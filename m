@@ -2,116 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1E344D60A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2295444D60D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbhKKLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhKKLtn (ORCPT
+        id S233172AbhKKLu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:50:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23766 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhKKLu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:49:43 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D17BC061766;
-        Thu, 11 Nov 2021 03:46:54 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id bu18so13620343lfb.0;
-        Thu, 11 Nov 2021 03:46:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9tM59iHxbjBy1nj5+saeMd6teAXT6q3TU+sgxUry514=;
-        b=CIUmnieQoR1hCQLeHpZ5ND64jwPZyhb9sw95MlDQ5eOLhYH6rLx8k/XO4GZaU5pC0J
-         yntni+AKB7XU+Yrs5cvLym76/9dofICQFBblyVecCUXdcxGO0PIrx2BL9b/Qnb/JTKaJ
-         PtoteIt5y1jDyAdXRMudJGTFpcc0IXrx+CjgYQIC2ETL1asJE9BPI+1wLncFb3LtQbLl
-         yOobghDPOAc0D1PSD4bCiJS13CitRo/gUVcLsRo8yTyV6cUMargeKtyVTgdVbQpYgt7O
-         KNnswWufIic9guBst16ge/hh8eLlpQ7+QCfjGpW4e748WSXxPMSjzdkTCvPD2xHqou2V
-         LAZw==
+        Thu, 11 Nov 2021 06:50:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636631256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
+        b=BGjnSm70KtBlGpjs0vJ7W0gmDQ4Ez6G6kqdiSunpoBEro6UoY3oO4udWrWVLdcdy/yxhdA
+        2YZo6bQxZ0T6yGZnyusZZ8fbrJe1eYyweE9px0nW3/yTQCM+qPccCMupapWq5M5prB1Cr+
+        uF5rmyjCY/ah0JrjHLk+gdatf6NyLBI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-02b_PLNcOi-rY3obamdpvQ-1; Thu, 11 Nov 2021 06:47:35 -0500
+X-MC-Unique: 02b_PLNcOi-rY3obamdpvQ-1
+Received: by mail-wm1-f70.google.com with SMTP id m1-20020a1ca301000000b003231d5b3c4cso4661091wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 03:47:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9tM59iHxbjBy1nj5+saeMd6teAXT6q3TU+sgxUry514=;
-        b=4rvdfdte7VoJ4OfG5v3NpA9vdrdxqsUT71EhOM5aMxQKHkbI0LgqvH0B2KxzopRuYc
-         0ZrCXuTZUjHfNvWLbG1BUVCowAtDM7azaxy/0q5OGvtcqQX8Ej7/xmwmkvvnx8Y3RUKq
-         uRlrHUNKSEIZLl+WSmHUIfIOGCPvK9k/y7wJ6xftNfOLdMD5N1q6HdaNRrQJrj57l9H3
-         a40u5Oih4KooAEVGsnM0h2B4a7uMAkFes1k7fm5XeNsCDdFcN3FWAoWrmcswvpou4M5i
-         wFRavkDPMSwtoxAlF6tunXcBgS4/DtSpW51pILNYRkwBztVhvZji6+KnJ4OCofslxuWf
-         E5tw==
-X-Gm-Message-State: AOAM530p+HAGnD5oHYPRZqMd6PM3KpUEZdzI2p37P4XNxd+uPhQkF9xt
-        SaDBfuh0kv7Ar3mXc7t0OygHw06NJ/ZfKZCjxXUQDylkRc0=
-X-Google-Smtp-Source: ABdhPJxtFSfBVWazykokLpoBlAsxF3sPUki/hnXcuN7tS/9f15DbmBvhRTrjP6XvBP35W2yEZ5p4suuvkrTDTYHvC9g=
-X-Received: by 2002:a19:740a:: with SMTP id v10mr6081459lfe.179.1636631212426;
- Thu, 11 Nov 2021 03:46:52 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
+        b=Gzn9LiPBg2+pZIhX8K7DcrOMU/4NHBMOxGX3PEgjGdJZ1cZSvW5qaXWOsac6otocHe
+         QdesRUB/Bg230d6UkXTBKEK0CweKF03F25HxxOpJS9zr0d/SadCDxItTxOCWp3TIJ5Pu
+         RJMND/O04VY7tnrrspGyf1atxTPWWEeiFBOWmToLdLDS34GFQKhs0zPgb3rd1JnXB6Or
+         1RhksfJDJhrjBSindigx1MqZPaUcHxdoowYIzx3XL9X5z1tPkfsammJ64qL7Mu364lBU
+         e2iXiW0X5lG4LXazLkWSXO/DrttjHx7PIV/OK2eXEeQussZq/Ca47NJ0qEC6++tNS7ct
+         bPnQ==
+X-Gm-Message-State: AOAM533ITE4rve66htdYzPiKd+WaSaO/fGNgFWzj+P5dsIS0JLD4o2XB
+        GEW+LD4F1Z+EveYuxdCL+SitF5Xi9V+l/3E/lUbQxctgmHeVxTZKsopvv6c+DZlsvNar83lR7k9
+        e21XNKSuI/qs2TkMbVoeMAR5C
+X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082378wrs.164.1636631254683;
+        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwO566pckJvXEcwz+OG93YPsApF+toGZKExvaMFLBrnliRRTv/LgjAiYUOFAAaeaDr4bLvTMw==
+X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082352wrs.164.1636631254480;
+        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
+Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
+        by smtp.gmail.com with ESMTPSA id d8sm2782565wrm.76.2021.11.11.03.47.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 03:47:33 -0800 (PST)
+Message-ID: <70dd5e1c-99c9-c1ca-4e3f-1a894896cf06@redhat.com>
+Date:   Thu, 11 Nov 2021 12:47:33 +0100
 MIME-Version: 1.0
-References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
- <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
- <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
- <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
- <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
- <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
- <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna>
-In-Reply-To: <YYzxWPIWFAV04LRU@lahna>
-From:   Richard Hughes <hughsient@gmail.com>
-Date:   Thu, 11 Nov 2021 11:46:39 +0000
-Message-ID: <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 4/7] fs/binfmt_elf: use get_task_comm instead of
+ open-coded string copy
+Content-Language: en-US
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <20211108083840.4627-1-laoar.shao@gmail.com>
+ <20211108083840.4627-5-laoar.shao@gmail.com>
+ <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com>
+ <b495d38d-5cdd-8a33-b9d3-de721095ccab@redhat.com> <YYz/4bSdSXR3Palz@alley>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YYz/4bSdSXR3Palz@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
-> OK, I see from your patch that it uses the direct mapped read-only
-> region to read this data.
+On 11.11.21 12:34, Petr Mladek wrote:
+> On Thu 2021-11-11 11:06:04, David Hildenbrand wrote:
+>> On 11.11.21 11:03, David Hildenbrand wrote:
+>>> On 08.11.21 09:38, Yafang Shao wrote:
+>>>> It is better to use get_task_comm() instead of the open coded string
+>>>> copy as we do in other places.
+>>>>
+>>>> struct elf_prpsinfo is used to dump the task information in userspace
+>>>> coredump or kernel vmcore. Below is the verfication of vmcore,
+>>>>
+>>>> crash> ps
+>>>>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+>>>>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
+>>>>>     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
+>>>>>     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
+>>>>>     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
+>>>>>     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
+>>>>>     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
+>>>>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
+>>>>>     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
+>>>>>     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
+>>>>>     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
+>>>>>     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
+>>>>>     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
+>>>>>     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
+>>>>>     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
+>>>>>     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
+>>>>>     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
+>>>>
+>>>> It works well as expected.
+>>>>
+>>>> Suggested-by: Kees Cook <keescook@chromium.org>
+>>>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+>>>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>>>> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>>>> Cc: Matthew Wilcox <willy@infradead.org>
+>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>> Cc: Al Viro <viro@zeniv.linux.org.uk>
+>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>> Cc: Petr Mladek <pmladek@suse.com>
+>>>> ---
+>>>>  fs/binfmt_elf.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+>>>> index a813b70f594e..138956fd4a88 100644
+>>>> --- a/fs/binfmt_elf.c
+>>>> +++ b/fs/binfmt_elf.c
+>>>> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
+>>>>  	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
+>>>>  	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
+>>>>  	rcu_read_unlock();
+>>>> -	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
+>>>> +	get_task_comm(psinfo->pr_fname, p);
+>>>>  
+>>>>  	return 0;
+>>>>  }
+>>>>
+>>>
+>>> We have a hard-coded "pr_fname[16]" as well, not sure if we want to
+>>> adjust that to use TASK_COMM_LEN?
+>>
+>> But if the intention is to chance TASK_COMM_LEN later, we might want to
+>> keep that unchanged.
+> 
+> It seems that len will not change in the end. Another solution is
+> going to be used for the long names, see
+> https://lore.kernel.org/r/20211108084142.4692-1-laoar.shao@gmail.com.
 
-Sorry for the delay in replying here. What I like about Hans-Gert's
-patch is that it's always going to work on x64 -- if the system
-firmware isn't available at that offset then the platform just isn't
-going to boot. It's super simple, and means we can read out the hugely
-complex UEFI blob without asking the user to turn off kernel lockdown
-and secure boot so we can run the security verification tools. At the
-moment we're in this strange situation where we ask the user to
-cripple their platform security to run the platform security tools.
+Yes, that's what I recall as well. The I read the patch
+subjects+descriptions in this series "make it adopt to task comm size
+change" and was slightly confused.
 
-> Do we know what information exactly fwupd needs? I mean exposing all of
-> this might not be good idea from security perspective (but I'm not an
-> expert).
+Maybe we should just remove any notion of "task comm size change" from
+this series and instead just call it a cleanup.
 
-Ideally, fwupd needs the entire IFD partition which contains all the
-EFI File Volumes. We already parse these when the user is booting
-without secure boot using the Intel SPI controller and doing *evil*
-hacks to make the PCI device visible. The reason we want to parse the
-BIOS can be explained pretty easily; at startup we look at the TPM
-PCRs and we know very quickly and easily if the system firmware event
-has changed. If the checksum changed, then the firmware was modified
-in some way. However, saying to the user that "checksum changed" isn't
-useful at all. What we want to do is say something like "an EFI binary
-called RootKitz.efi was added" or "the AmiTcgPlatformPeiAfterMem.efi
-binary changed" and actually report what was done. At the moment we
-can do this, but not if /dev/mem cannot be used.
 
-> However, we can perhaps expose some of it through intel-spi,
-> and make that work so that distros can enable it safely.
+-- 
+Thanks,
 
-I think, if we're being honest, that Intel has no plans to make
-intel-spi available as a RO interface of any sort. There's some sort
-of hardware errata or misdesign that nobody can mention that makes the
-RO access unsafe. I think it's probably more than missing arbitration.
+David / dhildenb
 
-Richard
