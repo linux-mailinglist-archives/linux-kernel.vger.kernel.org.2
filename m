@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEEC44D652
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0497144D655
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhKKMJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:09:40 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:58933 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232318AbhKKMJh (ORCPT
+        id S233240AbhKKMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:10:17 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40614 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhKKMKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:09:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636632409; x=1668168409;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pEhHx4xmdkRDKSCeTsMlzkrnFkjav4JeEBzcJ5Zp1ZQ=;
-  b=gSb/zPOPxyDj0jQ8pP0+zGXfmlqdHu8nba05uH5eUJMmngTYdS2EZn8Q
-   BAJtMhje6L35B6SOAX6aAeLxyZ+9+pgWY7jxux+JGjJSGFqTrmnrvfB+t
-   jJRXfl/ya/vEODP5nQDh8xqpHFn+5ly6coMO4KBxDRWwqb10RFOrMG6WH
-   A=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 11 Nov 2021 04:06:47 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 04:06:45 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 11 Nov 2021 04:06:44 -0800
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 11 Nov 2021 04:06:40 -0800
-Date:   Thu, 11 Nov 2021 17:36:36 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Pavankumar Kondeti <quic_pkondeti@quicinc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Peter Chen <peter.chen@nxp.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        Dean Anderson <dean@sensoray.com>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] usb: gadget: f_fs: Use stream_open() for endpoint files
-Message-ID: <20211111120636.GA11612@hu-pkondeti-hyd.qualcomm.com>
-References: <1636629117-2206-1-git-send-email-quic_pkondeti@quicinc.com>
- <YY0Asjnm/Ce6FpS8@kroah.com>
+        Thu, 11 Nov 2021 07:10:15 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1ABC7Hqq015276;
+        Thu, 11 Nov 2021 06:07:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636632437;
+        bh=RFY8vcAlJt3jAFzCZzexLytEhRxy/imNlg2DEtzITSQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=bbNJUPJaZqxwAr588pN1xTiNdPOGocWwZ/7spRIH5XdBmfvSHXdVEkNb7hqlXRUtV
+         O+AfwAZz4ovRAAheHos+w0WSOj24CJni0PmJDwuMtvT1z05JyHLkR3B7GunrsiJOjy
+         oWYw1qZGy8B1w+kBbWfKfaUFc5WkXngksnybQlyU=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1ABC7Hg1091580
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Nov 2021 06:07:17 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 11
+ Nov 2021 06:07:16 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 11 Nov 2021 06:07:16 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1ABC7F3h027907;
+        Thu, 11 Nov 2021 06:07:16 -0600
+Date:   Thu, 11 Nov 2021 17:37:14 +0530
+From:   Rahul T R <r-ravikumar@ti.com>
+To:     <thierry.reding@gmail.com>, <sam@ravnborg.org>
+CC:     <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <nikhil.nd@ti.com>
+Subject: Re: [PATCH] drm/panel: simple: Initialize bpc in RK101II01D-CT panel
+ descriptor
+Message-ID: <20211111120714.74luy3cksxyeuk7h@uda0490373>
+References: <20211028115242.28539-1-r-ravikumar@ti.com>
+ <20211108163340.tafx6tug7wkdii7e@uda0490373>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YY0Asjnm/Ce6FpS8@kroah.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+In-Reply-To: <20211108163340.tafx6tug7wkdii7e@uda0490373>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 22:03-20211108, Rahul T R wrote:
+> On 17:22-20211028, Rahul T R wrote:
+> Hi Thierry / Sam,
+> 
+> Can you please review this patch
+> 
+> Regards
+> Rahul T R
 
-On Thu, Nov 11, 2021 at 12:38:26PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Nov 11, 2021 at 04:41:55PM +0530, Pavankumar Kondeti wrote:
-> > Function fs endpoint files does not have the notion of file position.
-> > So switch to stream like functionality. This allows concurrent threads
-> > to be blocked in the ffs read/write operations which use ffs_mutex_lock().
-> > The ffs mutex lock deploys interruptible wait. Otherwise, threads are
-> > blocking for the mutex lock in __fdget_pos(). For whatever reason, ff the
-> > host does not send/receive data for longer time, hung task warnings
-> > are observed.
+ping
+
+> > Initialize bpc while creating panel_desc structure for RK101II01D-CT
 > > 
-> > Change-Id: I602fa56fb5ed4c8c46e19df68c3335c4b12cae81
-> 
-> Always run scripts/checkpatch.pl on your patches so you do not get
-> grumpy maintainers asking you to run scripts/checkpatch.pl on them...
-> 
-Thanks for taking a look at the patch. My bad, I have applied the patch
-from a recent android tree and carry forwarded this tag. I will fix it.
-
-Thanks,
-Pavan
+> > Below warning is triggered since bpc is not being initialized
+> > 
+> > WARNING: CPU: 2 PID: 47 at drivers/gpu/drm/panel/panel-simple.c:614
+> > panel_simple_probe+0x1b0/0x3c8
+> > 
+> > Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> > ---
+> >  drivers/gpu/drm/panel/panel-simple.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> > index dde033066f3d..32f775db5cb7 100644
+> > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > @@ -3027,6 +3027,7 @@ static const struct drm_display_mode rocktech_rk101ii01d_ct_mode = {
+> >  
+> >  static const struct panel_desc rocktech_rk101ii01d_ct = {
+> >  	.modes = &rocktech_rk101ii01d_ct_mode,
+> > +	.bpc = 8,
+> >  	.num_modes = 1,
+> >  	.size = {
+> >  		.width = 217,
+> > -- 
+> > 2.17.1
+> > 
