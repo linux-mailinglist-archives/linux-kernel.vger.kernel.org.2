@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FB744CEBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DCA44CEBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhKKBU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhKKBUy (ORCPT
+        id S232650AbhKKBWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:22:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230338AbhKKBWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:20:54 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9436DC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:18:06 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id b11so4392232pld.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t4nnDeLo1iCP0qWFNqUucoApDeR2qvBQ8UhWQ3UZmkc=;
-        b=PQIcRaRFx0EEmilZQB4hvm/u+nMZhIQEbx87Ve5EiNZyg9Gr4GgiVSeuxX7yNDLsM2
-         c+fUHjBAKtuyM+1oeAprgXKlyJ+7eVeUsL4rUT8ohL6Bcpt5QL0f7EtUqQNeA+k049kf
-         3JqD39l+MC54PdQJ4H1t7UqLLGNNkv2xdX7QqCzx83xwOacUcb+Frqd7N7JOim4oprWY
-         pDA2dAzVATQC2R4OyDgzJWGz4GkLd7w4ib6uhBCD4m1vtWF2nJWBR6QS5o/Y7mJa7jB6
-         7MZdtTio6MqHrYXfPnJjcooaSRTdD8b+K5lO5XmcJDeasoYjXjnrH2k3DY7OGgBS/AJx
-         ierg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t4nnDeLo1iCP0qWFNqUucoApDeR2qvBQ8UhWQ3UZmkc=;
-        b=J3kmR9UgE1FPopsVyVe7FgvGI1oCugdVnR5+EJkqvW6p2FDEBnNvneD8UihVCWzWtE
-         h87F7ocGiygJEYj3HYkVfBg6v5NPlvr+0sMnRHe7uEYU+ybdzYRJ7r4hB3+8gWAsPDL+
-         oM44tLxI7dmYgpkfVcdcPp0nZzJ7jRCPCASiO+vE860ty7pGDUgaYX6OjksSx6xlECS9
-         JiPt4vp+6Xpds6Or912820usZYkyj2LONmwaJ2e0XRbSNqy7YvUn42K5Kb0Csil56J8+
-         7EOZm1cB/vzFDE735U9zxvtWEH+piTsHqnbZmmN+l6MQ85xUiZ5je3RmFvFU4ggz7yjV
-         Ljzw==
-X-Gm-Message-State: AOAM533yLIY5uldliQzEPQfqETTykGnoDgQ5f2tKa2oVXuoUKHdykpW1
-        dBiSVgn56CiQCRxVy54pQB7pCw==
-X-Google-Smtp-Source: ABdhPJz8FPQc7GIFH5vWRt+n3wEUWrg+9k44PkN/N5CImHKZdrpBhr5CuaxR3JJDQS1irQfeUnVtwQ==
-X-Received: by 2002:a17:902:e405:b0:141:b2fa:b00 with SMTP id m5-20020a170902e40500b00141b2fa0b00mr3935488ple.22.1636593485875;
-        Wed, 10 Nov 2021 17:18:05 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z23sm609892pgn.14.2021.11.10.17.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 17:18:05 -0800 (PST)
-Date:   Thu, 11 Nov 2021 01:18:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
- make_spte
-Message-ID: <YYxvSfUPTXbclpSa@google.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-12-bgardon@google.com>
- <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
- <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
+        Wed, 10 Nov 2021 20:22:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636593605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wf5lH6O3s6nS/L2xv76f95vR+cNgDmPYjWL5ihoALv0=;
+        b=hjI5ifNW6hNXyC59cwT3B48vDdDpQkDB9fzcAi3Zx/23OX6zhbOBDq6yPH0DuVQ63pgE0Y
+        SFNlZZZqKlSN9/lfAz9/L6VAUm/Xx9W2lhZn65zv8QHfT6rR0kgYEURhoCH9yTTPEBNI1G
+        5WOBSLoxbOIgl9En4ojG83XkOugac1c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-xLrCtBAZOoS1E0dRlmX2PQ-1; Wed, 10 Nov 2021 20:20:01 -0500
+X-MC-Unique: xLrCtBAZOoS1E0dRlmX2PQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04E9D18125C1;
+        Thu, 11 Nov 2021 01:20:00 +0000 (UTC)
+Received: from [10.22.16.136] (unknown [10.22.16.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BED5218A8F;
+        Thu, 11 Nov 2021 01:19:58 +0000 (UTC)
+Message-ID: <adc41c96-a86b-0cfe-4082-38bed8597aa2@redhat.com>
+Date:   Wed, 10 Nov 2021 20:19:58 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/2] clocksource: Avoid incorrect hpet fallback
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Feng Tang <feng.tang@intel.com>
+References: <20211110221732.272986-1-longman@redhat.com>
+ <20211110223250.GG641268@paulmck-ThinkPad-P17-Gen-1>
+ <1f43bfad-434f-88d5-b794-4cf1116e9924@redhat.com>
+ <20211111000414.GH641268@paulmck-ThinkPad-P17-Gen-1>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211111000414.GH641268@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021, Ben Gardon wrote:
-> On Wed, Nov 10, 2021 at 2:45 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 11/10/21 23:30, Ben Gardon wrote:
-> > > -     WARN_ONCE(is_rsvd_spte(&vcpu->arch.mmu->shadow_zero_check, spte, level),
-> > > +     WARN_ONCE(is_rsvd_spte(shadow_zero_check, spte, level),
-> > >                 "spte = 0x%llx, level = %d, rsvd bits = 0x%llx", spte, level,
-> > > -               get_rsvd_bits(&vcpu->arch.mmu->shadow_zero_check, spte, level));
-> > > +               get_rsvd_bits(shadow_zero_check, spte, level));
-> >
-> > Hmm, there is a deeper issue here, in that when using EPT/NPT (on either
-> > the legacy aka shadow or the TDP MMU) large parts of vcpu->arch.mmu are
-> > really the same for all vCPUs.  The only thing that varies is those
-> > parts that actually depend on the guest's paging mode---the extended
-> > role, the reserved bits, etc.  Those are needed by the emulator, but
-> > don't really belong in vcpu->arch.mmu when EPT/NPT is in use.
-> >
-> > I wonder if there's room for splitting kvm_mmu in two parts, such as
-> > kvm_mmu and kvm_guest_paging_context, and possibly change the walk_mmu
-> > pointer into a pointer to kvm_guest_paging_context.  This way the
-> > EPT/NPT MMU (again either shadow or TDP) can be moved to kvm->arch.  It
-> > should simplify this series and also David's work on eager page splitting.
-> >
-> > I'm not asking you to do this, of course, but perhaps I can trigger
-> > Sean's itch to refactor stuff. :)
-> >
-> > Paolo
-> >
-> 
-> I think that's a great idea. I'm frequently confused as to why the
-> struct kvm_mmu is a per-vcpu construct as opposed to being VM-global.
-> Moving part of the struct to be a member for struct kvm would also
-> open the door to formalizing the MMU interface a little better and
-> perhaps even reveal more MMU code that can be consolidated across
-> architectures.
 
-But what would you actually move?  Even shadow_zero_check barely squeaks by,
-e.g. if NX is ever used to for NPT, then maybe it stops being a per-VM setting.
+On 11/10/21 19:04, Paul E. McKenney wrote:
+> On Wed, Nov 10, 2021 at 06:25:14PM -0500, Waiman Long wrote:
+>> On 11/10/21 17:32, Paul E. McKenney wrote:
+>>> On Wed, Nov 10, 2021 at 05:17:30PM -0500, Waiman Long wrote:
+>>>> It was found that when an x86 system was being stressed by running
+>>>> various different benchmark suites, the clocksource watchdog might
+>>>> occasionally mark TSC as unstable and fall back to hpet which will
+>>>> have a signficant impact on system performance.
+>>>>
+>>>> The current watchdog clocksource skew threshold of 50us is found to be
+>>>> insufficient. So it is changed back to 100us before commit 2e27e793e280
+>>>> ("clocksource: Reduce clocksource-skew threshold") in patch 1. Patch 2
+>>>> adds a Kconfig option to allow kernel builder to control the actual
+>>>> threshold to be used.
+>>>>
+>>>> Waiman Long (2):
+>>>>     clocksource: Avoid accidental unstable marking of clocksources
+>>>>     clocksource: Add a Kconfig option for WATCHDOG_MAX_SKEW
+>>> The ability to control the fine-grained threshold seems useful, but is
+>>> the TSC still marked unstable when this commit from -rcu is applied?
+>>> It has passed significant testing on other workloads.
+>>>
+>>> 2a43fb0479aa ("clocksource: Forgive repeated long-latency watchdog clocksource reads")
+>>>
+>>> If the patch below takes care of your situation, my thought is to
+>>> also take your second patch, which would allow people to set the
+>>> cutoff more loosely or more tightly, as their situation dictates.
+>>>
+>>> Thoughts?
+>> That is commit 14dbb29eda51 ("clocksource: Forgive repeated long-latency
+>> watchdog clocksource reads") in your linux-rcu git tree. From reading the
+>> patch, I believe it should be able to address the hpet fallback problem that
+>> Red Hat had encountered. Your patch said it was an out-of-tree patch. Are
+>> you planning to mainline it?
+> Yes, I expect to submit it into the next merge window (not the current
+> v5.16 merge window, but v5.17).  However, if your situation is urgent, and
+> if it works for you, I could submit it as a fix for an earlier regression.
 
-Going through the fields...
+I will build a test kernel based on your patch and ask our benchmarking 
+group to run their test suites. It will take a day or two to get a 
+definitive answer even though I believe it should fix the issue.
 
-These are all related to guest context:
+Cheers,
+Longman
 
-	unsigned long (*get_guest_pgd)(struct kvm_vcpu *vcpu);
-	u64 (*get_pdptr)(struct kvm_vcpu *vcpu, int index);
-	int (*page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
-	void (*inject_page_fault)(struct kvm_vcpu *vcpu,
-				  struct x86_exception *fault);
-	gpa_t (*gva_to_gpa)(struct kvm_vcpu *vcpu, gpa_t gva_or_gpa,
-			    u32 access, struct x86_exception *exception);
-	gpa_t (*translate_gpa)(struct kvm_vcpu *vcpu, gpa_t gpa, u32 access,
-			       struct x86_exception *exception);
-	int (*sync_page)(struct kvm_vcpu *vcpu,
-			 struct kvm_mmu_page *sp);
-	void (*invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa);
-	union kvm_mmu_role mmu_role;
-	u8 root_level;
-	u8 permissions[16];
-	u32 pkru_mask;
-	struct rsvd_bits_validate guest_rsvd_check;
-	u64 pdptrs[4];
-	gpa_t root_pgd;
 
-One field, ept_ad, can be straight deleted as it's redundant with respect to
-the above mmu_role.ad_disabled.
-
-	u8 ept_ad;
-
-Ditto for direct_map flag (mmu_role.direct) and shadow_root_level (mmu_role.level).
-I haven't bothered to yank those because they have a lot of touchpoints.
-
-	bool direct_map;
-	u8 shadow_root_level;
-
-The prev_roots could be dropped if TDP roots were tracked per-VM, but we'd still
-want an equivalent for !TDP and nTDP MMUs.
-
-	struct kvm_mmu_root_info prev_roots[KVM_MMU_NUM_PREV_ROOTS];
-
-shadow_zero_check can be made per-VM if all vCPUs are required to have the same
-cpuid.MAXPHYADDR or if we remove the (IMO) pointless 5-level vs. 4-level behavior,
-which by-the-by, has my vote since we could make shadow_zero_check _global_, not
-just per-VM, and everything I've heard is that the extra level has no measurable
-performance overhead.
-
-	struct rsvd_bits_validate shadow_zero_check;
-
-And that leaves us with:
-	hpa_t root_hpa;
-
-	u64 *pae_root;
-	u64 *pml4_root;
-	u64 *pml5_root;
-
-Of those, _none_ of them can be per-VM, because they are all nothing more than
-shadow pages, and thus cannot be per-VM unless there is exactly one set of TDP
-page tables for the guest.  Even if/when we strip the unnecessary role bits from
-these for TDP (on my todo list), we still need up to three sets of page tables:
-
-	1. Normal
-	2. SMM
-	3. Guest (if L1 doesn't use TDP)
-
-So I suppose we could refactor KVM to explicitly track its three possible TDP
-roots, but I don't think it buys us anything and would complicate supporting
-!TDP as well as nTDP.
