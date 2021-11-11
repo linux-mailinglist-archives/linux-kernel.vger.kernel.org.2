@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6987644D6A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B3C44D6AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhKKMcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:32:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
+        id S232916AbhKKMeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhKKMca (ORCPT
+        with ESMTP id S229946AbhKKMeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:32:30 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74521C061766;
-        Thu, 11 Nov 2021 04:29:41 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id o29so4916006wms.2;
-        Thu, 11 Nov 2021 04:29:41 -0800 (PST)
+        Thu, 11 Nov 2021 07:34:18 -0500
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEFFC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:31:29 -0800 (PST)
+Received: by mail-vk1-xa33.google.com with SMTP id n201so3153335vkn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:31:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0tMfvP4Mz3a8Bp08U0yneAGTC8aLaMj3BxhAPrjTCe0=;
-        b=BStFhoaTitL+lANSUa6KzVBFUdabVylOtySdzEbp/hzYJXFUqcfLA2tISurJRxyKL2
-         NbmJjF/sHx4U0NEOnGNVLvypz8n752khBQWNJ0IMEeAimNbI7G20rOUU+wTouPDjnZtR
-         FY0/bKnAJUcC6LI2AyrtpT8oU6FIFKEevIMsm+Lgux+NPyxEWDlaBzBdvJWPKKOlTkwD
-         s1XA5JuCJQjXvvNwYEHU4wu4R2VYDb5NI7UiQUsAzXuVQu1Y3NZg0cL8ajGb5a6S1P0+
-         zol4fZ6EKSoDztxvwrASpe4jrqwQu1OnD6VewCdvEjVCVdjUrH7T5RtLgHoiZVvoCaIi
-         te0w==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QFuPfVHxT0WoN/sdPwAKj5LWYOBlv/YBMKA+MkWBFSY=;
+        b=oqkvEFVKk2itBiLlUXpkPeVSN3eyxtJkRARN59YNCctvrAGz5avqRYjWl8qrUuXNP7
+         fVwzOd7Cr0Wnk56CSjjTDqoEl2+10FL1aJReTkQEtEb73eEwzCTf1ijFJe0UHX6J/n5C
+         4bWbkLIzuAIcLn+T6PzQWiEptXNpR0hm3YDG2jZsooZR9uzZcNZP6gYjzBocBfABRpAe
+         zoOQzGBlXbizIqV55a4Vwj7Z9CaQHDoiO+WNEuq24aJYYaQ70xIARrUuofjr8HOduRx/
+         5cTsV+dzuVaC7RX4McCDdq6B9Pn9iT/ld0QaPc9Gfgq20iQtrbMJAFHOjC8vKfSbyAg9
+         7bdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0tMfvP4Mz3a8Bp08U0yneAGTC8aLaMj3BxhAPrjTCe0=;
-        b=hOHzKughHmM+FdBw1+mIp9o4w3T6T6lQFG05990kwmeKP5xYIBvZcRpfWvVtV6somF
-         749/Lu35/+ae4cNAleANm538zLJMdG1chQnKSOFpfjj9Y/SzmNX/iyAioBisbZRXU4F0
-         0AQTKwDC1DDmCSYTCCUjoU1hs6ZDQPJXGw8b0cpebKiGf2jKn74R5aCOwgzYW0sW4ZcN
-         tvLWyW1LK+lSiBh0xkRWq386b1HW2ixQNrzq+iFcFCPRT2EOueRQmf76aeNu1VX4aMiJ
-         MkmzlTqVXKKecbhHVOPHAcmd6WiPuyQ/yYVbZz8Qlwg5vzeyiNWpuBL2NrVJVSaCLISy
-         ILrA==
-X-Gm-Message-State: AOAM530yzeIzaFCMNQhEZhnt9ePXblokSvzI6g3QquSNi6OqaT3+Odz1
-        aNJSoT8g62Ra5j3UCk26+Ck=
-X-Google-Smtp-Source: ABdhPJysmYJWBa0xKrAQEAzzbzYWtVp5mdUvmySeRld7Fj/cULJINfQrlWZjYgfF4DeBxjvUE92gzw==
-X-Received: by 2002:a05:600c:4e8d:: with SMTP id f13mr25513961wmq.7.1636633780101;
-        Thu, 11 Nov 2021 04:29:40 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id w7sm2799991wru.51.2021.11.11.04.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 04:29:39 -0800 (PST)
-Date:   Thu, 11 Nov 2021 12:29:36 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/17] 5.4.159-rc1 review
-Message-ID: <YY0MsN4ATTvU2hdv@debian>
-References: <20211110182002.206203228@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QFuPfVHxT0WoN/sdPwAKj5LWYOBlv/YBMKA+MkWBFSY=;
+        b=08BcW/MOX0jRnfYMaqDjKCEaFQPO2BR9GvvqrYimr/d5q71tAHLIPLGiXaNvgbxktH
+         HFGLsZPa3CSuseNyGeN8qD9SqeZfKM6lOyAVT1BgRkObpgFwG+Kx73kOFmS38ob2FIaV
+         MRscSS/cXHEmWJ++uOruXf9+J6xGjKb09OY3vZS0Ls27Oh9xiROwbDg68A+0aCjMD/11
+         4g8PMKXFrBpFy3J7O6vqrtXb3fWjT9qLm1x4tzcSM354rEjMDiTB/X6hOO9ORywfPEQZ
+         PnsKAG8voXdX3IKDrIlGVTEqJDP/zNw0/g/QA+wagA6Ch0YzNZdgSR73ML/dsIjxwtl7
+         Cofw==
+X-Gm-Message-State: AOAM531Osbt0fQ0L4J+tUQx/i0UhcbElqxrX3Hge53LeE5KVBcBP1dHq
+        aBbXYfx/KzFGS/5h57IDn0qPnHiWAURobNli40w=
+X-Google-Smtp-Source: ABdhPJzpDMtYwhWwDUfht6BC9ToDoM8fRbNSHuQkXFjHsXEULq4nXRAtYZe0yI6Jnq5me/6YmB9szUfBAbJkqsAdOwI=
+X-Received: by 2002:a05:6122:a03:: with SMTP id 3mr10624402vkn.8.1636633888774;
+ Thu, 11 Nov 2021 04:31:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+Received: by 2002:a59:c52f:0:b0:245:f618:9e67 with HTTP; Thu, 11 Nov 2021
+ 04:31:28 -0800 (PST)
+Reply-To: richardazizlawfirm@gmail.com
+From:   Richard Aziz <suniewendy600@gmail.com>
+Date:   Thu, 11 Nov 2021 13:31:28 +0100
+Message-ID: <CACihmKr5NhKf=4mHvoyg315CyQcS-Qe+n64uD0ixtZRcde4ZGA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Wed, Nov 10, 2021 at 07:43:39PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.159 release.
-> There are 17 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
-
-Build test:
-mips (gcc version 11.2.1 20211104): 65 configs -> no new failure
-arm (gcc version 11.2.1 20211104): 107 configs -> no new failure
-arm64 (gcc version 11.2.1 20211104): 2 configs -> no failure
-x86_64 (gcc version 11.2.1 20211104): 4 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/366
+Dear Friend,
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Sorry for contacting you through this medium as we have never met each
+other before.
+I got your contact via the internet database of your country on my
+preliminary search for the  relatives of my late client.
+My name is Barrister Richard Aziz Esq from Burkina Faso but based in
+Republic of Togo as a legal practitioner.
 
---
-Regards
-Sudip
+I am contacting you in regards to my late client wo has the same
+surname and country of Origin as you, he was a road construction
+contractor here in
+Togo before his sudden death  on a fatal motor accident alongside his
+wife and only daughter on February 17,2015 without a valid will or
+record of
+next of kin to his access.
+Recently, his bank "Orabank" informed me of the deceased left over
+deposit of seven million five hundred and fifty thousand united
+state dollars ($7.550,000),the bank further warned that the money
+could be confiscated or declared an abandoned Bank deposit if no
+member of the deceased family comes forth for the claim of the fund
+within the period of time allowed.
 
+Sadly, I didn't succeed in locating any of the late decedent's
+extended family members, hence my contacting you.
+Perhaps, you may not biologically be related to the late depositor,
+but it will be reasonable for us to use this opportunity to claim the
+money since you have the same last name, nationality and country of
+origin with my late client in accordance with the Togolese intercity
+rules/constitution.
+
+All the documents which will protect you from any breach of the law
+during and after this transaction will be provided from the
+appropriate authority.
+I am proposing 45% of the money to both parties while the remaining
+10% will be divided into two equal halves and be donated to the
+charity organization's in our respective countries if you could agree
+to stand as the deceased beneficiary /next of kin under the "Intestacy
+Rules".
+I look forward to receive your response to enable us proceed with the
+success of this transaction.
+
+
+Best Regards,
+Richard Aziz, Esq
