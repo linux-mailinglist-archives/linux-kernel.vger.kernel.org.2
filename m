@@ -2,182 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223E944DCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8989144DCDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbhKKVIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:08:23 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:55277 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhKKVIT (ORCPT
+        id S233695AbhKKVKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhKKVKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:08:19 -0500
-Received: from leknes.fjasle.eu ([92.116.65.223]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MOzKm-1n448p2HPQ-00PJwc; Thu, 11 Nov 2021 22:04:31 +0100
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id 14D833C563; Thu, 11 Nov 2021 22:04:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1636664669; bh=E9zRL4wp69cueK3T0b6a6zpUpjWFIzefnR0viafArLA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wqCnbgCpZW3hdHjlP2UnZ287DMugL2ceaJCZdLoYuRG5L1PqawgPHsvE8u7hXFO5R
-         wRXvfrzb6wMfgkPEfkV5ED3cM9cXa5Om+Zr1RKIYJMlo/mGS37X3MytMQew4KiR2oj
-         Q9WGLa96mzPjNr0w20xwb/3HZWfd5XyxaCfWcrwE=
-Date:   Thu, 11 Nov 2021 22:04:28 +0100
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2] scripts/config: allow "O=config-dir" option
-Message-ID: <YY2FXErXArNnKwDh@fjasle.eu>
-References: <20211102224041.5105-1-rdunlap@infradead.org>
- <CAK7LNAQg0Dmj03xLWvz4=Y6n6VoiOnn-hkHrR7_MTgE5obt_7w@mail.gmail.com>
+        Thu, 11 Nov 2021 16:10:46 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D57C061766;
+        Thu, 11 Nov 2021 13:07:56 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id w1so29256652edd.10;
+        Thu, 11 Nov 2021 13:07:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I5/QR0fHODlqbwJV7S2kEOX48nVs3lR4nWWESAR7ot8=;
+        b=BACge4gwR4FjHMj+kG2cyK0l1bIwq1pBIuO96TbeV0v1aroqwuM4o8ulh/WsGrsR9o
+         UgZqI4bw+rknTxhgU/qX2z/JOGeg4A1iiMba6GsseSlwJvtlpvhoLyN21YICqxgWCPXf
+         5XuhgLK4aoCATpY2+Ne0fF6GzzjqgWA32BOug7lVzXwfip15ux3RNfmZ7QIuHsjZTOV0
+         YoEDndBMs+3wahSmHpkgq/CL6JW+PCXjEV4aw4JLwpYCRb6THQ/im6J6FLWkaICZEsIY
+         q85F9Ek5Yqbwf7fB3mXyhNlhpnMk7EkLwPv8igUyMU4UW53uEmBjQc/0JxdzpPRBLAk9
+         /ZWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I5/QR0fHODlqbwJV7S2kEOX48nVs3lR4nWWESAR7ot8=;
+        b=qmSE6QNp6NMTiTotUZsqfxpeo/VRh/DScDmx+N3TYUBOzR8eMQWkNsUaEoZec3C0TT
+         e3iYUc/wPjU++pQIRhZfSFXVoYPSNuDv5q0+8DmcIGa1Nx43BG35DqXAfpjZpC4wpplC
+         rfQLfDzDwA4Na0umT2ikEgXM2dExAwv3/cCqnfKq0DIg6TsagaIWsJuvDVm/P34gbuvM
+         +iGpoZzXIqhzOn1ggRPs6lz/MTSIyvGOPGBRLCfd7L8SI/SFNWEG5k9zcYfe+OIDJjKj
+         uS0T5jKhU7MTW20vXp8+0ByClwKQXeJWtNlB9jlZc3cN9+/WfwrZzRz5hIbn+fjI3MB+
+         sy/A==
+X-Gm-Message-State: AOAM530wAYJTI4t6oIKzMzWeTyzIzsVBBhRZ1mJS5yKpJxuH36U5gfWz
+        ACgbC69OtbkIoVeSxqxIaIhxCEbLVsOi2pQIIb06aX32
+X-Google-Smtp-Source: ABdhPJxPQARMqHT35vc/9vUQ5/d7UgTjh+rmJjlEvmyzrZ7HxbykWPKqasxIZoRH7FEFTeB8YkjRVEspwZCrz1hcG6o=
+X-Received: by 2002:a05:6402:51cc:: with SMTP id r12mr14383794edd.64.1636664875541;
+ Thu, 11 Nov 2021 13:07:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQg0Dmj03xLWvz4=Y6n6VoiOnn-hkHrR7_MTgE5obt_7w@mail.gmail.com>
-X-Provags-ID: V03:K1:KEgiijC07xwaSkYU63nzWVP2XqOJppvdWCAZnjlVWeGvEHfF5is
- 36Lu/X+BwO1ppBlOyVhTBuP2QgsDqzrFPAz8F1Fkt0ntFyxrYpxrArLmatV0r7I/+4TlRjU
- O05hwKcZari8f+pp+vOPnVHZprgtaqsal7vOyFGk/eYkLbMsGldCETBR/mti/pljx6EFj5f
- GZ0/QWJCPii1Qu1zRGLEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6MitMX78nJM=:jnJ9ptHn6X+BGSmAqhyAsG
- GcPy0/UhDTKd/0CXjYXv6RiyjkRutc8FOjtNONA8NNCQWgCu/5UtJkCTNDkQNYRIN+ew0SU9r
- n7cs9wM+ZAQ08ER4eYjmmP1hg9SqFO6yKNM3spX8SPTAz2SEiVTXSQ5BF4t4QCmsNv/nhPHVt
- 2taH8J//QC1mC8jr/ayEk4gjg8EttKNV368LWPyesfEhBvt8zHD42mAsB9mhqLqibkwLEaof/
- r838T12UDMzEJEvetTZtx3weSVAjpzOFnWju4KS9M0IeYKDiUbpF7VqiohTlWyoK6aZr/nnm6
- xl2gXvJnBQy4ptLHn9jfqJWAdIKy3XKUIiISxItbpXV2g9C6L6F0F5VY6aFBRhXdw9RVryYOy
- o54EW4PYw7GWmcEZ43KEKM5I69YGUWvwdio+auOwllCgRLFd5h92JHfeF7VsSkE65KlVPcD/c
- sDUVfaUAyUhRWyNSjRt80HSQxIJWwu8FoVsx7h8B3Yw2Hp6ryM7Iya59t3WxRGYPZqyNl4gP5
- BtwT4JmaMd5JNPvNnDwLwAbbXsvWmasSLFIzh27t7BLHUItZI6GNNOD0CXuh6MMOvGrcbDEVS
- xNa239AZQlcJ+tFljqBVLBdjOsXPovTtP1SmR88Pcr7gPVkH5X1ZMfar+iLO3CRoz2kT4hkoi
- LEiY5vjcGDs8xl71ctyOQxwEz+AqrwplkU39Yl1j7Ej8DUCw3YjRLMOuzSkfSwUSaxHc=
+References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
+ <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
+ <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+ <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
+ <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
+ <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
+ <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
+ <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
+ <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com> <CAHp75VckB0RA6zoLRQ2UOcQRgMEf6sNxDGfpsNVr+92eArhD=Q@mail.gmail.com>
+In-Reply-To: <CAHp75VckB0RA6zoLRQ2UOcQRgMEf6sNxDGfpsNVr+92eArhD=Q@mail.gmail.com>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Thu, 11 Nov 2021 21:07:42 +0000
+Message-ID: <CAD2FfiH9OcKyUo6xjTfSENrEKF=4kZiGU4rT0FriK6KgKYSzyw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+On Thu, 11 Nov 2021 at 15:50, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> I was thinking about SHA256 hashes or so (as they tell about
+> binaries). In any case the interface for this seems to be in the
+> kernel.
 
-On Fri, Nov 05, 2021 at 12:41:59AM +0900 Masahiro Yamada wrote:
-> On Wed, Nov 3, 2021 at 7:40 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > Support "O=config-dir" as the location of the .config file
-> > like (some) other kernel build (make) tools do.
-> >
-> > Also check for the existence of the config-dir/config-file
-> > and report if there is no such file instead of letting grep
-> > report that there is no such file.
-> >
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-> > ---
-> 
-> Why don't you use  --file path/to/output/dir/.config ?
+I'm quite sure you don't want to put those EFI format decoders in the
+kernel; there is all kinds of weird compression schemes, volumes are
+recursive, and vendors like to hide weird things in the undocumented
+(or reserved) areas.
 
-I did not ask for the patch, but it matches some typical situations I
-experience at work.  Building kernels out-of-source w/ 'O=' but modifying
-.config with the '--file' option does not feel "natural". And 'O=' in
-scripts/config allows reusing make arguments (readline/bash's ESC-n ESC-.).
-
-Having the 'O=' argument, it might allow fixing the '--refresh' option to
-support out-of-source builds.
-
-Thus, no really great points from me.
-
-Kind regards,
-Nicolas
-
-
-> > v2:
-> > - use 'shellcheck' and other recommendations from Nicolas
-> > - move one comment from the commit description to under the "---" line
-> >
-> > Someone asked for this "feature" a few months ago but I don't
-> > recall who it was.
-> >
-> >  scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 39 insertions(+), 5 deletions(-)
-> >
-> > --- linux-next-20211102.orig/scripts/config
-> > +++ linux-next-20211102/scripts/config
-> > @@ -37,6 +37,7 @@ commands:
-> >
-> >  options:
-> >         --file config-file   .config file to change (default .config)
-> > +       O=config-dir         Specify the directory location of the config-file
-> >         --keep-case|-k       Keep next symbols' case (dont' upper-case it)
-> >
-> >  $myname doesn't check the validity of the .config file. This is done at next
-> > @@ -124,15 +125,48 @@ undef_var() {
-> >         txt_delete "^# $name is not set" "$FN"
-> >  }
-> >
-> > -if [ "$1" = "--file" ]; then
-> > -       FN="$2"
-> > -       if [ "$FN" = "" ] ; then
-> > +DIR=
-> > +FN=
-> > +
-> > +while [ "$DIR" = "" ] || [ "$FN" = "" ]; do
-> > +
-> > +       if [ "$1" = "" ] ; then
-> >                 usage
-> >         fi
-> > -       shift 2
-> > -else
-> > +       if [ "$1" = "--file" ]; then
-> > +               FN="$2"
-> > +               if [ "$FN" = "" ] ; then
-> > +                       usage
-> > +               fi
-> > +               shift 2
-> > +               continue
-> > +       fi
-> > +
-> > +       optn=$1
-> > +       optnlen=${#optn}
-> > +       if [ "$optnlen" -gt 1 ] && [ "${optn:0:2}" = "O=" ]; then
-> > +               DIR=${optn:2}
-> > +               shift
-> > +               if [ "$DIR" = "" ]; then
-> > +                       usage
-> > +               fi
-> > +               continue
-> > +       fi
-> > +       break   # something other than --file or O=dir
-> > +done
-> > +
-> > +if [ "$FN" = "" ]; then
-> >         FN=.config
-> >  fi
-> > +if [ "$DIR" != "" ]; then
-> > +       DIR=$DIR"/"
-> > +fi
-> > +FN="${DIR}${FN}"
-> > +
-> > +if [ ! -r "$FN" ]; then
-> > +       echo "No such config file: $FN"
-> > +       exit
-> > +fi
-> >
-> >  if [ "$1" = "" ] ; then
-> >         usage
-> 
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
-
--- 
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-↳ gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
+Richard.
