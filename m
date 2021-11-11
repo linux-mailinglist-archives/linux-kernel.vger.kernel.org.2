@@ -2,158 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C2444D674
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3390C44D676
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhKKMS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:18:26 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49332 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhKKMSX (ORCPT
+        id S233202AbhKKMS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhKKMSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:18:23 -0500
-Date:   Thu, 11 Nov 2021 12:15:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636632933;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UfjJtKrHq7LeVOEuNmGXKQ+uIhLteyltsMXwiJq+rFE=;
-        b=gemDb6/9++7oIPuaV2W2vrt3H0ZMJYh4zzKxMvok7aemk+Nm79l7SoZLHFUfiNmUCNaUl0
-        2Gl30uBPjvkxC5dNg86sak/wJkAmbeARKdCAZnsD3FE+rwyKB1IYi0+024RSk1UZOn7wLU
-        dufQhewsWme5tyTtKnp/i+sNBqqKh8rxoCHwbWbZ7VqbJ2hu94BZY8Tzf+dtQbmO7xLPjQ
-        qZgr6NWvZY2sslEMPLhUhnXOfq2tgH7q/zrAfZe6aoNxQwosaRImcJqP2tozTzDPIKGvfr
-        +a7QCAK2kKDP3qQ98N27J5xbi/bMIK2KEFKr8l2z5Vdi3SaRiTqKiDm+rXCDIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636632933;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UfjJtKrHq7LeVOEuNmGXKQ+uIhLteyltsMXwiJq+rFE=;
-        b=8qwlFRGx5O1MupE9KLPyeYJ3EuDRUqbMfygt459zKsOT5IeA/ZG+i+rzePUWk3SdnSZ5US
-        tc0woqD29YoyrtDg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] static_call,x86: Robustify trampoline patching
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
-References: <20211030074758.GT174703@worktop.programming.kicks-ass.net>
+        Thu, 11 Nov 2021 07:18:51 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28F5C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:16:01 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id b15so23153668edd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:16:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xRvVQxe2maqTo/5rXGRR2f58OkYf5yGEeq6jLRm3FCQ=;
+        b=bJK2ExcJxoc1Z5j8CGhk7qf9QKdPD31mkNj5qCFm9COmoP1m8Sx6nF5ypZZNHKgqDY
+         7VmSicQ5sFQRhR2FGRh2+Sq1eoTcxPlbPUBxqohtN2Q/Bg5ARvqjgSItC/UdjNXkGK0+
+         S2pDZWXj/Dryav0CVeUIpZzzTjIIU9ZWyU89DEeHpX/5s1yAa8+9wgbLAf2DEufdY8KZ
+         j3p5WCUGnAoHTCuKIKYbsFNK49fYlrSwwphJ3QaBttMxC0tG2xrx3uA04piHx6GqbcTP
+         qjFJkMnXyh2Ef8z3X00OBztMa4QFTJJRF2IwvRAIrKArxFhukTJBol+sisb3MVPDLiZD
+         eZAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xRvVQxe2maqTo/5rXGRR2f58OkYf5yGEeq6jLRm3FCQ=;
+        b=wlde5IaxFNP6VKeY5UpRCkDfiIP7WVLvWtSW1GkrpaLPYbnHU+RgQJWsbAc33RJHov
+         pvXuFJKcwpgDYX58K+Mc/60VfkXzHlSDcs2VRDV3LBuAUZRHi+YMxC0v/4aoOtrkKnjQ
+         JA5SKTtEKIiMPavld5+CucO1TVaNM4VLmrvBhlXj6UiBQ4b48ddtuWNkZ1KVlI/SuGU7
+         buFG7lArDEU3H9omcVTI0/xdeg2mrVxGkepG6lXG3mLO4b/4Mw/fBG6cMWeT8nrWzoDj
+         8PpZcqTLrsZMq36CmcTIybekBA3J9s7rvSqUZSEcyTAmuGHFxc7ZFiXKVvZzzgwB0mYw
+         dYbQ==
+X-Gm-Message-State: AOAM531jtUiFlD4S/hzrXYtzgP+XmZfDOIyjG2+yG5PuusLAwGoAZU2F
+        6NApzTkhdx/eaKnQbJKUdGkohQCmGbfa7IzX8hoGkHlzxQpmFg==
+X-Google-Smtp-Source: ABdhPJzm7yOSzMlWQ1HfnTPQoU4+qFy9iRqvreji9Jl2pfhTN8KZrGNsG1QRnAJaEZX9I5D+SSOVgJwjLobgel2hv9Y=
+X-Received: by 2002:a50:e184:: with SMTP id k4mr9282043edl.217.1636632960343;
+ Thu, 11 Nov 2021 04:16:00 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <163663293212.414.10737140849753868860.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211110182002.206203228@linuxfoundation.org>
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 11 Nov 2021 17:45:48 +0530
+Message-ID: <CA+G9fYturr1Uvfedq+9b9dJbytwiiXYkokE+wNMQNCEwRXeK-g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/17] 5.4.159-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Thu, 11 Nov 2021 at 00:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.159 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.159-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Commit-ID:     2105a92748e83e2e3ee6be539da959706bbb3898
-Gitweb:        https://git.kernel.org/tip/2105a92748e83e2e3ee6be539da959706bbb3898
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Sat, 30 Oct 2021 09:47:58 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 11 Nov 2021 13:09:31 +01:00
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-static_call,x86: Robustify trampoline patching
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Add a few signature bytes after the static call trampoline and verify
-those bytes match before patching the trampoline. This avoids patching
-random other JMPs (such as CFI jump-table entries) instead.
+## Build
+* kernel: 5.4.159-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: 1422b7f3f43d27856aa1eaf04eac12fc7e565f66
+* git describe: v5.4.158-18-g1422b7f3f43d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+58-18-g1422b7f3f43d
 
-These bytes decode as:
+## No regressions (compared to v5.4.158)
 
-   d:   53                      push   %rbx
-   e:   43 54                   rex.XB push %r12
+## No fixes (compared to v5.4.158)
 
-And happen to spell "SCT".
+## Test result summary
+total: 90024, pass: 74328, fail: 796, skip: 13498, xfail: 1402
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211030074758.GT174703@worktop.programming.kicks-ass.net
----
- arch/x86/include/asm/static_call.h |  1 +
- arch/x86/kernel/static_call.c      | 14 ++++++++++----
- tools/objtool/check.c              |  3 +++
- 3 files changed, 14 insertions(+), 4 deletions(-)
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 267 passed, 22 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 20 total, 20 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 48 passed, 6 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
 
-diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
-index cbb67b6..39ebe05 100644
---- a/arch/x86/include/asm/static_call.h
-+++ b/arch/x86/include/asm/static_call.h
-@@ -27,6 +27,7 @@
- 	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
- 	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
- 	    insns "						\n"	\
-+	    ".byte 0x53, 0x43, 0x54				\n"	\
- 	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
- 	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
- 	    ".popsection					\n")
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index ea028e7..9c407a3 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -56,10 +56,15 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void 
- 	text_poke_bp(insn, code, size, emulate);
- }
- 
--static void __static_call_validate(void *insn, bool tail)
-+static void __static_call_validate(void *insn, bool tail, bool tramp)
- {
- 	u8 opcode = *(u8 *)insn;
- 
-+	if (tramp && memcmp(insn+5, "SCT", 3)) {
-+		pr_err("trampoline signature fail");
-+		BUG();
-+	}
-+
- 	if (tail) {
- 		if (opcode == JMP32_INSN_OPCODE ||
- 		    opcode == RET_INSN_OPCODE)
-@@ -74,7 +79,8 @@ static void __static_call_validate(void *insn, bool tail)
- 	/*
- 	 * If we ever trigger this, our text is corrupt, we'll probably not live long.
- 	 */
--	WARN_ONCE(1, "unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
-+	pr_err("unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
-+	BUG();
- }
- 
- static inline enum insn_type __sc_insn(bool null, bool tail)
-@@ -97,12 +103,12 @@ void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
- 	mutex_lock(&text_mutex);
- 
- 	if (tramp) {
--		__static_call_validate(tramp, true);
-+		__static_call_validate(tramp, true, true);
- 		__static_call_transform(tramp, __sc_insn(!func, true), func);
- 	}
- 
- 	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site) {
--		__static_call_validate(site, tail);
-+		__static_call_validate(site, tail, false);
- 		__static_call_transform(site, __sc_insn(!func, tail), func);
- 	}
- 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index add3990..2173582 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -3310,6 +3310,9 @@ static bool ignore_unreachable_insn(struct objtool_file *file, struct instructio
- 	if (!insn->func)
- 		return false;
- 
-+	if (insn->func->static_call_tramp)
-+		return true;
-+
- 	/*
- 	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
- 	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* prep-tmp-disk
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
