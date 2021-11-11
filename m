@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7426F44DE6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB6C44DE6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 00:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbhKKXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 18:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhKKXYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 18:24:37 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D15FC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:21:48 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id x10so8976305ioj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:21:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
-        b=bhQ2/poJbmf248WwSYK+SMChKnhPqpdIc0Zcd+0yV4kmd+SZ9KrRRIy6dhWkg6OZkm
-         GYRV3Sz4cKaWNMgzBwsUMrnWullXQAPte0FMj5Lrb3qx7KrxKuYqKYUgjt6F+0h9YpcF
-         lAFpe1TxJ0XfqrcK4ehDV9PaGqa+oFWbZc4weaTc6q8E/nWStVabFpBeevqXb9ckl06q
-         7DqICdqEVm99aNcZqbHsNevlqQdipvAucmT0R7PgoceQ0KB/h4/WK2rRES6nG6OJjdav
-         1gs1tCHHPWNwFGRfvQDWUgD1/iQyEN5tRtqYuZ9iR4uk6lYU1kPUJOlgUR+j1rjO9PT2
-         J29g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
-        b=uFrVTYgQvcC0IkeYpae6u9F2HIvbBs8mZiDyx+fQCEnlH7xhtfH7rowgqn4+RGqPsA
-         UMg1ajgps7xZsnZpKD0wcpYhPk64xo/1dsZf/INH/08rM7A2RyOPe8vmlM9OD1u9TaM9
-         7aty3dcJBcNnP18yZRwxr+C+GB8DuGcIpDankAJtWBP1LfMQ9BQqob5tfo9sR1PEoMhN
-         oeWEKdBs5wdrjgn3n9I5kTzjGSLdzHFLrh6QimHwo7UZC1hqD15P/oZtvyz8R3Wi2WLl
-         Mlqfm26PdUgDTyl87+ihA6y43rkw8au6ymO85gXLwWe/gbUberzmImXJPL+XrmDoLK9H
-         4Caw==
-X-Gm-Message-State: AOAM5307YRDUky0sMwaUhExOEV4HVcFrzpoOI9ojgi9x5dUZOWgJj4wp
-        T4L3BSxKPhv+aI2IWvGdNguczeDUiEJoyhkEB7o=
-X-Google-Smtp-Source: ABdhPJzkZmRCHdgHzsRkTNDIADxngYLwhzWsPStX2hOYEQSOhYYNmN6C7H24v5l4lABZeq8U0cWrIWlbHVMh2Ia8d+g=
-X-Received: by 2002:a6b:5c05:: with SMTP id z5mr7117579ioh.181.1636672907492;
- Thu, 11 Nov 2021 15:21:47 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:6602:2f16:0:0:0:0 with HTTP; Thu, 11 Nov 2021 15:21:47
- -0800 (PST)
-Reply-To: salemchantal@mail.ee
-From:   MRS Salem Chantal Lawrence <angelamark454@gmail.com>
-Date:   Thu, 11 Nov 2021 15:21:47 -0800
-Message-ID: <CAFirAodX9xExFNEEfCKcCHxTMGZF_QRNVRCvU7cqOR2+Rw3xOQ@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S234386AbhKKXZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 18:25:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230131AbhKKXZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 18:25:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 97AD361267;
+        Thu, 11 Nov 2021 23:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636672983;
+        bh=ENO8AQEnukGph4xnKsmEAMZANo+vLEmlxmcxLLgQ5CY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=i2E4JFbuEPhf0S1dqSAgQaCgLT3CAaJjSCuKHzduTpa0j2K5MO433olBnRxj6GzhN
+         LWmM9NSdRGfNR2X+/uNTJkzBwkPCzgemtdS8oIBhDKYBifz5AH14e91LZJ9phqYn3q
+         WuTh9y7+Sw8A4dUlhSZ1PJN6tVAvsMoAUdLds8/swKetdFNTwQL+fWMLmjtv7E+j9h
+         s9oBBpZly85RYjNT6jP6sNfwb7VDiPt8XvdemoHEGl7tEhWXdxFPYWAjpgG0awOTW1
+         5v8zZGq8+A7Aaq1NN7I/plj65gqm7bY1wPOAd/s40EMYeuPRhC7eAwktOCWi35XP2U
+         ZniNwxNw0z7XA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 841E860726;
+        Thu, 11 Nov 2021 23:23:03 +0000 (UTC)
+Subject: Re: [GIT PULL] PCI fixes for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211111195040.GA1345641@bhelgaas>
+References: <20211111195040.GA1345641@bhelgaas>
+X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211111195040.GA1345641@bhelgaas>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.16-fixes-1
+X-PR-Tracked-Commit-Id: e0217c5ba10d7bf640f038b2feae58e630f2f958
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5833291ab6de9c3e2374336b51c814e515e8f3a5
+Message-Id: <163667298347.23960.17167773583022894247.pr-tracker-bot@kernel.org>
+Date:   Thu, 11 Nov 2021 23:23:03 +0000
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention
+The pull request you sent on Thu, 11 Nov 2021 13:50:40 -0600:
 
-You have been compensated with the sum of 4.6 million dollars in this
-United Nation the payment will be issue into Atm Visa Card and send to you
-from the Bank we need your Address Passport and your whatsapp number
+> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.16-fixes-1
 
-Contact This My WhatsApp Number for more Details (+1 (201)308-2233
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5833291ab6de9c3e2374336b51c814e515e8f3a5
 
-THANKS
-MRS Salem Chantal Lawrence
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
