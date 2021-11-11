@@ -2,245 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A3844D4B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9AE44D4BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbhKKKJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbhKKKJY (ORCPT
+        id S232768AbhKKKKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:10:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232535AbhKKKKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:09:24 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAEBC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:06:35 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id n66so10658966oia.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wuvwDD3Iz+0nxw7WCXIhtGkfBZuUHKSOA7fghzk+kgY=;
-        b=vTj1VAUsYvk5iVlZ1V2Wa64PovAtmyVuCpE5RKBzj615OjkMwAIVbuE4huWtU6ZACE
-         Z8ZUgCgNGacNyfoCGkkil9b5m9KkZdWReNs21vtTGjGjsptyEIHaKs9yVyxKflBms/LU
-         b+ecuodvaCyqlElgLHPBjmUaH3R5o1t026vxAt5NrV9+zgH6zgOsWVKETDt1Yh6sV7nz
-         WJtcBGM3MgGE4B8AfssJ27jPhw4xdQAvOcEGj3hF9VlK/hfALL3vBhGGHRwsrJdVXKfp
-         PwZgJlrblicxmHvNr82W0NfIpzP74OGcpQ9CgG1dwUrqAuAPCvLkKY2AWjQjGN63Y/il
-         TQwQ==
+        Thu, 11 Nov 2021 05:10:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636625271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O47h4DVVtUaEBtUgssjuQpExDB0fecfhYF5eRGFKZI0=;
+        b=AQC7sWRhWmotK3pOcULNVzXgyAaa8GZkMufVuPzvs/gsGvgBaNdIggSmBh/51Ilj4rUJgm
+        hFUvTnTbnckJRN9s/e+ZS0tOfXeeaLw7OsdlMoyc8RT822XwYjYTGPvMyyUrJQzEpn6lFl
+        LLDxFDYEF0gC/EF7GNEzpqoYLDdXXsA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-TjiNALBiNrCV7Z1CAsRaJA-1; Thu, 11 Nov 2021 05:07:48 -0500
+X-MC-Unique: TjiNALBiNrCV7Z1CAsRaJA-1
+Received: by mail-wm1-f69.google.com with SMTP id m1-20020a1ca301000000b003231d5b3c4cso4543871wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:07:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wuvwDD3Iz+0nxw7WCXIhtGkfBZuUHKSOA7fghzk+kgY=;
-        b=NwaxHbaZXurPyZK+105j847CCVNyds1T028xveYfhenPlzsdJxL00VULf3hV0g7HC4
-         KGuX851I7a5lXpszQucCCAMqhzPPSvH0eScfnT7q5MGhN+2LflpYEPzbRXquiBW8Mn9I
-         yuiDT63b5N/jLyDYqzNCmMCCykRryXFixCbSzYd2rsS/mUs016IHYMo64IgrFKC+uR/K
-         MqTGHVWBjkbxaZunmQknna6rDMjTDCdvYXjVMpR+LR0O3KurwD9wtMsTr7vRPmY5t+4K
-         PM26hDTQ1FEvKXvKxwHPn3CIOZFMMPQxbXzmrsW9vv9/ltiafVFZkK0Pnrhyb2Yduzfl
-         2lfQ==
-X-Gm-Message-State: AOAM530lmC9fCbZp85MsZC1mbtGzXQT34KTH5Wtyg2lcHsAVdVsylwjR
-        EXEeYCHZc0btnNHfiOJPjkhXSjvqYpreKeDpk948nw==
-X-Google-Smtp-Source: ABdhPJxt4ATY9UUF8VNIV+A1QdL3lmH3fStFIQG1zVT5abHDxLCSBYj7WiHjDyuyq+CdPOBzzoNVF9yiGeXVzgCmv8E=
-X-Received: by 2002:a05:6808:3097:: with SMTP id bl23mr5266037oib.0.1636625194783;
- Thu, 11 Nov 2021 02:06:34 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=O47h4DVVtUaEBtUgssjuQpExDB0fecfhYF5eRGFKZI0=;
+        b=qSWaZV7ypYDxxA6L6CTuWNx/mwAyGddjUdaOmtmgiOs4bpMVShf7Nqa5ATZ9Jg5/dm
+         NeBg0uEYv7YwJ69GvlsBviqVighxFrxDZCDXRLAVXoJBMoGNLfxj9grzO+J2u6bqAOwz
+         LKCt3gLrzBoqVdPueUw94rWnK2oO8wZtOB/ODdiayvBgf+n/J3AgZZBVfLomKR/Nw9vd
+         /jFQqI6RnPhPbphQJ4SuOpJdbbd21fjY7jKH/XIl+dGDq69eW/nn6lmVJWdK9rCuw/6V
+         mYb35jDlmuZJ/9fIsWKsxJBPxVphLt+zQbFfcReW9oTMKvJYpNzM1K6gEQCPyxTg1R4j
+         5kZg==
+X-Gm-Message-State: AOAM532UuOOKrKCybLi18ftoM1PqUUg8g5y+k3OJpGiRw799GugNyIbL
+        zOXcuL36t9BMIMVwxqkvFF4zmQT1DrAaazzHVWbxvNU6tK5LGHYjv+8w7syfaDswvFhRazLBIDc
+        z63jIXzybHPYS/nljN9LsfNU/
+X-Received: by 2002:a5d:58ed:: with SMTP id f13mr7228903wrd.373.1636625267126;
+        Thu, 11 Nov 2021 02:07:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzIYNQG8t7gWYqwpgZkkzMNqewJnW2iU/frpsF+W0jIDUpjovyfAg40kLr/ApFY0hP+csCBmg==
+X-Received: by 2002:a5d:58ed:: with SMTP id f13mr7228866wrd.373.1636625266915;
+        Thu, 11 Nov 2021 02:07:46 -0800 (PST)
+Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
+        by smtp.gmail.com with ESMTPSA id g18sm2436886wrv.42.2021.11.11.02.07.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 02:07:46 -0800 (PST)
+Message-ID: <8be53ae6-b3f9-f3da-afc7-23c8232a7a0a@redhat.com>
+Date:   Thu, 11 Nov 2021 11:07:45 +0100
 MIME-Version: 1.0
-References: <20211110182003.342919058@linuxfoundation.org>
-In-Reply-To: <20211110182003.342919058@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 11 Nov 2021 15:36:23 +0530
-Message-ID: <CA+G9fYtFejMyeAnNL5pXTOkyXeOgFwy94d5hdbWd2x+PxCeEjg@mail.gmail.com>
-Subject: Re: [PATCH 5.14 00/24] 5.14.18-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 5/7] samples/bpf/test_overhead_kprobe_kern: make it adopt
+ to task comm size change
+Content-Language: en-US
+To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+References: <20211108083840.4627-1-laoar.shao@gmail.com>
+ <20211108083840.4627-6-laoar.shao@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211108083840.4627-6-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 at 00:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.18 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.14.18-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 08.11.21 09:38, Yafang Shao wrote:
+> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
+> we don't care about if the dst size is big enough. This patch also
+> replaces the hard-coded 16 with TASK_COMM_LEN to make it adopt to task
+> comm size change.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
+>  samples/bpf/offwaketime_kern.c          |  4 ++--
+>  samples/bpf/test_overhead_kprobe_kern.c | 11 ++++++-----
+>  samples/bpf/test_overhead_tp_kern.c     |  5 +++--
+>  3 files changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/samples/bpf/offwaketime_kern.c b/samples/bpf/offwaketime_kern.c
+> index 4866afd054da..eb4d94742e6b 100644
+> --- a/samples/bpf/offwaketime_kern.c
+> +++ b/samples/bpf/offwaketime_kern.c
+> @@ -113,11 +113,11 @@ static inline int update_counts(void *ctx, u32 pid, u64 delta)
+>  /* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
+>  struct sched_switch_args {
+>  	unsigned long long pad;
+> -	char prev_comm[16];
+> +	char prev_comm[TASK_COMM_LEN];
+>  	int prev_pid;
+>  	int prev_prio;
+>  	long long prev_state;
+> -	char next_comm[16];
+> +	char next_comm[TASK_COMM_LEN];
+>  	int next_pid;
+>  	int next_prio;
+>  };
+> diff --git a/samples/bpf/test_overhead_kprobe_kern.c b/samples/bpf/test_overhead_kprobe_kern.c
+> index f6d593e47037..8fdd2c9c56b2 100644
+> --- a/samples/bpf/test_overhead_kprobe_kern.c
+> +++ b/samples/bpf/test_overhead_kprobe_kern.c
+> @@ -6,6 +6,7 @@
+>   */
+>  #include <linux/version.h>
+>  #include <linux/ptrace.h>
+> +#include <linux/sched.h>
+>  #include <uapi/linux/bpf.h>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> @@ -22,17 +23,17 @@ int prog(struct pt_regs *ctx)
+>  {
+>  	struct signal_struct *signal;
+>  	struct task_struct *tsk;
+> -	char oldcomm[16] = {};
+> -	char newcomm[16] = {};
+> +	char oldcomm[TASK_COMM_LEN] = {};
+> +	char newcomm[TASK_COMM_LEN] = {};
+>  	u16 oom_score_adj;
+>  	u32 pid;
+>  
+>  	tsk = (void *)PT_REGS_PARM1(ctx);
+>  
+>  	pid = _(tsk->pid);
+> -	bpf_probe_read_kernel(oldcomm, sizeof(oldcomm), &tsk->comm);
+> -	bpf_probe_read_kernel(newcomm, sizeof(newcomm),
+> -			      (void *)PT_REGS_PARM2(ctx));
+> +	bpf_probe_read_kernel_str(oldcomm, sizeof(oldcomm), &tsk->comm);
+> +	bpf_probe_read_kernel_str(newcomm, sizeof(newcomm),
+> +				  (void *)PT_REGS_PARM2(ctx));
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+It's a shame we have to do a manual copy here ...
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Changes LGTM
 
-## Build
-* kernel: 5.14.18-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.14.y
-* git commit: f4613872ae53b177f31fb92c5ba342bb4a0c3731
-* git describe: v5.14.17-25-gf4613872ae53
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
-.17-25-gf4613872ae53
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-## No regressions (compared to v5.14.17)
+-- 
+Thanks,
 
-## No fixes (compared to v5.14.17)
+David / dhildenb
 
-## Test result summary
-total: 94576, pass: 79818, fail: 1089, skip: 12781, xfail: 888
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 290 total, 268 passed, 22 failed
-* arm64: 40 total, 40 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 54 total, 48 passed, 6 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 40 total, 40 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
