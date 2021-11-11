@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B67F44D16F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A783E44D173
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 06:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhKKFXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 00:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S234013AbhKKFYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 00:24:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhKKFXw (ORCPT
+        with ESMTP id S233711AbhKKFYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 00:23:52 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936A2C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 21:21:03 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id g3-20020ac85803000000b002ac655f3b00so3847731qtg.20
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 21:21:03 -0800 (PST)
+        Thu, 11 Nov 2021 00:24:00 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C933C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 21:21:11 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id g36-20020a25ae64000000b005c1f46f7ee6so7623278ybe.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 21:21:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=4QGK+gsnB0i8v51ZJlvJzgAW5exC56xFsYJaAgqkcHM=;
-        b=YG0KukbASgq1N77esyIQ9HWrllIl06n6PBi+UPAkNh8JQHAfOe7yu2UomP7G8Qn9F6
-         6TkhSle1byBGFj4DoF6Gjw+pTixFhU65cuwPg1akViLjnoHGXvNy/kuDZWD5peMFDQVw
-         ZbwVFPEC4EI204FZUUbQbf+2wkT1tDQ0aeUdRiPykNexXQpuZj6oHT5/cshGRNbRzXKi
-         TlS6uBbeRUrCNpTygo2KnCg8QyarBy75QfdgsTO0ZkBtjEgU6CTEurd/4p38PcPsLpkR
-         pq4wxRsrzBKZ5XYrLXhlmTuzsMDImnHuhInUQokQm6n/h+Duh8VYviVDrsKdgnkMljJK
-         xbRQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=bXvoGq85SjQrZE2UDJdD7tTQN0yXDS84CPrsHpU2ecg=;
+        b=VNAzwo5Shkdg3dxf283rVfyylmMu5nAfaDf2I9NCkyk6Q8WBduzquCY9bhxqMRm3zd
+         xNiLSjaTz+J6xeselnY+5QrX/WSJdTyyJvV4SPaw2m52+g6nyoLWGkjJbzg/dhQ/6INH
+         5e3bgNOrylE88J5y/aS09oaUFoVdf9C8Nc9FPg5dHncD7X4q/McY1pf0jpv1AYxchz2X
+         qkBDKJn/Cgunsnj3IiFE6ACpIOWdmKvKZ3uBunsljSpRuYttgbgzLbXdUuWUM9AKMqCm
+         2mgkqFO1mOIQfj8eHp50jVv+lDP1fX2FEQIFhERMri+Ua4CTh0QyKB8J5gM7inE0Qokc
+         ONug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=4QGK+gsnB0i8v51ZJlvJzgAW5exC56xFsYJaAgqkcHM=;
-        b=TPYYAyLrz8xh0oYovwhl7q9t8jAee4PnOsxs0x9dR7CMgOHAs05b8tgos52R1G6U/h
-         i7FwOcOjAPfJwoRlf3zJWIscSLH6KEJTFXDU1ZppfMtiW0TuzNRDMVVoPnr69fdeGsAF
-         ofiigNL3mDuXhLB2Yrp7dlHSf4VpdeZiqt9ew43XghWTWVfeFNHJR0GrkI4jXH0G3yCW
-         WWICeOdndHPUqlRq0Uxgn4+8ByebVJQ+TIgqJuUuS0b8qRJENjxS/N0XrnQsW6oc/8QC
-         w/l7zx1WoRQpGWobJDUKFJYR0wtewrpAUOCghO7qY2vf1HmU4Ox//CaSsDzYNSC3oMPG
-         C3Ng==
-X-Gm-Message-State: AOAM533WA8vObVZFUR/hTYJBaZu/orlajDBLcCc9pkfMS6yDM2ps3Ou2
-        40nPXjKYwxiTfpxxqp01NhOP2SRjqe4S
-X-Google-Smtp-Source: ABdhPJxDHD1UOlNrc/Jl27bTgfN5RjcdbjW+C10h/DM/s2OxoJ90atmHrfalsaaQG783G4xuKl4hNic6mZZx
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=bXvoGq85SjQrZE2UDJdD7tTQN0yXDS84CPrsHpU2ecg=;
+        b=UG5rJCaKyhpXfzJkta44BQESJhfcNSZrXw7fKK7yG727LwwSkgNoBEU1q82th048hC
+         ko1Yf3l90QH6MB5PwiLBcTH2N2dSAj8yxwGlbuBwahV8YElVo58hP35LH7r9LPXkacJe
+         Gz4ArEh3rDWGXjGDKIwuobGc5Gqot/hxst4KK5disUklljWPf+5t3SlqCHWkL49c6B9B
+         asqOu902F80CbF/xHlaHOAimiN6dps488ko+Eg5yb8v0HxubRyK/hsycZWayVAnpSUJU
+         ltySJZOxq5dR5Re8TysoO6ERIWAzcPax+45cdDY1Bjb5a8MSk2/01CcAIPlbUSiur7lm
+         LPjQ==
+X-Gm-Message-State: AOAM532BFRqlR4B1AIl2eEF+du5GRCEGTsLQ9Fb182VUThStPAUZTB41
+        P0B/dYv0xPkPlO7O0A8nHtL7Y+0C4dEo
+X-Google-Smtp-Source: ABdhPJzLucYZdSz607KwUMA4pm8NAhPadPIQEQpMeYRLmJSFH9e2Hgaj8d39ogIHjaaLoIIHGDS24o0y/RuI
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:b87e:3eb:e17e:1273])
- (user=apusaka job=sendgmr) by 2002:ac8:7e91:: with SMTP id
- w17mr5032950qtj.191.1636608062561; Wed, 10 Nov 2021 21:21:02 -0800 (PST)
-Date:   Thu, 11 Nov 2021 13:20:53 +0800
-Message-Id: <20211111132045.v3.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
+ (user=apusaka job=sendgmr) by 2002:a25:3252:: with SMTP id
+ y79mr5132719yby.5.1636608070701; Wed, 10 Nov 2021 21:21:10 -0800 (PST)
+Date:   Thu, 11 Nov 2021 13:20:54 +0800
+In-Reply-To: <20211111132045.v3.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
+Message-Id: <20211111132045.v3.2.I4e34d9e5fdd7515aa15d0ee2ef94d57dcb48a927@changeid>
 Mime-Version: 1.0
+References: <20211111132045.v3.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v3 1/2] Bluetooth: Ignore HCI_ERROR_CANCELLED_BY_HOST on adv
- set terminated event
+Subject: [PATCH v3 2/2] Bluetooth: Attempt to clear HCI_LE_ADV on adv set
+ terminated error event
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
 Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
         Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
@@ -66,96 +71,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Archie Pusaka <apusaka@chromium.org>
 
-This event is received when the controller stops advertising,
-specifically for these three reasons:
-(a) Connection is successfully created (success).
-(b) Timeout is reached (error).
-(c) Number of advertising events is reached (error).
-(*) This event is NOT generated when the host stops the advertisement.
-Refer to the BT spec ver 5.3 vol 4 part E sec 7.7.65.18. Note that the
-section was revised from BT spec ver 5.0 vol 2 part E sec 7.7.65.18
-which was ambiguous about (*).
-
-Some chips (e.g. RTL8822CE) send this event when the host stops the
-advertisement with status = HCI_ERROR_CANCELLED_BY_HOST (due to (*)
-above). This is treated as an error and the advertisement will be
-removed and userspace will be informed via MGMT event.
-
-On suspend, we are supposed to temporarily disable advertisements,
-and continue advertising on resume. However, due to the behavior
-above, the advertisements are removed instead.
-
-This patch returns early if HCI_ERROR_CANCELLED_BY_HOST is received.
-
-Btmon snippet of the unexpected behavior:
-@ MGMT Command: Remove Advertising (0x003f) plen 1
-        Instance: 1
-< HCI Command: LE Set Extended Advertising Enable (0x08|0x0039) plen 6
-        Extended advertising: Disabled (0x00)
-        Number of sets: 1 (0x01)
-        Entry 0
-          Handle: 0x01
-          Duration: 0 ms (0x00)
-          Max ext adv events: 0
-> HCI Event: LE Meta Event (0x3e) plen 6
-      LE Advertising Set Terminated (0x12)
-        Status: Operation Cancelled by Host (0x44)
-        Handle: 1
-        Connection handle: 0
-        Number of completed extended advertising events: 5
-> HCI Event: Command Complete (0x0e) plen 4
-      LE Set Extended Advertising Enable (0x08|0x0039) ncmd 2
-        Status: Success (0x00)
+We should clear the flag if the adv instance removed due to receiving
+this error status is the last one we have.
 
 Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
 
-(no changes since v2)
+Changes in v3:
+* Check adv->enabled rather than just checking for list empty
 
-Changes in v2:
-* Split clearing HCI_LE_ADV into its own patch
-* Reword comments
+ net/bluetooth/hci_event.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- include/net/bluetooth/hci.h |  1 +
- net/bluetooth/hci_event.c   | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
-
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index 63065bc01b76..84db6b275231 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -566,6 +566,7 @@ enum {
- #define HCI_ERROR_INVALID_LL_PARAMS	0x1e
- #define HCI_ERROR_UNSPECIFIED		0x1f
- #define HCI_ERROR_ADVERTISING_TIMEOUT	0x3c
-+#define HCI_ERROR_CANCELLED_BY_HOST	0x44
- 
- /* Flow control modes */
- #define HCI_FLOW_CTL_MODE_PACKET_BASED	0x00
 diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index d4b75a6cfeee..7d875927c48b 100644
+index 7d875927c48b..6cf882e6d7e7 100644
 --- a/net/bluetooth/hci_event.c
 +++ b/net/bluetooth/hci_event.c
-@@ -5538,6 +5538,18 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+@@ -5532,7 +5532,7 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ {
+ 	struct hci_evt_le_ext_adv_set_term *ev = (void *) skb->data;
+ 	struct hci_conn *conn;
+-	struct adv_info *adv;
++	struct adv_info *adv, *n;
  
- 	adv = hci_find_adv_instance(hdev, ev->handle);
+ 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
  
-+	/* The Bluetooth Core 5.3 specification clearly states that this event
-+	 * shall not be sent when the Host disables the advertising set. So in
-+	 * case of HCI_ERROR_CANCELLED_BY_HOST, just ignore the event.
-+	 *
-+	 * When the Host disables an advertising set, all cleanup is done via
-+	 * its command callback and not needed to be duplicated here.
-+	 */
-+	if (ev->status == HCI_ERROR_CANCELLED_BY_HOST) {
-+		bt_dev_warn_ratelimited(hdev, "Unexpected advertising set terminated event");
-+		return;
-+	}
+@@ -5558,6 +5558,13 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 		hci_remove_adv_instance(hdev, ev->handle);
+ 		mgmt_advertising_removed(NULL, hdev, ev->handle);
+ 
++		list_for_each_entry_safe(adv, n, &hdev->adv_instances, list) {
++			if (adv->enabled)
++				return;
++		}
 +
- 	if (ev->status) {
- 		if (!adv)
- 			return;
++		/* We are no longer advertising, clear HCI_LE_ADV */
++		hci_dev_clear_flag(hdev, HCI_LE_ADV);
+ 		return;
+ 	}
+ 
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
