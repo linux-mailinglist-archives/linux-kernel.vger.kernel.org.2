@@ -2,231 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC8344CFD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCDF44CFD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234401AbhKKCMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 21:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234249AbhKKCMP (ORCPT
+        id S233964AbhKKCNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:13:17 -0500
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:39181
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S234265AbhKKCNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:12:15 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF25C06122B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:18 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id m14so18388777edd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2f7mNHFGCNYaSYUTYmGvh1vF4I+NlTW7cZ0xXVFvLk=;
-        b=R4e4rH97jtwiKe8JCRSPD7urIB71/MDTR7HT4WFDvsXO8IrUI4+548uXNHI9ID3lZu
-         ctRbmW192o3CLs0qNxFTxBCye9EBSZkH+6BcdqEU6rVxRlFYKy040LsrwY9U2/e3N9jk
-         g/4+qNNO3jPTFBzaQHv+vSZJo6HD1LXmlOdccw3xhoNNOq0Wx3YUYcQOgtpjf2QssKqf
-         Ka0cbFDu8beL9hediOtMJ61ifIeAMkFmCOuTBo4KFiMKHUb/xX8WuLw/E1xpveb816UN
-         Rf52hxvUYnbd0Oz9Zd1+EL7Mx4InKcoZh16Uy1SpFRE+cL0hPTYM5mCzX1zqW56R1I3Z
-         6Z+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2f7mNHFGCNYaSYUTYmGvh1vF4I+NlTW7cZ0xXVFvLk=;
-        b=eXarEe9T/qIL1JF/1SFo1aQKXlt/kphzuV0wP7EtfXLR8Hl9zHAtVRC2ZhHms2k7t3
-         IMag5/liiJl0w32v/EMEpSGukl/pGwDTfBIXRxwqs3iK06sEtt69DrtpXMTHehwcGWID
-         07OKwXexO05XEGJffLoOSlV+Xnp1G3MNCDSEFGNQS6BbX7EiDwUUAgtB5lJy+85gMPtI
-         +tfu5j3AgaeK6ttY8mOJZu9ziSc/mO7hHUetGBoYD0ldW4CXt30ZyTgqM15oHZ/nnk4F
-         YafHfVdf+vBKlr2u6gnv9M5WiLuTsRavB/1UE1ca7RUx9ypIxiuUXNAyG4yCgo/E22wS
-         xjlw==
-X-Gm-Message-State: AOAM532b/jsbE6L4McdmyWAFABipTF7y23YwZeGPowToxtYCmBsPoXMj
-        ArYfE2iDFwdJlx+xmomhGFjE/gfXjMDOzejX//WZGA==
-X-Google-Smtp-Source: ABdhPJwJ+V96RLd1FGOaO5sgF7EbrYmQoVDLbepCA1fvbEiabgxL8IStUtFtpIgbWCwxk9FiIehcIWd/3jwLCeXjOIk=
-X-Received: by 2002:a17:906:1451:: with SMTP id q17mr4784534ejc.36.1636596496906;
- Wed, 10 Nov 2021 18:08:16 -0800 (PST)
+        Wed, 10 Nov 2021 21:13:04 -0500
+Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 11 Nov 2021 10:09:59
+ +0800 (GMT+08:00)
+X-Originating-IP: [183.159.98.51]
+Date:   Thu, 11 Nov 2021 10:09:59 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v1 2/2] hamradio: defer 6pack kfree after
+ unregister_netdev
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20211110180612.2f2eb760@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211108103721.30522-1-linma@zju.edu.cn>
+ <20211108103759.30541-1-linma@zju.edu.cn>
+ <20211110180525.20422f66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211110180612.2f2eb760@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-12-brad@pensando.io>
- <YXnGkjXMmLdFHEIF@robh.at.kernel.org>
-In-Reply-To: <YXnGkjXMmLdFHEIF@robh.at.kernel.org>
-From:   Brad Larson <brad@pensando.io>
-Date:   Wed, 10 Nov 2021 18:08:05 -0800
-Message-ID: <CAK9rFnzRF_Tv-DRO3SvrcZz7PmzPQOGJLS6f_ZBJPR4QbjG-Dw@mail.gmail.com>
-Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <724aae55.1863af.17d0cc249ab.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: en_US
+X-CM-TRANSID: cS_KCgAXSXR3e4xhh7ffBA--.61118W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUCElNG3ElR6gAUs5
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Wed, Oct 27, 2021 at 2:37 PM Rob Herring <robh@kernel.org> wrote:
->
-> > +always-y     := $(dtb-y)
-> > +subdir-y     := $(dts-dirs)
-> > +clean-files  := *.dtb
->
-> None of these lines should be needed.
-
-Yes, these will be removed.
-
-> > diff --git a/arch/arm64/boot/dts/pensando/elba-16core.dtsi b/arch/arm64/boot/dts/pensando/elba-16core.dtsi
-> > new file mode 100644
-> > index 000000000000..acf5941afbc1
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/pensando/elba-16core.dtsi
-> > @@ -0,0 +1,192 @@
-> > +// SPDX-License-Identifier: GPL-2.0
->
-> Do you care about using with non-GPL OS? Dual license is preferred.
->
-Dual is fine, changing to this:
-SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-
-> > +             psci {
->
-> This goes at the root level.
->
-Moving to the root level
-
-> > +                     compatible = "arm,psci-0.2";
-> > +                     method = "smc";
-> > +             };
-> > +
-> > +     };
-> > +};
-> > diff --git a/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi b/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
-> > +
-> > +&spi0 {
-> > +     num-cs = <4>;
-> > +     cs-gpios = <0>, <0>, <&porta 1 GPIO_ACTIVE_LOW>,
-> > +                <&porta 7 GPIO_ACTIVE_LOW>;
-> > +     status = "okay";
-> > +     spi0_cs0@0 {
->
-> Node names should reflect the class of device and use standard name
-> defined in the DT spec. This probably doesn't have one. 'lora' perhaps?
->
-Right, I didn't see a standard name and found many approaches in other files
-so I likely based off of one of these below.   I searched the dts
-files for 'lora' and
-didn't find it.  Is that an acronym?  I can change it to what the preference is.
-
-./microchip/sparx5_pcb134_board.dtsi:
-&spi0 {
-   status = "okay";
-   spi@0 {
-           compatible = "spi-mux";
-           ...
-};
-
-./rockchip/rk3399.dtsi:
-spi5 {
-        spi5_clk: spi5-clk {
-                rockchip,pins =
-                        <2 RK_PC6 2 &pcfg_pull_up>;
-        };
-        spi5_cs0: spi5-cs0 {
-                rockchip,pins =
-                        <2 RK_PC7 2 &pcfg_pull_up>;
-        };
-        spi5_rx: spi5-rx {
-                rockchip,pins =
-                        <2 RK_PC4 2 &pcfg_pull_up>;
-        };
-        spi5_tx: spi5-tx {
-                rockchip,pins =
-                        <2 RK_PC5 2 &pcfg_pull_up>;
-        };
-};
-
->
-> > +             compatible = "semtech,sx1301";  /* Enable spidev */
->
-> What's spidev?
->
-It's module drivers/spi/spidev.c which won't populate /dev/spidevB.C unless
-there is a match which we need for the system to boot.  An earlier patch added
-to the compatible list below and the feedback on that was to remove it.  Later I
-noticed the compatible list expanded...
-
-static const struct of_device_id spidev_dt_ids[] = {
-        { .compatible = "rohm,dh2228fv" },
-        { .compatible = "lineartechnology,ltc2488" },
-        { .compatible = "semtech,sx1301" },
-        { .compatible = "lwn,bk4" },
-        { .compatible = "dh,dhcom-board" },
-        { .compatible = "menlo,m53cpld" },
-        { .compatible = "cisco,spi-petra" },
-        { .compatible = "micron,spi-authenta" },
-        {},
-};
-
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             spi-max-frequency = <12000000>;
-> > +             reg = <0>;
-> > +     };
-> > +
-> > +     spi0_cs1@1 {
-> > +             compatible = "semtech,sx1301";
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             spi-max-frequency = <12000000>;
-> > +             reg = <1>;
-> > +     };
-> > +
-> > +     spi0_cs2@2 {
-> > +             compatible = "semtech,sx1301";
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             spi-max-frequency = <12000000>;
-> > +             reg = <2>;
-> > +             interrupt-parent = <&porta>;
-> > +             interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-> > +     };
-> > +
-> > +     spi0_cs3@3 {
-> > +             compatible = "semtech,sx1301";
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             spi-max-frequency = <12000000>;
-> > +             reg = <3>;
-> > +     };
-> > +};
-> > diff --git a/arch/arm64/boot/dts/pensando/elba-asic.dts b/arch/arm64/boot/dts/pensando/elba-asic.dts
-> > new file mode 100644
-> > index 000000000000..131931dc643f
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/pensando/elba-asic.dts
-> > @@ -0,0 +1,23 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/dts-v1/;
-> > +
-> > +/ {
-> > +     model = "Elba ASIC Board";
-> > +     compatible = "pensando,elba";
->
-> Normally we have a compatible for the board plus the soc compatible.
-
-In this case there are currently five different boards/products that have no
-variations needing a board level description.
-
-Thanks,
-Brad
+SGkgdGhlcmUsCgo+IFNlbnQgVGltZTogMjAyMS0xMS0xMSAxMDowNjoxMiAoVGh1cnNkYXkpCj4g
+VG86ICJMaW4gTWEiIDxsaW5tYUB6anUuZWR1LmNuPgo+IENjOiBuZXRkZXZAdmdlci5rZXJuZWwu
+b3JnLCBkYXZlbUBkYXZlbWxvZnQubmV0LCBqaXJpc2xhYnlAa2VybmVsLm9yZywgZ3JlZ2toQGxp
+bnV4Zm91bmRhdGlvbi5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKPiBTdWJqZWN0
+OiBSZTogW1BBVENIIHYxIDIvMl0gaGFtcmFkaW86IGRlZmVyIDZwYWNrIGtmcmVlIGFmdGVyIHVu
+cmVnaXN0ZXJfbmV0ZGV2Cj4gCj4gT24gV2VkLCAxMCBOb3YgMjAyMSAxODowNToyNSAtMDgwMCBK
+YWt1YiBLaWNpbnNraSB3cm90ZToKPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2hhbXJh
+ZGlvLzZwYWNrLmMgYi9kcml2ZXJzL25ldC9oYW1yYWRpby82cGFjay5jCj4gPiA+IGluZGV4IDQ5
+ZjEwMDUzYTc5NC4uYmZkZjg5ZTU0NzUyIDEwMDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC9o
+YW1yYWRpby82cGFjay5jCj4gPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2hhbXJhZGlvLzZwYWNrLmMK
+PiA+ID4gQEAgLTY3MiwxMSArNjcyLDEzIEBAIHN0YXRpYyB2b2lkIHNpeHBhY2tfY2xvc2Uoc3Ry
+dWN0IHR0eV9zdHJ1Y3QgKnR0eSkKPiA+ID4gIAlkZWxfdGltZXJfc3luYygmc3AtPnR4X3QpOwo+
+ID4gPiAgCWRlbF90aW1lcl9zeW5jKCZzcC0+cmVzeW5jX3QpOwo+ID4gPiAgCj4gPiA+IC0JLyog
+RnJlZSBhbGwgNnBhY2sgZnJhbWUgYnVmZmVycy4gKi8KPiA+ID4gKwl1bnJlZ2lzdGVyX25ldGRl
+dihzcC0+ZGV2KTsKPiA+ID4gKwo+ID4gPiArCS8qIEZyZWUgYWxsIDZwYWNrIGZyYW1lIGJ1ZmZl
+cnMgYWZ0ZXIgdW5yZWcuICovCj4gPiA+ICAJa2ZyZWUoc3AtPnJidWZmKTsKPiA+ID4gIAlrZnJl
+ZShzcC0+eGJ1ZmYpOwo+ID4gPiAgCj4gPiA+IC0JdW5yZWdpc3Rlcl9uZXRkZXYoc3AtPmRldik7
+Cj4gPiA+ICsJZnJlZV9uZXRkZXYoc3AtPmRldik7ICAKPiA+IAo+ID4gWW91IHNob3VsZCBtZW50
+aW9uIGluIHRoZSBjb21taXQgbWVzc2FnZSB3aHkgeW91IHRoaW5rIGl0J3Mgc2FmZSB0byBhZGQK
+PiA+IGZyZWVfbmV0ZGV2KCkgd2hpY2ggd2Fzbid0IGhlcmUgYmVmb3JlLi4uCj4gPiAKPiA+IFRo
+aXMgZHJpdmVyIHNlZW1zIHRvIGJlIHNldHRpbmc6Cj4gPiAKPiA+IAlkZXYtPm5lZWRzX2ZyZWVf
+bmV0ZGV2CT0gdHJ1ZTsKPiA+IAo+ID4gc28gdW5yZWdpc3Rlcl9uZXRkZXYoKSB3aWxsIGZyZWUg
+dGhlIG5ldGRldiBhdXRvbWF0aWNhbGx5Lgo+ID4gCj4gPiBUaGF0IHNhaWQgSSBkb24ndCBzZWUg
+YSByZWFzb24gd2h5IHRoaXMgZHJpdmVyIG5lZWRzIHRoZSBhdXRvbWF0aWMKPiA+IGNsZWFudXAu
+Cj4gPiAKPiA+IFlvdSBjYW4gZWl0aGVyIHJlbW92ZSB0aGF0IHNldHRpbmcgYW5kIHRoZW4geW91
+IGNhbiBjYWxsIGZyZWVfbmV0ZGV2KCkKPiA+IGxpa2UgeW91IGRvLCBvciB5b3UgbmVlZCB0byBt
+b3ZlIHRoZSBjbGVhbnVwIHRvIGRldi0+cHJpdl9kZXN0cnVjdG9yLgo+IAo+IExvb2tzIGxpa2Ug
+dGhpcyBnbyBhcHBsaWVkIGFscmVhZHksIHBsZWFzZSBzZW5kIGEgZm9sbG93IHVwIGZpeC4KCk9v
+b29wcywgdGhhbmtzIGZvciB0aGUgcmVtaW5kLiBYRAoKSSBqdXN0IGZvdW5kIHRoYXQgdGhlIG1r
+aWxsIGFkZHMgdGhlIGZyZWVfbmV0ZGV2IGFmdGVyIHRoZSB1bnJlZ2lzdGVyX25ldGRldiBzbyBJ
+IGRpZCBpdCB0b28uIE5vIGlkZWEgYWJvdXQgdGhpcyBhdXRvbWF0aWMgY2xlYW51cC4KClNob3Vs
+ZCBJIHNlbmQgdGhlIGZpeCBpbiB0aGlzIHRocmVhZCBvciBvcGVuIGEgbmV3IG9uZT8KClRoYW5r
+cwoKTGluIAo=
