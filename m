@@ -2,123 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430A744D932
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D4544D930
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhKKPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbhKKPeS (ORCPT
+        id S233899AbhKKPeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:34:10 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36034
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233752AbhKKPeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:34:18 -0500
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1DCC0613F5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:28 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id k83so2610391vke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G3bu+PH6Yux9LvJiYt0Dv70QMkjE3dN3AsT/rb8XYAc=;
-        b=VOh6c5T2eSrr3tQeaJDXu+94vpaP1ryfB4R3kU47DDiktzWv4TI4kHDXgP7d044BeD
-         gmTU11iII/OPf2jsD3YiBrqz96rdKaMULH6FVgpfk0+wwNkEcXXW+Evi4flE88+R2bFH
-         YhXMISkDz5tSBkz9DKMXEc1yfM288A/x+pmlYMTpaLa0JcUIcTwnhXtPZmMbXZxhDDbN
-         vp3WzkRZXpmfBQEnS+V1ene4QG3u1TOj9l1RDrlKgr1lwD5D5lm3MuPyZTp827yJiCTi
-         rDxnR6xW2zmrP7ZKsxD2ASzgBzxMTc8+K9br90G5O3ukjpzn0ieIpy3M7hJXSwOAVBv2
-         aTwg==
+        Thu, 11 Nov 2021 10:34:09 -0500
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E6B273F19F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 15:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636644678;
+        bh=M0C7+Kz82L1iJI4IsUCerrEkcKIRCNBXuupYaoELGn8=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=Z0tRQF3//dA43VNIN1zdtZKhc0nO+D4MQMIGSI3J+2trrtgQFvWUig6MCKzVwH3ZV
+         6wBwXN95NMjRPpw8sLF+Vzu2kW0tpNK+u7Xfa4EFzhTcR/SzlVAVO87jZUFP3SC/FS
+         bBAGIqxtIu6z2vZaU5WXtGbvUuBcNuylq2aw478Z+H6moq8ULQC4EWomODAjJhb/H7
+         eeZf1SPwh32xtW/f/gg3TKqBQ0idnURyofxuITiU6Cgil7R5Hpy2/iyvjYzFV37plQ
+         pmCWqj8xaKD/Dn9RIuoszT69PtT41RLdmTMlkFUpww8QmT32xdOREDSVc8D0bpRkyB
+         3btKJYTO4rPIQ==
+Received: by mail-ed1-f70.google.com with SMTP id w12-20020a056402268c00b003e2ab5a3370so5751830edd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:31:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G3bu+PH6Yux9LvJiYt0Dv70QMkjE3dN3AsT/rb8XYAc=;
-        b=N6sXUGBz73CtvPD1aNI8XJgbmiZW0WPaAtMqwRcPohtRw1COEteqI/iMjtkvBFexIR
-         OhmAsXRZues9J1jBfgx9NRbNX1p81lZ4erHNwrjqlGtojK9aagB3lUfCwYrspgdsMruT
-         4FW1eDvb1XOaQUU8NBJidWOumYmnpkESTMBq5DoeA8QTJiE6vb0yybAq/V+J641jzirL
-         DfvzmqwZUzKwzEYN+S4Xr87Dc0knd75GBg+SYaLpXM2EyYeX0vWtd5+pqsAIoyRdfJNf
-         SmDqr/AoR5+nsYyRIosY39np7tH+/IgPfzJfjJqmWLkXAecxPbAqQk5nXNE3Lu7sNIfx
-         EQlw==
-X-Gm-Message-State: AOAM531QxuQ5FLjY9BMqUVR7avXNeSa9SVep0v4UrIJlNKzEEu+uQkX0
-        qaY+UPcY6SCBIpdtQ+ruQaoGtmnHOwhJwV233EN1KhmALm8=
-X-Google-Smtp-Source: ABdhPJzoz1I9aOmFDH7fzZwUnI6BDXLSCK52gKv5ifJbGjUqjSq/lq6+d2sDBabF6YQmsZJaOrayu+3ILobqLKdci1c=
-X-Received: by 2002:a05:6122:790:: with SMTP id k16mr12310963vkr.26.1636644687779;
- Thu, 11 Nov 2021 07:31:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M0C7+Kz82L1iJI4IsUCerrEkcKIRCNBXuupYaoELGn8=;
+        b=3jWi6cZVKEEsbWQ3B2lBlDKJ/VHq5HAadZQTgLzKB+Xu2GpMxvZy20RHZ9NAWqVKZF
+         clU3LCU3kykLHWxnWeSJX6i8oO66VAx658DDiV/q4nvPZEHkuNBIXKMTvWPZqdwKGP9i
+         jJXop7pbCrevgaxQFYRHiO8ZZiZEnUCL9BAtyR9fbNJSpI37fvksag2r/+Ix1ScKJfln
+         NNuwn8s28p6h9LqCQBWojeIFSpa4lXfQK6l/t7AxdavBtaAtTub9iJaWbxc/tdouV9oH
+         WTt9TBxsl4NkHiSs9tlsaHpiAPaeuNzYOVOZIMmXGxFhzXHl1d+6PTQLvM+EuU8PzrLa
+         +dWw==
+X-Gm-Message-State: AOAM5307hkA+Un1w8W7rEaMPKFDjHSAV7VpBL6TWJVMFlF9PR0nwAxk8
+        SUWy8ZwxwJ5HxHxnzflRoxBgYWZ/vzZO/ktCG6LX4k2K6OCIeBVSZEiJ3gwwmH1+1cYfWdVm68g
+        lYhAfD82bsiYisLZEP1uGuH0kRVHshcBagEeSrZObiQ==
+X-Received: by 2002:a50:8741:: with SMTP id 1mr5562821edv.119.1636644678606;
+        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxNXq3MmMTketRsMLJKPUzEi/cY9pv/3KWPhTEuC6OXxeVdf1W1fHDuZk7Csd5eUT40sk6ApA==
+X-Received: by 2002:a50:8741:: with SMTP id 1mr5562788edv.119.1636644678393;
+        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id y4sm1745261edq.13.2021.11.11.07.31.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 07:31:18 -0800 (PST)
+Date:   Thu, 11 Nov 2021 16:31:17 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: net: properly support IPv6 in GSO GRE test
+Message-ID: <YY03RcYshbQFJBRb@arighi-desktop>
+References: <20211104104613.17204-1-andrea.righi@canonical.com>
+ <20211111072048.00852448@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
- <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
- <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
- <YYzxWPIWFAV04LRU@lahna> <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
- <YY0UCHtf8SAvGHTY@lahna> <CAD2FfiF=7H7RuAdrSrrr57JF6YG=pb5jw2QMgBDQsAEwgasYLw@mail.gmail.com>
- <YY0b01g+z3lkO4w2@lahna> <CAArk9MOxZaK2WqsuPR4GbgdxSnUBqgO1KZ8OT=+siksYq+2PxQ@mail.gmail.com>
- <YY0xZjjGjNq+kUXi@lahna>
-In-Reply-To: <YY0xZjjGjNq+kUXi@lahna>
-From:   Mauro Lima <mauro.lima@eclypsium.com>
-Date:   Thu, 11 Nov 2021 12:31:16 -0300
-Message-ID: <CAArk9MMh575-JwrMrn=NF7hBk9t-mzjc7Uz1BwjWFZELsWtXXg@mail.gmail.com>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Richard Hughes <hughsient@gmail.com>,
-        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111072048.00852448@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 12:06 PM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> Hi,
->
-> On Thu, Nov 11, 2021 at 11:42:52AM -0300, Mauro Lima wrote:
-> > > > > Having said that the hardware sequencer used in the recent CPUs should
-> > > > > be much safer in that sense.
-> > > >
-> > > > FWIW, I'd be fine if we had RO access for HWSEQ flash access only. If
-> > > > I understood correctly that's what Mauro proposed (with a patch) and
-> > > > instead was told that it was being rewritten as a mtd driver
-> > > > completion time unknown.
-> > >
-> > > I think Mauro proposed something different, basically exposing RO parts
-> > > of the driver only.
-> >
-> > My patch was intended to move the read functionality of the spi chip
-> > to be able to compile the driver with just that and then remove the
-> > dangerous tag. So we can use that functionality to read the flash, I'm
-> > missing what is different from the things being discussed here sorry.
->
-> I'm hinting that we could make this "non-DANGEROUS" for hardware
-> sequencer parts of the driver. Basically moving only the software
-> sequencer bits as DANGEROUS or something like that. The hardware
-> sequencer is much more safer because it does not allow to run random
-> opcodes.
+On Thu, Nov 11, 2021 at 07:20:48AM -0800, Jakub Kicinski wrote:
+> On Thu,  4 Nov 2021 11:46:13 +0100 Andrea Righi wrote:
+> > Explicitly pass -6 to netcat when the test is using IPv6 to prevent
+> > failures.
+> > 
+> > Also make sure to pass "-N" to netcat to close the socket after EOF on
+> > the client side, otherwise we would always hit the timeout and the test
+> > would fail.
+> > 
+> > Without this fix applied:
+> > 
+> >  TEST: GREv6/v4 - copy file w/ TSO                                   [FAIL]
+> >  TEST: GREv6/v4 - copy file w/ GSO                                   [FAIL]
+> >  TEST: GREv6/v6 - copy file w/ TSO                                   [FAIL]
+> >  TEST: GREv6/v6 - copy file w/ GSO                                   [FAIL]
+> > 
+> > With this fix applied:
+> > 
+> >  TEST: GREv6/v4 - copy file w/ TSO                                   [ OK ]
+> >  TEST: GREv6/v4 - copy file w/ GSO                                   [ OK ]
+> >  TEST: GREv6/v6 - copy file w/ TSO                                   [ OK ]
+> >  TEST: GREv6/v6 - copy file w/ GSO                                   [ OK ]
+> > 
+> > Fixes: 025efa0a82df ("selftests: add simple GSO GRE test")
+> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> 
+> This breaks the test for me on Fedora now :(
 
-I'm aware about hw and sw sequencer diffs, my patch aimed to split
-reading functionality because we thought that the issue was related
-with write/erase ops plus the writable module param (this mixed with
-the sw sequencer could be the bug?). I totally agree with the hw
-sequencer path and I'm willing to help to make this happen.
+Oops, sorry about that.
 
-> In case someone is unfamiliar with this, the Intel SPI hardware
-> exposes two interfaces through the same controller. One that is called
-> software sequencer and there is a register of "allowed" opcodes that
-> software can use as it wishes. This register can be locked down but is
-> not always. The second interface is the hardware sequencer that only
-> exposes higher level commands like read, write and so on and internally
-> then executes whatever opcode the controller got from the chip
-> "supported opcodes table" (SFDP).  The recent Intel hardware, all
-> big-cores, only provide hardware sequencer and the software one is not
-> even available.
->
-> Regardless of all this the driver needs to be converted from MTD to SPI
-> (SPI MEM) before we can add any features. I'm planning to send v4 of
-> that series next week.
+> 
+> nc: invalid option -- 'N'
+> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
+>     TEST: GREv6/v4 - copy file w/ TSO                                   [FAIL]
+> nc: invalid option -- 'N'
+> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
+>     TEST: GREv6/v4 - copy file w/ GSO                                   [FAIL]
+> nc: invalid option -- 'N'
+> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
+>     TEST: GREv6/v6 - copy file w/ TSO                                   [FAIL]
+> nc: invalid option -- 'N'
+> Ncat: Try `--help' or man(1) ncat for more information, usage options and help. QUITTING.
+>     TEST: GREv6/v6 - copy file w/ GSO                                   [FAIL]
+> 
+> Tests passed:   0
+> Tests failed:   4
+> 
+> 
+> Can you please test this on your distro?
 
-Good luck with the patch.
+Tested, it works fine in Ubuntu as well:
+
+$ sudo ./tools/testing/selftests/net/gre_gso.sh
+    TEST: GREv6/v4 - copy file w/ TSO                                   [ OK ]
+    TEST: GREv6/v4 - copy file w/ GSO                                   [ OK ]
+    TEST: GREv6/v6 - copy file w/ TSO                                   [ OK ]
+    TEST: GREv6/v6 - copy file w/ GSO                                   [ OK ]
+
+Tests passed:   4
+Tests failed:   0
+
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
