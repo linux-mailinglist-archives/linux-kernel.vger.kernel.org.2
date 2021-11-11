@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11C444DD09
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF4744DD0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 22:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbhKKV2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 16:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhKKV2P (ORCPT
+        id S234051AbhKKV25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 16:28:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233901AbhKKV2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 16:28:15 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E48C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:25:26 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id w15so7143013ill.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 13:25:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y4JyUrRVkl7jRVNnow9Cuz7LmoY2mJupCDpaUKXIdd8=;
-        b=VCJFK9rW+syMORNU6vFfp0mPegobo2rG2MXJKAa95n5gxdfZ7BGBU7qpK/vXzQ2085
-         l6E8K+76scd90ou8RSRxzz1u5kyIFfuewtcyvvIVy5IALSWyxVQldo/fbb0abC19Enat
-         fIp15wq2fycN7BOYjuF+nrhAdmdUGP4iBmNAo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y4JyUrRVkl7jRVNnow9Cuz7LmoY2mJupCDpaUKXIdd8=;
-        b=ZCrbvZnoFIn0snDzne27pmSSXR1PXRDapS9TVPsdR5MyTP1zy9YCbthvvZYUlKiahY
-         5317VFNq3F8GqrogRZHVKZwMj2ADonzVI1k4VbQ3JfTeNIkqohkQlXhgBXoSZfDOGPkQ
-         13qV4OKbmTUO0YirIt2hW9/kbMavwVBOkHV50Zq++wmifthFFmI3abNsvOR387YW91fA
-         Huugn8URHsEVQQT93X5YyxvkfTuWKcPB8cMk1XTqsz5JHnaRgd0hNgf9jgyXV+1HYFx/
-         FB/lq9wFOBdGOoKhdit5IJmUo+6dRIG6ZtoaUIFAX/+AF/E2LIA+oPpC3rTJJTzW/JNg
-         4vAw==
-X-Gm-Message-State: AOAM530G5pXqV2YdDqckCu/IpFr3WeTtEVmJfGKPkA+2WFgWfOKJ+B3D
-        JWj7CAzo+sJgm8B9/fepGyD33R1gBEiFhw==
-X-Google-Smtp-Source: ABdhPJzMZMMAipebIjjwfyE2eXlvAEIuMIJ2iMJJWhmoD8kJtFAB+V0Ywp6ZlLzmiR1Bnb19mOYdZw==
-X-Received: by 2002:a05:6e02:12c3:: with SMTP id i3mr6188540ilm.316.1636665925290;
-        Thu, 11 Nov 2021 13:25:25 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id l1sm2145751ioj.29.2021.11.11.13.25.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 13:25:24 -0800 (PST)
-Subject: Re: [PATCH v2] net/ipa: ipa_resource: Fix wrong for loop range
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211111183724.593478-1-konrad.dybcio@somainline.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <337396cb-0959-561d-8abd-7cf6e48d6fae@ieee.org>
-Date:   Thu, 11 Nov 2021 15:25:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 11 Nov 2021 16:28:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636665963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FZozKaZqp+hpg5yru80J9OkOMfslxt/7ZEe4MXr7Egw=;
+        b=c8PMJ1yd+Xz+yKjWpXz4aAOinxsNoC4QqWQM0QDnX5M6DCYUN6PTkbu5o3+de4aOzZCCjp
+        MnBv8DlbldsPmpq7SV8G3i7aDAfxz/8EUCHOeAHpD5tWYymoWtkvjz24bXUxM7P+2Q5wrd
+        s8mlVLxwXXRBl/+BJ1vmfXz+NB7Odwg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-C_szPjGrNH6oRE6Wh8w0Yg-1; Thu, 11 Nov 2021 16:26:00 -0500
+X-MC-Unique: C_szPjGrNH6oRE6Wh8w0Yg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CA4A824F83;
+        Thu, 11 Nov 2021 21:25:58 +0000 (UTC)
+Received: from [10.22.8.202] (unknown [10.22.8.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5229E5F707;
+        Thu, 11 Nov 2021 21:25:57 +0000 (UTC)
+Message-ID: <436bcf39-297a-f5a6-ac58-a82e77cb3b83@redhat.com>
+Date:   Thu, 11 Nov 2021 16:25:56 -0500
 MIME-Version: 1.0
-In-Reply-To: <20211111183724.593478-1-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?UTF-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+ <20211107090131.1535-1-hdanton@sina.com>
+ <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+ <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+ <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
+ <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+ <20211111202647.GH174703@worktop.programming.kicks-ass.net>
+ <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
+In-Reply-To: <be3dc705-494a-913e-230f-9533c7404ac2@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 12:37 PM, Konrad Dybcio wrote:
-> The source group count was mistakenly assigned to both dst and src loops.
-> Fix it to make IPA probe and work again.
 
-Looks good.  Oops.
+On 11/11/21 16:01, Waiman Long wrote:
+>
+> On 11/11/21 15:26, Peter Zijlstra wrote:
+>> On Thu, Nov 11, 2021 at 02:36:52PM -0500, Waiman Long wrote:
+>>
+>>> @@ -434,6 +430,7 @@ static void rwsem_mark_wake(struct rw_semaphore 
+>>> *sem,
+>>>               if (!(oldcount & RWSEM_FLAG_HANDOFF) &&
+>>>                   time_after(jiffies, waiter->timeout)) {
+>>>                   adjustment -= RWSEM_FLAG_HANDOFF;
+>>> +                waiter->handoff_set = true;
+>>>                   lockevent_inc(rwsem_rlock_handoff);
+>>>               }
+>> Do we really need this flag? Wouldn't it be the same as waiter-is-first
+>> AND sem-has-handoff ?
+> That is true. The only downside is that we have to read the count 
+> first in rwsem_out_nolock_clear_flags(). Since this is not a fast 
+> path, it should be OK to do that.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+I just realize that I may still need this flag for writer to determine 
+if it should spin after failing to acquire the lock. Or I will have to 
+do extra read of count value in the loop. I don't need to use it for 
+writer now.
 
-> 
-> Fixes: 4fd704b3608a ("net: ipa: record number of groups in data")
-> Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
-> Changes since v1:
-> - Add a "Fixes:" tag, R-b, A-b and fix up the commit message
->   drivers/net/ipa/ipa_resource.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_resource.c b/drivers/net/ipa/ipa_resource.c
-> index e3da95d69409..06cec7199382 100644
-> --- a/drivers/net/ipa/ipa_resource.c
-> +++ b/drivers/net/ipa/ipa_resource.c
-> @@ -52,7 +52,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
->   				return false;
->   	}
->   
-> -	group_count = data->rsrc_group_src_count;
-> +	group_count = data->rsrc_group_dst_count;
->   	if (!group_count || group_count > IPA_RESOURCE_GROUP_MAX)
->   		return false;
->   
-> 
+Cheers,
+Longman
 
