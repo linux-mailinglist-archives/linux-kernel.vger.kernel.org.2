@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA3B44D235
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9171D44D23E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhKKHKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:10:40 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27196 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhKKHKj (ORCPT
+        id S231526AbhKKHPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:15:13 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:50744 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229649AbhKKHPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:10:39 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HqXnH3mlfz8vLs;
-        Thu, 11 Nov 2021 15:06:11 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Thu, 11 Nov 2021 15:07:48 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Thu, 11
- Nov 2021 15:07:48 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
-        <amitk@kernel.org>, <rui.zhang@intel.com>,
-        <srinivas.pandruvada@linux.intel.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] thermal: int340x: processor_thermal: Fix build error
-Date:   Thu, 11 Nov 2021 15:07:16 +0800
-Message-ID: <20211111070716.20260-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Thu, 11 Nov 2021 02:15:12 -0500
+X-UUID: d256bc8e433a42a28496a25a41389d46-20211111
+X-UUID: d256bc8e433a42a28496a25a41389d46-20211111
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <biao.huang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1191703551; Thu, 11 Nov 2021 15:12:20 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 11 Nov 2021 15:12:18 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Thu, 11 Nov 2021 15:12:17 +0800
+From:   Biao Huang <biao.huang@mediatek.com>
+To:     <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Biao Huang <biao.huang@mediatek.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <srv_heupstream@mediatek.com>, <macpaul.lin@mediatek.com>
+Subject: [PATCH v2 0/5] MediaTek Ethernet Patches on MT8195
+Date:   Thu, 11 Nov 2021 15:12:09 +0800
+Message-ID: <20211111071214.21027-1-biao.huang@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In function ‘send_mbox_cmd’:
-drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:16:
- error: implicit declaration of function ‘readq’; did you mean ‘readl’? [-Werror=implicit-function-declaration]
-    *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
-                ^~~~~
-                readl
+Changes in v2:
+1. fix errors/warnings in mediatek-dwmac.yaml with upgraded dtschema tools
 
-Add missing include to fix this.
+This series include 5 patches:
+1. add platform level clocks management for dwmac-mediatek
+2. resue more common features defined in stmmac_platform.c
+3. add ethernet entry for mt8195
+4. convert mediatek-dwmac.txt to mediatek-dwmac.yaml
+5. add ethernet device node for mt8195
 
-Fixes: aeb58c860dc5 ("thermal/drivers/int340x: processor_thermal: Suppot 64 bit RFIM responses")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c | 1 +
- 1 file changed, 1 insertion(+)
+Biao Huang (5):
+  net: stmmac: dwmac-mediatek: add platform level clocks management
+  net: stmmac: dwmac-mediatek: Reuse more common features
+  net: stmmac: dwmac-mediatek: add support for mt8195
+  dt-bindings: net: dwmac: Convert mediatek-dwmac to DT schema
+  arm64: dts: mt8195: add ethernet device node
 
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-index a86521973dad..01008ae00e7f 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-@@ -7,6 +7,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- #include "processor_thermal_device.h"
- 
- #define MBOX_CMD_WORKLOAD_TYPE_READ	0x0E
--- 
-2.17.1
+ .../bindings/net/mediatek-dwmac.txt           |  91 -----
+ .../bindings/net/mediatek-dwmac.yaml          | 211 ++++++++++++
+ arch/arm64/boot/dts/mediatek/mt8195-evb.dts   |  92 +++++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  70 ++++
+ .../ethernet/stmicro/stmmac/dwmac-mediatek.c  | 313 ++++++++++++++++--
+ 5 files changed, 664 insertions(+), 113 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+
+--
+2.18.0
+
 
