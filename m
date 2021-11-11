@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B809B44DC53
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F160144DC54
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhKKTxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 14:53:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhKKTxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 14:53:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E901561241;
-        Thu, 11 Nov 2021 19:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636660242;
-        bh=fPyBt7AKMRfKpDiq/z/CYanNpyOJhV3N4JWIwUTEOtU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FSC/65Qpk9LM54xgnpSiH2tes2MD0Boz+0/wy4qR3dWfBx/f5E4u9SwBh6abb/BYU
-         2HmUwVUYDazXXU8JPiPLDEid2d7B3DAG/yDLj28GZRO+N0br5tSJ+XTgmVy5b3hIo5
-         JKAqy57y73H19MRZ5YlnDpMK4FSRUCZyiLnPzfpIqx5rCljXyGpJPFfWQuEMq1hdi6
-         NKk/qgebKpmYTajZOecJFjHwrXqrQnJhbuOPrMEA9On9oQzM6OIxYc+osRtujqUpjb
-         RlKXn5YD/ipT+sjbLTEwHT8uR1DG5IrBXnkZ7sfzBxE5xt5O1K284bLf9lfRJjsnKE
-         jpRfhfKez1N1Q==
-Date:   Thu, 11 Nov 2021 13:50:40 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Robert =?utf-8?B?xZp3acSZY2tp?= <robert@swiecki.net>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [GIT PULL] PCI fixes for v5.16
-Message-ID: <20211111195040.GA1345641@bhelgaas>
+        id S232411AbhKKTzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 14:55:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28146 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229710AbhKKTzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 14:55:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636660348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rj4dBkXZNM78ldukFDcDyf4+5HD2eBVeG0uoftbTD2o=;
+        b=jBFsqjKtlL4KqZIZIFr8MTswHHMbU0mrwBcFR+SPGUuvk42Rq1TpZw3q6vNuGPbinhhpYR
+        IRrSuF4AL6LQBE1Q4bwtn+zwiQqmweWmAk7LZRFKM9hwU5T+6dtYlHFxsH3BIF8gQvZvBQ
+        chitOPvreG1PvwxF3d/GYUkW9gSnRNI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-EFx1BHRqNMa-dU5aRyVqkw-1; Thu, 11 Nov 2021 14:52:25 -0500
+X-MC-Unique: EFx1BHRqNMa-dU5aRyVqkw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B77D18125C0;
+        Thu, 11 Nov 2021 19:52:23 +0000 (UTC)
+Received: from [10.22.8.202] (unknown [10.22.8.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 261AA56A87;
+        Thu, 11 Nov 2021 19:52:20 +0000 (UTC)
+Message-ID: <cd5e96e6-fbfd-487a-e308-13800c79ead3@redhat.com>
+Date:   Thu, 11 Nov 2021 14:52:19 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        =?UTF-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+ <20211107090131.1535-1-hdanton@sina.com>
+ <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
+ <02e118c0-2116-b806-2b48-b9c91dc847dd@redhat.com>
+ <20211110213854.GE174703@worktop.programming.kicks-ass.net>
+ <YY0x55wxO2v5HCOW@hirez.programming.kicks-ass.net>
+ <61735528-141c-8d77-592d-b6b8fb75ebaa@redhat.com>
+ <YY1s6v9b/tYtNnGv@hirez.programming.kicks-ass.net>
+ <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+In-Reply-To: <e16f9fc2-ce01-192b-065d-460c2ad9b317@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit dda4b381f05d447a0ae31e2e44aeb35d313a311f:
 
-  Merge branch 'remotes/lorenzo/pci/xgene' (2021-11-05 11:28:53 -0500)
+On 11/11/21 14:36, Waiman Long wrote:
+>
+> On 11/11/21 14:20, Peter Zijlstra wrote:
+>> On Thu, Nov 11, 2021 at 02:14:48PM -0500, Waiman Long wrote:
+>>> As for the PHASE_CHANGE name, we have to be consistent in both rwsem 
+>>> and
+>>> mutex. Maybe a follow up patch if you think we should change the
+>>> terminology.
+>> Well, that's exactly the point, they do radically different things.
+>> Having the same name for two different things is confusing.
+>>
+>> Anyway, let me go read that patch you sent.
+>
+> My understanding of handoff is to disable optimistic spinning to let 
+> waiters in the wait queue have an opportunity to acquire the lock. 
+> There are difference in details on how to do that in mutex and rwsem, 
+> though.
+>
+> BTW, I have decided that we should further simply the trylock for loop 
+> in rwsem_down_write_slowpath() to make it easier to read. That is the 
+> only difference in the attached v2 patch compared with the previous one.
 
-are available in the Git repository at:
+My bad, I forgot to initialize waiter.handoff_set in 
+rwsem_down_write_slowpath(). I will send out an updated version once you 
+have finished your review.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.16-fixes-1
+Cheers,
+Longman
 
-for you to fetch changes up to e0217c5ba10d7bf640f038b2feae58e630f2f958:
-
-  Revert "PCI: Use to_pci_driver() instead of pci_dev->driver" (2021-11-11 13:36:22 -0600)
-
-N.B.: My for-linus branch, which contains these, also includes a revert of
-041284181226 ("of/irq: Allow matching of an interrupt-map local to an
-interrupt controller").  That revert is *not* included here and we hope we
-don't need it, but that issue is not resolved yet.
-
-----------------------------------------------------------------
-PCI fixes:
-
-  - Revert conversion to struct device.driver instead of struct
-    pci_dev.driver.  The device.driver is set earlier, and using it
-    caused the PCI core to call driver PM entry points before .probe()
-    and after .remove(), when the driver isn't prepared.  This caused
-    NULL pointer dereferences in i2c_designware_pci and probably other
-    driver issues (Bjorn Helgaas)
-
-----------------------------------------------------------------
-Bjorn Helgaas (2):
-      Revert "PCI: Remove struct pci_dev->driver"
-      Revert "PCI: Use to_pci_driver() instead of pci_dev->driver"
-
- drivers/pci/iov.c        | 24 +++++++++---------------
- drivers/pci/pci-driver.c | 37 ++++++++++++++++++++-----------------
- drivers/pci/pci.c        | 17 ++++++++---------
- drivers/pci/pcie/err.c   |  8 ++++----
- include/linux/pci.h      |  1 +
- 5 files changed, 42 insertions(+), 45 deletions(-)
