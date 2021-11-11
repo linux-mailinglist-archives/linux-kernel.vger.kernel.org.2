@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF26E44D3B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E15244D3B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbhKKJF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbhKKJEy (ORCPT
+        id S232601AbhKKJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:05:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37160 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232112AbhKKJFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:04:54 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF47C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:01:51 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso4177437pjo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mc0Tzhtgh4/qXgYv8Pba3NIwdWL9eEUNhYWCL2YZn7s=;
-        b=AVuC2Qy/Ov2rAVoK5pSuBabo+Wy3IA0iRqDiXo62eWaj69nR5hRBIj2yjgflpy1EvO
-         jSHS1wV+QFBxga5x/tEnB7a0+Ej9R7/MjKLa844PJBN7h84Z4FlfFP/EDJD7f5M3WIuS
-         zgHNj8RINJRBh1VIRc/J6PhcTChl1Xe7j0BiH6leWrf3QrKmDFaeBBIf1uMT2U4joDkk
-         Ogm3ohDqg3UBkmPdKKcgqJezP0HZ7apEY9gY35q+DqvnzAt84A3o9WmjCMAEdXuSR4UR
-         LzqmJGwQhffcd+LMFhw3UartO6vBWctW/YRKvUjGpK18bteOKe0ehFTcv99/asxRYcql
-         xkBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mc0Tzhtgh4/qXgYv8Pba3NIwdWL9eEUNhYWCL2YZn7s=;
-        b=lYUBLKeg2IffVIPj2XDD6VSo4Aee2pOfIH3tPVFIK7OiIul8MSq164FrvJfuGT26mL
-         sW8dyCNixNvDFMFDqxYs6RE59nhOWqc6wuhEE8K1MSGdez+jGtKU2kHfyBAgfWNmz7s4
-         X3y3sXi2HIYhWPEhc1h59Q4mZQvcQSq7joksqddd8l4vsZnuheCQtiCqnVnVkF7up8x3
-         r5KtMA14Q888d4ARh+Q+9yF9Rrpn29MLlr1bTQw2Ci2okWcejBvNApXQryTuXDJNjDwD
-         lJxMc/MobupWfTkQAm+aYmHa/16vTKOCAMlT311atJtjbOs8kjqIrU8/hg3jlohC78r/
-         cRig==
-X-Gm-Message-State: AOAM530Iivj3sMjVMacmF0k6WI3bOmMAjA8GuLd3cLFbrnknzUHtGBbH
-        P/o4IlJRjwWx6bG7aR4iTHRQ2Xbbg54=
-X-Google-Smtp-Source: ABdhPJxgtyZwf7guZdlFY7m+JGzYzycnnF0BIbLStZDWlvqJYOG2csnO7zongK5JUKVM8m2H44XtPw==
-X-Received: by 2002:a17:902:aa49:b0:142:5a22:428f with SMTP id c9-20020a170902aa4900b001425a22428fmr5987312plr.39.1636621311144;
-        Thu, 11 Nov 2021 01:01:51 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f22sm1746177pgk.21.2021.11.11.01.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:01:50 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     David Airlie <airlied@linux.ie>
-Cc:     linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] agp: Remove redundant assignments
-Date:   Thu, 11 Nov 2021 09:01:30 +0000
-Message-Id: <20211111090130.158582-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Nov 2021 04:05:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636621383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HDJlKWmITGGiSJRAEgTyI1lTFGvuDXl7ywXp7NhlzRE=;
+        b=LJCu5iS/RbnNj5LCnro7rkJt0paVSu5lYZW7FNA51ZZAt2/hKw4c1l4j5Z/ezwEWki7LbW
+        eGKGGZl218xFzaJEJSknH2g/5Vt1GHiKy2JseuPvacbyf42T7l9WTLAkOpZA++uK34LMde
+        WiJBbQOoMDwHHtY9QEEbwaeKN1TFwIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-MfuEAeLuO3u2l5bcJsuzqA-1; Thu, 11 Nov 2021 04:03:00 -0500
+X-MC-Unique: MfuEAeLuO3u2l5bcJsuzqA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74A901927800;
+        Thu, 11 Nov 2021 09:02:59 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23DA05D6D7;
+        Thu, 11 Nov 2021 09:02:46 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 67A061800925; Thu, 11 Nov 2021 10:02:44 +0100 (CET)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     linux-pci@vger.kernel.org
+Cc:     mst@redhat.com, Gerd Hoffmann <kraxel@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] pciehp: fast unplug for virtual machines
+Date:   Thu, 11 Nov 2021 10:02:24 +0100
+Message-Id: <20211111090225.946381-1-kraxel@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+The PCIe specification asks the OS to wait five seconds after the
+attention button has been pressed before actually un-plugging the
+device.  This gives the operator the chance to cancel the operation
+by pressing the attention button again within those five seconds.
 
-i will then be assigned the same value
+For physical hardware this makes sense.  Picking the wrong button
+by accident can easily happen and it can be corrected that way.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+For virtual hardware the benefits are questionable.  Typically
+users find the five second delay annoying.
+
+This patch adds the fast_virtual_unplug module parameter to the
+pciehp driver.  When enabled (which is the default) the linux
+kernel will simply skip the delay for virtual pcie ports, which
+reduces the total time for the unplug operation from 6-7 seconds
+to 1-2 seconds.
+
+Virtual pcie ports are identified by PCI ID.  For now the qemu
+pcie root ports are detected, other hardware can be added easily.
+
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
- drivers/char/agp/amd64-agp.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/pci/hotplug/pciehp.h      |  3 +++
+ drivers/pci/hotplug/pciehp_core.c |  5 +++++
+ drivers/pci/hotplug/pciehp_ctrl.c | 11 ++++++++++-
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
-index b40edae..0413b31 100644
---- a/drivers/char/agp/amd64-agp.c
-+++ b/drivers/char/agp/amd64-agp.c
-@@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
- 	if (!amd_nb_has_feature(AMD_NB_GART))
- 		return -ENODEV;
+diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
+index 69fd401691be..131ffec2e947 100644
+--- a/drivers/pci/hotplug/pciehp.h
++++ b/drivers/pci/hotplug/pciehp.h
+@@ -79,6 +79,7 @@ extern int pciehp_poll_time;
+  * @request_result: result of last user request submitted to the IRQ thread
+  * @requester: wait queue to wake up on completion of user request,
+  *	used for synchronous slot enable/disable request via sysfs
++ * @is_virtual: virtual machine pcie port.
+  *
+  * PCIe hotplug has a 1:1 relationship between controller and slot, hence
+  * unlike other drivers, the two aren't represented by separate structures.
+@@ -109,6 +110,8 @@ struct controller {
+ 	unsigned int ist_running;
+ 	int request_result;
+ 	wait_queue_head_t requester;
++
++	bool is_virtual;
+ };
  
--	i = 0;
- 	for (i = 0; i < amd_nb_num(); i++) {
- 		struct pci_dev *dev = node_to_amd_nb(i)->misc;
- 		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
+ /**
+diff --git a/drivers/pci/hotplug/pciehp_core.c b/drivers/pci/hotplug/pciehp_core.c
+index ad3393930ecb..28867ec33f5b 100644
+--- a/drivers/pci/hotplug/pciehp_core.c
++++ b/drivers/pci/hotplug/pciehp_core.c
+@@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
+ 		goto err_out_shutdown_notification;
+ 	}
+ 
++	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
++	    dev->port->device == 0x000c)
++		/* qemu pcie root port */
++		ctrl->is_virtual = true;
++
+ 	pciehp_check_presence(ctrl);
+ 
+ 	return 0;
+diff --git a/drivers/pci/hotplug/pciehp_ctrl.c b/drivers/pci/hotplug/pciehp_ctrl.c
+index 529c34808440..119bb11f87d6 100644
+--- a/drivers/pci/hotplug/pciehp_ctrl.c
++++ b/drivers/pci/hotplug/pciehp_ctrl.c
+@@ -15,12 +15,17 @@
+ 
+ #define dev_fmt(fmt) "pciehp: " fmt
+ 
++#include <linux/moduleparam.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pci.h>
+ #include "pciehp.h"
+ 
++static bool fast_virtual_unplug = true;
++module_param(fast_virtual_unplug, bool, 0644);
++MODULE_PARM_DESC(fast_virtual_unplug, "Fast unplug (don't wait 5 seconds) for virtual machines.");
++
+ /* The following routines constitute the bulk of the
+    hotplug controller logic
+  */
+@@ -176,7 +181,11 @@ void pciehp_handle_button_press(struct controller *ctrl)
+ 		/* blink power indicator and turn off attention */
+ 		pciehp_set_indicators(ctrl, PCI_EXP_SLTCTL_PWR_IND_BLINK,
+ 				      PCI_EXP_SLTCTL_ATTN_IND_OFF);
+-		schedule_delayed_work(&ctrl->button_work, 5 * HZ);
++		if (ctrl->is_virtual && fast_virtual_unplug) {
++			schedule_delayed_work(&ctrl->button_work, 1);
++		} else {
++			schedule_delayed_work(&ctrl->button_work, 5 * HZ);
++		}
+ 		break;
+ 	case BLINKINGOFF_STATE:
+ 	case BLINKINGON_STATE:
 -- 
-2.15.2
-
+2.33.1
 
