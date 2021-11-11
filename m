@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4438744D471
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD10F44D476
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhKKJ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhKKJ5x (ORCPT
+        id S232707AbhKKJ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:59:33 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50252
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhKKJ7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:57:53 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8266C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:55:04 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id i12so3706224wmq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bdsCoAnax0xMdSi3LEgeLkYD/HFUU9RT8hDhS95OAt0=;
-        b=Pvr6LjVy0p4znnuxieeKa3HPTeRFxZ+3knxotyGb0PFNzFJ4xM/abD+ljU/qbLS9aR
-         5QrmdMZmVTweFvDlm2eLs44xWhyVo1EBNNm2nIWCe+7jkOi+vZBd8ZaHb6Q7ZgYPqtQp
-         kLq9fvUodqqeqMnMOUsVbbtGxI7f175Jrdez0=
+        Thu, 11 Nov 2021 04:59:31 -0500
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2942B3F19E
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636624602;
+        bh=0QmUn/+wubSYSmTQYVtEMAkMcA2QWp77KCs126H+Juc=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=UJGTaUvRlCS5snsZIq3WY58ktHK6uNJICPxgILPcnx0mBu1jgtPyGz+qRrzfpnxqJ
+         sfrG+31r0rYfNdNtwGiZm0xIu8HI7alZrYQaArVNDRIVN34dzLBs6oxmEq0EILGr37
+         48jGZzTph9tnpV22LaYvOI3lQE7hJzjNILOSf4B90yOCZVRBzl4zIj3BW7TqyC1yhh
+         5xmYfWdA/EPFoLQ3RaKPud20Vmy8sdaklTlMQMPVUn2Y/IDSV/s2b+t+tO93fl9WPj
+         9XOwJOauHGtkPkyPzr5Wo21q361wRDZxvjyCGYcuXN3khz6ourYrhtxpGLNxgH3Kw7
+         vQDqNQnxAAbig==
+Received: by mail-lf1-f69.google.com with SMTP id b23-20020a0565120b9700b00403a044bfcdso1382018lfv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:56:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=bdsCoAnax0xMdSi3LEgeLkYD/HFUU9RT8hDhS95OAt0=;
-        b=K2Rg1wAWKqt4GYrzcP9lZev2mZ5blhtQirE8Lv0VnldwWlv4TrO8ZNqpX6SH2J6KZR
-         mPy/1rDuLPBku1ry10Q0kDl0yp7VnkghCOW6AXU1udZgw9lekAm1bb/OFaE0PwykGkdw
-         y8vttWp5DhtArOH/0BZ8N72dntbqtiUKBitqLmEkWzVAcASAUqR6SkmQ7B+af0Bx9Ncj
-         MFnff4wtonVBWaaNvnVtOowheS8JD0LcRy4C2EzendJOBOcJUziMmN5K4dFwEw0eSTc5
-         x74u/msgB2UzatgUXjfeGqXfL33sp3wVEdmsvP8fmKJLVWSm1P+gaFXozdXXN7SFjTpw
-         NYwg==
-X-Gm-Message-State: AOAM532AH0jb2hpP92+J1sratoaLDNZ9vgzUdHc04yE/ZeYXKzA9xgaZ
-        3x6EgOC4MRl1u0wFVWWmaLKE0w==
-X-Google-Smtp-Source: ABdhPJzZD6hXg1vjTxLyAuHF9yWYrd++DYJyRcez14UgECfYo+Da2LILIKoHIcu0e84TnnarVAnjJw==
-X-Received: by 2002:a7b:c1cb:: with SMTP id a11mr7024713wmj.30.1636624503159;
-        Thu, 11 Nov 2021 01:55:03 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p19sm2521931wmq.4.2021.11.11.01.55.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:55:02 -0800 (PST)
-Date:   Thu, 11 Nov 2021 10:54:33 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ilya Trukhanov <lahvuun@gmail.com>
-Subject: Re: [PATCH] fbdev: Prevent probing generic drivers if a FB is
- already registered
-Message-ID: <YYzoWTMBkC64a4Cn@phenom.ffwll.local>
-Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ilya Trukhanov <lahvuun@gmail.com>
-References: <20211111092053.1328304-1-javierm@redhat.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0QmUn/+wubSYSmTQYVtEMAkMcA2QWp77KCs126H+Juc=;
+        b=bk2SkFkE3vBE2oDHabZQ96dE/DamC+xgSzV10AjRFj04IyZsZwtaqwhRZa9vnQQvJQ
+         Ewcn3Vm0WGemY1tLWapuAwybkm/Q9rmvtJNvIlqHVw/OsBiEybA0MTNMIQxtAp12ZzSr
+         nVgUGT2bxBf0IDepby/r2Z8EAKEfu+z6ajJ93oS64Co6VexaJPn6Q/EcF5ci0pxXIt7I
+         HXDmpq1M+b6hGLFPW2rTRK5Zga6rseKz0DutH/rweALsRPgipmTYzYXlMQwIwO5zfIQ4
+         Lb7trBH0Kgdsn/VtzRnqJVJIplwqxvS4pRJS5S2dgCmF7c/FyUXl2DoMWR8M+azOu0vD
+         HhtA==
+X-Gm-Message-State: AOAM533iDVQ1h1JQEewp7pUUcOAi7nIIllcOraryjgUESehf0khLajBU
+        tpXV5TjsCjzkbkTW47vepVa887MOi09N9QQqzf+mDRyHLCDJv3jq8iZWYAZryBS7VfK6Jezewzo
+        wbX92mc2s/AlpJ/zISRAa0MMBr2dXdUbQB8brhuWi0w==
+X-Received: by 2002:a05:6512:1506:: with SMTP id bq6mr5549696lfb.118.1636624601670;
+        Thu, 11 Nov 2021 01:56:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzUfUwcF2cAx8x/G3+7qqwx0dkmnl366M+/YmAriQ6UM5akc3pj67B9VmIgqFuG4BblwDqMLA==
+X-Received: by 2002:a05:6512:1506:: with SMTP id bq6mr5549680lfb.118.1636624601513;
+        Thu, 11 Nov 2021 01:56:41 -0800 (PST)
+Received: from [192.168.0.27] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id d23sm242723lfm.107.2021.11.11.01.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 01:56:41 -0800 (PST)
+Message-ID: <16fbb472-4a82-1267-9971-db453ba009e3@canonical.com>
+Date:   Thu, 11 Nov 2021 10:56:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111092053.1328304-1-javierm@redhat.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] ARM: s3c: include header for prototype of
+ s3c2410_modify_misccr
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+ <CAK8P3a3MezegptR_-XPVm=RtOn4UYsb+TPEKjCGb-XRt9ke36A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <CAK8P3a3MezegptR_-XPVm=RtOn4UYsb+TPEKjCGb-XRt9ke36A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 10:20:53AM +0100, Javier Martinez Canillas wrote:
-> The efifb and simplefb drivers just render to a pre-allocated frame buffer
-> and rely on the display hardware being initialized before the kernel boots.
+On 11/11/2021 10:46, Arnd Bergmann wrote:
+> On Thu, Nov 11, 2021 at 10:11 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> Include the header with prototype of s3c2410_modify_misccr to fix W=1
+>> warning:
+>>
+>>   arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
+>>     no previous prototype for ‘s3c2410_modify_misccr’ [-Wmissing-prototypes]
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > 
-> But if another driver already probed correctly and registered a fbdev, the
-> generic drivers shouldn't be probed since an actual driver for the display
-> hardware is already present.
+> Thank you for fixing it,
 > 
-> Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-Also Cc: stable@vger.kernel.org?
-
-btw time to organize drm-misc commit rights so you can push stuff like
-this?
--Daniel
-
-> ---
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 > 
->  drivers/video/fbdev/efifb.c    | 6 ++++++
->  drivers/video/fbdev/simplefb.c | 6 ++++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git drivers/video/fbdev/efifb.c drivers/video/fbdev/efifb.c
-> index edca3703b964..76325c07cf0c 100644
-> --- drivers/video/fbdev/efifb.c
-> +++ drivers/video/fbdev/efifb.c
-> @@ -351,6 +351,12 @@ static int efifb_probe(struct platform_device *dev)
->  	char *option = NULL;
->  	efi_memory_desc_t md;
->  
-> +	if (num_registered_fb > 0) {
-> +		dev_err(&dev->dev,
-> +			"efifb: a framebuffer is already registered\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI || pci_dev_disabled)
->  		return -ENODEV;
->  
-> diff --git drivers/video/fbdev/simplefb.c drivers/video/fbdev/simplefb.c
-> index 62f0ded70681..55c1f54d7663 100644
-> --- drivers/video/fbdev/simplefb.c
-> +++ drivers/video/fbdev/simplefb.c
-> @@ -407,6 +407,12 @@ static int simplefb_probe(struct platform_device *pdev)
->  	struct simplefb_par *par;
->  	struct resource *mem;
->  
-> +	if (num_registered_fb > 0) {
-> +		dev_err(&pdev->dev,
-> +			"simplefb: a framebuffer is already registered\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	if (fb_get_options("simplefb", NULL))
->  		return -ENODEV;
->  
-> -- 
-> 2.33.1
-> 
+> If you like, I can put it into the fixes branch of the soc tree directly,
+> otherwise I expect you'll send it in a pull request later.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+It's not a serious bug and was there since long time, so maybe let's
+send it via regular pull request.
+
+
+Best regards,
+Krzysztof
