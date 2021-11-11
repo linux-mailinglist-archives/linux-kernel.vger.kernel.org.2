@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142AE44D79E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5201C44D7A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhKKN5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKN5j (ORCPT
+        id S233601AbhKKN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:58:53 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30932 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233572AbhKKN6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:57:39 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F0FC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:54:50 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id i13so4081483qvm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 05:54:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
-        b=iQZAa9VL4jVrqs3JttRSqTFtpBwCwhZIiuf0juUtq4+0PMb+o+ZWar7Q7/RI/nXaMu
-         7QCDUHJ9CRNsuvnoLQLCndLqbm4dkguTOpR3T2kcf+Pvqabp5sSdVQO6nJl+Dovwk/yt
-         NnM2W/73g3PftX/FWG78Qr8QC4vXjbv6rsXQr9KkIC29AsJ2+jiCzVICc1GsFB7gAUSJ
-         IPegGvPcJyOWL5jNWGbrvmv2KW1yF3FkM9UzW8SXwAF8OLy+moTIcqMGv87ovIHTzDGC
-         1hNMZpxg3aYlchrARPmufEyJKbKDVgCNau1Kaz35/WYQkonyI0/VJYWpqecXE9nkRDFu
-         j0Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
-        b=MogfvjoD7deJD7I8dg243s+ACSt5ZQJB5P+GHQrEFHUKpl4pKf5lLszb2F5gW/X57U
-         v1ZrojUSNZ1/eShpWuc1ZEChbALsPj1Y1j61y7Bbl8FYUTeWrUs3erKv7QUREYA0c2OJ
-         Vf4Y2C0NLbb1zwX3CZeVGzNqve86aexQaddOqAwE2wanS9VJJI7ZtJrDxGlWgYGKScAj
-         CtbmcHpahECDaUWVAx+dYfFEn6eyg8i8WjOUI4SsGttb+YDrvHuafYBItamP9XAoaD1L
-         2v51ObOKT3Wbd4dil8v3VQ8VyHwPHOw3YqjZASEGjdbM0O2cMNe/gDx6oLwMtKRHCK3E
-         dn5A==
-X-Gm-Message-State: AOAM532NghnSKTMNlt+snQryLCNtZMUWWlPHdSBue6t+xFPh6EVdd15G
-        PrQkob5xAdPmNOJTageK1SDIVLPAzDYBM93hga0=
-X-Google-Smtp-Source: ABdhPJynw5H4Jaz+lI76M0l9sMhJSJca4+xEAwHODejjlGTtfC45NR0moCT9j+obK4sHmfTW+5uMnU94uWBu08sCc/g=
-X-Received: by 2002:a05:6214:f09:: with SMTP id gw9mr6678652qvb.36.1636638889210;
- Thu, 11 Nov 2021 05:54:49 -0800 (PST)
+        Thu, 11 Nov 2021 08:58:44 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HqjmN4qfmzcbHx;
+        Thu, 11 Nov 2021 21:51:00 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Thu, 11 Nov 2021 21:55:51 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Thu, 11
+ Nov 2021 21:55:50 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <srinivas.pandruvada@linux.intel.com>, <jikos@kernel.org>,
+        <benjamin.tissoires@redhat.com>, <hdegoede@redhat.com>,
+        <linux@weissschuh.net>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] HID: intel-ish-hid: hid-client: Fix build error
+Date:   Thu, 11 Nov 2021 21:54:49 +0800
+Message-ID: <20211111135449.10840-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Sender: reymonddennis@gmail.com
-Received: by 2002:ac8:7d12:0:0:0:0:0 with HTTP; Thu, 11 Nov 2021 05:54:48
- -0800 (PST)
-From:   "helen.carlsen" <helen.carlsen26@gmail.com>
-Date:   Thu, 11 Nov 2021 14:54:48 +0100
-X-Google-Sender-Auth: bur7Aj9tYLZ6tOuiZpAhSWjMy0k
-Message-ID: <CAOOE2sGzasS8WR2LHr42-VTwyojBA7Dvg3i7=zAvQU7St67sqg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- I sent this mail praying it will found you in a good condition of
-health, since I myself are in a very critical health condition in
-which I  sleep every night without knowing if I may be alive to see
-the next day. I'm Mrs. Helen John carlsen, wife of late Mrs. Helen
-John carlsen, a widow suffering from long time illness. I have some
-funds I inherited from my late husband, the sum of($ 11.000.000,eleven
-million dollars)my Doctor told me recently that I have serious
-sickness which is cancer problem. What disturbs me most is my stroke
-sickness.Having known my condition, I decided to donate this fund to a
-good person that will utilize it the way i am going to instruct
-herein. I need a very honest and God fearing person who can claim this
-money and use it for Charity works, for orphanages, widows and also
-build schools for less privileges that will be named after my late
-husband if possible and to promote the word of God and the effort that
-the house of God is maintained.
+drivers/hid/intel-ish-hid/ishtp-hid-client.c:956:4: error: initializer element is not constant
+  { hid_ishtp_guid },
+    ^~~~~~~~~~~~~~
 
-I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death
-so I know where I'm going. I accept this decision because I do not
-have any child who will inherit this money after I die. Please I want
-your sincerely and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
+The reason is that we are using non-const expressions to initialize the
+static structure, which will probably trigger a compiling error/warning
+on gcc-7.5.0. Fix it by converting const variable into macro.
 
-Best Regards,
+Fixes: 0d0cccc0fd83 ("HID: intel-ish-hid: hid-client: only load for matching devices")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/hid/intel-ish-hid/ishtp-hid-client.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Mrs. Helen John carlsen,
+diff --git a/drivers/hid/intel-ish-hid/ishtp-hid-client.c b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+index fb47d38d1e87..545ec6cf345c 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-hid-client.c
++++ b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
+@@ -12,9 +12,9 @@
+ #include "ishtp-hid.h"
+ 
+ /* ISH Transport protocol (ISHTP in short) GUID */
+-static const guid_t hid_ishtp_guid =
+-	GUID_INIT(0x33AECD58, 0xB679, 0x4E54,
+-		  0x9B, 0xD9, 0xA0, 0x4D, 0x34, 0xF0, 0xC2, 0x26);
++#define HID_ISHTP_GUID \
++	GUID_INIT(0x33AECD58, 0xB679, 0x4E54, \
++		  0x9B, 0xD9, 0xA0, 0x4D, 0x34, 0xF0, 0xC2, 0x26)
+ 
+ /* Rx ring buffer pool size */
+ #define HID_CL_RX_RING_SIZE	32
+@@ -662,7 +662,7 @@ static int hid_ishtp_cl_init(struct ishtp_cl *hid_ishtp_cl, int reset)
+ 	ishtp_set_tx_ring_size(hid_ishtp_cl, HID_CL_TX_RING_SIZE);
+ 	ishtp_set_rx_ring_size(hid_ishtp_cl, HID_CL_RX_RING_SIZE);
+ 
+-	fw_client = ishtp_fw_cl_get_client(dev, &hid_ishtp_guid);
++	fw_client = ishtp_fw_cl_get_client(dev, &HID_ISHTP_GUID);
+ 	if (!fw_client) {
+ 		dev_err(cl_data_to_dev(client_data),
+ 			"ish client uuid not found\n");
+@@ -945,7 +945,7 @@ static const struct dev_pm_ops hid_ishtp_pm_ops = {
+ 
+ static struct ishtp_cl_driver	hid_ishtp_cl_driver = {
+ 	.name = "ish-hid",
+-	.guid = &hid_ishtp_guid,
++	.guid = &HID_ISHTP_GUID,
+ 	.probe = hid_ishtp_cl_probe,
+ 	.remove = hid_ishtp_cl_remove,
+ 	.reset = hid_ishtp_cl_reset,
+@@ -953,7 +953,7 @@ static struct ishtp_cl_driver	hid_ishtp_cl_driver = {
+ };
+ 
+ static const struct ishtp_device_id hid_ishtp_id_table[] = {
+-	{ hid_ishtp_guid },
++	{ HID_ISHTP_GUID },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ishtp, hid_ishtp_id_table);
+-- 
+2.17.1
+
