@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E6E44D3E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D530D44D3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 10:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhKKJV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 04:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S232519AbhKKJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 04:21:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232570AbhKKJVE (ORCPT
+        with ESMTP id S232513AbhKKJVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 04:21:04 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFAFC06127A;
-        Thu, 11 Nov 2021 01:18:14 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id b68so5069859pfg.11;
-        Thu, 11 Nov 2021 01:18:14 -0800 (PST)
+        Thu, 11 Nov 2021 04:21:53 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAA5C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:19:03 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id p17so4684898pgj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 01:19:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LjO7/fZn8A4IMe1GMP9m7bCzLwYikbXUyytf4mrez9I=;
-        b=V1HNfvZ2U0+GPbyim+Kquq2OpFo6MTL7U1sTyfO9l//Vdqxn3/GEjWHaK3qHOluCKM
-         1iT3+STWT6gBV1QU8fkNMye7i60ccrJL5PpAfOG8LCjQSmWwztH5MLpyBDXqTmqZHHQG
-         qmcxvXC+lVdk84bWi3TI5aXd9n3UT6UCPUoz8048ePkmjMvowScbI9iEjucfXPeQGFYT
-         IC5bWeZdok9G8M6AAoVf5Mf6TrVHgb0q5jSZz7iqf2rsYQLVEOo7VsElhT4y2XYAX/1y
-         JXKN/6lK/3JfvUrHGUhwuH/13U3Us/n3Dop/lvQGat0gxlSQumxWmrQVhDwGGoCaozKU
-         gUOg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W4oON9tVLzbGnMHdSvx5FpIn6WtCPoheg0Qx9WxWbPQ=;
+        b=LEI+Zjqvo5YR46BDk0UGfF0Z206KbIE5NfmIdD1sEs38gVeU/TXLHux/kPRlEhpwpm
+         CKnJNdTqjFVmVY7fu07F4vbbKnEpeJ2Bj16hCjCBZzOwas3FwxaISJe+xwjqMQMK5s+y
+         pn5aWxgxZxZi8BHfshdRinyy3kjTyvS01GXAK/49RSSdNZf/MtmU9QfX2oAXmZwfe/hu
+         UdzVBaFmyiNiYcmCL5HKtRanaJEGwvJsntBRkhIKEoM9iXFteOmnIX1xqzYBMHfQZN+8
+         ubPkn+Q3+swfnbA88+4LlBqwA0ms/McQxqxEuCObiQiZfQLL7SMnHiyPBRvgKD4NsMoV
+         x85Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LjO7/fZn8A4IMe1GMP9m7bCzLwYikbXUyytf4mrez9I=;
-        b=8BlQPNAiNoeKhEHxMRASGLdcmdeaUXUMyQXHr8vt0xdnc2TQfa9waLpcWZg5I+fDZf
-         Mln/bT9wciDydBmgGVr5oN++I2+HR3mOiemCq/gynPVR3nzNvJcigSllwvK5ApozhIHF
-         RBqb2+9uLguFtJibS4qqpKJ6rEyAj2fdY2jzixJFITBlozvFQq6rrvRXMl1IJM01q3h/
-         mCbSGOkgEMKO7WpOc7rEK5TBsDpiXPtBj+WVsZ/LBCi0ZJX/4etWmF6MjMONYjOTA4Bi
-         A/5EQqu5ZWJr6rYGgVl+satYmALg/fTe/QuUiVx/Ap86/Yf01+UXYctnz1GNQbL6hWMO
-         ZtMA==
-X-Gm-Message-State: AOAM531qmoGd8FEoLBCgvtSbrb/cIkStQDrhpUQg+1evgaankmTf2Oxr
-        uCI50DksPKkfHCFbmpehUHJan+Xzv9Y=
-X-Google-Smtp-Source: ABdhPJwisArS43Uz93uj5pf2J2ZmQmsWA5250+ed2chujObe4GEphMp/fRmHAuFOU1Luib+EXkvy1A==
-X-Received: by 2002:a63:63c1:: with SMTP id x184mr3585330pgb.401.1636622294165;
-        Thu, 11 Nov 2021 01:18:14 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u2sm2233225pfi.120.2021.11.11.01.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 01:18:13 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ipv4: drop unused assignment
-Date:   Thu, 11 Nov 2021 09:18:09 +0000
-Message-Id: <20211111091809.159707-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W4oON9tVLzbGnMHdSvx5FpIn6WtCPoheg0Qx9WxWbPQ=;
+        b=LbiWy5DuFFSKVZepcXSsONb7UzXmuwWjxDBqPA4RomOnkiCPTpAA5hIQAuVkeHZhMM
+         YOJtQgJwPeTAuRuj7DUKzuJ6LqavB2E0LljbEHxHH5OJx9hN0kAyy66WYUcM1tdvQjGs
+         suPvAtnkluuVCG5Wg2l3mtJkpQiFe5+T8yhS7BkbF8nqrGx+utnwkAy+VDYwaBkXSi8E
+         GtMYqf0vIEoSi3zK1+mSjloloN7/MqnGmPan9q7Bbu4Ide6LBW0EDR9X+gcJLTqqfKTc
+         gpHm+1LJx0tnJEJBbPLBU2IufA4gqlW/jfU9uU3IhCPVYVlQ0aSgGkgXvkLEdmBFkdVP
+         YJvg==
+X-Gm-Message-State: AOAM530iWl2LcvGvS2hUvdvyeroDlGcoP3JoSjczA/P31ZjaaYS9jCK2
+        V9Gmqdz3U76vGzsggqQ/B+lilQ==
+X-Google-Smtp-Source: ABdhPJyAgSAhmt4zPqV47R/uN2HyIfaw0kvLLeTkHktBsw5JQz044Jif9nZJrLioItZgzYZiwiQepQ==
+X-Received: by 2002:a62:1c0e:0:b0:4a0:3492:37b5 with SMTP id c14-20020a621c0e000000b004a0349237b5mr5425509pfc.33.1636622343312;
+        Thu, 11 Nov 2021 01:19:03 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id u10sm2240141pfh.49.2021.11.11.01.19.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Nov 2021 01:19:02 -0800 (PST)
+Date:   Thu, 11 Nov 2021 17:18:56 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>
+Subject: Re: [PATCH 5/6] dt-bindings: interconnect: Add Qualcomm QCM2290 NoC
+ support
+Message-ID: <20211111091855.GK7231@dragon>
+References: <20211110120716.6401-1-shawn.guo@linaro.org>
+ <20211110120716.6401-6-shawn.guo@linaro.org>
+ <1636573460.901134.1783738.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636573460.901134.1783738.nullmailer@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+On Wed, Nov 10, 2021 at 01:44:20PM -0600, Rob Herring wrote:
+> On Wed, 10 Nov 2021 20:07:15 +0800, Shawn Guo wrote:
+> > Add bindings for Qualcomm QCM2290 Network-On-Chip interconnect devices.
+> > 
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > ---
+> >  .../bindings/interconnect/qcom,qcm2290.yaml   | 117 ++++++++++++++++++
+> >  .../dt-bindings/interconnect/qcom,qcm2290.h   |  94 ++++++++++++++
+> >  2 files changed, 211 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml
+> >  create mode 100644 include/dt-bindings/interconnect/qcom,qcm2290.h
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/interconnect/qcom,qcm2290.example.dts:20:18: fatal error: dt-bindings/clock/qcom,gcc-qcm2290.h: No such file or directory
+>    20 |         #include <dt-bindings/clock/qcom,gcc-qcm2290.h>
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The assignment in the if statement will be overwritten by the
-following statement
+Thanks for the report!
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- net/ipv4/igmp.c | 1 -
- 1 file changed, 1 deletion(-)
+The header has just landed on mainline tree.  But the binding actually
+doesn't need to include it.  I will drop it for the next posting.
 
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index d2e2b3d..2ad3c7b 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2558,7 +2558,6 @@ int ip_mc_msfget(struct sock *sk, struct ip_msfilter *msf,
- 	msf->imsf_fmode = pmc->sfmode;
- 	psl = rtnl_dereference(pmc->sflist);
- 	if (!psl) {
--		len = 0;
- 		count = 0;
- 	} else {
- 		count = psl->sl_count;
--- 
-2.15.2
-
-
+Shawn
