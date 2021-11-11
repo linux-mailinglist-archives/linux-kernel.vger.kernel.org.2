@@ -2,232 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378A744D607
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1E344D60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 12:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbhKKLr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 06:47:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230358AbhKKLrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 06:47:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F35EB61261;
-        Thu, 11 Nov 2021 11:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636631106;
-        bh=cxxjYHRSK8HBzFRFlHnXvXqJzZ8JUHisCwGFasAr9xI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aoa3LmNGNKHfXBVDWotnWOstCTwhGCbyds2LH2w4PAI/AK3UUN2IFAWn1GkYTLpyN
-         5nkXxdOaRBgI03kz+5YsfConZ+EaGwZ4KPbsn8zUxImfVUdjIFCDx4B4hCqbVDGYxh
-         L3z9LtZKo4AodejFMT0qwB4hXlqlwad+HuGcg1DI7wzjmLw/cG46Y3ypAwstbDoUd1
-         Aod2AU9xLR6im+cKTx6yU1GsKdoffVQjXhYE6khEJExBSspL0LdbewjCb+EKoJ1lgI
-         Sylx2dfWOitf1Ew4HePcxrLk+4V3GRj1aNrzpAj5EMz6lf8k3j9vRw56D6oQSs+gzJ
-         Btn0B4UBVrSxA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/core: Set send and receive CQ before forwarding to the driver
-Date:   Thu, 11 Nov 2021 13:45:00 +0200
-Message-Id: <2dbb2e2cbb1efb188a500e5634be1d71956424ce.1636631035.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.33.1
+        id S233114AbhKKLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 06:49:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230358AbhKKLtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 06:49:43 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D17BC061766;
+        Thu, 11 Nov 2021 03:46:54 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id bu18so13620343lfb.0;
+        Thu, 11 Nov 2021 03:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9tM59iHxbjBy1nj5+saeMd6teAXT6q3TU+sgxUry514=;
+        b=CIUmnieQoR1hCQLeHpZ5ND64jwPZyhb9sw95MlDQ5eOLhYH6rLx8k/XO4GZaU5pC0J
+         yntni+AKB7XU+Yrs5cvLym76/9dofICQFBblyVecCUXdcxGO0PIrx2BL9b/Qnb/JTKaJ
+         PtoteIt5y1jDyAdXRMudJGTFpcc0IXrx+CjgYQIC2ETL1asJE9BPI+1wLncFb3LtQbLl
+         yOobghDPOAc0D1PSD4bCiJS13CitRo/gUVcLsRo8yTyV6cUMargeKtyVTgdVbQpYgt7O
+         KNnswWufIic9guBst16ge/hh8eLlpQ7+QCfjGpW4e748WSXxPMSjzdkTCvPD2xHqou2V
+         LAZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9tM59iHxbjBy1nj5+saeMd6teAXT6q3TU+sgxUry514=;
+        b=4rvdfdte7VoJ4OfG5v3NpA9vdrdxqsUT71EhOM5aMxQKHkbI0LgqvH0B2KxzopRuYc
+         0ZrCXuTZUjHfNvWLbG1BUVCowAtDM7azaxy/0q5OGvtcqQX8Ej7/xmwmkvvnx8Y3RUKq
+         uRlrHUNKSEIZLl+WSmHUIfIOGCPvK9k/y7wJ6xftNfOLdMD5N1q6HdaNRrQJrj57l9H3
+         a40u5Oih4KooAEVGsnM0h2B4a7uMAkFes1k7fm5XeNsCDdFcN3FWAoWrmcswvpou4M5i
+         wFRavkDPMSwtoxAlF6tunXcBgS4/DtSpW51pILNYRkwBztVhvZji6+KnJ4OCofslxuWf
+         E5tw==
+X-Gm-Message-State: AOAM530p+HAGnD5oHYPRZqMd6PM3KpUEZdzI2p37P4XNxd+uPhQkF9xt
+        SaDBfuh0kv7Ar3mXc7t0OygHw06NJ/ZfKZCjxXUQDylkRc0=
+X-Google-Smtp-Source: ABdhPJxtFSfBVWazykokLpoBlAsxF3sPUki/hnXcuN7tS/9f15DbmBvhRTrjP6XvBP35W2yEZ5p4suuvkrTDTYHvC9g=
+X-Received: by 2002:a19:740a:: with SMTP id v10mr6081459lfe.179.1636631212426;
+ Thu, 11 Nov 2021 03:46:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHifhD5V9vwJenRLcPRH5ZMeLa_JnjZKfdcFZw1CjceBtC6=Ew@mail.gmail.com>
+ <CAHp75VeyQEaABFOnEUh2pdFx9ROJvRcud-BuEbKWmaEWpL9_Uw@mail.gmail.com>
+ <CAHifhD7Qf7+dc7K-MjNguqmiCWUxOJZmQoCTRUZOR-RWMm_JPw@mail.gmail.com>
+ <CAHp75Ve9BMNy3gP=-Dajm+Lgu+E4FCqc4phLgV1_cr2qUnTX_w@mail.gmail.com>
+ <CAHifhD4n7O5eWFPOjRAmHYL52tW0K=uXXzVj7L5+enTFwFXW2A@mail.gmail.com>
+ <CAArk9MP5cKJ+VhAZUseW4LnQNRvux=MZe2eSy3rQkbHKnUsGig@mail.gmail.com>
+ <CAHp75VdRwvU5WjFP5E4gg8U+_e34A0Lwze+nz_wVHoB49jLeLg@mail.gmail.com>
+ <CAArk9MNGSxR+92n-D2pe_+r+Z0Q9FoTMPqk11sAKA=4Vckj0HQ@mail.gmail.com>
+ <YYy7QZGKeEEfI1mH@lahna> <CAHifhD5bXu2nP533RXyWDnyNt=k2rRZq5Z6A6CCik_2e6XNgGA@mail.gmail.com>
+ <YYzxWPIWFAV04LRU@lahna>
+In-Reply-To: <YYzxWPIWFAV04LRU@lahna>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Thu, 11 Nov 2021 11:46:39 +0000
+Message-ID: <CAD2FfiGnmFSTPvkJaXj+cf4yDvci-j+2QkpMqNY821fUT5C=CA@mail.gmail.com>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+        Mauro Lima <mauro.lima@eclypsium.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, 11 Nov 2021 at 10:33, Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+> OK, I see from your patch that it uses the direct mapped read-only
+> region to read this data.
 
-Preset both receive and send CQ pointers prior to call to the drivers and
-overwrite it later again till the mlx4 is going to be changed do not overwrite
-ibqp properties.
+Sorry for the delay in replying here. What I like about Hans-Gert's
+patch is that it's always going to work on x64 -- if the system
+firmware isn't available at that offset then the platform just isn't
+going to boot. It's super simple, and means we can read out the hugely
+complex UEFI blob without asking the user to turn off kernel lockdown
+and secure boot so we can run the security verification tools. At the
+moment we're in this strange situation where we ask the user to
+cripple their platform security to run the platform security tools.
 
-This change is needed for mlx5, because in case of QP creation failure,
-it will go to the path of QP destroy which relies on proper CQ pointers.
+> Do we know what information exactly fwupd needs? I mean exposing all of
+> this might not be good idea from security perspective (but I'm not an
+> expert).
 
- ==================================================================
- BUG: KASAN: use-after-free in create_qp.cold+0x164/0x16e [mlx5_ib]
- Write of size 8 at addr ffff8880064c55c0 by task a.out/246
+Ideally, fwupd needs the entire IFD partition which contains all the
+EFI File Volumes. We already parse these when the user is booting
+without secure boot using the Intel SPI controller and doing *evil*
+hacks to make the PCI device visible. The reason we want to parse the
+BIOS can be explained pretty easily; at startup we look at the TPM
+PCRs and we know very quickly and easily if the system firmware event
+has changed. If the checksum changed, then the firmware was modified
+in some way. However, saying to the user that "checksum changed" isn't
+useful at all. What we want to do is say something like "an EFI binary
+called RootKitz.efi was added" or "the AmiTcgPlatformPeiAfterMem.efi
+binary changed" and actually report what was done. At the moment we
+can do this, but not if /dev/mem cannot be used.
 
- CPU: 0 PID: 246 Comm: a.out Not tainted 5.15.0+ #291
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- Call Trace:
-  dump_stack_lvl+0x45/0x59
-  print_address_description.constprop.0+0x1f/0x140
-  ? create_qp.cold+0x164/0x16e [mlx5_ib]
-  kasan_report.cold+0x83/0xdf
-  ? create_qp.cold+0x164/0x16e [mlx5_ib]
-  create_qp.cold+0x164/0x16e [mlx5_ib]
-  ? lock_acquire+0x1a9/0x4a0
-  ? __might_fault+0x8f/0x160
-  ? lock_is_held_type+0x98/0x110
-  ? _create_user_qp.constprop.0+0x18a0/0x18a0 [mlx5_ib]
-  ? rcu_read_lock_sched_held+0x3f/0x70
-  ? __module_address.part.0+0x25/0x300
-  ? is_kernel_percpu_address+0x7d/0x100
-  ? static_obj+0x8a/0xc0
-  ? lockdep_init_map_type+0x2c3/0x780
-  ? __raw_spin_lock_init+0x3b/0x110
-  mlx5_ib_create_qp+0x358/0x28a0 [mlx5_ib]
-  ? create_qp+0xc210/0xc210 [mlx5_ib]
-  ? __module_address.part.0+0x25/0x300
-  create_qp.part.0+0x45b/0x6a0 [ib_core]
-  ib_create_qp_user+0x97/0x150 [ib_core]
-  ib_uverbs_handler_UVERBS_METHOD_QP_CREATE+0x92c/0x1250 [ib_uverbs]
-  ? _uverbs_copy_from+0x120/0x120 [ib_uverbs]
-  ? lock_downgrade+0x6d0/0x6d0
-  ? lock_acquire+0x1a9/0x4a0
-  ? __might_fault+0x8f/0x160
-  ? ib_uverbs_cq_event_handler+0x120/0x120 [ib_uverbs]
-  ? uverbs_fill_udata+0x103/0x510 [ib_uverbs]
-  ib_uverbs_cmd_verbs+0x1c38/0x3150 [ib_uverbs]
-  ? _uverbs_copy_from+0x120/0x120 [ib_uverbs]
-  ? __kernel_text_address+0xe/0x30
-  ? unwind_get_return_address+0x56/0xa0
-  ? xfer_to_guest_mode_handle_work+0xd0/0xd0
-  ? uverbs_fill_udata+0x510/0x510 [ib_uverbs]
-  ? __lock_acquire+0xbec/0x5a40
-  ? kmem_cache_free+0xb1/0x2e0
-  ? lockdep_hardirqs_on_prepare+0x3e0/0x3e0
-  ? kasan_save_stack+0x1b/0x40
-  ? lock_acquire+0x1a9/0x4a0
-  ? lock_acquire+0x1a9/0x4a0
-  ? ib_uverbs_ioctl+0x11e/0x260 [ib_uverbs]
-  ? __might_fault+0xba/0x160
-  ? lock_release+0x6c0/0x6c0
-  ? ib_uverbs_ioctl+0x19c/0x260 [ib_uverbs]
-  ib_uverbs_ioctl+0x169/0x260 [ib_uverbs]
-  ? ib_uverbs_ioctl+0x11e/0x260 [ib_uverbs]
-  ? ib_uverbs_cmd_verbs+0x3150/0x3150 [ib_uverbs]
-  ? kasan_quarantine_put+0x78/0x1b0
-  ? trace_hardirqs_on+0x32/0x120
-  ? kasan_quarantine_put+0x78/0x1b0
-  __x64_sys_ioctl+0x866/0x14d0
-  ? rcu_read_lock_sched_held+0x3f/0x70
-  ? do_sys_openat2+0x10a/0x400
-  ? vfs_fileattr_set+0x9f0/0x9f0
-  ? do_sys_openat2+0x10a/0x400
-  ? build_open_flags+0x450/0x450
-  ? vfs_write+0x470/0x8e0
-  ? __x64_sys_openat+0x11f/0x1d0
-  ? __x64_sys_open+0x1a0/0x1a0
-  ? lockdep_hardirqs_on_prepare+0x273/0x3e0
-  ? syscall_enter_from_user_mode+0x1d/0x50
-  do_syscall_64+0x3d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7fdafc4f2e0d
- Code: c8 0c 00 0f 05 eb a9 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 3b 80 0c 00 f7 d8 64 89 01 48
- RSP: 002b:00007ffc1e7ee158 EFLAGS: 00000286 ORIG_RAX: 0000000000000010
- RAX: ffffffffffffffda RBX: 0000000000402b40 RCX: 00007fdafc4f2e0d
- RDX: 0000000020000980 RSI: 00000000c0181b01 RDI: 0000000000000003
- RBP: 00007ffc1e7ee170 R08: 00007ffc1e7ee260 R09: 00007ffc1e7ee260
- R10: 00007ffc1e7ee260 R11: 0000000000000286 R12: 0000000000401050
- R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> However, we can perhaps expose some of it through intel-spi,
+> and make that work so that distros can enable it safely.
 
- Allocated by task 246:
-  kasan_save_stack+0x1b/0x40
-  __kasan_kmalloc+0xa4/0xd0
-  create_qp.part.0+0x92/0x6a0 [ib_core]
-  ib_create_qp_user+0x97/0x150 [ib_core]
-  ib_uverbs_handler_UVERBS_METHOD_QP_CREATE+0x92c/0x1250 [ib_uverbs]
-  ib_uverbs_cmd_verbs+0x1c38/0x3150 [ib_uverbs]
-  ib_uverbs_ioctl+0x169/0x260 [ib_uverbs]
-  __x64_sys_ioctl+0x866/0x14d0
-  do_syscall_64+0x3d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
+I think, if we're being honest, that Intel has no plans to make
+intel-spi available as a RO interface of any sort. There's some sort
+of hardware errata or misdesign that nobody can mention that makes the
+RO access unsafe. I think it's probably more than missing arbitration.
 
- Freed by task 246:
-  kasan_save_stack+0x1b/0x40
-  kasan_set_track+0x1c/0x30
-  kasan_set_free_info+0x20/0x30
-  __kasan_slab_free+0x10c/0x150
-  slab_free_freelist_hook+0xb4/0x1b0
-  kfree+0xe7/0x2a0
-  create_qp.part.0+0x52b/0x6a0 [ib_core]
-  ib_create_qp_user+0x97/0x150 [ib_core]
-  ib_uverbs_handler_UVERBS_METHOD_QP_CREATE+0x92c/0x1250 [ib_uverbs]
-  ib_uverbs_cmd_verbs+0x1c38/0x3150 [ib_uverbs]
-  ib_uverbs_ioctl+0x169/0x260 [ib_uverbs]
-  __x64_sys_ioctl+0x866/0x14d0
-  do_syscall_64+0x3d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
- Last potentially related work creation:
-  kasan_save_stack+0x1b/0x40
-  kasan_record_aux_stack+0xc7/0xd0
-  insert_work+0x44/0x280
-  __queue_work+0x4e3/0xd30
-  queue_work_on+0x69/0x80
-  tty_release_struct+0xa6/0xd0
-  tty_release+0x9bb/0xef0
-  __fput+0x1fe/0x8d0
-  task_work_run+0xc5/0x160
-  exit_to_user_mode_prepare+0x1d4/0x1e0
-  syscall_exit_to_user_mode+0x19/0x50
-  do_syscall_64+0x4a/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
- Second to last potentially related work creation:
-  kasan_save_stack+0x1b/0x40
-  kasan_record_aux_stack+0xc7/0xd0
-  insert_work+0x44/0x280
-  __queue_work+0x4e3/0xd30
-  queue_work_on+0x69/0x80
-  tty_release_struct+0xa6/0xd0
-  tty_release+0x9bb/0xef0
-  __fput+0x1fe/0x8d0
-  task_work_run+0xc5/0x160
-  exit_to_user_mode_prepare+0x1d4/0x1e0
-  syscall_exit_to_user_mode+0x19/0x50
-  do_syscall_64+0x4a/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
- The buggy address belongs to the object at ffff8880064c5000
-  which belongs to the cache kmalloc-2k of size 2048
- The buggy address is located 1472 bytes inside of
-  2048-byte region [ffff8880064c5000, ffff8880064c5800)
- The buggy address belongs to the page:
- page:000000006ea34cf4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x64c0
- head:000000006ea34cf4 order:3 compound_mapcount:0 compound_pincount:0
- flags: 0x4000000000010200(slab|head|zone=1)
- raw: 4000000000010200 ffffea0000571c00 0000000200000002 ffff888005042f00
- raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
- page dumped because: kasan: bad access detected
-
- Memory state around the buggy address:
-  ffff8880064c5480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8880064c5500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- >ffff8880064c5580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                            ^
-  ffff8880064c5600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8880064c5680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ==================================================================
- Disabling lock debugging due to kernel taint
-
-Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/verbs.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 692d5ff657df..c18634bec212 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1232,6 +1232,9 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	INIT_LIST_HEAD(&qp->rdma_mrs);
- 	INIT_LIST_HEAD(&qp->sig_mrs);
- 
-+	qp->send_cq = attr->send_cq;
-+	qp->recv_cq = attr->recv_cq;
-+
- 	rdma_restrack_new(&qp->res, RDMA_RESTRACK_QP);
- 	WARN_ONCE(!udata && !caller, "Missing kernel QP owner");
- 	rdma_restrack_set_name(&qp->res, udata ? NULL : caller);
--- 
-2.33.1
-
+Richard
