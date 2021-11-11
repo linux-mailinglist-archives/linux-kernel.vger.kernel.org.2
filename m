@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A7A44D784
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F189744D788
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 14:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbhKKNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 08:50:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232699AbhKKNuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:50:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB9460F4A;
-        Thu, 11 Nov 2021 13:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636638441;
-        bh=9TFTxcUEdEwhp48u9fNkDL4nwF4RxAlnd8sjIj3YoQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XXnI40erBUzui9bY1inM9UXZaj7r75cqdyYeqmZfqzBxLwvou3n+G5QQ5oZZu5Vzd
-         4CuKdyCkEifiATxnu+Ibg2qaYnvK8KNZnsvuA6tapAQRozlRKhx1IqIVG3G0v5nLb4
-         MnyUgYpskTg+mwNRN6ENI2vDagxPkK5nw0Y82c0g5phFIcsKgUd6fSsg+266SfeHyE
-         Daoqmm9aDauY88oN2sBogs/ZRCymaek9QOQBvrYVfuWeQEBXR8nmztWQwv13pDxtdD
-         9/8zU45xWKxfS/Odm07owHwhWrGFxmn7VCF/NApS9zyPtXdrV6dQiyl69E8GaQfoaq
-         Z4QtCy92Rmdww==
-Date:   Thu, 11 Nov 2021 13:47:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lukas Wunner <lukas@wunner.de>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] spi: fix use-after-free of the add_lock mutex
-Message-ID: <YY0e5GFrdgNde3m4@sirena.org.uk>
-References: <20211111083713.3335171-1-michael@walle.cc>
- <YY0Oe9NjhfUvq0J+@sirena.org.uk>
- <20cde88dd11fde7f6847506ffcaa67ed@walle.cc>
+        id S233554AbhKKNuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 08:50:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56726 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233510AbhKKNup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 08:50:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636638476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xahSpUdRnqSm12epmOAhtr6bKCO9iTR18R9pvrUHXh8=;
+        b=Mxcm5Nch1Zg0kZfuDnhtGfG6oZvAbRUtOJOvaVZXYyVIJ9MCkj1P+N8peEio2xJH4Hw9eC
+        +3nQL/u6k0z1GeaMa9hBMXjPN7Dv7dKGQbr8dUwunTVs4sERtv8hcZr7FshshH7JAiPRsQ
+        jVDUoQLLcF9IrCMegmYw/PNZhBX6GLE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-h4VG2NzdPL6IpNGT5rgpxw-1; Thu, 11 Nov 2021 08:47:52 -0500
+X-MC-Unique: h4VG2NzdPL6IpNGT5rgpxw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CEF3871810;
+        Thu, 11 Nov 2021 13:47:51 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.40.192.82])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D9AA556A97;
+        Thu, 11 Nov 2021 13:47:34 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS
+Date:   Thu, 11 Nov 2021 14:47:33 +0100
+Message-Id: <20211111134733.86601-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Ser8Hc8y7Eyt67W5"
-Content-Disposition: inline
-In-Reply-To: <20cde88dd11fde7f6847506ffcaa67ed@walle.cc>
-X-Cookie: Teutonic:
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KVM_CAP_NR_VCPUS is used to get the "recommended" maximum number of
+VCPUs and arm64/mips/riscv report num_online_cpus(). Powerpc reports
+either num_online_cpus() or num_present_cpus(), s390 has multiple
+constants depending on hardware features. On x86, KVM reports an
+arbitrary value of '710' which is supposed to be the maximum tested
+value but it's possible to test all KVM_MAX_VCPUS even when there are
+less physical CPUs available.
 
---Ser8Hc8y7Eyt67W5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Drop the arbitrary '710' value and return num_online_cpus() on x86 as
+well. The recommendation will match other architectures and will mean
+'no CPU overcommit'.
 
-On Thu, Nov 11, 2021 at 01:46:01PM +0100, Michael Walle wrote:
-> Am 2021-11-11 13:37, schrieb Mark Brown:
+For reference, QEMU only queries KVM_CAP_NR_VCPUS to print a warning
+when the requested vCPU number exceeds it. The static limit of '710'
+is quite weird as smaller systems with just a few physical CPUs should
+certainly "recommend" less.
 
-> > If you are sending a new version of something please flag that in the
-> > commit message, this helps both people and automated systems identify
-> > that this is a new version of the same thing.
+Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/include/asm/kvm_host.h | 1 -
+ arch/x86/kvm/x86.c              | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-> Are RFC patches eligible to be picked up? I wasn't sure if I had to
-> resend it at all. But since there was a mistake in the commit message
-> anyway, I went ahead and the the first "real" version. How would
-> you flag that? Isn't changing the subject from "[PATCH RFC]" (ok it
-> was "RFC PATCH", my bad) to "[PATCH]" enough?
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88fce6ab4bbd..0232a00598f2 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -38,7 +38,6 @@
+ #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+ 
+ #define KVM_MAX_VCPUS 1024
+-#define KVM_SOFT_MAX_VCPUS 710
+ 
+ /*
+  * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ac83d873d65b..91ef1b872b90 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4137,7 +4137,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		r = !static_call(kvm_x86_cpu_has_accelerated_tpr)();
+ 		break;
+ 	case KVM_CAP_NR_VCPUS:
+-		r = KVM_SOFT_MAX_VCPUS;
++		r = num_online_cpus();
+ 		break;
+ 	case KVM_CAP_MAX_VCPUS:
+ 		r = KVM_MAX_VCPUS;
+-- 
+2.33.1
 
-No, both people and machines are going to get confused.
-
---Ser8Hc8y7Eyt67W5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGNHuQACgkQJNaLcl1U
-h9C2Ugf+PquYMxxYsWbB/sZkRXTWaLfsSZc9dPdO82Cc4RXf0ckpdjZA+uHhbles
-A1xhgfsUNvv9UekloIvZzc61NkcgM8r4GWFFI4skv7fvWxowYtn6iF/g2APvzmvw
-18v3TU+IIa4gKXHrYT96Iooo0gi6LmLbHQCI60ggDmMouurmGGLPYJovxJvQmuSs
-L+tx9obJQrxF3sGG8auD74u165362wU93weIHuN7UCUF0rGWosvopt4C1ekkT1UA
-cmyV/iSai8oXA2HUERoD21cZEceiWAUgK64v5dOGIRWAU4ne2p6LkTIccdFd0tje
-qpsy/E+oG8IEsQ2+ta2aE6pcVbyvHQ==
-=mcCk
------END PGP SIGNATURE-----
-
---Ser8Hc8y7Eyt67W5--
