@@ -2,295 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E73044D52A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162A844D52D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 11:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhKKKmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 05:42:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230256AbhKKKmk (ORCPT
+        id S232960AbhKKKnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 05:43:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232955AbhKKKnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:42:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636627191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3GsoHxG6tbN9F1JDRhurToiafQZa+kQvGVSVSX20JIs=;
-        b=c80azBnlmrqZbSESRAbkz+iE26a8jd8rTR82JlScxnb7wWxdV9Lgu2huMgvvPVU0UO7FY/
-        g6dsVNcUQNfnS1iC/9sjp4bN/c5jfRBoXuFyrB2FeTIc4gfvimIED0HgtP3bA9yBICHune
-        c9dqUteeLTxsk9xx88ipf2LASNRZ+pI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-1ab60q0qObOAxbdQgfmoiw-1; Thu, 11 Nov 2021 05:39:50 -0500
-X-MC-Unique: 1ab60q0qObOAxbdQgfmoiw-1
-Received: by mail-wm1-f72.google.com with SMTP id b145-20020a1c8097000000b003335872db8dso1909888wmd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:39:49 -0800 (PST)
+        Thu, 11 Nov 2021 05:43:07 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B85C06127A
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:40:17 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id z34so13096502lfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 02:40:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9tIx/igNKPYVIrwndCggjgpScM833Y4RL5Ah+VgOguU=;
+        b=DimTsruqEQMoF6afspPb/WQy4ew0Vd3WE4uUd9Bcq6kQ2kby/N9oSKkMx/WMc8aGMF
+         lwfmDXtMz9QmQrtpJWlpZS3P/k1+l+TZBhAQYqLvKU5kDenjkHerHRNJ+QBwFVchbM1k
+         k+dnVSZzel1b8uFhnDZaSpoUvsn/fhz+g+uPEiOAXXlyO+wID55gcsp1B5dR4IX5xpFD
+         +d3d2wGMf7NF2U6Sno4QqHQ0aYuF9ihzOhbwe9R2bjIxPn7ETuRf19qjThfxDYUQuBFW
+         f/wiamhlhi0xgGf2ncaD5yvplDL/3Z7wmkTVSs0ea8ByocaxleBny0xsujWZTfWtyIks
+         csEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3GsoHxG6tbN9F1JDRhurToiafQZa+kQvGVSVSX20JIs=;
-        b=kzr+1fvIGeC5iYF8se0nCvij6nsgldqvUffKasGYt0jg7L7xci5MLPsLaiXB0tdsUv
-         GxvsF1KRzZskfaXHBihLrvcAAioWG8Eiu5hlOq0rhf7WJcNOFX2xbqo/Bu8Acgw7Ec8p
-         GKLrndiH3kZGxP3B3/ZWYyaOrKT5eyNteQly+IMl0uxH5HvCnncrUXYEy6I3Pg1PNC5R
-         DD7uufJ4YTjyY1+5UKn5+H54gilE3/+bH6mIkAe7pYVM4iuSwk4+U5EcPflCjiiOz4wu
-         oI9XTedM8W55rUrik3O+mD6Rvk/slARc7RUUMUlvutT+UQv51+2umvZoaHgJorBUEvPu
-         HwYQ==
-X-Gm-Message-State: AOAM531oaF8ujXBxohsvDQuAE9Pj/ScrUuguJdjzWb3puxqcQC3d296H
-        vjD7bYaS9T5d9bPR3Qn+VxIdLMrhfPf5KOeyl9IQpfpumxU1W97ycMTIgf0ShXeOaxy27v7SMk0
-        je3rhSs1jJ8y6HpyMUTEWnW0X
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr6926075wmq.77.1636627188888;
-        Thu, 11 Nov 2021 02:39:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwTYMHTkSN+BIGJqDL7NN5zIg2PBR9XWifP9uLbTro4v0wXHfWDmPWNeawdlFQiQ6RIVcQ3ZQ==
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr6926042wmq.77.1636627188579;
-        Thu, 11 Nov 2021 02:39:48 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id u14sm2539907wrt.49.2021.11.11.02.39.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 02:39:48 -0800 (PST)
-Subject: Re: [PATCH v4 15/15] KVM: arm64: Add async PF document
-To:     Gavin Shan <gshan@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     kvm@vger.kernel.org, maz@kernel.org, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, Jonathan.Cameron@huawei.com,
-        pbonzini@redhat.com, vkuznets@redhat.com, will@kernel.org
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-16-gshan@redhat.com>
-From:   Eric Auger <eauger@redhat.com>
-Message-ID: <8505a820-9a67-fc8e-46e2-7f261a4501a3@redhat.com>
-Date:   Thu, 11 Nov 2021 11:39:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9tIx/igNKPYVIrwndCggjgpScM833Y4RL5Ah+VgOguU=;
+        b=ztr3KhPwD7d4K1navpM7kC/b21qMZHj+q5PWB42q4RsbpRNRKdwJLS1sHMtrGKV4Qn
+         D0WLBDj0tO3P3JAXOu2VqFZz1cfz+E0runlBEfD5UD9iIx8WPJy0kofAtO2GzpS0Hz7M
+         B2Lb32w9D5oByfi3JE2WEo6f0oNKdzNFNew93qAlICqcNy7tNIE8kxTT7geSeAMHgEC4
+         rlKzaWzUpzJWeezRUNl/EKBUVMtMe8erQcVTZR7IAYmoomWRWJiseGTuO//BrlI5+2nW
+         BEi7cyYQnfQrSSBeFUbKcFN7QOlx405KzlHjMASRp/Qv93Gnx9vF6woUZN3PXjAEJ3EU
+         V5Ow==
+X-Gm-Message-State: AOAM532tBc5kXWMXVUfIkbIkMxS0uqWEJ5xa5V25KMzEHDfVXsOYqAtF
+        G/Fj+hLqvdVetFNo5AXjYPjmM3jjuiWCV+InnefqDw==
+X-Google-Smtp-Source: ABdhPJxxMnc/++Ejn4mwaEgWk7yDts/ov3C1q1UFglFDJR1j83ZeQbo+BIoKTPuhhKDDvw47Oef3D/aDqV3Dz4XMJgU=
+X-Received: by 2002:a05:6512:2305:: with SMTP id o5mr5308056lfu.362.1636627215652;
+ Thu, 11 Nov 2021 02:40:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210815005947.83699-16-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211027181350.91630-1-nikita@trvn.ru> <CACRpkda_EM9mXuJdrZcpFaJCKF1UDgXkfdxkaniyXFHFd_7+Pw@mail.gmail.com>
+ <ec9185459dbc0e95dc2f2cdf27baa0f6@trvn.ru>
+In-Reply-To: <ec9185459dbc0e95dc2f2cdf27baa0f6@trvn.ru>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 11 Nov 2021 11:40:04 +0100
+Message-ID: <CACRpkdbp6udtBsDHkLmCivRcxCCCbMcGu5z41HVgMpLkPCkLGA@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Add touch-keys support to the Zinitix touch driver
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        Michael.Srba@seznam.cz, broonie@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+On Tue, Nov 9, 2021 at 4:23 PM Nikita Travkin <nikita@trvn.ru> wrote:
+> [Me]
+> > Have you notices some behaviour like surplus touch events
+> > (like many press/release events fall through to the UI)
+> > when using this driver? I think it might need some z fuzzing
+> > but I am not sure.
+> >
+>
+> On my device (8 inch tablet with BT532) I saw no problems with touch
+> so far. However another person with a different tablet (10 inch with
+> ZT7554)
+> indeed says that they notice "multiplied" touches that make typing hard
+> so maybe that depends on controller model/firmware...
 
-On 8/15/21 2:59 AM, Gavin Shan wrote:
-> This adds document to explain the interface for asynchronous page
-> fault and how it works in general.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  Documentation/virt/kvm/arm/apf.rst   | 143 +++++++++++++++++++++++++++
->  Documentation/virt/kvm/arm/index.rst |   1 +
->  2 files changed, 144 insertions(+)
->  create mode 100644 Documentation/virt/kvm/arm/apf.rst
-> 
-> diff --git a/Documentation/virt/kvm/arm/apf.rst b/Documentation/virt/kvm/arm/apf.rst
-> new file mode 100644
-> index 000000000000..4f5c01b6699f
-> --- /dev/null
-> +++ b/Documentation/virt/kvm/arm/apf.rst
-> @@ -0,0 +1,143 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Asynchronous Page Fault Support for arm64
-> +=========================================
-> +
-> +There are two stages of page faults when KVM module is enabled as accelerator
-> +to the guest. The guest is responsible for handling the stage-1 page faults,
-> +while the host handles the stage-2 page faults. During the period of handling
-> +the stage-2 page faults, the guest is suspended until the requested page is
-> +ready. It could take several milliseconds, even hundreds of milliseconds in
- s/It could take several milliseconds, even hundreds of milliseconds/It
-could take up to hundreds of milliseconds
-> +extreme situations because I/O might be required to move the requested page
-> +from disk to DRAM. The guest does not do any work when it is suspended. The
-> +feature (Asynchronous Page Fault) is introduced to take advantage of the
-s/The feature (Asynchronous Page Fault)/ The Asynchronous Page Fault
-feature allows to improve the overall performance by allowing the guest
-to reschedule ... ?
-> +suspending period and to improve the overall performance.
-> +
-> +There are two paths in order to fulfil the asynchronous page fault, called
-> +as control path and data path.
-The asynchronous page fault is implemented upon a control path and a
-data path?
- The control path allows the VMM or guest to
-> +configure the functionality, while the notifications are delivered in data
-> +path. The notifications are classified into page-not-present and page-ready
-> +notifications.
-> +
-> +Data Path
-> +---------
-> +
-> +There are two types of notifications delivered from host to guest in the
-> +data path: page-not-present and page-ready notification. They are delivered
-> +through SDEI event and (PPI) interrupt separately.
-s/separately/respectively
- Besides, there is a shared
-> +buffer between host and guest to indicate the reason and sequential token,
-s/to indicate/that indicates
-Can you clarify 'reason'?
-Also a sequential token is used ...
-> +which is used to identify the asynchronous page fault. The reason and token
-> +resident in the shared buffer is written by host, read and cleared by guest.
-s/is/are
-> +An asynchronous page fault is delivered and completed as below.
-> +
-> +(1) When an asynchronous page fault starts, a (workqueue) worker is created
-> +    and queued to the vCPU's pending queue. The worker makes the requested
-> +    page ready and resident to DRAM in the background. The shared buffer is
-> +    updated with reason and sequential token. After that, SDEI event is sent
-> +    to guest as page-not-present notification.
-This gives the impression the SDEI event is sent after the worker
-completes the job. I think you should rephrase.
-> +
-> +(2) When the SDEI event is received on guest, the current process is tagged
-> +    with TIF_ASYNC_PF and associated with a wait queue. The process is ready
-> +    to keep rescheduling itself on switching from kernel to user mode. After
-above sentence sounds a bit cryptic to me: ~ waits for being rescheduled
-later?
-> +    that, a reschedule IPI is sent to current CPU and the received SDEI event
-> +    is acknowledged. Note that the IPI is delivered when the acknowledgment
-> +    on the SDEI event is received on host.
-> +
-> +(3) On the host, the worker is dequeued from the vCPU's pending queue and
-> +    enqueued to its completion queue when the requested page becomes ready.
-> +    In the mean while, KVM_REQ_ASYNC_PF request is sent the vCPU if the
-in the meanwhile here and below
-> +    worker is the first element enqueued to the completion queue.
-I think you should remind what is the intent of this KVM_REQ_ASYNC_PF
-request, ie. notify that the page is ready.
-> +
-> +(4) With pending KVM_REQ_ASYNC_PF request, the first worker in the completion
-> +    queue is dequeued and destroyed. In the mean while, a (PPI) interrupt is
+It may even be depending on specimen. I saw that the vendor driver
+does contain some debouncing code.
 
-> +    sent to guest with updated reason and token in the shared buffer.
-> +
-> +(5) When the (PPI) interrupt is received on guest, the affected process is
-> +    located using the token and waken up after its TIF_ASYNC_PF tag is cleared.
-> +    After that, the interrupt is acknowledged through SMCCC interface. The
-> +    workers in the completion queue is dequeued and destroyed if any workers
-the worker
-Isn't it destroyed even if no other worker exist?
-> +    exist, and another (PPI) interrupt is sent to the guest.
+> And speaking of that ZT7554: Seems like it's works with the driver
+> and I'd like to add the compatible for it in v2 but I'd also have to add
+> it to the bindings. Looking at how you add all other similar names for BT*
+> there does it make sense to add ZT* as well?
 
-I think you should briefly remind the motivation of SDEI and PPI
-mechanism for both synchros. Maybe by doing an analogy with x86
-implementation?
-> +
-> +Control Path
-> +------------
-> +
-> +The configurations are passed through SMCCC or ioctl interface. The SDEI
-> +event and (PPI) interrupt are owned by VMM, so the SDEI event and interrupt
-> +numbers are configured through ioctl command on per-vCPU basis.
-The "owned" terminology looks weird here. Do you mean the SDEI event
-number and the PPI ID are defined by the VMM userspace?
+Yeah probably, if they are electrically very similar.
 
- Besides,
-> +the functionality might be enabled and configured through ioctl interface
-> +by VMM during migration:
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_GET_VERSION
-> +
-> +     Returns the current version of the feature, supported by the host. It is
-> +     made up of major, minor and revision fields. Each field is one byte in
-> +     length.
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_GET_SDEI:
-> +
-> +     Retrieve the SDEI event number, used for page-not-present notification,
-> +     so that it can be configured on destination VM in the scenario of
-> +     migration.
-> +
-> +   * KVM_ARM_ASYNC_PF_GET_IRQ:
-> +
-> +     Retrieve the IRQ (PPI) number, used for page-ready notification, so that
-> +     it can be configured on destination VM in the scenario of migration.
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_GET_CONTROL
-> +
-> +     Retrieve the address of control block, so that it can be configured on
-> +     destination VM in the scenario of migration.
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_SET_SDEI:
-> +
-> +     Used by VMM to configure number of SDEI event, which is used to deliver
-> +     page-not-present notification by host. This is used when VM is started
-> +     or migrated.
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_SET_IRQ
-> +
-> +     Used by VMM to configure number of (PPI) interrupt, which is used to
-> +     deliver page-ready notification by host. This is used when VM is started
-> +     or migrated.
-> +
-> +   * KVM_ARM_ASYNC_PF_CMD_SET_CONTROL
-> +
-> +     Set the control block on the destination VM in the scenario of migration.
-What is the size of this control block?
-> +
-> +The other configurations are passed through SMCCC interface. The host exports
-> +the capability through KVM vendor specific service, which is identified by
-> +ARM_SMCCC_KVM_FUNC_ASYNC_PF_FUNC_ID. There are several functions defined for
-> +this:
-> +
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION
-> +
-> +     Returns the current version of the feature, supported by the host. It is
-> +     made up of major, minor and revision fields. Each field is one byte in
-> +     length.
-> +
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS
-> +
-> +     Returns the size of the hashed GFN table. It is used by guest to set up
-by the guest
-> +     the capacity of waiting process table.
-> +
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ
-> +
-> +     Used by the guest to retrieve the SDEI event and (PPI) interrupt number
-> +     that are configured by VMM.
-How does the guest recognize which SDEI event num it shall register.
-Same question for PPI? What if we were to expose the guest with several
-SDEIs?
-> +
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE
-> +
-> +     Used by the guest to enable or disable the feature on the specific vCPU.
-> +     The argument is made up of shared buffer and flags. The shared buffer
-> +     is written by host to indicate the reason about the delivered asynchronous
-> +     page fault and token (sequence number) to identify that. There are two
-> +     flags are supported: KVM_ASYNC_PF_ENABLED is used to enable or disable
-> +     the feature. KVM_ASYNC_PF_SEND_ALWAYS allows to deliver page-not-present
-> +     notification regardless of the guest's state. Otherwise, the notification
-> +     is delivered only when the guest is in user mode.
-> +
-> +   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK
+> Maybe you have some hints where
+> to look for a list of the models?
 
-How does it compare to x86? I mean there are a huger number of IOCTLs
-and SMCCC calls to achieve the functionaly. Was the x86 implementation
-as invasive as this implementation?
+I usually google ... try to find things like powerpoints with roadmaps
+from the vendor and things like that. Best thing is if they answer
+to mail but I don't know if Zinitix are even around anymore.
 
-Thanks
+> I've noticed a yet another quirky issue with the touch controller:
+> At least on my device, for some reason enabling touchkeys changes the
+> way the
+> controller reports the finger touch events which breaks multi-touch...
+> Assuming that *not* enabling the touchkeys leads to calibration being
+> wrong
+> (controller assigns the touchkey sense lines to the touch area in that
+> case)
+> I now have to resolve this quirk as well...
 
-Eric
-> +
-> +     Used by the guest to acknowledge the completion of page-ready notification.
-> diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-> index 78a9b670aafe..f43b5fe25f61 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -7,6 +7,7 @@ ARM
->  .. toctree::
->     :maxdepth: 2
->  
-> +   apf
->     hyp-abi
->     psci
->     pvtime
-> 
+Hm yeah I guess refer to the (messy) vendor driver for hints.
 
+Yours,
+Linus Walleij
