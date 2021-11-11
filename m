@@ -2,612 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA8744DBC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320B244DBCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhKKSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 13:49:29 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:58867 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbhKKSt2 (ORCPT
+        id S233876AbhKKSxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 13:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233575AbhKKSxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:49:28 -0500
-Received: from localhost.localdomain (83.6.165.118.neoplus.adsl.tpnet.pl [83.6.165.118])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 9DD4A3F402;
-        Thu, 11 Nov 2021 19:46:35 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: qcom: Add support for SONY Xperia XZ2 / XZ2C / XZ3 (Tama platform)
-Date:   Thu, 11 Nov 2021 19:46:28 +0100
-Message-Id: <20211111184630.605035-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.33.0
+        Thu, 11 Nov 2021 13:53:18 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E28EC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:50:29 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id y8so999015plg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 10:50:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rRVHCuHiuxKYNIqQo9pBKH0e3aaYrZJR7xHo+IO8Ccc=;
+        b=NhRmv31zjnUd8uznaaqbrITyl6VRhNwqjKbWffpfyujtKjgaad4E9gvn1nbyQxONpS
+         BGk78Xi+4ehMUTzl1fBblW1C5FTsqeAChXKxupkoZBo8m5WNDnM5DiRvO3e1S4WE1lYC
+         VyDw0VMl5YCkv77GcJZV8AJUtuXfpVPdpGE6yN4RfgbK/ciD1UK7D4VoYD+RZfboIPxv
+         x7x9Ihu5Awo8B6LnJ9BVW5pvhTbvpkgMzkQ1mUhQwt7SLmBGL71WGJdJRE3GD6G70E5N
+         8N3VmoQbdERYW+XhPfoaHackMWF2Q+mC8JTJGtIdwvajLXloTF4d/gg2Voeu5IrZeaQU
+         r8/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rRVHCuHiuxKYNIqQo9pBKH0e3aaYrZJR7xHo+IO8Ccc=;
+        b=eT7L7odB+l6HDv1X1uV/YXNdYOHgikTvXSFA/b/WJdSIRBLDZ9LAOkIszdQCs7YlKl
+         8z/ANJ2LC496yf0tkRFNYSitqTjxBXjGtsUZX4nTR/hTtJVxX6QZ5mRe2Otsswuu56UT
+         BCw+FQr2veTWyM53GAFz9fBJi3oHVbM6AU/0aIT+B7O60k6osFpEkMab8RJ1v+TQyzC7
+         xKkQo6R4Ivul3TyMcypyZJytmlEQUSWc5hfbtTYq0Wwf9S8l3zUogt4Sdw1rNR05rirY
+         TbguTDPAV1vDZJafVa6Gjev7rS8V0On96pOH6C72976cvc/vD/4Dww8mNrsJWkUrCxuC
+         E/FA==
+X-Gm-Message-State: AOAM533rxzgxomrNsEmWjudAv9Vgb3k+DtUUuuxOTyk9TwAFU2YcZc74
+        Cf6Cfwz3W6dZ59kHeRWRcsmuMg==
+X-Google-Smtp-Source: ABdhPJzZZiWTYiCSTtcvOq5/hfnPl//w7ttNemIYs8P8665MMNy+9wWvKRZPpzULktGfQPT2Wu1q/g==
+X-Received: by 2002:a17:90b:1c81:: with SMTP id oo1mr10868087pjb.171.1636656628339;
+        Thu, 11 Nov 2021 10:50:28 -0800 (PST)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id u19sm3604682pfl.185.2021.11.11.10.50.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 10:50:27 -0800 (PST)
+Date:   Thu, 11 Nov 2021 18:50:24 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC 04/19] KVM: x86/mmu: Yield while processing disconnected_sps
+Message-ID: <YY1l8EMsQyTDAAkT@google.com>
+References: <20211110223010.1392399-1-bgardon@google.com>
+ <20211110223010.1392399-5-bgardon@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110223010.1392399-5-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for SONY Xperia XZ2, XZ2 Compact and XZ3 smartphones, all based on
-the Qualcomm SDM845 chipset. There also exists a fourth Tama device, the XZ2
-Premium (Aurora) with a 4K display, but it's relatively rare.
+On Wed, Nov 10, 2021 at 02:29:55PM -0800, Ben Gardon wrote:
+> When preparing to free disconnected SPs, the list can accumulate many
+> entries; enough that it is likely necessary to yeild while queuing RCU
+> callbacks to free the SPs.
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index a448f0f2d993..c2a9f7acf8ef 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -513,7 +513,8 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>   * being removed from the paging structure and this function being called.
+>   */
+>  static void handle_disconnected_sps(struct kvm *kvm,
+> -				    struct list_head *disconnected_sps)
+> +				    struct list_head *disconnected_sps,
+> +				    bool can_yield, bool shared)
+>  {
+>  	struct kvm_mmu_page *sp;
+>  	struct kvm_mmu_page *next;
+> @@ -521,6 +522,16 @@ static void handle_disconnected_sps(struct kvm *kvm,
+>  	list_for_each_entry_safe(sp, next, disconnected_sps, link) {
+>  		list_del(&sp->link);
+>  		call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
+> +
+> +		if (can_yield &&
+> +		    (need_resched() || rwlock_needbreak(&kvm->mmu_lock))) {
+> +			rcu_read_unlock();
+> +			if (shared)
+> +				cond_resched_rwlock_read(&kvm->mmu_lock);
+> +			else
+> +				cond_resched_rwlock_write(&kvm->mmu_lock);
+> +			rcu_read_lock();
+> +		}
 
-The devices are affected by a scary UFS behaviour where sending a certain UFS
-command (which is worked around on downstream) renders the device unbootable,
-by effectively erasing the bootloader. Therefore UFS AND UFSPHY are strictly
-disabled for now.
+What about something like this to cut down on the duplicate code?
 
-Downstream workaround:
-https://github.com/kholk/kernel/commit/2e7a9ee1c91a016baa0b826a7752ec45663a0561
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index c2a9f7acf8ef..2fd010f2421e 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -508,6 +508,26 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+                                      new_spte, level);
+ }
 
-This platform's bootloader is not very nice either. To boot mainline you need
-to flash a bogus DTBO (fastboot erasing may cut it, but it takes an inhumane
-amount of time) - one that's just 4 bytes (all zeroes) seems to work just fine.
++static inline bool tdp_mmu_need_resched(struct kvm *kvm)
++{
++       return need_resched() || rwlock_needbreak(&kvm->mmu_lock);
++}
++
++static void tdp_mmu_cond_resched(struct kvm *kvm, bool shared, bool flush)
++{
++       rcu_read_unlock()
++
++       if (flush)
++               kvm_flush_remote_tlbs(kvm);
++
++       if (shared)
++               cond_resched_rwlock_read(&kvm->mmu_lock);
++       else
++               cond_resched_rwlock_write(&kvm->mmu_lock);
++
++       rcu_read_lock();
++}
++
+ /*
+  * The TLBs must be flushed between the pages linked from disconnected_sps
+  * being removed from the paging structure and this function being called.
+@@ -523,15 +543,8 @@ static void handle_disconnected_sps(struct kvm *kvm,
+                list_del(&sp->link);
+                call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
 
-Of course, one can also provide a "normal" DTBO (device-specific DT overlayed
-on top of the SoC DT), but that's not yet supported by the mainline kernel
-build system.
+-               if (can_yield &&
+-                   (need_resched() || rwlock_needbreak(&kvm->mmu_lock))) {
+-                       rcu_read_unlock();
+-                       if (shared)
+-                               cond_resched_rwlock_read(&kvm->mmu_lock);
+-                       else
+-                               cond_resched_rwlock_write(&kvm->mmu_lock);
+-                       rcu_read_lock();
+-               }
++               if (can_yield && tdp_mmu_need_resched(kvm))
++                       tdp_mmu_cond_resched(kvm, shared, false);
+        }
+ }
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org> 
-Reviewed-by: Martin Botka <martin.botka@somainline.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
-Changes since v1:
-- Grab R-bs
-- Add a compatible to gpio-keys and remove the currently-not-working CAM_FOCUS
- arch/arm64/boot/dts/qcom/Makefile             |   3 +
- .../qcom/sdm845-sony-xperia-tama-akari.dts    |  13 +
- .../qcom/sdm845-sony-xperia-tama-akatsuki.dts |  29 ++
- .../qcom/sdm845-sony-xperia-tama-apollo.dts   |  13 +
- .../dts/qcom/sdm845-sony-xperia-tama.dtsi     | 438 ++++++++++++++++++
- 5 files changed, 496 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akari.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akatsuki.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-apollo.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
+@@ -724,18 +737,8 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+        if (iter->next_last_level_gfn == iter->yielded_gfn)
+                return false;
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 6b816eb33309..bc38b79f4b5b 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -91,6 +91,9 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-db845c.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-mtp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-enchilada.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-oneplus-fajita.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-sony-xperia-tama-akari.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-sony-xperia-tama-akatsuki.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-sony-xperia-tama-apollo.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akari.dts b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akari.dts
-new file mode 100644
-index 000000000000..34f84f1f1eb4
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akari.dts
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sdm845-sony-xperia-tama.dtsi"
-+
-+/ {
-+	model = "Sony Xperia XZ2";
-+	compatible = "sony,akari-row", "qcom,sdm845";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akatsuki.dts b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akatsuki.dts
-new file mode 100644
-index 000000000000..8a0d94e7f598
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-akatsuki.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sdm845-sony-xperia-tama.dtsi"
-+
-+/ {
-+	model = "Sony Xperia XZ3";
-+	compatible = "sony,akatsuki-row", "qcom,sdm845";
-+};
-+
-+/* For the future: WLED + LAB/IBB/OLEDB are not used on Akatsuki */
-+&vreg_l14a_1p8 {
-+	regulator-min-microvolt = <1840000>;
-+	regulator-max-microvolt = <1840000>;
-+};
-+
-+&vreg_l22a_2p8 {
-+	regulator-min-microvolt = <2700000>;
-+	regulator-max-microvolt = <2700000>;
-+};
-+
-+&vreg_l28a_2p8 {
-+	regulator-min-microvolt = <3000000>;
-+	regulator-max-microvolt = <3000000>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-apollo.dts b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-apollo.dts
-new file mode 100644
-index 000000000000..c9e62c72f60e
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama-apollo.dts
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sdm845-sony-xperia-tama.dtsi"
-+
-+/ {
-+	model = "Sony Xperia XZ2 Compact";
-+	compatible = "sony,apollo-row", "qcom,sdm845";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
-new file mode 100644
-index 000000000000..281fe6dea62a
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sdm845-sony-xperia-tama.dtsi
-@@ -0,0 +1,438 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-+ */
-+
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "sdm845.dtsi"
-+#include "pm8005.dtsi"
-+#include "pm8998.dtsi"
-+#include "pmi8998.dtsi"
-+
-+/ {
-+	qcom,msm-id = <321 0x20001>; /* SDM845 v2.1 */
-+	qcom,board-id = <8 0>;
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		/* Neither Camera Focus, nor Camera Shutter seem to work... */
-+
-+		vol-down {
-+			label = "volume_down";
-+			gpios = <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEDOWN>;
-+			debounce-interval = <15>;
-+			gpio-key,wakeup;
-+		};
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vreg_s4a_1p8: pm8998-smps4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s4a_1p8";
-+
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	reserved-memory {
-+		/* SONY was cool and didn't diverge from MTP this time, yay! */
-+		cont_splash_mem: memory@9d400000 {
-+			reg = <0x0 0x9d400000 0x0 0x2400000>;
-+			no-map;
-+		};
-+
-+		ramoops@ffc00000 {
-+			compatible = "ramoops";
-+			reg = <0x0 0xffc00000 0x0 0x100000>;
-+			record-size = <0x10000>;
-+			console-size = <0x60000>;
-+			ftrace-size = <0x10000>;
-+			pmsg-size = <0x20000>;
-+			ecc-size = <16>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&apps_rsc {
-+	pm8998-rpmh-regulators {
-+		compatible = "qcom,pm8998-rpmh-regulators";
-+		qcom,pmic-id = "a";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-s9-supply = <&vph_pwr>;
-+		vdd-s10-supply = <&vph_pwr>;
-+		vdd-s11-supply = <&vph_pwr>;
-+		vdd-s12-supply = <&vph_pwr>;
-+		vdd-s13-supply = <&vph_pwr>;
-+		vdd-l1-l27-supply = <&vreg_s7a_0p9>;
-+		vdd-l2-l8-l17-supply = <&vreg_s3a_1p3>;
-+		vdd-l3-l11-supply = <&vreg_s7a_0p9>;
-+		vdd-l4-l5-supply = <&vreg_s7a_0p9>;
-+		vdd-l6-supply = <&vph_pwr>;
-+		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_1p9>;
-+		vdd-l9-supply = <&vreg_s5a_1p9>;
-+		vdd-l10-l23-l25-supply = <&src_vreg_bob>;
-+		vdd-l13-l19-l21-supply = <&src_vreg_bob>;
-+		vdd-l16-l28-supply = <&src_vreg_bob>;
-+		vdd-l18-l22-supply = <&src_vreg_bob>;
-+		vdd-l20-l24-supply = <&src_vreg_bob>;
-+		vdd-l26-supply = <&vreg_s3a_1p3>;
-+		vin-lvs-1-2-supply = <&vreg_s4a_1p8>;
-+
-+		vreg_s2a_1p1: smps2 {
-+			regulator-min-microvolt = <1100000>;
-+			regulator-max-microvolt = <1100000>;
-+		};
-+
-+		vreg_s3a_1p3: smps3 {
-+			regulator-min-microvolt = <1352000>;
-+			regulator-max-microvolt = <1352000>;
-+		};
-+
-+		vreg_s5a_1p9: smps5 {
-+			regulator-min-microvolt = <1904000>;
-+			regulator-max-microvolt = <2040000>;
-+		};
-+
-+		vreg_s7a_0p9: smps7 {
-+			regulator-min-microvolt = <900000>;
-+			regulator-max-microvolt = <1028000>;
-+		};
-+
-+		vreg_l1a_0p9: ldo1 {
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2a_1p2: ldo2 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-always-on;
-+		};
-+
-+		vreg_l3a_1p0: ldo3 {
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5a_0p8: ldo5 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6a_1p8: ldo6 {
-+			regulator-min-microvolt = <1856000>;
-+			regulator-max-microvolt = <1856000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7a_1p8: ldo7 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8a_1p2: ldo8 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1248000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9a_1p7: ldo9 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10a_1p7: ldo10 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11a_1p0: ldo11 {
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1048000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12a_1p8: ldo12 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13a_1p8: ldo13 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l14a_1p8: ldo14 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15a_1p8: ldo15 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16a_2p7: ldo16 {
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2704000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l17a_1p3: ldo17 {
-+			regulator-min-microvolt = <1304000>;
-+			regulator-max-microvolt = <1304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18a_2p7: ldo18 {
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l19a_2p7: ldo19 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <2700000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+
-+			/*
-+			 * The driver *really* doesn't want this regualtor to exist,
-+			 * saying that it could not get the current voltage (-ENOTRECOVERABLE)
-+			 * even though it surely is used on these devices (as a voltage
-+			 * source for camera autofocus)
-+			 */
-+			status = "disabled";
-+		};
-+
-+		vreg_l20a_2p7: ldo20 {
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l21a_2p7: ldo21 {
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l22a_2p8: ldo22 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l23a_3p0: ldo23 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3312000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l24a_3p1: ldo24 {
-+			regulator-min-microvolt = <3088000>;
-+			regulator-max-microvolt = <3088000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l25a_3p0: ldo25 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3312000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l26a_1p2: ldo26 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l28a_2p8: ldo28 {
-+			regulator-min-microvolt = <2856000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_lvs1a_1p8: lvs1 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_lvs2a_1p8: lvs2 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pmi8998-rpmh-regulators {
-+		compatible = "qcom,pmi8998-rpmh-regulators";
-+		qcom,pmic-id = "b";
-+
-+		src_vreg_bob: bob {
-+			regulator-min-microvolt = <3312000>;
-+			regulator-max-microvolt = <3600000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pm8005-rpmh-regulators {
-+		compatible = "qcom,pm8005-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+
-+		vreg_s3c_0p6: smps3 {
-+			regulator-min-microvolt = <600000>;
-+			regulator-max-microvolt = <600000>;
-+		};
-+	};
-+};
-+
-+&gcc {
-+	protected-clocks = <GCC_QSPI_CORE_CLK>,
-+			<GCC_QSPI_CORE_CLK_SRC>,
-+			<GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
-+			<GCC_LPASS_Q6_AXI_CLK>,
-+			<GCC_LPASS_SWAY_CLK>;
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	/* Synaptics touchscreen @ 2c, 3c */
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	/* Qcom SMB1355 @ 8, c */
-+	/* NXP PN547 NFC @ 28 */
-+	/* Renesas IDTP9221 Qi charger @ 61 */
-+};
-+
-+&i2c14 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	/* SONY ToF sensor @ 52 */
-+	/* AMS TCS3490 RGB+IR color sensor @ 72 */
-+};
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+
-+	vmmc-supply = <&vreg_l21a_2p7>;
-+	vqmmc-supply = <&vreg_l13a_1p8>;
-+	cd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
-+	pinctrl-0 = <&sdc2_default_state>;
-+	pinctrl-names = "default";
-+	bus-width = <4>;
-+	no-sdio;
-+	no-emmc;
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <0 4>, <81 4>;
-+
-+	sdc2_default_state: sdc2-default-state {
-+		clk {
-+			pins = "sdc2_clk";
-+			drive-strength = <16>;
-+			bias-disable;
-+		};
-+
-+		cmd {
-+			pins = "sdc2_cmd";
-+			drive-strength = <10>;
-+			bias-pull-up;
-+		};
-+
-+		data {
-+			pins = "sdc2_data";
-+			drive-strength = <10>;
-+			bias-pull-up;
-+		};
-+	};
-+};
-+
-+&uart6 {
-+	status = "okay";
-+};
-+
-+&uart9 {
-+	status = "okay";
-+};
-+
-+/* BIG WARNING! DO NOT TOUCH UFS, YOUR DEVICE WILL DIE! */
-+&ufs_mem_hc { status = "disabled"; };
-+&ufs_mem_phy { status = "disabled"; };
-+
-+&usb_1 {
-+	status = "okay";
-+
-+	qcom,select-utmi-as-pipe-clk;
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+
-+	maximum-speed = "high-speed";
-+	phys = <&usb_1_hsphy>;
-+	phy-names = "usb2-phy";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+
-+	vdd-supply = <&vreg_l1a_0p9>;
-+	vdda-pll-supply = <&vreg_l12a_1p8>;
-+	vdda-phy-dpdm-supply = <&vreg_l24a_3p1>;
-+};
--- 
-2.33.0
+-       if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+-               rcu_read_unlock();
+-
+-               if (flush)
+-                       kvm_flush_remote_tlbs(kvm);
+-
+-               if (shared)
+-                       cond_resched_rwlock_read(&kvm->mmu_lock);
+-               else
+-                       cond_resched_rwlock_write(&kvm->mmu_lock);
+-
+-               rcu_read_lock();
++       if (tdp_mmu_need_resched(kvm)) {
++               tdp_mmu_cond_resched(kvm, shared, flush);
 
+                WARN_ON(iter->gfn > iter->next_last_level_gfn);
+
+>  	}
+>  }
+>  
+> @@ -599,7 +610,7 @@ static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
+>  	 */
+>  	WRITE_ONCE(*rcu_dereference(iter->sptep), 0);
+>  
+> -	handle_disconnected_sps(kvm, &disconnected_sps);
+> +	handle_disconnected_sps(kvm, &disconnected_sps, false, true);
+>  
+>  	return true;
+>  }
+> @@ -817,7 +828,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>  
+>  	if (!list_empty(&disconnected_sps)) {
+>  		kvm_flush_remote_tlbs(kvm);
+> -		handle_disconnected_sps(kvm, &disconnected_sps);
+> +		handle_disconnected_sps(kvm, &disconnected_sps,
+> +					can_yield, shared);
+>  		flush = false;
+>  	}
+>  
+> -- 
+> 2.34.0.rc0.344.g81b53c2807-goog
+> 
