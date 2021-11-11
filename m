@@ -2,132 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0CE44D233
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA3B44D235
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 08:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhKKHJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 02:09:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229674AbhKKHJ0 (ORCPT
+        id S231360AbhKKHKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 02:10:40 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27196 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229674AbhKKHKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 02:09:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636614397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6FPPIWSEmE31KLIl9Vrcf0Gv1iU2go7pRZ4yE5vVRuE=;
-        b=f+hZCRFYQze2OnDQqwb5+vlL+XjjoRJMB1XFliuscGYuV7wgMC+69fmHXrvg+/h8qDvOCW
-        lZy3mB3RBbUbEGYxwe14iDjhdQOLGlW4iRxuDRE7MZSp4T1kGvPooJJyK/YOVZn9xpDe2n
-        7C5jwFtLJ8iak3xsYSRbNvJ7B2qXL34=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-2NHtZwZQPL69VOY5cY_oFg-1; Thu, 11 Nov 2021 02:06:35 -0500
-X-MC-Unique: 2NHtZwZQPL69VOY5cY_oFg-1
-Received: by mail-ed1-f70.google.com with SMTP id i22-20020a05640242d600b003e28aecc0afso4624179edc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 23:06:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=6FPPIWSEmE31KLIl9Vrcf0Gv1iU2go7pRZ4yE5vVRuE=;
-        b=75A3daZAhocGQaQhIpjKwigIsXg/VQOqNfq/acCaaePx2CNyArsACs2WFL9ba7uerl
-         MIaRgQScESKJRVs+TLSPEZ5EL5A48G7hNdOT3AiMsasfySJrduATRKxh+lDs99n91p1I
-         b7djz45QNQ8pzGPWaJqxlqcoLB409q3UPStdVTVODp/+4hpiLybe3DFcv3OYl/oql2QY
-         zBu1GJqwXmLlQ72hAX+xiiEI9PnnMO04kdG+DdWenJDEE+UMv4iV+DP8IaMBmUre2636
-         aSFFf0Vs3sqEgmqUWsVDwB8iiKaSTz+uQkTkPHKzDZ5QTkQT8mS0Y4P02Z/hsnaiIyFV
-         PqIA==
-X-Gm-Message-State: AOAM533xGVCQZJq5q3dWwZaJ6z3WNJtVeutH66K2GIZp9rvO9E0MxIzq
-        CjIXVr1811rPVqNz5whmiLJvaiPw52u+iYH7B86GB1ABiYKp1nduXWVI3fWJdfehxssK4Xv1VZq
-        CpHOUoWhUYE91tNKvVIw74zKA
-X-Received: by 2002:a17:907:d14:: with SMTP id gn20mr6439676ejc.73.1636614394525;
-        Wed, 10 Nov 2021 23:06:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwSO380yB499Wry7ErnQwuOiC7wRh8mA4LjnJkL1cH4gVeth+BH5b/QMKIh3woi+nd3LDIOqA==
-X-Received: by 2002:a17:907:d14:: with SMTP id gn20mr6439640ejc.73.1636614394282;
-        Wed, 10 Nov 2021 23:06:34 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id o14sm1002526edj.15.2021.11.10.23.06.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 23:06:33 -0800 (PST)
-Message-ID: <2c924ef5-2ff9-c9a8-f28c-8bedaf8b1af6@redhat.com>
-Date:   Thu, 11 Nov 2021 08:06:31 +0100
+        Thu, 11 Nov 2021 02:10:39 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HqXnH3mlfz8vLs;
+        Thu, 11 Nov 2021 15:06:11 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Thu, 11 Nov 2021 15:07:48 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Thu, 11
+ Nov 2021 15:07:48 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
+        <amitk@kernel.org>, <rui.zhang@intel.com>,
+        <srinivas.pandruvada@linux.intel.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] thermal: int340x: processor_thermal: Fix build error
+Date:   Thu, 11 Nov 2021 15:07:16 +0800
+Message-ID: <20211111070716.20260-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
- make_spte
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-12-bgardon@google.com>
- <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
- <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
- <YYxvSfUPTXbclpSa@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YYxvSfUPTXbclpSa@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 02:18, Sean Christopherson wrote:
-> But what would you actually move?  Even shadow_zero_check barely squeaks by,
-> e.g. if NX is ever used to for NPT, then maybe it stops being a per-VM setting.
+drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In function ‘send_mbox_cmd’:
+drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:16:
+ error: implicit declaration of function ‘readq’; did you mean ‘readl’? [-Werror=implicit-function-declaration]
+    *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+                ^~~~~
+                readl
 
-Hmm, I think it would still be per-VM, just like 32-bit shadow page tables
-are always built for EFER.NXE=CR4.PAE=1.  Anyway, the rough sketch is to have
-three structs:
+Add missing include to fix this.
 
-* struct kvm_mmu_kind has the function pointers and the state that is
-needed to operate on page tables
+Fixes: aeb58c860dc5 ("thermal/drivers/int340x: processor_thermal: Suppot 64 bit RFIM responses")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-* struct kvm_mmu has the function pointers and the state that is
-needed while the vCPU runs, including the role
-
-* struct kvm_paging_context has the stuff related to emulation;
-shadow page tables of course needs it but EPT/NPT do not (with
-either the old or the new MMU)
-
-So you'd have a "struct kvm_mmu_kind direct_mmu" in struct kvm_arch (for
-either legacy EPT/NPT or the new MMU), and
-
-	struct kvm_mmu_kind shadow_mmu;
-	struct kvm_mmu root_mmu;		/* either TDP or shadow */
-	struct kvm_mmu tdp12_mmu;		/* always shadow */
-	struct kvm_mmu *mmu;			/* either &kvm->direct_mmu or &vcpu->shadow_mmu */
-	struct kvm_paging_context root_walk;	/* maybe unified with walk01 below? dunno yet */
-	struct kvm_paging_context walk01;
-	struct kvm_paging_context walk12;
-	struct kvm_paging_context *walk;	/* either &vcpu->root_walk or &vcpu->walk12 */
-
-in struct kvm_vcpu_arch.  struct kvm_mmu* has a pointer to
-struct kvm_mmu_kind*; however, if an spte.c function does not need
-the data in struct kvm_mmu_state*, it can take a struct kvm_mmu_kind*
-and it won't need a vCPU.  Likewise the TDP MMU knows its kvm_mmu_kind
-is always in &kvm->direct_mmu so it can take a struct kvm* if the struct
-kvm_mmu_state* is not needed.
-
-The first part of the refactoring would be to kill the nested_mmu
-and walk_mmu, replacing them by &vcpu->walk12 and vcpu->walk
-respectively.  The half-useless nested_mmu has always bothered me,
-I was going to play with it anyway because I want to remove the
-kvm_mmu_reset_context from CR0.WP writes, I'll see if I get
-something useful out of it.
-
-Paolo
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+index a86521973dad..01008ae00e7f 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+@@ -7,6 +7,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
+ #include "processor_thermal_device.h"
+ 
+ #define MBOX_CMD_WORKLOAD_TYPE_READ	0x0E
+-- 
+2.17.1
 
