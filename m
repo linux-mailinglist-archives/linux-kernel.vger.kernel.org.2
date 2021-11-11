@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD13F44D887
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E669144D88D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhKKOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:49:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhKKOtQ (ORCPT
+        id S233429AbhKKOvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:51:43 -0500
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:35670 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233328AbhKKOvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:49:16 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACE4C061766;
-        Thu, 11 Nov 2021 06:46:27 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so4190124pjj.0;
-        Thu, 11 Nov 2021 06:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aRIZhEJSC5CLQX6HTzAaA6f+WmYf2hQfxbDd38/dBig=;
-        b=iVj5d/aqJVXFZjT5mEWOEg0AVSZ86JeMFrApiyvai8PrimFgwfAAT4Wxc3jdG/0vnA
-         +Z3n6PvyKqjP6/nDu70n3dEhLNnerbO0/M5A65IKgLRjKr0Vxdpiif5aRCRh5sRpFrC5
-         dZqEcvHFE5GPbMFGpWq77VvEMzNDDCvF0JcLSoobOW13DoXW81sdaQ794Xft+3d177EY
-         URkAIZ7BCeLa3YeNa1Q0x3hTkrZr1oQ/k9B/Nqv5xNGTnqEp4PwtX7uSY5DolHQnj5MQ
-         up96Vp8C1QxMQMBWYHeOiWkOx4q6Rh91sgDrPxx7oa28VILvLqYAjMYbi7bYGSDCXqiS
-         TeFw==
+        Thu, 11 Nov 2021 09:51:39 -0500
+Received: by mail-vk1-f177.google.com with SMTP id u130so3391976vku.2;
+        Thu, 11 Nov 2021 06:48:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aRIZhEJSC5CLQX6HTzAaA6f+WmYf2hQfxbDd38/dBig=;
-        b=c1cbMDokld12F1xmC9CAuj9H2QRrP1GPFfRYawWnPKDh5N4oV6KX7FNzTZuQUmXtzL
-         gh+/ixV6A3qRb/UPa1Y/8P8vkb0AuQ1gXt4HOH9aM+VRVWax2FzzUmb2/FANyYG3vaRw
-         BcMytIyF+UtbkULs8V6Cz/xw9uzqLiMpRDQWcBKpIPQDiHUb1Sq2E2j/ZCFA6t+945yA
-         DCs+Ba5+jVT0fktRYgSvTzhTD3/Eji7BSHIVA7DXUp3xNsgVmuJnT6U3+H1gfUEu6aq9
-         GzvxROQk6nn8cEepf4jXSGd9d556ZtNzp4N0Psz3FxR9Z874Hz54pIv9trM4vxbvsnUx
-         a34w==
-X-Gm-Message-State: AOAM530N7wMuBL2POBpFSap4Lg5zTZ+6XAsJwxgK3rJ9XnQQoC2Q3gZC
-        ridi7DPwTW9PwEhRXJAlNW6TQ1j8RTA=
-X-Google-Smtp-Source: ABdhPJyYRCFRSloNwuNIXl3Hp9JTYXsSB6oRo4rEr2iZWQYuRPVtIJhPDTdLSoxqi4D9AZQojGoD4Q==
-X-Received: by 2002:a17:90b:4b90:: with SMTP id lr16mr27177912pjb.57.1636641987180;
-        Thu, 11 Nov 2021 06:46:27 -0800 (PST)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id a8sm2570103pgh.84.2021.11.11.06.46.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Nov 2021 06:46:26 -0800 (PST)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Xiao Guangrong <guangrong.xiao@linux.intel.com>
-Subject: [PATCH 17/15] KVM: X86: Ensure pae_root to be reconstructed for shadow paging if the guest PDPTEs is changed
-Date:   Thu, 11 Nov 2021 22:46:34 +0800
-Message-Id: <20211111144634.88972-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211108124407.12187-1-jiangshanlai@gmail.com>
-References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YOdkRMonvPRtvh+RCUFAypHkHVRkuDa2ETyMKRHbHyA=;
+        b=iI8joZvt9NHEqXQcZbe3su7QIofZpWoYEk6jkWejQor5hYpIcqCUVeNWS+firLSGuB
+         7sLAsjVzyHKlyOPcSh+c2J0nW+fLWN0kSf8oK/VQtNW9PkXm6qNXrprMn7FFuWXZNsG3
+         p1JzgVEHPMKHRwwvB+qg7X2nh0b+hU2aMGdlfJq932DElypEEfqvmd2i8K6duLgLke7X
+         PH0CJt+QNoTVWTrqPnu3vMP6OsTbv73DKQSlIyvckygaO3/KMPDxpWUe0mNt//UIylBO
+         mPz4JAlFTRMDXg4yhu+akXKDXML2uRFVVDJ5TIwbb83fChZrD+SEmOTENqPrO1ZS3UVP
+         CpVw==
+X-Gm-Message-State: AOAM533hmdUQrLze4q18T3iEvwl3y45xkluUkIZf5cDrIUXtZhQsaram
+        RHdQuJCd3ccHJECPcb4yv7fTZbCzC5Q/EQ==
+X-Google-Smtp-Source: ABdhPJyhbdTsSErOLCuMUxvc8k46h57eVvwPNTN1bYH5Rm1jfVYxGpGNsnkLH7qCIiZ1E5RkNJncbQ==
+X-Received: by 2002:a05:6122:50e:: with SMTP id x14mr11836486vko.7.1636642129174;
+        Thu, 11 Nov 2021 06:48:49 -0800 (PST)
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com. [209.85.221.172])
+        by smtp.gmail.com with ESMTPSA id d13sm2249722uaf.6.2021.11.11.06.48.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 06:48:48 -0800 (PST)
+Received: by mail-vk1-f172.google.com with SMTP id k83so2536214vke.7;
+        Thu, 11 Nov 2021 06:48:48 -0800 (PST)
+X-Received: by 2002:a05:6122:20a7:: with SMTP id i39mr11374370vkd.15.1636642128577;
+ Thu, 11 Nov 2021 06:48:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211104182201.83906-1-axboe@kernel.dk> <20211104182201.83906-5-axboe@kernel.dk>
+ <YYQoLzMn7+s9hxpX@infradead.org> <2865c289-7014-2250-0f5b-a9ed8770d0ec@kernel.dk>
+ <YYQo4ougXZvgv11X@infradead.org> <8c6163f4-0c0f-5254-5f79-9074f5a73cfe@kernel.dk>
+ <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk> <YYQr3jl3avsuOUAJ@infradead.org>
+ <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk> <YYQuyt2/y1MgzRi0@infradead.org>
+ <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk> <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
+ <yq1sfw2g7xr.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1sfw2g7xr.fsf@ca-mkp.ca.oracle.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 11 Nov 2021 15:48:37 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVdwwT5yQPpQ5Frr-Un5OMk9LX3sF_zocOejrouSjaO-w@mail.gmail.com>
+Message-ID: <CAMuHMdVdwwT5yQPpQ5Frr-Un5OMk9LX3sF_zocOejrouSjaO-w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] block: move queue enter logic into blk_mq_submit_bio()
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-block@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+Hi Martin,
 
-For shadow paging, the pae_root needs to be reconstructed before the
-coming VMENTER if the guest PDPTEs is changed.
+On Thu, Nov 11, 2021 at 2:19 PM Martin K. Petersen
+<martin.petersen@oracle.com> wrote:
+> > sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
+> > sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
+> > sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
+> > sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
+> > critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
+> > Buffer I/O error on dev sda1, logical block 0, lost sync page write
+>
+> Peculiar. That write command looks OK to me. I wonder if it's the FUA
+> bit that trips it?
+>
+> What does:
+>
+> # dmesg | grep FUA
+>
+> say?
 
-But not all paths that call load_pdptrs() will cause the pae_root to be
-reconstructed. Normally, kvm_mmu_reset_context() and kvm_mmu_free_roots()
-are used to launch later reconstruction.
+sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't
+support DPO or FUA
 
-The commit d81135a57aa6("KVM: x86: do not reset mmu if CR0.CD and
-CR0.NW are changed") skips kvm_mmu_reset_context() after load_pdptrs()
-when changing CR0.CD and CR0.NW.
+Gr{oetje,eeting}s,
 
-The commit 21823fbda552("KVM: x86: Invalidate all PGDs for the current
-PCID on MOV CR3 w/ flush") skips kvm_mmu_free_roots() after
-load_pdptrs() when rewriting the CR3 with the same value.
+                        Geert
 
-The commit a91a7c709600("KVM: X86: Don't reset mmu context when
-toggling X86_CR4_PGE") skips kvm_mmu_reset_context() after
-load_pdptrs() when changing CR4.PGE.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Normally, the guest doesn't change the PDPTEs before doing only the
-above operation without touching other bits that can force pae_root to
-be reconstructed.  Guests like linux would keep the PDPTEs unchaged
-for every instance of pagetable.
-
-Fixes: d81135a57aa6("KVM: x86: do not reset mmu if CR0.CD and CR0.NW are changed")
-Fixes: 21823fbda552("KVM: x86: Invalidate all PGDs for the current PCID on MOV CR3 w/ flush")
-Fixes: a91a7c709600("KVM: X86: Don't reset mmu context when toggling X86_CR4_PGE")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/x86.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0176eaa86a35..cfba337e46ab 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -832,8 +832,14 @@ int load_pdptrs(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu, unsigned long cr3)
- 	if (memcmp(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs))) {
- 		memcpy(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs));
- 		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
--		/* Ensure the dirty PDPTEs to be loaded. */
--		kvm_make_request(KVM_REQ_LOAD_MMU_PGD, vcpu);
-+		/*
-+		 * Ensure the dirty PDPTEs to be loaded for VMX with EPT
-+		 * enabled or pae_root to be reconstructed for shadow paging.
-+		 */
-+		if (tdp_enabled)
-+			kvm_make_request(KVM_REQ_LOAD_MMU_PGD, vcpu);
-+		else
-+			kvm_mmu_free_roots(vcpu, vcpu->arch.mmu, KVM_MMU_ROOT_CURRENT);
- 	}
- 	vcpu->arch.pdptrs_from_userspace = false;
- 
--- 
-2.19.1.6.gb485710b
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
