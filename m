@@ -2,67 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B75944D9E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357C944D9ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhKKQLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234052AbhKKQLc (ORCPT
+        id S234180AbhKKQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:11:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58015 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234151AbhKKQLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:11:32 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E602C06127A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:08:42 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id g14so26180517edz.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=TpTcTcivucgwkiyqkj1zzJWU3hB8dDNMbilNVwfOU0A=;
-        b=LtdK5Amx5i4GwJiyPI0GbaovKcqT30D097sXaA2mohXl1Aqwst0Q18IKF5fh/bx3Dg
-         8o4UGh7Lzn6j/uIWZQBAK49zOPEtSyfIPkt+xzB3PAWJ1Z7QqaaMg6ZcPGnbc6ZLRfdv
-         89MZI3SRklyOsaD/2QMYv3id42IIGeBBfi4Ljvua2AVT2ssciAOTfjygxaFLo0eRo9nU
-         7xeXA9DZgICjMorfCRk3nV/eW8zweFmJdAv+IbsEbwniLh6HxBdMkBtB7JblBlO9UmUt
-         XklCA93d/hra84qQYgAPdHoRnmVOJbdcQnJBEXI3Dhx8jyz47+v7tI01c9XM3bUtKQ/7
-         V6qQ==
+        Thu, 11 Nov 2021 11:11:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636646934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEiAuhtYpYmWwGYiEVTRT5DiiEXqyobrsCTGPeXR28s=;
+        b=crR75qQNg3bbtR1BuJp8DmUWUbPPiZFIYKyNNCqgaaBGjhMB7mrAE3IjS35l3KuWI1Ek6+
+        FTRzqZ/BNunuSm10qSafTg7+0wxzvaxiXTMMh7hMfX+YFmW69P/y/beHcktnAuGByExyb6
+        Tr+daH0k0ZngYIh2mAhy02hKC9s9308=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-yNnWF4oxOJCGsc2dKC5yyw-1; Thu, 11 Nov 2021 11:08:53 -0500
+X-MC-Unique: yNnWF4oxOJCGsc2dKC5yyw-1
+Received: by mail-qk1-f199.google.com with SMTP id c1-20020a05620a0ce100b00468060d41ecso1159649qkj.19
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:08:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=TpTcTcivucgwkiyqkj1zzJWU3hB8dDNMbilNVwfOU0A=;
-        b=pmsQKsRQh9xO09kjIvP2dNe4yI2nGCWGKBXHkVHt102NzzNw8WDzq8bkkWi/dXgL+v
-         W6zcsX+YjKfvSz86m7o4ggggbmFqYRi880PJXqNXk8p6JtK/45PQ27zdtifQ9zk7bAya
-         db4oEySpyGQi5k/cYoMghSpJjrQtvlYrZQcPPDpp7+yfbFcJyyL2u2rt9/SyzHBHuycE
-         5GscmG2owqShVRKf/Z+8T/W521cc98QZABJHyGLKFNIkZhZxxLJ88f1mwsnbkowFkdfK
-         ipLya0orhKq7wppkfi4raMnegVbeAhvpzvgIbEN//YnW1JSvgfUmchVuX1bI0ZhWK+4R
-         BeLA==
-X-Gm-Message-State: AOAM532KBey08mhD0zCYpVF4njQKOMagZzIs34GPP+bwX3PIunU0CzsT
-        3oDz442LQzamtiIxLeEez0RlyYFlRmGIfjN2/r4=
-X-Google-Smtp-Source: ABdhPJwEnnTjb/6sP6xjnJNb3GOQUsKDv2oErtVBHk5wljm8/b53DssZnq9WNdvY0eQPZY0/5GA2Tnybehdkj0Fr0vs=
-X-Received: by 2002:a05:6402:337:: with SMTP id q23mr11466606edw.189.1636646920054;
- Thu, 11 Nov 2021 08:08:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lEiAuhtYpYmWwGYiEVTRT5DiiEXqyobrsCTGPeXR28s=;
+        b=0Kgb4aN22ZysWUGvp2PZk1pYwckbVGD3en2TLTNurtcfV/je/aPP2AxpYcV358j/67
+         v0FzLr0WVtUjWyuBLoUtD/az831tuzVG4aA+cApNhv69FVhGM4MhxSbdv/V03Z+geOl8
+         HmDm8kniRRGsn9a4gCtc/xs5YoyftOA/qfQpWMohR9hbb2rLxfmPDsACixtlJE/ARSoI
+         SuXaSiS9bQuDBXJtm7aLDagMwAorOpUQb1VGMxLT41uXmaa0IFavB82rec2ImDVSVaRT
+         MgzyoD+9ih/kyEAc45ELiM5yOj3ngi3IzLewnNNN6zZBAQ8x6ikzrKjEUsb9iJRA7yrx
+         YA2Q==
+X-Gm-Message-State: AOAM531CsyJuPaaRgpr0nXhGT5eDEPUZaWuoiHZthxa0C4S0zpRnZPS0
+        3MCArG6oSk7hwPQ8QQrZIfFB1sutbyJuia+H/usAc3bp0g8M89cOTUZop5UR+4lTtVuhX5Aw5A/
+        Cg3aKYviKKQGURDi6TQr+c2CM
+X-Received: by 2002:ac8:58d1:: with SMTP id u17mr8918077qta.137.1636646933190;
+        Thu, 11 Nov 2021 08:08:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwM45i/F5PcLsATLBWXHVAozkIpTgDT+XwicghpZg7RZGKQs5HPcUkNK0yi3P5LGjEhDw49eg==
+X-Received: by 2002:ac8:58d1:: with SMTP id u17mr8918028qta.137.1636646932926;
+        Thu, 11 Nov 2021 08:08:52 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id t11sm1493205qkm.96.2021.11.11.08.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 08:08:52 -0800 (PST)
+Date:   Thu, 11 Nov 2021 11:08:49 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Ian Kent <raven@themaw.net>
+Cc:     xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <YY1AEaHRLe+P4IYr@bfoster>
+References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
+ <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
 MIME-Version: 1.0
-Received: by 2002:a05:6402:3490:0:0:0:0 with HTTP; Thu, 11 Nov 2021 08:08:39
- -0800 (PST)
-Reply-To: kathrynh566@gmail.com
-From:   Kathryn Hensley <marinavanessa534@gmail.com>
-Date:   Thu, 11 Nov 2021 08:08:39 -0800
-Message-ID: <CAAPyjrug0ER5JNGQEp6WfRvoA4xd7c2KcDyi2N3-fhn9UBorqA@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5bCK5pWs55qE5YWI55Sf77yMDQrmiJHmnInkuIDnrJTkuqTmmJPmtonlj4oxNzkw5LiH576O5YWD
-55qE5aSW5ZWG5oqV6LWE77yM5aaC5p6c5oKo5pyJ5YW06Laj77yM6K+35Zue5aSN77yaa2F0aHJ5
-bmg1NjZAZ21haWwuY29t5LqG6Kej5pu05aSa6K+m5oOF44CCDQrosKLosKLkvaDjgIINCg0KDQoN
-CkRlYXIgU2lyLA0KSSBoYXZlIGEgdHJhbnNhY3Rpb24gdGhhdCBpbnZvbHZlcyB0aGUgdHJhbnNm
-ZXIgb2YgJDE3LjkgbWlsbGlvbiBmb3INCmZvcmVpZ24gaW52ZXN0bWVudCwgaWYgeW91IGFyZSBp
-bnRlcmVzdGVkIGtpbmRseSByZXBseSB0bzoNCmthdGhyeW5oNTY2QGdtYWlsLmNvbSAgIGZvciBt
-b3JlIHNwZWNpZmljIGRldGFpbHMuDQpUaGFuayB5b3UuDQo=
+On Thu, Nov 11, 2021 at 11:39:30AM +0800, Ian Kent wrote:
+> When following a trailing symlink in rcu-walk mode it's possible to
+> succeed in getting the ->get_link() method pointer but the link path
+> string be deallocated while it's being used.
+> 
+> Utilize the rcu mechanism to mitigate this risk.
+> 
+> Suggested-by: Miklos Szeredi <miklos@szeredi.hu>
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> ---
+>  fs/xfs/kmem.h      |    4 ++++
+>  fs/xfs/xfs_inode.c |    4 ++--
+>  fs/xfs/xfs_iops.c  |   10 ++++++++--
+>  3 files changed, 14 insertions(+), 4 deletions(-)
+> 
+...
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index a607d6aca5c4..2977e19da7b7 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -524,11 +524,17 @@ xfs_vn_get_link_inline(
+>  
+>  	/*
+>  	 * The VFS crashes on a NULL pointer, so return -EFSCORRUPTED if
+> -	 * if_data is junk.
+> +	 * if_data is junk. Also, if the path walk is in rcu-walk mode
+> +	 * and the inode link path has gone away due inode re-use we have
+> +	 * no choice but to tell the VFS to redo the lookup.
+>  	 */
+> -	link = ip->i_df.if_u1.if_data;
+> +	link = rcu_dereference(ip->i_df.if_u1.if_data);
+> +	if (!dentry && !link)
+> +		return ERR_PTR(-ECHILD);
+> +
+
+One thing that concerns me slightly about this approach is that inode
+reuse does not necessarily guarantee that if_data is NULL. It seems
+technically just as possible (even if exceedingly unlikely) for link to
+point at newly allocated memory since the previous sequence count
+validation check. The inode could be reused as another inline symlink
+for example, though it's not clear to me if that is really a problem for
+the vfs (assuming a restart would just land on the new link anyways?).
+But the inode could also be reallocated as something like a shortform
+directory, which means passing directory header data or whatever that it
+stores in if_data back to pick_link(), which is then further processed
+as a string.
+
+With that, I wonder why we wouldn't just return -ECHILD here like we do
+for the non-inline case to address the immediate problem, and then
+perhaps separately consider if we can rework bits of the reuse/reclaim
+code to allow rcu lookup of inline symlinks under certain conditions.
+
+FWIW, I'm also a little curious why we don't set i_link for inline
+symlinks. I don't think that addresses this validation problem, but
+perhaps might allow rcu lookups in the inline symlink common case where
+things don't change during the lookup (and maybe even eliminate the need
+for this custom inline callback)..?
+
+Brian
+
+>  	if (XFS_IS_CORRUPT(ip->i_mount, !link))
+>  		return ERR_PTR(-EFSCORRUPTED);
+> +
+>  	return link;
+>  }
+>  
+> 
+> 
+
