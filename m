@@ -2,182 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5887744D95F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9198844D964
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 16:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhKKPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
+        id S234007AbhKKPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbhKKPsl (ORCPT
+        with ESMTP id S233872AbhKKPsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:48:41 -0500
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF30C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:45:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-        d=auristor.com; s=MDaemon; r=y; t=1636645545; x=1637250345;
-        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-        References:From:Organization:In-Reply-To:Content-Type; bh=o43ddd
-        RqvcOKv8dV2+541CLjyFn2jjeaDK5ooAtjc4g=; b=KVXX/LkE2EixlW4UO4v94+
-        ycYpuPwZHSbTGlFqdmV1MSTo3o8Bd19Fhf3XmGjpOyP7b9jgiCEqrOiSgwZqPhZq
-        pLA2CSoF+3GYlFXGxK2iOkMyOpe4Mr9CDVbSBNUA1rK13eSC/9CdQ+G9olb9Godd
-        r05WIVCJFHemKppsJ9B0A=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Nov 2021 10:45:45 -0500
-Received: from [IPV6:2603:7000:73d:4f22:489a:3cea:a047:72cb] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v21.5.0) 
-        with ESMTPSA id md5001003028602.msg; Thu, 11 Nov 2021 10:45:45 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 11 Nov 2021 10:45:45 -0500
-        (not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73d:4f22:489a:3cea:a047:72cb
-X-MDHelo: [IPV6:2603:7000:73d:4f22:489a:3cea:a047:72cb]
-X-MDArrival-Date: Thu, 11 Nov 2021 10:45:45 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=19492496b8=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <2e766687-23b3-7983-7b03-cb28f49ad41f@auristor.com>
-Date:   Thu, 11 Nov 2021 10:45:37 -0500
+        Thu, 11 Nov 2021 10:48:55 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858D2C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:46:06 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 200so5514631pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 07:46:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=BHccbKUYFihxrvL4LkODdfxX5LJ5XuM0tHtYW03wVts=;
+        b=mzYW1NQQpxn7t+qrDxy1Zhk/2kyidt8NLxAeTcZw3x5YwXgtyasREch7tTXCAwgIln
+         eNJdt58BaovTp2e5BZEJdAQv8GYnNs3p6f/fdLbM4qAQEBlfzap0VBQ2Xz+Q/dTAdH94
+         uY7ID1d5VougpBnnpgR33obR+1DPiWjo2aF85aqaVHpbJAvlrPo/8RrqfjznsNbTj4hd
+         aXEmgSKtDUKwKBwyilJTYqTodtuJYbvKTgh+1fL3xDKEl0/1MGOtWXG2f//DrO4QCs8K
+         9h8d4ywu1vXrFrEzgguHRPZi9vcRyu5o3AMcjxAXAFO0wvvu+QvE2lpGjk9C8GIoR8/O
+         VUdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=BHccbKUYFihxrvL4LkODdfxX5LJ5XuM0tHtYW03wVts=;
+        b=kOTOSwTIqL6wBTG+1KSl/IyIIl8KZMqFwQ6DU9KYILvlYh/++Wn0IRprrPFY/WCE60
+         /2SGQB/nKBXrN3QCZi3TZK57/CkDYwR3HVaVVVVIjZOBrYWVGms+R4k/8oUg7DV9Hl6c
+         JlAY8UFDgDTOtjojR3zcsXjiILbpQsnmKqKNaw7OKzy5YpL6LFtq0DBKqpt+wp7O/ZNX
+         usvjPYf2L7OF+Pru2Nc7uvWW4pAmGpEIGgSF+de0d6Z8Fq/9gOkPXtOiJOmp/h2NS/QX
+         DSM17xqjUO78bGjt86HwujNxWZ7dFrO+mbHYg065Scz8sHTGxIMBYPe3k6SpNs//hPSO
+         bzSw==
+X-Gm-Message-State: AOAM532oS2SRcONBC9rqmg+Q+Fs3p2WF/VDiu6uuUKUzEfkSd6zovcFC
+        dYYi+hy933OaPcZ0D/V/MB94uQ==
+X-Google-Smtp-Source: ABdhPJxvj/ffqLCEnuG9spEMFlTL9xC6GI5bKoFJZ/QBOSSIo4t8lut3c28hhWT9q9gZLR94wBlrsQ==
+X-Received: by 2002:a62:1b86:0:b0:47b:d112:96d4 with SMTP id b128-20020a621b86000000b0047bd11296d4mr7606654pfb.52.1636645565990;
+        Thu, 11 Nov 2021 07:46:05 -0800 (PST)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id w20sm3978276pfu.146.2021.11.11.07.46.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 07:46:05 -0800 (PST)
+Message-ID: <c410f4a0-cc06-8ef8-3765-d99e29012acb@linaro.org>
+Date:   Thu, 11 Nov 2021 07:46:04 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [kafs-testing] [PATCH v5 4/4] afs: Use folios in directory
- handling
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Content-Language: en-US
-To:     "David Howells (dhowells@redhat.com)" <dhowells@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     kafs-testing@auristor.com, Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <163657847613.834781.7923681076643317435.stgit@warthog.procyon.org.uk>
- <MDAEMON-F202111101609.AA0938215md5001000000902@sequoia-grove.ad.secure-endpoints.com>
-From:   Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <MDAEMON-F202111101609.AA0938215md5001000000902@sequoia-grove.ad.secure-endpoints.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms080703040809060001010207"
-X-MDCFSigsAdded: auristor.com
+To:     Marco Elver <elver@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Kees Cook <keescook@chromium.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <20211111003519.1050494-1-tadeusz.struk@linaro.org>
+ <CANpmjNNcVFmnBV-1Daauqk5ww8YRUVRtVs_SXVAPWG5CrFBVPg@mail.gmail.com>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
+In-Reply-To: <CANpmjNNcVFmnBV-1Daauqk5ww8YRUVRtVs_SXVAPWG5CrFBVPg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi Marco,
+On 11/11/21 01:51, Marco Elver wrote:
+> On Thu, 11 Nov 2021 at 01:36, Tadeusz Struk<tadeusz.struk@linaro.org>  wrote:
+>> Kernel throws a runtime object-size-mismatch error in skbuff queue
+>> helpers like in [1]. This happens every time there is a pattern
+>> like the below:
+>>
+>> int skbuf_xmit(struct sk_buff *skb)
+>> {
+>>          struct sk_buff_head list;
+>>
+>>          __skb_queue_head_init(&list);
+>>          __skb_queue_tail(&list, skb); <-- offending call
+>>
+>>          return do_xmit(net, &list);
+>> }
+>>
+>> and the kernel is build with clang and -fsanitize=undefined flag set.
+>> The reason is that the functions __skb_queue_[tail|head]() access the
+>> struct sk_buff_head object via a pointer to struct sk_buff, which is
+>> much bigger in size than the sk_buff_head. This could cause undefined
+>> behavior and clang is complaining:
+>>
+>> UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2023:28
+>> member access within address ffffc90000cb71c0 with insufficient space
+>> for an object of type 'struct sk_buff'
+> The config includes CONFIG_UBSAN_OBJECT_SIZE, right? Normally that's
+> disabled by default, probably why nobody has noticed these much.
 
---------------ms080703040809060001010207
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Right, in all the defconfigs CONFIG_UBSAN_OBJECT_SIZE is not set.
 
-On 11/10/2021 4:09 PM, David Howells (dhowells@redhat.com) wrote:
-> Convert the AFS directory handling code to use folios.
->
-> With these changes, afs passes -g quick xfstests.
->
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Tested-by: kafs-testing@auristor.com
-> cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: Marc Dionne <marc.dionne@auristor.com>
-> cc: linux-afs@lists.infradead.org
-> cc: linux-cachefs@redhat.com
-> Link: https://lore.kernel.org/r/162877312172.3085614.992850861791211206.stgit@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/162981154845.1901565.2078707403143240098.stgit@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/163005746215.2472992.8321380998443828308.stgit@warthog.procyon.org.uk/ # v2
-> Link: https://lore.kernel.org/r/163584190457.4023316.10544419117563104940.stgit@warthog.procyon.org.uk/ # v3
-> Link: https://lore.kernel.org/r/CAH2r5mtECQA6K_OGgU=_G8qLY3G-6-jo1odVyF9EK+O2-EWLFg@mail.gmail.com/ # v3
-> Link: https://lore.kernel.org/r/163649330345.309189.11182522282723655658.stgit@warthog.procyon.org.uk/ # v4
-Patch v5
+> 
+>> Suppress the error with __attribute__((no_sanitize("undefined")))
+>> in the skb helpers.
+> Isn't there a better way, because doing this might also suppress other
+> issues wholesale. __no_sanitize_undefined should be the last resort.
+> 
 
-Tested-by: kafs-testing@auristor.com
+The other way to fix it would be to make the struct sk_buff_head
+equal in size with struct sk_buff:
 
+  struct sk_buff_head {
+-       /* These two members must be first. */
+-       struct sk_buff  *next;
+-       struct sk_buff  *prev;
++       union {
++               struct {
++                       /* These two members must be first. */
++                       struct sk_buff  *next;
++                       struct sk_buff  *prev;
 
---------------ms080703040809060001010207
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+-       __u32           qlen;
+-       spinlock_t      lock;
++                       __u32           qlen;
++                       spinlock_t      lock;
++               };
++               struct sk_buff  __prv;
++       };
+  };
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DGswggXSMIIEuqADAgECAhBAAW0B1qVVQ32wvx2EXYU6MA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEy
-MB4XDTE5MDkwNTE0MzE0N1oXDTIyMTEwMTE0MzE0N1owcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEMwMDAwMDE2RDAxRDZBNTQwMDAwMDQ0NDcxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCY1TC9QeWnUgEoJ81FcAVnhGn/AWuzvkYRUG5/ZyXDdaM212e8
-ybCklgSmZweqNdrfaaHXk9vwjpvpD4YWgb07nJ1QBwlvRV/VPAaDdneIygJJWBCzaMVLttKO
-0VimH/I/HUwFBQT2mrktucCEf2qogdi2P+p5nuhnhIUiyZ71Fo43gF6cuXIMV/1rBNIJDuwM
-Q3H8zi6GL0p4mZFZDDKtbYq2l8+MNxFvMrYcLaJqejQNQRBuZVfv0Fq9pOGwNLAk19baIw3U
-xdwx+bGpTtS63Py1/57MQ0W/ZXE/Ocnt1qoDLpJeZIuEBKgMcn5/iN9+Ro5zAuOBEKg34wBS
-8QCTAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-Mi5wN2MwHwYDVR0jBBgwFoAUpHPa72k1inXMoBl7CDL4a4nkQuwwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTIuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBR7pHsvL4H5GdzNToI9e5BuzV19
-bzAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAFlm
-JYk4Ff1v/n0foZkv661W4LCRtroBaVykOXetrDDOQNK2N6JdTa146uIZVgBeU+S/0DLvJBKY
-tkUHQ9ovjXJTsuCBmhIIw3YlHoFxbku0wHEpXMdFUHV3tUodFJJKF3MbC8j7dOMkag59/Mdz
-Sjszdvit0av9nTxWs/tRKKtSQQlxtH34TouIke2UgP/Nn901QLOrJYJmtjzVz8DW3IYVxfci
-SBHhbhJTdley5cuEzphELo5NR4gFjBNlxH7G57Hno9+EWILpx302FJMwTgodIBJbXLbPMHou
-xQbOL2anOTUMKO8oH0QdQHCtC7hpgoQa7UJYJxDBI+PRaQ/HObkwggaRMIIEeaADAgECAhEA
-+d5Wf8lNDHdw+WAbUtoVOzANBgkqhkiG9w0BAQsFADBKMQswCQYDVQQGEwJVUzESMBAGA1UE
-ChMJSWRlblRydXN0MScwJQYDVQQDEx5JZGVuVHJ1c3QgQ29tbWVyY2lhbCBSb290IENBIDEw
-HhcNMTUwMjE4MjIyNTE5WhcNMjMwMjE4MjIyNTE5WjA6MQswCQYDVQQGEwJVUzESMBAGA1UE
-ChMJSWRlblRydXN0MRcwFQYDVQQDEw5UcnVzdElEIENBIEExMjCCASIwDQYJKoZIhvcNAQEB
-BQADggEPADCCAQoCggEBANGRTTzPCic0kq5L6ZrUJWt5LE/n6tbPXPhGt2Egv7plJMoEpvVJ
-JDqGqDYymaAsd8Hn9ZMAuKUEFdlx5PgCkfu7jL5zgiMNnAFVD9PyrsuF+poqmlxhlQ06sFY2
-hbhQkVVQ00KCNgUzKcBUIvjv04w+fhNPkwGW5M7Ae5K5OGFGwOoRck9GG6MUVKvTNkBw2/vN
-MOd29VGVTtR0tjH5PS5yDXss48Yl1P4hDStO2L4wTsW2P37QGD27//XGN8K6amWB6F2XOgff
-/PmlQjQOORT95PmLkwwvma5nj0AS0CVp8kv0K2RHV7GonllKpFDMT0CkxMQKwoj+tWEWJTiD
-KSsCAwEAAaOCAoAwggJ8MIGJBggrBgEFBQcBAQR9MHswMAYIKwYBBQUHMAGGJGh0dHA6Ly9j
-b21tZXJjaWFsLm9jc3AuaWRlbnRydXN0LmNvbTBHBggrBgEFBQcwAoY7aHR0cDovL3ZhbGlk
-YXRpb24uaWRlbnRydXN0LmNvbS9yb290cy9jb21tZXJjaWFscm9vdGNhMS5wN2MwHwYDVR0j
-BBgwFoAU7UQZwNPwBovupHu+QucmVMiONnYwDwYDVR0TAQH/BAUwAwEB/zCCASAGA1UdIASC
-ARcwggETMIIBDwYEVR0gADCCAQUwggEBBggrBgEFBQcCAjCB9DBFFj5odHRwczovL3NlY3Vy
-ZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDADAgEB
-GoGqVGhpcyBUcnVzdElEIENlcnRpZmljYXRlIGhhcyBiZWVuIGlzc3VlZCBpbiBhY2NvcmRh
-bmNlIHdpdGggSWRlblRydXN0J3MgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBQb2xpY3kgZm91bmQg
-YXQgaHR0cHM6Ly9zZWN1cmUuaWRlbnRydXN0LmNvbS9jZXJ0aWZpY2F0ZXMvcG9saWN5L3Rz
-L2luZGV4Lmh0bWwwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL3ZhbGlkYXRpb24uaWRlbnRy
-dXN0LmNvbS9jcmwvY29tbWVyY2lhbHJvb3RjYTEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMC
-BggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0OBBYEFKRz2u9pNYp1zKAZewgy+GuJ
-5ELsMA0GCSqGSIb3DQEBCwUAA4ICAQAN4YKu0vv062MZfg+xMSNUXYKvHwvZIk+6H1pUmivy
-DI4I6A3wWzxlr83ZJm0oGIF6PBsbgKJ/fhyyIzb+vAYFJmyI8I/0mGlc+nIQNuV2XY8cypPo
-VJKgpnzp/7cECXkX8R4NyPtEn8KecbNdGBdEaG4a7AkZ3ujlJofZqYdHxN29tZPdDlZ8fR36
-/mAFeCEq0wOtOOc0Eyhs29+9MIZYjyxaPoTS+l8xLcuYX3RWlirRyH6RPfeAi5kySOEhG1qu
-NHe06QIwpigjyFT6v/vRqoIBr7WpDOSt1VzXPVbSj1PcWBgkwyGKHlQUOuSbHbHcjOD8w8wH
-SDbL+L2he8hNN54doy1e1wJHKmnfb0uBAeISoxRbJnMMWvgAlH5FVrQWlgajeH/6NbYbBSRx
-ALuEOqEQepmJM6qz4oD2sxdq4GMN5adAdYEswkY/o0bRKyFXTD3mdqeRXce0jYQbWm7oapqS
-ZBccFvUgYOrB78tB6c1bxIgaQKRShtWR1zMM0JfqUfD9u8Fg7G5SVO0IG/GcxkSvZeRjhYcb
-TfqF2eAgprpyzLWmdr0mou3bv1Sq4OuBhmTQCnqxAXr4yVTRYHkp5lCvRgeJAme1OTVpVPth
-/O7HJ7VuEP9GOr6kCXCXmjB4P3UJ2oU0NqfoQdcSSSt9hliALnExTEjii20B2nSDojGCAxQw
-ggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UEAxMO
-VHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowDQYJYIZIAWUDBAIBBQCgggGXMBgG
-CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMTExMTE1NDUzN1ow
-LwYJKoZIhvcNAQkEMSIEIFDjS9DDAqUn5ZC3EyI5skB04tdvXxjkw3hUQZ+EJa+WMF0GCSsG
-AQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UE
-AxMOVHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowXwYLKoZIhvcNAQkQAgsxUKBO
-MDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQg
-Q0EgQTEyAhBAAW0B1qVVQ32wvx2EXYU6MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
-AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAUB5olgH9fLBH
-ob+ZhhYHSiuaKa0qYVWtajIr2fKdAfINeQei1OSxjaNYuUZ9Z/bphddvr+qY4ESqcA55B4Uy
-Pw7ulaYR0h8KHJK0/v7P6BESakf3tMv+vY6jr9LBJ9UQEpgdixlaLyze/fWx5OjtJCGQ2E3I
-x2C0K0CXn0oPiB/tsNdbnus6iXu+iOpCaXk0PTblsLbr98VE5VXR2S9XAgUcv3OU8D0+Sbm0
-hTcr88zi3XPpm0ty8zcdd8X6swa6GGb8rxiK42v3M2k49uFBYbA0+KnQSRsPP5dLaFTbVHed
-XP/nqCIBtEmfBmh5R69o/9XA0zpKDHaEJkmCjmA6lgAAAAAAAA==
---------------ms080703040809060001010207--
+but that's much more invasive, and I don't even have means to
+quantify this in terms of final binary size and performance
+impact. I think that would be a flat out no go.
 
+ From the other hand if you look at the __skb_queue functions
+they don't do much and at all so there is no much room for
+other issues really. I followed the suggestion in [1]:
+
+"if your function deliberately contains possible ..., you can
+  use __attribute__((no_sanitize... "
+
+[1] https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+
+-- 
+Thanks,
+Tadeusz
