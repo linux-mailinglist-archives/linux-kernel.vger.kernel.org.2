@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0329644DDF4
+	by mail.lfdr.de (Postfix) with ESMTP id 008C244DDF3
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 23:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhKKWvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 17:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
+        id S233892AbhKKWvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 17:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhKKWvW (ORCPT
+        with ESMTP id S230348AbhKKWvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 17:51:22 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F15C061766;
-        Thu, 11 Nov 2021 14:48:32 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id u130so4142315vku.2;
-        Thu, 11 Nov 2021 14:48:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zWYuq2uKQslQhuAS9ITOBTJ7JMyhU7VzEa0F62THcNI=;
-        b=C8AAScB0axppJpbpqUCrrvMBJErNBnRc3KWDKD/Z14khJvPJCxVstMI6QglSjMltmh
-         0/lBybFdCXGiGSN89GfBHppFkPa/ZtiPYNCUOUPI8I3YEJoZ6MKKDgeXjI8Li7AUEuRR
-         pw28F9Qzcu9K7tvOeqhlBrFP+PePZMqEK8wxjjCry/re2r5F0w6UF/NF/Z9eYGwZ+eoK
-         KX9poHkFFTbxPTaEbaB1LMfwYXhUgcHlhPIdafv4CQW9dhTFLrTdU2YHwJt7PkYhyAuj
-         uLJNl7XNoHY30mqdWai/4szabgA7MVABOAvk9BfxFVWi0oZ+3otbaND/wbgdUXkKFpkJ
-         IHAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zWYuq2uKQslQhuAS9ITOBTJ7JMyhU7VzEa0F62THcNI=;
-        b=bzsIAuCWC8DJOxkObTMczSaxw8P5UtNRnqum+RvuI4TUnXw5OdN6+vo22KoiTdxyuE
-         UgrnD2iUifZVXIYjfJd7vICTutRt8fOt7zEfpwYVYu9QYcO4r8yDr3YA66ho2NDCHyo/
-         luuAJ4ZlUm8r0HDDlOWZSM5z+c4vw3BLhEkcR0B/YXomjkd0IMJrYO65HhPywD/gDEJZ
-         /UYE+dYavgFnhBaCVGodIbFGGOI8fQIL6sZr1Y9L7uQsPeg+zW/WSyX1x1Vl2Rx33y7v
-         Y1EfAqgOy8MJKVoS/Mf5SAnHMqStwqHYjuKBUR4wXnkNDiJIsywwmVcIPq0qwQ0Q+M4c
-         YOag==
-X-Gm-Message-State: AOAM533nLQURjOp8wtZSnjFug0suORI7pr1mPv5vJbEGy0Sbw0q9YkeK
-        PcLUfZQtpfPLqmx9fASfjiA9PVzwvt0=
-X-Google-Smtp-Source: ABdhPJw6Dshck5QSx1Emb2cP0Ea6LBzhOlUFrKWpQwMQk/iqHipsTut3DWNI5Aux6kqeGtRX09YjWA==
-X-Received: by 2002:a1f:a704:: with SMTP id q4mr16073592vke.0.1636670911429;
-        Thu, 11 Nov 2021 14:48:31 -0800 (PST)
-Received: from rog-zephyrus.. ([201.46.20.144])
-        by smtp.gmail.com with ESMTPSA id t5sm2987190vsk.24.2021.11.11.14.48.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 14:48:31 -0800 (PST)
-From:   =?UTF-8?q?Vin=C3=ADcius=20Angiolucci=20Reis?= 
-        <angiolucci@gmail.com>
-To:     jikos@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmitry.torokhov@gmail.com,
-        =?UTF-8?q?Vin=C3=ADcius=20Angiolucci=20Reis?= 
-        <angiolucci@gmail.com>
-Subject: [PATCH] Revert "HID: hid-asus.c: Maps key 0x35 (display off) to KEY_SCREENLOCK"
-Date:   Thu, 11 Nov 2021 19:47:35 -0300
-Message-Id: <20211111224735.29665-1-angiolucci@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Thu, 11 Nov 2021 17:51:23 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C781C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 14:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=P8dbu6bq4K+PWUujkU4hjoft1+fqI27MatlMJ/QyGuI=; b=DIEtXFmC2F85m71vwyPLcjKOQk
+        XjZEbHKR4s6o9R+TJFbZJAX5w6NIoGC4G7Tyr4UiU2sDuxm/bM/DqzgQfEXijaLfYzbsZMB+nW2Pg
+        3fS5axfaKR/QoXehw3rpT5x08XLk3pdS95g4GbvhgzZTXlpNNp6aQoUMl8nKH29W8h0noSg8OSL0n
+        bfGMRaMuz1qL/dM15gvBb/UkqsFSNFor48hNDm5vJjOo3uKFAeVY6JWhl++NRpUh8COLKxDqePUS7
+        nbT7OL0ngCIQOs/4Ikle6bmn7BGmq4XLLkOsvsgEBmXO9v2HT1XAil0vxpAZBxgPPz22kmyXqe6R9
+        rLTU1SPQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlIrp-008vaU-R6; Thu, 11 Nov 2021 22:48:25 +0000
+Date:   Thu, 11 Nov 2021 14:48:25 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     mst@redhat.com, david@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
+Subject: update_balloon_size_func blocked for more than 120 seconds
+Message-ID: <YY2duTi0wAyAKUTJ@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 2ea5999d07d2a0ab6ad92ccf65524707f2c5e456.
+I get the following splats with a kvm guest in idle, after a few seconds
+it starts:
 
-As Dmitry Torokhov pointed out, the previous code (KEY_DISPLAY_OFF) is
-actually correct. The real issue is that current desktop environments
-don't deal it properly. Mapping it to another event does not solve the
-issue.
+[  242.412806] INFO: task kworker/6:2:271 blockedfor more than 120 seconds.
+[  242.415790]       Tainted: G            E     5.15.0-next-20211111 #68
+[  242.417755] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  242.418332] task:kworker/6:2     state:D stack:    0 pid:  271 ppid: 2 flags:0x00004000
+[  242.418954] Workqueue: events_freezable update_balloon_size_func [virtio_balloon]
+[  242.419518] Call Trace:
+[  242.419709]  <TASK>
+[  242.419873]  __schedule+0x2fd/0x990
+[  242.420142]  schedule+0x4e/0xc0
+[  242.420382]  tell_host+0xaa/0xf0 [virtio_balloon]
+[  242.420757]  ? do_wait_intr_irq+0xa0/0xa0
+[  242.421065]  update_balloon_size_func+0x2c9/0x2e0 [virtio_balloon]
+[  242.421527]  process_one_work+0x1e5/0x3c0
+[  242.421833]  worker_thread+0x50/0x3b0
+[  242.422204]  ? rescuer_thread+0x370/0x370
+[  242.422507]  kthread+0x169/0x190
+[  242.422754]  ? set_kthread_struct+0x40/0x40
+[  242.423073]  ret_from_fork+0x1f/0x30
+[  242.423347]  </TASK>
 
-So I'm reverting that change, keeping key 0x35 mapped to KEY_DISPLAY_OFF
+And this goes on endlessly. The last one says it blocked for more than 1208
+seconds. This was not happening until the last few weeks but I see no
+relevant recent commits for virtio_balloon, so the related change could
+be elsewhere.
 
-Signed-off-by: Vinícius Angiolucci Reis <angiolucci@gmail.com>
----
- drivers/hid/hid-asus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I could bisect but first I figured I'd check to see if someone already
+had spotted this.
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index 5d57214d8dee..f3ecddc519ee 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -854,7 +854,7 @@ static int asus_input_mapping(struct hid_device *hdev,
- 		switch (usage->hid & HID_USAGE) {
- 		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
- 		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
--		case 0x35: asus_map_key_clear(KEY_SCREENLOCK);		break;
-+		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
- 		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
- 		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
- 		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
--- 
-2.33.1
-
+  Luis
