@@ -2,132 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D74A44CFCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC8344CFD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 03:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbhKKCMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 21:12:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S234401AbhKKCMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 21:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbhKKCMK (ORCPT
+        with ESMTP id S234249AbhKKCMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 21:12:10 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F390C0432D2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:09 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id u6-20020a63f646000000b002dbccd46e61so2464663pgj.18
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:09 -0800 (PST)
+        Wed, 10 Nov 2021 21:12:15 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF25C06122B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:18 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id m14so18388777edd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 18:08:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=OsKSO91+IQOd1IkS1z06+WXQrIrb9btCelj8IT/rfjk=;
-        b=UjO1QsSOEJxaGsYGL3Apu9warF+RLCb7N0O8lrT4uA7hcwAOXn0B9aIpQDfjrTQVV9
-         GpUiUx0P3EvrUcerrFYJ43Q90SJS/Gs68/jHuhbKg4LsEjNWoUkdOiAjjqiiHSBSgjMG
-         R7y7UnI6YE9rNtmXbNbVt3sbKA6jvhnnGELbGyK4SRL2xwd9sX+q3f8jF57/MEhgUPD+
-         t/+a9Sg8Ta3/1ptTGbTPekcMLXxNe7dS033Slo6cfYWGcnVi+krIVbSkYZwCP0WX4pZh
-         GTnRwbyA69uU8U608boW9DzCYJ+6PE43F4bM/b41jK5pMY5lvLJwB8NslG8L5Jh5BxcV
-         /FSA==
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x2f7mNHFGCNYaSYUTYmGvh1vF4I+NlTW7cZ0xXVFvLk=;
+        b=R4e4rH97jtwiKe8JCRSPD7urIB71/MDTR7HT4WFDvsXO8IrUI4+548uXNHI9ID3lZu
+         ctRbmW192o3CLs0qNxFTxBCye9EBSZkH+6BcdqEU6rVxRlFYKy040LsrwY9U2/e3N9jk
+         g/4+qNNO3jPTFBzaQHv+vSZJo6HD1LXmlOdccw3xhoNNOq0Wx3YUYcQOgtpjf2QssKqf
+         Ka0cbFDu8beL9hediOtMJ61ifIeAMkFmCOuTBo4KFiMKHUb/xX8WuLw/E1xpveb816UN
+         Rf52hxvUYnbd0Oz9Zd1+EL7Mx4InKcoZh16Uy1SpFRE+cL0hPTYM5mCzX1zqW56R1I3Z
+         6Z+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=OsKSO91+IQOd1IkS1z06+WXQrIrb9btCelj8IT/rfjk=;
-        b=Srsqa2iIpKCfa4LhxtSq993THiSNMvQd3vGk8f0rPgxugchydgEyG2Z4qoYfrayltv
-         xuPqHpVMfPSsBtAphoUC/1zBY46fgEQ66armeECUZITaqRpRqID2CGqxTcuIT1IGixeo
-         6BRLRRTEX+KHBWMe9GR+CV7N3So5olYtuKqBg/0B0KVRGsxwqDq1Ny3d9l3hcEBXu4xL
-         hCqUNJnEJqd8Vgohb0FaUhfjP62v7VLCtXe+nUaY9BufA1sW3zZ1QhA8vfxGkVKtzTb6
-         oWVExxXxM+hpPPPTDfhozs4HROkmbHlp02JTTFujiAi2pUZ2TUz3OF13ZhOmbf8UOK/Z
-         qiIw==
-X-Gm-Message-State: AOAM532ijsT10Oi+IvT7Z0Bx/IgdsFC0PdSRW9m5gWdU6AXAhQxQmcFl
-        hOoU0LWeAOtxCZEuwehKfTJwPaAPuz0=
-X-Google-Smtp-Source: ABdhPJyHlT5oqharcB3QQjRQ4qoO/10ujhci23RJu5uAP9JkYDshL4v2uHHALGrgFqagvzcYI5ZLh/T3x7g=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:1950:: with SMTP id
- 16mr4223713pjh.126.1636596488573; Wed, 10 Nov 2021 18:08:08 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 11 Nov 2021 02:07:38 +0000
-In-Reply-To: <20211111020738.2512932-1-seanjc@google.com>
-Message-Id: <20211111020738.2512932-18-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211111020738.2512932-1-seanjc@google.com>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v4 17/17] perf: Drop guest callback (un)register stubs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x2f7mNHFGCNYaSYUTYmGvh1vF4I+NlTW7cZ0xXVFvLk=;
+        b=eXarEe9T/qIL1JF/1SFo1aQKXlt/kphzuV0wP7EtfXLR8Hl9zHAtVRC2ZhHms2k7t3
+         IMag5/liiJl0w32v/EMEpSGukl/pGwDTfBIXRxwqs3iK06sEtt69DrtpXMTHehwcGWID
+         07OKwXexO05XEGJffLoOSlV+Xnp1G3MNCDSEFGNQS6BbX7EiDwUUAgtB5lJy+85gMPtI
+         +tfu5j3AgaeK6ttY8mOJZu9ziSc/mO7hHUetGBoYD0ldW4CXt30ZyTgqM15oHZ/nnk4F
+         YafHfVdf+vBKlr2u6gnv9M5WiLuTsRavB/1UE1ca7RUx9ypIxiuUXNAyG4yCgo/E22wS
+         xjlw==
+X-Gm-Message-State: AOAM532b/jsbE6L4McdmyWAFABipTF7y23YwZeGPowToxtYCmBsPoXMj
+        ArYfE2iDFwdJlx+xmomhGFjE/gfXjMDOzejX//WZGA==
+X-Google-Smtp-Source: ABdhPJwJ+V96RLd1FGOaO5sgF7EbrYmQoVDLbepCA1fvbEiabgxL8IStUtFtpIgbWCwxk9FiIehcIWd/3jwLCeXjOIk=
+X-Received: by 2002:a17:906:1451:: with SMTP id q17mr4784534ejc.36.1636596496906;
+ Wed, 10 Nov 2021 18:08:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-12-brad@pensando.io>
+ <YXnGkjXMmLdFHEIF@robh.at.kernel.org>
+In-Reply-To: <YXnGkjXMmLdFHEIF@robh.at.kernel.org>
+From:   Brad Larson <brad@pensando.io>
+Date:   Wed, 10 Nov 2021 18:08:05 -0800
+Message-ID: <CAK9rFnzRF_Tv-DRO3SvrcZz7PmzPQOGJLS6f_ZBJPR4QbjG-Dw@mail.gmail.com>
+Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop perf's stubs for (un)registering guest callbacks now that KVM
-registration of callbacks is hidden behind GUEST_PERF_EVENTS=y.  The only
-other user is x86 XEN_PV, and x86 unconditionally selects PERF_EVENTS.
+Hi Rob,
 
-No functional change intended.
+On Wed, Oct 27, 2021 at 2:37 PM Rob Herring <robh@kernel.org> wrote:
+>
+> > +always-y     := $(dtb-y)
+> > +subdir-y     := $(dts-dirs)
+> > +clean-files  := *.dtb
+>
+> None of these lines should be needed.
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- include/linux/perf_event.h | 5 -----
- 1 file changed, 5 deletions(-)
+Yes, these will be removed.
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 0ac7d867ca0c..7b7525e9155f 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1511,11 +1511,6 @@ perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
- static inline void
- perf_bp_event(struct perf_event *event, void *data)			{ }
- 
--static inline void perf_register_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
--static inline void perf_unregister_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
--
- static inline void perf_event_mmap(struct vm_area_struct *vma)		{ }
- 
- typedef int (perf_ksymbol_get_name_f)(char *name, int name_len, void *data);
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+> > diff --git a/arch/arm64/boot/dts/pensando/elba-16core.dtsi b/arch/arm64/boot/dts/pensando/elba-16core.dtsi
+> > new file mode 100644
+> > index 000000000000..acf5941afbc1
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/pensando/elba-16core.dtsi
+> > @@ -0,0 +1,192 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+>
+> Do you care about using with non-GPL OS? Dual license is preferred.
+>
+Dual is fine, changing to this:
+SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
+> > +             psci {
+>
+> This goes at the root level.
+>
+Moving to the root level
+
+> > +                     compatible = "arm,psci-0.2";
+> > +                     method = "smc";
+> > +             };
+> > +
+> > +     };
+> > +};
+> > diff --git a/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi b/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
+> > +
+> > +&spi0 {
+> > +     num-cs = <4>;
+> > +     cs-gpios = <0>, <0>, <&porta 1 GPIO_ACTIVE_LOW>,
+> > +                <&porta 7 GPIO_ACTIVE_LOW>;
+> > +     status = "okay";
+> > +     spi0_cs0@0 {
+>
+> Node names should reflect the class of device and use standard name
+> defined in the DT spec. This probably doesn't have one. 'lora' perhaps?
+>
+Right, I didn't see a standard name and found many approaches in other files
+so I likely based off of one of these below.   I searched the dts
+files for 'lora' and
+didn't find it.  Is that an acronym?  I can change it to what the preference is.
+
+./microchip/sparx5_pcb134_board.dtsi:
+&spi0 {
+   status = "okay";
+   spi@0 {
+           compatible = "spi-mux";
+           ...
+};
+
+./rockchip/rk3399.dtsi:
+spi5 {
+        spi5_clk: spi5-clk {
+                rockchip,pins =
+                        <2 RK_PC6 2 &pcfg_pull_up>;
+        };
+        spi5_cs0: spi5-cs0 {
+                rockchip,pins =
+                        <2 RK_PC7 2 &pcfg_pull_up>;
+        };
+        spi5_rx: spi5-rx {
+                rockchip,pins =
+                        <2 RK_PC4 2 &pcfg_pull_up>;
+        };
+        spi5_tx: spi5-tx {
+                rockchip,pins =
+                        <2 RK_PC5 2 &pcfg_pull_up>;
+        };
+};
+
+>
+> > +             compatible = "semtech,sx1301";  /* Enable spidev */
+>
+> What's spidev?
+>
+It's module drivers/spi/spidev.c which won't populate /dev/spidevB.C unless
+there is a match which we need for the system to boot.  An earlier patch added
+to the compatible list below and the feedback on that was to remove it.  Later I
+noticed the compatible list expanded...
+
+static const struct of_device_id spidev_dt_ids[] = {
+        { .compatible = "rohm,dh2228fv" },
+        { .compatible = "lineartechnology,ltc2488" },
+        { .compatible = "semtech,sx1301" },
+        { .compatible = "lwn,bk4" },
+        { .compatible = "dh,dhcom-board" },
+        { .compatible = "menlo,m53cpld" },
+        { .compatible = "cisco,spi-petra" },
+        { .compatible = "micron,spi-authenta" },
+        {},
+};
+
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             spi-max-frequency = <12000000>;
+> > +             reg = <0>;
+> > +     };
+> > +
+> > +     spi0_cs1@1 {
+> > +             compatible = "semtech,sx1301";
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             spi-max-frequency = <12000000>;
+> > +             reg = <1>;
+> > +     };
+> > +
+> > +     spi0_cs2@2 {
+> > +             compatible = "semtech,sx1301";
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             spi-max-frequency = <12000000>;
+> > +             reg = <2>;
+> > +             interrupt-parent = <&porta>;
+> > +             interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+> > +     };
+> > +
+> > +     spi0_cs3@3 {
+> > +             compatible = "semtech,sx1301";
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             spi-max-frequency = <12000000>;
+> > +             reg = <3>;
+> > +     };
+> > +};
+> > diff --git a/arch/arm64/boot/dts/pensando/elba-asic.dts b/arch/arm64/boot/dts/pensando/elba-asic.dts
+> > new file mode 100644
+> > index 000000000000..131931dc643f
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/pensando/elba-asic.dts
+> > @@ -0,0 +1,23 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/dts-v1/;
+> > +
+> > +/ {
+> > +     model = "Elba ASIC Board";
+> > +     compatible = "pensando,elba";
+>
+> Normally we have a compatible for the board plus the soc compatible.
+
+In this case there are currently five different boards/products that have no
+variations needing a board level description.
+
+Thanks,
+Brad
