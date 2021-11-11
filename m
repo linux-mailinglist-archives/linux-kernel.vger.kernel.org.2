@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF4D44CF31
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753C744CF33
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 02:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhKKBro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Nov 2021 20:47:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231312AbhKKBrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:47:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EECB6152A;
-        Thu, 11 Nov 2021 01:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636595094;
-        bh=NlZ2LprdXDO5Hwn424/uwgcaVgQOHgvTAdrucmqWuqA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J3E+8a4ndMmqVxp5n5J8PAWs6d+O9sjkZay5C6IO2MABfKIZorLHkvYczeYCfMEVi
-         g4RfZ25SKcMHjkaxSndKXX7QdOBv7E4OGBghgJhhkTQMLxCfPrrojm3lfCPURaWNw7
-         mp0c2sMQmsNrIG1RemcFa6k85dsPUwYf3aL2oz9zLAmyst6QEa/6sqFmKAb9OOzUrQ
-         lLDPqBKpEQpCe6iaBWMWZU0jewJgNFIurFefnwEa9dJI01euRzV9JSZ9Z09pAcEe/8
-         Xc9FzTH8zL03k8sbKq8BbuUIaLeb++HHVI5FYZRCOr8jBRA6W199digX4+QbHGI8uo
-         rGFJyZD+FWq4w==
-Date:   Wed, 10 Nov 2021 17:44:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: fix premature exit from NAPI state polling in
- napi_disable()
-Message-ID: <20211110174453.3cb33cde@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211110174407.2b9083a9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211110191126.1214-1-alexandr.lobakin@intel.com>
-        <CANn89i+ZH83K9V7-7D6egC5AF=hxBv8FL+rroEqOskB-+TLZCA@mail.gmail.com>
-        <20211110194337.179-1-alexandr.lobakin@intel.com>
-        <20211110174407.2b9083a9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S233221AbhKKBrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Nov 2021 20:47:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233150AbhKKBrt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:47:49 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0647C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:45:01 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id gt5so3001954pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Nov 2021 17:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vIpqkuXH/BEP47oEfxhMZ9/fTD6xVKLD28FU3QaYHLg=;
+        b=mM69LO5YQ6sqQc8Le0frsg9F3hqNgWpT2kCUVE55Ec6XVmIu9DQfmszelkI97gfwre
+         014Qezf+KDo6iflV5bNvhE7KfBAhkKVXODMe6VNdoJINHgisiEgTQMquKsqFV1fm185d
+         MwUEn8MkPQjzJdo2iB1Bd93EX6f+U4I79VFK6n7okZD9nkY6Mq3xdiK05S14/iKUzlnk
+         VWCy0+U54EA1ov52EvgFXy3IzMYePujUrjR7lUA/p944Zx2YMyq7wxpoUei96DYgq8y8
+         vtVwALtuZUMMRDqXM47ZoctqCW52q7b6ty/7uCZ/gEaK4AqntWFTy58VUdVPUldxW6S0
+         jFqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vIpqkuXH/BEP47oEfxhMZ9/fTD6xVKLD28FU3QaYHLg=;
+        b=wXVlLDuiHd/FnsuwOjSFzCgkjZJB4i34r3tTXitq6HH3Ylq9I0tMHeLp/azXNAveil
+         b5Ogd2Tp6MocenZcMUDO54FbtndFDgVJPmPoaXstfunKH7xbHx2RVkXMq1WVrqW1dxtI
+         3sEuZlxvdzsgurfTXRqUZp+4bLUsb3pgb7EhgS6l7Ac4zRedepJJw11AU5BwSBe2/Ao5
+         ZBEtzFRqqfep0282GS8NWs/AE8xVeCv+u0bXoNwBSwJHkgcSnIUagNvEBfqHUps9Lkma
+         W5sEMyUTzV6W4VY9cbZBLAjqGCL2Rj21oL8+37uEwMCoQZUjWQGxk6JmO9X3TZo0LoYQ
+         XHzg==
+X-Gm-Message-State: AOAM533d4ZVarq3Siz4W1Iy4i7UisiofyZNDIv7qRq0wnpszBunXCQns
+        MA2YbqsjXljhWSn0fLQiiS6u3A==
+X-Google-Smtp-Source: ABdhPJw65Cs7XdtqOeDTy0swpntsrIFQd+3JADjeMBvvt4fWbOcVc3oGGNi04LpHcIEZAJqhVlKzlg==
+X-Received: by 2002:a17:90b:350c:: with SMTP id ls12mr4066067pjb.197.1636595100452;
+        Wed, 10 Nov 2021 17:45:00 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a8sm860341pfv.176.2021.11.10.17.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 17:44:59 -0800 (PST)
+Date:   Thu, 11 Nov 2021 01:44:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
+ make_spte
+Message-ID: <YYx1mDJo/L79cKOH@google.com>
+References: <20211110223010.1392399-1-bgardon@google.com>
+ <20211110223010.1392399-12-bgardon@google.com>
+ <80407e4a-36e1-e606-ed9f-74429f850e77@redhat.com>
+ <CANgfPd8hzDU+v52t9Kr=b48utC1p_j3yJ8gHzo-uifAxHbh-eQ@mail.gmail.com>
+ <YYxvSfUPTXbclpSa@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYxvSfUPTXbclpSa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 17:44:07 -0800 Jakub Kicinski wrote:
-> On Wed, 10 Nov 2021 20:43:37 +0100 Alexander Lobakin wrote:
-> > > What about replacing the error prone do {...} while (cmpxchg(..)) by
-> > > something less confusing ?
-> > > 
-> > > This way, no need for a label.
-> > > 
-> > > diff --git a/net/core/dev.c b/net/core/dev.c
-> > > index 5e37d6809317fb3c54686188a908bfcb0bfccdab..9327141892cdaaf0282e082e0c6746abae0f12a7
-> > > 100644
-> > > --- a/net/core/dev.c
-> > > +++ b/net/core/dev.c
-> > > @@ -6264,7 +6264,7 @@ void napi_disable(struct napi_struct *n)
-> > >         might_sleep();
-> > >         set_bit(NAPI_STATE_DISABLE, &n->state);
-> > > 
-> > > -       do {
-> > > +       for (;;) {
-> > >                 val = READ_ONCE(n->state);
-> > >                 if (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
-> > >                         usleep_range(20, 200);
-> > > @@ -6273,7 +6273,9 @@ void napi_disable(struct napi_struct *n)
-> > > 
-> > >                 new = val | NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC;
-> > >                 new &= ~(NAPIF_STATE_THREADED | NAPIF_STATE_PREFER_BUSY_POLL);
-> > > -       } while (cmpxchg(&n->state, val, new) != val);
-> > > +               if (cmpxchg(&n->state, val, new) == val)
-> > > +                       break;
-> > > +       }
-> > > 
-> > >         hrtimer_cancel(&n->timer);    
-> > 
-> > LFTM, I'l queue v2 in a moment with you in Suggested-by.  
-> 
-> Ouch.
-> 
-> Feel free to put
-> 
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
+On Thu, Nov 11, 2021, Sean Christopherson wrote:
+> These are all related to guest context:
+> 	int (*page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
+> 	void (*inject_page_fault)(struct kvm_vcpu *vcpu,
+> 				  struct x86_exception *fault);
 
-Or I'll do it myself since it's already out...
+That's incorrect, page_fault() and inject_page_fault() could be per-VM.  Neither
+is particularly interesting though.
