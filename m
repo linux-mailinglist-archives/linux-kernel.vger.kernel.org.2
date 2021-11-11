@@ -2,348 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD5A44DAAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E88C44DAB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhKKQru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 11:47:50 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:41439 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233902AbhKKQrr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:47:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636649098; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=//ebf0pTl7FqUfYkQSfNfcnD3tef4Up1ihIo7rYioHA=; b=nm9bouR2ghUrlHArflSjIa59hZ3ci15TjpMJ9NsvZ9heuqZt8mC2WLNu3/mKK0IdVeuJWthR
- rwuSD8Y7mVgBXjDfRjJfbgGLUxPBCyvm2OjXOteibvMnBJlSSligUw5VegZLE+Yivm81ICkl
- 82EGKW23ptu38c8ELSoNqW9Hjjo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 618d487cf6c5b6c8d5c62c8b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Nov 2021 16:44:44
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C8A3BC4338F; Thu, 11 Nov 2021 16:44:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.16] (unknown [117.210.184.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74C4DC4338F;
-        Thu, 11 Nov 2021 16:44:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 74C4DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <1aa5b508-d225-1dbc-63ab-0958ac94c18a@codeaurora.org>
-Date:   Thu, 11 Nov 2021 22:14:31 +0530
+        id S234314AbhKKQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 11:49:18 -0500
+Received: from mail-am6eur05on2099.outbound.protection.outlook.com ([40.107.22.99]:38144
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233966AbhKKQtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 11:49:17 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F1Ke1HDB2sWPzucO0krFQRvCAE5UJF7xoJztpLjw4VABn8MK4S8qs9aCvGbVnxsmYZ0OMdgBehSyEtlYmRF1AWVcrFJ1dPkmBuWTE9SfDf8tm3QU6RVeo3t1u+6+gwml3C0AkObhzO0+spD0rNeTsQEUs+VuGBOb4oq/7T6JiM3+s6tP6yfaLz3dL/XXy98rkeP8rpFjRgl9uanNdGKytnJhxl+zJVMZKFbtYW48P9q36/7zlam01N/srRiVEkWiMVq4ILWafVnP3Z4GJHRNsq30mTfYDdRj9bY7xKVzpz1sm+aKfmEMLQ191Mr/cCggHY2uSkSKKSZEy0lK0FRiRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Zerkbcep/Q5PY9vBjI53Yl6Sqd93m76agKMYCiUSVbw=;
+ b=GSfce+k/bVCC/Tnm3EDmeMdmqOmuEsbB9JvxOI6NYIszw/u8NKYQoTtnIIVVgTsNh27QPpPPqBqs8g7C/xqvR4+S/KgajhjVVjQGNctUcZ8Zs1TTiGUDzrZ5BmYUfLCTLjp/rdiKCmZcb502r68Ifst2iE7hGYIFlypWfMTXqEIjC+OvJyq6gJXjfUL5lLkBfM1dxfTbBc51v/qJvmB7vtmh9HXBzwj045jyc2HcWImiDumXMCk9whMGTbbwUlUN8ItxgTjHSzsDSymwOPwGl/Iy790ujZS52Z16wIM+6LdlWpl/q+dryzjrz2jfMldG9QHwzQJW0NRxxSjh7wk3KQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
+ header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zerkbcep/Q5PY9vBjI53Yl6Sqd93m76agKMYCiUSVbw=;
+ b=SgoiH0yiVS2sEoJW3xHGBGTubPQiMyv3e11YmdIQgaekGMCgJJjmssHwiRbXujjKQ1Tsiqj9oMGGb5AuanL8/jQVxsIuV75Pjuhbk80f4hLuEoiE6ich1FV6pQT3oGRP8f8xiHzIDT9JPH3FOwEi6u7DV1V2FPjCQ+LnjFvvw5w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
+Received: from VI1PR06MB3102.eurprd06.prod.outlook.com (2603:10a6:802:c::17)
+ by VI1PR0601MB2430.eurprd06.prod.outlook.com (2603:10a6:801:7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Thu, 11 Nov
+ 2021 16:46:25 +0000
+Received: from VI1PR06MB3102.eurprd06.prod.outlook.com
+ ([fe80::5420:b387:e6b8:9e22]) by VI1PR06MB3102.eurprd06.prod.outlook.com
+ ([fe80::5420:b387:e6b8:9e22%4]) with mapi id 15.20.4669.016; Thu, 11 Nov 2021
+ 16:46:24 +0000
+From:   Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+To:     horia.geanta@nxp.com, pankaj.gupta@nxp.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        iuliana.prodan@nxp.com, michael@walle.cc,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Subject: [PATCH v2 0/2] CAAM Driver: re-factor and dynamic JR availability check
+Date:   Thu, 11 Nov 2021 17:45:59 +0100
+Message-Id: <20211111164601.13135-1-andrey.zhizhikin@leica-geosystems.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211104162114.2019509-1-andrey.zhizhikin@leica-geosystems.com>
+References: <20211104162114.2019509-1-andrey.zhizhikin@leica-geosystems.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0166.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:45::13) To VI1PR06MB3102.eurprd06.prod.outlook.com
+ (2603:10a6:802:c::17)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/5] drm/msm: Drop priv->lastctx
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211109181117.591148-1-robdclark@gmail.com>
- <20211109181117.591148-3-robdclark@gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-In-Reply-To: <20211109181117.591148-3-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from GEO-HfyyrYQLnZo.lgs-net.com (193.8.40.112) by ZR0P278CA0166.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:45::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend Transport; Thu, 11 Nov 2021 16:46:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff1e7688-ffc4-4a38-2355-08d9a532cc6a
+X-MS-TrafficTypeDiagnostic: VI1PR0601MB2430:
+X-Microsoft-Antispam-PRVS: <VI1PR0601MB24304EEF00F121275BEF374BA6949@VI1PR0601MB2430.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pgbBsJNd2tjv1TwbAelJ0Ge1XQTiryOGcR5fv0GCh04L3P3exxjM9FbxU0VdtlmH7n1YsyBuWUy0IgcF90xRGB5fVxWP+2tGy/5QylAv7xS5PyO3RiT2MSQ5yWyHFanh0E2jEX6CQYW66ln/THwONAeQDlwkggvvNh3/bi0eB8FWcVAO2JE+1h7UqJzAyo/ObC4Y55lqhajdWvyPVFFCOtyGyYbf9APk7cAcFvyUpCoGkV15/YhiuPj14rqA9/XOpALrUuYlxiVJygJWLGlMFNGVPLZ9xvnQ1tpLmwKSv7AY8PQLDy3I416T/fC6N8vEW5PcgaXh6HAVn+mq6HF1ZeeG1hd4WahHUt5fIsaiF31hsbxYfExh21GO+AF89kgMXTiKPa+d3yjwIrdPVYhTl4XNJOR3wMXoYZsJdHi9ynPBgsmdZYdw9EfXZFqajd628vUgLC/jGPxXImipQdnsQ0h++X/JqceGjA1oeyr+oOAocd+v6k1jCSk7MyhwsdX/I7067at9UxVsnnKBc64dbeBNiWxb0izZnTlF7bs/IscVK6Qh7Mm3yFEjTfha9gR37I+wUTZHE4nra9p4ZA2KqqXiHkTJUJse+5C9TX2SkEHghZ4Z9nn9b6xX7//PXafyZ09eGanimWGOjlo8to6oNF6bUIA5MW4t8bXtIqqoYkDvM0auh+CWG3xQWFB2DFhmYLr5yH3KdJp9ZfTIfnae1pt45wXOX/h4i6bnLMvJR4z6DqIPgJKb+N4BmZwAsMCsw6bPn4HpJf/ws7H/ut94kSKd+svdwTWUqRCxFjoIZoY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR06MB3102.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(2906002)(8676002)(66556008)(66476007)(6486002)(508600001)(966005)(44832011)(6666004)(2616005)(956004)(8936002)(4326008)(6512007)(52116002)(83380400001)(316002)(6506007)(5660300002)(26005)(86362001)(36756003)(38100700002)(38350700002)(107886003)(186003)(1076003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o2VeYqRszAJMY/F3UmYWzXm3sjFMAYFvTe1Fkko+oNwc03wjeg1JU+D9qvLS?=
+ =?us-ascii?Q?PTZpAaZ2vjPaX5P+WoCFAZaTHx4MCLvpwImUkURO0V29bPyjK7czgI1nJBy2?=
+ =?us-ascii?Q?+vb2UKKXb7ZuheWQ0E5QGsd6Ec3ZTlFLE++Ltd0z3Llz+xnKSiEhqVM2zpP0?=
+ =?us-ascii?Q?6TeelOJ9390nXGAjFme+Y6YyxhxBVVVwKTS0YRt5o5M4xuoQ0T5LHvoMk8Dj?=
+ =?us-ascii?Q?UA/NSLJC6NA9lyBwPvtZd0Wf82eYhMCV681uWRTZvpOzHcaXJ0N7TWtdMJFk?=
+ =?us-ascii?Q?GaBrzvtobAbs5IrjRlsU3CJX8ZBLUmc8ovScyAVCrJOaM1jTG/8ZhCUWVjdM?=
+ =?us-ascii?Q?2YGAy30b7edKSY7Ga8JUYUffqBF1I2Iu+OXLVq2YE8arGSghtTpo9LnqnTbh?=
+ =?us-ascii?Q?RZNv90L5gJH37d+go/Jx5mAhhXkCzskwj5IYWvW9voow2rSMwS+mSlaL4Nea?=
+ =?us-ascii?Q?FHXljQOqu+CVvJqOusQpYnYx+t6rMlJKs8cys+NkD7sqq4R4HWnw4xtI/lMa?=
+ =?us-ascii?Q?udfHlqHMZMGRjZyhUX/F/BoDfFq0IwzdAMaBv5aMU6HY+pqHA42EyV5CWvlb?=
+ =?us-ascii?Q?6q1sK0Q9ArdeELSAH1D2rViSPBKd+yJbgDSt09w6ZuoAVRuw6zUDb6rRHFlq?=
+ =?us-ascii?Q?KS6U9X9CxQi2ggr8FmLzGV7f6S/glIrOpoUm56PwFsHqatnf+EOP2geoxqE2?=
+ =?us-ascii?Q?a9Oeyjrafx9dzorq96HkTnCCEhuVC1shlifhVjRARUmJio4jbXvV2ZF0NlZs?=
+ =?us-ascii?Q?Qv/8DFI/bEzj/3XXfd69OJF+BAP0m4+a4qfY1+/5UjnEpWZp56ct+Pv8tu/u?=
+ =?us-ascii?Q?9pB7ecjuvDL6MVmY7vM/tW/K6gjWnvQJVeAohCj+wOVyRhNxwhN/hNaOPlV6?=
+ =?us-ascii?Q?nk89sHY2oQ+sMWwHCYPtG3bBLT61SfnkO69eyP4+OGqeddcQdeeeHJO8488O?=
+ =?us-ascii?Q?45NyMHhKHpRSpbzFbL1WPROI5z6YLTXiybHSv3BLcKOCFkGLxtXkPnDUN6cS?=
+ =?us-ascii?Q?XWIEMiCE86qfKGuUzgXhYnnnJWY1n0ymFVpgul0DzteyzIi9yH0hbuZm7K8+?=
+ =?us-ascii?Q?KG2sPfLM9RseuwkFG0AXxdnzUWMkCWSq0Z9KLWrmrjbGfy2blQ1ojpDGjx4f?=
+ =?us-ascii?Q?RnTX/qmEaNMnRIfH18MdUf3T3lcGSKs4xVlpFyiMKG8RlldioUuLYuz/c3kL?=
+ =?us-ascii?Q?EpeGhEH1ihoLy0DfmGxLh0oPOrd5mp4wA389YjhUfI8QxfF5AjxIaGe/u9+B?=
+ =?us-ascii?Q?PEwkqaxIG91bLdbfER2eP/NNeBSaHyQhH+TZo9sXVWAko10abj0x87nmYLUV?=
+ =?us-ascii?Q?lZPu4I+RFCA27ryeNIqIKw5J7Bl+9MeTFXBBcQUA3rf9lOaA9Vyvv60kEOGW?=
+ =?us-ascii?Q?6q6AMU62tzzhF1JHyN5l6BtJlp+vUeS+Xq4/G0Kku+zaK0pfdQkqGy3vt/zb?=
+ =?us-ascii?Q?jpksxfj/aS2gW5Dtw9z3jKGDl6yEuLEIUM0Mo+brDLXlwZT6K66n5llQOGTY?=
+ =?us-ascii?Q?ULuuL7h2N9tDQCnCFBFbYSpCkSIMyn5NXA18VqwCOpJo8rSf/8Gp6YSg3CD7?=
+ =?us-ascii?Q?2nvhh5YXYZ87DwW337wG0MeAKam/4Rih8+/SF+gHziwfJWfbVTQDcTSmSeCc?=
+ =?us-ascii?Q?mu6zuUQEW7TwcFHEkFA7bgXcw/TE3tlG+29bX2Bfm9eyJaWN80VAJCvnSJG8?=
+ =?us-ascii?Q?ZPQT5jVsUuCth/FrEzwb7Mb5jF8=3D?=
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff1e7688-ffc4-4a38-2355-08d9a532cc6a
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR06MB3102.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2021 16:46:24.8390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LqcWn84z+23e5RhLBGGwOYMtzzQx0dqGFgt/9E8EMj7qDVxpc0LNUuEOpKG7YQi0be+Z53C2/t7jor17iYg7OaFfMVNthihKbrIqcjaxpVs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0601MB2430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/2021 11:41 PM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> cur_ctx_seqno already does the same thing, but handles the edge cases
-> where a refcnt'd context can live after lastclose.  So let's not have
-> two ways to do the same thing.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/adreno/a2xx_gpu.c |  3 +--
->   drivers/gpu/drm/msm/adreno/a3xx_gpu.c |  3 +--
->   drivers/gpu/drm/msm/adreno/a4xx_gpu.c |  3 +--
->   drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  8 +++-----
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  9 +++------
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.h | 10 ----------
->   drivers/gpu/drm/msm/msm_drv.c         |  6 ------
->   drivers/gpu/drm/msm/msm_drv.h         |  2 +-
->   drivers/gpu/drm/msm/msm_gpu.c         |  2 +-
->   drivers/gpu/drm/msm/msm_gpu.h         | 11 +++++++++++
->   10 files changed, 22 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-> index bdc989183c64..22e8295a5e2b 100644
-> --- a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-> @@ -12,7 +12,6 @@ static bool a2xx_idle(struct msm_gpu *gpu);
->   
->   static void a2xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct msm_ringbuffer *ring = submit->ring;
->   	unsigned int i;
->   
-> @@ -23,7 +22,7 @@ static void a2xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
->   			/* ignore if there has not been a ctx switch: */
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> index 8fb847c174ff..2e481e2692ba 100644
-> --- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> @@ -30,7 +30,6 @@ static bool a3xx_idle(struct msm_gpu *gpu);
->   
->   static void a3xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct msm_ringbuffer *ring = submit->ring;
->   	unsigned int i;
->   
-> @@ -41,7 +40,7 @@ static void a3xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
->   			/* ignore if there has not been a ctx switch: */
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> index a96ee79cc5e0..c5524d6e8705 100644
-> --- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> @@ -24,7 +24,6 @@ static bool a4xx_idle(struct msm_gpu *gpu);
->   
->   static void a4xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct msm_ringbuffer *ring = submit->ring;
->   	unsigned int i;
->   
-> @@ -35,7 +34,7 @@ static void a4xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
->   			/* ignore if there has not been a ctx switch: */
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 5e2750eb3810..6163990a4d09 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -65,7 +65,6 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
->   
->   static void a5xx_submit_in_rb(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct msm_ringbuffer *ring = submit->ring;
->   	struct msm_gem_object *obj;
->   	uint32_t *ptr, dwords;
-> @@ -76,7 +75,7 @@ static void a5xx_submit_in_rb(struct msm_gpu *gpu, struct msm_gem_submit *submit
->   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> @@ -126,12 +125,11 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->   	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct msm_ringbuffer *ring = submit->ring;
->   	unsigned int i, ibs = 0;
->   
->   	if (IS_ENABLED(CONFIG_DRM_MSM_GPU_SUDO) && submit->in_rb) {
-> -		priv->lastctx = NULL;
-> +		gpu->cur_ctx_seqno = 0;
->   		a5xx_submit_in_rb(gpu, submit);
->   		return;
->   	}
-> @@ -166,7 +164,7 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 33da25b81615..3d2da81cb2c9 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -106,7 +106,7 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
->   	u32 asid;
->   	u64 memptr = rbmemptr(ring, ttbr0);
->   
-> -	if (ctx->seqno == a6xx_gpu->cur_ctx_seqno)
-> +	if (ctx->seqno == a6xx_gpu->base.base.cur_ctx_seqno)
->   		return;
->   
->   	if (msm_iommu_pagetable_params(ctx->aspace->mmu, &ttbr, &asid))
-> @@ -138,14 +138,11 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
->   
->   	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
->   	OUT_RING(ring, 0x31);
-> -
-> -	a6xx_gpu->cur_ctx_seqno = ctx->seqno;
->   }
->   
->   static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
->   	unsigned int index = submit->seqno % MSM_GPU_SUBMIT_STATS_COUNT;
-> -	struct msm_drm_private *priv = gpu->dev->dev_private;
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->   	struct msm_ringbuffer *ring = submit->ring;
-> @@ -177,7 +174,7 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
->   			break;
->   		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-> -			if (priv->lastctx == submit->queue->ctx)
-> +			if (gpu->cur_ctx_seqno == submit->queue->ctx->seqno)
->   				break;
->   			fallthrough;
->   		case MSM_SUBMIT_CMD_BUF:
-> @@ -1081,7 +1078,7 @@ static int hw_init(struct msm_gpu *gpu)
->   	/* Always come up on rb 0 */
->   	a6xx_gpu->cur_ring = gpu->rb[0];
->   
-> -	a6xx_gpu->cur_ctx_seqno = 0;
-> +	gpu->cur_ctx_seqno = 0;
->   
->   	/* Enable the SQE_to start the CP engine */
->   	gpu_write(gpu, REG_A6XX_CP_SQE_CNTL, 1);
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> index 8e5527c881b1..86e0a7c3fe6d 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> @@ -20,16 +20,6 @@ struct a6xx_gpu {
->   
->   	struct msm_ringbuffer *cur_ring;
->   
-> -	/**
-> -	 * cur_ctx_seqno:
-> -	 *
-> -	 * The ctx->seqno value of the context with current pgtables
-> -	 * installed.  Tracked by seqno rather than pointer value to
-> -	 * avoid dangling pointers, and cases where a ctx can be freed
-> -	 * and a new one created with the same address.
-> -	 */
-> -	int cur_ctx_seqno;
-> -
->   	struct a6xx_gmu gmu;
->   
->   	struct drm_gem_object *shadow_bo;
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index 7936e8d498dd..73e827641024 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -752,14 +752,8 @@ static void context_close(struct msm_file_private *ctx)
->   
->   static void msm_postclose(struct drm_device *dev, struct drm_file *file)
->   {
-> -	struct msm_drm_private *priv = dev->dev_private;
->   	struct msm_file_private *ctx = file->driver_priv;
->   
-> -	mutex_lock(&dev->struct_mutex);
-> -	if (ctx == priv->lastctx)
-> -		priv->lastctx = NULL;
-> -	mutex_unlock(&dev->struct_mutex);
-> -
->   	context_close(ctx);
->   }
->   
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> index 69952b239384..2943c21d9aac 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -164,7 +164,7 @@ struct msm_drm_private {
->   
->   	/* when we have more than one 'msm_gpu' these need to be an array: */
->   	struct msm_gpu *gpu;
-> -	struct msm_file_private *lastctx;
-> +
->   	/* gpu is only set on open(), but we need this info earlier */
->   	bool is_a2xx;
->   	bool has_cached_coherent;
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index 2c46cd968ac4..3dfc58e6498f 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -763,7 +763,7 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   	mutex_unlock(&gpu->active_lock);
->   
->   	gpu->funcs->submit(gpu, submit);
-> -	priv->lastctx = submit->queue->ctx;
-> +	gpu->cur_ctx_seqno = submit->queue->ctx->seqno;
->   
->   	hangcheck_timer_reset(gpu);
->   }
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index 59870095ea41..623ee416c568 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -144,6 +144,17 @@ struct msm_gpu {
->   	struct msm_ringbuffer *rb[MSM_GPU_MAX_RINGS];
->   	int nr_rings;
->   
-> +	/**
-> +	 * cur_ctx_seqno:
-> +	 *
-> +	 * The ctx->seqno value of the last context to submit rendering,
-> +	 * and the one with current pgtables installed (for generations
-> +	 * that support per-context pgtables).  Tracked by seqno rather
-> +	 * than pointer value to avoid dangling pointers, and cases where
-> +	 * a ctx can be freed and a new one created with the same address.
-> +	 */
-> +	int cur_ctx_seqno;
-> +
->   	/*
->   	 * List of GEM active objects on this gpu.  Protected by
->   	 * msm_drm_private::mm_lock
-> 
+This patchset is a follow-up work, which was originated with patch [1].
 
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+During the review of originally proposed solution, it has been
+discovered that a certain level of clean-up and re-factoring would be
+needed for CAAM Driver to remove static variables in JR probing
+functions, and some bits of CAAM driver code that is used for debug
+output purposes only.
 
--Akhil.
+New solution is proposed in this series, and provides following
+enhancements to the CAAM Driver infrastructure:
+- CAAM Driver uses new bitmap to indicate capabilities, which has been
+  previously accomplished by various assorted variables in
+  caam_ctrl_priv structure
+- JR node parsing is made independent from the order of appearance in
+  the DTB, indexing is now based on the address provided by the "reg"
+  property
+- CAAM Driver checks the presence on JR nodes in DTB, and matches the
+  access to JR HW units in its internal registers. If the JR HW unit is
+  marked to be used by TrustZone - it would be marked appropriate and
+  further probing of JR device would be stopped at the very early stage.
+
+Changelog with respect to original patch [1] is recorded in the updated
+version of the patch, which is included in this series.
+
+Link: [1]: https://lore.kernel.org/lkml/20211104162114.2019509-1-andrey.zhizhikin@leica-geosystems.com/
+
+Andrey Zhizhikin (2):
+  crypto: caam - convert to use capabilities
+  crypto: caam - check jr permissions before probing
+
+ drivers/crypto/caam/caamalg_qi.c |   2 +-
+ drivers/crypto/caam/ctrl.c       | 110 ++++++++++++++++++++++---------
+ drivers/crypto/caam/intern.h     |  18 ++---
+ drivers/crypto/caam/jr.c         |  33 ++++++++--
+ drivers/crypto/caam/regs.h       |   9 ++-
+ 5 files changed, 122 insertions(+), 50 deletions(-)
+
+
+base-commit: ad8be4fa6e8149ba6ea21fdf0089e8254437b3c8
+-- 
+2.25.1
+
