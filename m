@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3584C44DBB3
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE3044DBB4
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 19:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbhKKSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 13:46:10 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:53211 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233575AbhKKSqI (ORCPT
+        id S234442AbhKKSqL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Nov 2021 13:46:11 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:48187 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233245AbhKKSqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Nov 2021 13:46:08 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 917A52B01481;
-        Thu, 11 Nov 2021 13:43:18 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 11 Nov 2021 13:43:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=PGgunZVpj38XYZcYLfPCOQoENOw
-        7BhxHX2TPIJ6SG9o=; b=IKbUwddOVGne+QsO6GS9Hcgle4iTFIIi1P4W1uKIh4P
-        OUr/VQtl8nPM7nbXFr/PKLvt1DZ6MAm1s/sJ//gExwNIki17QIaUYZml3BSiPcg3
-        sF+a6Vtgxm9YgEH9+LH4K9QiphzXyCjlIa9Ko+ZaW8/3uxWJyZIuy3NSVNl2Hkoo
-        ougBc6VBc9TX9/77TQmzzC3Fbpek5tJEDZSIBNDZw49axBEgZ7hn8ROVmEZOyw7p
-        bcWRfHgWr0XcE6hHB8yvQ6UPt37IqIUSF3Y9yGNgbU72qC3X3+vItuEBi3HanzIX
-        v7Kbda4OnByv3Vl/wcfXKFSzmTXkCpz5GpT9jd957tw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PGgunZ
-        Vpj38XYZcYLfPCOQoENOw7BhxHX2TPIJ6SG9o=; b=N1wVtYx3NYPWa1BvJ6Mb/p
-        KYE3byRWGUFxlxoOQ31vIpcEee6L4HV9Xh5+/GeK9JtC5Uv4KRu4vCY2cxc5fpxA
-        BKkHtto9a6iiUe2xtXe2+pGH2v0Q8Cp/H9JHXeUyojECuNk+YkLbN517D59wK3mG
-        E2VJPrOjUtxvGnOnWQiEtDzk7paG2T1JwE8v3jfnWh+SAHadc/+xQqq3AVLuaXuj
-        Ut1GORC63jRkXaMK3KGjjXO8CuabdNk/9Lu91grjFT3DqhNdQslWgljyY6X8W2Wb
-        Qz/AxSw+FdeSwGdUKNH+Q7G8GBpyQZwJK913DFO+m3AucJIYX3YsnTqyzfe1bh6Q
-        ==
-X-ME-Sender: <xms:RWSNYZzCLa0UkfZpDFhxO5wxlixOQxamCFE4dVv1zoEA56Vp8USUww>
-    <xme:RWSNYZQgGtF2sFIz1Ph6N0DFobKGsi9oRPgM83hrL0TefPZxh8L7Tk45WHcgkC4c3
-    L-NgJlcS_GCFajpI2A>
-X-ME-Received: <xmr:RWSNYTUvNdmbcOfVcIfGW_QYuiEDAmdn6gbQVXVOEdgAPqdrTT6kkXcvZJjF1g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddugdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeffvggvphcu
-    ofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghilhdrihhnqeenucggtffrrghtth
-    gvrhhnpeetudfhfeejhfefledugfehkefhkedugeduhffhgedtheffffelueeuffffffdt
-    feenucffohhmrghinhepnhigphdrtghomhdpphholhholhhurdgtohhmpdgrrhgthhhivg
-    hvvgdrohhrghdprghrtghhihhvvgdrohhrghenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpeguvggvphesfhgrshhtmhgrihhlrdhinh
-X-ME-Proxy: <xmx:RWSNYbgjzgOWtOXD6lEgYlBuQaX852j-kzfo8t6ow-z-HvDEUdZ7Dg>
-    <xmx:RWSNYbBJwIxOZ1ZdnMWtdK1U1WQciQxBqUD_OXMSVTfZaKr0Y5eatA>
-    <xmx:RWSNYUIcOr9KRRtUY6KsYAy_K4d65szsi534P-oxD0zPkBcyb-EwQQ>
-    <xmx:RWSNYePcyEVvVr_zApRW8QOgvyhOgzv41mmMJp6wxb76PhACvpYkB3DKbjo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Nov 2021 13:43:16 -0500 (EST)
-Date:   Fri, 12 Nov 2021 00:13:07 +0530
-From:   Deep Majumder <deep@fastmail.in>
-To:     Wolfram Sang <wsa@kernel.org>, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Docs: Fixes link to I2C specification
-Message-ID: <20211111184307.6ld75ektg6avb3wb@pop-os.localdomain>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211104060018.35570-1-deep@fastmail.in>
- <YYWqGyETMgKcIkul@kunai>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYWqGyETMgKcIkul@kunai>
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 6FED6CECD2;
+        Thu, 11 Nov 2021 19:43:15 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v2] Bluetooth: Don't initialize msft/aosp when using user
+ channel
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211108200058.v2.1.Ide934b992a0b54085a6be469d3687963a245dba9@changeid>
+Date:   Thu, 11 Nov 2021 19:43:14 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <17BDA821-9D4A-46C9-8C0E-F7DB35D50033@holtmann.org>
+References: <20211108200058.v2.1.Ide934b992a0b54085a6be469d3687963a245dba9@changeid>
+To:     Jesse Melhuish <melhuishj@chromium.org>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wolfram Sang wrote:
-> On Thu, Nov 04, 2021 at 11:30:18AM +0530, Deep Majumder wrote:
-> > The link to the I2C specification is broken and is replaced in this
-> > patch by one that points to Rev 6 (2014) of the specification.
-> > Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
-> > specification, it is behind a login-wall and thus cannot be used.
-> > 
-> > Signed-off-by: Deep Majumder <deep@fastmail.in>
+Hi Jesse,
+
+> A race condition is triggered when usermode control is given to
+> userspace before the kernel's MSFT query responds, resulting in an
+> unexpected response to userspace's reset command.
 > 
-> Thanks for pointing out this issue!
+> Issue can be observed in btmon:
+> < HCI Command: Vendor (0x3f|0x001e) plen 2                    #3 [hci0]
+>        05 01                                            ..
+> @ USER Open: bt_stack_manage (privileged) version 2.22  {0x0002} [hci0]
+> < HCI Command: Reset (0x03|0x0003) plen 0                     #4 [hci0]
+>> HCI Event: Command Complete (0x0e) plen 5                   #5 [hci0]
+>      Vendor (0x3f|0x001e) ncmd 1
+> 	Status: Command Disallowed (0x0c)
+> 	05                                               .
+>> HCI Event: Command Complete (0x0e) plen 4                   #6 [hci0]
+>      Reset (0x03|0x0003) ncmd 2
+> 	Status: Success (0x00)
 > 
-> >  The official I2C specification is the `"I2C-bus specification and user
-> > -manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
-> > +manual" (UM10204) <https://www.pololu.com/file/0J435/UM10204.pdf>`_
+> Signed-off-by: Jesse Melhuish <melhuishj@chromium.org>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+> ---
 > 
-> I'd think we should have two links. One to the latest official specs,
-> even though it is behind a login wall. And one to the latest free
-> version. For that, I think the archieve.org address which Wikipedia uses
-> is more stable thant the pololu address from above:
+> Changes in v2:
+> - Moved guard to the new home for this code.
 > 
-> https://web.archive.org/web/20210813122132/https://www.nxp.com/docs/en/user-guide/UM10204.pdf
+> net/bluetooth/hci_sync.c | 6 ++++--
+> 1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> What do you think?
+> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> index b794605dc882..5f1f59ac1813 100644
+> --- a/net/bluetooth/hci_sync.c
+> +++ b/net/bluetooth/hci_sync.c
+> @@ -3887,8 +3887,10 @@ int hci_dev_open_sync(struct hci_dev *hdev)
+> 	    hci_dev_test_flag(hdev, HCI_VENDOR_DIAG) && hdev->set_diag)
+> 		ret = hdev->set_diag(hdev, true);
 > 
-Yes, I agree. Should I update the patch and re-send it?
+> -	msft_do_open(hdev);
+> -	aosp_do_open(hdev);
+> +	if (!hci_dev_test_flag(hdev, HCI_USER_CHANNEL)) {
+> +		msft_do_open(hdev);
+> +		aosp_do_open(hdev);
+> +	}
+
+but then you need to do the same on hci_dev_close. Also it would be good to extend userchan-tester with test cases for this.
+
+Regards
+
+Marcel
 
