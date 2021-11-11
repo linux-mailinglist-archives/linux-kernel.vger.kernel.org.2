@@ -2,112 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DDF44DB39
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0892644DB3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 18:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbhKKRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S234407AbhKKRsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:48:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhKKRrj (ORCPT
+        with ESMTP id S229710AbhKKRsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:47:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F8AC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:44:50 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id x7so4641721pjn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:44:50 -0800 (PST)
+        Thu, 11 Nov 2021 12:48:09 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05F1C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:45:19 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso10056330ote.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 09:45:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7MaSOuEOp+CoiKDEE7sxnGw6C1tJ0+8FkGqNIXlaeOA=;
-        b=FnGpm3IF6H65QzbG3rCh8MmyvtNek0vSeOME3psBrfAVG3939I40wIxO2yosG1b+8B
-         Sad+hM2t4c7Fq3IyDGA/ZDs33DIANmy1v1UZ54FX49PnBvzAxDKGDiXxnKre5ZnZ2EHx
-         GBikptqHMGmMR1fbZe0CQDEHVxRj3jTEf6WAKF3OPOsO+6gGWOD8DLUg/cPexe3hcdQK
-         sokXOYi8CE4wwfpRZoSyOcV66zPu/K1RiporWSt6FZl3UrIwnHSqlY/o76+s1n7s/sHP
-         oRoqRk9VS3n4HdrD3JnlDvI76ep9sqJu43l+5FKoM2fsaI3n4pbsO9lB+R2XzlXMGlRO
-         oDkQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=+LpyPIoZTKI9UToEAiLTdSPomWKgk1C2icqdbicCgnc=;
+        b=BW/VDT7VHtQPLLVudjdLklsUw34VamOFBVSTwdoSlF7QOfMR7lBmwsh1DKV/DK9SxW
+         XCITELNN+LNqajmFI2m48h24/wdW2G0RcmKu82cdQgWQWDPUd+8lWnhO1gnhF7l+GpTg
+         VJW5w/TQFbA1S2hoqV+dfjBG+BtiyvHecv5pI/yXDJWWaYkcGgPQAzwM7cM3Nx3wr8Hz
+         EUs0liLj9LiSFWn3GX6tZAzalCdxjMbbNQ/RwTAufZObjl00kBSWzVv54CiifK8CMOsc
+         3ZwNj935wD+J9OtFontXTgRjZiQSsYRKM25DP1PkXhf0d1tXCCiJ1g6/htrOBcgG75WV
+         Jfvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7MaSOuEOp+CoiKDEE7sxnGw6C1tJ0+8FkGqNIXlaeOA=;
-        b=286D1SCm3zcGfEX1ZitWPyXQZewMdQ84vDqU0tTV0gC1IomTbz+DQq3X/xWcNKPrhS
-         Z+3ChtJawGDmqlFysN4HxdrvoujUkpVTU6BAdXT7WyScV3bVfRhW2eMNP8Ec5IGmpi9Q
-         wC+m5eHNFRPIz0//l+OaW+GRbdFRpJhCEGYo1zV4fNa+xD70Az1fMwpOek75kYXVpLRM
-         fn9wGk3goLREXuivfGrFPhFmn2Xc3PBdqvHPTrt47AnORVmyxh5aozr1bkYcHvxKEk4I
-         NPPxsQ0lIG6NEYMIv/XAMbgcQYzVFjuM4hD9/OYAfz8O+oYy8IvzUsAZiRAu+g1z4ZRy
-         lVqQ==
-X-Gm-Message-State: AOAM533rdUW5qVhIc70cIn4+tTt8lgxXNXbPwC4va507N9Hg0Ng3Cc0w
-        rmDtBo1nISPWIgXFUExosM+RQpimL1Zujw==
-X-Google-Smtp-Source: ABdhPJwsH3mjR1to/+eMgCPxKJRq74DHSnHEnWS89IVB3LZ0yYHt/FcM8e3ZoCMzCoQVNiPxhxvi5Q==
-X-Received: by 2002:a17:90a:6e41:: with SMTP id s1mr28492721pjm.166.1636652689846;
-        Thu, 11 Nov 2021 09:44:49 -0800 (PST)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id f21sm4393355pfc.85.2021.11.11.09.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 09:44:49 -0800 (PST)
-Date:   Thu, 11 Nov 2021 17:44:45 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>, stable@vger.kernel.org
-Subject: Re: [RFC 01/19] KVM: x86/mmu: Fix TLB flush range when handling
- disconnected pt
-Message-ID: <YY1Wje9zNEch6XvG@google.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-2-bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=+LpyPIoZTKI9UToEAiLTdSPomWKgk1C2icqdbicCgnc=;
+        b=ikr1IzRB3l8iNEyQgh7fhTcXotUyhXP3TmjXNikFPJOBPEXpeAI57ixqpi3xwUu14u
+         ZiYq2tkrWvbcTwHm1ZbNWiAGg+uWT6SUNduwGy45N9+fMYiDJY19tWoiB0aNyhCOMA4J
+         qeI7ofUfnnZvLCl7Vsh1BdqNVkSSHayhgqI5ojlCbxuGSwM/YUP1dSlft/s157g3vvll
+         UX3zwXTzGAfmts6lJPapWvJxN2dmMoS1pPsyT4udA5X4oaV0aPTqFBBaEf0UV6Mdq64e
+         J10iiB5YXuGf3wxVqnIDWvVsrT39mtg9ZHq5qNubMVuXktL/klqW3LnNTzSmIf+sVSJ7
+         Z1tQ==
+X-Gm-Message-State: AOAM530JBAANFo4t+tHzFF1TxQ/qeqSCTJDmHWWQ/JUP9hzDD4f0+KRs
+        gRzuCt74qxGUTQqECUTVySGxkXAOH0bVPNWK+bc=
+X-Google-Smtp-Source: ABdhPJwhU6/85AHCrZderRz4f6gsysgalGuYs3mFuR7mgKdtwcALY5Qo7BvzSgkqqCO8XL0+K9WK3ay6Ery7UlUHR9c=
+X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr7305130otq.173.1636652719114;
+ Thu, 11 Nov 2021 09:45:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110223010.1392399-2-bgardon@google.com>
+References: <20211111084617.6746-1-ajaygargnsit@gmail.com>
+In-Reply-To: <20211111084617.6746-1-ajaygargnsit@gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Thu, 11 Nov 2021 23:15:07 +0530
+Message-ID: <CAHP4M8V2WEQ0LgHp7PHdBMYFp+_frn=7GLQVF7=faqapojQ+2g@mail.gmail.com>
+Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
+To:     hughd@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 02:29:52PM -0800, Ben Gardon wrote:
-> When recursively clearing out disconnected pts, the range based TLB
-> flush in handle_removed_tdp_mmu_page uses the wrong starting GFN,
-> resulting in the flush mostly missing the affected range. Fix this by
-> using base_gfn for the flush.
-> 
-> Fixes: a066e61f13cf ("KVM: x86/mmu: Factor out handling of removed page tables")
-> CC: stable@vger.kernel.org
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+Another report of the issue (different call-flow, but the same error
+at "shmem_read_mapping_page_gfp") at :
+https://lore.kernel.org/lkml/6bb8c25c-cdcf-8bca-3db2-9871a90d518f@kernel.dk/T/#m52d98b6bdb05764524a118b15cec048b34e5ca76
+
+with a tentative approval for the patch :
+https://lore.kernel.org/lkml/6bb8c25c-cdcf-8bca-3db2-9871a90d518f@kernel.dk/T/#m24c2888a879d428cde5b34c43838301de544eb7e
+
+
+Thanks and Regards,
+Ajay
+
+
+On Thu, Nov 11, 2021 at 2:16 PM Ajay Garg <ajaygargnsit@gmail.com> wrote:
+>
+> commit b9d02f1bdd98
+> ("mm: shmem: don't truncate page if memory failure happens")
+>
+> introduced a PageHWPoison(page) call in "shmem_read_mapping_page_gfp"
+> in shmem.c.
+>
+> Now, if "shmem_getpage_gfp" returns an error, page is set to ERR-page.
+> Therafter, calling PageHWPoison() on this ERR-page, causes KASAN to OOP
+> the kernel :
+>
+>  #############################
+> BUG: unable to handle page fault for address: fffffffffffffff4
+> PF: supervisor read access in kernel mode
+> PF: error_code(0x0000) - not-present page
+> PGD 18e019067 P4D 18e019067 PUD 18e01b067 PMD 0
+> Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN PTI
+> CPU: 0 PID: 4836 Comm: MATLAB Not tainted 5.15.0+ #18
+> Hardware name: Dell Inc. Latitude E6320/0GJF11, BIOS A19 11/14/2013
+> RIP: 0010:shmem_read_mapping_page_gfp+0xd3/0x140
+> Code: 4c 89 ff e8 6f eb ff ff 5a 59 85 c0 74 64 48 63 d8 48 89 5d 98 be 08 00 00 00 48 89 df e8 e5 67 0c 00 48 89 df e8 6d 5c 0c 00 <48> 8b 13 48 c7 c0 fb ff ff ff f7 c2 00 00 80 00 74 30 48 ba 00 00
+> RSP: 0018:ffff88806b33f998 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: fffffffffffffff4 RCX: ffffffffb7a37ba3
+> RDX: 0000000000000003 RSI: dffffc0000000000 RDI: fffffffffffffff4
+> RBP: ffff88806b33fa20 R08: 1ffffffffffffffe R09: fffffffffffffffb
+> R10: fffffbffffffffff R11: 0000000000000001 R12: 1ffff1100d667f33
+> R13: 00000000001120d2 R14: 00000000000005db R15: ffff88814e64e2d8
+> FS:  00007f379a384640(0000) GS:ffff888161a00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: fffffffffffffff4 CR3: 00000000269dc004 CR4: 00000000000606f0
+> Call Trace:
+> <TASK>
+> ? shmem_fault+0x480/0x480
+> ? __cond_resched+0x1c/0x30
+> ? __kasan_check_read+0x11/0x20
+> shmem_get_pages+0x3a4/0xa70 [i915]
+> ? shmem_writeback+0x3b0/0x3b0 [i915]
+> ? i915_gem_object_wait_reservation+0x330/0x560 [i915]
+> ...
+> ...
+>  ################################
+>
+> So, we proceed with PageHWPoison() call, only if the page is not a
+> ERR-page.
+>
+>
+> P.S. : Alternative (optimised) solution :
+> ===========================================
+>
+> We could save some CPU cycles, if we directly replace
+>
+>         if (error)
+>                 page = ERR_PTR(error);
+>         else
+>                 unlock_page(page);
+>
+> with
+>
+>         if (error)
+>                 return ERR_PTR(error);
+>
+>
+> Fixes: b9d02f1bdd98 ("mm: shmem: don't truncate page if memory failure happens")
+> Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
 > ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+>  mm/shmem.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7c5dd83e52de..866c2b191e1e 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -374,7 +374,7 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
->  				    shared);
->  	}
->  
-> -	kvm_flush_remote_tlbs_with_address(kvm, gfn,
-> +	kvm_flush_remote_tlbs_with_address(kvm, base_gfn,
-
-Suggest pulling the definition of gfn into the for loop as well (along
-with sptep and old_child_spte for that matter) so that referencing it
-here isn't even possible.
-
->  					   KVM_PAGES_PER_HPAGE(level + 1));
->  
->  	call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
-> -- 
-> 2.34.0.rc0.344.g81b53c2807-goog
-> 
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 23c91a8beb78..427863cbf0dc 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -4222,7 +4222,7 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+>         else
+>                 unlock_page(page);
+>
+> -       if (PageHWPoison(page))
+> +       if (!IS_ERR(page) && PageHWPoison(page))
+>                 page = ERR_PTR(-EIO);
+>
+>         return page;
+> --
+> 2.30.2
+>
