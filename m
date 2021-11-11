@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64AA44DC3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3C044DC37
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 20:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhKKTmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 14:42:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50659 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229785AbhKKTmR (ORCPT
+        id S233839AbhKKTjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 14:39:49 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:33033 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233752AbhKKTjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 14:42:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636659567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0cPNm28FmvGF69nKmphcoBlWDfSJ5fX9zp/LDfDQQ3I=;
-        b=ESv2zq0JBoePMmhLHgLMkuONywnUE7CEHp8QqgL/jEPRsmb4Dd3JBxJoZfci9v2mS3Aywh
-        34U3bin+ml+3hBL3onpERo8JDaerPdt9UkXZYtz1L48ea/zWZ6dzekSd6jjHRKFaZM6jm2
-        TlYkGhGvZq0wjdxgO/g/KJ6RYoXGN30=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-xsjv7s98MNy1w2U9edKmGg-1; Thu, 11 Nov 2021 14:39:26 -0500
-X-MC-Unique: xsjv7s98MNy1w2U9edKmGg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05EAB19057A0;
-        Thu, 11 Nov 2021 19:39:25 +0000 (UTC)
-Received: from wcosta.com (ovpn-116-123.gru2.redhat.com [10.97.116.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1685219D9D;
-        Thu, 11 Nov 2021 19:39:17 +0000 (UTC)
-From:   Wander Lairson Costa <wander@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Wander Lairson Costa <wander@redhat.com>
-Subject: [PATCH] printk: suppress rcu stall warnings caused by slow console devices
-Date:   Thu, 11 Nov 2021 16:38:54 -0300
-Message-Id: <20211111193854.616163-1-wander@redhat.com>
+        Thu, 11 Nov 2021 14:39:47 -0500
+Received: from [128.177.79.46] (helo=csail.mit.edu)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mlFsU-0003Le-47; Thu, 11 Nov 2021 14:36:54 -0500
+Date:   Thu, 11 Nov 2021 11:40:02 -0800
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com, joe@perches.com,
+        kuba@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
+ and VMware hypervisor interface
+Message-ID: <20211111194002.GA8739@csail.mit.edu>
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
+ <YYy9P7Rjg9hntmm3@kroah.com>
+ <20211111153916.GA7966@csail.mit.edu>
+ <YY1krlfM5R7uEzJF@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YY1krlfM5R7uEzJF@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have a reasonable large dataset to flush in the printk ring
-buffer in the presence of a slow console device (like a serial port
-with a low baud rate configured), the RCU stall detector may report
-warnings.
+On Thu, Nov 11, 2021 at 07:45:02PM +0100, Greg KH wrote:
+> On Thu, Nov 11, 2021 at 07:39:16AM -0800, Srivatsa S. Bhat wrote:
+> > On Thu, Nov 11, 2021 at 07:50:39AM +0100, Greg KH wrote:
+> > > On Wed, Nov 10, 2021 at 12:08:16PM -0800, Srivatsa S. Bhat wrote:
+> > > > From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > 
+> > > > Deep has decided to transfer maintainership of the VMware hypervisor
+> > > > interface to Srivatsa, and the joint-maintainership of paravirt ops in
+> > > > the Linux kernel to Srivatsa and Alexey. Update the MAINTAINERS file
+> > > > to reflect this change.
+> > > > 
+> > > > Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > Acked-by: Alexey Makhalov <amakhalov@vmware.com>
+> > > > Acked-by: Deep Shah <sdeep@vmware.com>
+> > > > Acked-by: Juergen Gross <jgross@suse.com>
+> > > > Cc: stable@vger.kernel.org
+> > > 
+> > > Why are MAINTAINERS updates needed for stable?  That's not normal :(
+> > 
+> > So that people posting bug-fixes / backports to these subsystems for
+> > older kernels (stable and LTS releases) will CC the new subsystem
+> > maintainers.
+> 
+> That's not how stable releases work at all.
+> 
+> > That's why I added CC stable tag only to the first two
+> > patches which add/replace maintainers and not the third patch which is
+> > just a cleanup.
+> 
+> Patches for stable kernels need to go into Linus's tree first, and if
+> you have the MAINTAINERS file updated properly there, then you will be
+> properly cc:ed.  We do not look at the MAINTAINERS file for the older
+> kernel when sending patches out, it's totally ignored as that was the
+> snapshot at a point in time, which is usually no longer the true state.
+> 
 
-This patch suppresses RCU stall warnings while flushing the ring buffer
-to the console.
+Sure, but that's the case for patches that get mainlined (and
+subsequently backported to -stable) /after/ this update to the
+MAINTAINERS file gets merged into mainline.
 
-Signed-off-by: Wander Lairson Costa <wander@redhat.com>
----
- kernel/printk/printk.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+When adding the CC stable tag, the case I was trying to address was
+for patches that are already in mainline but weren't CC'ed to stable,
+and at some later point, somebody decides to backport them to older
+stable kernels. In that case, there is a chance that the contributor
+might run ./get_maintainer.pl against the stable tree (as that's the
+tree they are backporting the upstream commit against) and end up not
+CC'ing the new maintainers. So, I thought it would be good to keep the
+maintainer info updated in the older stable kernels too.
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 142a58d124d9..cb995f8d4f8a 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2523,6 +2523,20 @@ static inline int can_use_console(void)
- 	return cpu_online(raw_smp_processor_id()) || have_callable_console();
- }
- 
-+extern int rcu_cpu_stall_suppress;
-+
-+static void rcu_console_stall_suppress(void)
-+{
-+	if (!rcu_cpu_stall_suppress)
-+		rcu_cpu_stall_suppress = 4;
-+}
-+
-+static void rcu_console_stall_unsuppress(void)
-+{
-+	if (rcu_cpu_stall_suppress == 4)
-+		rcu_cpu_stall_suppress = 0;
-+}
-+
- /**
-  * console_unlock - unlock the console system
-  *
-@@ -2568,6 +2582,9 @@ void console_unlock(void)
- 	 * and cleared after the "again" goto label.
- 	 */
- 	do_cond_resched = console_may_schedule;
-+
-+	rcu_console_stall_suppress();
-+
- again:
- 	console_may_schedule = 0;
- 
-@@ -2579,6 +2596,7 @@ void console_unlock(void)
- 	if (!can_use_console()) {
- 		console_locked = 0;
- 		up_console_sem();
-+		rcu_console_stall_unsuppress();
- 		return;
- 	}
- 
-@@ -2645,6 +2663,7 @@ void console_unlock(void)
- 
- 		if (console_lock_spinning_disable_and_check()) {
- 			printk_safe_exit_irqrestore(flags);
-+			rcu_console_stall_unsuppress();
- 			return;
- 		}
- 
-@@ -2669,6 +2688,8 @@ void console_unlock(void)
- 
- 	if (retry && console_trylock())
- 		goto again;
-+
-+	rcu_console_stall_unsuppress();
- }
- EXPORT_SYMBOL(console_unlock);
- 
--- 
-2.27.0
-
+Regards,
+Srivatsa
