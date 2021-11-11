@@ -2,238 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6734F44D6AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680C944D6AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 13:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhKKMe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 07:34:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:11601 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhKKMe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 07:34:56 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="213627931"
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="213627931"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 04:32:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="492527468"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga007.jf.intel.com with ESMTP; 11 Nov 2021 04:32:03 -0800
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 11 Nov 2021 04:32:03 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Thu, 11 Nov 2021 04:32:03 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Thu, 11 Nov 2021 04:32:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PXYkk6Lh3KKR+CVE5TorCf3d8inoXB4KdnqzAjLqREIPQI3KPd61QWwI/elJGPt2UN9bVRIzQHZYYJEWXdqrTf4cEumuGmsz+MiKnJ89oWQczkEsmMXCmGMLxLPFX4OVzBf/mYhJKIt1BgTkubBXtClCD7COl4eYUBFqsigzxzwvrXM2bhrrDGstlQwZ24QOWELgDCcwoA6K3WFfnnoMcqKMMf3ENnoJ0Q/AQkvImxTj0yTlCmF+5VoONHQkiO92y2yMbAFrIZEgFEBQIVIcIDdIO/2WPRM5LQHpukGE3OP78s9cpUBGFhEgIoe21BJER9oxYLmCZfEJVST5RZToxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Le+CFli682kT16P7G6lDEMnWTHa853kI4oVrHqcRy44=;
- b=P2eHwnH17dzUOL1WrGMbzhytT/fTZtl1sAPIYXpghd7/CJuPJRpDW4d1eQFcbrYKAx9qqG2M6iPM01tnEDECb6XukYL8OJsun2LXOoiLBvR7nkfVFsFTMzpA7dGFh4WEzSmwGYq7Ta2s22YPhTf7UMOlVhkA8FqRi0oyKb5OR4NCo5wo7aciRQyDWbRt6jyxtc5ubwCB5BqiSJ48T8oSrRgu2nIdBKBLkfZMk5IDXCdnPjW5DOIvZsEtdQzNw1HWpTVv38lbuMVB2biSKrwwgi16zH0ATJkHw092R+wFqiIuRij0WroLQqLh2VjTcYgR76pz851N+BjeU6H9rmXiPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Le+CFli682kT16P7G6lDEMnWTHa853kI4oVrHqcRy44=;
- b=d9UiuWV+92spXv4Hobc8x72Vcxg7o23wRlpNFMl05ALKYQFdA4aJCwL+0wbrXa/ss49baD86dN04O44CCh4LgXjho7kaNrwbEqCv4T01j0ud1JZNS6BwrhnHXgn1vYH404q2uKtkTmjspBWgVKR0WcOhtx5nGd/UOxymAg5KKYs=
-Received: from PH0PR11MB5658.namprd11.prod.outlook.com (2603:10b6:510:e2::23)
- by PH0PR11MB5595.namprd11.prod.outlook.com (2603:10b6:510:e5::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Thu, 11 Nov
- 2021 12:32:00 +0000
-Received: from PH0PR11MB5658.namprd11.prod.outlook.com
- ([fe80::e849:e503:195c:b69c]) by PH0PR11MB5658.namprd11.prod.outlook.com
- ([fe80::e849:e503:195c:b69c%6]) with mapi id 15.20.4649.020; Thu, 11 Nov 2021
- 12:32:00 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: RE: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Thread-Topic: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Thread-Index: AQHXyZ9N9hHTiUakTUi0phVNj8QgQ6vpuU9ggATxeICAAVDBMIAB3diAgAyAZCA=
-Date:   Thu, 11 Nov 2021 12:32:00 +0000
-Message-ID: <PH0PR11MB56582105A53056F2B7DDADB5C3949@PH0PR11MB5658.namprd11.prod.outlook.com>
-References: <PH0PR11MB56583D477B3977D92C2C1ADDC3839@PH0PR11MB5658.namprd11.prod.outlook.com>
- <20211025125309.GT2744544@nvidia.com>
- <PH0PR11MB56586D2EC89F282C915AF18DC3879@PH0PR11MB5658.namprd11.prod.outlook.com>
- <20211101125013.GL2744544@nvidia.com>
- <PH0PR11MB565808A9C9974A0D0D72B738C38B9@PH0PR11MB5658.namprd11.prod.outlook.com>
- <20211103132547.GM2744544@nvidia.com>
-In-Reply-To: <20211103132547.GM2744544@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 68a5f8a6-33de-4a79-56cd-08d9a50f4281
-x-ms-traffictypediagnostic: PH0PR11MB5595:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-microsoft-antispam-prvs: <PH0PR11MB55955299E4A26702E5287AD6C3949@PH0PR11MB5595.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0cdWl5tbH7T4g7jIX4KnO0nWOo58cC9dHEWjNGoyTuFKFGDXYAMvtOoRgqQx4exRPFM9l8abz2B7ZgLClYNW/aJPYZkRvctzZaUEnMRm79XkeykOnc95j3Oh7wXYsVpSG3aVHNn3pr7W1BhW7st2UhOTwQXttbkDHhJFuTPCMTHApaWOTnXFE6QZBz4lHu70018nt9gqD1wKMCgP0s1/D0JIqC8dHkqiCJHZ0mIAAug30OMk4MpDTEN1tYw4dv82+hkkJtsIPJAE/91Nt8kUyGMehi97uEHPYipXiYQabDGF0jIKZ5S/GT9mByC0nfAoYM1DebagZYyL+uGXHYr2aKD353e1qh41PS7oYhedxCIB4sAYjwVed6ZaQomAmbA4riNLBMT0wXuxFgM+k80ov2QYgzh6Fp0TWhLnpGiN+hohEKVT9woRf2gUCKmxOC3MCIXXSOqYfu1Qf3KqmlGYVfQix/J0P2NF9VCvj3USQu0lp9yYwcBT0G6tCNhlR29zBYS4b/CGwp0Eo4OVFXta3AvndRvIrC0VJeixTIBSN4l5OoxDUeTPoNRHx5c7fH3XEUHQIqqS+iZ1wTL/u1X1w83oR7pfMn/I7SqzKz9+jlk8GvUoftbbb+DtPHbSj0Y5AHJYzVJIqUo38h/7av7m5fhydbz5lH7Q6FPgeFxih+R8a1D3ApBiVNuegmqhUKT9y8gwhLb+FSwdmtNKNirOdH1orhpWngrCP3NsEVwdrPAqA82ctUKeC008jMGI74RMFi3tmp3LtF5rkiaWrItveHpR8ZQp5cYbFhSBvDrV/LM5nmiig+5eo6EmdKidE93z
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5658.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(33656002)(6916009)(82960400001)(2906002)(5660300002)(26005)(316002)(54906003)(122000001)(7416002)(71200400001)(38100700002)(52536014)(38070700005)(186003)(7696005)(8676002)(9686003)(83380400001)(4326008)(64756008)(66476007)(86362001)(66446008)(66556008)(55016002)(66946007)(6506007)(76116006)(966005)(8936002)(508600001)(9126006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/NADS/+iZl44zcRd58SVyFcspVAa5CnLPDNCA/Hd3EDlJkpz5gnuExtNaFWg?=
- =?us-ascii?Q?3MkQxkYz+3QV7VBzlG+7lH6hF2OXtYpD1fhot0HUNDl61u8jXLoJzJxKHXHP?=
- =?us-ascii?Q?k9LLfJ3+zXqgK45hZsYfncesXswWh0NJMVCgAFfuMnvacNZTn7d2/JzC7y15?=
- =?us-ascii?Q?0GPFhkFwIYV8j9wkWCBlX2MpLshKQ+jbSuTCRm6HyMaBT1PkcIuHUUV2vbcQ?=
- =?us-ascii?Q?yaF44TONXVREvXaJHWlbIwsw7kykAHbXefrmzb/kT1AB18N0N3ZvR554+DwR?=
- =?us-ascii?Q?oWo4YsMgSAa4MfJv2rCoQWn3ISR6OXNY9mBE0RlOaE5855cgbl3fXyu70hZR?=
- =?us-ascii?Q?m4F6uwxkrFC5Ohy9vrSTRqtCMzqv2zJQHfAdlgrZJFRP/kuCyaziVsWRbzu7?=
- =?us-ascii?Q?DHngtSP/rdgVZYcj+Gr+JvW1Yw4l208Ls5zXy5GV3vWB2g2sc3CHrMBhYISv?=
- =?us-ascii?Q?shjXLmrpSb3ed4haX3PUMQm/t3/bW4GWsnDxiN8Aru9cykn9mWpbcm1gtcZ4?=
- =?us-ascii?Q?anwQ2dluaFVq4K/qLHfgcIYrwdTkkiSsR81lUDtrlFUTOywSBJxsihDGA+9W?=
- =?us-ascii?Q?vPqry0LElUC7VPNIiSiyWJhITXcBgxN19GJ7U0/FIAVKMPpxZRXU6/pG59ox?=
- =?us-ascii?Q?HhgF+4illPl9YaMVq9TsURncQ7L+TMMpZHN7bczghhnhQ/gyw6jeonepQTU6?=
- =?us-ascii?Q?sdxIsVN6NPhfYMkRz4ju3jt/5XPPJaRDBjucUbDyuaS9yox8hlHHa+A2tyFu?=
- =?us-ascii?Q?rhOUvalrOyLXjkeTk4tY4Xm29BvgcJuQp0UXQqlO1EQzU7Y7+k9GwJ5sMSTx?=
- =?us-ascii?Q?G7ucncMoJTB2jVfUfe55+XORqYlzufr4+Br1KyzO+ApB1EpWkUs/ESPPmW+f?=
- =?us-ascii?Q?lmfVcqcjiDJYHIKF/MEWRhLPV7qXhrOGWwjw4G0B5OP3msIpiibm3SvcPTQ2?=
- =?us-ascii?Q?IzZagHJn2YHTgnRLXv04Lr9/PdN/WW/4wjMA440PPhPJwdhB/Px08cx0mXUK?=
- =?us-ascii?Q?T4bLGp4NSEtqxz3hwGrmrujemwHruRG44VBYw1n/h3XKzIKfJ/OqZZcK+z29?=
- =?us-ascii?Q?6At9PKXu+AIkTdNmE2Ht0xhYYW9PGWGC2xVnDHhPHZD1uLIQIgZKwxmqZM29?=
- =?us-ascii?Q?YFne/8cRRTXdERSIKrVUmEIREen0fdCfeL+ZhAB6EapdsnT+faJoADzZT716?=
- =?us-ascii?Q?HnqKFLxQy7ciQ/5NVE2CjOu08ZymRb0yFME4rr1kXerJnCQgFPHjQY82awjT?=
- =?us-ascii?Q?WLavj4RkEaoSBhTakdCxkxOQdovk+8LMO3e6fEOZcKGuLkGqPr8MeBF5rqWG?=
- =?us-ascii?Q?HM1oPmQmmTb1ju2aAqdWdgCDdAZ5xFsRbMPVlEew1NH+nF3H7MGKABt9lLW1?=
- =?us-ascii?Q?yXzs5csCOkmDOAo9Ib6VWpZMU+GJg8gGcSeSLutZvBV6H9dNXaSZO2lHlYac?=
- =?us-ascii?Q?LHau76ODBgUn0IQNA6WGd+If4EGdU5ih6K4ALndZxpwYRPRKNz5txVrHOC7p?=
- =?us-ascii?Q?ulYjmwWyd4dqjHYSUqtghnCtUGr2ZCJQ0SlpwdmaQN2/UcUAIwFwa8B9iKIL?=
- =?us-ascii?Q?IbyqvDo3sQzTxPAz8lMK7Btfmx2q9GqBzyUJTEkg+6rLwl9CUynfnNEA4jag?=
- =?us-ascii?Q?pkGR53vd1QWLAtGM0inJnUI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233311AbhKKMfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 07:35:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233274AbhKKMfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 07:35:38 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637AEC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:32:49 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id z6so5489202pfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 04:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=N9eWrGMaTS7mIY9Ow3VHOpPVUK2E0L1tukxlTfZow/I=;
+        b=0DCmcveGGlFkJ6nj1QVG7Pj/jIAVjn7kPov9weG3UvqT8F0hvEstw+o0v12mpnlitN
+         n8scT97+kJmkNEdr/1/PG6GcF1illpYNK8gGUe3KIJSlXid/dAfIjlzjizeqRLrU76fx
+         JJDPQJumxFsIAXPN8jjlFER29TRiwr2YUrrXCEX7egZUdjm5l/iI3vPZCTpRkmTfGaIa
+         7AhYSvPMi4BQ4NOV1LiU0rjZ9Qq1CavRL0l18hI6fIOp27/KcuCv1mTJLMnw0iuaGPPQ
+         XnH1ROgwnLtx8bcbkasc/TeLPH9jUEqevAuIuK9z6mar7eYpn10wFLVlHXMH4eeoNhSb
+         cGrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=N9eWrGMaTS7mIY9Ow3VHOpPVUK2E0L1tukxlTfZow/I=;
+        b=V8/Cg4/oCyWS56B7ROGfvc1tk086+TgYsYiBYSAYljm0/oTgmtkzlhGrEJbREYOUIU
+         KOeYaxxinaSPH9dvKlIOaSKtp4zUeEOhYtpGasj1KpBNGZlDAhBTZef+k80zMxs9y00t
+         LcS6uqc469gAuQIWbHTswYci/SvNKGpVYAHHL+Sor990a1W0Lgbjso7aNTx8fu/P+WwI
+         pJG2bD+I0Dx2FY1lIgq+ZwpFeDTRuljNelE78KgWNPngWdUHpqH67/8zoj0kMx3CsIYP
+         av27ST4W5+AcEDZrAVejvcDGIMfrtjKyaMt5CCIHF76X3zJrWySa2f/d/2xPpRBVRU6l
+         ngQw==
+X-Gm-Message-State: AOAM5312c1FzEg/MTua5dcUFq9+ESQ3B0HEgg8+9CRmodlNGGQbIXb7P
+        Bw/ZCCDpKndsVt/VfrJd/P0Y/dNyra+bNQ==
+X-Google-Smtp-Source: ABdhPJyiZWEFxYBGLynrCfVHBE7mGR89TDDZMx2f07TTTneXkPh/suRRqCYTj58MFolNEg3awLnFTA==
+X-Received: by 2002:a05:6a00:1a8d:b0:49f:de63:d9c0 with SMTP id e13-20020a056a001a8d00b0049fde63d9c0mr6089092pfv.79.1636633968816;
+        Thu, 11 Nov 2021 04:32:48 -0800 (PST)
+Received: from [10.254.173.217] ([139.177.225.248])
+        by smtp.gmail.com with ESMTPSA id j17sm3327330pfj.55.2021.11.11.04.32.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 04:32:48 -0800 (PST)
+Message-ID: <791ddf94-5ad1-b431-85a1-db9a07579057@bytedance.com>
+Date:   Thu, 11 Nov 2021 20:32:39 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5658.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68a5f8a6-33de-4a79-56cd-08d9a50f4281
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2021 12:32:00.6439
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AwTUaYdY+/+L4TIqBnqXZRL80ApqyPVtmfbbopAN8a8nPe6rxfN4cuF4iFeJEDEKG0sahQRBqdMjaa/Vs5BG5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5595
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v3 00/15] Free user PTE page table pages
+To:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+References: <20211110105428.32458-1-zhengqi.arch@bytedance.com>
+ <20211110125601.GQ1740502@nvidia.com>
+ <8d0bc258-58ba-52c5-2e0d-a588489f2572@redhat.com>
+ <20211110143859.GS1740502@nvidia.com>
+ <6ac9cc0d-7dea-0e19-51b3-625ec6561ac7@redhat.com>
+ <20211110163925.GX1740502@nvidia.com>
+ <7c97d86f-57f4-f764-3e92-1660690a0f24@redhat.com>
+ <60515562-5f93-11cd-6c6a-c7cc92ff3bf8@bytedance.com>
+ <a052e0ba-a22c-5df1-80b8-d847efacd66e@redhat.com>
+ <9ee06b52-4844-7996-fa34-34fc7d4fdc10@bytedance.com>
+ <27d73395-70b4-fe4a-4c8d-415b43ff9c1f@redhat.com>
+ <2e19ad1b-15f3-7508-c5d5-6c31765f26d3@bytedance.com>
+ <1489f02f-d024-b9ec-2ab6-e6efc8a022f1@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <1489f02f-d024-b9ec-2ab6-e6efc8a022f1@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, November 3, 2021 9:26 PM
->=20
-> On Tue, Nov 02, 2021 at 09:53:29AM +0000, Liu, Yi L wrote:
->=20
-> > > 	vfio_uninit_group_dev(&mdev_state->vdev);
-> > > 	kfree(mdev_state->pages);
-> > > 	kfree(mdev_state->vconfig);
-> > > 	kfree(mdev_state);
-> > >
-> > > pages/vconfig would logically be in a release function
-> >
-> > I see. So the criteria is: the pointer fields pointing to a memory buff=
-er
-> > allocated by the device driver should be logically be free in a release
-> > function. right?
->=20
-> Often yes, that is usually a good idea
->=20
-> >I can see there are such fields in struct vfio_pci_core_device
-> > and mdev_state (both mbochs and mdpy). So we may go with your option
-> #2.
-> > Is it? otherwise, needs to add release callback for all the related dri=
-vers.
->=20
-> Yes, that is the approx trade off
->=20
-> > > On the other hand ccw needs to rcu free the vfio_device, so that woul=
-d
-> > > have to be global overhead with this api design.
-> >
-> > not quite get. why ccw is special here? could you elaborate?
->=20
-> I added a rcu usage to it in order to fix a race
->=20
-> +static inline struct vfio_ccw_private *vfio_ccw_get_priv(struct subchann=
-el
-> *sch)
-> +{
-> +       struct vfio_ccw_private *private;
-> +
-> +       rcu_read_lock();
-> +       private =3D dev_get_drvdata(&sch->dev);
-> +       if (private && !vfio_device_try_get(&private->vdev))
-> +               private =3D NULL;
-> +       rcu_read_unlock();
-> +       return private;
-> +}
 
-you are right. After checking your ccw patch, the private free triggered
-by vfio_ccw_free_private() should use kfree_rcu(). So it is not quite
-same with other vfio_device users which only need kfree() to free the
-vfio_device. So how can I address the difference when moving the vfio_devic=
-e
-alloc/free into vfio core? any suggestion?
+On 11/11/21 8:20 PM, David Hildenbrand wrote:
+> On 11.11.21 13:00, Qi Zheng wrote:
+>>
+>>
+>> On 11/11/21 7:19 PM, David Hildenbrand wrote:
+>>> On 11.11.21 12:08, Qi Zheng wrote:
+>>>>
+>>>>
+>>>> On 11/11/21 5:22 PM, David Hildenbrand wrote:
+>>>>> On 11.11.21 04:58, Qi Zheng wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 11/11/21 1:37 AM, David Hildenbrand wrote:
+>>>>>>>>> It would still be a fairly coarse-grained locking, I am not sure if that
+>>>>>>>>> is a step into the right direction. If you want to modify *some* page
+>>>>>>>>> table in your process you have exclude each and every page table walker.
+>>>>>>>>> Or did I mis-interpret what you were saying?
+>>>>>>>>
+>>>>>>>> That is one possible design, it favours fast walking and penalizes
+>>>>>>>> mutation. We could also stick a lock in the PMD (instead of a
+>>>>>>>> refcount) and still logically be using a lock instead of a refcount
+>>>>>>>> scheme. Remember modify here is "want to change a table pointer into a
+>>>>>>>> leaf pointer" so it isn't an every day activity..
+>>>>>>>
+>>>>>>> It will be if we somewhat frequent when reclaim an empty PTE page table
+>>>>>>> as soon as it turns empty. This not only happens when zapping, but also
+>>>>>>> during writeback/swapping. So while writing back / swapping you might be
+>>>>>>> left with empty page tables to reclaim.
+>>>>>>>
+>>>>>>> Of course, this is the current approach. Another approach that doesn't
+>>>>>>> require additional refcounts is scanning page tables for empty ones and
+>>>>>>> reclaiming them. This scanning can either be triggered manually from
+>>>>>>> user space or automatically from the kernel.
+>>>>>>
+>>>>>> Whether it is introducing a special rwsem or scanning an empty page
+>>>>>> table, there are two problems as follows:
+>>>>>>
+>>>>>> 	#1. When to trigger the scanning or releasing?
+>>>>>
+>>>>> For example when reclaiming memory, when scanning page tables in
+>>>>> khugepaged, or triggered by user space (note that this is the approach I
+>>>>> originally looked into). But it certainly requires more locking thought
+>>>>> to avoid stopping essentially any page table walker.
+>>>>>
+>>>>>> 	#2. Every time to release a 4K page table page, 512 page table
+>>>>>> 	    entries need to be scanned.
+>>>>>
+>>>>> It would happen only when actually trigger reclaim of page tables
+>>>>> (again, someone has to trigger it), so it's barely an issue.
+>>>>>
+>>>>> For example, khugepaged already scans the page tables either way.
+>>>>>
+>>>>>>
+>>>>>> For #1, if the scanning is triggered manually from user space, the
+>>>>>> kernel is relatively passive, and the user does not fully know the best
+>>>>>> timing to scan. If the scanning is triggered automatically from the
+>>>>>> kernel, that is great. But the timing is not easy to confirm, is it
+>>>>>> scanned and reclaimed every time zap or try_to_unmap?
+>>>>>>
+>>>>>> For #2, refcount has advantages.
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> There is some advantage with this thinking because it harmonizes well
+>>>>>>>> with the other stuff that wants to convert tables into leafs, but has
+>>>>>>>> to deal with complicated locking.
+>>>>>>>>
+>>>>>>>> On the other hand, refcounts are a degenerate kind of rwsem and only
+>>>>>>>> help with freeing pages. It also puts more atomics in normal fast
+>>>>>>>> paths since we are refcounting each PTE, not read locking the PMD.
+>>>>>>>>
+>>>>>>>> Perhaps the ideal thing would be to stick a rwsem in the PMD. read
+>>>>>>>> means a table cannot be come a leaf. I don't know if there is space
+>>>>>>>> for another atomic in the PMD level, and we'd have to use a hitching
+>>>>>>>> post/hashed waitq scheme too since there surely isn't room for a waitq
+>>>>>>>> too..
+>>>>>>>>
+>>>>>>>> I wouldn't be so quick to say one is better than the other, but at
+>>>>>>>> least let's have thought about a locking solution before merging
+>>>>>>>> refcounts :)
+>>>>>>>
+>>>>>>> Yes, absolutely. I can see the beauty in the current approach, because
+>>>>>>> it just reclaims "automatically" once possible -- page table empty and
+>>>>>>> nobody is walking it. The downside is that it doesn't always make sense
+>>>>>>> to reclaim an empty page table immediately once it turns empty.
+>>>>>>>
+>>>>>>> Also, it adds complexity for something that is only a problem in some
+>>>>>>> corner cases -- sparse memory mappings, especially relevant for some
+>>>>>>> memory allocators after freeing a lot of memory or running VMs with
+>>>>>>> memory ballooning after inflating the balloon. Some of these use cases
+>>>>>>> might be good with just triggering page table reclaim manually from user
+>>>>>>> space.
+>>>>>>>
+>>>>>>
+>>>>>> Yes, this is indeed a problem. Perhaps some flags can be introduced so
+>>>>>> that the release of page table pages can be delayed in some cases.
+>>>>>> Similar to the lazyfree mechanism in MADV_FREE?
+>>>>>
+>>>>> The issue AFAIU is that once your refcount hits 0 (no more references,
+>>>>> no more entries), the longer you wait with reclaim, the longer others
+>>>>> have to wait for populating a fresh page table because the "page table
+>>>>> to be reclaimed" is still stuck around. You'd have to keep the refcount
+>>>>> increased for a while, and only drop it after a while. But when? And
+>>>>> how? IMHO it's not trivial, but maybe there is an easy way to achieve it.
+>>>>>
+>>>>
+>>>> For running VMs with memory ballooning after inflating the balloon, is
+>>>> this a hot behavior? Even if it is, it is already facing the release and
+>>>> reallocation of physical pages. The overhead after introducing
+>>>> pte_refcount is that we need to release and re-allocate page table page.
+>>>> But 2MB physical pages only corresponds to 4KiB of PTE page table page.
+>>>> So maybe the overhead is not big.
+>>>
+>>> The cases that come to my mind are
+>>>
+>>> a) Swapping on shared memory with concurrent access
+>>> b) Reclaim on file-backed memory with concurrent access
+>>> c) Free page reporting as implemented by virtio-balloon
+>>>
+>>> In all of these cases, you can have someone immediately re-access the
+>>> page table and re-populate it.
+>>
+>> In the performance test shown on the cover, we repeatedly performed
+>> touch and madvise(MADV_DONTNEED) actions, which simulated the case
+>> you said above.
+>>
+>> We did find a small amount of performance regression, but I think it is
+>> acceptable, and no new perf hotspots have been added.
+> 
+> That test always accesses 2MiB and does it from a single thread. Things
+> might (IMHO will) look different when only accessing individual pages
+> and doing the access from one/multiple separate threads (that's what
 
-@@ -164,14 +173,14 @@ static void vfio_ccw_free_private(struct vfio_ccw_pri=
-vate *private)
- 	kmem_cache_free(vfio_ccw_io_region, private->io_region);
- 	kfree(private->cp.guest_cp);
- 	mutex_destroy(&private->io_mutex);
--	kfree(private);
-+	vfio_uninit_group_dev(&private->vdev);
-+	kfree_rcu(private, rcu);
- }
+No, it includes multi-threading:
 
-https://lore.kernel.org/kvm/10-v3-57c1502c62fd+2190-ccw_mdev_jgg@nvidia.com=
-/
+	while (1) {
+		char *c;
+		char *start = mmap_area[cpu];
+		char *end = mmap_area[cpu] + FAULT_LENGTH;
+		pthread_barrier_wait(&barrier);
+		//printf("fault into %p-%p\n",start, end);
 
-Regards,
-Yi Liu
+		for (c = start; c < end; c += PAGE_SIZE)
+			*c = 0;
+
+		pthread_barrier_wait(&barrier);
+		for (i = 0; cpu==0 && i < num; i++)
+			madvise(mmap_area[i], FAULT_LENGTH, MADV_DONTNEED);
+		pthread_barrier_wait(&barrier);
+	}
+
+Thread on cpu0 will use madvise(MADV_DONTNEED) to release the physical
+memory of threads on other cpu.
+
+> a),b) and c) essentially do, they don't do it in the pattern you
+> measured. what you measured matches rather a typical memory allocator).
+> 
+> 
