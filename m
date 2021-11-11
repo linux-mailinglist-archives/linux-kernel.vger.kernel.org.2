@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAC844D8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539D144D8C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbhKKPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:00:32 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:37647 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKPAU (ORCPT
+        id S233941AbhKKPBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:01:05 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:41640 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233316AbhKKPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:00:20 -0500
-Received: by mail-oi1-f178.google.com with SMTP id o83so12017014oif.4;
-        Thu, 11 Nov 2021 06:57:30 -0800 (PST)
+        Thu, 11 Nov 2021 10:00:25 -0500
+Received: by mail-oi1-f181.google.com with SMTP id u74so12003358oie.8;
+        Thu, 11 Nov 2021 06:57:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=R7zk+o5f/F0OgLbsWoxwuTgZGcESXnxoCctVtMNWdEU=;
-        b=8Ga8gKvtN/UWwRsrDaJdgTCIBzSMhEOIB7zWXrfaNEpNDVMZjFMRECkQVC4jLL6FLv
-         hEVednquoOYLI8BO0d1Sgj3XVxC6D5ULVxthkRmeWYRfLD/D5Op4/CTvSCqLi3bqnInE
-         bZUMUxmial8nP/LWSgf6FwK48lnZpItYtsQLOFULMlJNEYcpsbE6JSavdi3jZiJUkb/x
-         2sZmVP3zEqbYRrNLh/le8NScujS/ovK5VqYvJmr9Fq9RcCTnHpymuv2Yp+WYXbRGNORl
-         hConr8v2fFW6lGMzxxak67odI8qqctTV+xK7TrxcOzU2d3p5mYgcmNFcI+CiZ08xqk/L
-         drKw==
-X-Gm-Message-State: AOAM532txqzHzg/COLGWujkkhHfoWpojte5gxsSR73FIuip+q8UFsR/+
-        SUAZNcMFY1v6u7a5px/7C9VcssV6Pw==
-X-Google-Smtp-Source: ABdhPJzuQbo38UpOM4K4zoxHNYkhMhMKbgGcvAsCg6RfNTOyr1EfdkDGQE+UrYFETFyfrMEtwdQx4A==
-X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr1649495oiw.5.1636642650538;
-        Thu, 11 Nov 2021 06:57:30 -0800 (PST)
+        bh=eOq5ir+TFZBL5cj7XaOZPw0GldpRN8fcVtMKUZ8KDPc=;
+        b=SMY2FKgbDJZoMRFWODsXCP3a5xnsRNrW/LHfFYnEZcyMtMU/AewOQf/Sb0zj78L8wb
+         04rdXvKzB2RHRYGnY7EAWWbdDHhxf7hxguX4nnmUQ5rtZX3l/xYBagSWM2YwsTibO7gV
+         uB2flJPMTHS0H2j/8HeNrilNSxGMy/FeO65hcIJkdHGs7q7Zg/xqEKXM5cqeZvOJ97C4
+         GhkVB7Yfa/6w6Sxz9PR4uURLEXbPq8taOSOYk+emwEkWv9kt+esyE/ZB3YXJSR8wXdFn
+         ElxFTDcgJmLTqqMyeuZnD9vqtb1yV6baIQ03djiIAPv/UDlo1bT92yvTXCaFvO7eeg2n
+         4lbA==
+X-Gm-Message-State: AOAM5316OSKNuYSKpj2gyQ9MZsD+oCT219up2Gf+2HKieLUiG3BjJwik
+        ToRqmvIAvfhzW08xmLJQUQ==
+X-Google-Smtp-Source: ABdhPJylUnRgVbfCJwWY8YapTYWcyJT8PtHaBGyigns+dkTO2lU8gHUIpbJagVcgphNPxro1ePlm2w==
+X-Received: by 2002:a05:6808:159a:: with SMTP id t26mr20008829oiw.106.1636642655301;
+        Thu, 11 Nov 2021 06:57:35 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q10sm807331oiw.17.2021.11.11.06.57.29
+        by smtp.gmail.com with ESMTPSA id ay42sm769577oib.22.2021.11.11.06.57.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:57:29 -0800 (PST)
-Received: (nullmailer pid 3774085 invoked by uid 1000);
+        Thu, 11 Nov 2021 06:57:34 -0800 (PST)
+Received: (nullmailer pid 3774089 invoked by uid 1000);
         Thu, 11 Nov 2021 14:57:26 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Cc:     michal.simek@xilinx.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        git-dev@xilinx.com
-In-Reply-To: <20211111085939.21769-1-shubhrajyoti.datta@xilinx.com>
-References: <20211111085939.21769-1-shubhrajyoti.datta@xilinx.com>
-Subject: Re: [PATCH] dt-bindings: mailbox: zynqmp_ipi: convert to yaml
+To:     Biao Huang <biao.huang@mediatek.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        Jose Abreu <joabreu@synopsys.com>, srv_heupstream@mediatek.com,
+        davem@davemloft.net, linux-arm-kernel@lists.infradead.org,
+        macpaul.lin@mediatek.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+In-Reply-To: <20211111071214.21027-5-biao.huang@mediatek.com>
+References: <20211111071214.21027-1-biao.huang@mediatek.com> <20211111071214.21027-5-biao.huang@mediatek.com>
+Subject: Re: [PATCH v2 4/5] dt-bindings: net: dwmac: Convert mediatek-dwmac to DT schema
 Date:   Thu, 11 Nov 2021 08:57:26 -0600
-Message-Id: <1636642646.899407.3774084.nullmailer@robh.at.kernel.org>
+Message-Id: <1636642646.918741.3774088.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 14:29:39 +0530, Shubhrajyoti Datta wrote:
-> Convert the ipi doc to yaml.
+On Thu, 11 Nov 2021 15:12:13 +0800, Biao Huang wrote:
+> Convert mediatek-dwmac to DT schema, and delete old mediatek-dwmac.txt.
 > 
-> Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+> Signed-off-by: Biao Huang <biao.huang@mediatek.com>
 > ---
->  .../mailbox/xlnx,zynqmp-ipi-mailbox.txt       | 127 ------------------
->  .../mailbox/xlnx,zynqmp-ipi-mailbox.yaml      |  91 +++++++++++++
->  2 files changed, 91 insertions(+), 127 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.txt
->  create mode 100644 Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
+>  .../bindings/net/mediatek-dwmac.txt           |  91 --------
+>  .../bindings/net/mediatek-dwmac.yaml          | 211 ++++++++++++++++++
+>  2 files changed, 211 insertions(+), 91 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.example.dt.yaml: zynqmp_ipi: 'reg' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.example.dt.yaml: zynqmp_ipi: '#mbox-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.example.dt.yaml: zynqmp_ipi: '#address-cells', '#size-cells', 'mailbox@ff990400', 'mailbox@ff990440', 'ranges' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
+Full log is available here: https://patchwork.ozlabs.org/patch/1553803
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1553827
+ethernet@1101c000: clock-names: ['axi', 'apb', 'mac_main', 'ptp_ref'] is too short
+	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+ethernet@1101c000: clocks: [[27, 34], [27, 37], [6, 154], [6, 155]] is too short
+	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+ethernet@1101c000: compatible: ['mediatek,mt2712-gmac'] does not contain items matching the given schema
+	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+ethernet@1101c000: compatible: 'oneOf' conditional failed, one must be fixed:
+	arch/arm64/boot/dts/mediatek/mt2712-evb.dt.yaml
 
