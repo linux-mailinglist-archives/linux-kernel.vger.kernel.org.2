@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846A544D8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B933D44D8A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhKKOzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbhKKOzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:55:40 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EFAC061766;
-        Thu, 11 Nov 2021 06:52:50 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id h11so12487026ljk.1;
-        Thu, 11 Nov 2021 06:52:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8A7hURGRK27cExB7JA3d0U7r7U3aVexHtqO36HqGG9I=;
-        b=cld9pHE9I3y0XFBMaSeIu8abMfVMmti6/tE8JjUkGWw92zjXZjEXRxyJpW/aSo70RO
-         BcvCLwhP1je724JwxU2mSeGh1uP445lRQhbY9riFt2JFHKLyqJNYdpIWfZiNGeY1rbgw
-         QfnJ/wMAW199ncO2+S8oaYgEbx7Fqd/xJZRzB178Omvd/HKj5ECMStN5P2//k2niL39G
-         40VzQL5jHmWR5+eS9lSwb9zGlpyF8vF7evDwjPdjgkMg4Yynbt9M4WHnsP29om3qf1zS
-         wJWK2KSFsNft0AAEiQLdQR5/onl+yAGbuq45f9H1jZ0IYeUDo/Kn+JcqU4pNyD7iSoeS
-         wtbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8A7hURGRK27cExB7JA3d0U7r7U3aVexHtqO36HqGG9I=;
-        b=dr7NdZOISZFELbSVfDP7LSrwkZJMRYIaNdQp3uAU/vlwzhiIabgt5Dk4Aslgls2MSe
-         AZel6zMRJDS3euoXnVd4HOztXHCKVzDNn8SBxfBjWQIY5OkUu22Pqfr3XHOtgkQmc3S5
-         B2xEX8H71BdB0e5fXx9vj01H84PSmFXNj5D2uwt0fsbSzKGQHVkS7L39xrKVA8bsFF2v
-         UY55FX4VmQTsH7FdmgRxR1A3R5OYViR8wOT1WT23jFI2lDi8pqntHnZ9klqbvUeKbOY1
-         zcT8+GR58Fao+iPbo1gWHrMmYA8t9CGOy9+VuUcJLaWNvh+j0HId/pFdzpu9ZFPYHn5K
-         4ftw==
-X-Gm-Message-State: AOAM5306aB5TKOUpi/fayWm5Gb3gPgJfrpMjRLjR81F8DhBu4k/Ytt7b
-        xfeFmy/oHUzlL6TmuxtHzmU=
-X-Google-Smtp-Source: ABdhPJzTU0BqBSsZ7ne4RJyZ92AjdR7Y8f2NrJ2uLoNVETVKBLVcUHV+kRaA+7zD4MWqm8GxgvubjQ==
-X-Received: by 2002:a2e:bc24:: with SMTP id b36mr7734881ljf.54.1636642369080;
-        Thu, 11 Nov 2021 06:52:49 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id l19sm320244lji.27.2021.11.11.06.52.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:52:48 -0800 (PST)
-Date:   Thu, 11 Nov 2021 17:52:46 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        nandhini.srikandan@intel.com, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com, rashmi.a@intel.com
-Subject: Re: [PATCH v3 3/5] spi: dw: Add support for master mode selection
- for DWC SSI controller
-Message-ID: <20211111145246.dj4gogl4rlbem6qc@mobilestation>
-References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
- <20211111065201.10249-4-nandhini.srikandan@intel.com>
- <YY0lpZkIsJih+g2o@sirena.org.uk>
+        id S233290AbhKKO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:57:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhKKO51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:57:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31CEF60F51;
+        Thu, 11 Nov 2021 14:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636642478;
+        bh=6Dgw8HyF1/nOtZxLMcnB3+PnISjW7N0dRiQF9PMuKNk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GcceayDV7PmmjRw5NKwDyYdx9BD75thwhBNMvUFOJLQBm1ipvyNxgstwQy3rqaeum
+         GHUpT7x9tFTNh5rPE1h1uOlY0uSnHDUGkoAmOJXMLCF8spOE5w+M0QpYMu1T72dht4
+         SuHf1d5jgYuFSLvDKuYFBMuv6ihe+Baw/Tfw34oh8PvqVAQ9B7y3rIRFXA9njmLPb7
+         SUys5sZsGhqsNuBomQUrX5SoabwGB+FtxeRWlpwC8X9UznUEYsrq2UPgqpVw/lNQ7C
+         6GCBd2fxdE4hGWSdai7PgA1+gS1hPOheZoPLaNh8DgvYM4SZuvkeVFWvC5PUPUMqIv
+         WQn8B+htk2pAQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A804F410A1; Thu, 11 Nov 2021 11:54:35 -0300 (-03)
+Date:   Thu, 11 Nov 2021 11:54:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     German Gomez <german.gomez@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] perf arm-spe: Add snapshot mode support
+Message-ID: <YY0uq/dVOLmkR5Iv@kernel.org>
+References: <20211109163009.92072-1-german.gomez@arm.com>
+ <20211111084621.GC106401@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YY0lpZkIsJih+g2o@sirena.org.uk>
+In-Reply-To: <20211111084621.GC106401@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
-
-On Thu, Nov 11, 2021 at 02:16:05PM +0000, Mark Brown wrote:
-> On Thu, Nov 11, 2021 at 02:51:59PM +0800, nandhini.srikandan@intel.com wrote:
+Em Thu, Nov 11, 2021 at 04:46:21PM +0800, Leo Yan escreveu:
+> Hi Arnaldo,
 > 
-> > Add support to select the controller mode as master mode by setting
-> > Bit 31 of CTRLR0 register. This feature is supported for controller
-> > versions above v1.02.
+> On Tue, Nov 09, 2021 at 04:30:06PM +0000, German Gomez wrote:
+> > This patchset adds snapshot mode support for arm-spe.
+> > 
+> >   - [PATCH 1/3] implements the minimal callbacks to support recording in
+> >     snapshot mode.
+> >   - [PATCH 2/3] implements the find_snapshot callback in order to handle
+> >     wrap-arounds in the AUX buffer.
+> >   - [PATCH 3/3] adds a test for spe snapshot mode.
 > 
-
-> Clearly older versions of the controller can also run in this mode...
-
-Yes, but the driver doesn't support the slave mode at the moment.
-So always enabling the master mode seems natural. (see my next comment
-also concerning this matter)
-
+> I have verified this patch set on Hisilicon D06 board, please consider
+> to pick up:
 > 
-> > -		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
-> > -			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
-> > +		/* CTRLR0[31] MST */
-> > +		cr0 |= DWC_SSI_CTRLR0_MST;
+> root@ubuntu:/home/leoy/linux/tools/perf# ./perf test -v 85
+> 85: Check Arm SPE trace data recording and synthesized samples      :
+> --- start ---
+> test child forked, pid 17083
+> Recording trace with snapshot mode /tmp/__perf_test.perf.data.MI2iX
+> Looking at perf.data file for dumping samples:
+> Looking at perf.data file for reporting samples:
+> SPE snapshot testing: PASS
+> test child finished with 0
+> ---- end ----
+> Check Arm SPE trace data recording and synthesized samples: Ok
 > 
+> BTW, you could see German has another patch set for enabling pid/tid
+> for Arm SPE tracing [1].  I confirmed that the pid/tid patch set and
+> current patch set have no conflit, and don't need worry the dependency
+> between these two patch sets (so you could apply two patch sets in any
+> ordering).
 
-> This makes the configuration unconditional, it's not gated by controller
-> version checks or any kind of quirk any more meaning that if anything
-> interprets that bit differently things might break.  If this is really
-> required to put the controller in master mode it seems that either the
-> 1.02 version is not widespread or this is generally the hardware
-> default.
+Thanks for the clarifications, applied, its out in my tmp.perf/core
+branch, that still needs some fixes for buiding on arm related to a
+recent patchset for 'perf test' from Ian Rogers, as soon as that is
+fixed it will be set in stone in perf/core.
 
-We have already discussed this feature in v2:
-https://patchwork.kernel.org/project/spi-devel-general/patch/20210824085856.12714-3-nandhini.srikandan@intel.com/
-Since that bit has been reserved before 1.02a but is no available for
-any DWC SSI controller and the driver doesn't support the SPI-slave mode
-at the moment I suggested to just always set that flag for the DWC SSI
-code. Please see my reply to Nandhini here:
-https://patchwork.kernel.org/project/spi-devel-general/patch/20210824085856.12714-3-nandhini.srikandan@intel.com/#24433679
-
--Sergey
-
+- Arnaldo
