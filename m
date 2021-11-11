@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FD344D7BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB10944D7C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhKKODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:03:10 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:33790 "EHLO zju.edu.cn"
+        id S233530AbhKKOEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:04:49 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:34078 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233586AbhKKODI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:03:08 -0500
-Received: from localhost.localdomain (unknown [222.205.2.245])
-        by mail-app3 (Coremail) with SMTP id cC_KCgBnbxvoIY1ht1H5Bw--.22116S4;
-        Thu, 11 Nov 2021 22:00:08 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v0] hamradio: delete unnecessary free_netdev()
-Date:   Thu, 11 Nov 2021 22:00:07 +0800
-Message-Id: <20211111140007.7244-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.33.1
+        id S233439AbhKKOEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:04:47 -0500
+Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 11 Nov 2021 22:01:50
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.214.160.77]
+Date:   Thu, 11 Nov 2021 22:01:50 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v1 2/2] hamradio: defer 6pack kfree after
+ unregister_netdev
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20211111055021.77186242@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211108103721.30522-1-linma@zju.edu.cn>
+ <20211108103759.30541-1-linma@zju.edu.cn>
+ <20211110180525.20422f66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211110180612.2f2eb760@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <724aae55.1863af.17d0cc249ab.Coremail.linma@zju.edu.cn>
+ <20211111055021.77186242@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cC_KCgBnbxvoIY1ht1H5Bw--.22116S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtrW8uw15XF48AF15Xw48Xrb_yoWfZrg_ur
-        1xZFZ7Jr1DJrW7tanFvr4rA34IkFs8Xr1fuas2qas3Ga43twn7J3yI9rs3Jr15WayxtF9x
-        Ar12qF17J3y2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
-        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        kR65UUUUU==
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Message-ID: <2384cfdd.188d2b.17d0f4e0474.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgD3fK1OIo1h5lzlBA--.65141W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUCElNG3ElR6gAbs2
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW5Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The former patch "defer 6pack kfree after unregister_netdev" adds
-free_netdev() function in sixpack_close(), which is a bad copy from the
-similar code in mkiss_close(). However, this free is unnecessary as the
-flag needs_free_netdev is set to true in sp_setup(), hence the
-unregister_netdev() will free the netdev automatically.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/net/hamradio/6pack.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index bfdf89e54752..180c8f08169b 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -677,8 +677,6 @@ static void sixpack_close(struct tty_struct *tty)
- 	/* Free all 6pack frame buffers after unreg. */
- 	kfree(sp->rbuff);
- 	kfree(sp->xbuff);
--
--	free_netdev(sp->dev);
- }
- 
- /* Perform I/O control on an active 6pack channel. */
--- 
-2.33.1
-
+SGkgdGhlcmUsCgo+IAo+IE9uIFRodSwgMTEgTm92IDIwMjEgMTA6MDk6NTkgKzA4MDAgKEdNVCsw
+ODowMCkgTGluIE1hIHdyb3RlOgo+ID4gPiBMb29rcyBsaWtlIHRoaXMgZ28gYXBwbGllZCBhbHJl
+YWR5LCBwbGVhc2Ugc2VuZCBhIGZvbGxvdyB1cCBmaXguICAKPiA+IAo+ID4gT29vb3BzLCB0aGFu
+a3MgZm9yIHRoZSByZW1pbmQuIFhECj4gPiAKPiA+IEkganVzdCBmb3VuZCB0aGF0IHRoZSBta2ls
+bCBhZGRzIHRoZSBmcmVlX25ldGRldiBhZnRlciB0aGUKPiA+IHVucmVnaXN0ZXJfbmV0ZGV2IHNv
+IEkgZGlkIGl0IHRvby4gTm8gaWRlYSBhYm91dCB0aGlzIGF1dG9tYXRpYwo+ID4gY2xlYW51cC4K
+PiA+IAo+ID4gU2hvdWxkIEkgc2VuZCB0aGUgZml4IGluIHRoaXMgdGhyZWFkIG9yIG9wZW4gYSBu
+ZXcgb25lPwo+IAo+IE5ldyB0aHJlYWQgaXMgYmV0dGVyIGZvciBtZS4KClRoZSBmaXggZm9yIHRo
+ZSBlcnJvbmVvdXMgcGF0Y2ggaXMgc2VudCwgaW5mb3JtYXRpb24gaXMgbGlrZSBiZWxvdwoKU3Vi
+amVjdDogW1BBVENIIHYwXSBoYW1yYWRpbzogZGVsZXRlIHVubmVjZXNzYXJ5IGZyZWVfbmV0ZGV2
+KCkKRGF0ZTogVGh1LCAxMSBOb3YgMjAyMSAyMjowMDowNyArMDgwMApNZXNzYWdlLUlkOiA8MjAy
+MTExMTExNDAwMDcuNzI0NC0xLWxpbm1hQHpqdS5lZHUuY24+CgpTb3JyeSBhYm91dCB0aGlzIGRp
+c3R1cmJpbmcgOigKCkJlc3QgUmVnYXJkcwpMaW4=
