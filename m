@@ -2,291 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ABF44D866
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F87644D87A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhKKOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 09:37:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:7731 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233730AbhKKOhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 09:37:23 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="233163496"
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="233163496"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 06:34:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,226,1631602800"; 
-   d="scan'208";a="492560933"
-Received: from glass.png.intel.com ([10.158.65.203])
-  by orsmga007.jf.intel.com with ESMTP; 11 Nov 2021 06:34:29 -0800
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        alexandre.torgue@foss.st.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next 1/1] net: stmmac: enhance XDP ZC driver level switching performance
-Date:   Thu, 11 Nov 2021 22:39:49 +0800
-Message-Id: <20211111143949.2806049-1-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233454AbhKKOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 09:45:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhKKOpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:45:36 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DF5C061766;
+        Thu, 11 Nov 2021 06:42:46 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id k2so4869315lji.4;
+        Thu, 11 Nov 2021 06:42:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qhkGC9vs+8mYqWAc/dPeeYNcQUYIT811ZL6Z1XhKGYo=;
+        b=c8xWz4NHfAPgjgi2BVEhU5gMof1yx4VeIE8Wv57iMbxnMxsV7SHOnEj/ruRhZ/HEEb
+         6xkgwY2UTFZ/JXR882wpyXq1J7tqVZDis2ITf5Ezm8PzMQV5fFkIl2tCRiLySjYtbAns
+         ilp5xiDL8fARog9DfUcgV87p1tiz/LKqVqwVAVqcNXSjQKbsSsXwoWK+ZDfqT1qlwrB3
+         hkJhGti8TotgUZOEKmaKOQJOExglC9m7XZ0W57MWjbuqYAU+JaM01oUKZ2VgH9Vs6eWw
+         Ilq+C78xuSNvhvyIThysIfuBhQnJIpHk5dV+jfvlny2uFtSMU9UaMys3+hhzGM8kffIs
+         gO9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qhkGC9vs+8mYqWAc/dPeeYNcQUYIT811ZL6Z1XhKGYo=;
+        b=ruaMlbv2l+fUSAWoRkx/LLctbmbWJqSp5yN1FKJIr6MD9Ui9vko1VN9i9W09vppNkv
+         W/15f0RgzzmGa0XDvns30B8JeP8CB4Fkempo4pe4wiLGl7Kk/CUzTRV0XpAiCQVZckDS
+         HKXB45/+kPfN/NxS2ybaPCp2GgNbReifSr5E0GABFC/jhqlHcdyUqzbJM2NzEg/j13mR
+         N6hrrrsLWLqBk4yTjmoXymvGUg/BR9oZsOv+2xAsiNusft4UcANGyxTNNEZZdgKMMmG8
+         j+YaTaM700WqjEgx3L91DPsCOnZnipYPsETUrIv6OVD5t9WtTNOGywT8LHSOu5RvY9tZ
+         RlKQ==
+X-Gm-Message-State: AOAM5309dpeKP0Np70kziYKm9pY3O5JdVxFg9mwzmQtBrJTlyBiByyWt
+        SXgBibhfnwpvArk4Xwy9C7Y=
+X-Google-Smtp-Source: ABdhPJzBpTrPjYJKy4Mj6D38F5gugRbf42XlOEdoGKheJxH3UqPDdtnu2MsjpEClCBLvFvXomDSd0w==
+X-Received: by 2002:a2e:8744:: with SMTP id q4mr2662604ljj.277.1636641765087;
+        Thu, 11 Nov 2021 06:42:45 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id y1sm301343lfd.204.2021.11.11.06.42.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 06:42:44 -0800 (PST)
+Date:   Thu, 11 Nov 2021 17:42:42 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     nandhini.srikandan@intel.com
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: [PATCH v3 2/5] spi: dw: Add SSTE support for DWC SSI controller
+Message-ID: <20211111144242.af3h5r4ayufcelsz@mobilestation>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-3-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111065201.10249-3-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous stmmac_xdp_set_prog() implementation uses stmmac_release()
-and stmmac_open() which tear down the PHY device and causes undesirable
-autonegotiation which causes a delay whenever AFXDP ZC is setup.
+On Thu, Nov 11, 2021 at 02:51:58PM +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> 
+> Add support for Slave Select Toggle Enable (SSTE) in DWC SSI controller
+> via DTS. The slave select line will toggle between consecutive data frames,
+> with the serial clock being held to its default value while slave
+> select line is high.
+> 
+> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> ---
+>  drivers/spi/spi-dw-core.c | 11 +++++++++++
+>  drivers/spi/spi-dw.h      |  2 ++
+>  2 files changed, 13 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> index a305074c482e..bfa075a4f779 100644
+> --- a/drivers/spi/spi-dw-core.c
+> +++ b/drivers/spi/spi-dw-core.c
+> @@ -27,6 +27,7 @@
+>  struct chip_data {
+>  	u32 cr0;
+>  	u32 rx_sample_dly;	/* RX sample delay */
 
-This patch introduces two new functions that just sufficiently tear
-down DMA descriptors, buffer, NAPI process, and IRQs and reestablish
-them accordingly in both stmmac_xdp_release() and stammac_xdp_open().
+> +	bool sste;		/* Slave select Toggle flag */
 
-As the results of this enhancement, we get rid of transient state
-introduced by the link auto-negotiation:
+As Mark said there is no need in the new DT-property thus there is no
+need in the sste flag being preserved in the chip-data structure
+seeing there is a dedicated flag has been defined for this mode.
 
-$ ./xdpsock -i eth0 -t -z
+>  };
+>  
+>  #ifdef CONFIG_DEBUG_FS
+> @@ -269,6 +270,7 @@ static irqreturn_t dw_spi_irq(int irq, void *dev_id)
+>  
+>  static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
+>  {
+> +	struct chip_data *chip = spi_get_ctldata(spi);
+>  	u32 cr0 = 0;
+>  
+>  	if (!(dws->caps & DW_SPI_CAP_DWC_SSI)) {
+> @@ -285,6 +287,9 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
+>  
+>  		/* CTRLR0[11] Shift Register Loop */
+>  		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << SPI_SRL_OFFSET;
 
- sock0@eth0:0 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 634444         634560
+> +
+> +		/* CTRLR0[24] Slave Select Toggle Enable */
+> +		cr0 |= chip->sste << SPI_SSTE_OFFSET;
 
- sock0@eth0:0 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 632330         1267072
+Just check for the SPI_CS_WORD flag state here directly. Like this:
++ cr0 |= ((spi->mode & SPI_CS_WORD) ? 1 : 0) << SPI_SSTE_OFFSET;
 
- sock0@eth0:0 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 632438         1899584
+>  	} else {
+>  		/* CTRLR0[ 7: 6] Frame Format */
+>  		cr0 |= SSI_MOTO_SPI << DWC_SSI_CTRLR0_FRF_OFFSET;
+> @@ -300,6 +305,9 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
+>  		/* CTRLR0[13] Shift Register Loop */
+>  		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DWC_SSI_CTRLR0_SRL_OFFSET;
+>  
 
- sock0@eth0:0 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 632502         2532160
+> +		/* CTRLR0[14] Slave Select Toggle Enable */
+> +		cr0 |= chip->sste << DWC_SSI_CTRLR0_SSTE_OFFSET;
+> +
 
-Reported-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   4 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 137 +++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |   4 +-
- 3 files changed, 139 insertions(+), 6 deletions(-)
+the same as above.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index 43eead726886..dd7adf9b2537 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -316,8 +316,8 @@ void stmmac_set_ethtool_ops(struct net_device *netdev);
- 
- void stmmac_ptp_register(struct stmmac_priv *priv);
- void stmmac_ptp_unregister(struct stmmac_priv *priv);
--int stmmac_open(struct net_device *dev);
--int stmmac_release(struct net_device *dev);
-+int stmmac_xdp_open(struct net_device *dev);
-+void stmmac_xdp_release(struct net_device *dev);
- int stmmac_resume(struct device *dev);
- int stmmac_suspend(struct device *dev);
- int stmmac_dvr_remove(struct device *dev);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index d3f350c25b9b..033c35c09a54 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3643,7 +3643,7 @@ static int stmmac_request_irq(struct net_device *dev)
-  *  0 on success and an appropriate (-)ve integer as defined in errno.h
-  *  file on failure.
-  */
--int stmmac_open(struct net_device *dev)
-+static int stmmac_open(struct net_device *dev)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	int mode = priv->plat->phy_interface;
-@@ -3767,7 +3767,7 @@ static void stmmac_fpe_stop_wq(struct stmmac_priv *priv)
-  *  Description:
-  *  This is the stop entry point of the driver.
-  */
--int stmmac_release(struct net_device *dev)
-+static int stmmac_release(struct net_device *dev)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	u32 chan;
-@@ -6429,6 +6429,139 @@ void stmmac_enable_tx_queue(struct stmmac_priv *priv, u32 queue)
- 	spin_unlock_irqrestore(&ch->lock, flags);
- }
- 
-+void stmmac_xdp_release(struct net_device *dev)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+	u32 chan;
-+
-+	/* Disable NAPI process */
-+	stmmac_disable_all_queues(priv);
-+
-+	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++)
-+		hrtimer_cancel(&priv->tx_queue[chan].txtimer);
-+
-+	/* Free the IRQ lines */
-+	stmmac_free_irq(dev, REQ_IRQ_ERR_ALL, 0);
-+
-+	/* Stop TX/RX DMA channels */
-+	stmmac_stop_all_dma(priv);
-+
-+	/* Release and free the Rx/Tx resources */
-+	free_dma_desc_resources(priv);
-+
-+	/* Disable the MAC Rx/Tx */
-+	stmmac_mac_set(priv, priv->ioaddr, false);
-+
-+	/* set trans_start so we don't get spurious
-+	 * watchdogs during reset
-+	 */
-+	netif_trans_update(dev);
-+	netif_carrier_off(dev);
-+}
-+
-+int stmmac_xdp_open(struct net_device *dev)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+	u32 rx_cnt = priv->plat->rx_queues_to_use;
-+	u32 tx_cnt = priv->plat->tx_queues_to_use;
-+	u32 dma_csr_ch = max(rx_cnt, tx_cnt);
-+	struct stmmac_rx_queue *rx_q;
-+	struct stmmac_tx_queue *tx_q;
-+	u32 buf_size;
-+	bool sph_en;
-+	u32 chan;
-+	int ret;
-+
-+	ret = alloc_dma_desc_resources(priv);
-+	if (ret < 0) {
-+		netdev_err(dev, "%s: DMA descriptors allocation failed\n",
-+			   __func__);
-+		goto dma_desc_error;
-+	}
-+
-+	ret = init_dma_desc_rings(dev, GFP_KERNEL);
-+	if (ret < 0) {
-+		netdev_err(dev, "%s: DMA descriptors initialization failed\n",
-+			   __func__);
-+		goto init_error;
-+	}
-+
-+	/* DMA CSR Channel configuration */
-+	for (chan = 0; chan < dma_csr_ch; chan++)
-+		stmmac_init_chan(priv, priv->ioaddr, priv->plat->dma_cfg, chan);
-+
-+	/* Adjust Split header */
-+	sph_en = (priv->hw->rx_csum > 0) && priv->sph;
-+
-+	/* DMA RX Channel Configuration */
-+	for (chan = 0; chan < rx_cnt; chan++) {
-+		rx_q = &priv->rx_queue[chan];
-+
-+		stmmac_init_rx_chan(priv, priv->ioaddr, priv->plat->dma_cfg,
-+				    rx_q->dma_rx_phy, chan);
-+
-+		rx_q->rx_tail_addr = rx_q->dma_rx_phy +
-+				     (rx_q->buf_alloc_num *
-+				      sizeof(struct dma_desc));
-+		stmmac_set_rx_tail_ptr(priv, priv->ioaddr,
-+				       rx_q->rx_tail_addr, chan);
-+
-+		if (rx_q->xsk_pool && rx_q->buf_alloc_num) {
-+			buf_size = xsk_pool_get_rx_frame_size(rx_q->xsk_pool);
-+			stmmac_set_dma_bfsize(priv, priv->ioaddr,
-+					      buf_size,
-+					      rx_q->queue_index);
-+		} else {
-+			stmmac_set_dma_bfsize(priv, priv->ioaddr,
-+					      priv->dma_buf_sz,
-+					      rx_q->queue_index);
-+		}
-+
-+		stmmac_enable_sph(priv, priv->ioaddr, sph_en, chan);
-+	}
-+
-+	/* DMA TX Channel Configuration */
-+	for (chan = 0; chan < tx_cnt; chan++) {
-+		tx_q = &priv->tx_queue[chan];
-+
-+		stmmac_init_tx_chan(priv, priv->ioaddr, priv->plat->dma_cfg,
-+				    tx_q->dma_tx_phy, chan);
-+
-+		tx_q->tx_tail_addr = tx_q->dma_tx_phy;
-+		stmmac_set_tx_tail_ptr(priv, priv->ioaddr,
-+				       tx_q->tx_tail_addr, chan);
-+	}
-+
-+	/* Enable the MAC Rx/Tx */
-+	stmmac_mac_set(priv, priv->ioaddr, true);
-+
-+	/* Start Rx & Tx DMA Channels */
-+	stmmac_start_all_dma(priv);
-+
-+	stmmac_init_coalesce(priv);
-+
-+	ret = stmmac_request_irq(dev);
-+	if (ret)
-+		goto irq_error;
-+
-+	/* Enable NAPI process*/
-+	stmmac_enable_all_queues(priv);
-+	netif_carrier_on(dev);
-+	netif_tx_start_all_queues(dev);
-+
-+	return 0;
-+
-+irq_error:
-+	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++)
-+		hrtimer_cancel(&priv->tx_queue[chan].txtimer);
-+
-+	stmmac_hw_teardown(dev);
-+init_error:
-+	free_dma_desc_resources(priv);
-+dma_desc_error:
-+	return ret;
-+}
-+
- int stmmac_xsk_wakeup(struct net_device *dev, u32 queue, u32 flags)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-index 2a616c6f7cd0..9d4d8c3dad0a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-@@ -119,7 +119,7 @@ int stmmac_xdp_set_prog(struct stmmac_priv *priv, struct bpf_prog *prog,
- 
- 	need_update = !!priv->xdp_prog != !!prog;
- 	if (if_running && need_update)
--		stmmac_release(dev);
-+		stmmac_xdp_release(dev);
- 
- 	old_prog = xchg(&priv->xdp_prog, prog);
- 	if (old_prog)
-@@ -129,7 +129,7 @@ int stmmac_xdp_set_prog(struct stmmac_priv *priv, struct bpf_prog *prog,
- 	priv->sph = priv->sph_cap && !stmmac_xdp_is_enabled(priv);
- 
- 	if (if_running && need_update)
--		stmmac_open(dev);
-+		stmmac_xdp_open(dev);
- 
- 	return 0;
- }
--- 
-2.25.1
+>  		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
+>  			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
+>  	}
+> @@ -789,6 +797,9 @@ static int dw_spi_setup(struct spi_device *spi)
+>  		chip->rx_sample_dly = DIV_ROUND_CLOSEST(rx_sample_dly_ns,
+>  							NSEC_PER_SEC /
+>  							dws->max_freq);
 
+> +
+> +		/* Get slave select toggling feature requirement */
+> +		chip->sste = device_property_read_bool(&spi->dev, "snps,sste");
+
+As Mark said there is no need in this new DT-property.
+
+-Sergey
+
+>  	}
+>  
+>  	/*
+> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+> index b665e040862c..2ee3f839de39 100644
+> --- a/drivers/spi/spi-dw.h
+> +++ b/drivers/spi/spi-dw.h
+> @@ -65,8 +65,10 @@
+>  #define SPI_SLVOE_OFFSET		10
+>  #define SPI_SRL_OFFSET			11
+>  #define SPI_CFS_OFFSET			12
+> +#define SPI_SSTE_OFFSET			24
+>  
+>  /* Bit fields in CTRLR0 based on DWC_ssi_databook.pdf v1.01a */
+> +#define DWC_SSI_CTRLR0_SSTE_OFFSET	14
+>  #define DWC_SSI_CTRLR0_SRL_OFFSET	13
+>  #define DWC_SSI_CTRLR0_TMOD_OFFSET	10
+>  #define DWC_SSI_CTRLR0_TMOD_MASK	GENMASK(11, 10)
+> -- 
+> 2.17.1
+> 
