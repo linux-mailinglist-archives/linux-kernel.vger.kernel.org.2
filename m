@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072C744D8BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A1E44D8BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 15:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhKKPAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 10:00:55 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:38833 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhKKPAX (ORCPT
+        id S233873AbhKKPAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 10:00:48 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:43884 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhKKPAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 10:00:23 -0500
-Received: by mail-ot1-f45.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so9249893otj.5;
-        Thu, 11 Nov 2021 06:57:34 -0800 (PST)
+        Thu, 11 Nov 2021 10:00:22 -0500
+Received: by mail-ot1-f54.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so9184692otm.10;
+        Thu, 11 Nov 2021 06:57:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=k+ivML6yp1mJQtYfp7G9jU0X3RF9IdCXVUkTDOyaGng=;
-        b=i6QMsnEeKLqGFMq8zDMpPJcl6pttoZGx9HSBLyYfQ8CALETjd1Ko4LLBra30ZIG5jC
-         Rp+WvVlEAWLGdQ038upAKNPLL+mfwKanuDaOKpzCafxY9jfQFB0i6u5+2+DK9Vhtkh+D
-         bwWN6tnA/VpGv+o3TJnEJsb0LlFwA+OeDZ3DBwV3GiPyeKWbSCv4AoDcmMWH8Ck74ZD7
-         d3i6tEFsWWQCscTMCqrTKU2WPi0d3we2UyLuHhZpCViuvNSodHzmVljPndAzBeAYrst5
-         9lnW2jag8AYpn4j/nRd4I7SfPt6MRrsQcvYLjeuq0dH17LOjTRrFQnlxedCNHm0N4K0i
-         5afQ==
-X-Gm-Message-State: AOAM532DdQCp9tCMS5D2Xdqm0MnP4APpr/DnIyWocJWeSFKPZs1PdPKP
-        JRiusKvrDFyt+bM1c/LuvZjOsCf0dw==
-X-Google-Smtp-Source: ABdhPJwrOF1c4/+j2nTSweytZpGQaZ8+UidW8m08ah6e3aO9H6fIVOzm3E4fb5t/DH3r5j3yRTPxjg==
-X-Received: by 2002:a9d:6752:: with SMTP id w18mr4874984otm.13.1636642653683;
-        Thu, 11 Nov 2021 06:57:33 -0800 (PST)
+        bh=64/gMeluDh46xQANFHjT+1DBqKjidRINOKcAP65+XLA=;
+        b=4beWPldknEpdN46L+5opDWSb8XNcCrE4sif4pQGQIm8/qR64eRMjR36mzledAJNDJo
+         v7ojcDjIBdhpVsQXWUlbgHUyw2kGNzK1mEwDM+6GM3Aw3f2AMM/7Na141qqIJH1U26UW
+         9NLPHq6GA3720rEMmZERbeIPGepaX1Nvqam7xOlVDXV+AYrtWe40xhAHVG13rLKVO6Ni
+         eVRpkoaQZju5zYiWRtg5ULWd5L3a5U6Pr1fez9kZjcARkI+d2S6k9UO2Ai5jbcxlTlxM
+         vlLPdwPGXt/rOvaRhBX2EIjttfy0+q5kI2cJBCIAPZie/8e95xEESf8UXL+biApGXHd9
+         IcBg==
+X-Gm-Message-State: AOAM532/6vTwTaxRg9ZuPnfAZRY9Xd7HvZpgEFw32hPbZEPG6OmdI7ck
+        WpzZd8za7O4gBUWXPM1quw==
+X-Google-Smtp-Source: ABdhPJw/R+Mjewhuy/cboJpMNmZlgIh2IRZTJ82ScnNL4x3sE567kKqKxWKBtD27mha3LodQ/D2z+g==
+X-Received: by 2002:a05:6830:1dab:: with SMTP id z11mr5974863oti.103.1636642652099;
+        Thu, 11 Nov 2021 06:57:32 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p14sm559651oov.0.2021.11.11.06.57.32
+        by smtp.gmail.com with ESMTPSA id 9sm695269oij.16.2021.11.11.06.57.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 06:57:33 -0800 (PST)
-Received: (nullmailer pid 3774087 invoked by uid 1000);
+        Thu, 11 Nov 2021 06:57:31 -0800 (PST)
+Received: (nullmailer pid 3774083 invoked by uid 1000);
         Thu, 11 Nov 2021 14:57:26 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Wells Lu <wellslutw@gmail.com>
-Cc:     netdev@vger.kernel.org, Wells Lu <wells.lu@sunplus.com>,
-        linux-kernel@vger.kernel.org, vincent.shih@sunplus.com,
-        davem@davemloft.net, p.zabel@pengutronix.de,
-        devicetree@vger.kernel.org, kuba@kernel.org, robh+dt@kernel.org
-In-Reply-To: <321e3b1a7dfca81f3ffae03b11099e8efeef92fa.1636620754.git.wells.lu@sunplus.com>
-References: <cover.1635936610.git.wells.lu@sunplus.com> <cover.1636620754.git.wells.lu@sunplus.com> <321e3b1a7dfca81f3ffae03b11099e8efeef92fa.1636620754.git.wells.lu@sunplus.com>
-Subject: Re: [PATCH v2 1/2] devicetree: bindings: net: Add bindings doc for Sunplus SP7021.
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Qii Wang <qii.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-i2c@vger.kernel.org
+In-Reply-To: <20211110194959.20611-1-fparent@baylibre.com>
+References: <20211110194959.20611-1-fparent@baylibre.com>
+Subject: Re: [PATCH v3 1/4] dt-bindings: i2c: i2c-mt65xx: convert doc to yaml schema format
 Date:   Thu, 11 Nov 2021 08:57:26 -0600
-Message-Id: <1636642646.909645.3774086.nullmailer@robh.at.kernel.org>
+Message-Id: <1636642646.887422.3774082.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 17:04:20 +0800, Wells Lu wrote:
-> Add bindings documentation for Sunplus SP7021.
+On Wed, 10 Nov 2021 20:49:56 +0100, Fabien Parent wrote:
+> Convert the binding documentation for i2c-mt65xx driver to the
+> YAML schema format.
 > 
-> Signed-off-by: Wells Lu <wells.lu@sunplus.com>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
-> Changes in V2
->  - Added mdio and phy sub-nodes.
 > 
->  .../bindings/net/sunplus,sp7021-emac.yaml          | 152 +++++++++++++++++++++
->  MAINTAINERS                                        |   7 +
->  2 files changed, 159 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/sunplus,sp7021-emac.yaml
+> v3:
+> 	* rebased: added new compatible since last revision + added vbus-supply
+> 		description
+> 	* added clock-div description
+> 
+> v2:
+> 	* write compatibles in a more compact way
+> 	* set the node pattern to be "^i2c@[0-9a-f]+$" instead of
+> 		"^i2c[0-9]*@[0-9a-f]+"$
+> 
+>  .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  51 ---------
+>  .../devicetree/bindings/i2c/i2c-mt65xx.yaml   | 106 ++++++++++++++++++
+>  2 files changed, 106 insertions(+), 51 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/sunplus,sp7021-emac.yaml:94:12: [warning] wrong indentation: expected 10 but found 11 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml: properties:vbus-supply: '$ref' is not one of ['description', 'deprecated']
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml: properties:clocks: {'minItems': 2, 'maxItems': 4, 'items': [{'description': 'Controller clock'}, {'description': 'DMA clock'}, {'description': 'ARB clock for multi-master when a bus has more than one i2c controllers'}, {'description': 'PMIC clock. Only when mediatek,have-pmic is set.'}]} should not be valid under {'required': ['maxItems']}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml: properties:clock-names: {'minItems': 2, 'maxItems': 4, 'items': [{'const': 'main'}, {'const': 'dma'}, {'const': 'arb'}, {'const': 'pmic'}]} should not be valid under {'required': ['maxItems']}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml: ignoring, error in schema: properties: vbus-supply
+warning: no schema found in file: ./Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+Documentation/devicetree/bindings/i2c/i2c-mt65xx.example.dt.yaml:0:0: /example-0/i2c@1100d000: failed to match any schema with compatible: ['mediatek,mt6577-i2c']
 
 doc reference errors (make refcheckdocs):
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+MAINTAINERS: Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
 
-See https://patchwork.ozlabs.org/patch/1553831
+See https://patchwork.ozlabs.org/patch/1553583
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
