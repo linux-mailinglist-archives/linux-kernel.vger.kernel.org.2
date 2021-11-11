@@ -2,228 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3C144DADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A2344DADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Nov 2021 17:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhKKRAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 12:00:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230034AbhKKRA2 (ORCPT
+        id S234205AbhKKRB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 12:01:26 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:28379 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhKKRBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:00:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636649859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4nnuPe2lK5wahIQd1KXZIXGUVFrD/7Ht6SqdOl/REkM=;
-        b=CxhfudhXIBPEBc+wkzF5zr7Mb+YURsJi/GNCJeC6BnpBloNxkq/LwoAuapJAbt0OYP65L/
-        ZjYl8WOqDM1SCRNQIqLe3WVXl9zDrkvwa6VoyOpS2fJhLmmsN2jibw1USA9aTHERCJPpfa
-        Xe8ezmVMm4oRyMHghSnCaI6HE77GN7U=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-dFZLAXOJPZCXx9yjHNXQwg-1; Thu, 11 Nov 2021 11:57:38 -0500
-X-MC-Unique: dFZLAXOJPZCXx9yjHNXQwg-1
-Received: by mail-ed1-f70.google.com with SMTP id x13-20020a05640226cd00b003e2bf805a02so5874097edd.23
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 08:57:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4nnuPe2lK5wahIQd1KXZIXGUVFrD/7Ht6SqdOl/REkM=;
-        b=biRAQUapjNTzAXvyrGvAkITO4oZJdyXhVyTn5qgrYFop+cfyWECab2NoLnKcJPdHX3
-         NX/YstuymAzP9YX0Zwl4raLoBneXFCBsWluSQ/6XSwdK10heGoDstYmLgFxKdbmRhfBO
-         RDbhzXFSOQ9HIXdlcBr9nNDVGSNvs6mbNHi66bnfaXkKWs9qypGLvsCdx9xFGTZL+/H3
-         0JH/h3WvJxSpt+P7NH+KvjnMDvW/G5pF3OclGgk2W00DgGdAxfTflla3t+oWXZPmsZ3Q
-         3039AAmebO1C5mkt4C/tHu5WRRrh8fDYU9VoeHn5YIC1B7ISvQ58otF0kJe2Y8lNyqDF
-         iY5Q==
-X-Gm-Message-State: AOAM533lbWj1Ts5MsotVzHiPpxYojvD2oGbEzuNclXzZXc0h4iooEVxC
-        CxNWD6X4XNlBysKGMRjxDSdjY9U4v1YcrYBPa9lRjtISjBFC1i48ISpeUpuQfzejeXjjyp+jUA2
-        pfkNJPI2xeUNN0L2t019ryeFU
-X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr11582151edv.162.1636649855624;
-        Thu, 11 Nov 2021 08:57:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz7ECgB9KZKxo539pDYD4hDXKyd4DrqxPiQKOXusMT5WUd1v2H70mZt+EG9F2Disk7HjImsLg==
-X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr11582109edv.162.1636649855310;
-        Thu, 11 Nov 2021 08:57:35 -0800 (PST)
-Received: from redhat.com ([2.55.135.246])
-        by smtp.gmail.com with ESMTPSA id gt18sm1669994ejc.46.2021.11.11.08.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 08:57:34 -0800 (PST)
-Date:   Thu, 11 Nov 2021 11:57:30 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     wsa@kernel.org, jie.deng@intel.com, viresh.kumar@linaro.org,
-        conghui.chen@intel.com, virtualization@lists.linux-foundation.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH v2 2/2] i2c: virtio: fix completion handling
-Message-ID: <20211111114630-mutt-send-email-mst@kernel.org>
-References: <20211111160412.11980-1-vincent.whitchurch@axis.com>
- <20211111160412.11980-3-vincent.whitchurch@axis.com>
+        Thu, 11 Nov 2021 12:01:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636649915; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
+ Message-ID: Sender; bh=Fm+8CbAWSdAcP/8qZCXokIpOIPGShPhL8uLwQhrTmh8=; b=vAPsyi4uLYiv7gzV8fxNZ1h8nXG5gLw2OdlMrSBon+PRA9Dp+hO5bznN5bgMzOWLIS8AAIHq
+ 5hDhiv699oM2dboZ4oaE5Dyhlskqd6amJ4T5WS6a6QdZeJ0INPKhEIn8EJLqqwssj4zJfIx5
+ LgAG5YX0LgYUS+eMCb2efdIRr0Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 618d4bb01b212dbdbde1f31d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Nov 2021 16:58:24
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C41AC4360D; Thu, 11 Nov 2021 16:58:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.16] (unknown [117.210.184.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 158DFC4338F;
+        Thu, 11 Nov 2021 16:58:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 158DFC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Message-ID: <ce362bf0-3fac-79d9-41c0-05920cdbbd9e@codeaurora.org>
+Date:   Thu, 11 Nov 2021 22:28:16 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111160412.11980-3-vincent.whitchurch@axis.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 4/5] drm/msm: Handle fence rollover
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211109181117.591148-1-robdclark@gmail.com>
+ <20211109181117.591148-5-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+In-Reply-To: <20211109181117.591148-5-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 05:04:12PM +0100, Vincent Whitchurch wrote:
-> The driver currently assumes that the notify callback is only received
-> when the device is done with all the queued buffers.
+On 11/9/2021 11:41 PM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> However, this is not true, since the notify callback could be called
-> without any of the queued buffers being completed (for example, with
-> virtio-pci and shared interrupts) or with only some of the buffers being
-> completed (since the driver makes them available to the device in
-> multiple separate virtqueue_add_sgs() calls).
+> Add some helpers for fence comparision, which handle rollover properly,
+> and stop open coding fence seqno comparisions.
 > 
-> This can lead to incorrect data on the I2C bus or memory corruption in
-> the guest if the device operates on buffers which are have been freed by
-> the driver.  (The WARN_ON in the driver is also triggered.)
-> 
->  BUG kmalloc-128 (Tainted: G        W        ): Poison overwritten
->  First byte 0x0 instead of 0x6b
->  Allocated in i2cdev_ioctl_rdwr+0x9d/0x1de age=243 cpu=0 pid=28
->  	memdup_user+0x2e/0xbd
->  	i2cdev_ioctl_rdwr+0x9d/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
->  Freed in i2cdev_ioctl_rdwr+0x1bb/0x1de age=68 cpu=0 pid=28
->  	kfree+0x1bd/0x1cc
->  	i2cdev_ioctl_rdwr+0x1bb/0x1de
->  	i2cdev_ioctl+0x247/0x2ed
->  	vfs_ioctl+0x21/0x30
->  	sys_ioctl+0xb18/0xb41
-> 
-> Fix this by calling virtio_get_buf() from the notify handler like other
-> virtio drivers and by actually waiting for all the buffers to be
-> completed.
-> 
-> Fixes: 3cfc88380413d20f ("i2c: virtio: add a virtio i2c frontend driver")
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  drivers/i2c/busses/i2c-virtio.c | 34 +++++++++++++++------------------
->  1 file changed, 15 insertions(+), 19 deletions(-)
+>   drivers/gpu/drm/msm/msm_fence.h | 12 ++++++++++++
+>   drivers/gpu/drm/msm/msm_gpu.c   |  6 +++---
+>   drivers/gpu/drm/msm/msm_gpu.h   |  2 +-
+>   3 files changed, 16 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> index 7b2474e6876f..2d3ae8e238ec 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -22,24 +22,24 @@
->  /**
->   * struct virtio_i2c - virtio I2C data
->   * @vdev: virtio device for this controller
-> - * @completion: completion of virtio I2C message
->   * @adap: I2C adapter for this controller
->   * @vq: the virtio virtqueue for communication
->   */
->  struct virtio_i2c {
->  	struct virtio_device *vdev;
-> -	struct completion completion;
->  	struct i2c_adapter adap;
->  	struct virtqueue *vq;
->  };
->  
->  /**
->   * struct virtio_i2c_req - the virtio I2C request structure
-> + * @completion: completion of virtio I2C message
->   * @out_hdr: the OUT header of the virtio I2C message
->   * @buf: the buffer into which data is read, or from which it's written
->   * @in_hdr: the IN header of the virtio I2C message
->   */
->  struct virtio_i2c_req {
-> +	struct completion completion;
->  	struct virtio_i2c_out_hdr out_hdr	____cacheline_aligned;
->  	uint8_t *buf				____cacheline_aligned;
->  	struct virtio_i2c_in_hdr in_hdr		____cacheline_aligned;
-> @@ -47,9 +47,11 @@ struct virtio_i2c_req {
->  
->  static void virtio_i2c_msg_done(struct virtqueue *vq)
->  {
-> -	struct virtio_i2c *vi = vq->vdev->priv;
-> +	struct virtio_i2c_req *req;
-> +	unsigned int len;
->  
-> -	complete(&vi->completion);
-> +	while ((req = virtqueue_get_buf(vq, &len)))
-> +		complete(&req->completion);
->  }
->  
->  static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
-> @@ -69,6 +71,8 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
->  		if (!msgs[i].len)
->  			break;
->  
-> +		init_completion(&reqs[i].completion);
+> diff --git a/drivers/gpu/drm/msm/msm_fence.h b/drivers/gpu/drm/msm/msm_fence.h
+> index 4783db528bcc..17ee3822b423 100644
+> --- a/drivers/gpu/drm/msm/msm_fence.h
+> +++ b/drivers/gpu/drm/msm/msm_fence.h
+> @@ -60,4 +60,16 @@ void msm_update_fence(struct msm_fence_context *fctx, uint32_t fence);
+>   
+>   struct dma_fence * msm_fence_alloc(struct msm_fence_context *fctx);
+>   
+> +static inline bool
+> +fence_before(uint32_t a, uint32_t b)
+> +{
+> +   return (int32_t)(a - b) < 0;
+
+This is good enough when a and b have close values. And that is a good 
+assumption for KMD generated seqno.
+
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+
+-Akhil.
+
+> +}
 > +
->  		/*
->  		 * Only 7-bit mode supported for this moment. For the address
->  		 * format, Please check the Virtio I2C Specification.
-> @@ -108,21 +112,13 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->  				    struct virtio_i2c_req *reqs,
->  				    struct i2c_msg *msgs, int num)
->  {
-> -	struct virtio_i2c_req *req;
->  	bool failed = false;
-> -	unsigned int len;
->  	int i, j = 0;
->  
->  	for (i = 0; i < num; i++) {
-> -		/* Detach the ith request from the vq */
-> -		req = virtqueue_get_buf(vq, &len);
-> +		struct virtio_i2c_req *req = &reqs[i];
->  
-> -		/*
-> -		 * Condition req == &reqs[i] should always meet since we have
-> -		 * total num requests in the vq. reqs[i] can never be NULL here.
-> -		 */
-> -		if (!failed && (WARN_ON(req != &reqs[i]) ||
-> -				req->in_hdr.status != VIRTIO_I2C_MSG_OK))
-> +		if (!failed && req->in_hdr.status != VIRTIO_I2C_MSG_OK)
->  			failed = true;
->  
->  		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-> @@ -158,11 +154,13 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->  	 * remote here to clear the virtqueue, so we can try another set of
->  	 * messages later on.
->  	 */
-> -
-> -	reinit_completion(&vi->completion);
->  	virtqueue_kick(vq);
->  
-> -	wait_for_completion(&vi->completion);
-> +	/*
-> +	 * We only need to wait for the last one since the device is required
-> +	 * to complete requests in order.
-> +	 */
-
-Hmm the spec only says:
-
-    A device MUST guarantee the requests in the virtqueue being processed in order
-    if multiple requests are received at a time.
-
-it does not seem to require using the buffers in order.
-In any case, just waiting for all of them in a loop
-seems cleaner and likely won't take longer ...
-
-
-> +	wait_for_completion(&reqs[count - 1].completion);
->  
->  	count = virtio_i2c_complete_reqs(vq, reqs, msgs, count);
->  
-> @@ -211,8 +209,6 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
->  	vdev->priv = vi;
->  	vi->vdev = vdev;
->  
-> -	init_completion(&vi->completion);
-> -
->  	ret = virtio_i2c_setup_vqs(vi);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.28.0
+> +static inline bool
+> +fence_after(uint32_t a, uint32_t b)
+> +{
+> +   return (int32_t)(a - b) > 0;
+> +}
+> +
+>   #endif
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index 13de1241d595..0f78c2615272 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -172,7 +172,7 @@ static void update_fences(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>   
+>   	spin_lock_irqsave(&ring->submit_lock, flags);
+>   	list_for_each_entry(submit, &ring->submits, node) {
+> -		if (submit->seqno > fence)
+> +		if (fence_after(submit->seqno, fence))
+>   			break;
+>   
+>   		msm_update_fence(submit->ring->fctx,
+> @@ -509,7 +509,7 @@ static void hangcheck_handler(struct timer_list *t)
+>   	if (fence != ring->hangcheck_fence) {
+>   		/* some progress has been made.. ya! */
+>   		ring->hangcheck_fence = fence;
+> -	} else if (fence < ring->seqno) {
+> +	} else if (fence_before(fence, ring->seqno)) {
+>   		/* no progress and not done.. hung! */
+>   		ring->hangcheck_fence = fence;
+>   		DRM_DEV_ERROR(dev->dev, "%s: hangcheck detected gpu lockup rb %d!\n",
+> @@ -523,7 +523,7 @@ static void hangcheck_handler(struct timer_list *t)
+>   	}
+>   
+>   	/* if still more pending work, reset the hangcheck timer: */
+> -	if (ring->seqno > ring->hangcheck_fence)
+> +	if (fence_after(ring->seqno, ring->hangcheck_fence))
+>   		hangcheck_timer_reset(gpu);
+>   
+>   	/* workaround for missing irq: */
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 0dcc31c27ac3..bd4e0024033e 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -258,7 +258,7 @@ static inline bool msm_gpu_active(struct msm_gpu *gpu)
+>   	for (i = 0; i < gpu->nr_rings; i++) {
+>   		struct msm_ringbuffer *ring = gpu->rb[i];
+>   
+> -		if (ring->seqno > ring->memptrs->fence)
+> +		if (fence_after(ring->seqno, ring->memptrs->fence))
+>   			return true;
+>   	}
+>   
+> 
 
