@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C6344EB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B497144EB6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhKLQeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
+        id S235430AbhKLQfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:35:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbhKLQd7 (ORCPT
+        with ESMTP id S235420AbhKLQfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:33:59 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEE6C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:31:07 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id z8so19574027ljz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:31:07 -0800 (PST)
+        Fri, 12 Nov 2021 11:35:07 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE73C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:32:16 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id k1so9528701ilo.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=10KMDDU+DaSIDbG4KLnwkKUabZtwZOoBI/YHPLaepm8=;
-        b=lYNoIGAzCqLDgiOPcZXWaYhuk/NMieSo8L8NBUujzpvCzpizz14ynUgsIxWJcABFNm
-         Cq0aN7F7xjXniy9tNJkGxfAqeNdm0h95Gcs227oq6Voho3VXszHNiDQQnMxEFIymhbs9
-         zAChlzCteZjM3TczYklsTCBRn+3oS0q+HCHSpN5DttFGk88SLrxEmH9ZGmOYEQ5QzBs0
-         r6SWULmqSbHlM02KHy2gVbLsVL7Bzegy9tkGPnX0RTjbPNelawMPoNOygkXtfEK1qWAa
-         gRMSx7cZe70hHKC1TLbq7ivHgpWakRWBp/AdYGxFhptGD17yl+gMNQOgbA5Y8pZegw8Z
-         Jt9g==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WZQU60Xp18Hdsmtr7VDsvNRYsO9Fr9Pv2XyHmxjj+mM=;
+        b=KuCqVetYf798pzMpcifYfYBDXK7mJj8RA51iDj8N5l+Hr6lkTUxdpghhQ5jIk36Mth
+         wl4kFkIE3mufICbUYUMyO5l9GhOWg2rrWnFEOtLxzTSdv7cJuUBFXVOo/o8RLBg3Siw8
+         LyHz6ZvZjh2sGHFGCifhnNbxYDuwOX6YT1ZVEMevpd7LFwXs1Rmu9k8DS/5n1pBmSMTT
+         GjeArjcZePLAIQdrnN+IKo11faF3a5gjiLW7Px3vgI8g53ptQX9AJvBHmsU4ZWDM1zfv
+         DQ4Nyq7pXqwd9oFi+UH9P7wsxxQIPhTb4a23Fea4vkvRAKmOI1GxAlJ7R/uy8IamChq4
+         Yhsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=10KMDDU+DaSIDbG4KLnwkKUabZtwZOoBI/YHPLaepm8=;
-        b=qO+8bbzyGArEh/k/BW5Lqc81R8JIL/DEQPNH9uYfXvh6QegeRQmC4ZoDdxYMYn+tM0
-         AC2pQ6CuftG/YIBkEpDq+jn4VrPgdIJO0Vm5dyCuLuHWlsveAy/t81mHgHAU/UwsFlsh
-         WxT+leJJYswQabqQHTKjDPT1C7ixk1v5W7OVm/nXJQuOvrJEVrHNAFXKPyUrkb25mMTk
-         mkVX+0Is7wg5y64/t9jwZFOabisZ24XiqVUffVZr9L/miTm2WSANiWlO5KKFFKn6iRv6
-         cEhmMC5cqbSSgwLusrbEXeQedX5j+xJqwh/cMORGheOxWoQnud6xcVlOnR8a70+tNyxv
-         4Wrw==
-X-Gm-Message-State: AOAM530J40qep94i2r+SrCY2D5ZkHmKjdP+UJbpEJwEpeZmWIfCMDrUF
-        +e/w2JJpWB5InjywOjpm+Ao=
-X-Google-Smtp-Source: ABdhPJwvss7U2lYl+ogC+1ZI1w3j7qlIWufbl8KUwKR9aUXGd9w3OK2jiJR1ZGGt8o4ZhFSXp2nmAQ==
-X-Received: by 2002:a05:651c:891:: with SMTP id d17mr16605087ljq.199.1636734665752;
-        Fri, 12 Nov 2021 08:31:05 -0800 (PST)
-Received: from [192.168.1.11] ([94.103.224.112])
-        by smtp.gmail.com with ESMTPSA id n3sm600479ljc.92.2021.11.12.08.31.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 08:31:05 -0800 (PST)
-Message-ID: <afe0a4bb-c6fe-8eeb-6077-dde7839537e9@gmail.com>
-Date:   Fri, 12 Nov 2021 19:31:04 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WZQU60Xp18Hdsmtr7VDsvNRYsO9Fr9Pv2XyHmxjj+mM=;
+        b=ocfCENB31cmV/VcMNpAclRXKThGnH0wSuHARGTCHw+XD2UbiEW0O/YSK/vLtgq7VFi
+         VDurRZYgwj52Ct8z6IkgOW34eYNQ0XddvjDuVOcX1DghOZIc0Jqs1Yp0z7t4XSWGVz6b
+         YUuePKbxyINjbPa7B/EZszyKnZhgNnjncxcEUyJfpX6Fl1uUfxqAaVXi0UjdoqrPS0JK
+         oSU0q9+ISKozyV6Nom/Fa0w+UGbSVGwizOL7CRjn6Mc5B6xapM7en3gcDqJy5C+NS/F6
+         tc60Lnh0TeKXDRpHpxgSLb19Eq0+KpDxBRzi6uNqPhynYSzP4dcVO4m4brquhsxtL/T7
+         AOvw==
+X-Gm-Message-State: AOAM532bBWigfuzY57L8OjiRZL00f5aEvR6UTJpJFS92Wnb/zKHosjY8
+        DGWcVYMKaQwFC/+5DlH1Aa/p9ZrNYUrhpsvtWmv/nQ==
+X-Google-Smtp-Source: ABdhPJx2vazsN9hiP4Pi5PPRhbKghUbvJI/jrMtOuxA3B6w+bLX6dIBky+qiit4PlBLgRfNrY9wQl1QF0SBSxiEolaQ=
+X-Received: by 2002:a05:6e02:144e:: with SMTP id p14mr9934206ilo.180.1636734735453;
+ Fri, 12 Nov 2021 08:32:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] staging: r8188eu: remove unneeded variable
-Content-Language: en-US
-To:     cgel.zte@gmail.com, phil@philpotter.co.uk
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        linux@roeck-us.net, martin@kaiser.cx, dan.carpenter@oracle.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20211112131830.11418-1-deng.changcheng@zte.com.cn>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20211112131830.11418-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 12 Nov 2021 08:32:04 -0800
+Message-ID: <CAD=FV=XWdA5kC5VpRPNWzCQDJjmDg5s7bP=sa7yVuqnRcxWf+w@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: Fix additional suspend/resume
+ at bootup
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     swboyd@chromium.org, robert.foss@linaro.org,
+        narmstrong@baylibre.com, laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, a.hajda@samsung.com, philipchen@chromium.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 16:18, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> Fix the following coccicheck review:
-> ./drivers/staging/r8188eu/core/rtw_ap.c: 1094: 5-8: Unneeded variable
-> 
-> Remove unneeded variable used to store return value.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-> ---
->   drivers/staging/r8188eu/core/rtw_ap.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-> index c78feeb9c862..d103a92ee2f1 100644
-> --- a/drivers/staging/r8188eu/core/rtw_ap.c
-> +++ b/drivers/staging/r8188eu/core/rtw_ap.c
-> @@ -1091,7 +1091,6 @@ u8 ap_free_sta(struct adapter *padapter, struct sta_info *psta,
->   int rtw_sta_flush(struct adapter *padapter)
->   {
->   	struct list_head *phead, *plist;
-> -	int ret = 0;
+Hi,
 
+On Fri, Nov 12, 2021 at 12:43 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Through log and waveform, we can see that there will be additional
+> suspend/resume when booting. This timing does not meet the ps8640 spec.
+> It seems that the delay of 500ms does not satisfied drm_panel_get_modes.
+> I increased it to 900ms and it seems that this problem can be solved.
+> To be safe, I'd just round up to a full 1000.
 
-None of the existing callers check the return value of this function. 
-Make it void, please.
+Do be clear: I'm still not convinced that the old 500 ms actually
+causes any real problems. I think someone is just measuring with a
+scope and upset that they see the device power on and then power off
+again. In any case, if we can avoid an extra power cycle at boot then
+that seems sane to me. Since this is a tiny change, I'll plan to merge
+it some time next week unless someone yells.
 
-
-
-With regards,
-Pavel Skripkin
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
