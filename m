@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086B844EDF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43AA44EDFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235588AbhKLUk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        id S235542AbhKLUoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:44:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235542AbhKLUkz (ORCPT
+        with ESMTP id S231968AbhKLUn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:40:55 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77624C0613F5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:38:04 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id e65so9019263pgc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:38:04 -0800 (PST)
+        Fri, 12 Nov 2021 15:43:59 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C3EC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:41:08 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id x15so42580473edv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:41:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y3lkkCoH31qkZVjCCR/E7oVCSTtI0bujwimpGP/k3sA=;
-        b=StN5hrm4hrP1PWbwCsad9xfHaY2mzd5NEqWZg7LjTXOZ+9O/G/vIJYTO874W0+OU7r
-         02e49SdXYQFdhvavIZ0/Bgod8n3+ZPrZX9t5taGeiSaOJLczRlhgUsuiblb4EI1jSGr+
-         NZWJGqOvikolAUKZstOfQnFkDiHpXy5LCm6OqCEgEmOlPoBi5L0xsKFKfGSbbt3WMQV8
-         erURs1+sPIwc1Q6/kxoa4st6fVGOE95gxJmsH2gSpF6ktwp5Vr5qTsL65Ap/O7SZjEtY
-         by6NXYeQrLcf7ijygDNbUjhgeRcyqonZeu3bZGNg0RmLBhW2BQofEnHhp2HQOsR5EwSx
-         4itw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JBexy6By+IDrzYml2cSyJQNCDSqFJvGVfsO9tJKX2J4=;
+        b=QY4qjhwn6x99z5bLD7KOzzqVb482QKLVZEWjKWbjrjJ73xK2C7ymYChU64S/Vfp18k
+         E1xju4Vpr2u35t3AKPcfSVAEEFcGXXJXQSFZxmVDcOymATTxpZi8WUji3/a/dmzEOpcW
+         CPliAFfPd79penhQcta8OGxw76X9/4DtTttbo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y3lkkCoH31qkZVjCCR/E7oVCSTtI0bujwimpGP/k3sA=;
-        b=n67WVWMCqVbbQH/6bhZ/GBZZIiz32P2Aop7WZS9DOQwT1/9dTSDaNJn1cszRQ4ELYH
-         0JKsQKO9hPPbMEsaXxtRz9r/rvcgEKWS1XJOHtDNus5wq4h8Qle2iQAoKAKbioKT5Svf
-         cR72X69yVbzb06V5KpBoc8wkxsWMnHAR34Bc3EURH7m56DWocPwq8gL3BxpbmMxu+d86
-         SzyHkMM7kLZ8EU8fr+mOgA0pkyeOM9wxwXOWvUY5iUyCgoBWNph2Dg6rPj/l1DrayfXH
-         V+yuOlR21+JG9wsCnARqctyUcdRgQnZmLbJVCHv8F+1QVOcVdfq5NzcO+0gHtmq4CMGd
-         CDgg==
-X-Gm-Message-State: AOAM532NV6UDLj8SE4byRLMoqLG+CMU1LvY4ji7obTqrgQTWNUCRLmfu
-        1xbqBaBDHBgeZuV2EvBab5QOVg==
-X-Google-Smtp-Source: ABdhPJzHagE7e/zPwAVgF1qVOvwX2AZJfu6+gEOKjv7ntsak1VhR4NZPtnwdBehCWj1cbnfgo9fw4g==
-X-Received: by 2002:a63:9508:: with SMTP id p8mr11607250pgd.413.1636749483738;
-        Fri, 12 Nov 2021 12:38:03 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id qe12sm12567812pjb.29.2021.11.12.12.38.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 12:38:02 -0800 (PST)
-Date:   Fri, 12 Nov 2021 20:37:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YY7Qp8c/gTD1rT86@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
- <YY7I6sgqIPubTrtA@zn.tnic>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JBexy6By+IDrzYml2cSyJQNCDSqFJvGVfsO9tJKX2J4=;
+        b=Ubx+KRu1EEDtlHiKV+xo6aKeioYCF5ktu8s1AAc5sD/sr/XvcIXLGajkKugUenIOBn
+         t7vpjHmwlBQRyv+8voudIWBD9p47JUvtakJDsY+YdTvd0L9lhq96idPc7Q/FvBCNR/7h
+         V8N1CSpsD5Ru0wKrkyC7oO292yuPFefsXZG3h5DLrzFgebVjq0+zF5CHELCILZq8pj6I
+         cGJ2P8boWZocy06Uzf2q3p5OcpBcjFShYn+pS7WNPKQARBWtbydBIoB4qHFzSxmVUgSS
+         +sjcaHRyLfPLS/PHtXcJrhMJs8++tyPqKHj00iwmgnc50j6/dr93eaCy8GuAIAMLKROI
+         qyxQ==
+X-Gm-Message-State: AOAM533xkJe9dGOSyXX4pvJZha3D4NY8iHijyXA6wlDtBnAOb5nEuSvA
+        pZmaVKqawffX4qQi4sw5QtneK+1xBghk9ABKpTs=
+X-Google-Smtp-Source: ABdhPJyg6Fh1tXLbUezdTmvVefh8DTi11XdK00zpGc6FAnXgZas5T7K4aajH4+/yN/e7x7DEOjX3+g==
+X-Received: by 2002:a17:906:ece9:: with SMTP id qt9mr18572913ejb.362.1636749666503;
+        Fri, 12 Nov 2021 12:41:06 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id jx2sm1888970ejc.122.2021.11.12.12.41.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 12:41:04 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id b12so17672163wrh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:41:04 -0800 (PST)
+X-Received: by 2002:a5d:50c6:: with SMTP id f6mr22240639wrt.131.1636749664027;
+ Fri, 12 Nov 2021 12:41:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YY7I6sgqIPubTrtA@zn.tnic>
+References: <87y26nmwkb.fsf@disp2133> <20211020174406.17889-9-ebiederm@xmission.com>
+ <874k8htmb2.fsf@email.froward.int.ebiederm.org> <CAMzpN2jkK5sAv-Kg_kVnCEyVySiqeTdUORcC=AdG1gV6r8nUew@mail.gmail.com>
+ <87ilwxrvu9.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87ilwxrvu9.fsf@email.froward.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 12 Nov 2021 12:40:48 -0800
+X-Gmail-Original-Message-ID: <CAHk-=widK1vko2EN9PtV3jTo02u-expXxozui-fsK-0uKrcGHg@mail.gmail.com>
+Message-ID: <CAHk-=widK1vko2EN9PtV3jTo02u-expXxozui-fsK-0uKrcGHg@mail.gmail.com>
+Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an
+ actual BUG_ON
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Brian Gerst <brgerst@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021, Borislav Petkov wrote:
-> On Fri, Nov 12, 2021 at 07:48:17PM +0000, Sean Christopherson wrote:
-> > Yes, but IMO inducing a fault in the guest because of _host_ bug is wrong.
-> 
-> What do you suggest instead?
+On Fri, Nov 12, 2021 at 11:57 AM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> Still user space would have had to have mapped address 0 to get that
+> value set in do_sys_vm86.
 
-Let userspace decide what is mapped shared and what is mapped private.  The kernel
-and KVM provide the APIs/infrastructure to do the actual conversions in a thread-safe
-fashion and also to enforce the current state, but userspace is the control plane.
+You have to map address 0 anyway just to get vm86 mode to work.
 
-It would require non-trivial changes in userspace if there are multiple processes
-accessing guest memory, e.g. Peter's networking daemon example, but it _is_ fully
-solvable.  The exit to userspace means all three components (guest, kernel, 
-and userspace) have full knowledge of what is shared and what is private.  There
-is zero ambiguity:
+vm86 mode fundamentally requires the low 1MB of virtual memory to be
+mapped, since there is no virtual memory offset in the vm86 model.
 
-  - if userspace accesses guest private memory, it gets SIGSEGV or whatever.  
-  - if kernel accesses guest private memory, it does BUG/panic/oops[*]
-  - if guest accesses memory with the incorrect C/SHARED-bit, it gets killed.
-
-This is the direction KVM TDX support is headed, though it's obviously still a WIP.
-
-And ideally, to avoid implicit conversions at any level, hardware vendors' ABIs
-define that:
-
-  a) All convertible memory, i.e. RAM, starts as private.
-  b) Conversions between private and shared must be done via explicit hypercall.
-
-Without (b), userspace and thus KVM have to treat guest accesses to the incorrect
-type as implicit conversions.
-
-[*] Sadly, fully preventing kernel access to guest private is not possible with
-    TDX, especially if the direct map is left intact.  But maybe in the future
-    TDX will signal a fault instead of poisoning memory and leaving a #MC mine.
+             Linus
