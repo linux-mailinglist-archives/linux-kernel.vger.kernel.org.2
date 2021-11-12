@@ -2,154 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E73844F01B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9924C44F01E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhKLX4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 18:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        id S232644AbhKLX7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 18:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhKLX4F (ORCPT
+        with ESMTP id S231576AbhKLX7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 18:56:05 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6790C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:53:13 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id y8so4199157plg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:53:13 -0800 (PST)
+        Fri, 12 Nov 2021 18:59:48 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA656C0613F5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:56:56 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so3432501ooi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:56:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gojtBW/r/xf8g2//78l2TEMOnJOiXV3waj3qkECVeqU=;
-        b=cPdRbXCvdzWASSXvVHD7Rc/r30jMYD5c7cQeFJIk1Ww78VP3OjZXIBBwjWfp1gh9K5
-         o6BM6uiLSvYqTimqPrqerL7mdyCNlV6Qm97YgzD1OAomTJVQJLawjbSSYT8rGXcfDRNT
-         fgpvRVRdDEyOvbgCB+Q8fwo/QLCo01tdhJuDx5duYaWnS2QkEG5vNUOSnRnv8d8lPnSo
-         TdAPS2b3JnIr4EJd7A4X94oJ7ZWoo2i1j6EHEITZY3gM6PcwPwqi174GN7N7ioW3UeRm
-         ymBult5TNbzcAvXW4DWxunqHKI3o9ylCHRyD4px0YOY+n9dRSf/pa/vBJdwXXaZAVHZv
-         +C7w==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=1Bbi1dTodYSxYFvQyegx5oXbco/1YM4dBbouw8AdF18=;
+        b=k1Y8XJGMd/OGVp2wbEJMNXQpah+IDXwuI5FrFYaUDU+0mqSpCdjUFzf5wzIB2g5q9s
+         L28KMw76e+gFQiDu5Q5R1a5fAc8ojQl9ovg+MfuANxd+sLzWriLTMaNlDp3eTSZ1dzZq
+         X3LrnDQx0M8cAmjnRZCE2VJdEQCW6R7pGTwnhhw0ZqtMeMwo0NAI3YzMFQpxwMdctevJ
+         Ty6wrhjtifOfsD7FDUVDV9nnzhsvTXPoFheScI9dNNr/N3psrrIiE5B5wYfKJY4Onkul
+         Q3uk6QIc3ADdvtQTANo4+kyv3hpGbTl4XNrMqRiqwo7IJbtkQjcjO/5XJ+HnD53/d2ns
+         MbzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gojtBW/r/xf8g2//78l2TEMOnJOiXV3waj3qkECVeqU=;
-        b=1HcAG9qEXo9q9kNsxMxhLeYUgGfcO9+uRknLMk0+yPr1yXd8RCABUblRclnVpp8SZr
-         qWP9Rk76wpwC5D7qL9pBd51juM/7swWxaUCb1gGXLYL9E//y5tXoCBUXXyW6MPiPiEHw
-         tqa2CCifs6yiZGPP8/s3v23P7PK/GLh1J/OqL/zIFfufDrLQTQdswtac/ujd33d4wfo1
-         avS37tn+1UAzrEkXSMvs61E5SQpq3PMRdvboOT2DTyVUyFImdFP+Y7mWG/stfee3Pp9B
-         tgSJNmO3y4gyPpvS8dxRQT9toOmzut67+MazLUZ9CPmehULu5LFmNnf/MoNwdEP1pX1k
-         6Zhg==
-X-Gm-Message-State: AOAM532GtZ3BVM1QpO1dlbfn19i9uPzvGYxjAjRf4uafMt2HPyJs86GL
-        VvowFcVsv3xE9arh4g4QfCKLTg==
-X-Google-Smtp-Source: ABdhPJwU07AJSZ2zDITrDqE5QeTuOZmtItO8muoN5QPSoPbBBJPmnQtrCEPjVLpFM1x45iewkiYAbA==
-X-Received: by 2002:a17:90a:aa0e:: with SMTP id k14mr23007162pjq.88.1636761193271;
-        Fri, 12 Nov 2021 15:53:13 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t21sm5525037pgo.12.2021.11.12.15.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 15:53:12 -0800 (PST)
-Date:   Fri, 12 Nov 2021 23:53:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC 02/19] KVM: x86/mmu: Batch TLB flushes for a single zap
-Message-ID: <YY7+ZARmQV+eWbDL@google.com>
-References: <20211110223010.1392399-1-bgardon@google.com>
- <20211110223010.1392399-3-bgardon@google.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=1Bbi1dTodYSxYFvQyegx5oXbco/1YM4dBbouw8AdF18=;
+        b=TLOO/Mxb2/qceNmwfiHBsPnRulf55qT8zUSlMcdgHFUhGEtIpK5BGVjL+ct1xHnOp0
+         LAeayFGFjKv+WPzGTnReGWrpx5mn2N8fh+W8Uu/Pf92RbRMFUrYOC8+J7w5HAx++pnfK
+         yyvM6iM+w2D0Ydnrvh20SVNjn8Q7N757GmGbj1voNulpCg7Zsw5qiRKcw0c4LruSkTGR
+         LqJp3Al2bCpp50X0VKDxUrrauybcoo6LmrQou5SM2HD1VBnvhDGh4ixiVkr5RAzAavQU
+         q5TUT5fZGws3h6GR5qByaBFYU9aua9wdE1NHUuIdXftoC8rUg9CQA+2NkF8RI0kSAj0q
+         1i5g==
+X-Gm-Message-State: AOAM532wBoxdyiuQHKuZnayI04SGuq767LuSEMsQYa9efBH+Hjk0tk9v
+        4bsFZDabTopm4T826ELKsVJASMx8BF2RRmRoJFk=
+X-Google-Smtp-Source: ABdhPJzweIbM/0UQXzsghkmxZ2EXnzLZlUCIrqGYObszoc7ctM4tjzCQulvjefwUrKEnlMXp9UoO6j0boxygBPEvo7w=
+X-Received: by 2002:a4a:5487:: with SMTP id t129mr10656804ooa.4.1636761416174;
+ Fri, 12 Nov 2021 15:56:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110223010.1392399-3-bgardon@google.com>
+Received: by 2002:a05:6839:639e:0:0:0:0 with HTTP; Fri, 12 Nov 2021 15:56:55
+ -0800 (PST)
+Reply-To: ahmadmustafa.7800@gmail.com
+From:   Ahmad Mustafa <delgadoangelo650@gmail.com>
+Date:   Sat, 13 Nov 2021 00:56:55 +0100
+Message-ID: <CAKOM8vp-2tK7CHP-1kixDbVa6TvU0b34m5SnrcPYQ1iTWBTfUA@mail.gmail.com>
+Subject: LOANS AND INVESTMENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021, Ben Gardon wrote:
-> When recursively handling a removed TDP page table, the TDP MMU will
-> flush the TLBs and queue an RCU callback to free the PT. If the original
-> change zapped a non-leaf SPTE at PG_LEVEL_1G or above, that change will
-> result in many unnecessary TLB flushes when one would suffice. Queue all
-> the PTs which need to be freed on a list and wait to queue RCU callbacks
-> to free them until after all the recursive callbacks are done.
+Dear Sir,
 
-I'm pretty sure we can do this without tracking disconnected SPs.  The whole point
-of protecting TDP MMU with RCU is to wait until _all_ CPUs are guaranateed to have
-dropped references.  Emphasis on "all" because that also includes the CPU that's
-doing the zapping/replacement!
+Aseel Islamic finance PJSC is private joint stock company that was
+established in 2006 and has built a leading market position for itself
+in the UAE's Islamic finance market which specializes in loan finance
+and investment activities in real estate, hospitality, industrial &
+sustainable technologies, strategic financial investments, specialized
+education, healthcare services, agriculture, manufacturing,
+mining,energy and additional environmentally sustainable projects.
 
-And since the current CPU is required to hold RCU, we can use its RCU lock as a
-proxy for all vCPUs executing in the guest.  That will require either flushing in
-zap_gfn_range() or requiring callers to hold, or more likely a mix of both so that
-flows that zap multiple roots or both TDP and legacy MMU pages can batch flushes
+For further details,kindly indicate your interest.
 
-If this doesn't sound completely bonkers, I'd like to pick this up next week, I
-wandered into KVM's handling of invalidated roots and have patches that would
-conflict in weird ways with this idea.
+Best regards.
 
-So I think this can simply be (sans zap_gfn_range() changes):
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 4e226cdb40d9..d2303bca4449 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -431,9 +431,6 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
-                                    shared);
-        }
- 
--       kvm_flush_remote_tlbs_with_address(kvm, gfn,
--                                          KVM_PAGES_PER_HPAGE(level + 1));
--
-        call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
- }
- 
-@@ -716,11 +713,11 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-                return false;
- 
-        if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
--               rcu_read_unlock();
--
-                if (flush)
-                        kvm_flush_remote_tlbs(kvm);
- 
-+               rcu_read_unlock();
-+
-                if (shared)
-                        cond_resched_rwlock_read(&kvm->mmu_lock);
-                else
-@@ -817,7 +814,6 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-        }
- 
-        rcu_read_unlock();
--       return flush;
- }
- 
- /*
-@@ -954,6 +950,8 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
-                ret = RET_PF_SPURIOUS;
-        else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
-                return RET_PF_RETRY;
-+       else if (<old spte was present shadow page>)
-+               kvm_flush_remote_tlbs(kvm);
- 
-        /*
-         * If the page fault was caused by a write but the page is write
-
-
-> +static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
-> +					   struct tdp_iter *iter,
-> +					   u64 new_spte)
-> +{
-> +	return __tdp_mmu_set_spte_atomic(kvm, iter, new_spte, NULL);
-
-This helper and refactoring belongs in patch 19.  It is impossible to review without
-the context of its user(s).
+Mr. Ibn Ahmad Mustafa
+International Business Coordinator
+Aseel Islamic Finance PJSC
+Al Mankhool, Dubai C2 Tower,
+Ground floor,P.O 94669 Dubai, UAE
+Abu Dhabi - United Arab Emirates
+Email : ahmadmustafa.7800@gmail.com
