@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D7444E029
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB3544E02B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbhKLCOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 21:14:45 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45960 "EHLO
+        id S234430AbhKLCQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 21:16:06 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48332 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229908AbhKLCOo (ORCPT
+        with ESMTP id S229908AbhKLCQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:14:44 -0500
-X-UUID: 21e06842463d43bc821990a8da6df3f8-20211112
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ufO+ZBf8QD7tWoExaa5T5GTQHOADopwfBVamDw5rnT8=;
-        b=WGNR5C6X6mNe9hpA9vwRUcTU0RpZ+MmlZaY7jez4e3CnJzapr5V2kQlzKqbAQQu+rUFQeu3QuTgN1Hp3VFE/gvn3ZDWUSeTGURKnQJ3Z/LO5fo3t1EkV66nFGaNjz5G2QanusQTSifCyApWAqNlOPOtzRpdaUJygJaIEco4qF3Y=;
-X-UUID: 21e06842463d43bc821990a8da6df3f8-20211112
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <biao.huang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1869951413; Fri, 12 Nov 2021 10:11:52 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+        Thu, 11 Nov 2021 21:16:04 -0500
+X-UUID: cf7cd25a14364a8eb474d0fd2a428fe5-20211112
+X-UUID: cf7cd25a14364a8eb474d0fd2a428fe5-20211112
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1034424440; Fri, 12 Nov 2021 10:13:10 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
  mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Fri, 12 Nov 2021 10:11:51 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
+ Fri, 12 Nov 2021 10:13:10 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Nov
+ 2021 10:13:10 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Nov 2021 10:11:50 +0800
-Message-ID: <5500319817253c3f0c01064c363089d6b0c95d48.camel@mediatek.com>
-Subject: Re: [PATCH v2 4/5] dt-bindings: net: dwmac: Convert mediatek-dwmac
- to DT schema
-From:   Biao Huang <biao.huang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        <srv_heupstream@mediatek.com>, <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>, <macpaul.lin@mediatek.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+ Transport; Fri, 12 Nov 2021 10:13:10 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <mathieu.poirier@linaro.org>
+CC:     <bjorn.andersson@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Date:   Fri, 12 Nov 2021 10:11:50 +0800
-In-Reply-To: <1636642646.918741.3774088.nullmailer@robh.at.kernel.org>
-References: <20211111071214.21027-1-biao.huang@mediatek.com>
-         <20211111071214.21027-5-biao.huang@mediatek.com>
-         <1636642646.918741.3774088.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        <linux-remoteproc@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <ohad@wizery.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v2] remoteproc: use %pe format string to print return error code
+Date:   Fri, 12 Nov 2021 10:13:10 +0800
+Message-ID: <20211112021310.19493-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CANLsYkyLgvMDx-CMLZPEdJ8rUuGX-=QgB++5fz_h_ordm_q1aA@mail.gmail.com>
+References: <CANLsYkyLgvMDx-CMLZPEdJ8rUuGX-=QgB++5fz_h_ordm_q1aA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 X-MTK:  N
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBSb2IsDQoJVGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzfg0KDQpPbiBUaHUsIDIwMjEtMTEt
-MTEgYXQgMDg6NTcgLTA2MDAsIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBPbiBUaHUsIDExIE5vdiAy
-MDIxIDE1OjEyOjEzICswODAwLCBCaWFvIEh1YW5nIHdyb3RlOg0KPiA+IENvbnZlcnQgbWVkaWF0
-ZWstZHdtYWMgdG8gRFQgc2NoZW1hLCBhbmQgZGVsZXRlIG9sZCBtZWRpYXRlay0NCj4gPiBkd21h
-Yy50eHQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQmlhbyBIdWFuZyA8Ymlhby5odWFuZ0Bt
-ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIC4uLi9iaW5kaW5ncy9uZXQvbWVkaWF0ZWstZHdt
-YWMudHh0ICAgICAgICAgICB8ICA5MSAtLS0tLS0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvbmV0L21l
-ZGlhdGVrLWR3bWFjLnlhbWwgICAgICAgICAgfCAyMTENCj4gPiArKysrKysrKysrKysrKysrKysN
-Cj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAyMTEgaW5zZXJ0aW9ucygrKSwgOTEgZGVsZXRpb25zKC0p
-DQo+ID4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvbmV0L21lZGlhdGVrLQ0KPiA+IGR3bWFjLnR4dA0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9tZWRpYXRlay0NCj4gPiBkd21h
-Yy55YW1sDQo+ID4gDQo+IA0KPiBSdW5uaW5nICdtYWtlIGR0YnNfY2hlY2snIHdpdGggdGhlIHNj
-aGVtYSBpbiB0aGlzIHBhdGNoIGdpdmVzIHRoZQ0KPiBmb2xsb3dpbmcgd2FybmluZ3MuIENvbnNp
-ZGVyIGlmIHRoZXkgYXJlIGV4cGVjdGVkIG9yIHRoZSBzY2hlbWEgaXMNCj4gaW5jb3JyZWN0LiBU
-aGVzZSBtYXkgbm90IGJlIG5ldyB3YXJuaW5ncy4NCj4gDQo+IE5vdGUgdGhhdCBpdCBpcyBub3Qg
-eWV0IGEgcmVxdWlyZW1lbnQgdG8gaGF2ZSAwIHdhcm5pbmdzIGZvcg0KPiBkdGJzX2NoZWNrLg0K
-PiBUaGlzIHdpbGwgY2hhbmdlIGluIHRoZSBmdXR1cmUuDQo+IA0KPiBGdWxsIGxvZyBpcyBhdmFp
-bGFibGUgaGVyZTogDQo+IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvMTU1Mzgw
-Mw0KPiANCj4gDQo+IGV0aGVybmV0QDExMDFjMDAwOiBjbG9jay1uYW1lczogWydheGknLCAnYXBi
-JywgJ21hY19tYWluJywgJ3B0cF9yZWYnXQ0KPiBpcyB0b28gc2hvcnQNCj4gCWFyY2gvYXJtNjQv
-Ym9vdC9kdHMvbWVkaWF0ZWsvbXQyNzEyLWV2Yi5kdC55YW1sDQo+IA0KPiBldGhlcm5ldEAxMTAx
-YzAwMDogY2xvY2tzOiBbWzI3LCAzNF0sIFsyNywgMzddLCBbNiwgMTU0XSwgWzYsIDE1NV1dDQo+
-IGlzIHRvbyBzaG9ydA0KPiAJYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDI3MTItZXZi
-LmR0LnlhbWwNCj4gDQo+IGV0aGVybmV0QDExMDFjMDAwOiBjb21wYXRpYmxlOiBbJ21lZGlhdGVr
-LG10MjcxMi1nbWFjJ10gZG9lcyBub3QNCj4gY29udGFpbiBpdGVtcyBtYXRjaGluZyB0aGUgZ2l2
-ZW4gc2NoZW1hDQo+IAlhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210MjcxMi1ldmIuZHQu
-eWFtbA0KPiANCj4gZXRoZXJuZXRAMTEwMWMwMDA6IGNvbXBhdGlibGU6ICdvbmVPZicgY29uZGl0
-aW9uYWwgZmFpbGVkLCBvbmUgbXVzdA0KPiBiZSBmaXhlZDoNCj4gCWFyY2gvYXJtNjQvYm9vdC9k
-dHMvbWVkaWF0ZWsvbXQyNzEyLWV2Yi5kdC55YW1sDQo+IA0KWWVzLCBJIHNob3VsZCBhZGQgYSBk
-dHMgcmVsYXRlZCBwYXRjaCB0byBmaXggdGhpcyBpc3N1ZSBpbiBuZXh0IHNlbmQuDQo=
+> Hi Mark,
+>
+>
+> >
+> > Use %pe format string to print return error code which
+> > make the error message easier to understand.
+> >
+> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > ---
+> >  drivers/remoteproc/remoteproc_core.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > index 502b6604b757..2242da320368 100644
+> > --- a/drivers/remoteproc/remoteproc_core.c
+> > +++ b/drivers/remoteproc/remoteproc_core.c
+> > @@ -575,8 +575,8 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+> >                                            dma_get_mask(rproc->dev.parent));
+> >         if (ret) {
+> >                 dev_warn(dev,
+> > -                        "Failed to set DMA mask %llx. Trying to continue... %x\n",
+> > -                        dma_get_mask(rproc->dev.parent), ret);
+> > +                        "Failed to set DMA mask %llx. Trying to continue... (%pe)\n",
+> > +                        dma_get_mask(rproc->dev.parent), ERR_PTR(ret));
+>
+> Macro ERR_PTR() is used to convert error codes to pointer type when
+> returning from a function - I fail to see how doing so in a dev_warn()
+> context can make the message easier to understand.  Can you provide an
+> example?
 
+Hi,
+
+When dma_coerce_mask_and_coherent() fail, the output log will be as following.
+
+format		log
+%x		Trying to continue... fffffffb
+%d		Trying to continue... -5
+%pe		Trying to continue... -5	(if CONFIG_SYMBOLIC_ERRNAME is not set)
+%pe		Trying to continue... -EIO	(if CONFIG_SYMBOLIC_ERRNAME=y)
