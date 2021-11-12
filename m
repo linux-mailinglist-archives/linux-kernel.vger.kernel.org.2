@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8004444E828
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8DA44E82C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhKLOKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:10:44 -0500
-Received: from mga02.intel.com ([134.134.136.20]:16984 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234199AbhKLOKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:10:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220344711"
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="220344711"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 06:07:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="590533411"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 12 Nov 2021 06:07:49 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id C28A81F8; Fri, 12 Nov 2021 16:07:51 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
-Date:   Fri, 12 Nov 2021 16:07:49 +0200
-Message-Id: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S235119AbhKLOK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:10:56 -0500
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:44910 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234199AbhKLOKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:10:54 -0500
+Received: by mail-ua1-f52.google.com with SMTP id p2so18986587uad.11;
+        Fri, 12 Nov 2021 06:08:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4DOuw4nyHs7hU56f2iCja0ZDfqiThTsFxVnB3zDgPfI=;
+        b=4LnniHzYEiWzM8AgiF/nfTT1kDo1RJgnR1nFUQCHjYn/a3+NvKi8RGpt6TCfs+jCZx
+         TJ8u6aetLIKmPQwLA8m9pYPVNSuABJiaQYRhex1XZXUn67pVKjwg63rSKdKQluAPzEWp
+         H60iiCsN9ibGyB2yeeARqyuGMpvvxbU3FEUEHu4R3ZBJ1qbt0diBxrcfTVdBXIxupAUK
+         qXc+SPojm/CS2AZKqnqlBrvxhRbqH5ADw0i8w+IGho2GjylNVHz8V9wBNQtS7RGPcaGI
+         85qciRvq19mb8yqHVVSeYcPwv7N1y6yn0TPVa4tkFBpeUPQybXJtAmM1+hxxvv2f4M+3
+         pYYg==
+X-Gm-Message-State: AOAM532xIb/CocorU1GA8qwaq4QL7Blotpw/ayb3yG9HiNSg9t4sGJB9
+        WNmub9GbN6mm6QRtP03JtUx949IF5cTX6g==
+X-Google-Smtp-Source: ABdhPJz5KGNJrVdAXKI67Z4d66322skrJGUdEoTkkyYUJMVGUF+dtI0zuGNceNigS2DkLchS90nUuQ==
+X-Received: by 2002:ab0:3813:: with SMTP id x19mr22586736uav.56.1636726082730;
+        Fri, 12 Nov 2021 06:08:02 -0800 (PST)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id u16sm4499191uad.2.2021.11.12.06.08.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 06:08:02 -0800 (PST)
+Received: by mail-ua1-f45.google.com with SMTP id t13so18999817uad.9;
+        Fri, 12 Nov 2021 06:08:02 -0800 (PST)
+X-Received: by 2002:ab0:5552:: with SMTP id u18mr22545741uaa.78.1636726082069;
+ Fri, 12 Nov 2021 06:08:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211110224622.16022-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211110224622.16022-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Nov 2021 15:07:51 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWoJEYkPDFa5CBnz4HUOD+E791hLu1Fk2xFaz0UX+hFmg@mail.gmail.com>
+Message-ID: <CAMuHMdWoJEYkPDFa5CBnz4HUOD+E791hLu1Fk2xFaz0UX+hFmg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set pin config for GPIO port pins
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the commit 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
-in NMI") the printk.h is not needed anymore in percpu.h.
+On Wed, Nov 10, 2021 at 11:46 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support to get/set pin config for GPIO port pins.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Moreover `make headerdep` complains (an excerpt)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.17.
 
-In file included from linux/printk.h,
-                 from linux/dynamic_debug.h:188
-                 from linux/printk.h:559 <-- here
-                 from linux/percpu.h:9
-                 from linux/idr.h:17
-include/net/9p/client.h:13: warning: recursive header inclusion
+Gr{oetje,eeting}s,
 
-Yeah, it's not a root cause of this, but removing will help to reduce
-the noise.
+                        Geert
 
-Fixes: 42a0bb3f7138 ("printk/nmi: generic solution for safe printk in NMI")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/percpu.h | 1 -
- 1 file changed, 1 deletion(-)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-index 98a9371133f8..ae4004e7957e 100644
---- a/include/linux/percpu.h
-+++ b/include/linux/percpu.h
-@@ -6,7 +6,6 @@
- #include <linux/preempt.h>
- #include <linux/smp.h>
- #include <linux/cpumask.h>
--#include <linux/printk.h>
- #include <linux/pfn.h>
- #include <linux/init.h>
- 
--- 
-2.33.0
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
