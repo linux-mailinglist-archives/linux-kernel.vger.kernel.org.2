@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2113644EAE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D203D44EAED
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhKLP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:58:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhKLP6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:58:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD59560F45;
-        Fri, 12 Nov 2021 15:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636732556;
-        bh=ZdLwxjYgTxXkalzhkw/k7vZBpw+xVc13rs6AD5fASgg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cQA3hSJ/X2TBdwjuoxUmnkSL6ITzQys0CR8b/iU6eQ26IdEpgaNxux1vkFl/dIktW
-         6ZiP+5iM10fkF4fkC01690EwYySFOfhsSYKbe2kQbyt+zSPOi9US5uq885mzxwrdSO
-         9cFBE8Hb9uLd1DmZwmP+b0SFq1Z2mv60HviDp2++lREtH3M+MGLXK+/+fYgnIpDh9S
-         +1KzFkfT4rZwfTcca7Szi2PKxjMlftOi6cM8STEgfB2Ym1OmhCiyonOQcN00PZSOiq
-         4SeF9vuUjkNpLY1kXghrQy36jyTTryn/roosmloa2kx2+EZSHUiEql9ul5t5RqbS3j
-         l08sR7g5HM73Q==
-Received: by mail-ed1-f46.google.com with SMTP id e3so3060916edu.4;
-        Fri, 12 Nov 2021 07:55:56 -0800 (PST)
-X-Gm-Message-State: AOAM530kzn1FA24yk1oRsIzFk1PsXpbZnn17hmSW3MGTzH2LFll276au
-        HzRmqLtr3AlVfJHeftfnLuO1N3gaODIx+BE50g==
-X-Google-Smtp-Source: ABdhPJxMSbQEPedZftdSDnp2XKnzGwwj8IAex8jyauOxAcT5jmt9rQALJLlQpj+ehikSpWj59+z0u9Zvy82e2SfjGbs=
-X-Received: by 2002:a17:907:7f25:: with SMTP id qf37mr20901805ejc.147.1636732555191;
- Fri, 12 Nov 2021 07:55:55 -0800 (PST)
+        id S235156AbhKLQDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229841AbhKLQDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 11:03:07 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8BAC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:00:16 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id v7so24972222ybq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:00:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MBw7nAjDOpIx54PL6CtGwWGYEgjR+E9SaAUwBkpc0jU=;
+        b=WSQXrHTUecwEOSkMbrwVBr1/kG09TKAuuO8JuMhKDKK/fO1ZcBuQh+ygHQrscvvgJH
+         tcjgPqYIkW/IqWlXpwfZrQ+F3IylFOhypk/ImwK439XxfSH3ffIWDNiGnxvhXsskudzh
+         KpRPaNZecMQ+yI27VP+/1X0ar1tcVjyz0z8ptzTwAFRoFRNjwI6Gp2c7MQBQBc/GOQ03
+         NkVdXim3hlPeXY/MOWeWfoez8vYrpjGorH9Ol0mW6lGuDCoOOpttS0lJztrD0ijaTD3d
+         Iyzqhr6Q1SSs13vbRIUsCxyxlRXVobBrLnau+h6RiAC4oveffTcsPOiiuzX0/IEkYdur
+         ygDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MBw7nAjDOpIx54PL6CtGwWGYEgjR+E9SaAUwBkpc0jU=;
+        b=WOT4pQeTuRgCWESpUyGrsbGPkYedzrWubVi5RNW/V0TOP0kyHC/UYPR4CFWZp1OCu4
+         dvqKUqCHGvzgiyheDH2Pg9LaxHeeqB7ucvmuUGJWHkWMdFQwk/ebu3bHZkxQcNqOk9X1
+         BHyeD7MzNMCzAavZle5IY40E9+L3Hr/teW6aD9zKAO40fCKcxDqcUO/PWxB9zq3hi2G9
+         0CfGAf7D+KtUbMhfomkoRDQ3tXX0ZmNzu2G1r+D7QInClsxkJikR3obasp2/wk8ejg67
+         rGM55ibw0nCiNX1CbC22amKbjDNurvjhnGV+A68DDQaDlqTxHYXHdsf67FEXcU4eTCT/
+         FILA==
+X-Gm-Message-State: AOAM532gsekQ11PC1ivNNrt8tymggMWTZM+12bJmbHUNYNifC/QBJxB0
+        nto05DdZCtQ0nUbPI5rJItkTUSqKZDfowwSvvAOU1Q==
+X-Google-Smtp-Source: ABdhPJwHn8mpOswus43mfCk29R4fAdhIqXVj+xv1CqLJYRPCfc06/HRFtJmqn2nab1RhER4AK8hBOKWBSACFO0H4H18=
+X-Received: by 2002:a05:6902:134b:: with SMTP id g11mr17195784ybu.202.1636732815170;
+ Fri, 12 Nov 2021 08:00:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112143644.434995-1-maz@kernel.org> <20211112150415.GA1401861@bhelgaas>
- <87fss18kb5.wl-maz@kernel.org>
-In-Reply-To: <87fss18kb5.wl-maz@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 12 Nov 2021 09:55:43 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLumnN6bExJ22SkngCiYsN8LwD=q8ov8wk0zvE3-UKdzg@mail.gmail.com>
-Message-ID: <CAL_JsqLumnN6bExJ22SkngCiYsN8LwD=q8ov8wk0zvE3-UKdzg@mail.gmail.com>
-Subject: Re: [PATCH] of/irq: Don't ignore interrupt-controller when
- interrupt-map failed
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
+References: <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz> <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz> <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+ <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz> <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+ <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
+ <YYzgZARxi8csprIx@dhcp22.suse.cz> <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
+ <YY4snVzZZZYhbigV@dhcp22.suse.cz>
+In-Reply-To: <YY4snVzZZZYhbigV@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 12 Nov 2021 08:00:04 -0800
+Message-ID: <CAJuCfpHXZvCCi=DW53i9qbmcjY48CmSVBCaYqbSyyBmmp9JqaQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 9:28 AM Marc Zyngier <maz@kernel.org> wrote:
+On Fri, Nov 12, 2021 at 12:58 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
 >
-> On Fri, 12 Nov 2021 15:04:15 +0000,
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Fri, Nov 12, 2021 at 02:36:44PM +0000, Marc Zyngier wrote:
-> > > Since 041284181226 ("of/irq: Allow matching of an interrupt-map local
-> > > to an interrupt controller"), the irq code favors using an interrupt-map
-> > > over a interrupt-controller property if both are available, while the
-> > > earlier behaviour was to ignore the interrupt-map altogether.
+> On Thu 11-11-21 07:02:42, Suren Baghdasaryan wrote:
+> > On Thu, Nov 11, 2021 at 1:20 AM Michal Hocko <mhocko@suse.com> wrote:
 > > >
-> > > However, we now end-up with the opposite behaviour, which is to
-> > > ignore the interrupt-controller property even if the interrupt-map
-> > > fails to match its input. This new behaviour breaks the AmigaOne
-> > > X1000 machine, which ships with an extremely "creative" (read:
-> > > broken) device tree.
+> > > On Wed 10-11-21 17:49:37, Suren Baghdasaryan wrote:
+> > > > On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > >
+> > > > > On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > [...]
+> > > > > > Yes, those can run concurrently. One thing I completely forgot about is
+> > > > > > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
+> > > > > > which is about interaction with the munlock.
+> > > >
+> > > > Agrh! This interaction with the munlock you mentioned requires us to
+> > > > take mmap_write_lock before munlock_vma_pages_all and that prevents
+> > > > __oom_reap_task_mm from running concurrently with unmap_vmas. The
+> > > > reapers would not be as effective as they are now after such a change
+> > > > :(
 > > >
-> > > Fix this by allowing the interrupt-controller property to be selected
-> > > when interrupt-map fails to match anything.
-> > >
-> > > Fixes: 041284181226 ("of/irq: Allow matching of an interrupt-map local to an interrupt controller")
-> > > Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > Link: https://lore.kernel.org/r/78308692-02e6-9544-4035-3171a8e1e6d4@xenosoft.de
-> > > Cc: Rob Herring <robh@kernel.org>
-> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > __oom_reap_task_mm will not run concurrently with unmap_vmas even
+> > > with the current code. The mmap_sem barrier right before munlock code
+> > > prevents that.
 > >
-> > I'm not qualified to review this, but since 041284181226 was merged
-> > via my tree along with the rest of the Apple stuff, let me know if
-> > you'd like me to merge this.
-> >
-> > I see Rob has a comment, so if you want to take care merging it
-> > yourself, that's certainly fine with me.
+> > You are right, it will run concurrently with another
+> > __oom_reap_task_mm in the exit_mmap. But I thought we wanted to get
+> > rid of that call to __oom_reap_task_mm in exit_mmap or did I
+> > misunderstand?
 >
-> I have a couple of IRQ patches that need to go in, so happy to route
-> it via the irqchip tree if Rob gives his blessing.
+> I do not remember this to be objective or the motivation. IIRC we wanted
+> to make the locking more robust which would help your process_mrelease
+> use case. This one currently suffers from a much heavier cost if it
+> turns out to be the last holder of the reference count on the address
+> space.
 
-I have stuff for rc1 too, but feel free to take it:
+Ok, I wrongly assumed the mmap_lock cleanup should be deeper. Will
+keep pounding on it. Thanks!
 
-With the WARN added,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+> --
+> Michal Hocko
+> SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
