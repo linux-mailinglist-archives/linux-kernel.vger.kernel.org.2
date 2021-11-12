@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E0444DF26
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6407F44DF2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhKLAc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:32:56 -0500
-Received: from mga02.intel.com ([134.134.136.20]:65259 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234146AbhKLAcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:32:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220254440"
-X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="220254440"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 16:30:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="452948081"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 11 Nov 2021 16:30:02 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mlKS9-000HJP-O6; Fri, 12 Nov 2021 00:30:01 +0000
-Date:   Fri, 12 Nov 2021 08:29:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- 4716023a8f6a0f4a28047f14dd7ebdc319606b84
-Message-ID: <618db55a.rTW8NMjNR0EQYbwD%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234497AbhKLAfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:35:51 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:38136 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234182AbhKLAft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 19:35:49 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 4E1DFA1DD1;
+        Fri, 12 Nov 2021 11:32:51 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mlKUr-007jrt-Ty; Fri, 12 Nov 2021 11:32:49 +1100
+Date:   Fri, 12 Nov 2021 11:32:49 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ian Kent <raven@themaw.net>
+Cc:     xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <20211112003249.GL449541@dread.disaster.area>
+References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
+ <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=618db635
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=HsDoLlocmGUuF16g:21 a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=jUFqNg-nAAAA:8
+        a=7-415B0cAAAA:8 a=M1zDxuRCMWIfiWoXodwA:9 a=CjuIK1q_8ugA:10
+        a=hl_xKfOxWho2XEkUDbUg:22 a=-tElvS_Zar9K8zhlwiSp:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
-branch HEAD: 4716023a8f6a0f4a28047f14dd7ebdc319606b84  perf/core: Avoid put_page() when GUP fails
+On Thu, Nov 11, 2021 at 11:39:30AM +0800, Ian Kent wrote:
+> When following a trailing symlink in rcu-walk mode it's possible to
+> succeed in getting the ->get_link() method pointer but the link path
+> string be deallocated while it's being used.
+> 
+> Utilize the rcu mechanism to mitigate this risk.
+> 
+> Suggested-by: Miklos Szeredi <miklos@szeredi.hu>
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> ---
+>  fs/xfs/kmem.h      |    4 ++++
+>  fs/xfs/xfs_inode.c |    4 ++--
+>  fs/xfs/xfs_iops.c  |   10 ++++++++--
+>  3 files changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+> index 54da6d717a06..c1bd1103b340 100644
+> --- a/fs/xfs/kmem.h
+> +++ b/fs/xfs/kmem.h
+> @@ -61,6 +61,10 @@ static inline void  kmem_free(const void *ptr)
+>  {
+>  	kvfree(ptr);
+>  }
+> +static inline void  kmem_free_rcu(const void *ptr)
+> +{
+> +	kvfree_rcu(ptr);
+> +}
+>  
+>  
+>  static inline void *
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index a4f6f034fb81..aaa1911e61ed 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -2650,8 +2650,8 @@ xfs_ifree(
+>  	 * already been freed by xfs_attr_inactive.
+>  	 */
+>  	if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
+> -		kmem_free(ip->i_df.if_u1.if_data);
+> -		ip->i_df.if_u1.if_data = NULL;
+> +		kmem_free_rcu(ip->i_df.if_u1.if_data);
+> +		RCU_INIT_POINTER(ip->i_df.if_u1.if_data, NULL);
+>  		ip->i_df.if_bytes = 0;
+>  	}
 
-elapsed time: 726m
+How do we get here in a way that the VFS will walk into this inode
+during a lookup?
 
-configs tested: 53
-configs skipped: 3
+I mean, the dentry has to be validated and held during the RCU path
+walk, so if we are running a transaction to mark the inode as free
+here it has already been unlinked and the dentry turned
+negative. So anything that is doing a lockless pathwalk onto that
+dentry *should* see that it is a negative dentry at this point and
+hence nothing should be walking any further or trying to access the
+link that was shared from ->get_link().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+AFAICT, that's what the sequence check bug you fixed in the previous
+patch guarantees. It makes no difference if the unlinked inode has
+been recycled or not, the lookup race condition is the same in that
+the inode has gone through ->destroy_inode and is now owned by the
+filesystem and not the VFS.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allmodconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
+Otherwise, it might just be best to memset the buffer to zero here
+rather than free it, and leave it to be freed when the inode is
+freed from the RCU callback in xfs_inode_free_callback() as per
+normal.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
