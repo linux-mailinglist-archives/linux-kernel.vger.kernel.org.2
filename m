@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4DA44E6D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BFC44E6D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbhKLM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhKLM7N (ORCPT
+        id S235005AbhKLM7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:59:44 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4091 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234881AbhKLM7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:59:13 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B001FC061766;
-        Fri, 12 Nov 2021 04:56:22 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b13so8380776plg.2;
-        Fri, 12 Nov 2021 04:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g+fNIRpzo2sLghB9sgoem/xkpimyK2WeQcIa3G2jAk4=;
-        b=fFO+dQTOs7hF8CbwuxCH4FypYoZgO/F/ddXxMphcWjE90BQyQat7ruVbGemFIe4AKh
-         CxFrcjbnyTbLRW/7XQZvNhRm1ZocSXgLYT9JXytm3hTcpTczxYLYXuvXfEZYS1u7XD7l
-         xesgJRb8PzZiwdxnpCGWfiNndBnOPOWo2eP7N9VS0gKfz+6BAOmaqoIoy0ach36ZOLxw
-         jW6uW3bHmnYuzRMWCjzwkWJSK9HFpBklzpR8+7sagza5I5Dh8mvigZ1I5A78i63pc3lW
-         5QzBMmzWyzdfZuBLPhmLI5jWSLgLnReQ9yoqZznJMwjtpAhFGtn1IMn4MODP7HOGeJ7C
-         QC+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g+fNIRpzo2sLghB9sgoem/xkpimyK2WeQcIa3G2jAk4=;
-        b=QWpEtZB+bbCsYfi5b1lWqNhjU1s90prussoaEDRpBeAAydcNgI6lfVkoXVXg9CqU2c
-         V4c4l0cPK7VoocPMV0uIkOPBAcO6hYlU+x/hh1yNkJ5MuhJ3Gdmve80L8Ijpb0WAUXy2
-         M7UaL8X/M5A78T6tAQtsDUCy6n2YSM9EPJaGyaeYfHOXgDn+fWIeKp91cKZUyFyQQXpj
-         cEW4+hpVzc8vfb/rXew0fzmroYME+iDXMwPpLbP7+qd6y7u3ic+Zk3DlKk0bidsjM6Wj
-         Pwiw5yh2lq9Fsk0iO/vUefZv0XCy/SumiiPVCdeciMYnPPquBj+iJjapFp5xW6+LMF0d
-         Sj3g==
-X-Gm-Message-State: AOAM531mn8SRBBPhMuyP7ZedCyB7MDdzEBrPrTY3iqeU7wQXHEK/I6Lv
-        vNHnzEHu4UUEBbBd8Q2i7gc=
-X-Google-Smtp-Source: ABdhPJyoZUkmCjbtpH0+fi3C6/PtsN9O2NdWoKUkvRPZ0eNm/ux/A61mh9WH0+NaN4S5cdh/MICkVA==
-X-Received: by 2002:a17:902:7c02:b0:143:9d6a:8e42 with SMTP id x2-20020a1709027c0200b001439d6a8e42mr7739240pll.80.1636721782272;
-        Fri, 12 Nov 2021 04:56:22 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q9sm7206553pfj.88.2021.11.12.04.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 04:56:21 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     acme@kernel.org
-Cc:     mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, kan.liang@linux.intel.com, irogers@google.com,
-        deng.changcheng@zte.com.cn, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] perf tools: remove unneeded variable
-Date:   Fri, 12 Nov 2021 12:56:15 +0000
-Message-Id: <20211112125615.10504-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Nov 2021 07:59:43 -0500
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HrJPl25CZz67NsT;
+        Fri, 12 Nov 2021 20:51:55 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 12 Nov 2021 13:56:50 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.015;
+ Fri, 12 Nov 2021 13:56:50 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Ajay Garg <ajaygargnsit@gmail.com>
+CC:     "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH 4/5] shmem: Avoid segfault in
+ shmem_read_mapping_page_gfp()
+Thread-Topic: [RFC][PATCH 4/5] shmem: Avoid segfault in
+ shmem_read_mapping_page_gfp()
+Thread-Index: AQHX18MROltj/rJe+kKE1cDtluXUoav/yFuAgAARW5A=
+Date:   Fri, 12 Nov 2021 12:56:50 +0000
+Message-ID: <5b4ea24c3c104e74a2cae4cf0b90eaa3@huawei.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-5-roberto.sassu@huawei.com>
+ <CAHP4M8V9i7PZvPKwzWRo54u0xjrGwhtPPsHCjxwy9SLQM7HbEg@mail.gmail.com>
+In-Reply-To: <CAHP4M8V9i7PZvPKwzWRo54u0xjrGwhtPPsHCjxwy9SLQM7HbEg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
-
-Fix the following coccicheck review:
-./tools/perf/util/perf_event_attr_fprintf.c: 97: 5-8: Unneeded variable
-
-Remove unneeded variable used to store return value.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- tools/perf/util/perf_event_attr_fprintf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index 47b7531f51da..111180bcd466 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -94,7 +94,6 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 			     attr__fprintf_f attr__fprintf, void *priv)
- {
- 	char buf[BUF_SIZE];
--	int ret = 0;
- 
- 	PRINT_ATTRf(type, p_unsigned);
- 	PRINT_ATTRf(size, p_unsigned);
-@@ -155,5 +154,5 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 	PRINT_ATTRf(aux_sample_size, p_unsigned);
- 	PRINT_ATTRf(sig_data, p_unsigned);
- 
--	return ret;
-+	return 0;
- }
--- 
-2.25.1
-
+PiBGcm9tOiBBamF5IEdhcmcgW21haWx0bzphamF5Z2FyZ25zaXRAZ21haWwuY29tXQ0KPiBTZW50
+OiBGcmlkYXksIE5vdmVtYmVyIDEyLCAyMDIxIDE6NTQgUE0NCj4gSGkgUm9iZXJ0by4NCj4gDQo+
+IElkZW50aWNhbCBwYXRjaCBoYXMgYmVlbiBmbG9hdGVkIGVhcmxpZXIgdmlhIDoNCj4gaHR0cHM6
+Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtDQo+IG1tL0NBTVpmR3RVcDZka1Q0T1d6TGhMOHdocU5u
+WEFiZlZ3NWM2QVFvZ0h6WTNiYk1fazJRd0BtYWlsLg0KPiBnbWFpbC5jb20vVC8jbTIxODlkMTM1
+YjkyOTNkZTliNGExMTM2MmYwMTc5YzE3YjI1NGQ1YWINCg0KSGkgQWpheQ0KDQp0aGFua3MsIEkg
+d2FzIG5vdCBhd2FyZS4NCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxk
+b3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIFpob25nIFJv
+bmdodWENCg0KPiBUaGFua3MgYW5kIFJlZ2FyZHMsDQo+IEFqYXkNCj4gDQo+IE9uIEZyaSwgTm92
+IDEyLCAyMDIxIGF0IDY6MTUgUE0gUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWku
+Y29tPg0KPiB3cm90ZToNCj4gPg0KPiA+IENoZWNrIHRoZSBod3BvaXNvbiBwYWdlIGZsYWcgb25s
+eSBpZiB0aGUgcGFnZSBpcyB2YWxpZCBpbg0KPiA+IHNobWVtX3JlYWRfbWFwcGluZ19wYWdlX2dm
+cCgpLiBUaGUgUGFnZUhXUG9pc29uKCkgbWFjcm8gdHJpZXMgdG8NCj4gYWNjZXNzDQo+ID4gdGhl
+IHBhZ2UgZmxhZ3MgYW5kIGNhbm5vdCB3b3JrIG9uIGFuIGVycm9yIHBvaW50ZXIuDQo+ID4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+
+DQo+ID4gLS0tDQo+ID4gIG1tL3NobWVtLmMgfCAyICstDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL21tL3No
+bWVtLmMgYi9tbS9zaG1lbS5jDQo+ID4gaW5kZXggMjNjOTFhOGJlYjc4Li40Mjc4NjNjYmYwZGMg
+MTAwNjQ0DQo+ID4gLS0tIGEvbW0vc2htZW0uYw0KPiA+ICsrKyBiL21tL3NobWVtLmMNCj4gPiBA
+QCAtNDIyMiw3ICs0MjIyLDcgQEAgc3RydWN0IHBhZ2UNCj4gKnNobWVtX3JlYWRfbWFwcGluZ19w
+YWdlX2dmcChzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywNCj4gPiAgICAgICAgIGVsc2UN
+Cj4gPiAgICAgICAgICAgICAgICAgdW5sb2NrX3BhZ2UocGFnZSk7DQo+ID4NCj4gPiAtICAgICAg
+IGlmIChQYWdlSFdQb2lzb24ocGFnZSkpDQo+ID4gKyAgICAgICBpZiAoIUlTX0VSUihwYWdlKSAm
+JiBQYWdlSFdQb2lzb24ocGFnZSkpDQo+ID4gICAgICAgICAgICAgICAgIHBhZ2UgPSBFUlJfUFRS
+KC1FSU8pOw0KPiA+DQo+ID4gICAgICAgICByZXR1cm4gcGFnZTsNCj4gPiAtLQ0KPiA+IDIuMzIu
+MA0KPiA+DQo=
