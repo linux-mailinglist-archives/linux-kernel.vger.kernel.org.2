@@ -2,174 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708F144E7CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0560B44E7E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhKLNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:50:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235079AbhKLNuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:50:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35CB560F93;
-        Fri, 12 Nov 2021 13:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636724861;
-        bh=tzR1zz/QIlY8cKoU6Cu7kiPj1FGauiZuMueFbriZ+rk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eTK5ovxnRNtcmIIyMjcwezKI0SM5gsn1mvL5xOnIX4KY0GT/FMnNg+VrjpCLL9SQE
-         sKAcDKt1mBDNnItvlxIV8A6+NoUVEOeO+W+RH9+4LyGogILThDM1K+M1O6sQzXPsNa
-         5e3wNMhWQf8WOo+jqn9SLcIB4jquWAc7phhW9/30=
-Date:   Fri, 12 Nov 2021 14:47:39 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>, f.fainelli@gmail.com,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        lkft-triage@lists.linaro.org, patches@kernelci.org,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        jonathanh@nvidia.com, shuah@kernel.org, linux@roeck-us.net,
-        Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH 5.10 00/21] 5.10.79-rc1 review
-Message-ID: <YY5we7CKKS0g4d/s@kroah.com>
-References: <20211110182002.964190708@linuxfoundation.org>
- <YY0UQAQ54Vq4vC3z@debian>
- <CA+G9fYvu9VQY=_NgR6-UCFOZ+57pSy1xsPkCgJuQsAS-P62Umg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvu9VQY=_NgR6-UCFOZ+57pSy1xsPkCgJuQsAS-P62Umg@mail.gmail.com>
+        id S235085AbhKLNvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:51:51 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:39838 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235075AbhKLNvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 08:51:42 -0500
+Received: by mail-oi1-f172.google.com with SMTP id bf8so17961400oib.6;
+        Fri, 12 Nov 2021 05:48:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=TC2M+mU+A5z9HrDX9S9GZXSmeMTv6gFjkiYKXqPqtKU=;
+        b=PDf2hNDkay3S9sSRwW9ke8Cmov/20KXOJKW6m8MlVoa9RRJdt9/g6JQ6hOKfqXsH56
+         aAAHfunu/0ygu4S6vavZqDfYldvGtl5xQZF2oiZWMmVg4c1r5oUGUsU8fkbCxWntFHEj
+         j/nYARXMzlH20UIGpMQH2CQLlwdvlywOnxPDtz82iL2BooSYf9Q4a2JthrvBQSlEABK2
+         pCDb/zp1/fOj+1hCpxuc2sk21y14ZRXtd7Kn0uWkEnQNTq8cVT8JZOL7VRW6Yt7qZLxR
+         FT5Y+MMFZjJV0y3uEPeOUXSh60OT5+kHkYQas3hIg++JNAHFJLqdh/6Xshn5V897nf+J
+         5Jvg==
+X-Gm-Message-State: AOAM533OOsOGhdcx1VxlEIG6RD+FLvjTGkPKfHFLGjNosWGxF7B2GELa
+        WkADSH8KMs4mgkoyarOWJA==
+X-Google-Smtp-Source: ABdhPJyqLCyeEGS/my0wi5TWURD/69mMXlwnqhbDUdTjRdhY68jF3ugams1WHnb2/8Hlm26KL1Qd8w==
+X-Received: by 2002:aca:5c82:: with SMTP id q124mr27682430oib.113.1636724930650;
+        Fri, 12 Nov 2021 05:48:50 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q12sm1172983otl.66.2021.11.12.05.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 05:48:50 -0800 (PST)
+Received: (nullmailer pid 2463371 invoked by uid 1000);
+        Fri, 12 Nov 2021 13:48:37 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     James Lo <james.lo@mediatek.com>
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20211112055410.21418-2-james.lo@mediatek.com>
+References: <20211112055410.21418-1-james.lo@mediatek.com> <20211112055410.21418-2-james.lo@mediatek.com>
+Subject: Re: [RESEND, v14 1/3] dt-bindings: spmi: modify the constraint of reg property
+Date:   Fri, 12 Nov 2021 07:48:37 -0600
+Message-Id: <1636724917.135780.2463370.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 08:24:42PM +0530, Naresh Kamboju wrote:
-> On Thu, 11 Nov 2021 at 18:32, Sudip Mukherjee
-> <sudipm.mukherjee@gmail.com> wrote:
-> >
-> > Hi Greg,
-> >
-> > On Wed, Nov 10, 2021 at 07:43:46PM +0100, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.10.79 release.
-> > > There are 21 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
-> > > Anything received after that time might be too late.
-> >
-> > systemd-journal-flush.service failed due to a timeout resulting in a very very
-> > slow boot on my test laptop. qemu test on openqa failed due to the same problem.
-> >
-> > https://openqa.qa.codethink.co.uk/tests/365
-> >
-> > A bisect showed the problem to be 8615ff6dd1ac ("mm: filemap: check if THP has
-> > hwpoisoned subpage for PMD page fault"). Reverting it on top of 5.10.79-rc1
-> > fixed the problem.
-> > Incidentally, I was having similar problem with Linus's tree
-> > for last few days and was failing since 20211106 (did not get the time to check).
-> > I will test mainline again with this commit reverted.
+On Fri, 12 Nov 2021 13:54:08 +0800, James Lo wrote:
+> The constraint of reg may larger than 1, so we modify to
+> 'minItem: 1' and 'maxItem: 2'.
+> And adds documentation for the SPMI controller found on
+> Mediatek SoCs.
 > 
-> I have also noticed this problem and Anders bisected and found this
-> first bad commit.
+> Merge [RESEND,v13,2/4] into [RESEND,v13,1/4] for fix yaml
+> error.
+> [RESEND,v13,1/4] :
+> dt-bindings: spmi: modify the constraint of reg property
+> [RESEND,v13,2/4] :
+> dt-bindings: spmi: document binding for the Mediatek SPMI
+> controller
 > 
-> Failed test log link,
-> A start job is running for Journal Service (5s / 1min 27s)
-> https://lkft.validation.linaro.org/scheduler/job/3901980#L2234
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Bisect log:
-> 
-> # bad: [b85617a6291f710807d0cd078c230626dee60b16] Linux 5.10.79-rc1
-> # good: [5040520482a594e92d4f69141229a6dd26173511] Linux 5.10.78
-> git bisect start 'b85617a6291f710807d0cd078c230626dee60b16'
-> '5040520482a594e92d4f69141229a6dd26173511'
-> # bad: [7ceeda856035991a6c9804916987a03759745fb0] staging: rtl8712:
-> fix use-after-free in rtl8712_dl_fw
-> git bisect bad 7ceeda856035991a6c9804916987a03759745fb0
-> # bad: [8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed] mm: filemap: check
-> if THP has hwpoisoned subpage for PMD page fault
-> git bisect bad 8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed
-> # good: [e9cb6ce4690749d42013f1d56874c624d7241740] Revert "x86/kvm:
-> fix vcpu-id indexed array sizes"
-> git bisect good e9cb6ce4690749d42013f1d56874c624d7241740
-> # good: [dc385dfc126d51d7a93db694f8e151afe60eb06a] mm: hwpoison:
-> remove the unnecessary THP check
-> git bisect good dc385dfc126d51d7a93db694f8e151afe60eb06a
-> # first bad commit: [8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed] mm:
-> filemap: check if THP has hwpoisoned subpage for PMD page fault
-> commit 8615ff6dd1ac9e01b6fcf0fc0652353f79f524ed
-> Author: Yang Shi <shy828301@gmail.com>
-> Date:   Thu Oct 28 14:36:11 2021 -0700
-> 
->     mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
-> 
->     commit eac96c3efdb593df1a57bb5b95dbe037bfa9a522 upstream.
-> 
->     When handling shmem page fault the THP with corrupted subpage could be
->     PMD mapped if certain conditions are satisfied.  But kernel is supposed
->     to send SIGBUS when trying to map hwpoisoned page.
-> 
->     There are two paths which may do PMD map: fault around and regular
->     fault.
-> 
->     Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
->     codepaths") the thing was even worse in fault around path.  The THP
->     could be PMD mapped as long as the VMA fits regardless what subpage is
->     accessed and corrupted.  After this commit as long as head page is not
->     corrupted the THP could be PMD mapped.
-> 
->     In the regular fault path the THP could be PMD mapped as long as the
->     corrupted page is not accessed and the VMA fits.
-> 
->     This loophole could be fixed by iterating every subpage to check if any
->     of them is hwpoisoned or not, but it is somewhat costly in page fault
->     path.
-> 
->     So introduce a new page flag called HasHWPoisoned on the first tail
->     page.  It indicates the THP has hwpoisoned subpage(s).  It is set if any
->     subpage of THP is found hwpoisoned by memory failure and after the
->     refcount is bumped successfully, then cleared when the THP is freed or
->     split.
-> 
->     The soft offline path doesn't need this since soft offline handler just
->     marks a subpage hwpoisoned when the subpage is migrated successfully.
->     But shmem THP didn't get split then migrated at all.
-> 
->     Link: https://lkml.kernel.org/r/20211020210755.23964-3-shy828301@gmail.com
->     Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
->     Signed-off-by: Yang Shi <shy828301@gmail.com>
->     Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
->     Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->     Cc: Hugh Dickins <hughd@google.com>
->     Cc: Matthew Wilcox <willy@infradead.org>
->     Cc: Oscar Salvador <osalvador@suse.de>
->     Cc: Peter Xu <peterx@redhat.com>
->     Cc: <stable@vger.kernel.org>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
->  include/linux/page-flags.h | 23 +++++++++++++++++++++++
->  mm/huge_memory.c           |  2 ++
->  mm/memory-failure.c        | 14 ++++++++++++++
->  mm/memory.c                |  9 +++++++++
->  mm/page_alloc.c            |  4 +++-
->  5 files changed, 51 insertions(+), 1 deletion(-)
+> Signed-off-by: James Lo <james.lo@mediatek.com>
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
+>  .../devicetree/bindings/spmi/spmi.yaml        |  3 +-
+>  2 files changed, 78 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
 > 
 
-Thanks, I'm going to go drop this patch again.
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-This has been the second time we have tried to add it.  Yang, are you
-_SURE_ it needs to be in the 5.10.y tree?  So far it's been nothing but
-build and boot failures :(
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-thanks,
+Full log is available here: https://patchwork.ozlabs.org/patch/1554153
 
-greg k-h
+
+spmi@1c40000: reg: [[29622272, 4352], [31457280, 33554432], [65011712, 1048576], [66060288, 655360], [29401088, 155648]] is too long
+	arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dt.yaml
+
+spmi@200f000: reg: [[33615872, 4096], [37748736, 4194304], [46137344, 4194304], [58720256, 2097152], [33595392, 8448]] is too long
+	arch/arm64/boot/dts/qcom/apq8016-sbc.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dt.yaml
+
+spmi@200f000: reg: [[33615872, 4096], [37748736, 8388608], [46137344, 8388608], [58720256, 2097152], [33595392, 8448]] is too long
+	arch/arm64/boot/dts/qcom/qcs404-evb-1000.dt.yaml
+	arch/arm64/boot/dts/qcom/qcs404-evb-4000.dt.yaml
+
+spmi@800f000: reg: [[134279168, 4096], [138412032, 16777216], [155189248, 16777216], [171966464, 2228224], [134258688, 12288]] is too long
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-discovery.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-pioneer.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-voyager.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm636-sony-xperia-ganges-mermaid.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dt.yaml
+
+spmi@c440000: #address-cells:0:0: 2 was expected
+	arch/arm64/boot/dts/qcom/sc7180-idp.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r4.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp.dt.yaml
+
+spmi@c440000: reg: [[0, 205783040, 0, 4352], [0, 207618048, 0, 33554432], [0, 241172480, 0, 1048576], [0, 242221056, 0, 655360], [0, 205561856, 0, 155648]] is too long
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-idp.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r4.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8350-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8350-mtp.dt.yaml
+
+spmi@c440000: #size-cells:0:0: 0 was expected
+	arch/arm64/boot/dts/qcom/sc7180-idp.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r4.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7180-trogdor-r1-lte.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp2.dt.yaml
+	arch/arm64/boot/dts/qcom/sc7280-idp.dt.yaml
+
+spmi@fc4c0000: reg: [[4232900608, 4096], [4232884224, 4096], [4232880128, 4096]] is too long
+	arch/arm64/boot/dts/qcom/apq8094-sony-xperia-kitakami-karin_windy.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8992-bullhead-rev-101.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8992-msft-lumia-octagon-talkman.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon-cityman.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami-ivy.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami-karin.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami-satsuki.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami-sumire.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami-suzuran.dt.yaml
+
+spmi@fc4cf000: reg: [[4232900608, 4096], [4232884224, 4096], [4232880128, 4096]] is too long
+	arch/arm/boot/dts/qcom-apq8074-dragonboard.dt.yaml
+	arch/arm/boot/dts/qcom-apq8084-ifc6540.dt.yaml
+	arch/arm/boot/dts/qcom-apq8084-mtp.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-samsung-klte.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dt.yaml
+	arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dt.yaml
+
