@@ -2,222 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF5D44EA1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F290944EA2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhKLPgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:36:44 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:35638 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbhKLPgm (ORCPT
+        id S235087AbhKLPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:37:27 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:35168 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233776AbhKLPhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:36:42 -0500
-Received: by mail-oi1-f173.google.com with SMTP id m6so18589397oim.2;
-        Fri, 12 Nov 2021 07:33:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nDrhavM5gNU8fiGV4yXPS+mEDIrEI/q0tvC/VqQatCU=;
-        b=tEtl9yUWXgTCyFvTk87ouGLoOAKzU7ZL5st8+iENO20/OTbxh80kW6wPip7fQWC/43
-         MJfiS7IWIua5/BBvn1yKPhWeIcWDjNeKL7czWKuRvkCcSf/Kfwwksm7Ffs/TJTwNMb4E
-         nQlISI0YejCSCziYyBeRNlMMXIUhRkMTdG4u3JXkgGGyxpV3WwWAW3GFbHn0ur7Mvmr5
-         2+pMjsfHyTQnwaQUfC64CULlzEjnnHmqjDt8EMtI737WG58I2PevsHpK6O7qr70qbwwj
-         TnGXkdpGROwuWjI24uM5iKiw2VvApuNVB7G5E0jZgoZXyizmZw0qUpuRP1igHcQKAt22
-         dovA==
-X-Gm-Message-State: AOAM530gUIOA1aWRtQ5B4L/PGOjj/1zNMjXaNZpaImpCFxnnyWtvTO24
-        WPoRYATc7j4PeC63/1p5Bw==
-X-Google-Smtp-Source: ABdhPJwPo1ebTBXtx7cRT1OZMYNSVXyxKOypZR2MNKgmDSUgIkvz6F8xujE4mZrawvQvxLffd2sM7A==
-X-Received: by 2002:a54:480a:: with SMTP id j10mr6961708oij.34.1636731231381;
-        Fri, 12 Nov 2021 07:33:51 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o10sm1144053oom.32.2021.11.12.07.33.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 07:33:50 -0800 (PST)
-Received: (nullmailer pid 2890267 invoked by uid 1000);
-        Fri, 12 Nov 2021 15:33:49 -0000
-Date:   Fri, 12 Nov 2021 09:33:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Vincent Shih <vincent.sunplus@gmail.com>
-Cc:     srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Vincent Shih <vincent.shih@sunplus.com>
-Subject: Re: [PATCH 2/2] dt-bindings: nvmem: Convert Sunplus OCOTP to
- json-schema
-Message-ID: <YY6JXT2UK+tyXfdY@robh.at.kernel.org>
-References: <1635743712-25358-1-git-send-email-vincent.shih@sunplus.com>
- <1635743712-25358-3-git-send-email-vincent.shih@sunplus.com>
+        Fri, 12 Nov 2021 10:37:25 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B0C631FD3D;
+        Fri, 12 Nov 2021 15:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636731273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2sbpI/plwivBXzGwyojuYWpzjgBzhbo5rCRsZexXDo=;
+        b=J/RTt8c++HduhLkKS5rLA4+TiIwxyYV10ziRyMv+dozhao5sHlKMoBS9gf6Cs/sHn7rcGo
+        Ef4aSmlfrpSgaeHtAODLG9J4Us2ZnXt6tLKE3n1UGZhSKA35lwosCHstCh4qsx27IZt1rJ
+        dDnw20mLk5aN5UF7wVKNIOQ7ZVy5xUg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 17FCBA3B81;
+        Fri, 12 Nov 2021 15:34:33 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 16:34:29 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] kthread: dynamically allocate memory to store kthread's
+ full name
+Message-ID: <YY6JhZK/oiLUwHyZ@alley>
+References: <20211108084142.4692-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1635743712-25358-3-git-send-email-vincent.shih@sunplus.com>
+In-Reply-To: <20211108084142.4692-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 01:15:12PM +0800, Vincent Shih wrote:
-> Convert Sunplus OCOTP to json-schema
+On Mon 2021-11-08 08:41:42, Yafang Shao wrote:
+> When I was implementing a new per-cpu kthread cfs_migration, I found the
+> comm of it "cfs_migration/%u" is truncated due to the limitation of
+> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
+> all with the same name "cfs_migration/1", which will confuse the user. This
+> issue is not critical, because we can get the corresponding CPU from the
+> task's Cpus_allowed. But for kthreads correspoinding to other hardware
+> devices, it is not easy to get the detailed device info from task comm,
+> for example,
 > 
-> Signed-off-by: Vincent Shih <vincent.shih@sunplus.com>
-
-Author and Sob emails don't match.
-
-> ---
->  .../bindings/nvmem/sunplus,sp7021-ocotp.yaml       | 116 +++++++++++++++++++++
->  MAINTAINERS                                        |   1 +
->  2 files changed, 117 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
+> After this change, the full name of these truncated kthreads will be
+> displayed via /proc/[pid]/comm:
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
-> new file mode 100644
-> index 0000000..2d18f38
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
-> @@ -0,0 +1,116 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) Sunplus Co., Ltd. 2021
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/sunplus,sp7021-ocotp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: On-Chip OTP Memory for Sunplus sp7021
-> +
-> +maintainers:
-> +  - Vincent Shih <vincent.shih@sunplus.com>
-> +
-> +allOf:
-> +  - $ref: "nvmem.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: sunplus,sp7021-ocotp
-> +
-> +  reg:
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    items:
-> +      - const: hb_gpio
-> +      - const: otprx
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  therm_calib:
+> --- a/fs/proc/array.c
+> +++ b/fs/proc/array.c
+> @@ -102,6 +103,8 @@ void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
+>  
+>  	if (p->flags & PF_WQ_WORKER)
+>  		wq_worker_comm(tcomm, sizeof(tcomm), p);
 
-s/_/-/ in node names.
+Just for record. I though that this patch obsoleted wq_worker_comm()
+but it did not. wq_worker_comm() returns different values
+depending on the last proceed work item and has to stay.
 
-> +    type: object
-> +    description: thermal calibration values
+> +	else if (p->flags & PF_KTHREAD)
+> +		get_kthread_comm(tcomm, sizeof(tcomm), p);
+>  	else
+>  		__get_task_comm(tcomm, sizeof(tcomm), p);
+>  
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -121,6 +135,7 @@ void free_kthread_struct(struct task_struct *k)
 
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - reg
+Hmm, there is the following comment:
 
-You can drop 'reg' as nvmem.yaml should cover that.
+	/*
+	 * Can be NULL if this kthread was created by kernel_thread()
+	 * or if kmalloc() in kthread() failed.
+	 */
+	kthread = to_kthread(k);
 
-> +
-> +  mac_addr0:
-> +    type: object
-> +    description: MAC address of ethernet port 0
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - reg
-> +
-> +  mac_addr1:
-> +    type: object
-> +    description: MAC address of ethernet port 1
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - reg
-> +
-> +  disc_vol:
-> +    type: object
-> +    description: disconnect voltages of usb2 port 0 and port 1
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - resets
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/sp-sp7021.h>
-> +    #include <dt-bindings/reset/sp-sp7021.h>
-> +
-> +    otp: otp@9C00AF00 {
+And indeed, set_kthread_struct() is called only by kthread()
+and init_idle().
 
-Lowercase hex for unit-address
+For example, call_usermodehelper_exec_sync() calls kernel_thread()
+but given @fn does not call set_kthread_struct(). Also init_idle()
+continues even when the allocation failed.
 
-> +        compatible = "sunplus,sp7021-ocotp";
-> +        reg = <0x9C00AF00 0x34>, <0x9C00AF80 0x58>;
-> +        reg-names = "hb_gpio", "otprx";
-> +        clocks = <&clks OTPRX>;
-> +        resets = <&rstc RST_OTPRX>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        therm_calib: therm_calib@14 {
-> +          reg = <0x14 0x3>;
-> +        };
-> +        mac_addr0: mac_addr0@34 {
-> +          reg = <0x34 0x6>;
-> +        };
-> +        mac_addr1: mac_addr1@3A {
 
-Here too. If nvmem.yaml is not checking this, it should be.
+>  #ifdef CONFIG_BLK_CGROUP
+>  	WARN_ON_ONCE(kthread && kthread->blkcg_css);
+>  #endif
+> +	kfree(kthread->full_name);
 
-> +          reg = <0x3A 0x6>;
-> +        };
-> +        disc_vol: disc_vol@18 {
+Hence, we have to make sure that it is not NULL here. I suggest
+something like:
 
-Sort nodes in order of unit-address.
+void free_kthread_struct(struct task_struct *k)
+{
+	struct kthread *kthread;
 
-> +          reg = <0x18 0x2>;
-> +        };
-> +    };
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b7df2f1..c0ccc95 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17950,6 +17950,7 @@ F:	drivers/net/ethernet/dlink/sundance.c
->  SUNPLUS OCOTP DRIVER
->  M:	Vincent Shih <vincent.shih@sunplus.com>
->  S:	Maintained
-> +F:	Documentation/devicetree/bindings/nvmem/sunplus,sp7021-ocotp.yaml
->  F:	drivers/nvmem/sunplus-ocotp.c
->  F:	drivers/nvmem/sunplus-ocotp.h
->  F:	drivers/nvmem/sunplus-ocotp0.c
-> -- 
-> 2.7.4
-> 
-> 
+	/*
+	 * Can be NULL if this kthread was created by kernel_thread()
+	 * or if kmalloc() in kthread() failed.
+	 */
+	kthread = to_kthread(k);
+	if (!kthread)
+		return;
+
+#ifdef CONFIG_BLK_CGROUP
+	WARN_ON_ONCE(kthread->blkcg_css);
+#endif
+	kfree(kthread->full_name);
+	kfree(kthread);
+}
+
+
+Side note: The possible NULL pointer looks dangerous to
+    me. to_kthread() is dereferenced without any check on
+    several locations.
+
+    For example, kthread_create_on_cpu() looks safe. It is a kthread
+    crated by kthread(). It will exists only when the allocation
+    succeeded.
+
+    kthread_stop() is probably safe only because it used only for
+    the classic kthreads created by kthread(). But the API
+    is not safe.
+
+    kthread_use_mm() is probably used only by classic kthreads as
+    well. But it is less clear to me.
+
+    All this unsafe APIs looks like a ticking bomb to me. But
+    it is beyond this patchset.
+
+
+>  	kfree(kthread);
+>  }
+>  
+
+Best Regards,
+Petr
