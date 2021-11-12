@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDCD44EC77
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990A244EC7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbhKLSKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 13:10:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        id S235442AbhKLSRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 13:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhKLSKp (ORCPT
+        with ESMTP id S229975AbhKLSRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:10:45 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFAEC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:07:54 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id z26so12205672iod.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:07:54 -0800 (PST)
+        Fri, 12 Nov 2021 13:17:32 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4452CC061766;
+        Fri, 12 Nov 2021 10:14:41 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id s139so19308678oie.13;
+        Fri, 12 Nov 2021 10:14:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jYyIUcNyqFYWQevqPCKi5GHaxVLWb9zf/lJDxAk+wWE=;
-        b=smtZvps6ICKig2+l9PIAtdSIYyIHcr0vo/xL3MXU52SH4WNGhI+0NmvuwixZwPIABi
-         7O6x8uNw+o9f65GaWgks3M3cSRvSBf+Du45Wr7jfM3EiZ8ClukJePme8NSEyvvOhuGXn
-         4ghepUehNmyyh9+aUpx7Z0Abot8SYcLi4274Dpxh7kuogiSLlW1qUzkzKSrC4QHzW6BA
-         BSsrnWGK+O5vaeMjJiPnOyJG45kEw9Rp+EBjhOYoJMTPq++/+WNAP3Uws+1B5YEkLXUs
-         JhEimAERjJ/Qrn7up/i4tumaC36YT+EokxNCV981rnqgF+fhcG7aFGGi9ca06Hbu2UWx
-         fcLQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=k6vBm0W1nCavg671b89cqG0/+cyc/856RwfodNvKark=;
+        b=EFsVedSxze2GLqkpELn8gzq1wlGyO5X3+YZOL9gki6dxSFJ8QnLKzQXqHoBIfO4Dez
+         Cjj4sLtnP4ikXkHeXeTP05BB3wJq84rXRP/XTiSw+ALB/a7SOrbQGvhM3zjKl7jBpS+K
+         b1+63Z1vGywdP8E2QQ+hhzqPidVjZrtq35sXTC7Ti1ZbslcOPUcrGnnqKs47uzmPtefl
+         77Lrgg+fq/ZW5wd72QtLBD0kNdU42hHnHBzZFf1BqXaMWkSG8OpTE+HHPMG69tGttNax
+         N35hGF6lPEbOVvv4o91+jkyndeYGD0sgHbFNmGHQpEdeTPpHzApIZGSd5M/fT9W9pN7a
+         Mdag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jYyIUcNyqFYWQevqPCKi5GHaxVLWb9zf/lJDxAk+wWE=;
-        b=hfLX6O9ZxtoGuksV3Q7hOWiI0XRb2p7x6OC2A7YEMSwstWhxjqcWQrCAI6GDz7069Z
-         vIkumM2rPLX2bjZN1bXZledSKwVAEzQlutPBDZmFRXXo75sXUN9tgB+PCp2oY87fJJCB
-         bRp8EVHqG95vjY3r6/39l3suqwzBPvk5fBPpESawyAZrTxh7i3afHsHjpcej82bDIF39
-         +79pfUEEzDH00XLU/4G287EjnY5SXQrJyEc7Hh0Jsrir1AzOar/BIwTPASZ0C2UqfS1o
-         u5huPEn3Frkx0uVra9Ck1xsgn7l9V9LSjwl3o5PLjrVPAU8hyf3vXOYx2/+eOgjCWfnl
-         EnnQ==
-X-Gm-Message-State: AOAM533LWqeCu1zknHt3CFVj2ZWmHOex5fvArVb1wF6ZqZsyPBQ2okGC
-        PV/YbLC9CLK5ng9bQ8n1RE+0AVYYCotmG8pN
-X-Google-Smtp-Source: ABdhPJxkWU33y7hmcUzatPLqNYlS7UN9ts+4Dd9tHRIcfrTws4t8YdH8lZYAZKHxHUy+HIiCeLyThQ==
-X-Received: by 2002:a5d:9356:: with SMTP id i22mr11361724ioo.159.1636740473541;
-        Fri, 12 Nov 2021 10:07:53 -0800 (PST)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id a14sm4895786ilv.86.2021.11.12.10.07.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 10:07:53 -0800 (PST)
-Subject: Re: [PATCH 4.19 01/16] block: introduce multi-page bvec helpers
-To:     Christoph Hellwig <hch@lst.de>, Pavel Machek <pavel@ucw.cz>
-Cc:     Zubin Mithra <zsm@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>, Ming Lei <ming.lei@redhat.com>
-References: <20211110182001.994215976@linuxfoundation.org>
- <20211110182002.041203616@linuxfoundation.org>
- <20211111164754.GA29545@duo.ucw.cz> <YY1OHxpimjKYgxGR@google.com>
- <20211111185308.GA7933@duo.ucw.cz> <20211112054811.GD27605@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <396f9358-1e73-5448-96d1-98e36123093f@kernel.dk>
-Date:   Fri, 12 Nov 2021 11:07:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k6vBm0W1nCavg671b89cqG0/+cyc/856RwfodNvKark=;
+        b=AnpUy0I4pO2OfRhxdrDi4inx/KCR8DaYFVXDIJj8eU2PV2xvRV2iGjGUlIWCoPEEGc
+         SNiEnSPuSVCWRUd6zxOleRvOFXxrPC2jjKMEPCQIpnEyt2UROmb9dOGAgTkf/uOyS1d0
+         iavb4telL0RDI32a+NrNV5DjSvZiArXqVUz0dZQUKuvvfh2wqskpIF6SN8HtmIqAq7Ni
+         ErZcEvNHSkCogfbH9Kqxepei0wCC1EsGHYpnRyOHt+tFtficiTiiJVqAEFV3/a4//0IJ
+         hvoI62Rs4ol8pQHgEF2pN+qTsSFBb6EZR7uIwJ6WT3fbvt0nss9ZavR7ne2XLV+U6ome
+         J8ZQ==
+X-Gm-Message-State: AOAM5308DfzCmu5Oot7xK+3a/qxCfLATM5ehbV6NtPtzXBbEhPMnQyro
+        NVON+xyT9wVFuahleaT6fbygnODMNZtBjfmuLqA7i/FZzF7jcg==
+X-Google-Smtp-Source: ABdhPJzyIERufOnKcfzbsPKtHYY5Hl5iMmrWKTmNMJ8ZnVuPuma6j1kMcLbX33TCunwGhhBFqS8jFHBQiJvnK5xfQAs=
+X-Received: by 2002:aca:d608:: with SMTP id n8mr14975866oig.89.1636740880654;
+ Fri, 12 Nov 2021 10:14:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211112054811.GD27605@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211110221456.11977-1-jim2101024@gmail.com> <20211110221456.11977-5-jim2101024@gmail.com>
+ <YY2sVNEcVmQinbj8@rocinante>
+In-Reply-To: <YY2sVNEcVmQinbj8@rocinante>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Fri, 12 Nov 2021 13:14:28 -0500
+Message-ID: <CANCKTBuor2xa9zCr1zrVPnFrfWe83qL8kR-pihRYn06rRw4xKw@mail.gmail.com>
+Subject: Re: [PATCH v8 4/8] PCI/portdrv: Create pcie_is_port_dev() func from
+ existing code
+To:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 10:48 PM, Christoph Hellwig wrote:
-> On Thu, Nov 11, 2021 at 07:53:08PM +0100, Pavel Machek wrote:
->>> There is some more context on this at:
->>> https://lore.kernel.org/linux-block/YXweJ00CVsDLCI7b@google.com/T/#u
->>> and
->>> https://lore.kernel.org/stable/YYVZBuDaWBKT3vOS@google.com/T/#u
->>
->> Thank you!
-> 
-> Honestly, this looks broken to me.  multipage-bvec was a big invasive
-> series with a lot of latter fixups.  While taking this patch on it's
-> own should be save by itself, but also useless.  So if it is needed
-> to make a KASAN warning go away we need to dig deeper and back something
-> else out that should not have been backported to rely on multipage
-> bvec becasue without the other patches they don't exist and can't
-> acually work.
+On Thu, Nov 11, 2021 at 6:50 PM Krzysztof Wilczy=C5=84ski <kw@linux.com> wr=
+ote:
+>
+> Hi Jim,
+>
+> [...]
+> > +bool pcie_is_port_dev(struct pci_dev *dev)
+> > +{
+> > +     int type;
+> > +
+> > +     if (!dev)
+> > +             return false;
+> > +
+> > +     type =3D pci_pcie_type(dev);
+> > +
+> > +     return pci_is_pcie(dev) &&
+> > +             ((type =3D=3D PCI_EXP_TYPE_ROOT_PORT) ||
+> > +              (type =3D=3D PCI_EXP_TYPE_UPSTREAM) ||
+> > +              (type =3D=3D PCI_EXP_TYPE_DOWNSTREAM) ||
+> > +              (type =3D=3D PCI_EXP_TYPE_RC_EC));
+> > +}
+> > +EXPORT_SYMBOL_GPL(pcie_is_port_dev);
+>
+> It would be really nice to document what the above function does (not tha=
+t
+> some of the logic has been extracted from other function).  You know, for
+> the future generations of kernel hackers.
 
-Yeah it makes no sense to me, to be honest. We're most certainly not
-backporting multipage bvecs to stable, and if this particular patch
-fixes something, it's by happy accident and we should find out why.
+Hi Krzysztof and others,
 
--- 
-Jens Axboe
+I gave this a second look and realized that the portdrv's
+pci_device_id list for the probe is doing filtering that is not
+included in the function.  So perhaps the code must be the following
+in order to live up to its name:
 
+static inline bool pci_is_port_dev(struct pci_dev *dev)
+{
+    int type, class;
+
+    if (!dev || !pci_is_pcie(dev))
+        return false;
+
+    class =3D dev->class;
+
+    /* This must be kept in sync with port_pci_ids[] of protdev_pci.c */
+    if (!(class =3D=3D ((PCI_CLASS_BRIDGE_PCI << 8) | 0x00) ||
+          class =3D=3D ((PCI_CLASS_BRIDGE_PCI << 8) | 0x01) ||
+          class =3D=3D ((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00)))
+        return false;
+
+    type =3D pci_pcie_type(dev);
+
+    return ((type =3D=3D PCI_EXP_TYPE_ROOT_PORT) ||
+        (type =3D=3D PCI_EXP_TYPE_UPSTREAM) ||
+        (type =3D=3D PCI_EXP_TYPE_DOWNSTREAM) ||
+        (type =3D=3D PCI_EXP_TYPE_RC_EC));
+}
+
+Kind of large for an inline, plus the code must be kept in sync with
+the device list.   Suggestions?
+
+As for a description, my understanding is that the code identifies a
+pci_dev that is directly under a host bridge device.  I'm not really
+sure about the PCI_CLASS_SYSTEM_RCEC though.
+
+Regards,
+Jim Quinlan
+Broadcom STB
+
+>
+>         Krzysztof
