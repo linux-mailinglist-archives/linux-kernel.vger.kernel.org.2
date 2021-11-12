@@ -2,294 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6945244EE88
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E367644EE8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhKLV1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbhKLV1a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:27:30 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F875C061766;
-        Fri, 12 Nov 2021 13:24:39 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id o8so42774880edc.3;
-        Fri, 12 Nov 2021 13:24:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wbah8by0dDebSIbBvPNVod7KUQ7vB76R3o3yFUA01YM=;
-        b=oFBHfWQHzZKt9DeR92EwVMFVsc9yuL0K9KN7oEHwLCLEeD1ZbGJ5J3W/wzhVgadoRU
-         lzXj9et78Aa3QUxXpbRNewa97VcmZTqovmnssITQz5TgKv20SZqSlgpHcjfJE+DvfkCP
-         j7XADbY6Qpa8BU7+7Eo2XFLwC1V0brA375mAakc/xxa63p/1SJHZbWMoJRfV1e8gkkqn
-         YZTzAq6RrapPvkFvnK9ZTQizsM0kmrJNA0TtLp85Fs+ODJCj5DhMSQHTE1BM55XaDElr
-         exH4A9O8qvppMyyCvKlF74z5mbxM7GxkHzTovCXUmWJLmrLYxrFbubRiVSrG3uLmUMR/
-         VORw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wbah8by0dDebSIbBvPNVod7KUQ7vB76R3o3yFUA01YM=;
-        b=2IMdns+wd71IIVwDWHVFvcKFclveAN/4FLYxaNYsPRd6mHWX35a4pNHAvl/BS+G5nP
-         hd/quHn/nF/yc0a4KgAnlKaYh9fF0yO9wu/p2tWx9paoxwADlAN3ZfKHiPag7g7ZVOHI
-         jGZVw8zKo4VtxguVSUxTkw4+B6K3RvIYTXshjt7r+7ry0H+Gkavs2dtmBLgORUDE0f/U
-         5hs8LP8F1CgEs1AaWzatucyS9amoLJ6Thp045xS5EhRzJ2rO2SCHi19OEWV4gM9pBa+W
-         wgmR9H7cvrbJvFLXDRclCD2xjtC2EODDjyIGqVk4VGHooLT8/gkdFU4xcxf+QDnRVCLx
-         OiqA==
-X-Gm-Message-State: AOAM530pQS2+ni50NFOLJtknNFujiJBOU8R3YhfsSK5CftP2tNaovfoi
-        X7R1lfWgO26V8j2Ezfkm0ove7FzAGCwhMtrH1DM=
-X-Google-Smtp-Source: ABdhPJwmh649IJPLC/KE2YV9o4G8lv8I5VVOZ0uf78hRST/JRIDLk7781RVxc1IcI+WeYSU9ALlix69vHdo/9TYRaXc=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr22346452ejq.567.1636752277886;
- Fri, 12 Nov 2021 13:24:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20211112204927.8830-1-Sergey.Semin@baikalelectronics.ru> <20211112204927.8830-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20211112204927.8830-4-Sergey.Semin@baikalelectronics.ru>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Nov 2021 23:23:54 +0200
-Message-ID: <CAHp75VfEmjR1J92w=GgA2bJWj1DY35_eO3tCmVfT3fK+DK2ytA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] spi: dw: Convert to using the Bitfield access macros
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        id S235750AbhKLV1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:27:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235714AbhKLV1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:27:31 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEB196108B;
+        Fri, 12 Nov 2021 21:24:35 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 16:24:33 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, notify@kernel.org
+Subject: Re: [PATCH v2 2/2] sysctl: introduce kernel.pkill_on_warn
+Message-ID: <20211112162433.3ebbd7c7@gandalf.local.home>
+In-Reply-To: <20211027233215.306111-3-alex.popov@linux.com>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+        <20211027233215.306111-3-alex.popov@linux.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 10:51 PM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> The driver has been using the offset/bitwise-shift-based approach for the
-> CSR fields R/W operations since it was merged into the kernel. It can be
-> simplified by using the macros defined in the linux/bitfield.h and
-> linux/bit.h header files like BIT(), GENMASK(), FIELD_PREP(), FIELD_GET(),
-> etc where it is required, for instance in the cached cr0 preparation
-> method. Thus in order to have the FIELD_*()-macros utilized we just need
-> to convert the macros with the CSR-fields offsets to the masks with the
-> corresponding registers fields definition. That's where the GENMASK() and
-> BIT() macros come in handy. After that the masks can be used in the
-> FIELD_*()-macros where it's appropriate.
->
-> We also need to convert the macros with the CRS-bit flags using the manual
-> bitwise shift operations (x << y) to using the BIT() macro. Thus we'll
-> have a more coherent set of the CSR-related macros.
->
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+On Thu, 28 Oct 2021 02:32:15 +0300
+Alexander Popov <alex.popov@linux.com> wrote:
+
+> Signed-off-by: Alexander Popov <alex.popov@linux.com>
 > ---
->  drivers/spi/spi-dw-core.c | 31 +++++++++++--------
->  drivers/spi/spi-dw.h      | 64 +++++++++++++++++++--------------------
->  2 files changed, 50 insertions(+), 45 deletions(-)
->
-> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-> index 4d91ffb5c0d8..b4cbcd38eaba 100644
-> --- a/drivers/spi/spi-dw-core.c
-> +++ b/drivers/spi/spi-dw-core.c
-> @@ -5,6 +5,7 @@
->   * Copyright (c) 2009, Intel Corporation.
->   */
->
-> +#include <linux/bitfield.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
-> @@ -254,7 +255,7 @@ static irqreturn_t dw_spi_irq(int irq, void *dev_id)
->  {
->         struct spi_controller *master = dev_id;
->         struct dw_spi *dws = spi_controller_get_devdata(master);
-> -       u16 irq_status = dw_readl(dws, DW_SPI_ISR) & 0x3f;
-> +       u16 irq_status = dw_readl(dws, DW_SPI_ISR) & DW_SPI_INT_MASK;
->
->         if (!irq_status)
->                 return IRQ_NONE;
-> @@ -273,32 +274,38 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
->
->         if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
->                 /* CTRLR0[ 5: 4] Frame Format */
-> -               cr0 |= DW_SPI_CTRLR0_FRF_MOTO_SPI << DW_PSSI_CTRLR0_FRF_OFFSET;
-> +               cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
->
->                 /*
->                  * SPI mode (SCPOL|SCPH)
->                  * CTRLR0[ 6] Serial Clock Phase
->                  * CTRLR0[ 7] Serial Clock Polarity
->                  */
-> -               cr0 |= ((spi->mode & SPI_CPOL) ? 1 : 0) << DW_PSSI_CTRLR0_SCOL_OFFSET;
-> -               cr0 |= ((spi->mode & SPI_CPHA) ? 1 : 0) << DW_PSSI_CTRLR0_SCPH_OFFSET;
-> +               if (spi->mode & SPI_CPOL)
-> +                       cr0 |= DW_PSSI_CTRLR0_SCPOL;
-> +               if (spi->mode & SPI_CPHA)
-> +                       cr0 |= DW_PSSI_CTRLR0_SCPHA;
->
->                 /* CTRLR0[11] Shift Register Loop */
-> -               cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DW_PSSI_CTRLR0_SRL_OFFSET;
-> +               if (spi->mode & SPI_LOOP)
-> +                       cr0 |= DW_PSSI_CTRLR0_SRL;
->         } else {
->                 /* CTRLR0[ 7: 6] Frame Format */
-> -               cr0 |= DW_SPI_CTRLR0_FRF_MOTO_SPI << DW_HSSI_CTRLR0_FRF_OFFSET;
-> +               cr0 |= FIELD_PREP(DW_HSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
->
->                 /*
->                  * SPI mode (SCPOL|SCPH)
->                  * CTRLR0[ 8] Serial Clock Phase
->                  * CTRLR0[ 9] Serial Clock Polarity
->                  */
-> -               cr0 |= ((spi->mode & SPI_CPOL) ? 1 : 0) << DW_HSSI_CTRLR0_SCPOL_OFFSET;
-> -               cr0 |= ((spi->mode & SPI_CPHA) ? 1 : 0) << DW_HSSI_CTRLR0_SCPH_OFFSET;
-> +               if (spi->mode & SPI_CPOL)
-> +                       cr0 |= DW_HSSI_CTRLR0_SCPOL;
-> +               if (spi->mode & SPI_CPHA)
-> +                       cr0 |= DW_HSSI_CTRLR0_SCPHA;
->
->                 /* CTRLR0[13] Shift Register Loop */
-> -               cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DW_HSSI_CTRLR0_SRL_OFFSET;
-> +               if (spi->mode & SPI_LOOP)
-> +                       cr0 |= DW_HSSI_CTRLR0_SRL;
->
->                 if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
->                         cr0 |= DW_HSSI_CTRLR0_KEEMBAY_MST;
-> @@ -320,10 +327,10 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
->
->         if (!(dws->caps & DW_SPI_CAP_DWC_HSSI))
->                 /* CTRLR0[ 9:8] Transfer Mode */
-> -               cr0 |= cfg->tmode << DW_PSSI_CTRLR0_TMOD_OFFSET;
-> +               cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_TMOD_MASK, cfg->tmode);
->         else
->                 /* CTRLR0[11:10] Transfer Mode */
-> -               cr0 |= cfg->tmode << DW_HSSI_CTRLR0_TMOD_OFFSET;
-> +               cr0 |= FIELD_PREP(DW_HSSI_CTRLR0_TMOD_MASK, cfg->tmode);
->
->         dw_writel(dws, DW_SPI_CTRLR0, cr0);
->
-> @@ -850,7 +857,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
->
->                 if (!(cr0 & DW_PSSI_CTRLR0_DFS_MASK)) {
->                         dws->caps |= DW_SPI_CAP_DFS32;
-> -                       dws->dfs_offset = DW_PSSI_CTRLR0_DFS32_OFFSET;
-> +                       dws->dfs_offset = __bf_shf(DW_PSSI_CTRLR0_DFS32_MASK);
->                         dev_dbg(dev, "Detected 32-bits max data frame size\n");
->                 }
->         } else {
-> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> index 893b78c43a50..634085eadad1 100644
-> --- a/drivers/spi/spi-dw.h
-> +++ b/drivers/spi/spi-dw.h
+>  Documentation/admin-guide/sysctl/kernel.rst | 14 +++++++++++++
+>  include/asm-generic/bug.h                   | 12 ++++++++---
+>  include/linux/panic.h                       |  3 +++
+>  kernel/panic.c                              | 22 ++++++++++++++++++++-
+>  kernel/sysctl.c                             |  9 +++++++++
+>  lib/bug.c                                   |  3 +++
+>  6 files changed, 59 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 426162009ce9..5faf395fdf8f 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -921,6 +921,20 @@ lives in) pid namespace. When selecting a pid for a next task on fork
+>  kernel tries to allocate a number starting from this one.
+>  
+>  
+> +pkill_on_warn
+> +=============
+> +
+> +Kills all threads in a process that provoked a kernel warning.
+> +That allows the kernel to stop the process when the first signs
+> +of wrong behavior are detected.
+> +
+> += =====================================================================
+> +0 Allows a process to proceed execution after hitting a kernel warning,
+> +  this is the default behavior.
+> +1 Kills all threads in a process that provoked a kernel warning.
+> += =====================================================================
+> +
+> +
+>  powersave-nap (PPC only)
+>  ========================
+>  
+> diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+> index 881aeaf5a2d5..959000b5856a 100644
+> --- a/include/asm-generic/bug.h
+> +++ b/include/asm-generic/bug.h
+> @@ -94,8 +94,10 @@ void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
+>  #ifndef WARN_ON_ONCE
+>  #define WARN_ON_ONCE(condition) ({					\
+>  	int __ret_warn_on = !!(condition);				\
+> -	if (unlikely(__ret_warn_on))					\
+> +	if (unlikely(__ret_warn_on)) {					\
+>  		DO_ONCE_LITE(__WARN_printf, TAINT_WARN, NULL);		\
+> +		do_pkill_on_warn();					\
 
-Haven't deeply checked this, but below changes require to have bits.h
-to be included.
-Please, double check this is included already.
+Should this be a config option so that those that do not want this do not
+need to have the added overhead of a function call embedded at every
+WARN*() in their code?
 
-> @@ -41,39 +41,36 @@
->  #define DW_SPI_CS_OVERRIDE             0xf4
->
->  /* Bit fields in CTRLR0 (DWC APB SSI) */
-> -#define DW_PSSI_CTRLR0_DFS_OFFSET              0
->  #define DW_PSSI_CTRLR0_DFS_MASK                        GENMASK(3, 0)
-> -#define DW_PSSI_CTRLR0_DFS32_OFFSET            16
-> +#define DW_PSSI_CTRLR0_DFS32_MASK              GENMASK(20, 16)
->
-> -#define DW_PSSI_CTRLR0_FRF_OFFSET              4
-> +#define DW_PSSI_CTRLR0_FRF_MASK                        GENMASK(5, 4)
->  #define DW_SPI_CTRLR0_FRF_MOTO_SPI             0x0
->  #define DW_SPI_CTRLR0_FRF_TI_SSP               0x1
->  #define DW_SPI_CTRLR0_FRF_NS_MICROWIRE         0x2
->  #define DW_SPI_CTRLR0_FRF_RESV                 0x3
->
-> -#define DW_PSSI_CTRLR0_MODE_OFFSET             6
-> -#define DW_PSSI_CTRLR0_SCPH_OFFSET             6
-> -#define DW_PSSI_CTRLR0_SCOL_OFFSET             7
-> +#define DW_PSSI_CTRLR0_MODE_MASK               GENMASK(7, 6)
-> +#define DW_PSSI_CTRLR0_SCPHA                   BIT(6)
-> +#define DW_PSSI_CTRLR0_SCPOL                   BIT(7)
->
-> -#define DW_PSSI_CTRLR0_TMOD_OFFSET             8
-> -#define DW_PSSI_CTRLR0_TMOD_MASK               (0x3 << DW_PSSI_CTRLR0_TMOD_OFFSET)
-> +#define DW_PSSI_CTRLR0_TMOD_MASK               GENMASK(9, 8)
->  #define DW_SPI_CTRLR0_TMOD_TR                  0x0     /* xmit & recv */
->  #define DW_SPI_CTRLR0_TMOD_TO                  0x1     /* xmit only */
->  #define DW_SPI_CTRLR0_TMOD_RO                  0x2     /* recv only */
->  #define DW_SPI_CTRLR0_TMOD_EPROMREAD           0x3     /* eeprom read mode */
->
-> -#define DW_PSSI_CTRLR0_SLVOE_OFFSET            10
-> -#define DW_PSSI_CTRLR0_SRL_OFFSET              11
-> -#define DW_PSSI_CTRLR0_CFS_OFFSET              12
-> +#define DW_PSSI_CTRLR0_SLV_OE                  BIT(10)
-> +#define DW_PSSI_CTRLR0_SRL                     BIT(11)
-> +#define DW_PSSI_CTRLR0_CFS                     BIT(12)
->
->  /* Bit fields in CTRLR0 (DWC SSI with AHB interface) */
-> -#define DW_HSSI_CTRLR0_SRL_OFFSET              13
-> -#define DW_HSSI_CTRLR0_TMOD_OFFSET             10
-> +#define DW_HSSI_CTRLR0_DFS_MASK                        GENMASK(4, 0)
-> +#define DW_HSSI_CTRLR0_FRF_MASK                        GENMASK(7, 6)
-> +#define DW_HSSI_CTRLR0_SCPHA                   BIT(8)
-> +#define DW_HSSI_CTRLR0_SCPOL                   BIT(9)
->  #define DW_HSSI_CTRLR0_TMOD_MASK               GENMASK(11, 10)
-> -#define DW_HSSI_CTRLR0_SCPOL_OFFSET            9
-> -#define DW_HSSI_CTRLR0_SCPH_OFFSET             8
-> -#define DW_HSSI_CTRLR0_FRF_OFFSET              6
-> -#define DW_HSSI_CTRLR0_DFS_OFFSET              0
-> +#define DW_HSSI_CTRLR0_SRL                     BIT(13)
->
->  /*
->   * For Keem Bay, CTRLR0[31] is used to select controller mode.
-> @@ -86,26 +83,27 @@
->  #define DW_SPI_NDF_MASK                                GENMASK(15, 0)
->
->  /* Bit fields in SR, 7 bits */
-> -#define DW_SPI_SR_MASK                         0x7f    /* cover 7 bits */
-> -#define DW_SPI_SR_BUSY                         (1 << 0)
-> -#define DW_SPI_SR_TF_NOT_FULL                  (1 << 1)
-> -#define DW_SPI_SR_TF_EMPT                      (1 << 2)
-> -#define DW_SPI_SR_RF_NOT_EMPT                  (1 << 3)
-> -#define DW_SPI_SR_RF_FULL                      (1 << 4)
-> -#define DW_SPI_SR_TX_ERR                       (1 << 5)
-> -#define DW_SPI_SR_DCOL                         (1 << 6)
-> +#define DW_SPI_SR_MASK                         GENMASK(6, 0)
-> +#define DW_SPI_SR_BUSY                         BIT(0)
-> +#define DW_SPI_SR_TF_NOT_FULL                  BIT(1)
-> +#define DW_SPI_SR_TF_EMPT                      BIT(2)
-> +#define DW_SPI_SR_RF_NOT_EMPT                  BIT(3)
-> +#define DW_SPI_SR_RF_FULL                      BIT(4)
-> +#define DW_SPI_SR_TX_ERR                       BIT(5)
-> +#define DW_SPI_SR_DCOL                         BIT(6)
->
->  /* Bit fields in ISR, IMR, RISR, 7 bits */
-> -#define DW_SPI_INT_TXEI                                (1 << 0)
-> -#define DW_SPI_INT_TXOI                                (1 << 1)
-> -#define DW_SPI_INT_RXUI                                (1 << 2)
-> -#define DW_SPI_INT_RXOI                                (1 << 3)
-> -#define DW_SPI_INT_RXFI                                (1 << 4)
-> -#define DW_SPI_INT_MSTI                                (1 << 5)
-> +#define DW_SPI_INT_MASK                                GENMASK(5, 0)
-> +#define DW_SPI_INT_TXEI                                BIT(0)
-> +#define DW_SPI_INT_TXOI                                BIT(1)
-> +#define DW_SPI_INT_RXUI                                BIT(2)
-> +#define DW_SPI_INT_RXOI                                BIT(3)
-> +#define DW_SPI_INT_RXFI                                BIT(4)
-> +#define DW_SPI_INT_MSTI                                BIT(5)
->
->  /* Bit fields in DMACR */
-> -#define DW_SPI_DMACR_RDMAE                     (1 << 0)
-> -#define DW_SPI_DMACR_TDMAE                     (1 << 1)
-> +#define DW_SPI_DMACR_RDMAE                     BIT(0)
-> +#define DW_SPI_DMACR_TDMAE                     BIT(1)
->
->  /* Mem/DMA operations helpers */
->  #define DW_SPI_WAIT_RETRIES                    5
-> --
-> 2.33.0
->
+That is, do_pkill_on_warn() should be defined as do { } while (0), and not
+add any I$ overhead when compiled out?
+
+> +	}								\
+>  	unlikely(__ret_warn_on);					\
+>  })
+>  #endif
+> @@ -151,15 +153,19 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+>  
+>  #define WARN_ONCE(condition, format...) ({				\
+>  	int __ret_warn_on = !!(condition);				\
+> -	if (unlikely(__ret_warn_on))					\
+> +	if (unlikely(__ret_warn_on)) {					\
+>  		DO_ONCE_LITE(__WARN_printf, TAINT_WARN, format);	\
+> +		do_pkill_on_warn();					\
+> +	}								\
+>  	unlikely(__ret_warn_on);					\
+>  })
+>  
+>  #define WARN_TAINT_ONCE(condition, taint, format...) ({			\
+>  	int __ret_warn_on = !!(condition);				\
+> -	if (unlikely(__ret_warn_on))					\
+> +	if (unlikely(__ret_warn_on)) {					\
+>  		DO_ONCE_LITE(__WARN_printf, taint, format);		\
+> +		do_pkill_on_warn();					\
+> +	}								\
+>  	unlikely(__ret_warn_on);					\
+>  })
+>  
+> diff --git a/include/linux/panic.h b/include/linux/panic.h
+> index f5844908a089..f79c69279859 100644
+> --- a/include/linux/panic.h
+> +++ b/include/linux/panic.h
+> @@ -27,6 +27,9 @@ extern int panic_on_oops;
+>  extern int panic_on_unrecovered_nmi;
+>  extern int panic_on_io_nmi;
+>  extern int panic_on_warn;
+> +extern int pkill_on_warn;
+> +
+> +extern void do_pkill_on_warn(void);
+>  
+>  extern unsigned long panic_on_taint;
+>  extern bool panic_on_taint_nousertaint;
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index cefd7d82366f..1323c9e2630f 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -53,6 +53,7 @@ static int pause_on_oops_flag;
+>  static DEFINE_SPINLOCK(pause_on_oops_lock);
+>  bool crash_kexec_post_notifiers;
+>  int panic_on_warn __read_mostly;
+> +int pkill_on_warn __read_mostly;
+>  unsigned long panic_on_taint;
+>  bool panic_on_taint_nousertaint = false;
+>  
+> @@ -625,13 +626,16 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
+>  	if (!fmt) {
+>  		__warn(file, line, __builtin_return_address(0), taint,
+>  		       NULL, NULL);
+> -		return;
+> +		goto out;
+>  	}
+>  
+>  	args.fmt = fmt;
+>  	va_start(args.args, fmt);
+>  	__warn(file, line, __builtin_return_address(0), taint, NULL, &args);
+>  	va_end(args.args);
+> +
+> +out:
+> +	do_pkill_on_warn();
+>  }
+>  EXPORT_SYMBOL(warn_slowpath_fmt);
+>  #else
+> @@ -732,3 +736,19 @@ static int __init panic_on_taint_setup(char *s)
+>  	return 0;
+>  }
+>  early_param("panic_on_taint", panic_on_taint_setup);
+> +
+> +void do_pkill_on_warn(void)
+> +{
+> +	if (!pkill_on_warn)
+> +		return;
+> +
+> +	if (is_global_init(current))
+> +		return;
+> +
+> +	if (current->flags & PF_KTHREAD)
+> +		return;
+> +
+> +	if (system_state >= SYSTEM_RUNNING)
+> +		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, current, PIDTYPE_TGID);
+
+I believe this was mentioned before. I'm not sure how safe it is to call
+do_send_sig_info() in random areas of the kernel, as that could possibly
+cause a deadlock with the locking that is taken.
+
+Best to use irq_work() and have a irq_work interrupt handle the
+do_sig_info, because then you know you are safe to call this. Of course,
+then you need some way to pass the task to the handler.
+
+Could do some kind of clever trick, where we add a PF_KILL_ME flag to the
+task, and the irq worker just loops over all the tasks kill all those with
+it set?
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +}
+> +EXPORT_SYMBOL(do_pkill_on_warn);
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 083be6af29d7..7fe6f0aaad2b 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -2656,6 +2656,15 @@ static struct ctl_table kern_table[] = {
+>  		.extra1		= SYSCTL_ZERO,
+>  		.extra2		= SYSCTL_ONE,
+>  	},
+> +		{
+
+extra tab?
+
+-- Steve
+
+> +		.procname	= "pkill_on_warn",
+> +		.data		= &pkill_on_warn,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dointvec_minmax,
+> +		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= SYSCTL_ONE,
+> +	},
+>  #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
+>  	{
+>  		.procname	= "timer_migration",
+> diff --git a/lib/bug.c b/lib/bug.c
+> index 1a91f01412b8..28cc8a5b2ee0 100644
+> --- a/lib/bug.c
+> +++ b/lib/bug.c
+> @@ -214,6 +214,9 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
+>  	bug_type = BUG_TRAP_TYPE_BUG;
+>  
+>  out:
+> +	if (bug_type == BUG_TRAP_TYPE_WARN)
+> +		do_pkill_on_warn();
+> +
+>  	return bug_type;
+>  }
+>  
+
