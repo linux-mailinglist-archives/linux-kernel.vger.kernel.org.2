@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1986B44E6D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C96744E6F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbhKLNAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S234995AbhKLNF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhKLNA3 (ORCPT
+        with ESMTP id S234998AbhKLNFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:00:29 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED93EC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:57:38 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id 13so18373594ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:57:38 -0800 (PST)
+        Fri, 12 Nov 2021 08:05:19 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F920C0613F5;
+        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id n8so8350706plf.4;
+        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uKAQHm+oNgHHFeC7PQaj4A60xKYfRUqsbLr3lOP3iM4=;
-        b=Zr0sxPXBfae2hAGmZdKVJRplXMEPkDR+EDSOI7sLgToVsezU3PDJha4sn4OistX+lx
-         OLuzylgcGe4t38pcv30ToM9aDCyYmMnwARu5lI9UwT7hQvjzpB4b2IxFI3k5E90hm3hs
-         GW1clmRRhbI1wPKcFkdXTCMNpcruf7BNvdR6RBRVmlrjeFho90nA61xB5adkceynn57w
-         bC7oeugNq66Sh1czLa5WfODdpQS42Que2/GH7s2kt7uA87/niy1Gzhno4FSUdXxCXVpH
-         bwvWO8BrG8JAru0yVUlDNElW1Stne+ghG/Ry/yi29y2mUBkS7Ij7ysR1JB6WWLO++dRZ
-         rfWg==
+        bh=5DDh4jKNY942Gl/i8dUbs2Mkijh1sNJCdeUegqogFsE=;
+        b=Z8vBO/pyAz/7yfuKfpeCMeHOJ4L6xdiskutvoNm8WPJDgUwbkRs0MS0ZcLJ64KOsPF
+         QQckZ2PTSjadOr3TV0vDHmJbywE6jtZHFdeqDOxW1YT8NgVThXbNo3sCRBjtaFIe3uoD
+         IFq2IyHux9Op/sb93+3c9n85m24IeKRFQIYUxT8ahQDUYkl8Yw5GT4hxQycvTO+ByEkM
+         GYBjZi7fvomL6x0DNp+6TmQ3S2we7YiKWvyTz4LWbQfdJXA6NFI1rylioeAf+8EIw3xI
+         umxWVvQcLGCdg7twPIBx0kr/8/pTT+0978oeOEtzbrOEXPC91VaH4oJWrxgxiO0GaO5n
+         iM3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=uKAQHm+oNgHHFeC7PQaj4A60xKYfRUqsbLr3lOP3iM4=;
-        b=J2MVbaf0Z9nTjmAOHCGrBevQJ5x+7A3wOvDRgTrDeNYq9LUmf071wBP2d5zqiSHWbn
-         wDGt4ueoScpSi/B/n+G7cjlT7doOWTVAKDgWk26P1GTM+tup3BDWnFoJQsciMrDjC2UU
-         WypncOCi/u49Ke+qeyWfVYWKJJ4N3wCgynTDD0rWHH+o/Obtd08xw3hIRh3K1nfvkPg3
-         i3rlpIqxNzOf0VCBzfTuC4n+aMetSubPQlSf3qoUCtOmnKC81u3dNIHTmWGG6l/xJwwi
-         0G0DB6J+kEsJXVmmhn6gR2dGKr5AVKdeEwrEykpGnXq7qv0f+mrlcVkaHWKa1/zAFpyk
-         BtyQ==
-X-Gm-Message-State: AOAM533rVy1TKZUxBFwUdSg3W/cAcxMxuzky6kSy0AsxVBWDMqa7Bfmb
-        Hg5Vz9Q5Q8Ii30hZeFVdqsJys64QMUsBuNr2xdo=
-X-Google-Smtp-Source: ABdhPJx5mI5MPYuyxC1FGp115QNAN1svef4d7/8JO3w5hHYdpU5x59eeMD4zH4o34h26BBGuFhiKO03NGCBVR01VLQE=
-X-Received: by 2002:a2e:8e38:: with SMTP id r24mr14624758ljk.450.1636721857372;
- Fri, 12 Nov 2021 04:57:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5DDh4jKNY942Gl/i8dUbs2Mkijh1sNJCdeUegqogFsE=;
+        b=GDmj6YQRRRX236aoxLQGtEx/Gbb2c8TJl8S3McRQ2ZrJbxzNc64duE/B8XEhYHj5LK
+         Y+x2yie+qTvrz5EBPYHRrIZykswguvPLGlFDRWEEfYQgCrkR+75T/OWzf8JLiC549Ht6
+         5m43aVr9QWTyoADIf5JunV/KGKQ71uhPG/vy7AFzKlTl2Uz3GmE/QYbPdMx3ljTVdoLC
+         /+mQ2qJj4FWsDMHtsB7igRFQcCm3VR2w4yZpW5bS33ju1YAeYekGNwCemy/gq+lJHVa1
+         rV0Bn3/+sjm8KdEsH0v7V7osgPqijq+IdrP6k03J+1WIQoijaVYM+HA1La9wUFBQGEag
+         cYig==
+X-Gm-Message-State: AOAM532lWWtfhNRFuN9z4HUCVnk/bQ2lpOi/+ZuprGSvLkrzAJCnHbSu
+        grFbI3qNfPoz1xC3BKmkQ/0=
+X-Google-Smtp-Source: ABdhPJy6tZtAnigJMcLzG99Dwhc4diNcfzyLltbIEChePSsJosJRZDjox+cnwSfVKYVuW4L/MQA98g==
+X-Received: by 2002:a17:903:248f:b0:143:8e81:4d7c with SMTP id p15-20020a170903248f00b001438e814d7cmr7827668plw.1.1636722147064;
+        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id d15sm7331493pfu.12.2021.11.12.05.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 05:02:26 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     james.smart@broadcom.com
+Cc:     dick.kennedy@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi: lpfc: remove unneeded variable
+Date:   Fri, 12 Nov 2021 13:02:20 +0000
+Message-Id: <20211112130220.10741-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6520:25c8:b0:14d:68dc:d726 with HTTP; Fri, 12 Nov 2021
- 04:57:37 -0800 (PST)
-Reply-To: Konedavid768001@gmail.com
-From:   Konedavid <marcrobncau33@gmail.com>
-Date:   Fri, 12 Nov 2021 13:57:37 +0100
-Message-ID: <CAAK0YmuYgRyeKzWQJK1vGY0Bxwvj7bVHCNp2fYrZ7LkYJnD6eQ@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-I am a reputable employee of the management Board of a Banque, and
-once account manager to Jonas, who has an account with my bank valued
-at =E2=82=AC14,2M (Fourteen
+Fix the following coccicheck review:
+./drivers/scsi/lpfc/lpfc_sli.c: 3655: 5-7: Unneeded variable
 
-Million, Two Hundred Thousand Dollars Euros) He died with his wife,
-and their two children on the in a car accident along Yamoussoukro
-Cote Ivoire express Road.
+Remove unneeded variable used to store return value.
 
-Now,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/scsi/lpfc/lpfc_sli.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- since we=E2=80=99ve been unsuccessful in locating a relative to come forth=
- to
-claim the fund for years, i seek your approval to present you to my
-bank management as a
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 53f154a301b5..93596cdd66a7 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -3652,7 +3652,6 @@ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 			  struct lpfc_iocbq *saveq)
+ {
+ 	struct lpfc_iocbq *cmdiocbp;
+-	int rc = 1;
+ 	unsigned long iflag;
+ 
+ 	cmdiocbp = lpfc_sli_iocbq_lookup(phba, pring, saveq);
+@@ -3777,7 +3776,7 @@ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 		}
+ 	}
+ 
+-	return rc;
++	return 1;
+ }
+ 
+ /**
+-- 
+2.25.1
 
-relative to the deceased client since you bear the same surname, thus
-my bank will accept you as his next of kin, and will release the fund
-to you, which will be
-
-transferred to your account out of C=C3=B4te d=E2=80=99 Ivoire. At the conf=
-irmation
-of the fund in your account, it will be sheared 60/ 40% split.
-
-This operation is risk free
-
-because the operation will be executed on a legitimate platform that
-will exempt us from claws of the law, all i require is your
-cooperation and sincerity to secure
-
-the funds in your account, and pay my share to my account which will
-be sent to you. If you are capable of securing this fund, respond.
-
-
-
-Thank,
-
-Kone David
