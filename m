@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3977344E0D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06BA44E0DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhKLDeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 22:34:16 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35740 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234532AbhKLDeP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 22:34:15 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uw7B-M1_1636687839;
-Received: from e02h04404.eu6sqa(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Uw7B-M1_1636687839)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Nov 2021 11:31:23 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        guwen@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, xuanzhuo@linux.alibaba.com
-Subject: [PATCH net] net/smc: Transfer remaining wait queue entries during fallback
-Date:   Fri, 12 Nov 2021 11:30:39 +0800
-Message-Id: <1636687839-38962-1-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234535AbhKLDmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 22:42:36 -0500
+Received: from asix.com.tw ([113.196.140.82]:59498 "EHLO asix.com.tw"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhKLDme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 22:42:34 -0500
+Received: from localhost.localdomain (unknown [10.1.2.57])
+        by asix.com.tw (Postfix) with ESMTPA id 8204A101BCB66;
+        Fri, 12 Nov 2021 11:33:31 +0800 (CST)
+From:   Jacky Chou <jackychou@asix.com.tw>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, louis@asix.com.tw,
+        jackychou@asix.com.tw
+Subject: [PATCH] net: usb: ax88179_178a: add TSO feature
+Date:   Fri, 12 Nov 2021 11:33:22 +0800
+Message-Id: <20211112033322.741974-1-jackychou@asix.com.tw>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SMC fallback is incomplete currently. There may be some
-wait queue entries remaining in smc socket->wq, which should
-be removed to clcsocket->wq during the fallback.
+On low-effciency embedded platforms, transmission performance is poor
+due to on Bulk-out with single packet.
+Adding TSO feature improves the transmission performance and reduces
+the number of interrupt caused by Bulk-out complete.
 
-For example, in nginx/wrk benchmark, this issue causes an
-all-zeros test result:
+Reference to module, net: usb: aqc111.
 
-server: nginx -g 'daemon off;'
-client: smc_run wrk -c 1 -t 1 -d 5 http://11.200.15.93/index.html
-
-  Running 5s test @ http://11.200.15.93/index.html
-     1 threads and 1 connections
-     Thread Stats   Avg      Stdev     Max   ± Stdev
-     	Latency     0.00us    0.00us   0.00us    -nan%
-	Req/Sec     0.00      0.00     0.00      -nan%
-	0 requests in 5.00s, 0.00B read
-     Requests/sec:      0.00
-     Transfer/sec:       0.00B
-
-The reason for this all-zeros result is that when wrk used SMC
-to replace TCP, it added an eppoll_entry into smc socket->wq
-and expected to be notified if epoll events like EPOLL_IN/
-EPOLL_OUT occurred on the smc socket.
-
-However, once a fallback occurred, wrk switches to use clcsocket.
-Now it is clcsocket->wq instead of smc socket->wq which will
-be woken up. The eppoll_entry remaining in smc socket->wq does
-not work anymore and wrk stops the test.
-
-This patch fixes this issue by removing remaining wait queue
-entries from smc socket->wq to clcsocket->wq during the fallback.
-
-Link: https://www.spinics.net/lists/netdev/msg779769.html
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+Signed-off-by: Jacky Chou <jackychou@asix.com.tw>
 ---
- net/smc/af_smc.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/usb/ax88179_178a.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 0cf7ed2..11a966a 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -562,6 +562,10 @@ static void smc_stat_fallback(struct smc_sock *smc)
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index c13167183..866954155 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1368,6 +1368,9 @@ static int ax88179_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	dev->net->needed_headroom = 8;
+ 	dev->net->max_mtu = 4088;
  
- static void smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
- {
-+	wait_queue_head_t *smc_wait = sk_sleep(&smc->sk);
-+	wait_queue_head_t *clc_wait = sk_sleep(smc->clcsock->sk);
-+	unsigned long flags;
++	if (usb_device_no_sg_constraint(dev->udev))
++		dev->can_dma_sg = 1;
 +
- 	smc->use_fallback = true;
- 	smc->fallback_rsn = reason_code;
- 	smc_stat_fallback(smc);
-@@ -571,6 +575,16 @@ static void smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
- 		smc->clcsock->file->private_data = smc->clcsock;
- 		smc->clcsock->wq.fasync_list =
- 			smc->sk.sk_socket->wq.fasync_list;
-+
-+		/* There might be some wait queue entries remaining
-+		 * in smc socket->wq, which should be removed to
-+		 * clcsocket->wq during the fallback.
-+		 */
-+		spin_lock_irqsave(&smc_wait->lock, flags);
-+		spin_lock_irqsave(&clc_wait->lock, flags);
-+		list_splice_init(&smc_wait->head, &clc_wait->head);
-+		spin_unlock_irqrestore(&clc_wait->lock, flags);
-+		spin_unlock_irqrestore(&smc_wait->lock, flags);
- 	}
- }
+ 	/* Initialize MII structure */
+ 	dev->mii.dev = dev->net;
+ 	dev->mii.mdio_read = ax88179_mdio_read;
+@@ -1377,11 +1380,14 @@ static int ax88179_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	dev->mii.phy_id = 0x03;
+ 	dev->mii.supports_gmii = 1;
  
+-	dev->net->features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+-			      NETIF_F_RXCSUM;
++	dev->net->features |= NETIF_F_SG | NETIF_F_IP_CSUM |
++			      NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM | NETIF_F_TSO;
+ 
+-	dev->net->hw_features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+-				 NETIF_F_RXCSUM;
++	dev->net->hw_features |= NETIF_F_SG | NETIF_F_IP_CSUM |
++				 NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM |
++				 NETIF_F_TSO;
++
++	netif_set_gso_max_size(dev->net, 16384);
+ 
+ 	/* Enable checksum offload */
+ 	*tmp = AX_RXCOE_IP | AX_RXCOE_TCP | AX_RXCOE_UDP |
+@@ -1537,6 +1543,10 @@ ax88179_tx_fixup(struct usbnet *dev, struct sk_buff *skb, gfp_t flags)
+ 
+ 	headroom = skb_headroom(skb) - 8;
+ 
++	if (!dev->can_dma_sg && (dev->net->features & NETIF_F_SG) &&
++	    skb_linearize(skb))
++		return NULL;
++
+ 	if ((skb_header_cloned(skb) || headroom < 0) &&
+ 	    pskb_expand_head(skb, headroom < 0 ? 8 : 0, 0, GFP_ATOMIC)) {
+ 		dev_kfree_skb_any(skb);
 -- 
-1.8.3.1
+2.25.1
 
