@@ -2,1339 +2,771 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2787444E154
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AEC44E157
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhKLFLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 00:11:12 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:34036 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230182AbhKLFLI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 00:11:08 -0500
-X-UUID: 5a808ef4a846490abb2473f95d79de4c-20211112
-X-UUID: 5a808ef4a846490abb2473f95d79de4c-20211112
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <tinghan.shen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2000358818; Fri, 12 Nov 2021 13:08:14 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 12 Nov 2021 13:08:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Nov 2021 13:08:12 +0800
-From:   Tinghan Shen <tinghan.shen@mediatek.com>
-To:     <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
-        <bgolaszewski@baylibre.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>
-Subject: [PATCH v5 2/2] arm64: dts: Add mediatek SoC mt8195 and evaluation board
-Date:   Fri, 12 Nov 2021 13:08:11 +0800
-Message-ID: <20211112050811.21202-3-tinghan.shen@mediatek.com>
-X-Mailer: git-send-email 2.15.GIT
-In-Reply-To: <20211112050811.21202-1-tinghan.shen@mediatek.com>
-References: <20211112050811.21202-1-tinghan.shen@mediatek.com>
+        id S230231AbhKLFPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 00:15:11 -0500
+Received: from mga12.intel.com ([192.55.52.136]:37286 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhKLFPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 00:15:10 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="213111537"
+X-IronPort-AV: E=Sophos;i="5.87,228,1631602800"; 
+   d="gz'50?scan'50,208,50";a="213111537"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 21:12:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,228,1631602800"; 
+   d="gz'50?scan'50,208,50";a="452956070"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 11 Nov 2021 21:12:13 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mlOrE-000HgU-Ke; Fri, 12 Nov 2021 05:12:12 +0000
+Date:   Fri, 12 Nov 2021 13:11:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: debug_vm_pgtable.c:undefined reference to `pmd_set_huge'
+Message-ID: <202111121326.Pd4X0anV-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/mixed; boundary="ikeVEW9yuYc//A+q"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic chip support for mediatek mt8195.
 
-Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+--ikeVEW9yuYc//A+q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5833291ab6de9c3e2374336b51c814e515e8f3a5
+commit: d8a719059b9dc963aa190598778ac804ff3e6a87 Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge"
+date:   4 months ago
+config: powerpc-randconfig-c024-20211012 (attached as .config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8a719059b9dc963aa190598778ac804ff3e6a87
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout d8a719059b9dc963aa190598778ac804ff3e6a87
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   powerpc-linux-ld: mm/debug_vm_pgtable.o: in function `debug_vm_pgtable':
+>> debug_vm_pgtable.c:(.init.text+0x9d0): undefined reference to `pmd_set_huge'
+>> powerpc-linux-ld: debug_vm_pgtable.c:(.init.text+0xaf4): undefined reference to `pud_set_huge'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend':
+   (.text+0x424): undefined reference to `fb_set_suspend'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
+   drm_fb_helper.c:(.text+0x4b0): undefined reference to `fb_set_suspend'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_unregister_fbi':
+   (.text+0x818): undefined reference to `unregister_framebuffer'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_fini':
+   (.text+0x9b8): undefined reference to `fb_dealloc_cmap'
+   powerpc-linux-ld: (.text+0x9d8): undefined reference to `framebuffer_release'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_read':
+   (.text+0xbe8): undefined reference to `fb_sys_read'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
+   (.text+0x34f8): undefined reference to `framebuffer_alloc'
+   powerpc-linux-ld: (.text+0x3554): undefined reference to `fb_alloc_cmap'
+   powerpc-linux-ld: (.text+0x3618): undefined reference to `fb_dealloc_cmap'
+   powerpc-linux-ld: (.text+0x3674): undefined reference to `framebuffer_release'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `__drm_fb_helper_initial_config_and_unlock':
+   drm_fb_helper.c:(.text+0x37b0): undefined reference to `register_framebuffer'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend_unlocked':
+   (.text+0x4518): undefined reference to `fb_set_suspend'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_generic_probe':
+   drm_fb_helper.c:(.text+0x58f8): undefined reference to `fb_deferred_io_init'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_write':
+   (.text+0x644c): undefined reference to `fb_sys_write'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_fillrect':
+   (.text+0x6534): undefined reference to `sys_fillrect'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_copyarea':
+   (.text+0x65b4): undefined reference to `sys_copyarea'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_imageblit':
+   (.text+0x6634): undefined reference to `sys_imageblit'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_fillrect':
+   (.text+0x66b4): undefined reference to `cfb_fillrect'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_copyarea':
+   (.text+0x6734): undefined reference to `cfb_copyarea'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_imageblit':
+   (.text+0x67b4): undefined reference to `cfb_imageblit'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_imageblit':
+   drm_fb_helper.c:(.text+0x6c30): undefined reference to `cfb_imageblit'
+   powerpc-linux-ld: drm_fb_helper.c:(.text+0x6c58): undefined reference to `sys_imageblit'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_copyarea':
+   drm_fb_helper.c:(.text+0x6d30): undefined reference to `cfb_copyarea'
+   powerpc-linux-ld: drm_fb_helper.c:(.text+0x6d58): undefined reference to `sys_copyarea'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_fillrect':
+   drm_fb_helper.c:(.text+0x6e30): undefined reference to `cfb_fillrect'
+   powerpc-linux-ld: drm_fb_helper.c:(.text+0x6e58): undefined reference to `sys_fillrect'
+   powerpc-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_cleanup':
+   drm_fb_helper.c:(.text+0x734c): undefined reference to `fb_deferred_io_cleanup'
+
 ---
- arch/arm64/boot/dts/mediatek/Makefile       |    1 +
- arch/arm64/boot/dts/mediatek/mt8195-evb.dts |  210 ++++
- arch/arm64/boot/dts/mediatek/mt8195.dtsi    | 1044 +++++++++++++++++++
- 3 files changed, 1255 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8195-evb.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8195.dtsi
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 4f68ebed2e31..7aa08bb4c078 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -32,4 +32,5 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-evb.dts b/arch/arm64/boot/dts/mediatek/mt8195-evb.dts
-new file mode 100644
-index 000000000000..a620d4c3ea5d
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-evb.dts
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Seiya Wang <seiya.wang@mediatek.com>
-+ */
-+/dts-v1/;
-+#include "mt8195.dtsi"
-+
-+/ {
-+	model = "MediaTek MT8195 evaluation board";
-+	compatible = "mediatek,mt8195-evb", "mediatek,mt8195";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:921600n8";
-+	};
-+
-+	memory@40000000 {
-+		device_type = "memory";
-+		reg = <0 0x40000000 0 0x80000000>;
-+	};
-+};
-+
-+&auxadc {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pin>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c1_pin>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pin>;
-+	status = "disabled";
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c3_pin>;
-+	status = "disabled";
-+};
-+
-+&i2c4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c4_pin>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c5_pin>;
-+	status = "disabled";
-+};
-+
-+&i2c6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c6_pin>;
-+	clock-frequency = <400000>;
-+	status = "disabled";
-+};
-+
-+&nor_flash {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&nor_pins_default>;
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&pio {
-+	pinctrl-names = "default";
-+	i2c0_pin: i2c0_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO8__FUNC_SDA0>,
-+				 <PINMUX_GPIO9__FUNC_SCL0>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <0>;
-+			drive-strength = <MTK_DRIVE_6mA>;
-+		};
-+	};
-+	i2c1_pin: i2c1_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO10__FUNC_SDA1>,
-+				 <PINMUX_GPIO11__FUNC_SCL1>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <0>;
-+			drive-strength = <MTK_DRIVE_6mA>;
-+		};
-+	};
-+	i2c2_pin: i2c2_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO12__FUNC_SDA2>,
-+				 <PINMUX_GPIO13__FUNC_SCL2>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <7>;
-+		};
-+	};
-+	i2c3_pin: i2c3_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO14__FUNC_SDA3>,
-+				 <PINMUX_GPIO15__FUNC_SCL3>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <7>;
-+		};
-+	};
-+	i2c4_pin: i2c4_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO16__FUNC_SDA4>,
-+				 <PINMUX_GPIO17__FUNC_SCL4>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <7>;
-+		};
-+	};
-+	i2c5_pin: i2c5_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO29__FUNC_SCL5>,
-+				 <PINMUX_GPIO30__FUNC_SDA5>;
-+			bias-pull-up = <1>;
-+			mediatek,rsel = <7>;
-+			mediatek,drive-strength-adv = <7>;
-+		};
-+	};
-+	i2c6_pin: i2c6_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO25__FUNC_SDA6>,
-+				 <PINMUX_GPIO26__FUNC_SCL6>;
-+			bias-pull-up = <1>;
-+		};
-+	};
-+	i2c7_pin: i2c7_pin {
-+		pins_bus {
-+			pinmux = <PINMUX_GPIO27__FUNC_SCL7>,
-+				 <PINMUX_GPIO28__FUNC_SDA7>;
-+			bias-pull-up = <1>;
-+		};
-+	};
-+	nor_pins_default: nordefault {
-+		pins0 {
-+			pinmux = <PINMUX_GPIO142__FUNC_SPINOR_IO0>,
-+					 <PINMUX_GPIO141__FUNC_SPINOR_CK>,
-+					 <PINMUX_GPIO143__FUNC_SPINOR_IO1>;
-+			bias-pull-down;
-+		};
-+		pins1 {
-+			pinmux = <PINMUX_GPIO140__FUNC_SPINOR_CS>,
-+				     <PINMUX_GPIO130__FUNC_SPINOR_IO2>,
-+				     <PINMUX_GPIO131__FUNC_SPINOR_IO3>;
-+			bias-pull-up;
-+		};
-+	};
-+	uart0_pin: uart0_pin {
-+		uart_pins {
-+			pinmux = <PINMUX_GPIO98__FUNC_UTXD0>,
-+				<PINMUX_GPIO99__FUNC_URXD0>;
-+		};
-+	};
-+};
-+
-+&u2port0 {
-+	status = "okay";
-+};
-+
-+&u2port1 {
-+	status = "okay";
-+};
-+
-+&u3phy0 {
-+	status="okay";
-+};
-+
-+&u3phy1 {
-+	status="okay";
-+};
-+
-+&u3port0 {
-+	status = "okay";
-+};
-+
-+&u3port1 {
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_pin>;
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-new file mode 100644
-index 000000000000..c290189b2479
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -0,0 +1,1044 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Seiya Wang <seiya.wang@mediatek.com>
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/clock/mt8195-clk.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/pinctrl/mt8195-pinfunc.h>
-+#include <dt-bindings/reset/ti-syscon.h>
-+
-+/ {
-+	compatible = "mediatek,mt8195";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	clk26m: oscillator0 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+		clock-output-names = "clk26m";
-+	};
-+
-+	clk32k: oscillator1 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		clock-output-names = "clk32k";
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55", "arm,armv8";
-+			reg = <0x000>;
-+			enable-method = "psci";
-+			clock-frequency = <1701000000>;
-+			capacity-dmips-mhz = <578>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu1: cpu@100 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55", "arm,armv8";
-+			reg = <0x100>;
-+			enable-method = "psci";
-+			clock-frequency = <1701000000>;
-+			capacity-dmips-mhz = <578>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu2: cpu@200 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55", "arm,armv8";
-+			reg = <0x200>;
-+			enable-method = "psci";
-+			clock-frequency = <1701000000>;
-+			capacity-dmips-mhz = <578>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu3: cpu@300 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55", "arm,armv8";
-+			reg = <0x300>;
-+			enable-method = "psci";
-+			clock-frequency = <1701000000>;
-+			capacity-dmips-mhz = <578>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu4: cpu@400 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78", "arm,armv8";
-+			reg = <0x400>;
-+			enable-method = "psci";
-+			clock-frequency = <2171000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu5: cpu@500 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78", "arm,armv8";
-+			reg = <0x500>;
-+			enable-method = "psci";
-+			clock-frequency = <2171000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu6: cpu@600 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78", "arm,armv8";
-+			reg = <0x600>;
-+			enable-method = "psci";
-+			clock-frequency = <2171000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu7: cpu@700 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78", "arm,armv8";
-+			reg = <0x700>;
-+			enable-method = "psci";
-+			clock-frequency = <2171000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&cpu0>;
-+				};
-+				core1 {
-+					cpu = <&cpu1>;
-+				};
-+				core2 {
-+					cpu = <&cpu2>;
-+				};
-+				core3 {
-+					cpu = <&cpu3>;
-+				};
-+			};
-+			cluster1 {
-+				core0 {
-+					cpu = <&cpu4>;
-+				};
-+				core1 {
-+					cpu = <&cpu5>;
-+				};
-+				core2 {
-+					cpu = <&cpu6>;
-+				};
-+				core3 {
-+					cpu = <&cpu7>;
-+				};
-+			};
-+		};
-+
-+		idle-states {
-+			entry-method = "arm,psci";
-+			cpuoff_l: cpuoff_l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010001>;
-+				local-timer-stop;
-+				entry-latency-us = <50>;
-+				exit-latency-us = <95>;
-+				min-residency-us = <580>;
-+			};
-+			cpuoff_b: cpuoff_b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010001>;
-+				local-timer-stop;
-+				entry-latency-us = <45>;
-+				exit-latency-us = <140>;
-+				min-residency-us = <740>;
-+			};
-+			clusteroff_l: clusteroff_l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010002>;
-+				local-timer-stop;
-+				entry-latency-us = <55>;
-+				exit-latency-us = <155>;
-+				min-residency-us = <840>;
-+			};
-+			clusteroff_b: clusteroff_b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010002>;
-+				local-timer-stop;
-+				entry-latency-us = <50>;
-+				exit-latency-us = <200>;
-+				min-residency-us = <1000>;
-+			};
-+		};
-+
-+		l2_0: l2-cache0 {
-+			compatible = "cache";
-+			next-level-cache = <&l3_0>;
-+		};
-+
-+		l2_1: l2-cache1 {
-+			compatible = "cache";
-+			next-level-cache = <&l3_0>;
-+		};
-+
-+		l3_0: l3-cache {
-+			compatible = "cache";
-+		};
-+	};
-+
-+	dsu-pmu {
-+		compatible = "arm,dsu-pmu";
-+		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH 0>;
-+		cpus = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>,
-+		       <&cpu4>, <&cpu5>, <&cpu6>, <&cpu7>;
-+	};
-+
-+	pmu-a55 {
-+		compatible = "arm,cortex-a55-pmu";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster0>;
-+	};
-+
-+	pmu-a78 {
-+		compatible = "arm,cortex-a78-pmu";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster1>;
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-1.0";
-+		method = "smc";
-+	};
-+
-+	timer: timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_HIGH 0>;
-+		clock-frequency = <13000000>;
-+	};
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		gic: interrupt-controller@c000000 {
-+			compatible = "arm,gic-v3";
-+			#interrupt-cells = <4>;
-+			#redistributor-regions = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupt-controller;
-+			reg = <0 0x0c000000 0 0x40000>,
-+			      <0 0x0c040000 0 0x200000>;
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH 0>;
-+
-+			ppi-partitions {
-+				ppi_cluster0: interrupt-partition-0 {
-+					affinity = <&cpu0 &cpu1 &cpu2 &cpu3>;
-+				};
-+				ppi_cluster1: interrupt-partition-1 {
-+					affinity = <&cpu4 &cpu5 &cpu6 &cpu7>;
-+				};
-+			};
-+		};
-+
-+		topckgen: syscon@10000000 {
-+			compatible = "mediatek,mt8195-topckgen", "syscon";
-+			reg = <0 0x10000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		infracfg_ao: syscon@10001000 {
-+			compatible = "mediatek,mt8195-infracfg_ao", "syscon", "simple-mfd";
-+			reg = <0 0x10001000 0 0x1000>;
-+			#clock-cells = <1>;
-+			infracfg_rst: reset-controller {
-+				compatible = "ti,syscon-reset";
-+				#reset-cells = <1>;
-+				ti,reset-bits = <
-+					0x140 18 0x144 18 0 0 (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
-+					0x120 0 0x124 0 0 0     (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
-+					0x730 10 0x734 10 0 0     (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
-+					0x150 5 0x154 5 0 0     (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
-+				>;
-+			};
-+		};
-+
-+		pericfg: syscon@10003000 {
-+			compatible = "mediatek,mt8195-pericfg", "syscon";
-+			reg = <0 0x10003000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		pio: pinctrl@10005000 {
-+			compatible = "mediatek,mt8195-pinctrl";
-+			reg = <0 0x10005000 0 0x1000>,
-+			      <0 0x11d10000 0 0x1000>,
-+			      <0 0x11d30000 0 0x1000>,
-+			      <0 0x11d40000 0 0x1000>,
-+			      <0 0x11e20000 0 0x1000>,
-+			      <0 0x11eb0000 0 0x1000>,
-+			      <0 0x11f40000 0 0x1000>,
-+			      <0 0x1000b000 0 0x1000>;
-+			reg-names = "iocfg0", "iocfg_bm", "iocfg_bl",
-+				    "iocfg_br", "iocfg_lm", "iocfg_rb",
-+				    "iocfg_tl", "eint";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pio 0 0 144>;
-+			interrupt-controller;
-+			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_HIGH 0>;
-+			#interrupt-cells = <2>;
-+		};
-+
-+		watchdog: watchdog@10007000 {
-+			compatible = "mediatek,mt8195-wdt",
-+				     "mediatek,mt6589-wdt";
-+			reg = <0 0x10007000 0 0x100>;
-+		};
-+
-+		apmixedsys: syscon@1000c000 {
-+			compatible = "mediatek,mt8195-apmixedsys", "syscon";
-+			reg = <0 0x1000c000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		systimer: timer@10017000 {
-+			compatible = "mediatek,mt8195-timer",
-+				     "mediatek,mt6765-timer";
-+			reg = <0 0x10017000 0 0x1000>;
-+			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_CLK26M_D2>;
-+		};
-+
-+		pwrap: pwrap@10024000 {
-+			compatible = "mediatek,mt8195-pwrap", "syscon";
-+			reg = <0 0x10024000 0 0x1000>;
-+			reg-names = "pwrap";
-+			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_PMIC_AP>,
-+				 <&infracfg_ao CLK_INFRA_AO_PMIC_TMR>;
-+			clock-names = "spi", "wrap";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_ULPOSC1_D10>;
-+		};
-+
-+		scp_adsp: clock-controller@10720000 {
-+			compatible = "mediatek,mt8195-scp_adsp";
-+			reg = <0 0x10720000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		uart0: serial@11001100 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001100 0 0x100>;
-+			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART0>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@11001200 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001200 0 0x100>;
-+			interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART1>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@11001300 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001300 0 0x100>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART2>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart3: serial@11001400 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001400 0 0x100>;
-+			interrupts = <GIC_SPI 723 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART3>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart4: serial@11001500 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001500 0 0x100>;
-+			interrupts = <GIC_SPI 724 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART4>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart5: serial@11001600 {
-+			compatible = "mediatek,mt8195-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11001600 0 0x100>;
-+			interrupts = <GIC_SPI 725 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART5>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		auxadc: auxadc@11002000 {
-+			compatible = "mediatek,mt8195-auxadc",
-+				     "mediatek,mt8173-auxadc";
-+			reg = <0 0x11002000 0 0x1000>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_AUXADC>;
-+			clock-names = "main";
-+			#io-channel-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		pericfg_ao: syscon@11003000 {
-+			compatible = "mediatek,mt8195-pericfg_ao", "syscon";
-+			reg = <0 0x11003000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		spi0: spi@1100a000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi1: spi@11010000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi2: spi@11012000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi3: spi@11013000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi4: spi@11018000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi5: spi@11019000 {
-+			compatible = "mediatek,mt8195-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spis0: spi@1101d000 {
-+			compatible = "mediatek,mt8195-spi-slave";
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_SPIS0>;
-+			clock-names = "spi";
-+			assigned-clocks = <&topckgen CLK_TOP_SPIS>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D6>;
-+			status = "disabled";
-+		};
-+
-+		spis1: spi@1101e000 {
-+			compatible = "mediatek,mt8195-spi-slave";
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_SPIS1>;
-+			clock-names = "spi";
-+			assigned-clocks = <&topckgen CLK_TOP_SPIS>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D6>;
-+			status = "disabled";
-+		};
-+
-+		xhci0: xhci@11200000 {
-+			compatible = "mediatek,mt8195-xhci",
-+				     "mediatek,mtk-xhci";
-+			reg = <0 0x11200000 0 0x1000>,
-+			      <0 0x11203e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port0 PHY_TYPE_USB2>,
-+			       <&u3port0 PHY_TYPE_USB3>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_SSUSB>,
-+				 <&infracfg_ao CLK_INFRA_AO_SSUSB_XHCI>,
-+				 <&topckgen CLK_TOP_SSUSB_REF>,
-+				 <&apmixedsys CLK_APMIXED_USB1PLL>;
-+			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			status = "disabled";
-+		};
-+
-+		mmc0: mmc@11230000 {
-+			compatible = "mediatek,mt8195-mmc",
-+				     "mediatek,mt8192-mmc",
-+				     "mediatek,mt8183-mmc";
-+			reg = <0 0x11230000 0 0x10000>,
-+			      <0 0x11f50000 0 0x1000>;
-+			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_MSDC50_0>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC0>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC0_SRC>;
-+			clock-names = "source", "hclk", "source_cg";
-+			status = "disabled";
-+		};
-+
-+		mmc1: mmc@11240000 {
-+			compatible = "mediatek,mt8195-mmc",
-+				     "mediatek,mt8192-mmc",
-+				     "mediatek,mt8183-mmc";
-+			reg = <0 0x11240000 0 0x1000>,
-+			      <0 0x11c70000 0 0x1000>;
-+			interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_MSDC30_1>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC1>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC1_SRC>;
-+			clock-names = "source", "hclk", "source_cg";
-+			assigned-clocks = <&topckgen CLK_TOP_MSDC30_1>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL_D2>;
-+			status = "disabled";
-+		};
-+
-+		mmc2: mmc@11250000 {
-+			compatible = "mediatek,mt8195-mmc",
-+				     "mediatek,mt8192-mmc";
-+			reg = <0 0x11250000 0 0x1000>,
-+			      <0 0x11e60000 0 0x1000>;
-+			interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_MSDC30_2>,
-+				 <&infracfg_ao CLK_INFRA_AO_CG1_MSDC2>,
-+				 <&infracfg_ao CLK_INFRA_AO_CG3_MSDC2>;
-+			clock-names = "source", "hclk", "source_cg";
-+			assigned-clocks = <&topckgen CLK_TOP_MSDC30_2>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL_D2>;
-+			status = "disabled";
-+		};
-+
-+		xhci1: xhci1@11290000 {
-+			compatible = "mediatek,mt8195-xhci",
-+				     "mediatek,mtk-xhci";
-+			reg = <0 0x11290000 0 0x1000>,
-+			      <0 0x11293e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 530 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port1 PHY_TYPE_USB2>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_1P>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI_1P>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_1P_BUS>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_1P_XHCI>,
-+				 <&topckgen CLK_TOP_SSUSB_P1_REF>,
-+				 <&apmixedsys CLK_APMIXED_USB1PLL>;
-+			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			status = "disabled";
-+		};
-+
-+		xhci2: xhci2@112a0000 {
-+			compatible = "mediatek,mt8195-xhci",
-+				     "mediatek,mtk-xhci";
-+			reg = <0 0x112a0000 0 0x1000>,
-+			      <0 0x112a3e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 533 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port2 PHY_TYPE_USB2>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_2P>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI_2P>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_2P_BUS>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_2P_XHCI>,
-+				 <&topckgen CLK_TOP_SSUSB_P2_REF>;
-+			clock-names = "sys_ck", "xhci_ck", "ref_ck";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			status = "disabled";
-+		};
-+
-+		xhci3: xhci3@112b0000 {
-+			compatible = "mediatek,mt8195-xhci",
-+				     "mediatek,mtk-xhci";
-+			reg = <0 0x112b0000 0 0x1000>,
-+			      <0 0x112b3e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port3 PHY_TYPE_USB2>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_3P>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI_3P>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_3P_BUS>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_3P_XHCI>,
-+				 <&topckgen CLK_TOP_SSUSB_P3_REF>;
-+			clock-names = "sys_ck", "xhci_ck", "ref_ck";
-+			usb2-lpm-disable;
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			status = "disabled";
-+		};
-+
-+		nor_flash: nor@1132c000 {
-+			compatible = "mediatek,mt8195-nor",
-+				     "mediatek,mt8173-nor";
-+			reg = <0 0x1132c000 0 0x1000>;
-+			interrupts = <GIC_SPI 825 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_SPINOR>,
-+				 <&pericfg_ao CLK_PERI_AO_FLASHIF_FLASH>,
-+				 <&pericfg_ao CLK_PERI_AO_FLASHIF_BUS>;
-+			clock-names = "spi", "sf", "axi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		u3phy2: t-phy@11c40000 {
-+			compatible = "mediatek,mt8195-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0 0x11c40000 0x700>;
-+			status = "disabled";
-+
-+			u2port2: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_P2_REF>;
-+				clock-names = "ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		u3phy3: t-phy@11c50000 {
-+			compatible = "mediatek,mt8195-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0 0x11c50000 0x700>;
-+			status = "disabled";
-+
-+			u2port3: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_P3_REF>;
-+				clock-names = "ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		i2c5: i2c@11d00000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11d00000 0 0x1000>,
-+			      <0 0x10220580 0 0x80>;
-+			interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C5>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c6: i2c@11d01000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11d01000 0 0x1000>,
-+			      <0 0x10220600 0 0x80>;
-+			interrupts = <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C6>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c7: i2c@11d02000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11d02000 0 0x1000>,
-+			      <0 0x10220680 0 0x80>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C7>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		imp_iic_wrap_s: clock-controller@11d03000 {
-+			compatible = "mediatek,mt8195-imp_iic_wrap_s";
-+			reg = <0 0x11d03000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		i2c0: i2c@11e00000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11e00000 0 0x1000>,
-+			      <0 0x10220080 0 0x80>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C0>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "okay";
-+		};
-+
-+		i2c1: i2c@11e01000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11e01000 0 0x1000>,
-+			      <0 0x10220200 0 0x80>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C1>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c2: i2c@11e02000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11e02000 0 0x1000>,
-+			      <0 0x10220380 0 0x80>;
-+			interrupts = <GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C2>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c3: i2c@11e03000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11e03000 0 0x1000>,
-+			      <0 0x10220480 0 0x80>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C3>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c4: i2c@11e04000 {
-+			compatible = "mediatek,mt8195-i2c",
-+				     "mediatek,mt8192-i2c";
-+			reg = <0 0x11e04000 0 0x1000>,
-+			      <0 0x10220500 0 0x80>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C4>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_B>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		imp_iic_wrap_w: clock-controller@11e05000 {
-+			compatible = "mediatek,mt8195-imp_iic_wrap_w";
-+			reg = <0 0x11e05000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		u3phy1: t-phy@11e30000 {
-+			compatible = "mediatek,mt8195-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0 0x11e30000 0xe00>;
-+			status = "disabled";
-+
-+			u2port1: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_P1_REF>,
-+					 <&clk26m>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+
-+			u3port1: usb-phy@700 {
-+				reg = <0x700 0x700>;
-+				clocks = <&apmixedsys CLK_APMIXED_PLL_SSUSB26M>,
-+					 <&topckgen CLK_TOP_SSUSB_PHY_P1_REF>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		u3phy0: t-phy@11e40000 {
-+			compatible = "mediatek,mt8195-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0 0x11e40000 0xe00>;
-+			status = "disabled";
-+
-+			u2port0: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_REF>,
-+					 <&clk26m>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+
-+			u3port0: usb-phy@700 {
-+				reg = <0x700 0x700>;
-+				clocks = <&apmixedsys CLK_APMIXED_PLL_SSUSB26M>,
-+					 <&topckgen CLK_TOP_SSUSB_PHY_REF>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		ufsphy: phy@11fa0000 {
-+			compatible = "mediatek,mt8195-ufsphy", "mediatek,mt8183-ufsphy";
-+			reg = <0 0x11fa0000 0 0xc000>;
-+			clocks = <&clk26m>, <&clk26m>;
-+			clock-names = "unipro", "mp";
-+			#phy-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		mfgcfg: clock-controller@13fbf000 {
-+			compatible = "mediatek,mt8195-mfgcfg";
-+			reg = <0 0x13fbf000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		wpesys: clock-controller@14e00000 {
-+			compatible = "mediatek,mt8195-wpesys";
-+			reg = <0 0x14e00000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		wpesys_vpp0: clock-controller@14e02000 {
-+			compatible = "mediatek,mt8195-wpesys_vpp0";
-+			reg = <0 0x14e02000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		wpesys_vpp1: clock-controller@14e03000 {
-+			compatible = "mediatek,mt8195-wpesys_vpp1";
-+			reg = <0 0x14e03000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys: clock-controller@15000000 {
-+			compatible = "mediatek,mt8195-imgsys";
-+			reg = <0 0x15000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys1_dip_top: clock-controller@15110000 {
-+			compatible = "mediatek,mt8195-imgsys1_dip_top";
-+			reg = <0 0x15110000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys1_dip_nr: clock-controller@15130000 {
-+			compatible = "mediatek,mt8195-imgsys1_dip_nr";
-+			reg = <0 0x15130000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys1_wpe: clock-controller@15220000 {
-+			compatible = "mediatek,mt8195-imgsys1_wpe";
-+			reg = <0 0x15220000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		ipesys: clock-controller@15330000 {
-+			compatible = "mediatek,mt8195-ipesys";
-+			reg = <0 0x15330000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys: clock-controller@16000000 {
-+			compatible = "mediatek,mt8195-camsys";
-+			reg = <0 0x16000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawa: clock-controller@1604f000 {
-+			compatible = "mediatek,mt8195-camsys_rawa";
-+			reg = <0 0x1604f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_yuva: clock-controller@1606f000 {
-+			compatible = "mediatek,mt8195-camsys_yuva";
-+			reg = <0 0x1606f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawb: clock-controller@1608f000 {
-+			compatible = "mediatek,mt8195-camsys_rawb";
-+			reg = <0 0x1608f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_yuvb: clock-controller@160af000 {
-+			compatible = "mediatek,mt8195-camsys_yuvb";
-+			reg = <0 0x160af000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_mraw: clock-controller@16140000 {
-+			compatible = "mediatek,mt8195-camsys_mraw";
-+			reg = <0 0x16140000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		ccusys: clock-controller@17200000 {
-+			compatible = "mediatek,mt8195-ccusys";
-+			reg = <0 0x17200000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys_soc: clock-controller@1800f000 {
-+			compatible = "mediatek,mt8195-vdecsys_soc";
-+			reg = <0 0x1800f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys: clock-controller@1802f000 {
-+			compatible = "mediatek,mt8195-vdecsys";
-+			reg = <0 0x1802f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys_core1: clock-controller@1803f000 {
-+			compatible = "mediatek,mt8195-vdecsys_core1";
-+			reg = <0 0x1803f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		apusys_pll: clock-controller@190f3000 {
-+			compatible = "mediatek,mt8195-apusys_pll";
-+			reg = <0 0x190f3000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vencsys: clock-controller@1a000000 {
-+			compatible = "mediatek,mt8195-vencsys";
-+			reg = <0 0x1a000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vencsys_core1: clock-controller@1b000000 {
-+			compatible = "mediatek,mt8195-vencsys_core1";
-+			reg = <0 0x1b000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+	};
-+};
--- 
-2.18.0
+--ikeVEW9yuYc//A+q
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+AgA=
+
+--ikeVEW9yuYc//A+q--
