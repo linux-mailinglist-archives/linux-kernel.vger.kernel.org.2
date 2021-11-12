@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5376E44DFFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3845C44E006
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbhKLBx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 20:53:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42224 "EHLO mail.kernel.org"
+        id S234412AbhKLB5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 20:57:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232458AbhKLBxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:53:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DC0B6103A;
-        Fri, 12 Nov 2021 01:50:33 +0000 (UTC)
+        id S229908AbhKLB5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 20:57:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A17E60C4D;
+        Fri, 12 Nov 2021 01:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636681833;
-        bh=BIHcLTzaRtNAXz+qvfUTOyZZ233jGsfuSnUE9AYSWXo=;
+        s=k20201202; t=1636682101;
+        bh=ON2ojmkv6yXL8pNdAAUIaWTtcae03Y5Nnk1xacIWpbs=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ryZejMKQZ4RMaHBNoEI9lAgdkoyB7mc8sKRKg/QgMFTfZRve5BMHp0HJIHQQxgQi8
-         4eFPso1U/lr/CK9iE7Y9bR5/gpvpepbxctET8kJyA97aZ6PtnkKsiaKTBXXLo9/+F4
-         w7xzDM0Ufjo9AOzi7lkdKY9ZdqFgRbGxe/NryghQbsOI2vJpZyonPzG6x6tzUPbmCK
-         E+ecC9Cw6yr5xeVADSj8Pl/UGPpOIVv5D/R/SbnG8YHq4mdYkFnh66sTVlG/YAN1MH
-         uaW8ekuRC/2E441lJacIxQRPBGaAexVt98VXT89RZIVb+2KEEGEB/bOgV0KMEn+gn6
-         hDR67fvrmwX/A==
-Date:   Thu, 11 Nov 2021 17:50:32 -0800
+        b=hKrM3ghwLe7pUDN+LRvHmHkcudA11kFUEVk9SpGKwxuvqFvcljhDZ00L38LE141OD
+         wl+SSEINPiJ+sGMF1Qq98VNa9tw/VTKHozRKsEO5RI4fU38WS4KS7oJnEGysknEZeY
+         +G6dOxrOthPNybOeD82iBkXjtMxpNG/ZN0lwnkfzQpieXml9BX5VrOOGJjBZGXp5pV
+         MTyk4eawCd+x7i69Li9WA4KjwX4r7w3/PtBBKRbm1KpwGoyR5LYY5xNlN/jEtsqMGb
+         h3MKVAaB5P2maVKDzEd65Gtic3Xh1uR/lsSzyLxEOD9UDjFtgX9rgEqSYaxgttFsP6
+         7AUi3PMa06NRA==
+Date:   Thu, 11 Nov 2021 17:55:00 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/2] net: snmp: tracepoint support for snmp
-Message-ID: <20211111175032.14999302@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CADxym3bk5+3t9jFmEgCBBYHWvNJx6BJGdjk+-zqiQaJPtLM=Ug@mail.gmail.com>
-References: <20211111133530.2156478-1-imagedong@tencent.com>
-        <20211111060827.5906a2f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CADxym3bk5+3t9jFmEgCBBYHWvNJx6BJGdjk+-zqiQaJPtLM=Ug@mail.gmail.com>
+To:     Lin Ma <linma@zju.edu.cn>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] hamradio: remove needs_free_netdev to avoid UAF
+Message-ID: <20211111175500.2f67e18a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211111141402.7551-1-linma@zju.edu.cn>
+References: <20211111141402.7551-1-linma@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -45,16 +39,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 09:40:47 +0800 Menglong Dong wrote:
-> > I feel like I have seen this idea before. Is this your first posting?
-> >
-> > Would you mind including links to previous discussion if you're aware
-> > of any?  
+On Thu, 11 Nov 2021 22:14:02 +0800 Lin Ma wrote:
+> The former patch "defer 6pack kfree after unregister_netdev" reorders
+> the kfree of two buffer after the unregister_netdev to prevent the race
+> condition. It also adds free_netdev() function in sixpack_close(), which
+> is a direct copy from the similar code in mkiss_close().
 > 
-> This is the first time that I post this patch. Do you mean that someone
-> else has done this before? Sorry, I didn't find it~
+> However, in sixpack driver, the flag needs_free_netdev is set to true in
+> sp_setup(), hence the unregister_netdev() will free the netdev
+> automatically. Therefore, as the sp is netdev_priv, use-after-free
+> occurs.
+> 
+> This patch removes the needs_free_netdev = true and just let the
+> free_netdev to finish this deallocation task.
+> 
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 
-I see. Yes, I believe very similar changes were proposed in the past.
-
-I believe that concerns about the performance impact had prevented them
-from being merged.
+Fixes: 0b9111922b1f ("hamradio: defer 6pack kfree after unregister_netdev")
