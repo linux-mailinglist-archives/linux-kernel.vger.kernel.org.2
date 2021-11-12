@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC2944EB04
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373F944EB05
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbhKLQIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        id S235321AbhKLQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:08:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbhKLQIJ (ORCPT
+        with ESMTP id S229841AbhKLQIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:08:09 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CC6C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:18 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b15so39365959edd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:18 -0800 (PST)
+        Fri, 12 Nov 2021 11:08:44 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B65C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:53 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id q74so24822926ybq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BsZMys5WNyqk7+eesMlJ0N4sIj1/7PpfJUrs7lTDm78=;
-        b=qSe5dncvcro+nK81vw/dpUP7DK9mDBMm1Oq2cUYzxGBclz+xQIBFN753+BejD6xfmj
-         wwS/37uCdl+M3JvfhLpOdvVOm2A+tlkEDDdpC74HBr/vVh/ya7EfKxZPBspz+OeF0Wgw
-         CBgAbd8EFuGRGD6CyEwuDEamu799G1gUUp/e44B0nxNx/++a2sVdJ2JjO7l3Iga1Sn/P
-         c4zeNTM6FI2qd7iRThz/PtrcJjWAUr2/UZqF2QIHsVCjRf+++tKAks+5TFlOnStJNoJr
-         8S9XS2dhVUhyzrrO5JDqZ+zRsd+8bKWRBsf7cTd6SU+trDb7GKMMSfBfln3bkItL8QdV
-         lGRw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GkuxDS6t0tcAaRotTMVpEen3isy6bKfo7Q8ytKiC9G0=;
+        b=qS2NWrgEvw7tAmCh1tg9LbV9Pp0DSpz8AGa2giFaNJ+ESnNOvQk1UOIs8jPk2P8n5H
+         5dATVLoUZagLoSWMiL8XkAf0qD3mq8JTRLV/jkIppcJS6MCUyfzbAdFtXEdCniR4qYoC
+         Wu0M/fZk1U6WTDDEikiIALzuw6hcZITPsoNSxfkNH6b0b0pNT2PYGHl+cSkrCKn95wX6
+         GNINjZjS/HeH+mUKBXMGVkJPuBd0fJp1GfI6BE+xTeqed0aS1G63NGSKHGYOCI/Rng+Q
+         M9swTyvX/9dS04b0FEy2LGJ1jEqXfy5I3ThsT5NiDKK0XEXS9KMII5ijpMhARePZClA8
+         y8AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BsZMys5WNyqk7+eesMlJ0N4sIj1/7PpfJUrs7lTDm78=;
-        b=X3fliv/DPJpBNHbB+HBr4O12+PVHUS1R6Qk9iMGAJXta05sm9yz36/V2NFKZn58tzj
-         ww+Y+xPUDdBGS9hBdKy4VUkcG0iN/EzwmwpNHzjQb9mf5MQuc2FAX8bW6P++abxQy5yv
-         1J0TLRPkX0bKHbwuXcp5LbEjY4PEfO5hk+3gfzb2PekF/Bf+roRqj6dw3Oq6KNxxkTn9
-         PWt0ixTYliG2Lvp6C0nJstqmM0do586ltCo5jBcrcPF73UUD8bICAXCNNwertVzrX4uY
-         bu2tAyAbNtN/zfBJxUux1h6lXKxzvH7xR4kF0n1jlRGdbBQxl1rE78yTRsMPwNxVvxxh
-         LHHw==
-X-Gm-Message-State: AOAM530bs27rEvZv7iD9cR5hhgmTV+6iqhxLUl8zM4zm9pZUPtj6nqDa
-        thju3F0XjLseqTG/2qGxfuY=
-X-Google-Smtp-Source: ABdhPJyGMUgrfNLQeMjQE9dHheGptOccfM+CZnYN3cHCLob+EPYizaEguAOkNSfiCV6ZGw6pgQ9Grg==
-X-Received: by 2002:a50:d49d:: with SMTP id s29mr9137023edi.55.1636733116918;
-        Fri, 12 Nov 2021 08:05:16 -0800 (PST)
-Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
-        by smtp.gmail.com with ESMTPSA id hc16sm2772058ejc.12.2021.11.12.08.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 08:05:16 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Marco Elver <elver@google.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __might_resched
-Date:   Fri, 12 Nov 2021 17:05:14 +0100
-Message-ID: <1805242.PYQNYDVmnG@localhost.localdomain>
-In-Reply-To: <CANpmjNMg62oXEQpuSccZdv-cx9txy2TH_4FQphaLEpSQTqZ1cQ@mail.gmail.com>
-References: <000000000000f43bb905d06c8b7f@google.com> <8755565.Ff9ToCiNAG@localhost.localdomain> <CANpmjNMg62oXEQpuSccZdv-cx9txy2TH_4FQphaLEpSQTqZ1cQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GkuxDS6t0tcAaRotTMVpEen3isy6bKfo7Q8ytKiC9G0=;
+        b=ogeD7y0pznwhxJdMYZLccC73Sx69g9cqMhVpnS83nQP1bZzv+DQZ/0oaD9l1Yr7lcs
+         wAxwAklpt4BcTyI5/YWQrcPlZ1dCMhIRwUs6tTu3v7Pc0HHtnzkUs+L5xnsyc0vkMN57
+         VPAj8eAJFbu0CzQrKjLms1LgXR0kiM8aHlLiNAzu0N/uvU4165OZQ4xlZ0GH89cK9cG/
+         oVhINEkYR3hNCkt0fX5u7yKyHlO7jXNiCbod0R1vQ3LYRu9YmXIo8yoXy1beTgwzUxX7
+         tLkSibDTqx2udynQAyZtPKjfT+ec+MUdoT5A5ZANUiQx+xtq204/+rJ7glr4yN3qUcvI
+         gYrw==
+X-Gm-Message-State: AOAM5300K25b6YdeNpGKYZipCUWo1+CDGZ5Tf7BS5hoIYaGWtqfINvAR
+        exlFQeVaDvoMY6IfsgpJ/uu2BP9dTzOGWKqxNb+meg==
+X-Google-Smtp-Source: ABdhPJxUca9F534RKO9gMQ93xB/mq5f9Zcwmn5hh0EFIYvNT4tSf+SMGb39EjD5Jvhqm/TQsbenp51lhBXNF8C5wkTE=
+X-Received: by 2002:a5b:d50:: with SMTP id f16mr16605102ybr.350.1636733152868;
+ Fri, 12 Nov 2021 08:05:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20211112095857.7016-1-vincent.guittot@linaro.org>
+ <20211112095857.7016-2-vincent.guittot@linaro.org> <YY6ARaFrpuWYqege@hirez.programming.kicks-ass.net>
+ <YY6AXx2lhJ27IBuJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YY6AXx2lhJ27IBuJ@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 12 Nov 2021 17:05:41 +0100
+Message-ID: <CAKfTPtDPtsRRajctvL1S=ySneRqN7nMyHgc6X9fChmRWTU9eNg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com, joel@joelfernandes.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, November 12, 2021 2:58:14 PM CET Marco Elver wrote:
-> On Fri, 12 Nov 2021 at 13:22, Fabio M. De Francesco
-> <fmdefrancesco@gmail.com> wrote:
-> [...]
-> > I think that this "BUG" is a false positive.
-> >
-> > In do_con_write(), Just before the call of console_lock() there is an
-> > in_interrupt() check that, if it evaluates to true, makes this function 
-to
-> > return "count" and prevents the SAC bug.
-> 
-> It's not complaining about being in an interrupt, but rather
-> interrupts disabled, i.e. still an atomic context.
+On Fri, 12 Nov 2021 at 15:55, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+> Subject: sched/fair: Reflow newidle_balance()
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Fri Nov 12 15:46:08 CET 2021
+>
+> The control flow in newidle_balance() is a little convoluted, attempt
+> simplification.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/sched/fair.c |   21 ++++++++-------------
+>  1 file changed, 8 insertions(+), 13 deletions(-)
+>
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10858,10 +10858,10 @@ static inline void nohz_newidle_balance(
+>  static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  {
+>         unsigned long next_balance = jiffies + HZ;
+> +       int pulled_task = 0, timeout = 0;
+>         int this_cpu = this_rq->cpu;
+>         u64 t0, t1, curr_cost = 0;
+>         struct sched_domain *sd;
+> -       int pulled_task = 0, early_stop = 0;
+>
+>         update_misfit_status(NULL, this_rq);
+>
+> @@ -10889,17 +10889,9 @@ static int newidle_balance(struct rq *th
+>         if (!READ_ONCE(this_rq->rd->overload) ||
+>             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>
+> -               if (sd) {
+> +               if (sd)
+>                         update_next_balance(sd, &next_balance);
+>
+> -                       /*
+> -                        * We skip new idle LB because there is not enough
+> -                        * time before next wake up. Make sure that we will
+> -                        * not kick NOHZ_NEWILB_KICK
+> -                        */
+> -                       early_stop = 1;
+> -               }
+> -
+>                 goto out;
+>         }
+>
+> @@ -10922,7 +10914,7 @@ static int newidle_balance(struct rq *th
+>                 update_next_balance(sd, &next_balance);
+>
+>                 if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+> -                       early_stop = 1;
+> +                       timeout = 1;
+>                         break;
+>                 }
+>
+> @@ -10967,6 +10959,11 @@ static int newidle_balance(struct rq *th
+>         if (this_rq->nr_running != this_rq->cfs.h_nr_running)
+>                 pulled_task = -1;
+>
+> +       if (pulled_task || timeout)
+> +               goto out;
+> +
+> +       nohz_newidle_balance(this_rq);
 
-Yes, still in an atomic context. 
+maybe
 
-Actually, I've never talked about being "in an interrupt", but I've just said 
-that the in_interrupt() macro prevents to fall into the code that might 
-sleep. 
+       if (!pulled_task && !timeout)
+               nohz_newidle_balance(this_rq);
 
-Now I suppose that this is the place for in_atomic(). Isn't it?
-
-I wrongly thought that in_interrupt() returns non-zero from any kind of 
-atomic context.
-
-Thanks,
-
-Fabio
-
-> > >  do_con_write+0x10f/0x1e40 drivers/tty/vt/vt.c:2908
-> > >  con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
-> > >  n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
-> > >  tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
-> > >  __start_tty drivers/tty/tty_io.c:806 [inline]
-> > >  __start_tty+0xfb/0x130 drivers/tty/tty_io.c:799
-> > >  n_tty_ioctl_helper+0x299/0x2d0 drivers/tty/tty_ioctl.c:880
-> 
->        ^^ n_tty_ioctl_helper() disabled interrupts via
-> spin_lock_irq(&tty->flow.lock)
-> 
-
-
-
-
+> +
+>  out:
+>         /* Move the next balance forward */
+>         if (time_after(this_rq->next_balance, next_balance))
+> @@ -10974,8 +10971,6 @@ static int newidle_balance(struct rq *th
+>
+>         if (pulled_task)
+>                 this_rq->idle_stamp = 0;
+> -       else if (!early_stop)
+> -               nohz_newidle_balance(this_rq);
+>
+>         return pulled_task;
+>  }
