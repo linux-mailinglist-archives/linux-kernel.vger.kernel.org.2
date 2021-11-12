@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512ED44EDCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3580244EDCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhKLUTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:19:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhKLUTk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:19:40 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A47C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:49 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id t18so22877543edd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ln4RXyBHR8doDkTvzPRGiuinGe7jyzb0IrpoLwi8jaI=;
-        b=NI9uAcinaqpmJx5ILSYb8lXr26e0VJqphVU5LVvNQTyPCe/3VDYqvtuqe+/DyAePMH
-         CQZD+o3avI3ug403ryG6GwE0OgouZXhed9c2/svOy5d3J0x/doML+D3z48oU2DmlaBAJ
-         L9bpQDojkBXy1zxmyGS4uEKJR7MtcKtD5/luM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ln4RXyBHR8doDkTvzPRGiuinGe7jyzb0IrpoLwi8jaI=;
-        b=1jVXbSsxmuAK4EYf//CluUGktKGyVeYroW13CXXYxL8jDli8dGACmucVTG4vmnNuTc
-         W2S3iGy2G6UFC16UAEs5aY/0sRPBAyPNxa0SIPNdQtyCkoD+lPx3Bp0inix99tUPKizi
-         xYcHAfyOhE6hNyhw4fSlUad2M9DXGqJ8WTWtW8cYqU5kYA+JG7uVhL1VYplIntol/Iw9
-         QZ6yee60jWI6o5TZczcaevRn/mHspR1ZzNu31JYqYk30kQhdhITWZQLFr4vkeLfiHq78
-         ItSUgTH4u42kAqJIfjeZdx17n3lrJvJ5pG6h1gB0mhjZRh4vVti63UQRGmVY3GiW36Wd
-         aO7w==
-X-Gm-Message-State: AOAM532eZBMfvR6sosZdGOTspoU47a3iZscl9jKRsN2HV4fvsCpq8In8
-        OotOtHR681Rxy4Ww+7BmPRD3YmWLo5fuQo0fl8g=
-X-Google-Smtp-Source: ABdhPJzGePBzcvx01b5GsGLi1NWmTk0X0iBq/a+2dffZExMvvs5VN5lMYOcZpkUIlJ/ayHRsPdrzpw==
-X-Received: by 2002:a50:d74e:: with SMTP id i14mr3847171edj.243.1636748196994;
-        Fri, 12 Nov 2021 12:16:36 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id h7sm3386962edt.37.2021.11.12.12.16.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 12:16:36 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id o29so8736169wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:36 -0800 (PST)
-X-Received: by 2002:a05:600c:1914:: with SMTP id j20mr37406491wmq.26.1636748195924;
- Fri, 12 Nov 2021 12:16:35 -0800 (PST)
+        id S235439AbhKLUVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:21:16 -0500
+Received: from mga07.intel.com ([134.134.136.100]:25766 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231238AbhKLUVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:21:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10166"; a="296634790"
+X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
+   d="scan'208";a="296634790"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 12:18:23 -0800
+X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
+   d="scan'208";a="590678546"
+Received: from cheemeig-mobl1.gar.corp.intel.com (HELO [10.212.248.140]) ([10.212.248.140])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 12:18:22 -0800
+Subject: Re: [PATCH 0/2] Nuke PAGE_KERNEL_IO
+To:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20211021181511.1533377-1-lucas.demarchi@intel.com>
+ <20211112190403.GK174703@worktop.programming.kicks-ass.net>
+ <20211112200957.qem4dyjnzjhls4v3@ldmartin-desk2>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5ad5de1d-1cd3-b1cd-2880-c8df78e4db58@intel.com>
+Date:   Fri, 12 Nov 2021 12:18:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
-In-Reply-To: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 12 Nov 2021 12:16:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
-Message-ID: <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
-Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
-To:     Dave Airlie <airlied@gmail.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211112200957.qem4dyjnzjhls4v3@ldmartin-desk2>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 7:25 PM Dave Airlie <airlied@gmail.com> wrote:
->
-> I missed a drm-misc-next pull for the main pull last week. It wasn't
-> that major and isn't the bulk of this at all. This has a bunch of
-> fixes all over, a lot for amdgpu and i915.
+On 11/12/21 12:09 PM, Lucas De Marchi wrote:
+> The intention was to merge this through the tip tree. Although now I'm
+> not sure. Options:
+> 
+>     1) take the first patch through the drm-intel tree and apply the
+>        second patch later
+>     2) take everything through the drm tree
+>     3) take everything through the tip tree
+> 
+> What's your preference here?
 
-Ugh.
-
-The i915 conflict was trivial, but made me aware of that absolutely
-disgusting "wbinvd_on_all_cpus()" hack.
-
-And that thing is much too ugly to survive. I made my merge resolution
-remove that disgusting thing.
-
-That driver is x86-only anyway, so it all seemed completely bogus in
-the first place.
-
-And if there is some actual non-x86 work in progress for i915, then
-that wbinvd_on_all_cpus() needs to be replaced with something proper
-and architecture-neutral anyway, most definitely involving a name
-change, and almost certainly also involving a range for the cache
-writeback.
-
-Because that "create broken macro on other architectures" thing is
-*NOT* acceptable.
-
-And I sincerely hope to the gods that no cache-incoherent i915 mess
-ever makes it out of the x86 world. Incoherent IO was always a
-historical mistake and should never ever happen again, so we should
-not spread that horrific pattern around.
-
-                Linus
+It's fine with me to take it through tip unless that causes a problem
+for anyone.  I was planning on doing queuing it after -rc1.
