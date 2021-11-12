@@ -2,91 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F1C44EBAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9AE44EBB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbhKLRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:00:31 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:33356 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbhKLRAa (ORCPT
+        id S235459AbhKLRA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235142AbhKLRA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:00:30 -0500
-Received: by mail-oi1-f178.google.com with SMTP id q25so13434771oiw.0;
-        Fri, 12 Nov 2021 08:57:39 -0800 (PST)
+        Fri, 12 Nov 2021 12:00:57 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A89C061766;
+        Fri, 12 Nov 2021 08:58:06 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id z10so13799657edc.11;
+        Fri, 12 Nov 2021 08:58:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eyqg6p4AjDBrrt4XArlO33nk2XTZ9oXkihOY6hJrEj0=;
+        b=gEdvnuBEEGlM92bprmggmxutdAgR4dd/MJWVmlbuB0pKm8EoYlYc4qvcBmZR9ZKgGN
+         w7zymYQK6DiQZXsTjhO/ipRjVAaUMPJ93O9oekonBn1GFVKNulwmKZqU7cFNaW8IAdv8
+         YJvn26wzLJpV0OImAXeDwRrmqqSVIm+GaByR+tMvdmUu3oyYCM63wfgmHX3VOl1DPdBq
+         1ghLzpyPr8lbzjyJsNypqPfVy5xgmvUEpZS2l1Be4+/J+OLHCeyH0KuXCmijkOANbbuX
+         a1vBDf1+hURUQ9huuviS0GBs9OCWJNp2Qos6cPO3XSha9vfHY9FHtuBAIVv0EaMVl2V3
+         fXMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n9OxRMPgp6pk93jZ1YlEjSWdjPyoXU189+XIXwiTYRw=;
-        b=RaBfxHI9CFSa3vWZ86mkjIwDShThJIdL7aIiUqNeXWqggHznkC4lc7yy0Cb93zgItD
-         f0VJ6l7Tn91qVeWsXtohuCn82fXO/PyQjGPtLZBdgRW1LznWwqoDn4fMv3y1VkRtdC4X
-         DwJEjJRci7cR+8bzH3/bTThc8UgYtKkredr+kQB85UvlmO0pgPb9gYLYm0II3eJdtjzg
-         ki+q+sYyaOsTOzO5PDDtxZJj5S+X5uHgt7q8shmA/ylPxV6S+p/Mc+SOyDrzNXeRrEwh
-         EkfXpajvRzHboNXNM+FymzUsO+v9gbgI5DNvGYwS+ogGZyJUw9/SsHYjgRIG95WGfFIX
-         0jow==
-X-Gm-Message-State: AOAM531PAFvsEVjwRmGJiVjMzrgsvsUD8JcYKy/LjDsQkig6Vtl5JNJu
-        dauZvrifQGWWVkeruoOAHw==
-X-Google-Smtp-Source: ABdhPJw55ryGR39q61JJpTyvJsied/FtWSJDgs9l5hCvlD+IouVp9dNd0acwh0y+I9393pbRkbSMFw==
-X-Received: by 2002:a54:4584:: with SMTP id z4mr27648506oib.158.1636736259168;
-        Fri, 12 Nov 2021 08:57:39 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id y203sm1407807oia.1.2021.11.12.08.57.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eyqg6p4AjDBrrt4XArlO33nk2XTZ9oXkihOY6hJrEj0=;
+        b=ViCaJ11bAiTAuGQsbgkXZDI6uwHwyknzHJf+DPYVxvV+1lGMcQuOFcYZY/DaqQo9bv
+         L9P1/IHilDdX1SVPP5K1j3lxZqCTRzAje4u6Ki+xMergygCtSIlyolMY7/+IdjwKO5HR
+         jYU42MZEyq7JH4BsyjhjqRe1Q74pJhZWrLtY+sDUm43HE2+8G9ZBH9eJnEMQuyVyRThO
+         qwZVvdtDF03AAthODxVlcyfUAPv+pzi8ewzcGMEDJpuqjYC8R3+QmXrx7vyQh9mpr+ij
+         iMiF/908rgYvCXzgbdhRUQYxwfzBeguURne1RDDILtCOvTH3C0nnq7ThDNipOGNAcR9T
+         T2lw==
+X-Gm-Message-State: AOAM532AaJuCWFBw/ZEDNyyda5DNAAm46DxCqgsf9aUaosybidPDteHT
+        v6TpTD9gvvpjitNKdwq2CsU=
+X-Google-Smtp-Source: ABdhPJz0iD4PTo+VPXmRIq40jiq2OOdvPGNDwwivMYeMZ+/+R8NxV5aKrKw5lewJaEDMGCAC3Pajww==
+X-Received: by 2002:aa7:da09:: with SMTP id r9mr4806793eds.71.1636736285200;
+        Fri, 12 Nov 2021 08:58:05 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id bo20sm3409492edb.31.2021.11.12.08.58.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 08:57:38 -0800 (PST)
-Received: (nullmailer pid 3004958 invoked by uid 1000);
-        Fri, 12 Nov 2021 16:57:37 -0000
-Date:   Fri, 12 Nov 2021 10:57:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: usb: mtk-xhci: add support ip-sleep for
- mt8195
-Message-ID: <YY6dAT3OHbu0CO/J@robh.at.kernel.org>
-References: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+        Fri, 12 Nov 2021 08:58:04 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: net: dsa: split generic port definition from dsa.yaml
+Date:   Fri, 12 Nov 2021 17:57:51 +0100
+Message-Id: <20211112165752.1704-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 02:00:47PM +0800, Chunfeng Yun wrote:
-> There are 4 USB controllers on MT8195, each controller's wakeup control is
-> different, add some spicific versions for them.
+Some switch may require to add additional binding to the node port.
+Move DSA generic port definition to a dedicated yaml to permit this.
 
-specific
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ .../devicetree/bindings/net/dsa/dsa-port.yaml | 70 +++++++++++++++++++
+ .../devicetree/bindings/net/dsa/dsa.yaml      | 54 +-------------
+ 2 files changed, 72 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/dsa-port.yaml
 
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml          | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> index 11f7bacd4e2b..41efb51638d1 100644
-> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> @@ -146,7 +146,11 @@ properties:
->              2 - used by mt2712 etc, revision 2 following IPM rule;
->              101 - used by mt8183, specific 1.01;
->              102 - used by mt8192, specific 1.02;
-> -          enum: [1, 2, 101, 102]
-> +            103 - used by mt8195, IP0, specific 1.03;
-> +            104 - used by mt8195, IP1, specific 1.04;
-> +            105 - used by mt8195, IP2, specific 1.05;
-> +            106 - used by mt8195, IP3, specific 1.06;
-> +          enum: [1, 2, 101, 102, 103, 104, 105, 106]
->  
->    mediatek,u3p-dis-msk:
->      $ref: /schemas/types.yaml#/definitions/uint32
-> -- 
-> 2.18.0
-> 
-> 
+diff --git a/Documentation/devicetree/bindings/net/dsa/dsa-port.yaml b/Documentation/devicetree/bindings/net/dsa/dsa-port.yaml
+new file mode 100644
+index 000000000000..258df41c9133
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/dsa/dsa-port.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/dsa/dsa-port.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ethernet Switch port Device Tree Bindings
++
++maintainers:
++  - Andrew Lunn <andrew@lunn.ch>
++  - Florian Fainelli <f.fainelli@gmail.com>
++  - Vivien Didelot <vivien.didelot@gmail.com>
++
++description:
++  Ethernet switch port Description
++
++properties:
++  reg:
++    description: Port number
++
++  label:
++    description:
++      Describes the label associated with this port, which will become
++      the netdev name
++    $ref: /schemas/types.yaml#/definitions/string
++
++  link:
++    description:
++      Should be a list of phandles to other switch's DSA port. This
++      port is used as the outgoing port towards the phandle ports. The
++      full routing information must be given, not just the one hop
++      routes to neighbouring switches
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++
++  ethernet:
++    description:
++      Should be a phandle to a valid Ethernet device node.  This host
++      device is what the switch port is connected to
++    $ref: /schemas/types.yaml#/definitions/phandle
++
++  dsa-tag-protocol:
++    description:
++      Instead of the default, the switch will use this tag protocol if
++      possible. Useful when a device supports multiple protocols and
++      the default is incompatible with the Ethernet device.
++    enum:
++      - dsa
++      - edsa
++      - ocelot
++      - ocelot-8021q
++      - seville
++
++  phy-handle: true
++
++  phy-mode: true
++
++  fixed-link: true
++
++  mac-address: true
++
++  sfp: true
++
++  managed: true
++
++required:
++  - reg
++
++additionalProperties: true
++
++...
+diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+index 224cfa45de9a..15ea9ef3def9 100644
+--- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+@@ -46,58 +46,8 @@ patternProperties:
+         type: object
+         description: Ethernet switch ports
+ 
+-        properties:
+-          reg:
+-            description: Port number
+-
+-          label:
+-            description:
+-              Describes the label associated with this port, which will become
+-              the netdev name
+-            $ref: /schemas/types.yaml#/definitions/string
+-
+-          link:
+-            description:
+-              Should be a list of phandles to other switch's DSA port. This
+-              port is used as the outgoing port towards the phandle ports. The
+-              full routing information must be given, not just the one hop
+-              routes to neighbouring switches
+-            $ref: /schemas/types.yaml#/definitions/phandle-array
+-
+-          ethernet:
+-            description:
+-              Should be a phandle to a valid Ethernet device node.  This host
+-              device is what the switch port is connected to
+-            $ref: /schemas/types.yaml#/definitions/phandle
+-
+-          dsa-tag-protocol:
+-            description:
+-              Instead of the default, the switch will use this tag protocol if
+-              possible. Useful when a device supports multiple protocols and
+-              the default is incompatible with the Ethernet device.
+-            enum:
+-              - dsa
+-              - edsa
+-              - ocelot
+-              - ocelot-8021q
+-              - seville
+-
+-          phy-handle: true
+-
+-          phy-mode: true
+-
+-          fixed-link: true
+-
+-          mac-address: true
+-
+-          sfp: true
+-
+-          managed: true
+-
+-        required:
+-          - reg
+-
+-        additionalProperties: false
++        allOf:
++          - $ref: dsa-port.yaml#
+ 
+ oneOf:
+   - required:
+-- 
+2.32.0
+
