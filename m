@@ -2,138 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE4B44E883
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE9644E885
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbhKLOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
+        id S235010AbhKLOXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbhKLOWN (ORCPT
+        with ESMTP id S231131AbhKLOXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:22:13 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AC5C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:19:22 -0800 (PST)
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id CD8CB1F633;
-        Fri, 12 Nov 2021 15:19:18 +0100 (CET)
-Date:   Fri, 12 Nov 2021 15:19:17 +0100
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 05/13] backlight: qcom-wled: Override default
- length with qcom,enabled-strings
-Message-ID: <20211112141917.akufukmeyz5enjg3@SoMainline.org>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>, Bryan Wu <cooloney@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-References: <20211112002706.453289-1-marijn.suijten@somainline.org>
- <20211112002706.453289-6-marijn.suijten@somainline.org>
- <20211112121238.kb3kkt6xzv5so26j@maple.lan>
- <20211112124522.g7e3m7l2oxxxobof@SoMainline.org>
- <20211112132336.z2x4bzrfqr4u3jol@maple.lan>
+        Fri, 12 Nov 2021 09:23:05 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBEBC061766;
+        Fri, 12 Nov 2021 06:20:14 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id np3so6883763pjb.4;
+        Fri, 12 Nov 2021 06:20:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tKyWJgE04HxRAjq5nb7ERjx0vGYGSgiBeT5zkfHPsnw=;
+        b=c6tbwnM8EEdXQbXjZ6TBKu/GDieGFFzpHqyAv/x9gtsV7u9AbwnmumGLMO0/EiCoGN
+         Yf5qCS4fIkHQGwoyoL4ywdKyumfkWOKyjqw9Ct2rv2+6bZv53d/FbafgVZFrMTIvTt5D
+         eA/10d3nD6C+OXYQFt04R4CsZKRFYGumYpPBcd0kA0KkCHJQqztNuFVtkubP0ozjtChk
+         BzZ1QUnBwMBOcg41FLNlXK2oM+wpBHHGJxrNrVy//gB9kI7KQGphRKUzKziLBwjktIbz
+         3yfQyasiBzLSaitwbu4fR+QK+p8qI3zUzDDqkXL4GRpNe7PjG6B0XMXkYVuz+q/qHVq5
+         gvnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tKyWJgE04HxRAjq5nb7ERjx0vGYGSgiBeT5zkfHPsnw=;
+        b=hJlKLhsOJaQA+oe7go2nMLbXzmWOewvLBKKdUD61cP/DdaHk4al04IgAZe6F43JW0z
+         +GI0DbtpHIdKysTmgjRGqBKn89Fv3/du1pSq9aRm/G5HCbniIU9VpptfauH9mMeljsUY
+         mofvPb3fnfDaQeknaQiPxzL5s9loTKMvjPT7Om74/6enpF7ob/9R/6mnIYcDZzcrbMdV
+         QayN4LWJkYefVTCnI9riybxkFNsY2fsWnccFP1nkcr0rQxFzPJPhr+6DIvbXKWWdYXNf
+         1oDOGqHOdJdNBEgzkVCje6HgtqTaYRvUFMEWqjh3tjEfJ3jys8neEW0MbJKwgvH6QaPm
+         0UPA==
+X-Gm-Message-State: AOAM5304mVtMxlteT76+yTjnISYBXocg0lFlu6RXjmZ8nMrSHXKvXIPS
+        YlDTV3HJXU+bjKd5a7Nclaw=
+X-Google-Smtp-Source: ABdhPJwg92vrA9JI16k61zQqU2yfIiV/eDCJUm5tXXj6752EumHyQSBUbrIuJGcQ45rvBBQI07OUlQ==
+X-Received: by 2002:a17:902:8a93:b0:142:30fe:dd20 with SMTP id p19-20020a1709028a9300b0014230fedd20mr8309699plo.29.1636726813724;
+        Fri, 12 Nov 2021 06:20:13 -0800 (PST)
+Received: from fanta-arch.localdomain ([148.163.172.142])
+        by smtp.gmail.com with ESMTPSA id i2sm6409532pfe.70.2021.11.12.06.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 06:20:13 -0800 (PST)
+From:   Letu Ren <fantasquex@gmail.com>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] net: igbvf: fix double free in `igbvf_probe`
+Date:   Fri, 12 Nov 2021 22:20:02 +0800
+Message-Id: <20211112142002.23156-1-fantasquex@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112132336.z2x4bzrfqr4u3jol@maple.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-12 13:23:36, Daniel Thompson wrote:
-> On Fri, Nov 12, 2021 at 01:45:22PM +0100, Marijn Suijten wrote:
-> > On 2021-11-12 12:12:38, Daniel Thompson wrote:
-> > > On Fri, Nov 12, 2021 at 01:26:58AM +0100, Marijn Suijten wrote:
-> > > > The length of qcom,enabled-strings as property array is enough to
-> > > > determine the number of strings to be enabled, without needing to set
-> > > > qcom,num-strings to override the default number of strings when less
-> > > > than the default (which is also the maxium) is provided in DT.
-> > > > 
-> > > > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-> > > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > > ---
-> > > >  drivers/video/backlight/qcom-wled.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > > index c5232478a343..9bfbf601762a 100644
-> > > > --- a/drivers/video/backlight/qcom-wled.c
-> > > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > > @@ -1518,6 +1518,8 @@ static int wled_configure(struct wled *wled)
-> > > >  				return -EINVAL;
-> > > >  			}
-> > > >  		}
-> > > > +
-> > > > +		cfg->num_strings = string_len;
-> > > 
-> > > I still don't really understand why this wants to be a separate patch.
-> > 
-> > I'm viewing this as a separate issue, and this makes it easier to
-> > document the change in a loose commit.
-> > 
-> > > The warning text emitted by the previous patch (whatever text we agree
-> > > on) will be nonsense until this patch is applied.
-> > > 
-> > > If this patch cannot appear before the warning is introduces then there
-> > > is no correct order for patches 4 and 5 (which implies they should be the
-> > > same patch).
-> > 
-> > Agreed, this is a weird way of doing things in v2 - the error message is
-> > printed yet the length of qcom,enabled-strings is always ignored before
-> > this patch.
-> > 
-> > If we were to reorder patch 5 before patch 4 that should also
-> > temporarily move `cfg->num_strings = cfg->num_strings + 1;` right below
-> > this `if` so that `qcom,num-strings` remains the definitive way to
-> > set/override length.  That's doable, and makes it easier to read patch 4
-> > as that bit of code will be replaced by of_property_read_u32 on that
-> > exact line.  Let me know which method you prefer.
-> 
-> Personally I would just squash them together. There are no redundant
-> values in the DT that could be fixed until we can use the string_len
-> to set num_strings.
+In `igbvf_probe`, if register_netdev() fails, the program will go to
+label err_hw_init, and then to label err_ioremap. In free_netdev() which
+is just below label err_ioremap, there is `list_for_each_entry_safe` and
+`netif_napi_del` which aims to delete all entries in `dev->napi_list`.
+The program has added an entry `adapter->rx_ring->napi` which is added by
+`netif_napi_add` in igbvf_alloc_queues(). However, adapter->rx_ring has
+been freed below label err_hw_init. So this a UAF.
 
-Reordering this patch before patch 4 in the way described above should
-allow just that, except that no warnings will be given for ambiguity
-until patch 4 is applied after that - which is weird given that that
-patch only intends the off-by-one error.  Perhaps we should keep the
-order as it is, but add the ambiguity warning in this patch instead.
+In terms of how to patch the problem, we can refer to igbvf_remove() and
+delete the entry before `adapter->rx_ring`.
 
-That means we have one patch to fix the off-by-one first, and another
-that allows qcom,num-strings to provide a default for num_strings.  I
-guess that's better to keep separated?
+The KASAN logs are as follows:
 
-- Marijn
+[   35.126075] BUG: KASAN: use-after-free in free_netdev+0x1fd/0x450
+[   35.127170] Read of size 8 at addr ffff88810126d990 by task modprobe/366
+[   35.128360]
+[   35.128643] CPU: 1 PID: 366 Comm: modprobe Not tainted 5.15.0-rc2+ #14
+[   35.129789] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   35.131749] Call Trace:
+[   35.132199]  dump_stack_lvl+0x59/0x7b
+[   35.132865]  print_address_description+0x7c/0x3b0
+[   35.133707]  ? free_netdev+0x1fd/0x450
+[   35.134378]  __kasan_report+0x160/0x1c0
+[   35.135063]  ? free_netdev+0x1fd/0x450
+[   35.135738]  kasan_report+0x4b/0x70
+[   35.136367]  free_netdev+0x1fd/0x450
+[   35.137006]  igbvf_probe+0x121d/0x1a10 [igbvf]
+[   35.137808]  ? igbvf_vlan_rx_add_vid+0x100/0x100 [igbvf]
+[   35.138751]  local_pci_probe+0x13c/0x1f0
+[   35.139461]  pci_device_probe+0x37e/0x6c0
+[   35.165526]
+[   35.165806] Allocated by task 366:
+[   35.166414]  ____kasan_kmalloc+0xc4/0xf0
+[   35.167117]  foo_kmem_cache_alloc_trace+0x3c/0x50 [igbvf]
+[   35.168078]  igbvf_probe+0x9c5/0x1a10 [igbvf]
+[   35.168866]  local_pci_probe+0x13c/0x1f0
+[   35.169565]  pci_device_probe+0x37e/0x6c0
+[   35.179713]
+[   35.179993] Freed by task 366:
+[   35.180539]  kasan_set_track+0x4c/0x80
+[   35.181211]  kasan_set_free_info+0x1f/0x40
+[   35.181942]  ____kasan_slab_free+0x103/0x140
+[   35.182703]  kfree+0xe3/0x250
+[   35.183239]  igbvf_probe+0x1173/0x1a10 [igbvf]
+[   35.184040]  local_pci_probe+0x13c/0x1f0
+
+Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Letu Ren <fantasquex@gmail.com>
+---
+ drivers/net/ethernet/intel/igbvf/netdev.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
+index d32e72d953c8..d051918dfdff 100644
+--- a/drivers/net/ethernet/intel/igbvf/netdev.c
++++ b/drivers/net/ethernet/intel/igbvf/netdev.c
+@@ -2861,6 +2861,7 @@ static int igbvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	return 0;
+ 
+ err_hw_init:
++	netif_napi_del(&adapter->rx_ring->napi);
+ 	kfree(adapter->tx_ring);
+ 	kfree(adapter->rx_ring);
+ err_sw_init:
+-- 
+2.33.1
+
