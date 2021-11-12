@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083D644E8BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996D944E8DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbhKLObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S235035AbhKLOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:32:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235226AbhKLObD (ORCPT
+        with ESMTP id S235074AbhKLOci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:31:03 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC85C061766;
-        Fri, 12 Nov 2021 06:28:13 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id q124so18190004oig.3;
-        Fri, 12 Nov 2021 06:28:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x5dfSUHa1njoopDFflSMfZqV2g9VFMYcNiM5aiRugeo=;
-        b=VYSjzYM+QuDZ26S8+m6rUl0o+PC8pqY7nVUW31EomlzBGk1hF4UaAGOLXL03Sxgq4k
-         GmQ0BI+jQKcdjgCViAosV+9bmYzbhmeDclSSvQ2QVeofKAWuVh5/oTiLuS74rdXZvspS
-         wkqCLN+B75Udtsujv6++p96gd/GPIywNxMvpaUAlWdOylHuEkVP1PMqfB4iLXVOH2FBp
-         fX3UJhoBm2XdD9T64ZIGEoMk+F7BgwlNE1dKE49DpD+mATY+rt8pizFFmvLNWSvgBc0x
-         W0NkFWf/R64HxaTNiUxFefA28VRhDFTvXs3/0xn7IUGm1YYj6nG2e9pkvtSeCEZ5ZhwD
-         f16w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x5dfSUHa1njoopDFflSMfZqV2g9VFMYcNiM5aiRugeo=;
-        b=nWZ8rws3CfghxDhrTQbToqTZhw6UUq7X4lXhV5ofZ49orJAabmaxuQeCE+LFD8qO4f
-         DRrS2luilW8na3VfPWQWbfoVV6xckFCzNvs+DrI05JCy/HVpUoxBG2nipIYwGxPD8DZ/
-         P0VauYxwl6G9OZL6UoKKV7Mxnsqflns30yDhNNUZRFJWp9SAU2YCnzahS5F7VANE0EKK
-         RTBfjyN8bCAcXdiZtB4v/AMUXTrrmhPqs/JpjrQbBmLv2h7daUZGeTLkmRO8rODgjBKI
-         09S4bIGPxwKIoov5WpOm2iKrVIU1cWZVt1j0q8/aUh/WL5J+fKoDLQNYyla85o7XvdfH
-         Bl6Q==
-X-Gm-Message-State: AOAM532G6VkmuKhDgECeJk4alnWRGqHejA2kgVV2wqWIFWzKIdst1/Q3
-        m5aUliZwEXUxG/+rnsattss=
-X-Google-Smtp-Source: ABdhPJzdXAiqkHjNaY9KvH435R1uUoa7Ewk7VHxGDNdTXjcKZxF8WNLoJN4qb9Pk7ctJYmVRXQPq1w==
-X-Received: by 2002:a05:6808:2186:: with SMTP id be6mr27190633oib.115.1636727292441;
-        Fri, 12 Nov 2021 06:28:12 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l19sm1083194ooq.17.2021.11.12.06.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 06:28:11 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH V4 6/9] dt-bindings: watchdog: imx7ulp-wdt: Add imx8ulp
- compatible string
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
-        aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        ulf.hansson@linaro.org, broonie@kernel.org, wim@linux-watchdog.org,
-        linux@rempel-privat.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Jacky Bai <ping.bai@nxp.com>,
-        Rob Herring <robh@kernel.org>, Peng Fan <peng.fan@nxp.com>
-References: <20211112082930.3809351-1-peng.fan@oss.nxp.com>
- <20211112082930.3809351-7-peng.fan@oss.nxp.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <ecd1b962-0401-e077-f1c4-426fafde58f8@roeck-us.net>
-Date:   Fri, 12 Nov 2021 06:28:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 12 Nov 2021 09:32:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE371C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:29:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3yjn5TF7htvmwDrVuz3mRtuCJAhpYpSdxeHobzEE41A=; b=UmU7h+ft+Z8IuG6ElCKOdGLd5B
+        Wp/4lAirSwbYYmd/3prgwy+XOsHREf9WbPil0JEScF5ITpNnQHAKL305IWXLW+wDhMZnMxoLbtdCm
+        3oFLU5ynIiF33mLFu5zBEsuIwkIPAAvfezi68o9kAHWkVWxTFxRMotN8UO0Tv4PZSB5zhDax12yig
+        YzBLl1zWsac+bXCvRNUh/kFIBhRYzb0JLzBt051zmiDaVw6LTpCxezKoKijwipczAjSxqAuPRRNAB
+        NM8BveSI5s2z3XdV0bY66IYgsHeBjD7gM3lEMHQ/uEhGOFGKCQWEZhWdOiy6PtKYumNGhZ5/IGTCA
+        RSKnVIJg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlXYT-003afL-IU; Fri, 12 Nov 2021 14:29:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71FF6300366;
+        Fri, 12 Nov 2021 15:29:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 39E852C6E8EFB; Fri, 12 Nov 2021 15:29:24 +0100 (CET)
+Date:   Fri, 12 Nov 2021 15:29:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com, joel@joelfernandes.org
+Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
+Message-ID: <YY56RBQR912S6ScC@hirez.programming.kicks-ass.net>
+References: <20211112095857.7016-1-vincent.guittot@linaro.org>
+ <20211112095857.7016-2-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20211112082930.3809351-7-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112095857.7016-2-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 12:29 AM, Peng Fan (OSS) wrote:
-> From: Jacky Bai <ping.bai@nxp.com>
+On Fri, Nov 12, 2021 at 10:58:56AM +0100, Vincent Guittot wrote:
+> In case we skip the newly idle LB entirely or we abort it because we are
+> going to exceed the avg_idle, we have to make sure to not start an update
+> of the blocked load when entering idle
 > 
-> The wdog on i.MX8ULP is derived from i.MX7ULP, it uses two compatible
-> strings, so update the compatible string for i.MX8ULP.
-> 
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Jacky Bai <ping.bai@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > ---
+>  kernel/sched/fair.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
 > 
->   - v4 changes:
->     no
-> 
->   - v3 changes:
->     no
-> 
->   - v2 changes:
->     refine the commit message
-> 
->   .../devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml      | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml
-> index 51d6d482bbc2..fb603a20e396 100644
-> --- a/Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml
-> @@ -14,8 +14,11 @@ allOf:
->   
->   properties:
->     compatible:
-> -    enum:
-> -      - fsl,imx7ulp-wdt
-> +    oneOf:
-> +      - const: fsl,imx7ulp-wdt
-> +      - items:
-> +          - const: fsl,imx8ulp-wdt
-> +          - const: fsl,imx7ulp-wdt
->   
->     reg:
->       maxItems: 1
-> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 13950beb01a2..a162b0ec8963 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10861,7 +10861,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  	int this_cpu = this_rq->cpu;
+>  	u64 t0, t1, curr_cost = 0;
+>  	struct sched_domain *sd;
+> -	int pulled_task = 0;
+> +	int pulled_task = 0, early_stop = 0;
+>  
+>  	update_misfit_status(NULL, this_rq);
+>  
+> @@ -10898,8 +10898,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  	if (!READ_ONCE(this_rq->rd->overload) ||
+>  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>  
+> -		if (sd)
+> +		if (sd) {
+>  			update_next_balance(sd, &next_balance);
+> +
+> +			/*
+> +			 * We skip new idle LB because there is not enough
+> +			 * time before next wake up. Make sure that we will
+> +			 * not kick NOHZ_NEWILB_KICK
+> +			 */
+> +			early_stop = 1;
+> +		}
+>  		rcu_read_unlock();
+>  
+>  		goto out;
+> @@ -10918,8 +10926,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  
+>  		update_next_balance(sd, &next_balance);
+>  
+> -		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
+> +		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+> +			early_stop = 1;
+>  			break;
+> +		}
+>  
+>  		if (sd->flags & SD_BALANCE_NEWIDLE) {
+>  
+> @@ -10969,7 +10979,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  
+>  	if (pulled_task)
+>  		this_rq->idle_stamp = 0;
+> -	else
+> +	else if (!early_stop)
+>  		nohz_newidle_balance(this_rq);
+>  
+>  	rq_repin_lock(this_rq, rf);
 
+Urgh code flow is a mess... Let me see if I can fix some of that.
+
+Anyway, does nohz_newidle_balance() want to loose it's ->avg_idle test
+with this on?
