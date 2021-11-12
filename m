@@ -2,183 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F0844EE47
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:01:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0005B44EE4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235715AbhKLVEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        id S235721AbhKLVGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232902AbhKLVEX (ORCPT
+        with ESMTP id S235694AbhKLVGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:04:23 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C30C061766;
-        Fri, 12 Nov 2021 13:01:32 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so10932040wme.0;
-        Fri, 12 Nov 2021 13:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=B3e+13s4p3dhI8Zf6QqfqzgmLP21sUtb60eTfseb1RM=;
-        b=pVO9n6kHKfA/tQZdTAfy5MF2d/CmjtqXvWOhNlddj/wlSkaOl+8h44Psb3F0cFxIgV
-         6JVlgYaTrOF+iDSy9aCmVN9nrgwgyv9uJoBYkRPkV0vI9lLGiotjxynXXdGjhxnkPHmP
-         5F7eCsOU3p1rVmrTMB6sWdvQTOQ0aZGhHdyHEE4UxkqtCwWV/5BghiVLAsaQ0jOIxaCn
-         LhsLT1T0O7H4lOjR7hU1XMIJx4pxCyrpBXN16yiZN7bOhmoSt2rGshpst07ZtpYSNoKq
-         +NNYLEzj/fOtlHt5BzR3JzIh/9cfvgwWJ4HYpnKR6JjFmvBpDdtzUTKSrsYUaUkpO5BB
-         39Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=B3e+13s4p3dhI8Zf6QqfqzgmLP21sUtb60eTfseb1RM=;
-        b=QpVEAKr+z/bEK17GYQw40UsUFyjOIy+3sPXm4NMPu/aG3sZF36LSa5cRfNqm2wZ8/R
-         GsC7W0XUOhgLCVZAoW5OaT77E8iYYbjqOotpLOCdipN/ydOVJze93qEWaiAdZ/TlWhHn
-         HV4LYcB7j2Ej44jNByfuAXcT4uYrCzgsdQB94O1rukU09D+k0g5/KbcYiP0Qwx95h8V0
-         dGRPJJuBMiwXfxCGVDbmoqtVAhuvWpE+j3YTXedJLKCN7Vkrfv2rWIAAQnXWfQ5d1f4l
-         Fd1OpjifLqBUdVt3Y2Ieef+3PN6f5RD2jUcNVOZlqwWObDf+WhZfakgmPbUB19tgbS1z
-         50cg==
-X-Gm-Message-State: AOAM533bsFdJLAkb7pATFJXCGC6ZrJJ0HOpDd1Dl+dvzex1dgEetdJOH
-        b45CeqM9dPTjtfFcEdXi6VI=
-X-Google-Smtp-Source: ABdhPJyxSpGkAnhYPgRNQITd3yeWDvqC9pDE/arAD4iC++4J6Tpe6GShMf0YqEQbw7v0W6pxqfb4Aw==
-X-Received: by 2002:a05:600c:358a:: with SMTP id p10mr19821181wmq.180.1636750891230;
-        Fri, 12 Nov 2021 13:01:31 -0800 (PST)
-Received: from [10.168.10.170] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id t9sm7171558wrx.72.2021.11.12.13.01.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 13:01:30 -0800 (PST)
-Message-ID: <ee12204f-0bfb-5b64-ef77-9217eb7dc456@gmail.com>
-Date:   Fri, 12 Nov 2021 22:01:29 +0100
+        Fri, 12 Nov 2021 16:06:01 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20996C061766;
+        Fri, 12 Nov 2021 13:03:10 -0800 (PST)
+Date:   Fri, 12 Nov 2021 21:03:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636750988;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+0eCd/uTf3OkYcn+N0cg5m3bti9dC+FFsLPssvtWEs=;
+        b=gbUxfdcgQdG+fqoJurkdVJftSWAhEEsQFvxgA+PdNq7x71EjQedOUaVPpQz2sPmVOFVPaA
+        pPoCZ32iWu/lAph5RPlvl5ytMBGTb0g1VsPPkKfa6xz/s5KMzPlCWV9vRyf+vzcFElfvZe
+        GAyopuPqTSg/t3+mtAgeZvQAN9Ma4FLflmeuXQob9BlvxloSQBd1f4Eu4XVb1Hw791G8A9
+        o2iOHwo42uVhc8XGkl1p2TxGBqd0HiP6kLMjQxfIJiIhB3LLpYO356AjuTtPg54ixhyHF/
+        MWILE8LHEiM6X7gAGei9ZZj0EvPFuLY6hQfxfFcM5Lxx2fPSRV01dr4jlx8SUQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636750988;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+0eCd/uTf3OkYcn+N0cg5m3bti9dC+FFsLPssvtWEs=;
+        b=EQJf8Gl9Dn926bS8ssxY6wbvOltIRnsmEZt558NoDkQ2xx38mMeALRVO24CRXy8ebOPKAG
+        OWC7bu/unOk3LmBA==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Add Raptor Lake to Intel family
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211112182835.924977-1-tony.luck@intel.com>
+References: <20211112182835.924977-1-tony.luck@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: netdevice.7 SIOCGIFFLAGS/SIOCSIFFLAGS
-Content-Language: en-US
-To:     Erik Flodin <erik@flodin.me>
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        Stefan Rompf <stefan@loplof.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Dykstra <john.dykstra1@gmail.com>, netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CAAMKmof+Y+qrro7Ohd9FSw1bf+-tLMPzaTba-tVniAMY0zwTOQ@mail.gmail.com>
- <b0a534b3-9bdf-868e-1f28-8e32d31013a2@gmail.com>
- <CAAMKmodhSsckMxH9jLKKwXN_B76RoLmDttbq5X9apE-eCo0hag@mail.gmail.com>
- <1cde5a72-033e-05e7-be58-b1b2ef95c80f@gmail.com>
- <CAAMKmoe8rUuoxFK2gKZL4um79gmtn-__-1ZDWuBgGTqfqPjZdw@mail.gmail.com>
- <ec0d0a2d-235c-a71f-92bc-45e1156bff9e@gmail.com>
- <CAAMKmocBEr05EfidF9CfqJQw4uj1YcYwmkJPR=c0eCCYgsAHwg@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-In-Reply-To: <CAAMKmocBEr05EfidF9CfqJQw4uj1YcYwmkJPR=c0eCCYgsAHwg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <163675098743.414.13524984324100742080.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erik,
+The following commit has been merged into the x86/urgent branch of tip:
 
-On 10/2/21 18:35, Erik Flodin wrote:
-> A bit more than a month has passed so here's a ping :)
-> 
-> // Erik
+Commit-ID:     fbdb5e8f2926ae9636c9fa6f42c7426132ddeeb2
+Gitweb:        https://git.kernel.org/tip/fbdb5e8f2926ae9636c9fa6f42c7426132ddeeb2
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Fri, 12 Nov 2021 10:28:35 -08:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 12 Nov 2021 11:46:06 -08:00
 
-Thanks for the ping.
+x86/cpu: Add Raptor Lake to Intel family
 
-alarm(3600 * 24 * 30);  // :)
+Add model ID for Raptor Lake.
 
-> 
-> On Fri, 30 Apr 2021 at 21:32, Alejandro Colomar (man-pages) 
-> <alx.manpages@gmail.com <mailto:alx.manpages@gmail.com>> wrote:
-> 
->     [PING mtk, netdev@]
->     [CC += linux-kernel]
-> 
->     Hi Erik,
-> 
->     On 4/29/21 9:45 PM, Erik Flodin wrote:
->      > On Wed, 14 Apr 2021 at 21:56, Alejandro Colomar (man-pages)
->      > <alx.manpages@gmail.com <mailto:alx.manpages@gmail.com>> wrote:
->      >>
->      >> [CC += netdev]
->      >>
->      >> Hi Erik,
->      >>
->      >> On 4/14/21 8:52 PM, Erik Flodin wrote:
->      >>> Hi,
->      >>>
->      >>> On Fri, 19 Mar 2021 at 20:53, Alejandro Colomar (man-pages)
->      >>> <alx.manpages@gmail.com <mailto:alx.manpages@gmail.com>> wrote:
->      >>>> On 3/17/21 3:12 PM, Erik Flodin wrote:
->      >>>>> The documentation for SIOCGIFFLAGS/SIOCSIFFLAGS in
->     netdevice.7 lists
->      >>>>> IFF_LOWER_UP, IFF_DORMANT and IFF_ECHO, but those can't be set in
->      >>>>> ifr_flags as it is only a short and the flags start at 1<<16.
->      >>>>>
->      >>>>> See also
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=746e6ad23cd6fec2edce056e014a0eabeffa838c
->     <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=746e6ad23cd6fec2edce056e014a0eabeffa838c>
->      >>>>>
->      >>>>
->      >>>> I don't know what's the history of that.
->      >>>
->      >>> Judging from commit message in the commit linked above it was
->     added by
->      >>> mistake. As noted the flags are accessible via netlink, just
->     not via
->      >>> SIOCGIFFLAGS.
->      >>>
->      >>> // Erik
->      >>>
->      >>
->      >> I should have CCd netdev@ before.  Thanks for the update.  Let's
->     see if
->      >> anyone there can comment.
->      >>
->      >> Thanks,
->      >>
->      >> Alex
->      >>
-> 
->      > Hi again,
->      >
->      > Have there been any updates on this one?
-> 
->     No, Noone from the kernel answered.  And I'm sorry, but I'm not sure
->     what is going on in the code, so I don't want to close this here by just
->     removing those flags from the manual page, because I worry that the
->     actual code may be wrong or something.  So I prefer that when Michael
->     has some time he can maybe review this and say something.  Ideally,
->     someone from the kernel would also respond, but they haven't.  I've CCd
->     the LKML; let's see if someone reads this and can help.
-> 
->     Thanks,
-> 
->     Alex
-> 
->     P.S.:  Please, if we haven't responded in a month from now, ping us
->     again.  Thanks again.
-> 
->      >
->      > // Erik
->      >
->      >>
->      >> --
->      >> Alejandro Colomar
->      >> Linux man-pages comaintainer;
->     https://www.kernel.org/doc/man-pages/
->     <https://www.kernel.org/doc/man-pages/>
->      >> http://www.alejandro-colomar.es/ <http://www.alejandro-colomar.es/>
-> 
->     -- 
->     Alejandro Colomar
->     Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
->     <https://www.kernel.org/doc/man-pages/>
->     http://www.alejandro-colomar.es/ <http://www.alejandro-colomar.es/>
-> 
+[ dhansen: These get added as soon as possible so that folks doing
+  development can leverage them. ]
 
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; http://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lkml.kernel.org/r/20211112182835.924977-1-tony.luck@intel.com
+---
+ arch/x86/include/asm/intel-family.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 2715843..5a0bcf8 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -108,6 +108,8 @@
+ #define INTEL_FAM6_ALDERLAKE		0x97	/* Golden Cove / Gracemont */
+ #define INTEL_FAM6_ALDERLAKE_L		0x9A	/* Golden Cove / Gracemont */
+ 
++#define INTEL_FAM6_RAPTOR_LAKE		0xB7
++
+ /* "Small Core" Processors (Atom) */
+ 
+ #define INTEL_FAM6_ATOM_BONNELL		0x1C /* Diamondville, Pineview */
