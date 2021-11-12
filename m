@@ -2,37 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEC744EE91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ECF44EE92
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbhKLVaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:30:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32974 "EHLO mail.kernel.org"
+        id S235736AbhKLVaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:30:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231877AbhKLVaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:30:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A06A60F51;
-        Fri, 12 Nov 2021 21:27:14 +0000 (UTC)
+        id S235702AbhKLVaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:30:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94C24610A2;
+        Fri, 12 Nov 2021 21:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636752436;
-        bh=AgghWFlwj08jaTwHsQSldw9SQNW5vIHNTtQtXlYwbGE=;
+        s=k20201202; t=1636752441;
+        bh=mf1NFqehFwwHUnvV8Idqyi02NlZ+oErngaqk4fic4S4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=n2UXpwF46ZHr8RG9z+KSfNX3P7bqADR4UCcejG6a16Dlvxa7hZ2j3W9tqnsOukEM8
-         ovvD1b01DPBDORbfKPIZbGfAy0VpCMQqtODj95CuvcOOSZtrWeGW2jVz7gjKcXJZSJ
-         qgKEL0dZSJ59EE58ZvXq4swBtokITPUevjJtFjIHunj0EdzbqzbNqI/E2yr0JBHYpr
-         baQgKGJRvdy8XO5fReaB4rcgW4c2fyONBxZfslARfEh6508OU43MFPPynVvLc1+OLy
-         4DPwWqrrUyw2Mag2swc58KGkP3/bLwOGnjQAjuu1CzfucXV/bCrzqSVCbODUVR0jc2
-         EDkT3zOtW2eRw==
+        b=aDvpP+DFJB4bvRNscJMY96pS4qYVLznkd7+8ok6kJBnfEWAG6Rs/zP85uScisafOM
+         46pLOY/FFDOT/1wXZK0DaCEQyUsM12cnD+i/GLMayaIDICqfqGaaGZB4Qpg76yJSP+
+         5rdDFu6I0kWG6wyXtucDnhxWYhLy9iqpx2x6P+AsjwLnvsapkiFso/9MKWas9CANA7
+         8Vr2e9ZBgnUZaHkRgMcgfaUt8YWDmqRwznBQmt/SOktpPwpkkyri0OISTug1cJb5pL
+         4IgWcF5po7zI6YEXX7bqZaR4C/cfd8+EMTnyUqKmnSFUKcVq+7agKp/uOACy7e8hBb
+         F90d4kadE61lw==
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, perex@perex.cz, cy_huang <u0084500@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, allen_lin@richtek.com,
-        cy_huang@richtek.com, alsa-devel@alsa-project.org,
-        oder_chiou@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <1636515921-31694-1-git-send-email-u0084500@gmail.com>
-References: <1636515921-31694-1-git-send-email-u0084500@gmail.com>
-Subject: Re: [PATCH v2 0/3] ASoC: rt9120: Fix settings and make compatible with rt9120s
-Message-Id: <163675243417.742274.8712537973718036345.b4-ty@kernel.org>
-Date:   Fri, 12 Nov 2021 21:27:14 +0000
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Bud Liviu-Alexandru <budliviu@gmail.com>,
+        alsa-devel@alsa-project.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        sound-open-firmware@alsa-project.org
+In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
+References: <20211108111132.3800548-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
+Message-Id: <163675243834.742274.3363954435285911217.b4-ty@kernel.org>
+Date:   Fri, 12 Nov 2021 21:27:18 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,13 +52,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 11:45:18 +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On Mon, 8 Nov 2021 12:11:14 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> This patch series add the below changes
-> - Fix the wrong ocp level setting.
-> - Fix clock auto sync issue.
-> - Make the driver compatible with rt9120s
+> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
+> not built into a the main SOF driver when that is built-in:
+> 
+> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
+> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
+> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
+> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
 > 
 > [...]
 
@@ -56,12 +72,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: rt9120: Update internal ocp level to the correct value
-      commit: 9bb4e4bae5a19ca68527392e85ad5ee88fc4b786
-[2/3] ASoC: rt9120: Fix clock auto sync issue when fs is the multiple of 48
-      commit: 8f1f1846d78a318c7cdb8268b47a964a3dbc0075
-[3/3] ASoC: rt9120: Add the compatibility with rt9120s
-      commit: dbe638f71eaed5c7b5fbbf03fb044e429c4a2d48
+[1/1] ASoC: SOF: build compression interface into snd_sof.ko
+      commit: 1218f06cb3c6e2c51699998bc17c0d9a41ab37a6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
