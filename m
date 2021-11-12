@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB3544E02B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B43BE44E02C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhKLCQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 21:16:06 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48332 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229908AbhKLCQE (ORCPT
+        id S234483AbhKLCRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 21:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234214AbhKLCQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:16:04 -0500
-X-UUID: cf7cd25a14364a8eb474d0fd2a428fe5-20211112
-X-UUID: cf7cd25a14364a8eb474d0fd2a428fe5-20211112
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1034424440; Fri, 12 Nov 2021 10:13:10 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Fri, 12 Nov 2021 10:13:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Nov
- 2021 10:13:10 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Nov 2021 10:13:10 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <mathieu.poirier@linaro.org>
-CC:     <bjorn.andersson@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <ohad@wizery.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v2] remoteproc: use %pe format string to print return error code
-Date:   Fri, 12 Nov 2021 10:13:10 +0800
-Message-ID: <20211112021310.19493-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CANLsYkyLgvMDx-CMLZPEdJ8rUuGX-=QgB++5fz_h_ordm_q1aA@mail.gmail.com>
-References: <CANLsYkyLgvMDx-CMLZPEdJ8rUuGX-=QgB++5fz_h_ordm_q1aA@mail.gmail.com>
+        Thu, 11 Nov 2021 21:16:59 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C6EC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 18:14:10 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id a129so19770437yba.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 18:14:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZY4s5ylz5JjvU9Y/cYs4aSYUkvwJz2HHa2zqFTnNdjE=;
+        b=v0sz9GcPwSfnTYLtM+5JLh1gxfthFcIgmtzAYC30bfbnAaP9dwRC3AiirtZSY6ruJH
+         DcV/2q/wW+B7rWigVwP+vlNLa9DP4WjIxlgm5Bnc2JUSmYV7Ly+hzNF/SsoJv1I2X871
+         0hDwb85bW7A1diBZz4NGWGGWzySwKkEllo5fOfue7fP86KgmyWOKncTzdusoltrAd/it
+         nHIt+TTaKBoQqJW8hYJCiG4UzWQ66IZJUj/NRfM1WJ2LtrJVicO3q2mwE+wCYL5Ja+8D
+         JwNZBeR0HnXXviFGPmW0NEdu+MrCIaXjNHr9SXN0LRrPq/K3obAXvb7596yfA6COYT+b
+         vOwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZY4s5ylz5JjvU9Y/cYs4aSYUkvwJz2HHa2zqFTnNdjE=;
+        b=kQsFhz5Bigba+D/QbfE2ehbYi+SKqNyO5yS374B98f5E0BKrD1cJweUdDzQ0HzeqKz
+         MGOz91fk8L1PNpt+OZ1YwBjszHZRaay4g6hP+Bmwv1QAna7/gbbOd0iuJEejlMRHES8G
+         NfdCZrbs4uDf+hISni2cQdEPalkV0L4in9Uv6AHFbcG4u8vpD0ZHzikd71TlYFPUQGdr
+         HwT/Hlymy7FlHf/TTFh1UMVT3OYuqJlhjcZ21Z6fMjMkL5ndmwG183e55W2N2aTheOBs
+         vsAzln+jum1q8/oK5GvR7XxVX01O08x6Pw464kJ5CWBpsE0jOIf5TEJLuruj6vbTvULm
+         HM7w==
+X-Gm-Message-State: AOAM530jnSmKi0FoTHDitHU+wcHNkqyu8kQYYCpaK/eVJTlsaM5scO9d
+        DMGAk/KS+nm7cjZiiAw2rqupCUSoNJEegLrErxzgFMqwq8tPdIDP
+X-Google-Smtp-Source: ABdhPJzcEI6MStXj6WmUYXYaEbmMx3jkPh0h8ToSzLLNPs39oROcyVNELCYG1cAc03tP3lurXbKlfjc8vJat/wo8oA0=
+X-Received: by 2002:a05:6902:1342:: with SMTP id g2mr13490640ybu.419.1636683248797;
+ Thu, 11 Nov 2021 18:14:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20211111062445.5236-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20211111062445.5236-1-ligang.bdlg@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 12 Nov 2021 10:13:29 +0800
+Message-ID: <CAMZfGtWpfVnOSxjXyJxaeDq_798nLE9SxyBiwPyG7-Yfjf7VcQ@mail.gmail.com>
+Subject: Re: [PATCH v1] vmscan: make drop_slab_node static
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Mark,
+On Thu, Nov 11, 2021 at 2:25 PM Gang Li <ligang.bdlg@bytedance.com> wrote:
 >
+> drop_slab_node is only used in drop_slab. So remove it's declaration from
+> header file and add keyword static for it's definition.
 >
-> >
-> > Use %pe format string to print return error code which
-> > make the error message easier to understand.
-> >
-> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > index 502b6604b757..2242da320368 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -575,8 +575,8 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
-> >                                            dma_get_mask(rproc->dev.parent));
-> >         if (ret) {
-> >                 dev_warn(dev,
-> > -                        "Failed to set DMA mask %llx. Trying to continue... %x\n",
-> > -                        dma_get_mask(rproc->dev.parent), ret);
-> > +                        "Failed to set DMA mask %llx. Trying to continue... (%pe)\n",
-> > +                        dma_get_mask(rproc->dev.parent), ERR_PTR(ret));
->
-> Macro ERR_PTR() is used to convert error codes to pointer type when
-> returning from a function - I fail to see how doing so in a dev_warn()
-> context can make the message easier to understand.  Can you provide an
-> example?
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 
-Hi,
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-When dma_coerce_mask_and_coherent() fail, the output log will be as following.
-
-format		log
-%x		Trying to continue... fffffffb
-%d		Trying to continue... -5
-%pe		Trying to continue... -5	(if CONFIG_SYMBOLIC_ERRNAME is not set)
-%pe		Trying to continue... -EIO	(if CONFIG_SYMBOLIC_ERRNAME=y)
+Thanks.
