@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D947644E4B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F2844E4B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbhKLKiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:38:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232841AbhKLKiV (ORCPT
+        id S234559AbhKLKjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhKLKjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:38:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636713330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ESxUrrp2niyFj2SEQ95J4I3ux91XqFDjhDdEg5bTD3A=;
-        b=cfh/ywy7zy+BNX1+M9TKxGD7TlBKxvRz6am8vttfxpzsVArcoAOu10pVOP2djptIOD0yY3
-        nRRG2DYjws11l+/eQnaLCumBw+1FASJNiOHIqrN1C1dayOvY32M1mx+g3Y/t5b5bwIqreM
-        rWJ0o1lNSEh84PCN2pRGbNv1N9UggvY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176--3alCETOPLCQXnxWSzEhNw-1; Fri, 12 Nov 2021 05:35:28 -0500
-X-MC-Unique: -3alCETOPLCQXnxWSzEhNw-1
-Received: by mail-wm1-f71.google.com with SMTP id m14-20020a05600c3b0e00b0033308dcc933so4072543wms.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:35:28 -0800 (PST)
+        Fri, 12 Nov 2021 05:39:12 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59085C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:36:21 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id f3so21138406lfu.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+ZekWpBm7nvoX5yGD/xw1EOH1c2Ekg7v4OjngJkSA8Q=;
+        b=xDGqeWet/t2HP8OY1r7i+XyNKaxQnsEp7vRUBX+oS1if3CYBxiC/wn9JKGlC6xEOtp
+         Q4M/w9aA1D1Q9FhWyLsRBF0jkoJJlywccNCNziudrdu52LnPFCt0zhDmEv+VqThwo25C
+         r3XsxW9URW3GaztO1tv5hqg0eMQfRkKRGlNScM4WgJjQEbZ0nZSOFDZawmB8XrTccFxS
+         B7GCOoQTx1MvjDVnU0oN7OZZ0DEKNjDxIkOYLtnlo7mGjHSr93uXsa4e4MR8pkxdGnHc
+         XAH/SWnvZJaZ7vAConNPhi0FV6VLq2Knf+CfF12KVot4VRTa+D8G2JFl1q7XuNd86XVi
+         dBag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ESxUrrp2niyFj2SEQ95J4I3ux91XqFDjhDdEg5bTD3A=;
-        b=qOERNtza4YxhH/W5EmfPqPDq57lYyNPZQTMwdqipSf51OvvPndiwzYru6xxSbMjaTP
-         DFXBD0FeVfiooMaerfMsBFVn4hCD8rH7wfM5jgFIyyj1Puh/mk7kjaOM0usLwnzCKFQh
-         mEtu7CzIGtoLfXN9985888y4281k0kKcsqvErFabKdRoHvDP1LigHPGUw3AWKQmRrNCK
-         ORovzloaAwbHLfynF1JR2qUbdwLVYaYPB8WXGKuS33rLLH1mtw3Ap3SJ///WH5uzm95a
-         4RH5BgTIS3aMo7W0DC2xWL0xnMhb0TLCEAmUBYj+/FnTPTlKzgS2BhxM2OqkacRyZ0DX
-         9lKQ==
-X-Gm-Message-State: AOAM531dNsn3TdpPPZ7GBtVagTS++HM68ANVCpue768VTHtt/q638TEE
-        KJbltEiUxSnKq0vZLGyhH+A7sQgNmggbSghGj0tdj2cZgPEcs3afu3dO4ncgt5M+Z5UdUtjBv1k
-        iWRyYaamKeWjcRPOFhr/koLt9
-X-Received: by 2002:a1c:7c14:: with SMTP id x20mr32408336wmc.75.1636713327594;
-        Fri, 12 Nov 2021 02:35:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwwWdS92Od66yS5RBjeycg9X/6oCyhiCqM6XuUuk5jzs1h7kYu2mZ9skqVRQyYXAq/StNZz2g==
-X-Received: by 2002:a1c:7c14:: with SMTP id x20mr32408298wmc.75.1636713327316;
-        Fri, 12 Nov 2021 02:35:27 -0800 (PST)
-Received: from [192.168.1.102] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id l11sm5167018wrp.61.2021.11.12.02.35.26
+        bh=+ZekWpBm7nvoX5yGD/xw1EOH1c2Ekg7v4OjngJkSA8Q=;
+        b=ZWyhQCXJFq4cJ6nQhE6bWL3qRbZqSU2pQm95U/EsGQ6xcKUOS8YW+zKh59dfvoIVVt
+         owUbpjmMmeU0QrkRBA7pH6AFkjf9ENW5HXX/oAu667sDo07fkv/L/zbqXFLcpCPyrkYg
+         vwVZS/Cc1LKGgT5hKXjZalcUqttfG+FFYn+y1pgkEMi41NN+kaDX/VwY0IT0/Bdf57sI
+         W0Fg7YlK6H2Puaqbk9P+tzCgFiBeLA4jKlriDSZZk7jZkjzAh45rrF4MlElDTz0ctvyi
+         q8HgUMed9pyFekSu7jFHtNU2KDeQdNRGi71KrCQCDwyqxA4FVD4xx25epe1O45dx6Fna
+         06+g==
+X-Gm-Message-State: AOAM533xzDXuXMWrTk0YlcP/9Dn+cKQ5Ud6Pb20p2TRrOtX+nWSr/xE6
+        gjrIDmL7Gvb8HqBlbt1YAD02FA==
+X-Google-Smtp-Source: ABdhPJz3quEPlpLtMB6ie7ZzdpWRt1b1RS3VcaroVsV50tz5ZAP82kry1qyHYIaP+9ObqP4mjXn+bg==
+X-Received: by 2002:a05:6512:1307:: with SMTP id x7mr12451124lfu.210.1636713379758;
+        Fri, 12 Nov 2021 02:36:19 -0800 (PST)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id v14sm524851lfb.264.2021.11.12.02.36.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 02:35:26 -0800 (PST)
-Message-ID: <c1cbe6b4-0c86-b7a5-c2df-0ac3052dec6a@redhat.com>
-Date:   Fri, 12 Nov 2021 11:35:19 +0100
+        Fri, 12 Nov 2021 02:36:19 -0800 (PST)
+Subject: Re: [PATCH v5 15/22] crypto: qce: Add new compatibles for qce crypto
+ driver
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-16-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <f5b7c89c-3bdd-1e1e-772e-721aa5e95bbf@linaro.org>
+Date:   Fri, 12 Nov 2021 12:36:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line
- parameter logic
+In-Reply-To: <20211110105922.217895-16-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Pekka Paalanen <ppaalanen@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Peter Robinson <pbrobinson@gmail.com>
-References: <20211108140648.795268-1-javierm@redhat.com>
- <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de>
- <20211112105641.25a4e1a7@eldfell>
- <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com>
- <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de>
- <20211112122239.26b3787c@eldfell>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <20211112122239.26b3787c@eldfell>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 11:22, Pekka Paalanen wrote:
+Hi Bhupesh,
 
-[snip]
-
->>>   
->>>> As this is just returning bool without changing anything, the usual
->>>> word to use is "is". Since this function is also used at most once per
->>>> driver, which is rarely, it could have a long and descriptive name.
->>>>
->>>> For example:
->>>>
->>>> bool drm_is_modeset_driver_allowed(void);  
->>
->> I'd nominate
->>
->>    bool drm_native_drivers_enabled()
->>
->> This is what HW-specific drivers want to query in their init/probing 
->> code. The actual semantics of this decision is hidden from the driver. 
->> It's also easier to read than the other name IMHO
+On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
+> Since we decided to use soc specific compatibles for describing
+> the qce crypto IP nodes in the device-trees, adapt the driver
+> now to handle the same.
 > 
-> Ok, but what is a "native driver"? Or a "non-native driver"?
-> Is that established kernel terminology?
->
-
-For me the term "native" is also vague. I would prefer to call it platform
-specific driver or non-generic driver instead. A problem is that "platform
-driver" has a very specific meaning in the kernel, which are drivers for
-devices in the "platform" bus (which is also a very overloaded term).
- 
-> I'd think a non-native driver is something that e.g. ndiswrapper is
-
-Yeah, that's why I think that "generic" and "non-generic" is a better way
-to describe the drivers that could be used for any platform as long as the
-hardware was already initialized and a struct screen_info filled with data.
-
-> loading. Is simpledrm like ndiswrapper in a sense? IIRC, simpledrm is
-> the driver that would not consult this function, right?
->
-
-Correct.
-
-Or maybe just 'bool drm_modeset_enabled()' ? After all, that's really what
-the "nomodeset" kernel param disables. The fact that DRM drivers abuse that
-boolean semantics to also prevent the drivers to load is a different topic.
- 
+> Keep the old deprecated compatible strings still in the driver,
+> to ensure backward compatibility.
 > 
-> Thanks,
-> pq
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>   drivers/crypto/qce/core.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index 89d9c01ba009..dd2604f5ce6a 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -297,8 +297,12 @@ static int qce_crypto_remove(struct platform_device *pdev)
+>   }
+>   
+>   static const struct of_device_id qce_crypto_of_match[] = {
+> +	/* Following two entries are deprecated (kept only for backward compatibility) */
+>   	{ .compatible = "qcom,crypto-v5.1", },
+>   	{ .compatible = "qcom,crypto-v5.4", },
+> +	/* Add compatible strings as per updated dt-bindings, here: */
+> +	{ .compatible = "qcom,ipq6018-qce", },
+> +	{ .compatible = "qcom,sdm845-qce", },
+>   	{}
+>   };
+>   MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
+> 
 
+and two more compatibles should be added to the list, see my review
+comment on v5 11/22.
+
+--
+Best wishes,
+Vladimir
