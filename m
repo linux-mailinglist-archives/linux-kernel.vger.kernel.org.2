@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E8C44E206
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B569C44E204
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhKLGqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 01:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhKLGq3 (ORCPT
+        id S232732AbhKLGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 01:45:29 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58174 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhKLGp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 01:46:29 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02346C061766;
-        Thu, 11 Nov 2021 22:43:39 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id f8so33926519edy.4;
-        Thu, 11 Nov 2021 22:43:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mXSkFnc6W0uhF72QqlDzmJCFzXvpezEdkesJtVNnp3E=;
-        b=UpRk14MJ7uYWNUuWq6RGfSl03WE0hF/rRg8e3ANeTB90dB9PQHvdgrgRwe6VL5aSnH
-         6LfrlZ/Zpc6PlQFibFSYVOURI+qcjWMI7rSVy/N0GMRAN22lvWnZvotdM13snSHe0AQ0
-         2OUWUTLJsnneMa7zKIneZxyqwbITw9onKJ/+yxLr8CZoOJeO8yG6u83bz0V5FaM+FLqU
-         AIXRkp/iXKAG0UCgSL0eqCMMEns5d1mCCRmXyPUxYHaiRTdfIkhm9FUc6ESHwxdvhSbo
-         bskx4+UDUpHjYA+R/km39C3L0gBtQ1xtJFlwFHeeMvfHTfotl3Sd9kZ198pyjgxjyKJJ
-         A2sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mXSkFnc6W0uhF72QqlDzmJCFzXvpezEdkesJtVNnp3E=;
-        b=w/kuWxP/2ZjLtnkyWV9SezmOTDMwYliuP7RLAQlpSjFhy+usWioPVFB5kOBsCVN2T4
-         wbjChwNpCeu0L9dxDq3D3IMhV0hyWVX/TvM2hUJs8+eBtak7Ws9hVklqLhRNllv7Ymz2
-         D5TXPt7YkaX8Y1vqszJEjvJ+QPFoJakj0I7aALSq7DH2xSU/3akRxiBTD0uOulBd1y0V
-         MBFKkZ54gs4NBv7fsI+FqS9Ukd2k+jx//RF/KTWT5iNSYAMZq4Cwf8fn3yAMY4iiGeoT
-         qja0M/5wJvWNLMAfXFkBbYl285OD5sXBc5MyeX0f7lidNlfUwUmzZ97m3Oo/0YcaNtbO
-         wGLQ==
-X-Gm-Message-State: AOAM5311BkL4zFaMoesNh7vOHfEJVXXfK1ZM0sCbTMfrobzsLXgTwYbW
-        iIga29zhnnt8RUwXmlp9RYd+GQQGULSXw5hTNdI=
-X-Google-Smtp-Source: ABdhPJwbJWR2WlmTMbOdEF6bvWmcevTpX6YpBmODKhY0/OXyhaT7s03WYdjeMHmqzQQjTteukvUzoyLBuZqOB9LuTm4=
-X-Received: by 2002:a17:906:8a62:: with SMTP id hy2mr16490299ejc.347.1636699417619;
- Thu, 11 Nov 2021 22:43:37 -0800 (PST)
+        Fri, 12 Nov 2021 01:45:27 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AC6gUr7056414;
+        Fri, 12 Nov 2021 00:42:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636699350;
+        bh=1P38wV/BK74lYrHDkeWs2IVOShjF3pDbyYeEWfZZ0D0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=qB+dbLhmXC/HK0CRWnlCQNpu7m7uvzFQJ4U0EK0Nf0c59PeVoNStUgSByoQEEfpZZ
+         UpCg/6gIkT3petBzN19W1jbJJfzYuZqMOuhBArp9jvLjbuIMC9KuJHjnzasjNT7T51
+         xvcegTvRfQ2+b8bD6irThRrsaj6gKbOO4g1mkYzc=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AC6gUME082454
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Nov 2021 00:42:30 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 12
+ Nov 2021 00:42:30 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 12 Nov 2021 00:42:30 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AC6gUeb049000;
+        Fri, 12 Nov 2021 00:42:30 -0600
+Date:   Fri, 12 Nov 2021 00:42:30 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Vihas Mak <makvihas@gmail.com>
+CC:     <ssantosh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] soc: ti: Use DEFINE_DEBUGFS_ATTRIBUTE
+Message-ID: <20211112064230.c6acyxudgbs7lmsf@predator>
+References: <20211110191707.GA98778@makvihas>
 MIME-Version: 1.0
-References: <20211111133530.2156478-1-imagedong@tencent.com>
- <20211111060827.5906a2f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CADxym3bk5+3t9jFmEgCBBYHWvNJx6BJGdjk+-zqiQaJPtLM=Ug@mail.gmail.com> <20211111175032.14999302@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211111175032.14999302@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 12 Nov 2021 14:42:23 +0800
-Message-ID: <CADxym3YzMGG3gZ1X6gc=qF182Ow0iO+782Hjn3QvnFnRhfEbRA@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/2] net: snmp: tracepoint support for snmp
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211110191707.GA98778@makvihas>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 00:47-20211111, Vihas Mak wrote:
+> Use DEFINE_DEBUGFS_ATTRIBUTE instead of DEFINE_SIMPLE_ATTRIBUTE as
+> pm_sr_fops is used to create a debugfs file.
+> 
+> This solves following warning generated by coccicheck:
+> 
+> ./drivers/soc/ti/smartreflex.c:815:0-23: WARNING: pm_sr_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+> 
+> Signed-off-by: Vihas Mak <makvihas@gmail.com>
+> ---
+>  drivers/soc/ti/smartreflex.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
+> index b5b2fa538..14b69307d 100644
+> --- a/drivers/soc/ti/smartreflex.c
+> +++ b/drivers/soc/ti/smartreflex.c
+> @@ -812,7 +812,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
+>  	return 0;
+>  }
+>  
+> -DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+> +DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+>  			omap_sr_autocomp_store, "%llu\n");
+>  
 
-On Fri, Nov 12, 2021 at 9:50 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Fri, 12 Nov 2021 09:40:47 +0800 Menglong Dong wrote:
-> > > I feel like I have seen this idea before. Is this your first posting?
-> > >
-> > > Would you mind including links to previous discussion if you're aware
-> > > of any?
-> >
-> > This is the first time that I post this patch. Do you mean that someone
-> > else has done this before? Sorry, I didn't find it~
->
-> I see. Yes, I believe very similar changes were proposed in the past.
->
-> I believe that concerns about the performance impact had prevented them
-> from being merged.
+Same as https://lore.kernel.org/linux-arm-kernel/1619523673-120782-1-git-send-email-yang.lee@linux.alibaba.com/
 
-I have found a similar post:
-https://lore.kernel.org/netdev/20090303165747.GA1480@hmsreliant.think-freely.org/
+Santosh: could you pick the original patch up?
 
-And this is the tracepoint for kfree_skb().
-
-I also concerns about the performance. However, with the tracepoints disabled,
-they don't have any impact; with enabled, their impact is no more than the
-tracepoint in kfree_skb() and consume_skb().
-
-What's more, I have also realized another version: create tracepoint for every
-statistics type, such as snmp_udp_incsumerrors, snmp_udp_rcvbuferrors, etc.
-This can solve performance issue, as users can enable part of them, which
-may be triggered not frequently. However, too many tracepoint are created, and
-I think it may be not applicable.
-
-Thanks!
-Menglong Dong
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
