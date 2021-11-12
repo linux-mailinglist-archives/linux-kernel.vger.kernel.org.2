@@ -2,172 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BC544DFB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A76A244DFCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234260AbhKLB3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 20:29:12 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47677 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233817AbhKLB3L (ORCPT
+        id S234240AbhKLBfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 20:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230308AbhKLBfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:29:11 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id E8FA13201FAA;
-        Thu, 11 Nov 2021 20:26:20 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 11 Nov 2021 20:26:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
-        C6DIL1g4ocp+GSZWoR5IeaYCSZ+yaLz2mMkIgIsKz8c=; b=A5E6eafq3NSM05uU
-        /gfKXpW/x2uHebzko+yqgzpYrRzzXVbNPFxuyLh7b2qSScXxLUdyhM/K7iUf2iWq
-        nBL3KwC8GmjmDWRFWHxEW32U3/ydLbVKEwbsgOmOAwfrwl//ckF8VxL1FLZj2IG2
-        vEw/kBMDRCCFihQBdHWJTh8dxVsXMb3flSNo5ujlFDg6WrQmifgIB1oWT7JSIVy8
-        InySUALgINCiI91DqS4Z/J1FO+rcEo6huVmBK89F/K9hlErvs9+FVQCnddlxEC63
-        sPJff88P2fSTNTO6XzMIl/q3YoaCMg+DeuyTHniO61+fTPI9p6+lpBlrvxWUQdpP
-        SbDCOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=C6DIL1g4ocp+GSZWoR5IeaYCSZ+yaLz2mMkIgIsKz
-        8c=; b=EVJsqCPemi4p0KJJing/TRfJIkpiIo0sVZfrCORVR3x2hxeFx2N3NEmf9
-        F8ujuAgL8jAP+hvBgp3DM6gHrO9WlBy6JU6pEAgRWfG5k9FXWKr1rR0X7u1uAbEh
-        z0WX/lrzEQNoYuYi72JNn9cUXbVb6YUF+LIXNfB7yDxTQNm7nsQ/WVdYIHX2tw4e
-        6iX+10AcMm5dWEpfFpZCC65Tg/OWep1vAVmHeZctORUp40e+aXa+dHavV8jVITtw
-        N3rsVoOeQd4OSvq7HINEizhc0UFtR717G5cvDBEvEC0p55tFzqTYP60taYzfhJci
-        fiCRBWQk+8268nZTq5eYLEqzrHLcA==
-X-ME-Sender: <xms:vMKNYVMTDnlHM1BhHplPBt9CTwreqA2B7tjLYypyA_S5SD2Gy7lasQ>
-    <xme:vMKNYX_o1ELILZ059MjoQ4D06SYM1Md2wepYFsOoeisI2ZFSqpCmvKcj9VIa__GUB
-    opwqxtcNetI>
-X-ME-Received: <xmr:vMKNYURw_StqwuoG5PEZuOU0kWw30o1F6ZUYm7N46EU4FoLSQbL5Ak8p8ilagtu_1lQ4knU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddvgdefvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtkeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepgf
-    elleekteehleegheeujeeuudfhueffgfelhefgvedthefhhffhhfdtudfgfeehnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
-    hhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:vMKNYRtRWSn0AYH1aAXcwXYqqaO9sOCci_zbZhaFMXUCa7GUqC18wQ>
-    <xmx:vMKNYdeODUXzIxGh0GJhFXkBN9ZDCKKP6gzrmdri8HYnXplfZD4I3A>
-    <xmx:vMKNYd2XNTZO2Ixfb8ilU28vfu5kfu9qE31dP8iN4MICa2Phhz7G7w>
-    <xmx:vMKNYVTzwmV5aRFT0Qs-RJRy1R14YMjgLgpNxUnZImXcEU8AAa63gA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Nov 2021 20:26:16 -0500 (EST)
-Message-ID: <d4fa793505fe264295152950fa31a915d2ba0384.camel@themaw.net>
-Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
-From:   Ian Kent <raven@themaw.net>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Brian Foster <bfoster@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 12 Nov 2021 09:26:11 +0800
-In-Reply-To: <20211112003249.GL449541@dread.disaster.area>
-References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
-         <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
-         <20211112003249.GL449541@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 11 Nov 2021 20:35:36 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CD7C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 17:32:46 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id np3so5434395pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 17:32:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AL90QSnlPxXv5tLufZ1zlq7KjJ0D5BExWrjps1t+29s=;
+        b=bxpxOXkH1/gRoN3q2sIlqLWqnDgG6G2HCxNOF6DiM0eebPtdUrVaLZdwTKm30XXIKf
+         pciYCCAraDj6+N5ub88aiEU9Sqc+gEEP0tH18UnSplfqeJqpp5zQ3lSTaSygRoGg4fg+
+         tll+ejzFsotRKGLbtXHvALciCIt5yeW9ml8k89oDq6DTTLGsUACfArDWOsNIoY0iXp96
+         kikQ0fngC+TPH3Kllv27OAwe5xRNf7EWJvcamUReZttXO7TYV+21eZVF7m1gQCC7oZ3B
+         biwzTph5R1rTPbnijCWDmekT3qmBDk8AlH8GBjflmk5suuX4JZkxLi8aoALrZ9ZHJtW7
+         R2tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AL90QSnlPxXv5tLufZ1zlq7KjJ0D5BExWrjps1t+29s=;
+        b=4Gtf6YdGuRLg+FWlGnkqmhYokKiV5uQESTI0xa8ZJ1apKpQkUyI9DMynGnsxs2G+DZ
+         gqDeovM2hLVHnMAfG02HpsM2A83pTZ49yTZH/cfp1uC9Eh1RmAo7qzweNBiPf8fcFVq8
+         nLNZe4/xH/mjMc/gCLBZ2XfB+XIcWee/tDgXRTNZeg7wrae9UvhOcNuvuoQYER7jow0T
+         RSixGMFz/XBewAQRGXbujyMEu97J6ezIr6H09QD00kt1eczaINMVxBt0dT5QLkVRZ5mo
+         fbZtDFSnuiKsYlO3421iu+aWJHjKhVG5zShqYhWw8rXaBnjzAh9s0F/obYJjookT9p7a
+         CqYw==
+X-Gm-Message-State: AOAM532LesNjn0CP4X/I/b06qSMNpNeS4ybiFMsqqJK/ptWXNr2GQCja
+        lPEfL+nZGuWZ/YYG+iDihz+YAg==
+X-Google-Smtp-Source: ABdhPJy7r4nQtcrRS0vLIHiQ7JwTdkVyJqAYi43992L2uT2O4NHn7Evm+9JHhEIz/lSq4u0UiWyh1A==
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr31238939pja.122.1636680766291;
+        Thu, 11 Nov 2021 17:32:46 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p23sm9227849pjg.55.2021.11.11.17.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 17:32:45 -0800 (PST)
+Date:   Fri, 12 Nov 2021 01:32:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v5.5 30/30] KVM: Dynamically allocate "new" memslots from
+ the get-go
+Message-ID: <YY3EOeHVvgOKHNnt@google.com>
+References: <20211104002531.1176691-1-seanjc@google.com>
+ <20211104002531.1176691-31-seanjc@google.com>
+ <fee75f86-26b0-2dbe-770a-8ecf5cc9e178@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fee75f86-26b0-2dbe-770a-8ecf5cc9e178@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-12 at 11:32 +1100, Dave Chinner wrote:
-> On Thu, Nov 11, 2021 at 11:39:30AM +0800, Ian Kent wrote:
-> > When following a trailing symlink in rcu-walk mode it's possible to
-> > succeed in getting the ->get_link() method pointer but the link
-> > path
-> > string be deallocated while it's being used.
+On Fri, Nov 12, 2021, Maciej S. Szmigiero wrote:
+> On 04.11.2021 01:25, Sean Christopherson wrote:
+> > Allocate the "new" memslot for !DELETE memslot updates straight away
+> > instead of filling an intermediate on-stack object and forcing
+> > kvm_set_memslot() to juggle the allocation and do weird things like reuse
+> > the old memslot object in MOVE.
 > > 
-> > Utilize the rcu mechanism to mitigate this risk.
+> > In the MOVE case, this results in an "extra" memslot allocation due to
+> > allocating both the "new" slot and the "invalid" slot, but that's a
+> > temporary and not-huge allocation, and MOVE is a relatively rare memslot
+> > operation.
 > > 
-> > Suggested-by: Miklos Szeredi <miklos@szeredi.hu>
-> > Signed-off-by: Ian Kent <raven@themaw.net>
-> > ---
-> >  fs/xfs/kmem.h      |    4 ++++
-> >  fs/xfs/xfs_inode.c |    4 ++--
-> >  fs/xfs/xfs_iops.c  |   10 ++++++++--
-> >  3 files changed, 14 insertions(+), 4 deletions(-)
+> > Regarding MOVE, drop the open-coded management of the gfn tree with a
+> > call to kvm_replace_memslot(), which already handles the case where
+> > new->base_gfn != old->base_gfn.  This is made possible by virtue of not
+> > having to copy the "new" memslot data after erasing the old memslot from
+> > the gfn tree.  Using kvm_replace_memslot(), and more specifically not
+> > reusing the old memslot, means the MOVE case now does hva tree and hash
+> > list updates, but that's a small price to pay for simplifying the code
+> > and making MOVE align with all the other flavors of updates.  The "extra"
+> > updates are firmly in the noise from a performance perspective, e.g. the
+> > "move (in)active area" selfttests show a (very, very) slight improvement.
 > > 
-> > diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
-> > index 54da6d717a06..c1bd1103b340 100644
-> > --- a/fs/xfs/kmem.h
-> > +++ b/fs/xfs/kmem.h
-> > @@ -61,6 +61,10 @@ static inline void  kmem_free(const void *ptr)
-> >  {
-> >         kvfree(ptr);
-> >  }
-> > +static inline void  kmem_free_rcu(const void *ptr)
-> > +{
-> > +       kvfree_rcu(ptr);
-> > +}
-> >  
-> >  
-> >  static inline void *
-> > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > index a4f6f034fb81..aaa1911e61ed 100644
-> > --- a/fs/xfs/xfs_inode.c
-> > +++ b/fs/xfs/xfs_inode.c
-> > @@ -2650,8 +2650,8 @@ xfs_ifree(
-> >          * already been freed by xfs_attr_inactive.
-> >          */
-> >         if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
-> > -               kmem_free(ip->i_df.if_u1.if_data);
-> > -               ip->i_df.if_u1.if_data = NULL;
-> > +               kmem_free_rcu(ip->i_df.if_u1.if_data);
-> > +               RCU_INIT_POINTER(ip->i_df.if_u1.if_data, NULL);
-> >                 ip->i_df.if_bytes = 0;
-> >         }
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> How do we get here in a way that the VFS will walk into this inode
-> during a lookup?
+> Reviewed-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 > 
-> I mean, the dentry has to be validated and held during the RCU path
-> walk, so if we are running a transaction to mark the inode as free
-> here it has already been unlinked and the dentry turned
-> negative. So anything that is doing a lockless pathwalk onto that
-> dentry *should* see that it is a negative dentry at this point and
-> hence nothing should be walking any further or trying to access the
-> link that was shared from ->get_link().
+> For a new patch set version when the "main" commit is rewritten anyway
+> (I mean the one titled "Keep memslots in tree-based structures instead of
+> array-based ones") it makes sense to integrate changes like these into
+> such modified main commit.
 > 
-> AFAICT, that's what the sequence check bug you fixed in the previous
-> patch guarantees. It makes no difference if the unlinked inode has
-> been recycled or not, the lookup race condition is the same in that
-> the inode has gone through ->destroy_inode and is now owned by the
-> filesystem and not the VFS.
-
-That's right.
-
-The concern is that the process that's doing the release is different
-so ->destroy_inode() can be called at "any" time during an rcu-mode
-walk (since its not holding references). Like just after the sequence
-check and ->get_link() pointer read racing with a concurrent unlink
-of the symlink.
-
-The race window must be very small indeed but I thought it was
-possible.
-
-Your right, the first question to answer is whether this is in fact
-needed at all.
-
-Ian
+> This way a full algorithm / logic check for all the supported memslot
+> operations needs to be done only once instead of having to be done
+> multiple times for all these intermediate forms of the code (as this is
+> a quite time-consuming job to do properly).
 > 
-> Otherwise, it might just be best to memset the buffer to zero here
-> rather than free it, and leave it to be freed when the inode is
-> freed from the RCU callback in xfs_inode_free_callback() as per
-> normal.
-> 
-> Cheers,
-> 
-> Dave.
+> I think it only makes sense to separate non-functional changes (like
+> renaming of variables, comment rewording, open-coding a helper, etc.)
+> into their own patches for ease of reviewing.
 
+I agree that validating intermediate stages is time-consuming and can be
+frustrating, but that doesn't diminish the value of intermediate patches.  I do
+tend to lean too far towards slicing and dicing, but I am quite confident that
+I've come out ahead in terms of time spent validating smaller patches versus
+time saved because bisection could pinpoint the exact problem.
 
+E.g. in this patch, arch code can now see a NULL @new.  That's _supposed_ to be a
+non-functional change, but it would be all too easy to have missed a path in the
+prep work where an arch accesses @new without first checking it for NULL (or DELETE).
+If such a bug were to escape review, then bisection would point at this patch, not
+the mega patch that completely reworked the core memslots behavior.
+
+And IIRC, I actually botched the prior "bitter end" patch and initially missed a
+new.npages => npages conversion.  Again, no functional change _intended_, but one
+of the main reasons for doing small(er) intermediate patches is precisely so that
+any unintended behavior stands out and is easier to debug/triage.
+
+> Or if the main commit was unchanged from the last reviewed version so
+> actual changes in the new version will stand out.
+> 
+> Thanks,
+> Maciej
