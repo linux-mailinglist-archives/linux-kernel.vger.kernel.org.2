@@ -2,182 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E5F44EC58
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0046A44EC65
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhKLSDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 13:03:30 -0500
-Received: from mga06.intel.com ([134.134.136.31]:31982 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235563AbhKLSD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:03:27 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10166"; a="294002764"
-X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
-   d="scan'208";a="294002764"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 10:00:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
-   d="scan'208";a="733736169"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Nov 2021 10:00:30 -0800
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 12 Nov 2021 10:00:30 -0800
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 12 Nov 2021 10:00:30 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 12 Nov 2021 10:00:30 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 12 Nov 2021 10:00:30 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eACXRI3JHt8Kk6XfBvgbaMvbRCc10ply0A4++oeN3JdLBOVtTMz/ehVE4B7If/2RhDFwhrtLmzP55q7rqyX66RLZvJuxjZIfJIq3Aps4n6Lzs+JKsVp2uLXr2k7GZdddHfmSZfk/FfaJ3gkRky0PlUOSzKJ+kjlMHwiWiiCY2JaG2+z2kMXF0LhLvVJBUDFTs+/uK0kjp06w0ySs1GU97yrtUnKy8ecicZW39b6s/99VltJkmaCt+9DA0Klg9nOKW9X7e9dpn6TDEUEUFLMTo/0Azy3YNRX7RDYVJ9JTEh2s3AW1PcnBiZkx/4l8ARxjDZ44c+igQ2rld2fMZGLJ+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aACVBPMvoZaBWNVbm0gJde9Jch79fTM6j6J9Ja6aBtg=;
- b=VBqNiI4o9nrNK/gzQEoXGD0JNFEXvzBGRsLQm0lrrx203xJTe0vSP4/jDHDvxVozDHLWneokrW8ZAj2FiH8t7bfknPySR3GOtbywS7wWQT/0eODbuMISZiyn6dxa3KPZscwA3dMswUhuQOS0WO8Lxw7IbJCO7h3uF1S9uBnGf61Ja8rw6uaA1TKgpNktuVPlYtAkADiVogvzqIBaW362CwgtdBQ2W0jg5LN6p+hlRuX51oYE1zZgE97Iz2eOJ8Hs6frfDW2JjuIFhUcYKf8A5FLc5oaefkk5cObsr1CN7c4bCHlhRJSTTtlYqddOaT6uVga1PwA3gMYEEG2jSPOc4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aACVBPMvoZaBWNVbm0gJde9Jch79fTM6j6J9Ja6aBtg=;
- b=bg8F22U9HEppdXBHVfBZzXXeaqx36eoOoV0/0FdZq/Ae82/2yBa6cr/RJNTLVUTcrOrruKQnbHtMlDkmwf+YmSKWdzDaK8J1cwbZsZelloo3L3OtiOcLvPRzsugn0NQgb8A3Y7sojNu+Z9Ako8l8/JD10JmCISSULU7aKTWyPnw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
- by BN6PR11MB0034.namprd11.prod.outlook.com (2603:10b6:405:6b::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Fri, 12 Nov
- 2021 18:00:28 +0000
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::494d:4194:b64e:c672]) by BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::494d:4194:b64e:c672%8]) with mapi id 15.20.4669.016; Fri, 12 Nov 2021
- 18:00:28 +0000
-Message-ID: <c23356c7-3af7-0aba-18b6-2e53ce18a164@intel.com>
-Date:   Fri, 12 Nov 2021 10:00:23 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [PATCH] selftests/resctrl: Skip MBM&CMT tests when Intel Sub-NUMA
-Content-Language: en-US
-To:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20211110082734.3184985-1-tan.shaopeng@jp.fujitsu.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20211110082734.3184985-1-tan.shaopeng@jp.fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR1401CA0008.namprd14.prod.outlook.com
- (2603:10b6:301:4b::18) To BN0PR11MB5744.namprd11.prod.outlook.com
- (2603:10b6:408:166::16)
+        id S235523AbhKLSHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 13:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235265AbhKLSHc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 13:07:32 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3972C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:04:41 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id np3so7391777pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:04:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=khqWKtumgtjOaGXjCkOX2yp8uJlzfXG3P2oRoM9pohQ=;
+        b=YNDMVGEWCPkcFNNIhPF5BqOoDP92dqiwmJwFarGVH+5U9JDPje5/KQSQB+EduGIcT5
+         gs4ESxkq+0PxvftuEmurHGj27hhB329KUNFuZy/E/COLn99we4ItMSvDDALQGUqEpsi8
+         i4gbjYGaPpIps5Aqq0zt7RBR5QKKRgB/6vHnbJVaU54dWRV0J/JtaOHdesUe/OCeiURU
+         5mJ7YLZTn8a9x6iSI1HVtI+lbpd6WbPZpmqm2RQ/vtiR/+2ofkUl8TtLUJ3PIwHTVkDI
+         QqcRpvR7rni7jirVvHZQmUWeHZQMLmROyoQRpfrDO278WyoDL8a1QV95xrEQpX4BWPML
+         yTTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=khqWKtumgtjOaGXjCkOX2yp8uJlzfXG3P2oRoM9pohQ=;
+        b=dTICQ8pLBOfq6j1Cm5CWzTRjWYz1ntbJ3mA5SvJaAPg3OWdhvKQ7zQHJ7nf2EHB0Nj
+         G/cBOtgi9wnHvHdBmjce/DBxs/jqmXuEKoXMtJmkq9p1vjw05VPOOV5pULsfgQb2PF/x
+         re8RtbaygKtrrSurDw+MHQGthyztSPi2rDn7f/ktW7vkD6dpzFETTIDsc2PYz6f5VZa2
+         xMLZ4A9lT68ybBNIoGdMSd9rwjqlHrqb3j3AKNNEwL4P5EGBS49mffvXj0f3q3JWeA3d
+         D0zDzmzqUyov3fRT9COJHjBknFL+AJrq6Uclr6cw+ZapHqeMB+2QqIyOQOm/Vj4qseHv
+         MMCQ==
+X-Gm-Message-State: AOAM531TaO7vvStjJ+eCK8xvHK/4V6OA31g5pm/s+g5Z81Crvy/uOkvp
+        IdiKVlTQLFuinkhI4oP5ddCnHQ==
+X-Google-Smtp-Source: ABdhPJw2/j+HnxGbY6Tn46Xw61qiLY7brYw/6mzUuU419CK4R4LbZMfxybgr9J1XuBV4tB9ruFsaZQ==
+X-Received: by 2002:a17:902:ba85:b0:13e:c846:c92e with SMTP id k5-20020a170902ba8500b0013ec846c92emr9734035pls.57.1636740280854;
+        Fri, 12 Nov 2021 10:04:40 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id mi18sm6058012pjb.13.2021.11.12.10.04.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 10:04:40 -0800 (PST)
+Date:   Fri, 12 Nov 2021 18:04:36 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@intel.com, Kai Huang <kai.huang@intel.com>
+Subject: Re: [PATCH 07/11] KVM: x86: Disable SMM for TDX
+Message-ID: <YY6stGpsmZawyRy5@google.com>
+References: <20211112153733.2767561-1-xiaoyao.li@intel.com>
+ <20211112153733.2767561-8-xiaoyao.li@intel.com>
 MIME-Version: 1.0
-Received: from [192.168.1.221] (71.238.111.198) by MWHPR1401CA0008.namprd14.prod.outlook.com (2603:10b6:301:4b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 18:00:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84d1e3ba-ed45-46ab-0666-08d9a6064f62
-X-MS-TrafficTypeDiagnostic: BN6PR11MB0034:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-Microsoft-Antispam-PRVS: <BN6PR11MB0034A421FA1AF57E90C83192F8959@BN6PR11MB0034.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a6N8cyEu2+wTOlshkZJiMXmyi31LEd+GbWe2f1zm273pTtn9xfdONVGU0xnUNL0KkcE2UyeuvDg4nqD9CKopyDo5E4PYddnW5K3nlregrjQPZl7M3Aad16N2zVCQrWJjyY8A4eBXmG8hZYvy2zYnRL+PAWyA+Kf2vGbyMHDERnubkjeX/5aXaMudFYwRhlCCmj5+qGjR9rk7WeSnoi/nDxu0rG834gSDGoLjc6NXUS5LlObNbxycuVYGd/5slTmB7qv8D9FvyBkWhg00E2aZPqL9Nor3YUAM7GG4GAxwM025aGPNOioNhsqCq81LwTAB/HG2bkoK2qRy23DhhPrOswd1awB7j2+TOGcU6Bca3fmHl9CEofB6JzbLIildR5HDGTL+XNMGevHI81pTg+V0OELDXlC1Nu/4dsraKH09P3vd3YFC6xWEhxghee1bHE3PD6AiKp0Hnw/TA5pFWDpOtt7xG7pjUUS+4tzXpW7gOyJ+YrRRdxfvcw1OUKbGqZamKfMg0D7g0fQjjxXP1sYxo0mI9FruWRUp++3uWeH6L8+B8tMAkfW9n+UBurFCzFB3i6frQG/4lq8twWbTmC3QfgA25AGXh4ERxhaEkg5eqf0n/ZzWjR7u9ErgZ7Hft0Hokat0IrPBun1BQ21pUIkQ8H9KNKd3YuizU3Ace9w9m3ndRQi1F4vD7HA+gvNPobi5lcItqGyWwGnCm+OPyJC8cjiEoDB0OsJTLcBANmT9lrP6anhxwPnLtCTRGcxM/eZfMPyHJn7SX6IVG2w55NipQyHOvOBBq7dzExCeKrFr658l41TA86Pu5dJbJh1YLm55
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(8936002)(6666004)(5660300002)(31686004)(38100700002)(53546011)(36756003)(86362001)(6486002)(110136005)(44832011)(2906002)(966005)(2616005)(956004)(26005)(66946007)(186003)(82960400001)(4326008)(66556008)(66476007)(31696002)(508600001)(16576012)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2dob1NHQzhHSjNMb2luK0N4MjR2d21oZVFtUzhEeWhKL3lkbjhPV2VDZXZ3?=
- =?utf-8?B?dWkwcGoyRk45Z2swd2owZFhWcFovM3ErbGlZZzlvRHVqL0lwKzZHaGFJQi9R?=
- =?utf-8?B?b1NqY1ZDTFpqa0FqK0NKOFBSV3pubUlaL2I3Y0V2VUNOWTdSaG9UczVGRzFM?=
- =?utf-8?B?bFhKR21OOGxaVzRjSXBtNldZNFdHS3dvQkZ2ejl3TVNOMGpNaythRnVpQkty?=
- =?utf-8?B?OHg0S2lrbXhzbEhVYVQ3bVhuM2F4TzlNWGRrOFNoVjEwbWh4MnhCMTZIaGtD?=
- =?utf-8?B?RWxOQzNBVXdacjFXTy9RQlBza3dQMms0d3AwRENwaU9qUjk4dzZuMVFjM1k3?=
- =?utf-8?B?TW41QkNHUTc2cndtWFA2UWdoSFdXWTNyMXo5aWhZUVNiR0NHN2hwdGFERTJs?=
- =?utf-8?B?M2o1dkdHc0RqTmt5VlFrUDlxQmE5SHFlTGhUVmpwaXR5V2QzbW93dVFjWnZR?=
- =?utf-8?B?K1N4aE5HYkNQb2JkQ2d6Y284S0dOZDZMZDl1N2ZBSjdESmg4dnVUUjRSQVNq?=
- =?utf-8?B?TW9vNWhjSmtaU2ZCT1FzZHFIdXB5MUFtTktpbjRsdzJDQTVjS3o3dHlWUXph?=
- =?utf-8?B?d3ZseFVEK0VTcHJHNmdTajQ0WWZBaU9qWEE5K1g0QkNtUFRFTGFkWDF3SUVi?=
- =?utf-8?B?MDVMUmMra0FPNUtOczBLclB3WHpZOFdHT1BLcGt6NTFXejJWR3dja0o3eGZV?=
- =?utf-8?B?ZnVvM1JTZWdzekR3UlpXRk5jcVBYYnVlT2JjYjZYajNyd2t1TktORk9LZlU4?=
- =?utf-8?B?L0dYQ2VCWFVGOEUxcjdlQ0RHMjE1cEFxdFJTSWcyMFdTRFA0YVR1M2FJOXJm?=
- =?utf-8?B?OWZpVFRlRTg2anMwYjcrSFJKeGZLSmlQMjhyVDNpT1hBUmxGTXUwU2pjdDMv?=
- =?utf-8?B?UzNUeWx1Kzd1ZUpCZDk5Y1A0SzN4azd0Mm14ZlM2U0pjOGFCTW8weWgvSjc3?=
- =?utf-8?B?NzJ5Z0lrOERENGV1a3lab1JEb1BHL2k3dFd1TlhFTVR3aXhib3FhWVZ2aHg5?=
- =?utf-8?B?YjBhaGxYcmIwVEFTd01HUElvbG1iK016MnZpRzRDZlB1R1lycXFLdGlmR3lB?=
- =?utf-8?B?blBHVDU3R3pwK3l1NUd4RU9VanBOaGRHL1BubEE0d3ByNmF5QUo2cU5JNVJo?=
- =?utf-8?B?MGxrckQvUW95ZlYyMFVHVmoxa0o4azZJZ205RXBQSGxqempSV0Q4RDBBN1pr?=
- =?utf-8?B?UUpmLzJtei9IbmxKcnBOdVg5djBVMnBMOGEybEgxRWd4Sis4MEQ0OGVKbnVG?=
- =?utf-8?B?R1lEUkZwVlgzUE1DNThxb25wL0F5Mk5OMWFpZHJScGkyYnpsMm9BK3YzRzN0?=
- =?utf-8?B?UjU0dzMwd3lKMnQ0OVNYY3EwY2hIN2FFKzZIR2R1djl5bkMzMDNmZUpSZFAr?=
- =?utf-8?B?UUVBT1ZFc1J5bXlqQmlaVk0ya25YdzNzSU91VEtpdit4alcrc3RrQjFLMS9h?=
- =?utf-8?B?RjV2bXNCMzBKSXJCaG5vajkza1dNZHpNSHJSR1NuenJlOUZhVUZtSzlESGor?=
- =?utf-8?B?cmJGdWptdGlESzhBUDVzT2pOWEhKbVlkZWlwTGxiMGFYWGx1YitBaXdwdFBz?=
- =?utf-8?B?dGQzYVNDaDR6a2dvZTZIV0lwMDlDc3VWZXNrZ3ppYms0bGgzSjQ1VmIwTSs0?=
- =?utf-8?B?b0VnUFhPZmUxbjF3R1VCZCtYN2J5Q0xUalg1QldJZUNRTk45MW1GVW1td0Nz?=
- =?utf-8?B?M1JmMEFzQ0FDZnhwOEs2Nmd5N2ZhNHFkTjA0MmxMb09vSUlPZ3IyUitnb2R6?=
- =?utf-8?B?NzA1R3RGZFQwREV2b1M4VEcvV3N4WGZYSE53ZnV4TGtCZVZWVytadlhmdmRJ?=
- =?utf-8?B?LzlwM3Z2WTF1R0ZTeEhpUmg1eFdBSVdzdEY5MDRML24vUDUyRDJUZkpzRUFx?=
- =?utf-8?B?UzlsYkhjSWc1UXkxM29RRStrcW83aklJa3dIUlF0c3lvZ01CMER0V2M5dHdE?=
- =?utf-8?B?TjE0NmlKVzZ6alZ1YmJUUkJhWTlFajUxeEVMclZDWWVDa0FxdFBtWGsxbHhL?=
- =?utf-8?B?Y1Y5eHVDZTJvZXJOK2Fhd3NBTHF0ekMwVk14dGJia3U1b1dHV1ppRENjMFFi?=
- =?utf-8?B?OURJZ3hPZ3JnWWZQM2I3bEdZR3dFRHBaancwcDM4MHdBVU4xdXkzMGlHWTB4?=
- =?utf-8?B?c2hzRlVIQUptUVZ0REtFV2Rzbmx0aUo2dzFoanlscnRnWFBLWXBPRGhVZ1Bw?=
- =?utf-8?B?endGN1htT1NvaHlqWHBjT2pZTnl5NWl3MDE1eVhISjlJbDBLNE43elY5SmY3?=
- =?utf-8?B?T0cxejlEeWxPSzdpc0lCblZUN3RRPT0=?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84d1e3ba-ed45-46ab-0666-08d9a6064f62
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 18:00:28.4073
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: suXSJAUA6hq5EzWP0ZIXqwHKp6TOFKjWBNNP3gtu4f/q8U+pd/rjGpwEzPWSY3dEABpFd7FULdWCPFHz17HXwuTf/HcHZZ9f7cSfRXHLOpg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB0034
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112153733.2767561-8-xiaoyao.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/10/2021 12:27 AM, Shaopeng Tan wrote:
-> From: "Tan, Shaopeng" <tan.shaopeng@jp.fujitsu.com>
+On Fri, Nov 12, 2021, Xiaoyao Li wrote:
+> SMM is not supported for TDX VM, nor can KVM emulate it for TDX VM.
 > 
-> When the Intel Sub-NUMA Clustering(SNC) feature is enabled,
-> the CMT and MBM counters may not be accurate.
-> In this case, skip MBM&CMT tests.
-> 
-> Signed-off-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
 > ---
-> Hello,
+>  arch/x86/kvm/irq_comm.c | 2 ++
+>  arch/x86/kvm/x86.c      | 6 ++++++
+>  arch/x86/kvm/x86.h      | 5 +++++
+>  3 files changed, 13 insertions(+)
 > 
-> According to the Intel RDT reference Manual,
-> when the sub-numa clustering feature is enabled, the CMT and MBM counters may not be accurate.
-> When running CMT tests and MBM tests on Intel processor, the result is "not ok".
-> So, fix it to skip the CMT & MBM test When the Intel Sub-NUMA Clustering(SNC) feature is enabled.
-> 
+> diff --git a/arch/x86/kvm/irq_comm.c b/arch/x86/kvm/irq_comm.c
+> index f9f643e31893..705fc0dc0272 100644
+> --- a/arch/x86/kvm/irq_comm.c
+> +++ b/arch/x86/kvm/irq_comm.c
+> @@ -128,6 +128,8 @@ static inline bool kvm_msi_route_invalid(struct kvm *kvm,
+>  			       .data = e->msi.data };
+>  	return  (kvm_eoi_intercept_disallowed(kvm) &&
+>  		 msg.arch_data.is_level) ||
+> +		(kvm_smm_unsupported(kvm) &&
+> +		 msg.arch_data.delivery_mode == APIC_DELIVERY_MODE_SMI) ||
 
-It is not clear to me which exact document you refer to but I did find a 
-RDT reference manual at the link below that describes the problem you 
-mention:
-https://www.intel.com/content/dam/develop/external/us/en/documents/180115-intel-rdtcascadelake-serverreferencemanual-806717.pdf
+This patch neglects to disallow SMI via IPI.  Ditto for INIT+SIPI in the next
+patch.  And no small part of me thinks we shouldn't even bother handling the
+delivery mode in the MSI routing.  If we reject MSI configuration, then to be
+consistent we should also technically reject guest attempts to configure LVT
+entries.  Sadly, KVM doesn't handle any of that stuff correctly as there are
+assumptions left and right about how the guest will configure things like LVTT,
+but from an architctural perspective it is legal to configure LVT0, LVT1, LVTT,
+etc... to send SMI, NMI, INIT, etc...
 
-What is not mentioned in your description is that this is a hardware 
-errata so the test is expected to fail on these systems and I find that 
-disabling the test for all systems based on this hardware errata is too 
-drastic.
+The kvm_eoi_intercept_disallowed() part is a little different, since KVM can
+deliver the interrupt, it just can handle the backend correctly.  Dropping an
+event on the floor is a bit gross, but on the other hand I really don't want to
+sign up for a game of whack-a-mole for all the paths that can get to
+__apic_accept_irq().
 
-Reinette
+E.g. I'm thinking:
+
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 76fb00921203..33364d3e4d02 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -1112,6 +1112,9 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+                break;
+
+        case APIC_DM_SMI:
++               if (kvm_smi_disallowed(vcpu->kvm))
++                       break;
++
+                result = 1;
+                kvm_make_request(KVM_REQ_SMI, vcpu);
+                kvm_vcpu_kick(vcpu);
+@@ -1124,6 +1127,9 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+                break;
+
+        case APIC_DM_INIT:
++               if (kvm_init_disallowed(vcpu->kvm))
++                       break;
++
+                if (!trig_mode || level) {
+                        result = 1;
+                        /* assumes that there are only KVM_APIC_INIT/SIPI */
+@@ -1134,6 +1140,9 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+                break;
+
+        case APIC_DM_STARTUP:
++               if (kvm_sipi_disallowed(vcpu->kvm))
++                       break;
++
+                result = 1;
+                apic->sipi_vector = vector;
+                /* make sure sipi_vector is visible for the receiver */
 
 
+>  		(kvm->arch.x2apic_format && (msg.address_hi & 0xff));
+>  }
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 113ed9aa5c82..1f3cc2a2d844 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4132,6 +4132,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  			r |= KVM_X86_DISABLE_EXITS_MWAIT;
+>  		break;
+>  	case KVM_CAP_X86_SMM:
+> +		if (kvm && kvm_smm_unsupported(kvm))
+> +			break;
+> +
+>  		/* SMBASE is usually relocated above 1M on modern chipsets,
+>  		 * and SMM handlers might indeed rely on 4G segment limits,
+>  		 * so do not report SMM to be available if real mode is
+> @@ -4500,6 +4503,9 @@ static int kvm_vcpu_ioctl_nmi(struct kvm_vcpu *vcpu)
+>  
+>  static int kvm_vcpu_ioctl_smi(struct kvm_vcpu *vcpu)
+>  {
+> +	if (kvm_smm_unsupported(vcpu->kvm))
+> +		return -EINVAL;
+> +
+>  	kvm_make_request(KVM_REQ_SMI, vcpu);
+>  
+>  	return 0;
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 65c8c77e507b..ab7c91ca2478 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -456,6 +456,11 @@ static __always_inline bool kvm_eoi_intercept_disallowed(struct kvm *kvm)
+>  	return kvm->arch.vm_type == KVM_X86_TDX_VM;
+>  }
+>  
+> +static __always_inline bool kvm_smm_unsupported(struct kvm *kvm)
 
+This should be "kvm_smi_disallowed" to be consistent with the other helpers.  Also,
+why are these all __always_inline?  Generally speaking, __always_inline should
+really only be used if there is a hard dependency on the function being inlined.
+I would be extremely surprised if it actually changed anything in this case, but
+it's odd and unnecessary.
+
+> +{
+> +	return kvm->arch.vm_type == KVM_X86_TDX_VM;
+
+There really needs to be a helper for this:
+
+static inline bool is_tdx_guest(struct kvm *kvm*)
+{
+	return kvm->arch.vm_type == KVM_X86_TDX_VM;
+}
+
+And I think we should bite the bullet and expose SEV-ES status in x86.  Ideally,
+we would not have had to do that, but TDX and SEV diverge just enough that a single
+guest_state_protected doesn't suffice :-(  Whining aside, exposing TDX in x86 but
+not SEV-ES will create a weird split where some things are handled in common x86
+and others are deferred to vendor code.
+
+And I think it would make sense to tie the "smi disallowed" part to whether or
+not KVM can emulate an instruction, because that's really the issue.  E.g.
+
+static inline bool kvm_smi_disallowed(struct kvm *kvm)
+{
+	/* SMM requires emulation in KVM. */
+	return __kvm_can_emulate_instruction(kvm);
+}
+
+
+And then the existing kvm_x86_ops.can_emulation_instruction() can be folded into
+a helper that checks both the "can this VM emulating _anything_" as well as the
+"can this specific instruction be emulated".
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 21bb81710e0f..7af4393ccecd 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4465,12 +4465,6 @@ static bool svm_can_emulate_instruction(struct kvm_vcpu *vcpu, void *insn, int i
+        bool smep, smap, is_user;
+        unsigned long cr4;
+
+-       /*
+-        * When the guest is an SEV-ES guest, emulation is not possible.
+-        */
+-       if (sev_es_guest(vcpu->kvm))
+-               return false;
+-
+        /*
+         * Detect and workaround Errata 1096 Fam_17h_00_0Fh.
+         *
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9a0440e22ede..c34f653e2546 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6717,6 +6717,18 @@ int kvm_write_guest_virt_system(struct kvm_vcpu *vcpu, gva_t addr, void *val,
+ }
+ EXPORT_SYMBOL_GPL(kvm_write_guest_virt_system);
+
++static bool __kvm_can_emulate_instruction(struct kvm *kvm)
++{
++       return !is_sev_guest(kvm) && !is_tdx_guest(kvm);
++}
++
++static bool kvm_can_emulate_instruction(struct kvm_vcpu *vcpu,
++                                       void *insn, int insn_len)
++{
++       return __kvm_can_emulate_instruction(vcpu->kvm) &&
++              static_call(kvm_x86_can_emulate_instruction)(vcpu, NULL, 0);
++}
++
+ int handle_ud(struct kvm_vcpu *vcpu)
+ {
+        static const char kvm_emulate_prefix[] = { __KVM_EMULATE_PREFIX };
+@@ -6724,7 +6736,7 @@ int handle_ud(struct kvm_vcpu *vcpu)
+        char sig[5]; /* ud2; .ascii "kvm" */
+        struct x86_exception e;
+
+-       if (unlikely(!static_call(kvm_x86_can_emulate_instruction)(vcpu, NULL, 0)))
++       if (unlikely(!kvm_can_emulate_instruction(vcpu, NULL, 0)))
+                return 1;
+
+        if (force_emulation_prefix &&
+@@ -8071,7 +8083,7 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+        bool writeback = true;
+        bool write_fault_to_spt;
+
+-       if (unlikely(!static_call(kvm_x86_can_emulate_instruction)(vcpu, insn, insn_len)))
++       if (unlikely(!kvm_can_emulate_instruction(vcpu, insn, insn_len)))
+                return 1;
+
+        vcpu->arch.l1tf_flush_l1d = true;
