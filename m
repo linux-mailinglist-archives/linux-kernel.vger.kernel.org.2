@@ -2,167 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C743144EBB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5785544EBBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235427AbhKLREZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235333AbhKLREX (ORCPT
+        id S235486AbhKLREg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:04:36 -0500
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:65260 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235444AbhKLREd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:04:23 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C13C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:01:32 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so8102838pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VeGP71NzWoQQd6cCJiug/uQuJURejP09aRjqzgCTBfk=;
-        b=NtkoyEjKHc6Xn4X/LJyqef3xqvUGS079W8NtYqEYiOiQz3NfBgpH7LaFHtkUysnFGu
-         nVSKDr+//uXJDqh6AafjH9N3/Q21QhlEbN8YGheXAwqO3vyUcPk+52Upu+nc9H6g5HNt
-         DWw0oKbHFaeddcN/lD4T0dHQ2tiE0NKA2OTam5tiFLF+OIrI+F0fB6vqEm5EAV8guSiC
-         AO/T5pZxDJMyelsCpF50WeDWZ8HADu8WWuv2WrlomQHa43/6PxWrL/3rW+w80d84h6Xs
-         S1y73oWCb6yXgThgIU5YMeZKNo0O7C9QEeVdqMoeNx7+eF5cwMl7aQyjFtNswM5nVjtc
-         PYfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VeGP71NzWoQQd6cCJiug/uQuJURejP09aRjqzgCTBfk=;
-        b=bPBXZOaJGa/sZh6cjq+oscR4x5JTECwiTUmdd6WFKyBPLXjZOJchLcGgAJ0Hiqc0aE
-         iX0d+X2Zw1/36aBpSNxI5hRM9K3PIV60xcIcNmLT44c2fJHHt3COXrqTWN78GrgpEXzY
-         CSb+dj8XGUHMyEj8R54zIZJ0rdANs5Tw9H80kNKaMn23nogpsDnaDaTVhl2gomYepCOF
-         ieTdwysrWHyClBNnbm7eUGehAtKsttO3sF2Q4iOQ5kcx4hvoO7pFBI5ZhdrRoSfyOvAt
-         bXJGjG8T/nanPVuMlvvZPJXGK8TjK4SLWDXF5NSFaiS64nlLnPyAxYswAIoAGn5DdDWf
-         Q5PA==
-X-Gm-Message-State: AOAM5328Xu9NDDwL/euUrhcjNscvQeKaMmhLIf5H1KYbg7gP468W2yzS
-        aF5rhE55xfMoUUHlEqHZxag37A==
-X-Google-Smtp-Source: ABdhPJzVwuvoTZvv9S3bWPpUSl8MC8JKFmvfxQdzsR/rYhIPkyIIljB0lxQsBZK8RyQFHAut/b2XZQ==
-X-Received: by 2002:a17:902:c94a:b0:141:fdaa:59ac with SMTP id i10-20020a170902c94a00b00141fdaa59acmr9359788pla.37.1636736491768;
-        Fri, 12 Nov 2021 09:01:31 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id fs21sm10420998pjb.1.2021.11.12.09.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 09:01:31 -0800 (PST)
-Date:   Fri, 12 Nov 2021 17:01:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH 04/11] KVM: x86: Disable MCE related stuff for TDX
-Message-ID: <YY6d57pWU8iJg/i+@google.com>
-References: <20211112153733.2767561-1-xiaoyao.li@intel.com>
- <20211112153733.2767561-5-xiaoyao.li@intel.com>
+        Fri, 12 Nov 2021 12:04:33 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id lZvpmTuLw1UGBlZvpmGL72; Fri, 12 Nov 2021 18:01:41 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Fri, 12 Nov 2021 18:01:41 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     colyli@suse.de, kent.overstreet@gmail.com
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] bcache: Remove redundant 'flush_workqueue()' calls
+Date:   Fri, 12 Nov 2021 18:01:40 +0100
+Message-Id: <b61537b83c7e893d99c6ea05930a42e87679e429.1636736443.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112153733.2767561-5-xiaoyao.li@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021, Xiaoyao Li wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> MCE is not supported for TDX VM and KVM cannot inject #MC to TDX VM.
-> 
-> Introduce kvm_guest_mce_disallowed() which actually reports the MCE
-> availability based on vm_type. And use it to guard all the MCE related
-> CAPs and IOCTLs.
-> 
-> Note: KVM_X86_GET_MCE_CAP_SUPPORTED is KVM scope so that what it reports
-> may not match the behavior of specific VM (e.g., here for TDX VM). The
-> same for KVM_CAP_MCE when queried from /dev/kvm. To qeuery the precise
-> KVM_CAP_MCE of the VM, it should use VM's fd.
-> 
-> [ Xiaoyao: Guard MCE related CAPs ]
-> 
-> Co-developed-by: Kai Huang <kai.huang@linux.intel.com>
-> Signed-off-by: Kai Huang <kai.huang@linux.intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/x86.c | 10 ++++++++++
->  arch/x86/kvm/x86.h |  5 +++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b02088343d80..2b21c5169f32 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4150,6 +4150,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  		break;
->  	case KVM_CAP_MCE:
->  		r = KVM_MAX_MCE_BANKS;
-> +		if (kvm)
-> +			r = kvm_guest_mce_disallowed(kvm) ? 0 : r;
+'destroy_workqueue()' already drains the queue before destroying it, so
+there is no need to flush it explicitly.
 
-		r = KVM_MAX_MCE_BANKS;
-		if (kvm && kvm_guest_mce_disallowed(kvm))
-			r = 0;
+Remove the redundant 'flush_workqueue()' calls.
 
-or
+This was generated with coccinelle:
 
-		r = (kvm && kvm_guest_mce_disallowed(kvm)) ? 0 : KVM_MAX_MCE_BANKS;
+@@
+expression E;
+@@
+- 	flush_workqueue(E);
+	destroy_workqueue(E);
 
->  		break;
->  	case KVM_CAP_XCRS:
->  		r = boot_cpu_has(X86_FEATURE_XSAVE);
-> @@ -5155,6 +5157,10 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  	case KVM_X86_SETUP_MCE: {
->  		u64 mcg_cap;
->  
-> +		r = EINVAL;
-> +		if (kvm_guest_mce_disallowed(vcpu->kvm))
-> +			goto out;
-> +
->  		r = -EFAULT;
->  		if (copy_from_user(&mcg_cap, argp, sizeof(mcg_cap)))
->  			goto out;
-> @@ -5164,6 +5170,10 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  	case KVM_X86_SET_MCE: {
->  		struct kvm_x86_mce mce;
->  
-> +		r = EINVAL;
-> +		if (kvm_guest_mce_disallowed(vcpu->kvm))
-> +			goto out;
-> +
->  		r = -EFAULT;
->  		if (copy_from_user(&mce, argp, sizeof(mce)))
->  			goto out;
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index a2813892740d..69c60297bef2 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -441,6 +441,11 @@ static __always_inline bool kvm_irq_injection_disallowed(struct kvm_vcpu *vcpu)
->  	return vcpu->kvm->arch.vm_type == KVM_X86_TDX_VM;
->  }
->  
-> +static __always_inline bool kvm_guest_mce_disallowed(struct kvm *kvm)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/md/bcache/writeback.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-The "guest" part is potentially confusing and incosistent with e.g.
-kvm_irq_injection_disallowed.  And given the current ridiculous spec, CR4.MCE=1
-is _required_, so saying "mce disallowed" is arguably wrong from that perspective.
+diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+index c7560f66dca8..384c666605ec 100644
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -790,10 +790,8 @@ static int bch_writeback_thread(void *arg)
+ 		}
+ 	}
+ 
+-	if (dc->writeback_write_wq) {
+-		flush_workqueue(dc->writeback_write_wq);
++	if (dc->writeback_write_wq)
+ 		destroy_workqueue(dc->writeback_write_wq);
+-	}
+ 	cached_dev_put(dc);
+ 	wait_for_kthread_stop();
+ 
+-- 
+2.30.2
 
-kvm_mce_injection_disallowed() would be more appropriate.
-
-> +{
-> +	return kvm->arch.vm_type == KVM_X86_TDX_VM;
-> +}
-> +
->  void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu);
->  void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu);
->  int kvm_spec_ctrl_test_value(u64 value);
-> -- 
-> 2.27.0
-> 
