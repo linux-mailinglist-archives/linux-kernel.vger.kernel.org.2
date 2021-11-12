@@ -2,161 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD9844E4BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E9444E4C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbhKLKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:41:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:33098 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231173AbhKLKlu (ORCPT
+        id S234581AbhKLKnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:43:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232791AbhKLKns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:41:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636713539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=46oPanpNXibKa0tnHojCAVl1G+VIp/9kz1W1tOMUA/o=;
-        b=M0+67PBx+32MkJT9SZ3mlGbApiNbQxG9CWOp69DkB4WXIjUctSt0SXIeMlLPdA3gWNAWvV
-        QqloyOsOn0stHgkwsqOs+S+c0+Sb/cu3GzjiZPgHgT0Dyhxz/EN1f/aMoyH3aAfRUQdaGz
-        tC4t8UXWEah8hQxBBplySiGMLEhvqzs=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-178sGGojOZyk9nD70X5FCg-1; Fri, 12 Nov 2021 05:38:56 -0500
-X-MC-Unique: 178sGGojOZyk9nD70X5FCg-1
-Received: by mail-ed1-f71.google.com with SMTP id x13-20020a05640226cd00b003e2bf805a02so7851711edd.23
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:38:56 -0800 (PST)
+        Fri, 12 Nov 2021 05:43:48 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F9BC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:40:57 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id p16so21282367lfa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GVudPWh9z7/9ROvJAujFUKtqeFkQkz4OzzMVyQLCtzo=;
+        b=xUrEE+nZx0rXepYvGqn+YobNymOSxkeoTkZFzIZcIRY1XtRebBWiwo9DX0IX0Ita4Y
+         S+WvHtxvVvCNiI4ooVfpLXR4RzB6lntJkq0OLzPqQ3vUL+cuRvdxfxzJlff15RuMH52a
+         lyc6j3uLAvXPdqqSJ5d1x8Pr+7Ma0v7LW+iYduCPI1kc9Z9hltWLqRrp+khTTwraCyQ6
+         8Emr1JI1aweSBbtv9uY25ZbP6QvOcX3felkWlj/MUVzUT1kjsly4FX1zC59ekz9zpcgM
+         64vjDMfXoXtsbV/EFsh8Q2iMCVyIjkTtQmvXBAubVXaRDYc7TiSgbjKRdE+DtKcUuDJ0
+         Z72A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=46oPanpNXibKa0tnHojCAVl1G+VIp/9kz1W1tOMUA/o=;
-        b=UnETtZ3MWh1IF2i2anMIcVAjjyDBPuLN2R3OBvFz2uok1XcMIBhGYHI7bCovzCyN1s
-         BzPWLaaEtxeTC315XPPy92kfLHVyRS2b3J3o6UEf7bCCPfLp7J055WzWL6KsXH4cuI1n
-         Y+LH/t+LJNiHTDhQI5pOiED8rkViLi7m05fp1jNnzzbq7vq9FuojQByZEWJ9U/gQPZ53
-         0v0No/okLuTgzKqFD1/7ULi9P5nT/YNvwOGQtGpw93e2k1m8gwlewjds6vhhudhv4Rem
-         FdDLWrmdwNADC2EdlVDO7Ql3rjPb/hjqxKoitEce4SAIJQEJF+4Zs+pa+hgsuKYoBUyu
-         Be7A==
-X-Gm-Message-State: AOAM531+gL0ouYNo+75PKgtdyCOHnHh8mXrOM4GEBRD/xgI+Yd2/zRBx
-        ScGtx+KXxfw6cLX06/AxAWjFriOs7zxlTRDJ5E26lh0KN1MLB3abUvdyJcXXBNj6co/dB1ZWnaV
-        KhzSqPzjF3ikx6MD/Cc9X58dX
-X-Received: by 2002:aa7:d941:: with SMTP id l1mr11835619eds.85.1636713535287;
-        Fri, 12 Nov 2021 02:38:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9layiD+6Vv4+AU3/Qy6m1v3qARXE9JoqZtCdClcHuoufFeEjkx3MDLgO30N9JpFidH7eEUw==
-X-Received: by 2002:aa7:d941:: with SMTP id l1mr11835576eds.85.1636713535102;
-        Fri, 12 Nov 2021 02:38:55 -0800 (PST)
-Received: from gator.home (cst-prg-92-133.cust.vodafone.cz. [46.135.92.133])
-        by smtp.gmail.com with ESMTPSA id a15sm2912187edr.76.2021.11.12.02.38.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 02:38:54 -0800 (PST)
-Date:   Fri, 12 Nov 2021 11:38:51 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-Message-ID: <20211112103851.pmb35qf5bvcukjmg@gator.home>
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <20211111162746.100598-2-vkuznets@redhat.com>
- <a5cdff6878b7157587e92ebe4d5af362@kernel.org>
- <875ysxg0s1.fsf@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GVudPWh9z7/9ROvJAujFUKtqeFkQkz4OzzMVyQLCtzo=;
+        b=lujoQJnjBS+tHkk0BDJ4v4Rkp7hPGP5giYm/Bh2usWkXqE2L6yJZiKsiJoBJUKOyfC
+         XYNarewv46SQP6KgEOvsj1HZmk+1LDAhkEA/0GEdWZb/u4LeqUVAgZ9vdrBghBr1gYgM
+         ltQIUXi3z0q2OyauhU1UFia5szUB+H0M8Hd+i/uQF8j/BI9iBFKRpTMU3PKZCMnPsRys
+         7Dj9M/E10po/Rn+IMYEFf67IziABNWEX6JRvDBBnVbdncSh1yF1EXU+gc/t1O794RiRz
+         nKy/MhCLqbJOwnHyleNwABfkBtI1Zjj6abX4V+D/1LugD4gqPeuURSECvw5icAowl1/n
+         d+eA==
+X-Gm-Message-State: AOAM531CWLTFVNcEvCAPTmwvBLViZcmiRvEUbJMSydqZiZPifOuRTN85
+        wgsfi19axgjn16NhfwwTxfZvsA==
+X-Google-Smtp-Source: ABdhPJxLSJRXW0zwXqew1B9iaPPb1ofazypqUEOYB4QnZRXOyXeXReJ0GxqHvlKd2s4rWc8YL8/Scg==
+X-Received: by 2002:ac2:42c5:: with SMTP id n5mr13054211lfl.511.1636713655951;
+        Fri, 12 Nov 2021 02:40:55 -0800 (PST)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id o15sm524819lfu.283.2021.11.12.02.40.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 02:40:55 -0800 (PST)
+Subject: Re: [PATCH v5 14/22] crypto: qce: core: Add support to initialize
+ interconnect path
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-15-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <54178c8f-b9f9-1e8a-9a09-0e3ccaf6d5da@linaro.org>
+Date:   Fri, 12 Nov 2021 12:40:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875ysxg0s1.fsf@redhat.com>
+In-Reply-To: <20211110105922.217895-15-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 10:51:10AM +0100, Vitaly Kuznetsov wrote:
-> Marc Zyngier <maz@kernel.org> writes:
-> 
-> > Hi Vitaly,
-> >
-> > On 2021-11-11 16:27, Vitaly Kuznetsov wrote:
-> >> It doesn't make sense to return the recommended maximum number of
-> >> vCPUs which exceeds the maximum possible number of vCPUs.
-> >> 
-> >> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> >> ---
-> >>  arch/arm64/kvm/arm.c | 7 ++++++-
-> >>  1 file changed, 6 insertions(+), 1 deletion(-)
-> >> 
-> >> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> >> index 7838e9fb693e..391dc7a921d5 100644
-> >> --- a/arch/arm64/kvm/arm.c
-> >> +++ b/arch/arm64/kvm/arm.c
-> >> @@ -223,7 +223,12 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
-> >> long ext)
-> >>  		r = 1;
-> >>  		break;
-> >>  	case KVM_CAP_NR_VCPUS:
-> >> -		r = num_online_cpus();
-> >> +		if (kvm)
-> >> +			r = min_t(unsigned int, num_online_cpus(),
-> >> +				  kvm->arch.max_vcpus);
-> >> +		else
-> >> +			r = min_t(unsigned int, num_online_cpus(),
-> >> +				  kvm_arm_default_max_vcpus());
-> >>  		break;
-> >>  	case KVM_CAP_MAX_VCPUS:
-> >>  	case KVM_CAP_MAX_VCPU_ID:
-> >
-> > This looks odd. This means that depending on the phase userspace is
-> > in while initialising the VM, KVM_CAP_NR_VCPUS can return one thing
-> > or the other.
-> >
-> > For example, I create a VM on a 32 CPU system, NR_VCPUS says 32.
-> > I create a GICv2 interrupt controller, it now says 8.
-> >
-> > That's a change in behaviour that is visible by userspace
-> 
-> Yes, I realize this is a userspace visible change. The reason I suggest
-> it is that logically, it seems very odd that the maximum recommended
-> number of vCPUs (KVM_CAP_NR_VCPUS) can be higher, than the maximum
-> supported number of vCPUs (KVM_CAP_MAX_VCPUS). All userspaces which use
-> this information somehow should already contain some workaround for this
-> case. (maybe it's a rare one and nobody hit it yet or maybe there are no
-> userspaces using KVM_CAP_NR_VCPUS for anything besides complaining --
-> like QEMU).
-> 
-> I'd like KVM to be consistent across architectures and have the same
-> (similar) meaning for KVM_CAP_NR_VCPUS.
+Hi Bhupesh,
 
-KVM_CAP_NR_VCPUS seems pretty useless if we just want to tell userspace
-the same thing it can get with _SC_NPROCESSORS_ONLN. In fact, if userspace
-knows something we don't about the future onlining of some pcpus, then
-maybe userspace would prefer to check _SC_NPROCESSORS_CONF.
-
+On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
+> From: Thara Gopinath <thara.gopinath@linaro.org>
 > 
-> > which I'm keen on avoiding. I'd rather have the kvm and !kvm cases
-> > return the same thing.
+> Crypto engine on certain Snapdragon processors like sm8150, sm8250, sm8350
+> etc. requires interconnect path between the engine and memory to be
+> explicitly enabled and bandwidth set prior to any operations. Add support
+> in the qce core to enable the interconnect path appropriately.
 > 
-> Forgive me my (ARM?) ignorance but what would it be then? If we go for
-> min(num_online_cpus(), kvm_arm_default_max_vcpus()) in both cases, cat
-> this can still go above KVM_CAP_MAX_VCPUS after vGIC is created?
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> [Make header file inclusion alphabetical and use devm_of_icc_get()]
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-So the GIC version case looks like the type of thing that could make
-KVM_CAP_NR_VCPUS useful, i.e. being able to tell userspace a maximum
-number of vcpus supported for a given configuration. However, even
-in that case the concept of "recommended" number doesn't make sense,
-because, for the GICv2 example, a VM cannot configure more than 8 VCPUs,
-so it's a real limit, not a recommendation. Maybe KVM_CAP_NR_VCPUS should
-just be left alone, but deprecated, and, if there's need, a new CAP could
-be created for a config-vcpu-max.
+similar SoB swap is expected above.
 
-Thanks,
-drew
+> ---
+>   drivers/crypto/qce/core.c | 34 +++++++++++++++++++++++++++-------
+>   drivers/crypto/qce/core.h |  1 +
+>   2 files changed, 28 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index d3780be44a76..89d9c01ba009 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -5,6 +5,7 @@
+>   
+>   #include <linux/clk.h>
+>   #include <linux/dma-mapping.h>
+> +#include <linux/interconnect.h>
+>   #include <linux/interrupt.h>
+>   #include <linux/module.h>
+>   #include <linux/mod_devicetable.h>
+> @@ -22,6 +23,8 @@
+>   #define QCE_MAJOR_VERSION5	0x05
+>   #define QCE_QUEUE_LENGTH	1
+>   
+> +#define QCE_DEFAULT_MEM_BANDWIDTH	393600
+> +
+>   static const struct qce_algo_ops *qce_ops[] = {
+>   #ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>   	&skcipher_ops,
+> @@ -206,21 +209,35 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> +	qce->mem_path = devm_of_icc_get(qce->dev, "memory");
+> +	if (IS_ERR(qce->mem_path))
+> +		return PTR_ERR(qce->mem_path);
+> +
+>   	qce->core = devm_clk_get(qce->dev, "core");
+> -	if (IS_ERR(qce->core))
+> -		return PTR_ERR(qce->core);
+> +	if (IS_ERR(qce->core)) {
+> +		ret = PTR_ERR(qce->core);
+> +		goto err;
+> +	}
+>   
+>   	qce->iface = devm_clk_get(qce->dev, "iface");
+> -	if (IS_ERR(qce->iface))
+> -		return PTR_ERR(qce->iface);
+> +	if (IS_ERR(qce->iface)) {
+> +		ret = PTR_ERR(qce->iface);
+> +		goto err;
+> +	}
+>   
+>   	qce->bus = devm_clk_get(qce->dev, "bus");
+> -	if (IS_ERR(qce->bus))
+> -		return PTR_ERR(qce->bus);
+> +	if (IS_ERR(qce->bus)) {
+> +		ret = PTR_ERR(qce->bus);
+> +		goto err;
 
+formally all these changes from 'return' to 'goto err' are not needed,
+the necessity of such a transition will be required in a later change.
+
+Please consider to move addition of 'err' goto label directly into
+patch v5 18/22 -- since I still think that v17/22 is not needed...
+
+> +	}
+> +
+> +	ret = icc_set_bw(qce->mem_path, QCE_DEFAULT_MEM_BANDWIDTH, QCE_DEFAULT_MEM_BANDWIDTH);
+> +	if (ret)
+> +		goto err;
+>   
+>   	ret = clk_prepare_enable(qce->core);
+>   	if (ret)
+> -		return ret;
+> +		goto err_mem_path_disable;
+>   
+>   	ret = clk_prepare_enable(qce->iface);
+>   	if (ret)
+> @@ -260,6 +277,9 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   	clk_disable_unprepare(qce->iface);
+>   err_clks_core:
+>   	clk_disable_unprepare(qce->core);
+> +err_mem_path_disable:
+> +	icc_set_bw(qce->mem_path, 0, 0);
+> +err:
+>   	return ret;
+
+See my comment above.
+
+>   }
+>   
+> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
+> index 085774cdf641..228fcd69ec51 100644
+> --- a/drivers/crypto/qce/core.h
+> +++ b/drivers/crypto/qce/core.h
+> @@ -35,6 +35,7 @@ struct qce_device {
+>   	void __iomem *base;
+>   	struct device *dev;
+>   	struct clk *core, *iface, *bus;
+> +	struct icc_path *mem_path;
+>   	struct qce_dma_data dma;
+>   	int burst_size;
+>   	unsigned int pipe_pair_id;
+> 
+
+--
+Best wishes,
+Vladimir
