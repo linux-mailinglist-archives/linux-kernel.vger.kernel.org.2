@@ -2,103 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2433F44EC94
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD01D44EC98
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhKLS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 13:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S235451AbhKLSbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 13:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhKLS2O (ORCPT
+        with ESMTP id S229892AbhKLSbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:28:14 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC4EC061766;
-        Fri, 12 Nov 2021 10:25:22 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id bk14so19449137oib.7;
-        Fri, 12 Nov 2021 10:25:22 -0800 (PST)
+        Fri, 12 Nov 2021 13:31:05 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF110C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:28:14 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id t19so19531789oij.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:28:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sa0jBA3wpvakD7viFQ8ToAySOGD0WqRf4octMEbtih0=;
-        b=kjSyXDtPvbAlccyL7gHYWEEa6qBv/xCU7kJ4Vv0o73t3sx8ohpKywpXvTiDcvx5Ouw
-         Rd1O3C5asrJ2KJT+98X41ucEGMX9o1+PxoBIpwrikCIooZNkQwo5SMCuN5ao2zywCM7N
-         KGoV+KD21T2A1GH0a4BxgvDDtPkpmjhpMs1oBURvtRMTy0ssMSFrbQYr3pvYFlwbUoK+
-         3dZ0C7C9YqmTaxwUDP+mCIkLEa2/SV4XvGT0RSsxqxofCSAmuhoU3U7/KsEQdTpuRHOF
-         Fx672TWwXdqprhXnVps7RLUPQd4KBVA6UBVc/B8N3U6MOJ7teH7wxz5RhV9J6LcFW6HX
-         FVqQ==
+        bh=HMwNPLBTnhg+gZ7hYIJP6ZsXs0JaDZesh/uMRXZDM5E=;
+        b=FV+GtoQM5ZgZHQLFpnLgZLsIsUBpnLQzWPdye3mGIBpoI1AmS+Qrv0X86l6HvnuptR
+         nzKLE0aeTDjOmhRmZX2NIRoZI5cequcUXIC+OK039vnUu2RQ+PqfdSCwO5WTWyq6Sd8Z
+         /qPCam2i1dFp33VVl7tDMXiqI2Kr1mEIkc9mFP+C9su9uNu8JVf8Ziwq0POt/gB8UQjR
+         eO/EfVM/Kg3X7DpVAj8oZMkl2AB+T4g/6EIqn0MDeyhp992Vr5MZRppYZtjyajC8v79W
+         rZ9TFvr1m5y3GekLQUPU31p/CKdOOYqKmV8kteqAHWjF4OSAiJ8xpVReYC/hrNuJK8ql
+         O+kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sa0jBA3wpvakD7viFQ8ToAySOGD0WqRf4octMEbtih0=;
-        b=zLS54n9hGbo2BBgJ4Cww3QHK0yl7frND8+rlAeRK1Bk+UVqVpgknLO+34qJtlUrH0D
-         3+0Bi3z3+5UPXe6rNCQSwyF5Fxhh5RdxbbnTP2C/4QkBPj5942PyYa9nAILs/n4K0vg4
-         An3sJolFkWmrlpECLyS9xPXs3UP5K+LLXUqETHUvlBmvYAxZsL/1IzQ4pzwvGCKICFiL
-         RGcZvz/PiqV8+QCxAZPRGymnWmUTjR2bOviBv5sB/YkWeqXZN8+h0WN4z13Z5GybRaRe
-         zFpwANTzNvgoQvnHWQpiFNn1gBwJWoaVyMyoOktdixH2lX6SVudgGmVlSCchX6vboQ52
-         /DAw==
-X-Gm-Message-State: AOAM532ixGZdrD93Je4H5wbZC6cTu1cukDcWRQy90D66mvoUW+PuzWSx
-        CcDLfTmLY6GIIj/JA2C3YP3nJ2eQKcXqlzLwYSs=
-X-Google-Smtp-Source: ABdhPJx+m1O3ZfKBTW5vP7GJjq+TTjrXGPwdtitmdl2plac2LYfIgefS40oau5QEX2T48Fa4J+BgWorNYStSrHLKTaU=
-X-Received: by 2002:a54:4707:: with SMTP id k7mr27139073oik.163.1636741522427;
- Fri, 12 Nov 2021 10:25:22 -0800 (PST)
+        bh=HMwNPLBTnhg+gZ7hYIJP6ZsXs0JaDZesh/uMRXZDM5E=;
+        b=GAIm5TX5RA/2L8ThIAlZCUpbX5WhHltIIyJveAbwSTVJNkfwJ1FCDDc54WWaWmPW+K
+         HPtZgAs3dAQto4Sfy4r6D3jo9MojPye7UrBSHjNgZRKV/N8SXtOmW5i6elOVOuYaePcm
+         aj8OfipHh3fjOr8LOK+l48XvV0HwDhEWOUjVX90S+QuX5e1theUrCIMPymx/kVT1b444
+         aYp6ITma0Z1cEm5NLbtycfzI4i7jfdzRgUQE4+qXfdy8UbI0x+Cuk2W25jCjGNbY0pdM
+         ObvnnL9SJ+I83eyFJh5Am/4Nk1aWeylA0R6DuT2TMyyIxqEW+70asFdjtB9FH+o/L2z1
+         xCzg==
+X-Gm-Message-State: AOAM532768GFV/TO+pm5PJGcj9S8AAFkyG7QsZSx9cMg2GqWGH8ye6E2
+        db7CzvFg496BFjs04C3mK95L0OxAULPlYNGB1jVuCg==
+X-Google-Smtp-Source: ABdhPJzxLSBvFUTzogmSMbV5/M3VUQMGVOcxgqoIsEcXefYe6+Z9VI2bxguiMxeYEBKTGjfUlI20oyL0e4BQafpZyT4=
+X-Received: by 2002:aca:2319:: with SMTP id e25mr27966403oie.164.1636741693790;
+ Fri, 12 Nov 2021 10:28:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110221456.11977-4-jim2101024@gmail.com> <20211111221714.GA1354700@bhelgaas>
-In-Reply-To: <20211111221714.GA1354700@bhelgaas>
-From:   Jim Quinlan <jim2101024@gmail.com>
-Date:   Fri, 12 Nov 2021 13:25:11 -0500
-Message-ID: <CANCKTBun0MCiH5QWBMQqP+pxAN=+dX=ziB1ga39kdr5CmK=Gfw@mail.gmail.com>
-Subject: Re: [PATCH v8 3/8] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-5-pgonda@google.com>
+ <YYquDWbkIwCkixxD@google.com> <CAMkAt6rHdsdD-L4PbZL7qaOY7GRHmApVJam0V0yY2BnYdhmPjA@mail.gmail.com>
+ <YYrZXRTukz3RccPN@google.com> <CAMkAt6qauoiTBXF9VXRGiqtJD5pTAV=NqKHZgNFXHCkrR50gkg@mail.gmail.com>
+ <eff7a2cb-f78a-646a-dc0c-b24998e9e9af@amd.com> <CAMkAt6rj94Mzb6HBaqQbi7HHfhS4q1O4fxO8M7Xe=TZeZ0zZOg@mail.gmail.com>
+ <CAMkAt6r5MJq0rGYg7MAqm83Xp4mBADSKtQxV=i2_OFuQnDd5Yg@mail.gmail.com>
+ <CAA03e5GDo3oFe8D8xTP1YsasN=moYqnT-AKayu006u1ARa7cYg@mail.gmail.com> <CAMkAt6og+9LJn84PJhhCn9QAkxzAg_27i1iCy+8edLtymUeyaw@mail.gmail.com>
+In-Reply-To: <CAMkAt6og+9LJn84PJhhCn9QAkxzAg_27i1iCy+8edLtymUeyaw@mail.gmail.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Fri, 12 Nov 2021 10:28:02 -0800
+Message-ID: <CAA03e5H5WAqVYQ86azVzYfLsAEYS2M_swy9t3RG+3mVZ9twYXQ@mail.gmail.com>
+Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
+To:     Peter Gonda <pgonda@google.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas.Lendacky@amd.com, David Rientjes <rientjes@google.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 5:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Fri, Nov 12, 2021 at 9:49 AM Peter Gonda <pgonda@google.com> wrote:
 >
-> On Wed, Nov 10, 2021 at 05:14:43PM -0500, Jim Quinlan wrote:
-> > Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> > allows optional regulators to be attached and controlled by the PCIe RC
-> > driver.  That being said, this driver searches in the DT subnode (the EP
-> > node, eg pci-ep@0,0) for the regulator property.
+> On Fri, Nov 12, 2021 at 10:46 AM Marc Orr <marcorr@google.com> wrote:
 > >
-> > The use of a regulator property in the pcie EP subnode such as
-> > "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> > file at
+> > On Fri, Nov 12, 2021 at 8:55 AM Peter Gonda <pgonda@google.com> wrote:
+> > >
+> > > On Wed, Nov 10, 2021 at 8:32 AM Peter Gonda <pgonda@google.com> wrote:
+> > > >
+> > > > On Tue, Nov 9, 2021 at 3:20 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > On 11/9/21 2:46 PM, Peter Gonda wrote:
+> > > > > > On Tue, Nov 9, 2021 at 1:26 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > > > >>
+> > > > > >> On Tue, Nov 09, 2021, Peter Gonda wrote:
+> > > > > >>> On Tue, Nov 9, 2021 at 10:21 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > > > >>>> There's no need for this to be a function pointer, and the duplicate code can be
+> > > > > >>>> consolidated.
+> > > > > >>>>
+> > > > > >>>> static int sev_do_init_locked(int cmd, void *data, int *error)
+> > > > > >>>> {
+> > > > > >>>>          if (sev_es_tmr) {
+> > > > > >>>>                  /*
+> > > > > >>>>                   * Do not include the encryption mask on the physical
+> > > > > >>>>                   * address of the TMR (firmware should clear it anyway).
+> > > > > >>>>                   */
+> > > > > >>>>                  data.flags |= SEV_INIT_FLAGS_SEV_ES;
+> > > > > >>>>                  data.tmr_address = __pa(sev_es_tmr);
+> > > > > >>>>                  data.tmr_len = SEV_ES_TMR_SIZE;
+> > > > > >>>>          }
+> > > > > >>>>          return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > > > > >>>> }
+> > > > > >>>>
+> > > > > >>>> static int __sev_init_locked(int *error)
+> > > > > >>>> {
+> > > > > >>>>          struct sev_data_init data;
+> > > > > >>>>
+> > > > > >>>>          memset(&data, 0, sizeof(data));
+> > > > > >>>>          return sev_do_init_locked(cmd, &data, error);
+> > > > > >>>> }
+> > > > > >>>>
+> > > > > >>>> static int __sev_init_ex_locked(int *error)
+> > > > > >>>> {
+> > > > > >>>>          struct sev_data_init_ex data;
+> > > > > >>>>
+> > > > > >>>>          memset(&data, 0, sizeof(data));
+> > > > > >>>>          data.length = sizeof(data);
+> > > > > >>>>          data.nv_address = __psp_pa(sev_init_ex_nv_address);
+> > > > > >>>>          data.nv_len = NV_LENGTH;
+> > > > > >>>>          return sev_do_init_locked(SEV_CMD_INIT_EX, &data, error);
+> > > > > >>>> }
+> > > > > >>>
+> > > > > >>> I am missing how this removes the duplication of the retry code,
+> > > > > >>> parameter checking, and other error checking code.. With what you have
+> > > > > >>> typed out I would assume I still need to function pointer between
+> > > > > >>> __sev_init_ex_locked and __sev_init_locked. Can you please elaborate
+> > > > > >>> here?
+> > > > > >>
+> > > > > >> Hmm.  Ah, I got distracted between the original thought, the realization that
+> > > > > >> the two commands used different structs, and typing up the above.
+> > > > > >>
+> > > > > >>> Also is there some reason the function pointer is not acceptable?
+> > > > > >>
+> > > > > >> It's not unacceptable, it would just be nice to avoid, assuming the alternative
+> > > > > >> is cleaner.  But I don't think any alternative is cleaner, since as you pointed
+> > > > > >> out the above is a half-baked thought.
+> > > > > >
+> > > > > > OK I'll leave as is.
+> > > > > >
+> > > > > >>
+> > > > > >>>>> +     rc = init_function(error);
+> > > > > >>>>>        if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+> > > > > >>>>>                /*
+> > > > > >>>>>                 * INIT command returned an integrity check failure
+> > > > > >>>>> @@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
+> > > > > >>>>>                 * failed and persistent state has been erased.
+> > > > > >>>>>                 * Retrying INIT command here should succeed.
+> > > > > >>>>>                 */
+> > > > > >>>>> -             dev_dbg(sev->dev, "SEV: retrying INIT command");
+> > > > > >>>>> -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+> > > > > >>>>> +             dev_notice(sev->dev, "SEV: retrying INIT command");
+> > > > > >>>>> +             rc = init_function(error);
+> > > > > >>>>
+> > > > > >>>> The above comment says "persistent state has been erased", but __sev_do_cmd_locked()
+> > > > > >>>> only writes back to the file if a relevant command was successful, which means
+> > > > > >>>> that rereading the userspace file in __sev_init_ex_locked() will retry INIT_EX
+> > > > > >>>> with the same garbage data.
+> > > > > >>>
+> > > > > >>> Ack my mistake, that comment is stale. I will update it so its correct
+> > > > > >>> for the INIT and INIT_EX flows.
+> > > > > >>>>
+> > > > > >>>> IMO, the behavior should be to read the file on load and then use the kernel buffer
+> > > > > >>>> without ever reloading (unless this is built as a module and is unloaded and reloaded).
+> > > > > >>>> The writeback then becomes opportunistic in the sense that if it fails for some reason,
+> > > > > >>>> the kernel's internal state isn't blasted away.
+> > > > > >>>
+> > > > > >>> One issue here is that the file read can fail on load so we use the
+> > > > > >>> late retry to guarantee we can read the file.
+> > > > > >>
+> > > > > >> But why continue loading if reading the file fails on load?
+> > > > > >>
+> > > > > >>> The other point seems like preference. Users may wish to shutdown the PSP FW,
+> > > > > >>> load a new file, and INIT_EX again with that new data. Why should we preclude
+> > > > > >>> them from that functionality?
+> > > > > >>
+> > > > > >> I don't think we should preclude that functionality, but it needs to be explicitly
+> > > > > >> tied to a userspace action, e.g. either on module load or on writing the param to
+> > > > > >> change the path.  If the latter is allowed, then it needs to be denied if the PSP
+> > > > > >> is initialized, otherwise the kernel will be in a non-coherent state and AFAICT
+> > > > > >> userspace will have a heck of a time even understanding what state has been used
+> > > > > >> to initialize the PSP.
+> > > > > >
+> > > > > > If this driver is builtin the filesystem will be unavailable during
+> > > > > > __init. Using the existing retries already built into
+> > > > > > sev_platform_init() also the file to be read once userspace is
+> > > > > > running, meaning the file system is usable. As I tried to explain in
+> > > > > > the commit message. We could remove the sev_platform_init call during
+> > > > > > sev_pci_init since this only actually needs to be initialized when the
+> > > > > > first command requiring it is issues (either reading some keys/certs
+> > > > > > from the PSP or launching an SEV guest). Then userspace in both the
+> > > > > > builtin and module usage would know running one of those commands
+> > > > > > cause the file to be read for PSP usage. Tom any thoughts on this?
+> > > > > >
+> > > > >
+> > > > > One thing to note is that if we do the INIT on the first command then
+> > > > > the first guest launch will take a longer. The init command is not
+> > > > > cheap (especially with the SNP, it may take a longer because it has to
+> > > > > do all those RMP setup etc). IIRC, in my early SEV series in I was doing
+> > > > > the INIT during the first command execution and based on the
+> > > > > recommendation moved to do the init on probe.
+> > > > >
+> > > > > Should we add a module param to control whether to do INIT on probe or
+> > > > > delay until the first command ?
+> > > >
+> > > > Thats a good point Brijesh. I've only been testing this with SEV and
+> > > > ES so haven't noticed that long setup time. I like the idea of a
+> > > > module parameter to decide when to INIT, that should satisfy Sean's
+> > > > concern that the user doesn't know when the INIT_EX file would be read
+> > > > and that there is extra retry code (duplicated between sev_pci_init
+> > > > and all the PSP commands). I'll get started on that.
+> > >
+> > > I need a little guidance on how to proceed with this. Should I have
+> > > the new module parameter 'psp_init_on_probe' just disable PSP init on
+> > > module init if false. Or should it also disable PSP init during
+> > > command flow if it's true?
+> > >
+> > > I was thinking I should just have 'psp_init_on_probe' default to true,
+> > > and if false it stops the PSP init during sev_pci_init(). If I add the
+> > > second change that seems like it changes the ABI. Thoughts?
 > >
-> > https://github.com/devicetree-org/dt-schema/pull/63
+> > What about doing the INIT when we load the KVM module? Does that
+> > resolve all of these problems? By the time we load the KVM module, we
+> > know that the file system is up, which is the original problem we were
+> > trying to solve. And the KVM module is most likely loaded before we
+> > run the first guest.
 >
-> Can you use a lore URL here?  github.com is sort of outside the Linux
-> ecosystem and this link is more likely to remain useful if it's to
-> something in kernel.org.
-Hi Bjorn,
-I'm afraid I don't know how or if  this github repo transfers
-information to Linux.  RobH, what should I be doing here?
->
-> The subject says what this patch does, but the commit log doesn't.
-> It's OK to repeat the subject in the commit log if that's what makes
-> the most sense.
-Got it.
-Thanks,
-Jim Quinlan
-Broadcom STB
+> KVM can be compiled as Y as well right? Then KVM module init is still too early.
+
+I think even with KVM built in, it's guaranteed to load after the file system:
+
+* KVM is loaded using `module_init()` (e.g., kvm-amd `module_init()` [1]).
+* `module_init()` is defined as `__initcall()` [2].
+* `__initcall()` is defined as `device_initcall()` [3].
+* Finally, looking at [3] and scrolling up a few lines,
+`device_init_call()`'s appear to happen after the file system init
+calls.
+
+[1] https://elixir.bootlin.com/linux/latest/source/arch/x86/kvm/svm/svm.c#L4673
+[2] https://elixir.bootlin.com/linux/latest/source/include/linux/module.h#L88
+[3] https://elixir.bootlin.com/linux/latest/source/include/linux/init.h#L296
