@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBB644E080
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBD144E082
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhKLCvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 21:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S234503AbhKLCwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 21:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234495AbhKLCvw (ORCPT
+        with ESMTP id S229908AbhKLCws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:51:52 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692BFC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 18:49:02 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id z34so18707146lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 18:49:02 -0800 (PST)
+        Thu, 11 Nov 2021 21:52:48 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4E7C061766;
+        Thu, 11 Nov 2021 18:49:58 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id n8so7311968plf.4;
+        Thu, 11 Nov 2021 18:49:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dACq+SeisgPOtFcuavxVuy5MhjeTai5DO8RwpVx7m2c=;
-        b=Fx96tFQ2JK6VrO9XjC8jFp7qrJiPRzHXwLrzyvTTPW5moGUkiXCUHVQ7BB67e6+dzX
-         N1uc2L53iG9xqjlu805dgjxtNZ/bHdtonEAOv8TQmkx5YOYeDS6WIkr9LnMJ4NmNywOK
-         qdrtNUkDqYq3XFWyRb/dW2/gEbAO5tROfWAtU=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IBQs7fu+H8AhiV4259K+BvetOv7yqdM5oNTRoi6ACrs=;
+        b=B5LePBIa4sFcc8s+Aixlq31jU7zs28gM15aVJSPAyGeYiOrILqDsA0JTEnoozIfTIw
+         NxdYpRe0ZM0Mbl5z2cd9K2FLNn27t0XDSPpJ5oapztnHOVpnUWgokzPw9x5Jfv+Agb94
+         sls3VpkkhYI4Rp7RlqHhR1Yai0kpm/07F/IHXsPazWy4OBP8Bq436/4QyuIEaYeTFnGa
+         lgryecKmB5cHtw45vV+G6sXC5NJyuVBzl8LVmWzoWzI3q9Eh5yHaIQQ/i/+fVPrUEVvr
+         k8jELj0KmXEWGWZGimro8CEbtIrnfuwE9aOXg/2K6ibcp7xcuaYTdMjndijcnhWhzBG6
+         3Htg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dACq+SeisgPOtFcuavxVuy5MhjeTai5DO8RwpVx7m2c=;
-        b=p2nYsWdlp0AY6ktr6R7KjSniwhQbEXe5f8nUxGzb3voHBzDS0Mm9gymKhf4jNkhXaR
-         CojaC5rb0oponMEQXFRWruk4Rs/bSbaQVTol0VTyo5hW82vSAEIZngBqljg4Qsv9O0+Z
-         h222km1qKr6m+hnq6Q3VHormJAnJlfrrGYywh8+STwyimbCx09lzQUcXsoaAk7/eM7Ty
-         QimqC9fD6/w3zXu9XXF26PTdV8JDJE8UMeAQIDX10zY078uNghZot/Lycya38Xk98m3l
-         ZT24uDoQKqFpUnqhIiPeuZn1wNRDakDBF2t3ZkoR6pl1YVnpi9ix/mLniCnImUuhIvpe
-         mi9Q==
-X-Gm-Message-State: AOAM5302dcLmw/+45b4xV9JIsC9BowHx8he56D4f6XoWa1MZcsTQ6cSt
-        WWU665r+F/ECbyZybuelFlcNnd80N0UQnhABbNM=
-X-Google-Smtp-Source: ABdhPJyqQztphAyyYA9w3PG9m3fBP1qSnxiD9KXcCaUSyxvTOGnD5rYscQLxzdW/q5sn2DShh3AZqw==
-X-Received: by 2002:a05:6512:b8c:: with SMTP id b12mr10584956lfv.99.1636685340463;
-        Thu, 11 Nov 2021 18:49:00 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id b17sm422511ljd.68.2021.11.11.18.48.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 18:48:59 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id b40so18717659lfv.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 18:48:59 -0800 (PST)
-X-Received: by 2002:a05:6512:23a7:: with SMTP id c39mr10942289lfv.655.1636685339562;
- Thu, 11 Nov 2021 18:48:59 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IBQs7fu+H8AhiV4259K+BvetOv7yqdM5oNTRoi6ACrs=;
+        b=KXauKpkFpIBD1sF151fevYfVJ/VUdGZiTsucYm/GUpVINLIJ95g7GGKoT8JIz5tCtO
+         MJjj2v9A1JBXTYzBXhFOgUzKP8JYsgQxmIhk2ZISxbAg08dXnBNmZxFegalPogOgBhkK
+         pRHsDrnAfaJrlgHJF1OpHVkxd6z2J3zGcZd7TnJz/aAiAFMpt7fvXmwtvPM8B9x12fIF
+         7X4ZmsGCo3HW/YHyJVqHSymRBu4OuJs67ivIvSYGpBzCX1U8bMT2bTILhWujLyQra99w
+         lG0fN1i4Eyv/qjVWTIcsbeXgmOKVgzdviNhtIjdbpTukZGODW1KAvZt7WLJeMlJ72yDs
+         b9bg==
+X-Gm-Message-State: AOAM533c2vsFZI+HcISS1/7ryDIcwVVjAqHoKGpuGUiiKUBEXOi07k+L
+        b3GTJnEgbp8vMcBQF9cmP2A=
+X-Google-Smtp-Source: ABdhPJx/qFQ/l4obeAdyLnDxa3K9tn6GsbP0tvKrDCLEaylWtAkAK5M2JcYz3JFsbjGigGvPxhp2UA==
+X-Received: by 2002:a17:90b:1c8f:: with SMTP id oo15mr32199824pjb.87.1636685398206;
+        Thu, 11 Nov 2021 18:49:58 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id fw21sm9165995pjb.25.2021.11.11.18.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 18:49:57 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cm>
+Subject: [PATCH] fs:btrfs: remove unneeded variable
+Date:   Fri, 12 Nov 2021 02:49:50 +0000
+Message-Id: <20211112024950.5098-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211111163301.1930617-1-kuba@kernel.org> <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
- <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 11 Nov 2021 18:48:43 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
-Message-ID: <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
-Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for 5.16-rc1)
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 5:46 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Rafael, Srinivas, we're getting 32 bit build failures after pulling back
-> from Linus today.
->
-> make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
-> make: *** [Makefile:219: __sub-make] Error 2
-> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In fun=
-ction =E2=80=98send_mbox_cmd=E2=80=99:
-> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: =
-error: implicit declaration of function =E2=80=98readq=E2=80=99; did you me=
-an =E2=80=98readl=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->    79 |                         *cmd_resp =3D readq((void __iomem *) (pro=
-c_priv->mmio_base + MBOX_OFFSET_DATA));
->       |                                     ^~~~~
->       |                                     readl
+From: chiminghao <chi.minghao@zte.com.cn>
 
-Gaah.
+Fix the following coccicheck REVIEW:
+./fs/btrfs/extent_map.c:299:5-8 REVIEW Unneeded variable
 
-The trivial fix is *probably* just a simple
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ fs/btrfs/extent_map.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-    #include <linux/io-64-nonatomic-lo-hi.h>
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 5a36add21305..1dcb5486ccb6 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 		       u64 gen)
+ {
+-	int ret = 0;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
+ 
+@@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 	free_extent_map(em);
+ out:
+ 	write_unlock(&tree->lock);
+-	return ret;
++	return 0;
+ 
+ }
+ 
+-- 
+2.25.1
 
-to say that a non-atomic readq() is ok done low word first. IOW, just a
-
-  --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-  +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-  @@ -7,6 +7,7 @@
-   #include <linux/kernel.h>
-   #include <linux/module.h>
-   #include <linux/pci.h>
-  +#include <linux/io-64-nonatomic-lo-hi.h>
-   #include "processor_thermal_device.h"
-
-   #define MBOX_CMD_WORKLOAD_TYPE_READ  0x0E
-
-Of course, it depends on the hardware. It might not matter. Or maybe
-it really wants the high word read first.
-
-Looking at that driver, and how it didn't use to do 64-bit reads at
-all, I suspect the answer is "doesn't matter".
-
-                Linus
