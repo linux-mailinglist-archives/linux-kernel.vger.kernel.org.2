@@ -2,131 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A56C44EB41
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FB944EB44
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235339AbhKLQWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:22:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S235330AbhKLQXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235172AbhKLQWJ (ORCPT
+        with ESMTP id S230019AbhKLQXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:22:09 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FD1C061767;
-        Fri, 12 Nov 2021 08:19:18 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id z8so19501853ljz.9;
-        Fri, 12 Nov 2021 08:19:18 -0800 (PST)
+        Fri, 12 Nov 2021 11:23:04 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1DCC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:20:13 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id v64so25030151ybi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:20:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=nw3DmsyVi78VBxFxXKV3pNgx1Lmaugz8lN9SDA39wYQ=;
-        b=YYUgTDcKtclCmeRRFu5RuSj35rhfPBNHFV1VwUXq4XMs1G4PK91lda7/CPbRc6SQFk
-         WDAFvPouNDWVh0sdJJzlD/J9/ixMsSkgG4Jq9UZvypv9pWXdo46ZNGGdE7S0sYIaFKHo
-         MAfnBx7yB2k/XxJvLBXYCebZPgeqGfUHukjTipOKc3IjfobYkec2sT/J8yzIlztyLjuY
-         C4Ae5obK2VPSsPqNsfVS+Fsz3llN+/aCiahfFf1b4M3fpXcluXLXY42MZpQlEfed2k86
-         ftnJWmPucvc8kszkwj98Jv5U8QpPPrJ3UNochTwLHPadtEBvTw1YxBKvDRAflC0fNy7k
-         H3xw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zSyi1t+zt7tAuow8W+db8Y7S8jqQDHW6kMj3Q06p+Fc=;
+        b=Y/ck4UPeh/tDdtb/TfLTArPFbN8OSGZKbqnyMx0nYs1D/pYNmnE3Mo99bEcSq5Lh3X
+         uOcFx8HL1JYU8IPxkNa9kTzxQCOF14vALCvBryM0tkzYcDvOhApt2kM59wVyc8JUyQMR
+         Z2mlDTMUqS5grpf3xPifrXyauieSVOhXxyusOYS8o/XX6YQR6pUBto8n+j1C7yY+Rd+S
+         4prIuBlnizjHIda1ZIlOgHQ0DvJvQ5zdYjmP2jiQRrmb5IA7+Tsc8HZ9YSqJiYiPfiuO
+         ycFLhg02Idzbqr7dV9YsdhtO9Hru/lIxDp6DsaG7RJbIhXwhdtn6C2kXCyrjyZc964iM
+         oK6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=nw3DmsyVi78VBxFxXKV3pNgx1Lmaugz8lN9SDA39wYQ=;
-        b=rE6XFigUQffj0b4DdWHsJ8y2EFLEkI15376SfFoLfAHkqYoKNqAUDWHFfajPhvtLCH
-         dWKxRp/Tdmo4eb1KAYs5wIsQCYJd5idtbwdeDMugzlWvds67bIT44fxkTTPbYq2aLqga
-         JEmgPFTU67XIGLVePR54zSCyINcWwRMiGqQUR98Z9PxPbXdYExCgSQE8HxsffMK0c6z+
-         ldUFPZ8rMOvwLT8ZZbkg0SSAaX5rX9+nM7nYpcGSaEGflnet3SKuYfL53pCtwXt96BNO
-         +FwL++PLCeKGFE5Um9nNUJf0ooeYAJpRXMcibM+qXiIafBweTN4RxAwkGgq+Vfgfo8k6
-         ib9w==
-X-Gm-Message-State: AOAM532mlTC6J2zMmJoOwY6DYSp0U6Hzi77MZnNyebxYJe1/cJN1GcF6
-        uYJnamfiBRboBgLdNs/BWQnyhNcbdle/D9/mAUo=
-X-Google-Smtp-Source: ABdhPJxwZHW9w8Kh52hjz6X1pFeMitVzKSnRKhBzgj8SS8/gh1G7Og4fiIWZrl1n+ejpOs+HJDgImbCRhgXreDazN2g=
-X-Received: by 2002:a2e:9e88:: with SMTP id f8mr16503900ljk.460.1636733956632;
- Fri, 12 Nov 2021 08:19:16 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zSyi1t+zt7tAuow8W+db8Y7S8jqQDHW6kMj3Q06p+Fc=;
+        b=d1PHnKzJFc0VS/MDITN/2gx7gUVj86vFEzRf18yfLqteM8t60g5EcctDZZIADqeELY
+         7LDXfTPpA8Gvkj6vAZYRIcxwCFqK+1rByK/4DEwUtN614puGKUleyLQqdAEDfhd9r+lh
+         IdbnE9r4L8jyyD04wUP8caVOmOwpLVTyP81Ld4LVLuj0TAlptX8DH4HKDHdw3RJv2qms
+         pSiDVZto5jz2oKl/ql4EBGBR43nJyKjMRfV12GHy64DsMdZObtdJl4rqzxysQ1wwnHk6
+         dkgU/dhwVbpniU4Iyg3pD5YUoWSpg1LH5dSYXzuRsVFMNwRg8xsqbMLnEBQM370BNDVK
+         2z6w==
+X-Gm-Message-State: AOAM531kB2K1G+JKq86ocjavfySFFFALR5MPRIhACmqn1QvoYaVFCuuG
+        /LbbexAe9qH/vh+j8rjxnvm0Ci0F+YTWsZhHW4822A==
+X-Google-Smtp-Source: ABdhPJwJxtIwdQ/xSKQABzzt8kLR95aNau3y+yUXGVRt1mVVdmtJKv4q2X+T5mddzB7ECDN2NEMJvYldPNPIKI92LSw=
+X-Received: by 2002:a25:f205:: with SMTP id i5mr18301171ybe.61.1636734012862;
+ Fri, 12 Nov 2021 08:20:12 -0800 (PST)
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 12 Nov 2021 10:19:05 -0600
-Message-ID: <CAH2r5ms0=2rMt4+jGi1nQC+EPrjozYezRjSiyt9DCxbkTwqgNw@mail.gmail.com>
-Subject: [GIT PULL] ksmbd fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211112141349.155713-1-dietmar.eggemann@arm.com>
+In-Reply-To: <20211112141349.155713-1-dietmar.eggemann@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 12 Nov 2021 17:20:01 +0100
+Message-ID: <CAKfTPtCzP_Xgos-yAiUxnKw_BvP22P5CH3xJjLiUQLeg0a-AxQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Replace CFS internal cpu_util() with cpu_util_cfs()
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb:
+On Fri, 12 Nov 2021 at 15:14, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
+> the DEADLINE utilization signal") to enable the access to CPU
+> utilization from the Schedutil CPUfreq governor.
+>
+> Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
+> selection") added util_est support later.
+>
+> The only thing cpu_util() is doing on top of what cpu_util_cfs() already
+> does is to clamp the return value to the [0..capacity_orig] capacity
+> range of the CPU. Integrating this into cpu_util_cfs() is not harming
+> the existing users (Schedutil and CPUfreq cooling (latter via
+> sched_cpu_util() wrapper)).
 
-  Merge tag '5.16-rc-part1-smb3-client-fixes' of
-git://git.samba.org/sfrench/cifs-2.6 (2021-11-06 16:47:53 -0700)
+Could you to update cpu_util_cfs() to use cpu as a parameter instead of rq ?
 
-are available in the Git repository at:
+>
+> Remove cpu_util().
+>
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>
+> I deliberately got rid of the comment on top of cpu_util(). It's from
+> the early days of using PELT utilization, it describes CPU utilization
+> behaviour before PELT time-scaling and talks about current capacity
+> which we don't maintain.
 
-  git://git.samba.org/ksmbd.git tags/5.16-rc-ksmbd-fixes
+would be good to keep an updated version in this case. There are lot
+of interesting informations in the comment
 
-for you to fetch changes up to 26a2787d45c5af8ffe0f986c01c36bc9111aa9be:
-
-  ksmbd: Use the SMB3_Create definitions from the shared (2021-11-11
-19:22:58 -0600)
-
-----------------------------------------------------------------
-15 smb server fixes: 3 for stable
-- important fix for validate negotiate
-- fix alignment check in packet validation
-- cleanup of dead code (like MD4)
-- refactoring some protocol headers to use common code in smbfs_common
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/93
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      ksmbd: Remove redundant 'flush_workqueue()' calls
-
-Marios Makassikis (1):
-      ksmbd: Fix buffer length check in fsctl_validate_negotiate_info()
-
-Namjae Jeon (6):
-      ksmbd: don't need 8byte alignment for request length in
-ksmbd_check_message
-      ksmbd: set unique value to volume serial field in FS_VOLUME_INFORMATION
-      ksmbd: remove md4 leftovers
-      ksmbd: remove smb2_buf_length in smb2_hdr
-      ksmbd: remove smb2_buf_length in smb2_transform_hdr
-      ksmbd: change LeaseKey data type to u8 array
-
-Ralph Boehme (3):
-      ksmbd: use ksmbd_req_buf_next() in ksmbd_verify_smb_message()
-      ksmbd: use ksmbd_req_buf_next() in ksmbd_smb2_check_message()
-      ksmdb: use cmd helper variable in smb2_get_ksmbd_tcon()
-
-Ronnie Sahlberg (4):
-      ksmbd: switch to use shared definitions where available
-      ksmbd: use the common definitions for NEGOTIATE_PROTOCOL
-      ksmbd: Move more definitions into the shared area
-      ksmbd: Use the SMB3_Create definitions from the shared
-
- fs/ksmbd/Kconfig          |   2 +-
- fs/ksmbd/auth.c           |  11 +-
- fs/ksmbd/connection.c     |  11 +-
- fs/ksmbd/ksmbd_work.c     |   1 -
- fs/ksmbd/ksmbd_work.h     |   4 +-
- fs/ksmbd/oplock.c         |  48 ++--
- fs/ksmbd/oplock.h         |   2 -
- fs/ksmbd/server.c         |   2 +-
- fs/ksmbd/smb2misc.c       |  16 +-
- fs/ksmbd/smb2ops.c        |   9 +-
- fs/ksmbd/smb2pdu.c        | 591 +++++++++++++++++++-------------------
- fs/ksmbd/smb2pdu.h        | 696 ++-------------------------------------------
- fs/ksmbd/smb_common.c     |  13 +-
- fs/ksmbd/smb_common.h     |  55 +---
- fs/ksmbd/transport_rdma.c |   3 +-
- fs/ksmbd/vfs.c            |   8 +-
- fs/ksmbd/vfs.h            |  39 ---
- 17 files changed, 372 insertions(+), 1139 deletions(-)
-
--- 
-Thanks,
-
-Steve
+>
+>  kernel/sched/fair.c  | 65 ++++----------------------------------------
+>  kernel/sched/sched.h |  2 +-
+>  2 files changed, 6 insertions(+), 61 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 13950beb01a2..7a815b10c0c3 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1502,7 +1502,6 @@ struct task_numa_env {
+>
+>  static unsigned long cpu_load(struct rq *rq);
+>  static unsigned long cpu_runnable(struct rq *rq);
+> -static unsigned long cpu_util(int cpu);
+>  static inline long adjust_numa_imbalance(int imbalance,
+>                                         int dst_running, int dst_weight);
+>
+> @@ -1569,7 +1568,7 @@ static void update_numa_stats(struct task_numa_env *env,
+>
+>                 ns->load += cpu_load(rq);
+>                 ns->runnable += cpu_runnable(rq);
+> -               ns->util += cpu_util(cpu);
+> +               ns->util += cpu_util_cfs(rq);
+>                 ns->nr_running += rq->cfs.h_nr_running;
+>                 ns->compute_capacity += capacity_of(cpu);
+>
+> @@ -5509,11 +5508,9 @@ static inline void hrtick_update(struct rq *rq)
+>  #endif
+>
+>  #ifdef CONFIG_SMP
+> -static inline unsigned long cpu_util(int cpu);
+> -
+>  static inline bool cpu_overutilized(int cpu)
+>  {
+> -       return !fits_capacity(cpu_util(cpu), capacity_of(cpu));
+> +       return !fits_capacity(cpu_util_cfs(cpu_rq(cpu)), capacity_of(cpu));
+>  }
+>
+>  static inline void update_overutilized_status(struct rq *rq)
+> @@ -6456,58 +6453,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>         return target;
+>  }
+>
+> -/**
+> - * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
+> - * @cpu: the CPU to get the utilization of
+> - *
+> - * The unit of the return value must be the one of capacity so we can compare
+> - * the utilization with the capacity of the CPU that is available for CFS task
+> - * (ie cpu_capacity).
+> - *
+> - * cfs_rq.avg.util_avg is the sum of running time of runnable tasks plus the
+> - * recent utilization of currently non-runnable tasks on a CPU. It represents
+> - * the amount of utilization of a CPU in the range [0..capacity_orig] where
+> - * capacity_orig is the cpu_capacity available at the highest frequency
+> - * (arch_scale_freq_capacity()).
+> - * The utilization of a CPU converges towards a sum equal to or less than the
+> - * current capacity (capacity_curr <= capacity_orig) of the CPU because it is
+> - * the running time on this CPU scaled by capacity_curr.
+> - *
+> - * The estimated utilization of a CPU is defined to be the maximum between its
+> - * cfs_rq.avg.util_avg and the sum of the estimated utilization of the tasks
+> - * currently RUNNABLE on that CPU.
+> - * This allows to properly represent the expected utilization of a CPU which
+> - * has just got a big task running since a long sleep period. At the same time
+> - * however it preserves the benefits of the "blocked utilization" in
+> - * describing the potential for other tasks waking up on the same CPU.
+> - *
+> - * Nevertheless, cfs_rq.avg.util_avg can be higher than capacity_curr or even
+> - * higher than capacity_orig because of unfortunate rounding in
+> - * cfs.avg.util_avg or just after migrating tasks and new task wakeups until
+> - * the average stabilizes with the new running time. We need to check that the
+> - * utilization stays within the range of [0..capacity_orig] and cap it if
+> - * necessary. Without utilization capping, a group could be seen as overloaded
+> - * (CPU0 utilization at 121% + CPU1 utilization at 80%) whereas CPU1 has 20% of
+> - * available capacity. We allow utilization to overshoot capacity_curr (but not
+> - * capacity_orig) as it useful for predicting the capacity required after task
+> - * migrations (scheduler-driven DVFS).
+> - *
+> - * Return: the (estimated) utilization for the specified CPU
+> - */
+> -static inline unsigned long cpu_util(int cpu)
+> -{
+> -       struct cfs_rq *cfs_rq;
+> -       unsigned int util;
+> -
+> -       cfs_rq = &cpu_rq(cpu)->cfs;
+> -       util = READ_ONCE(cfs_rq->avg.util_avg);
+> -
+> -       if (sched_feat(UTIL_EST))
+> -               util = max(util, READ_ONCE(cfs_rq->avg.util_est.enqueued));
+> -
+> -       return min_t(unsigned long, util, capacity_orig_of(cpu));
+> -}
+> -
+>  /*
+>   * cpu_util_without: compute cpu utilization without any contributions from *p
+>   * @cpu: the CPU which utilization is requested
+> @@ -6528,7 +6473,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
+>
+>         /* Task has no contribution or is new */
+>         if (cpu != task_cpu(p) || !READ_ONCE(p->se.avg.last_update_time))
+> -               return cpu_util(cpu);
+> +               return cpu_util_cfs(cpu_rq(cpu));
+>
+>         cfs_rq = &cpu_rq(cpu)->cfs;
+>         util = READ_ONCE(cfs_rq->avg.util_avg);
+> @@ -8681,7 +8626,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>                 struct rq *rq = cpu_rq(i);
+>
+>                 sgs->group_load += cpu_load(rq);
+> -               sgs->group_util += cpu_util(i);
+> +               sgs->group_util += cpu_util_cfs(rq);
+>                 sgs->group_runnable += cpu_runnable(rq);
+>                 sgs->sum_h_nr_running += rq->cfs.h_nr_running;
+>
+> @@ -9699,7 +9644,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>                         break;
+>
+>                 case migrate_util:
+> -                       util = cpu_util(cpu_of(rq));
+> +                       util = cpu_util_cfs(rq);
+>
+>                         /*
+>                          * Don't try to pull utilization from a CPU with one
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index f0b249ec581d..d49eda251049 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2951,7 +2951,7 @@ static inline unsigned long cpu_util_cfs(struct rq *rq)
+>                              READ_ONCE(rq->cfs.avg.util_est.enqueued));
+>         }
+>
+> -       return util;
+> +       return min(util, capacity_orig_of(cpu_of(rq)));
+>  }
+>
+>  static inline unsigned long cpu_util_rt(struct rq *rq)
+> --
+> 2.25.1
+>
