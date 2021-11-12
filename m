@@ -2,152 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D24344E1A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B363E44E1AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhKLFrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 00:47:12 -0500
-Received: from mga04.intel.com ([192.55.52.120]:11591 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhKLFrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 00:47:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="231802701"
-X-IronPort-AV: E=Sophos;i="5.87,228,1631602800"; 
-   d="scan'208";a="231802701"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 21:44:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,228,1631602800"; 
-   d="scan'208";a="504755009"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.189])
-  by orsmga008.jf.intel.com with ESMTP; 11 Nov 2021 21:44:17 -0800
-Date:   Fri, 12 Nov 2021 13:44:17 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
- clocksources
-Message-ID: <20211112054417.GA29845@shbuild999.sh.intel.com>
-References: <20211110221732.272986-1-longman@redhat.com>
- <20211110221732.272986-2-longman@redhat.com>
- <20211111045703.GA15896@shbuild999.sh.intel.com>
- <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+        id S231524AbhKLFsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 00:48:13 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48564 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231156AbhKLFsL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 00:48:11 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AC5dM3w022261
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 21:45:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=mjEUJsJziQQwmn+P/3yhywfNIRO8Hilhk8hoMqZicsQ=;
+ b=gl5nVDBGPIab0cusGE1Lv34cvIJbYWkx4Frf499E8pvWSNhzR6cnHB9zFDtB0Gw8BL/6
+ 5QL81kXJF7FzYgCEEfjNvZntrkSGZSz1y8VEXpro9yU1CZmGDjNzv6gnkPEYkFmiEjwo
+ dUv7J/TGWXRdl/JwlHC05aPltkfh4Zm5Ztg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c9dtk11qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 21:45:20 -0800
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 11 Nov 2021 21:45:18 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 1D5C01F860C32; Thu, 11 Nov 2021 21:45:12 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] x86/perf: fix snapshot_branch_stack warning in VM
+Date:   Thu, 11 Nov 2021 21:45:10 -0800
+Message-ID: <20211112054510.2667030-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: aCCJmu4f4Ac71HPmlxedBcca3BCgT3Gy
+X-Proofpoint-GUID: aCCJmu4f4Ac71HPmlxedBcca3BCgT3Gy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-12_02,2021-11-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111120031
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 06:43:11AM -0800, Paul E. McKenney wrote:
-> On Thu, Nov 11, 2021 at 12:57:03PM +0800, Feng Tang wrote:
-> > On Wed, Nov 10, 2021 at 05:17:31PM -0500, Waiman Long wrote:
-> > > Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
-> > > detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
-> > > threshold"), it is found that tsc clocksource fallback to hpet can
-> > > sometimes happen on both Intel and AMD systems especially when they are
-> > > running stressful benchmarking workloads. Of the 23 systems tested with
-> > > a v5.14 kernel, 10 of them have switched to hpet clock source during
-> > > the test run.
-> > > 
-> > > The result of falling back to hpet is a drastic reduction of performance
-> > > when running benchmarks. For example, the fio performance tests can
-> > > drop up to 70% whereas the iperf3 performance can drop up to 80%.
-> > > 
-> > > 4 hpet fallbacks happened during bootup. They were:
-> > > 
-> > >   [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
-> > >   [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
-> > >   [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
-> > >   [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
-> > > 
-> > > Other fallbacks happen when the systems were running stressful
-> > > benchmarks. For example:
-> > > 
-> > >   [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
-> > >   [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
-> > > 
-> > > Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
-> > > changed the skew margin from 100us to 50us. I think this is too small
-> > > and can easily be exceeded when running some stressful workloads on
-> > > a thermally stressed system.  So it is switched back to 100us. On
-> > > the other hand, it doesn't look like we need to increase the minimum
-> > > uncertainty margin. So it is kept the same at 100us too.
-> > > 
-> > > Even a maximum skew margin of 100us may be too small in for some systems
-> > > when booting up especially if those systems are under thermal stress. To
-> > > eliminate the case that the large skew is due to the system being too
-> > > busy slowing down the reading of both the watchdog and the clocksource,
-> > > a final check is done by reading watchdog time again and comparing the
-> > > consecutive watchdog timing read delay against WATCHDOG_MAX_SKEW/2. If
-> > > that delay exceeds the limit, we assume that the system is just too
-> > > busy. A warning will be printed to the console and the watchdog check
-> > > is then skipped for this round. For example:
-> > > 
-> > >   [    8.789316] clocksource: timekeeping watchdog on CPU13: hpet consecutive read-back delay of 174541ns, system too busy
-> >  
-> > 
-> > I think it may be better to add more details about the root cause, other
-> > than that it looks good to me, as we tested similar patch on our test
-> > platforms.
-> > 
-> > Reviewed-by: Feng Tang <feng.tang@intel.com>
-> 
-> Thank you both!
-> 
-> I agree on the bit about root cause.  Would it make sense to compare the
-> difference between HPET reads 1 and 2 (containing the read of the TSC)
-> and the difference between HPET reads 2 and 3?  If the 2-1 difference was
-> no more than (say) 8/7ths of the 3-2 difference, or the 2-1 difference
-> was no more than (say) 20 microseconds more than the 3-2 difference,
-> this could be considered a good-as-it-gets read, ending the retry loop.
-> Then if the 3-1 difference was greater than the default (100 microseconds
-> in current -rcu), that difference could be substituted for that particular
-> clocksource watchdog check.  With a console message noting the unusually
-> high overhead (but not a splat).
-> 
-> So if it took 75 microseconds for each HPET read and 1 microsecond for
-> the TSC read, then 226 microseconds would be substituted for the default
-> of 100 microseconds for that cycle's skew cutoff.  Unless the previous
-> skew cutoff was larger, in which case the previous cutoff should be
-> used instead.  Either way, the current cutoff is recorded for comparison
-> for the next clocksource watchdog check.
-> 
-> If the 3-1 difference was greater than 62.5 milliseconds, a warning should
-> probably be emitted anyway.
- 
-I can test the patch with our cases that could reproduce the problem.
+When running in VM intel_pmu_snapshot_branch_stack triggers WRMSR warning
+like:
 
-> Or did you have something else in mind?
+[  252.599708] unchecked MSR access error: WRMSR to 0x3f1 (tried to write=
+ 0x0000000000000000) at rIP: 0xffffffff81011a5b (intel_pmu_snapshot_branc=
+h_stack+0x3b/0xd0)
+[  252.601886] Call Trace:
+[  252.602215]  <TASK>
+[  252.602516]  bpf_get_branch_snapshot+0x17/0x40
+[  252.603109]  bpf_prog_5c58f41f99af93ce_test1+0x33/0xd54
+[  252.603777]  bpf_trampoline_15032502913_0+0x4c/0x1000
+[  252.604435]  bpf_testmod_loop_test+0x5/0x20 [bpf_testmod]
+[  252.605127]  bpf_testmod_test_read+0x8f/0x3b0 [bpf_testmod]
+[  252.605864]  ? bpf_testmod_loop_test+0x20/0x20 [bpf_testmod]
+[  252.606612]  ? __kasan_kmalloc+0x84/0xa0
+[  252.607146]  ? lock_is_held_type+0xd8/0x130
+[  252.607736]  ? sysfs_kf_bin_read+0xbe/0x110
+[  252.608513]  ? bpf_testmod_loop_test+0x20/0x20 [bpf_testmod]
+[  252.609332]  kernfs_fop_read_iter+0x1ac/0x2c0
+[  252.609901]  ? kernfs_create_link+0x110/0x110
+[  252.610509]  new_sync_read+0x25a/0x380
+[  252.610994]  ? __x64_sys_llseek+0x1e0/0x1e0
+[  252.611538]  ? rcu_read_lock_sched_held+0xa1/0xd0
+[  252.612165]  ? find_held_lock+0xac/0xd0
+[  252.612700]  ? security_file_permission+0xe7/0x2c0
+[  252.613326]  vfs_read+0x1a4/0x2a0
+[  252.613780]  ksys_read+0xc0/0x160
+[  252.614218]  ? vfs_write+0x510/0x510
+[  252.614684]  ? ktime_get_coarse_real_ts64+0xe4/0xf0
+[  252.615423]  do_syscall_64+0x3a/0x80
+[  252.615886]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  252.616553] RIP: 0033:0x7f62aa7f08b2
+[  252.617011] Code: 97 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b6 0=
+f 1f 80 00 00 00 00 f3 0f 1e fa 8b 05 96 db 20 00 85 c0 75 12 31 c0 0f 05=
+ <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 41 54 49 89 d4 55 48 89
+[  252.619333] RSP: 002b:00007ffe72c83628 EFLAGS: 00000246 ORIG_RAX: 0000=
+000000000000
+[  252.620252] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f62a=
+a7f08b2
+[  252.621138] RDX: 0000000000000064 RSI: 0000000000000000 RDI: 000000000=
+0000028
+[  252.622035] RBP: 00007ffe72c83660 R08: 0000000000000000 R09: 00007ffe7=
+2c83507
+[  252.622951] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
+040d090
+[  252.623890] R13: 00007ffe72c83900 R14: 0000000000000000 R15: 000000000=
+0000000
+[  252.624829]  </TASK>
 
-I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
-the delay between watchdog's (HPET here) read were not linear, that
-from debug data, sometimes the 3-2 difference could be bigger or much
-bigger than the 2-1 difference.
+This can be triggered with BPF selftests:
 
-The reason could be the gap between 2 reads depends hugely on the system
-pressure at that time that 3 HPET read happens. On our test box (a
-2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
-about 2.5 us,  while under the stress it could be bumped to from 6 us
-to 2800 us.
+  tools/testing/selftests/bpf/test_progs -t get_branch_snapshot
 
-So I think checking the 3-2 difference plus increasing the max retries
-to 10 may be a simple way, if the watchdog read is found to be
-abnormally long, we skip this round of check.
+This warning is caused by __intel_pmu_pebs_disable_all() in the VM. Since
+it is not necessary to disable PEBs for LBR, remove it from
+intel_pmu_snapshot_branch_stack and intel_pmu_snapshot_arch_branch_stack.
 
-Thanks,
-Feng
+Fixes: c22ac2a3d4bd ("perf: Enable branch record for software events")
+Cc: Like Xu <like.xu.linux@gmail.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ arch/x86/events/intel/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 42cf01ecdd131..ec6444f2c9dcb 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2211,7 +2211,6 @@ intel_pmu_snapshot_branch_stack(struct perf_branch_=
+entry *entries, unsigned int
+ 	/* must not have branches... */
+ 	local_irq_save(flags);
+ 	__intel_pmu_disable_all(false); /* we don't care about BTS */
+-	__intel_pmu_pebs_disable_all();
+ 	__intel_pmu_lbr_disable();
+ 	/*            ... until here */
+ 	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
+@@ -2225,7 +2224,6 @@ intel_pmu_snapshot_arch_branch_stack(struct perf_br=
+anch_entry *entries, unsigned
+ 	/* must not have branches... */
+ 	local_irq_save(flags);
+ 	__intel_pmu_disable_all(false); /* we don't care about BTS */
+-	__intel_pmu_pebs_disable_all();
+ 	__intel_pmu_arch_lbr_disable();
+ 	/*            ... until here */
+ 	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
+--=20
+2.30.2
 
-> 
-> 							Thanx, Paul
- 
