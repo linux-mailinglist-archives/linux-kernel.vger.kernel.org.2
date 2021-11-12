@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE9644E885
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6815A44E889
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbhKLOXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhKLOXF (ORCPT
+        id S235113AbhKLOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:23:59 -0500
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:39861 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233894AbhKLOX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:23:05 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBEBC061766;
-        Fri, 12 Nov 2021 06:20:14 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id np3so6883763pjb.4;
-        Fri, 12 Nov 2021 06:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tKyWJgE04HxRAjq5nb7ERjx0vGYGSgiBeT5zkfHPsnw=;
-        b=c6tbwnM8EEdXQbXjZ6TBKu/GDieGFFzpHqyAv/x9gtsV7u9AbwnmumGLMO0/EiCoGN
-         Yf5qCS4fIkHQGwoyoL4ywdKyumfkWOKyjqw9Ct2rv2+6bZv53d/FbafgVZFrMTIvTt5D
-         eA/10d3nD6C+OXYQFt04R4CsZKRFYGumYpPBcd0kA0KkCHJQqztNuFVtkubP0ozjtChk
-         BzZ1QUnBwMBOcg41FLNlXK2oM+wpBHHGJxrNrVy//gB9kI7KQGphRKUzKziLBwjktIbz
-         3yfQyasiBzLSaitwbu4fR+QK+p8qI3zUzDDqkXL4GRpNe7PjG6B0XMXkYVuz+q/qHVq5
-         gvnA==
+        Fri, 12 Nov 2021 09:23:56 -0500
+Received: by mail-ua1-f41.google.com with SMTP id i6so19092548uae.6;
+        Fri, 12 Nov 2021 06:21:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tKyWJgE04HxRAjq5nb7ERjx0vGYGSgiBeT5zkfHPsnw=;
-        b=hJlKLhsOJaQA+oe7go2nMLbXzmWOewvLBKKdUD61cP/DdaHk4al04IgAZe6F43JW0z
-         +GI0DbtpHIdKysTmgjRGqBKn89Fv3/du1pSq9aRm/G5HCbniIU9VpptfauH9mMeljsUY
-         mofvPb3fnfDaQeknaQiPxzL5s9loTKMvjPT7Om74/6enpF7ob/9R/6mnIYcDZzcrbMdV
-         QayN4LWJkYefVTCnI9riybxkFNsY2fsWnccFP1nkcr0rQxFzPJPhr+6DIvbXKWWdYXNf
-         1oDOGqHOdJdNBEgzkVCje6HgtqTaYRvUFMEWqjh3tjEfJ3jys8neEW0MbJKwgvH6QaPm
-         0UPA==
-X-Gm-Message-State: AOAM5304mVtMxlteT76+yTjnISYBXocg0lFlu6RXjmZ8nMrSHXKvXIPS
-        YlDTV3HJXU+bjKd5a7Nclaw=
-X-Google-Smtp-Source: ABdhPJwg92vrA9JI16k61zQqU2yfIiV/eDCJUm5tXXj6752EumHyQSBUbrIuJGcQ45rvBBQI07OUlQ==
-X-Received: by 2002:a17:902:8a93:b0:142:30fe:dd20 with SMTP id p19-20020a1709028a9300b0014230fedd20mr8309699plo.29.1636726813724;
-        Fri, 12 Nov 2021 06:20:13 -0800 (PST)
-Received: from fanta-arch.localdomain ([148.163.172.142])
-        by smtp.gmail.com with ESMTPSA id i2sm6409532pfe.70.2021.11.12.06.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 06:20:13 -0800 (PST)
-From:   Letu Ren <fantasquex@gmail.com>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
-        Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH] net: igbvf: fix double free in `igbvf_probe`
-Date:   Fri, 12 Nov 2021 22:20:02 +0800
-Message-Id: <20211112142002.23156-1-fantasquex@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d0xUKMNGAKW3Rv2NiR2CE/TSNmlcrsKAFcxfksPwJsc=;
+        b=RL3vJ7j9iuORfEq6EvcizcD9TTu1NbRoAESKz+AflnMUvZkgCs8qC1LyF+bM0RM7Sa
+         UO+/04mJN5UJDb49mhvaNr22Q+zq41feQuN/XQaUphbw2nMtGW52PFZ/fnqZfaxOksFJ
+         t/TAPJnVGkRGtX7yWnBbsi/fKTHcbZ8MRkHm9XqzRmSMSHqgIGxunSG6AQfnaxLHzOYh
+         kJfzGpdEsw0Wry2UsWd+HI80ru0o7hXEikqytqm2pU//PX0cOJUw42QDWkH+S0DbELe6
+         u2AbDoJaNzYBrdihXB3c0+Hi9mEZCyuHOuXBuP2gc4VLmicGAM7lBltuM8RxLGsWY0DV
+         D70A==
+X-Gm-Message-State: AOAM532/DgTPe1eJwfTbzNIkU0vpWCOZ8mwn3uYFWy22SSz6zNDNAvrE
+        2kiSUqOiSqrEC0o9Ek0F04+P01ykQ/TcqQ==
+X-Google-Smtp-Source: ABdhPJwtAZ2nlUntcVflRIDcdzZRS/OxqcqCaQDDg9wv5sciVWz1cJv8uLClM814F9dGHZ4NoOjT1Q==
+X-Received: by 2002:a05:6102:dcb:: with SMTP id e11mr10634002vst.8.1636726864420;
+        Fri, 12 Nov 2021 06:21:04 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id p3sm4200321vsr.3.2021.11.12.06.21.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 06:21:04 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id t13so19083541uad.9;
+        Fri, 12 Nov 2021 06:21:03 -0800 (PST)
+X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr10408439vsl.41.1636726863321;
+ Fri, 12 Nov 2021 06:21:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211110232920.19198-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211110232920.19198-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211110232920.19198-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Nov 2021 15:20:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXXhBpcL+VrLQCnSNvsdVWLACyBRSGaVKj+F_NZZBxGTg@mail.gmail.com>
+Message-ID: <CAMuHMdXXhBpcL+VrLQCnSNvsdVWLACyBRSGaVKj+F_NZZBxGTg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] serial: sh-sci: Add support to deassert/assert
+ reset line
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In `igbvf_probe`, if register_netdev() fails, the program will go to
-label err_hw_init, and then to label err_ioremap. In free_netdev() which
-is just below label err_ioremap, there is `list_for_each_entry_safe` and
-`netif_napi_del` which aims to delete all entries in `dev->napi_list`.
-The program has added an entry `adapter->rx_ring->napi` which is added by
-`netif_napi_add` in igbvf_alloc_queues(). However, adapter->rx_ring has
-been freed below label err_hw_init. So this a UAF.
+On Thu, Nov 11, 2021 at 12:29 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> On RZ/G2L SoC we need to explicitly deassert the reset line
+> for the device to work, use this opportunity to deassert/assert
+> reset line in sh-sci driver.
+>
+> This patch adds support to read the "resets" property (if available)
+> from DT and perform deassert/assert when required.
+>
+> Also, propagate the error to the caller of sci_parse_dt() instead of
+> returning NULL in case of failure.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-In terms of how to patch the problem, we can refer to igbvf_remove() and
-delete the entry before `adapter->rx_ring`.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The KASAN logs are as follows:
+Gr{oetje,eeting}s,
 
-[   35.126075] BUG: KASAN: use-after-free in free_netdev+0x1fd/0x450
-[   35.127170] Read of size 8 at addr ffff88810126d990 by task modprobe/366
-[   35.128360]
-[   35.128643] CPU: 1 PID: 366 Comm: modprobe Not tainted 5.15.0-rc2+ #14
-[   35.129789] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[   35.131749] Call Trace:
-[   35.132199]  dump_stack_lvl+0x59/0x7b
-[   35.132865]  print_address_description+0x7c/0x3b0
-[   35.133707]  ? free_netdev+0x1fd/0x450
-[   35.134378]  __kasan_report+0x160/0x1c0
-[   35.135063]  ? free_netdev+0x1fd/0x450
-[   35.135738]  kasan_report+0x4b/0x70
-[   35.136367]  free_netdev+0x1fd/0x450
-[   35.137006]  igbvf_probe+0x121d/0x1a10 [igbvf]
-[   35.137808]  ? igbvf_vlan_rx_add_vid+0x100/0x100 [igbvf]
-[   35.138751]  local_pci_probe+0x13c/0x1f0
-[   35.139461]  pci_device_probe+0x37e/0x6c0
-[   35.165526]
-[   35.165806] Allocated by task 366:
-[   35.166414]  ____kasan_kmalloc+0xc4/0xf0
-[   35.167117]  foo_kmem_cache_alloc_trace+0x3c/0x50 [igbvf]
-[   35.168078]  igbvf_probe+0x9c5/0x1a10 [igbvf]
-[   35.168866]  local_pci_probe+0x13c/0x1f0
-[   35.169565]  pci_device_probe+0x37e/0x6c0
-[   35.179713]
-[   35.179993] Freed by task 366:
-[   35.180539]  kasan_set_track+0x4c/0x80
-[   35.181211]  kasan_set_free_info+0x1f/0x40
-[   35.181942]  ____kasan_slab_free+0x103/0x140
-[   35.182703]  kfree+0xe3/0x250
-[   35.183239]  igbvf_probe+0x1173/0x1a10 [igbvf]
-[   35.184040]  local_pci_probe+0x13c/0x1f0
+                        Geert
 
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
----
- drivers/net/ethernet/intel/igbvf/netdev.c | 1 +
- 1 file changed, 1 insertion(+)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
-index d32e72d953c8..d051918dfdff 100644
---- a/drivers/net/ethernet/intel/igbvf/netdev.c
-+++ b/drivers/net/ethernet/intel/igbvf/netdev.c
-@@ -2861,6 +2861,7 @@ static int igbvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	return 0;
- 
- err_hw_init:
-+	netif_napi_del(&adapter->rx_ring->napi);
- 	kfree(adapter->tx_ring);
- 	kfree(adapter->rx_ring);
- err_sw_init:
--- 
-2.33.1
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
