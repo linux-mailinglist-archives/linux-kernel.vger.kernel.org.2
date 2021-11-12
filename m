@@ -2,175 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821B144EDC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA3244EDC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235464AbhKLUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:18:07 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:33497 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhKLUSG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:18:06 -0500
-Received: by mail-ot1-f54.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso15631011ote.0;
-        Fri, 12 Nov 2021 12:15:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=keLT6GqkBxKBg5E7mpziqAGsje8UnIi4oJ/70fWYsOk=;
-        b=tveqlObCh9TbDyJaO6cOspfelQJTt91QWYN+597Ne2+hRe5uTRlHTNTnD2l4fm8c87
-         WUSOi5G2QouNpVHh6Jm79fh/yibIytLFjLa/QEvQ3S5EeElipARW4TLSwD4dDbWUiu19
-         lJczJR+YSs/17FP4TLH7mdOfg+hzGyBYEfBQiK+GCBxJ4syTZbfasgCqBePYmzWMoYxJ
-         qBspArOEXN/IRnrkaUvtdiJKUb/dQ1YqziUrkkGGWZk+fzmNwj+5aeCyjH/VjPiWvzWb
-         4xYXOOSP2Z9+5a4AMt2mELwmf4DIwhM7QrQXxdrc+PUi5ELFcllDj+S16VMEwpBMvJxt
-         9QpA==
-X-Gm-Message-State: AOAM532bcSMGZOU39lScu+NXbXDyizm7DkfqDD4AsbIcGUTyCfb6ske+
-        KV3580jxk8kAgcBemV9iVA==
-X-Google-Smtp-Source: ABdhPJz0IgudO9I+dADfCJrqhnAcSXUvXv7srFOWzM/tpxDv/VcAcn13Yy2W70rZqXpm+7Y/UoSzNQ==
-X-Received: by 2002:a9d:6307:: with SMTP id q7mr14945920otk.83.1636748115023;
-        Fri, 12 Nov 2021 12:15:15 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id y9sm1235608oon.8.2021.11.12.12.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 12:15:14 -0800 (PST)
-Received: (nullmailer pid 3294254 invoked by uid 1000);
-        Fri, 12 Nov 2021 20:15:13 -0000
-Date:   Fri, 12 Nov 2021 14:15:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     YC Hung <yc.hung@mediatek.com>
-Cc:     broonie@kernel.org, tiwai@suse.com, matthias.bgg@gmail.com,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, daniel.baluta@nxp.com,
-        trevor.wu@mediatek.com, allen-kh.cheng@mediatek.com,
-        angelogioacchino.delregno@collabora.com
-Subject: Re: [PATCH v5] dt-bindings: dsp: mediatek: Add mt8195 DSP binding
- support
-Message-ID: <YY7LUWS5YDBBl/Kp@robh.at.kernel.org>
-References: <20211103102607.12277-1-yc.hung@mediatek.com>
+        id S232753AbhKLUSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:18:42 -0500
+Received: from mail-bn8nam11on2053.outbound.protection.outlook.com ([40.107.236.53]:30369
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230235AbhKLUSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:18:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TwQBTnQuajykTv94kE0XRPcxvKAyd91VOztkVgCBKWokHeXj+oZLbnBtiyXMVNf/KumF3WBgPVxtnUGbLxMZ7sF68hykDcRXullf7qEQKqlBsdhmenHMpCl86wVFvIYGGIipcRBKvOoSvbEs4yCrQc6SekYXRM10+ItlsxugA2ZLRgP2c6BOSgo7U9Sf9e1Sg/6Es6ziN0wpEsD/x8kD91NSMp+z0jjskDkwOwsf+TNpsHDG2+JPLE21RGgEEjUURveBVJyIILKCZB2blpgPSyyU7Yua+PuLFhlK3wrrCIPlgGThS403UHosnE7Lz5qmqp4MBq3cfHrdm9LgDQtSdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lDw14s7iChUNhdZtf7kxAvagn7yz0qHaNZuBy142+Xo=;
+ b=gZDKAkqpHLnyJxALI5gmxBeaCqQPmod5g0qZWhhSjvdxB417rvVfEvrYf/JQTgUtpgak6KmK7b3ZGBSEylJDryXUgj0BOgAuyXs6ZGkiU/zaatd6vk94WX+vFbGjW73hZb/awlp9Ef18nA1LqQbZLLOIAEPZIUEGM82v/InIx7QJf+z3O3dOz6fM+Rcy8Gg5fF8dPXZy7qP4F07EEo3j6cs/+tTFQ1HVJdxHwDnMWwHVNsBcNkqbLO7wuquPDKX9xedPScPQJ6Gab5O6P75EAtM0WLj2BNsfYzEnd6C958SpzDv+0YwK0L1vXJmDL9H0LRyxJm4VH4l++jFiqx086w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=opensource.wdc.com smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lDw14s7iChUNhdZtf7kxAvagn7yz0qHaNZuBy142+Xo=;
+ b=Ep60bFRHv/zmEmvlPlBtIO5j4Jpb5n7PRz1MYQKEYAJQM6qQll+fibGnGN9PULKBN2+PoCo3eN8xCSh9hrW4xLNKzwpGlnrY1sDbeguOkTgvdjJV0RmEWVUzVKMGX+ywUwMwd2rqEObGLD0x8K2A3oJwv4ws7go2Nkovk3fMizI=
+Received: from DM5PR19CA0029.namprd19.prod.outlook.com (2603:10b6:3:9a::15) by
+ MN2PR12MB4205.namprd12.prod.outlook.com (2603:10b6:208:198::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.17; Fri, 12 Nov
+ 2021 20:15:48 +0000
+Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:9a:cafe::70) by DM5PR19CA0029.outlook.office365.com
+ (2603:10b6:3:9a::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.17 via Frontend
+ Transport; Fri, 12 Nov 2021 20:15:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 20:15:47 +0000
+Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 12 Nov
+ 2021 14:15:46 -0600
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+CC:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Mario Limonciello" <mario.limonciello@amd.com>,
+        Nehal-bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>
+Subject: [PATCH 1/2] ahci: Add Green Sardine vendor ID as board_ahci_mobile
+Date:   Fri, 12 Nov 2021 14:15:38 -0600
+Message-ID: <20211112201539.17377-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103102607.12277-1-yc.hung@mediatek.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1650ffac-ab83-4d16-6013-08d9a6193732
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4205:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4205B93E7E748CFF907BD109E2959@MN2PR12MB4205.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:972;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WGdirqfcBMhT6Tbizy4fOydr+KjFvc7Qfh28Ck+lNNYXqHsdr45zeRibbUkkaG+y1yclaSPcomXMeWnYpWjb2xg9xSHdKoFO/UDMofd4sB8bMxZKtj71yG60EXkhUw01v7SDioXklRP16QTGk1PI3W17lpeKX/qfDLjfx3Cma6yM9bbz5y9JfaZEtRcglUdvaV6ARlPJpfSDdREN/PF2xscQWH2+PQzhIRoIJiGv1u7FZbsqhs2ZalI2vEipBxnvvLcXmv01mtxTMw3z4ktSDeXtceTwJhBi7IAjoNCouph9y6TCw7Atu+2/Y7uILvz1F/quzOAxVDO+O4XetugZqM6x7A7OvnL95NplFYmo82CyANdJyQcC13exMGzVuNET259+kL+38QUFf3PDdoRAJ7HrsbVuPlzNjYltwYsdX6k7zYS6sUJvQic395PBQrcwsWzPb7LdIU9aDjB4PNd2D1CLPdmSvaIB0s/eC4Yf8vYeNMkTzhkVPjofjYTWkHJHs+Ro8RghNnQ90qqC8DXRaZ1m7ltoOzIaHiYLA0xfF08AoaDJUqj8y7U1uDxnMelCF1UDy9xOCBNtTtJXEfHAKgXfIdc0kTclM67dWsPGRqK3NkMvyM/E+ovRbPzOlrdHgMfYv6PWsGLoe3aAot/uyS8379x5n6WDZIJlzrgS+E5lFAYbVqnykZDxyEfgC6M4zKelrqPq0f9RrU2uPYG1Aiv4Cik2Zj/cmcT5tNcwjzVW3q2hvX6/xWf/OVMW2/OOowDhamLAKTiUXbxB3FB88BIJFRvq+FBTqPBLqKCTPRhMtSdV28AAMeamS8FUbiEB
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(4326008)(5660300002)(36756003)(336012)(7696005)(8676002)(70586007)(2906002)(356005)(47076005)(54906003)(186003)(44832011)(6666004)(36860700001)(1076003)(86362001)(6916009)(16526019)(2616005)(26005)(8936002)(508600001)(83380400001)(966005)(82310400003)(70206006)(316002)(81166007)(426003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 20:15:47.8987
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1650ffac-ab83-4d16-6013-08d9a6193732
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4205
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 06:26:08PM +0800, YC Hung wrote:
-> From: "yc.hung" <yc.hung@mediatek.com>
-> 
-> This describes the mt8195 DSP device tree node.
-> 
-> Signed-off-by: yc.hung <yc.hung@mediatek.com>
-> ---
-> Changes since v4:
->   - remove patch 1 with clocks as it will be reviewed and merged to SOF tree.
->     https://github.com/thesofproject/linux/pull/3237
->   - refine DT file binding files with Rob's comments.
-> 
->  .../bindings/dsp/mtk,mt8195-dsp.yaml          | 142 ++++++++++++++++++
->  1 file changed, 142 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> new file mode 100644
-> index 000000000000..aeeb7af69625
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> @@ -0,0 +1,142 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dsp/mtk,mt8195-dsp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek mt8195 DSP core
-> +
-> +maintainers:
-> +  - YC Hung <yc.hung@mediatek.com>
-> +
-> +description: |
-> +  Some boards from mt8195 contain a DSP core used for
-> +  advanced pre- and post- audio processing.
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt8195-dsp
-> +
-> +  reg:
-> +    items:
-> +      - description: Address and size of the DSP Cfg registers
-> +      - description: Address and size of the DSP SRAM
-> +
-> +  reg-names:
-> +    items:
-> +      - const: cfg
-> +      - const: sram
-> +
-> +  interrupts:
-> +    items:
-> +      - description: watchdog interrupt
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: wdt
-> +
-> +  clocks:
-> +    items:
-> +      - description: mux for audio dsp clock
-> +      - description: 26M clock
-> +      - description: mux for audio dsp local bus
-> +      - description: default audio dsp local bus clock source
-> +      - description: clock gate for audio dsp clock
-> +      - description: mux for audio dsp access external bus
-> +
-> +  clock-names:
-> +    items:
-> +      - const: adsp_sel
-> +      - const: clk26m_ck
-> +      - const: audio_local_bus
-> +      - const: mainpll_d7_d2
-> +      - const: scp_adsp_audiodsp
-> +      - const: audio_h
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  mboxes:
-> +    items:
-> +      - description: a mailbox is ised for ipc reply between host and audio DSP.
-> +      - description: a mailbox is ised for ipc reuqest between host and audio DSP.
-> +
-> +  mbox-names:
-> +    items:
-> +      - const: mbox0
-> +      - const: mbox1
-> +
-> +  memory-region:      
-> +    items:
-> +      - description: A phandle to a reserved memory region is used for dma buffer between host and DSP.   
-> +      - description: A phandle to a reserved memory region is used for DSP system memory.
-> +
-> +  sound:
-> +    description:
-> +      Sound subnode includes ASoC platform, DPTx codec node, and
-> +      HDMI codec node.
-> +
-> +    type: object
+AMD requires that the SATA controller be configured for devsleep in order
+for S0i3 entry to work properly.
 
-Same question as v4, why do you need a sub-node here. Just move these 
-properties up a level.
+commit b1a9585cc396 ("ata: ahci: Enable DEVSLP by default on x86 with
+SLP_S0") sets up a kernel policy to enable devsleep on Intel mobile
+platforms that are using s0ix.  Add the PCI ID for the SATA controller in
+Green Sardine platforms to extend this policy by default for AMD based
+systems using s0i3 as well.
 
-> +
-> +    properties:
-> +      mediatek,platform:
-> +        $ref: "/schemas/types.yaml#/definitions/phandle"
-> +        description: The phandle of MT8195 ASoC platform.
-> +
-> +      mediatek,dptx-codec:
-> +        $ref: "/schemas/types.yaml#/definitions/phandle"
-> +        description: The phandle of MT8195 Display Port Tx codec node.
-> +
-> +      mediatek,hdmi-codec:
-> +        $ref: "/schemas/types.yaml#/definitions/phandle"
-> +        description: The phandle of MT8195 HDMI codec node.
+Cc: Nehal-bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214091
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ drivers/ata/ahci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index d60f34718b5d..1e1167e725a4 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -438,6 +438,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	/* AMD */
+ 	{ PCI_VDEVICE(AMD, 0x7800), board_ahci }, /* AMD Hudson-2 */
+ 	{ PCI_VDEVICE(AMD, 0x7900), board_ahci }, /* AMD CZ */
++	{ PCI_VDEVICE(AMD, 0x7901), board_ahci_mobile }, /* AMD Green Sardine */
+ 	/* AMD is using RAID class only for ahci controllers */
+ 	{ PCI_VENDOR_ID_AMD, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+ 	  PCI_CLASS_STORAGE_RAID << 8, 0xffffff, board_ahci },
+-- 
+2.25.1
+
