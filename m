@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2DC44E501
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC5144E50C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhKLK7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:59:00 -0500
-Received: from srv6.fidu.org ([159.69.62.71]:33154 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234814AbhKLK65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:58:57 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 3BA1EC8009C;
-        Fri, 12 Nov 2021 11:56:01 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id tvCNWA5uMmMo; Fri, 12 Nov 2021 11:56:01 +0100 (CET)
-Received: from [192.168.178.21] (host-212-18-30-247.customer.m-online.net [212.18.30.247])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 8F3F2C80099;
-        Fri, 12 Nov 2021 11:56:00 +0100 (CET)
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for ASRock NUC Box 1100
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20211112094711.963474-1-wse@tuxedocomputers.com>
- <s5h8rxt3cx3.wl-tiwai@suse.de>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <db285b5c-9ac7-84b7-3123-1411259f5208@tuxedocomputers.com>
-Date:   Fri, 12 Nov 2021 11:56:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233441AbhKLK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:59:17 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:25247 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234862AbhKLK7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 05:59:14 -0500
+IronPort-Data: =?us-ascii?q?A9a23=3ABO2bra3AiM9WWu6uEfbD5cxwkn2cJEfYwER7XOP?=
+ =?us-ascii?q?LsXnJ1joigjwByzRND2iBOK2JMGf8e4x+aNyzo0IOu8fTzIQ2QQE+nZ1PZyIT+?=
+ =?us-ascii?q?JCdXbx1DW+pYnjMdpWbJK5fAnR3huDodKjYdVeB4EfyWlTdhSMkj/jRH+OmULS?=
+ =?us-ascii?q?s1h1ZHmeIdg9w0HqPpMZp2uaEsfDha++8kYuaT//3YDdJ6BYoWo4g0J9vnTs01?=
+ =?us-ascii?q?BjEVJz0iXRlDRxDlAe2e3D4l/vzL4npR5fzatE88uJX24/+IL+FEmPxp3/BC/u?=
+ =?us-ascii?q?lm7rhc0AMKlLQFVjTzCQGHfH4214b+XdaPqUTbZLwbW9VljGIlpZ1wcpEsZiYS?=
+ =?us-ascii?q?AEzP6SKlv51vxxwSHsuYPwdo9crJlD666R/1Xbudnbjw/woAEwnFYwe5utzR2p?=
+ =?us-ascii?q?J8JQwKzoQbxSPwuuyxJq/S/JwnYJ7dY/sJox3knVhyyzJSPUrW5bOR43U6tJCm?=
+ =?us-ascii?q?jQ9nMZDGbDZfcVxQSZoaR3bcVtMM1ELBZk9nc+pgGXyd3tTr1f9jao6+WLe1hB?=
+ =?us-ascii?q?Z37/rPN3PPNWSTMNc2EGCqSTP4gzRHh4eJPSbyDyY7mirgO7f2y/2MKoXFbu38?=
+ =?us-ascii?q?dZwjVGTz3BVAxoTPXOxudGwjk+zXYIZJ0F80jp+84Ax+VatQ927WAe3yFaEphc?=
+ =?us-ascii?q?0SctMFPd84waIooLQ4gCEFi0PVC9ZdNsOqsA7X3op20WPktevAiZg2JWRSHSA5?=
+ =?us-ascii?q?vKXoCm0NCw9M2APf2kHQBED7t2lp5s85i8j5P4L/LWd14KuX2iqmnbU/G5u2vM?=
+ =?us-ascii?q?JgNBNzKuhu1bKn1qRSlHyZlZdzm3qsqiNt2uVvLKYWrE=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ADrvr26MpHffWjMBcT4H155DYdb4zR+YMi2QD?=
+ =?us-ascii?q?/1t6SBxLfsHdv93GpoVc6fajskdjZJhGo6H3BEDgewKqyXcb2/htAV7JZniDhI?=
+ =?us-ascii?q?KXFvAp0WKP+UyeJ8S6zJ8p6U+PG5IOT+EZIzBB/IbHCSODYpcdKEHtytHtuQ/m?=
+ =?us-ascii?q?p00dCD2DgclbnkRE43+gYw9LrWp9dO4E/finl7t6TmGbCDlnIvhTb0NtN4Ovy7?=
+ =?us-ascii?q?Kk9OOEEHx2YG9AmXH+9kLT1FedKWnn4v4waUIB/V5IyxmNr+WW3NTejxiT8G6v?=
+ =?us-ascii?q?64fsha4m0OcJsuEzdPBk5/JlTwkFgWyTFc9cswjuhlEIST6UgidSrPD85xAne8?=
+ =?us-ascii?q?xp4XLQYW3dm2qi5yDQlC8/xnO+7VPC6EGT+L2gNWlKUfZ8uQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.87,229,1631570400"; 
+   d="scan'208";a="3285933"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 11:56:22 +0100
+Date:   Fri, 12 Nov 2021 11:56:22 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Megha Dey <megha.dey@intel.com>
+cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Tomasz Kantecki <tomasz.kantecki@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: fix flexible_array.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2111121154320.2916@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <s5h8rxt3cx3.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.11.21 um 11:07 schrieb Takashi Iwai:
-> On Fri, 12 Nov 2021 10:47:11 +0100,
-> Werner Sembach wrote:
->> This applies a SND_PCI_QUIRK(...) to the ASRock NUC Box 1100 series. This
->> fixes the issue of the headphone jack not being detected unless warm
->> rebooted from a certain other OS.
->>
->> When booting a certain other OS some coeff settings are changed that enable
->> the audio jack. These settings are preserved on a warm reboot and can be
->> easily dumped.
->>
->> The relevant indexes and values where gathered by naively diff-ing and
->> reading a working and a non-working coeff dump.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> Cc: <stable@vger.kernel.org>
-> Thanks, the change looks almost good but in some small details:
->
->> +static void alc233_fixup_asrock_nuc_box_1100_no_audio_jack(struct hda_codec *codec,
->> +							     const struct hda_fixup *fix,
->> +							     int action)
-> The function name could be a bit shorter?  It might be possible that
-> the fixup could be re-used by others, too.
->
->> +{
->> +	/*
->> +	 * The audio jack input and output is not detected on the ASRock NUC Box 1100 series when
->> +	 * cold booting without this fix. Warm rebooting from a certain other OS makes the audio
->> +	 * functional, as COEF settings are preserved in this case. This fix sets these altered
->> +	 * COEF values as the default.
-> Fitting in 80 columns is still preferred, to align with other code.
->
->> +	alc_write_coef_idx(codec, 0x1a, 0x9003);
->> +	alc_write_coef_idx(codec, 0x1b, 0x0e2b);
->> +	alc_write_coef_idx(codec, 0x37, 0xfe06);
->> +	alc_write_coef_idx(codec, 0x38, 0x4981);
->> +	alc_write_coef_idx(codec, 0x45, 0xd489);
->> +	alc_write_coef_idx(codec, 0x46, 0x0074);
->> +	alc_write_coef_idx(codec, 0x49, 0x0149);
-> Can be put in the coef_fw table and processed via
-> alc_process_coef_fw() instead?
->
->
-> thanks,
->
-> Takashi
+From: kernel test robot <lkp@intel.com>
 
-Done. I was not aware of the alc_process_coef_fw() function, thanks.
+ Zero-length and one-element arrays are deprecated, see
+ Documentation/process/deprecated.rst
+ Flexible-array members should be used instead.
 
-Testing now and then sending v2.
+Generated by: scripts/coccinelle/misc/flexible_array.cocci
 
-Kind regards,
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-Werner Sembach
+tree:   https://github.com/meghadey/crypto crypto-avx512
+head:   9c8c2ca77f6e2575a130bddb9767d068e1162d71
+commit: 377aede9f10ee28be954473668bc6d33c6c9db75 [5/6] crypto: aesni - AVX512 version of AESNI-GCM using VPCLMULQDQ
+:::::: branch date: 7 weeks ago
+:::::: commit date: 7 weeks ago
 
+ aesni-intel_glue.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -87,7 +87,7 @@ struct gcm_context_data {
+ 	u64 partial_block_len;
+ 	u64 unused;
+ 	/* Allocate space for hash_keys later */
+-	u8 hash_keys[0];
++	u8 hash_keys[];
+ };
+
+ asmlinkage int aesni_set_key(struct crypto_aes_ctx *ctx, const u8 *in_key,
