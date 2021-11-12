@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4FB44E294
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A0844E29F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbhKLHsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 02:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        id S232953AbhKLHxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 02:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhKLHsU (ORCPT
+        with ESMTP id S230464AbhKLHxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 02:48:20 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE07C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:45:30 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id x75-20020a25ce4e000000b005c5d04a1d52so13199788ybe.23
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:45:30 -0800 (PST)
+        Fri, 12 Nov 2021 02:53:49 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EECC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:50:59 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id e136so21568495ybc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:50:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=lBk8dGY4hFJkFmSHmPRQmSxy6IAflxMTO27FP9s8b+w=;
-        b=OTwDuIdL8CRDE4t/A+7voiAtQtDhuLkEOav8gVsu8YQHJpcmQjg0Ymj0XLxITAEx61
-         +gIHzmRepKXd2Dmvxfl/Zir6uirlc/VRoo/FDs7lO28ZaX0USpBUrQ6l6RYKJ4iDiABi
-         v5PE/XDJVDlmtX+dc6uns0KL44Efq9VxexECohoyGKWK0qqvDmXpb+5rBpxUMduEdWIf
-         zUdn+AIr/KNU36T26BKIWbMNu/bmR5nu/LNHXKMncamGUszfd+NSjK0z+evloDdt3Bmc
-         Nxqzm3hE9iWqencUaWPWHFEcdA8bXX3ZCrtnB8NDQvW75NpcNsjpTFEM172C1hT5vWxf
-         +8ww==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8hsJfBjpLQBnNYoC8zh5y1uUfpVlm2S4eitLUmrS0SI=;
+        b=JBV6L1OHMnp6AQ9vM+jo8Lrg6xtxiG3nXWTz5o5RSYI39xgwe0ng8XHLP+9bwUfd/o
+         hLaQgG26lHY6x1a83Ds1FJTIr5fS/v/wX3KIBeoHC1nprvQVCHfzIE+4aCnJeLuyehSH
+         2ihTrpFqGF2kb8SwhGO6OW+FSEbQjeuKjzY1+UfqqOXAbJihZjyMqZe2EH/Rxf+EAgS8
+         0QbRoGuuGB7teAMvE3SCmg8nvr7PHDXsd7df5FoOjjfmgCXvzWDRGt5tG/3pum5zp4WI
+         y7ZVZjpA6HR0bWMug27ecBkz14v4Tk7SdQTOqRatzShMMu8ZQwXakG74WjW7H5JOHl4H
+         q4FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=lBk8dGY4hFJkFmSHmPRQmSxy6IAflxMTO27FP9s8b+w=;
-        b=7qgTuzyh/kzDciIDVVIYcPynSRA+qlK6bUHlmhp4ZzEO9V1mVLBJvmyz5k2w5ydGXY
-         Fyc6GUtID/pbIfkhHwvvEwRF6nunkJZCaoC2wBzDRfJJX66gcTbSpstNMHrN6HZPGGUs
-         Ba3P4nk1N8Gtb4rs+/QAg3EU3IqoloRKh1G9Y9vL+XFCtnvXQHTVu+SR1bWrJlh8BP9z
-         MMyqpfm3EZVF694gQD8stC7acHtOJKEG5NzMU+Cjhmz1OCEvOxgI/Y/XBJAn1DODSl5F
-         L1bTao5KYfmZNL4v469VcE0U6AkUIPFBu3sA2EQy6SaKMbTECwEni0ly3bR+mqcD4KZx
-         jQTQ==
-X-Gm-Message-State: AOAM530cYLKAoFoBr+P44cvodCdTZWzEdgb4AEOdUxsLHe8/3LTNBQMg
-        Wjmk22qD7RivVKHUuLhuMHIHu93/cq0d
-X-Google-Smtp-Source: ABdhPJyzg/K2BXrzWNNCTEC82Wr4M/VaVTvD03vyOuSvcRJzqozFC7v08rJvrUrHF/y+btADRBPrseTPWBF5
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:5ce9:74ca:7ed9:75f2])
- (user=irogers job=sendgmr) by 2002:a25:3341:: with SMTP id
- z62mr14319876ybz.101.1636703129304; Thu, 11 Nov 2021 23:45:29 -0800 (PST)
-Date:   Thu, 11 Nov 2021 23:45:25 -0800
-Message-Id: <20211112074525.121633-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH v2] perf bpf: Avoid memory leak from perf_env__insert_btf
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8hsJfBjpLQBnNYoC8zh5y1uUfpVlm2S4eitLUmrS0SI=;
+        b=yL00qa/lc8ngX8w23i99cSaJhuzw0rq7DtZ8zwmZQRlR/fb4T9lEwcGWTABqG+8nRm
+         VQQqDFO7h+vNp2ptXjf65Cq3hJPXLKH+ozZzJ44JZmyFrw7JJ6+OHeKVq/quRHAj6swm
+         mLlFOPRTEtsyZdv2vRei6jUIpdYLovi4lCI/VjyrfTOXOkgyp/7E1xXVqx03K+FAdgEP
+         IN/x1DfuOOa/kQxQSTE3jUEKL0wAsk+4ZZbXEzBur7uddJ02sBxcvDDxOxZlpPkkfyVo
+         b7RNizPJ2gFeFPP6C3yQ5jCc7Mcwf44hrXl1G5B8RgYrwYx9hsiCYNQ053z8bbhKr5t3
+         b6Ig==
+X-Gm-Message-State: AOAM531lds88vhR+9NHdc1Yj2qbHBFhTAKh5W/dsl1B494/pWBq6O1rA
+        0C5R/DcZq5dl7c649E75/zMl6WZY+oRnxLWJ/IxK6w==
+X-Google-Smtp-Source: ABdhPJxYnWdOcV5iPRaYM7MejstD+Cx3j6SwdJdRMaK1kX1sZPdfnECqq3bvWSXTyWwZRDugM5kEUr51wLDc3Vui35E=
+X-Received: by 2002:a25:a427:: with SMTP id f36mr14333170ybi.245.1636703458115;
+ Thu, 11 Nov 2021 23:50:58 -0800 (PST)
+MIME-Version: 1.0
+References: <YYrU2PdmdNkulWSM@sultan-box.localdomain> <20211109213847.GY174703@worktop.programming.kicks-ass.net>
+ <CAKfTPtC_A-_sfQ+rm440oHwd2gUZ222FMwsi-JTkyLPc-x0qrw@mail.gmail.com> <YYwihj21abVmf9Ag@sultan-box.localdomain>
+In-Reply-To: <YYwihj21abVmf9Ag@sultan-box.localdomain>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 12 Nov 2021 08:50:46 +0100
+Message-ID: <CAKfTPtDaO9KGhWGYnr6CNRy=h1UuVXTJEqcVFz3dzvi=xqMv4A@mail.gmail.com>
+Subject: Re: printk deadlock due to double lock attempt on current CPU's runqueue
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>, mkoutny@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf_env__insert_btf doesn't insert if a duplicate btf id is
-encountered and this causes a memory leak. Modify the function to return
-a success/error value and then free the memory if insertion didn't
-happen.
+On Wed, 10 Nov 2021 at 20:50, Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 10:00:35AM +0100, Vincent Guittot wrote:
+> > Is it the same SCHED_WARN_ON(rq->tmp_alone_branch !=
+> > &rq->leaf_cfs_rq_list); that generates the deadlock on v5.15 too ?
+> >
+> > one remaining tmp_alone_branch warning has been fixed in v5.15 with
+> > 2630cde26711 ("sched/fair: Add ancestors of unthrottled undecayed cfs_rq")
+>
+> I should clarify that I didn't actually reproduce the issue on v5.15; I just saw
+> that the call chain leading to the deadlock still existed in v5.15 after looking
+> through the code.
 
-v2. Adds a return -1 when the insertion error occurs in
-    perf_env__fetch_btf. This doesn't affect anything as the result is
-    never checked.
+Thanks for the clarification
 
-Fixes: 3792cb2ff43b ("perf bpf: Save BTF in a rbtree in perf_env")
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf-event.c | 6 +++++-
- tools/perf/util/env.c       | 5 ++++-
- tools/perf/util/env.h       | 2 +-
- 3 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 4d3b4cdce176..d49cdff8fb39 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -119,7 +119,11 @@ static int perf_env__fetch_btf(struct perf_env *env,
- 	node->data_size = data_size;
- 	memcpy(node->data, data, data_size);
- 
--	perf_env__insert_btf(env, node);
-+	if (!perf_env__insert_btf(env, node)) {
-+		/* Insertion failed because of a duplicate. */
-+		free(node);
-+		return -1;
-+	}
- 	return 0;
- }
- 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 17f1dd0680b4..b9904896eb97 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -75,12 +75,13 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 	return node;
- }
- 
--void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
-+bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- {
- 	struct rb_node *parent = NULL;
- 	__u32 btf_id = btf_node->id;
- 	struct btf_node *node;
- 	struct rb_node **p;
-+	bool ret = true;
- 
- 	down_write(&env->bpf_progs.lock);
- 	p = &env->bpf_progs.btfs.rb_node;
-@@ -94,6 +95,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- 			p = &(*p)->rb_right;
- 		} else {
- 			pr_debug("duplicated btf %u\n", btf_id);
-+			ret = false;
- 			goto out;
- 		}
- 	}
-@@ -103,6 +105,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- 	env->bpf_progs.btfs_cnt++;
- out:
- 	up_write(&env->bpf_progs.lock);
-+	return ret;
- }
- 
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index 1383876f72b3..163e5ec503a2 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -167,7 +167,7 @@ void perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node);
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 							__u32 prog_id);
--void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
-+bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
- 
- int perf_env__numa_node(struct perf_env *env, int cpu);
--- 
-2.34.0.rc1.387.gb447b232ab-goog
-
+>
+> Failing the SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list); assert
+> is extremely rare in my experience, and I don't have a reproducer. It has only
+> happened once after months of heavy usage (with lots of reboots too, so not with
+> crazy high uptime).
+>
+> Sultan
