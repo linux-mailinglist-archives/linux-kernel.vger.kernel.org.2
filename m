@@ -2,141 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0779C44E73C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1769944E740
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhKLN0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        id S234986AbhKLN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhKLN0b (ORCPT
+        with ESMTP id S231855AbhKLN1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:26:31 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B096C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:23:40 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d24so15576194wra.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:23:40 -0800 (PST)
+        Fri, 12 Nov 2021 08:27:19 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753D8C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:24:28 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id z200so7718709wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:24:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=02F/d82Dv5J0ghwlMisFlWdCmAUwQ0DAdk18ZSOkpFw=;
-        b=SvJLLdpyF3SSSiTlAYmOpa6ZgStvxCKQeEuFYDONsZidEXTrU6xu771ccaw17ALyD4
-         CtV7JIvP34Gwg4WBMQkLXKAIbctCicDYIz95fprmrwjyNxzmrY4N7MwxBVF6aOQ6D0aZ
-         dQz2SL1ti+VXB1qJSzMkKkDWlwmHNsLTR6PCsMhsQt52IgaKc7EarkZYrnJpX6V/gZX0
-         SjkTfLYBcDrF9m4P2/ij7pwzbf9roWdNR1AwMy0TPLosw6xjn/RfqocxU/zRTT1WgypE
-         xW/c1mHpyoXSd+eQV9hVCdl+2MRFDNAP3xZeMFQtNXVU940kTgDDuMPFVLx5WEa6pXph
-         SzaA==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pvQoleAGM9Zrph+RM13dsCV9NkoY/kMYM5P43VaVlns=;
+        b=qaVKsAW0Aq9EIXUGVOdi0/rsBJ+wQM59iVEqQzmRET3Igj3lB4KgSF4gV1PHP/2oil
+         0gn+LQAap+LbA3zly0Dz0cBAY7Ea6r0dPr4O6+ryKnwDP2MXTdtNyQUFjnhalEQVYGUb
+         Mfum9u0hKUt7/TspQcmZE8SFI3SE6J1AeXuJWPjzLDKCunSDyDTShULfmXf6CdKzXYc5
+         eRy2yPr1k+CsvDcr5rgKWSpCrQ6sZ/4nPGyPCOJ7qKf8qUkFZuiYA+mpGw3ZaVLEi42x
+         9T6Hncf4kQPbuy6MPRtuEFvNn1TeY5fQyderi57bb7C83Ob6XVnQDrBjfD2aX/kB/rgG
+         KQSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=02F/d82Dv5J0ghwlMisFlWdCmAUwQ0DAdk18ZSOkpFw=;
-        b=fMamelZtUYtNku/C2O+2SO1UP704LCTNJa7pUqdhSJYqCSDUsh8VMtfHQrbAt4UjGY
-         XMxNh/B0ZvowQ/l4QzuYawLeJyM8/HoublE6nQHUKwINH5NB+9Q3iAtuvI+8g/UKGmz+
-         RUXa0HgOXIq1qjau/SUwGO4i07RcGnFHG98t4gbVBY/kd4dk8reS+fTcz0C7FJJbv0a/
-         1CX9AN0zvsoceg2n2Qf/7skYxV4ca9qDXTjzVzzziBDOtEbEmY+sp8tr0qEMEUZ6quHD
-         AR51JsXsGMgcLyPKMrFPFbDR9+5NLwlGzdByY3bUGRhBJXsK/uKujYpFYWL+X3XswH8V
-         S5xQ==
-X-Gm-Message-State: AOAM532hxeSoCmbeJE9+xWNN4QYytG4y06SwWwpRPH8ZV9Q3BitD/Pgm
-        DVl0CMElOX1ngkiAMISuHEOm1g==
-X-Google-Smtp-Source: ABdhPJwcyZkEOCkjfNZQaL+Oh4iQ1CcSgH8jFbjI9XgbrvnN5WJtc4Sj5+iD/+0FjB9rIkKVy0VGDw==
-X-Received: by 2002:adf:dd46:: with SMTP id u6mr19111085wrm.280.1636723418610;
-        Fri, 12 Nov 2021 05:23:38 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id be3sm1422460wmb.1.2021.11.12.05.23.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 05:23:38 -0800 (PST)
-Date:   Fri, 12 Nov 2021 13:23:36 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 05/13] backlight: qcom-wled: Override default
- length with qcom,enabled-strings
-Message-ID: <20211112132336.z2x4bzrfqr4u3jol@maple.lan>
-References: <20211112002706.453289-1-marijn.suijten@somainline.org>
- <20211112002706.453289-6-marijn.suijten@somainline.org>
- <20211112121238.kb3kkt6xzv5so26j@maple.lan>
- <20211112124522.g7e3m7l2oxxxobof@SoMainline.org>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=pvQoleAGM9Zrph+RM13dsCV9NkoY/kMYM5P43VaVlns=;
+        b=LYViHcGry1TI3xVKvtr4O2J5eVB13F8iymOoWWCbDbi4OH6rxXg/p4sTt0TPvTeHE0
+         +K9co7rQr4D46U3RdowRbO+VXPr9HEeDAwwwihmzAjZiTOOb+SyiYVImyeSIpiCudPxj
+         Jx6hy+RTEJN41zCImy1w3u/szXKypOZKmSyB5lsazCXAJRARDH9mJRFKlho+AM4NVKTB
+         Mw7kBlBRA1qFzHiX8kJKJHlgPcHuIyapaJ7jnGewuLtmvzN6pEMp3hrSh5Q7M1Podemu
+         SL80Ej3nyOgTcJfNWTCFM+RPYGOGhFMow7zd6MF6ySlGaR7/cvUFRx568maIE7LsMpkB
+         A3Aw==
+X-Gm-Message-State: AOAM532ENb7yO6ZxvDBEw0pai3zB0fRnhZwHmT6zKgWBpakXOOVJ70vD
+        4DWRW2C4CFf+LukC59nc6f5q8PCIfKAk3QLw
+X-Google-Smtp-Source: ABdhPJypVrEMaaFxG9GsLct4xeTHd0tGCt2OsXltLtPd9pGRzvEezB5JSb8+HTfZRNCYd5lod1o2EQ==
+X-Received: by 2002:a7b:c155:: with SMTP id z21mr33442835wmi.107.1636723466539;
+        Fri, 12 Nov 2021 05:24:26 -0800 (PST)
+Received: from ?IPv6:2001:861:44c0:66c0:15c5:4746:b404:ed78? ([2001:861:44c0:66c0:15c5:4746:b404:ed78])
+        by smtp.gmail.com with ESMTPSA id h204sm5979057wmh.33.2021.11.12.05.24.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 05:24:26 -0800 (PST)
+Subject: Re: [PATCH v3 0/6] drm/meson: rework encoders to pass
+ ATTACH_NO_CONNECTOR
+To:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
+        sam@ravnborg.org
+Cc:     martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211020123947.2585572-1-narmstrong@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <3e0e5a2f-a81b-dcba-e379-4786c4a5de7b@baylibre.com>
+Date:   Fri, 12 Nov 2021 14:24:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112124522.g7e3m7l2oxxxobof@SoMainline.org>
+In-Reply-To: <20211020123947.2585572-1-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:45:22PM +0100, Marijn Suijten wrote:
-> On 2021-11-12 12:12:38, Daniel Thompson wrote:
-> > On Fri, Nov 12, 2021 at 01:26:58AM +0100, Marijn Suijten wrote:
-> > > The length of qcom,enabled-strings as property array is enough to
-> > > determine the number of strings to be enabled, without needing to set
-> > > qcom,num-strings to override the default number of strings when less
-> > > than the default (which is also the maxium) is provided in DT.
-> > > 
-> > > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > ---
-> > >  drivers/video/backlight/qcom-wled.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > index c5232478a343..9bfbf601762a 100644
-> > > --- a/drivers/video/backlight/qcom-wled.c
-> > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > @@ -1518,6 +1518,8 @@ static int wled_configure(struct wled *wled)
-> > >  				return -EINVAL;
-> > >  			}
-> > >  		}
-> > > +
-> > > +		cfg->num_strings = string_len;
-> > 
-> > I still don't really understand why this wants to be a separate patch.
+On 20/10/2021 14:39, Neil Armstrong wrote:
+> This serie finnally reworks the drm/meson driver by extracting the encoders
+> in their own file and moves to bridge-only callbacks.
 > 
-> I'm viewing this as a separate issue, and this makes it easier to
-> document the change in a loose commit.
+> This permits passing the ATTACH_NO_CONNECTOR bridge attach flag and finally
+> use the CVBS & HDMI display-connector driver.
 > 
-> > The warning text emitted by the previous patch (whatever text we agree
-> > on) will be nonsense until this patch is applied.
-> > 
-> > If this patch cannot appear before the warning is introduces then there
-> > is no correct order for patches 4 and 5 (which implies they should be the
-> > same patch).
+> This will ease Martin Blumenstingl writing the HDMI transceiver driver for
+> the older Meson8/8b SoCs, and sets the proper architecture for the work in
+> progress MIPI-DSI support.
 > 
-> Agreed, this is a weird way of doing things in v2 - the error message is
-> printed yet the length of qcom,enabled-strings is always ignored before
-> this patch.
+> Finally, this serie will path the way to a removal of the device component
+> and use the drmm memory management.
 > 
-> If we were to reorder patch 5 before patch 4 that should also
-> temporarily move `cfg->num_strings = cfg->num_strings + 1;` right below
-> this `if` so that `qcom,num-strings` remains the definitive way to
-> set/override length.  That's doable, and makes it easier to read patch 4
-> as that bit of code will be replaced by of_property_read_u32 on that
-> exact line.  Let me know which method you prefer.
+> Changes since v2 at [2]:
+>  - patch 1: no changes
+>  - patch 2: added martin's ack
+>  - patch 3: moved ->enable & ->disable to atomic, added sam's & martin's acks
+>  - patch 4: added martin's ack
+>  - patch 5: added martin's ack
+>  - patch 6: moved ->enable & ->disable to atomic, added martin's ack
+> 
+> Changes since v1 at [1];
+>  - patch 1: added sam's review tag, fixed include order, fixed doc wording
+>  - patch 2: added sam's ack tag, switched to dev_dbg()
+>  - patch 3: moved mode_set to atomic_enable, removed DRM_DEBUG, fixed include order
+>  - patch 4: added sam's ack tag & applied to drm-misc-next
+>  - patch 5 & 6: added sam's ack tag
+>  - patch 7: added sam's review tag, stopped saving connector, moved mode_set to atomic_enable,
+>  	added missing atomic state callbacks, fixed include order, switched to dev_dbg/dev_err
+> 
+> [1] https://lore.kernel.org/r/20211014152606.2289528-1-narmstrong@baylibre.com
+> [2] https://lore.kernel.org/r/20211015141107.2430800-1-narmstrong@baylibre.com
+> 
+> Neil Armstrong (6):
+>   drm/bridge: display-connector: implement bus fmts callbacks
+>   drm/meson: remove useless recursive components matching
+>   drm/meson: split out encoder from meson_dw_hdmi
+>   drm/meson: encoder_hdmi: switch to bridge
+>     DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>   drm/meson: rename venc_cvbs to encoder_cvbs
+>   drm/meson: encoder_cvbs: switch to bridge with ATTACH_NO_CONNECTOR
+> 
+>  drivers/gpu/drm/bridge/display-connector.c    |  86 ++++
+>  drivers/gpu/drm/meson/Kconfig                 |   2 +
+>  drivers/gpu/drm/meson/Makefile                |   3 +-
+>  drivers/gpu/drm/meson/meson_drv.c             |  71 ++-
+>  drivers/gpu/drm/meson/meson_dw_hdmi.c         | 342 +-------------
+>  drivers/gpu/drm/meson/meson_encoder_cvbs.c    | 284 +++++++++++
+>  ...meson_venc_cvbs.h => meson_encoder_cvbs.h} |   2 +-
+>  drivers/gpu/drm/meson/meson_encoder_hdmi.c    | 446 ++++++++++++++++++
+>  drivers/gpu/drm/meson/meson_encoder_hdmi.h    |  12 +
+>  drivers/gpu/drm/meson/meson_venc_cvbs.c       | 293 ------------
+>  10 files changed, 881 insertions(+), 660 deletions(-)
+>  create mode 100644 drivers/gpu/drm/meson/meson_encoder_cvbs.c
+>  rename drivers/gpu/drm/meson/{meson_venc_cvbs.h => meson_encoder_cvbs.h} (92%)
+>  create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.c
+>  create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.h
+>  delete mode 100644 drivers/gpu/drm/meson/meson_venc_cvbs.c
+> 
+> 
+> base-commit: f6632721cd6231e1bf28b5317dcc7543e43359f7
+> 
 
-Personally I would just squash them together. There are no redundant
-values in the DT that could be fixed until we can use the string_len
-to set num_strings.
+Applied to drm-misc-next
 
-However I won't object to the other approach providing the result is
-bisectable.
+Now https://lore.kernel.org/all/20211029135947.3022875-1-narmstrong@baylibre.com/ has been applied, we should have no regression.
 
-
-Daniel.
+Neil
