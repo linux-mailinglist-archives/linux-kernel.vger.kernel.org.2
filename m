@@ -2,617 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5ABB44E849
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69D544E84B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhKLOQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:16:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49294 "EHLO mail.kernel.org"
+        id S234818AbhKLOQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:16:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:38284 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234818AbhKLOQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:16:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4497960F5B;
-        Fri, 12 Nov 2021 14:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636726438;
-        bh=13aLh2qK4THDQDWidbVrlINRsquwzBm4WTcFtY/EwFI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5DNTAMzc7e0BXmaj2uPMeF2CY42ggTPv4J8dtUfQMJFhAXSOpCQ8gZKCSSUsYWTX
-         h8nr9bE4cYwwsRvFkjLZz2uTtRK/q++fRyK3F1JoxL8sPEE8JLr1U1rZ384wGdSjr3
-         gAHX5FcwpwjvkSHMgZnSiUse5l4D2rN1sCTH5JgU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.19.217
-Date:   Fri, 12 Nov 2021 15:13:48 +0100
-Message-Id: <163672642722556@kroah.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <163672642716517@kroah.com>
-References: <163672642716517@kroah.com>
+        id S235095AbhKLOQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:16:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F51BED1;
+        Fri, 12 Nov 2021 06:14:01 -0800 (PST)
+Received: from dell3630.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7266A3F70D;
+        Fri, 12 Nov 2021 06:13:59 -0800 (PST)
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/fair: Replace CFS internal cpu_util() with cpu_util_cfs()
+Date:   Fri, 12 Nov 2021 15:13:49 +0100
+Message-Id: <20211112141349.155713-1-dietmar.eggemann@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index f8255c787f7e..6f983a62d1fd 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 216
-+SUBLEVEL = 217
- EXTRAVERSION =
- NAME = "People's Front"
+cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
+the DEADLINE utilization signal") to enable the access to CPU
+utilization from the Schedutil CPUfreq governor.
+
+Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
+selection") added util_est support later.
+
+The only thing cpu_util() is doing on top of what cpu_util_cfs() already
+does is to clamp the return value to the [0..capacity_orig] capacity
+range of the CPU. Integrating this into cpu_util_cfs() is not harming
+the existing users (Schedutil and CPUfreq cooling (latter via
+sched_cpu_util() wrapper)).
+
+Remove cpu_util().
+
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+---
+
+I deliberately got rid of the comment on top of cpu_util(). It's from
+the early days of using PELT utilization, it describes CPU utilization
+behaviour before PELT time-scaling and talks about current capacity
+which we don't maintain. 
+
+ kernel/sched/fair.c  | 65 ++++----------------------------------------
+ kernel/sched/sched.h |  2 +-
+ 2 files changed, 6 insertions(+), 61 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 13950beb01a2..7a815b10c0c3 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1502,7 +1502,6 @@ struct task_numa_env {
  
-diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-index 9944b9c7ceee..bac2ec9b4443 100644
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirect(struct kvm_ioapic *ioapic,
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+ static unsigned long cpu_load(struct rq *rq);
+ static unsigned long cpu_runnable(struct rq *rq);
+-static unsigned long cpu_util(int cpu);
+ static inline long adjust_numa_imbalance(int imbalance,
+ 					int dst_running, int dst_weight);
+ 
+@@ -1569,7 +1568,7 @@ static void update_numa_stats(struct task_numa_env *env,
+ 
+ 		ns->load += cpu_load(rq);
+ 		ns->runnable += cpu_runnable(rq);
+-		ns->util += cpu_util(cpu);
++		ns->util += cpu_util_cfs(rq);
+ 		ns->nr_running += rq->cfs.h_nr_running;
+ 		ns->compute_capacity += capacity_of(cpu);
+ 
+@@ -5509,11 +5508,9 @@ static inline void hrtick_update(struct rq *rq)
+ #endif
+ 
+ #ifdef CONFIG_SMP
+-static inline unsigned long cpu_util(int cpu);
+-
+ static inline bool cpu_overutilized(int cpu)
  {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
+-	return !fits_capacity(cpu_util(cpu), capacity_of(cpu));
++	return !fits_capacity(cpu_util_cfs(cpu_rq(cpu)), capacity_of(cpu));
  }
  
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
-diff --git a/arch/x86/kvm/ioapic.h b/arch/x86/kvm/ioapic.h
-index 283f1f489bca..ea1a4e0297da 100644
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -43,13 +43,13 @@ struct kvm_vcpu;
- 
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
- 
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID + 1];
-+	u8 vectors[KVM_MAX_VCPU_ID];
- };
- 
- 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_usb.c b/drivers/net/wireless/rsi/rsi_91x_usb.c
-index 54106646445a..17e50eba780d 100644
---- a/drivers/net/wireless/rsi/rsi_91x_usb.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_usb.c
-@@ -61,7 +61,7 @@ static int rsi_usb_card_write(struct rsi_hw *adapter,
- 			      (void *)seg,
- 			      (int)len,
- 			      &transfer,
--			      HZ * 5);
-+			      USB_CTRL_SET_TIMEOUT);
- 
- 	if (status < 0) {
- 		rsi_dbg(ERR_ZONE,
-diff --git a/drivers/staging/comedi/drivers/dt9812.c b/drivers/staging/comedi/drivers/dt9812.c
-index 75cc9e8e5b94..ee0402bf6e67 100644
---- a/drivers/staging/comedi/drivers/dt9812.c
-+++ b/drivers/staging/comedi/drivers/dt9812.c
-@@ -32,6 +32,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-+#include <linux/slab.h>
- #include <linux/uaccess.h>
- 
- #include "../comedi_usb.h"
-@@ -237,22 +238,42 @@ static int dt9812_read_info(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
-+	size_t tbuf_size;
- 	int count, ret;
-+	void *tbuf;
- 
--	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
--	cmd.u.flash_data_info.address =
-+	tbuf_size = max(sizeof(*cmd), buf_size);
-+
-+	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
-+	if (!tbuf)
-+		return -ENOMEM;
-+
-+	cmd = tbuf;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-+	cmd->u.flash_data_info.address =
- 	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
--	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
-+	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
- 
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
-+
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == buf_size)
-+			memcpy(buf, tbuf, buf_size);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(tbuf);
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	return ret;
+ static inline void update_overutilized_status(struct rq *rq)
+@@ -6456,58 +6453,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	return target;
  }
  
- static int dt9812_read_multiple_registers(struct comedi_device *dev,
-@@ -261,22 +282,42 @@ static int dt9812_read_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count, ret;
-+	size_t buf_size;
-+	void *buf;
- 
--	cmd.cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
-+
-+	buf = kzalloc(buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	cmd = buf;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.read_multi_info.address[i] = address[i];
-+		cmd->u.read_multi_info.address[i] = address[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
-+
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   buf, reg_count, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == reg_count)
-+			memcpy(value, buf, reg_count);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(buf);
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    value, reg_count, &count, DT9812_USB_TIMEOUT);
-+	return ret;
- }
- 
- static int dt9812_write_multiple_registers(struct comedi_device *dev,
-@@ -285,19 +326,27 @@ static int dt9812_write_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
- 
--	cmd.cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++) {
--		cmd.u.write_multi_info.write[i].address = address[i];
--		cmd.u.write_multi_info.write[i].value = value[i];
-+		cmd->u.write_multi_info.write[i].address = address[i];
-+		cmd->u.write_multi_info.write[i].value = value[i];
- 	}
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
-@@ -306,17 +355,25 @@ static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
- 
--	cmd.cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
--	cmd.u.rmw_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
-+	cmd->u.rmw_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.rmw_multi_info.rmw[i] = rmw[i];
-+		cmd->u.rmw_multi_info.rmw[i] = rmw[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_digital_in(struct comedi_device *dev, u8 *bits)
-diff --git a/drivers/staging/comedi/drivers/ni_usb6501.c b/drivers/staging/comedi/drivers/ni_usb6501.c
-index 1bb1cb651349..75e5b57ae0d7 100644
---- a/drivers/staging/comedi/drivers/ni_usb6501.c
-+++ b/drivers/staging/comedi/drivers/ni_usb6501.c
-@@ -144,6 +144,10 @@ static const u8 READ_COUNTER_RESPONSE[]	= {0x00, 0x01, 0x00, 0x10,
- 					   0x00, 0x00, 0x00, 0x02,
- 					   0x00, 0x00, 0x00, 0x00};
- 
-+/* Largest supported packets */
-+static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
-+static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
-+
- enum commands {
- 	READ_PORT,
- 	WRITE_PORT,
-@@ -501,6 +505,12 @@ static int ni6501_find_endpoints(struct comedi_device *dev)
- 	if (!devpriv->ep_rx || !devpriv->ep_tx)
- 		return -ENODEV;
- 
-+	if (usb_endpoint_maxp(devpriv->ep_rx) < RX_MAX_SIZE)
-+		return -ENODEV;
-+
-+	if (usb_endpoint_maxp(devpriv->ep_tx) < TX_MAX_SIZE)
-+		return -ENODEV;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
-index 7956abcbae22..7769eadfaf61 100644
---- a/drivers/staging/comedi/drivers/vmk80xx.c
-+++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -90,6 +90,9 @@ enum {
- #define IC3_VERSION		BIT(0)
- #define IC6_VERSION		BIT(1)
- 
-+#define MIN_BUF_SIZE		64
-+#define PACKET_TIMEOUT		10000	/* ms */
-+
- enum vmk80xx_model {
- 	VMK8055_MODEL,
- 	VMK8061_MODEL
-@@ -157,22 +160,21 @@ static void vmk80xx_do_bulk_msg(struct comedi_device *dev)
- 	__u8 rx_addr;
- 	unsigned int tx_pipe;
- 	unsigned int rx_pipe;
--	size_t size;
-+	size_t tx_size;
-+	size_t rx_size;
- 
- 	tx_addr = devpriv->ep_tx->bEndpointAddress;
- 	rx_addr = devpriv->ep_rx->bEndpointAddress;
- 	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
- 	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
-+	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
-+	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
- 
--	/*
--	 * The max packet size attributes of the K8061
--	 * input/output endpoints are identical
--	 */
--	size = usb_endpoint_maxp(devpriv->ep_tx);
-+	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
-+		     PACKET_TIMEOUT);
- 
--	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
--		     size, NULL, devpriv->ep_tx->bInterval);
--	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
-+	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
-+		     PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_read_packet(struct comedi_device *dev)
-@@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct comedi_device *dev)
- 	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
-@@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
- 	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
- 	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
- 				 usb_endpoint_maxp(ep), NULL,
--				 HZ * 10);
-+				 PACKET_TIMEOUT);
- }
- 
- static int vmk80xx_reset_device(struct comedi_device *dev)
-@@ -678,12 +680,12 @@ static int vmk80xx_alloc_usb_buffers(struct comedi_device *dev)
- 	struct vmk80xx_private *devpriv = dev->private;
- 	size_t size;
- 
--	size = usb_endpoint_maxp(devpriv->ep_rx);
-+	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
- 	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_rx_buf)
- 		return -ENOMEM;
- 
--	size = usb_endpoint_maxp(devpriv->ep_tx);
-+	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
- 	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
- 	if (!devpriv->usb_tx_buf)
- 		return -ENOMEM;
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-index cc12e6c36fed..becf444e590c 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -266,7 +266,7 @@ int write_nic_byte_E(struct net_device *dev, int indx, u8 data)
- 
- 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
--				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
-+				 indx | 0xfe00, 0, usbdata, 1, 500);
- 	kfree(usbdata);
- 
- 	if (status < 0) {
-@@ -288,7 +288,7 @@ int read_nic_byte_E(struct net_device *dev, int indx, u8 *data)
- 
- 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
--				 indx | 0xfe00, 0, usbdata, 1, HZ / 2);
-+				 indx | 0xfe00, 0, usbdata, 1, 500);
- 	*data = *usbdata;
- 	kfree(usbdata);
- 
-@@ -316,7 +316,7 @@ int write_nic_byte(struct net_device *dev, int indx, u8 data)
- 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 1, HZ / 2);
-+				 usbdata, 1, 500);
- 	kfree(usbdata);
- 
- 	if (status < 0) {
-@@ -343,7 +343,7 @@ int write_nic_word(struct net_device *dev, int indx, u16 data)
- 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 2, HZ / 2);
-+				 usbdata, 2, 500);
- 	kfree(usbdata);
- 
- 	if (status < 0) {
-@@ -370,7 +370,7 @@ int write_nic_dword(struct net_device *dev, int indx, u32 data)
- 	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 4, HZ / 2);
-+				 usbdata, 4, 500);
- 	kfree(usbdata);
- 
- 
-@@ -397,7 +397,7 @@ int read_nic_byte(struct net_device *dev, int indx, u8 *data)
- 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 1, HZ / 2);
-+				 usbdata, 1, 500);
- 	*data = *usbdata;
- 	kfree(usbdata);
- 
-@@ -424,7 +424,7 @@ int read_nic_word(struct net_device *dev, int indx, u16 *data)
- 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 2, HZ / 2);
-+				 usbdata, 2, 500);
- 	*data = *usbdata;
- 	kfree(usbdata);
- 
-@@ -448,7 +448,7 @@ static int read_nic_word_E(struct net_device *dev, int indx, u16 *data)
- 
- 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
--				 indx | 0xfe00, 0, usbdata, 2, HZ / 2);
-+				 indx | 0xfe00, 0, usbdata, 2, 500);
- 	*data = *usbdata;
- 	kfree(usbdata);
- 
-@@ -474,7 +474,7 @@ int read_nic_dword(struct net_device *dev, int indx, u32 *data)
- 	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
- 				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
- 				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
--				 usbdata, 4, HZ / 2);
-+				 usbdata, 4, 500);
- 	*data = *usbdata;
- 	kfree(usbdata);
- 
-diff --git a/drivers/staging/rtl8712/usb_ops_linux.c b/drivers/staging/rtl8712/usb_ops_linux.c
-index 6d12a96fa65f..dd1311b62b05 100644
---- a/drivers/staging/rtl8712/usb_ops_linux.c
-+++ b/drivers/staging/rtl8712/usb_ops_linux.c
-@@ -505,7 +505,7 @@ int r8712_usbctrl_vendorreq(struct intf_priv *pintfpriv, u8 request, u16 value,
- 		memcpy(pIo_buf, pdata, len);
- 	}
- 	status = usb_control_msg(udev, pipe, request, reqtype, value, index,
--				 pIo_buf, len, HZ / 2);
-+				 pIo_buf, len, 500);
- 	if (status > 0) {  /* Success this control transfer. */
- 		if (requesttype == 0x01) {
- 			/* For Control read transfer, we have to copy the read
-diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
-index 0a16cbd4e528..d83d93c6ef9e 100644
---- a/drivers/usb/gadget/udc/Kconfig
-+++ b/drivers/usb/gadget/udc/Kconfig
-@@ -328,6 +328,7 @@ config USB_AMD5536UDC
- config USB_FSL_QE
- 	tristate "Freescale QE/CPM USB Device Controller"
- 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
-+	depends on !64BIT || BROKEN
- 	help
- 	   Some of Freescale PowerPC processors have a Full Speed
- 	   QE/CPM2 USB controller, which support device mode with 4
-diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-index d9282ca7ae8c..f2be5501430b 100644
---- a/drivers/usb/host/ehci-hcd.c
-+++ b/drivers/usb/host/ehci-hcd.c
-@@ -634,7 +634,16 @@ static int ehci_run (struct usb_hcd *hcd)
- 	/* Wait until HC become operational */
- 	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
- 	msleep(5);
--	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
-+
-+	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
-+	 * Check CMD_RUN instead.
-+	 */
-+	if (ehci->is_aspeed)
-+		rc = ehci_handshake(ehci, &ehci->regs->command, CMD_RUN,
-+				    1, 100 * 1000);
-+	else
-+		rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
-+				    0, 100 * 1000);
- 
- 	up_write(&ehci_cf_port_reset_rwsem);
- 
-diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-index 8a45362155c5..ed96353764e8 100644
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -288,6 +288,12 @@ static int ehci_platform_probe(struct platform_device *dev)
- 					  "has-transaction-translator"))
- 			hcd->has_tt = 1;
- 
-+		if (of_device_is_compatible(dev->dev.of_node,
-+					    "aspeed,ast2500-ehci") ||
-+		    of_device_is_compatible(dev->dev.of_node,
-+					    "aspeed,ast2600-ehci"))
-+			ehci->is_aspeed = 1;
-+
- 		if (soc_device_match(quirk_poll_match))
- 			priv->quirk_poll = true;
- 
-diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-index c8e9a48e1d51..f3b2f3375a21 100644
---- a/drivers/usb/host/ehci.h
-+++ b/drivers/usb/host/ehci.h
-@@ -218,6 +218,7 @@ struct ehci_hcd {			/* one per controller */
- 	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
- 	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
- 	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
-+	unsigned		is_aspeed:1;
- 
- 	/* required for usb32 quirk */
- 	#define OHCI_CTRL_HCFS          (3 << 6)
-diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
-index ffe462a657b1..4622400ba4dd 100644
---- a/drivers/usb/musb/musb_gadget.c
-+++ b/drivers/usb/musb/musb_gadget.c
-@@ -1248,9 +1248,11 @@ static int musb_gadget_queue(struct usb_ep *ep, struct usb_request *req,
- 		status = musb_queue_resume_work(musb,
- 						musb_ep_restart_resume_work,
- 						request);
--		if (status < 0)
-+		if (status < 0) {
- 			dev_err(musb->controller, "%s resume work: %i\n",
- 				__func__, status);
-+			list_del(&request->list);
-+		}
- 	}
- 
- unlock:
-diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
-index 7442793fe050..3ba4e060fd05 100644
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -406,6 +406,16 @@ UNUSUAL_DEV(  0x04b8, 0x0602, 0x0110, 0x0110,
- 		"785EPX Storage",
- 		USB_SC_SCSI, USB_PR_BULK, NULL, US_FL_SINGLE_LUN),
- 
-+/*
-+ * Reported by James Buren <braewoods+lkml@braewoods.net>
-+ * Virtual ISOs cannot be remounted if ejected while the device is locked
-+ * Disable locking to mimic Windows behavior that bypasses the issue
-+ */
-+UNUSUAL_DEV(  0x04c5, 0x2028, 0x0001, 0x0001,
-+		"iODD",
-+		"2531/2541",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE),
-+
+-/**
+- * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
+- * @cpu: the CPU to get the utilization of
+- *
+- * The unit of the return value must be the one of capacity so we can compare
+- * the utilization with the capacity of the CPU that is available for CFS task
+- * (ie cpu_capacity).
+- *
+- * cfs_rq.avg.util_avg is the sum of running time of runnable tasks plus the
+- * recent utilization of currently non-runnable tasks on a CPU. It represents
+- * the amount of utilization of a CPU in the range [0..capacity_orig] where
+- * capacity_orig is the cpu_capacity available at the highest frequency
+- * (arch_scale_freq_capacity()).
+- * The utilization of a CPU converges towards a sum equal to or less than the
+- * current capacity (capacity_curr <= capacity_orig) of the CPU because it is
+- * the running time on this CPU scaled by capacity_curr.
+- *
+- * The estimated utilization of a CPU is defined to be the maximum between its
+- * cfs_rq.avg.util_avg and the sum of the estimated utilization of the tasks
+- * currently RUNNABLE on that CPU.
+- * This allows to properly represent the expected utilization of a CPU which
+- * has just got a big task running since a long sleep period. At the same time
+- * however it preserves the benefits of the "blocked utilization" in
+- * describing the potential for other tasks waking up on the same CPU.
+- *
+- * Nevertheless, cfs_rq.avg.util_avg can be higher than capacity_curr or even
+- * higher than capacity_orig because of unfortunate rounding in
+- * cfs.avg.util_avg or just after migrating tasks and new task wakeups until
+- * the average stabilizes with the new running time. We need to check that the
+- * utilization stays within the range of [0..capacity_orig] and cap it if
+- * necessary. Without utilization capping, a group could be seen as overloaded
+- * (CPU0 utilization at 121% + CPU1 utilization at 80%) whereas CPU1 has 20% of
+- * available capacity. We allow utilization to overshoot capacity_curr (but not
+- * capacity_orig) as it useful for predicting the capacity required after task
+- * migrations (scheduler-driven DVFS).
+- *
+- * Return: the (estimated) utilization for the specified CPU
+- */
+-static inline unsigned long cpu_util(int cpu)
+-{
+-	struct cfs_rq *cfs_rq;
+-	unsigned int util;
+-
+-	cfs_rq = &cpu_rq(cpu)->cfs;
+-	util = READ_ONCE(cfs_rq->avg.util_avg);
+-
+-	if (sched_feat(UTIL_EST))
+-		util = max(util, READ_ONCE(cfs_rq->avg.util_est.enqueued));
+-
+-	return min_t(unsigned long, util, capacity_orig_of(cpu));
+-}
+-
  /*
-  * Not sure who reported this originally but
-  * Pavel Machek <pavel@ucw.cz> reported that the extra US_FL_SINGLE_LUN
-diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-index 2355ad62b81f..6e4e2cfd40b9 100644
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -1326,6 +1326,8 @@ static int isofs_read_inode(struct inode *inode, int relocated)
+  * cpu_util_without: compute cpu utilization without any contributions from *p
+  * @cpu: the CPU which utilization is requested
+@@ -6528,7 +6473,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
  
- 	de = (struct iso_directory_record *) (bh->b_data + offset);
- 	de_len = *(unsigned char *) de;
-+	if (de_len < sizeof(struct iso_directory_record))
-+		goto fail;
+ 	/* Task has no contribution or is new */
+ 	if (cpu != task_cpu(p) || !READ_ONCE(p->se.avg.last_update_time))
+-		return cpu_util(cpu);
++		return cpu_util_cfs(cpu_rq(cpu));
  
- 	if (offset + de_len > bufsize) {
- 		int frag1 = bufsize - offset;
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index cf272aba362b..57742e193214 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2148,8 +2148,15 @@ static int __init console_setup(char *str)
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
+ 	cfs_rq = &cpu_rq(cpu)->cfs;
+ 	util = READ_ONCE(cfs_rq->avg.util_avg);
+@@ -8681,7 +8626,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+ 		struct rq *rq = cpu_rq(i);
  
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. Use ttynull that has been created
-+	 * for exacly this purpose.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		__add_preferred_console("ttynull", 0, NULL, NULL);
- 		return 1;
-+	}
+ 		sgs->group_load += cpu_load(rq);
+-		sgs->group_util += cpu_util(i);
++		sgs->group_util += cpu_util_cfs(rq);
+ 		sgs->group_runnable += cpu_runnable(rq);
+ 		sgs->sum_h_nr_running += rq->cfs.h_nr_running;
  
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
+@@ -9699,7 +9644,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 			break;
+ 
+ 		case migrate_util:
+-			util = cpu_util(cpu_of(rq));
++			util = cpu_util_cfs(rq);
+ 
+ 			/*
+ 			 * Don't try to pull utilization from a CPU with one
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index f0b249ec581d..d49eda251049 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2951,7 +2951,7 @@ static inline unsigned long cpu_util_cfs(struct rq *rq)
+ 			     READ_ONCE(rq->cfs.avg.util_est.enqueued));
+ 	}
+ 
+-	return util;
++	return min(util, capacity_orig_of(cpu_of(rq)));
+ }
+ 
+ static inline unsigned long cpu_util_rt(struct rq *rq)
+-- 
+2.25.1
+
