@@ -2,177 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA05744EBB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A7344EBA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbhKLRBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:01:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbhKLRA7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:00:59 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED886C061766;
-        Fri, 12 Nov 2021 08:58:07 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id z21so40205137edb.5;
-        Fri, 12 Nov 2021 08:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YFxHos6+nfMoiQmEudF08/34z+Vvn/sOnlO81tu6OjY=;
-        b=A8Din55U1R9G4WopnAbY7XqGhIIsD2Hekk6twPyvjTUPq8qTpHQZEJFKbMA90ExbF9
-         yE+m32s3hQwJA8lSeDL+uiX9QLm0aBNLerrISric6osU/dLkqEM3gnzCCWZQ7cKJuH4z
-         FVfoh88MrazOIKMK8hPMjICZDCG+vjXawZuHoDJmOasp8iWtTCYWGWswxZ31aBW670mc
-         bOBC6E9vFskIz9PgANAD3k12U4tEBt8frxbS9nSnc2yCmDJMX4eIeIBidrw7r/EpGqNe
-         5iygV9ismhDGfw5/wXYtYqEMJAY0kLCkB52zbaP9MAnC5e+qXEjHtoMfetd4/oJCejkC
-         7qLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YFxHos6+nfMoiQmEudF08/34z+Vvn/sOnlO81tu6OjY=;
-        b=Mojer4pOvusTaSseBGW++hnzOd/jhCvQV9NB8jZZeZ6ABwajpdgKx/QB8L3M4WO91h
-         G8ORNVw7X2e3NmiXfX+J3LSQtEl4G2qxOZBwFTPUC06UHtPa3MEwjVF2EHaXy4azRqbw
-         iW8Ki/tEVDqX/OGf+k2/MJYQlRaDV+B7ov2rItQ3Qf5l/FG9Z3C7CNkRRmwzRP83KeXo
-         T6X3GJiFbfC/FwFH3SKHAJA3uvEQK2JLAIe46tEoOCMOK6Gxxod6Dlp20Ph5hy42fI4U
-         FxMB6lKOaP7wuIX++ASxt7PCeVwRX5Gr0l/LxHnN0E6E1vUkkhv6sfwhLDw5xtKnkN72
-         fcJQ==
-X-Gm-Message-State: AOAM532R1WS1XNLLorPzGJ6d6vA9PJJCV0vdho+6eeuljs4NnXbhEoMT
-        iawmXar5IsnehlkqSqSigYM=
-X-Google-Smtp-Source: ABdhPJz/5Q5mujAW1rUrZMzXuMXNiA2IKTBkVKf0bKbHfN8cYcm/NE2Sbd1fZEXlHpuWION2gQwy2w==
-X-Received: by 2002:a05:6402:184c:: with SMTP id v12mr23504646edy.242.1636736286413;
-        Fri, 12 Nov 2021 08:58:06 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id bo20sm3409492edb.31.2021.11.12.08.58.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 08:58:05 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH 2/2] dt-bindings: net: dsa: qca8k: improve port definition documentation
-Date:   Fri, 12 Nov 2021 17:57:52 +0100
-Message-Id: <20211112165752.1704-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211112165752.1704-1-ansuelsmth@gmail.com>
-References: <20211112165752.1704-1-ansuelsmth@gmail.com>
+        id S235490AbhKLQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:56:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235465AbhKLQ4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 11:56:01 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1583061056;
+        Fri, 12 Nov 2021 16:53:09 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 16:57:55 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     <alexandru.tachici@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] iio: adc: ad7192: Add update_scan_mode
+Message-ID: <20211112165755.0504e06a@jic23-huawei>
+In-Reply-To: <20211110111750.27263-3-alexandru.tachici@analog.com>
+References: <20211110111750.27263-1-alexandru.tachici@analog.com>
+        <20211110111750.27263-3-alexandru.tachici@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean and improve port definition for qca8k documentation by referencing
-the dsa generic port definition and adding the additional specific port
-definition.
+On Wed, 10 Nov 2021 13:17:47 +0200
+<alexandru.tachici@analog.com> wrote:
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/net/dsa/qca8k.yaml    | 82 ++++++-------------
- 1 file changed, 23 insertions(+), 59 deletions(-)
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> In continuous mode neither sigma_delta.c nor ad7192.c
+> will disable previously enabled channels.
+> 
+> Before this patch a channel stayed enabled indefinetly,
+> even when one another one was supposed to be sampled.
+> This causes mixed samples in continuous mode to be delivered
+> to the host.
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-index 48de0ace265d..9eb24cdf6cd4 100644
---- a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-+++ b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-@@ -99,65 +99,29 @@ patternProperties:
-         type: object
-         description: Ethernet switch ports
- 
--        properties:
--          reg:
--            description: Port number
--
--          label:
--            description:
--              Describes the label associated with this port, which will become
--              the netdev name
--            $ref: /schemas/types.yaml#/definitions/string
--
--          link:
--            description:
--              Should be a list of phandles to other switch's DSA port. This
--              port is used as the outgoing port towards the phandle ports. The
--              full routing information must be given, not just the one hop
--              routes to neighbouring switches
--            $ref: /schemas/types.yaml#/definitions/phandle-array
--
--          ethernet:
--            description:
--              Should be a phandle to a valid Ethernet device node.  This host
--              device is what the switch port is connected to
--            $ref: /schemas/types.yaml#/definitions/phandle
--
--          phy-handle: true
--
--          phy-mode: true
--
--          fixed-link: true
--
--          mac-address: true
--
--          sfp: true
--
--          qca,sgmii-rxclk-falling-edge:
--            $ref: /schemas/types.yaml#/definitions/flag
--            description:
--              Set the receive clock phase to falling edge. Mostly commonly used on
--              the QCA8327 with CPU port 0 set to SGMII.
--
--          qca,sgmii-txclk-falling-edge:
--            $ref: /schemas/types.yaml#/definitions/flag
--            description:
--              Set the transmit clock phase to falling edge.
--
--          qca,sgmii-enable-pll:
--            $ref: /schemas/types.yaml#/definitions/flag
--            description:
--              For SGMII CPU port, explicitly enable PLL, TX and RX chain along with
--              Signal Detection. On the QCA8327 this should not be enabled, otherwise
--              the SGMII port will not initialize. When used on the QCA8337, revision 3
--              or greater, a warning will be displayed. When the CPU port is set to
--              SGMII on the QCA8337, it is advised to set this unless a communication
--              issue is observed.
--
--        required:
--          - reg
--
--        additionalProperties: false
-+        allOf:
-+          - $ref: dsa-port.yaml#
-+          - properties:
-+              qca,sgmii-rxclk-falling-edge:
-+                $ref: /schemas/types.yaml#/definitions/flag
-+                description:
-+                  Set the receive clock phase to falling edge. Mostly commonly used on
-+                  the QCA8327 with CPU port 0 set to SGMII.
-+
-+              qca,sgmii-txclk-falling-edge:
-+                $ref: /schemas/types.yaml#/definitions/flag
-+                description:
-+                  Set the transmit clock phase to falling edge.
-+
-+              qca,sgmii-enable-pll:
-+                $ref: /schemas/types.yaml#/definitions/flag
-+                description:
-+                  For SGMII CPU port, explicitly enable PLL, TX and RX chain along with
-+                  Signal Detection. On the QCA8327 this should not be enabled, otherwise
-+                  the SGMII port will not initialize. When used on the QCA8337, revision 3
-+                  or greater, a warning will be displayed. When the CPU port is set to
-+                  SGMII on the QCA8337, it is advised to set this unless a communication
-+                  issue is observed.
- 
- oneOf:
-   - required:
--- 
-2.32.0
+Can you expand a bit on the path that leads to this.  As far as I can tell
+in both continuous mode enable and single channel reading set_channel()
+callback is called and will overwrite the channels enabled previously.
+
+Perhaps I'm missing a path in which that call isn't made?
+> 
+> By adding an update_scan_mode callback, every time the
+> continuous mode is activated, channels will be enabled/disabled
+> accordingly.
+> 
+> Fixes: 3f7c3306cf38 ("staging:iio:ad7192: Use common Sigma Delta library")
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  drivers/iio/adc/ad7192.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 2121a812b0c3..1fc0f4eb858e 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -782,6 +782,20 @@ static int ad7192_read_avail(struct iio_dev *indio_dev,
+>  	return -EINVAL;
+>  }
+>  
+> +static int ad7192_update_scan_mode(struct iio_dev *indio_dev, const unsigned long *scan_mask)
+> +{
+> +	struct ad7192_state *st = iio_priv(indio_dev);
+> +	int i;
+> +
+> +	st->conf &= ~AD7192_CONF_CHAN_MASK;
+> +	for (i = 0; i < 8; i++) {
+> +		if (test_bit(i, scan_mask))
+
+for_each_set_bit()
+
+> +			st->conf |= AD7192_CONF_CHAN(i);
+> +	}
+> +
+> +	return ad_sd_write_reg(&st->sd, AD7192_REG_CONF, 3, st->conf);
+> +}
+> +
+>  static const struct iio_info ad7192_info = {
+>  	.read_raw = ad7192_read_raw,
+>  	.write_raw = ad7192_write_raw,
+> @@ -789,6 +803,7 @@ static const struct iio_info ad7192_info = {
+>  	.read_avail = ad7192_read_avail,
+>  	.attrs = &ad7192_attribute_group,
+>  	.validate_trigger = ad_sd_validate_trigger,
+> +	.update_scan_mode = ad7192_update_scan_mode,
+>  };
+>  
+>  static const struct iio_info ad7195_info = {
+> @@ -798,6 +813,7 @@ static const struct iio_info ad7195_info = {
+>  	.read_avail = ad7192_read_avail,
+>  	.attrs = &ad7195_attribute_group,
+>  	.validate_trigger = ad_sd_validate_trigger,
+> +	.update_scan_mode = ad7192_update_scan_mode,
+>  };
+>  
+>  #define __AD719x_CHANNEL(_si, _channel1, _channel2, _address, _extend_name, \
 
