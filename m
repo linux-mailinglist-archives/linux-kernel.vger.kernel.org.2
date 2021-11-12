@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABC544E3EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB9D44E3FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhKLJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:40:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbhKLJk4 (ORCPT
+        id S234826AbhKLJm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:42:27 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:57792 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234761AbhKLJmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:40:56 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB85C061766;
-        Fri, 12 Nov 2021 01:38:05 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id v11so35349848edc.9;
-        Fri, 12 Nov 2021 01:38:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQTrXaTc/lNdG2njTmpBunO4PJ13P2OY2tx73UH6CuU=;
-        b=UuPQDmaDEsA8PwyeTSw9cpcEoCcpZvH3lk+fjcDXoPBJ+/ZAFaBw2otYEVHb362ufH
-         F2LzjEVO6nkcmACl3nWJZ/sJ8s50vKy5nuO2JWZN033YzeQNfWq8Xmc3MRiGMcql8mt4
-         Ce/iL3jaZm7r8X5puEADTcVg3ncGREI+8SpzWFJZ3sBi/VQ7uNaakWLVNIalYDg5YYrD
-         5RmVFwSoZBupqp1ANqYDx+hIczdItoX4s7R/c0OjqFdCZ3ixtKdzeGDwt8U47yprEsbc
-         TtT2JKVUA4GgH1Q4xfPNlTCUSKNsSVy3yqQtfg1scMIDVkS2PJL4HFn0lVb7PTqTHI5j
-         6lxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQTrXaTc/lNdG2njTmpBunO4PJ13P2OY2tx73UH6CuU=;
-        b=OrErs9ZjZxIHrk44ElHeC6JPpfl1W+J5mhriHOihvbXAbT/+6QDtpB5RJrTmw73jb4
-         KJnlsBit2UN6qGYAwbyOfx09zjjnSdq2mh03xAaOLcq0Nr5y4fSO90HN5+ZfxA5ZbPTM
-         GLTt1Uq1F5seJT6lL0Ba61fUP9IXEU1fmF6yfxR5GKkaspP0DvVUVV7Hrr3jcNTUlTsN
-         l/eEEmbwJu3+mmhtEoMRn9ERKvYi0UvkSlIgjaGm9xbaUq0YymBGknmwZrZEHX++S4gE
-         0Dl+NluDXCOzDS5ozigA3gORQdp4VyRHlgPqrRhSQeF0v0gcKej7E+5K/FaTCKtyu2SJ
-         gxpA==
-X-Gm-Message-State: AOAM530DlzN4sByRcy/JklQ5VDj0VHSIkMf7/TVdh/iihfI7k/tIk8/C
-        MWSKf6LYzjMW93aYNu6VVHI=
-X-Google-Smtp-Source: ABdhPJxmYjAv5I/zFbX5GzObOpTS0ULNPZBHNhapqmiB8HEktW7Acxn3OkriYXH/E3fVEGgGZEFKwQ==
-X-Received: by 2002:a50:9b06:: with SMTP id o6mr19004140edi.284.1636709884459;
-        Fri, 12 Nov 2021 01:38:04 -0800 (PST)
-Received: from localhost.localdomain (i5C74E2C0.versanet.de. [92.116.226.192])
-        by smtp.gmail.com with ESMTPSA id jz4sm1699852ejc.19.2021.11.12.01.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 01:38:03 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] blk-iocost: drop selecting undefined BLK_RQ_IO_DATA_LEN
-Date:   Fri, 12 Nov 2021 10:37:28 +0100
-Message-Id: <20211112093728.3237-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 12 Nov 2021 04:42:24 -0500
+X-UUID: a461190ad1864952a97ab231ead45302-20211112
+X-UUID: a461190ad1864952a97ab231ead45302-20211112
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <biao.huang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1047386741; Fri, 12 Nov 2021 17:39:28 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 12 Nov 2021 17:39:27 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Nov 2021 17:39:20 +0800
+From:   Biao Huang <biao.huang@mediatek.com>
+To:     <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Biao Huang <biao.huang@mediatek.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <srv_heupstream@mediatek.com>, <macpaul.lin@mediatek.com>,
+        <angelogioacchino.delregno@collabora.com>, <dkirjanov@suse.de>
+Subject: [PATCH v3 0/7] MediaTek Ethernet Patches on MT8195
+Date:   Fri, 12 Nov 2021 17:39:11 +0800
+Message-ID: <20211112093918.11061-1-biao.huang@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cd006509b0a9 ("blk-iocost: account for IO size when testing
-latencies") selects the non-existing config BLK_RQ_IO_DATA_LEN in
-config BLK_CGROUP_IOCOST.
+Changes in v3:
+1. Add prefix "net-next" to support new IC as Denis's suggestion.
+2. Split dt-bindings to two patches, one for convertion, and the other for
+   new IC.
+3. add a new patch to update device node in mt2712-evb.dts to accommodate to
+   changes in driver.
+4. remove unnecessary wrapper as Angelo's suggestion.
+5. Add acked-by in "net-next: stmmac: dwmac-mediatek: Reuse more common
+   features" patch.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+Changes in v2:
+1. fix errors/warnings in mediatek-dwmac.yaml with upgraded dtschema tools
 
-  BLK_RQ_IO_DATA_LEN
-  Referencing files: block/Kconfig
+This series include 5 patches:
+1. add platform level clocks management for dwmac-mediatek
+2. resue more common features defined in stmmac_platform.c
+3. add ethernet entry for mt8195
+4. convert mediatek-dwmac.txt to mediatek-dwmac.yaml
+5. add ethernet device node for mt8195
 
-Probably, this select is just some unintended left-over from an earlier
-draft version; BLK_RQ_IO_DATA_LEN was never defined in any commit in the
-repository. So, drop this dead select to an undefined config.
+Biao Huang (7):
+  net-next: stmmac: dwmac-mediatek: add platform level clocks management
+  net-next: stmmac: dwmac-mediatek: Reuse more common features
+  arm64: dts: mt2712: update ethernet device node
+  net-next: dt-bindings: dwmac: Convert mediatek-dwmac to DT schema
+  net-next: stmmac: dwmac-mediatek: add support for mt8195
+  arm64: dts: mt8195: add ethernet device node
+  net-next: dt-bindings: dwmac: add support for mt8195
 
-Fixes: cd006509b0a9 ("blk-iocost: account for IO size when testing latencies")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- block/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ .../bindings/net/mediatek-dwmac.txt           |  91 ------
+ .../bindings/net/mediatek-dwmac.yaml          | 211 ++++++++++++
+ arch/arm64/boot/dts/mediatek/mt2712-evb.dts   |   1 +
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi     |  14 +-
+ arch/arm64/boot/dts/mediatek/mt8195-evb.dts   |  92 ++++++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  70 ++++
+ .../ethernet/stmicro/stmmac/dwmac-mediatek.c  | 305 ++++++++++++++++--
+ 7 files changed, 666 insertions(+), 118 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.txt
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
 
-diff --git a/block/Kconfig b/block/Kconfig
-index c6ce41a5e5b2..486bc6003b9e 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -133,7 +133,6 @@ config BLK_CGROUP_FC_APPID
- config BLK_CGROUP_IOCOST
- 	bool "Enable support for cost model based cgroup IO controller"
- 	depends on BLK_CGROUP
--	select BLK_RQ_IO_DATA_LEN
- 	select BLK_RQ_ALLOC_TIME
- 	help
- 	Enabling this option enables the .weight interface for cost
--- 
-2.26.2
+--
+2.18.0
+
 
