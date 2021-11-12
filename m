@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEB944EB30
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A6544EB2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbhKLQR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:17:57 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57472 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbhKLQRx (ORCPT
+        id S235365AbhKLQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235330AbhKLQRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Nov 2021 11:17:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69363C061766;
+        Fri, 12 Nov 2021 08:15:02 -0800 (PST)
 Date:   Fri, 12 Nov 2021 16:15:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1636733701;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H4IexYcksaPPDD57PXmxvpsj8K+IfbPEum7f3FghIGo=;
-        b=iMDUqj9oPGTaa4f4tm2Gfe4wfXmMV+NWtH+CSmkGE81LIUeD2GZlOQWBW/kcmwHkoS02d8
-        4/YM7Kqi+Pe472KFkX70zkJGNTL5gLG2t12QpRd8KEUZ4LaDE2lHPU0+d1BN7RiSKJvY4/
-        8n+PJaPh5NZAcWAx2Xs0pEJQAs/T79DPUPlhLTxeZ0O5t4O5cDVr+OiAsHJDa8aXAYa3pr
-        TJi5Hw9vedCw7TAzK7qPQkWQng5+cFurRy1ZLxC/taDrAHAyOmrp04ZbK8rtW32Dc2vUSF
-        volDqiolhNmsAgenJxlqnNPR4ZRv6XS2ZnPNN87XqM50owsJn+LzWGAuANScuw==
+        bh=xwubUX8ElWI7HDQBRs6iKFhCP+MJ2gNTthLF+UykuNY=;
+        b=uf83b3MnCREb/xCvyTsW8G2b9MaFKkBu61zF2jw2oVnGlRqLorDcQN+34bsRypgsbYarxK
+        KKBUxymnLoGZdSCRi+il/CAOgAw+jKHvOO/z4nLXLi/f4V7bvliuNK6v3ZJlnOTHYKNENh
+        PrnLMZgD7A5hiLDfOTVktD1JV53SGIPXVlcji/auixTNgbl3GkFGiObSrQTGo2j2lE+CeT
+        +JTaRiRa8UzPxT/TQf3H74PnAHBKMaEPKiQ8DsM7T8iKHfS4XVcq5FjwncNhbRs8EY3D4o
+        UZeVLwzGdS9Vy+h/PMoPZeqE193FqW0hyQoxZrkFC25kL9mpMVaJIWjwF2Ux2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1636733701;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +36,26 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H4IexYcksaPPDD57PXmxvpsj8K+IfbPEum7f3FghIGo=;
-        b=h5nAmyPcGyCF6sTMKZ4FJHX5PbzRugocdNpC3EXcy8LXUtFx8ABhxvxz+sqIonUYsdqPAP
-        JY9c1tFqfPMtKRCw==
+        bh=xwubUX8ElWI7HDQBRs6iKFhCP+MJ2gNTthLF+UykuNY=;
+        b=N5vXFVMOCpdd2uJ0KXlNEiQl9OeHppo1+qjsNxIDPTAcf1H4QIQdSTGJ5hP9Cbtk5OVhs7
+        3X2g6+uTD3hxnwBA==
 From:   "irqchip-bot for Guo Ren" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqchip/csky-mpintc: Fixup mask/unmask
- implementation
-Cc:     Guo Ren <guoren@linux.alibaba.com>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <20211101134534.3804542-1-guoren@kernel.org>
-References: <20211101134534.3804542-1-guoren@kernel.org>
+Subject: [irqchip: irq/irqchip-fixes] irqchip/sifive-plic: Fixup EOI failed
+ when masked
+Cc:     Vincent Pelletier <plr.vincent@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Guo Ren <guoren@linux.alibaba.com>, stable@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>, Marc Zyngier <maz@kernel.org>
+In-Reply-To: <20211105094748.3894453-1-guoren@kernel.org>
+References: <20211105094748.3894453-1-guoren@kernel.org>
 MIME-Version: 1.0
-Message-ID: <163673370081.414.13388785651860452703.tip-bot2@tip-bot2>
+Message-ID: <163673370017.414.6466255977362659814.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,58 +66,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     1cbb418b69ed28f3395c6208931843a53d3fbcbe
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/1cbb418b69ed28f3395c6208931843a53d3fbcbe
+Commit-ID:     69ea463021be0d159ab30f96195fb0dd18ee2272
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/69ea463021be0d159ab30f96195fb0dd18ee2272
 Author:        Guo Ren <guoren@linux.alibaba.com>
-AuthorDate:    Mon, 01 Nov 2021 21:45:34 +08:00
+AuthorDate:    Fri, 05 Nov 2021 17:47:48 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 12 Nov 2021 16:09:50 
+CommitterDate: Fri, 12 Nov 2021 16:09:51 
 
-irqchip/csky-mpintc: Fixup mask/unmask implementation
+irqchip/sifive-plic: Fixup EOI failed when masked
 
-The mask/unmask must be implemented, and enable/disable supplement
-them if the HW requires something different at startup time. When
-irq source is disabled by mask, mpintc could complete irq normally.
+When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in a driver,
+only the first interrupt is handled, and following interrupts are never
+delivered (initially reported in [1]).
 
-So drop enable/disable if favour of mask/unmask.
+That's because the RISC-V PLIC cannot EOI masked interrupts, as explained
+in the description of Interrupt Completion in the PLIC spec [2]:
 
+<quote>
+The PLIC signals it has completed executing an interrupt handler by
+writing the interrupt ID it received from the claim to the claim/complete
+register. The PLIC does not check whether the completion ID is the same
+as the last claim ID for that target. If the completion ID does not match
+an interrupt source that *is currently enabled* for the target, the
+completion is silently ignored.
+</quote>
+
+Re-enable the interrupt before completion if it has been masked during
+the handling, and remask it afterwards.
+
+[1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
+[2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
+
+Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
+Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
+Tested-by: Nikita Shubin <nikita.shubin@maquefel.me>
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: stable@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Atish Patra <atish.patra@wdc.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+[maz: amended commit message]
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211101134534.3804542-1-guoren@kernel.org
+Link: https://lore.kernel.org/r/20211105094748.3894453-1-guoren@kernel.org
 ---
- drivers/irqchip/irq-csky-mpintc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-csky-mpintc.c b/drivers/irqchip/irq-csky-mpintc.c
-index cb403c9..4aebd67 100644
---- a/drivers/irqchip/irq-csky-mpintc.c
-+++ b/drivers/irqchip/irq-csky-mpintc.c
-@@ -78,7 +78,7 @@ static void csky_mpintc_handler(struct pt_regs *regs)
- 		readl_relaxed(reg_base + INTCL_RDYIR));
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index cf74cfa..259065d 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
+ {
+ 	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+ 
+-	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++	if (irqd_irq_masked(d)) {
++		plic_irq_unmask(d);
++		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++		plic_irq_mask(d);
++	} else {
++		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
++	}
  }
  
--static void csky_mpintc_enable(struct irq_data *d)
-+static void csky_mpintc_unmask(struct irq_data *d)
- {
- 	void __iomem *reg_base = this_cpu_read(intcl_reg);
- 
-@@ -87,7 +87,7 @@ static void csky_mpintc_enable(struct irq_data *d)
- 	writel_relaxed(d->hwirq, reg_base + INTCL_SENR);
- }
- 
--static void csky_mpintc_disable(struct irq_data *d)
-+static void csky_mpintc_mask(struct irq_data *d)
- {
- 	void __iomem *reg_base = this_cpu_read(intcl_reg);
- 
-@@ -164,8 +164,8 @@ static int csky_irq_set_affinity(struct irq_data *d,
- static struct irq_chip csky_irq_chip = {
- 	.name           = "C-SKY SMP Intc",
- 	.irq_eoi	= csky_mpintc_eoi,
--	.irq_enable	= csky_mpintc_enable,
--	.irq_disable	= csky_mpintc_disable,
-+	.irq_unmask	= csky_mpintc_unmask,
-+	.irq_mask	= csky_mpintc_mask,
- 	.irq_set_type	= csky_mpintc_set_type,
- #ifdef CONFIG_SMP
- 	.irq_set_affinity = csky_irq_set_affinity,
+ static struct irq_chip plic_chip = {
