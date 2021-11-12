@@ -2,130 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E2F44E893
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C706844E89B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhKLOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbhKLOZt (ORCPT
+        id S235105AbhKLO2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:28:32 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:51712 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231718AbhKLO2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:25:49 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAFCC061766;
-        Fri, 12 Nov 2021 06:22:58 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id s186so24002579yba.12;
-        Fri, 12 Nov 2021 06:22:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggAR2uubSaydz9H2bhZaHxQ14ET7vRT2WA5ZzUM/Bq4=;
-        b=RmKrY1Mg6PRkyDz1IdWCexNeP/AXl4K1EwGea8Lbgt+TIk/zCcR97hrA6qvZGTHrcM
-         OeY4h7le+zysNz7HeifFubwumUkRt5uRNy2lUCnf2RD3FPIc7wMvwNihVbwO/U5scdgH
-         NXx6tzo83iI1UjbUy6H6vZyelZD0FaZbx/Dw6uHde0uD4BbE35cF9XOQkzlmwJMX1KU9
-         +GSdsMPZahMKqzl94uBuZkYZ77vJHKu1S/SpboJtV7ds/dEDgRmTj8qyMrLDKmVsJVnv
-         /txyxYe609hUCiABQEVu3Rw/1AluIkHy4bprZ/CBxbIFiI/+kJTm1NS9sdXLk7sYQ6OH
-         uYyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggAR2uubSaydz9H2bhZaHxQ14ET7vRT2WA5ZzUM/Bq4=;
-        b=4rCs1hnaH/tjdI82FZVqNFo7I1ndxFdLzIDyCtIAov+xiPPQ6cCVYtwNbGccIApNuH
-         G8kJATsMuG4uxqSUbN2RLNgw8o5M+UJLlVNEbmHtwxr/EY0VonFHRDdNzlT370pA9qTe
-         TCcTvMCrJxZ/XksNz5U4ZipcN7NJ3Gwa+S7QVlqD2Ix7mTuWQ/PUWM31POe94PlaLhAv
-         td51WL5ip7icEa78Qe0QCuLL+UKzt3gCvoP91QKbQeO3mDYWCiX0QL6+Ur02ZFt6s1d1
-         Yr9jdLHRHpU41lU9onTHw7xq4a49A83yICtQKs8UuwqPn5OK4VWeOLNAa67glSdQE4/t
-         kGpw==
-X-Gm-Message-State: AOAM531hM73nvs5BSnwd3d6L6aY54E2By5IM+g/iWNjaZiSXcOgUoO++
-        PvAJS+IxOKsn6w091LaXTLkWoniTxGf1/9oezgY=
-X-Google-Smtp-Source: ABdhPJyR7CKGHvXg49KCfNoT5U0Y+hsV3oGjChLcbb/t6QQoHHxwVAoOOEMYuIH8zySnXIegmuAbgC8Cs4np+f3RF2E=
-X-Received: by 2002:a25:f502:: with SMTP id a2mr17981752ybe.254.1636726977939;
- Fri, 12 Nov 2021 06:22:57 -0800 (PST)
+        Fri, 12 Nov 2021 09:28:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1636727140; x=1668263140;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rgh69Aka38+wNe9PcLbeZQ3RfJdiFvu3KYCjuQBZciE=;
+  b=xser0l3cekUeGQAr4syIGRDqm93yRVDmpyQCsMf0OO9ULm9qdE1xJKZj
+   MYr8nw8s5cKbVgDVLVJpFtBK6wVB/eESZUR4M+JuMvHIQr+HjfhYLL6qB
+   wc8NsuTLTepbJQAAe8BW1CF8GoNdd5b7sAwQWGXZ975ZVQp/b39CNbIYI
+   DBZ/b+omi5vndg/zKhC83T73ReI96jX0vSQ75UN9uo4E6JQdCfWw1NrSQ
+   DquQZY94BQwUIxskmgxz2VNZK6mFSur6k8uX25q+IOfEUs9FoYZEQo1qe
+   CA0h5h9VvdT3R7m3aOCL1yuCGNX9KlLqYOkci9kDJ6Y4oPqSFhZc4Rw1Q
+   Q==;
+IronPort-SDR: vWmOqrKR1QW6KA5o66Xy8DcxWLVwCHRqFVV0Z6j0UW39z2JAFb8p2MecPxPgctaWsSlFMRMJsW
+ 8i9jDNYP5KaQxmq4bAvNOYcvDVPMxtXKS+YoFK7xASITpwH33/GCGEcpJgJSIe2TlVvvsx0U7f
+ U2SRcSdNwAa0ovA5V1ODuqtW3RRSocAwwMNyl0FD3Ti3GPnP8AHFdEh9Z4xF6EbSPE+ANjRfqN
+ IFwg3QHF3PEHZKSXNus4ixoTnLb1RLtqaiqw7R91Cwiyc7cVyROWfGMfxDFqiivvd94i3NDZfq
+ NBu+R5Rn22f7V6IEcV6cZssi
+X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
+   d="scan'208";a="143729456"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Nov 2021 07:25:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 12 Nov 2021 07:25:39 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 12 Nov 2021 07:25:28 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <linux-media@vger.kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <jacopo@jmondi.org>,
+        <laurent.pinchart@ideasonboard.com>, <sakari.ailus@iki.fi>,
+        <nicolas.ferre@microchip.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH v2 00/25] media: atmel: atmel-isc: implement media controller
+Date:   Fri, 12 Nov 2021 16:24:44 +0200
+Message-ID: <20211112142509.2230884-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211110225808.16388-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWmvPgAeS1o8aubaYBihuFrggoVkpT8XtnTZ6nq-VXn9A@mail.gmail.com>
-In-Reply-To: <CAMuHMdWmvPgAeS1o8aubaYBihuFrggoVkpT8XtnTZ6nq-VXn9A@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 12 Nov 2021 14:22:32 +0000
-Message-ID: <CA+V-a8tLRircMSHxqHRP6g611fPpSrVe1motkKAULeuAM1bMUA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/7] Renesas RZ/G2L IRQC support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+This series is the v2 of the series that attempts to support media controller
+in the atmel ISC and XISC drivers.
+This series also includes the csi2dc driver which was previously sent in a
+separate series:
+https://www.spinics.net/lists/linux-media/msg181042.html
+https://www.spinics.net/lists/linux-media/msg181044.html
+The driver now addresses comments received in latest v5 series from last year.
 
-On Fri, Nov 12, 2021 at 2:12 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Wed, Nov 10, 2021 at 11:58 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > The RZ/G2L Interrupt Controller is a front-end for the GIC found on
-> > Renesas RZ/G2L SoC's with below pins:
-> > - IRQ sense select for 8 external interrupts, mapped to 8 GIC SPI interrupts
-> > - GPIO pins used as external interrupt input pins out of GPIOINT0-122 a
-> >   maximum of only 32 can be mapped to 32 GIC SPI interrupts,
-> > - NMI edge select.
-> >
-> >                                                                 _____________
-> >                                                                 |    GIC     |
-> >                                                                 |  ________  |
-> >                                          ____________           | |        | |
-> > NMI ------------------------------------>|          |  SPI0-479 | | GIC-600| |
-> >                 _______                  |          |------------>|        | |
-> >                 |      |                 |          |  PPI16-31 | |        | |
-> >                 |      | IRQ0-IRQ8       |   IRQC   |------------>|        | |
->
-> IRQ0-IRQ7?
->
-oops typo here.
+The series includes some minor changes and fixes that improve the isc common
+code base, like removing the enum frameintervals VIDIOC, fixing bytesperline
+for planar formats, etc.
 
-> > P0_P48_4 ------>| GPIO |---------------->|          |           | |________| |
-> >                 |      |GPIOINT0-122     |          |           |            |
-> >                 |      |---------------->| TINT0-31 |           |            |
-> >                 |______|                 |__________|           |____________|
-> >
-> > The proposed RFC patches, add the IRQ domains in GPIO (pinctrl driver) and the
-> > IRQC driver. The IRQC domain handles the actual SPI interrupt and upon reception
-> > of the interrupt it propagates to the GPIO IRQ domain to handle virq.
-Also this bit isnt true (copy pasted from v1 :(). IRQ now is handled
-by the slave driver requesting interrupts. IRQC now handles eoi
-callbacks.
+Many thanks to folks from libcamera who helped a lot with understanding
+how a media controller driver should behave.
 
-> > Out of GPIOINT0-122 only 32 can be mapped to GIC SPI, this mapping is handled by
-> > the IRQC driver.
->
+Feedback is welcome !
 
-Cheers,
-Prabhakar
+Changes in v2:
+- integrated many changes suggested by Jacopo in the review of the v1 series.
+- add a few new patches
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+
+Eugen Hristev (25):
+  MAINTAINERS: add microchip csi2dc
+  dt-bindings: media: atmel: csi2dc: add bindings for microchip csi2dc
+  media: atmel: introduce microchip csi2dc driver
+  MAINTAINERS: atmel-isc: add new file atmel-isc-clk.c
+  media: atmel: atmel-isc: split the clock code into separate source
+    file
+  media: atmel: atmel-isc: replace video device name with module name
+  media: atmel: atmel-sama7g5-isc: fix ispck leftover
+  media: atmel: atmel-isc-base: use streaming status when queueing
+    buffers
+  media: atmel: atmel-isc-base: remove frameintervals VIDIOC
+  media: atmel: atmel-isc-base: report frame sizes as full supported
+    range
+  media: atmel: atmel-isc-base: implement mbus_code support in enumfmt
+  media: atmel: atmel-isc-base: fix bytesperline value for planar
+    formats
+  MAINTAINERS: atmel-isc: add new file atmel-isc-mc.c
+  media: atmel: atmel-isc: implement media controller
+  ARM: dts: at91: sama7g5: add nodes for video capture
+  ARM: configs: at91: sama7: add xisc and csi2dc
+  ARM: multi_v7_defconfig: add atmel video pipeline modules
+  media: atmel: atmel-sama5d2-isc: fix wrong mask in YUYV format check
+  media: atmel: atmel-isc-base: use mutex to lock awb workqueue from
+    streaming
+  media: atmel: atmel-isc-base: add wb debug messages
+  media: atmel: atmel-isc-base: clamp wb gain coefficients
+  media: atmel: atmel-sama7g5-isc: fix UYVY input format mbus_code typo
+  media: atmel: atmel-isc: add raw Bayer 8bit 10bit output formats
+  media: atmel: atmel-isc: compact the controller formats list
+  media: atmel: atmel-isc: change format propagation to subdev into only
+    verification
+
+ .../bindings/media/microchip,csi2dc.yaml      | 159 ++++
+ MAINTAINERS                                   |   9 +
+ arch/arm/boot/dts/sama7g5.dtsi                |  49 ++
+ arch/arm/configs/multi_v7_defconfig           |   3 +
+ arch/arm/configs/sama7_defconfig              |   2 +
+ drivers/media/platform/Makefile               |   1 +
+ drivers/media/platform/atmel/Kconfig          |  15 +
+ drivers/media/platform/atmel/Makefile         |   4 +-
+ drivers/media/platform/atmel/atmel-isc-base.c | 788 ++++++-----------
+ drivers/media/platform/atmel/atmel-isc-clk.c  | 311 +++++++
+ drivers/media/platform/atmel/atmel-isc-mc.c   | 287 +++++++
+ drivers/media/platform/atmel/atmel-isc.h      |  49 ++
+ .../media/platform/atmel/atmel-sama5d2-isc.c  |  59 +-
+ .../media/platform/atmel/atmel-sama7g5-isc.c  |  72 +-
+ .../media/platform/atmel/microchip-csi2dc.c   | 797 ++++++++++++++++++
+ 15 files changed, 2036 insertions(+), 569 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+ create mode 100644 drivers/media/platform/atmel/atmel-isc-clk.c
+ create mode 100644 drivers/media/platform/atmel/atmel-isc-mc.c
+ create mode 100644 drivers/media/platform/atmel/microchip-csi2dc.c
+
+-- 
+2.25.1
+
