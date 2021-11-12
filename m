@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437EB44ED17
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D93344ED1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235572AbhKLTPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 14:15:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhKLTPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 14:15:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A5C60E08;
-        Fri, 12 Nov 2021 19:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636744331;
-        bh=wOUilmJG0yEgl1+k5Dv+lHJaSa6UoZ46IqfGRu9V9XQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X7FNpIsZPHPlPoIgaaUHCqxHG7T4VxQwOupFwalBJqQi0gFy2oU2SbJ8935bY/cF+
-         9kVFwQ2YDAbV1gk/1jTM0OVZpDzSFwNERoAH0rq4uT9rBQUy/QMnBmGRAhIYAuKgNm
-         h8ybUFxujrye+TLVBFWUoqELZUnY+Q134eMTiCoEiBmAMBUSn3jBUB6nIk8JFRSH51
-         PDB49vG+Ku47WfCQL3K0u/tYafjvvas67C1ko9aHEUAraiW/YyBHr/saBP6GUOH4iG
-         uoPF9+5Hh3yyMMS0mwC9OxevB/gqj1wYaUZKSL/huR+sElTevY/BFtFv8uDEc1AoS8
-         rMrSWUvuPVYmg==
-Date:   Fri, 12 Nov 2021 11:12:09 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     tytso@mit.edu, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        hughd@google.com, akpm@linux-foundation.org,
-        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 5/5] shmem: Add fsverity support
-Message-ID: <YY68iXKPWN8+rd+0@gmail.com>
-References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
- <20211112124411.1948809-6-roberto.sassu@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112124411.1948809-6-roberto.sassu@huawei.com>
+        id S235609AbhKLTQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 14:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235379AbhKLTQ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 14:16:26 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A62CC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:13:35 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id z19-20020a630a53000000b002dc2f4542faso5305206pgk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:13:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=GsIi8/iqtr2GLgOD7vsfMp3NlXKV3TgHKavw0IFPKpY=;
+        b=gt7k/aSehR6cQr0L3Jzrt9q7UFuIliY5b0NVuQY/JpWzn+348526bQv7ipD5Ast66n
+         WaqLA8xmZ06AAntCyondqeJwzKAbruZQ+S8xsLRDSc58o7KLPlIqFLB6zgm03lhSjghj
+         uo9F2keim+n85vNmhojyW1G109o9zeFxOgL/JSEmQGysXeyW269NHIszvnl55ajrq7DD
+         vvzaPi8lqIR//koy8Efi4WdQ16mqo50hxlDvPqJAUOGcuIpwI2grylD9ti45kf5fxj4V
+         BwNevQH0mK6mBKdq8rO0Lwjbi+4/V/vNuYi9PvNLm+Jy7AY0UkJvMXfVhLCx4UVkUOEQ
+         OPng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=GsIi8/iqtr2GLgOD7vsfMp3NlXKV3TgHKavw0IFPKpY=;
+        b=PhL0MvfqzvQVTaK40FtP3bcCivBt6livCIP439h6/76/D5cWHYPjasKVEgnCq/8OR5
+         jVMxNTJIYCwREEs8so0LRmwqBwzhPeJkow0iOSjpp8446a+9poGDzKywWIQXvfcAbFYd
+         A/VVssQgrfeXwpT6ieLqEPijVmF7QHddUhqOAYMS37YxFOLWE1M3i9UaIPX+22QQGv+p
+         RE6QinwZNcNsgp3aEFlZ78Q2O3T8HFF0c+LR3O2P5DDtaZHJxG28Txq01S3LeZ4Qit8x
+         NLEJ2cPUNpi8q9FgtqBcd7uuc0OlZx8jxtIRaQjyDji7+lWsb7BWQZXZgEXHlubzjJ/A
+         f6/w==
+X-Gm-Message-State: AOAM531qG4wuedqz53fYmW04rDGUJaLRjDVYtNjkn5bgTXZtBn8vv+Fb
+        RsCqGTrmURccwVgimTIxW8NRwF8ZhtIR3jLuHA==
+X-Google-Smtp-Source: ABdhPJzYh+LCMezXcM7CyllvNk7f0e4nKS6rGcYs6E6xpHxga3UiQLpCIUS3W+BAnuOP8Al6JRqyNnWj/64XDIm53Q==
+X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:b3bc:434c:ee52:f320])
+ (user=kaleshsingh job=sendgmr) by 2002:a17:90a:8a82:: with SMTP id
+ x2mr20217933pjn.187.1636744414929; Fri, 12 Nov 2021 11:13:34 -0800 (PST)
+Date:   Fri, 12 Nov 2021 11:13:24 -0800
+Message-Id: <20211112191324.1302505-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH] tracing/histogram: Fix check for missing operands in an expression
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
+        zanussi@kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:44:11PM +0100, Roberto Sassu wrote:
-> Make the necessary modifications to support fsverity in tmpfs.
-> 
-> First, implement the fsverity operations (in a similar way of f2fs). These
-> operations make use of shmem_read_mapping_page() instead of
-> read_mapping_page() to handle the case where the page has been swapped out.
-> The fsverity descriptor is placed at the end of the file and its location
-> is stored in an xattr.
-> 
-> Second, implement the ioctl operations to enable, measure and read fsverity
-> metadata.
-> 
-> Lastly, add calls to fsverity functions, to ensure that fsverity-relevant
-> operations are checked and handled by fsverity (file open, attr set, inode
-> evict).
-> 
-> Fsverity support can be enabled through the kernel configuration and
-> remains enabled by default for every tmpfs filesystem instantiated (there
-> should be no overhead, unless fsverity is enabled for a file).
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+If a binary operation is detected while parsing an expression string,
+the operand strings are deduced by splitting the experssion string at
+the position of the detected binary operator. Both operand strings are
+sub-strings (can be empty string) of the expression string but will
+never be NULL.
 
-I don't see how this makes sense at all.  The point of fs-verity is to avoid
-having to hash the whole file when verifying it.  However, obviously the whole
-file still has to be hashed to build the Merkle tree in the first place.  That
-makes sense for a persistent filesystem where a file can be written once and
-verified many times.  I don't see how it makes sense for tmpfs, where files have
-to be re-created on every boot.  You might as well just hash the whole file.
+Currently a NULL check is used for missing operands, fix this by
+checking for empty strings instead.
 
-Also, you didn't implement actually verifying the data (by calling
-fsverity_verify_page()), so this patch doesn't really do anything anyway.
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Fixes: 9710b2f341a0 ("tracing: Fix operator precedence for hist triggers expression")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ kernel/trace/trace_events_hist.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-- Eric
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 0abc9a413b4d..328b1f83a3c8 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2580,7 +2580,8 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 	operand1_str = str;
+ 	str = sep+1;
+ 
+-	if (!operand1_str || !str)
++	/* Binary operator requires both operands */
++	if (*operand1_str == '\0' || *str == '\0')
+ 		goto free;
+ 
+ 	operand_flags = 0;
+
+base-commit: 5833291ab6de9c3e2374336b51c814e515e8f3a5
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
+
