@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990A444EE65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9093844EE6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235719AbhKLVPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S235682AbhKLVTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhKLVPY (ORCPT
+        with ESMTP id S235329AbhKLVTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:15:24 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3BFC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:12:32 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id br15so21635932lfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:12:32 -0800 (PST)
+        Fri, 12 Nov 2021 16:19:45 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28271C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:16:54 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id b31-20020a4a98e2000000b002bce352296cso3351122ooj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Dn+bcXMxMVbConI0dzzOMHuL8/svkzu+Wwj+qbiR4x8=;
-        b=EdzZWhK+twSP8CvwCQlYnN86NLSH4z6uOIKjsX+ieqtsfgIe6iwn4m5q/+wYMjmvo6
-         062jaDfetxnssAtPg2E/mW7NYDChxtGhOUICnrA7EEJ9XXAMCppnsFgGyZmfJ/yKdjLs
-         s2Z32/7worYPlLhueFmEQv5FTZV6YFWp1RMdOwWJEb/Bb6W+jZgQ6g7FWwJj9uSLrdaQ
-         YBa2H5x5he1yz1h5IuS5JWT8EBlkiVVwdHu6BBUI4yLYa/pa4GYqIL4LegYmg1IyiLJG
-         p3kAsDZK8tDm9KQPdFVvoor0H2zgZJMx9Rw01hfOViR7D8pDtJO5Uvmdy3AlsAooISbU
-         9zaA==
+        bh=Wss/5FTdvL/ZsvqJzpcpP0vdH9OVb8c+LLdYEkdhnSs=;
+        b=rH4CDA2O6JCJq7jEtKrpJB3naSzfLAW3EwcXwJBgz8NHwCbEfX4Y7uVz+LkZr+hrEJ
+         +I0JUbdCZ0Eg+jU7wr0UWgv5MDmCQEwSLGmghVhPsyXWCJLkgNTbAEEIodMi2vC+nDGP
+         vAnO27RJCLMGr+oQH3ulQDVXl+wQnrPymGwD+C8Ct6C3DeEXgjsqVjqN+hGRnsLmOFi8
+         nPkzBkWeT1G3yIcW2QZxvHaZQmPv3Hr+tSGUPT0LwTUvBEwM3VTfJSuVQ97JJ6+ohD0v
+         sm4Jcwh4byJx7uc264omN9uaYgtuYaY49B2I53HH1xF8Dj1+neZHJFB8B1P12TfFku+L
+         wdbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Dn+bcXMxMVbConI0dzzOMHuL8/svkzu+Wwj+qbiR4x8=;
-        b=LXaNSHmhHm86YPSSNhT45m4FCAghhm6BfyDSnAurJ8HOVS8LmNNQEXXXaDDmqVwV+E
-         57q47Oso+BX+aw+oo9LBtZzbzWGm9rLhr5GhDdWlQVcLYJ3+OmqnflNwOn8MbVSz7ImZ
-         tID1z6qub+Z1oPoUuVqyt+IaISx1lfsvbPOpwb5Aj3YeOpFMBZhkC1/0RbEZZVhK2IVn
-         cygtjsV5F1j8THZWQtxEzk6JUqKUMFpgOO18pxD/4GZyVg/82acJgIRs8yDzGbT3vkSM
-         C+j8ZMkS+7joaDK0UeBeeLgu6tusCAnyN6RWkCRuRX1RMmHCh9CwBXw79yDNG6puhIuL
-         Ezmg==
-X-Gm-Message-State: AOAM531OHqn0N/v+ciX/5jvX1V6lnGAeXfA5UOEL6f7GvtTyhZ7lHCSy
-        8lExTLHo1JLE6UovNIXGtMRIvSXSAKDjYfuLk89K1w==
-X-Google-Smtp-Source: ABdhPJx0zv9oZiVhO/YNxkJ7L7PIPrKlq6CA5xheWOUfHI/cpWmE7wF5mKEaWrnaVRWPNR0426TS6C177SQB4l0qALk=
-X-Received: by 2002:a05:6512:39c4:: with SMTP id k4mr15332635lfu.79.1636751550683;
- Fri, 12 Nov 2021 13:12:30 -0800 (PST)
+        bh=Wss/5FTdvL/ZsvqJzpcpP0vdH9OVb8c+LLdYEkdhnSs=;
+        b=X5FCSJgGk6pEtfg9wDncIUprXM5pcXfbZtshHOYYAlOH7bz/0MGHhtvtK6FOqmtacu
+         RfXHlA0QbQNjUoP+zNBAbUnS5spBN4euUS+L8xSWB78MjzMBEFrqUob9DFKNHwOKS/iG
+         vwdOmHp661MatkYR0UcUWwE4c9HYFbBQHcptLe6eceubc1OIvrPB2FmU0l1dbe6n+80T
+         28TxbHmZOQj3bTZ53sPd94oPFo6giBf5ZAWrNLK8TOWIFLPSBptpKEccZ1fP6pNykKTf
+         ew3cBm7as/YHzz8U0r1ASrNr3ljYScGyDK5tiWbjzvN5z55aba+92s6FOnIPO0RtiaHg
+         DGeQ==
+X-Gm-Message-State: AOAM530v1ZYEkJ0GCkNNYLHAWTrnNZUOl/amNLGIO8bpAQjVSOcz+a97
+        IcKJA/Y5JwTWGENT300D7ltvzHKgcC0UjY7NxaGNPw==
+X-Google-Smtp-Source: ABdhPJyat1/wejZeYNbgqmYOxRGD7fk2dWxHtnIZDfKhyhl6kHLjSWImplcgB28WjBzJ96p1EICE1Qugb0LOIJXrx6U=
+X-Received: by 2002:a4a:dc1a:: with SMTP id p26mr10372786oov.6.1636751813173;
+ Fri, 12 Nov 2021 13:16:53 -0800 (PST)
 MIME-Version: 1.0
 References: <20210820155918.7518-1-brijesh.singh@amd.com> <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com> <YY7I6sgqIPubTrtA@zn.tnic> <YY7Qp8c/gTD1rT86@google.com>
- <YY7USItsMPNbuSSG@zn.tnic>
-In-Reply-To: <YY7USItsMPNbuSSG@zn.tnic>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 12 Nov 2021 14:12:19 -0700
-Message-ID: <CAMkAt6o909yYq3NfRboF3U3V8k-2XGb9p_WcQuvSjOKokmMzMA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic> <YY7FAW5ti7YMeejj@google.com>
+In-Reply-To: <YY7FAW5ti7YMeejj@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Fri, 12 Nov 2021 13:16:42 -0800
+Message-ID: <CAA03e5EpQZnNzWgRsCAahwwvsd6+QVnRHdiYFM=GhEb2N1W0GQ@mail.gmail.com>
 Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
  Hypervisor Support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@intel.com>,
+        Peter Gonda <pgonda@google.com>,
         Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         linux-coco@lists.linux.dev, linux-mm@kvack.org,
@@ -77,94 +76,29 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         David Rientjes <rientjes@google.com>,
         Dov Murik <dovmurik@linux.ibm.com>,
         Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
+        Michael Roth <Michael.Roth@amd.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+        sathyanarayanan.kuppuswamy@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 1:55 PM Borislav Petkov <bp@alien8.de> wrote:
+> > So cloud providers should have an interest to prevent such random stray
+> > accesses if they wanna have guests. :)
 >
-> On Fri, Nov 12, 2021 at 08:37:59PM +0000, Sean Christopherson wrote:
-> > Let userspace decide what is mapped shared and what is mapped private.
->
-> With "userspace", you mean the *host* userspace?
->
-> > The kernel and KVM provide the APIs/infrastructure to do the actual
-> > conversions in a thread-safe fashion and also to enforce the current
-> > state, but userspace is the control plane.
-> >
-> > It would require non-trivial changes in userspace if there are multiple processes
-> > accessing guest memory, e.g. Peter's networking daemon example, but it _is_ fully
-> > solvable.  The exit to userspace means all three components (guest, kernel,
-> > and userspace) have full knowledge of what is shared and what is private.  There
-> > is zero ambiguity:
-> >
-> >   - if userspace accesses guest private memory, it gets SIGSEGV or whatever.
->
-> That SIGSEGV is generated by the host kernel, I presume, after it checks
-> whether the memory belongs to the guest?
->
-> >   - if kernel accesses guest private memory, it does BUG/panic/oops[*]
->
-> If *it* is the host kernel, then you probably shouldn't do that -
-> otherwise you just killed the host kernel on which all those guests are
-> running.
+> Yes, but IMO inducing a fault in the guest because of _host_ bug is wrong.
 
-I agree, it seems better to terminate the single guest with an issue.
-Rather than killing the host (and therefore all guests). So I'd
-suggest even in this case we do the 'convert to shared' approach or
-just outright terminate the guest.
-
-Are there already examples in KVM of a KVM bug in servicing a VM's
-request results in a BUG/panic/oops? That seems not ideal ever.
-
->
-> >   - if guest accesses memory with the incorrect C/SHARED-bit, it gets killed.
->
-> Yah, that's the easy one.
->
-> > This is the direction KVM TDX support is headed, though it's obviously still a WIP.
-> >
-> > And ideally, to avoid implicit conversions at any level, hardware vendors' ABIs
-> > define that:
-> >
-> >   a) All convertible memory, i.e. RAM, starts as private.
-> >   b) Conversions between private and shared must be done via explicit hypercall.
->
-> I like the explicit nature of this but devil's in the detail and I'm no
-> virt guy...
-
-This seems like a reasonable approach that can help with the issue of
-terminating the entity behaving poorly. Could this feature be an
-improvement that comes later? This improvement could be gated behind a
-per VM KVM CAP, a kvm module param, or insert other solution here, to
-not blind side userspace with this change?
-
->
-> > Without (b), userspace and thus KVM have to treat guest accesses to the incorrect
-> > type as implicit conversions.
-> >
-> > [*] Sadly, fully preventing kernel access to guest private is not possible with
-> >     TDX, especially if the direct map is left intact.  But maybe in the future
-> >     TDX will signal a fault instead of poisoning memory and leaving a #MC mine.
->
-> Yah, the #MC thing sounds like someone didn't think things through. ;-\
-
-Yes #MC in TDX seems much harder to deal with than the #PF for SNP.
-I'd propose TDX keeps the host kernel safe bug not have that solution
-block SNP. As suggested above I like the idea but it seems like it can
-come as a future improvement to SNP support.
-
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+I want to push back on "inducing a fault in the guest because of
+_host_ bug is wrong.". The guest is _required_ to be robust against
+the host maliciously (or accidentally) writing its memory. SNP
+security depends on the guest detecting such writes. Therefore, why is
+leveraging this system property that the guest will detect when its
+private memory has been written wrong? Especially when its orders or
+magnitudes simpler than the alternative to have everything in the
+system -- kernel, user-space, and guest -- all coordinate to agree
+what's private and what's shared. Such a complex approach is likely to
+bring a lot of bugs, vulnerabilities, and limitations on future design
+into the picture.
