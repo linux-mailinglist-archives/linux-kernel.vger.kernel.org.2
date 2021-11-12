@@ -2,123 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238D244E4B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D947644E4B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhKLKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234144AbhKLKiG (ORCPT
+        id S234707AbhKLKiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:38:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232841AbhKLKiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:38:06 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF377C061766;
-        Fri, 12 Nov 2021 02:35:15 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id r8so14608378wra.7;
-        Fri, 12 Nov 2021 02:35:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QdoNIfuooUxGvM1/b5JFfH6vaJ2XJ2d/YPwKErmo22w=;
-        b=ZPgxkQUMiQOxckL/6jdYj8UN9nOtMnrBoPRPrAHuKl24iZ16hoa0TD25SSeI/A3t1d
-         mMwyuya5j23x/hQEu4yaGDgE3D/bkOwFW5yx2lL92e+Y4rB3kFcQ+heHYBIzuUbPcRyP
-         lJqhYbQvYMI8GTe/V/maTuljtel/Q3iXy13qCpeQRXiYNTX+oV5vVIeThjONtC8ES9JD
-         ntXYqf0ZdouUhrYFDa9lB8xMBDUa/fiVspFvlkD9jGqlFW7ymFpGZ1qhFSGyVH3Ciu4Y
-         JxHau8NizF7X/GeORz0fcGxnYgB0ptogucnbFXKk6/+ugsrhWBrRw0HZ2lTafD8x5Zp5
-         L74A==
+        Fri, 12 Nov 2021 05:38:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636713330;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ESxUrrp2niyFj2SEQ95J4I3ux91XqFDjhDdEg5bTD3A=;
+        b=cfh/ywy7zy+BNX1+M9TKxGD7TlBKxvRz6am8vttfxpzsVArcoAOu10pVOP2djptIOD0yY3
+        nRRG2DYjws11l+/eQnaLCumBw+1FASJNiOHIqrN1C1dayOvY32M1mx+g3Y/t5b5bwIqreM
+        rWJ0o1lNSEh84PCN2pRGbNv1N9UggvY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176--3alCETOPLCQXnxWSzEhNw-1; Fri, 12 Nov 2021 05:35:28 -0500
+X-MC-Unique: -3alCETOPLCQXnxWSzEhNw-1
+Received: by mail-wm1-f71.google.com with SMTP id m14-20020a05600c3b0e00b0033308dcc933so4072543wms.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:35:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QdoNIfuooUxGvM1/b5JFfH6vaJ2XJ2d/YPwKErmo22w=;
-        b=MSMe/LZXr5iSpwhxTaV7IB/Ddk49uMN5pb8Es7/HNT+ij0m39fGqJqM9tJTKElvPCk
-         5/8168oxbJqdVvGnsMbYOidGU92ahe06qFsPAc2dgExzYCVZP1T+jZo8o7jriR3K+UDZ
-         /iZ3Wc25ukgUKzr2DQWysTLoX+0ecf01Dbmq4GQR0tNJd+c0YQ8mWbm7SdTXC7Zu4cr4
-         10HBD+CuRjXpRC3Z8caE3zC+Vsm1UbbufwV9pRLys4sGcoVW7j+gjn5YETObMWYyEwsR
-         KpPvs7mLPkT0EZzJRJIHlIujhnVMGpa+6lQcVCEcMgKGl4EzFU7CVsPWCstwTefCsZbl
-         eWaA==
-X-Gm-Message-State: AOAM530yYcgHMJIkTry30fSX7qDZMvWBmadbDXcN35yhjeHNeWX9xl71
-        aonvaxLU+i4BA9Jr7f4ugT8=
-X-Google-Smtp-Source: ABdhPJxv6PsU9fthoNFdX3tDvA618t/AN85YWs8Oi5s91O6Iy+wiEahdsLUu220uNmi1omEHX08dDw==
-X-Received: by 2002:a5d:468f:: with SMTP id u15mr17174462wrq.171.1636713314393;
-        Fri, 12 Nov 2021 02:35:14 -0800 (PST)
-Received: from orome.fritz.box ([193.209.96.43])
-        by smtp.gmail.com with ESMTPSA id m20sm12117707wmq.11.2021.11.12.02.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 02:35:13 -0800 (PST)
-Date:   Fri, 12 Nov 2021 11:35:10 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Prathamesh Shete <pshete@nvidia.com>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suresh Mangipudi <smangipudi@nvidia.com>
-Subject: Re: [PATCH 2/2] gpio: tegra186: Add support for Tegra234 gpio
-Message-ID: <YY5DXh6MdmSFXHhB@orome.fritz.box>
-References: <20211021123021.9602-1-pshete@nvidia.com>
- <20211021123021.9602-2-pshete@nvidia.com>
- <YXq3/1AXX7KiwpTy@orome.fritz.box>
- <YYE7aXo0mfCfCqGF@orome.fritz.box>
- <DM5PR12MB240697948C6DFF64E45AFF00B78C9@DM5PR12MB2406.namprd12.prod.outlook.com>
- <CACRpkdZto=5Pa4r7-eufUqteaJS5yYeTL6Oh8mFO_g=6RzV+mg@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ESxUrrp2niyFj2SEQ95J4I3ux91XqFDjhDdEg5bTD3A=;
+        b=qOERNtza4YxhH/W5EmfPqPDq57lYyNPZQTMwdqipSf51OvvPndiwzYru6xxSbMjaTP
+         DFXBD0FeVfiooMaerfMsBFVn4hCD8rH7wfM5jgFIyyj1Puh/mk7kjaOM0usLwnzCKFQh
+         mEtu7CzIGtoLfXN9985888y4281k0kKcsqvErFabKdRoHvDP1LigHPGUw3AWKQmRrNCK
+         ORovzloaAwbHLfynF1JR2qUbdwLVYaYPB8WXGKuS33rLLH1mtw3Ap3SJ///WH5uzm95a
+         4RH5BgTIS3aMo7W0DC2xWL0xnMhb0TLCEAmUBYj+/FnTPTlKzgS2BhxM2OqkacRyZ0DX
+         9lKQ==
+X-Gm-Message-State: AOAM531dNsn3TdpPPZ7GBtVagTS++HM68ANVCpue768VTHtt/q638TEE
+        KJbltEiUxSnKq0vZLGyhH+A7sQgNmggbSghGj0tdj2cZgPEcs3afu3dO4ncgt5M+Z5UdUtjBv1k
+        iWRyYaamKeWjcRPOFhr/koLt9
+X-Received: by 2002:a1c:7c14:: with SMTP id x20mr32408336wmc.75.1636713327594;
+        Fri, 12 Nov 2021 02:35:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwwWdS92Od66yS5RBjeycg9X/6oCyhiCqM6XuUuk5jzs1h7kYu2mZ9skqVRQyYXAq/StNZz2g==
+X-Received: by 2002:a1c:7c14:: with SMTP id x20mr32408298wmc.75.1636713327316;
+        Fri, 12 Nov 2021 02:35:27 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id l11sm5167018wrp.61.2021.11.12.02.35.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 02:35:26 -0800 (PST)
+Message-ID: <c1cbe6b4-0c86-b7a5-c2df-0ac3052dec6a@redhat.com>
+Date:   Fri, 12 Nov 2021 11:35:19 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aVodid0IcneiqicN"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZto=5Pa4r7-eufUqteaJS5yYeTL6Oh8mFO_g=6RzV+mg@mail.gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line
+ parameter logic
+Content-Language: en-US
+To:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Peter Robinson <pbrobinson@gmail.com>
+References: <20211108140648.795268-1-javierm@redhat.com>
+ <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de>
+ <20211112105641.25a4e1a7@eldfell>
+ <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com>
+ <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de>
+ <20211112122239.26b3787c@eldfell>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <20211112122239.26b3787c@eldfell>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/12/21 11:22, Pekka Paalanen wrote:
 
---aVodid0IcneiqicN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[snip]
 
-On Tue, Nov 09, 2021 at 01:30:38AM +0100, Linus Walleij wrote:
-> On Wed, Nov 3, 2021 at 12:01 PM Prathamesh Shete <pshete@nvidia.com> wrot=
-e:
->=20
-> > It would be helpful if you share the update to the device tree bindings=
- documentation patch with me I will push all the changes together.
-> > OR
-> > Can you please resend these patches along with device tree binding docu=
-ment patch that you have.
->=20
-> I'm just gonna assume that you guys sort this out and I can see the
-> combined tegra234 support in v2 :)
+>>>   
+>>>> As this is just returning bool without changing anything, the usual
+>>>> word to use is "is". Since this function is also used at most once per
+>>>> driver, which is rarely, it could have a long and descriptive name.
+>>>>
+>>>> For example:
+>>>>
+>>>> bool drm_is_modeset_driver_allowed(void);  
+>>
+>> I'd nominate
+>>
+>>    bool drm_native_drivers_enabled()
+>>
+>> This is what HW-specific drivers want to query in their init/probing 
+>> code. The actual semantics of this decision is hidden from the driver. 
+>> It's also easier to read than the other name IMHO
+> 
+> Ok, but what is a "native driver"? Or a "non-native driver"?
+> Is that established kernel terminology?
+>
 
-Yeah, I was working on some other Tegra234 related stuff and I'm about
-ready to send out the whole set, though I will likely split it up a bit
-because it's quite a few patches and not all are relevant to everyone.
+For me the term "native" is also vague. I would prefer to call it platform
+specific driver or non-generic driver instead. A problem is that "platform
+driver" has a very specific meaning in the kernel, which are drivers for
+devices in the "platform" bus (which is also a very overloaded term).
+ 
+> I'd think a non-native driver is something that e.g. ndiswrapper is
 
-Thierry
+Yeah, that's why I think that "generic" and "non-generic" is a better way
+to describe the drivers that could be used for any platform as long as the
+hardware was already initialized and a struct screen_info filled with data.
 
---aVodid0IcneiqicN
-Content-Type: application/pgp-signature; name="signature.asc"
+> loading. Is simpledrm like ndiswrapper in a sense? IIRC, simpledrm is
+> the driver that would not consult this function, right?
+>
 
------BEGIN PGP SIGNATURE-----
+Correct.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmGOQ14ACgkQ3SOs138+
-s6GHyQ/+KiBJwnOJCZ9FAjlW235POgJ8cDk6kiJ9ARWHs7T3/PvPab5BBtVGEWju
-Mv7eUorj0AoWSTp6a/4PCRPJarVW1En/wBkn0PdQvPvpFTVx/QSEbZ7Qtshfpsa/
-kQU7Q8XXz6Yhj6BnmGpOE+hCXPTjUSMTyHBX2/mPJEQH1bmDKF1hgDcf2g2O1uT5
-t/IvcoBMyYBB0Pdvj7LWGOq/vwrS6lm8xUYwyvZL8l8P4zo/t48Ea0Y0vk2Fk03X
-6Z9Bd1ozTzrjQcY43ufQIswzQhpzGdPnLSEnkQCExbjCFtGd/yk6HCLbpmN9S/Rb
-s4zHmq/hHezeLHhS8iLAaiXxoRpfLwsNBkqLInC++AC1ZprWIiF08Fxdxp3isQ3R
-nxD0U9jDTwj9on7FxBUFl7MNE8mYQ8pifnJ35nEnrLSaPyL3kGqjRVrl2NSdcaYW
-EOTGZP1QgkqNlxSfC+f04hrlDW1xdAJ4zfpceglyu0k75GUyZivu20M3n1UPaBts
-erO3wL/jLS15b7C0JhPJgS99KqMBll8N6EyNzJzBhlB+j7+X8g+kUmZSjkeIfVL+
-HWFrOQe2oXzrZEj1GU1Efkiuf/J+6lSpr6+yXqiQttmhDRmQolMSmkj8use0HANf
-1koXLqqDS9Av6P1f6ukgovXdj2DQK2afCJzAAtwH2nZkO753WsI=
-=p0li
------END PGP SIGNATURE-----
+Or maybe just 'bool drm_modeset_enabled()' ? After all, that's really what
+the "nomodeset" kernel param disables. The fact that DRM drivers abuse that
+boolean semantics to also prevent the drivers to load is a different topic.
+ 
+> 
+> Thanks,
+> pq
+> 
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
---aVodid0IcneiqicN--
