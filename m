@@ -2,320 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B67844DF37
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A25544DF3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhKLAkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:40:00 -0500
-Received: from mail-ed1-f46.google.com ([209.85.208.46]:39779 "EHLO
-        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbhKLAj7 (ORCPT
+        id S234594AbhKLAlY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Nov 2021 19:41:24 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:40331 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234489AbhKLAlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:39:59 -0500
-Received: by mail-ed1-f46.google.com with SMTP id r12so30832613edt.6;
-        Thu, 11 Nov 2021 16:37:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R1tUfUsW9yxfyVmNsT2W35onz8Yo0bOTMnqcIJ1wUhc=;
-        b=upgF0pyrzwrtnYQhtNoozMC5Pjm1NmKLw6E/irGmVtifAzM/vTD7I5XdS4qhMU57o3
-         j+Aoeti8yydKQwbJVTkorjr4C9Omt1wFSPL9ztBrxw73YPGGEXJwBmDhkRbc//XM7Kjo
-         gs/hZpHwCpQXtMEryTkzZ1QJxtF6AvM3r6ZlWX/RFyfnA5qRw3+ySr1dxm0rh5wUdh4R
-         oplB7bsBX6I13f87VjT5l+Kt+QSzCzcrwx91e0rF8UrTz0s0ythOcZIkW3heFwk4yBYV
-         Vok4Rmn259yh4OZeVkNdKYKUBruEUViwOSI74rG8j95zwME7f6CigVRRQ5KquipYUUi5
-         xJWQ==
-X-Gm-Message-State: AOAM530jXCwJwstOB/X053nzdrjznijzpF8YFnKUOKpWJ/Lm4QypdAI1
-        zgScrmsIQEkXJXzwH1A1z6c=
-X-Google-Smtp-Source: ABdhPJwPnxK6FC4BIfe/lkhIF828ja5edt407OTCenhE6XVpenIhvw+b0OdNEv6X6UuF4fuzGcyDiw==
-X-Received: by 2002:a50:f08b:: with SMTP id v11mr15560307edl.96.1636677427655;
-        Thu, 11 Nov 2021 16:37:07 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id h6sm794056edz.40.2021.11.11.16.37.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 16:37:07 -0800 (PST)
-Date:   Fri, 12 Nov 2021 01:37:05 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, bhelgaas@google.com,
-        shawnguo@kernel.org, leoyang.li@nxp.com,
-        gustavo.pimentel@synopsys.com, minghuan.Lian@nxp.com,
-        mingkai.hu@nxp.com, roy.zang@nxp.com
-Subject: Re: [PATCHv5 6/6] PCI: layerscape: Add power management support
-Message-ID: <YY23MeAa0U/r4lbO@rocinante>
-References: <20210407030948.3845-1-Zhiqiang.Hou@nxp.com>
- <20210407030948.3845-7-Zhiqiang.Hou@nxp.com>
+        Thu, 11 Nov 2021 19:41:22 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1AC0cN3C1001395, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1AC0cN3C1001395
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 12 Nov 2021 08:38:23 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 12 Nov 2021 08:38:22 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 11 Nov 2021 19:38:22 -0500
+Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
+ RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
+ 15.01.2308.015; Fri, 12 Nov 2021 08:38:22 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rtw89: Fix crash by loading compressed firmware file
+Thread-Topic: [PATCH] rtw89: Fix crash by loading compressed firmware file
+Thread-Index: AQHX0hU7VE24GGCl002qwvOXgdMXQqv0AUsAgACX6Q///34ogIAAjK5D///UggCAAArHAIAJHR/Q///AsAAADsiKgAAn5IYA
+Date:   Fri, 12 Nov 2021 00:38:21 +0000
+Message-ID: <489f31a2f323487da829d67480f09b52@realtek.com>
+References: <20211105071725.31539-1-tiwai@suse.de>
+        <s5hpmrfgj93.wl-tiwai@suse.de>  <87zgqjqaae.fsf@codeaurora.org>
+        <s5hh7crgflg.wl-tiwai@suse.de>  <87v917q8hw.fsf@codeaurora.org>
+        <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
+        <s5h5yt6fxpf.wl-tiwai@suse.de>  <68f61525b26f46578a62b2a54d775c17@realtek.com>
+        <s5hv90z5hlh.wl-tiwai@suse.de> <s5hwnle4y00.wl-tiwai@suse.de>
+In-Reply-To: <s5hwnle4y00.wl-tiwai@suse.de>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/11/11_=3F=3F_10:30:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210407030948.3845-7-Zhiqiang.Hou@nxp.com>
+X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/12/2021 00:25:28
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 167215 [Nov 11 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;bugzilla.opensuse.org:7.1.1;realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/12/2021 00:29:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-[...]
-> +/* PF Message Command Register */
-> +#define LS_PCIE_PF_MCR		0x2c
-> +#define PF_MCR_PTOMR		BIT(0)
-> +#define PF_MCR_EXL2S		BIT(1)
-> +
-> +/* LS1021A PEXn PM Write Control Register */
-> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> +#define PMXMTTURNOFF		BIT(31)
-> +#define SCFG_PEXSFTRSTCR	0x190
-> +#define PEXSR(idx)		BIT(idx)
-> +
-> +/* LS1043A PEX PME control register */
-> +#define SCFG_PEXPMECR		0x144
-> +#define PEXPME(idx)		BIT(31 - (idx) * 4)
-> +
-> +/* LS1043A PEX LUT debug register */
-> +#define LS_PCIE_LDBG	0x7fc
-> +#define LDBG_SR		BIT(30)
-> +#define LDBG_WE		BIT(31)
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Thursday, November 11, 2021 9:34 PM
+> To: Pkshih <pkshih@realtek.com>
+> Cc: kvalo@codeaurora.org; linux-wireless@vger.kernel.org; Larry.Finger@gmail.com;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+> 
+> On Thu, 11 Nov 2021 07:31:06 +0100,
+> Takashi Iwai wrote:
+> >
+> > On Thu, 11 Nov 2021 03:28:09 +0100,
+> > Pkshih wrote:
+> > > Please check if my patch works on your platform.
+> > > Thanks you.
+> > >
+> > > [1] https://lore.kernel.org/linux-wireless/20211111021457.13776-1-pkshih@realtek.com/T/#t
+> >
+> > Thanks.  I'll ask people testing those patches.
+> 
+> The patches have been confirmed to work.
+> Feel free to put the tag
+> 
+> BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1188303
+> 
 
-A small nitpick: a consistent capitalisation of "control" and "debug", and
-"register" in the comments above.
+I have sent v2 with BugLink and Tested-by tags.
+If anything is improper, please let me know.
 
-[...]
-> +static void ls_pcie_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		return iowrite32be(val, pcie->lut_base + off);
-> +
-> +	return iowrite32(val, pcie->lut_base + off);
-> +
-> +}
+--
+Ping-Ke
 
-Surplus newline above after the return statement.
-
-[...]
-> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		return iowrite32be(val, pcie->pf_base + off);
-> +
-> +	return iowrite32(val, pcie->pf_base + off);
-> +
-> +}
-
-Surplus newline above after the return statement.
-
-[...]
-> +static void ls_pcie_send_turnoff_msg(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_PTOMR;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_PTOMR), 100, 10000);
-> +	if (ret)
-> +		dev_info(pcie->pci->dev, "poll turn off message timeout\n");
-> +}
-
-Would this dev_info() be more of a warning or an error?  A timeout is
-potentially a problem, correct?
-
-[...]
-> +static void ls1021a_pcie_send_turnoff_msg(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	if (!pcie->scfg) {
-> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> +		return;
-> +	}
-> +
-> +	/* Send Turn_off message */
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val |= PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +
-> +	mdelay(10);
-
-We often, customary, document why a particular mdelay() is needed.  You
-also did this in other part of the code, so perhaps adding a note here (and
-everywhere else) would be nice for keeping the consistency.
-
-[...]
-> +static void ls_pcie_exit_from_l2(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_EXL2S;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_EXL2S), 100, 10000);
-> +	if (ret)
-> +		dev_info(pcie->pci->dev, "poll exit L2 state timeout\n");
-> +}
-
-Similarly to the question above: is this timeout something more severe and
-would warrant a warning or an error here instead?
-
-[...]
-> +static void ls1021a_pcie_exit_from_l2(struct ls_pcie *pcie)
-> +{
-> +	u32 val;
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val |= PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val &= ~PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	mdelay(1);
-
-Aside of documenting this mdelay() here, if possible, would 1 be enough?
-Everywhere else you seem to use 10 consistently.
-
-> +
-> +	ls_pcie_retrain_link(pcie);
-> +}
-> +static void ls1043a_pcie_exit_from_l2(struct ls_pcie *pcie)
-
-Missing newline above to separate code blocks.
-
-> +{
-> +	u32 val;
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val |= LDBG_WE;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val |= LDBG_SR;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val &= ~LDBG_SR;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
-> +	val &= ~LDBG_WE;
-> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
-> +
-> +	mdelay(1);
-
-See comment above.
-
-[...]
-> +static int ls1021a_pcie_pm_init(struct ls_pcie *pcie)
-> +{
-> +	struct device *dev = pcie->pci->dev;
-> +	u32 index[2];
-> +	int ret;
-> +
-> +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +						     "fsl,pcie-scfg");
-> +	if (IS_ERR(pcie->scfg)) {
-> +		ret = PTR_ERR(pcie->scfg);
-> +		dev_err(dev, "No syscfg phandle specified\n");
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg",
-> +					 index, 2);
-> +	if (ret) {
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	pcie->index = index[1];
-> +
-> +	return 0;
-> +}
-
-Just an idea: what about using goto for error handling?
-
-(...)
-	if (IS_ERR(pcie->scfg)) {
-		ret = PTR_ERR(pcie->scfg);
-		dev_err(dev, "No syscfg phandle specified\n");
-		goto error;
-	}
-
-	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg",
-					 index, 2);
-	if (ret)
-		goto error;
-
-	pcie->index = index[1];
-
-	return 0;
-
-error:
-	pcie->scfg = NULL;
-	return ret;
-}
-
-Not necessarily better or worse compared with your version, so it would be
-more of a matter of personal preference here.
-
-> +static int ls_pcie_suspend_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +	struct dw_pcie *pci = pcie->pci;
-> +	u32 val;
-> +	int ret;
-> +
-> +	if (!ls_pcie_pm_check(pcie))
-> +		return 0;
-> +
-> +	pcie->drvdata->pm_ops->send_turn_off_message(pcie);
-> +
-> +	/* 10ms timeout to check L2 ready */
-> +	ret = readl_poll_timeout(pci->dbi_base + PCIE_PORT_DEBUG0,
-> +				 val, LS_PCIE_IS_L2(val), 100, 10000);
-> +	if (ret) {
-> +		dev_err(dev, "PCIe link enter L2 timeout! ltssm = 0x%x\n", val);
-> +		return ret;
-> +	}
-
-The error message above could be improve to be more like an error stating
-that something failed and such, as currently it looks like a debug message,
-unless it was intended as such.
-
-[...]
-> +static int ls_pcie_resume_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +	struct dw_pcie *pci = pcie->pci;
-> +	int ret;
-> +
-> +	if (!ls_pcie_pm_check(pcie))
-> +		return 0;
-> +
-> +	ls_pcie_set_dstate(pcie, 0x0);
-> +
-> +	pcie->drvdata->pm_ops->exit_from_l2(pcie);
-> +
-> +	dw_pcie_setup_rc(&pci->pp);
-> +
-> +	/* delay 10 ms to access EP */
-> +	mdelay(10);
-> +
-> +	ret = ls_pcie_host_init(&pci->pp);
-> +	if (ret) {
-> +		dev_err(dev, "ls_pcie_host_init failed! ret = 0x%x\n", ret);
-> +		return ret;
-> +	}
-
-A small nitpick: error messages that are directed at end users should have
-a little more context than just the function name.
-
-	Krzysztof
