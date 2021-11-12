@@ -2,174 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1595544E2AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5900544E2E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhKLH5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 02:57:43 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27127 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhKLH5k (ORCPT
+        id S234426AbhKLIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 03:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234002AbhKLIOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 02:57:40 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Hr9mJ0bH2z1DJ7P;
-        Fri, 12 Nov 2021 15:52:32 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 12 Nov 2021 15:54:48 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 12 Nov
- 2021 15:54:47 +0800
-From:   Laibin Qiu <qiulaibin@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <dennis@kernel.org>, <tj@kernel.org>, <bo.liu@linux.alibaba.com>,
-        <josef@toxicpanda.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] blkcg: Remove extra blkcg_bio_issue_init
-Date:   Fri, 12 Nov 2021 16:10:06 +0800
-Message-ID: <20211112081006.3336263-1-qiulaibin@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 12 Nov 2021 03:14:00 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF17C061766;
+        Fri, 12 Nov 2021 00:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wJHltix5O/T/yNBOoPvxI7+MG7CO2JUeTg1EVcw8kFI=; b=ZZe3KeFAwbgiUPQ08D6J2V7GjK
+        7P+fNn8Ds07FK5Ia4wwHWDfoUo0iayvxv/sGUVPjZK6n+l1zEgkREBFg5pBsqKbdemAgOCVbPmY5r
+        UbuC0iiOK/y0YODUXAjIXsr6h5s/HtogwmGW7uDrqccd/x4HZp+9kAA2M2JRh8iOMwO4i1FoPbbKk
+        Q0X0phqjnUwEs9d2PFDzFcZLXaDiNixD2kvzEL023kEH0MypsUzSvNcjhZ+NUx6S4SJ4jLh/hMSJF
+        6+P7F14IXHt7qp9kvVOTP2Lxd8FMKy1/DaWCzCdZ/KiZI5OTliadjmiplJcdwIGuGl0NGMtC9kb8N
+        MPQikC7Q==;
+Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlReP-009euC-H2; Fri, 12 Nov 2021 08:11:09 +0000
+Message-ID: <e0a60cc65d6e3d7670b65479fd7ff662db6a5dfd.camel@infradead.org>
+Subject: Re: [PATCH] KVM: x86: move guest_pv_has out of user_access section
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Fri, 12 Nov 2021 08:11:07 +0000
+In-Reply-To: <20211112075422.3821671-1-pbonzini@redhat.com>
+References: <20211112075422.3821671-1-pbonzini@redhat.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-mdKdWKroCH9xAa/43sMu"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN reports a use-after-free report when doing block test:
 
-==================================================================
-[10050.967049] BUG: KASAN: use-after-free in
-submit_bio_checks+0x1539/0x1550
+--=-mdKdWKroCH9xAa/43sMu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[10050.977638] Call Trace:
-[10050.978190]  dump_stack+0x9b/0xce
-[10050.979674]  print_address_description.constprop.6+0x3e/0x60
-[10050.983510]  kasan_report.cold.9+0x22/0x3a
-[10050.986089]  submit_bio_checks+0x1539/0x1550
-[10050.989576]  submit_bio_noacct+0x83/0xc80
-[10050.993714]  submit_bio+0xa7/0x330
-[10050.994435]  mpage_readahead+0x380/0x500
-[10050.998009]  read_pages+0x1c1/0xbf0
-[10051.002057]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.007413]  do_page_cache_ra+0xda/0x110
-[10051.008207]  force_page_cache_ra+0x23d/0x3d0
-[10051.009087]  page_cache_sync_ra+0xca/0x300
-[10051.009970]  generic_file_buffered_read+0xbea/0x2130
-[10051.012685]  generic_file_read_iter+0x315/0x490
-[10051.014472]  blkdev_read_iter+0x113/0x1b0
-[10051.015300]  aio_read+0x2ad/0x450
-[10051.023786]  io_submit_one+0xc8e/0x1d60
-[10051.029855]  __se_sys_io_submit+0x125/0x350
-[10051.033442]  do_syscall_64+0x2d/0x40
-[10051.034156]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Fri, 2021-11-12 at 02:54 -0500, Paolo Bonzini wrote:
+> When UBSAN is enabled, the code emitted for the call to guest_pv_has
+> includes a call to __ubsan_handle_load_invalid_value.  objtool
+> complains that this call happens with UACCESS enabled; to avoid
+> the warning, pull the calls to user_access_begin into both arms
+> of the "if" statement, after the check for guest_pv_has.
+>=20
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-[10051.048733] Allocated by task 18598:
-[10051.049482]  kasan_save_stack+0x19/0x40
-[10051.050263]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-[10051.051230]  kmem_cache_alloc+0x146/0x440
-[10051.052060]  mempool_alloc+0x125/0x2f0
-[10051.052818]  bio_alloc_bioset+0x353/0x590
-[10051.053658]  mpage_alloc+0x3b/0x240
-[10051.054382]  do_mpage_readpage+0xddf/0x1ef0
-[10051.055250]  mpage_readahead+0x264/0x500
-[10051.056060]  read_pages+0x1c1/0xbf0
-[10051.056758]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.057702]  do_page_cache_ra+0xda/0x110
-[10051.058511]  force_page_cache_ra+0x23d/0x3d0
-[10051.059373]  page_cache_sync_ra+0xca/0x300
-[10051.060198]  generic_file_buffered_read+0xbea/0x2130
-[10051.061195]  generic_file_read_iter+0x315/0x490
-[10051.062189]  blkdev_read_iter+0x113/0x1b0
-[10051.063015]  aio_read+0x2ad/0x450
-[10051.063686]  io_submit_one+0xc8e/0x1d60
-[10051.064467]  __se_sys_io_submit+0x125/0x350
-[10051.065318]  do_syscall_64+0x2d/0x40
-[10051.066082]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Acked-by: David Woodhouse <dwmw@amazon.co.uk>
 
-[10051.067455] Freed by task 13307:
-[10051.068136]  kasan_save_stack+0x19/0x40
-[10051.068931]  kasan_set_track+0x1c/0x30
-[10051.069726]  kasan_set_free_info+0x1b/0x30
-[10051.070621]  __kasan_slab_free+0x111/0x160
-[10051.071480]  kmem_cache_free+0x94/0x460
-[10051.072256]  mempool_free+0xd6/0x320
-[10051.072985]  bio_free+0xe0/0x130
-[10051.073630]  bio_put+0xab/0xe0
-[10051.074252]  bio_endio+0x3a6/0x5d0
-[10051.074984]  blk_update_request+0x590/0x1370
-[10051.075870]  scsi_end_request+0x7d/0x400
-[10051.076667]  scsi_io_completion+0x1aa/0xe50
-[10051.077503]  scsi_softirq_done+0x11b/0x240
-[10051.078344]  blk_mq_complete_request+0xd4/0x120
-[10051.079275]  scsi_mq_done+0xf0/0x200
-[10051.080036]  virtscsi_vq_done+0xbc/0x150
-[10051.080850]  vring_interrupt+0x179/0x390
-[10051.081650]  __handle_irq_event_percpu+0xf7/0x490
-[10051.082626]  handle_irq_event_percpu+0x7b/0x160
-[10051.083527]  handle_irq_event+0xcc/0x170
-[10051.084297]  handle_edge_irq+0x215/0xb20
-[10051.085122]  asm_call_irq_on_stack+0xf/0x20
-[10051.085986]  common_interrupt+0xae/0x120
-[10051.086830]  asm_common_interrupt+0x1e/0x40
+Thanks. I found a bunch of those objtool warnings during my original
+experimentation and testing, but clearly missed that one. I'll turn on
+CONFIG_UBSAN.
 
-==================================================================
 
-Bio will be checked at beginning of submit_bio_noacct(). If bio needs
-to be throttled, it will start the timer and stop submit bio directly.
-Bio will submit in blk_throtl_dispatch_work_fn() when the timer expires.
-But in the current process, if bio is throttled, it will still set bio
-issue->value by blkcg_bio_issue_init(). This is redundant and may cause
-the above use-after-free.
 
-CPU0                                   CPU1
-submit_bio
-submit_bio_noacct
-  submit_bio_checks
-    blk_throtl_bio()
-      <=mod_timer(&sq->pending_timer
-                                      blk_throtl_dispatch_work_fn
-                                        submit_bio_noacct() <= bio have
-                                        throttle tag, will throw directly
-                                        and bio issue->value will be set
-                                        here
+--=-mdKdWKroCH9xAa/43sMu
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-                                      bio_endio()
-                                      bio_put()
-                                      bio_free() <= free this bio
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
+MTEyMDgxMTA3WjAvBgkqhkiG9w0BCQQxIgQgmCLNIqThoQ3WXKOLDk/caPIPGFFmjWnzQ1R+/qRQ
+f94wgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBABW/6FDbbVYxdpKLJaRJru/ViM+KFcGrT30IZfjPP2SHVMA3Sb0B+N4HnO/2+pJ4
+dda/akncImDM6uY8RBAE9VpcW7wKKiIl9DYlYAdl4E97E/EayAJ70hG6XqS1rYOPneavwhldjAlm
+UAiPa4m6S1OXMseFStF+YvZSEQ4bo0G6GJFNUU1ZmmpD9RUGu2vjz1xT6/3oXSikPP1rSh5bGgyi
+4YsDVJY+z+o7v+snpb9iUIfxO5KQm03YVj74Q8sGqwrdatYGgAXWaWbUC6ESnPEXm6sCYuuokrip
+FPVIv8KICiwXbE8AH/2ptmcQ6VtLRgdqPf0jE4iAFn1eg/RxKWMAAAAAAAA=
 
-    blkcg_bio_issue_init(bio)
-      <= bio has been freed and
-      will lead to UAF
-  return BLK_QC_T_NONE
 
-Fix this by remove extra blkcg_bio_issue_init.
-
-Fixes: e439bedf6b24 (blkcg: consolidate bio_issue_init() to be a part of core)
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
----
- block/blk-core.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index b043de2baaac..364e4e083115 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -810,7 +810,6 @@ noinline_for_stack bool submit_bio_checks(struct bio *bio)
- 		create_task_io_context(current, GFP_ATOMIC, q->node);
- 
- 	if (blk_throtl_bio(bio)) {
--		blkcg_bio_issue_init(bio);
- 		return false;
- 	}
- 
--- 
-2.22.0
+--=-mdKdWKroCH9xAa/43sMu--
 
