@@ -2,144 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990A244EC7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFFE44EC7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhKLSRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 13:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhKLSRc (ORCPT
+        id S235568AbhKLSSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 13:18:46 -0500
+Received: from mail-qv1-f41.google.com ([209.85.219.41]:33645 "EHLO
+        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229975AbhKLSSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:17:32 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4452CC061766;
-        Fri, 12 Nov 2021 10:14:41 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id s139so19308678oie.13;
-        Fri, 12 Nov 2021 10:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k6vBm0W1nCavg671b89cqG0/+cyc/856RwfodNvKark=;
-        b=EFsVedSxze2GLqkpELn8gzq1wlGyO5X3+YZOL9gki6dxSFJ8QnLKzQXqHoBIfO4Dez
-         Cjj4sLtnP4ikXkHeXeTP05BB3wJq84rXRP/XTiSw+ALB/a7SOrbQGvhM3zjKl7jBpS+K
-         b1+63Z1vGywdP8E2QQ+hhzqPidVjZrtq35sXTC7Ti1ZbslcOPUcrGnnqKs47uzmPtefl
-         77Lrgg+fq/ZW5wd72QtLBD0kNdU42hHnHBzZFf1BqXaMWkSG8OpTE+HHPMG69tGttNax
-         N35hGF6lPEbOVvv4o91+jkyndeYGD0sgHbFNmGHQpEdeTPpHzApIZGSd5M/fT9W9pN7a
-         Mdag==
+        Fri, 12 Nov 2021 13:18:44 -0500
+Received: by mail-qv1-f41.google.com with SMTP id bu11so6886909qvb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 10:15:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k6vBm0W1nCavg671b89cqG0/+cyc/856RwfodNvKark=;
-        b=AnpUy0I4pO2OfRhxdrDi4inx/KCR8DaYFVXDIJj8eU2PV2xvRV2iGjGUlIWCoPEEGc
-         SNiEnSPuSVCWRUd6zxOleRvOFXxrPC2jjKMEPCQIpnEyt2UROmb9dOGAgTkf/uOyS1d0
-         iavb4telL0RDI32a+NrNV5DjSvZiArXqVUz0dZQUKuvvfh2wqskpIF6SN8HtmIqAq7Ni
-         ErZcEvNHSkCogfbH9Kqxepei0wCC1EsGHYpnRyOHt+tFtficiTiiJVqAEFV3/a4//0IJ
-         hvoI62Rs4ol8pQHgEF2pN+qTsSFBb6EZR7uIwJ6WT3fbvt0nss9ZavR7ne2XLV+U6ome
-         J8ZQ==
-X-Gm-Message-State: AOAM5308DfzCmu5Oot7xK+3a/qxCfLATM5ehbV6NtPtzXBbEhPMnQyro
-        NVON+xyT9wVFuahleaT6fbygnODMNZtBjfmuLqA7i/FZzF7jcg==
-X-Google-Smtp-Source: ABdhPJzyIERufOnKcfzbsPKtHYY5Hl5iMmrWKTmNMJ8ZnVuPuma6j1kMcLbX33TCunwGhhBFqS8jFHBQiJvnK5xfQAs=
-X-Received: by 2002:aca:d608:: with SMTP id n8mr14975866oig.89.1636740880654;
- Fri, 12 Nov 2021 10:14:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cop4I1aJy8z6ak0PjU3E7DI7v06o5jsLWL60m/FXBfk=;
+        b=PxaidTedkk8t+5o+adwu9/8YjBf8LHeP0D+4jZLM1wdM+iVSoMm+ag1ELijDaN6HOo
+         3ZYCmoXkObDkU7/sLqXFK6PZ4HkiWmAgUN9vENpV1KuIwx7UCHD0iNMXuutMSKneIjhB
+         vAy4sheX/IWJ6XtgCBXmVl3drKHWIHKYJRNv0Pvjq+Kfre3WO8a42FuA7yH5EtZqWx6c
+         5pUM+kBnR4VCZTGxrHuSay5rxOQAg/HcuLVWFnLNGpwHOsFoqxHHSO67gh81pq86VKZ1
+         uF/bGPHMVTB43tbTl/7mBtariqolaU/MAmw0YYPmx+gXgEjLb7DivxGKdWuyvNe5/pER
+         SSOQ==
+X-Gm-Message-State: AOAM531IhJUWV2851JMN9MdFqzw/W5IiF0cqrjnlrMZUY11b6ry2UEKv
+        B+PG1li42f34APEd04laeYQ=
+X-Google-Smtp-Source: ABdhPJyOaTMeyqagIIw4gBdML86eGkUddV2vICZg3GXua3oB54KGmh7wnYdATKXU8i8nGv70D94D0w==
+X-Received: by 2002:a0c:eec3:: with SMTP id h3mr16595518qvs.17.1636740953456;
+        Fri, 12 Nov 2021 10:15:53 -0800 (PST)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id l15sm3592323qtx.77.2021.11.12.10.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 10:15:52 -0800 (PST)
+Date:   Fri, 12 Nov 2021 13:15:51 -0500
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
+Message-ID: <YY6vV2zUTdH5SNt5@fedora>
+References: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20211110221456.11977-1-jim2101024@gmail.com> <20211110221456.11977-5-jim2101024@gmail.com>
- <YY2sVNEcVmQinbj8@rocinante>
-In-Reply-To: <YY2sVNEcVmQinbj8@rocinante>
-From:   Jim Quinlan <jim2101024@gmail.com>
-Date:   Fri, 12 Nov 2021 13:14:28 -0500
-Message-ID: <CANCKTBuor2xa9zCr1zrVPnFrfWe83qL8kR-pihRYn06rRw4xKw@mail.gmail.com>
-Subject: Re: [PATCH v8 4/8] PCI/portdrv: Create pcie_is_port_dev() func from
- existing code
-To:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 6:50 PM Krzysztof Wilczy=C5=84ski <kw@linux.com> wr=
-ote:
->
-> Hi Jim,
->
-> [...]
-> > +bool pcie_is_port_dev(struct pci_dev *dev)
-> > +{
-> > +     int type;
-> > +
-> > +     if (!dev)
-> > +             return false;
-> > +
-> > +     type =3D pci_pcie_type(dev);
-> > +
-> > +     return pci_is_pcie(dev) &&
-> > +             ((type =3D=3D PCI_EXP_TYPE_ROOT_PORT) ||
-> > +              (type =3D=3D PCI_EXP_TYPE_UPSTREAM) ||
-> > +              (type =3D=3D PCI_EXP_TYPE_DOWNSTREAM) ||
-> > +              (type =3D=3D PCI_EXP_TYPE_RC_EC));
-> > +}
-> > +EXPORT_SYMBOL_GPL(pcie_is_port_dev);
->
-> It would be really nice to document what the above function does (not tha=
-t
-> some of the logic has been extracted from other function).  You know, for
-> the future generations of kernel hackers.
+Hello,
 
-Hi Krzysztof and others,
+On Fri, Nov 12, 2021 at 04:07:49PM +0200, Andy Shevchenko wrote:
+> After the commit 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
+> in NMI") the printk.h is not needed anymore in percpu.h.
+> 
+> Moreover `make headerdep` complains (an excerpt)
+> 
+> In file included from linux/printk.h,
+>                  from linux/dynamic_debug.h:188
+>                  from linux/printk.h:559 <-- here
+>                  from linux/percpu.h:9
+>                  from linux/idr.h:17
+> include/net/9p/client.h:13: warning: recursive header inclusion
+> 
+> Yeah, it's not a root cause of this, but removing will help to reduce
+> the noise.
+> 
+> Fixes: 42a0bb3f7138 ("printk/nmi: generic solution for safe printk in NMI")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/percpu.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+> index 98a9371133f8..ae4004e7957e 100644
+> --- a/include/linux/percpu.h
+> +++ b/include/linux/percpu.h
+> @@ -6,7 +6,6 @@
+>  #include <linux/preempt.h>
+>  #include <linux/smp.h>
+>  #include <linux/cpumask.h>
+> -#include <linux/printk.h>
+>  #include <linux/pfn.h>
+>  #include <linux/init.h>
+>  
+> -- 
+> 2.33.0
+> 
 
-I gave this a second look and realized that the portdrv's
-pci_device_id list for the probe is doing filtering that is not
-included in the function.  So perhaps the code must be the following
-in order to live up to its name:
+Acked-by: Dennis Zhou <dennis@kernel.org>
 
-static inline bool pci_is_port_dev(struct pci_dev *dev)
-{
-    int type, class;
+Hey Andrew, it doesn't seem like I have anything big coming through
+percpu, do you mind taking this. I might have some stuff due to sh, but
+I'm still working on that with them.
 
-    if (!dev || !pci_is_pcie(dev))
-        return false;
-
-    class =3D dev->class;
-
-    /* This must be kept in sync with port_pci_ids[] of protdev_pci.c */
-    if (!(class =3D=3D ((PCI_CLASS_BRIDGE_PCI << 8) | 0x00) ||
-          class =3D=3D ((PCI_CLASS_BRIDGE_PCI << 8) | 0x01) ||
-          class =3D=3D ((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00)))
-        return false;
-
-    type =3D pci_pcie_type(dev);
-
-    return ((type =3D=3D PCI_EXP_TYPE_ROOT_PORT) ||
-        (type =3D=3D PCI_EXP_TYPE_UPSTREAM) ||
-        (type =3D=3D PCI_EXP_TYPE_DOWNSTREAM) ||
-        (type =3D=3D PCI_EXP_TYPE_RC_EC));
-}
-
-Kind of large for an inline, plus the code must be kept in sync with
-the device list.   Suggestions?
-
-As for a description, my understanding is that the code identifies a
-pci_dev that is directly under a host bridge device.  I'm not really
-sure about the PCI_CLASS_SYSTEM_RCEC though.
-
-Regards,
-Jim Quinlan
-Broadcom STB
-
->
->         Krzysztof
+Thanks,
+Dennis
