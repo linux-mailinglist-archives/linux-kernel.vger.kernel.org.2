@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D055444E61E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ED944E620
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbhKLMLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S234825AbhKLMNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhKLMLe (ORCPT
+        with ESMTP id S231270AbhKLMNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:11:34 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56876C06127A
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:08:43 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d24so15190506wra.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:08:43 -0800 (PST)
+        Fri, 12 Nov 2021 07:13:41 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F0CC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:10:50 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 13so18133044ljj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:10:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=otZ0McVJ5SiYRqP7yOEzIbw/1AxWwGOspMcAdakaeds=;
-        b=LQvnnW/sBfmRpWNRpou+Po67N6Z73lHiWzAUWeL56rM8KZQ3wcMuaQRgL4/GQOgHAr
-         NR1N8PTQ7wPb9IWjzJE/t1++yyiwBNJyVLj/9x1KLhsENhmeUAOwV23X9xgrxu9dlZlK
-         seKCNreAhLBnz43Fg9g9UkKZpJNfC9Ft9GORMdYh4HJwBa0vHgHlHtAlp4EhcTk/OdNy
-         wRWINay5dRtLg7UIlQbAA7oPswjbqMCoX1c9wJB1r0beZvHgeuw/9uWDWc9AgbQOUVuV
-         ksKKfkkdm5ZXqiFm2hH26ZX6Uf503hnuuVwow3sJy2yfebYMkBaHDCTwrwEvvfjVLwkv
-         qmSA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=dqMUJxuDqznX8iP/0PGGKyRvFuHRtWMHNTIPIxdJC90=;
+        b=bcYunbF8BibQPFjxUg8F1GFUgtRvXsArQ1YEP99ALIqFGB2BVjZSh70Fn9colQDXto
+         vLDvvJF9+sTYE1p3QmkK0sLWBN4HtfHs2GF36hD0z3uYj4kcMSQh009PyI0Mrl94SCfJ
+         ItDgPnCkVVoKImYmhVaeEJ5CI569lrW6n/kYXFKya+wt5TRs0TgZdPLkSIMlTrzcTX9J
+         4tcS0HwIbPUkfy53DY0en9X1UipJI189Kuhs2kwJQXGJ5Q38fkEbMfHZtKwaMXFR43NR
+         k2b7V82HV0XFHCy9ij6f8Yg4kkCjsnv3S4Sx+pSqmGHjJSSX/U+6IdybeqpdeyuJ02Pa
+         5ZAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=otZ0McVJ5SiYRqP7yOEzIbw/1AxWwGOspMcAdakaeds=;
-        b=vRL5GWtBOP5WTt9VfCcz+oEyKqdK3meqgZDZfLPJaRsVjG/38AKex1fMjXU0LwrduJ
-         4BbVSf8FX8KsZo/6P/ALs1xtSKBVAw8HiRxdIK4u1gwhGNwWq5NvvT7gTxcoCW/4KT01
-         EBn2tvzq6yjT1GzEyxbIz9gfe4/aFiO3dK7ugD/t2VSzpJHqAe4/vZkEptEMcBD9utp0
-         dFu50khj24B8gDtivo0RPpvbmuc0YxubpMKtSrGrAFrn8uEpSQ/Sw4s1SosCMaWLtstC
-         TDW5Y10Iwv1J1jBHiB54wfFhHBIYDjkAuV3warLSNT4n4zaGULkwPwSo8cROAx4maBj1
-         O1Ew==
-X-Gm-Message-State: AOAM531Zp159o3wZV01Rh+uydZ1Z98cJe7xY/ejBultLXci5wLbSL9lA
-        d8iFLmQQmVRebfp2sI8AqdFcEg==
-X-Google-Smtp-Source: ABdhPJxBlMEeY7j5TABoz1gcsiHhfYOgh3JsBIzuuI4vMpGemDgBxW2s1QNyVKfFDMXNmN/UEcWvGA==
-X-Received: by 2002:a5d:6e8c:: with SMTP id k12mr17741380wrz.401.1636718921903;
-        Fri, 12 Nov 2021 04:08:41 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id 126sm11086997wmz.28.2021.11.12.04.08.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=dqMUJxuDqznX8iP/0PGGKyRvFuHRtWMHNTIPIxdJC90=;
+        b=G/VV2ajiSV+UxGIKiVcVYhPly7aWVHwxs+tsNNEtBJtvRm0oI1mAIycfR8MER77HZe
+         m7K96COFM4EACtt6EzPMJAkHVTbwmsnNMR9nAmgSwz9zO5UV0ncA368e54KwQ1ttKtDk
+         G251mh/g+zeH+aPhOk01akYxcz8w2fIA4rCsPnqpF2bwDiQQAioNycFE0qCi9WikFRCs
+         fo/yOkcwjYJq9WMXW0DyRNfTeKjS513KRpqq7jxC0z5ZFbEx5udUgtFk1WGLZ7OdpYLG
+         CLXtBLYvfxoQ672I3I4YSXefAZGHFK/dyrmH3vWQe1jYDGs/Flh0LrwiWN2DwE4rITJi
+         i+1Q==
+X-Gm-Message-State: AOAM532F4fDubqvxNlQDOnaHzTSb8GQCIPIUaNg32j5YCu/ydt9NspB+
+        kysOEc/GDHCFCqKe+rG6h0A=
+X-Google-Smtp-Source: ABdhPJxDeO1DXoOEP1oUCmoGqHWB4tlPP6UJrYRsRshU8OWxjZLR8seKGkRbqP0+s3OEmA5124ktZg==
+X-Received: by 2002:a2e:3102:: with SMTP id x2mr14417332ljx.276.1636719048742;
+        Fri, 12 Nov 2021 04:10:48 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id x10sm547260lfg.102.2021.11.12.04.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 04:08:41 -0800 (PST)
-Date:   Fri, 12 Nov 2021 12:08:39 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: [RESEND PATCH v2 04/13] backlight: qcom-wled: Fix off-by-one
- maximum with default num_strings
-Message-ID: <20211112120839.i6g747vewg6bkyk7@maple.lan>
-References: <20211112002706.453289-1-marijn.suijten@somainline.org>
- <20211112002706.453289-5-marijn.suijten@somainline.org>
+        Fri, 12 Nov 2021 04:10:48 -0800 (PST)
+Date:   Fri, 12 Nov 2021 14:10:45 +0200
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Michel =?UTF-8?B?RMOkbnplcg==?= <michel@daenzer.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line
+ parameter logic
+Message-ID: <20211112141045.55c8dfdf@eldfell>
+In-Reply-To: <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
+References: <20211108140648.795268-1-javierm@redhat.com>
+        <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de>
+        <20211112105641.25a4e1a7@eldfell>
+        <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com>
+        <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de>
+        <20211112122239.26b3787c@eldfell>
+        <5bd4ffa9-f44f-ca34-c346-6c530d31e5ec@suse.de>
+        <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112002706.453289-5-marijn.suijten@somainline.org>
+Content-Type: multipart/signed; boundary="Sig_/Kl3x8r8jus8qFhy5fBpdX.X";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:26:57AM +0100, Marijn Suijten wrote:
-> When not specifying num-strings in the DT the default is used, but +1 is
-> added to it which turns WLED3 into 4 and WLED4/5 into 5 strings instead
-> of 3 and 4 respectively, causing out-of-bounds reads and register
-> read/writes.  This +1 exists for a deficiency in the DT parsing code,
-> and is simply omitted entirely - solving this oob issue - by parsing the
-> property separately much like qcom,enabled-strings.
-> 
-> This also allows more stringent checks on the maximum value when
-> qcom,enabled-strings is provided in the DT.  Note that num-strings is
-> parsed after enabled-strings to give it final sign-off over the length,
-> which DT currently utilizes to get around an incorrect fixed read of
-> four elements from that array (has been addressed in a prior patch).
-> 
-> Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  drivers/video/backlight/qcom-wled.c | 51 +++++++++++------------------
->  1 file changed, 19 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index 977cd75827d7..c5232478a343 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -1552,6 +1520,25 @@ static int wled_configure(struct wled *wled)
->  		}
->  	}
-> 
-> +	rc = of_property_read_u32(dev->of_node, "qcom,num-strings", &val);
-> +	if (!rc) {
-> +		if (val < 1 || val > wled->max_string_count) {
-> +			dev_err(dev, "qcom,num-strings must be between 1 and %d\n",
-> +				wled->max_string_count);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (string_len > 0) {
-> +			dev_warn(dev, "qcom,num-strings and qcom,enabled-strings are ambiguous\n");
+--Sig_/Kl3x8r8jus8qFhy5fBpdX.X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This warning occurs even when there is no ambiguity.
+On Fri, 12 Nov 2021 12:20:14 +0100
+Javier Martinez Canillas <javierm@redhat.com> wrote:
 
-This could be:
+> On 11/12/21 11:57, Thomas Zimmermann wrote:
+>=20
+> [snip]
+>=20
+> >>>
+> >>> This is what HW-specific drivers want to query in their init/probing
+> >>> code. The actual semantics of this decision is hidden from the driver.
+> >>> It's also easier to read than the other name IMHO =20
+> >>
+> >> Ok, but what is a "native driver"? Or a "non-native driver"?
+> >> Is that established kernel terminology?
+> >>
+> >> I'd think a non-native driver is something that e.g. ndiswrapper is
+> >> loading. Is simpledrm like ndiswrapper in a sense? IIRC, simpledrm is
+> >> the driver that would not consult this function, right? =20
+> >=20
+> > We use that term for hw-specific drivers. A 'non-native' driver would b=
+e=20
+> > called generic or firmware driver.
+> >=20
+> > My concern with the 'modeset' term is that it exposes an implementation=
+=20
+> > detail, which can mislead a driver to to the wrong thing: a HW-specifc=
+=20
+> > driver that disables it's modesetting functionality would pass the test=
+=20
+> > for (!modeset). But that's not what we want, we want to disable all of=
+=20
+> > the driver and not even load it.
+> >=20
+> > How about we invert the test function and use something like
+> >=20
+> >   bool drm_firmware_drivers_only()
+> > =20
+>=20
+> That name I think is more self explanatory, so it works for me.
 
-	if (string_len > 0 && val != string_len)
-
-The warning should also be below the error message on the next if statement.
-Combined these changes allows us to give a much more helpful and assertive
-warning message:
-
-qcom,num-strings mis-matches and will partially override
-qcom,enabled-strings (remove qcom,num-strings?)
+I'm not going to argue against that. :-)
 
 
-> +			if (val > string_len) {
-> +				dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
-> +				return -EINVAL;
-> +			}
-> +		}
+Thanks,
+pq
 
+--Sig_/Kl3x8r8jus8qFhy5fBpdX.X
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Daniel.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGOWcUACgkQI1/ltBGq
+qqfjPhAAo7roVsEKzK786CitsoAcpU31AmYgEPC+POqP9Eg6GMAhM1YRRg+1w7nE
+1nA8ekOe7G1Z8dzPY57ZOFqdwFuPA8qLgVsZr4EIInxeQZFT2sYy1OiZu/q6FsMQ
+hWQ3sA2ow2Mq8j9Bw1Tgkgs/gmvaGLeQoTg9ICp4p0wB/3JOYejR90+WREaN9uvO
+jmjTq9ge4s31lO7MTRmS+7P3/Nk7uYnNrwmONdswiwg0JMkEiAx4aJm124GGdWpf
+BoTv6gU/78s1v4ym4d5f6U1Ndhrkujf6c37UYdwRblJZ0Rc0wdYPgiY3fgskEXVz
+odElcmDe9+DEXuIAoUkzHsw8Up1sDFkFmGagCH6qw/7+7BY6KOw3YTcf/ATGq9z+
+nx0Qcd/ufK/Ax4TFo4YYTy5yXM+WqnbMMgN+hRPFPARIIzHmHi/5dW7Nr2IaFE/v
+Nmdv05wDx+ggO6/8XOiynel7jAUEWqXthRJvZNQpw9gcllu0W/q+hYd4oTEKCllV
+Ifn33SmAxNCAtmM5z4T23WipxF/RCmf5cQu/VkTd1DSeKSjmjdifzc8mIuMMiBML
+7ux30EsHJ2x3FGyDzhK+uS8tE/rs60pKZS3HaGqKT8++hIIT0OkRJRps3ZQnPumw
+0kmEFgOtmgNezD8zbQcihrOF7eqbjXlv+DUn+p61ZKUXUEv91T0=
+=UVDr
+-----END PGP SIGNATURE-----
+
+--Sig_/Kl3x8r8jus8qFhy5fBpdX.X--
