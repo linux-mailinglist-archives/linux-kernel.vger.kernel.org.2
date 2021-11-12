@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5A944E48C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3727344E490
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbhKLK3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:29:19 -0500
-Received: from mga02.intel.com ([134.134.136.20]:35250 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234675AbhKLK3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:29:17 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220321710"
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="220321710"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 02:26:26 -0800
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="453113481"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 02:26:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mlTl8-0063lg-Ow;
-        Fri, 12 Nov 2021 12:26:14 +0200
-Date:   Fri, 12 Nov 2021 12:26:14 +0200
-From:   "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>
-To:     =?utf-8?B?6buE56Kn5rOi?= <huangbibo@uniontech.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "mika.westerberg" <mika.westerberg@linux.intel.com>,
-        "p.zabel" <p.zabel@pengutronix.de>
-Subject: Re: [PATCH] i2c: designware: I2C unexpected interrupt handling will
- cause kernel panic
-Message-ID: <YY5BRrE8bLyvd3PB@smile.fi.intel.com>
-References: <20211111065759.7423-1-huangbibo@uniontech.com>
- <0f203acf-7f63-e2d0-b590-120d3a7ba9c5@linux.intel.com>
- <tencent_48E4F3B231317FCA25752384@qq.com>
+        id S234932AbhKLK3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:29:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234922AbhKLK3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 05:29:31 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A56C06127A
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:26:40 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id n12so11556238lfe.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I1lUFEImuTS6xFBFWY3qJycDEfssA90Wiadl9cwV/KY=;
+        b=SN5wNCz61qhLX6S9xmzQp/tuUbo/f7HlCefhytENH6KMoIfL6fRMtbPgCtk/JHMU/P
+         Ua+qQRraE91I3khY8ECaus5KP8rfzHo1GOZtygjDDupIo7u/CtksKAL+fpJnnQuUHP7I
+         kZDhihXxN2ao+btqke65WXDaShXldpZG7qdw3/SL4YPaBOkNpDQLhEKJGC1qtCe7Vvut
+         gdiFQT64oPzupgfpc4CvLZNcdHg7bPkEsqHT3oh4gHiVUoYBxF2vv+wu8l/LYEYO/GaY
+         8KM0AcIk7/iLd0AonIEAvaMQlM03DAYBt0A36LMEO0c5qvWK8K8cbVAaopAL8caT6hnB
+         4S8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I1lUFEImuTS6xFBFWY3qJycDEfssA90Wiadl9cwV/KY=;
+        b=2SOWLgzXcJX6c9VItZ/6kj23qa743bpU5ohXBAVeSd0KZsx1IcnpQHbfdQ3hEpbBx0
+         Q0ilM604x/P98TFezJq3HxdiUg0A584CvVIlRP/8p/44wU93TX6WuoTt3liv5DA8+veW
+         7RV+tuxlFXzgPSoYtKiVKoI4ZXrPJHNvu9j2PiUH11DuKahn0Uf6K/pK+UbXlMq8h4qP
+         ijjlUQ2KOADb3XNtpAyAWN6KbS2g6wwRkjwZkWL7OzUMnJoiXdC14pXNBi5gSZBW8D6Z
+         2Ia+Xa+YFNQ8ethNwQTK0sn3ghBX2ovwY+kHRSXcPRArggNnGxeS+mYtQTtXB2d1lOF2
+         SlfA==
+X-Gm-Message-State: AOAM5317tT/tZLoO9Ds9AgmLeYF7UsJTdnDA2gXKvQ2raZKBRxeHrWNi
+        VFzJSzCtjnDDKfIBYPG4tAA3kg==
+X-Google-Smtp-Source: ABdhPJwp/Tx+3AEnAfXaNU1aY7BJXXgZBpHWYS9OqshzxEYOstBe+ZyajNnEb3y5N9hSKCWV7IQ04w==
+X-Received: by 2002:a05:6512:203:: with SMTP id a3mr13265360lfo.409.1636712799215;
+        Fri, 12 Nov 2021 02:26:39 -0800 (PST)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id g14sm525253lfv.138.2021.11.12.02.26.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 02:26:38 -0800 (PST)
+Subject: Re: [PATCH v5 12/22] arm64/dts: qcom: Use new compatibles for crypto
+ nodes
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-13-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <7328ae17-1dc7-eaa1-5993-411b986e5e02@linaro.org>
+Date:   Fri, 12 Nov 2021 12:26:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_48E4F3B231317FCA25752384@qq.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211110105922.217895-13-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 03:35:07AM +0000, 黄碧波 wrote:
-> Hi Andy,
+Hi Bhupesh,
 
-First of all, please fix your email client (it mangled the message
-in a bad way) and do not top post!
-
-> This patch is to make the kernel more stable &amp; stronger,
-> Even if there is an unexpected I2C interrupt, kernel will not crash
-
-As far as I can see this is, as Jarkko said, the change to hide the real issue.
-
-> Let me elaborate on this issue:
-> The BIOS support EFI RTC feature and add the I2C bus descr in the ACPI table (RTC chip is connected to I2C bus), The OS matches and registers the I2C bus driver.
+On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
+> Since we are using soc specific qce crypto IP compatibles
+> in the bindings now, use the same in the device tree files
+> which include the crypto nodes.
 > 
-> When OS get RTC time by BIOS interface (Runtime Server), crash occurs.
-> The&nbsp; BIOS interface direct acces registers to sends and receives data, which conflicts with the&nbsp; I2C driver
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 2 +-
+>   arch/arm64/boot/dts/qcom/sdm845.dtsi  | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> This is a BIOS error and the root cause of this issue. The final solution is to delete the I2C device node in the ACPI table
-
-Oh, yeah, yet another brain damaged design. If somebody wants to have driver of
-the I²C peripheral in the ASL, it's not gonna work in Linux (in 99.99% cases).
-
-What you should do is go and fix BIOS that it won't do two things together, i.e.
-ASL based driver and exposure of I²C host controller in ACPI.
-
-On the constructive way, you need to use DMI quirks and somehow make EFI and
-I²C code to be communicating nicely in the kernel.
-
-The patch makes no sense to me, the problem is obviously somewhere else.
-
-NAK.
-
-> &nbsp;
-> &nbsp;
-> ------------------&nbsp;Original&nbsp;------------------
-> From: &nbsp;"Jarkko Nikula"<jarkko.nikula@linux.intel.com&gt;;
-> Date: &nbsp;Thu, Nov 11, 2021 02:06 PM
-> To: &nbsp;"huangbibo"<huangbibo@uniontech.com&gt;; "linux-i2c"<linux-i2c@vger.kernel.org&gt;; 
-> Cc: &nbsp;"linux-kernel"<linux-kernel@vger.kernel.org&gt;; "mika.westerberg"<mika.westerberg@linux.intel.com&gt;; "andriy.shevchenko"<andriy.shevchenko@linux.intel.com&gt;; "p.zabel"<p.zabel@pengutronix.de&gt;; 
-> Subject: &nbsp;Re: [PATCH] i2c: designware: I2C unexpected interrupt handling will cause kernel panic
+> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> index 933b56103a46..f477d026c949 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> @@ -204,7 +204,7 @@ cryptobam: dma-controller@704000 {
+>   		};
+>   
+>   		crypto: crypto@73a000 {
+> -			compatible = "qcom,crypto-v5.1";
+> +			compatible = "qcom,ipq6018-qce";
+>   			reg = <0x0 0x0073a000 0x0 0x6000>;
+>   			clocks = <&gcc GCC_CRYPTO_AHB_CLK>,
+>   				<&gcc GCC_CRYPTO_AXI_CLK>,
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 526087586ba4..8e7cbadff25a 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -2329,7 +2329,7 @@ cryptobam: dma-controller@1dc4000 {
+>   		};
+>   
+>   		crypto: crypto@1dfa000 {
+> -			compatible = "qcom,crypto-v5.4";
+> +			compatible = "qcom,sdm845-qce";
+>   			reg = <0 0x01dfa000 0 0x6000>;
+>   			clocks = <&gcc GCC_CE1_AHB_CLK>,
+>   				 <&gcc GCC_CE1_AXI_CLK>,
 > 
-> &nbsp;
-> 
-> Hi
-> 
-> On 11/11/21 8:57 AM, huangbibo wrote:
-> &gt; I2C interrupts may be triggered unexpectedly,
-> &gt; such as programs that directly access I2C registers,
-> &gt; bus conflicts caused by hardware design defects, etc.
-> &gt; These can cause null pointer reference errors and kernel panic.
-> &gt; 
-> &gt; kernel log:
-> &gt; [&nbsp;&nbsp; 52.676442] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> &gt; ...
-> &gt; [&nbsp;&nbsp; 52.816536] Workqueue: efi_rts_wq efi_call_rts
-> &gt; [&nbsp;&nbsp; 52.820968] pstate: 60000085 (nZCv daIf -PAN -UAO)
-> &gt; [&nbsp;&nbsp; 52.825753] pc : i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
-> &gt; [&nbsp;&nbsp; 52.831487] lr : i2c_dw_isr+0x88/0x5e0 [i2c_designware_core]
-> &gt; [&nbsp;&nbsp; 52.837134] sp : ffff8020fff17650
-> &gt; [&nbsp;&nbsp; 52.924451] Call trace:
-> &gt; [&nbsp;&nbsp; 52.926888]&nbsp; i2c_dw_isr+0x36c/0x5e0 [i2c_designware_core]
-> &gt; ...
-> &gt; [&nbsp;&nbsp; 52.957394]&nbsp; gic_handle_irq+0x7c/0x178
-> &gt; [&nbsp;&nbsp; 52.961130]&nbsp; el1_irq+0xb0/0x140
-> &gt; [&nbsp;&nbsp; 52.964259]&nbsp; 0x21291d30
-> &gt; [&nbsp;&nbsp; 52.983729]&nbsp; 0x21160938
-> &gt; [&nbsp;&nbsp; 52.986164]&nbsp; __efi_rt_asm_wrapper+0x28/0x44
-> &gt; [&nbsp;&nbsp; 52.990335]&nbsp; efi_call_rts+0x78/0x448
-> &gt; [&nbsp;&nbsp; 53.019021] Kernel panic - not syncing: Fatal exception in interrupt
 
--- 
-With Best Regards,
-Andy Shevchenko
+and in connection to my review comment on v5 11/22 there should be done
+similar changes for ipq8074.dtsi and msm8996.dtsi.
 
-
+--
+Best wishes,
+Vladimir
