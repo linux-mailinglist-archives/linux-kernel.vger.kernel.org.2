@@ -2,60 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1498844E554
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5CF44E556
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234696AbhKLLJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 06:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbhKLLJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 06:09:55 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08882C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 03:07:04 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c126so8277121pfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 03:07:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fibocom-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EfbdNfPRKiXEShy5FRCun9rl5zvUp5N+pmeBSmr/0OE=;
-        b=3fwXMDOm36uht8ippOLg8VoDeEoEjQOCxweixsjBMdRwxeQ7Uy2B36OkwJ5Ldu/GM3
-         jwQh8gB6sO3ySMP8SrlEWsxOc3FzGhlvPnojHRPSPDW1hcaEP1f//9Z7RzUqLvZYFJna
-         bLmezReJaQohURMSV6f2b3NMJH/UyTXYNJe8URg20CQxCj+06SLeu3QRBuJbP3O6MhOA
-         vqbmf1dcOcfMV4QUeRrK/CmqJ2tPQeLd2p0kEyXZv+NcKTYj815OnAeubMQnyLSe6sd4
-         t756QSC5Unlq1Y4ev/TBuHRxnRYMahbqu3DRZfWAVhkx6DkxPzKfnX1Ovsk5iGVFAhdq
-         Z2Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EfbdNfPRKiXEShy5FRCun9rl5zvUp5N+pmeBSmr/0OE=;
-        b=gFY4+lxIIrEgxByk3YhRVMdjtJjwtzRaJFp+j4uSzeati+P28Yqp6GYpQ/QtxA0i0l
-         vSP3sbHo+oqAU3OY15HICy5T8tJICxHVC+dbvHu/oovWnQHa+UJXqMHmEeuqv0cHX5OL
-         dUUDHQdzxh4AkC6KX77UNweQ1E7OSR4SjMYGmHdXWGZ50ReErDmDnMoYYDBORnxVZp/n
-         JA8qZfG3fLgNevgydcVJHBtQ5u43pc0KDIpShhYUkk22jEeRk+n8KbTMGs+wPBmv6Zt5
-         tJ33k/zJSEIfOCaxhFKyOPKKabPLkQVGxK3MqOoboAnhl37fktvgJ5ndXHIu7AF1iAKu
-         qAnQ==
-X-Gm-Message-State: AOAM530cHyXGJgWC4S2fp7WWEeXTz4mLSv3NoSpw2vX507w5xDch45Fr
-        P69Hm/wS2aOgGnUSmoKB68JcJ9EnYVUSbjKM
-X-Google-Smtp-Source: ABdhPJy8VP4eQF6+4V8z3AV+wlxSCZegoWCA9NlOq6wbpZqvL/2G6O80yFikG+09dw2V6rQnemE04Q==
-X-Received: by 2002:aa7:88cb:0:b0:49f:ad17:c08 with SMTP id k11-20020aa788cb000000b0049fad170c08mr12894189pff.19.1636715224425;
-        Fri, 12 Nov 2021 03:07:04 -0800 (PST)
-Received: from localhost ([103.95.66.60])
-        by smtp.gmail.com with ESMTPSA id l1sm4616806pgn.27.2021.11.12.03.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 03:07:04 -0800 (PST)
-From:   Super Zhang <superzmj@fibocom.corp-partner.google.com>
-To:     johan@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Super Zhang <superzmj@fibocom.corp-partner.google.com>
-Subject: [PATCH] USB: serial: option: add Fibocom FM101-GL variants
-Date:   Fri, 12 Nov 2021 19:06:38 +0800
-Message-Id: <20211112110638.751141-1-superzmj@fibocom.corp-partner.google.com>
+        id S234742AbhKLLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 06:10:00 -0500
+Received: from srv6.fidu.org ([159.69.62.71]:33864 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233994AbhKLLJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 06:09:56 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id E3CEDC8009D;
+        Fri, 12 Nov 2021 12:07:04 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id l3sTf6RsUn9l; Fri, 12 Nov 2021 12:07:04 +0100 (CET)
+Received: from wsembach-tuxedo.fritz.box (host-212-18-30-247.customer.m-online.net [212.18.30.247])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 8F553C8009C;
+        Fri, 12 Nov 2021 12:07:04 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ALSA: hda/realtek: Add quirk for ASRock NUC Box 1100
+Date:   Fri, 12 Nov 2021 12:07:04 +0100
+Message-Id: <20211112110704.1022501-1-wse@tuxedocomputers.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,75 +35,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the USB serial option driver support for the Fibocom
-FM101-GL Cat.6
-LTE modules as there are actually several different variants.
-- VID:PID 2cb7:01a4, FM101-GL for laptop debug M.2 cards(adb
-  interface)
-- VID:PID 2cb7:01a2, FM101-GL are laptop M.2 cards (with
-MBIM interfaces for /Linux/Chrome OS)
+This applies a SND_PCI_QUIRK(...) to the ASRock NUC Box 1100 series. This
+fixes the issue of the headphone jack not being detected unless warm
+rebooted from a certain other OS.
 
-T:  Bus=02 Lev=01 Prnt=01 Port=03 Cnt=01 Dev#=  2 Spd=5000
-MxCh= 0
-D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-P:  Vendor=2cb7 ProdID=01a2 Rev= 5.04
-S:  Manufacturer=Fibocom Wireless Inc.
-S:  Product=Fibocom FM101-GL Module
-S:  SerialNumber=86bffe63
-C:* #Ifs= 7 Cfg#= 1 Atr=a0 MxPwr=896mA
-A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
-I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00
-Driver=cdc_mbim
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30
-Driver=(none)
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-Driver=(none)
-I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-Driver=(none)
-I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-Driver=(none)
-I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-Driver=(none)
+When booting a certain other OS some coeff settings are changed that enable
+the audio jack. These settings are preserved on a warm reboot and can be
+easily dumped.
 
-T:  Bus=02 Lev=01 Prnt=01 Port=03 Cnt=01 Dev#=  3 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-P:  Vendor=2cb7 ProdID=01a4 Rev= 5.04
-S:  Manufacturer=Fibocom Wireless Inc.
-S:  Product=Fibocom FM101-GL Module
-S:  SerialNumber=86bffe63
-C:* #Ifs= 7 Cfg#= 1 Atr=a0 MxPwr=896mA
-A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
-I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00
-Driver=cdc_mbim
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30
-Driver=(none)
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-Driver=(none)
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01
-Driver=(none)
-I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-Driver=(none)
-I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-Driver=(none)
+The relevant indexes and values where gathered by naively diff-ing and
+reading a working and a non-working coeff dump.
 
-Signed-off-by: Super Zhang <superzmj@fibocom.corp-partner.google.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- drivers/usb/serial/option.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 29c765cc8495..8f5c98a75429 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2081,6 +2081,8 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a2, 0xff) },			/* Fibocom FM101-GL (laptop MBIM) */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a4, 0xff) },			/* Fibocom FM101-GL (laptop adb) */
- 	{ } /* Terminating entry */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2f1727faec69..701c80ed83dc 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6521,6 +6521,27 @@ static void alc256_fixup_tongfang_reset_persistent_settings(struct hda_codec *co
+ 	alc_write_coef_idx(codec, 0x45, 0x5089);
+ }
+ 
++static const struct coef_fw alc233_fixup_no_audio_jack_coefs[] = {
++	WRITE_COEF(0x1a, 0x9003), WRITE_COEF(0x1b, 0x0e2b), WRITE_COEF(0x37, 0xfe06),
++	WRITE_COEF(0x38, 0x4981), WRITE_COEF(0x45, 0xd489), WRITE_COEF(0x46, 0x0074),
++	WRITE_COEF(0x49, 0x0149),
++	{}
++};
++
++static void alc233_fixup_no_audio_jack(struct hda_codec *codec,
++				       const struct hda_fixup *fix,
++				       int action)
++{
++	/*
++	 * The audio jack input and output is not detected on the ASRock NUC Box
++	 * 1100 series when cold booting without this fix. Warm rebooting from a
++	 * certain other OS makes the audio functional, as COEF settings are
++	 * preserved in this case. This fix sets these altered COEF values as
++	 * the default.
++	 */
++	alc_process_coef_fw(codec, alc233_fixup_no_audio_jack_coefs);
++}
++
+ enum {
+ 	ALC269_FIXUP_GPIO2,
+ 	ALC269_FIXUP_SONY_VAIO,
+@@ -6740,6 +6761,7 @@ enum {
+ 	ALC287_FIXUP_13S_GEN2_SPEAKERS,
+ 	ALC256_FIXUP_TONGFANG_RESET_PERSISTENT_SETTINGS,
+ 	ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
++	ALC233_FIXUP_NO_AUDIO_JACK,
  };
- MODULE_DEVICE_TABLE(usb, option_ids);
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8460,6 +8482,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC,
+ 	},
++	[ALC233_FIXUP_NO_AUDIO_JACK] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc233_fixup_no_audio_jack,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8894,6 +8920,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x511e, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK(0x1849, 0x1233, "ASRock NUC Box 1100", ALC233_FIXUP_NO_AUDIO_JACK),
+ 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9", ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
+ 	SND_PCI_QUIRK(0x1b35, 0x1235, "CZC B20", ALC269_FIXUP_CZC_B20),
+ 	SND_PCI_QUIRK(0x1b35, 0x1236, "CZC TMI", ALC269_FIXUP_CZC_TMI),
 -- 
 2.25.1
 
