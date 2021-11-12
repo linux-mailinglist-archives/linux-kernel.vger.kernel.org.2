@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5785544EBBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A409744EBBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbhKLREg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:04:36 -0500
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:65260 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbhKLREd (ORCPT
+        id S235444AbhKLRFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:05:03 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:44922 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235434AbhKLRFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:04:33 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id lZvpmTuLw1UGBlZvpmGL72; Fri, 12 Nov 2021 18:01:41 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Fri, 12 Nov 2021 18:01:41 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     colyli@suse.de, kent.overstreet@gmail.com
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] bcache: Remove redundant 'flush_workqueue()' calls
-Date:   Fri, 12 Nov 2021 18:01:40 +0100
-Message-Id: <b61537b83c7e893d99c6ea05930a42e87679e429.1636736443.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Fri, 12 Nov 2021 12:05:00 -0500
+Received: by mail-oi1-f180.google.com with SMTP id be32so18978179oib.11;
+        Fri, 12 Nov 2021 09:02:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qdsBiO0OvPadce4G4EQFWEDt+EqmAslf5x4Pahu/XEU=;
+        b=OhYkoZUsEowPK6bgY1Fx9bulO1wrVn+kT2oaLcsinYXgAz+78NYSUolhNEVhiIcpA3
+         BGEe8uYMNpfqkj6+7+4Uoxk4FCM3lVv+cszJfbamGqogFkkvngPd0nqJkUVyy+cMCw4s
+         3VoORRnDl81zsP+y2n5vD1Zll/qw0MzHxa2wniWKsKd2QVV7r4z/MAg9qxnEaxqSzj6B
+         arTBQv6Fu3p+fQ+XJX/BmDNy2oRuMQrtjnbNYo7GHRO1ZdFbdXRkDOk4INTrP/y9xL+O
+         6SaFCA2e8duoeNTOmEIOfuDtOAOVSXNSseapUlX4+ZDXbb+rtWlKoZOLNWX4bKZWt7gG
+         Cd/A==
+X-Gm-Message-State: AOAM533t6Chx3ylnGM89UAsSvSIsdacXZyQJIah6fRexwSphD05BsCvN
+        l1Jow6jYwsXYfwV/qckYJg==
+X-Google-Smtp-Source: ABdhPJydefifTQ+SBOXFlomA+xHAsz+GKvhJi4GL1HPrhn/YwYfEAyRA97AWg+ueH5gW7I/kODvcIQ==
+X-Received: by 2002:a05:6808:11c9:: with SMTP id p9mr26902301oiv.169.1636736528788;
+        Fri, 12 Nov 2021 09:02:08 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g2sm1364024oic.35.2021.11.12.09.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 09:02:08 -0800 (PST)
+Received: (nullmailer pid 3010964 invoked by uid 1000);
+        Fri, 12 Nov 2021 17:02:07 -0000
+Date:   Fri, 12 Nov 2021 11:02:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     davem@davemloft.net, rjliao@codeaurora.org, kuba@kernel.org,
+        bgodavar@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        devicetree@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: net: bluetooth: Add device tree
+ bindings for QTI bluetooth MAPLE
+Message-ID: <YY6eD/r3ddU7PUxJ@robh.at.kernel.org>
+References: <1635837069-1293-1-git-send-email-zijuhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635837069-1293-1-git-send-email-zijuhu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+On Tue, Nov 02, 2021 at 03:11:09PM +0800, Zijun Hu wrote:
+> From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-Remove the redundant 'flush_workqueue()' calls.
+Subject space is valuable, don't say things twice:
 
-This was generated with coccinelle:
+dt-bindings: net: bluetooth: Add Qualcomm MAPLE
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
+Is MAPLE an SoC? Everything else used part numbers, why not here?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/md/bcache/writeback.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index c7560f66dca8..384c666605ec 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -790,10 +790,8 @@ static int bch_writeback_thread(void *arg)
- 		}
- 	}
- 
--	if (dc->writeback_write_wq) {
--		flush_workqueue(dc->writeback_write_wq);
-+	if (dc->writeback_write_wq)
- 		destroy_workqueue(dc->writeback_write_wq);
--	}
- 	cached_dev_put(dc);
- 	wait_for_kthread_stop();
- 
--- 
-2.30.2
-
+> 
+> Add device tree bindings for QTI bluetooth MAPLE.
+> 
+> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> index f93c6e7a1b59..9f0508c4dd16 100644
+> --- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> @@ -23,6 +23,7 @@ properties:
+>        - qcom,wcn3998-bt
+>        - qcom,qca6390-bt
+>        - qcom,wcn6750-bt
+> +      - qcom,maple-bt
+>  
+>    enable-gpios:
+>      maxItems: 1
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+> 
+> 
