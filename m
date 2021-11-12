@@ -2,148 +2,558 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF8A44E670
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C169444E698
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234927AbhKLMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:37:57 -0500
-Received: from relay08.th.seeweb.it ([5.144.164.169]:50737 "EHLO
-        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhKLMh4 (ORCPT
+        id S235072AbhKLMrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:47:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235031AbhKLMrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:37:56 -0500
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 12 Nov 2021 07:47:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636721062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Ttaa+ovxk1xhvhgwZpkxFSWWZVYQa+Ux6jLKFuwVolM=;
+        b=SqCwQ7csl4trS9VwUtmycv/JcJ1fBHsbx9G7yiaUbaq9wWWCsCjfijSuT4jqQelfeQs2CJ
+        FD5lWzrCV9Pzb+VZEiW4I8NKXnHsZrBpdB59vmO9Z/r2AI35fxzxY0BzbNxpRHcCFlTbb4
+        IPoXYc6YqVrekS/OUUYbd6TQuTXoWSk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-5bY9OT-yO2GlaKacAFQGVw-1; Fri, 12 Nov 2021 07:44:21 -0500
+X-MC-Unique: 5bY9OT-yO2GlaKacAFQGVw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 237123F1EA;
-        Fri, 12 Nov 2021 13:35:03 +0100 (CET)
-Date:   Fri, 12 Nov 2021 13:35:01 +0100
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: [RESEND PATCH v2 04/13] backlight: qcom-wled: Fix off-by-one
- maximum with default num_strings
-Message-ID: <20211112123501.pz5e6g7gavlinung@SoMainline.org>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>, Bryan Wu <cooloney@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-References: <20211112002706.453289-1-marijn.suijten@somainline.org>
- <20211112002706.453289-5-marijn.suijten@somainline.org>
- <20211112120839.i6g747vewg6bkyk7@maple.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112120839.i6g747vewg6bkyk7@maple.lan>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E214FBBEE5;
+        Fri, 12 Nov 2021 12:44:19 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 674DB19D9D;
+        Fri, 12 Nov 2021 12:44:04 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 30E0D41885D7; Fri, 12 Nov 2021 09:42:32 -0300 (-03)
+Message-ID: <20211112123531.497831890@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Fri, 12 Nov 2021 09:35:31 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: [patch v7 00/10] extensible prctl task isolation interface and vmstat sync                                                                                                               
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-12 12:08:39, Daniel Thompson wrote:
-> On Fri, Nov 12, 2021 at 01:26:57AM +0100, Marijn Suijten wrote:
-> > When not specifying num-strings in the DT the default is used, but +1 is
-> > added to it which turns WLED3 into 4 and WLED4/5 into 5 strings instead
-> > of 3 and 4 respectively, causing out-of-bounds reads and register
-> > read/writes.  This +1 exists for a deficiency in the DT parsing code,
-> > and is simply omitted entirely - solving this oob issue - by parsing the
-> > property separately much like qcom,enabled-strings.
-> > 
-> > This also allows more stringent checks on the maximum value when
-> > qcom,enabled-strings is provided in the DT.  Note that num-strings is
-> > parsed after enabled-strings to give it final sign-off over the length,
-> > which DT currently utilizes to get around an incorrect fixed read of
-> > four elements from that array (has been addressed in a prior patch).
-> > 
-> > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > ---
-> >  drivers/video/backlight/qcom-wled.c | 51 +++++++++++------------------
-> >  1 file changed, 19 insertions(+), 32 deletions(-)
-> > 
-> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > index 977cd75827d7..c5232478a343 100644
-> > --- a/drivers/video/backlight/qcom-wled.c
-> > +++ b/drivers/video/backlight/qcom-wled.c
-> > @@ -1552,6 +1520,25 @@ static int wled_configure(struct wled *wled)
-> >  		}
-> >  	}
-> > 
-> > +	rc = of_property_read_u32(dev->of_node, "qcom,num-strings", &val);
-> > +	if (!rc) {
-> > +		if (val < 1 || val > wled->max_string_count) {
-> > +			dev_err(dev, "qcom,num-strings must be between 1 and %d\n",
-> > +				wled->max_string_count);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		if (string_len > 0) {
-> > +			dev_warn(dev, "qcom,num-strings and qcom,enabled-strings are ambiguous\n");
-> 
-> The warning should also be below the error message on the next if statement.
+The logic to disable vmstat worker thread, when entering
+nohz full, does not cover all scenarios. For example, it is possible
+for the following to happen:
 
-Agreed.
+1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+2) app runs mlock, which increases counters for mlock'ed pages.
+3) start -RT loop
 
-> This warning occurs even when there is no ambiguity.
-> 
-> This could be:
-> 
-> 	if (string_len > 0 && val != string_len)
-> 
-> Combined these changes allows us to give a much more helpful and assertive
-> warning message:
-> 
-> qcom,num-strings mis-matches and will partially override
-> qcom,enabled-strings (remove qcom,num-strings?)
+Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+the mlock, vmstat shepherd can restart vmstat worker thread on
+the CPU in question.
 
-I want to let the user know it's set regardless of whether they're
-equivalent; no need to set both.
+To fix this, add task isolation prctl interface to quiesce
+deferred actions when returning to userspace.
 
-How about:
+The patchset is based on ideas and code from the
+task isolation patchset from Alex Belits:
+https://lwn.net/Articles/816298/
 
-    Only one of qcom,num-strings or qcom,enabled-strings should be set
+Please refer to Documentation/userspace-api/task_isolation.rst
+(patch 1) for details. Its attached at the end of this message
+in .txt format as well.
 
-That should be more descriptive?  Otherwise, let me know if you really
-want to allow users to (unnecessarily) set both - or if it can / should
-be caught in DT validation instead.
+Note: the prctl interface is independent of nohz_full=.
 
-- Marijn
+The userspace patches can be found at https://people.redhat.com/~mtosatti/task-isol-v6-userspace-patches/
 
-> > +			if (val > string_len) {
-> > +				dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
-> > +				return -EINVAL;
-> > +			}
-> > +		}
-> 
-> 
-> Daniel.
+- qemu-task-isolation.patch: activate task isolation from CPU execution loop
+- rt-tests-task-isolation.patch: add task isolation activation to cyclictest/oslat
+- util-linux-chisol.patch: add chisol tool to util-linux.
+
+---
+
+v7
+ - no changes (resending series without changelog corruption).
+
+v6
+ - Move oneshot mode enablement to configuration time (Frederic Weisbecker).
+ - Allow more extensions to CFG_SET of ISOL_F_QUIESCE (Frederic Weisbecker).
+ - Update docs and samples regarding oneshot mode     (Frederic Weisbecker).
+ - Update docs and samples regarding more extensibility of
+   CFG_SET of ISOL_F_QUIESCE                          (Frederic Weisbecker).
+ - prctl_task_isolation_activate_get should copy active_mask
+   to address in arg2.
+ - modify exit_to_user_mode_loop to cover exceptions
+   and interrupts.
+ - split exit hooks into its own patch
+
+v5
+  - Add changelogs to individual patches                (Peter Zijlstra).
+  - Add documentation to patchset intro                 (Peter Zijlstra).
+
+v4:
+ - Switch to structures for parameters when possible
+   (which are more extensible).
+ - Switch to CFG_{S,G}ET naming and use drop
+   "internal configuration" prctls            (Frederic Weisbecker).
+ - Add summary of terms to documentation      (Frederic Weisbecker).
+ - Examples for compute and one-shot modes    (Thomas G/Christoph L).
+
+v3:
+
+ - Split in smaller patches              (Nitesh Lal).
+ - Misc cleanups                         (Nitesh Lal).
+ - Clarify nohz_full is not a dependency (Nicolas Saenz).
+ - Incorrect values for prctl definitions (kernel robot).
+ - Save configured state, so applications
+   can activate externally configured
+   task isolation parameters.
+ - Remove "system default" notion (chisol should
+   make it obsolete).
+ - Update documentation: add new section with explanation
+   about configuration/activation and code example.
+ - Update samples.
+ - Report configuration/activation state at
+   /proc/pid/task_isolation.
+ - Condense dirty information of per-CPU vmstats counters
+   in a bool.
+ - In-kernel KVM support.
+
+v2:
+
+- Finer-grained control of quiescing (Frederic Weisbecker / Nicolas Saenz).
+
+- Avoid potential regressions by allowing applications
+  to use ISOL_F_QUIESCE_DEFMASK (whose default value
+  is configurable in /sys/).         (Nitesh Lal / Nicolas Saenz).
+
+
+
+v5 can be found at:
+https://lore.kernel.org/lkml/20211019152431.885037499@fedora.localdomain/
+
+v4 can be found at:
+https://lore.kernel.org/all/20211007192346.731667417@fedora.localdomain/
+
+v3 can be found at:
+https://lore.kernel.org/lkml/20210824152423.300346181@fuller.cnet/
+
+v2 can be found at:
+https://lore.kernel.org/patchwork/project/lkml/list/?series=510225
+
+---
+
+ Documentation/userspace-api/task_isolation.rst |  370 +++++++++++++++++++++++
+ fs/proc/base.c                                 |   68 ++++
+ include/linux/entry-kvm.h                      |    4 
+ include/linux/sched.h                          |    5 
+ include/linux/task_isolation.h                 |  138 ++++++++
+ include/linux/vmstat.h                         |   19 +
+ include/uapi/linux/prctl.h                     |   43 ++
+ init/init_task.c                               |    3 
+ kernel/Makefile                                |    2 
+ kernel/entry/common.c                          |   15 
+ kernel/entry/kvm.c                             |   18 -
+ kernel/exit.c                                  |    2 
+ kernel/fork.c                                  |   23 +
+ kernel/sys.c                                   |   16 +
+ kernel/task_isolation.c                        |  388 +++++++++++++++++++++++++
+ mm/vmstat.c                                    |  155 +++++++--
+ samples/Kconfig                                |    7 
+ samples/Makefile                               |    1 
+ samples/task_isolation/Makefile                |   11 
+ samples/task_isolation/task_isol.c             |   92 +++++
+ samples/task_isolation/task_isol.h             |    9 
+ samples/task_isolation/task_isol_computation.c |   89 +++++
+ samples/task_isolation/task_isol_oneshot.c     |  104 ++++++
+ samples/task_isolation/task_isol_userloop.c    |   54 +++
+ 24 files changed, 1591 insertions(+), 45 deletions(-)
+
+---
+
+
+Task isolation prctl interface
+******************************
+
+Certain types of applications benefit from running uninterrupted by
+background OS activities. Realtime systems and high-bandwidth
+networking applications with user-space drivers can fall into the
+category.
+
+To create an OS noise free environment for the application, this
+interface allows userspace to inform the kernel the start and end of
+the latency sensitive application section (with configurable system
+behaviour for that section).
+
+Note: the prctl interface is independent of nohz_full=.
+
+The prctl options are:
+
+   * PR_ISOL_FEAT_GET: Retrieve supported features.
+
+   * PR_ISOL_CFG_GET: Retrieve task isolation configuration.
+
+   * PR_ISOL_CFG_SET: Set task isolation configuration.
+
+   * PR_ISOL_ACTIVATE_GET: Retrieve task isolation activation state.
+
+   * PR_ISOL_ACTIVATE_SET: Set task isolation activation state.
+
+Summary of terms:
+
+* feature:
+
+     A distinct attribute or aspect of task isolation. Examples of
+     features could be logging, new operating modes (eg: syscalls
+     disallowed), userspace notifications, etc. The only feature
+     currently available is quiescing.
+
+* configuration:
+
+     A specific choice from a given set of possible choices that
+     dictate how the particular feature in question should behave.
+
+* activation state:
+
+     The activation state (whether active/inactive) of the task
+     isolation features (features must be configured before being
+     activated).
+
+Inheritance of the isolation parameters and state, across fork(2) and
+clone(2), can be changed via PR_ISOL_CFG_GET/PR_ISOL_CFG_SET.
+
+At a high-level, task isolation is divided in two steps:
+
+1. Configuration.
+
+2. Activation.
+
+Section "Userspace support" describes how to use task isolation.
+
+In terms of the interface, the sequence of steps to activate task
+isolation are:
+
+1. Retrieve supported task isolation features (PR_ISOL_FEAT_GET).
+
+2. Configure task isolation features
+   (PR_ISOL_CFG_GET/PR_ISOL_CFG_SET).
+
+3. Activate or deactivate task isolation features
+   (PR_ISOL_ACTIVATE_GET/PR_ISOL_ACTIVATE_SET).
+
+This interface is based on ideas and code from the task isolation
+patchset from Alex Belits: https://lwn.net/Articles/816298/
+
+
+Feature description
+===================
+
+   * "ISOL_F_QUIESCE"
+
+   This feature allows quiescing selected kernel activities on return
+   from system calls.
+
+
+Interface description
+=====================
+
+**PR_ISOL_FEAT**:
+
+   Returns the supported features and feature capabilities, as a
+   bitmask:
+
+      prctl(PR_ISOL_FEAT, feat, arg3, arg4, arg5);
+
+   The 'feat' argument specifies whether to return supported features
+   (if zero), or feature capabilities (if not zero). Possible values
+   for 'feat' are:
+
+   * "0":
+
+        Return the bitmask of supported features, in the location
+        pointed  to  by  "(int *)arg3". The buffer should allow space
+        for 8 bytes.
+
+   * "ISOL_F_QUIESCE":
+
+        Return a structure containing which kernel activities are
+        supported for quiescing, in the location pointed to by "(int
+        *)arg3":
+
+           struct task_isol_quiesce_extensions {
+                   __u64 flags;
+                   __u64 supported_quiesce_bits;
+                   __u64 pad[6];
+           };
+
+        Where:
+
+        *flags*: Additional flags (should be zero).
+
+        *supported_quiesce_bits*: Bitmask indicating
+           which features are supported for quiescing.
+
+        *pad*: Additional space for future enhancements.
+
+   Features and its capabilities are defined at
+   include/uapi/linux/task_isolation.h.
+
+**PR_ISOL_CFG_GET**:
+
+   Retrieve task isolation configuration. The general format is:
+
+      prctl(PR_ISOL_CFG_GET, what, arg3, arg4, arg5);
+
+   The 'what' argument specifies what to configure. Possible values
+   are:
+
+   * "I_CFG_FEAT":
+
+        Return configuration of task isolation features. The 'arg3'
+        argument specifies whether to return configured features (if
+        zero), or individual feature configuration (if not zero), as
+        follows.
+
+        * "0":
+
+             Return the bitmask of configured features, in the
+             location pointed  to  by  "(int *)arg4". The buffer
+             should allow space for 8 bytes.
+
+        * "ISOL_F_QUIESCE":
+
+             If arg4 is QUIESCE_CONTROL, return the control structure
+             for quiescing of background kernel activities, in the
+             location pointed to by "(int *)arg5":
+
+                struct task_isol_quiesce_control {
+                       __u64 flags;
+                       __u64 quiesce_mask;
+                       __u64 quiesce_oneshot_mask;
+                       __u64 pad[5];
+                };
+
+             See PR_ISOL_CFG_GET description for meaning of fields.
+
+   * "I_CFG_INHERIT":
+
+        Retrieve inheritance configuration across fork/clone.
+
+        Return the structure which configures inheritance across
+        fork/clone, in the location pointed to by "(int *)arg4":
+
+           struct task_isol_inherit_control {
+                   __u8    inherit_mask;
+                   __u8    pad[7];
+           };
+
+        See PR_ISOL_CFG_SET description for meaning of fields.
+
+**PR_ISOL_CFG_SET**:
+
+   Set task isolation configuration. The general format is:
+
+      prctl(PR_ISOL_CFG_SET, what, arg3, arg4, arg5);
+
+   The 'what' argument specifies what to configure. Possible values
+   are:
+
+   * "I_CFG_FEAT":
+
+        Set configuration of task isolation features. 'arg3' specifies
+        the feature. Possible values are:
+
+        * "ISOL_F_QUIESCE":
+
+             If arg4 is QUIESCE_CONTROL, set the control structure for
+             quiescing of background kernel activities, from the
+             location pointed to by "(int *)arg5":
+
+                struct task_isol_quiesce_control {
+                       __u64 flags;
+                       __u64 quiesce_mask;
+                       __u64 quiesce_oneshot_mask;
+                       __u64 pad[5];
+                };
+
+             Where:
+
+             *flags*: Additional flags (should be zero).
+
+             *quiesce_mask*: A bitmask containing which kernel
+             activities to quiesce.
+
+             *quiesce_oneshot_mask*: A bitmask indicating which kernel
+             activities should behave in oneshot mode, that is,
+             quiescing will happen on return from
+             prctl(PR_ISOL_ACTIVATE_SET), but not on return of
+             subsequent system calls. The corresponding bit(s) must
+             also be set at quiesce_mask.
+
+             *pad*: Additional space for future enhancements.
+
+             For quiesce_mask (and quiesce_oneshot_mask), possible bit
+             sets are:
+
+             * "ISOL_F_QUIESCE_VMSTATS"
+
+             VM statistics are maintained in per-CPU counters to
+             improve performance. When a CPU modifies a VM statistic,
+             this modification is kept in the per-CPU counter. Certain
+             activities require a global count, which involves
+             requesting each CPU to flush its local counters to the
+             global VM counters.
+
+             This flush is implemented via a workqueue item, which
+             might schedule a workqueue on isolated CPUs.
+
+             To avoid this interruption, task isolation can be
+             configured to, upon return from system calls, synchronize
+             the per-CPU counters to global counters, thus avoiding
+             the interruption.
+
+   * "I_CFG_INHERIT":
+
+        Set inheritance configuration when a new task is created via
+        fork and clone.
+
+        The "(int *)arg4" argument is a pointer to:
+
+           struct task_isol_inherit_control {
+                   __u8    inherit_mask;
+                   __u8    pad[7];
+           };
+
+        inherit_mask is a bitmask that specifies which part of task
+        isolation should be inherited:
+
+        * Bit ISOL_INHERIT_CONF: Inherit task isolation
+          configuration. This is the state written via
+          prctl(PR_ISOL_CFG_SET, ...).
+
+        * Bit ISOL_INHERIT_ACTIVE: Inherit task isolation activation
+          (requires ISOL_INHERIT_CONF to be set). The new task should
+          behave, after fork/clone, in the same manner as the parent
+          task after it executed:
+
+             prctl(PR_ISOL_ACTIVATE_SET, &mask, ...);
+
+**PR_ISOL_ACTIVATE_GET**:
+
+   Retrieve task isolation activation state.
+
+   The general format is:
+
+      prctl(PR_ISOL_ACTIVATE_GET, pmask, arg3, arg4, arg5);
+
+   'pmask' specifies the location of a feature mask, where the current
+   active mask will be copied. See PR_ISOL_ACTIVATE_SET for
+   description of individual bits.
+
+**PR_ISOL_ACTIVATE_SET**:
+
+   Set task isolation activation state (activates/deactivates task
+   isolation).
+
+   The general format is:
+
+      prctl(PR_ISOL_ACTIVATE_SET, pmask, arg3, arg4, arg5);
+
+   The 'pmask' argument specifies the location of an 8 byte mask
+   containing which features should be activated. Features whose bits
+   are cleared will be deactivated. The possible bits for this mask
+   are:
+
+      * "ISOL_F_QUIESCE":
+
+      Activate quiescing of background kernel activities. Quiescing
+      happens on return to userspace from this system call, and on
+      return from subsequent system calls (unless quiesce_oneshot_mask
+      has been set at PR_ISOL_CFG_SET time).
+
+   Quiescing can be adjusted (while active) by
+   prctl(PR_ISOL_ACTIVATE_SET, &new_mask, ...).
+
+
+Userspace support
+*****************
+
+Task isolation is divided in two main steps: configuration and
+activation.
+
+Each step can be performed by an external tool or the latency
+sensitive application itself. util-linux contains the "chisol" tool
+for this purpose.
+
+This results in three combinations:
+
+1. Both configuration and activation performed by the latency
+sensitive application. Allows fine grained control of what task
+isolation features are enabled and when (see samples section below).
+
+2. Only activation can be performed by the latency sensitive app (and
+configuration performed by chisol). This allows the admin/user to
+control task isolation parameters, and applications have to be
+modified only once.
+
+3. Configuration and activation performed by an external tool. This
+allows unmodified applications to take advantage of task isolation.
+Activation is performed by the "-a" option of chisol.
+
+
+Examples
+********
+
+The "samples/task_isolation/" directory contains 3 examples:
+
+* task_isol_userloop.c:
+
+     Example of program with a loop on userspace scenario.
+
+* task_isol_computation.c:
+
+     Example of program that enters task isolated mode, performs an
+     amount of computation, exits task isolated mode, and writes the
+     computation to disk.
+
+* task_isol_oneshot.c:
+
+     Example of program that enables one-shot mode for quiescing,
+     enters a processing loop, then upon an external event performs a
+     number of syscalls to handle that event.
+
+This is a snippet of code to activate task isolation if it has been
+previously configured (by chisol for example):
+
+   #include <sys/prctl.h>
+   #include <linux/types.h>
+
+   #ifdef PR_ISOL_CFG_GET
+   unsigned long long fmask;
+
+   ret = prctl(PR_ISOL_CFG_GET, I_CFG_FEAT, 0, &fmask, 0);
+   if (ret != -1 && fmask != 0) {
+           ret = prctl(PR_ISOL_ACTIVATE_SET, &fmask, 0, 0, 0);
+           if (ret == -1) {
+                   perror("prctl PR_ISOL_ACTIVATE_SET");
+                   return ret;
+           }
+   }
+   #endif
+
+
+
