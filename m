@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE30844E834
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6BE44E83D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhKLOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:12:15 -0500
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:38893 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhKLOMO (ORCPT
+        id S235071AbhKLONo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:13:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26686 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235000AbhKLONn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:12:14 -0500
-Received: by mail-ua1-f52.google.com with SMTP id o26so19088682uab.5;
-        Fri, 12 Nov 2021 06:09:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DhXqfwSlPm16zKdEV1ag+dVLF4h8hJZRSRqMOMtnQqE=;
-        b=pAMihPEe/5UFKRD4T/1DfbLMkJDHEisTHlH1XgSmeAj2IknKzLyfQyjBJbiYlI8VzC
-         BD6g8MLKf+HOnKPZwjLl518QcsbcP629wR6lIS2E3OvVafFvBXprCy4tMCn5H440e2tk
-         a1L6Jz0p3Rny8F6FDXKfA93lXqIu/TGonc8uOeCmTy1/XUbsMEKny0h2O3v0U0DHJRo7
-         SOZnPciXkzQZHGNfd+LaqXOxd7QXyG+ViyFqypjr9DTWfJMyWPBv/327UD2u41ujEq0T
-         owTivkZW7+O/aBh32iHWsWkIv594sNWMadz7draRxntAYnT192iboBikuwyUcX5YPvx9
-         2xpQ==
-X-Gm-Message-State: AOAM5304HWVlUCktLM3ITwL8Gf0awAyR2G1LdtiIR758LNVeLGceCnFz
-        UTpTDVVsJRhVfViCiA3VXDrKrSBN6TluTg==
-X-Google-Smtp-Source: ABdhPJzQ2pUeUXWsBt79uZucsYMSuLGKV7RPpagUhB8nnNXwrU12K4qXxaJanDlhVBz5L0T3xeZuAw==
-X-Received: by 2002:a05:6102:d8d:: with SMTP id d13mr10491858vst.54.1636726161974;
-        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id t1sm4006288vkl.56.2021.11.12.06.09.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
-Received: by mail-ua1-f52.google.com with SMTP id v3so18954364uam.10;
-        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
-X-Received: by 2002:ab0:15a1:: with SMTP id i30mr22901368uae.122.1636726161283;
- Fri, 12 Nov 2021 06:09:21 -0800 (PST)
+        Fri, 12 Nov 2021 09:13:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636726252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WG8PFqpRKxCavfbVvSUmpH7cc2ZZWGSAwL7C9wQeDCQ=;
+        b=iVO/jZumYpSVk4Y8U3AmTuGLAtEeCq8pfY4bTlRo2wjoMzlOhS3krPGRkavHuEhSL9WAQ1
+        pamw75+0YeDCgidv0AIOlqGtWcSB3JjgiCdM7l9JSjeA/+db0vE8Z69m7pK4pa1nmqa3tS
+        Q4seLqvn/FtnI5EOzGHeQZ19ie4sswM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-vtSOMdmQMPC3jGlwUWxpGg-1; Fri, 12 Nov 2021 09:10:49 -0500
+X-MC-Unique: vtSOMdmQMPC3jGlwUWxpGg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B07E871817;
+        Fri, 12 Nov 2021 14:10:46 +0000 (UTC)
+Received: from [10.39.193.118] (unknown [10.39.193.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB60218A50;
+        Fri, 12 Nov 2021 14:10:42 +0000 (UTC)
+Message-ID: <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
+Date:   Fri, 12 Nov 2021 15:10:41 +0100
 MIME-Version: 1.0
-References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Nov 2021 15:09:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVw=bDj=Uq+wXzBb_HhG4viHZC0A0znv15htvwwS15oEQ@mail.gmail.com>
-Message-ID: <CAMuHMdVw=bDj=Uq+wXzBb_HhG4viHZC0A0znv15htvwwS15oEQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] RZ/G2L: pinctrl: Support to get/set drive-strength
- and output-impedance-ohms
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211111162746.100598-1-vkuznets@redhat.com>
+ <20211111162746.100598-2-vkuznets@redhat.com>
+ <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
+ <87k0hd8obo.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87k0hd8obo.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On 11/12/21 15:02, Marc Zyngier wrote:
+>> I'd like KVM to be consistent across architectures and have the same
+>> (similar) meaning for KVM_CAP_NR_VCPUS.
+> Sure, but this is a pretty useless piece of information anyway. As
+> Andrew pointed out, the information is available somewhere else, and
+> all we need to do is to cap it to the number of supported vcpus, which
+> is effectively a KVM limitation.
+> 
+> Also, we are talking about representing the architecture to userspace.
+> No amount of massaging is going to make an arm64 box look like an x86.
 
-On Wed, Nov 10, 2021 at 11:46 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> This patch series add support to get/set drive-strength and
-> output-impedance for RZ/G2L SoC. Along with some macro renames
-> and code cleanup.
->
-> Cheers,
-> Prabhakar
->
-> Changes for v3:
-> * Fixed review comments pointed by Geert.
->
-> Changes for v2:
-> * Fixed review comments pointed by Geert, split up patch 4 from series [1]
->
-> Note: This patch series is dependent on first two patches of series [1]
->
-> [1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/
-> 20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+Not sure what you mean?  The API is about providing a piece of 
+information independent of the architecture, while catering for a ppc 
+weirdness.  Yes it's mostly useless if you don't care about ppc, but 
+it's not about making arm64 look like x86 or ppc; it's about not having 
+to special case ppc in userspace.
 
-Thank you, will queue in renesas-pinctrl-for-v5.17 with the dependencies.
+If anything, if KVM_CAP_NR_VCPUS returns the same for kvm and !kvm, then 
+*that* is making an arm64 box look like an x86.  On ARM the max vCPUs 
+depends on VM's GIC configuration, so KVM_CAP_NR_VCPUS should take that 
+into account.  Or KVM_CAP_NR_VCPUS should have been only for !kvm; but 
+the ship for that has sailed.
 
-Gr{oetje,eeting}s,
+Paolo
 
-                        Geert
+>>> which I'm keen on avoiding. I'd rather have the kvm and !kvm cases
+>>> return the same thing.
+>> Forgive me my (ARM?) ignorance but what would it be then? If we go for
+>> min(num_online_cpus(), kvm_arm_default_max_vcpus()) in both cases, cat
+>> this can still go above KVM_CAP_MAX_VCPUS after vGIC is created?
+> "min(num_online_cpus(), kvm_arm_default_max_vcpus())" is probably the
+> right thing in all cases. Yes, KVM_CAP_NR_VCPUS will keep reporting
+> more than the VM can actually support. But that's why we have
+> KVM_CAP_MAX_VCPUS, which tells you now many vcpus you can create for a
+> given configuration.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
