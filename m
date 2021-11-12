@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA02144E7FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373A744E7FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhKLN5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:57:02 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42164 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231553AbhKLN5B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:57:01 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UwCALcf_1636725247;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0UwCALcf_1636725247)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Nov 2021 21:54:08 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Cc:     bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
-        lenb@kernel.org, rjw@rjwysocki.net, bhelgaas@google.com,
-        xueshuai@linux.alibaba.com, zhangliguang@linux.alibaba.com,
-        zhuo.song@linux.alibaba.com
-Subject: [RFC PATCH] ACPI: Move sdei_init and ghes_init ahead
-Date:   Fri, 12 Nov 2021 21:54:05 +0800
-Message-Id: <20211112135405.19318-1-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S235073AbhKLN5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:57:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231553AbhKLN5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 08:57:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC6160F5B;
+        Fri, 12 Nov 2021 13:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636725255;
+        bh=jvt62KNJOGwlc2aToeLipRv2sRUkeFHgLVGiVuLF8QE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1PSmjmo6V14ifW0NLt5o4l4obI/shimjRuaHfSI8Zzys32QV1EasveQ47jmBc59n7
+         c9iZ6BNAjSunTxtuJOKrwnP3fcy1QaUXRYYrhlBzW/BfZv6VRjj67Xv4dR2k2rv3PO
+         ToBkxmwxq5VlgzzTAErb6l4XdxaIgad/j72G+G50=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.255
+Date:   Fri, 12 Nov 2021 14:54:12 +0100
+Message-Id: <16367252528812@kroah.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On an ACPI system, ACPI is initialised very early from a
-subsys_initcall(), while SDEI is not ready until a subsys_initcall().
-More seriously, the kernel is able to handle and report errors until the
-GHES is initialised by device_initcall().
+I'm announcing the release of the 4.14.255 kernel.
 
-Consequently, when an error occurs during the kernel booting, the
-phyiscal sdei dispatcher in firmware fails to dispatch error events. All
-errors that occurred before GHES initialization are missed and there is
-no chance to report and find them again.
+All users of the 4.14 kernel series must upgrade.
 
-In this patch, move sdei_init and ghes_init as far ahead as possible,
-right after acpi_hest_init().
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
- drivers/acpi/apei/ghes.c    | 3 +--
- drivers/acpi/pci_root.c     | 2 ++
- drivers/firmware/arm_sdei.c | 9 +--------
- include/acpi/apei.h         | 2 ++
- 4 files changed, 6 insertions(+), 10 deletions(-)
+thanks,
 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index c60961d31213..bf0177f44dfd 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -1452,7 +1452,7 @@ static struct platform_driver ghes_platform_driver = {
- 	.remove		= ghes_remove,
- };
- 
--static int __init ghes_init(void)
-+int __init ghes_init(void)
- {
- 	int rc;
- 
-@@ -1494,4 +1494,3 @@ static int __init ghes_init(void)
- err:
- 	return rc;
- }
--device_initcall(ghes_init);
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index 81cc18f39cc8..d9bbb6b8340e 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -977,6 +977,8 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
- void __init acpi_pci_root_init(void)
- {
- 	acpi_hest_init();
-+	sdei_init();
-+	ghes_init();
- 	if (acpi_pci_disabled)
- 		return;
- 
-diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-index 198151ca471d..604063d6f542 100644
---- a/drivers/firmware/arm_sdei.c
-+++ b/drivers/firmware/arm_sdei.c
-@@ -1089,7 +1089,7 @@ static bool __init sdei_present_acpi(void)
- 	return true;
- }
- 
--static int __init sdei_init(void)
-+int __init sdei_init(void)
- {
- 	struct platform_device *pdev;
- 	int ret;
-@@ -1110,13 +1110,6 @@ static int __init sdei_init(void)
- 	return ret;
- }
- 
--/*
-- * On an ACPI system SDEI needs to be ready before HEST:GHES tries to register
-- * its events. ACPI is initialised from a subsys_initcall(), GHES is initialised
-- * by device_initcall(). We want to be called in the middle.
-- */
--subsys_initcall_sync(sdei_init);
--
- int sdei_event_handler(struct pt_regs *regs,
- 		       struct sdei_registered_event *arg)
- {
-diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-index 680f80960c3d..5e6187ca5621 100644
---- a/include/acpi/apei.h
-+++ b/include/acpi/apei.h
-@@ -33,6 +33,8 @@ extern bool ghes_disable;
- 
- #ifdef CONFIG_ACPI_APEI
- void __init acpi_hest_init(void);
-+int __init sdei_init(void);
-+int __init ghes_init(void);
- #else
- static inline void acpi_hest_init(void) { return; }
- #endif
--- 
-2.20.1.9.gb50a0d7
+greg k-h
+
+------------
+
+ Makefile                                    |    2 
+ arch/arc/include/asm/pgtable.h              |    2 
+ arch/arm/include/asm/pgtable-2level.h       |    2 
+ arch/arm/include/asm/pgtable-3level.h       |    2 
+ arch/mips/include/asm/pgtable-32.h          |    3 
+ arch/powerpc/include/asm/pte-common.h       |    2 
+ arch/x86/include/asm/pgtable-3level_types.h |    1 
+ arch/x86/include/asm/pgtable_64_types.h     |    2 
+ arch/x86/kvm/ioapic.c                       |    2 
+ arch/x86/kvm/ioapic.h                       |    4 
+ drivers/amba/bus.c                          |    3 
+ drivers/infiniband/hw/qib/qib_user_sdma.c   |   35 ++++++--
+ drivers/media/firewire/firedtv-avc.c        |   14 ++-
+ drivers/media/firewire/firedtv-ci.c         |    2 
+ drivers/net/wireless/rsi/rsi_91x_usb.c      |    2 
+ drivers/scsi/scsi.c                         |    4 
+ drivers/scsi/scsi_sysfs.c                   |    9 ++
+ drivers/staging/comedi/drivers/dt9812.c     |  115 ++++++++++++++++++++--------
+ drivers/staging/comedi/drivers/ni_usb6501.c |   10 ++
+ drivers/staging/comedi/drivers/vmk80xx.c    |   28 +++---
+ drivers/staging/rtl8192u/r8192U_core.c      |   18 ++--
+ drivers/staging/rtl8712/usb_ops_linux.c     |    2 
+ drivers/usb/gadget/udc/Kconfig              |    1 
+ drivers/usb/musb/musb_gadget.c              |    4 
+ drivers/usb/storage/unusual_devs.h          |   10 ++
+ fs/isofs/inode.c                            |    2 
+ include/asm-generic/pgtable.h               |   13 +++
+ include/linux/bvec.h                        |   30 ++++++-
+ kernel/printk/printk.c                      |    9 +-
+ mm/zsmalloc.c                               |   13 +--
+ 30 files changed, 261 insertions(+), 85 deletions(-)
+
+Arnd Bergmann (1):
+      arch: pgtable: define MAX_POSSIBLE_PHYSMEM_BITS where needed
+
+Dan Carpenter (1):
+      media: firewire: firedtv-avc: fix a buffer overflow in avc_ca_pmt()
+
+Geert Uytterhoeven (1):
+      usb: gadget: Mark USB_FSL_QE broken on 64-bit
+
+Greg Kroah-Hartman (1):
+      Linux 4.14.255
+
+Gustavo A. R. Silva (1):
+      IB/qib: Use struct_size() helper
+
+James Buren (1):
+      usb-storage: Add compatibility quirk flags for iODD 2531/2541
+
+Jan Kara (1):
+      isofs: Fix out of bound access for corrupted isofs image
+
+Johan Hovold (8):
+      comedi: dt9812: fix DMA buffers on stack
+      comedi: ni_usb6501: fix NULL-deref in command paths
+      comedi: vmk80xx: fix transfer-buffer overflows
+      comedi: vmk80xx: fix bulk-buffer overflow
+      comedi: vmk80xx: fix bulk and interrupt message timeouts
+      staging: r8712u: fix control-message timeout
+      staging: rtl8192u: fix control-message timeouts
+      rsi: fix control-message timeout
+
+Juergen Gross (1):
+      Revert "x86/kvm: fix vcpu-id indexed array sizes"
+
+Kirill A. Shutemov (1):
+      mm/zsmalloc: Prepare to variable MAX_PHYSMEM_BITS
+
+Mike Marciniszyn (1):
+      IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
+
+Ming Lei (2):
+      scsi: core: Put LLD module refcnt after SCSI device is released
+      block: introduce multi-page bvec helpers
+
+Petr Mladek (1):
+      printk/console: Allow to disable console output by using console="" or console=null
+
+Viraj Shah (1):
+      usb: musb: Balance list entry in musb_gadget_queue
+
+Wang Kefeng (1):
+      ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
 
