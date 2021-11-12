@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F05444E9A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321F244E9B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhKLPMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:12:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231553AbhKLPMj (ORCPT
+        id S229843AbhKLPNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhKLPNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:12:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636729788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m8wjvVSjO04BUbkKGsTBTVULT6cd2cgB0v+0Q9ngovI=;
-        b=Mej/WZInPu2TZJ5djUJKsEuIy3gUE46Kn9MfwhrUOgnPnpCLIwazV1XHj+O8KytTvh9b7U
-        /gGiTjnsOK3AoKYhXBGQFL1Sgngg0nOui37DK5wlycXixJSTXL1/S6YruXPIgwrd9VIR5e
-        YVSigl0v2Z2J8TBZ5VDKUdgW05Ub45Q=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-CQvq5MHnNVWGCSwdfgneNg-1; Fri, 12 Nov 2021 10:09:45 -0500
-X-MC-Unique: CQvq5MHnNVWGCSwdfgneNg-1
-Received: by mail-qt1-f199.google.com with SMTP id i5-20020ac85c05000000b002ae12b76e64so7412073qti.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:09:45 -0800 (PST)
+        Fri, 12 Nov 2021 10:13:52 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2371DC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:11:01 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so7011476wmd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aq9hqCG8idgTpRhc5meZTF7+FM8GBSfO5tUh1K9J7b0=;
+        b=WO+i2o7Jziiy0BtVpnE7pqYL0Q5027w0/uMoDNHjVvdpUzTiDfAeBccQWZBmQR25Pa
+         ZNz2t3TB/E7fImoXUUvEkJLZppUTRR5+3QnuMOTlsqEpKPjrPYZN3DX0SL1tET3NRjSl
+         +C7QsjzBHzc3attCinLB1ljbbfORuLK8C5TQychZ5JkQchTo1UpfYV0+XN34FYOf0XI+
+         7G7sWuQOV2KaMnQgEO+uEZxxGgk8UBpYTTYVjE9ETukGEb6YbDPuqPmglR6Vyw3+lSOr
+         RcWU/6YLxEzFRter4kowEpfyc/Xz8bQuKkC9b1/tuLAUgdFBzU9ko7gXv31kG5nbCuLc
+         Fi6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=m8wjvVSjO04BUbkKGsTBTVULT6cd2cgB0v+0Q9ngovI=;
-        b=Grw+Vlfd9E3Uob/latECQ14EZAJmRMW5c5bJUY3xbvmHGu84ZOeKfJttR4mHDQgY5Q
-         qS7+MuH0IwP+jJ9t/JO5EAvU++RaWDXKXlrI/Gf/0S7V+U6ndyge4kmURulzMBBpI8Qq
-         r+proA2pr9LdYYR0gzTmoVknRpgEKIIU+MpVnFJNhfey/mlyq2MWVtkL49tPYjhSB+zA
-         LFs47FfIlAf4rFMgXOwwxoEg5YiHST/1PlIWMPti2YVYukcrOFEqaA7rRuSmTy0Fmgoz
-         nYmCxRcT346xDKdefjdvlzmHdY5zuvTkxaYxwq8ejELxPrsnt/Wer6ibeaCESJ6dsH8Q
-         xQvw==
-X-Gm-Message-State: AOAM533ZaP4gI5VcMOu2eHMdN8qkmzLeDJb5XC2+D8uTH0hT2ZHLJ/JH
-        NW4YlwSQecq0kIgiVeyXnG1JQ/c26QuPR5ombU5EkcbcsVp0fLooTedMU/j5MaQFtOiSllD54sM
-        yatmZCUJDhScYZOfmyVfP2uM=
-X-Received: by 2002:a05:620a:280d:: with SMTP id f13mr12862073qkp.31.1636729784793;
-        Fri, 12 Nov 2021 07:09:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyonI7are665jPN4yxD09tOYZibEQWeHpUqQ6sWWPo/7YEoc54YCv4QEI2cQ78SIsxGcGbCsQ==
-X-Received: by 2002:a05:620a:280d:: with SMTP id f13mr12862056qkp.31.1636729784622;
-        Fri, 12 Nov 2021 07:09:44 -0800 (PST)
-Received: from localhost (pool-68-160-176-52.bstnma.fios.verizon.net. [68.160.176.52])
-        by smtp.gmail.com with ESMTPSA id s22sm2983160qko.88.2021.11.12.07.09.44
+        bh=aq9hqCG8idgTpRhc5meZTF7+FM8GBSfO5tUh1K9J7b0=;
+        b=AxTi/vsvlOEmepbhU/eJAlH+791p0Inc+cFJeoo7hVOR3lgTWboGZUotIcef47dpeb
+         FSj36TMVW2GtPQ6j6XeanQnEvqeS3blbVtSjK6SPyQXs7DQtEKNzbzNuX7inShw5aGm5
+         k7Qtw8tcyRp67ewwoOgPRSLwwZWwScD3FwJNQhBoDx+dNpLbM/F53aF0IWdUA+OP3TBx
+         /pkF4wanALk7tETRO23VQfKyo6R2E6+WcCEsSJiCw3CiVgrgdDwYQVKzwNL6wuPtbXfN
+         AUStbg2eJPSNT/MD8HYRz2h7WpW7THqxCnfxVMGVlAvndkJ55Q+PEHc3hNkoLuNjBPZP
+         80IQ==
+X-Gm-Message-State: AOAM530jRP/DKH2uGrPtkQj/YB/fsP96ukvS+6vnbLdDn/Sw5M+RsVN+
+        OZzxSgWxxbiK2Uz7sFNKFSW1gg==
+X-Google-Smtp-Source: ABdhPJwR5hWfk95kDgYfAnrK9AqbZuzMKtLs6G7ePVwgAHK72HqZr2HBm0By7v4Ftl1w7VgCXoj3UA==
+X-Received: by 2002:a05:600c:3b1b:: with SMTP id m27mr18462847wms.125.1636729859565;
+        Fri, 12 Nov 2021 07:10:59 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id b197sm5822645wmb.24.2021.11.12.07.10.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 07:09:44 -0800 (PST)
-Date:   Fri, 12 Nov 2021 10:09:43 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     cgel.zte@gmail.com
-Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: dm: remove unneeded variable
-Message-ID: <YY6Dt+Wy4rfHwgXw@redhat.com>
-References: <20211111075331.158061-1-ran.jianping@zte.com.cn>
+        Fri, 12 Nov 2021 07:10:58 -0800 (PST)
+Date:   Fri, 12 Nov 2021 15:10:57 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 05/13] backlight: qcom-wled: Override default
+ length with qcom,enabled-strings
+Message-ID: <20211112151057.h474227aln2huf6l@maple.lan>
+References: <20211112002706.453289-1-marijn.suijten@somainline.org>
+ <20211112002706.453289-6-marijn.suijten@somainline.org>
+ <20211112121238.kb3kkt6xzv5so26j@maple.lan>
+ <20211112124522.g7e3m7l2oxxxobof@SoMainline.org>
+ <20211112132336.z2x4bzrfqr4u3jol@maple.lan>
+ <20211112141917.akufukmeyz5enjg3@SoMainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211111075331.158061-1-ran.jianping@zte.com.cn>
+In-Reply-To: <20211112141917.akufukmeyz5enjg3@SoMainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11 2021 at  2:53P -0500,
-cgel.zte@gmail.com <cgel.zte@gmail.com> wrote:
+On Fri, Nov 12, 2021 at 03:19:17PM +0100, Marijn Suijten wrote:
+> On 2021-11-12 13:23:36, Daniel Thompson wrote:
+> > On Fri, Nov 12, 2021 at 01:45:22PM +0100, Marijn Suijten wrote:
+> > > On 2021-11-12 12:12:38, Daniel Thompson wrote:
+> > > > On Fri, Nov 12, 2021 at 01:26:58AM +0100, Marijn Suijten wrote:
+> > > > > The length of qcom,enabled-strings as property array is enough to
+> > > > > determine the number of strings to be enabled, without needing to set
+> > > > > qcom,num-strings to override the default number of strings when less
+> > > > > than the default (which is also the maxium) is provided in DT.
+> > > > > 
+> > > > > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
+> > > > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > > > ---
+> > > > >  drivers/video/backlight/qcom-wled.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > > > index c5232478a343..9bfbf601762a 100644
+> > > > > --- a/drivers/video/backlight/qcom-wled.c
+> > > > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > > > @@ -1518,6 +1518,8 @@ static int wled_configure(struct wled *wled)
+> > > > >  				return -EINVAL;
+> > > > >  			}
+> > > > >  		}
+> > > > > +
+> > > > > +		cfg->num_strings = string_len;
+> > > > 
+> > > > I still don't really understand why this wants to be a separate patch.
+> > > 
+> > > I'm viewing this as a separate issue, and this makes it easier to
+> > > document the change in a loose commit.
+> > > 
+> > > > The warning text emitted by the previous patch (whatever text we agree
+> > > > on) will be nonsense until this patch is applied.
+> > > > 
+> > > > If this patch cannot appear before the warning is introduces then there
+> > > > is no correct order for patches 4 and 5 (which implies they should be the
+> > > > same patch).
+> > > 
+> > > Agreed, this is a weird way of doing things in v2 - the error message is
+> > > printed yet the length of qcom,enabled-strings is always ignored before
+> > > this patch.
+> > > 
+> > > If we were to reorder patch 5 before patch 4 that should also
+> > > temporarily move `cfg->num_strings = cfg->num_strings + 1;` right below
+> > > this `if` so that `qcom,num-strings` remains the definitive way to
+> > > set/override length.  That's doable, and makes it easier to read patch 4
+> > > as that bit of code will be replaced by of_property_read_u32 on that
+> > > exact line.  Let me know which method you prefer.
+> > 
+> > Personally I would just squash them together. There are no redundant
+> > values in the DT that could be fixed until we can use the string_len
+> > to set num_strings.
+> 
+> Reordering this patch before patch 4 in the way described above should
+> allow just that, except that no warnings will be given for ambiguity
+> until patch 4 is applied after that - which is weird given that that
+> patch only intends the off-by-one error.  Perhaps we should keep the
+> order as it is, but add the ambiguity warning in this patch instead.
 
-> From: ran jianping <ran.jianping@zte.com.cn>
-> 
-> Fix the following coccicheck review:
-> ./drivers/md/dm-ps-round-robin.c:91:5-7:Unneeded variable
-> 
-> Remove unneeded variable used to store return value.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
-> ---
->  drivers/md/dm-ps-round-robin.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/md/dm-ps-round-robin.c b/drivers/md/dm-ps-round-robin.c
-> index 27f44c5fa04e..455fc02af1cf 100644
-> --- a/drivers/md/dm-ps-round-robin.c
-> +++ b/drivers/md/dm-ps-round-robin.c
-> @@ -88,7 +88,6 @@ static int rr_status(struct path_selector *ps, struct dm_path *path,
->  		     status_type_t type, char *result, unsigned int maxlen)
->  {
->  	struct path_info *pi;
-> -	int sz = 0;
->  
->  	if (!path)
->  		DMEMIT("0 ");
-> @@ -107,7 +106,7 @@ static int rr_status(struct path_selector *ps, struct dm_path *path,
->  		}
->  	}
->  
-> -	return sz;
-> +	return 0;
->  }
->  
->  /*
-> -- 
-> 2.25.1
-> 
+That works for me. Sounds good.
 
-You clearly didn't even	compile	test this (hint: DMEMIT macro uses it).
 
-Nacked-by: Mike Snitzer <snitzer@redhat.com>
-
+Daniel.
