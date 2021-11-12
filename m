@@ -2,100 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF70A44E2D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1595544E2AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhKLIMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 03:12:46 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41612
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233351AbhKLIMo (ORCPT
+        id S234029AbhKLH5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 02:57:43 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27127 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhKLH5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 03:12:44 -0500
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B4D1A3F1C1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636704590;
-        bh=N0lgEvQGt1KLpLy11X2dOPKbOYo7U8IYp3IkLc+Sfe4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=fWurR8O3W7O/T0GhBRAV770vK4/uvOawof3vnCprxs6PpFpgra3dIBmjMneIAV/VR
-         ik/N5qGkWdF8wx/D/XIe51CkuW9bCQ7RHiTa3/Y0ndu+4CcUSE00DQWQR7+hXPbzyF
-         bjJw+mqjhNoqe0PCFgYyl4L1XEuMGT6OCqaEcbCOzVZIoj/Jv2jREZrTGlbIsfxw+e
-         xyvTibNgxpOukXe3BwbuEyQA43dwyvEECworVGjVEhRzclWjHXft445AwSFYhzlspr
-         I6YLYUMI28yWdWW3I5pEqcnsICkhChSROySS6F88SbnXtgC88LkwvzZaHHGDt+3box
-         zOfT6N/iXbjYw==
-Received: by mail-lj1-f199.google.com with SMTP id l9-20020a2e8349000000b00218c7c981bcso2838476ljh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:09:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=N0lgEvQGt1KLpLy11X2dOPKbOYo7U8IYp3IkLc+Sfe4=;
-        b=nf51y8cucJalz3xxSZhe7MmYDHioOoCiWPNOZUeJ52GfsMQJ/fUleRNsDV5QD58OBO
-         gAF/vcqJ6D40wCTZPdJ0iGIoYeNcJcNVyLoczmtsVSFdzP5bpgfSDHUC2nf+j9hXlVI+
-         tN0acv7KuK0PSHo3U9sNCQEhOaNFWVyboF2G4PVHPlmym32CypRdKuFU8/LkVlc1oMxh
-         Lsh5WQJZxRQf5Z4Tg0LDC5NkQgPZLQzW7SBV4CaG7nAJQtZmQxGrES6huOOZM+O2KvJI
-         //uJsgkUMV4cAe6HBJfAECe9O5ld8KGYUeli14tDWh81qHFTe4R8iFB9VMhUks+E0wij
-         obFA==
-X-Gm-Message-State: AOAM533jZhLFuK6zNoi7iDqpHVpBKs4wDTBmtl231qboOCVFe2MUDfvu
-        Y6+VSf/t8KBNqZpNf1W4OrVlH3oJg85+IQRAyeii3TTe1nPaACs7cBcIiegC/CmVG9MATo8wd6o
-        2u+n+BJYNFv1bE+CrpreL+9acAywvS+yvK+w8trGmSw==
-X-Received: by 2002:a05:651c:1503:: with SMTP id e3mr13074825ljf.181.1636704590076;
-        Fri, 12 Nov 2021 00:09:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyrUNr1T5EkFtrQpcvNMsMHIHtqi+AWQMLU5dHvVzJ97JYsfxC9021l75RYC0KKSA8xJU/X3g==
-X-Received: by 2002:a05:651c:1503:: with SMTP id e3mr13074809ljf.181.1636704589817;
-        Fri, 12 Nov 2021 00:09:49 -0800 (PST)
-Received: from [192.168.0.27] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id a7sm346751lfk.233.2021.11.12.00.09.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 00:09:49 -0800 (PST)
-Message-ID: <5816a13b-0ad8-450c-ff8e-2d646c7117b0@canonical.com>
-Date:   Fri, 12 Nov 2021 09:09:48 +0100
+        Fri, 12 Nov 2021 02:57:40 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Hr9mJ0bH2z1DJ7P;
+        Fri, 12 Nov 2021 15:52:32 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 12 Nov 2021 15:54:48 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 12 Nov
+ 2021 15:54:47 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <dennis@kernel.org>, <tj@kernel.org>, <bo.liu@linux.alibaba.com>,
+        <josef@toxicpanda.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] blkcg: Remove extra blkcg_bio_issue_init
+Date:   Fri, 12 Nov 2021 16:10:06 +0800
+Message-ID: <20211112081006.3336263-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
-Content-Language: en-US
-To:     Jaewon Kim <jaewon02.kim@samsung.com>,
-        Wolfram Sang <wsa@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chanho61.park@samsung.com, linux-arm-kernel@lists.infradead.org,
-        Sam Protsenko <semen.protsenko@linaro.org>
-References: <20211112010137.149174-1-jaewon02.kim@samsung.com>
- <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
- <20211112010137.149174-3-jaewon02.kim@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211112010137.149174-3-jaewon02.kim@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/2021 02:01, Jaewon Kim wrote:
-> Serial IPs(UART, I2C, SPI) are integrated into New IP-Core
-> called USI(Universal Serial Interface).
-> 
-> As it is integrated into USI, there are additinal HW changes.
-> Registers to control USI and sysreg to set serial IPs have been added.
-> Also, some timing registres have been changed.
-> 
-> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
-> ---
->  drivers/i2c/busses/i2c-exynos5.c | 135 ++++++++++++++++++++++++++++---
->  1 file changed, 125 insertions(+), 10 deletions(-)
-> 
+KASAN reports a use-after-free report when doing block test:
 
+==================================================================
+[10050.967049] BUG: KASAN: use-after-free in
+submit_bio_checks+0x1539/0x1550
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+[10050.977638] Call Trace:
+[10050.978190]  dump_stack+0x9b/0xce
+[10050.979674]  print_address_description.constprop.6+0x3e/0x60
+[10050.983510]  kasan_report.cold.9+0x22/0x3a
+[10050.986089]  submit_bio_checks+0x1539/0x1550
+[10050.989576]  submit_bio_noacct+0x83/0xc80
+[10050.993714]  submit_bio+0xa7/0x330
+[10050.994435]  mpage_readahead+0x380/0x500
+[10050.998009]  read_pages+0x1c1/0xbf0
+[10051.002057]  page_cache_ra_unbounded+0x4c2/0x6f0
+[10051.007413]  do_page_cache_ra+0xda/0x110
+[10051.008207]  force_page_cache_ra+0x23d/0x3d0
+[10051.009087]  page_cache_sync_ra+0xca/0x300
+[10051.009970]  generic_file_buffered_read+0xbea/0x2130
+[10051.012685]  generic_file_read_iter+0x315/0x490
+[10051.014472]  blkdev_read_iter+0x113/0x1b0
+[10051.015300]  aio_read+0x2ad/0x450
+[10051.023786]  io_submit_one+0xc8e/0x1d60
+[10051.029855]  __se_sys_io_submit+0x125/0x350
+[10051.033442]  do_syscall_64+0x2d/0x40
+[10051.034156]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+[10051.048733] Allocated by task 18598:
+[10051.049482]  kasan_save_stack+0x19/0x40
+[10051.050263]  __kasan_kmalloc.constprop.1+0xc1/0xd0
+[10051.051230]  kmem_cache_alloc+0x146/0x440
+[10051.052060]  mempool_alloc+0x125/0x2f0
+[10051.052818]  bio_alloc_bioset+0x353/0x590
+[10051.053658]  mpage_alloc+0x3b/0x240
+[10051.054382]  do_mpage_readpage+0xddf/0x1ef0
+[10051.055250]  mpage_readahead+0x264/0x500
+[10051.056060]  read_pages+0x1c1/0xbf0
+[10051.056758]  page_cache_ra_unbounded+0x4c2/0x6f0
+[10051.057702]  do_page_cache_ra+0xda/0x110
+[10051.058511]  force_page_cache_ra+0x23d/0x3d0
+[10051.059373]  page_cache_sync_ra+0xca/0x300
+[10051.060198]  generic_file_buffered_read+0xbea/0x2130
+[10051.061195]  generic_file_read_iter+0x315/0x490
+[10051.062189]  blkdev_read_iter+0x113/0x1b0
+[10051.063015]  aio_read+0x2ad/0x450
+[10051.063686]  io_submit_one+0xc8e/0x1d60
+[10051.064467]  __se_sys_io_submit+0x125/0x350
+[10051.065318]  do_syscall_64+0x2d/0x40
+[10051.066082]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Best regards,
-Krzysztof
+[10051.067455] Freed by task 13307:
+[10051.068136]  kasan_save_stack+0x19/0x40
+[10051.068931]  kasan_set_track+0x1c/0x30
+[10051.069726]  kasan_set_free_info+0x1b/0x30
+[10051.070621]  __kasan_slab_free+0x111/0x160
+[10051.071480]  kmem_cache_free+0x94/0x460
+[10051.072256]  mempool_free+0xd6/0x320
+[10051.072985]  bio_free+0xe0/0x130
+[10051.073630]  bio_put+0xab/0xe0
+[10051.074252]  bio_endio+0x3a6/0x5d0
+[10051.074984]  blk_update_request+0x590/0x1370
+[10051.075870]  scsi_end_request+0x7d/0x400
+[10051.076667]  scsi_io_completion+0x1aa/0xe50
+[10051.077503]  scsi_softirq_done+0x11b/0x240
+[10051.078344]  blk_mq_complete_request+0xd4/0x120
+[10051.079275]  scsi_mq_done+0xf0/0x200
+[10051.080036]  virtscsi_vq_done+0xbc/0x150
+[10051.080850]  vring_interrupt+0x179/0x390
+[10051.081650]  __handle_irq_event_percpu+0xf7/0x490
+[10051.082626]  handle_irq_event_percpu+0x7b/0x160
+[10051.083527]  handle_irq_event+0xcc/0x170
+[10051.084297]  handle_edge_irq+0x215/0xb20
+[10051.085122]  asm_call_irq_on_stack+0xf/0x20
+[10051.085986]  common_interrupt+0xae/0x120
+[10051.086830]  asm_common_interrupt+0x1e/0x40
+
+==================================================================
+
+Bio will be checked at beginning of submit_bio_noacct(). If bio needs
+to be throttled, it will start the timer and stop submit bio directly.
+Bio will submit in blk_throtl_dispatch_work_fn() when the timer expires.
+But in the current process, if bio is throttled, it will still set bio
+issue->value by blkcg_bio_issue_init(). This is redundant and may cause
+the above use-after-free.
+
+CPU0                                   CPU1
+submit_bio
+submit_bio_noacct
+  submit_bio_checks
+    blk_throtl_bio()
+      <=mod_timer(&sq->pending_timer
+                                      blk_throtl_dispatch_work_fn
+                                        submit_bio_noacct() <= bio have
+                                        throttle tag, will throw directly
+                                        and bio issue->value will be set
+                                        here
+
+                                      bio_endio()
+                                      bio_put()
+                                      bio_free() <= free this bio
+
+    blkcg_bio_issue_init(bio)
+      <= bio has been freed and
+      will lead to UAF
+  return BLK_QC_T_NONE
+
+Fix this by remove extra blkcg_bio_issue_init.
+
+Fixes: e439bedf6b24 (blkcg: consolidate bio_issue_init() to be a part of core)
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+---
+ block/blk-core.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index b043de2baaac..364e4e083115 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -810,7 +810,6 @@ noinline_for_stack bool submit_bio_checks(struct bio *bio)
+ 		create_task_io_context(current, GFP_ATOMIC, q->node);
+ 
+ 	if (blk_throtl_bio(bio)) {
+-		blkcg_bio_issue_init(bio);
+ 		return false;
+ 	}
+ 
+-- 
+2.22.0
+
