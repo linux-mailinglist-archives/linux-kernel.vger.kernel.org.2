@@ -2,156 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2C144EDE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9C644EDE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbhKLU3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:29:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34394 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230235AbhKLU3s (ORCPT
+        id S232616AbhKLUc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:32:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59094 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230235AbhKLUcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:29:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636748816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2hKzFqAYpjnD27jwSRYJVURcWAC9c1KmAhVPUzr+uD0=;
-        b=TQFnARVW/vONEB0ssKQOEvcuJafPtZXrTc7osA7J2CU6RIBXJUZ7Dp8buKnDXhk0QOvKuW
-        04Y1MA79j02bd8Ru5wq/k5DcblaYblANm6SF6NCJ/njjF5oxxeZEk4S0wsWQZV5UteZRcj
-        +IF9Nf3BFApao/SpKZtoL9pqbanfCQU=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-iYJ41YZsPfeDI4BJf_nd4A-1; Fri, 12 Nov 2021 15:26:55 -0500
-X-MC-Unique: iYJ41YZsPfeDI4BJf_nd4A-1
-Received: by mail-qk1-f199.google.com with SMTP id m19-20020a05620a221300b00467cb90a8e2so7237975qkh.18
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:26:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=2hKzFqAYpjnD27jwSRYJVURcWAC9c1KmAhVPUzr+uD0=;
-        b=snHOvjte/2h7tpqOqi6lVFzlCWC06pWHj0PkgAIsNaNf74UOoJgs6SZ6LgKWzmAO09
-         Ihj/CwqpdPQu6ye1W8/f9o3ywJdepQfc7T/e2hXOzFRT/WAeVH9lKqXnQa/BWzEzHHlb
-         vyTavoQ0lRkFO9BTHBtxbfRnDI5tzHrtxJXs2rgJPpJDpHERnOxo0Dql1xDFT2dyRzaC
-         sEMRsbQbZeCB/4AOrZaZi17DmMNHoesSMWzU33RaqMRYBCjgEqOS4mfYV73Y+fjcaOft
-         E7Wo7VUWewhfUCX/dHMQMfMhmR3HljSbJ9nh3rigvT/F0jq3QKezygw8tTGmReVz6IfL
-         E0Qg==
-X-Gm-Message-State: AOAM530c656j4E4+XYnRe0WSsUx3TwcoyxDq5iKFjGNxce1/rJ1cGk7S
-        Ed3/VRZYwNRJJdUEEjWUYe5R/dJtWFB+mK8buvzpY4WMjrwo/9L6ExQHBzZJOC2Ll/rNesGRJX8
-        XeGKkEx2q4XBJuskGEbNviVSt
-X-Received: by 2002:ad4:4452:: with SMTP id l18mr17371091qvt.8.1636748815184;
-        Fri, 12 Nov 2021 12:26:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCPD/xZBoIMM5Ht3JzQLe4OXeLMU7YK9BDgdA3kBtg895uCJ29aXlgQmKeeSXxnoIE8A5fMA==
-X-Received: by 2002:ad4:4452:: with SMTP id l18mr17371052qvt.8.1636748814948;
-        Fri, 12 Nov 2021 12:26:54 -0800 (PST)
-Received: from [192.168.8.138] (pool-96-230-249-157.bstnma.fios.verizon.net. [96.230.249.157])
-        by smtp.gmail.com with ESMTPSA id t11sm3167889qkm.96.2021.11.12.12.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 12:26:54 -0800 (PST)
-Message-ID: <be1833c5d27e666b760c729fc112d1bbd7b7a269.camel@redhat.com>
-Subject: Re: [PATCH v1 2/2] drm/tegra: Use drm_dp_aux_register_ddc/chardev()
- helpers
-From:   Lyude Paul <lyude@redhat.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 12 Nov 2021 15:26:53 -0500
-In-Reply-To: <5ee3f964-39ec-f6e2-5a01-230532a8b17e@gmail.com>
-References: <20211107230821.13511-1-digetx@gmail.com>
-         <20211107230821.13511-2-digetx@gmail.com>
-         <YYk/jfcceun/Qleq@phenom.ffwll.local>
-         <0a2c02ae-3fe1-e384-28d3-13e13801d675@gmail.com>
-         <YYo9IXjevmstSREu@phenom.ffwll.local>
-         <857a48ae-9ff4-89fe-11ce-5f1573763941@gmail.com>
-         <efdc184a-5aa3-1141-7d74-23d29da41f2d@gmail.com>
-         <71fcbc09-5b60-ee76-49b2-94adc965eda5@gmail.com>
-         <49ffd29b-eb64-e0ca-410c-44074673d740@gmail.com>
-         <YY5HfUUSmnr6qQSU@orome.fritz.box>
-         <5ee3f964-39ec-f6e2-5a01-230532a8b17e@gmail.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        Fri, 12 Nov 2021 15:32:54 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ACKD3RF013752;
+        Fri, 12 Nov 2021 20:29:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HXFplJHayDK9tdmNj0AR0yX2Zw7ksjGKwNpuy5qtPLg=;
+ b=SK1hig5Uo6+sR99lEHxi5XheBsuci4yxgnNXm3S7ANQHv7Sk9j2yf+fVw4kkyyYFVjuN
+ W9n6pXXgoYsv9MoD3ZulQvPxr7WAt+Nns6eir5eKTJhGnfDP7M3X8zZXL6SC3q7J7xT9
+ wAoc4ALcGv0DJgDIbcdn1b9OilMbKoQvbwrLxQc2pHTXWh4tNnFvOtuWWLjwtXn0QPkV
+ koLi5dPGXong/jfRr7OSFb7dxa2A5kAbTCc8VANsjyO+GjmpY0gL0Yeax9sK5f/27lo8
+ y6NnECCOX2XXdWzcPuSHYquCG26vJY5VxnsPUTUsXrZLYfGWcftoWjDk2SIL8LkJ+YtT CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3c9y43g9a0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Nov 2021 20:29:37 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1ACKFHxW021575;
+        Fri, 12 Nov 2021 20:29:37 GMT
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3c9y43g99t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Nov 2021 20:29:37 +0000
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1ACKDLZ0020198;
+        Fri, 12 Nov 2021 20:29:36 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01dal.us.ibm.com with ESMTP id 3c5hbety0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Nov 2021 20:29:36 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1ACKTYw257475502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Nov 2021 20:29:34 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C540C6063;
+        Fri, 12 Nov 2021 20:29:34 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4779C605A;
+        Fri, 12 Nov 2021 20:29:33 +0000 (GMT)
+Received: from fstone01p1.aus.stglabs.ibm.com (unknown [9.3.116.196])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Nov 2021 20:29:33 +0000 (GMT)
+From:   Adriana Kobylak <anoo@linux.ibm.com>
+To:     linux@armlinux.org.uk, joel@jms.id.au, andrew@aj.id.au,
+        olof@lixom.net, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     eajames@linux.ibm.com, bruce.mitchell@linux.vnet.ibm.com,
+        liuxiwei1013@gmail.com, openbmc@lists.ozlabs.org,
+        Adriana Kobylak <anoo@us.ibm.com>
+Subject: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
+Date:   Fri, 12 Nov 2021 20:29:31 +0000
+Message-Id: <20211112202931.2379145-1-anoo@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Li_P3rDViSUZmdcxYvh6Z2jdYEQjN8qa
+X-Proofpoint-GUID: pr-DF1aqYKsbRAaOL80q7zjY_KkdZiyp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-12_05,2021-11-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ impostorscore=0 priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111120107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-12 at 17:32 +0300, Dmitry Osipenko wrote:
-> 12.11.2021 13:52, Thierry Reding пишет:
-> > On Tue, Nov 09, 2021 at 05:39:02PM +0300, Dmitry Osipenko wrote:
-> > > 09.11.2021 17:17, Dmitry Osipenko пишет:
-> > > > 09.11.2021 17:08, Dmitry Osipenko пишет:
-> > > > > > +static void host1x_drm_dev_deinit(struct host1x_device *dev)
-> > > > > > +{
-> > > > > > +       struct drm_device *drm = dev_get_drvdata(&dev->dev);
-> > > > > And platform_unregister_drivers() should be moved here.
-> > > > > 
-> > > > 
-> > > > Nah, that should cause deadlock. This ad-hoc is too lame.
-> > > 
-> > > Actually, there is no problem here as I see now. The host1x driver
-> > > populates DT nodes after host1x_register() [1], meaning that Host1x DRM
-> > > will be always inited first.
-> > > 
-> > > [1]
-> > > https://elixir.bootlin.com/linux/v5.15/source/drivers/gpu/host1x/dev.c#L475
-> > > 
-> > > Still I'm not a fan of the ad-hoc solution.
-> > 
-> > Could we not fix this by making the panel "hot-pluggable"? I don't think
-> > there's anything inherent to the driver that would prevent doing so. The
-> > original reason for why things are as intertwined as they are now is
-> > because back at the time deferred framebuffer creation didn't exist. In
-> > fact I added deferred framebuffer support with Daniel's help precisely
-> > to fix a similar issue for things like HDMI and DP.
-> 
-> I don't understand what do you mean by "hot-pluggable", panel is static.
-> Please either clarify more or type the patch.
-> 
-> Keep in mind that fix should be simple and portable because stable
-> kernels are wrecked.
-> 
-> > With HDMI and DP it's slightly less critical, because a lack of mode
-> > support would've created a 1024x768 framebuffer, which most HDMI/DP
-> > monitors support. However, with panels we need to ensure that the exact
-> > mode from the panel is used to create the framebuffer, so it can only be
-> > created when the panel is available.
-> > 
-> > But, given that deferred framebuffer creation works now (which allows
-> > the framebuffer console to show up at the preferred resolution for HDMI
-> > and DP), even if a monitor is attached only after the driver has probed
-> > already, we should be able to make something like that work with panels
-> > as well.
-> 
-> BTW, I see now that DPAUX I2C transfer helper may access
-> aux->drm_device. Hence v1 patch isn't correct anyways.
+From: Adriana Kobylak <anoo@us.ibm.com>
 
-JFYI - unless I'm misunderstanding you, the aux->drm_dev accesses in the DPAUX
-i2c transfer functions are just from the various drm_{dbg,err,etc.} calls,
-which means that they all should be able to handle aux->drm_dev being NULL. If
-you can set aux->drm_dev before i2c transfers start that's more ideal, since
-otherwise you'll see the AUX device name as "(null)" in the kernel log, but
-any point before device registration should work.
+Add support to detect USB flash drives and create the /dev/sd* devices.
+Also add support for vfat to support USB drives formatted as FAT32.
+This support will be used to enable firmware updates via USB flash
+drives where the firmware image is stored in the USB drive and it's
+plugged into the BMC USB port.
 
-> 
-> For now I'll try to test more the ad-hoc variant with Thomas and send it
-> as v2 if we won't have a better solution.
-> 
+Signed-off-by: Adriana Kobylak <anoo@us.ibm.com>
+Tested-by: Adriana Kobylak <anoo@us.ibm.com>
+---
+ arch/arm/configs/aspeed_g5_defconfig | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm/configs/aspeed_g5_defconfig b/arch/arm/configs/aspeed_g5_defconfig
+index bee9422919aa..1b0d82c64ad4 100644
+--- a/arch/arm/configs/aspeed_g5_defconfig
++++ b/arch/arm/configs/aspeed_g5_defconfig
+@@ -37,11 +37,9 @@ CONFIG_KEXEC=y
+ CONFIG_VFP=y
+ CONFIG_NEON=y
+ CONFIG_KERNEL_MODE_NEON=y
+-CONFIG_FIRMWARE_MEMMAP=y
+ CONFIG_KPROBES=y
+ CONFIG_JUMP_LABEL=y
+ CONFIG_MODULES=y
+-# CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_BLK_DEBUG_FS is not set
+ # CONFIG_MQ_IOSCHED_DEADLINE is not set
+ # CONFIG_MQ_IOSCHED_KYBER is not set
+@@ -98,6 +96,7 @@ CONFIG_NET_NCSI=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
++CONFIG_FIRMWARE_MEMMAP=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_PARTITIONED_MASTER=y
+@@ -111,6 +110,8 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=y
+ CONFIG_EEPROM_AT24=y
+ CONFIG_EEPROM_AT25=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
+ CONFIG_NETDEVICES=y
+ CONFIG_NETCONSOLE=y
+ # CONFIG_NET_VENDOR_ALACRITECH is not set
+@@ -230,6 +231,7 @@ CONFIG_USB_DYNAMIC_MINORS=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_ROOT_HUB_TT=y
+ CONFIG_USB_EHCI_HCD_PLATFORM=y
++CONFIG_USB_STORAGE=y
+ CONFIG_USB_GADGET=y
+ CONFIG_USB_ASPEED_VHUB=y
+ CONFIG_USB_CONFIGFS=y
+@@ -277,6 +279,7 @@ CONFIG_FSI_OCC=y
+ CONFIG_EXT4_FS=y
+ CONFIG_FANOTIFY=y
+ CONFIG_OVERLAY_FS=y
++CONFIG_VFAT_FS=y
+ CONFIG_TMPFS=y
+ CONFIG_JFFS2_FS=y
+ # CONFIG_JFFS2_FS_WRITEBUFFER is not set
+@@ -292,6 +295,8 @@ CONFIG_PSTORE_PMSG=y
+ CONFIG_PSTORE_FTRACE=y
+ CONFIG_PSTORE_RAM=y
+ # CONFIG_NETWORK_FILESYSTEMS is not set
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
+ CONFIG_HARDENED_USERCOPY=y
+ CONFIG_FORTIFY_SOURCE=y
+ CONFIG_CRYPTO_HMAC=y
 -- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+2.25.1
 
