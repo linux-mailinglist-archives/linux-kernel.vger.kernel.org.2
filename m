@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25DB44E370
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492BB44E374
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234687AbhKLIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 03:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbhKLIqK (ORCPT
+        id S234658AbhKLIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 03:48:10 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:57178 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233994AbhKLIsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 03:46:10 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862FAC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:43:20 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 136so2854432pgc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:43:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jknAOBYahlvH5F30CImxBqWmnzl1YA1ZTXVlzmviue4=;
-        b=39TCUtZEzPl+BH+NQDIoyRNu/eH/yCIaDS2deHLE323oeOsDHpA+d0MFfMz3UCHgeQ
-         usalpodx90YSnI/8X5HySMegKyTxjVbpZBKVDsjpGkN2OnMb3oWlfQLwKqqjAF96609/
-         fUUmBJ5BHYw9YT+0paxdwWghIjLqbtIDwSxxYXcn0P4MHDR09D4SysI6HvkX8aVc05vj
-         z98XNlaMhYAZL5Wg/JcyKbHWuaY/47aEXHO6ui2DtZgEqqDUdaYyB7JnMOKJiCkwVwWL
-         oQ/ymmqsROXekuUEbBzbemNL3IYHB3ayl7fRlHIp+SxSv9xawemP2ZT7V13w/APaQ3uu
-         Wolg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jknAOBYahlvH5F30CImxBqWmnzl1YA1ZTXVlzmviue4=;
-        b=rLj9C4Oz7axNuPjnWYkNaMj4JoiVOfRvEq8AcMrlrAo9iP6FIW0P1kvn35m345aCdf
-         oQE4b/iMgpwrjKlR4kNuNpORbMXmkUP5NCZCYMJLX1brDvaVUKQUU+pajQUQLY6Ea4mc
-         T9vHzKYPzN22KM+p7WAPufzJZM/4R+fEZ9XVXseYdgP8qCO8Bvec99CZGmYlVFrY+e7R
-         64h/CEdDGe6MpuFqgNhsgCCUXpGoOr1qtbFezR3OpvAXfdIBvBUK8mp0V/ikUEPuwYWg
-         JnB46DacwmdLkWyd6da66SXViKuMrGIaRwAkJ6xiVMZJ4tv2jsAn48Eg1bAJ8ndgYfDn
-         WuSA==
-X-Gm-Message-State: AOAM533ADqj0E+3Z/HJicka20qqsZ2qHXtWkkBHLC3NGvEw9bhTg+lJH
-        ZWkwCT9d4TQCPjK6E+j8jLj7Gw==
-X-Google-Smtp-Source: ABdhPJx29oAZeJhbHSKdo6hnBAzqjZS+mxjQyulJdf1uTPHjp92uMqvnvUI4folmGqf0i8p+ApbmYw==
-X-Received: by 2002:a63:5416:: with SMTP id i22mr8978791pgb.382.1636706600097;
-        Fri, 12 Nov 2021 00:43:20 -0800 (PST)
-Received: from yc.huaqin.com ([101.78.151.213])
-        by smtp.gmail.com with ESMTPSA id h13sm5890959pfv.130.2021.11.12.00.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 00:43:19 -0800 (PST)
-From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
-To:     swboyd@chromium.org, robert.foss@linaro.org,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, a.hajda@samsung.com, philipchen@chromium.org,
-        dianders@google.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>
-Subject: [PATCH] drm/bridge: parade-ps8640: Fix additional suspend/resume at bootup
-Date:   Fri, 12 Nov 2021 16:43:02 +0800
-Message-Id: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Nov 2021 03:48:08 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 801D021B2A;
+        Fri, 12 Nov 2021 08:45:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636706717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PGUvzC73zFVV7sac1WafnOJVQ5GmzjfWEgRcmV4nMos=;
+        b=gI5FyuFmNwhi8dHwWPnH3x6qfoG2mpFsomZeqOX5UNj0gWU+7Ywdl/BBn6sPIJA4Gvk33x
+        EMxOw89IIATZR6iWIj4QYCHGLyKtRfa6gOEgFsLj60TbmLHDLQubUNW5eql70UDuXZ2i/L
+        lKa5t8Ddkr+fvolgi2OYDd90C5D4ISE=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 25E36A3B81;
+        Fri, 12 Nov 2021 08:45:17 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 09:45:15 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Wander Lairson Costa <wander@redhat.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v2 1/1] printk: suppress rcu stall warnings caused by
+ slow console devices
+Message-ID: <YY4pmySR3VVHAtYy@alley>
+References: <20211111195904.618253-1-wander@redhat.com>
+ <20211111195904.618253-2-wander@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111195904.618253-2-wander@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Through log and waveform, we can see that there will be additional
-suspend/resume when booting. This timing does not meet the ps8640 spec.
-It seems that the delay of 500ms does not satisfied drm_panel_get_modes.
-I increased it to 900ms and it seems that this problem can be solved.
-To be safe, I'd just round up to a full 1000.
+On Thu 2021-11-11 16:59:04, Wander Lairson Costa wrote:
+> If we have a reasonable large dataset to flush in the printk ring
+> buffer in the presence of a slow console device (like a serial port
+> with a low baud rate configured), the RCU stall detector may report
+> warnings.
+> 
+> This patch suppresses RCU stall warnings while flushing the ring buffer
+> to the console.
 
-Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
----
- drivers/gpu/drm/bridge/parade-ps8640.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have mixed feelings about this patch.
 
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 0c7aab42b04f..0749fa628bfb 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -635,13 +635,13 @@ static int ps8640_probe(struct i2c_client *client)
- 	pm_runtime_enable(dev);
- 	/*
- 	 * Powering on ps8640 takes ~300ms. To avoid wasting time on power
--	 * cycling ps8640 too often, set autosuspend_delay to 500ms to ensure
-+	 * cycling ps8640 too often, set autosuspend_delay to 1000ms to ensure
- 	 * the bridge wouldn't suspend in between each _aux_transfer_msg() call
- 	 * during EDID read (~20ms in my experiment) and in between the last
- 	 * _aux_transfer_msg() call during EDID read and the _pre_enable() call
- 	 * (~100ms in my experiment).
- 	 */
--	pm_runtime_set_autosuspend_delay(dev, 500);
-+	pm_runtime_set_autosuspend_delay(dev, 1000);
- 	pm_runtime_use_autosuspend(dev);
- 	pm_suspend_ignore_children(dev, true);
- 	ret = devm_add_action_or_reset(dev, ps8640_runtime_disable, dev);
--- 
-2.25.1
+We already touch watchdogs in several situations to avoid this type
+of reports. So, there is a precedent.
 
+On the other hand, it hides a real problem. printk() might cause
+softlockups, livelockups, and even deadlocks. It might really stall
+other processes and CPUs. And the stall report might help to
+understand that the system is not longer responsive because of
+printk().
+
+John Ogness is working on the proper solution, handling consoles
+in a kthread. It is not that easy because we need to handle situations
+when kthreads do not work, for example, during early boot, panic(),
+suspend, reboot, kexec. But I believe that we will have it rather
+sooner than later.
+
+A workaround, is to lower console_loglevel and show only the most
+important messages. Sometimes, a reasonable solution is to ratelimit
+repeated messages.
+
+Which brings the question. What is the motivation for this patch,
+please?
+
+Is it motivated by a particular bug report?
+Or does the experience shows that this report causes more harm than
+good?
+
+Best Regards,
+Petr
