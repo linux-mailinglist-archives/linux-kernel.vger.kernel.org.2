@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C9C44E498
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CEC44E49F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbhKLKeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        id S234917AbhKLKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234917AbhKLKeU (ORCPT
+        with ESMTP id S234675AbhKLKe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:34:20 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D312C061766;
-        Fri, 12 Nov 2021 02:31:30 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id c4so14622326wrd.9;
-        Fri, 12 Nov 2021 02:31:29 -0800 (PST)
+        Fri, 12 Nov 2021 05:34:59 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDD3C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:32:08 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id d11so17668881ljg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:32:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GRId0R89X51NxidyOU+NSWQUAWm4NbnKVuU1z19yzt4=;
-        b=ZU/2z553bDzH+m3p+tYs90x6L9v3GNYm9JQIFO0yg0pkYU4ffz9BEs6VPoXegk3AkR
-         a7LjF5CGE++BwkfXdX0anqyZTg2Axkgana/DquGmQhgnZxm0uKMkzYHAcfUkAJW3Zpe4
-         he3mXF5rlzAymg/Ty2oiLYq1To40h3SiuaCEFlIKGgdDmwj82BfhoyCALDu8bg9UtWIo
-         3uA9Iv9fQi5GYBERTqFo/f751lunx12xFD9rlsHVT5rVrhLvatvGuPYuArs08+AkcZNm
-         ccbnP/c5MDFqUBDPPe5i0yBEcpzIapK774BtUKNDtQQJwNekdJKTYUZl54oEZzO/AMjn
-         tnKA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oIInsHoJtPspQu2JlNxneTffyvc0sq43xk24340ZzN8=;
+        b=zFFoS6w0vBeC3X9Bq4WTDSuGKzhXq3DnF8UpAAfEnQwQafE/yIdNVgIVLNO5xGpdmq
+         670H/g+uSAelYyN9JZURAYGghQrY9yPZ7Q829BDE1BdCBklLVDLYBtKnrf9CbJ71Hhoo
+         MHxhdfhtXl+dMQpzCW6yzrwzHZNUEeQ1PtZXlzjhTs7eVtUVaNbgUXZHGNtFS3q/z+f4
+         Ao4IBzKHsYsLG0b/3Ljtf3Enp4lJd4JBzwd1Q6gj4aOykyDtGPQtRl58xL1pVfDbRKxp
+         k9x7nzA//y8afIIrKMH76Zsh5TZf3gdl4YT0GLRjwgATcQIr6q8U1D8x7Rv7v5oXTKXf
+         mEJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GRId0R89X51NxidyOU+NSWQUAWm4NbnKVuU1z19yzt4=;
-        b=ZrQiojW5NQ4rbYm4jE53z5HOdkr3SR5AoLvQ98ziwDsE6iVVHsakVe+oFKcikBFlhD
-         9+bcQEv10HASoA1WzYY8BoZekw7VfXFfC/hfmNr9wufCigL92z+4Yz4fN5BsXwEYB4Pd
-         TD3kluMKLBNf0WL9HGo4LM1Mm4m8bX0mdzL5TcdMdNgjmW9Yfuy11zi+sRjhDUKC+8W4
-         /yLdZZX4v3gXcSsC6K5pjnaX9QZaApsvHgmz3+gsCa6WicVbMBLL1w5+xS3nrd/zDaQZ
-         EutuxfPkCNECEjZB5fplsg5lTOtcW5mH9zxVybA3wS98jU79EJidL/zsUSG0kSYHzBOZ
-         kV0Q==
-X-Gm-Message-State: AOAM531joMQ8jJfs8qtL8DKOQfnH+d1dnnlCku6TMioSwS7GLIHxn5ZP
-        Bu648b/IomZpOWCWqo+p+Kw=
-X-Google-Smtp-Source: ABdhPJxDqxg4v9yVykQ4C/B8MDUNjaPAb/R3xkxgNtav3U0DAlCgmaIQ/I5iXvNLWebmGepi6Pqz+g==
-X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr16958321wrg.433.1636713088636;
-        Fri, 12 Nov 2021 02:31:28 -0800 (PST)
-Received: from localhost ([193.209.96.43])
-        by smtp.gmail.com with ESMTPSA id l4sm5163329wrv.94.2021.11.12.02.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 02:31:27 -0800 (PST)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] pwm: Changes for v5.16-rc1
-Date:   Fri, 12 Nov 2021 11:31:22 +0100
-Message-Id: <20211112103122.3664089-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        bh=oIInsHoJtPspQu2JlNxneTffyvc0sq43xk24340ZzN8=;
+        b=w9/NqV3q+Hms7vQcXdrS+Yb30xSfw8LVCv3d9x+V5vtDj+50BxHZMwGP7Tq1cl5tpl
+         5a1GsLuPXDPNFd7XAjHGTr0MsQr4Bsqk6n9eDorFZb6GeGD58PQw85D/aIf0kcoXlv2D
+         9kr/KCwYRCrBLD2h4sLFsquvA1+V1ZahwosYNyx3GtGULUEYAsnr5HsuHYGQ9pyuxyRz
+         XNVfPMUbNyese4bezkFLZOEHBAuT3gtbrm2Ws4droZPBUGTu2t3gqgffPpynx22SmBSO
+         Hr7ZHF3n23Ettn3cG1cq0DlU4AhMZfD++lkleXNaHZnsZ/c00XKOlP3YgzYY/PDj73d8
+         nlPw==
+X-Gm-Message-State: AOAM531kk+gNLzOfEbN9YxvJ4C/kFg7Ar8uJTDmsGg36cghfRsgUVPrS
+        Qw8bNUIEefOOm6oX4TM0odOEDg==
+X-Google-Smtp-Source: ABdhPJycDOSgO1LjddtCMBo1bAMldNS+GVeAguKQrsogA8R83WNB5vfhntvLQI8G1XO7RHvUlgEc9A==
+X-Received: by 2002:a2e:81d2:: with SMTP id s18mr14425824ljg.223.1636713126826;
+        Fri, 12 Nov 2021 02:32:06 -0800 (PST)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id k14sm584741lfu.210.2021.11.12.02.32.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 02:32:06 -0800 (PST)
+Subject: Re: [PATCH v5 13/22] dma: qcom: bam_dma: Add support to initialize
+ interconnect path
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-14-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <5fe9bb9f-ded6-1aa4-347f-ef5cd0b21358@linaro.org>
+Date:   Fri, 12 Nov 2021 12:32:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211110105922.217895-14-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Bhupesh,
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
+> From: Thara Gopinath <thara.gopinath@linaro.org>
+> 
+> BAM dma engine associated with certain hardware blocks could require
+> relevant interconnect pieces be initialized prior to the dma engine
+> initialization. For e.g. crypto bam dma engine on sm8250. Such requirement
+> is passed on to the bam dma driver from dt via the "interconnects"
+> property.  Add support in bam_dma driver to check whether the interconnect
+> path is accessible/enabled prior to attempting driver intializations.
+> 
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> [Make header file inclusion alphabetical and use 'devm_of_icc_get()']
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+please let me ask you to swap your and Thara's sob tags above, there is
+a rule applicable to all cases dealing with someone's else changes:
 
-are available in the Git repository at:
+ From Documentation/process/submitting-patches.rst:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.16-rc1
+   Any further SoBs (Signed-off-by:'s) following the author's SoB are from
+   people handling and transporting the patch, but were not involved in its
+   development. SoB chains should reflect the **real** route a patch took
+   as it was propagated to the maintainers and ultimately to Linus, with
+   the first SoB entry signalling primary authorship of a single author.
 
-for you to fetch changes up to e9d866d5a6296c701e5b46a94c0bbd6e2c0e357e:
-
-  pwm: vt8500: Rename pwm_busy_wait() to make it obviously driver-specific (2021-11-05 11:57:13 +0100)
-
-Thanks,
-Thierry
-
-----------------------------------------------------------------
-pwm: Changes for v5.16-rc1
-
-This set is mostly small fixes and cleanups, so more of a janitorial
-update for this cycle.
-
-----------------------------------------------------------------
-Duc Nguyen (1):
-      dt-bindings: pwm: tpu: Add R-Car V3U device tree bindings
-
-Krzysztof Kozlowski (1):
-      pwm: samsung: Describe driver in Kconfig
-
-Mårten Lindahl (1):
-      pwm: pwm-samsung: Trigger manual update when disabling PWM
-
-Uwe Kleine-König (4):
-      pwm: atmel: Drop unused header
-      pwm: Add might_sleep() annotations for !CONFIG_PWM API functions
-      pwm: Make it explicit that pwm_apply_state() might sleep
-      pwm: vt8500: Rename pwm_busy_wait() to make it obviously driver-specific
-
-Wolfram Sang (1):
-      dt-bindings: pwm: tpu: Add R-Car M3-W+ device tree bindings
-
-zhaoxiao (1):
-      pwm: visconti: Simplify using devm_pwmchip_add()
-
- .../devicetree/bindings/pwm/renesas,tpu-pwm.yaml   |  2 ++
- drivers/pwm/Kconfig                                |  4 ++-
- drivers/pwm/core.c                                 |  9 +++++++
- drivers/pwm/pwm-atmel.c                            |  1 -
- drivers/pwm/pwm-samsung.c                          | 30 ++++++++++++++++------
- drivers/pwm/pwm-visconti.c                         | 14 +---------
- drivers/pwm/pwm-vt8500.c                           | 16 ++++++------
- include/linux/pwm.h                                | 13 ++++++++++
- 8 files changed, 58 insertions(+), 31 deletions(-)
+--
+Best wishes,
+Vladimir
