@@ -2,385 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EF344DF51
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6516644DF56
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234628AbhKLAxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:53:01 -0500
-Received: from mail-cusazon11021020.outbound.protection.outlook.com ([52.101.62.20]:46655
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234546AbhKLAxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:53:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kQPPzn8uJuTmg56zhLvXf9MinUnzMRPNTshFR1pBdsW+ZuA/rsSglJVCarDIj9VFNOk6NCgzsKpGb+r0ggLIG6ipoFG0HkeuVPId2RMQNLTYAdmqLYW2c7z4cBENGqbppJEZKl1IyZSWQ23dguvQqJAEZCnGu1kjGF3p+i20tOaGV+S7QG67J1+TlPear7I1KDxSZq7j0H2ufbxxmmBzywA1wQFhndLU+26+s4LHiJpr9aE2j1t/XPLaDYkvZeoa+TECVgqVjsweEZrq+N7qfaZQjRpmWqR43MD21uC9f0dVNgEwPEPdaVs/d2VuiBsWT5M4Iq0nBZWNuMFiwgbmXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oymulsOOOXSRXjVrU0NJ8J+bTrz44gMVDajrrgtGqXo=;
- b=hKrHsA6nlq3cwwVvULwPObMWORWeoJ/EKGqJ7uqTP1CiLU1PS+c8w6QWIYUVIKkTixRVWm2wAqNLIA14qvYreaY7lvjT5h//bOlXS9/YyB+yJ9dJI/sXCF/dlGhiwmDU7hWpXhKYpe6tAJQGWsS0Zjy+t/Gc9MBmgR9lLMjhy6NOfBjNXMDTJV+w5vKcJprVPocMMLGRbjCk6GH7NaOVTcTlvw8kMlNe95Ed/EoFLAS7iFrZIWUpK+ONPkTtYAKpTc8ILxQEY0oCq9CcobaLH2KQfZGJ5UCByl+JPNq48IssiBSyM5/OQa30FwqDZU/Mtt4CA3TSiFCf2jnikljjIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oymulsOOOXSRXjVrU0NJ8J+bTrz44gMVDajrrgtGqXo=;
- b=U3dEeK1B9DXMNnJmYhmnEBSjs7MXJizWYc6ZfoELK3xlbwnBohsLXJMd0pZyaI5bEcIneUFf0/2XcgG+HTzINEtzNQm2ab2Crw0FChhKLdZ5o+Kuh4D6vDDYj3OuJq8cxVQcbIK/s0gW0ds8q6d5l4ybPVRciLU/1G+aimGP71c=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MW4PR21MB1969.namprd21.prod.outlook.com (2603:10b6:303:7c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.10; Fri, 12 Nov
- 2021 00:50:07 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::b01f:ac55:463a:dd91]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::b01f:ac55:463a:dd91%4]) with mapi id 15.20.4669.002; Fri, 12 Nov 2021
- 00:50:07 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Sunil Muthuswamy <sunilmut@linux.microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
-Subject: RE: [PATCH v5 2/2] arm64: PCI: hv: Add support for Hyper-V vPCI
-Thread-Topic: [PATCH v5 2/2] arm64: PCI: hv: Add support for Hyper-V vPCI
-Thread-Index: AQHX1muWUKNVFx3PLU2btjDmVCQGjqv/ENuA
-Date:   Fri, 12 Nov 2021 00:50:06 +0000
-Message-ID: <MWHPR21MB1593AF30DB2EC06B057FC283D7959@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <1636573510-23838-1-git-send-email-sunilmut@linux.microsoft.com>
- <1636573510-23838-3-git-send-email-sunilmut@linux.microsoft.com>
-In-Reply-To: <1636573510-23838-3-git-send-email-sunilmut@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=560e9958-680c-4bf2-a6f6-c49518c89557;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-11-12T00:47:20Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0e72934f-5ce0-42d1-a601-08d9a5765f2b
-x-ms-traffictypediagnostic: MW4PR21MB1969:
-x-microsoft-antispam-prvs: <MW4PR21MB196933D3E6D1261516DC2582D7959@MW4PR21MB1969.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7dPikVxEg6siSDP/7aKbV+adSH2wLrj6WIkc2yGORKKVmQBnEvpD/E/+hnOTLCkou2xV1Gs/0APagjOQjDmXjGN7VOC57v5lDd+IOubOftUdMthWtr3onpqRc1yt5NhutJHbs3NOnb81FyuhPXex7tiBOv7Pzp2TndUfij7rfyAaVYeh3d3v9LhLa59BcEBHOCaNuyksCLaEq0Ibf+z2YfbkuGQK4GP9g9CNlr04F29z/G8I6sDchX/fxUU1CwIVpjy9xmyWiXO1Z4uxMMBZxO3vy28GP/Qx77WwqGdbVFP/jduQI4Q0s9RFdgbyK8ePYO3ZMKk9o05IFVw5RGp60gGJnamE77fTfgrwQcHLLRE60kt4c5wejv8gcVv6Xgn2cx5PABfhILtb1wyCkhfs3k8OGNjv2QnifYyM/ri/ZrjwPK/oB1GH/1X0ujgI/4ztHW7J9BtknrGl1hi+CNrnkgnHRYmQN4B1UMsWxJrJHJW0qcXlAT2RVy7U8SAhDFlFW8MPs42oU7Jf4XDmwbtVwLYOvTEAe1VLAA56F5yk5Z+e6nLnoApEzdm+P+C+9w5cV2LyB+/1el+CGJgQLwBbrEYCHM8QTy4J0BddZ+LgiX2Sau2GSW5W5biheafcADWJMJUx8R/cp73Gtsa4PUzUVdVwtq78YxQX6+uDhWkvZpJ5USJXOR9t8TAEWa6QQ44uZwLfy3OsFO+lQGPyUwiRPhaFzAV3fkTXxXrgp8ogHyI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(33656002)(71200400001)(10290500003)(508600001)(52536014)(66946007)(86362001)(9686003)(76116006)(26005)(186003)(7416002)(107886003)(4326008)(7696005)(6506007)(8936002)(8676002)(110136005)(64756008)(66476007)(316002)(54906003)(66446008)(66556008)(5660300002)(82960400001)(82950400001)(83380400001)(2906002)(38070700005)(921005)(38100700002)(122000001)(8990500004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8u8bEz7avCWRNnaNUPz6FF4mk5ia/orMtBsmJ5+XjNyfh79zAvVYcqLcggXo?=
- =?us-ascii?Q?J4WjVAk6R3JcfZ42Rs34hzgaf1V35dhS1vyxkgyp1RodyJQ+u5LQTlvo3UgA?=
- =?us-ascii?Q?fKGyVCG6vfA8JoI73jlFMp+srFFzXbUMuvhnFe4X9lDnBv09DzmXPa0hVDvW?=
- =?us-ascii?Q?f9ACqHAuOo03hjrI+zHqNlr5IA2uESSWJyvMjlCyOZWc/KOTrlQxmi1lUhJs?=
- =?us-ascii?Q?niD8XUM52yWzxcE25rzeKeRc1Rh6bBFqPH0sRGciFwB50D4pd/IS+Xb8NDF3?=
- =?us-ascii?Q?NV+FrDwiMXBbcIb/UeD+4RaZnuz+r3hC3whzcR+uQbto4nt+3QGS1IMO/uhF?=
- =?us-ascii?Q?gmrdV6QqhGK0Bpq6lNH+/wvXDyXBig9ymvgzkj5hLiNdztryPwtgkaOmTnKP?=
- =?us-ascii?Q?qpnniCTaAAj8dGs1zQuUyqjE1oTsdesPx/SP7ltOBHLeHTJuLkQZZrLyQEye?=
- =?us-ascii?Q?fcUOceXrtiim6gqsn8mAPOIDJv0F3O4MMTe1PVK/im4LwqL2x3MnS796tATS?=
- =?us-ascii?Q?vC9UegxRb8ereFHzrCSEm5IC4eOD1UpYELO667hqGIILJEG7GIgK0cNyydbC?=
- =?us-ascii?Q?z1b2Ptq+ZOh2bxVB3aoPIqGPKDdgswe0dU/HNWGjQosH+rHXhXXr1vR4yum5?=
- =?us-ascii?Q?r0F39hZWYpA6IaEDdZjO8KqG+ph2SP1qYV1Ufmbzn7NRzcMH9agMx+HG2VLT?=
- =?us-ascii?Q?VKbexhJ10Ammgx4mf92GsmYSUGwRoEVJo1U+N8oy4+GbBV8q+/ltLe4PoA1H?=
- =?us-ascii?Q?fs/Gr3EpW8UGHUbHdIi7qsC00fj4yfa68LhQ2Ggbqj8Gg0jRPjuZkNt/IOoP?=
- =?us-ascii?Q?JKad/6urFGiBuBCEkkN4AJ36DAvWNGAOIh250tJ/XlVBwvoBKgMBn7+i1YQv?=
- =?us-ascii?Q?Tr7VqnbXpTryweg4eQXy1DdJlK3KMz5TPGjF5U4nOChoxo3ZQ9EVhlC6gKUd?=
- =?us-ascii?Q?V+halk264Se3THCbyMpaAE4m3jsxuZS1jIyIYVXqORYRP8jAqLvxzntAV55G?=
- =?us-ascii?Q?aMORlTfcJC7tjZjEYQSIA/t8y5QrB8ZthR/bvArSpJIFTG7PlkJZ7eEtbORm?=
- =?us-ascii?Q?BS2m2dScn6jZSHw5anEovXCRQS3WC3UsUCsAYNHj0HTEQWYfHX+lCww5+tr1?=
- =?us-ascii?Q?jOCNzXr77bsHskvVxFKgjzoXJUjA8ZSk0+9eS8/xVK4eWB+8HxlG5PODM0gF?=
- =?us-ascii?Q?ldQzh/Tl/jenHbQ1xwRrwnlT7p4DDomW3tyJkbUuNT/eI5NP7JmAU4e4FsQE?=
- =?us-ascii?Q?PWgMs81Hw2DThCIVBCOVRLwfzV9X6OHNthZjtOo2gtN1Lr1V9nb2p/bnE60R?=
- =?us-ascii?Q?DI87Qpz358Eq5K6fvrsnkB2tMakXNeB+N0CchS0/b6a8Knt4JndwRlzgXSHn?=
- =?us-ascii?Q?V6TRGi06IH6zOZRBtu0Q5DH7S1g+y0nCQaoX2z6oRy3dPUZlRvvNKD6LwdCz?=
- =?us-ascii?Q?PWMfWX0+FYvcKfMmvP6+Ni9Q5abv6uW+2WqNuTiW0Vvpmj1lkohZCHzur2N2?=
- =?us-ascii?Q?/bHYnRDcd9qiodrUJEHDz63BFdsza1egLk3ft19KL7ckRgLQISn22t01OPVc?=
- =?us-ascii?Q?A1UxYVvcGJgJ/de+gHx6pPbleece02YfXOlmHluV+I0tXvf6sWh2VUUNnCaP?=
- =?us-ascii?Q?R2t3a8EHS8I+Q6xHau1rGwF9pSgF36iSCRIraR8rXbTXuOX7l/DdWaNLhOVj?=
- =?us-ascii?Q?jnjZxQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234599AbhKLAyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234546AbhKLAx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 19:53:58 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A79C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 16:51:08 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id t21so7111939plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 16:51:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7VoEwbSPzrTyOh3w99mGEcK1Otv61yXE8VpDyQ7XU/Q=;
+        b=aR0iTUNTxKf6faFpqVLtDxLZ+Z93VjgfuMSy8Y9h3wnwVUTL/oHfhEOsrg0V7yOdYT
+         7fq8GTKIKG9OH6zETAjAXEzMtYxKZ4n8vzmgKUi//wtyVazuE6xgdlSVa2YM1WXEZK7o
+         ckgTdbQk1CrwriNKigDb1ZxyhMDgLtfKnE3RIVuAKQjcg2mMhNzjvwVYycKmLb0GnSZ1
+         GYcRaJBvetbHNGisq5tuHOigfRUZHZConfP9luv9GZtaibkXsyjw/cHwj8DSAwBW3aaZ
+         7VyKPKnacS2ZdpG3N5SRXdGPcXpnFm1QD3uLEDYX71FQ35qKY9q+/DI/dPGPqFGBB6ib
+         ajeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7VoEwbSPzrTyOh3w99mGEcK1Otv61yXE8VpDyQ7XU/Q=;
+        b=h7S3mpkjz0OkEtYJNWMsQgFOsuJhvBMZQxo5wYJ85knIXwAOsXEi764paEqkAOoLZ7
+         dfEIO+bhHKHjGXNq6BaOJqmbNgkLBQvdpER/OIqdhE/StNHXpm1P8iZxY9L2amWL4bYC
+         tz/196EDtJ8OnjYvm/JbxNiMMndGFHKW5puzsiqYP6WFqziCOrOR2bcwFM7tXa6GxTvH
+         kGEEnamRH0jD69LS4tIQrHt/AcMNKq/kep1luMueiSBdSKnI6A4Zm/l4GCx5cPkuAjMR
+         9PZgw2WJ9nTsFhIfVn8jQY3Up/jrcbumZsaPhNhkHXlp98uDncIHErjWjwB9az3pYk5a
+         kQ0Q==
+X-Gm-Message-State: AOAM533+aAluwkouESTi8KG5Z9fusZgpZRD5Vv0ovHwEP2Y28TZl2IxU
+        OXhN1YhPSTVTXSrnyibGhgRF+Q==
+X-Google-Smtp-Source: ABdhPJxC4jGH9js/28DTzQpRvZ4IBLyKiJDKoUfHaiXaxCscmtOSb6+KYszrts8CNNHGQNLMJ/jO0g==
+X-Received: by 2002:a17:90a:c58f:: with SMTP id l15mr12870593pjt.168.1636678268099;
+        Thu, 11 Nov 2021 16:51:08 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s21sm4279773pfk.3.2021.11.11.16.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 16:51:07 -0800 (PST)
+Date:   Fri, 12 Nov 2021 00:51:03 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>, Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v5.5 26/30] KVM: Keep memslots in tree-based structures
+ instead of array-based ones
+Message-ID: <YY26dxv2kM3m2H7Z@google.com>
+References: <20211104002531.1176691-1-seanjc@google.com>
+ <20211104002531.1176691-27-seanjc@google.com>
+ <5f5c80ce-9189-def3-9c50-d5a504925253@oracle.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e72934f-5ce0-42d1-a601-08d9a5765f2b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2021 00:50:06.9756
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kpBa4wsM+oEEm1i7+TNeDzpAYkGnbDKN9d53VPVgd8hL9zV6spyzMYsstXFizferB+BzxVXmQI3u2MXAnRgFTXfa4SX1wc6h3wXNoN3q1SA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1969
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f5c80ce-9189-def3-9c50-d5a504925253@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunil Muthuswamy <sunilmut@linux.microsoft.com> Sent: Wednesday, Nove=
-mber 10, 2021 11:45 AM
->=20
-> Add support for Hyper-V vPCI for arm64 by implementing the arch specific
-> interfaces. Introduce an IRQ domain and chip specific to Hyper-v vPCI tha=
-t
-> is based on SPIs. The IRQ domain parents itself to the arch GIC IRQ domai=
-n
-> for basic vector management.
->=20
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> ---
-> In v2, v3, v4 & v5:
->  Changes are described in the cover letter.
->=20
->  arch/arm64/include/asm/hyperv-tlfs.h |   9 ++
->  drivers/pci/Kconfig                  |   2 +-
->  drivers/pci/controller/Kconfig       |   2 +-
->  drivers/pci/controller/pci-hyperv.c  | 204 ++++++++++++++++++++++++++-
->  4 files changed, 214 insertions(+), 3 deletions(-)
->=20
+On Fri, Nov 12, 2021, Maciej S. Szmigiero wrote:
+> On 04.11.2021 01:25, Sean Christopherson wrote:
+> > -	/*
+> > -	 * Remove the old memslot from the hash list and interval tree, copying
+> > -	 * the node data would corrupt the structures.
+> > -	 */
+> > +	int as_id = kvm_memslots_get_as_id(old, new);
+> > +	struct kvm_memslots *slots = kvm_get_inactive_memslots(kvm, as_id);
+> > +	int idx = slots->node_idx;
+> > +
+> >   	if (old) {
+> > -		hash_del(&old->id_node);
+> > -		interval_tree_remove(&old->hva_node, &slots->hva_tree);
+> > +		hash_del(&old->id_node[idx]);
+> > +		interval_tree_remove(&old->hva_node[idx], &slots->hva_tree);
+> > -		if (!new)
+> > +		if ((long)old == atomic_long_read(&slots->last_used_slot))
+> > +			atomic_long_set(&slots->last_used_slot, (long)new);
+> 
+> Open-coding cmpxchg() is way less readable than a direct call.
 
-[snip]
+Doh, I meant to call this out and/or add a comment.
 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller=
-/pci-hyperv.c
-> index 03e07a4f0e3f..b13e3ae5a34f 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -47,6 +47,8 @@
->  #include <linux/msi.h>
->  #include <linux/hyperv.h>
->  #include <linux/refcount.h>
-> +#include <linux/irqdomain.h>
-> +#include <linux/acpi.h>
->  #include <asm/mshyperv.h>
->=20
->  /*
-> @@ -614,7 +616,202 @@ static int hv_msi_prepare(struct irq_domain *domain=
-, struct device *dev,
->  {
->  	return pci_msi_prepare(domain, dev, nvec, info);
->  }
-> -#endif // CONFIG_X86
-> +#elif defined(CONFIG_ARM64)
-> +/*
-> + * SPI vectors to use for vPCI; arch SPIs range is [32, 1019], but leavi=
-ng a bit
-> + * of room at the start to allow for SPIs to be specified through ACPI a=
-nd
-> + * starting with a power of two to satisfy power of 2 multi-MSI requirem=
-ent.
-> + */
-> +#define HV_PCI_MSI_SPI_START	64
-> +#define HV_PCI_MSI_SPI_NR	(1020 - HV_PCI_MSI_SPI_START)
-> +#define DELIVERY_MODE		0
-> +#define FLOW_HANDLER		NULL
-> +#define FLOW_NAME		NULL
-> +#define hv_msi_prepare		NULL
-> +
-> +struct hv_pci_chip_data {
-> +	DECLARE_BITMAP(spi_map, HV_PCI_MSI_SPI_NR);
-> +	struct mutex	map_lock;
-> +};
-> +
-> +/* Hyper-V vPCI MSI GIC IRQ domain */
-> +static struct irq_domain *hv_msi_gic_irq_domain;
-> +
-> +/* Hyper-V PCI MSI IRQ chip */
-> +static struct irq_chip hv_arm64_msi_irq_chip =3D {
-> +	.name =3D "MSI",
-> +	.irq_set_affinity =3D irq_chip_set_affinity_parent,
-> +	.irq_eoi =3D irq_chip_eoi_parent,
-> +	.irq_mask =3D irq_chip_mask_parent,
-> +	.irq_unmask =3D irq_chip_unmask_parent
-> +};
-> +
-> +static unsigned int hv_msi_get_int_vector(struct irq_data *irqd)
-> +{
-> +	return irqd->parent_data->hwirq;
-> +}
-> +
-> +static void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
-> +				       struct msi_desc *msi_desc)
-> +{
-> +	msi_entry->address =3D ((u64)msi_desc->msg.address_hi << 32) |
-> +			      msi_desc->msg.address_lo;
-> +	msi_entry->data =3D msi_desc->msg.data;
-> +}
-> +
-> +static void hv_pci_vec_irq_domain_free(struct irq_domain *domain,
-> +				       unsigned int virq, unsigned int nr_irqs)
-> +{
-> +	struct hv_pci_chip_data *chip_data =3D domain->host_data;
-> +	struct irq_data *irqd =3D irq_domain_get_irq_data(domain, virq);
-> +	int first =3D irqd->hwirq - HV_PCI_MSI_SPI_START;
-> +
-> +	mutex_lock(&chip_data->map_lock);
-> +	bitmap_release_region(chip_data->spi_map,
-> +			      first,
-> +			      get_count_order(nr_irqs));
-> +	mutex_unlock(&chip_data->map_lock);
-> +	irq_domain_reset_irq_data(irqd);
-> +	irq_domain_free_irqs_parent(domain, virq, nr_irqs);
-> +}
-> +
-> +static int hv_pci_vec_alloc_device_irq(struct irq_domain *domain,
-> +				       unsigned int nr_irqs,
-> +				       irq_hw_number_t *hwirq)
-> +{
-> +	struct hv_pci_chip_data *chip_data =3D domain->host_data;
-> +	unsigned int index;
-> +
-> +	/* Find and allocate region from the SPI bitmap */
-> +	mutex_lock(&chip_data->map_lock);
-> +	index =3D bitmap_find_free_region(chip_data->spi_map,
-> +					HV_PCI_MSI_SPI_NR,
-> +					get_count_order(nr_irqs));
-> +	mutex_unlock(&chip_data->map_lock);
-> +	if (index < 0)
-> +		return -ENOSPC;
-> +
-> +	*hwirq =3D index + HV_PCI_MSI_SPI_START;
-> +
-> +	return 0;
-> +}
-> +
-> +static int hv_pci_vec_irq_gic_domain_alloc(struct irq_domain *domain,
-> +					   unsigned int virq,
-> +					   irq_hw_number_t hwirq)
-> +{
-> +	struct irq_fwspec fwspec;
-> +
-> +	fwspec.fwnode =3D domain->parent->fwnode;
-> +	fwspec.param_count =3D 2;
-> +	fwspec.param[0] =3D hwirq;
-> +	fwspec.param[1] =3D IRQ_TYPE_EDGE_RISING;
-> +
-> +	return irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-> +}
-> +
-> +static int hv_pci_vec_irq_domain_alloc(struct irq_domain *domain,
-> +				       unsigned int virq, unsigned int nr_irqs,
-> +				       void *args)
-> +{
-> +	irq_hw_number_t hwirq;
-> +	unsigned int i;
-> +	int ret;
-> +
-> +	ret =3D hv_pci_vec_alloc_device_irq(domain, nr_irqs, &hwirq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (i =3D 0; i < nr_irqs; i++) {
-> +		ret =3D hv_pci_vec_irq_gic_domain_alloc(domain, virq + i,
-> +						      hwirq + i);
-> +		if (ret)
-> +			goto free_irq;
-> +
-> +		ret =3D irq_domain_set_hwirq_and_chip(domain, virq + i,
-> +						    hwirq + i,
-> +						    &hv_arm64_msi_irq_chip,
-> +						    domain->host_data);
-> +		if (ret)
-> +			goto free_irq;
-> +
-> +		pr_debug("pID:%d vID:%u\n", (int)(hwirq + i), virq + i);
-> +	}
-> +
-> +	return 0;
-> +
-> +free_irq:
-> +	hv_pci_vec_irq_domain_free(domain, virq, nr_irqs);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Pick the first online cpu as the irq affinity that can be temporarily=
- used
-> + * for composing MSI from the hypervisor. GIC will eventually set the ri=
-ght
-> + * affinity for the irq and the 'unmask' will retarget the interrupt to =
-that
-> + * cpu.
-> + */
-> +static int hv_pci_vec_irq_domain_activate(struct irq_domain *domain,
-> +					  struct irq_data *irqd, bool reserve)
-> +{
-> +	int cpu =3D cpumask_first(cpu_online_mask);
-> +
-> +	irq_data_update_effective_affinity(irqd, cpumask_of(cpu));
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct irq_domain_ops hv_pci_domain_ops =3D {
-> +	.alloc	=3D hv_pci_vec_irq_domain_alloc,
-> +	.free	=3D hv_pci_vec_irq_domain_free,
-> +	.activate =3D hv_pci_vec_irq_domain_activate,
-> +};
-> +
-> +static int hv_pci_irqchip_init(void)
-> +{
-> +	static struct hv_pci_chip_data *chip_data;
-> +	struct fwnode_handle *fn =3D NULL;
-> +	int ret =3D -ENOMEM;
-> +
-> +	chip_data =3D kzalloc(sizeof(*chip_data), GFP_KERNEL);
-> +	if (!chip_data)
-> +		return ret;
-> +
-> +	mutex_init(&chip_data->map_lock);
-> +	fn =3D irq_domain_alloc_named_fwnode("Hyper-V ARM64 vPCI");
-> +	if (!fn)
-> +		goto free_chip;
-> +
-> +	/*
-> +	 * IRQ domain once enabled, should not be removed since there is no
-> +	 * way to ensure that all the corresponding devices are also gone and
-> +	 * no interrupts will be generated.
-> +	 */
-> +	hv_msi_gic_irq_domain =3D acpi_irq_create_hierarchy(0, HV_PCI_MSI_SPI_N=
-R,
-> +							  fn, &hv_pci_domain_ops,
-> +							  chip_data);
-> +
-> +	if (!hv_msi_gic_irq_domain) {
-> +		pr_err("Failed to create Hyper-V ARMV vPCI MSI IRQ domain\n");
+My objection to cmpxchg() is that it implies atomicity is required (the kernel's
+version adds the lock), which is very much not the case.  So this isn't strictly
+an open-coded version of cmpxchg().
 
-Typo in the above error message:  "ARMV" should be "ARM64".
+> The open-coded version also compiles on x86 to multiple instructions with
+> a branch, instead of just a single instruction.
 
-> +		goto free_chip;
-> +	}
-> +
-> +	return 0;
-> +
-> +free_chip:
-> +	kfree(chip_data);
-> +	if (fn)
-> +		irq_domain_free_fwnode(fn);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct irq_domain *hv_pci_get_root_domain(void)
-> +{
-> +	return hv_msi_gic_irq_domain;
-> +}
-> +#endif //CONFIG_ARM64
+Yeah.  The lock can't be contended, so that part of cmpxchg is a non-issue.  But
+that's also why I don't love using cmpxchg.
 
-Use "C" style comments.
+I don't have a strong preference, I just got briefly confused by the atomicity part.
 
-Michael
+> > +static void kvm_invalidate_memslot(struct kvm *kvm,
+> > +				   struct kvm_memory_slot *old,
+> > +				   struct kvm_memory_slot *working_slot)
+> > +{
+> > +	/*
+> > +	 * Mark the current slot INVALID.  As with all memslot modifications,
+> > +	 * this must be done on an unreachable slot to avoid modifying the
+> > +	 * current slot in the active tree.
+> > +	 */
+> > +	kvm_copy_memslot(working_slot, old);
+> > +	working_slot->flags |= KVM_MEMSLOT_INVALID;
+> > +	kvm_replace_memslot(kvm, old, working_slot);
+> > +
+> > +	/*
+> > +	 * Activate the slot that is now marked INVALID, but don't propagate
+> > +	 * the slot to the now inactive slots. The slot is either going to be
+> > +	 * deleted or recreated as a new slot.
+> > +	 */
+> > +	kvm_swap_active_memslots(kvm, old->as_id);
+> > +
+> > +	/*
+> > +	 * From this point no new shadow pages pointing to a deleted, or moved,
+> > +	 * memslot will be created.  Validation of sp->gfn happens in:
+> > +	 *	- gfn_to_hva (kvm_read_guest, gfn_to_pfn)
+> > +	 *	- kvm_is_visible_gfn (mmu_check_root)
+> > +	 */
+> > +	kvm_arch_flush_shadow_memslot(kvm, old);
+> 
+> This should flush the currently active slot (that is, "working_slot",
+> not "old") to not introduce a behavior change with respect to the existing
+> code.
+> 
+> That's also what the previous version of this patch set did.
+
+Eww.  I would much prefer to "fix" the existing code in a prep patch.  It shouldn't
+matter, but arch code really should not get passed an INVALID slot.
