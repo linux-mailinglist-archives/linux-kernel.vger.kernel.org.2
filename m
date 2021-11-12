@@ -2,134 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9856B44EBA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE8F44EB97
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235509AbhKLQ5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:57:09 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47900
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235311AbhKLQ5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:57:08 -0500
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S235433AbhKLQxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:53:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235142AbhKLQxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 11:53:04 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6423B3F175
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:54:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636736056;
-        bh=Y/bAo0SDjZGHNLG0oYIbJ4ke5jmML832/GVhH0WD5jo=;
-        h=From:To:Subject:Date:Message-Id;
-        b=A/1DugZfb/wRrW+03b653wA2pyjx/oIZBna10J17ldvu7C9g3rELip04Lm5ChHbXe
-         PyxAucQuwoZSqBuXMv5jOrIWrwotEMshADYL/ka341H30rPI23o7/YqeoZpWGptxi9
-         l8bkezF+fDR/02B2WXrZs8fusZn1C6WD6ftekiC3shpoT8jqQV0oLCVB+o/Occng2F
-         7Q6kNYXmoKHYoj3BMaNvnSiUY6VNFmnnn0WX5Alnmekh8I46SDmHJN7IcxrfoR4uqW
-         DbM3FCl9wFAeXkF07eiIJmGJQM3zzRt9zrOB9wv7LWXhdzFojmglAidM5kFJIBU5Sz
-         /DSDt4EPIitPA==
-Received: by mail-wm1-f70.google.com with SMTP id 69-20020a1c0148000000b0033214e5b021so4502695wmb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:54:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=Y/bAo0SDjZGHNLG0oYIbJ4ke5jmML832/GVhH0WD5jo=;
-        b=R1umO3h8D9JsjISaM/oAMfMO1Yq63stDEspkyMlmubH8Uk3ORkpeI+Igr65+KNH1Ec
-         2yDnu2IgpUWauB+82I+7b2TQ2yQzJis1zTaGLnAiBU08g36XlIDkqLDs2SUZalZ3bRdz
-         C1Ek8HdskbG6APGyiYxLpeCXAKJyUp2IInvwpwq6nUJuw9qlkgANFbV67vwhZqwc4zVg
-         lpoXrZW1F4vStEmHUWS3hjTtIB9Mk67vSiUwM9GXntwo1zt5covI/c6llkLmwOr+FU25
-         iGmG6GwEgNn0Jl6Ahvy6Bj6UNcVB4lCqmk3YHUkhhXfh7s/sfFIurs9Yyxw7HIGZmG5+
-         JpTQ==
-X-Gm-Message-State: AOAM533JCsz0wEtztIduRJiYsOnUKkz8HpopoDa9WIK55BmYf0GjeNsl
-        c4ZEShOmiGfwZ4LT13tsH4C2IREgs87QVkRcnKhe85YZpy8eJDw2haHGPfWLpKt5slbPc2elkvN
-        j6euvJdwRJiaAI7v5oJm336rLjNwANJNS0xLWlZuv2w==
-X-Received: by 2002:adf:ca05:: with SMTP id o5mr20302340wrh.7.1636736055652;
-        Fri, 12 Nov 2021 08:54:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2dRTmDY3BwfEIJtHI/Hdal6tFLaJCXm9rAXKIQXdG53F20asemuEbcQ1oyNio7ZR9YfpGJQ==
-X-Received: by 2002:adf:ca05:: with SMTP id o5mr20302316wrh.7.1636736055445;
-        Fri, 12 Nov 2021 08:54:15 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c2e0])
-        by smtp.gmail.com with ESMTPSA id 8sm4503314wmg.24.2021.11.12.08.54.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Nov 2021 08:54:14 -0800 (PST)
-From:   Ioanna Alifieraki <ioanna-maria.alifieraki@canonical.com>
-To:     linux-kernel@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, minyard@acm.org,
-        ioanna.alifieraki@gmail.com
-Subject: [PATCH] ipmi: Move remove_work to dedicated workqueue
-Date:   Fri, 12 Nov 2021 18:54:13 +0200
-Message-Id: <20211112165413.7747-1-ioanna-maria.alifieraki@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        by mail.kernel.org (Postfix) with ESMTPSA id CB1FA60F70;
+        Fri, 12 Nov 2021 16:50:12 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 16:54:57 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     <alexandru.tachici@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] iio: adc: ad7124: Add update_scan_mode
+Message-ID: <20211112165457.176a6c6d@jic23-huawei>
+In-Reply-To: <20211110111750.27263-2-alexandru.tachici@analog.com>
+References: <20211110111750.27263-1-alexandru.tachici@analog.com>
+        <20211110111750.27263-2-alexandru.tachici@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently when removing an ipmi_user the removal is deferred as a work on
-the system's workqueue. Although this guarantees the free operation will
-occur in non atomic context, it can race with the ipmi_msghandler module
-removal (see [1]) . In case a remove_user work is scheduled for removal
-and shortly after ipmi_msghandler module is removed we can end up in a
-situation where the module is removed fist and when the work is executed
-the system crashes with :
-BUG: unable to handle page fault for address: ffffffffc05c3450
-PF: supervisor instruction fetch in kernel mode
-PF: error_code(0x0010) - not-present page
-because the pages of the module are gone. In cleanup_ipmi() there is no
-easy way to detect if there are any pending works to flush them before
-removing the module. This patch creates a separate workqueue and schedules
-the remove_work works on it. When removing the module the workqueue is
-flushed to avoid the race.
+On Wed, 10 Nov 2021 13:17:46 +0200
+<alexandru.tachici@analog.com> wrote:
 
-[1] https://bugs.launchpad.net/bugs/1950666
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> In continuous mode neither sigma_delta.c nor ad7124.c
+> will disable previously enabled channels.
+> 
+> Before this patch a channel stayed enabled indefinetly,
+> even when one another one was supposed to be sampled.
+> This causes mixed samples in continuous mode to be delivered
+> to the host.
+> 
+> By adding an update_scan_mode callback, every time the
+> continuous mode is activated, channels will be enabled/disabled
+> accordingly.
+> 
+> Fixes: b3af341bbd966 ("iio: adc: Add ad7124 support")
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Cc: stable@vger.kernel.org
-Fixes: 3b9a907223d7 (ipmi: fix sleep-in-atomic in free_user at cleanup SRCU user->release_barrier)
-Signed-off-by: Ioanna Alifieraki <ioanna-maria.alifieraki@canonical.com>
----
- drivers/char/ipmi/ipmi_msghandler.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I'm a little confused about which paths this bug affects.
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index deed355422f4..9e0ad2ccd3e0 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -191,6 +191,8 @@ struct ipmi_user {
- 	struct work_struct remove_work;
- };
+If we have done a single channel read, then the channel is always
+disabled afterwards so we won't leave one on in that path.
+
+So the remaining path is on a previous buffer setup. In that path
+set_channel is called as part the post_enable callback and will
+enable the channel.
+
+Currently nothing disables it again, so I guess if you then
+change the enabled channels and restart the buffer you see the
+condition you are covering here.
+
+However, as I read the docs, this should also affect any
+single reads of a later channel than the one that was originally enabled.
+e.g. buffered capture enabled for channel 0 then disabled.  Later read of
+channel 1 may get the data from channel 0.
+
+The fix you have here won't close that path because we don't
+call update_scan_mode() in the buffer disable path (we have considered
+it a few times, but so many devices don't have to do an explicit disable there
+that we never put it in). Perhaps with hindsight we should have always
+called it in the disable path, but maybe with a parameter to allow devices
+to opt out of doing anything.
+
+We could add core callback called something like disable_all() which
+is called in the remove path. Alternatively the issue can be closed
+in the ad_sigma_delta core by adding a callback to disable channels
+in predisable().
+
+Jonathan
  
-+struct workqueue_struct *remove_work_wq;
-+
- static struct ipmi_user *acquire_ipmi_user(struct ipmi_user *user, int *index)
- 	__acquires(user->release_barrier)
- {
-@@ -1297,7 +1299,7 @@ static void free_user(struct kref *ref)
- 	struct ipmi_user *user = container_of(ref, struct ipmi_user, refcount);
- 
- 	/* SRCU cleanup must happen in task context. */
--	schedule_work(&user->remove_work);
-+	queue_work(remove_work_wq, &user->remove_work);
- }
- 
- static void _ipmi_destroy_user(struct ipmi_user *user)
-@@ -5383,6 +5385,8 @@ static int ipmi_init_msghandler(void)
- 
- 	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
- 
-+	remove_work_wq = create_singlethread_workqueue("ipmi-msghandler-remove-wq");
-+
- 	initialized = true;
- 
- out:
-@@ -5408,6 +5412,9 @@ static void __exit cleanup_ipmi(void)
- 	int count;
- 
- 	if (initialized) {
-+		flush_workqueue(remove_work_wq);
-+		destroy_workqueue(remove_work_wq);
-+
- 		atomic_notifier_chain_unregister(&panic_notifier_list,
- 						 &panic_block);
- 
--- 
-2.17.1
+
+> ---
+>  drivers/iio/adc/ad7124.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/iio/adc/ad7124.c b/drivers/iio/adc/ad7124.c
+> index 11ce6a3729a5..30299b899799 100644
+> --- a/drivers/iio/adc/ad7124.c
+> +++ b/drivers/iio/adc/ad7124.c
+> @@ -669,11 +669,32 @@ static const struct attribute_group ad7124_attrs_group = {
+>  	.attrs = ad7124_attributes,
+>  };
+>  
+> +static int ad7124_update_scan_mode(struct iio_dev *indio_dev,
+> +				   const unsigned long *scan_mask)
+> +{
+> +	struct ad7124_state *st = iio_priv(indio_dev);
+> +	bool bit_set;
+> +	int ret;
+> +	int i;
+> +
+> +	for (i = 0; i < st->num_channels; i++) {
+> +		bit_set = test_bit(i, scan_mask);
+> +		ret = ad7124_spi_write_mask(st, AD7124_CHANNEL(i),
+> +					    AD7124_CHANNEL_EN_MSK,
+> +					    AD7124_CHANNEL_EN(bit_set),
+> +					    2);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static const struct iio_info ad7124_info = {
+>  	.read_raw = ad7124_read_raw,
+>  	.write_raw = ad7124_write_raw,
+>  	.debugfs_reg_access = &ad7124_reg_access,
+>  	.validate_trigger = ad_sd_validate_trigger,
+> +	.update_scan_mode = ad7124_update_scan_mode,
+>  	.attrs = &ad7124_attrs_group,
+>  };
+>  
 
