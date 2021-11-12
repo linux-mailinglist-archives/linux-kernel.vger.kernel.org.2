@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78A844E38C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF8C44E38F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhKLJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:01:01 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:58914 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhKLJA6 (ORCPT
+        id S234672AbhKLJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232841AbhKLJEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:00:58 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9011721B19;
-        Fri, 12 Nov 2021 08:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636707486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GkR05k/DFv96yXZ/lJqoljojL8CyJn6KLqBUIDP3Z+w=;
-        b=a/xykZk+UMhhumwe44SfoAxX9MWc8wbnfDMF0R08z5/IQS52lnWPpK7SL4TDXXMo06fBtM
-        NL1A653z0Tfn9EwjsKxwdqgMcF4/mLlNnsb5KJDRFfcKexusg610SfPsqoEs5B+lO5pfhn
-        99WTvZx3A9jR+QMYhgw9a2HhJVFWcn8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 41233A3B81;
-        Fri, 12 Nov 2021 08:58:06 +0000 (UTC)
-Date:   Fri, 12 Nov 2021 09:58:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YY4snVzZZZYhbigV@dhcp22.suse.cz>
-References: <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
- <YYrLe2u2zbmu4LfL@dhcp22.suse.cz>
- <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
- <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
- <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
- <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz>
- <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
- <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
- <YYzgZARxi8csprIx@dhcp22.suse.cz>
- <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
+        Fri, 12 Nov 2021 04:04:00 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AAAC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:01:10 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id f4so34887881edx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UcIHLMef49THsgwvLfI1bVNvCabXW3IkXo4MjW8OE+Q=;
+        b=aK4bqGzck1WLzHmKqUpQ7xIM3Nq0XsN/FS/20+L21bWIZSz8kEdqOqpjUUMTsUc7WF
+         6XrRNkzbSrWzEOiDs3xgb+kJ7SJBXNbWAaq6IPpw5Npwg77dW+3/vb70I2kDBZnyWGRm
+         vcxUzgAUKSRQ9EucQPB3/SylJQrW0qW6XfzkfoeYhmtI6y8WH/iwC/da9WRnPLtDsWiM
+         99oMWI6Et4UxDcoYSVkOre3KolNUcJRsTTVCgrpUSf4eQBEnhQ0vk5DYQhRbUCcnxIlg
+         qGMg78xljNziFdupr60m7NP2pSp1IHfw3xvWsLdfdvd1ZHLxfwddbuaZue3sn7TL/0Wq
+         yzRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UcIHLMef49THsgwvLfI1bVNvCabXW3IkXo4MjW8OE+Q=;
+        b=cN5BTt2YJNCG7CKw8j5KCK3W9C1NmPBBOnjnBE2tJ9wpM3cLuBzDzWXbQXNWXvI02n
+         oCSC7YZr5Jv5g3TBi8/Sfl2VjPm1kdcN/36Eqf/DyW8uh76EqqFBhMBzpJOR2WGbZhRj
+         Jga0xHSJFusYZsUjJCgeu48AH2p0QslMPxKFeU0ieCbAAVGD8HBvkBKsRnKsv6eywPc/
+         zop82+424X5nUU5m0zVX9omaVmX8cJclI4520qWTUkP9U3AUFAXZcXIcTu9krGfhXU7F
+         /UKGlMCq6cW5FRgtZM0ofTd40TR5ncou+++mqiFucW0BD5ZVdmYEB+7oAhajiAg/Fqx6
+         LhEg==
+X-Gm-Message-State: AOAM530mLb2wfu7mOQzvazX2qVTRQu3dPm+hcsg1cj6WZ5uGrgjZm7Rn
+        q5arwbv/ZiriA6MRKo9aQfo=
+X-Google-Smtp-Source: ABdhPJyrxrn0N8bjvkMJDNVDv5vN3bsnLj+3LCU0IyFkwP3nwzFCemZgK+VDj1Tnd8i6YVZH+ZFlSQ==
+X-Received: by 2002:a17:906:2757:: with SMTP id a23mr17830390ejd.230.1636707668574;
+        Fri, 12 Nov 2021 01:01:08 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id h10sm2688052edf.85.2021.11.12.01.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 01:01:08 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH 1/7] staging: r8188eu: remove haldata's EEPROMVID / PID
+Date:   Fri, 12 Nov 2021 10:00:59 +0100
+Message-ID: <6997531.xZuqOj027S@localhost.localdomain>
+In-Reply-To: <20211111212644.9011-1-martin@kaiser.cx>
+References: <20211111212644.9011-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-11-21 07:02:42, Suren Baghdasaryan wrote:
-> On Thu, Nov 11, 2021 at 1:20 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 10-11-21 17:49:37, Suren Baghdasaryan wrote:
-> > > On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > >
-> > > > On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > > Yes, those can run concurrently. One thing I completely forgot about is
-> > > > > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
-> > > > > which is about interaction with the munlock.
-> > >
-> > > Agrh! This interaction with the munlock you mentioned requires us to
-> > > take mmap_write_lock before munlock_vma_pages_all and that prevents
-> > > __oom_reap_task_mm from running concurrently with unmap_vmas. The
-> > > reapers would not be as effective as they are now after such a change
-> > > :(
-> >
-> > __oom_reap_task_mm will not run concurrently with unmap_vmas even
-> > with the current code. The mmap_sem barrier right before munlock code
-> > prevents that.
-> 
-> You are right, it will run concurrently with another
-> __oom_reap_task_mm in the exit_mmap. But I thought we wanted to get
-> rid of that call to __oom_reap_task_mm in exit_mmap or did I
-> misunderstand?
+On Thursday, November 11, 2021 10:26:38 PM CET Martin Kaiser wrote:
 
-I do not remember this to be objective or the motivation. IIRC we wanted
-to make the locking more robust which would help your process_mrelease
-use case. This one currently suffers from a much heavier cost if it
-turns out to be the last holder of the reference count on the address
-space.
--- 
-Michal Hocko
-SUSE Labs
+> They are used only in a (disabled) debug print.
+> 
+> In practice, lsusb can be used to read the actual vid and pid.
+
+Hi Martin,
+
+You seem to have overlooked the usual rules for writing conformant commit 
+messages :)
+
+Please say "what" you did along with "why" you made the changes.
+
+Here, and in two or three other patches of your series, you forgot to 
+describe "what" you did. You actually wrote it in the "Subject" lines but, as 
+you know for sure, commit messages must be self-contained entities.
+
+Also, it would be nice to have a cover letter and have all seven patches in 
+one thread in response to the above, even if it (AFAIK) is not strictly 
+required.
+
+Anyway, many thanks for your work.
+Regards,
+
+Fabio
+
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/r8188eu/hal/usb_halinit.c       | 8 --------
+>  drivers/staging/r8188eu/include/rtl8188e_hal.h  | 2 --
+>  drivers/staging/r8188eu/include/rtl8188e_spec.h | 2 --
+>  3 files changed, 12 deletions(-)
+
+
+
