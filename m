@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4DA44EC8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2433F44EC94
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 19:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhKLSXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 13:23:19 -0500
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:36505 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbhKLSXO (ORCPT
+        id S235539AbhKLS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 13:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhKLS2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:23:14 -0500
-Received: by mail-qk1-f171.google.com with SMTP id i9so9965986qki.3;
-        Fri, 12 Nov 2021 10:20:22 -0800 (PST)
+        Fri, 12 Nov 2021 13:28:14 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC4EC061766;
+        Fri, 12 Nov 2021 10:25:22 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id bk14so19449137oib.7;
+        Fri, 12 Nov 2021 10:25:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sa0jBA3wpvakD7viFQ8ToAySOGD0WqRf4octMEbtih0=;
+        b=kjSyXDtPvbAlccyL7gHYWEEa6qBv/xCU7kJ4Vv0o73t3sx8ohpKywpXvTiDcvx5Ouw
+         Rd1O3C5asrJ2KJT+98X41ucEGMX9o1+PxoBIpwrikCIooZNkQwo5SMCuN5ao2zywCM7N
+         KGoV+KD21T2A1GH0a4BxgvDDtPkpmjhpMs1oBURvtRMTy0ssMSFrbQYr3pvYFlwbUoK+
+         3dZ0C7C9YqmTaxwUDP+mCIkLEa2/SV4XvGT0RSsxqxofCSAmuhoU3U7/KsEQdTpuRHOF
+         Fx672TWwXdqprhXnVps7RLUPQd4KBVA6UBVc/B8N3U6MOJ7teH7wxz5RhV9J6LcFW6HX
+         FVqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JWiZ8wXdpr+ymeir7wbIGENhhh+/R2m3VvP1Bfr2oM4=;
-        b=M4sqScv+84j7gLvwUxmu6S4lXTe+X93ITsYiARqNdYmNbPT4aOMr84UVcmAisFoIIJ
-         6gbO498HNa6zb/Gna5vDtcyOAHK+P8AqNQuX8AV1kCdz+G6pKsOnYZrDHU18lXTmgVTM
-         hA72RHHm2YrIOS7XDTQm/4gls912uAX0/S6Ia8vBdVcFIsnO2xaJ8S1lpevbJ6AjqH0l
-         UneOT9GQ46layqTKGDxEXyghxu2Tft9VfzanHi1UAcNx6O4hIYC10sk1shRqSY7yumhk
-         Iymw7LKkzMggkaKrbzlm+bcaXTy1IX/gWP3eh8oNiv4INfF9BPBmXBUpW1watnA48Ij5
-         FaKg==
-X-Gm-Message-State: AOAM532sH57IVLFNC1/5cCr93ozslstiiyWU/78rJjAQuBBA5wjjUwfg
-        y3z325UG/xlBCr6kqRvP5fRpFxRvi/IX2Q==
-X-Google-Smtp-Source: ABdhPJzkotWNNE2ix4ZDIU6GFE4z6Dw5dyR82WpPFbAh3UAefUEqzld+CDUVl2jJ1IS+fxcn5BaFvw==
-X-Received: by 2002:a05:620a:1468:: with SMTP id j8mr14187436qkl.170.1636741222425;
-        Fri, 12 Nov 2021 10:20:22 -0800 (PST)
-Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
-        by smtp.gmail.com with ESMTPSA id e15sm3289846qtp.94.2021.11.12.10.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 10:20:22 -0800 (PST)
-Date:   Fri, 12 Nov 2021 13:20:20 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, amakhalov@vmware.com, cl@linux.com,
-        mm-commits@vger.kernel.org, osalvador@suse.de,
-        stable@vger.kernel.org, tj@kernel.org
-Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
-Message-ID: <YY6wZMcx/BeddUnH@fedora>
-References: <20211108205031.UxDPHBZWa%akpm@linux-foundation.org>
- <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
- <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
- <YYpTy9eXZucxuRO/@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sa0jBA3wpvakD7viFQ8ToAySOGD0WqRf4octMEbtih0=;
+        b=zLS54n9hGbo2BBgJ4Cww3QHK0yl7frND8+rlAeRK1Bk+UVqVpgknLO+34qJtlUrH0D
+         3+0Bi3z3+5UPXe6rNCQSwyF5Fxhh5RdxbbnTP2C/4QkBPj5942PyYa9nAILs/n4K0vg4
+         An3sJolFkWmrlpECLyS9xPXs3UP5K+LLXUqETHUvlBmvYAxZsL/1IzQ4pzwvGCKICFiL
+         RGcZvz/PiqV8+QCxAZPRGymnWmUTjR2bOviBv5sB/YkWeqXZN8+h0WN4z13Z5GybRaRe
+         zFpwANTzNvgoQvnHWQpiFNn1gBwJWoaVyMyoOktdixH2lX6SVudgGmVlSCchX6vboQ52
+         /DAw==
+X-Gm-Message-State: AOAM532ixGZdrD93Je4H5wbZC6cTu1cukDcWRQy90D66mvoUW+PuzWSx
+        CcDLfTmLY6GIIj/JA2C3YP3nJ2eQKcXqlzLwYSs=
+X-Google-Smtp-Source: ABdhPJx+m1O3ZfKBTW5vP7GJjq+TTjrXGPwdtitmdl2plac2LYfIgefS40oau5QEX2T48Fa4J+BgWorNYStSrHLKTaU=
+X-Received: by 2002:a54:4707:: with SMTP id k7mr27139073oik.163.1636741522427;
+ Fri, 12 Nov 2021 10:25:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYpTy9eXZucxuRO/@dhcp22.suse.cz>
+References: <20211110221456.11977-4-jim2101024@gmail.com> <20211111221714.GA1354700@bhelgaas>
+In-Reply-To: <20211111221714.GA1354700@bhelgaas>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Fri, 12 Nov 2021 13:25:11 -0500
+Message-ID: <CANCKTBun0MCiH5QWBMQqP+pxAN=+dX=ziB1ga39kdr5CmK=Gfw@mail.gmail.com>
+Subject: Re: [PATCH v8 3/8] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, Nov 09, 2021 at 12:00:46PM +0100, Michal Hocko wrote:
-> On Tue 09-11-21 09:42:56, David Hildenbrand wrote:
-> > On 09.11.21 09:37, Michal Hocko wrote:
-> > > I have opposed this patch http://lkml.kernel.org/r/YYj91Mkt4m8ySIWt@dhcp22.suse.cz
-> > > There was no response to that feedback. I will not go as far as to nack
-> > > it explicitly because pcp allocator is not an area I would nack patches
-> > > but seriously, this issue needs a deeper look rather than a paper over
-> > > patch. I hope we do not want to do a similar thing to all callers of
-> > > cpu_to_mem.
-> > 
-> > While we could move it into the !HOLES version of cpu_to_mem(), calling
-> > cpu_to_mem() on an offline (and eventually not even present) CPU (with
-> > an offline node) is really a corner case.
-> > 
-> > Instead of additional runtime overhead for all cpu_to_mem(), my take
-> > would be to just do it for the random special cases. Sure, we can
-> > document that people should be careful when calling cpu_to_mem() on
-> > offline CPUs. But IMHO it's really a corner case.
-> 
-> I suspect I haven't made myself clear enough. I do not think we should
-> be touching cpu_to_mem/cpu_to_node and handle this corner case. We
-> should be looking at the underlying problem instead. We cannot really
-> rely on cpu to be onlined to have a proper node association. We should
-> really look at the initialization code and handle this situation
-> properly. Memory less nodes are something we have been dealing with
-> already. This particular instance of the problem is new and we should
-> understand why.
-> -- 
-> Michal Hocko
-> SUSE Labs
-
-So I think we're still short a solution here. This patch solves the side
-effect but not the underlying problem related to cpu hotplug.
-
-I'm fine with this going in as a stop gap because I imagine the fixes to
-hotplug are a lot more intrusive, but do we have someone who can own
-that work to fix hotplug? I think that should be a requirement for
-taking this because clearly it's hotplug that's broken and not percpu.
-
-Acked-by: Dennis Zhou <dennis@kernel.org>
-
+On Thu, Nov 11, 2021 at 5:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Wed, Nov 10, 2021 at 05:14:43PM -0500, Jim Quinlan wrote:
+> > Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
+> > allows optional regulators to be attached and controlled by the PCIe RC
+> > driver.  That being said, this driver searches in the DT subnode (the EP
+> > node, eg pci-ep@0,0) for the regulator property.
+> >
+> > The use of a regulator property in the pcie EP subnode such as
+> > "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
+> > file at
+> >
+> > https://github.com/devicetree-org/dt-schema/pull/63
+>
+> Can you use a lore URL here?  github.com is sort of outside the Linux
+> ecosystem and this link is more likely to remain useful if it's to
+> something in kernel.org.
+Hi Bjorn,
+I'm afraid I don't know how or if  this github repo transfers
+information to Linux.  RobH, what should I be doing here?
+>
+> The subject says what this patch does, but the commit log doesn't.
+> It's OK to repeat the subject in the commit log if that's what makes
+> the most sense.
+Got it.
 Thanks,
-Dennis
+Jim Quinlan
+Broadcom STB
