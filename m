@@ -2,102 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCA744E5AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387D344E5B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhKLLqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 06:46:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234144AbhKLLqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 06:46:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF04960F5B;
-        Fri, 12 Nov 2021 11:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636717403;
-        bh=dKpfDmG6ocfPhcD3bOXlWfj54si9WcvQHXi/ZKCnCf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sDJOkN0MTf7JFjQriM0IwyWxsDXh8GF3vvnKPEU20hXOhTzeg8g4y7LXkwUVtzuY2
-         3Q6hWTGK93eluvYOAulTCfkmXYVrXMSHovXKeRNTfoOghmQjAoPHmJpcFTO6LUZj9X
-         qTsogP57eL8lPMaEseKceaabTgQpxyH5U6cUSalM=
-Date:   Fri, 12 Nov 2021 12:43:20 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Super Zhang <superzmj@fibocom.corp-partner.google.com>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: option: add Fibocom FM101-GL variants
-Message-ID: <YY5TWKrX29tHG+Lh@kroah.com>
-References: <20211112110638.751141-1-superzmj@fibocom.corp-partner.google.com>
+        id S234824AbhKLLsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 06:48:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234656AbhKLLs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 06:48:28 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81076C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 03:45:37 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b15so36370514edd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 03:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oiaZQCWo/+8uUx9TiUqPyKjHpWYnE7MZMGwxGTgY1VY=;
+        b=Ddj+kvzy57b7uopZlAcrocP4ESja8h1zlKKK7Qa65B1x1BMsSTcwbuDs61yAE1POLu
+         BRARGgluMwNfGwTYpm0b0Ekhm7nZpQGJ1LAZORsK0DPxFEIwqOt1R45SztSCg2DmMd8M
+         ql/6mM/dXBNMkmj2aJmHTRqBwq3aalgXuHHwDQfIVPk8FrmcAPmoQaqBzrezopANzHBZ
+         HHMgl6Fmyq2L3DfghEHEKmEMHizOnqw/6etGOW/D9x7DYtWiH33c7F3b8vmZPoeIdkyK
+         1usXIP2nIpUpLIVLncEF1r+5NT8FNZBhWvn8N1OkoETcgcgE2bOH1apXE8ezlDF3i/EG
+         kDkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oiaZQCWo/+8uUx9TiUqPyKjHpWYnE7MZMGwxGTgY1VY=;
+        b=4Evt3Jk/9EOKemXhIPInZQyOALS9U+WML+atwVr5mxZEcQT5bcfXknThBRYp9v9rkB
+         AVDL9OlqrG44r+a5WHe5ogRbQwA413s1u2nBMxHxV+CuOyysaju1m0mytqgywaBxfedN
+         3Sk91GOj27sVbYtZpW0ZOYYErvZvQGU9LBp7WD3bWT+gb4oNhmPg7C+vtTS2qVHfD2dO
+         g3VAh8xF9FDS/w2w961zJSh/JSKXEryy/kMPl0MHsZg62X3xLz+ejiMaTY8v0aKaYnIa
+         r6mYvIk7IF8QC9b3qIVycz/y9WVOOxbiG+KpSyg4SyAyGy7VwvS6cerapUfa/75o/GDX
+         ZMdQ==
+X-Gm-Message-State: AOAM531AmKcvHBDSMabuF18qXz3tFDdAc27FOJuA/TAIbfWXQNC8Wdbz
+        1py/gEWC3er7wE2ZTDFrKy3Awjensftr1IsyNHM=
+X-Google-Smtp-Source: ABdhPJxXqyn3aj10IKRftc21YFm+Wp8KQXVlWwuiQZ9RWL85H1zXimQ0V6fMXH2HBX0BGE16pZBvYFP7cM4wcnr2N84=
+X-Received: by 2002:a05:6402:50d3:: with SMTP id h19mr20036485edb.207.1636717536103;
+ Fri, 12 Nov 2021 03:45:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112110638.751141-1-superzmj@fibocom.corp-partner.google.com>
+Received: by 2002:a05:6402:1d8a:0:0:0:0 with HTTP; Fri, 12 Nov 2021 03:45:35
+ -0800 (PST)
+Reply-To: dinkarim06@gmail.com
+From:   Din Karim <rouckyanifa@gmail.com>
+Date:   Fri, 12 Nov 2021 11:45:35 +0000
+Message-ID: <CAOXkL702nwD6L5=nKuqbUijWbuMJ-v5MJOXRWQrV3ZZhMHaTqA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 07:06:38PM +0800, Super Zhang wrote:
-> Update the USB serial option driver support for the Fibocom
-> FM101-GL Cat.6
-> LTE modules as there are actually several different variants.
-> - VID:PID 2cb7:01a4, FM101-GL for laptop debug M.2 cards(adb
->   interface)
-> - VID:PID 2cb7:01a2, FM101-GL are laptop M.2 cards (with
-> MBIM interfaces for /Linux/Chrome OS)
-> 
-> T:  Bus=02 Lev=01 Prnt=01 Port=03 Cnt=01 Dev#=  2 Spd=5000
-> MxCh= 0
-> D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=01a2 Rev= 5.04
-> S:  Manufacturer=Fibocom Wireless Inc.
-> S:  Product=Fibocom FM101-GL Module
-> S:  SerialNumber=86bffe63
-> C:* #Ifs= 7 Cfg#= 1 Atr=a0 MxPwr=896mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00
-> Driver=cdc_mbim
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30
-> Driver=(none)
-> I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-> Driver=(none)
-> I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-> Driver=(none)
-> I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-> Driver=(none)
-> I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-> Driver=(none)
-> 
+Hello,
 
-Any chance you can not line-wrap these lines?
+I'm Barr Din Karim from Republic of Ghana please i wish to have a
+communication with you.
 
+I wait for your response.
 
-> T:  Bus=02 Lev=01 Prnt=01 Port=03 Cnt=01 Dev#=  3 Spd=5000 MxCh= 0
-> D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=01a4 Rev= 5.04
-> S:  Manufacturer=Fibocom Wireless Inc.
-> S:  Product=Fibocom FM101-GL Module
-> S:  SerialNumber=86bffe63
-> C:* #Ifs= 7 Cfg#= 1 Atr=a0 MxPwr=896mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00
-> Driver=cdc_mbim
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30
-> Driver=(none)
-> I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40
-> Driver=(none)
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01
-> Driver=(none)
-> I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-> Driver=(none)
-> I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40
-> Driver=(none)
-> 
-> Signed-off-by: Super Zhang <superzmj@fibocom.corp-partner.google.com>
-
-This is not a valid email address for you, please use your normal
-corporate address, I doubt google wants to take responsibility for this
-:)
-
-thanks,
-
-greg k-h
+Barr Din Karim(Esq)
