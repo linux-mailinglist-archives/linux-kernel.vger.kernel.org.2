@@ -2,136 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBEC44E590
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFCA44E593
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234740AbhKLLaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 06:30:14 -0500
-Received: from mail-dm6nam08on2075.outbound.protection.outlook.com ([40.107.102.75]:18432
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233883AbhKLLaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 06:30:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eIG8O9pND/l+Zydho84Ge++6aADhiVxR7QLKHsy0ZlvxaO2GjtV1xNbDdiwk7jJii4R0EYOsLe1eUuux37tRQNP9BmJBwQpfgZuVKKjIoiX2kUKukcytzApz1vz2yAJYh+M+FrXyzOsMDU5AIQzRjem4yuiKqsIxDXsE0HasGVKj8OPXnCU1GOynqCPy6ID7D68oHt4sgJRLjZjWIBSWLRm6M2QWSIElce/S6DH+ceZSeJXUAeYA+LyZvXkO9DuzKPsm8MIvkTA+il84CWFbNQJ1t5pb19X7LfpCidDZB0sQTj+mF+a++QUcyKM01NvfsTXtrpUA3NzB3vzOHdoB7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7StyRgFxb0S2BWfe3n4zRAzjeWcQ8Fjbc18iAhY0wRg=;
- b=nKf3a749pFkYSgjurt9JbYP2zQ7eyQFZHWk0hRL2XQnuRZ4kZG8WcCFvKPDGjgAawOAdGIc4tOei51XvgHwFKtcGcyyG0ZweSV+sG1GPMJbfH3osI3WlmdzB0sNURt9MI8gwwCSnk8zZ/y/1VtcAQI9CYu4sLehkXDwjwwvcKIhd2CkaiIW1svnf+gSnWoniS1yJipzXoEICbGZwV/+DthkpjzVV0uiavq5fayYq0/AM11YewWm1Z+RutTGaRIEQlJCks3hQJg59mc6f4lvmr2mhFlrN+R5x8nCBiZEZW2MIo5ZLm99EnsJBFy6IPFM5QUekUQpNyNbbDgrZJyNcrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7StyRgFxb0S2BWfe3n4zRAzjeWcQ8Fjbc18iAhY0wRg=;
- b=ugigoE7Q3n6MK8jZHXuEcGqCZdGtg5E54T9P+V2LSV3ZB6+Zo0Qeu5m/wE9otWBqQ54juhElyRcvban4Vrq6r2M3KAxLW/l4Leb2H2hkNOi24/IRdRQ577l/Yawi22qCkx4NW8YetJKlclbgguVvXMefNTOLFHgT2q3bp14sxEAijdvpqxxLnCieWl1z8oG0yKa/9YJlopFfLmsyupDeHo0/xv7MgebQ+NjLtQXzvS81XiWxZ7R+BlkqZU9OQZcYAICveq6L4dWwI2FjNQJt19F5P7w0ZQM/SSru7Z7bmJLLEHzlquvYPr0rdYgRQnD9zHUhd8R5AIfrBpG2KNhOwg==
-Received: from DM5PR13CA0033.namprd13.prod.outlook.com (2603:10b6:3:7b::19) by
- SN1PR12MB2479.namprd12.prod.outlook.com (2603:10b6:802:29::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4669.10; Fri, 12 Nov 2021 11:27:19 +0000
-Received: from DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:7b:cafe::2e) by DM5PR13CA0033.outlook.office365.com
- (2603:10b6:3:7b::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.14 via Frontend
- Transport; Fri, 12 Nov 2021 11:27:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- DM6NAM11FT025.mail.protection.outlook.com (10.13.172.197) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4690.19 via Frontend Transport; Fri, 12 Nov 2021 11:27:19 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 12 Nov
- 2021 11:27:18 +0000
-Received: from moonraker.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Fri, 12 Nov 2021 11:27:16 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     Mikko Perttunen <mperttunen@nvidia.com>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] reset: tegra-bpmp: Revert Handle errors in BPMP response
-Date:   Fri, 12 Nov 2021 11:27:12 +0000
-Message-ID: <20211112112712.21587-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S234771AbhKLLcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 06:32:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234144AbhKLLcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 06:32:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636716551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mWpX6S1S7t7oMXi+9chHuub2JTG8NEGR+ZhAheYJliY=;
+        b=KhfO1AVyAg9JIuyi2HNAxKhiMHVpvmK0csz24h/C3fNQMd4enNR5D5fx8i9qjj8VIEa5ag
+        KHlTAwBHh+XBzwhG9l/XulIX87fhXyTV0nEc1QsrTvT/j+PdRj4rt7to4X6SUG5Xh0hT4S
+        Q51m53qeL5Z4ap/qDWiYuUESbtFx7QM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-JOLS9nosPfmUETqqJzFshQ-1; Fri, 12 Nov 2021 06:29:08 -0500
+X-MC-Unique: JOLS9nosPfmUETqqJzFshQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A8431006AA0;
+        Fri, 12 Nov 2021 11:29:07 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A64E560C05;
+        Fri, 12 Nov 2021 11:29:00 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id EFF7D18003BE; Fri, 12 Nov 2021 12:28:58 +0100 (CET)
+Date:   Fri, 12 Nov 2021 12:28:58 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, mst@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211112112858.33bcm6jrvqb7z7uo@sirius.home.kraxel.org>
+References: <20211111090225.946381-1-kraxel@redhat.com>
+ <20211111215019.GA1332430@bhelgaas>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3efc7103-1cb0-4cdd-f565-08d9a5cf636d
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2479:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB24792883BB4D025F0CF30E67D9959@SN1PR12MB2479.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:773;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ij60eO6wRl+8RqHJ6YAYf0Jx0MmuxpMjJKM5PWVWHa69SnwLhzM+SYQRKQzSoR8Jd2JCwHtbc3qEQfoT2jcNdZoxcooaixQIme/w+CyXbM8KjvY24O/ot9xH2KNxy4QsdawsrCt3xvQEsSX/kmXeCdbUVPzzqi53AclOxJFRMuvQTMD5bDuFZeb6hxPjItJvBsfF/D5+34E66LM9EZwOB7S41GzaJxWCEfGCYoNqyFxFgHCV5zfD/mk4YWML7K2zOr4iUNjnsSjEau9gmmLP2JvdC1yB3qYJzQ+K+NaoC+UWC3GM5Qb65Q1qYkx5MkfDyh8YKz3TGRd1tqcOEYPRSwYpTmYGVeOm82L0C6iNLOTBoaQzkPgJZUdQSagsBY2TNoMLOB5Ter4mPWz8MPKSG2rYMsBoENvPNRwSE4iG0107NCMybmWo05vouH04XKTIpZgfIhyBHKc+JoGyzxIDtHV4LGd3P0HvLbT6IKIaMD4a3kBeht4djRvI2cyJoKO83gqe7HOXp6PnewSrUH06Nlnk1lDVUHuTjVzBKKDl/dMazRi5H5KnBL/OFkZqv5pi2LPlI8mRm23ixYshzPWmj5LtOd0AVGqr/7BjzRbGPKLLLE14sIJuwyUlan98e58ZwUXeoM7JwqdhGjnPJm3dMOpOnwLSFJ7JcZzjzP/9w2nXlAAQobN3T0fYdr6/eHVIdqIkmnj5pHxL7iNPfhSNBQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(1076003)(356005)(7636003)(110136005)(107886003)(54906003)(508600001)(8676002)(426003)(186003)(82310400003)(70586007)(36756003)(5660300002)(336012)(4326008)(70206006)(47076005)(36860700001)(26005)(7696005)(36906005)(2616005)(86362001)(2906002)(316002)(8936002)(83380400001)(6666004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 11:27:19.3600
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3efc7103-1cb0-4cdd-f565-08d9a5cf636d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2479
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111215019.GA1332430@bhelgaas>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP
-response") fixed an issue in the Tegra BPMP error handling but has
-exposed an issue in the Tegra194 HDA driver and now resetting the
-Tegra194 HDA controller is failing. For now revert the commit
-c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response")
-while a fix for the Tegra HDA driver is created.
+  Hi,
 
-Fixes: c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response")
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/reset/tegra/reset-bpmp.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+> "Virtual" doesn't seem like quite the right descriptor here.  That's
+> one use case, but I think the parameter should describe the actual
+> *effect*, not the use case, e.g., something related to the delay after
+> the attention button.
 
-diff --git a/drivers/reset/tegra/reset-bpmp.c b/drivers/reset/tegra/reset-bpmp.c
-index 4c5bba52b105..24d3395964cc 100644
---- a/drivers/reset/tegra/reset-bpmp.c
-+++ b/drivers/reset/tegra/reset-bpmp.c
-@@ -20,7 +20,6 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
- 	struct tegra_bpmp *bpmp = to_tegra_bpmp(rstc);
- 	struct mrq_reset_request request;
- 	struct tegra_bpmp_message msg;
--	int err;
- 
- 	memset(&request, 0, sizeof(request));
- 	request.cmd = command;
-@@ -31,13 +30,7 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
- 	msg.tx.data = &request;
- 	msg.tx.size = sizeof(request);
- 
--	err = tegra_bpmp_transfer(bpmp, &msg);
--	if (err)
--		return err;
--	if (msg.rx.ret)
--		return -EINVAL;
--
--	return 0;
-+	return tegra_bpmp_transfer(bpmp, &msg);
- }
- 
- static int tegra_bpmp_reset_module(struct reset_controller_dev *rstc,
--- 
-2.25.1
+Well, it's enabled only for virtual pcie ports because I could hardly
+enable it by default otherwise.
+
+There is another delay in remove_board(), mst suggests removing that
+too, and that surely would be something we can't do on physical
+hardware ...
+
+So I'd prefer to keep the name.
+
+> If it's practical, I think it would be nicer to have a sysfs attribute
+> instead of a kernel boot parameter.  Then we wouldn't have to reboot
+> to change this, and it could be generalized to allow arbitrary delays,
+> i.e., no delay, 5 seconds, or whatever the admin decides.
+
+It's a module parameter so will show up in
+/sys/module/pciehp/parameters/ and it is writable by root.
+
+[ will address the other things mentioned in v2 ].
+
+take care,
+  Gerd
 
