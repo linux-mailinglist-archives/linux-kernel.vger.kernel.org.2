@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B234344E2CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF70A44E2D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhKLIJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 03:09:28 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:60232 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233351AbhKLIJ1 (ORCPT
+        id S233717AbhKLIMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 03:12:46 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41612
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233351AbhKLIMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 03:09:27 -0500
-X-UUID: 8b8488334d3942d6a19e6ff7e633b693-20211112
-X-UUID: 8b8488334d3942d6a19e6ff7e633b693-20211112
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <ryder.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1853858561; Fri, 12 Nov 2021 16:06:33 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 12 Nov 2021 16:06:32 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Nov 2021 16:06:32 +0800
-Message-ID: <d59e616a0c106f626d5580ca4878965be332b069.camel@mediatek.com>
-Subject: Re: drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:2393:5:
- warning: no previous prototype for 'mt7915_mcu_set_fixed_rate'
-From:   Ryder Lee <ryder.lee@mediatek.com>
-To:     kernel test robot <lkp@intel.com>
-CC:     <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
-        Felix Fietkau <nbd@nbd.name>
-Date:   Fri, 12 Nov 2021 16:06:32 +0800
-In-Reply-To: <202111121411.8fGIInOx-lkp@intel.com>
-References: <202111121411.8fGIInOx-lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Fri, 12 Nov 2021 03:12:44 -0500
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B4D1A3F1C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636704590;
+        bh=N0lgEvQGt1KLpLy11X2dOPKbOYo7U8IYp3IkLc+Sfe4=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=fWurR8O3W7O/T0GhBRAV770vK4/uvOawof3vnCprxs6PpFpgra3dIBmjMneIAV/VR
+         ik/N5qGkWdF8wx/D/XIe51CkuW9bCQ7RHiTa3/Y0ndu+4CcUSE00DQWQR7+hXPbzyF
+         bjJw+mqjhNoqe0PCFgYyl4L1XEuMGT6OCqaEcbCOzVZIoj/Jv2jREZrTGlbIsfxw+e
+         xyvTibNgxpOukXe3BwbuEyQA43dwyvEECworVGjVEhRzclWjHXft445AwSFYhzlspr
+         I6YLYUMI28yWdWW3I5pEqcnsICkhChSROySS6F88SbnXtgC88LkwvzZaHHGDt+3box
+         zOfT6N/iXbjYw==
+Received: by mail-lj1-f199.google.com with SMTP id l9-20020a2e8349000000b00218c7c981bcso2838476ljh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:09:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=N0lgEvQGt1KLpLy11X2dOPKbOYo7U8IYp3IkLc+Sfe4=;
+        b=nf51y8cucJalz3xxSZhe7MmYDHioOoCiWPNOZUeJ52GfsMQJ/fUleRNsDV5QD58OBO
+         gAF/vcqJ6D40wCTZPdJ0iGIoYeNcJcNVyLoczmtsVSFdzP5bpgfSDHUC2nf+j9hXlVI+
+         tN0acv7KuK0PSHo3U9sNCQEhOaNFWVyboF2G4PVHPlmym32CypRdKuFU8/LkVlc1oMxh
+         Lsh5WQJZxRQf5Z4Tg0LDC5NkQgPZLQzW7SBV4CaG7nAJQtZmQxGrES6huOOZM+O2KvJI
+         //uJsgkUMV4cAe6HBJfAECe9O5ld8KGYUeli14tDWh81qHFTe4R8iFB9VMhUks+E0wij
+         obFA==
+X-Gm-Message-State: AOAM533jZhLFuK6zNoi7iDqpHVpBKs4wDTBmtl231qboOCVFe2MUDfvu
+        Y6+VSf/t8KBNqZpNf1W4OrVlH3oJg85+IQRAyeii3TTe1nPaACs7cBcIiegC/CmVG9MATo8wd6o
+        2u+n+BJYNFv1bE+CrpreL+9acAywvS+yvK+w8trGmSw==
+X-Received: by 2002:a05:651c:1503:: with SMTP id e3mr13074825ljf.181.1636704590076;
+        Fri, 12 Nov 2021 00:09:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrUNr1T5EkFtrQpcvNMsMHIHtqi+AWQMLU5dHvVzJ97JYsfxC9021l75RYC0KKSA8xJU/X3g==
+X-Received: by 2002:a05:651c:1503:: with SMTP id e3mr13074809ljf.181.1636704589817;
+        Fri, 12 Nov 2021 00:09:49 -0800 (PST)
+Received: from [192.168.0.27] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id a7sm346751lfk.233.2021.11.12.00.09.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 00:09:49 -0800 (PST)
+Message-ID: <5816a13b-0ad8-450c-ff8e-2d646c7117b0@canonical.com>
+Date:   Fri, 12 Nov 2021 09:09:48 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+Content-Language: en-US
+To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Wolfram Sang <wsa@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chanho61.park@samsung.com, linux-arm-kernel@lists.infradead.org,
+        Sam Protsenko <semen.protsenko@linaro.org>
+References: <20211112010137.149174-1-jaewon02.kim@samsung.com>
+ <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+ <20211112010137.149174-3-jaewon02.kim@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211112010137.149174-3-jaewon02.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-12 at 14:41 +0800, kernel test robot wrote:
-> tree:   
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> master
-> head:   5833291ab6de9c3e2374336b51c814e515e8f3a5
-> commit: 9a93364d6595358a11d07e7f4261ae263ae2a02a mt76: mt7915: rework
-> debugfs fixed-rate knob
-> date:   3 weeks ago
-> config: ia64-randconfig-c003-20211025 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget 
-> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
->  -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9a93364d6595358a11d07e7f4261ae263ae2a02a
->         git remote add linus 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 9a93364d6595358a11d07e7f4261ae263ae2a02a
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0
-> make.cross ARCH=ia64 
+On 12/11/2021 02:01, Jaewon Kim wrote:
+> Serial IPs(UART, I2C, SPI) are integrated into New IP-Core
+> called USI(Universal Serial Interface).
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> As it is integrated into USI, there are additinal HW changes.
+> Registers to control USI and sysreg to set serial IPs have been added.
+> Also, some timing registres have been changed.
 > 
-> All warnings (new ones prefixed by >>):
+> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+> ---
+>  drivers/i2c/busses/i2c-exynos5.c | 135 ++++++++++++++++++++++++++++---
+>  1 file changed, 125 insertions(+), 10 deletions(-)
 > 
-> > > drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:2393:5: warning:
-> > > no previous prototype for 'mt7915_mcu_set_fixed_rate' [-Wmissing-
-> > > prototypes]
-> 
->     2393 | int mt7915_mcu_set_fixed_rate(struct mt7915_dev *dev,
->          |     ^~~~~~~~~~~~~~~~~~~~~~~~
 
-This is fixed by 
-https://patchwork.kernel.org/project/linux-wireless/patch/d09619456ba3bf2d83b8929aefe00915ecce6b55.1634996863.git.lorenzo@kernel.org/
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+
+Best regards,
+Krzysztof
