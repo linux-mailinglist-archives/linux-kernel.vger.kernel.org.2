@@ -2,140 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14A944EA99
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BAE44EAA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhKLPnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:43:24 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:41674 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbhKLPnE (ORCPT
+        id S235352AbhKLPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:43:43 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:38823 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233551AbhKLPnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:43:04 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:39966)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlYex-00HRjL-OZ; Fri, 12 Nov 2021 08:40:11 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:60472 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mlYev-00CI2X-6y; Fri, 12 Nov 2021 08:40:11 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, H Peter Anvin <hpa@zytor.com>,
-        "Andy Lutomirski" <luto@kernel.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-9-ebiederm@xmission.com>
-Date:   Fri, 12 Nov 2021 09:40:01 -0600
-In-Reply-To: <20211020174406.17889-9-ebiederm@xmission.com> (Eric
-        W. Biederman's message of "Wed, 20 Oct 2021 12:43:55 -0500")
-Message-ID: <874k8htmb2.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 12 Nov 2021 10:43:39 -0500
+Received: by mail-oi1-f171.google.com with SMTP id r26so18578241oiw.5;
+        Fri, 12 Nov 2021 07:40:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nzVMGtks6rrWhxXjE+FNEYQ2vPVnBRRsHmjFJbXZd9Q=;
+        b=vSpqBZBFnDT6IrY5jZUtGrPS6lxrk9vUDGcxce2Qx2CVcBuDZXgG39W4vSScltUQpD
+         +icSzoZVEig0zEXZk/pctte70d/GlzB2NUVggO2l7HgPB+m7FrmOGeCY431n//VpolIX
+         SxuaQWqPAwD8j1nC9gC+uEHl0000PfCGqHS6vzf7ttp0Oc/tqYLh7a5VgxvRaIfiDWPj
+         J2Z4Q1433oGGKz8ATuwLVGXOqA9fovX2lCXOeLp5p+gZ0G9lOK98egiYCWF13PxFGzG7
+         Bx+JFR+UMpXSyXKc23lRmEG46EVeIz8Bi98pxEd5jgNpdf2uQZSsuhx0Dfs0RUU0VG4t
+         5GfA==
+X-Gm-Message-State: AOAM532VVj11Y+KMp0bNYLLCxQLc4gL8jMNTaROAs1VK6EJX2VWiEMI2
+        +tgcNc8cjXhBGTZSPMbcCQ==
+X-Google-Smtp-Source: ABdhPJySeCyS8+hB8H/nj8C5IHPl5OU84DQCx6Sks3+0VZ9TlDlz+wXCYcq2KKL/IdtD/aNdEV04SQ==
+X-Received: by 2002:aca:110e:: with SMTP id 14mr19815794oir.100.1636731647969;
+        Fri, 12 Nov 2021 07:40:47 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v20sm1294642otj.27.2021.11.12.07.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 07:40:47 -0800 (PST)
+Received: (nullmailer pid 2899506 invoked by uid 1000);
+        Fri, 12 Nov 2021 15:40:46 -0000
+Date:   Fri, 12 Nov 2021 09:40:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wells Lu <wellslutw@gmail.com>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        qinjian@cqplus1.com, dvorkin@tibbo.com,
+        Wells Lu <wells.lu@sunplus.com>
+Subject: Re: [PATCH v2 3/3] devicetree: bindings: pinctrl: Add bindings doc
+ for Sunplus SP7021.
+Message-ID: <YY6K/sJi9xZLmW+W@robh.at.kernel.org>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-4-git-send-email-wells.lu@sunplus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mlYev-00CI2X-6y;;;mid=<874k8htmb2.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/KsN+DLpDCN8Kpyddi7rOkerSB6iMUT1U=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;linux-kernel@vger.kernel.org
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1976 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 19 (1.0%), b_tie_ro: 17 (0.9%), parse: 1.94
-        (0.1%), extract_message_metadata: 28 (1.4%), get_uri_detail_list: 2.7
-        (0.1%), tests_pri_-1000: 32 (1.6%), tests_pri_-950: 1.51 (0.1%),
-        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 95 (4.8%), check_bayes: 91
-        (4.6%), b_tokenize: 9 (0.4%), b_tok_get_all: 8 (0.4%), b_comp_prob:
-        2.8 (0.1%), b_tok_touch_all: 67 (3.4%), b_finish: 1.06 (0.1%),
-        tests_pri_0: 1267 (64.1%), check_dkim_signature: 0.69 (0.0%),
-        check_dkim_adsp: 2.9 (0.1%), poll_dns_idle: 506 (25.6%), tests_pri_10:
-        2.2 (0.1%), tests_pri_500: 524 (26.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an actual BUG_ON
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635754277-32429-4-git-send-email-wells.lu@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Eric W. Biederman" <ebiederm@xmission.com> writes:
+On Mon, Nov 01, 2021 at 04:11:17PM +0800, Wells Lu wrote:
+> Add bindings documentation for Sunplus SP7021.
 
-> The function save_v86_state is only called when userspace was
-> operating in vm86 mode before entering the kernel.  Not having vm86
-> state in the task_struct should never happen.  So transform the hand
-> rolled BUG_ON into an actual BUG_ON to make it clear what is
-> happening.
+Patch 2 and 3 can be combined. Use consistent subjects. Patch 2 is good. 
+This one is not.
 
-Now that this change has been merged into Linus' tree I have a report
-that it is possible to trigger this new BUG_ON.  Which obviously is not
-good.
-
-We could revert the change but I think that would just be shooting the
-messenger.
-
-Does anyone have an idea where to start to track down what is going on?
-
-A very quick skim through the code suggests that the only code path
-that calls save_v86_state that has not already accessed is
-current->thread.vm86 is handle_signal.
-
-Another quick look suggests that the only place where X86_VM_MASK gets
-set in eflags is in do_sys_vm86.  So it appears do_sys_vm86 must
-be called before v8086_mode returns true in handle_signal.
-
-Which seems to suggest that the bug on can't trigger.
-
-But that is obviously wrong.
-
-I will keep digging but if anyone has some ideas that would be appreciated.
-
-Eric
-
-
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: H Peter Anvin <hpa@zytor.com>
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> Signed-off-by: Wells Lu <wells.lu@sunplus.com>
 > ---
->  arch/x86/kernel/vm86_32.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-> index e5a7a10a0164..63486da77272 100644
-> --- a/arch/x86/kernel/vm86_32.c
-> +++ b/arch/x86/kernel/vm86_32.c
-> @@ -106,10 +106,8 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
->  	 */
->  	local_irq_enable();
->  
-> -	if (!vm86 || !vm86->user_vm86) {
-> -		pr_alert("no user_vm86: BAD\n");
-> -		do_exit(SIGSEGV);
-> -	}
-> +	BUG_ON(!vm86 || !vm86->user_vm86);
+> Changes in v2:
+>  - None
+> 
+>  .../bindings/pinctrl/sunplus,sp7021-pinctrl.yaml   | 277 +++++++++++++++++++++
+>  MAINTAINERS                                        |   1 +
+>  2 files changed, 278 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
+> new file mode 100644
+> index 0000000..7cfa0ce
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
+> @@ -0,0 +1,277 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) Sunplus Co., Ltd. 2021
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/sunplus,sp7021-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	set_flags(regs->pt.flags, VEFLAGS, X86_EFLAGS_VIF | vm86->veflags_mask);
->  	user = vm86->user_vm86;
+> +title: Sunplus SP7021 Pin Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Dvorkin Dmitry <dvorkin@tibbo.com>
+> +  - Wells Lu <wells.lu@sunplus.com>
+> +
+> +description: |
+> +  The Sunplus SP7021 pin controller is used to control SoC pins. Please
+> +  refer to pinctrl-bindings.txt in this directory for details of the common
+> +  pinctrl bindings used by client devices.
+> +
+> +  Refer to https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/pages/
+> +  1443495991/How+to+setup+pins+of+SP7021+in+device-tree+source
+> +
+> +  The device node of pin controller of Sunplus SP7021 has following
+> +  properties.
+> +
+> +properties:
+> +  compatible:
+> +    const: sunplus,sp7021-pctl
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and length of the MOON2 registers.
+> +      - description: Base address and length of the GPIOXT registers.
+> +      - description: Base address and length of the GPIOXT2 registers.
+> +      - description: Base address and length of the FIRST registers.
+> +      - description: Base address and length of the MOON1 registers.
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  '^.*$':
+> +    if:
+> +      type: object
+> +    then:
+
+For new bindings, don't use this hack. Make the node name something you 
+can match on (e.g. '-pins$').
+
+> +      description: |
+> +        A pinctrl node should contain at least one subnodes representing the
+> +        pins or function-pins group available on the machine. Each subnode
+> +        will list the pins it needs, and how they should be configured.
+> +
+> +        Pinctrl node's client devices use subnodes for desired pin
+> +        configuration. Client device subnodes use below standard properties.
+> +
+> +      properties:
+> +        pins:
+> +          description: |
+> +            Define pins which are used by pinctrl node's client device.
+> +
+> +            It consists of one or more integers which represents the config
+> +            setting for corresponding pin. Please use macro SPPCTL_IOPAD to
+> +            define the integers for pins.
+> +
+> +            The first argument of the macro is pin number, the second is pin
+> +            type, the third is type of GPIO, the last is default output state
+> +            of GPIO.
+> +          $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +        function:
+> +          description: |
+> +            Define pin-function which is used by pinctrl node's client device.
+> +            The name should be one of string in the following enumeration.
+> +          $ref: "/schemas/types.yaml#/definitions/string"
+> +          enum: [ SPI_FLASH, SPI_FLASH_4BIT, SPI_NAND, CARD0_EMMC, SD_CARD,
+> +                  UA0, FPGA_IFX, HDMI_TX, LCDIF, USB0_OTG, USB1_OTG ]
+> +
+> +        groups:
+> +          description: |
+> +            Define pin-group in a specified pin-function.
+> +            The name should be one of string in the following enumeration.
+> +          $ref: "/schemas/types.yaml#/definitions/string"
+> +          enum: [ SPI_FLASH1, SPI_FLASH2, SPI_FLASH_4BIT1, SPI_FLASH_4BIT2,
+> +                  SPI_NAND, CARD0_EMMC, SD_CARD, UA0, FPGA_IFX, HDMI_TX1,
+> +                  HDMI_TX2, HDMI_TX3, LCDIF, USB0_OTG, USB1_OTG ]
+> +
+> +        zero_func:
+> +          description: |
+> +            Disabled pins which are not used by pinctrl node's client device.
+> +          $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +      additionalProperties: false
+> +
+> +      allOf:
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_FLASH
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_FLASH1
+> +                  - SPI_FLASH2
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_FLASH_4BIT
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_FLASH_4BIT1
+> +                  - SPI_FLASH_4BIT2
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SPI_NAND
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SPI_NAND
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - CARD0_EMMC
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - CARD0_EMMC
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - SD_CARD
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - SD_CARD
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - UA0
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - UA0
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - FPGA_IFX
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - FPGA_IFX
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - HDMI_TX
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - HDMI_TX1
+> +                  - HDMI_TX2
+> +                  - HDMI_TX3
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - LCDIF
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - LCDIF
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - USB0_OTG
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - USB0_OTG
+> +        - if:
+> +            properties:
+> +              function:
+> +                enum:
+> +                  - USB1_OTG
+> +          then:
+> +            properties:
+> +              groups:
+> +                enum:
+> +                  - USB1_OTG
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +  - clocks
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sp-sp7021.h>
+> +    #include <dt-bindings/reset/sp-sp7021.h>
+> +    #include <dt-bindings/pinctrl/sppctl-sp7021.h>
+> +
+> +    pctl: pctl@9C000100 {
+
+pinctl@9c000100
+
+> +        compatible = "sunplus,sp7021-pctl";
+> +        reg = <0x9C000100 0x100>, <0x9C000300 0x80>, <0x9C000380 0x80>,
+> +              <0x9C0032e4 0x1C>, <0x9C000080 0x20>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        clocks = <&clkc GPIO>;
+> +        resets = <&rstc RST_GPIO>;
+> +
+> +        pins_uart0: pins_uart0 {
+> +            function = "UA0";
+> +            groups = "UA0";
+> +        };
+> +
+> +        pins_uart1: pins_uart1 {
+> +            pins = <
+> +                SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
+> +                SPPCTL_IOPAD(10,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
+> +                SPPCTL_IOPAD(7,SPPCTL_PCTL_G_GPIO,0,SPPCTL_PCTL_L_OUT)
+> +            >;
+> +        };
+> +
+> +        emmc_mux: emmc_mux {
+> +            function = "CARD0_EMMC";
+> +            groups = "CARD0_EMMC";
+> +        };
+> +
+> +        mmc1_mux: mmc1_mux {
+> +            function = "SD_CARD";
+> +            groups = "SD_CARD";
+> +            pins = < SPPCTL_IOPAD(91,SPPCTL_PCTL_G_GPIO,0,0) >;
+> +        };
+> +
+> +        hdmi_A_tx1: hdmi_A_tx1_pins {
+> +            function = "HDMI_TX";
+> +            groups = "HDMI_TX1";
+> +        };
+> +        hdmi_A_tx2: hdmi_A_tx2_pins {
+> +            function = "HDMI_TX";
+> +            groups = "HDMI_TX2";
+> +        };
+> +        hdmi_A_tx3: hdmi_A_tx3_pins {
+> +            function = "HDMI_TX";
+> +            groups = "HDMI_TX3";
+> +        };
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index da6378f..11835e7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14872,6 +14872,7 @@ M:	Wells Lu <wells.lu@sunplus.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+> +F:	Documentation/devicetree/bindings/pinctrl/sunplus,*
+>  F:	drivers/pinctrl/sunplus/
+>  F:	include/dt-bindings/pinctrl/sppctl*
+>  
+> -- 
+> 2.7.4
+> 
+> 
