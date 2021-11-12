@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF7F44EF27
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D1C44EF2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhKLWWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 17:22:05 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50789 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhKLWWE (ORCPT
+        id S234981AbhKLWZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 17:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhKLWZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 17:22:04 -0500
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id C4A6560007;
-        Fri, 12 Nov 2021 22:19:11 +0000 (UTC)
-Date:   Fri, 12 Nov 2021 23:19:11 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] rtc: s3c: S3C driver improvements
-Message-ID: <YY7oX8k3dTH6n5lp@piout.net>
-References: <20211021202256.28517-1-semen.protsenko@linaro.org>
- <163502632457.411308.6365977083733513077.b4-ty@bootlin.com>
- <CAPLW+4mBKH_-A5rWGKgpA=r8as6UqhmHf6h1DRg0fEY9jSmJQA@mail.gmail.com>
+        Fri, 12 Nov 2021 17:25:06 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E66C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 14:22:15 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id l8so10393806ilv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 14:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oofobncB6zcDchp95iNx9ee8iwZFnsC9uA/95m01SxI=;
+        b=hXu0m+jbprrwHVbmDRDLPxR4jP2UlcGtxLQpE/Ln1FChq6mlHV617YbAP8Bm0FopvB
+         A3JiDXcRWUJKdaKWMIFCwYLk7LXR4pIb3UCTzIxy2OV1N/tCViQQVPfun7qOjPFv2/Wf
+         yJfCavAVsNTaujm90sEXo1izfGso3aGZpU/Jx2lmjGOf61Sy8YZDjp7rVjluj45nTpAB
+         8UGB9BPO9TV7pW0gRyUylsEEeEt8edy9stDhXpdFy+S0ZnrcJjD9VGIRR13yGKttBqr5
+         99SvmwKkysMxqbYROOoBEbmou/qG9XP7uzhMFwM7OVVKfG2bXSpdTHJYBrVWQ4H7VuqQ
+         tW9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oofobncB6zcDchp95iNx9ee8iwZFnsC9uA/95m01SxI=;
+        b=3ero5ysI5xvdvAVDYpPCq3tmjgIUCysoX7rbAOKTuG8Ia34+X7FFRYDBfLaMia3nXd
+         U5aSZHPQ0/JHjAp2V+ubAt7Ka7KpXsEklJO9j/mbsI0LujXlDBq0qG/POErMJ9lNVe1F
+         wmV6sXRsTZnluO0UBxBbEbmcblZbCF6bNu4AygvbLA2cr0qnmxP0Co+JE+jiqxu/btZL
+         15oLX1vWg6v2YQhzpTgP9ac7ywydCZrEvQUnXyLWb6RXMhabxTbucL2pWLsJLevTxfn4
+         Yuq+7UidLjAuhuBq2btfygV5NW1lEwQzBAP3XkQNfvjOeMheqoBnj/RtqsOo2g6grln2
+         S6Xw==
+X-Gm-Message-State: AOAM531boIot8w04X3nASTihCdj9IfGnvWDDiuKQG3Qt7X6szva/h6i1
+        X6GzOQ1HWVZhD7PGbCbu2NfA0Q==
+X-Google-Smtp-Source: ABdhPJyGS73m8Hz5pzCLotdbGUnMtKBTv03BwkoPYtvgyRSPAXk89ni7TaDvw59bF0N/dsjtFVCZfQ==
+X-Received: by 2002:a05:6e02:198b:: with SMTP id g11mr3582144ilf.288.1636755734995;
+        Fri, 12 Nov 2021 14:22:14 -0800 (PST)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id y6sm5241117ilu.38.2021.11.12.14.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 14:22:14 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     pkurapat@codeaurora.org, avuyyuru@codeaurora.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, evgreen@chromium.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/2] net: ipa: HOLB register write fixes
+Date:   Fri, 12 Nov 2021 16:22:08 -0600
+Message-Id: <20211112222210.224057-1-elder@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPLW+4mBKH_-A5rWGKgpA=r8as6UqhmHf6h1DRg0fEY9jSmJQA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2021 19:05:06+0200, Sam Protsenko wrote:
-> On Sun, 24 Oct 2021 at 00:58, Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> >
-> > On Thu, 21 Oct 2021 23:22:53 +0300, Sam Protsenko wrote:
-> > > While working on Exynos850 support (where this driver works fine in its
-> > > current state), I've stumbled upon some minor issue. This is the effort
-> > > to fix those.
-> > >
-> > >   * [PATCH 1/3]: moves S3C RTC driver to newer API usage
-> > >     (no functional changes)
-> > >   * [PATCH 2/3]: refactoring/cleanup (no functional changes)
-> > >   * [PATCH 3/3]: adds time range, as [PATCH 1/3] made it possible
-> > >
-> > > [...]
-> >
-> > Applied, thanks!
-> >
-> 
-> Hi Alexandre,
-> 
-> Just want to check if this series is going to be merged during current
-> merge window, or is it scheduled for the next one?
-> 
+This small series fixes two recently identified bugs related to the
+way two registers must be written.  The registers define whether and
+when to drop packets if a head-of-line blocking condition is
+encountered.  The "enable" (dropping packets) register must be
+written twice for newer versions of hardware.  And the timer
+register must not be written while dropping is enabled.
 
-This is now pulled by Linus.
+					-Alex
 
-> Thanks!
-> 
-> > [1/3] rtc: s3c: Remove usage of devm_rtc_device_register()
-> >       commit: dba28c37f23a09fc32dbc37463ddb2feb3886f98
-> > [2/3] rtc: s3c: Extract read/write IO into separate functions
-> >       commit: e4a1444e10cbda2892a4ea7325ef5efa47c75cfb
-> > [3/3] rtc: s3c: Add time range
-> >       commit: a5feda3b361e11b291786d5c4ff86d4b9a55498f
-> >
-> > Best regards,
-> > --
-> > Alexandre Belloni <alexandre.belloni@bootlin.com>
+Alex Elder (2):
+  net: ipa: HOLB register sometimes must be written twice
+  net: ipa: disable HOLB drop when updating timer
+
+ drivers/net/ipa/ipa_endpoint.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.32.0
+
