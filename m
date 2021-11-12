@@ -2,149 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE0844EC03
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB5744EC07
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhKLRfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
+        id S235524AbhKLRgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235122AbhKLRfI (ORCPT
+        with ESMTP id S235519AbhKLRgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:35:08 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41327C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:32:17 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id o14so8972549plg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:cc:from:to:message-id;
-        bh=27qMKBfE9SqMjFa/icnG6O/UTntPosZR3vJbadVwXiU=;
-        b=DBQ0ibsXf4NCyq/ULPbu87OnYXRMaFgFxH2//Z2XWW+RPZit6fCT/wKWNJO0D46CCW
-         yczk2B8vylVOesxhHRI3usqwHj6EiKmiB8CageWaFyA8rfbfdrqW/qi0GJGypRf51Onk
-         N1nDaq0EI7xl8ePvhPjauoemaXwATNstKGZs9Ychd2//EVsTd6cDNQjoDUA7ubv81eIE
-         +xDZ6DBUhca2dutRNEbUoK8QuPWmhYhTXmEsF9fYbaETrukV/K1uiDMfH4wOHJn0NQvn
-         gumVMslOVDaI4iYQf55BLxMa3riZ0YT0He4OgHznowCuKn6p4rL6VwSB41+qR841/uVD
-         tMaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=27qMKBfE9SqMjFa/icnG6O/UTntPosZR3vJbadVwXiU=;
-        b=pQqQExDla26gylGUvSksaQUKnhSHcSeg/wxube5dVEbLvuaCTWl+cxGo+z4zs5/eyY
-         ldZsgdjJxrBykArq8dKqWkr72TSzfh8sTzEpt69po+VisSCchzEQFOmBr5evQzkudIGG
-         3117wwgCLEY7fXm/sQiAHoc9BwzBAla5+FsWiKlNn4PJXll6EYcALoP7LWUWEiNCqVO5
-         AzLs9mdqVfvyYVXF0iZNkIVvacPqMfStEDcvbfQGyjK5Rk1FAySqEKWIA2WQypq7H6EY
-         ZDXGcogYXRKsLfIzUjtNALNonj9Ibi801ayWl7+59xNClJFognUdVd6Ifvg7iOYG5qh8
-         qdDg==
-X-Gm-Message-State: AOAM530nkUGegRDp+o+fhI+i+aF2gCFMcVuEWfY37AYnRMdzKYYi7FU6
-        pJfqbrNwTPVA9ofZR+ovbJeIY+mw9vKgmg==
-X-Google-Smtp-Source: ABdhPJyCrQVPmwKxTW3NnqjcUyZvA7sND1qbR7JaJBjlXHJLK/zwjPmnEk+sQQDvZrmwkXt2pmGiBw==
-X-Received: by 2002:a17:902:b941:b0:143:ae25:ba1a with SMTP id h1-20020a170902b94100b00143ae25ba1amr2737346pls.66.1636738336342;
-        Fri, 12 Nov 2021 09:32:16 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a11sm6862342pfh.108.2021.11.12.09.32.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 09:32:15 -0800 (PST)
-Date:   Fri, 12 Nov 2021 09:32:15 -0800 (PST)
-X-Google-Original-Date: Fri, 12 Nov 2021 09:32:02 PST (-0800)
-Subject: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
-CC:        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-109b0503-bc7c-4da8-8621-28aec8d9df59@palmer-ri-x1c9>
+        Fri, 12 Nov 2021 12:36:07 -0500
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECD8C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:33:16 -0800 (PST)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+        by m0050093.ppops.net-00190b01. (8.16.1.2/8.16.1.2) with ESMTP id 1ACEa4Ps002486;
+        Fri, 12 Nov 2021 17:32:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=FTlTtb3zf+ArAjPKIlpds0r2Pc/R15ABpwRa+8kNx84=;
+ b=Qrku+j2FDb2T7/JmMNGQ2mv2vlFdhF6hqFjwF1Fq3FKW8o2YjSRtVKGqfmP2AelRdZ8s
+ lsj6/aPejEpLyBQvimPJs1zgzO46h80TyrEOErCxUMLqfKe83hj40XY5XqJyOE1AQiZR
+ kCFdqFjL2gtLX4v0515fB6n4osEADBgS5S3wC6Xyn/TcT6mX/qWzS0wFtEgqQ44Bb5t6
+ w5qj7G3vorPJ8ISSDqeZYZmk936QqH/F0nMaonYn0MaqDE99wXHnRxuOK8nEZoRUml8U
+ 4+95GVpu49sERr+PXbHpx7c/pMoRnbS3XuhHhZC5wttSpC6XYpK+hwquxUfjRZ4Gkzut yg== 
+Received: from prod-mail-ppoint6 (prod-mail-ppoint6.akamai.com [184.51.33.61] (may be forged))
+        by m0050093.ppops.net-00190b01. (PPS) with ESMTPS id 3c98cd39x0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Nov 2021 17:32:25 +0000
+Received: from pps.filterd (prod-mail-ppoint6.akamai.com [127.0.0.1])
+        by prod-mail-ppoint6.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 1ACH53PX024205;
+        Fri, 12 Nov 2021 12:32:24 -0500
+Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
+        by prod-mail-ppoint6.akamai.com with ESMTP id 3c81umn6j7-1;
+        Fri, 12 Nov 2021 12:32:24 -0500
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 9B1E627A16;
+        Fri, 12 Nov 2021 17:32:23 +0000 (GMT)
+Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with it
+ - RFC
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
+        robdclark@gmail.com, sean@poorly.run, daniel.vetter@ffwll.ch,
+        seanpaul@chromium.org, lyude@redhat.com,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, quic_saipraka@quicinc.com,
+        will@kernel.org, catalin.marinas@arm.com,
+        quic_psodagud@quicinc.com, maz@kernel.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, mingo@redhat.com
+References: <20211111220206.121610-1-jim.cromie@gmail.com>
+ <20211111220206.121610-9-jim.cromie@gmail.com>
+ <20211112114953.GA1381@axis.com>
+ <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com>
+ <20211112120721.3a4827ce@gandalf.local.home>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <cfbc074c-73a5-b6be-580b-dae398d95d6b@akamai.com>
+Date:   Fri, 12 Nov 2021 12:32:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20211112120721.3a4827ce@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-12_05:2021-11-11,2021-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=799 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111120096
+X-Proofpoint-ORIG-GUID: whcCdKJ9XqGmPezo_Z88Q4exD-BG-aSS
+X-Proofpoint-GUID: whcCdKJ9XqGmPezo_Z88Q4exD-BG-aSS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-12_05,2021-11-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015 adultscore=0
+ mlxlogscore=842 malwarescore=0 priorityscore=1501 spamscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111120097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3f2401f47d29d669e2cb137709d10dd4c156a02f:
 
-  RISC-V: Add hypervisor extension related CSR defines (2021-10-04 04:54:55 -0400)
 
-are available in the Git repository at:
+On 11/12/21 12:07 PM, Steven Rostedt wrote:
+> On Fri, 12 Nov 2021 10:08:41 -0500
+> Jason Baron <jbaron@akamai.com> wrote:
+> 
+>>> A key difference between that patchset and this patch (besides that
+>>> small fact that I used +x instead of +T) was that my patchset allowed
+>>> the dyndbg trace to be emitted to the main buffer and did not force them
+>>> to be in an instance-specific buffer.  
+>>
+>> Yes, I agree I'd prefer that we print here to the 'main' buffer - it seems to keep things simpler and easier to combine the output from different
+>> sources as you mentioned.
+> 
+> I do not want anything to print to the "main buffer" that can not be
+> filtered or turned off by the tracing infrastructure itself (aka tracefs
+> file system).
+> 
+> Once we allow that, then the trace file will become useless because
+> everything will write to the main buffer and fill it with noise.
+> 
+> Events that can be enabled and disabled from tracefs are fine, as they can
+> be limited. This is why I added that nasty warning if people leave around
+> trace_printk(), because it does exactly this (write to the main buffer).
+> It's fine for debugging a custom kernel, but should never be enabled in
+> something that is shipped, or part of mainline.
+> 
+> -- Steve
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.16-mw1
+Ok, it looks like Vincent's patch defines a dyndbg event and then uses
+'trace_dyndbg()' to output to the 'main' log. So all dynamic output to
+the 'main' ftrace buffer goes through that event if I understand it
+correctly. Here's a pointer to it for reference:
 
-for you to fetch changes up to ffa7a9141bb70702744a312f904b190ca064bdd7:
+https://lore.kernel.org/lkml/20200825153338.17061-3-vincent.whitchurch@axis.com/
 
-  riscv: defconfig: enable DRM_NOUVEAU (2021-10-27 14:36:09 -0700)
+Would you be ok with that approach?
 
-----------------------------------------------------------------
-RISC-V Patches for the 5.16 Merge Window, Part 1
+Thanks,
 
-* Support for time namespaces in the VDSO, along with some associated
-  cleanups.
-* Support for building rv32 randconfigs.
-* Improvements to the XIP port that allow larger kernels to function
-* Various device tree cleanups for both the SiFive and Microchip boards
-* A handful of defconfig updates, including enabling Nouveau.
+-Jason
 
-There are also various small cleanups.
-
-----------------------------------------------------------------
-Dimitri John Ledkov (1):
-      riscv: set default pm_power_off to NULL
-
-Heinrich Schuchardt (1):
-      riscv: defconfig: enable DRM_NOUVEAU
-
-Kefeng Wang (1):
-      riscv/vdso: Drop unneeded part due to merge issue
-
-Krzysztof Kozlowski (11):
-      dt-bindings: mmc: cdns: document Microchip MPFS MMC/SDHCI controller
-      riscv: dts: microchip: drop duplicated nodes
-      riscv: dts: microchip: fix board compatible
-      riscv: dts: microchip: drop duplicated MMC/SDHC node
-      riscv: dts: microchip: drop unused pinctrl-names
-      riscv: dts: microchip: use vendor compatible for Cadence SD4HC
-      riscv: dts: sifive: use only generic JEDEC SPI NOR flash compatible
-      riscv: dts: sifive: fix Unleashed board compatible
-      riscv: dts: sifive: drop duplicated nodes and properties in sifive
-      riscv: dts: microchip: add missing compatibles for clint and plic
-      riscv: dts: sifive: add missing compatible for plic
-
-Palmer Dabbelt (3):
-      Merge remote-tracking branch 'palmer/riscv-vdso-cleanup' into for-next
-      Merge tag 'for-riscv' of https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
-      Merge tag 'riscv-sifive-dt-5.16' of git://gitolite.kernel.org/pub/scm/linux/kernel/git/krzk/linux into for-next
-
-Randy Dunlap (1):
-      riscv: add rv32 and rv64 randconfig build targets
-
-Tong Tiangen (1):
-      riscv/vdso: Add support for time namespaces
-
-Vineet Gupta (1):
-      riscv: mm: don't advertise 1 num_asid for 0 asid bits
-
-Vitaly Wool (1):
-      riscv: remove .text section size limitation for XIP
-
- .../devicetree/bindings/mmc/cdns,sdhci.yaml        |   1 +
- arch/riscv/Kconfig                                 |   1 +
- arch/riscv/Makefile                                |  10 +
- .../dts/microchip/microchip-mpfs-icicle-kit.dts    |  18 +-
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi  |  40 +---
- arch/riscv/boot/dts/sifive/fu540-c000.dtsi         |   2 +-
- .../riscv/boot/dts/sifive/hifive-unleashed-a00.dts |  10 +-
- .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts |   7 +-
- arch/riscv/configs/32-bit.config                   |   2 +
- arch/riscv/configs/64-bit.config                   |   2 +
- arch/riscv/configs/defconfig                       |   7 +-
- arch/riscv/include/asm/page.h                      |   2 +
- arch/riscv/include/asm/pgtable.h                   |   6 +-
- arch/riscv/include/asm/syscall.h                   |   1 +
- arch/riscv/include/asm/vdso.h                      |  13 +-
- arch/riscv/include/asm/vdso/gettimeofday.h         |   7 +
- arch/riscv/kernel/head.S                           |  12 +
- arch/riscv/kernel/reset.c                          |  12 +-
- arch/riscv/kernel/syscall_table.c                  |   1 -
- arch/riscv/kernel/vdso.c                           | 261 +++++++++++++++++----
- arch/riscv/kernel/vdso/vdso.lds.S                  |   6 +-
- arch/riscv/kernel/vmlinux-xip.lds.S                |  10 +-
- arch/riscv/mm/context.c                            |   8 +-
- arch/riscv/mm/init.c                               |   7 +-
- 24 files changed, 311 insertions(+), 135 deletions(-)
- create mode 100644 arch/riscv/configs/32-bit.config
- create mode 100644 arch/riscv/configs/64-bit.config
