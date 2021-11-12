@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3AE44E900
+	by mail.lfdr.de (Postfix) with ESMTP id 7A70D44E901
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbhKLOfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S235189AbhKLOfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:35:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhKLOfh (ORCPT
+        with ESMTP id S235122AbhKLOfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:35:37 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE9AC061766;
-        Fri, 12 Nov 2021 06:32:46 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id e11so18834482ljo.13;
-        Fri, 12 Nov 2021 06:32:46 -0800 (PST)
+        Fri, 12 Nov 2021 09:35:38 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E676C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:32:47 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id z21so38444127edb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jt2s5eE/KZv2f777KX1QTyz+OLPwPl/PkMsoEbWrCGs=;
-        b=i23UwZ6HE1MO8waAeRtHPEn5k2yNK9USGUt+trHLji3BvDimp03/SrKGm5JUcuPans
-         V2/TQzharlHbqb+MaQ1aMV27Gs8R3tAuLPvDAjlf/zDn20Fbec0kYackzhXzZLqy8xn9
-         aKXx/PgK0jKx1h/u7Wym5icG4tk83l0fRUIOBrGhQgv/KOoNf4W+SwqcmBWdaoEUpDeD
-         EOQQbi+V7qBN2WeS2dUcCBnvlxlHnlJ6YTJWP0TxpLJp9L8HZaKDePAwt9caVX2rmlro
-         K7Cf9DvOJ5Om9RDx7yiHFE1+L9udwpYmvO4rC29zzz8XQ0/qmvrn3wH/gZsH0UTAVs4P
-         Vopw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bopc4YbzmQZhCYY8YFa/3OaWvDHSSoSrrq2peGFOJqc=;
+        b=CuEazSfSwGq9/HsFsZ94MHrkjBzRq/Zyyziyu39eWpPcw/4VvldOy7LeXZ2Wd1FF2e
+         sSG09njVHGlnWrXrxkEhig41eY589lkaN3G2fdETSL3wsHE/cgxegBB+3Y0JRJY2HT6e
+         Eqv5jNN2lXY2ZgjRv8HUaLO2L7uH8SRRYN890+FVhd2Xk1k7GWv09Hvhpgfp4UrrvQtK
+         qfZSXp0uRzqcS6U1/6TE6l51ZRzvuTTi/aj4s24Wu69OWP7BKvPDPoiRA2BBT6RsrnPw
+         ptRxNMaEI8qkFXldEdviJdtkG/R+9J4TkQ1DXafrv1Mu0U+M61aw9cvScYxghTSrTbgI
+         prNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jt2s5eE/KZv2f777KX1QTyz+OLPwPl/PkMsoEbWrCGs=;
-        b=L3lJZlUd4de/FFDOzxhMp8+zaKEojbIvxwzPWg2jzik2eVLpJCjGD8wJffNrnurVFh
-         4y5Yyj+32R17wxnGM26nwFUVcyRuSeK0FYDXU1Z2W1RTBVOX7AIBX7U+6vJ0cz7UBPgr
-         AcWbkXwRu0a1jKfbD0qlreoKz2kVRT07IwjwOFb4g/Z3tI0S+gR/qzz6ceOEgqBUwtFA
-         Ke0T7fhVyLvzy09mHAnIspUVTCdXGSvxYsjOEGjP5Dc1Pfkca2Zjuyqw34HSIfYbxQzW
-         IuFkuHi+0RnQUhCqXDku9oS4FrdRtL+JO+ovSKIscG17mLOZyAfBYo2jGBcUwfBf6aQs
-         FCKw==
-X-Gm-Message-State: AOAM532tSoKe1ShooFHFXLhWnQoWZ+VUcgl7FK2KSA6trsM/IJjoGPmq
-        dTPuq9G7fHuNgmrCNLGGUgiVxMd3ujI=
-X-Google-Smtp-Source: ABdhPJxBQ423Ld/XMxX+l3TnJVKv96QnKYPBK0REIsPD1NSxn+CW9FihZYNXZBK1woVGv7zwysv0DA==
-X-Received: by 2002:a2e:a376:: with SMTP id i22mr15560272ljn.201.1636727564749;
-        Fri, 12 Nov 2021 06:32:44 -0800 (PST)
-Received: from [192.168.2.145] (79-139-177-117.dynamic.spd-mgts.ru. [79.139.177.117])
-        by smtp.googlemail.com with ESMTPSA id bn3sm573660ljb.7.2021.11.12.06.32.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 06:32:44 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] drm/tegra: Use drm_dp_aux_register_ddc/chardev()
- helpers
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211107230821.13511-1-digetx@gmail.com>
- <20211107230821.13511-2-digetx@gmail.com>
- <YYk/jfcceun/Qleq@phenom.ffwll.local>
- <0a2c02ae-3fe1-e384-28d3-13e13801d675@gmail.com>
- <YYo9IXjevmstSREu@phenom.ffwll.local>
- <857a48ae-9ff4-89fe-11ce-5f1573763941@gmail.com>
- <efdc184a-5aa3-1141-7d74-23d29da41f2d@gmail.com>
- <71fcbc09-5b60-ee76-49b2-94adc965eda5@gmail.com>
- <49ffd29b-eb64-e0ca-410c-44074673d740@gmail.com>
- <YY5HfUUSmnr6qQSU@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5ee3f964-39ec-f6e2-5a01-230532a8b17e@gmail.com>
-Date:   Fri, 12 Nov 2021 17:32:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=bopc4YbzmQZhCYY8YFa/3OaWvDHSSoSrrq2peGFOJqc=;
+        b=UgF6SPpLEuAIbwX8n4UUbZxJFDDiAZDENY+S6D/dLdXR2lznM881ONzPF4c5UEFQsH
+         OEKxm6+BunfN09FjlhF5Gp42z53tgW7so26UJC83FcZl6p1TQh4Ymxf+36Hqf424Tzsa
+         iZfITLBxNyBaNGeSJmAgWjGitRtYdZcwVzKb9S4pMamAhmVdTLmomaJaviZlxxgPJne8
+         povNIG1hE1KYrThKrFDzap1STNIy0E0TvGD6r7S53Dyh8fvoNnzCx+C/i6a1+Pb1tsjW
+         vUpTInSkEmXC57jFWpOE4VV537AYIPWa6Bi8U0pwmXEUVtP5FriZf7HpaXFsNqyXjPCi
+         I8Ag==
+X-Gm-Message-State: AOAM531xqKEuF0pw1MiV2p2/ErhEGXZtOJW4pFanNsr+6eauVZ60AK7d
+        60BcqIII0fxmXNmKxDKtU8YVmP3fN46TjiZvG10=
+X-Google-Smtp-Source: ABdhPJyEjpYFjQKsgHkSUBYZvP3/e5a8/0qE7e9M/0ogOW0R04xL4CTcZVoAOTGFIto4vMexNN22F3EUxqJCK+6pICo=
+X-Received: by 2002:aa7:cac2:: with SMTP id l2mr22106804edt.168.1636727565953;
+ Fri, 12 Nov 2021 06:32:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YY5HfUUSmnr6qQSU@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:907:60c9:0:0:0:0 with HTTP; Fri, 12 Nov 2021 06:32:45
+ -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <ali15zeidan1955@gmail.com>
+Date:   Fri, 12 Nov 2021 14:32:45 +0000
+Message-ID: <CAM9_WzC=LG5Q9QUnjXTUfNikprkxM7qS3E16+=Vh1w2SYCvsiA@mail.gmail.com>
+Subject: indyk
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.11.2021 13:52, Thierry Reding пишет:
-> On Tue, Nov 09, 2021 at 05:39:02PM +0300, Dmitry Osipenko wrote:
->> 09.11.2021 17:17, Dmitry Osipenko пишет:
->>> 09.11.2021 17:08, Dmitry Osipenko пишет:
->>>>> +static void host1x_drm_dev_deinit(struct host1x_device *dev)
->>>>> +{
->>>>> +	struct drm_device *drm = dev_get_drvdata(&dev->dev);
->>>> And platform_unregister_drivers() should be moved here.
->>>>
->>>
->>> Nah, that should cause deadlock. This ad-hoc is too lame.
->>
->> Actually, there is no problem here as I see now. The host1x driver
->> populates DT nodes after host1x_register() [1], meaning that Host1x DRM
->> will be always inited first.
->>
->> [1]
->> https://elixir.bootlin.com/linux/v5.15/source/drivers/gpu/host1x/dev.c#L475
->>
->> Still I'm not a fan of the ad-hoc solution.
-> 
-> Could we not fix this by making the panel "hot-pluggable"? I don't think
-> there's anything inherent to the driver that would prevent doing so. The
-> original reason for why things are as intertwined as they are now is
-> because back at the time deferred framebuffer creation didn't exist. In
-> fact I added deferred framebuffer support with Daniel's help precisely
-> to fix a similar issue for things like HDMI and DP.
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
+zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
+ Frau
+Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
+=BCr
+Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
+ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
+ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
+m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
+Nachnamen in Verbindung steht und Sie davon profitieren werden.
 
-I don't understand what do you mean by "hot-pluggable", panel is static.
-Please either clarify more or type the patch.
+ Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
+f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
+Bank
+eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertrag war der 16.
+Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
+em
+t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
+mindestens 68.000 Menschen ums Leben kamen.
 
-Keep in mind that fix should be simple and portable because stable
-kernels are wrecked.
+Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
+ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
+war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
+Herr
+ erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
+rben, und
+er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
+meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
+Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
 
-> With HDMI and DP it's slightly less critical, because a lack of mode
-> support would've created a 1024x768 framebuffer, which most HDMI/DP
-> monitors support. However, with panels we need to ensure that the exact
-> mode from the panel is used to create the framebuffer, so it can only be
-> created when the panel is available.
-> 
-> But, given that deferred framebuffer creation works now (which allows
-> the framebuffer console to show up at the preferred resolution for HDMI
-> and DP), even if a monitor is attached only after the driver has probed
-> already, we should be able to make something like that work with panels
-> as well.
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
+Ich
+m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
+ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
+Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
+er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
+besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
+Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
 
-BTW, I see now that DPAUX I2C transfer helper may access
-aux->drm_device. Hence v1 patch isn't correct anyways.
+Es ist besser, dass wir das Geld beanspruchen, als es den
+Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
+bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
+gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
+mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
+=C3=BCr
+wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
 
-For now I'll try to test more the ad-hoc variant with Thomas and send it
-as v2 if we won't have a better solution.
+Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
+brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
+ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
+Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
+Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
+jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
+behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
+Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
+Adresse,
+msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds erstellt hat.
+Gott segne, in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau Kodjovi Hegbor
+msbelinaya892@gmail.com
