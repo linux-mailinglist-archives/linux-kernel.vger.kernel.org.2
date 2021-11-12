@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25EB44EC02
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE0844EC03
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhKLRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        id S235517AbhKLRfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235122AbhKLRer (ORCPT
+        with ESMTP id S235122AbhKLRfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:34:47 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3A4C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:31:56 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so7317864wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:31:56 -0800 (PST)
+        Fri, 12 Nov 2021 12:35:08 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41327C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:32:17 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id o14so8972549plg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wm+5jLpLPmZrf1WlwY6wH3uP/CPvgUOsV/aFaulhYng=;
-        b=iy4Fr3eRlUPIev4qrkkMh2iwMbmbv+ZaysC5z5jyG8sNObrOctjYpZIHaJ0Ga9Jgbw
-         TE2yI+CKXM6hH5nISknngdEmp8nEs9qj0zOiBetN0lzg5TkC23Wl3BKllqTEAdesbf19
-         nN+uF/3cBzvSCjLWHnBC1S61EG9J2RXvXJgQgYvFxurOCy17Bg3a9aVr18/HNG5Cbipp
-         Opt0ljQ7fOJOvZN6Z7D1RkYBhqvWVBai3Yqqah1guzNS+e4AsIBKVCBt+/btsOPfs7Tp
-         jAz6/jtLf9UNb7KIorbq0WiUvkho/QnYvdywVKoppuNwMtN2Q+zFWecPw1vmNwnmPtOO
-         fIHQ==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:cc:from:to:message-id;
+        bh=27qMKBfE9SqMjFa/icnG6O/UTntPosZR3vJbadVwXiU=;
+        b=DBQ0ibsXf4NCyq/ULPbu87OnYXRMaFgFxH2//Z2XWW+RPZit6fCT/wKWNJO0D46CCW
+         yczk2B8vylVOesxhHRI3usqwHj6EiKmiB8CageWaFyA8rfbfdrqW/qi0GJGypRf51Onk
+         N1nDaq0EI7xl8ePvhPjauoemaXwATNstKGZs9Ychd2//EVsTd6cDNQjoDUA7ubv81eIE
+         +xDZ6DBUhca2dutRNEbUoK8QuPWmhYhTXmEsF9fYbaETrukV/K1uiDMfH4wOHJn0NQvn
+         gumVMslOVDaI4iYQf55BLxMa3riZ0YT0He4OgHznowCuKn6p4rL6VwSB41+qR841/uVD
+         tMaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wm+5jLpLPmZrf1WlwY6wH3uP/CPvgUOsV/aFaulhYng=;
-        b=r58djrgrFQGX/xekQzma2JLERmjp1we5yBUr/I/84Vtssj8jL98g6Jn51xpMVmsEyB
-         BxTFjqD5Mpwmh9RV60lPWFsaO3i56VtqAseSk05AFHY0IFe+SGVAhQjiyJXCDAHowfqB
-         MgRsxkEX9EHzRCl31TWxQKoQzvmWsAETjue7eCjDqVnm8RbVq+GebX+K7woq3/LV6l8x
-         5xgOuZeN22FVDJpYv1djI6zYT7JXPryEmuWj1azlu1A3G3irnkch0zX9WFCiOSAh272t
-         QHGsBJsxMA56wVe915wgjt7TT24x1/qoo4e0h37tWgCFUyArjLoTKVIDVE9NfoF0XyXc
-         HAgw==
-X-Gm-Message-State: AOAM530kXhu3EwrixU+COUlDEFrFuyTQKgozWd+AY5kXrTNIubszuEcM
-        x0EiYgK86IHVaUqTPjyHjJ0duQ==
-X-Google-Smtp-Source: ABdhPJwQrlUG0uL+YgowGgUwanoc7Q43jKQ5s7DD79h1qzV7ulQ9mh89/7/0nC/aurFNC+1Z6E4pcA==
-X-Received: by 2002:a1c:1b48:: with SMTP id b69mr18466353wmb.103.1636738315207;
-        Fri, 12 Nov 2021 09:31:55 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id h22sm7879129wmq.14.2021.11.12.09.31.54
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=27qMKBfE9SqMjFa/icnG6O/UTntPosZR3vJbadVwXiU=;
+        b=pQqQExDla26gylGUvSksaQUKnhSHcSeg/wxube5dVEbLvuaCTWl+cxGo+z4zs5/eyY
+         ldZsgdjJxrBykArq8dKqWkr72TSzfh8sTzEpt69po+VisSCchzEQFOmBr5evQzkudIGG
+         3117wwgCLEY7fXm/sQiAHoc9BwzBAla5+FsWiKlNn4PJXll6EYcALoP7LWUWEiNCqVO5
+         AzLs9mdqVfvyYVXF0iZNkIVvacPqMfStEDcvbfQGyjK5Rk1FAySqEKWIA2WQypq7H6EY
+         ZDXGcogYXRKsLfIzUjtNALNonj9Ibi801ayWl7+59xNClJFognUdVd6Ifvg7iOYG5qh8
+         qdDg==
+X-Gm-Message-State: AOAM530nkUGegRDp+o+fhI+i+aF2gCFMcVuEWfY37AYnRMdzKYYi7FU6
+        pJfqbrNwTPVA9ofZR+ovbJeIY+mw9vKgmg==
+X-Google-Smtp-Source: ABdhPJyCrQVPmwKxTW3NnqjcUyZvA7sND1qbR7JaJBjlXHJLK/zwjPmnEk+sQQDvZrmwkXt2pmGiBw==
+X-Received: by 2002:a17:902:b941:b0:143:ae25:ba1a with SMTP id h1-20020a170902b94100b00143ae25ba1amr2737346pls.66.1636738336342;
+        Fri, 12 Nov 2021 09:32:16 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a11sm6862342pfh.108.2021.11.12.09.32.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 09:31:54 -0800 (PST)
-Date:   Fri, 12 Nov 2021 17:31:53 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jon Nettleton <jon@solid-run.com>
-Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>, leoyang.li@nxp.com
-Subject: Re: [PATCH 2/8] bus: fsl-mc: handle DMA config deferral in ACPI case
-Message-ID: <20211112173153.7kdx3dptlif2tqbk@maple.lan>
-References: <20210715140718.8513-1-laurentiu.tudor@nxp.com>
- <20210715140718.8513-2-laurentiu.tudor@nxp.com>
- <20211111172340.fpn4pou2xwm654g5@maple.lan>
- <CABdtJHtDbTXLPKHQiFCAVPmJ16e1TuOtyCWU9PtUMSKhWvfa-w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABdtJHtDbTXLPKHQiFCAVPmJ16e1TuOtyCWU9PtUMSKhWvfa-w@mail.gmail.com>
+        Fri, 12 Nov 2021 09:32:15 -0800 (PST)
+Date:   Fri, 12 Nov 2021 09:32:15 -0800 (PST)
+X-Google-Original-Date: Fri, 12 Nov 2021 09:32:02 PST (-0800)
+Subject: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
+CC:        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-109b0503-bc7c-4da8-8621-28aec8d9df59@palmer-ri-x1c9>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 06:36:58PM +0100, Jon Nettleton wrote:
-> On Thu, Nov 11, 2021 at 6:23 PM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > Hi Laurentiu
-> >
-> > On Thu, Jul 15, 2021 at 05:07:12PM +0300, laurentiu.tudor@nxp.com wrote:
-> > > From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> > >
-> > > ACPI DMA configure API may return a defer status code, so handle it.
-> > > On top of this, move the MC firmware resume after the DMA setup
-> > > is completed to avoid crashing due to DMA setup not being done yet or
-> > > being deferred.
-> > >
-> > > Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> >
-> > I saw regressions on my Honeycomb LX2 (NXP LX2060A) when I switched to
-> > v5.15. It seems like it results in so many sMMU errors that the system
-> > cannot function correctly (it's only about a 75% chance the system will
-> > boot to GUI and even if it does boot successfully the system will hang
-> > up soon after).
-> >
-> > Bisect took me up a couple of blind alleys (mostly due to unrelated boot
-> > problems in v5.14-rc2) by eventually led me to this patch as the cause.
-> > Applying/unapplying this patch to a v5.14-rc3 tree will provoke/fix the
-> > problem and reverting it against v5.15 also resolves the problem.
-> >
-> > Is there some specific firmware version required for this patch to work
-> > correctly?
-> 
-> This patch was merged as a requirement for operational on board networking.
-> This was merged as a prerequisite to landing the patches to support MDIO and
-> phy initialization in general.
+The following changes since commit 3f2401f47d29d669e2cb137709d10dd4c156a02f:
 
-Interesting.
+  RISC-V: Add hypervisor extension related CSR defines (2021-10-04 04:54:55 -0400)
 
-I assumed the change of behaviour comes from properly handling
--EPROBE_DEFER (which can hardly be regarded as a fault with the patch).
+are available in the Git repository at:
 
-Having said that the patch does not seem to be mandatory to get the 1G
-networking working on Honeycomb LX2 (running ACPI). By taking v5.15 and
-reverting as I shared previously, I am still able to access the network
-using the 1G port on the back of the unit (although I didn't do any
-performance tests).
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.16-mw1
 
+for you to fetch changes up to ffa7a9141bb70702744a312f904b190ca064bdd7:
 
-> The correct solution for the problem you are seeing is the ACPI
-> maintainers figuring out how to land the IORT RMR patchset.  Until
-> that is done the only workaround is setting "arm-smmu.disable_bypass=0
-> iommu.passthrough=1" on the kernel commandline.  The latter option is
-> required since 5.15 and I haven't had time or energy to figure out
-> why.  The proper solution is to just land the IORT RMR patchset and
-> let HoneyComb run with the SMMU enabled.
+  riscv: defconfig: enable DRM_NOUVEAU (2021-10-27 14:36:09 -0700)
 
-Thanks for the update. I'll probably adopt iommu.passthrough=1 for now.
-That allows me to adopt a distro kernel when it updates to v5.15.
+----------------------------------------------------------------
+RISC-V Patches for the 5.16 Merge Window, Part 1
 
+* Support for time namespaces in the VDSO, along with some associated
+  cleanups.
+* Support for building rv32 randconfigs.
+* Improvements to the XIP port that allow larger kernels to function
+* Various device tree cleanups for both the SiFive and Microchip boards
+* A handful of defconfig updates, including enabling Nouveau.
 
-Daniel.
+There are also various small cleanups.
+
+----------------------------------------------------------------
+Dimitri John Ledkov (1):
+      riscv: set default pm_power_off to NULL
+
+Heinrich Schuchardt (1):
+      riscv: defconfig: enable DRM_NOUVEAU
+
+Kefeng Wang (1):
+      riscv/vdso: Drop unneeded part due to merge issue
+
+Krzysztof Kozlowski (11):
+      dt-bindings: mmc: cdns: document Microchip MPFS MMC/SDHCI controller
+      riscv: dts: microchip: drop duplicated nodes
+      riscv: dts: microchip: fix board compatible
+      riscv: dts: microchip: drop duplicated MMC/SDHC node
+      riscv: dts: microchip: drop unused pinctrl-names
+      riscv: dts: microchip: use vendor compatible for Cadence SD4HC
+      riscv: dts: sifive: use only generic JEDEC SPI NOR flash compatible
+      riscv: dts: sifive: fix Unleashed board compatible
+      riscv: dts: sifive: drop duplicated nodes and properties in sifive
+      riscv: dts: microchip: add missing compatibles for clint and plic
+      riscv: dts: sifive: add missing compatible for plic
+
+Palmer Dabbelt (3):
+      Merge remote-tracking branch 'palmer/riscv-vdso-cleanup' into for-next
+      Merge tag 'for-riscv' of https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
+      Merge tag 'riscv-sifive-dt-5.16' of git://gitolite.kernel.org/pub/scm/linux/kernel/git/krzk/linux into for-next
+
+Randy Dunlap (1):
+      riscv: add rv32 and rv64 randconfig build targets
+
+Tong Tiangen (1):
+      riscv/vdso: Add support for time namespaces
+
+Vineet Gupta (1):
+      riscv: mm: don't advertise 1 num_asid for 0 asid bits
+
+Vitaly Wool (1):
+      riscv: remove .text section size limitation for XIP
+
+ .../devicetree/bindings/mmc/cdns,sdhci.yaml        |   1 +
+ arch/riscv/Kconfig                                 |   1 +
+ arch/riscv/Makefile                                |  10 +
+ .../dts/microchip/microchip-mpfs-icicle-kit.dts    |  18 +-
+ arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi  |  40 +---
+ arch/riscv/boot/dts/sifive/fu540-c000.dtsi         |   2 +-
+ .../riscv/boot/dts/sifive/hifive-unleashed-a00.dts |  10 +-
+ .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts |   7 +-
+ arch/riscv/configs/32-bit.config                   |   2 +
+ arch/riscv/configs/64-bit.config                   |   2 +
+ arch/riscv/configs/defconfig                       |   7 +-
+ arch/riscv/include/asm/page.h                      |   2 +
+ arch/riscv/include/asm/pgtable.h                   |   6 +-
+ arch/riscv/include/asm/syscall.h                   |   1 +
+ arch/riscv/include/asm/vdso.h                      |  13 +-
+ arch/riscv/include/asm/vdso/gettimeofday.h         |   7 +
+ arch/riscv/kernel/head.S                           |  12 +
+ arch/riscv/kernel/reset.c                          |  12 +-
+ arch/riscv/kernel/syscall_table.c                  |   1 -
+ arch/riscv/kernel/vdso.c                           | 261 +++++++++++++++++----
+ arch/riscv/kernel/vdso/vdso.lds.S                  |   6 +-
+ arch/riscv/kernel/vmlinux-xip.lds.S                |  10 +-
+ arch/riscv/mm/context.c                            |   8 +-
+ arch/riscv/mm/init.c                               |   7 +-
+ 24 files changed, 311 insertions(+), 135 deletions(-)
+ create mode 100644 arch/riscv/configs/32-bit.config
+ create mode 100644 arch/riscv/configs/64-bit.config
