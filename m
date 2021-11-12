@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F7B44EAF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDFA44EAF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbhKLQFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:05:03 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34729 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232458AbhKLQFA (ORCPT
+        id S235353AbhKLQFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhKLQFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:05:00 -0500
-Received: from [77.244.183.192] (port=62782 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mlZ0B-000BVN-90; Fri, 12 Nov 2021 17:02:07 +0100
-Subject: Re: [PATCH v3 7/8] watchdog: max77714: add driver for the watchdog in
- the MAX77714 PMIC
-To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20211111225852.3128201-1-luca@lucaceresoli.net>
- <20211111225852.3128201-8-luca@lucaceresoli.net>
- <0f278280-27d0-4d43-8065-76ec1f7c19b5@roeck-us.net>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <7584d85a-5050-2b9d-1648-7d3bed2d10ea@lucaceresoli.net>
-Date:   Fri, 12 Nov 2021 17:02:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 12 Nov 2021 11:05:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3454C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EIMDZB8v/QNJMWxEA/VFn/Tm47nWxYESvcNR8W/yUnw=; b=BAryPcgHMRZueNA27yenIqBFR8
+        WG9jV7KoerYCgTPtFvt5mKnJoj8jWQurXL0IiJulsUVPhGWDwWTDhYbyuclncs2dBqtuKhcdKey3w
+        26zqIkG+mTKRuPloNuJiFMBpUC5N2eF3CKwpCZQkNdFnQipVi8rh+SMKfjxZm0K87JcwUZR8xRv9X
+        nJpoZkWfdOYMzbTmRU81rbQBCzGzeTG+V2m3uKM6rv+tyCnKPJX8I6dNl3CNNQrPDym/J3zGnnNC0
+        YlzLsc1n1qOkjugdoJfxRiv9CifhtQMKz+/3p/ituulQW+JhZ/27582fdEURaOIbK/C/YIyZep2cS
+        M+PIkhkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlZ0I-003eMF-Qr; Fri, 12 Nov 2021 16:02:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9423530001C;
+        Fri, 12 Nov 2021 17:02:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7DAED2CD8E74F; Fri, 12 Nov 2021 17:02:13 +0100 (CET)
+Date:   Fri, 12 Nov 2021 17:02:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, kim.phillips@amd.com,
+        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
+        mpe@ellerman.id.au, maddy@linux.ibm.com
+Subject: Re: [PATCH v2 03/13] perf/x86/amd: add AMD Fam19h Branch Sampling
+ support
+Message-ID: <YY6QBXs0sM16DdbV@hirez.programming.kicks-ass.net>
+References: <20211111084415.663951-1-eranian@google.com>
+ <20211111084415.663951-4-eranian@google.com>
 MIME-Version: 1.0
-In-Reply-To: <0f278280-27d0-4d43-8065-76ec1f7c19b5@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111084415.663951-4-eranian@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Thu, Nov 11, 2021 at 12:44:05AM -0800, Stephane Eranian wrote:
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 38b2c779146f..28559557f966 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -683,11 +683,16 @@ void x86_pmu_disable_all(void)
+>  
+>  		if (!test_bit(idx, cpuc->active_mask))
+>  			continue;
+> +
+> +		if (is_amd_brs(hwc))
+> +			amd_brs_disable();
+> +
+>  		rdmsrl(x86_pmu_config_addr(idx), val);
+>  		if (!(val & ARCH_PERFMON_EVENTSEL_ENABLE))
+>  			continue;
+>  		val &= ~ARCH_PERFMON_EVENTSEL_ENABLE;
+>  		wrmsrl(x86_pmu_config_addr(idx), val);
+> +
+>  		if (is_counter_pair(hwc))
+>  			wrmsrl(x86_pmu_config_addr(idx + 1), 0);
+>  	}
 
-On 12/11/21 15:57, Guenter Roeck wrote:
-> On 11/11/21 2:58 PM, Luca Ceresoli wrote:
->> Add a simple driver to support the watchdog embedded in the Maxim
->> MAX77714
->> PMIC.
->>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>
-> 
-> I just realized that this is effectively a rewrite of
-> drivers/watchdog/max77620_wdt.c.
-> The only difference I can see is is the register offsets (0x91 and 0x92
-> vs. 1 and 2) and some implementation details. Please add support for this
-> watchdog to the other driver or provide a _really_ good reason why that
-> is not possible.
+Please, stick that in amd_pmu_disable_all().
 
-I initially started developing MAX77714 watchdog support as an addition
-to max77620_wdt.c as the procedures look identical at least for the
-basic features.
-
-But the register content seems completely different. Here are the notes
-I took at that time:
-
--------------------------8<-------------------------
-
-MAX77620 has reg ONOFFCNFG1  at 0x41, ONOFFCNFG2  at 0x42.
-MAX77714 has reg CNFG1_ONOFF at 0x93, CNFG2_ONOFF at 0x94.
-OK, we can handle this with a register indirection table, indexed by
-chip model.
-
-MAX77620 has MAX77620_REG_FPS_CFG0 register.
-On MAX77714 I was unable to find any such register (I haven't looked at
-FPS in detail though).
-OK, we can handle this with some if()s or entirely disable PM on the
-77714 until anybody cares.
-
-MAX77620 ONOFFCNFG1  has SFT_RST in bit 7.
-MAX77714 CNFG1_ONOFF has SFT_RST is bit 6.
-Uhm, should we have a _bit_ indirection table in addition to the
-_register_ indirection table?
-
-MAX77620 ONOFFCNFG2  bit 5 is SLP_LPM_MSK, involved in FPS.
-MAX77620 ONOFFCNFG2  bit 6 is WD_RTS_WK, configures the watchdog timer.
-MAX77714 CNFG2_ONOFF bit 5 is WD_RTS_WK, configures the watchdog timer.
-On MAX77714 I haven't found SLP_LPM_MSK.
-
-MAX77620 has 6 CID registers with "ES version" in CID5.
-MAX77714 has 5 CID registers with "DEVICE id" in CID3.
-CID registers would be useful to get the chip model directly from the
-chip, if only they had the same structure.
-
-Almost all of the registers I have been looking into have similar
-differences.
-
--------------------------8<-------------------------
-
-When I started adding indirection tables the driver started growing
-bigger and uglier, and that little simple driver started being big and
-complex. So I opted to add a new driver.
-
-Let me know whether that sounds OK.
--- 
-Luca
