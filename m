@@ -2,105 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEC444E54B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEB544E55E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234848AbhKLLBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 06:01:03 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:13864 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234144AbhKLLBC (ORCPT
+        id S234834AbhKLLNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 06:13:14 -0500
+Received: from [113.204.237.245] ([113.204.237.245]:41378 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234745AbhKLLNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 06:01:02 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UwBxaTg_1636714678;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UwBxaTg_1636714678)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Nov 2021 18:58:00 +0800
-Date:   Fri, 12 Nov 2021 18:57:58 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
-        guoweichao@oppo.com, guanyuwei@oppo.com, yh@oppo.com,
-        zhangshiming@oppo.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] erofs: add sysfs interface
-Message-ID: <YY5ItpTScHI+f2p+@B-P7TQMD6M-0146.local>
-References: <20211112023003.10712-1-huangjianan@oppo.com>
- <YY39YZcn/a6F0PMh@B-P7TQMD6M-0146.local>
- <67b86422-3133-ff7b-ddb7-c25939bee549@oppo.com>
+        Fri, 12 Nov 2021 06:13:04 -0500
+X-MailGates: (compute_score:DELIVER,40,3)
+Received: from 172.28.114.216
+        by cqmailgates with MailGates ESMTP Server V5.0(16723:0:AUTH_RELAY)
+        (envelope-from <xt.hu@cqplus1.com>); Fri, 12 Nov 2021 19:00:23 +0800 (CST)
+From:   Xiantao Hu <xt.hu@cqplus1.com>
+To:     wim@linux-watchdog.org, p.zabel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux@roeck-us.net, robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     wells.lu@sunplus.com, qinjian@cqplus1.com,
+        Xiantao Hu <xt.hu@cqplus1.com>
+Subject: [PATCH 0/2] Add watchdog driver for Sunplus SP7021 SoC
+Date:   Fri, 12 Nov 2021 18:59:50 +0800
+Message-Id: <20211112105952.216280-1-xt.hu@cqplus1.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <67b86422-3133-ff7b-ddb7-c25939bee549@oppo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 06:10:37PM +0800, Huang Jianan wrote:
-> 在 2021/11/12 13:36, Gao Xiang 写道:
-> > Hi Jianan,
-> > 
-> > On Fri, Nov 12, 2021 at 10:30:02AM +0800, Huang Jianan wrote:
-> > > Add sysfs interface to configure erofs related parameters later.
-> > > 
-> > > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > > Reviewed-by: Chao Yu <chao@kernel.org>
-> > > ---
-> > > since v4:
-> > > - Resend in a clean chain.
-> > > 
-> > > since v3:
-> > > - Add description of sysfs in erofs documentation.
-> > > 
-> > > since v2:
-> > > - Check whether t in erofs_attr_store is illegal.
-> > > - Print raw value for bool entry.
-> > > 
-> > > since v1:
-> > > - Add sysfs API documentation.
-> > > - Use sysfs_emit over snprintf.
-> > > 
-> > >   Documentation/ABI/testing/sysfs-fs-erofs |   7 +
-> > >   Documentation/filesystems/erofs.rst      |   8 +
-> > >   fs/erofs/Makefile                        |   2 +-
-> > >   fs/erofs/internal.h                      |  10 +
-> > >   fs/erofs/super.c                         |  12 ++
-> > >   fs/erofs/sysfs.c                         | 240 +++++++++++++++++++++++
-> > >   6 files changed, 278 insertions(+), 1 deletion(-)
-> > >   create mode 100644 Documentation/ABI/testing/sysfs-fs-erofs
-> > >   create mode 100644 fs/erofs/sysfs.c
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-fs-erofs b/Documentation/ABI/testing/sysfs-fs-erofs
-> > > new file mode 100644
-> > > index 000000000000..86d0d0234473
-> > > --- /dev/null
-> > > +++ b/Documentation/ABI/testing/sysfs-fs-erofs
-> > > @@ -0,0 +1,7 @@
-> > > +What:		/sys/fs/erofs/features/
-> > > +Date:		November 2021
-> > > +Contact:	"Huang Jianan" <huangjianan@oppo.com>
-> > > +Description:	Shows all enabled kernel features.
-> > > +		Supported features:
-> > > +		lz4_0padding, compr_cfgs, big_pcluster, device_table,
-> > > +		sb_chksum.
-> > Please help submit a patch renaming lz4_0padding to 0padding globally
-> > since LZMA and later algorithms also need that...
-> > 
-> > Also, lack of chunked_file and compr_head2 as well?
-> 
-> It seems that these features are also missing in internal.h, I will send a
-> new
-> patchset containing these fixes.
+This is a patch series for watchdog driver for Sunplus SP7021 SoC.
 
-Yeah, these were not used before, but as you're introducing the sysfs
-directories, they need to be filled up.
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-Thanks,
-Gao Xiang
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-> 
-> Thanks,
-> Jianan
-> 
-> > Thanks,
-> > Gao Xiang
+Xiantao Hu (2):
+  watchdog: Add watchdog driver for Sunplus SP7021
+  dt-bindings: watchdog: Add Sunplus SP7021 WDT devicetree bindings
+    documentation
+
+ .../bindings/watchdog/sunplus,sp7021-wdt.yaml |  47 +++
+ MAINTAINERS                                   |   7 +
+ drivers/watchdog/Kconfig                      |  11 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/sunplus_wdt.c                | 297 ++++++++++++++++++
+ 5 files changed, 363 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/sunplus,sp7021-wdt.yaml
+ create mode 100644 drivers/watchdog/sunplus_wdt.c
+
+-- 
+2.33.1
+
