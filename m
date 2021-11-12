@@ -2,246 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E8044EFF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF6044F000
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbhKLXTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 18:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S234943AbhKLXWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 18:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbhKLXTb (ORCPT
+        with ESMTP id S233116AbhKLXWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 18:19:31 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF64C061766;
-        Fri, 12 Nov 2021 15:16:40 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id m15so5356142pgu.11;
-        Fri, 12 Nov 2021 15:16:40 -0800 (PST)
+        Fri, 12 Nov 2021 18:22:07 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B7EC0613F5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:19:15 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id z21so43711445edb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:19:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o42iCIyKTE0wGh5uE7Fre4OwYvIXk4RRf46useFLA9U=;
-        b=i+Zu61kHw0GzD5zlA0Rn+AEonWgE4Eazdxfyqr+06xsm4IabPpSTYEN57zfxRxGytl
-         /NbYL9itVlFqF8g4n132z86u6uhvpaj2vmSvu/DAW8W97ThepowrPS1AHkgdSQmoRNIe
-         zK/jyjIG3wpe2zGpKJbodcUoXgLoABEMH36ixS4LD8MbR0JVW8X6nDH3A0xoPZVLfsLD
-         0hz7IhzGgGFpDh/Vvg1EJbKBBP5T8HEBFSeKmR329kXEjynGq4+3ArPBBr2erOF24ImP
-         I9/GGbg6imZ1ph4vAHQhxfRUc5rGFuT+uVlejJVqqJoZLjv3lT+pQZN9aQpWKTVFDhCQ
-         uudg==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=PzfB2r9Lts83D+w1nh0/7Xk65VCP1/bBRA3N7CtjrYI=;
+        b=LCt7VcLC+QrccI1OS6B4rH/tpoNKiTgVMgh07bXtFgeDmfUYoX2cRD0CD8mF2UbC4F
+         H38YZf66EekQfZLxvqxtL1KADuSEt+7cdxnfAs4dFHETAK+a/bVy/iuEalo4wBV24CCu
+         CU2jsmN2s66d188G+1P7ZHG4fKlIkLUrJ1344TEKCqmTYD2W4ytssAyOF91SvzMbwGhY
+         D1leiipIeqZi2UH9CrqCFy56BhJZQJ++f+C4IxkugikdROddfSFR3KLudyC1cnuWpJ69
+         qHhTJOLFRk7W+XpvDAWvb8ULWskl6u24LwKIAeFa0zA9FGjHGRQ7nGMdF+iX3NM8LW0t
+         NsNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o42iCIyKTE0wGh5uE7Fre4OwYvIXk4RRf46useFLA9U=;
-        b=Kj4VIBMdoNBJ2czY+dWNAAWftbjjjoLOy7kOO+zCK3WoRv9U1m7yvzOXFglY0pIwQ9
-         zgCM+q+uX2A9YZ/6Yfk3oSiqBMY7pxmiqAaVzr09k48PPjUwv79/b/p3PKxUUtwKUVz5
-         BV4JHPkMIldC0feacdBz9mQGjtt9pzgyEgwBYSARm1qvnJuC6Pl7FHUD3+zqKoFirbrW
-         3s9FJvXj5TcB+lUrsv3ThuWkbpk0/FuKnZoV3SStTtWte4sciz6HyFm5z1ABSiFoAmcL
-         Q3bA041tcELZsvvwamJgUxD0pCWfJEpRp/pZUAXZFzcNupDH/fF+Z/cl8yU9vzkzyywh
-         cdwg==
-X-Gm-Message-State: AOAM5305t91FLLzYSsJD00BUSqPBdKh4xV+3QEq88Ab5NR39zbzEAF/n
-        FPecmNCMO4bdzTxnU+pOUWo=
-X-Google-Smtp-Source: ABdhPJyHwcW30qnndB+fgKgbwVE1y/aaXFVVoZGpiPodrAVNNsjXWjxVPqUiul7ArgHmxeaDZxtN6g==
-X-Received: by 2002:a05:6a00:cc8:b0:49f:c4a9:b9f1 with SMTP id b8-20020a056a000cc800b0049fc4a9b9f1mr17156385pfv.32.1636759000167;
-        Fri, 12 Nov 2021 15:16:40 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d2sm7897172pfj.42.2021.11.12.15.16.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 15:16:39 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-To:     Wells Lu <wellslutw@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de
-Cc:     vincent.shih@sunplus.com, Wells Lu <wells.lu@sunplus.com>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <cover.1636620754.git.wells.lu@sunplus.com>
- <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a8c656b8-a564-6aa6-7ca4-50e7a0bd65a1@gmail.com>
-Date:   Fri, 12 Nov 2021 15:16:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=PzfB2r9Lts83D+w1nh0/7Xk65VCP1/bBRA3N7CtjrYI=;
+        b=7LLLdAEh60AH3Xof2C6P3H93HeXk4Q2YCujMgGgPndXUORSQWrTthrZjMcJb4ERjVx
+         7041+c42JeB4QJwQHaVb2FK/j72+h+75zVEKqLxAPSMmqPtdy+J6Y5u93uQPCm8926/+
+         LrIZ7G8P7GIiEg5bAESMjtG3ff5CIaE3ZnFRKew6qx/ZUqMJwfYjKPG0kAg/ywhap8kh
+         QQcmGgwAXedD6uReHH6oooZD1Fsggg613WCC95jU+OEeB+tzuQ73T5b+Gzhy4YXZc6QG
+         z431OW/wsGWkIMeamIxlEBOxqO2h0vq74G/8W9DMKKjZa56SNEwOF45dezZQtl1v/g6h
+         OjhQ==
+X-Gm-Message-State: AOAM532LkFFopfunP4DNiYmOpejPSTXHSMz6b66DaowKOrPl4cX2NyVe
+        0imnZKbNpcBkIf9jFFqvreuODDk81oL5IsLFLQ4sUSRhEtfC
+X-Google-Smtp-Source: ABdhPJwlh9JjMWtJMDz75t58iKQ/UrL60fWqtv+4iD58UMzywsqCd7ezf3/QpGC1srSkk/JWEuyeAVj0gqIUgbcdbhk=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr23713291ejc.69.1636759154232;
+ Fri, 12 Nov 2021 15:19:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 12 Nov 2021 18:19:03 -0500
+Message-ID: <CAHC9VhQVodwxiEheuUM=XgwdytuCE0boQ-h4xt=SqOTHv0PffA@mail.gmail.com>
+Subject: [GIT PULL] SELinux fix / revert for v5.16 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 1:04 AM, Wells Lu wrote:
-> Add driver for Sunplus SP7021.
-> 
-> Signed-off-by: Wells Lu <wells.lu@sunplus.com>
-> ---
+Hi Linus,
 
-[snip]
+Unfortunately I need to request a revert for two LSM/SELinux patches
+that came in via the network tree.  The two patches in question add a
+new SCTP/LSM hook as well as an SELinux implementation of that LSM
+hook.  The short version of "why?" is in the commit description of the
+revert patch, but I'll copy-n-paste the important bits below to save
+some time for the curious:
 
-> +u32 mdio_read(struct sp_mac *mac, u32 phy_id, u16 regnum)
-> +{
-> +	int ret;
-> +
-> +	ret = hal_mdio_access(mac, MDIO_READ_CMD, phy_id, regnum, 0);
-> +	if (ret < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	return ret;
-> +}
-> +
-> +u32 mdio_write(struct sp_mac *mac, u32 phy_id, u32 regnum, u16 val)
-> +{
-> +	int ret;
-> +
-> +	ret = hal_mdio_access(mac, MDIO_WRITE_CMD, phy_id, regnum, val);
-> +	if (ret < 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	return 0;
-> +}
+   ... Unfortunately these two patches were merged
+   without proper review (the Reviewed-by and Tested-by
+   tags from Richard Haines were for previous revisions
+   of these patches that were significantly different)
+   and there are outstanding objections from the SELinux
+   maintainers regarding these patches.
 
-You should not be exposing these functions, if you do, that means
-another part of your code performs MDIO bus read/write operations
-without using the appropriate layer, so no.
+   Work is currently ongoing to correct the problems
+   identified in the reverted patches, as well as others
+   that have come up during review, but it is unclear at
+   this point in time when that work will be ready for
+   inclusion in the mainline kernel.  In the interest of
+   not keeping objectionable code in the kernel for
+   multiple weeks, and potentially a kernel release, we
+   are reverting the two problematic patches.
 
-> +
-> +static int mii_read(struct mii_bus *bus, int phy_id, int regnum)
-> +{
-> +	struct sp_mac *mac = bus->priv;
-> +
-> +	return mdio_read(mac, phy_id, regnum);
-> +}
-> +
-> +static int mii_write(struct mii_bus *bus, int phy_id, int regnum, u16 val)
-> +{
-> +	struct sp_mac *mac = bus->priv;
-> +
-> +	return mdio_write(mac, phy_id, regnum, val);
-> +}
-> +
-> +u32 mdio_init(struct platform_device *pdev, struct net_device *ndev)
+As usual with these things there is plenty of context to go with this
+and I'll try to do my best to provide that now.  This effort started
+with a report of SCTP client side peel-offs not working correctly with
+SELinux, Ondrej Mosnacek put forth a patch which he believed properly
+addressed the problem but upon review by the netdev folks Xin Long
+described some additional issues and submitted an improved patchset
+for review.  The SELinux folks reviewed Xin Long's initial patchset
+and suggested some changes which resulted in a second patchset (v2)
+from Xin Long; this is the patchset that is currently in your tree.
+Unfortunately this v2 patchset from Xin Long was merged before it had
+spent even just 24 hours on the mailing lists during the early days of
+the merge window, a time when many of us were busy doing verification
+of the newly released v5.15 kernel as well final review and testing of
+our v5.16 pull requests.  Making matters worse, upon reviewing the v2
+patchset there were both changes which were found objectionable by
+SELinux standards as well as additional outstanding SCTP/SELinux
+interaction problems.  At this point we did two things: resumed
+working on a better fix for the SCTP/SELinux issue(s) - thank you
+Ondrej - and we asked the networking folks to revert the v2 patchset.
 
-Those function names need to be prefixed with sp_ to denote the driver
-local scope, this applies for your entire patch set.
+The revert request was obviously rejected, but at the time I believed
+it was just going to be an issue for linux-next; I wasn't expecting
+something this significant that was merged into the networking tree
+during the merge window to make it into your tree in the same window,
+yet as of last night that is exactly what happened.  While we continue
+to try and resolve the SCTP/SELinux problem I am asking once again to
+revert the v2 patches and not ship the current
+security_sctp_assoc_established() hook in a v5.16-rcX kernel.  If I
+was confident that we could solve these issues in a week, maybe two, I
+would refrain from asking for the revert but our current estimate is
+for a minimum of two weeks for the next patch revision.  With the
+likelihood of additional delays due to normal patch review follow-up
+and/or holidays it seems to me that the safest course of action is to
+revert the patch both to try and keep some objectionable code out of a
+release kernel and limit the chances of any new breakages from such a
+change.  While the SCTP/SELinux code in v5.15 and earlier has
+problems, they are known problems, and I'd like to try and avoid
+creating new and different problems while we work to fix things
+properly.
 
-[snip]
+One final thing to mention: Xin Long's v2 patchset consisted of four
+patches, yet this revert is for only the last two.  We see the first
+two patches as good, reasonable, and not likely to cause an issue.  In
+an attempt to create a cleaner revert patch we suggest leaving the
+first two patches in the tree as they are currently.
 
-> diff --git a/drivers/net/ethernet/sunplus/sp_mdio.h b/drivers/net/ethernet/sunplus/sp_mdio.h
-> new file mode 100644
-> index 0000000..d708624
-> --- /dev/null
-> +++ b/drivers/net/ethernet/sunplus/sp_mdio.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright Sunplus Technology Co., Ltd.
-> + *       All rights reserved.
-> + */
-> +
-> +#ifndef __SP_MDIO_H__
-> +#define __SP_MDIO_H__
-> +
-> +#include "sp_define.h"
-> +#include "sp_hal.h"
-> +
-> +#define MDIO_READ_CMD           0x02
-> +#define MDIO_WRITE_CMD          0x01
-> +
-> +u32  mdio_read(struct sp_mac *mac, u32 phy_id, u16 regnum);
-> +u32  mdio_write(struct sp_mac *mac, u32 phy_id, u32 regnum, u16 val);
+Thanks,
+-Paul
 
-Please scope your functions better, and name them sp_mdio_read, etc.
-because mdio_read() is way too generic. Also, can you please follow the
-same prototype as what include/linux/mdio.h has for the mdiobus->read
-and ->write calls, that is phy_id is int, regnum is u32, etc.
+--
+The following changes since commit 5833291ab6de9c3e2374336b51c814e515e8f3a5:
 
-> +u32  mdio_init(struct platform_device *pdev, struct net_device *ndev);
-> +void mdio_remove(struct net_device *ndev);
-> +
-> +#endif
-> diff --git a/drivers/net/ethernet/sunplus/sp_phy.c b/drivers/net/ethernet/sunplus/sp_phy.c
-> new file mode 100644
-> index 0000000..df6df3a
-> --- /dev/null
-> +++ b/drivers/net/ethernet/sunplus/sp_phy.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright Sunplus Technology Co., Ltd.
-> + *       All rights reserved.
-> + */
-> +
-> +#include "sp_phy.h"
-> +#include "sp_mdio.h"
-> +
-> +static void mii_linkchange(struct net_device *netdev)
-> +{
-> +}
+ Merge tag 'pci-v5.16-fixes-1' of
+   git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci
+   (2021-11-11 15:10:18 -0800)
 
-Does your MAC fully auto-configure based on the PHY's link parameters,
-if so, how does it do it? You most certainly need to act on duplex
-changes, or speed changes no?
+are available in the Git repository at:
 
-> +
-> +int sp_phy_probe(struct net_device *ndev)
-> +{
-> +	struct sp_mac *mac = netdev_priv(ndev);
-> +	struct phy_device *phydev;
-> +	int i;
-> +
-> +	phydev = of_phy_connect(ndev, mac->phy_node, mii_linkchange,
-> +				0, mac->phy_mode);
-> +	if (!phydev) {
-> +		netdev_err(ndev, "\"%s\" failed to connect to phy!\n", ndev->name);
-> +		return -ENODEV;
-> +	}
-> +
-> +	for (i = 0; i < sizeof(phydev->supported) / sizeof(long); i++)
-> +		phydev->advertising[i] = phydev->supported[i];
-> +
-> +	phydev->irq = PHY_MAC_INTERRUPT;
-> +	mac->phy_dev = phydev;
-> +
-> +	// Bug workaround:
-> +	// Flow-control of phy should be enabled. MAC flow-control will refer
-> +	// to the bit to decide to enable or disable flow-control.
-> +	mdio_write(mac, mac->phy_addr, 4, mdio_read(mac, mac->phy_addr, 4) | (1 << 10));
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+   tags/selinux-pr-20211112
 
-This is a layering violation, and you should not be doing those things
-here, if you need to advertise flow control, then please set
-ADVERTISE_PAUSE_CAP and/or ADVERTISE_PAUSE_ASYM accordingly, see whether
-phy_set_asym_pause() can do what you need it to.
+for you to fetch changes up to 32a370abf12f82c8383e430c21365f5355d8b288:
 
-> +
-> +	return 0;
-> +}
-> +
-> +void sp_phy_start(struct net_device *ndev)
-> +{
-> +	struct sp_mac *mac = netdev_priv(ndev);
-> +
-> +	if (mac->phy_dev)
-> +		phy_start(mac->phy_dev);
-> +}
-> +
-> +void sp_phy_stop(struct net_device *ndev)
-> +{
-> +	struct sp_mac *mac = netdev_priv(ndev);
-> +
-> +	if (mac->phy_dev)
-> +		phy_stop(mac->phy_dev);
-> +}
-> +
-> +void sp_phy_remove(struct net_device *ndev)
-> +{
-> +	struct sp_mac *mac = netdev_priv(ndev);
-> +
-> +	if (mac->phy_dev) {
-> +		phy_disconnect(mac->phy_dev);
-> +		mac->phy_dev = NULL;
-> +	}
+ net,lsm,selinux: revert the security_sctp_assoc_established() hook
+   (2021-11-12 12:07:02 -0500)
 
-The net_device structure already contains a phy_device pointer, you
-don't need to have one in your sp_mac structure, too.
+----------------------------------------------------------------
+selinux/stable-5.16 PR 20211112
+
+----------------------------------------------------------------
+Paul Moore (1):
+     net,lsm,selinux: revert the security_sctp_assoc_established() hook
+
+Documentation/security/SCTP.rst | 22 ++++++++++++----------
+include/linux/lsm_hook_defs.h   |  2 --
+include/linux/lsm_hooks.h       |  5 -----
+include/linux/security.h        |  7 -------
+net/sctp/sm_statefuns.c         |  2 +-
+security/security.c             |  7 -------
+security/selinux/hooks.c        | 14 +-------------
+7 files changed, 14 insertions(+), 45 deletions(-)
+
 -- 
-Florian
+paul moore
+www.paul-moore.com
