@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6022E44E793
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DA444E79D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbhKLNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:43:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42324 "EHLO mail.kernel.org"
+        id S235056AbhKLNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:44:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231436AbhKLNn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:43:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B24ED60F5B;
-        Fri, 12 Nov 2021 13:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636724435;
-        bh=ztcUkw48Ye/+FvbdMM0UM+MUCAZ6dfJ3uXhKIbYP1eY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ech7FxGHVm4omq2oazqo6LDdjMWV+EAKov69QuUY7Dza8qkr8jDq14gYg8sFwscJc
-         VvrqLqDn4xDvizgQ4tOzvvZ1wiWG4Vmozsi/txKgwJTBrN8Z7+LqGarBukHTaxgNcg
-         XlauOfbgQo9kwKxLfdmxrtmObnMWSCIEoOAWI4TdvfG1dBHyC61uVazf020wgH3G7H
-         HSa2XWW7XQfFRfNPNLhSGzekGLUO6lr0Qr4VGNtma2RU8Dkbt1rhhKxMv7Wts+J82v
-         mO987zj79x+iqj6YUZP7ihcM2quOYYzzt2s2j9zVzRq0Yv1neQg6Ym2nfzAV1IITen
-         L5XQQGwWhg1HA==
-Date:   Fri, 12 Nov 2021 22:40:32 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-Id: <20211112224032.f3b3f43002c28d3c8613b4fa@kernel.org>
-In-Reply-To: <20211111173334.GA1433@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-        <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-        <20211108171336.GA1690@kbox>
-        <20211108131639.33a4f186@gandalf.local.home>
-        <20211108202527.GA1862@kbox>
-        <20211109115634.5fb6d984d7b4e701c740d5f3@kernel.org>
-        <20211109190844.GA1529@kbox>
-        <20211110225630.babcd70ec85f97e369b0e446@kernel.org>
-        <20211111173334.GA1433@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231436AbhKLNoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 08:44:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5FA361054;
+        Fri, 12 Nov 2021 13:41:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636724481;
+        bh=1EWQxxZf7Tg2OgXla/2EFmKmZUhu+4ZGI9QjyyCx0eg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FdfTdH3YIyQlOWt4HXowJ91iA/suCmROkgRng4CuTb2rl+OUe9LTSZ6GqaXhZAypC
+         XHiuG9ur1Tp4OhHVCPe5aQAHtusYwlpcFasX7M4CfXmUSiMKRsIQI9DGR+k1Pm4Jgv
+         7DyQQHoiBwd7fmxOxBEpq5r+UZQdIKflcvv88NwU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.292
+Date:   Fri, 12 Nov 2021 14:41:17 +0100
+Message-Id: <1636724477210236@kroah.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 09:33:34 -0800
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+I'm announcing the release of the 4.4.292 kernel.
 
-> On Wed, Nov 10, 2021 at 10:56:30PM +0900, Masami Hiramatsu wrote:
-> > On Tue, 9 Nov 2021 11:08:44 -0800
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > I would like to keep verifying in writer side then we can ensure the
-> > data on ring buffer (of perf and of ftrace) is sane. If you add the unsafe
-> > flag, you have to change all the code which access the ring buffer, not only
-> > the filter but also eprobes, histograms, perf-tools, and other user-space
-> > tracing tools which reads the tracing buffer directly.
-> > 
-> > > It sounded like Steven wanted to think about this a bit, so I'll wait a
-> > > bit before poking again for consensus :)
-> > > 
-> > > Do you have any strong feelings about where it goes?
-> > 
-> > I recommend you to start verifying the writer side, it should make the
-> > change as small as possible. Unsafe flag idea may involve many other
-> > tools. And it is not fundamentary required for user-events.
-> > 
-> > Thank you,
-> > 
-> > -- 
-> > Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Ok, I will start there.
-> 
-> Are static string buffers required as well for the null check?
-> 
-> Or is this only for dyn strings that require the check?
+All users of the 4.4 kernel series must upgrade.
 
-Good question! The dynamic strings is ensured to be null-terminated,
-but the static string is not because the size is fixed (at least
-event filter checked that.)
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-BTW, I found that the hist_triger_elt_update() doesn't check the
-field size for fixed-size string (only use STR_VAR_LEN_MAX to limit.)
-It seems buggy if the fixed-size char [] field is not null terminated.
-(e.g. it is used for storing array-data)
-Let me fix that.
+thanks,
 
-> Also, I am assuming that __rel_loc offset is based after the __rel_loc
-> payload, IE: Offset 0 of __rel_loc is immediately after the 4 byte
-> __rel_loc description?
+greg k-h
 
-Yes, so if the field is the last one, the offset can be 0.
+------------
 
-Thank you,
+ Makefile                                    |    2 
+ drivers/amba/bus.c                          |    3 
+ drivers/infiniband/hw/qib/qib_user_sdma.c   |   35 +++++---
+ drivers/net/usb/hso.c                       |   45 ++++++----
+ drivers/net/wireless/rsi/rsi_91x_usb.c      |    2 
+ drivers/scsi/scsi.c                         |    4 
+ drivers/scsi/scsi_sysfs.c                   |    9 ++
+ drivers/staging/comedi/drivers/dt9812.c     |  119 ++++++++++++++++++++--------
+ drivers/staging/comedi/drivers/ni_usb6501.c |   14 ++-
+ drivers/staging/comedi/drivers/vmk80xx.c    |   34 ++++----
+ drivers/staging/rtl8192u/r8192U_core.c      |   18 ++--
+ drivers/staging/rtl8712/usb_ops_linux.c     |    2 
+ drivers/usb/gadget/udc/Kconfig              |    1 
+ drivers/usb/storage/unusual_devs.h          |   10 ++
+ fs/isofs/inode.c                            |    2 
+ kernel/printk/printk.c                      |    9 +-
+ 16 files changed, 217 insertions(+), 92 deletions(-)
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Andreas Kemnade (1):
+      net: hso: register netdev later to avoid a race condition
+
+Cheah Kok Cheong (1):
+      staging: comedi: drivers: replace le16_to_cpu() with usb_endpoint_maxp()
+
+Dongliang Mu (1):
+      usb: hso: fix error handling code of hso_create_net_device
+
+Geert Uytterhoeven (1):
+      usb: gadget: Mark USB_FSL_QE broken on 64-bit
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.292
+
+Gustavo A. R. Silva (1):
+      IB/qib: Use struct_size() helper
+
+James Buren (1):
+      usb-storage: Add compatibility quirk flags for iODD 2531/2541
+
+Jan Kara (1):
+      isofs: Fix out of bound access for corrupted isofs image
+
+Johan Hovold (8):
+      comedi: dt9812: fix DMA buffers on stack
+      comedi: ni_usb6501: fix NULL-deref in command paths
+      comedi: vmk80xx: fix transfer-buffer overflows
+      comedi: vmk80xx: fix bulk-buffer overflow
+      comedi: vmk80xx: fix bulk and interrupt message timeouts
+      staging: r8712u: fix control-message timeout
+      staging: rtl8192u: fix control-message timeouts
+      rsi: fix control-message timeout
+
+Mike Marciniszyn (1):
+      IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
+
+Ming Lei (1):
+      scsi: core: Put LLD module refcnt after SCSI device is released
+
+Petr Mladek (1):
+      printk/console: Allow to disable console output by using console="" or console=null
+
+Wang Kefeng (1):
+      ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
+
