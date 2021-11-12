@@ -2,217 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7430244EA6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7037E44EA76
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhKLPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:40:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45976 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235339AbhKLPjY (ORCPT
+        id S235394AbhKLPkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:40:35 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:37525 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235411AbhKLPjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:39:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636731393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1yRNkydUNK+ZkSMdy54HzNSiQ/CpVQa1C/0YRKMDt6I=;
-        b=S2/s6xaSvbupJpLmNnyrFGANXEQLTwdtQg/CVV3DEzxjgpRqt5SeoatsRFodhOnwz7XfDS
-        LLy+QyDumPZWnHjEVgIzWvdUDizgeK/XBwwKc7kHqVAk2oEhzBnjq95OuYdOzvs92RZJ9d
-        tR847qHnDkTrpCvHsCYll5Gk8FB0OQg=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-EAA3Fds0NN-21sB5Afcqpw-1; Fri, 12 Nov 2021 10:36:32 -0500
-X-MC-Unique: EAA3Fds0NN-21sB5Afcqpw-1
-Received: by mail-qv1-f72.google.com with SMTP id h14-20020a0562140dae00b003ae664126e9so8677286qvh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:36:32 -0800 (PST)
+        Fri, 12 Nov 2021 10:39:55 -0500
+Received: by mail-oi1-f177.google.com with SMTP id o83so18531135oif.4;
+        Fri, 12 Nov 2021 07:37:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1yRNkydUNK+ZkSMdy54HzNSiQ/CpVQa1C/0YRKMDt6I=;
-        b=mP4850CohryYMLpQu7JwHCKr0YnUWLOL7OrnNCJiyubF2tdj4T6raf4ooG0qennxLz
-         pmF6R8hrMMZ8mb6gipfb/T4SK4e5JYQjDKx80TYCNzuqqKjC3KsltvIBxYJPO1i9mbQc
-         emperrw+EnfMgQ97C+k3uMSDsui5J7KcRuwcFVELN4sE5UqSnDjwIeUDG59DsSJnFixP
-         kHIm5sKB7Fdl9fCJzfnkB0N8hkuM5T78SyhN96TMvfVAYcn3nUlEiLMsYiFaVHSdYT/S
-         NDeGF3Fd3g712xfuzf3Kv6G/z6J/hItS3+3ELsg4bMXP+92wfJne1ASSoFnwLPaEpbe/
-         8Q9w==
-X-Gm-Message-State: AOAM532KNJPPgnHZXqs7BhwxxvqLaFN94EQTYbYSLnzWrC6yk1AZjDLa
-        ntmx+QM7knXHIGy3O7Fyve35mCWa5qgmeYuuOuP7O/kC4aKUk5EkYX+8BJx7Yg3/0veT+ZD8F/b
-        n4Nl27sMy95k2n1xnyRFvJz4=
-X-Received: by 2002:a05:620a:2889:: with SMTP id j9mr13666560qkp.135.1636731391999;
-        Fri, 12 Nov 2021 07:36:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyFKfis7Tfvod70r4n3+rCxCai5vb1NmzpAB89WVpeGak/SPYaHK+9rktro10Lf1pYOihkdQw==
-X-Received: by 2002:a05:620a:2889:: with SMTP id j9mr13666538qkp.135.1636731391781;
-        Fri, 12 Nov 2021 07:36:31 -0800 (PST)
-Received: from localhost (pool-68-160-176-52.bstnma.fios.verizon.net. [68.160.176.52])
-        by smtp.gmail.com with ESMTPSA id j13sm2955023qkp.111.2021.11.12.07.36.31
+        bh=9TaMLHWl9iJZfvjLD+Yt9rxlhwt1x09IX/sYxXtA9Lg=;
+        b=QQH4rzxL0EHsi57pRBsPa9wUnLqcsDJtIYmXaPbyq/V4w26aKVuR0+Qo7pCfyK5VnG
+         oW9ibWrNB61ME1SsAdU9TpYqGm4EsXPD6bl5Saxe7kDNvilQL9rqqwkGBQt67RhOU6mc
+         lgMeAeTEctsExsEblijQ+ifc6WNQez0CiONEnQh7C0/nL7lV7Dlxr1MR94a/ggLAXyJz
+         UfpZmTY/IpD6+O0KxR0ADSNvluIjjjY2xehJnPGEk3XFAhnEqfP1TQ8W9qlPETcW+u4G
+         dpo2ouroZRX0BISiZXqETFuTKvnUmhjA2pOOKFfKqNBCh93tD3GeH/LcYLSA815hKgbv
+         9JFA==
+X-Gm-Message-State: AOAM531ldQg3Qf0asIC7jDGVx4S86i8MgSW6PinO50p9cdoW+sNi9pBn
+        FC1i5L7k0eUJvEPlOTE/2A==
+X-Google-Smtp-Source: ABdhPJzIudTzP51IgML2CH0/sEdLOcsKs5b3oI04qJMTV4lzrHlxjPfAROskO5jZxg/7fAZGED04TQ==
+X-Received: by 2002:a05:6808:1814:: with SMTP id bh20mr26725397oib.31.1636731424737;
+        Fri, 12 Nov 2021 07:37:04 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bk41sm67699oib.31.2021.11.12.07.37.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 07:36:31 -0800 (PST)
-Date:   Fri, 12 Nov 2021 10:36:30 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        david <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] dax,pmem: Implement pmem based dax data recovery
-Message-ID: <YY6J/mdSmrfK8moV@redhat.com>
-References: <20211106011638.2613039-1-jane.chu@oracle.com>
- <20211106011638.2613039-3-jane.chu@oracle.com>
- <YYoi2JiwTtmxONvB@infradead.org>
- <CAPcyv4hQrUEhDOK-Ys1_=Sxb8f+GJZvpKZHTUPKQvVMaMe8XMg@mail.gmail.com>
- <15f01d51-2611-3566-0d08-bdfbec53f88c@oracle.com>
- <CAPcyv4gwbZ=Z6xCjDCASpkPnw1EC8NMAJDh9_sa3n2PAG5+zAA@mail.gmail.com>
- <795a0ced-68b4-4ed8-439b-c539942b925e@oracle.com>
+        Fri, 12 Nov 2021 07:37:03 -0800 (PST)
+Received: (nullmailer pid 2894576 invoked by uid 1000);
+        Fri, 12 Nov 2021 15:37:02 -0000
+Date:   Fri, 12 Nov 2021 09:37:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wells Lu <wellslutw@gmail.com>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        qinjian@cqplus1.com, dvorkin@tibbo.com,
+        Wells Lu <wells.lu@sunplus.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: Add dt-bindings for Sunplus
+ SP7021
+Message-ID: <YY6KHnXGMYeNq/dK@robh.at.kernel.org>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-3-git-send-email-wells.lu@sunplus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <795a0ced-68b4-4ed8-439b-c539942b925e@oracle.com>
+In-Reply-To: <1635754277-32429-3-git-send-email-wells.lu@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10 2021 at  1:26P -0500,
-Jane Chu <jane.chu@oracle.com> wrote:
+On Mon, Nov 01, 2021 at 04:11:16PM +0800, Wells Lu wrote:
+> Add dt-bindings header files for Sunplus SP7021 SoC.
+> 
+> Signed-off-by: Wells Lu <wells.lu@sunplus.com>
+> ---
+> Changes in v2:
+>  - Added more 'defines' in dt-bindings header files (forgot to add in v1).
+> 
+>  MAINTAINERS                                 |   1 +
+>  include/dt-bindings/pinctrl/sppctl-sp7021.h | 171 ++++++++++++++++++++++++++++
+>  include/dt-bindings/pinctrl/sppctl.h        |  40 +++++++
+>  3 files changed, 212 insertions(+)
+>  create mode 100644 include/dt-bindings/pinctrl/sppctl-sp7021.h
+>  create mode 100644 include/dt-bindings/pinctrl/sppctl.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fd82c77..da6378f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14873,6 +14873,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+>  F:	drivers/pinctrl/sunplus/
+> +F:	include/dt-bindings/pinctrl/sppctl*
+>  
+>  PKTCDVD DRIVER
+>  M:	linux-block@vger.kernel.org
+> diff --git a/include/dt-bindings/pinctrl/sppctl-sp7021.h b/include/dt-bindings/pinctrl/sppctl-sp7021.h
+> new file mode 100644
+> index 0000000..4e07d03
+> --- /dev/null
+> +++ b/include/dt-bindings/pinctrl/sppctl-sp7021.h
+> @@ -0,0 +1,171 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-> On 11/9/2021 1:02 PM, Dan Williams wrote:
-> > On Tue, Nov 9, 2021 at 11:59 AM Jane Chu <jane.chu@oracle.com> wrote:
-> >>
-> >> On 11/9/2021 10:48 AM, Dan Williams wrote:
-> >>> On Mon, Nov 8, 2021 at 11:27 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >>>>
-> >>>> On Fri, Nov 05, 2021 at 07:16:38PM -0600, Jane Chu wrote:
-> >>>>>    static size_t pmem_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff,
-> >>>>>                 void *addr, size_t bytes, struct iov_iter *i, int mode)
-> >>>>>    {
-> >>>>> +     phys_addr_t pmem_off;
-> >>>>> +     size_t len, lead_off;
-> >>>>> +     struct pmem_device *pmem = dax_get_private(dax_dev);
-> >>>>> +     struct device *dev = pmem->bb.dev;
-> >>>>> +
-> >>>>> +     if (unlikely(mode == DAX_OP_RECOVERY)) {
-> >>>>> +             lead_off = (unsigned long)addr & ~PAGE_MASK;
-> >>>>> +             len = PFN_PHYS(PFN_UP(lead_off + bytes));
-> >>>>> +             if (is_bad_pmem(&pmem->bb, PFN_PHYS(pgoff) / 512, len)) {
-> >>>>> +                     if (lead_off || !(PAGE_ALIGNED(bytes))) {
-> >>>>> +                             dev_warn(dev, "Found poison, but addr(%p) and/or bytes(%#lx) not page aligned\n",
-> >>>>> +                                     addr, bytes);
-> >>>>> +                             return (size_t) -EIO;
-> >>>>> +                     }
-> >>>>> +                     pmem_off = PFN_PHYS(pgoff) + pmem->data_offset;
-> >>>>> +                     if (pmem_clear_poison(pmem, pmem_off, bytes) !=
-> >>>>> +                                             BLK_STS_OK)
-> >>>>> +                             return (size_t) -EIO;
-> >>>>> +             }
-> >>>>> +     }
-> >>>>
-> >>>> This is in the wrong spot.  As seen in my WIP series individual drivers
-> >>>> really should not hook into copying to and from the iter, because it
-> >>>> really is just one way to write to a nvdimm.  How would dm-writecache
-> >>>> clear the errors with this scheme?
-> >>>>
-> >>>> So IMHO going back to the separate recovery method as in your previous
-> >>>> patch really is the way to go.  If/when the 64-bit store happens we
-> >>>> need to figure out a good way to clear the bad block list for that.
-> >>>
-> >>> I think we just make error management a first class citizen of a
-> >>> dax-device and stop abstracting it behind a driver callback. That way
-> >>> the driver that registers the dax-device can optionally register error
-> >>> management as well. Then fsdax path can do:
-> >>>
-> >>>           rc = dax_direct_access(..., &kaddr, ...);
-> >>>           if (unlikely(rc)) {
-> >>>                   kaddr = dax_mk_recovery(kaddr);
-> >>
-> >> Sorry, what does dax_mk_recovery(kaddr) do?
-> > 
-> > I was thinking this just does the hackery to set a flag bit in the
-> > pointer, something like:
-> > 
-> > return (void *) ((unsigned long) kaddr | DAX_RECOVERY)
-> 
-> Okay, how about call it dax_prep_recovery()?
-> 
-> > 
-> >>
-> >>>                   dax_direct_access(..., &kaddr, ...);
-> >>>                   return dax_recovery_{read,write}(..., kaddr, ...);
-> >>>           }
-> >>>           return copy_{mc_to_iter,from_iter_flushcache}(...);
-> >>>
-> >>> Where, the recovery version of dax_direct_access() has the opportunity
-> >>> to change the page permissions / use an alias mapping for the access,
-> >>
-> >> again, sorry, what 'page permissions'?  memory_failure_dev_pagemap()
-> >> changes the poisoned page mem_type from 'rw' to 'uc-' (should be NP?),
-> >> do you mean to reverse the change?
-> > 
-> > Right, the result of the conversation with Boris is that
-> > memory_failure() should mark the page as NP in call cases, so
-> > dax_direct_access() needs to create a UC mapping and
-> > dax_recover_{read,write}() would sink that operation and either return
-> > the page to NP after the access completes, or convert it to WB if the
-> > operation cleared the error.
-> 
-> Okay,  will add a patch to fix set_mce_nospec().
-> 
-> How about moving set_memory_uc() and set_memory_np() down to
-> dax_recovery_read(), so that we don't split the set_memory_X calls
-> over different APIs, because we can't enforce what follows
-> dax_direct_access()?
-> 
-> > 
-> >>> dax_recovery_read() allows reading the good cachelines out of a
-> >>> poisoned page, and dax_recovery_write() coordinates error list
-> >>> management and returning a poison page to full write-back caching
-> >>> operation when no more poisoned cacheline are detected in the page.
-> >>>
-> >>
-> >> How about to introduce 3 dax_recover_ APIs:
-> >>     dax_recover_direct_access(): similar to dax_direct_access except
-> >>        it ignores error list and return the kaddr, and hence is also
-> >>        optional, exported by device driver that has the ability to
-> >>        detect error;
-> >>     dax_recovery_read(): optional, supported by pmem driver only,
-> >>        reads as much data as possible up to the poisoned page;
-> > 
-> > It wouldn't be a property of the pmem driver, I expect it would be a
-> > flag on the dax device whether to attempt recovery or not. I.e. get
-> > away from this being a pmem callback and make this a native capability
-> > of a dax device.
-> > 
-> >>     dax_recovery_write(): optional, supported by pmem driver only,
-> >>        first clear-poison, then write.
-> >>
-> >> Should we worry about the dm targets?
-> > 
-> > The dm targets after Christoph's conversion should be able to do all
-> > the translation at direct access time and then dax_recovery_X can be
-> > done on the resulting already translated kaddr.
-> 
-> I'm thinking about the mixed device dm where some provides
-> dax_recovery_X, others don't, in which case we don't allow
-> dax recovery because that causes confusion? or should we still
-> allow recovery for part of the mixed devices?
+Care about OS other than Linux? Should be dual licensed.
 
-I really don't like the all or nothing approach if it can be avoided.
-I would imagine that if recovery possible it best to support it even
-if the DM device happens to span a mix of devices with varying support
-for recovery.
+> +/*
+> + * SP7021 pinmux pinctrl bindings.
+> + * Copyright (C) Sunplus Tech/Tibbo Tech. 2020
+> + * Author: Dvorkin Dmitry <dvorkin@tibbo.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_PINCTRL_SPPCTL_SP7021_H
+> +#define _DT_BINDINGS_PINCTRL_SPPCTL_SP7021_H
+> +
+> +#include <dt-bindings/pinctrl/sppctl.h>
+> +
+> +#define MUXF_GPIO                       0
 
-Thanks,
-Mike
+Where do these numbers come from? Hopefully they correspond to register 
+offsets and aren't made up. A comment either way here would help.
 
+> +#define MUXF_IOP                        1
+> +#define MUXF_L2SW_CLK_OUT               2
+> +#define MUXF_L2SW_MAC_SMI_MDC           3
+> +#define MUXF_L2SW_LED_FLASH0            4
+> +#define MUXF_L2SW_LED_FLASH1            5
+> +#define MUXF_L2SW_LED_ON0               6
+> +#define MUXF_L2SW_LED_ON1               7
+> +#define MUXF_L2SW_MAC_SMI_MDIO          8
+> +#define MUXF_L2SW_P0_MAC_RMII_TXEN      9
+> +#define MUXF_L2SW_P0_MAC_RMII_TXD0      10
+> +#define MUXF_L2SW_P0_MAC_RMII_TXD1      11
+> +#define MUXF_L2SW_P0_MAC_RMII_CRSDV     12
+> +#define MUXF_L2SW_P0_MAC_RMII_RXD0      13
+> +#define MUXF_L2SW_P0_MAC_RMII_RXD1      14
+> +#define MUXF_L2SW_P0_MAC_RMII_RXER      15
+> +#define MUXF_L2SW_P1_MAC_RMII_TXEN      16
+> +#define MUXF_L2SW_P1_MAC_RMII_TXD0      17
+> +#define MUXF_L2SW_P1_MAC_RMII_TXD1      18
+> +#define MUXF_L2SW_P1_MAC_RMII_CRSDV     19
+> +#define MUXF_L2SW_P1_MAC_RMII_RXD0      20
+> +#define MUXF_L2SW_P1_MAC_RMII_RXD1      21
+> +#define MUXF_L2SW_P1_MAC_RMII_RXER      22
+> +#define MUXF_DAISY_MODE                 23
+> +#define MUXF_SDIO_CLK                   24
+> +#define MUXF_SDIO_CMD                   25
+> +#define MUXF_SDIO_D0                    26
+> +#define MUXF_SDIO_D1                    27
+> +#define MUXF_SDIO_D2                    28
+> +#define MUXF_SDIO_D3                    29
+> +#define MUXF_PWM0                       30
+> +#define MUXF_PWM1                       31
+> +#define MUXF_PWM2                       32
+> +#define MUXF_PWM3                       33
+> +#define MUXF_PWM4                       34
+> +#define MUXF_PWM5                       35
+> +#define MUXF_PWM6                       36
+> +#define MUXF_PWM7                       37
+> +#define MUXF_ICM0_D                     38
+> +#define MUXF_ICM1_D                     39
+> +#define MUXF_ICM2_D                     40
+> +#define MUXF_ICM3_D                     41
+> +#define MUXF_ICM0_CLK                   42
+> +#define MUXF_ICM1_CLK                   43
+> +#define MUXF_ICM2_CLK                   44
+> +#define MUXF_ICM3_CLK                   45
+> +#define MUXF_SPIM0_INT                  46
+> +#define MUXF_SPIM0_CLK                  47
+> +#define MUXF_SPIM0_EN                   48
+> +#define MUXF_SPIM0_DO                   49
+> +#define MUXF_SPIM0_DI                   50
+> +#define MUXF_SPIM1_INT                  51
+> +#define MUXF_SPIM1_CLK                  52
+> +#define MUXF_SPIM1_EN                   53
+> +#define MUXF_SPIM1_DO                   54
+> +#define MUXF_SPIM1_DI                   55
+> +#define MUXF_SPIM2_INT                  56
+> +#define MUXF_SPIM2_CLK                  57
+> +#define MUXF_SPIM2_EN                   58
+> +#define MUXF_SPIM2_DO                   59
+> +#define MUXF_SPIM2_DI                   60
+> +#define MUXF_SPIM3_INT                  61
+> +#define MUXF_SPIM3_CLK                  62
+> +#define MUXF_SPIM3_EN                   63
+> +#define MUXF_SPIM3_DO                   64
+> +#define MUXF_SPIM3_DI                   65
+> +#define MUXF_SPI0S_INT                  66
+> +#define MUXF_SPI0S_CLK                  67
+> +#define MUXF_SPI0S_EN                   68
+> +#define MUXF_SPI0S_DO                   69
+> +#define MUXF_SPI0S_DI                   70
+> +#define MUXF_SPI1S_INT                  71
+> +#define MUXF_SPI1S_CLK                  72
+> +#define MUXF_SPI1S_EN                   73
+> +#define MUXF_SPI1S_DO                   74
+> +#define MUXF_SPI1S_DI                   75
+> +#define MUXF_SPI2S_INT                  76
+> +#define MUXF_SPI2S_CLK                  77
+> +#define MUXF_SPI2S_EN                   78
+> +#define MUXF_SPI2S_DO                   79
+> +#define MUXF_SPI2S_DI                   80
+> +#define MUXF_SPI3S_INT                  81
+> +#define MUXF_SPI3S_CLK                  82
+> +#define MUXF_SPI3S_EN                   83
+> +#define MUXF_SPI3S_DO                   84
+> +#define MUXF_SPI3S_DI                   85
+> +#define MUXF_I2CM0_CLK                  86
+> +#define MUXF_I2CM0_DAT                  87
+> +#define MUXF_I2CM1_CLK                  88
+> +#define MUXF_I2CM1_DAT                  89
+> +#define MUXF_I2CM2_CLK                  90
+> +#define MUXF_I2CM2_DAT                  91
+> +#define MUXF_I2CM3_CLK                  92
+> +#define MUXF_I2CM3_DAT                  93
+> +#define MUXF_UA1_TX                     94
+> +#define MUXF_UA1_RX                     95
+> +#define MUXF_UA1_CTS                    96
+> +#define MUXF_UA1_RTS                    97
+> +#define MUXF_UA2_TX                     98
+> +#define MUXF_UA2_RX                     99
+> +#define MUXF_UA2_CTS                    100
+> +#define MUXF_UA2_RTS                    101
+> +#define MUXF_UA3_TX                     102
+> +#define MUXF_UA3_RX                     103
+> +#define MUXF_UA3_CTS                    104
+> +#define MUXF_UA3_RTS                    105
+> +#define MUXF_UA4_TX                     106
+> +#define MUXF_UA4_RX                     107
+> +#define MUXF_UA4_CTS                    108
+> +#define MUXF_UA4_RTS                    109
+> +#define MUXF_TIMER0_INT                 110
+> +#define MUXF_TIMER1_INT                 111
+> +#define MUXF_TIMER2_INT                 112
+> +#define MUXF_TIMER3_INT                 113
+> +#define MUXF_GPIO_INT0                  114
+> +#define MUXF_GPIO_INT1                  115
+> +#define MUXF_GPIO_INT2                  116
+> +#define MUXF_GPIO_INT3                  117
+> +#define MUXF_GPIO_INT4                  118
+> +#define MUXF_GPIO_INT5                  119
+> +#define MUXF_GPIO_INT6                  120
+> +#define MUXF_GPIO_INT7                  121
+> +
+> +#define GROP_SPI_FLASH                  122
+> +#define GROP_SPI_FLASH_4BIT             123
+> +#define GROP_SPI_NAND                   124
+> +#define GROP_CARD0_EMMC                 125
+> +#define GROP_SD_CARD                    126
+> +#define GROP_UA0                        127
+> +#define GROP_ACHIP_DEBUG                128
+> +#define GROP_ACHIP_UA2AXI               129
+> +#define GROP_FPGA_IFX                   130
+> +#define GROP_HDMI_TX                    131
+> +#define GROP_AUD_EXT_ADC_IFX0           132
+> +#define GROP_AUD_EXT_DAC_IFX0           133
+> +#define GROP_SPDIF_RX                   134
+> +#define GROP_SPDIF_TX                   135
+> +#define GROP_TDMTX_IFX0                 136
+> +#define GROP_TDMRX_IFX0                 137
+> +#define GROP_PDMRX_IFX0                 138
+> +#define GROP_PCM_IEC_TX                 139
+> +#define GROP_LCDIF                      140
+> +#define GROP_DVD_DSP_DEBUG              141
+> +#define GROP_I2C_DEBUG                  142
+> +#define GROP_I2C_SLAVE                  143
+> +#define GROP_WAKEUP                     144
+> +#define GROP_UART2AXI                   145
+> +#define GROP_USB0_I2C                   146
+> +#define GROP_USB1_I2C                   147
+> +#define GROP_USB0_OTG                   148
+> +#define GROP_USB1_OTG                   149
+> +#define GROP_UPHY0_DEBUG                150
+> +#define GROP_UPHY1_DEBUG                151
+> +#define GROP_UPHY0_EXT                  152
+> +#define GROP_PROBE_PORT                 153
+> +#define GROP_ANA_I2C_IF                 154
+> +#define GROP_ANA_TEST_IF                155
+> +
+> +#endif
+> diff --git a/include/dt-bindings/pinctrl/sppctl.h b/include/dt-bindings/pinctrl/sppctl.h
+> new file mode 100644
+> index 0000000..3e82989
+> --- /dev/null
+> +++ b/include/dt-bindings/pinctrl/sppctl.h
+> @@ -0,0 +1,40 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * SP7021 pinmux pinctrl bindings.
+> + * Copyright (C) Sunplus Tech/Tibbo Tech. 2020
+> + * Author: Dvorkin Dmitry <dvorkin@tibbo.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_PINCTRL_SPPCTL_H
+> +#define _DT_BINDINGS_PINCTRL_SPPCTL_H
+> +
+> +#define IOP_G_MASTE             (0x01<<0)
+> +#define IOP_G_FIRST             (0x01<<1)
+> +
+> +#define SPPCTL_PCTL_G_PMUX      (0x00|IOP_G_MASTE)
+> +#define SPPCTL_PCTL_G_GPIO      (IOP_G_FIRST|IOP_G_MASTE)
+> +#define SPPCTL_PCTL_G_IOPP      (IOP_G_FIRST|0x00)
+> +
+> +#define SPPCTL_PCTL_L_OUT       (0x01<<0)
+> +#define SPPCTL_PCTL_L_OU1       (0x01<<1)
+> +#define SPPCTL_PCTL_L_INV       (0x01<<2)
+> +#define SPPCTL_PCTL_L_ONV       (0x01<<3)
+> +#define SPPCTL_PCTL_L_ODR       (0x01<<4)
+> +
+> +#define SPPCTL_PCTLE_P(v)       ((v)<<24)
+> +#define SPPCTL_PCTLE_G(v)       ((v)<<16)
+> +#define SPPCTL_PCTLE_F(v)       ((v)<<8)
+> +#define SPPCTL_PCTLE_L(v)       ((v)<<0)
+> +
+> +#define SPPCTL_PCTLD_P(v)       (((v)>>24) & 0xFF)
+> +#define SPPCTL_PCTLD_G(v)       (((v)>>16) & 0xFF)
+> +#define SPPCTL_PCTLD_F(v)       (((v) >> 8) & 0xFF)
+> +#define SPPCTL_PCTLD_L(v)       (((v) >> 0) & 0xFF)
+> +
+> +/*
+> + * pack into 32-bit value:
+> + * pin#{8bit}, typ{8bit}, function{8bit}, flags{8bit}
+> + */
+> +#define SPPCTL_IOPAD(pin, typ, fun, fls) (((pin)<<24)|((typ)<<16)|((fun)<<8)|(fls))
+> +
+> +#endif
+> -- 
+> 2.7.4
+> 
+> 
