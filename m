@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9306A44EC2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B079244EC35
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhKLRwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:52:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235420AbhKLRwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:52:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D0F61029;
-        Fri, 12 Nov 2021 17:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636739370;
-        bh=8SIeWHSpc4GOTIKuj+16/C53joVarOR9V6253bRe61c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=llkYecQP/5zw3tNjyTiqg3ojlE6vpXGdN6ybXpzcZ9e9vUF4Z+ELiTEwae1cHE1i5
-         L4NnkahwbB5SAHRzEWvo2Amzk2s2Up1NYhV3J3sa3aDTfwYeM5C4EogNJcKLhZgt2t
-         nDrCESnIxWwwvHS3yobWe0mXLdEm4sHWozS1HQY8ZHYsQoiB9GGEnDo3U145D8fPXv
-         +LXz3N8FXNooFxJwR81JQiX0j7oZ2UFXN52YjHPBdWkIHU9MnZbIgx4ztc3osMXm6x
-         zs1+uqeoVr6IaC++NLdYvRWGGBRto8CfvApU2SyNVV2nmxw1g8IIr00CUEbx2Uy+fd
-         mLhgM7eFlwdKQ==
-Received: by pali.im (Postfix)
-        id 626D979D; Fri, 12 Nov 2021 18:49:27 +0100 (CET)
-Date:   Fri, 12 Nov 2021 18:49:27 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Armin Wolf <W_Armin@gmx.de>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (dell-smm) Fix warning on /proc/i8k creation error
-Message-ID: <20211112174927.733zi3nt2reox6nz@pali>
-References: <20211112171440.59006-1-W_Armin@gmx.de>
+        id S235540AbhKLRxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:53:41 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:43694 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231919AbhKLRxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 12:53:39 -0500
+Received: from c-24-16-8-193.hsd1.wa.comcast.net ([24.16.8.193] helo=srivatsab-a02.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mlahI-0006py-1E; Fri, 12 Nov 2021 12:50:44 -0500
+Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
+ email aliases
+To:     Jakub Kicinski <kuba@kernel.org>, Joe Perches <joe@perches.com>
+Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
+        Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, amakhalov@vmware.com,
+        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
+        keerthanak@vmware.com, srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        srivatsa@csail.mit.edu
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
+ <20211110173935.45a9f495@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d7f3fec79287a149d6edc828583a771c84646b42.camel@perches.com>
+ <20211111055554.4f257fd2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <fd9df647-4c1a-b4fb-159b-4876bc5cd0b6@csail.mit.edu>
+Date:   Fri, 12 Nov 2021 09:50:33 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20211111055554.4f257fd2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211112171440.59006-1-W_Armin@gmx.de>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 12 November 2021 18:14:40 Armin Wolf wrote:
-> The removal function is called regardless of whether
-> /proc/i8k was created successfully or not, the later
-> causing a WARN() on module removal.
-> Fix that by only registering the removal function
-> if /proc/i8k was created successfully.
-> 
-> Tested on a Inspiron 3505.
-> 
-> Fixes: 039ae58503f3 ("hwmon: Allow to compile dell-smm-hwmon driver without /proc/i8k")
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 
-Acked-by: Pali Rohár <pali@kernel.org>
+[ Resending since my previous reply didn't reach the mailing lists. ]
 
-> ---
->  drivers/hwmon/dell-smm-hwmon.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+On 11/11/21 5:55 AM, Jakub Kicinski wrote:
+> On Wed, 10 Nov 2021 21:19:53 -0800 Joe Perches wrote:
+>> On Wed, 2021-11-10 at 17:39 -0800, Jakub Kicinski wrote:
+>>> On Wed, 10 Nov 2021 12:09:06 -0800 Srivatsa S. Bhat wrote:  
+>>>>  DRM DRIVER FOR VMWARE VIRTUAL GPU
+>>>> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+>>>>  M:	Zack Rusin <zackr@vmware.com>
+>>>> +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+>>>>  L:	dri-devel@lists.freedesktop.org
+>>>>  S:	Supported
+>>>>  T:	git git://anongit.freedesktop.org/drm/drm-misc  
+>>>
+>>> It'd be preferable for these corporate entries to be marked or
+>>> otherwise distinguishable so that we can ignore them when we try 
+>>> to purge MAINTAINERS from developers who stopped participating.
+>>>
+>>> These addresses will never show up in a commit tag which is normally
+>>> sign of inactivity.  
+>>
+>> Funny.
+>>
+>> The link below is from over 5 years ago.
+>>
+>> https://lore.kernel.org/lkml/1472081625.3746.217.camel@perches.com/
+>>
+>> Almost all of those entries are still in MAINTAINERS.
+>>
+>> I think the concept of purging is a non-issue.
 > 
-> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> index eaace478f508..5596c211f38d 100644
-> --- a/drivers/hwmon/dell-smm-hwmon.c
-> +++ b/drivers/hwmon/dell-smm-hwmon.c
-> @@ -627,10 +627,9 @@ static void __init i8k_init_procfs(struct device *dev)
->  {
->  	struct dell_smm_data *data = dev_get_drvdata(dev);
+> I cleaned networking in January and intend to do it again in 2 months.
+> See:
 > 
-> -	/* Register the proc entry */
-> -	proc_create_data("i8k", 0, NULL, &i8k_proc_ops, data);
-> -
-> -	devm_add_action_or_reset(dev, i8k_exit_procfs, NULL);
-> +	/* Only register exit function if creation was successful */
-> +	if (proc_create_data("i8k", 0, NULL, &i8k_proc_ops, data))
-> +		devm_add_action_or_reset(dev, i8k_exit_procfs, NULL);
->  }
+> 054c4610bd05 MAINTAINERS: dccp: move Gerrit Renker to CREDITS
+> 4f3786e01194 MAINTAINERS: ipvs: move Wensong Zhang to CREDITS
+> 0e4ed0b62b5a MAINTAINERS: tls: move Aviad to CREDITS
+> c41efbf2ad56 MAINTAINERS: ena: remove Zorik Machulsky from reviewers
+> 5e62d124f75a MAINTAINERS: vrf: move Shrijeet to CREDITS
+> 09cd3f4683a9 MAINTAINERS: net: move Alexey Kuznetsov to CREDITS
+> 93089de91e85 MAINTAINERS: altx: move Jay Cliburn to CREDITS
+> 8b0f64b113d6 MAINTAINERS: remove names from mailing list maintainers
 > 
->  #else
-> --
-> 2.30.2
-> 
+I'm assuming the purging is not totally automated, is it? As long as
+the entries are informative to a human reader, it should be possible
+to skip the relevant ones when purging inactive entries.
+
+I believe this patch makes the situation better than it is currently
+(at least for the human reader), by marking lists without public
+read-access in a format that is more appropriate. In the future, we
+could perhaps improve on it to ease automation too, but for now I
+think it is worthwhile to merge this change (unless there are strong
+objections or better alternatives that everyone agrees on).
+
+Regards,
+Srivatsa
