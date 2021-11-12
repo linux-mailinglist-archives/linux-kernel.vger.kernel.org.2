@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EAC44E5E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C7744E617
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhKLMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhKLMGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:06:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB4E460F5B;
-        Fri, 12 Nov 2021 12:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636718622;
-        bh=ffeYzujj/IeBGfwFbKhdA6/Hu6ySBnlErnYWQnW5ztg=;
-        h=Date:From:Cc:Subject:In-Reply-To:References:From;
-        b=Pa/P6Mjt6y0jGRIeUabLvDYYvZmYYeesUzo/AKHgFTDLjZTNuyr2obUPEhqzx1dku
-         HfYlYiq8eXB92REdHRNGxEaDRPhrai69Yx3BUrzfAJskyU/kdCq8/Qan4CSCIzgs4h
-         csHzZQnHIRUiaXH6afxAMDKnorG/KghISaar+4X3b/nVPAjjdI5Ya8ptalZTS4z4B1
-         ea0r2bzvIRY+6LTjxFX4c2v9gVl6Bx5CDl8B4Vr8vk3H+mBLFchOvwpuMWFqiJfrdd
-         YYyzT5YQdn0J6S3H2W6P3sKc6Cdeb7m8SWpaaNTSo4iWU3kl2oLuW+J5QjnnGXWRCV
-         lI3P09jhsOOjg==
-Date:   Fri, 12 Nov 2021 12:03:35 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Deepak R Varma <drv@mailo.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 0/3] atomisp: add support for enum frame rate and sizes
-Message-ID: <20211112120335.74e437db@sal.lan>
-In-Reply-To: <cover.1636651027.git.mchehab+huawei@kernel.org>
-References: <cover.1636651027.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S235077AbhKLMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:09:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234910AbhKLMJn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 07:09:43 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B602BC061203;
+        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id c4so8345834pfj.2;
+        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIyRtrqfmfv9Q70WA5OuleW3S97RwfmhJIbO/13nPI0=;
+        b=eUrb7nENr9K/JwpH4dsIeY4/ml8fLrNKUXppJa64u3i+7roPNJxy6uMNnHS2YadqUZ
+         yCPkY8CybmqjnJT6khQDAItloHqXM9bZZUIkOdyMYTXVK5m/36NwK9b+FLviishKTAIO
+         YYkRqV+0h3lAmwuQgRtb+P4tkD3JnOCdy4yY9kZx/kG+Q3jVoPT/vSqlN7FP/5HtMBDQ
+         bF/KmXFYQpClbh1z0IYOwhDQmY35nM+9i1KzpdMYL/6e4EjeOlfMYXpmeP+fqyejc+lE
+         S7Gh16ymepXekxve8I7zwHXpMASvM5Ckjgc2m9yXaEGq8hN9bjmfWRmkFbDtISNIgNml
+         s8+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIyRtrqfmfv9Q70WA5OuleW3S97RwfmhJIbO/13nPI0=;
+        b=QmMGqb8A9SKjJWwdxDPtH0oiTJpnWh1JdLs+jtnO8hSXAmAGAkAbKy2nwiSiFBO517
+         PJQjSMYHVeA0xWcth6ipXJPT/bb6o4LJJwgHwZTki3ko0g0o7ZqsV19UMyI8vkK5VGrL
+         x8CigZ10grSNVZo5gL1V+bHbwa6v2aIjz8Wg3H4wCp+8ISa6RWVRJzr1djxrxYtHUtt5
+         YQT5ESMO72a61Is3DaAP1FC0yiAZXSpqM0/sUveyXrMkpVnltj6A/NZdHIOEt0ZamcyJ
+         iMAqJNHxeIec1eJlfEY8+ikZlZTeRXQS18C91gOGvmcZ23yVFTRShvBKsmt99/KhUmIj
+         ha8g==
+X-Gm-Message-State: AOAM532c9C+Yq+/oAhUWE7e6EX8cKe/TS7K7lhKIkdl77iAfm8QwYIGN
+        ErrjYPRuhfUJkXfMwLPlBkdl+4L2prr3JDqfQcbSWQ==
+X-Google-Smtp-Source: ABdhPJx8ypXWbxfOJRQS60YeMql/1h8CczQ/+31wcaOfd4KGWHLiyyGTBRhCBrI4M6Pm9qh361QThQ==
+X-Received: by 2002:a63:5c13:: with SMTP id q19mr9459006pgb.350.1636718812226;
+        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
+Received: from fanta-arch.localdomain ([148.163.172.142])
+        by smtp.gmail.com with ESMTPSA id f15sm7058837pfe.171.2021.11.12.04.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 04:06:51 -0800 (PST)
+From:   Letu Ren <fantasquex@gmail.com>
+To:     skashyap@marvell.com, jhasan@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
+        Zheyu Ma <zheyuma97@gmail.com>, Wende Tan <twd2.me@gmail.com>
+Subject: [PATCH] scsi: qedf: Fix a UAF bug in __qedf_probe
+Date:   Fri, 12 Nov 2021 20:06:41 +0800
+Message-Id: <20211112120641.16073-1-fantasquex@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 11 Nov 2021 17:27:55 +0000
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+In __qedf_probe, if `qedf->cdev` is NULL which means
+qed_ops->common->probe() failed, then the program will goto label err1,
+scsi_host_put() will free `lport->host` pointer. Because the memory `qedf`
+points to is allocated by libfc_host_alloc(), it will be freed by
+scsi_host_put(). However, the if statement below label err0 only checks
+whether qedf is NULL but doesn't check whether the memory has been freed.
+So a UAF bug occurred.
 
-> Adding support for those two ioctls are trivial, and allow testing
-> different resolutions with the driver.
-> 
-> Together with some improvements I made at camorama, it is now
-> possible to change the atomisp sensor's resolution at the GUI.
-> 
-> Talking about camorama, I also added there an option to disable
-> the Gtk cairo_scale() calls. On my tests here, placing ov2680 on
-> its maximum resolution, I'm getting a framerate of 26 fps, which
-> sounds reasonable, as the maximum would be 30fps, and I'm not
-> using daylight.
-> 
-> When letting cairo_scale() to run, the rate reduces to 8 fps, meaning 
-> that Gtk is not using GPU acceleration.
-> 
-> Funny enough, when resolution is lower, atomisp is giving a very
-> bad framerate (around 3fps, even with the scaler disabled).
-> 
-> This is a very weird result, probably indicating some problems inside
-> the driver. That requires further investigation.
+There are two ways to get to the statements below err0. the first one is
+described as before. `qedf` should be set to NULL. The second way is goto
+`err0` directly. In this way `qedf` hasn't been changed and it has the
+initial value `NULL`. So the program wont't go to the if statement in any
+situation.
 
-Ok, when the sensor's resolution is not the highest one, what happens is
-that  the frame is retrieved via some timeout logic:
+The KASAN logs are as follows:
 
-[10447.865064] ov2680 i2c-OVTI2680:00: ov2680_s_stream one
-[10447.865491] atomisp-isp2 0000:00:03.0: timeout recovery handling done
-[10450.029956] atomisp-isp2 0000:00:03.0: [WARNING]asd 0 pipe ATOMISP ISP PREVIEW output ISP timeout 1!
-[10450.030099] atomisp-isp2 0000:00:03.0: pipe on asd0 timeout cnt: (0, 0, 1, 0) of 2, recover = 1
-[10450.030137] atomisp-isp2 0000:00:03.0: pipe on asd1 timeout cnt: (0, 0, 0, 0) of 2, recover = 1
+[    2.312969] BUG: KASAN: use-after-free in __qedf_probe+0x5dcf/0x6bc0
+[    2.312969]
+[    2.312969] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[    2.312969] Call Trace:
+[    2.312969]  dump_stack_lvl+0x59/0x7b
+[    2.312969]  print_address_description+0x7c/0x3b0
+[    2.312969]  ? __qedf_probe+0x5dcf/0x6bc0
+[    2.312969]  __kasan_report+0x160/0x1c0
+[    2.312969]  ? __qedf_probe+0x5dcf/0x6bc0
+[    2.312969]  kasan_report+0x4b/0x70
+[    2.312969]  ? kobject_put+0x25d/0x290
+[    2.312969]  kasan_check_range+0x2ca/0x310
+[    2.312969]  __qedf_probe+0x5dcf/0x6bc0
+[    2.312969]  ? selinux_kernfs_init_security+0xdc/0x5f0
+[    2.312969]  ? trace_rpm_return_int_rcuidle+0x18/0x120
+[    2.312969]  ? rpm_resume+0xa5c/0x16e0
+[    2.312969]  ? qedf_get_generic_tlv_data+0x160/0x160
+[    2.312969]  local_pci_probe+0x13c/0x1f0
+[    2.312969]  pci_device_probe+0x37e/0x6c0
 
-It sounds that it can't properly detect the end of frame when the
-sensor is not on its highest resolution.
+Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Letu Ren <fantasquex@gmail.com>
+Co-developed-by: Wende Tan <twd2.me@gmail.com>
+Signed-off-by: Wende Tan <twd2.me@gmail.com>
+---
+ drivers/scsi/qedf/qedf_main.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Basically atomisp_wdt_work() is triggered by a 
-IA_CSS_EVENT_TYPE_FW_ASSERT event. Identifying why this is happening 
-is not trivial, though.
-
-Regards,
-Mauro
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 42d0d941dba5..3ea552acd82a 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -3683,11 +3683,6 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
+ err1:
+ 	scsi_host_put(lport->host);
+ err0:
+-	if (qedf) {
+-		QEDF_INFO(&qedf->dbg_ctx, QEDF_LOG_DISC, "Probe done.\n");
+-
+-		clear_bit(QEDF_PROBING, &qedf->flags);
+-	}
+ 	return rc;
+ }
+ 
+-- 
+2.33.1
 
