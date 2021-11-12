@@ -2,212 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EC444F00A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C2544F00D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhKLXja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 18:39:30 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:65020 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229674AbhKLXj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 18:39:28 -0500
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ACLnJ7j009527;
-        Fri, 12 Nov 2021 23:36:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=vJrMSjaQBxnMoVRy3l7Y4Qhr7b87pjsvUjVEHP9sWX4=;
- b=Xzs1ijt+Q3BCOrzYB+0r+5Svcs1slwC3LXcu+/u566KjnCpR5ZwcCCZaQecyB9Lc9R8s
- oevBXRsHmIWsSRD/8cDPtNA9I0oIhOfEWqHN6olJByjID1S8VrQSeOGFxBWbT+74l3mH
- 8M1UPtFhloZ3Rl1Lq8G2NLQ8Ks4PugnFt02T0zF7wmZ/mFszrkmfo0j2is5WDwhfF+QD
- bwYAnglly/i+/K3OupuLjrRjUeSahahdPNbj8MKqkCu0usVJvhvF3aHZAJIWy17t0npU
- s4yRTGufHFmrQv5DCibLL8fcsFjBXtEnLkfEJrer85QM8+CwGg0nG3bJ1K6cYEUiJyLV pw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c9t70b1sh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Nov 2021 23:36:20 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1ACNGo8C087067;
-        Fri, 12 Nov 2021 23:36:19 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by userp3020.oracle.com with ESMTP id 3c63fybbtk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Nov 2021 23:36:19 +0000
+        id S233288AbhKLXml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 18:42:41 -0500
+Received: from mail-dm3nam07on2080.outbound.protection.outlook.com ([40.107.95.80]:65504
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229674AbhKLXmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 18:42:40 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i/Z/yqI6QMosbya80NWaJPmG+jOtQZPVGIkuZuAA1T8TlSySg8ZpKAa2FWvhDMZhzH9UdchkUcFo/3FbYXy9OAH6x+VKJFIU/U0dJACeMe55yec6btDeszKfa59xACOFbRKGjvG6tfkCmHZxedwt1jWx4HoUFmi3KC2pLNLxcG7D9xewqq6W1Nv1jXa/7S8a+iqx7nsvfdLx0UmHUaqtffmqrraRdNN0CMykTFN1+zbjkUyfHzpZiV7X5aQsCGPNVb0Np9tbELLZhreRX5HYQmRXca6TTVl5Xx9DS9w3XZ7946rSApVpbGQRpCgu4BmScDfvRAh7qQ6/6JGy9/TDOw==
+ b=Xtk1f6PHzy+SU56WuYsEdsmU4II5JUh4Ey1zbhOLHfHSIHUbBaE2t2AowT0us5CES0CLk0ar1uqR3qsYSVmMvvVQvw18oYmV5XKSCF/8zLZCpT/kfC1K118i942PYpDEBfbNy2pfjdJdLHjYSfVLAmwKZLGCad0bhWQ+0W8hXmH0CDlPMlXwFYSi9PiJClecbJsiF4z6lnH+jWWJe+pOmyo6AF9MRBujdMNV/zuWIQ54vwCs17jifx4y+S8TMHBQ7Glixp2B1xSb7xiDWRYeBRPfDNtorTfjXzjw2gRCQKSTQ31+oH89ltn9AzfZaPBy2DJmjHW7XC4szAmegGgZLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vJrMSjaQBxnMoVRy3l7Y4Qhr7b87pjsvUjVEHP9sWX4=;
- b=T44JyI0H/4+O03oU8UoL/y7k5BsHP7hQ0VdEjyz6sYI7yTZabrwvMFQSrkwO7EsH3B49N6bjwL6UG0/t5LrBEPpg0Jy0/ZWxBL4lBC40xKf1aykEsI/Ty+FcieNs36GvmtRFicDrTqhGxo7ErRvL2wWvd0wP8/gfcPm1KEWkcM/dERGrQzNKk3VV3n5pjClcBcSVdVonKjMPmOaCTjx3z8kXVI09DbqRjxdbeYr4xWL9pe8VJZyRAh3HQ2wkxl/PJf9RLik6nkMIVn24zgLFT0vhLpMNZ9GKzvZdxkI/4Q1M0stUpMqs011IzpE8+f/887QZTcXf+/2wTh0PcZwvzA==
+ bh=Z1BvMiOou6IiP83iST8RBByVWqWC5YbEDZdT9PmWALg=;
+ b=gyTXYYljF/iA1u2tzJbo4TTYI6qZdV267qpkZBbOZboW+g2f+o3iovlTkOdYcg738DMKleA2R6vtnl9sDsVn1jrtLGwbxvo/Yw8yGMjpj0GFL94O/CbPZEz95MSRvKW6zE2TtfURjIR0URqrqkt49PpFc175QXQedtWj4cAfWfw9ocTvoC0rjAqUjcK8sBTWOnT2n1M35wecUQNC3FVL6mPH70V+shwHi/I9wp6e9doJTa8vbsOwHFGpL2degfdyQEJ0QeXVpg0IcpDC4zvpCbDDUE5w9JwoSMHJO4izRjsLX7mGCpucvIerJ3jyC1sw4xv16efbhCqGQZ7Gm3vz4g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vJrMSjaQBxnMoVRy3l7Y4Qhr7b87pjsvUjVEHP9sWX4=;
- b=d6aWdmA22251bAK6knFg15PrcB5FelgGcZfEJexC1yc1vJsXWFy3YfLOqchAb+tC8m1dDv3rnhL47Aj+J89ODmNLaLqBj+OI/kUU9rpDhLODGohocesvcsjz3J7UbyYdQSQJ57fkyl056xjzV6PB7UN5EFD42csc8fmoku2++V8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB3446.namprd10.prod.outlook.com (2603:10b6:a03:86::25) with
+ bh=Z1BvMiOou6IiP83iST8RBByVWqWC5YbEDZdT9PmWALg=;
+ b=Pb1xRMaaYhg3IFda5lyKByNXiPYdVZdQg6csGusxmy2HeHG0UrUoMMuGmWr/5KOv4R3qW4ATfzZvRaCxGefWh6aHt6sYIdU8p7L2WQcV8H0B4zk3CRX/2UOAp17mN0KqJZ/AhpcFti59aGfIrOlIMOqYKXuYfM5MNGY/nsJ/GLs=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB4670.namprd12.prod.outlook.com (2603:10b6:805:11::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Fri, 12 Nov
- 2021 23:36:17 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::b5bc:c29f:1c2d:afd7]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::b5bc:c29f:1c2d:afd7%8]) with mapi id 15.20.4690.026; Fri, 12 Nov 2021
- 23:36:17 +0000
-Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>,
-        Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211111015037.4092956-1-almasrymina@google.com>
- <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com>
-Date:   Fri, 12 Nov 2021 15:36:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+ 2021 23:39:46 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::e4da:b3ea:a3ec:761c]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::e4da:b3ea:a3ec:761c%7]) with mapi id 15.20.4669.020; Fri, 12 Nov 2021
+ 23:39:46 +0000
+Message-ID: <14e6c746-c7d3-8cca-47ed-b90f31e4e495@amd.com>
+Date:   Fri, 12 Nov 2021 17:39:42 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Cc:     brijesh.singh@amd.com, Sean Christopherson <seanjc@google.com>,
+        Thomas.Lendacky@amd.com, David Rientjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
 Content-Language: en-US
+To:     Peter Gonda <pgonda@google.com>
+References: <20211102142331.3753798-1-pgonda@google.com>
+ <20211102142331.3753798-5-pgonda@google.com> <YYquDWbkIwCkixxD@google.com>
+ <CAMkAt6rHdsdD-L4PbZL7qaOY7GRHmApVJam0V0yY2BnYdhmPjA@mail.gmail.com>
+ <YYrZXRTukz3RccPN@google.com>
+ <CAMkAt6qauoiTBXF9VXRGiqtJD5pTAV=NqKHZgNFXHCkrR50gkg@mail.gmail.com>
+ <eff7a2cb-f78a-646a-dc0c-b24998e9e9af@amd.com>
+ <CAMkAt6rj94Mzb6HBaqQbi7HHfhS4q1O4fxO8M7Xe=TZeZ0zZOg@mail.gmail.com>
+ <CAMkAt6r5MJq0rGYg7MAqm83Xp4mBADSKtQxV=i2_OFuQnDd5Yg@mail.gmail.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+In-Reply-To: <CAMkAt6r5MJq0rGYg7MAqm83Xp4mBADSKtQxV=i2_OFuQnDd5Yg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0221.namprd03.prod.outlook.com
- (2603:10b6:303:b9::16) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+X-ClientProxiedBy: SN4PR0501CA0040.namprd05.prod.outlook.com
+ (2603:10b6:803:41::17) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Received: from [192.168.2.123] (50.38.35.18) by MW4PR03CA0221.namprd03.prod.outlook.com (2603:10b6:303:b9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 23:36:15 +0000
+Received: from [10.0.0.5] (70.112.153.56) by SN4PR0501CA0040.namprd05.prod.outlook.com (2603:10b6:803:41::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.8 via Frontend Transport; Fri, 12 Nov 2021 23:39:44 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f8d043f3-72b8-43aa-9b90-08d9a635384c
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3446:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3446E66605479F29140B667FE2959@BYAPR10MB3446.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Office365-Filtering-Correlation-Id: fd07790b-9656-421d-f9ea-08d9a635b54c
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4670:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB4670DBB3BFB48487282A3001E5959@SN6PR12MB4670.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HT5PryI7mY48pFvrrjUIdFNVJczTOMtS1FXXPOMynX89JEc+TP8Xqzf5tcxpuW5XZLUf0uUBO0FThsAlYnbpWqdRliHoFVAVwO3mgBAElw47O7ieiey8hojyJkRcPQSkj0gxCn3Qb9gncbC+CIxRhi8UvuPF0X3CtZK5SlX642SuHiuv7Rok7L+KpD/gKUU4vCgFzNdxz6Xzg4+PWGvhV4NdeUnF6XOGK9QkZWYddrb/2a6lViKhOsyVYqy7z4EenOzEWi9EUrLgoQk1wojs8+VZtv9Wsxc/t/HsggsJODKO9u5AXhiVRQo2smbJf1fsAk5ABshd0VQZnfpAD23WECxQxo9MoIGzf0DvFilIgooWGtPZlh/Zudd/BBjGwFiv1dsBMQQ66kEqPlqv4tQj+6LP76cGL+lJ2TaUXJlI/82hf0QKiUFtV8Nkdfnqx58SWhzD4Ta+RUW9gY3FlP1hQFykMv91uOpaDPWdnlSMP9x65oaikDaw6XUuAcmJMVV8aAotqPJNdFObRJYD8PS2BMgMDxfdKIjUU+xT17JL1WXjW/1vRc5mOb6UiV/B3+w0QGe6it5TGbX+gW/eBw9np3u4BcfaTlVve0sc5Ltj0fokzi6vRvO5JOxyUWebRdVliMujTHsLH1suuFWsWSx+ONjIQwn1xtFlS6GjBtHgb6jVoPwXPMNf25Z+AjtkDrKWctGmf0AXwELA1F9iHWHj+6bZWAm2+I4W4xC7vfHvzlBskNwcBtzUIpobedkHCST9TNXNbMsQsIbgTtOXRCiNFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(2906002)(36756003)(186003)(83380400001)(16576012)(6486002)(53546011)(66476007)(38350700002)(54906003)(2616005)(86362001)(31696002)(52116002)(316002)(956004)(31686004)(4326008)(66946007)(110136005)(7416002)(8676002)(6666004)(44832011)(508600001)(66556008)(38100700002)(26005)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7CAHmKwKlZqep0lDm362ogakyFXOMrhcrSd67YsqIEHbvlWSJhqQ1Whqhw1ZQjjOW4F/eCwLSALBFMiIBsuKp19JwzqGwQkKIzT8neeYsUgxMIaH7xekb8XJuX5l9eUOOfwSprWd7i8gD/Ad5pw31rT8rIDYAqPE0RkjMzDs9yXDZm+lzAVKsm22ZVGA9GTf/GeXDZvGZMZfhYS66aL8p6gAQOeJQYxUBU9MxyY0PZwZOlw7DM1dcf21n5iv5qCbwoFC5aut3AMIC1C6y5Rv4kBrHgvXbNKJZ+q2vIQD694JtGtC+K5M456Sz820HYM6geD6pUVzG2amrGTs3LxpZC4HeP1VoXd+czKxRFBcReXi5nlDvxquOE4FLVfNr0okVvYBjGAekQ969kGm4/S7dRYEU4xJbt8ddtF7WnRQ5qngKoBrCDmu2Pwhvvvg8fgGNO9oR+X2RqmuQOqEyLyZoW0ntiJNGLSpjQ8tGm1fdf8KUL3QLu6hOMaMC5VXwsNeCBGHMUfL5gsBqgreSE+kXnicCLTjov3DzVIkglrMdq0tuG80yjw7uw4zNKNSac+dcakQdENanF9qbaq/U/tfFqrXt92ZifneNvTVV7pEDYbXKD4Ibm2VouNa6kU2WOBL7wC14QVsULKXXWZoRh7Le48/b3q8pDIPDz51oWSeF92yKpM7sijgb1OSeNL4EyeHSLW8H4BzPUii1xTksfHf4rY98RxpKrdQI51eouwb+2ALh8Z0MbXiaecpBrEHvMmZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(36756003)(86362001)(31686004)(8676002)(8936002)(7416002)(31696002)(83380400001)(38100700002)(2906002)(66946007)(66476007)(66556008)(508600001)(316002)(16576012)(956004)(186003)(26005)(44832011)(2616005)(4326008)(6486002)(5660300002)(54906003)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z2g5eGZmbytHa1JoaHIrRjNSdlY4SWdvcDIxVVUyWTIzTDF4b2JuSkF3VVd6?=
- =?utf-8?B?eDgzMktJaDBIZDJ6Wk1lWmFvYkNDQURDMFNhazZhWkM1eE1uZUk4di9PRjNP?=
- =?utf-8?B?UXZYU3BnSHhVWU56TUhVWFhvSVBVVWdUNU5pMXdRelZnSFU3K3NNaG1Ib3gr?=
- =?utf-8?B?UVFiTU1hYmloeHppMXV0bTRKaDY2K2J5aU9nd3RxNHFnaEhaSGVCM3Y2cE5E?=
- =?utf-8?B?Vlg0NW5LSldBdXQ1VE41cGhIY1IzTHNDUE5FSUJKMzB3OFpYZXcyL3hQK1ZS?=
- =?utf-8?B?S1JZc3YvVTRNbGVjMG5QTFJYQnRnZGo4U2xtbDBpMEZ6VGhqME1HT082RENm?=
- =?utf-8?B?Y1B2aWo2UkRkV0lzSHRnZ0lvU1d0N3dmRzBBKy9iNVZHUEVCL1Z4RkVqTEFT?=
- =?utf-8?B?R1BLRzlJQ285MXdRZFhkMllRNW1BZ3k3SFFUdWF6b0NJY1ZXR1dkU2pVQjJl?=
- =?utf-8?B?c3laY3FseUpNdkNYNkNDbEFjaEtQRm5RZ3cwRjRKVUVORHFHbmVrSlZjM2Uv?=
- =?utf-8?B?VkRkWDBEYU4rNm5RVFpDcFVtRCs3SXRZbmJ6MlZiVk1DcStJbHhGOU40eHMz?=
- =?utf-8?B?TWs0eHdqMlhsbkhFNHpnOUkzelQxZGIwS01WZGVmbGRXYzNDcGtwNHRCNVBH?=
- =?utf-8?B?Y0lMdHV3TmFYSE40V3I1NXZVNkQ4QkdkdStCbUNyLy92eW9IbDRtSlArVG5T?=
- =?utf-8?B?MG1KeTFBcDhubytKVUNNbjk1TWRQQXcrVDBPdm1DazZaZXV5SnBWQ25ob2ho?=
- =?utf-8?B?bGZnT2x4VHBiSC9UTWpubGlQbTBoV05BcWZ1ZHVBa2tyVVNydVZQdnB5L2Jv?=
- =?utf-8?B?RGhQYW5mdTR4bE9jV3ZvZ0NsL012a0l3M0x6aGdsRnlHNWpBbm50UkdLYVFi?=
- =?utf-8?B?dVdjN2hqaGo0eVd5aVZ5V2xNTW5GRVhJdVdaZFpFd3lGZElyU3BmWmR3dzcr?=
- =?utf-8?B?c3JCUUFMbnVMNHJzajh0MTliams2Vithcis2OXlIZDlWZ2lNRzlDWHY0dzlz?=
- =?utf-8?B?UUYybHlRTmJic2RvZUJGS0VqMnV2TldLSE1PN0dZdzZlV0k5cnA2SExsZkNS?=
- =?utf-8?B?UjVtZVdJcDY5aU1GWGJMTElUUHowT3c2MEhYR3BUUzVQelpxclYrdlFtTkM2?=
- =?utf-8?B?UVkyTnhZY05zOWRPazhveVM3V3MreWNPNjBaeDg5T1JBS1VheXVLTzdsUGQw?=
- =?utf-8?B?eENQRXlId2I0c0hNYkVucElob3VCR0hzY1F2RjNnSE5nWHM5dTliWGpzcXF4?=
- =?utf-8?B?UFNnTXRhNjJ2WEU0bXcxM285aS94azl2REYvL2NDQUlveDZYTkpmRys2cVBu?=
- =?utf-8?B?cFo4SXFSdlB5WXB4eFBDQlZEcktLZDdHQlNNSXd3VXMvOXhwenBzVGNVK05J?=
- =?utf-8?B?SnZ5eTB3UDZ3SlNuaXd1eVZQcldyMDQ3elM0c2VEbFZMa0xUOVg0QTZ1bnZQ?=
- =?utf-8?B?endoUlIyOTd6MnZxcFlKcDRWQStJKzJEODE1NlVnZEZQZzlMMytPOHF5WEdC?=
- =?utf-8?B?U2xPVEJST2dtVVg5NkdPcUV6Z1luYll4NVJJRWVNalpBalZxekkyQWdvV1Iy?=
- =?utf-8?B?ajRVQzN5YlFFVXNmQTZtZWVmbVpWckVqTDRJK084SHIrSXVNSGcrRmJzRHht?=
- =?utf-8?B?a3N5MjQ0MTdtZG9nRHV2dW9mbDN3L0dvMy9kZW13WEMvaFVMSEZPODloVldS?=
- =?utf-8?B?cVhlS2R1cE1aeVdjWmVyWXhrUHJ1Z0tLSGtaWkQ5S2RzcXRNUVgwcDd0MUFP?=
- =?utf-8?B?WExEeS9MNlhJNFZnODFFUHRjZ0VDaDVFaFZuU1RYVDgvMGhnYklwSEtaalhw?=
- =?utf-8?B?cExMQnlzQ1kybGp4bUk5WithN3VOdXp5UXNUV0pTYWNWSm4vM0NPTmRiVG9G?=
- =?utf-8?B?enNlc21leEFZNE5rRWszSEpvL09ZOWl4SHgvNzlkUlU1ZFgwTFVqT1lpdU4w?=
- =?utf-8?B?aGNNUzRtNmRPTU5scjdzNUJQTE1BS3hmVjhra0dPOUxsS2FTdE5ZYWtYTmtu?=
- =?utf-8?B?b2dRRzJPUW1CeWZsOTJqNFk5ODFhbURVU0o2Sm1ZR0VtdXhSdXZ1OVhNcnlY?=
- =?utf-8?B?bGJmZzg2TUFodEkxdE5xVkNzcUN6Y0U4WVRKNlNmVk83b1BHa21SMGRHempT?=
- =?utf-8?B?MmN3aldncTBnNmhFa0pRbUFhOGs3V2ROL1gwWDQ4aThkRXVadVUyK1ZQay9k?=
- =?utf-8?Q?cA1T1d2f0APssyHDNj0rx2Y=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8d043f3-72b8-43aa-9b90-08d9a635384c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VGg5dTZ3ZEFlRUw0ZzhBMHlvbmJGL2kvUW10NUphaVlXZ1UrRmZQMTRIREF4?=
+ =?utf-8?B?RWdaMjFpaS9nQjFYN1VuU3BUT2ZXQmN5bUVsNmRMNGovM081WUF6SVlrVjU1?=
+ =?utf-8?B?SFlpZk9pcUF5aVZVVmE5eURONm5lVWJZbVhSWEE1Vnh5RWpXVHV0RENhb3dn?=
+ =?utf-8?B?TlZ0MmpKeXMvcXV6cWxVMVRITERMemk0clhZcUtuQTQrSG4xN3FjU1IxU2Nh?=
+ =?utf-8?B?c0ptWnpuRjVaNVFwU2grOXR0dUZCTVJONnhPWURVb3ZDbllkVVpwMjNncWQy?=
+ =?utf-8?B?RTNwb1pHcU9jcGlNMUlac1VGd2t5azFyZzJEZUVRNURSTnhRSGI2T283bktW?=
+ =?utf-8?B?UFJmblVXNWxZMmRPQ1h4L0VXdU1NVVJnVWtCTC9pbHl3eGE5SVNYUS9Dc3ZK?=
+ =?utf-8?B?MGJHMEdSa2J2QXIvcGxmM0N3QkF0NjVIKzByb0laUGRDUnpaZXJYWmZZcU42?=
+ =?utf-8?B?Sm5Ic1RTNUNOSVUzQmI2RlltUFNnQlhabmczTzQzK1NPdGRpQXVZVTd2SHRi?=
+ =?utf-8?B?dENGUmV4YTdOM0VjMFZ2VFdmdnl1OE1HZ3hKa2pNczNmblR3NU1YaVNuQjlk?=
+ =?utf-8?B?NEJyYlJNWHpqQVZISURxWkUvSGQ5VklRY1d4OXlqR3pFRlBuR3crY2Vjd3RM?=
+ =?utf-8?B?T3QrbktpVVhVb1ZtV05QbmQyTWxjSFNiaHdSL3dBODVSbUUvTmduOVpEUFRR?=
+ =?utf-8?B?eDExUjlveVhDdi9PMDkwUWpJZUE1T0RxdHRvQ3ZUeVE5MEd4YXNFS2xNdlYw?=
+ =?utf-8?B?ZmYzdlFvQkRQRkowN1RqUjNSTTNTUFIyQjF1K0VXVXRHa3dKdWQvU1ZmZHE1?=
+ =?utf-8?B?N09nRWp6clAvYnEyeUUweWo1NUpVMkM2bVJvSm5hbzlFSUc2RHNPSzdZbVlS?=
+ =?utf-8?B?c0tQQTIxL0M3c2dPREFoaERRMmVKQmZzQ2FCdTNtR1cvMFUzbDZoTEQvUVZz?=
+ =?utf-8?B?bjVMaDFLZWllNUVnenNnTlNmWFdLN3VFVHZvL3Jja3Z0UklkNUhjeXp1VWpn?=
+ =?utf-8?B?NTB6L1JRVCtjbk1CUEdpdnU0ejc0b1FHNDVmZ3JaQjlhZ2w1VS9OUllMSjVv?=
+ =?utf-8?B?dnNrN2dDaXpUM0lyOEVNMktDZHJGUkhIMXZNaGVud1JlMXVwYkY2YVJIU0dB?=
+ =?utf-8?B?dm5YQ2ZzbFdIWHRYVkxEa3REVDZRWGovMEN1UEpKQXRaRnZod0d5eGpYMWVw?=
+ =?utf-8?B?dFM4V3BPUFVmdnZqb1VLejdOd2VFM0d1bHFwZFEraUJlOThZRTZkZE5VUE1C?=
+ =?utf-8?B?TmI1Q1JJejhscW5JQmY4UDNqN3R3QVdlVW03cVhPVGNtY3plS2ttQTduU3Yr?=
+ =?utf-8?B?YVhxd3padXB1YSt0NWlmRWh1TnhCYmZyb0tSVERUT2lVL2Z0ZFl4dUVtaDdj?=
+ =?utf-8?B?NVk2Z3dMVmNwM2VBby9PNElUYnY2Ti9Bc1RWTWVXcDFzM0xFMEQ5QlQ4YXBZ?=
+ =?utf-8?B?MklvVDFnQWdDaFhyN2k2U0dMalB2WjlLdkd2N2dFY1NKN09VZXdWSFIvU3Y1?=
+ =?utf-8?B?SXB4bmYwVkpKNUEwR2grZERwT0RNRFlBVUg4ZGFDTE0yYU9yOUEwTUFLOHVG?=
+ =?utf-8?B?SlNYVnpGUUtPaEZDVmJWVjVRMjNvZkgzMEdHTU5qVm13Wm5Rc0hrSVlpVWdu?=
+ =?utf-8?B?dGduY3FqTFR1QUYybWc5UGRjWWJDS2o3b3QxZ0UzNHpwRVJMTVBGTmtodEww?=
+ =?utf-8?B?VVJVK2JjQXNUSnJSYlFJTGQwVWMrQkdzdXgxRzJsZ0hId3VKUVVHOHBaQVhG?=
+ =?utf-8?B?eENPbU0yRUZveHkzd1VGRU11NkxwUVB1LzZUR3N2bWJsYlZWZjhjRDNTcHJJ?=
+ =?utf-8?B?OXUwR09sOWpnUG1CaHlyMUh2UTZjdjN3YjBrdFhWTWlLdUdCMEJGdEdoVzRm?=
+ =?utf-8?B?U2ZPTGhrVXVja0djTmZibC9teTJFKys3ZlVEYnNjdTc2cDhaK1ZmalJ0YXJu?=
+ =?utf-8?B?aXdOQ2pETzdscFlJSnFYRTZGbG9oZUZ3d1FSeGRkUnNvaXkrTlQyeCs3VmlJ?=
+ =?utf-8?B?eXpqMTBxNWRVb2UzVzRVRFJpRFlXSFRkYTZyUHIvQ3NGbUpVd1JiY3pRRGQz?=
+ =?utf-8?B?SS9ZQ0grcWZpR3kvcjdDVEZ0ODMwWGY2R3U4RGFCZmZ0emg5OENwN3NlOENV?=
+ =?utf-8?B?S3lYVkxpUHBGeHpLNlNCQW9pSi8yTzZQK1FTTWpsblpWNDNhWHRzNXpMT3dz?=
+ =?utf-8?Q?SOWXQd6cwZSSJnwnXYJLZc4=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd07790b-9656-421d-f9ea-08d9a635b54c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 23:36:16.9227
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 23:39:46.5827
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cC4w3HkLxoPJbexCimdw/v0mQyIPiWQZ/ux/kfTwz1Ok5mN3usWJy98lWlnEKMTk+yWttHgaYQPUOdB7SRGeAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3446
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10166 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- bulkscore=0 phishscore=0 suspectscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111120118
-X-Proofpoint-GUID: _02NUuKoSA2Gyeh09yrr4b6Gq-ayOG2i
-X-Proofpoint-ORIG-GUID: _02NUuKoSA2Gyeh09yrr4b6Gq-ayOG2i
+X-MS-Exchange-CrossTenant-UserPrincipalName: m3ahlB9RYUpAP9fBYoWV/aXD00MNvV+/NmSPxcr+E+b3dCI5r1XkKg2svCSkVI22CYy9/WLLm7O0qIpdztF6IQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4670
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject:   Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
 
-To:        Muchun Song <songmuchun@bytedance.com>, Mina Almasry <almasrymina@google.com>
+On 11/12/21 10:55 AM, Peter Gonda wrote:
+> On Wed, Nov 10, 2021 at 8:32 AM Peter Gonda <pgonda@google.com> wrote:
+>> On Tue, Nov 9, 2021 at 3:20 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>>>
+>>>
+>>> On 11/9/21 2:46 PM, Peter Gonda wrote:
+>>>> On Tue, Nov 9, 2021 at 1:26 PM Sean Christopherson <seanjc@google.com> wrote:
+>>>>> On Tue, Nov 09, 2021, Peter Gonda wrote:
+>>>>>> On Tue, Nov 9, 2021 at 10:21 AM Sean Christopherson <seanjc@google.com> wrote:
+>>>>>>> There's no need for this to be a function pointer, and the duplicate code can be
+>>>>>>> consolidated.
+>>>>>>>
+>>>>>>> static int sev_do_init_locked(int cmd, void *data, int *error)
+>>>>>>> {
+>>>>>>>          if (sev_es_tmr) {
+>>>>>>>                  /*
+>>>>>>>                   * Do not include the encryption mask on the physical
+>>>>>>>                   * address of the TMR (firmware should clear it anyway).
+>>>>>>>                   */
+>>>>>>>                  data.flags |= SEV_INIT_FLAGS_SEV_ES;
+>>>>>>>                  data.tmr_address = __pa(sev_es_tmr);
+>>>>>>>                  data.tmr_len = SEV_ES_TMR_SIZE;
+>>>>>>>          }
+>>>>>>>          return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+>>>>>>> }
+>>>>>>>
+>>>>>>> static int __sev_init_locked(int *error)
+>>>>>>> {
+>>>>>>>          struct sev_data_init data;
+>>>>>>>
+>>>>>>>          memset(&data, 0, sizeof(data));
+>>>>>>>          return sev_do_init_locked(cmd, &data, error);
+>>>>>>> }
+>>>>>>>
+>>>>>>> static int __sev_init_ex_locked(int *error)
+>>>>>>> {
+>>>>>>>          struct sev_data_init_ex data;
+>>>>>>>
+>>>>>>>          memset(&data, 0, sizeof(data));
+>>>>>>>          data.length = sizeof(data);
+>>>>>>>          data.nv_address = __psp_pa(sev_init_ex_nv_address);
+>>>>>>>          data.nv_len = NV_LENGTH;
+>>>>>>>          return sev_do_init_locked(SEV_CMD_INIT_EX, &data, error);
+>>>>>>> }
+>>>>>> I am missing how this removes the duplication of the retry code,
+>>>>>> parameter checking, and other error checking code.. With what you have
+>>>>>> typed out I would assume I still need to function pointer between
+>>>>>> __sev_init_ex_locked and __sev_init_locked. Can you please elaborate
+>>>>>> here?
+>>>>> Hmm.  Ah, I got distracted between the original thought, the realization that
+>>>>> the two commands used different structs, and typing up the above.
+>>>>>
+>>>>>> Also is there some reason the function pointer is not acceptable?
+>>>>> It's not unacceptable, it would just be nice to avoid, assuming the alternative
+>>>>> is cleaner.  But I don't think any alternative is cleaner, since as you pointed
+>>>>> out the above is a half-baked thought.
+>>>> OK I'll leave as is.
+>>>>
+>>>>>>>> +     rc = init_function(error);
+>>>>>>>>        if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
+>>>>>>>>                /*
+>>>>>>>>                 * INIT command returned an integrity check failure
+>>>>>>>> @@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
+>>>>>>>>                 * failed and persistent state has been erased.
+>>>>>>>>                 * Retrying INIT command here should succeed.
+>>>>>>>>                 */
+>>>>>>>> -             dev_dbg(sev->dev, "SEV: retrying INIT command");
+>>>>>>>> -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
+>>>>>>>> +             dev_notice(sev->dev, "SEV: retrying INIT command");
+>>>>>>>> +             rc = init_function(error);
+>>>>>>> The above comment says "persistent state has been erased", but __sev_do_cmd_locked()
+>>>>>>> only writes back to the file if a relevant command was successful, which means
+>>>>>>> that rereading the userspace file in __sev_init_ex_locked() will retry INIT_EX
+>>>>>>> with the same garbage data.
+>>>>>> Ack my mistake, that comment is stale. I will update it so its correct
+>>>>>> for the INIT and INIT_EX flows.
+>>>>>>> IMO, the behavior should be to read the file on load and then use the kernel buffer
+>>>>>>> without ever reloading (unless this is built as a module and is unloaded and reloaded).
+>>>>>>> The writeback then becomes opportunistic in the sense that if it fails for some reason,
+>>>>>>> the kernel's internal state isn't blasted away.
+>>>>>> One issue here is that the file read can fail on load so we use the
+>>>>>> late retry to guarantee we can read the file.
+>>>>> But why continue loading if reading the file fails on load?
+>>>>>
+>>>>>> The other point seems like preference. Users may wish to shutdown the PSP FW,
+>>>>>> load a new file, and INIT_EX again with that new data. Why should we preclude
+>>>>>> them from that functionality?
+>>>>> I don't think we should preclude that functionality, but it needs to be explicitly
+>>>>> tied to a userspace action, e.g. either on module load or on writing the param to
+>>>>> change the path.  If the latter is allowed, then it needs to be denied if the PSP
+>>>>> is initialized, otherwise the kernel will be in a non-coherent state and AFAICT
+>>>>> userspace will have a heck of a time even understanding what state has been used
+>>>>> to initialize the PSP.
+>>>> If this driver is builtin the filesystem will be unavailable during
+>>>> __init. Using the existing retries already built into
+>>>> sev_platform_init() also the file to be read once userspace is
+>>>> running, meaning the file system is usable. As I tried to explain in
+>>>> the commit message. We could remove the sev_platform_init call during
+>>>> sev_pci_init since this only actually needs to be initialized when the
+>>>> first command requiring it is issues (either reading some keys/certs
+>>>> from the PSP or launching an SEV guest). Then userspace in both the
+>>>> builtin and module usage would know running one of those commands
+>>>> cause the file to be read for PSP usage. Tom any thoughts on this?
+>>>>
+>>> One thing to note is that if we do the INIT on the first command then
+>>> the first guest launch will take a longer. The init command is not
+>>> cheap (especially with the SNP, it may take a longer because it has to
+>>> do all those RMP setup etc). IIRC, in my early SEV series in I was doing
+>>> the INIT during the first command execution and based on the
+>>> recommendation moved to do the init on probe.
+>>>
+>>> Should we add a module param to control whether to do INIT on probe or
+>>> delay until the first command ?
+>> Thats a good point Brijesh. I've only been testing this with SEV and
+>> ES so haven't noticed that long setup time. I like the idea of a
+>> module parameter to decide when to INIT, that should satisfy Sean's
+>> concern that the user doesn't know when the INIT_EX file would be read
+>> and that there is extra retry code (duplicated between sev_pci_init
+>> and all the PSP commands). I'll get started on that.
+> I need a little guidance on how to proceed with this. Should I have
+> the new module parameter 'psp_init_on_probe' just disable PSP init on
+> module init if false. Or should it also disable PSP init during
+> command flow if it's true?
+>
+> I was thinking I should just have 'psp_init_on_probe' default to true,
+> and if false it stops the PSP init during sev_pci_init(). If I add the
+> second change that seems like it changes the ABI. Thoughts?
+>
+Good point that a module params may break the ABI. How about if we add a
+new ioctl that can be used to initialize the SEV_INIT_EX. The ioctl
+implementation will be similar to the PLATFORM_RESET; it will shutdown
+the firmware then call INIT_EX. A platform provisioning tool may use ioctl.
 
-Cc:        Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com>, Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>, Cannon Matthews <cannonmatthews@google.com>, Linux Memory Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-
-Bcc:       
-
--=-=-=-=-=-=-=-=-=# Don't remove this line #=-=-=-=-=-=-=-=-=-
-
-On 11/10/21 6:36 PM, Muchun Song wrote:
-
-> On Thu, Nov 11, 2021 at 9:50 AM Mina Almasry <almasrymina@google.com> wrote:
-
->>
-
->> +struct hugetlb_cgroup_per_node {
-
->> +       /* hugetlb usage in pages over all hstates. */
-
->> +       atomic_long_t usage[HUGE_MAX_HSTATE];
-
-> 
-
-> Why do you use atomic? IIUC, 'usage' is always
-
-> increased/decreased under hugetlb_lock except
-
-> hugetlb_cgroup_read_numa_stat() which is always
-
-> reading it. So I think WRITE_ONCE/READ_ONCE
-
-> is enough.
-
-
-
-Thanks for continuing to work this, I was traveling and unable to
-
-comment.
-
-
-
-Unless I am missing something, I do not see a reason for WRITE_ONCE/READ_ONCE
-
-and would suggest going back to the way this code was in v5.
-
--- 
-
-Mike Kravetz
+-Brijesh
 
