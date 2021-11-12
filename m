@@ -2,152 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB5E44E0CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442EC44E0D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhKLDaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 22:30:15 -0500
-Received: from mail-sgaapc01on2127.outbound.protection.outlook.com ([40.107.215.127]:22432
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229698AbhKLDaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 22:30:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZIqZD7R5yVXIlL2fVpLoL3e4UdH7dg480ugNwWj+BzbNAZE3CGcjdFsMA96/Zf1TXng4O0Dqm9CXJgjNPvZPNIvfLzmdOqGf42wGK8i6IEsUaaiOQfARCAJFnwvIWEuzIaRKlpKQgxTYuO61e/hkn1+YZyXTn8ZGBUsakV5NLAEjle84JFVZIFqppUPH66GD0hI1VVUC4noaAK6Z6IKzcCRgxI3iS7uceunxpRuJSaThcb3LSAOT5QhPkZJymDTyqdAw2zfdM6AC60YfdGsed5FVmTweVF+TMS5aysAFpp6sIRyGM7rbyBFjYvTDLCJu44GlNBtIFLS4lZ2g9PNZkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tXv6c9U5dSYZUqH1ylUdyj62X1MxCEep1Qo9ORwrJ90=;
- b=UewZ0N/FS/AT8hvhtOJMHnCWfIXh0rKRKxId8Ms1qb3hUVW4LCf0Bjoqd2vzvUVDI23Fl/z1G+aGfFyLPyYgZKn5ujMdCu60OuuOsg3KjZvNdVjZ0CNTCDLVJxoYRsXfOxmWX848Bwgs8EKAm42XMhpbsnC6aZwTuQrAUzfSqKNPWh65R4SLZIPmQtiSlycIs442WU2W/cdGEs5ngSeP9aq+8miIK9yGPmEJA7WvvJc4i5miITJ9Ymt1Ja3F6yQCL0J88dyyRwktqgUPSc53N6c4BeMucpbP/BEtX8Q51AUt/ckZqNC0STrZlCgRfy0kuY8Prd7CqRs3T3vPMPvpAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tXv6c9U5dSYZUqH1ylUdyj62X1MxCEep1Qo9ORwrJ90=;
- b=BVnFEL8pmUFUi6Dv64n+uo7U5qcQzJvBrNx36OjPp/clngrBsDXK0bLfhcA8mRvF/5L7pb7v4Rs0Be0bHcQIIWWIXAe/KEyFYDd6MA/ELQ5FOLVwQ/ePs+QpDhRd8QPEGuWEbOTF9bGp8XWyX2GLslbw3WCFu5vjLEMmjNWl984=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
- by TY2PR06MB3614.apcprd06.prod.outlook.com (2603:1096:404:107::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Fri, 12 Nov
- 2021 03:27:18 +0000
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Fri, 12 Nov 2021
- 03:27:18 +0000
-From:   Yihao Han <hanyihao@vivo.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Yihao Han <hanyihao@vivo.com>
-Subject: [PATCH] selftests/bpf: use swap() to make code cleaner
-Date:   Thu, 11 Nov 2021 19:27:04 -0800
-Message-Id: <20211112032704.4658-1-hanyihao@vivo.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0148.apcprd02.prod.outlook.com
- (2603:1096:202:16::32) To TYZPR06MB4173.apcprd06.prod.outlook.com
- (2603:1096:400:26::14)
+        id S234152AbhKLDeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 22:34:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32814 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229698AbhKLDeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 22:34:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636687877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2v9fF/0oseQ/pQZH0U5TtuGlQ3sQjbX2pDiieAp4QMo=;
+        b=RdCR6sXnVZ/2pNSYTbueJmCZmNRT+yrqOJK+Ng4tER3kxq7YPQYl3k+DM+PUZC+fXTOIQi
+        SHUhRqq4c7br1irucZgTJbZTp4cNhb1sugsEMwwXuNWMsD2ztGNHi9g25UQM2K4BqWKspp
+        wYRo/EQSBX3ccfTvgFGw7cNcpUxe/YY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-SPH25Kq2PjGfHXY8CK0iTw-1; Thu, 11 Nov 2021 22:31:14 -0500
+X-MC-Unique: SPH25Kq2PjGfHXY8CK0iTw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 743B015720;
+        Fri, 12 Nov 2021 03:31:13 +0000 (UTC)
+Received: from localhost (ovpn-12-197.pek2.redhat.com [10.72.12.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 82D5B79455;
+        Fri, 12 Nov 2021 03:30:31 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 11:30:28 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v1] proc/vmcore: don't fake reading zeroes on surprise
+ vmcore_cb unregistration
+Message-ID: <20211112033028.GP27625@MiWiFi-R3L-srv>
+References: <20211111192243.22002-1-david@redhat.com>
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HK2PR02CA0148.apcprd02.prod.outlook.com (2603:1096:202:16::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 03:27:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dbfba109-8c89-4bb3-a900-08d9a58c543f
-X-MS-TrafficTypeDiagnostic: TY2PR06MB3614:
-X-Microsoft-Antispam-PRVS: <TY2PR06MB3614D9AEDD9DF7D2F0A7010DA2959@TY2PR06MB3614.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yLZZtMsnL831i02vKwA6WmraMD++po7p88mnEhU81GFFE6gQS7MumPSoGZRQNJcm2LONDRENe7YPUSUbp5QVBlGrHJfKODOpTarGUguRG1WkzPV3FhFqCZZl2vt/no0yq3dijh/sOCx0Oby1oBWn9EQwNWgSAcgx1zuXVxDGCUbx5FL+ZtNELU07/eWYeHkgoDiMjtVLLCdquHskYLE8me/iu+BouDfGyy8EirHLkp4yDQ0uAu9tTvcf1p/bAMDB/gp6auUXz5KRAL2hnKQAheeRyMK9wuJLx93hiPFii/xfdxfl00iGBoIqkP7t+gB1KaT6SOcqRrx9A5Y2LbA3zZ8NMj3io4ctNXmVuvLycqidjtcXaVIRGBP8mPtvyb+s0NlfK0KLXQzwOR1K4+OZY0bK0uIZK2TVBfcf1xOG+/bA8bkTRDhmGxJjNMdsvAQv89uCz6bhr/ol4uPeox9VXYyCVb5gCGYFVeFLf/XDpNux3kY4WWHfNX3d4JotlveVR6pBP9TsBxhnU3VEWLCZhuX2rEeB5uDQgYcqT/p9o+SLwmQmEzV6SxlDP0Y6ebco5tPk7rbTgD1Af6mVl/KAkMRBh8+Xhu+EhNVIxBPc2xjHuj7SCWlfhUbk/WIrpyfqahBfXQBGTVRBeyn7r9h+yrLVVCvxMaYEe5J/dPIkIq+PgiCKrWUORxd422/S/YCJsEezPJfkgUpS/HXwRRsYYIjNkvvQ7abB4BrElS29vHM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(316002)(66946007)(66556008)(83380400001)(956004)(66476007)(508600001)(2616005)(921005)(36756003)(38350700002)(6486002)(38100700002)(8676002)(7416002)(4326008)(6512007)(52116002)(186003)(6506007)(26005)(107886003)(110136005)(2906002)(6666004)(1076003)(8936002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YsGT45sooI1+NkxbbY0/MEmW9tWJ2XwWJBYoX88WlTvp2FTs9yhw12hPfF2l?=
- =?us-ascii?Q?JMrFhn6IR2lp1uZzm1Spl+fz7ut521DbSfrSw+EXQj9h5bDZZQO3NACeuO4H?=
- =?us-ascii?Q?k/WNt8LLrCRZPV6im2VXcHVdEkFcFgLAQNoOgrvGcJ8J753nUemOwnuz2BH9?=
- =?us-ascii?Q?jKflA2o4WeS7URfinHsyz/OPe0eaotjLorx8LEBTtwegleBtBriVKMjAq32M?=
- =?us-ascii?Q?6X7vqUi/5j9fpCjdmJ7be1bj2Cd+8uiB47qQ4DBolXmLb5kxoRUGwOjG4kM9?=
- =?us-ascii?Q?Ht/TVzEUBziUQELX7n19lQGigtemz7ARN5katPlUm7C0/s/UE37hYrJ2rRhT?=
- =?us-ascii?Q?Lj8Fo96RCF8Iw4JtekR0aPKJ4A21eKJY2nmqcJEKvUKkxQWKiDIWRpIhVcqU?=
- =?us-ascii?Q?OFcttiaHosr+FRxkn2ZRVWTGj7HC0kG0aETw63vV8Crcz5JFZuS34HIHEZfU?=
- =?us-ascii?Q?EuBilPhHvU+8xIjsPc9BHkb4fLRZ0RSZpLnrE1lC07Mzb8X/Zk9dZpjSMSJZ?=
- =?us-ascii?Q?BkliQPC09IqoGDFNkyccOso6KzT3Yu2OtlU5XN4kCEhwW4QNr6kaBSDK2qJw?=
- =?us-ascii?Q?emIAZFSVC9qHyJHkc8P+jVUvHm9nun8ebAsX9YGaf92rt2ZaOHi25F+KkE9P?=
- =?us-ascii?Q?yak29PBIUO29OQzFXfM7GVav+IcpgAzov4CzysLQeF/oW5chpA1FLwfPRNaQ?=
- =?us-ascii?Q?MaGIidNB7WCh1eL96sfhcpiUdSmAXKlei8dMch4KlWD9NP7Foe89ZQTgspmd?=
- =?us-ascii?Q?j13X5etARHroZ+Ib54O7MNy+L31bAWMFMgkGZVXYsVUy616zl3OOSZe0eTzt?=
- =?us-ascii?Q?fONVI77yczP2A4TnwEy5XRo0ulbdDoAjE7anAFok464rinLUNubSJ/0ayYKu?=
- =?us-ascii?Q?yMnYnU+St1N1eI1xmmJav1disdUvuJ7yyubxT2FgHX/xI0iEmgbdaFGBN9Lq?=
- =?us-ascii?Q?wydATx9GXrX8/DqZT7nJSjVs5/PfS6AiJnApLeiAkLhAAeDyrOnPifJtpwWZ?=
- =?us-ascii?Q?pnlehZF43ucFfBgYsdzz553cIVuyp7jK/Ou6OV76iTVm7+vNloKHxu+e7+ed?=
- =?us-ascii?Q?xgcFIuPHMTWys3rGSDyVWa+eOjBzP5gwsgmceGEVX1VArdv0Az4NuKOf162H?=
- =?us-ascii?Q?S6SFOt9Z8fKPc039KhUwsBzlN0Px6iMDpKc+25rj2jIFSbBgsmeruSI9BL/W?=
- =?us-ascii?Q?sDfdIE7Rx8iIltm9RpqrcVSo4gN36M4l/9oD8ukeZV/oddc1IDjb++JKk9fx?=
- =?us-ascii?Q?ToTt9OuRmpKjF9QsJYnyWEQBQvNhzWq8+b1ywSeP/8dQPrKEQ7zKBkV4IBj9?=
- =?us-ascii?Q?Ed/5ohzmJJadkt6ATMJs9w+/WSZcQ4e24wEXm/zM1lYG7IbmUIi6ItjwXyVa?=
- =?us-ascii?Q?SebuzUJv60X7bCq2ClsYtRk01zmRw1yiwQ47nWWzyOE3/z8dzAy1FSBPOyg/?=
- =?us-ascii?Q?6y4xo3ZxC0UGidUD0lJRR+DIkB5J3hcV5lhXpUwoCBW9SKH1NcdhSpdwh/8j?=
- =?us-ascii?Q?8BHcMWdzms5w9Slu7Y+1jdTtE0Rn/O2ArAhjIoOwX3khgIIZxInHgpUf93yx?=
- =?us-ascii?Q?LoueCQ+BtV/l/DUh72ap7vnmE0fqcSYO11XCBVJJ+JOwmWlmZ23SC8IZwW6q?=
- =?us-ascii?Q?pr5mpJsIofVy8delUPkAw8M=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbfba109-8c89-4bb3-a900-08d9a58c543f
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 03:27:18.1220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lAJEP6HUhRxFTIDqJnk291JcVOkLEtbbHDDKHmhgImU8wo9TPW75bbSEbg5HPysPQwh3+Vh7PwPPNcRUNl74tg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR06MB3614
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111192243.22002-1-david@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
+On 11/11/21 at 08:22pm, David Hildenbrand wrote:
+> In commit cc5f2704c934 ("proc/vmcore: convert oldmem_pfn_is_ram callback
+> to more generic vmcore callbacks"), we added detection of surprise
+> vmcore_cb unregistration after the vmcore was already opened. Once
+> detected, we warn the user and simulate reading zeroes from that point on
+> when accessing the vmcore.
+> 
+> The basic reason was that unexpected unregistration, for example, by
+> manually unbinding a driver from a device after opening the
+> vmcore, is not supported and could result in reading oldmem the
+> vmcore_cb would have actually prohibited while registered. However,
+> something like that can similarly be trigger by a user that's really
+> looking for trouble simply by unbinding the relevant driver before opening
+> the vmcore -- or by disallowing loading the driver in the first place.
+> So it's actually of limited help.
 
-Signed-off-by: Yihao Han <hanyihao@vivo.com>
----
- tools/testing/selftests/bpf/progs/test_xdp_noinline.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Yes, this is the change what I would like to see in the original patch
+"proc/vmcore: convert oldmem_pfn_is_ram callback to more generic vmcore callbacks".
+I am happy with this patch appended to commit cc5f2704c934.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-index 596c4e71bf3a..6d9972168a7c 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-@@ -428,7 +428,6 @@ int send_icmp_reply(void *data, void *data_end)
- {
- 	struct icmphdr *icmp_hdr;
- 	__u16 *next_iph_u16;
--	__u32 tmp_addr = 0;
- 	struct iphdr *iph;
- 	__u32 csum1 = 0;
- 	__u32 csum = 0;
-@@ -444,9 +443,7 @@ int send_icmp_reply(void *data, void *data_end)
- 	icmp_hdr->type = 0;
- 	icmp_hdr->checksum += 0x0007;
- 	iph->ttl = 4;
--	tmp_addr = iph->daddr;
--	iph->daddr = iph->saddr;
--	iph->saddr = tmp_addr;
-+	swap(iph->daddr, iph->saddr);
- 	iph->check = 0;
- 	next_iph_u16 = (__u16 *) iph;
- #pragma clang loop unroll(full)
--- 
-2.17.1
+> 
+> Currently, unregistration can only be triggered via virtio-mem when
+> manually unbinding the driver from the device inside the VM; there is no
+> way to trigger it from the hypervisor, as hypervisors don't allow for
+> unplugging virtio-mem devices -- ripping out system RAM from a VM without
+> coordination with the guest is usually not a good idea.
+> 
+> The important part is that unbinding the driver and unregistering the
+> vmcore_cb while concurrently reading the vmcore won't crash the system,
+> and that is handled by the rwsem.
+> 
+> To make the mechanism more future proof, let's remove the "read zero"
+> part, but leave the warning in place. For example, we could have a future
+> driver (like virtio-balloon) that will contact the hypervisor to figure out
+> if we already populated a page for a given PFN. Hotunplugging such a device
+> and consequently unregistering the vmcore_cb could be triggered from the
+> hypervisor without harming the system even while kdump is running. In that
+
+I am a little confused, could you tell more about "contact the hypervisor to
+figure out if we already populated a page for a given PFN."? I think
+vmcore dumping relies on the eflcorehdr which is created beforehand, and
+relies on vmcore_cb registered in advance too, virtio-balloon could take
+another way to interact with kdump to make sure the dumpable ram?
+
+Nevertheless, this patch looks good to me, thanks.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+> case, we don't want to silently end up with a vmcore that contains wrong
+> data, because the user inside the VM might be unaware of the hypervisor
+> action and might easily miss the warning in the log.
+> 
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Philipp Rudo <prudo@redhat.com>
+> Cc: kexec@lists.infradead.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  fs/proc/vmcore.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+> index 30a3b66f475a..948691cf4a1a 100644
+> --- a/fs/proc/vmcore.c
+> +++ b/fs/proc/vmcore.c
+> @@ -65,8 +65,6 @@ static size_t vmcoredd_orig_sz;
+>  static DECLARE_RWSEM(vmcore_cb_rwsem);
+>  /* List of registered vmcore callbacks. */
+>  static LIST_HEAD(vmcore_cb_list);
+> -/* Whether we had a surprise unregistration of a callback. */
+> -static bool vmcore_cb_unstable;
+>  /* Whether the vmcore has been opened once. */
+>  static bool vmcore_opened;
+>  
+> @@ -94,10 +92,8 @@ void unregister_vmcore_cb(struct vmcore_cb *cb)
+>  	 * very unusual (e.g., forced driver removal), but we cannot stop
+>  	 * unregistering.
+>  	 */
+> -	if (vmcore_opened) {
+> +	if (vmcore_opened)
+>  		pr_warn_once("Unexpected vmcore callback unregistration\n");
+> -		vmcore_cb_unstable = true;
+> -	}
+>  	up_write(&vmcore_cb_rwsem);
+>  }
+>  EXPORT_SYMBOL_GPL(unregister_vmcore_cb);
+> @@ -108,8 +104,6 @@ static bool pfn_is_ram(unsigned long pfn)
+>  	bool ret = true;
+>  
+>  	lockdep_assert_held_read(&vmcore_cb_rwsem);
+> -	if (unlikely(vmcore_cb_unstable))
+> -		return false;
+>  
+>  	list_for_each_entry(cb, &vmcore_cb_list, next) {
+>  		if (unlikely(!cb->pfn_is_ram))
+> @@ -577,7 +571,7 @@ static int vmcore_remap_oldmem_pfn(struct vm_area_struct *vma,
+>  	 * looping over all pages without a reason.
+>  	 */
+>  	down_read(&vmcore_cb_rwsem);
+> -	if (!list_empty(&vmcore_cb_list) || vmcore_cb_unstable)
+> +	if (!list_empty(&vmcore_cb_list))
+>  		ret = remap_oldmem_pfn_checked(vma, from, pfn, size, prot);
+>  	else
+>  		ret = remap_oldmem_pfn_range(vma, from, pfn, size, prot);
+> 
+> base-commit: debe436e77c72fcee804fb867f275e6d31aa999c
+> -- 
+> 2.31.1
+> 
 
