@@ -2,158 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9C644EDE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EF044EDED
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhKLUc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:32:57 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59094 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230235AbhKLUcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:32:54 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ACKD3RF013752;
-        Fri, 12 Nov 2021 20:29:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=HXFplJHayDK9tdmNj0AR0yX2Zw7ksjGKwNpuy5qtPLg=;
- b=SK1hig5Uo6+sR99lEHxi5XheBsuci4yxgnNXm3S7ANQHv7Sk9j2yf+fVw4kkyyYFVjuN
- W9n6pXXgoYsv9MoD3ZulQvPxr7WAt+Nns6eir5eKTJhGnfDP7M3X8zZXL6SC3q7J7xT9
- wAoc4ALcGv0DJgDIbcdn1b9OilMbKoQvbwrLxQc2pHTXWh4tNnFvOtuWWLjwtXn0QPkV
- koLi5dPGXong/jfRr7OSFb7dxa2A5kAbTCc8VANsjyO+GjmpY0gL0Yeax9sK5f/27lo8
- y6NnECCOX2XXdWzcPuSHYquCG26vJY5VxnsPUTUsXrZLYfGWcftoWjDk2SIL8LkJ+YtT CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c9y43g9a0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Nov 2021 20:29:37 +0000
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1ACKFHxW021575;
-        Fri, 12 Nov 2021 20:29:37 GMT
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c9y43g99t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Nov 2021 20:29:37 +0000
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1ACKDLZ0020198;
-        Fri, 12 Nov 2021 20:29:36 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01dal.us.ibm.com with ESMTP id 3c5hbety0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Nov 2021 20:29:36 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1ACKTYw257475502
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Nov 2021 20:29:34 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C540C6063;
-        Fri, 12 Nov 2021 20:29:34 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4779C605A;
-        Fri, 12 Nov 2021 20:29:33 +0000 (GMT)
-Received: from fstone01p1.aus.stglabs.ibm.com (unknown [9.3.116.196])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Nov 2021 20:29:33 +0000 (GMT)
-From:   Adriana Kobylak <anoo@linux.ibm.com>
-To:     linux@armlinux.org.uk, joel@jms.id.au, andrew@aj.id.au,
-        olof@lixom.net, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     eajames@linux.ibm.com, bruce.mitchell@linux.vnet.ibm.com,
-        liuxiwei1013@gmail.com, openbmc@lists.ozlabs.org,
-        Adriana Kobylak <anoo@us.ibm.com>
-Subject: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
-Date:   Fri, 12 Nov 2021 20:29:31 +0000
-Message-Id: <20211112202931.2379145-1-anoo@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        id S235570AbhKLUdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:33:21 -0500
+Received: from mail-co1nam11on2058.outbound.protection.outlook.com ([40.107.220.58]:13472
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230235AbhKLUdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:33:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OXgVfQdor5CyD5+ZEtxYyPFLhzP1XK2m0EOTQooW/EBwVDkLO4e+Vw3DXnDCRV6w8jGc34K67f5SBD1rkNitTI1OB+sRX7KShbpqoeTIr2K+NGi/xqIY5tuXjPIjthfPYEe0W8L8HSB+KhBHlW012UaAAl1RFOhmy/B8c8fCjhwwOY0hYSu+KOE8bGEoKFI2Q3fDrBSxsJ/7hvmMJeM8JFYsb5I5G+clJA/sZuPV6t0U9MTugwHXKB1Mk5t4rWQseuCRg4wJqeaSygy194ayPZJ8ZcVJOqhOh4BHErGQlIgDUN7uZFJzFTYP2prK7bbOWKqbujRORBQMCYXH1bcAhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f/rfx4+lP7CRAXPHJoz+UOHVIQp38Gp2HChcztc2fqw=;
+ b=HYn2a9nyEip+QofTzpB/shC3XSzFwzrdazNaBFaz8NPzTNMKfCTe8bqnhMRqVJO+VhV7ya8LgnR0la5lqPfPkSgqORQgVXJjOkGUIgPlXU2CA2SdKVTp42tnoasdmItmLP5ZaweesDoYRjru84XBfN2I9MpUnjIYcJ9XM4/Xenw3EPjEaAibCYrSTnIkC+fOJ+PcNwdBIz54tFJvgK8k3MBd7DRW2ItttDCU1QE08r5IRcYGA/GL5tr7KaW9jmWt/iRv6KKeQfqILlZs/AcaNhqUmlsudqqsOwBvk75j/PkSoxbE2TK4OXGWOgT0Z54drhPX7gvKZGPZjbj3N4SzmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f/rfx4+lP7CRAXPHJoz+UOHVIQp38Gp2HChcztc2fqw=;
+ b=o8P4uBhBlOqeAwAR71CaxagB4FpaoCknNTj+ztEMYQizNCWt3fvA7yOcHA2srwHPrhNJnQ+kDIrA3bnVW2AGvgpKhlb3fcKrNlh+HR4iGiUhqRC+QoqTJz1vVtbG0H4YOJQDgUOJn3PIqOJBmg9nr6diooXgwUgFJmBLTzLIZ08=
+Received: from BN9PR03CA0879.namprd03.prod.outlook.com (2603:10b6:408:13c::14)
+ by DM6PR12MB3162.namprd12.prod.outlook.com (2603:10b6:5:15c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Fri, 12 Nov
+ 2021 20:30:25 +0000
+Received: from BN8NAM11FT019.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13c:cafe::1b) by BN9PR03CA0879.outlook.office365.com
+ (2603:10b6:408:13c::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.16 via Frontend
+ Transport; Fri, 12 Nov 2021 20:30:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT019.mail.protection.outlook.com (10.13.176.158) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 20:30:24 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 12 Nov
+ 2021 14:30:21 -0600
+Date:   Fri, 12 Nov 2021 14:30:01 -0600
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Brijesh Singh <brijesh.singh@amd.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
+        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        <tony.luck@intel.com>, <marcorr@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v7 01/45] x86/compressed/64: detect/setup SEV/SME
+ features earlier in boot
+Message-ID: <20211112203001.kdzhpgp3uqcr2dy5@amd.com>
+References: <20211110220731.2396491-1-brijesh.singh@amd.com>
+ <20211110220731.2396491-2-brijesh.singh@amd.com>
+ <YY6b4y8Shi5dBlCK@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Li_P3rDViSUZmdcxYvh6Z2jdYEQjN8qa
-X-Proofpoint-GUID: pr-DF1aqYKsbRAaOL80q7zjY_KkdZiyp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-12_05,2021-11-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- impostorscore=0 priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111120107
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YY6b4y8Shi5dBlCK@zn.tnic>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e0d02b3-6906-4750-1800-08d9a61b41b6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3162:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3162AB9A07FE0E51C567F22795959@DM6PR12MB3162.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l6Vs41jjXNa8fdImwJcDfz+L77M6wmTAHmeaN8fFttbYE9jvfQPC96bYAaf0uSrz6OE2zmfrqiPLl/R4xdCLST0aVaCplj0jokyIoMS6w7oQH7NmnJUV7yUAcNWAd4I4LWseB2X6U95r+jma0lFMXYHHvOu3YN4p449F2Vy2fP3VF2w70EMzp9M0IRI1Vg7jYWcRwqxK3TVsMnm0zBIcLRlyc+NIgL7CHLJsgNZsLT2g0CVg4Ge3bpEC2Z2NcZGR+Kgw3U6huvx/wbFAzVx5DtMQ4PTvMqtnSKJsvAqh/bOny8GngwUkiiXyQBMFO7BqTK234i72qgQPi2lHO+pPp3chdYDvmTP5RS8as000YpbfCVEq5EFKpDx6aG56u8ftlJsinkDRyeCNEmN1GPprtd9f82y/sKmb/PyMGKsrSgTKBJH9pH04S41ULHWxtp5Jvvd/zqWrGXyOFufXJ7zNcaYmYwgMQXot9GuamcvN5jwX7Bja/axAKn0/W6XoSNFsC95xoJu/kbp6PgKx6UhsN2Rn0dqbfJG93yq6cWosT0KlQ7ZDi5KLKKMPCB0VYCow/TDvXbdT+bvi/yBkX3iJXr9DHWeLuGMw4X6Yt1L7roipP3Hn30GeovRKy8uUYdYLKcdjiCGEbZ+2gMwzQsMoa98l+8eW02xxVwp0fZxAc1sbeMU7pG6xUynmmG0TG4gEmXL4/2XOU0bpPuy3EF2fepzWPal70oDJ9tsTbC04QRJe/VlA9fo3UiLGARwv0gqsAawyRiACRJZClRQS5+Ble6pru1I45V6Q53OiyY3d8s0E5/KT6XMrLpB1d7cmEUO+
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(336012)(8936002)(86362001)(54906003)(8676002)(2906002)(44832011)(316002)(426003)(1076003)(81166007)(6916009)(6666004)(70206006)(83380400001)(82310400003)(5660300002)(7416002)(356005)(2616005)(4326008)(508600001)(7406005)(26005)(36756003)(186003)(47076005)(16526019)(45080400002)(36860700001)(70586007)(966005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 20:30:24.5966
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e0d02b3-6906-4750-1800-08d9a61b41b6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT019.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adriana Kobylak <anoo@us.ibm.com>
+On Fri, Nov 12, 2021 at 05:52:51PM +0100, Borislav Petkov wrote:
+> On Wed, Nov 10, 2021 at 04:06:47PM -0600, Brijesh Singh wrote:
+> > +void sev_enable(struct boot_params *bp)
+> > +{
+> > +	unsigned int eax, ebx, ecx, edx;
+> > +
+> > +	/* Check for the SME/SEV support leaf */
+> > +	eax = 0x80000000;
+> > +	ecx = 0;
+> > +	native_cpuid(&eax, &ebx, &ecx, &edx);
+> > +	if (eax < 0x8000001f)
+> > +		return;
+> > +
+> > +	/*
+> > +	 * Check for the SME/SEV feature:
+> > +	 *   CPUID Fn8000_001F[EAX]
+> > +	 *   - Bit 0 - Secure Memory Encryption support
+> > +	 *   - Bit 1 - Secure Encrypted Virtualization support
+> > +	 *   CPUID Fn8000_001F[EBX]
+> > +	 *   - Bits 5:0 - Pagetable bit position used to indicate encryption
+> > +	 */
+> > +	eax = 0x8000001f;
+> > +	ecx = 0;
+> > +	native_cpuid(&eax, &ebx, &ecx, &edx);
+> > +	/* Check whether SEV is supported */
+> > +	if (!(eax & BIT(1)))
+> > +		return;
+> > +
+> > +	/* Check the SEV MSR whether SEV or SME is enabled */
+> > +	sev_status   = rd_sev_status_msr();
+> > +
+> > +	if (!(sev_status & MSR_AMD64_SEV_ENABLED))
+> > +		error("SEV support indicated by CPUID, but not SEV status MSR.");
+> 
+> What is the practical purpose of this test?
 
-Add support to detect USB flash drives and create the /dev/sd* devices.
-Also add support for vfat to support USB drives formatted as FAT32.
-This support will be used to enable firmware updates via USB flash
-drives where the firmware image is stored in the USB drive and it's
-plugged into the BMC USB port.
+In the current QEMU/KVM implementation the SEV* CPUID bits are only
+exposed for SEV guests, so this was more of a sanity check on that. But
+looking at things more closely: that's more of a VMM-specific behavior
+and isn't necessarily an invalid guest configuration as far as the spec
+is concerned, so I think this check should be dropped.
 
-Signed-off-by: Adriana Kobylak <anoo@us.ibm.com>
-Tested-by: Adriana Kobylak <anoo@us.ibm.com>
----
- arch/arm/configs/aspeed_g5_defconfig | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> > +	sme_me_mask = 1UL << (ebx & 0x3f);
+> 
+> 	sme_me_mask = BIT_ULL(ebx & 0x3f);
 
-diff --git a/arch/arm/configs/aspeed_g5_defconfig b/arch/arm/configs/aspeed_g5_defconfig
-index bee9422919aa..1b0d82c64ad4 100644
---- a/arch/arm/configs/aspeed_g5_defconfig
-+++ b/arch/arm/configs/aspeed_g5_defconfig
-@@ -37,11 +37,9 @@ CONFIG_KEXEC=y
- CONFIG_VFP=y
- CONFIG_NEON=y
- CONFIG_KERNEL_MODE_NEON=y
--CONFIG_FIRMWARE_MEMMAP=y
- CONFIG_KPROBES=y
- CONFIG_JUMP_LABEL=y
- CONFIG_MODULES=y
--# CONFIG_BLK_DEV_BSG is not set
- # CONFIG_BLK_DEBUG_FS is not set
- # CONFIG_MQ_IOSCHED_DEADLINE is not set
- # CONFIG_MQ_IOSCHED_KYBER is not set
-@@ -98,6 +96,7 @@ CONFIG_NET_NCSI=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
-+CONFIG_FIRMWARE_MEMMAP=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_PARTITIONED_MASTER=y
-@@ -111,6 +110,8 @@ CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_NBD=y
- CONFIG_EEPROM_AT24=y
- CONFIG_EEPROM_AT25=y
-+CONFIG_SCSI=y
-+CONFIG_BLK_DEV_SD=y
- CONFIG_NETDEVICES=y
- CONFIG_NETCONSOLE=y
- # CONFIG_NET_VENDOR_ALACRITECH is not set
-@@ -230,6 +231,7 @@ CONFIG_USB_DYNAMIC_MINORS=y
- CONFIG_USB_EHCI_HCD=y
- CONFIG_USB_EHCI_ROOT_HUB_TT=y
- CONFIG_USB_EHCI_HCD_PLATFORM=y
-+CONFIG_USB_STORAGE=y
- CONFIG_USB_GADGET=y
- CONFIG_USB_ASPEED_VHUB=y
- CONFIG_USB_CONFIGFS=y
-@@ -277,6 +279,7 @@ CONFIG_FSI_OCC=y
- CONFIG_EXT4_FS=y
- CONFIG_FANOTIFY=y
- CONFIG_OVERLAY_FS=y
-+CONFIG_VFAT_FS=y
- CONFIG_TMPFS=y
- CONFIG_JFFS2_FS=y
- # CONFIG_JFFS2_FS_WRITEBUFFER is not set
-@@ -292,6 +295,8 @@ CONFIG_PSTORE_PMSG=y
- CONFIG_PSTORE_FTRACE=y
- CONFIG_PSTORE_RAM=y
- # CONFIG_NETWORK_FILESYSTEMS is not set
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_ISO8859_1=y
- CONFIG_HARDENED_USERCOPY=y
- CONFIG_FORTIFY_SOURCE=y
- CONFIG_CRYPTO_HMAC=y
--- 
-2.25.1
+Will do.
 
+Thanks,
+
+Mike
+
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7Cmichael.roth%40amd.com%7Ca6bf3479fffa4b5eee8b08d9a5fce2e2%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637723327924654730%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=SRy8YSe8a2njNc6IT8CGKv0hUefSOW55DJV%2Fi2Lhkic%3D&amp;reserved=0
