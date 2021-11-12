@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6281844EE09
+	by mail.lfdr.de (Postfix) with ESMTP id AB11444EE0B
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbhKLUpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:45:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
+        id S235665AbhKLUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:45:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235656AbhKLUpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:45:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 439DD604DC;
-        Fri, 12 Nov 2021 20:42:29 +0000 (UTC)
+        id S235610AbhKLUpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:45:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 060F7604DC;
+        Fri, 12 Nov 2021 20:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636749749;
-        bh=Yf1Hk1FmiaNwOfcCYCvTdFnW8pNj0dZIiXjpDQHCWXs=;
+        s=k20201202; t=1636749751;
+        bh=pm63a4Kwb5TmcRA+XXaUYTRasggy//Yne/0RPY4uH2o=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZI9r+fw4WWgM5VhfvEL+XuMofAcqd6B0W+7i5ac7kpJPLUgT/PNIwEWCP5FrViKuM
-         qED0DMryL5OyAOmUudwnuALBB8Fx95yiXZ4UjEPO7NhktsBu4w5H3UrYfWs7Krw4DL
-         onrgp5clbk2c7krJQO8CWphj2Ts8sJ5bSSliiuMiMSp+4nrfiBgUQdA1xAyKfU1W8i
-         0GT2H8OnwiXJwgtg0XDWT0vEzpUyvwanqzpdgLFwE0HpCcmXwGdcxxjpXk+biUHI2k
-         x6JaGnajl9WN9ABEvuDEGhRoh4FVr8KZsOYvxttRq84XriPf/9PmDZ22xwJUeX2+0E
-         0AiZFsjGVysMA==
+        b=V8hzG6FJImnw1akT6lPjSNX2YZE9TM3HbZPWpnw0gEGzclp9KxlPS9RJLr5SOW4RY
+         r1qIpUOEoyAd80BRjqHJLCg0BIXDjh2j8viWvPxAJZyLCVlia9CsOLQlowSpQoG4Gf
+         q1odHrxGaIUF38YEVe7G/uqU5O41ndJHNXAylQ7ph7TvBN3NEJ2kNB4OPUnm5tbF1O
+         qQfYsRr2FI4iS9mYnrAV/BPU1f8nmLgod3dDajN2pkR6skJ5CB2IbVtGq9FTA7etn2
+         93JaVq+xCPuYP3ENlrFjJXp8kOO2g7OBA+yYbIcnowyynelIm9dXZUkXwe43oDJ98F
+         kZMkh27rJ2Gog==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3D2AF609F7;
-        Fri, 12 Nov 2021 20:42:29 +0000 (UTC)
-Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F151D608FE;
+        Fri, 12 Nov 2021 20:42:30 +0000 (UTC)
+Subject: Re: [git pull] Input updates for v5.16-rc0
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
-References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-11-12
-X-PR-Tracked-Commit-Id: b6c24725249a6c1a889665d720cdff088f686f98
+In-Reply-To: <YY4HIiDhEjGHXyGm@google.com>
+References: <YY4HIiDhEjGHXyGm@google.com>
+X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YY4HIiDhEjGHXyGm@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: efe6f16c6faf724882ddaba2eda8830a87bcc2b2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 304ac8032d3fa2d37750969cd4b8d5736a1829d9
-Message-Id: <163674974924.4802.17345412331126397639.pr-tracker-bot@kernel.org>
-Date:   Fri, 12 Nov 2021 20:42:29 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: f78e9de80f5ad15719a069a4e6c11e2777122188
+Message-Id: <163674975098.4802.18057390856237257674.pr-tracker-bot@kernel.org>
+Date:   Fri, 12 Nov 2021 20:42:30 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 13:25:30 +1000:
+The pull request you sent on Thu, 11 Nov 2021 22:18:10 -0800:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-11-12
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/304ac8032d3fa2d37750969cd4b8d5736a1829d9
+https://git.kernel.org/torvalds/c/f78e9de80f5ad15719a069a4e6c11e2777122188
 
 Thank you!
 
