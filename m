@@ -2,148 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373F944EB05
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101D644EB0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhKLQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhKLQIo (ORCPT
+        id S235115AbhKLQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:10:55 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45660
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229841AbhKLQKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:08:44 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B65C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:53 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id q74so24822926ybq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GkuxDS6t0tcAaRotTMVpEen3isy6bKfo7Q8ytKiC9G0=;
-        b=qS2NWrgEvw7tAmCh1tg9LbV9Pp0DSpz8AGa2giFaNJ+ESnNOvQk1UOIs8jPk2P8n5H
-         5dATVLoUZagLoSWMiL8XkAf0qD3mq8JTRLV/jkIppcJS6MCUyfzbAdFtXEdCniR4qYoC
-         Wu0M/fZk1U6WTDDEikiIALzuw6hcZITPsoNSxfkNH6b0b0pNT2PYGHl+cSkrCKn95wX6
-         GNINjZjS/HeH+mUKBXMGVkJPuBd0fJp1GfI6BE+xTeqed0aS1G63NGSKHGYOCI/Rng+Q
-         M9swTyvX/9dS04b0FEy2LGJ1jEqXfy5I3ThsT5NiDKK0XEXS9KMII5ijpMhARePZClA8
-         y8AQ==
+        Fri, 12 Nov 2021 11:10:54 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8EAF03F1B0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636733280;
+        bh=EJ4KGJvpDYdiNs1f7bKpHnVnPz3httl65IxsA6AuR/c=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=jdZ/svlG60vou6LWPXhgosJbnaRSQVL4UqB3j/bhWRdEOni/yBkqjnO497jrFfP4G
+         Q5AMPIJ87Re1Sqvaie00nR7Bpf1xqc/PmwzJ9+NRPOcf4A0BHFe9ypAmgdHtK7NN8N
+         CWMVDWt52PMrR9mTtDpYJjGagJww5X0J/K5Alm5vxx8ziEq/yfcUyhyWJVfnbzS/xy
+         9bGXsF/am8rxU7qsWtl1QnNFDS/nwlFv8wTWTqDjsbpxR52wZRBWemUmNzp5N9q94k
+         9NHjuDkBR+fQm+n3/VEpSFOZl9GP9OZijgFYxaVDaF86a0Zo+skGRIgfzCLNtNzCCZ
+         xLUi3OCrsA8JA==
+Received: by mail-lj1-f197.google.com with SMTP id j11-20020a2ea90b000000b00218c174bb5dso3116435ljq.22
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:08:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GkuxDS6t0tcAaRotTMVpEen3isy6bKfo7Q8ytKiC9G0=;
-        b=ogeD7y0pznwhxJdMYZLccC73Sx69g9cqMhVpnS83nQP1bZzv+DQZ/0oaD9l1Yr7lcs
-         wAxwAklpt4BcTyI5/YWQrcPlZ1dCMhIRwUs6tTu3v7Pc0HHtnzkUs+L5xnsyc0vkMN57
-         VPAj8eAJFbu0CzQrKjLms1LgXR0kiM8aHlLiNAzu0N/uvU4165OZQ4xlZ0GH89cK9cG/
-         oVhINEkYR3hNCkt0fX5u7yKyHlO7jXNiCbod0R1vQ3LYRu9YmXIo8yoXy1beTgwzUxX7
-         tLkSibDTqx2udynQAyZtPKjfT+ec+MUdoT5A5ZANUiQx+xtq204/+rJ7glr4yN3qUcvI
-         gYrw==
-X-Gm-Message-State: AOAM5300K25b6YdeNpGKYZipCUWo1+CDGZ5Tf7BS5hoIYaGWtqfINvAR
-        exlFQeVaDvoMY6IfsgpJ/uu2BP9dTzOGWKqxNb+meg==
-X-Google-Smtp-Source: ABdhPJxUca9F534RKO9gMQ93xB/mq5f9Zcwmn5hh0EFIYvNT4tSf+SMGb39EjD5Jvhqm/TQsbenp51lhBXNF8C5wkTE=
-X-Received: by 2002:a5b:d50:: with SMTP id f16mr16605102ybr.350.1636733152868;
- Fri, 12 Nov 2021 08:05:52 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=EJ4KGJvpDYdiNs1f7bKpHnVnPz3httl65IxsA6AuR/c=;
+        b=T89A4pDMnRFpSats7aYR3v4VZKZrUWB+30wXZ8g8c4p7WtLvZGPIdSVUxNPd24mwVl
+         p82IH76Jvxup6MqOwiPEvw42gOMuK4fTv/0YdCl49Eghha+AlTV0nEJ5Gzrqj0MwBxOt
+         lR10712GwyrGNzG4iV+K+RIYVshS+0ppNsEMOAxbgXUFd+ls0RhFaa+rlhiDx74ZqUf3
+         TRYuIvyXmkLtwnI9r6GgilKtHQfLX4jLDiFOilJsOkdBhlq+xLQeur9DiPQwzQCz8RvV
+         yQDcAa8fnTPwLOQy6+7+hao7Lva0dX/d3jLzNzB6BP0hHNrtSTGMJaZvoO0ewnD/ivhI
+         eJTg==
+X-Gm-Message-State: AOAM533OyFDtLwu2RDhNfRtJ6MzMQUVKe6sxllN4yznw9nyaf3HYmXNn
+        e6mnLHjOjQHaKvR520xsn8EM97thCHmiEcQsKKDS/0XGzAJWd5g0l2kH4wAr0u7MktHXZKLRC7E
+        1ksvfm7dccYVMEKuPVlu1Y9Sdq+dL1KcBu0Gs9/m2Tw==
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr12913540ljp.393.1636733279674;
+        Fri, 12 Nov 2021 08:07:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyWCaxvqrKZfXTzK33jH1qs/SwKYGykn9EvUNEw9zc05xN/7twJHYsJy+9LO5UTbGQ3c48xXQ==
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr12913496ljp.393.1636733279409;
+        Fri, 12 Nov 2021 08:07:59 -0800 (PST)
+Received: from [192.168.0.27] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id x7sm603353lfa.203.2021.11.12.08.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 08:07:58 -0800 (PST)
+Message-ID: <2af4073a-a5d9-e878-d622-b757b082359b@canonical.com>
+Date:   Fri, 12 Nov 2021 17:07:56 +0100
 MIME-Version: 1.0
-References: <20211112095857.7016-1-vincent.guittot@linaro.org>
- <20211112095857.7016-2-vincent.guittot@linaro.org> <YY6ARaFrpuWYqege@hirez.programming.kicks-ass.net>
- <YY6AXx2lhJ27IBuJ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YY6AXx2lhJ27IBuJ@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 12 Nov 2021 17:05:41 +0100
-Message-ID: <CAKfTPtDPtsRRajctvL1S=ySneRqN7nMyHgc6X9fChmRWTU9eNg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com, joel@joelfernandes.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3 7/8] watchdog: max77714: add driver for the watchdog in
+ the MAX77714 PMIC
+Content-Language: en-US
+To:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20211111225852.3128201-1-luca@lucaceresoli.net>
+ <20211111225852.3128201-8-luca@lucaceresoli.net>
+ <0f278280-27d0-4d43-8065-76ec1f7c19b5@roeck-us.net>
+ <7584d85a-5050-2b9d-1648-7d3bed2d10ea@lucaceresoli.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <7584d85a-5050-2b9d-1648-7d3bed2d10ea@lucaceresoli.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 at 15:55, Peter Zijlstra <peterz@infradead.org> wrote:
->
->
-> Subject: sched/fair: Reflow newidle_balance()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Fri Nov 12 15:46:08 CET 2021
->
-> The control flow in newidle_balance() is a little convoluted, attempt
-> simplification.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/sched/fair.c |   21 ++++++++-------------
->  1 file changed, 8 insertions(+), 13 deletions(-)
->
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10858,10 +10858,10 @@ static inline void nohz_newidle_balance(
->  static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  {
->         unsigned long next_balance = jiffies + HZ;
-> +       int pulled_task = 0, timeout = 0;
->         int this_cpu = this_rq->cpu;
->         u64 t0, t1, curr_cost = 0;
->         struct sched_domain *sd;
-> -       int pulled_task = 0, early_stop = 0;
->
->         update_misfit_status(NULL, this_rq);
->
-> @@ -10889,17 +10889,9 @@ static int newidle_balance(struct rq *th
->         if (!READ_ONCE(this_rq->rd->overload) ||
->             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
->
-> -               if (sd) {
-> +               if (sd)
->                         update_next_balance(sd, &next_balance);
->
-> -                       /*
-> -                        * We skip new idle LB because there is not enough
-> -                        * time before next wake up. Make sure that we will
-> -                        * not kick NOHZ_NEWILB_KICK
-> -                        */
-> -                       early_stop = 1;
-> -               }
-> -
->                 goto out;
->         }
->
-> @@ -10922,7 +10914,7 @@ static int newidle_balance(struct rq *th
->                 update_next_balance(sd, &next_balance);
->
->                 if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
-> -                       early_stop = 1;
-> +                       timeout = 1;
->                         break;
->                 }
->
-> @@ -10967,6 +10959,11 @@ static int newidle_balance(struct rq *th
->         if (this_rq->nr_running != this_rq->cfs.h_nr_running)
->                 pulled_task = -1;
->
-> +       if (pulled_task || timeout)
-> +               goto out;
-> +
-> +       nohz_newidle_balance(this_rq);
+On 12/11/2021 17:02, Luca Ceresoli wrote:
+> Hi Guenter,
+> 
+> On 12/11/21 15:57, Guenter Roeck wrote:
+>> On 11/11/21 2:58 PM, Luca Ceresoli wrote:
+>>> Add a simple driver to support the watchdog embedded in the Maxim
+>>> MAX77714
+>>> PMIC.
+>>>
+>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>>
+>>
+>> I just realized that this is effectively a rewrite of
+>> drivers/watchdog/max77620_wdt.c.
+>> The only difference I can see is is the register offsets (0x91 and 0x92
+>> vs. 1 and 2) and some implementation details. Please add support for this
+>> watchdog to the other driver or provide a _really_ good reason why that
+>> is not possible.
+> 
+> I initially started developing MAX77714 watchdog support as an addition
+> to max77620_wdt.c as the procedures look identical at least for the
+> basic features.
+> 
+> But the register content seems completely different. Here are the notes
+> I took at that time:
+> 
+> -------------------------8<-------------------------
+> 
+> MAX77620 has reg ONOFFCNFG1  at 0x41, ONOFFCNFG2  at 0x42.
+> MAX77714 has reg CNFG1_ONOFF at 0x93, CNFG2_ONOFF at 0x94.
+> OK, we can handle this with a register indirection table, indexed by
+> chip model.
+> 
+> MAX77620 has MAX77620_REG_FPS_CFG0 register.
+> On MAX77714 I was unable to find any such register (I haven't looked at
+> FPS in detail though).
+> OK, we can handle this with some if()s or entirely disable PM on the
+> 77714 until anybody cares.
+> 
+> MAX77620 ONOFFCNFG1  has SFT_RST in bit 7.
+> MAX77714 CNFG1_ONOFF has SFT_RST is bit 6.
+> Uhm, should we have a _bit_ indirection table in addition to the
+> _register_ indirection table?
+> 
+> MAX77620 ONOFFCNFG2  bit 5 is SLP_LPM_MSK, involved in FPS.
+> MAX77620 ONOFFCNFG2  bit 6 is WD_RTS_WK, configures the watchdog timer.
+> MAX77714 CNFG2_ONOFF bit 5 is WD_RTS_WK, configures the watchdog timer.
+> On MAX77714 I haven't found SLP_LPM_MSK.
+> 
+> MAX77620 has 6 CID registers with "ES version" in CID5.
+> MAX77714 has 5 CID registers with "DEVICE id" in CID3.
+> CID registers would be useful to get the chip model directly from the
+> chip, if only they had the same structure.
+> 
+> Almost all of the registers I have been looking into have similar
+> differences.
+> 
+> -------------------------8<-------------------------
+> 
+> When I started adding indirection tables the driver started growing
+> bigger and uglier, and that little simple driver started being big and
+> complex. So I opted to add a new driver.
+> 
 
-maybe
+The register offset differences are trivial and we do it in several
+drivers. Also in rtc-max77686 used by you here.
+Lack of features as well - just have a variant/driver data which defines
+certain features (true/false) or quirk bits (see s3c2410_wdt).
 
-       if (!pulled_task && !timeout)
-               nohz_newidle_balance(this_rq);
+The second driver - s3c2410_wdt - also customizes the bits.
 
-> +
->  out:
->         /* Move the next balance forward */
->         if (time_after(this_rq->next_balance, next_balance))
-> @@ -10974,8 +10971,6 @@ static int newidle_balance(struct rq *th
->
->         if (pulled_task)
->                 this_rq->idle_stamp = 0;
-> -       else if (!early_stop)
-> -               nohz_newidle_balance(this_rq);
->
->         return pulled_task;
->  }
+Therefore if the generic device operating configuration is similar (same
+generic control flow) and differences are in bits and offsets, then it
+should be one driver.
+
+Best regards,
+Krzysztof
