@@ -2,104 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF8C44E38F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5347D44E392
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234672AbhKLJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhKLJEA (ORCPT
+        id S234705AbhKLJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:04:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234696AbhKLJEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:04:00 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AAAC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:01:10 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id f4so34887881edx.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:01:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UcIHLMef49THsgwvLfI1bVNvCabXW3IkXo4MjW8OE+Q=;
-        b=aK4bqGzck1WLzHmKqUpQ7xIM3Nq0XsN/FS/20+L21bWIZSz8kEdqOqpjUUMTsUc7WF
-         6XrRNkzbSrWzEOiDs3xgb+kJ7SJBXNbWAaq6IPpw5Npwg77dW+3/vb70I2kDBZnyWGRm
-         vcxUzgAUKSRQ9EucQPB3/SylJQrW0qW6XfzkfoeYhmtI6y8WH/iwC/da9WRnPLtDsWiM
-         99oMWI6Et4UxDcoYSVkOre3KolNUcJRsTTVCgrpUSf4eQBEnhQ0vk5DYQhRbUCcnxIlg
-         qGMg78xljNziFdupr60m7NP2pSp1IHfw3xvWsLdfdvd1ZHLxfwddbuaZue3sn7TL/0Wq
-         yzRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UcIHLMef49THsgwvLfI1bVNvCabXW3IkXo4MjW8OE+Q=;
-        b=cN5BTt2YJNCG7CKw8j5KCK3W9C1NmPBBOnjnBE2tJ9wpM3cLuBzDzWXbQXNWXvI02n
-         oCSC7YZr5Jv5g3TBi8/Sfl2VjPm1kdcN/36Eqf/DyW8uh76EqqFBhMBzpJOR2WGbZhRj
-         Jga0xHSJFusYZsUjJCgeu48AH2p0QslMPxKFeU0ieCbAAVGD8HBvkBKsRnKsv6eywPc/
-         zop82+424X5nUU5m0zVX9omaVmX8cJclI4520qWTUkP9U3AUFAXZcXIcTu9krGfhXU7F
-         /UKGlMCq6cW5FRgtZM0ofTd40TR5ncou+++mqiFucW0BD5ZVdmYEB+7oAhajiAg/Fqx6
-         LhEg==
-X-Gm-Message-State: AOAM530mLb2wfu7mOQzvazX2qVTRQu3dPm+hcsg1cj6WZ5uGrgjZm7Rn
-        q5arwbv/ZiriA6MRKo9aQfo=
-X-Google-Smtp-Source: ABdhPJyrxrn0N8bjvkMJDNVDv5vN3bsnLj+3LCU0IyFkwP3nwzFCemZgK+VDj1Tnd8i6YVZH+ZFlSQ==
-X-Received: by 2002:a17:906:2757:: with SMTP id a23mr17830390ejd.230.1636707668574;
-        Fri, 12 Nov 2021 01:01:08 -0800 (PST)
-Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
-        by smtp.gmail.com with ESMTPSA id h10sm2688052edf.85.2021.11.12.01.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 01:01:08 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: Re: [PATCH 1/7] staging: r8188eu: remove haldata's EEPROMVID / PID
-Date:   Fri, 12 Nov 2021 10:00:59 +0100
-Message-ID: <6997531.xZuqOj027S@localhost.localdomain>
-In-Reply-To: <20211111212644.9011-1-martin@kaiser.cx>
-References: <20211111212644.9011-1-martin@kaiser.cx>
+        Fri, 12 Nov 2021 04:04:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636707684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPmXCOAP+rTiNoJ0nqN221/qsD2B2mXIGwmoN07nEBc=;
+        b=c7ZWUdMWvdPwV+pGrSF3ofGB/V7ohGLaaRMRTIPAVcv70KyzmLitQp8bnmoQUqTL41kC9K
+        GlSeIvDfIyLAPmcf8XwFnIWQCCsAPhy17ZKBG2haEBaTOlRwhdIk4udm9Yu9JgfVREZqdF
+        +Jf7LTMPRnJlk2CdA671x9hW/OhnCu8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26-zqOSKGcvPU-PByvF-c0fzg-1; Fri, 12 Nov 2021 04:01:21 -0500
+X-MC-Unique: zqOSKGcvPU-PByvF-c0fzg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64D171835ACA;
+        Fri, 12 Nov 2021 09:01:20 +0000 (UTC)
+Received: from localhost (ovpn-12-197.pek2.redhat.com [10.72.12.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C719260622;
+        Fri, 12 Nov 2021 09:01:19 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 17:01:16 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v1] proc/vmcore: fix clearing user buffer by properly
+ using clear_user()
+Message-ID: <20211112090116.GC19016@MiWiFi-R3L-srv>
+References: <20211111191800.21281-1-david@redhat.com>
+ <20211112070113.GA19016@MiWiFi-R3L-srv>
+ <21bdcecd-127c-f70e-0c7d-cb1b97caecb0@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21bdcecd-127c-f70e-0c7d-cb1b97caecb0@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, November 11, 2021 10:26:38 PM CET Martin Kaiser wrote:
-
-> They are used only in a (disabled) debug print.
+On 11/12/21 at 09:16am, David Hildenbrand wrote:
+> On 12.11.21 08:01, Baoquan He wrote:
+> > On 11/11/21 at 08:18pm, David Hildenbrand wrote:
+> >> To clear a user buffer we cannot simply use memset, we have to use
+> >> clear_user(). Using a kernel config based on rawhide Fedora and a
+> >> virtio-mem device that registers a vmcore_cb, I can easily trigger:
+> >>
+> >> [   11.327580] systemd[1]: Starting Kdump Vmcore Save Service...
+> >> [   11.339697] kdump[420]: Kdump is using the default log level(3).
+> >> [   11.370964] kdump[453]: saving to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+> >> [   11.373997] kdump[458]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+> >> [   11.385357] kdump[465]: saving vmcore-dmesg.txt complete
+> >> [   11.386722] kdump[467]: saving vmcore
+> >> [   16.531275] BUG: unable to handle page fault for address: 00007f2374e01000
+> >> [   16.531705] #PF: supervisor write access in kernel mode
+> >> [   16.532037] #PF: error_code(0x0003) - permissions violation
+> >> [   16.532396] PGD 7a523067 P4D 7a523067 PUD 7a528067 PMD 7a525067 PTE 800000007048f867
+> >> [   16.532872] Oops: 0003 [#1] PREEMPT SMP NOPTI
+> >> [   16.533154] CPU: 0 PID: 468 Comm: cp Not tainted 5.15.0+ #6
+> >> [   16.533513] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
+> >> [   16.534198] RIP: 0010:read_from_oldmem.part.0.cold+0x1d/0x86
+> >> [   16.534552] Code: ff ff ff e8 05 ff fe ff e9 b9 e9 7f ff 48 89 de 48 c7 c7 38 3b 60 82 e8 f1 fe fe ff 83 fd 08 72 3c 49 8d 7d 08 4c 89 e9 89 e8 <49> c7 45 00 00 00 00 00 49 c7 44 05 f8 00 00 00 00 48 83 e7 f81
+> >> [   16.535670] RSP: 0018:ffffc9000073be08 EFLAGS: 00010212
+> >> [   16.535998] RAX: 0000000000001000 RBX: 00000000002fd000 RCX: 00007f2374e01000
+> >> [   16.536441] RDX: 0000000000000001 RSI: 00000000ffffdfff RDI: 00007f2374e01008
+> >> [   16.536878] RBP: 0000000000001000 R08: 0000000000000000 R09: ffffc9000073bc50
+> >> [   16.537315] R10: ffffc9000073bc48 R11: ffffffff829461a8 R12: 000000000000f000
+> >> [   16.537755] R13: 00007f2374e01000 R14: 0000000000000000 R15: ffff88807bd421e8
+> >> [   16.538200] FS:  00007f2374e12140(0000) GS:ffff88807f000000(0000) knlGS:0000000000000000
+> >> [   16.538696] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> [   16.539055] CR2: 00007f2374e01000 CR3: 000000007a4aa000 CR4: 0000000000350eb0
+> >> [   16.539510] Call Trace:
+> >> [   16.539679]  <TASK>
+> >> [   16.539828]  read_vmcore+0x236/0x2c0
+> >> [   16.540063]  ? enqueue_hrtimer+0x2f/0x80
+> >> [   16.540323]  ? inode_security+0x22/0x60
+> >> [   16.540572]  proc_reg_read+0x55/0xa0
+> >> [   16.540807]  vfs_read+0x95/0x190
+> >> [   16.541022]  ksys_read+0x4f/0xc0
+> >> [   16.541238]  do_syscall_64+0x3b/0x90
+> >> [   16.541475]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >> To fix, properly use clear_user() when required.
+> > 
+> > Looks a great fix to me, thanks for fixing this. 
+> > 
+> > Check the code, clear_user invokes access_ok to do check, then call
+> > memset(). It's unclear to me how the bug is triggered, could you
+> > please tell more so that I can learn? 
+> >
+> TBH, I was testing virtio-mem+vmcore before without running into this
+> issue, but after I retested with upstream in a different setup
+> (different kernel config but eventually also different CPU features), I
+> ran into this.
 > 
-> In practice, lsusb can be used to read the actual vid and pid.
+> 
+> Note that you were looking at the generic __clear_user() implementation,
+> the x86-64 variant is different, see arch/x86/lib/usercopy_64.c
+> 
+> I can spot that it triggers stac()/clac() (X86_SMAP):
+> https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention
+> 
+> "that allows supervisor mode programs to optionally set user-space
+> memory mappings so that access to those mappings from supervisor mode
+> will cause a trap. This makes it harder for malicious programs to
+> "trick" the kernel into using instructions or data from a user-space
+> program"
 
-Hi Martin,
+OK, probably. I thought it's triggered in access_ok(), and tried to
+figure out why. But seems we should do something to check this in
+access_ok(), otherwise the logic of clear_user/_clear_user is not so
+reasonable. Anyway, I have learned it, thanks a lot for digging it out.
 
-You seem to have overlooked the usual rules for writing conformant commit 
-messages :)
+By the way, I can't open above wiki article, found below commit from
+hpa. Maybe we can add some into log to tell this, not strong opinin,
+leave it to you.
 
-Please say "what" you did along with "why" you made the changes.
+For this patch, looks good to me.
 
-Here, and in two or three other patches of your series, you forgot to 
-describe "what" you did. You actually wrote it in the "Subject" lines but, as 
-you know for sure, commit messages must be self-contained entities.
+Acked-by: Baoquan He <bhe@redhat.com>
 
-Also, it would be nice to have a cover letter and have all seven patches in 
-one thread in response to the above, even if it (AFAIK) is not strictly 
-required.
+~~~~~~~~~
+commit 63bcff2a307b9bcc712a8251eb27df8b2e117967
+Author: H. Peter Anvin <hpa@linux.intel.com>
+Date:   Fri Sep 21 12:43:12 2012 -0700
 
-Anyway, many thanks for your work.
-Regards,
-
-Fabio
-
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/r8188eu/hal/usb_halinit.c       | 8 --------
->  drivers/staging/r8188eu/include/rtl8188e_hal.h  | 2 --
->  drivers/staging/r8188eu/include/rtl8188e_spec.h | 2 --
->  3 files changed, 12 deletions(-)
-
-
+    x86, smap: Add STAC and CLAC instructions to control user space access
+    
+    When Supervisor Mode Access Prevention (SMAP) is enabled, access to
+    userspace from the kernel is controlled by the AC flag.  To make the
+    performance of manipulating that flag acceptable, there are two new
+    instructions, STAC and CLAC, to set and clear it.
+    
+    This patch adds those instructions, via alternative(), when the SMAP
+    feature is enabled.  It also adds X86_EFLAGS_AC unconditionally to the
+    SYSCALL entry mask; there is simply no reason to make that one
+    conditional.
+    
+    Signed-off-by: H. Peter Anvin <hpa@linux.intel.com>
+    Link: http://lkml.kernel.org/r/1348256595-29119-9-git-send-email-hpa@linux.intel.com
 
