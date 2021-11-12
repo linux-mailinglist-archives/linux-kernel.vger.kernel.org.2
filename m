@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA8044EDFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEA744EE01
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhKLUo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:44:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+        id S235627AbhKLUpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:45:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231968AbhKLUo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:44:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 52360610D0;
-        Fri, 12 Nov 2021 20:42:06 +0000 (UTC)
+        id S235581AbhKLUo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:44:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C49A760EBD;
+        Fri, 12 Nov 2021 20:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636749726;
-        bh=dQUk4X2qOhzpCjHCPly9op5V1uDns0LwUl4joXekB5Q=;
+        s=k20201202; t=1636749727;
+        bh=BbrZGW6EuifenVBCtUSrw3Sl4ZA4TbRwj1V5lfdXkUU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=d7TwD2E4xb4SRStHK/UCbdKBV26lrwuq5WYsOye6InZouqIfOwEQMg/xgul+mE45E
-         /jus2l4MtO9lqF195+6sLV4etZTq3kF1LLz6Kpx6s+aF1oR+qobLJuAHJ1aChjf9wF
-         fDkgzW1GwifR2mFGLepHbWbVevHniHxUlnsIs4AEeABzE+qNkzdwM3mPlal+7s0xXf
-         dDag0zXfH7h9FiICJHvkMG78OoyNKeFDQTR/uEfElACtLZmIyn25nUJGF2Ab0BI07j
-         Ipf5yFV2Ea/0wuZZueaAPoPaJV6XIPVBdWQA1wSQINxngZAp4SkAp4TetfYbMlz7JA
-         +hQKZFELyOF4A==
+        b=jrFfBBYONy6+y+boqOP6wYWJIIyyn6h6S1DG8FxhyRwVeibkauR/edXJj3W1cy6r2
+         r3LIbyDTw3zyMvuTgvYEjZvtE/TDlPYDI36uVqS5U0yURzCYMgPusQ2LkutS+DvN40
+         gzBVZdZDa47njb2H643JqPdQFNaWkYVnQqZsbkuMkheHv1zpP18+zZLgV0e5q+cyZ9
+         FWy8heXatApEL/zQcb0Z1Qt+Z3W/BgwmT9Uppt5KDLJW4cLOm0R/EoR0U0CjJ9Z0sN
+         Jjis7YNyNq2Pk3N43X047Nd6lxPpHkUUueUsglJDaZUgeOkVgSj0JMsiNPxcgXwIAb
+         GUZUWd6Yg3OmQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3E4DE608FE;
-        Fri, 12 Nov 2021 20:42:06 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BB8C0609F7;
+        Fri, 12 Nov 2021 20:42:07 +0000 (UTC)
+Subject: Re: [GIT PULL] final round of SCSI updates for the 5.15+ merge window
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211112104815.GA14105@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20200830223304.GA16882@gondor.apana.org.au>
- <20201026011159.GA2428@gondor.apana.org.au>
- <20201227113221.GA28744@gondor.apana.org.au>
- <20210108035450.GA6191@gondor.apana.org.au>
- <20210708030913.GA32097@gondor.apana.org.au>
- <20210817013601.GA14148@gondor.apana.org.au>
- <20210929023843.GA28594@gondor.apana.org.au>
- <20211029041408.GA3192@gondor.apana.org.au> <20211112104815.GA14105@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211112104815.GA14105@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: beaaaa37c664e9afdf2913aee19185d8e3793b50
+In-Reply-To: <d9405d786496756564b31540cc73a9d22cc97730.camel@HansenPartnership.com>
+References: <d9405d786496756564b31540cc73a9d22cc97730.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <d9405d786496756564b31540cc73a9d22cc97730.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+X-PR-Tracked-Commit-Id: 3344b58b53a76199dae48faa396e9fc37bf86992
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 66f4beaa6c1d28161f534471484b2daa2de1dce0
-Message-Id: <163674972619.4802.15642938512992640681.pr-tracker-bot@kernel.org>
-Date:   Fri, 12 Nov 2021 20:42:06 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+X-PR-Merge-Commit-Id: 6cbcc7ab2147d721700029a78558dc0ea4207153
+Message-Id: <163674972776.4802.5369135287794805070.pr-tracker-bot@kernel.org>
+Date:   Fri, 12 Nov 2021 20:42:07 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 18:48:15 +0800:
+The pull request you sent on Fri, 12 Nov 2021 08:43:14 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/66f4beaa6c1d28161f534471484b2daa2de1dce0
+https://git.kernel.org/torvalds/c/6cbcc7ab2147d721700029a78558dc0ea4207153
 
 Thank you!
 
