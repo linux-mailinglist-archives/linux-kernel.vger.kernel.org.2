@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F2844E4B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2F144E4B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhKLKjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhKLKjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:39:12 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59085C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:36:21 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id f3so21138406lfu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 02:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+ZekWpBm7nvoX5yGD/xw1EOH1c2Ekg7v4OjngJkSA8Q=;
-        b=xDGqeWet/t2HP8OY1r7i+XyNKaxQnsEp7vRUBX+oS1if3CYBxiC/wn9JKGlC6xEOtp
-         Q4M/w9aA1D1Q9FhWyLsRBF0jkoJJlywccNCNziudrdu52LnPFCt0zhDmEv+VqThwo25C
-         r3XsxW9URW3GaztO1tv5hqg0eMQfRkKRGlNScM4WgJjQEbZ0nZSOFDZawmB8XrTccFxS
-         B7GCOoQTx1MvjDVnU0oN7OZZ0DEKNjDxIkOYLtnlo7mGjHSr93uXsa4e4MR8pkxdGnHc
-         XAH/SWnvZJaZ7vAConNPhi0FV6VLq2Knf+CfF12KVot4VRTa+D8G2JFl1q7XuNd86XVi
-         dBag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+ZekWpBm7nvoX5yGD/xw1EOH1c2Ekg7v4OjngJkSA8Q=;
-        b=ZWyhQCXJFq4cJ6nQhE6bWL3qRbZqSU2pQm95U/EsGQ6xcKUOS8YW+zKh59dfvoIVVt
-         owUbpjmMmeU0QrkRBA7pH6AFkjf9ENW5HXX/oAu667sDo07fkv/L/zbqXFLcpCPyrkYg
-         vwVZS/Cc1LKGgT5hKXjZalcUqttfG+FFYn+y1pgkEMi41NN+kaDX/VwY0IT0/Bdf57sI
-         W0Fg7YlK6H2Puaqbk9P+tzCgFiBeLA4jKlriDSZZk7jZkjzAh45rrF4MlElDTz0ctvyi
-         q8HgUMed9pyFekSu7jFHtNU2KDeQdNRGi71KrCQCDwyqxA4FVD4xx25epe1O45dx6Fna
-         06+g==
-X-Gm-Message-State: AOAM533xzDXuXMWrTk0YlcP/9Dn+cKQ5Ud6Pb20p2TRrOtX+nWSr/xE6
-        gjrIDmL7Gvb8HqBlbt1YAD02FA==
-X-Google-Smtp-Source: ABdhPJz3quEPlpLtMB6ie7ZzdpWRt1b1RS3VcaroVsV50tz5ZAP82kry1qyHYIaP+9ObqP4mjXn+bg==
-X-Received: by 2002:a05:6512:1307:: with SMTP id x7mr12451124lfu.210.1636713379758;
-        Fri, 12 Nov 2021 02:36:19 -0800 (PST)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id v14sm524851lfb.264.2021.11.12.02.36.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 02:36:19 -0800 (PST)
-Subject: Re: [PATCH v5 15/22] crypto: qce: Add new compatibles for qce crypto
- driver
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-16-bhupesh.sharma@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <f5b7c89c-3bdd-1e1e-772e-721aa5e95bbf@linaro.org>
-Date:   Fri, 12 Nov 2021 12:36:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234691AbhKLKkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:40:05 -0500
+Received: from mga11.intel.com ([192.55.52.93]:46699 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234619AbhKLKkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 05:40:04 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="230576258"
+X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
+   d="scan'208";a="230576258"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 02:37:09 -0800
+X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
+   d="scan'208";a="504838590"
+Received: from sbacanu-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.217.145])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 02:37:06 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Michel =?utf-8?Q?D=C3=A4nzer?= <michel@daenzer.net>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line parameter logic
+In-Reply-To: <20211112122239.26b3787c@eldfell>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211108140648.795268-1-javierm@redhat.com> <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de> <20211112105641.25a4e1a7@eldfell> <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com> <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de> <20211112122239.26b3787c@eldfell>
+Date:   Fri, 12 Nov 2021 12:37:03 +0200
+Message-ID: <877ddd4q40.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211110105922.217895-16-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
+On Fri, 12 Nov 2021, Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> On Fri, 12 Nov 2021 11:09:13 +0100
+> Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+>> Hi
+>> 
+>> Am 12.11.21 um 10:39 schrieb Javier Martinez Canillas:
+>> > Hello Pekka,
+>> > 
+>> > On 11/12/21 09:56, Pekka Paalanen wrote:
+>> > 
+>> > [snip]
+>> >   
+>> >>
+>> >> Hi,
+>> >>
+>> >> these ideas make sense to me, so FWIW,
+>> >>
+>> >> Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+>> >>  
+>> > 
+>> > Thanks.
+>> >   
+>> >> There is one nitpick I'd like to ask about:
+>> >>
+>> >> +bool drm_get_modeset(void)
+>> >> +{
+>> >> +     return !drm_nomodeset;
+>> >> +}
+>> >> +EXPORT_SYMBOL(drm_get_modeset);
+>> >>
+>> >> Doesn't "get" have a special meaning in the kernel land, like "take a
+>> >> strong reference on an object and return it"?  
+>> > 
+>> > That's a very good point.
+>> >   
+>> >> As this is just returning bool without changing anything, the usual
+>> >> word to use is "is". Since this function is also used at most once per
+>> >> driver, which is rarely, it could have a long and descriptive name.
+>> >>
+>> >> For example:
+>> >>
+>> >> bool drm_is_modeset_driver_allowed(void);  
+>> 
+>> I'd nominate
+>> 
+>>    bool drm_native_drivers_enabled()
+>> 
+>> This is what HW-specific drivers want to query in their init/probing 
+>> code. The actual semantics of this decision is hidden from the driver. 
+>> It's also easier to read than the other name IMHO
+>
+> Ok, but what is a "native driver"? Or a "non-native driver"?
+> Is that established kernel terminology?
 
-On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
-> Since we decided to use soc specific compatibles for describing
-> the qce crypto IP nodes in the device-trees, adapt the driver
-> now to handle the same.
-> 
-> Keep the old deprecated compatible strings still in the driver,
-> to ensure backward compatibility.
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->   drivers/crypto/qce/core.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 89d9c01ba009..dd2604f5ce6a 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -297,8 +297,12 @@ static int qce_crypto_remove(struct platform_device *pdev)
->   }
->   
->   static const struct of_device_id qce_crypto_of_match[] = {
-> +	/* Following two entries are deprecated (kept only for backward compatibility) */
->   	{ .compatible = "qcom,crypto-v5.1", },
->   	{ .compatible = "qcom,crypto-v5.4", },
-> +	/* Add compatible strings as per updated dt-bindings, here: */
-> +	{ .compatible = "qcom,ipq6018-qce", },
-> +	{ .compatible = "qcom,sdm845-qce", },
->   	{}
->   };
->   MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
-> 
+FWIW, it doesn't mean anything to me.
 
-and two more compatibles should be added to the list, see my review
-comment on v5 11/22.
+drm_modeset_enabled()?
 
---
-Best wishes,
-Vladimir
+*sigh* I worked so hard not to participate in this bikeshed. ;)
+
+
+BR,
+Jani.
+
+
+>
+> I'd think a non-native driver is something that e.g. ndiswrapper is
+> loading. Is simpledrm like ndiswrapper in a sense? IIRC, simpledrm is
+> the driver that would not consult this function, right?
+>
+>
+> Thanks,
+> pq
+>
+>> 
+>> Best regards
+>> Thomas
+>> 
+>> >>  
+>> > 
+>> > Yeah, naming is hard. Jani also mentioned that he didn't like this
+>> > function name, so I don't mind to re-spin the series only for that.
+>> >   
+>> >> - "drm" is the namespace
+>> >> - "is" implies it is a read-only boolean inspection
+>> >> - "modeset" is the feature being checked
+>> >> - "driver" implies it is supposed gate driver loading or
+>> >>    initialization, rather than modesets after drivers have loaded
+>> >> - "allowed" says it is asking about general policy rather than what a
+>> >>    driver does
+>> >>  
+>> > 
+>> > I believe that name is more verbose than needed. But don't have a
+>> > strong opinion and could use it if others agree.
+>> >   
+>> >> Just a bikeshed, I'll leave it to actual kernel devs to say if this
+>> >> would be more appropriate or worth it.
+>> >>  
+>> > 
+>> > I think is worth it and better to do it now before the patches land, but
+>> > we could wait for others to chime in.
+>> > 
+>> > Best regards,
+>> > --
+>> > Javier Martinez Canillas
+>> > Linux Engineering
+>> > Red Hat
+>> >   
+>> 
+>
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
