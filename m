@@ -2,122 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2266B44E9D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3608E44E9E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhKLPVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:21:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47234 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229509AbhKLPVC (ORCPT
+        id S233575AbhKLPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:22:33 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:33471 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231553AbhKLPWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:21:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636730291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUBGxL2ntgz3Bi9YL3FvigZ4RqsfcGLSBgbmNESveQI=;
-        b=XmIz9j+BykThL6fpID3sRiAC9zMUMXaqfodxW6Riho3B2dqDJ0C7LLE367lzvLHRnideFm
-        lKDIaw+HNJ8IM+RpbKdC+QsvhiWV1arwhu5rYM3/GVyvqbwwRJAKmUHoo4YXQYydBxWEzm
-        MkDUXlb6BqmzRdpMODN8gWkqlMjTC0A=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-9hBQGt1SOYazxDNNxQ-WCg-1; Fri, 12 Nov 2021 10:18:10 -0500
-X-MC-Unique: 9hBQGt1SOYazxDNNxQ-WCg-1
-Received: by mail-pf1-f198.google.com with SMTP id g142-20020a625294000000b004946d789d14so5898705pfb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:18:09 -0800 (PST)
+        Fri, 12 Nov 2021 10:22:30 -0500
+Received: by mail-oi1-f182.google.com with SMTP id q25so12881627oiw.0;
+        Fri, 12 Nov 2021 07:19:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUBGxL2ntgz3Bi9YL3FvigZ4RqsfcGLSBgbmNESveQI=;
-        b=eJL4MbCWx7YqsvPDM1NWe8hFr7Sz6iCj+AhIhBNb2Taiud8praUPr6CrKW8vGq7Q0L
-         //JggJMllW9YdC9Gz7+2BV1X0Uzl+UnGYBY4MEQV3H5dwx/+QkBo9Z4E49p9uYJHCGRw
-         OJq9GQQQ2wFsNQLO5gSkr+ZlcezyKx1aDmI5aEoO6zXD7HvQmqSehlQi48qk7CHG4vhg
-         NKe6thfeG6skWeUAniAC/qkn2VghyWzKBdarOiIGo6e6y9IkDA9Xu6FCB0eTHK2ZkG9f
-         TaaCFFMqi8Yh4F9NIAeRKYc9ctT6ZpohnbL7eVU7p4AoxPxMgktTwQlRvqtLgCNwY21B
-         1ynQ==
-X-Gm-Message-State: AOAM531JFPvDjw4kG+HM7mWJC4g2eWOL+g2inlNFtgg7GOP2LXFFFNMM
-        pIvUvZuFWyR6zxL1/Ark9DY6PcIkmHambVW4zIu9t6eZSb8ixNr/47HJrGAZWmBwrM1nUyX2NGm
-        Iy1SnJr+z1k8luBNymaPilBU+FCmV8JDBjbz+oD4c
-X-Received: by 2002:a62:31c5:0:b0:447:cd37:61f8 with SMTP id x188-20020a6231c5000000b00447cd3761f8mr14681844pfx.29.1636730288941;
-        Fri, 12 Nov 2021 07:18:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCAiNzO2woi/eM6j4IIQta5+aHwTXJbQqSbT6LVrv558XyG6U2O7/4ufetx0K95N4OCSRhu2GQsyCM/JYnxOA=
-X-Received: by 2002:a62:31c5:0:b0:447:cd37:61f8 with SMTP id
- x188-20020a6231c5000000b00447cd3761f8mr14681806pfx.29.1636730288624; Fri, 12
- Nov 2021 07:18:08 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4yel1hd+kqu0GBbGBGX3XHvXpWBPzRQA3xBOJv/VtNs=;
+        b=GT+sTwhFv2xRBZfoEg8F2hH7IFaksDiLqcn4rJq95RpYyAiaYBbjsnNlETmPra6och
+         leMs2Yi5npN0bofzdFfx7mZo9+dB4W5FH4piklosIl7njZUSYWpej+tdBvU3NSEjSFEq
+         ovke62olqcF+NWvye1b1D5r5Y2tv0iAJypbiB5MRDeIIHJtzed5R1qZs4WXxo1kFHAXa
+         faeTiF9q0whUOgNum/gFMdOAVHbkPVQAuRxPrk+OXCYhpVtb+xGHj1eU9D1yL3i2os0t
+         I5fO2IpUGB4iEuBD7hSQRJJimYwkHjWESGZgT1ItCbzBdzUKpQUlcGC9omFH+ui8wUTx
+         XnEg==
+X-Gm-Message-State: AOAM532ZiYPMJzqNq+dLWYO0dITHDNj611i+3HmEBVWYm5Z8DP3+Jd7u
+        byKnqt5kX8WqEAbolbr2nQ==
+X-Google-Smtp-Source: ABdhPJxQ+VudnSViJNi+5YOF/wy3/DfPOdoi5jO3AL2BMG9xkI0fZG9NZYIjiv6etRC7ulNfdpKqsg==
+X-Received: by 2002:a05:6808:180c:: with SMTP id bh12mr14006813oib.152.1636730378271;
+        Fri, 12 Nov 2021 07:19:38 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g1sm1150075ooq.2.2021.11.12.07.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 07:19:37 -0800 (PST)
+Received: (nullmailer pid 2870844 invoked by uid 1000);
+        Fri, 12 Nov 2021 15:19:36 -0000
+Date:   Fri, 12 Nov 2021 09:19:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     James Lo <james.lo@mediatek.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [RESEND, v14 1/3] dt-bindings: spmi: modify the constraint of
+ reg property
+Message-ID: <YY6GCA9pu3p0p3fy@robh.at.kernel.org>
+References: <20211112055410.21418-1-james.lo@mediatek.com>
+ <20211112055410.21418-2-james.lo@mediatek.com>
 MIME-Version: 1.0
-References: <20211112135511.29573-1-linux@zary.sk>
-In-Reply-To: <20211112135511.29573-1-linux@zary.sk>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 12 Nov 2021 16:17:57 +0100
-Message-ID: <CAO-hwJLZ8roXUxnB5Umyjd_22KFGbFMouxdVM0GLSSLrktteAg@mail.gmail.com>
-Subject: Re: [PATCH] hid-multitouch: Fix Iiyama ProLite T1931SAW (0eef:0001 again!)
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112055410.21418-2-james.lo@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ondrej,
+On Fri, Nov 12, 2021 at 01:54:08PM +0800, James Lo wrote:
+> The constraint of reg may larger than 1, so we modify to
+> 'minItem: 1' and 'maxItem: 2'.
+> And adds documentation for the SPMI controller found on
+> Mediatek SoCs.
+> 
+> Merge [RESEND,v13,2/4] into [RESEND,v13,1/4] for fix yaml
+> error.
+> [RESEND,v13,1/4] :
+> dt-bindings: spmi: modify the constraint of reg property
+> [RESEND,v13,2/4] :
+> dt-bindings: spmi: document binding for the Mediatek SPMI
+> controller
 
-On Fri, Nov 12, 2021 at 3:00 PM Ondrej Zary <linux@zary.sk> wrote:
->
-> Iiyama ProLite T1931SAW does not work with Linux - input devices are
-> created but cursor does not move.
->
-> It has the infamous 0eef:0001 ID which has been reused for various
-> devices before.
->
-> It seems to require export_all_inputs = true.
-> Add it to mt_devices[] as MT_CLS_WIN_8 to fix the problem.
-> Hopefully there are no HID devices using this ID that will break.
-> It should not break non-HID devices (handled by usbtouchscreen).
+Combining is not the right thing to do.
 
-Hmm, this is worrisome. I am pretty sure there were some eGalax 0001
-devices that were Win 7 compatible and I am not sure if they are
-compatible with Win8...
-
-I guess that if you have to set MT_CLS_WIN_8, the device is not
-detected as such. so how about you use:
-MT_CLS_EXPORT_ALL_INPUTS instead, (to keep MT_CLS_DEFAULT for those
-devices), and restrict the VID/PID matching to the non Win8 devices:
-
-HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, USB_VENDOR_ID_DWAV,
-USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER)
-
-?
-
-Cheers,
-Benjamin
-
->
-> Signed-off-by: Ondrej Zary <linux@zary.sk>
+> 
+> Signed-off-by: James Lo <james.lo@mediatek.com>
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 > ---
->  drivers/hid/hid-multitouch.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-> index e1afddb7b33d..099daf590392 100644
-> --- a/drivers/hid/hid-multitouch.c
-> +++ b/drivers/hid/hid-multitouch.c
-> @@ -1888,6 +1888,11 @@ static const struct hid_device_id mt_devices[] = {
->                 MT_USB_DEVICE(USB_VENDOR_ID_CVTOUCH,
->                         USB_DEVICE_ID_CVTOUCH_SCREEN) },
->
-> +       /* eGalax devices (SAW) */
-> +       { .driver_data = MT_CLS_WIN_8,
-> +               MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-> +                       USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER) },
+>  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
+>  .../devicetree/bindings/spmi/spmi.yaml        |  3 +-
+>  2 files changed, 78 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> new file mode 100644
+> index 000000000000..2445c5e0b0ef
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> @@ -0,0 +1,76 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spmi/mtk,spmi-mtk-pmif.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->         /* eGalax devices (resistive) */
->         { .driver_data = MT_CLS_EGALAX,
->                 MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-> --
-> Ondrej Zary
->
+> +title: Mediatek SPMI Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> +
+> +description: |+
+> +  On MediaTek SoCs the PMIC is connected via SPMI and the controller allows
+> +  for multiple SoCs to control a single SPMI master.
+> +
+> +allOf:
+> +  - $ref: "spmi.yaml"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt6873-spmi
+> +      - mediatek,mt8195-spmi
+> +
+> +  reg:
+> +    maxItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: pmif
+> +      - const: spmimst
+> +
+> +  clocks:
+> +    minItems: 3
+> +    maxItems: 3
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pmif_sys_ck
+> +      - const: pmif_tmr_ck
+> +      - const: spmimst_clk_mux
+> +
+> +  assigned-clocks:
+> +    maxItems: 1
+> +
+> +  assigned-clock-parents:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +
+> +    spmi: spmi@10027000 {
+> +        compatible = "mediatek,mt6873-spmi";
+> +        reg = <0x10027000 0xe00>,
+> +              <0x10029000 0x100>;
+> +        reg-names = "pmif", "spmimst";
+> +        clocks = <&infracfg CLK_INFRA_PMIC_AP>,
+> +                 <&infracfg CLK_INFRA_PMIC_TMR>,
+> +                 <&topckgen CLK_TOP_SPMI_MST_SEL>;
+> +        clock-names = "pmif_sys_ck",
+> +                      "pmif_tmr_ck",
+> +                      "spmimst_clk_mux";
+> +        assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
+> +        assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/spmi/spmi.yaml b/Documentation/devicetree/bindings/spmi/spmi.yaml
+> index 1d243faef2f8..f29183a45adc 100644
+> --- a/Documentation/devicetree/bindings/spmi/spmi.yaml
+> +++ b/Documentation/devicetree/bindings/spmi/spmi.yaml
+> @@ -25,7 +25,8 @@ properties:
+>      pattern: "^spmi@.*"
+>  
+>    reg:
+> -    maxItems: 1
+> +    maxItems: 2
+> +    minItems: 1
 
+'reg' is controller specific so we shouldn't even be specifying it here. 
+Just remove it.
+
+>  
+>    "#address-cells":
+>      const: 2
+> -- 
+> 2.18.0
+> 
+> 
