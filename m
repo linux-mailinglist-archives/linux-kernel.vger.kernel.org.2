@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804D44E92B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772F744E92E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhKLOuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:50:46 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:40606 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235087AbhKLOuo (ORCPT
+        id S235176AbhKLOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232157AbhKLOvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:50:44 -0500
-Received: by mail-ot1-f54.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so6188430otj.7;
-        Fri, 12 Nov 2021 06:47:54 -0800 (PST)
+        Fri, 12 Nov 2021 09:51:37 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40933C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:48:46 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id f4so38597607edx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:48:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=liCIQ0fS9RC7PAp1JXFa7fSdczN2ri6zbG8n42TR698=;
+        b=2d38TNhNK2cNhtiA0+1oHekR01L0p4voHKIlXJMPEYWP9lQBKLbuptj3seDiN2+mGE
+         esruC5cRcsMBE83MAsKK9tLyMOAXSWnMcCpmTC+ddIoFMbiO1EH5h1RP0CWyVnfmgFXc
+         JCop+Mapt+WwyqbeAtX7Q6nITLVv+Z7QTWoi7x29Bfews3hM9GPzMyjT1Ba7s3g7px3Y
+         xbYeR6MFxwV2WL9zUm6ntNa5gIQZZ9vRSoSHBY/oGBJy03Qq6ebvoGh6aXD+2Glk7Dh9
+         pSLtyZqRcqsVSaRw4Q2l589V8WV2EAPyNaLOm9QQ6ciRsp+rUIOIoLPyMfEXbIoy5t2w
+         t8UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MqpVUsLYNqsJjO4ImeTejjx8SUZnfDjbhJPSiiUyJOQ=;
-        b=A1p7E+UYgvNA54JZTL1hP/+5/+sFOb/b2Fk0QJ/RLnZzUU0iWjaEZU56xUIOP4BVUX
-         XUx1NKwBk3bN45K7/NRWrD4V5Eidlr14V/RrKdWsa0ReBYJPO+oShdGZYzX4beeO4fvI
-         Kje0iB5JKToZBtuYnjVZ5qYRB0VhbA3lv+DVDb0KxInI1g4gxSTaY7GJFO5qr9cRB/Hw
-         Tb9shpKUAKKq4pG/WrUzQFQZ1uttrS0SNKv1fY+M8pe7Ika9U//D7rmg5QSojxftLwOg
-         dgMKSF07HFmWSlHodjeC9oi9K40VNZmsgseQtmKWDkGdey7FlzwN4IIpaYzoarCH/ZNo
-         mPUg==
-X-Gm-Message-State: AOAM530EBSYF6+HZUMEYAkAoGg+hRv1nySj2zKVKjAtOQLmtz/NA2gRZ
-        uy/7qQGYk9Ldwi67b6NPTA==
-X-Google-Smtp-Source: ABdhPJzDQAhXlkjwRvi5urW+7d003gcUAFjnSG2AHX4B3iXy467gNUrRe93n1Idba1w8d58aLwaeMw==
-X-Received: by 2002:a9d:326:: with SMTP id 35mr11139198otv.41.1636728473571;
-        Fri, 12 Nov 2021 06:47:53 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g26sm1280650ots.25.2021.11.12.06.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 06:47:52 -0800 (PST)
-Received: (nullmailer pid 2736205 invoked by uid 1000);
-        Fri, 12 Nov 2021 14:47:46 -0000
-Date:   Fri, 12 Nov 2021 08:47:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        David Airlie <airlied@linux.ie>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-mips@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        devicetree@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
-        Kees Cook <keescook@chromium.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        letux-kernel@openphoenux.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>,
-        Harry Wentland <harry.wentland@amd.com>
-Subject: Re: [PATCH v6 3/8] dt-bindings: display: Add ingenic,jz4780-dw-hdmi
- DT Schema
-Message-ID: <YY5+kgNRlKHIGPlO@robh.at.kernel.org>
-References: <cover.1636573413.git.hns@goldelico.com>
- <70f2abb5277369721cb352eb50daa407bee3fd04.1636573413.git.hns@goldelico.com>
- <1636642646.871896.3774079.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=liCIQ0fS9RC7PAp1JXFa7fSdczN2ri6zbG8n42TR698=;
+        b=TK1Tl77X7qIhJwr/k0Q0SJit+Dp8EJFEN7j1uucHGhZy5nm/xTz8Ns7Xry5a187f/Y
+         s3FcLJh3NCX8nWqpkHyj96qMqx09IVwqQtmAbGdMn4REDDAUClCUycd/DKRwz8zcz6Kj
+         gh7sDe9u7Tc9eUJhEQK67wE/8f9XgxCY96xMA0C9HfUbXURLT4Vc16Ov2jiIcR0DuPnI
+         aePgmBE81zGB40lym4lxoAGquYN07a1fxzEhGulvb1J/iByRNjDn2joXTS5ScBJGgRMz
+         ECTqE2mOhMlnsJD0igiOktDK3cMDV+B2gx/TncMSK1lwMQgWZp8nvC97rFl0Uq1uTBmW
+         BeRg==
+X-Gm-Message-State: AOAM530VKosEfyzmOY58pTTZmGwDy2o6Eh3J75L801ABMShtagpstA+M
+        GJTkZtbCiMoVZbhK41tdGX2pqTCFXQPHhDbWa/l8uQ==
+X-Google-Smtp-Source: ABdhPJzc44VifLa2rYLGlj3oXKnMb9qqwgqk4m8d/p+GHYSsjU2862hljMkjoNQFEFNAMXKeIt4lmytpw57S6DWqarY=
+X-Received: by 2002:a17:907:75f0:: with SMTP id jz16mr20705808ejc.77.1636728524826;
+ Fri, 12 Nov 2021 06:48:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636642646.871896.3774079.nullmailer@robh.at.kernel.org>
+References: <20211111202506.19459-1-brgl@bgdev.pl> <20211111202506.19459-2-brgl@bgdev.pl>
+ <CAHp75Vdbgk-SVe_eFHUdnNUF65ZSRPHVZXExus13Q6j2CHFy=g@mail.gmail.com>
+In-Reply-To: <CAHp75Vdbgk-SVe_eFHUdnNUF65ZSRPHVZXExus13Q6j2CHFy=g@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 12 Nov 2021 15:48:34 +0100
+Message-ID: <CAMRc=MdtuDVnBMWHuTYUC7e65s8GsYrPnRv0zcmWGJwEQfmuSw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] gpiolib: check the 'ngpios' property in core
+ gpiolib code
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 08:57:26AM -0600, Rob Herring wrote:
-> On Wed, 10 Nov 2021 20:43:28 +0100, H. Nikolaus Schaller wrote:
-> > From: Sam Ravnborg <sam@ravnborg.org>
-> > 
-> > Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
-> > Based on .txt binding from Zubair Lutfullah Kakakhel
-> > 
-> > We also add add generic ddc-i2c-bus to synopsys,dw-hdmi.yaml
-> > 
-> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> > Cc: Rob Herring <robh@kernel.org>
-> > Cc: devicetree@vger.kernel.org
-> > ---
-> >  .../display/bridge/synopsys,dw-hdmi.yaml      |  3 +
-> >  .../bindings/display/ingenic-jz4780-hdmi.yaml | 76 +++++++++++++++++++
+On Thu, Nov 11, 2021 at 9:47 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Nov 11, 2021 at 10:26 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > Several drivers read the 'ngpios' device property on their own, but
+> > since it's defined as a standard GPIO property in the device tree bindings
+> > anyway, it's a good candidate for generalization. If the driver didn't
+> > set its gc->ngpio, try to read the 'ngpios' property from the GPIO
+> > device's firmware node before bailing out.
+>
+> Thanks!
+>
+> ...
+>
+> > +               ret = fwnode_property_read_u32(gdev->dev.fwnode, "ngpios",
+> > +                                              &ngpios);
+>
+> I'm wondering if there is any obstacle to call
+>
+>                ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
+>
+> ?
+>
+> Rationale (the main one) is to avoid direct dereference of fwnode from
+> struct device (it might be changed in the future). I really prefer API
+> calls here.
+>
+> > +               if (ret == 0) {
+> > +                       gc->ngpio = ngpios;
+> > +               } else {
+> > +                       chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+> > +                       ret = -EINVAL;
+> > +                       goto err_free_descs;
+> > +               }
+>
+> I would prefer the other way around and without 'else' being involved.
+>
+> >         }
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-This goes in display/bridge/. And use compatible string for the file 
-name: ingenic,jz4780-hdmi.yaml
+Will do. Just a note: some drivers that parse the ngpios property will
+need to continue doing it themselves as they have additional
+requirements from the value (limited max value, needs to be multiple
+of 8, etc.) on the read value. For those that are obvious, we can
+start converting them after this patch lands.
 
-> >  2 files changed, 79 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml:36:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.example.dt.yaml: hdmi@10180000: 'clock-names', 'ddc-i2c-bus', 'interrupt-parent', 'interrupts', 'reg' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-
-I think you need to use 'unevaluatedPropertes' instead of 
-'additionalProperties' if you are getting these properties from 
-synopsys,dw-hdmi.yaml.
-
-Rob
+Bart
