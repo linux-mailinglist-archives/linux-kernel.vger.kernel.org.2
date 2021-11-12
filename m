@@ -2,161 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C7044EADB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2113644EAE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbhKLPzc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Nov 2021 10:55:32 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:44379 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhKLPzb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:55:31 -0500
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1AF05E000A;
-        Fri, 12 Nov 2021 15:52:37 +0000 (UTC)
-Date:   Fri, 12 Nov 2021 16:52:36 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 4/4] mtd: rawnand: fsmc: Fix timing computation
-Message-ID: <20211112165236.12d71bc0@xps13>
-In-Reply-To: <20211112143855.2678989-5-herve.codina@bootlin.com>
-References: <20211112143855.2678989-1-herve.codina@bootlin.com>
-        <20211112143855.2678989-5-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S234365AbhKLP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229841AbhKLP6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 10:58:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD59560F45;
+        Fri, 12 Nov 2021 15:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636732556;
+        bh=ZdLwxjYgTxXkalzhkw/k7vZBpw+xVc13rs6AD5fASgg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cQA3hSJ/X2TBdwjuoxUmnkSL6ITzQys0CR8b/iU6eQ26IdEpgaNxux1vkFl/dIktW
+         6ZiP+5iM10fkF4fkC01690EwYySFOfhsSYKbe2kQbyt+zSPOi9US5uq885mzxwrdSO
+         9cFBE8Hb9uLd1DmZwmP+b0SFq1Z2mv60HviDp2++lREtH3M+MGLXK+/+fYgnIpDh9S
+         +1KzFkfT4rZwfTcca7Szi2PKxjMlftOi6cM8STEgfB2Ym1OmhCiyonOQcN00PZSOiq
+         4SeF9vuUjkNpLY1kXghrQy36jyTTryn/roosmloa2kx2+EZSHUiEql9ul5t5RqbS3j
+         l08sR7g5HM73Q==
+Received: by mail-ed1-f46.google.com with SMTP id e3so3060916edu.4;
+        Fri, 12 Nov 2021 07:55:56 -0800 (PST)
+X-Gm-Message-State: AOAM530kzn1FA24yk1oRsIzFk1PsXpbZnn17hmSW3MGTzH2LFll276au
+        HzRmqLtr3AlVfJHeftfnLuO1N3gaODIx+BE50g==
+X-Google-Smtp-Source: ABdhPJxMSbQEPedZftdSDnp2XKnzGwwj8IAex8jyauOxAcT5jmt9rQALJLlQpj+ehikSpWj59+z0u9Zvy82e2SfjGbs=
+X-Received: by 2002:a17:907:7f25:: with SMTP id qf37mr20901805ejc.147.1636732555191;
+ Fri, 12 Nov 2021 07:55:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20211112143644.434995-1-maz@kernel.org> <20211112150415.GA1401861@bhelgaas>
+ <87fss18kb5.wl-maz@kernel.org>
+In-Reply-To: <87fss18kb5.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 12 Nov 2021 09:55:43 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLumnN6bExJ22SkngCiYsN8LwD=q8ov8wk0zvE3-UKdzg@mail.gmail.com>
+Message-ID: <CAL_JsqLumnN6bExJ22SkngCiYsN8LwD=q8ov8wk0zvE3-UKdzg@mail.gmail.com>
+Subject: Re: [PATCH] of/irq: Don't ignore interrupt-controller when
+ interrupt-map failed
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herve,
+On Fri, Nov 12, 2021 at 9:28 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Fri, 12 Nov 2021 15:04:15 +0000,
+> Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > On Fri, Nov 12, 2021 at 02:36:44PM +0000, Marc Zyngier wrote:
+> > > Since 041284181226 ("of/irq: Allow matching of an interrupt-map local
+> > > to an interrupt controller"), the irq code favors using an interrupt-map
+> > > over a interrupt-controller property if both are available, while the
+> > > earlier behaviour was to ignore the interrupt-map altogether.
+> > >
+> > > However, we now end-up with the opposite behaviour, which is to
+> > > ignore the interrupt-controller property even if the interrupt-map
+> > > fails to match its input. This new behaviour breaks the AmigaOne
+> > > X1000 machine, which ships with an extremely "creative" (read:
+> > > broken) device tree.
+> > >
+> > > Fix this by allowing the interrupt-controller property to be selected
+> > > when interrupt-map fails to match anything.
+> > >
+> > > Fixes: 041284181226 ("of/irq: Allow matching of an interrupt-map local to an interrupt controller")
+> > > Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > Link: https://lore.kernel.org/r/78308692-02e6-9544-4035-3171a8e1e6d4@xenosoft.de
+> > > Cc: Rob Herring <robh@kernel.org>
+> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> >
+> > I'm not qualified to review this, but since 041284181226 was merged
+> > via my tree along with the rest of the Apple stuff, let me know if
+> > you'd like me to merge this.
+> >
+> > I see Rob has a comment, so if you want to take care merging it
+> > yourself, that's certainly fine with me.
+>
+> I have a couple of IRQ patches that need to go in, so happy to route
+> it via the irqchip tree if Rob gives his blessing.
 
-herve.codina@bootlin.com wrote on Fri, 12 Nov 2021 15:38:55 +0100:
+I have stuff for rc1 too, but feel free to take it:
 
-> The timing setting were incorrect on some nands leading to a
-> fallback to mode 0 timing on some Micron nand or to incorrect
-> data reads on some Winbond NAND.
+With the WARN added,
 
-In general I prefer when acronyms use upper cases (NANDs, MTD, etc).
-Please also do the change in the other commits.
-
-Saying "timing setting were incorrect on some nands" is inaccurate. I
-think we can clearly state that "Under certain circumstances, the
-timing settings calculated by the FSMC NAND controller driver were
-inaccurate." (no need to precise a NAND device here).
-
-> The timing computation did not take into account the following
-> constraint given in SPEAr3xx reference manual:
->   twait >= tCEA - tset*TCLK + TOUTDEL + TINDEL
-> 
-> This patch adds this constraint and fixes the issues on both
-
-We generally use the declarative tense here, such as "Add this
-constraint and fixes..." even though I would happily reformulate with
-something like "Enhance the timings calculation by taking into account
-this additional constraint."
-
-And then you can provide your results, how it behaved with the two
-NANDs and what improvement you bring with this additional calculation.
-
-> nands having the both nands working at mode 3 timing.
-> The change has no impact on slower timing mode such as mode 0.
-> Indeed, on mode 0 timing, computed values are the same with and
-> without the patch.
-
-A few visual changes explained below otherwise the logic is fine.
-
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/fsmc_nand.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-> index bff09219ce3a..a3aa66f30869 100644
-> --- a/drivers/mtd/nand/raw/fsmc_nand.c
-> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
-> @@ -278,7 +278,7 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  {
->  	unsigned long hclk = clk_get_rate(host->clk);
->  	unsigned long hclkn = NSEC_PER_SEC / hclk;
-> -	u32 thiz, thold, twait, tset;
-> +	u32 thiz, thold, twait, tset, tmp;
->  
->  	if (sdrt->tRC_min < 30000)
->  		return -EOPNOTSUPP;
-> @@ -310,13 +310,6 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  	else if (tims->thold > FSMC_THOLD_MASK)
->  		tims->thold = FSMC_THOLD_MASK;
->  
-> -	twait = max(sdrt->tRP_min, sdrt->tWP_min);
-> -	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
-> -	if (tims->twait == 0)
-> -		tims->twait = 1;
-> -	else if (tims->twait > FSMC_TWAIT_MASK)
-> -		tims->twait = FSMC_TWAIT_MASK;
-> -
->  	tset = max(sdrt->tCS_min - sdrt->tWP_min,
->  		   sdrt->tCEA_max - sdrt->tREA_max);
->  	tims->tset = DIV_ROUND_UP(tset / 1000, hclkn) - 1;
-> @@ -325,6 +318,24 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  	else if (tims->tset > FSMC_TSET_MASK)
->  		tims->tset = FSMC_TSET_MASK;
->  
-> +	twait = max(sdrt->tRP_min, sdrt->tWP_min);
-> +
-> +	/* According to SPEAr300 Reference Manual (RM0082) which gives more
-
-           ^
-Should be:
-
-	/*
-	 * According to...
-
-> +	 * information related to FSMSC timings than the SPEAr600 one (RM0305),
-> +	 *   twait >= tCEA - tset*TCLK + TOUTDEL + TINDEL
-> +	 * With TOUTDEL = 7ns (Output delay from the flip-flops to the board)
-> +	 * and TINDEL = 5ns (Input delay from the board to the flipflop)
-
-These two information should be placed close to TOUTDEL and TINDEL
-definitions (see my comment below).
-
-> +	 */
-> +	tmp = sdrt->tCEA_max - (tims->tset + 1)*hclkn*1000 + 7000 + 5000;
-
-                                               ^
-The style here is wrong, you need spaces before and after a "*".
-
-Please also enclose these two multiplications with parenthesis to make
-it clear that you do not intend to multiply 7000 nor 5000.
-
-Finally, do not use open coded values, please define them at the top so
-that your code matches your commit message (using TOUTDEL and TINDEL).
-You can even add a comment explaining from where you got these values.
-
-> +	if (twait < tmp)
-> +		twait = tmp;
-
-I don't like the tmp naming, you could call this variable twait_min and
-use a min() calculation here to fit the manual better.
-
-> +
-> +	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
-> +	if (tims->twait == 0)
-> +		tims->twait = 1;
-> +	else if (tims->twait > FSMC_TWAIT_MASK)
-> +		tims->twait = FSMC_TWAIT_MASK;
-> +
->  	return 0;
->  }
->  
-
-
-Thanks,
-Miquèl
+Reviewed-by: Rob Herring <robh@kernel.org>
