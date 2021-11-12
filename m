@@ -2,132 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81EC44E35C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C41744E360
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbhKLIlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 03:41:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
+        id S234545AbhKLIng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 03:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbhKLIlR (ORCPT
+        with ESMTP id S230464AbhKLIne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 03:41:17 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64673C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:38:27 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id y8so2404017plg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:38:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Gr5eo6lh6tOCmqLZBPxylS6DQQWushgkeRkakiksvqM=;
-        b=AcbubQbvJYtTNJPR9YUQ3l4fihMXd4tvXzbiLJEU+CtAZpagjrtwTIHwo9NOMLDumT
-         vsErY2wgGazp9qtULJRl+3UJmsBiE+HVsnpiNGMNCNMsSE8Q6j5jA50ubTzeyCRmRN+a
-         xdWktaArWzIYfFwOJ9By0h+hq4F3g3LKtz/NLf/etja30zrgIpDX16KNRUGEvzDRkKuO
-         2Z5SWP6+fuwvQW9DTZ0mbGf4fFf3HGpKSND1nrXMOiC7T24vYYtPOc/4Ox6jBn3kOK3E
-         etbpq9Fmlj1VcstFaU1lKnIa58F3OHONXr285tkjyHD8Rgd9ZMg1oDRgj6Tr8Vv7lNSt
-         o5MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Gr5eo6lh6tOCmqLZBPxylS6DQQWushgkeRkakiksvqM=;
-        b=PDreZAkxLLNWV0rVQBR6o0ZTQnSXny4whBIHlt+8rbZeU1iRNZ93Q/t+mJNHvJVMfW
-         TLJKGRKUM2IY42IdNbiKARn9+fCyS8FZQOksxQlMwf5eofCvdZObwwGNoeUJNrkWGmfI
-         4kia2snzb7xt9YA2HaHPvKuS++qbF3BwodXSgKZ7LASatE3tXeausJtzAsjQMOl/jlBe
-         HfSwyW1a/fI+UopswfORC45fpBL9sOU9agQUpM6JgJKtDU5iV6boFxt6l9mkWXmGae4l
-         Qcnl8M8OJpjbuNTSkxe9QdGB9NhFA17vOzf7963iuZCOkQoeZnoRN1NsMSo5YTyt7Om1
-         gksg==
-X-Gm-Message-State: AOAM530eAmcwEDr8d0+ukxDsZo/Ny1eZn3s45bxPMORZ5KgOIm2IlSKB
-        d+rFT+CoO2mWYbXgq9NVBZ4EUA==
-X-Google-Smtp-Source: ABdhPJzzUAz3lEYq+ljbLBoCEcvv7E3wlCIkE/msZHBv1aCcYqnGaITkGIqkPsNRmjSIgA6ZIRH1dA==
-X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id i11-20020a1709026acb00b0014276c3d35fmr5978730plt.89.1636706306920;
-        Fri, 12 Nov 2021 00:38:26 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id v16sm4270928pgo.71.2021.11.12.00.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 00:38:26 -0800 (PST)
-Date:   Fri, 12 Nov 2021 16:38:19 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Yihao Han <hanyihao@vivo.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
-Subject: Re: [PATCH] perf cs-etm: use swap() to make code cleaner
-Message-ID: <20211112083819.GE106654@leoy-ThinkPad-X240s>
-References: <20211112023344.3642-1-hanyihao@vivo.com>
+        Fri, 12 Nov 2021 03:43:34 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36059C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 00:40:44 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mlS6o-0007Ca-BP; Fri, 12 Nov 2021 09:40:30 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-de63-3764-bcb9-a107.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:de63:3764:bcb9:a107])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CF6296AA391;
+        Fri, 12 Nov 2021 08:40:27 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 09:40:27 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH RFC 2/2] phy: phy-can-transceiver: Add support for
+ setting mux
+Message-ID: <20211112084027.b2t2beqiiodnwjtv@pengutronix.de>
+References: <20211111164313.649-1-a-govindraju@ti.com>
+ <20211111164313.649-3-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7j22je4qercubawa"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211112023344.3642-1-hanyihao@vivo.com>
+In-Reply-To: <20211111164313.649-3-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yihao,
 
-On Thu, Nov 11, 2021 at 06:33:44PM -0800, Yihao Han wrote:
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
+--7j22je4qercubawa
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The header 'include/linux/minmax.h' is used for kernel but it's not
-provided for user space program?
-
-> Signed-off-by: Yihao Han <hanyihao@vivo.com>
+On 11.11.2021 22:13:12, Aswath Govindraju wrote:
+> On some boards, for routing CAN signals from controller to transceiver,
+> muxes might need to be set. Therefore, add support for setting the mux by
+> reading the mux-controls property from the device tree node.
+>=20
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > ---
->  tools/perf/util/cs-etm.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index f323adb1af85..aaa3ec725002 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -408,17 +408,13 @@ struct cs_etm_packet_queue
->  static void cs_etm__packet_swap(struct cs_etm_auxtrace *etm,
->  				struct cs_etm_traceid_queue *tidq)
+>  drivers/phy/phy-can-transceiver.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>=20
+> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-tran=
+sceiver.c
+> index 6f3fe37dee0e..3d8da5226e27 100644
+> --- a/drivers/phy/phy-can-transceiver.c
+> +++ b/drivers/phy/phy-can-transceiver.c
+> @@ -10,6 +10,7 @@
+>  #include<linux/module.h>
+>  #include<linux/gpio.h>
+>  #include<linux/gpio/consumer.h>
+> +#include <linux/mux/consumer.h>
+> =20
+>  struct can_transceiver_data {
+>  	u32 flags;
+> @@ -21,13 +22,22 @@ struct can_transceiver_phy {
+>  	struct phy *generic_phy;
+>  	struct gpio_desc *standby_gpio;
+>  	struct gpio_desc *enable_gpio;
+> +	struct mux_control *mux_ctrl;
+>  };
+> =20
+>  /* Power on function */
+>  static int can_transceiver_phy_power_on(struct phy *phy)
 >  {
-> -	struct cs_etm_packet *tmp;
-> -
->  	if (etm->sample_branches || etm->synth_opts.last_branch ||
->  	    etm->sample_instructions) {
->  		/*
->  		 * Swap PACKET with PREV_PACKET: PACKET becomes PREV_PACKET for
->  		 * the next incoming packet.
->  		 */
-> -		tmp = tidq->packet;
-> -		tidq->packet = tidq->prev_packet;
-> -		tidq->prev_packet = tmp;
-> +		swap(tidq->packet, tidq->prev_packet);
+> +	int ret;
+>  	struct can_transceiver_phy *can_transceiver_phy =3D phy_get_drvdata(phy=
+);
+> =20
+> +	if (can_transceiver_phy->mux_ctrl) {
+> +		ret =3D mux_control_select(can_transceiver_phy->mux_ctrl, 1);
 
-NAK - This patch will introduce compilation error:
+Hard coding the "1" looks wrong here. I have seen some boards where you
+can select between a CAN-2.0 and a single wire CAN transceiver with a
+mux. So I think we cannot hard code the "1" here.
 
-util/cs-etm.c: In function ‘cs_etm__packet_swap’:
-util/cs-etm.c:417:3: error: implicit declaration of function ‘swap’; did you mean ‘swab’? [-Werror=implicit-function-declaration]
-   swap(tidq->packet, tidq->prev_packet);
-   ^~~~
-   swab
-
-Thanks,
-Leo
-
->  	}
+> +		if (ret) {
+> +			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+>  	if (can_transceiver_phy->standby_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+>  	if (can_transceiver_phy->enable_gpio)
+> @@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *ph=
+y)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
+>  	if (can_transceiver_phy->enable_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
+> +	if (can_transceiver_phy->mux_ctrl)
+> +		mux_control_deselect(can_transceiver_phy->mux_ctrl);
+> =20
+>  	return 0;
 >  }
->  
-> -- 
+> @@ -95,6 +107,15 @@ static int can_transceiver_phy_probe(struct platform_=
+device *pdev)
+>  	match =3D of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+>  	drvdata =3D match->data;
+> =20
+> +	if (of_property_read_bool(dev->of_node, "mux-controls")) {
+
+Is this the proper way of doing this? Looks like we need a
+devm_mux_control_get_optional(), which doesn't return a -ENODEV if the
+device doesn't exist.
+
+Cc'ed Peter Rosin.
+
+> +		struct mux_control *control;
+> +
+> +		control =3D devm_mux_control_get(dev, NULL);
+> +		if (IS_ERR(control))
+> +			return PTR_ERR(control);
+
+What about making use of dev_err_probe()?
+
+> +		can_transceiver_phy->mux_ctrl =3D control;
+> +	}
+> +
+>  	phy =3D devm_phy_create(dev, dev->of_node,
+>  			      &can_transceiver_phy_ops);
+>  	if (IS_ERR(phy)) {
+> --=20
 > 2.17.1
-> 
+>=20
+>
+
+Regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--7j22je4qercubawa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGOKHgACgkQqclaivrt
+76krsgf9HZyC31LNyXDMlw5iHHC/MjqR3DUT87FwBU5xiFUcgGq6QjNRUKF6b162
+P0VpnrQR3dTA/dZDN4MPfgUZeLxH88QuhcAQAN3PVWU5CQd/njoI/O1Idk7+F1BS
+QyVGGXV2EEMovB9ZD5xqiZ/9uBrrLvv278lHKxhZN6GFR+UV+0PKbOeJWzMmWafx
+6p+ql/gYigs44hYs5WwGHAFiwT5Poisk5qA4E7kzG542PyiKW14+YxyYooBXbCV+
+9Wss9w+3lgdgfDykYmVS961utCwlKwMGcojyxsVCao1+7VuqZb9lT8bMdaX1cqlD
+uexl6a2K8MrvoKwNELhqCjfvp9vIKA==
+=/gnY
+-----END PGP SIGNATURE-----
+
+--7j22je4qercubawa--
