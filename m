@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD0744E6BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C844344E6C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235203AbhKLMs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:48:26 -0500
-Received: from relay07.th.seeweb.it ([5.144.164.168]:52691 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235075AbhKLMsQ (ORCPT
+        id S234971AbhKLMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:49:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234929AbhKLMth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:48:16 -0500
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id AA7CC3F246;
-        Fri, 12 Nov 2021 13:45:23 +0100 (CET)
-Date:   Fri, 12 Nov 2021 13:45:22 +0100
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 05/13] backlight: qcom-wled: Override default
- length with qcom,enabled-strings
-Message-ID: <20211112124522.g7e3m7l2oxxxobof@SoMainline.org>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>, Bryan Wu <cooloney@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-References: <20211112002706.453289-1-marijn.suijten@somainline.org>
- <20211112002706.453289-6-marijn.suijten@somainline.org>
- <20211112121238.kb3kkt6xzv5so26j@maple.lan>
+        Fri, 12 Nov 2021 07:49:37 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E266C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:46:46 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id i9so8819701ilu.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:46:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=zb40TZdAdzS0s+t5wZ4mp/GEeNfg4Dt14seLh4Kp6DU=;
+        b=IOObxc3R+A4LYCkO7x+7r91aUUfJKbHzEnq+LTQBCZzPcsrwJKYnJQZz4uq8I7hby2
+         XrhdmfYeyzgOFPiwwJss5sguua6/WCBc2AIAzWTmZRt+Ua2pliP7a+bC6cP934GdO8Dv
+         j3jJCWoQ3Yx5Y+9OYq1PfA0UNSuEBcESOFIssTBIT2oMBH6w3HABEklDP8XSepEERU+v
+         zKFfGqikAxllKoroqWuk8ihne1PIwtVSbED0oERRI2TAGcIHBoKcyLEuMzaPaRizJG0+
+         uZL8h+ewzs3BpKALcPEniSWmi+TUJ+m66klTQIpA/X4lGeD+u52NPalEKPMo7Q+rfnbr
+         hukA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=zb40TZdAdzS0s+t5wZ4mp/GEeNfg4Dt14seLh4Kp6DU=;
+        b=PjP+8TtWDAd4UbzejnblIBe5sFKNIxsQb1dSYqWSq3ASWIxjAOodH/IntKCtODjOC4
+         JfmwK8cQo96gse2y/VQLHYszsJGJVH0MCiuIteg2wkL7cnTyRMbn0Uk9F8CBrKFazuMX
+         FA4PtpOL1o1UltXgJKcjKuWmT5GzuBpMHo1VfoiFnDQpTZuwDH9ur++33SANWy1xVPwh
+         r3GETuLOOPHftbTpcjVALI//FGxwxrAvK4N65jKc8WhU0CuNm7YXd8YmKe/cFDk6PMx3
+         C8PKA+mR6m9UaSH1LEirm+QBPpJFki5WSc0mTq/L7noICK8no7RwqxCLVu+WS2TDbC+Q
+         dUoQ==
+X-Gm-Message-State: AOAM532F+1pABL5hR/Q0VbonWZPvCoTdPvDgcquBlUP5NXoXYv89c2OH
+        HPoL3DDfJlqltkhRvJyr9Qae9kGWYKHJzDXq
+X-Google-Smtp-Source: ABdhPJwBGVrC63/n6Z9aBEm9Bdp112tIF7Vome5nBL+d1EmDy3sX/k/xe031B4axtW7VvUHLFCHP8w==
+X-Received: by 2002:a05:6e02:1526:: with SMTP id i6mr9328851ilu.3.1636721205820;
+        Fri, 12 Nov 2021 04:46:45 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id x15sm4028508ill.20.2021.11.12.04.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 04:46:45 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Laibin Qiu <qiulaibin@huawei.com>
+Cc:     bo.liu@linux.alibaba.com, dennis@kernel.org, tj@kernel.org,
+        linux-block@vger.kernel.org, josef@toxicpanda.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211112093354.3581504-1-qiulaibin@huawei.com>
+References: <20211112093354.3581504-1-qiulaibin@huawei.com>
+Subject: Re: [PATCH -next -V2] blkcg: Remove extra blkcg_bio_issue_init
+Message-Id: <163672120421.12772.10166896593736880728.b4-ty@kernel.dk>
+Date:   Fri, 12 Nov 2021 05:46:44 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112121238.kb3kkt6xzv5so26j@maple.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-12 12:12:38, Daniel Thompson wrote:
-> On Fri, Nov 12, 2021 at 01:26:58AM +0100, Marijn Suijten wrote:
-> > The length of qcom,enabled-strings as property array is enough to
-> > determine the number of strings to be enabled, without needing to set
-> > qcom,num-strings to override the default number of strings when less
-> > than the default (which is also the maxium) is provided in DT.
-> > 
-> > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > ---
-> >  drivers/video/backlight/qcom-wled.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > index c5232478a343..9bfbf601762a 100644
-> > --- a/drivers/video/backlight/qcom-wled.c
-> > +++ b/drivers/video/backlight/qcom-wled.c
-> > @@ -1518,6 +1518,8 @@ static int wled_configure(struct wled *wled)
-> >  				return -EINVAL;
-> >  			}
-> >  		}
-> > +
-> > +		cfg->num_strings = string_len;
+On Fri, 12 Nov 2021 17:33:54 +0800, Laibin Qiu wrote:
+> KASAN reports a use-after-free report when doing block test:
 > 
-> I still don't really understand why this wants to be a separate patch.
-
-I'm viewing this as a separate issue, and this makes it easier to
-document the change in a loose commit.
-
-> The warning text emitted by the previous patch (whatever text we agree
-> on) will be nonsense until this patch is applied.
+> ==================================================================
+> [10050.967049] BUG: KASAN: use-after-free in
+> submit_bio_checks+0x1539/0x1550
 > 
-> If this patch cannot appear before the warning is introduces then there
-> is no correct order for patches 4 and 5 (which implies they should be the
-> same patch).
+> [10050.977638] Call Trace:
+> [10050.978190]  dump_stack+0x9b/0xce
+> [10050.979674]  print_address_description.constprop.6+0x3e/0x60
+> [10050.983510]  kasan_report.cold.9+0x22/0x3a
+> [10050.986089]  submit_bio_checks+0x1539/0x1550
+> [10050.989576]  submit_bio_noacct+0x83/0xc80
+> [10050.993714]  submit_bio+0xa7/0x330
+> [10050.994435]  mpage_readahead+0x380/0x500
+> [10050.998009]  read_pages+0x1c1/0xbf0
+> [10051.002057]  page_cache_ra_unbounded+0x4c2/0x6f0
+> [10051.007413]  do_page_cache_ra+0xda/0x110
+> [10051.008207]  force_page_cache_ra+0x23d/0x3d0
+> [10051.009087]  page_cache_sync_ra+0xca/0x300
+> [10051.009970]  generic_file_buffered_read+0xbea/0x2130
+> [10051.012685]  generic_file_read_iter+0x315/0x490
+> [10051.014472]  blkdev_read_iter+0x113/0x1b0
+> [10051.015300]  aio_read+0x2ad/0x450
+> [10051.023786]  io_submit_one+0xc8e/0x1d60
+> [10051.029855]  __se_sys_io_submit+0x125/0x350
+> [10051.033442]  do_syscall_64+0x2d/0x40
+> [10051.034156]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> [...]
 
-Agreed, this is a weird way of doing things in v2 - the error message is
-printed yet the length of qcom,enabled-strings is always ignored before
-this patch.
+Applied, thanks!
 
-If we were to reorder patch 5 before patch 4 that should also
-temporarily move `cfg->num_strings = cfg->num_strings + 1;` right below
-this `if` so that `qcom,num-strings` remains the definitive way to
-set/override length.  That's doable, and makes it easier to read patch 4
-as that bit of code will be replaced by of_property_read_u32 on that
-exact line.  Let me know which method you prefer.
+[1/1] blkcg: Remove extra blkcg_bio_issue_init
+      commit: b781d8db580c058ecd54ed7d5dde7f8270b25f5b
 
-- Marijn
+Best regards,
+-- 
+Jens Axboe
+
+
