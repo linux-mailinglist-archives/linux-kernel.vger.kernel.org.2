@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E18944EB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A1044EB8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235445AbhKLQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:42:30 -0500
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:63030 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhKLQm3 (ORCPT
+        id S235363AbhKLQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233445AbhKLQqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:42:29 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id lZaQmTkjd1UGBlZaQmGHpS; Fri, 12 Nov 2021 17:39:37 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Fri, 12 Nov 2021 17:39:37 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     anil.gurumurthy@qlogic.com, sudarsana.kalluru@qlogic.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, satishkh@cisco.com,
-        sebaddel@cisco.com, kartilak@cisco.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, njavali@marvell.com,
-        mrangankar@marvell.com
-Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: Remove redundant 'flush_workqueue()' calls
-Date:   Fri, 12 Nov 2021 17:39:33 +0100
-Message-Id: <feb3511c02b9df0848c9cac8af3daf87d9ea5821.1636734915.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Fri, 12 Nov 2021 11:46:08 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FDCC061766;
+        Fri, 12 Nov 2021 08:43:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=ZJr7h+aiUJaGofCFppdFarePecaKlzFMCXf5qGKbWtM=; b=RU82OzPk/fSguZ+uwDMcWgvHPO
+        HgB2Q21AvTXvWu3+NgiwEQ5h7B+1m5tVmnzf1EipFpboQS8YWlRd0DO4IV1oQJog0uumD1t5diy8m
+        lGFcKat+W77CnSBp8fBq+sNBKZrXmJKsyc6Dls1K+VuvtrOq0/MokcTfUGcqcARX0hJ9XWnqUR+9A
+        fnX6co+GSbTTy0Q4g6fPE+izT9Wrx5G7JSpkCC0QU/FRK9gsg9NQlEtEIoZm38WtD7y/A4V02lK8R
+        xFqCNoxVnlVsI3FqQwUnPQi6m5qKORTQcD37L0YthwvWK+5NR+v28uPxzBaV5WXC6M32QjPFtNtwO
+        VSdPZ9Lg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlZe0-00BFtt-Rk; Fri, 12 Nov 2021 16:43:16 +0000
+Subject: Re: [PATCH v1 1/1] i2c: designware: Fix the kernel doc description
+ for struct dw_i2c_dev
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20211112123459.73538-1-andriy.shevchenko@linux.intel.com>
+ <e62bf878-03df-1b93-2177-7b8a3be293c4@infradead.org>
+ <CAHp75Vd71WPosA8Sy999Mb5ZiGEGg-y3vxYsYz3st5Ng2PJ98A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <07932f56-ec2d-46a5-7c8e-3f4aab7afd35@infradead.org>
+Date:   Fri, 12 Nov 2021 08:43:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75Vd71WPosA8Sy999Mb5ZiGEGg-y3vxYsYz3st5Ng2PJ98A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+On 11/12/21 8:26 AM, Andy Shevchenko wrote:
+> On Fri, Nov 12, 2021 at 6:01 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> On 11/12/21 4:34 AM, Andy Shevchenko wrote:
+> 
+> ...
+> 
+>>> + * @rinfo: I²C GPIO recovery information
+>>
+>> Preferably:   "I2C"
+> 
+> Why?
 
-Remove the redundant 'flush_workqueue()' calls.
+See below vvvvvvvvvvvvvvvvv:
+>> like it is in thousands of places in the kernel source tree.
 
-This was generated with coccinelle:
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
+> UTF-8 has been established for more than a decade. I prefer to use the
+> proper form of the abbreviation (*).
+> 
+> *) Check UM10204.pdf.
+> 
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/scsi/bfa/bfad_im.c    | 1 -
- drivers/scsi/fnic/fnic_main.c | 4 +---
- drivers/scsi/lpfc/lpfc_init.c | 1 -
- drivers/scsi/qedi/qedi_main.c | 2 --
- drivers/scsi/qla2xxx/qla_os.c | 1 -
- 5 files changed, 1 insertion(+), 8 deletions(-)
+Yes, I am aware of what is in the spec.
 
-diff --git a/drivers/scsi/bfa/bfad_im.c b/drivers/scsi/bfa/bfad_im.c
-index 759d2bb1ecdd..b5c1729974ac 100644
---- a/drivers/scsi/bfa/bfad_im.c
-+++ b/drivers/scsi/bfa/bfad_im.c
-@@ -756,7 +756,6 @@ void
- bfad_destroy_workq(struct bfad_im_s *im)
- {
- 	if (im && im->drv_workq) {
--		flush_workqueue(im->drv_workq);
- 		destroy_workqueue(im->drv_workq);
- 		im->drv_workq = NULL;
- 	}
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 44dbaa662d94..806aaf411d10 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -1145,10 +1145,8 @@ static void __exit fnic_cleanup_module(void)
- {
- 	pci_unregister_driver(&fnic_driver);
- 	destroy_workqueue(fnic_event_queue);
--	if (fnic_fip_queue) {
--		flush_workqueue(fnic_fip_queue);
-+	if (fnic_fip_queue)
- 		destroy_workqueue(fnic_fip_queue);
--	}
- 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
- 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
- 	kmem_cache_destroy(fnic_io_req_cache);
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index ba17a8f740a9..93decd6c7ab1 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -8529,7 +8529,6 @@ static void
- lpfc_unset_driver_resource_phase2(struct lpfc_hba *phba)
- {
- 	if (phba->wq) {
--		flush_workqueue(phba->wq);
- 		destroy_workqueue(phba->wq);
- 		phba->wq = NULL;
- 	}
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 1dec814d8788..542dde3a1cfd 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2422,13 +2422,11 @@ static void __qedi_remove(struct pci_dev *pdev, int mode)
- 		iscsi_host_remove(qedi->shost);
- 
- 		if (qedi->tmf_thread) {
--			flush_workqueue(qedi->tmf_thread);
- 			destroy_workqueue(qedi->tmf_thread);
- 			qedi->tmf_thread = NULL;
- 		}
- 
- 		if (qedi->offload_thread) {
--			flush_workqueue(qedi->offload_thread);
- 			destroy_workqueue(qedi->offload_thread);
- 			qedi->offload_thread = NULL;
- 		}
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index abcd30917263..9f9d2f075bbe 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -3922,7 +3922,6 @@ qla2x00_free_device(scsi_qla_host_t *vha)
- 
- 	/* Flush the work queue and remove it */
- 	if (ha->wq) {
--		flush_workqueue(ha->wq);
- 		destroy_workqueue(ha->wq);
- 		ha->wq = NULL;
- 	}
+thanks.
 -- 
-2.30.2
-
+~Randy
