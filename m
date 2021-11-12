@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3FC44E9F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C813444E9F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235144AbhKLPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:23:12 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37530 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbhKLPXE (ORCPT
+        id S230085AbhKLPYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229509AbhKLPYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:23:04 -0500
-Received: by mail-ot1-f50.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so13432412otg.4;
-        Fri, 12 Nov 2021 07:20:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XL7WHChnykm1XEF7Yo39vqcbHAAH7PV5WQdRdC97D8s=;
-        b=j/kb4VzmWa3hc5pDznIKRehK+N59F1bNGOZtILMbDTe3ECF9L9oSczTWGculZbJN7Q
-         FTR3zKvhbHC0AzL7KtVIdZ1DAHokoMvRxMPvTUI4kujuZ+9WpDgXdObeSjKoyljLO/Jl
-         jC74L8E6lMvlKARedX87iiQrQb59txTzFTPhvdyReocvBKcAQM1Ce1nIxz35AzT2EDv4
-         gNyxwLdBW2gttXfinOuej3zyn6CQrEBkjc1biraEFVokoiPM10SDJmDyDK1CHFJuzxRU
-         0IP2w1oNCPtK9eVpNJW4+in3t0+u3gwwYOIS225FnC1C7V9PRTLCuPBzGjcd3nBTHXdW
-         TI4g==
-X-Gm-Message-State: AOAM5333tlPyoyh5irS3Pm3scWuX+6bvdlWtZW+4U1kdkyLMtm9eFJAJ
-        BcowvGKt4PfZm8AhjjJ5WCyim6o58w==
-X-Google-Smtp-Source: ABdhPJy8eBQbPOkE+3SSIRibQY8WLVPaKWMwduUfydGqT0FYX5JU0EsXU2XqNIyLKmS5Pu87s0EaTA==
-X-Received: by 2002:a9d:5190:: with SMTP id y16mr13227870otg.364.1636730413416;
-        Fri, 12 Nov 2021 07:20:13 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g1sm1150338ooq.2.2021.11.12.07.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 07:20:12 -0800 (PST)
-Received: (nullmailer pid 2872324 invoked by uid 1000);
-        Fri, 12 Nov 2021 15:20:11 -0000
-Date:   Fri, 12 Nov 2021 09:20:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Cc:     lars@metafoo.de, pmeerw@pmeerw.net, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        michal.simek@xilinx.com, jic23@kernel.org, git@xilinx.com
-Subject: Re: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
- documentation
-Message-ID: <YY6GK3K5B/cgdczY@robh.at.kernel.org>
-References: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
- <20211108210509.29870-4-anand.ashok.dumbre@xilinx.com>
+        Fri, 12 Nov 2021 10:24:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB38AC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Nw4fVxmHOhOzV4laJzGiSMwLTRJzCYywBkU/nufUygg=; b=o0yV9hz3EA5uK6RtR9i14hSjXp
+        4K75+d4X9sMxAEl67mhlCT3z+CkLttOnPJNGyHftorbhxrLtCLITB6HtIYVP3Okpq8y98jjoGzOJ8
+        gmL0sQ0yok0O3cQ3bRsUBLuQF4BypEb4PXWdrCe9L4JhE0LMyXvdh+rryWtXrDk+oSAEba/vCsnyQ
+        QvKCUPQf47ee+jPoRikbZnNuYYg7egkIa/gu5FHEHZpDvJ42Bm23jf/6KDkBVggiyIZkVYGSwjXXB
+        52KTTz1Ql5KkCHe4eMCqvCBj0xHSMPBOwU+1vCv5b9c5jNtTZyd3X3B4DZ8+9Yn9GMBXO5Xtq5Vft
+        Nfh4g6HQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlYMw-003cdw-LO; Fri, 12 Nov 2021 15:21:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 62C2930001B;
+        Fri, 12 Nov 2021 16:21:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 25EF22080FBBA; Fri, 12 Nov 2021 16:21:34 +0100 (CET)
+Date:   Fri, 12 Nov 2021 16:21:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com, joel@joelfernandes.org
+Subject: Re: [PATCH 2/2] sched: sched: Fix rq->next_balance time updated to
+ earlier than current time
+Message-ID: <YY6GfilrilzTmhZx@hirez.programming.kicks-ass.net>
+References: <20211112100458.7958-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108210509.29870-4-anand.ashok.dumbre@xilinx.com>
+In-Reply-To: <20211112100458.7958-1-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Nov 2021 21:05:08 +0000, Anand Ashok Dumbre wrote:
-> Xilinx AMS have several ADC channels that can be used for measurement of
-> different voltages and temperatures. Document the same in the bindings.
+On Fri, Nov 12, 2021 at 11:04:58AM +0100, Vincent Guittot wrote:
+> From: Tim Chen <tim.c.chen@linux.intel.com>
 > 
-> Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+> In traces on newidle_balance(), this_rq->next_balance
+> time goes backward and earlier than current time jiffies, e.g.
+> 
+> 11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+> 11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> 13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+> 13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> 14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
+> 14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+
+No explanation of what these numbers mean, or where they're taken from.
+
+> It doesn't make sense to have a next_balance in the past.
+> Fix newidle_balance() and update_next_balance() so the next
+> balance time is at least jiffies+1.
+
+The changelog is deficient in that it doesn't explain how the times end
+up in the past, therefore we cannot evaluate if the provided solution is
+sufficient etc..
+
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > ---
->  .../bindings/iio/adc/xlnx,zynqmp-ams.yaml     | 227 ++++++++++++++++++
->  1 file changed, 227 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
+>  kernel/sched/fair.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a162b0ec8963..1050037578a9 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10138,7 +10138,10 @@ update_next_balance(struct sched_domain *sd, unsigned long *next_balance)
+>  
+>  	/* used by idle balance, so cpu_busy = 0 */
+>  	interval = get_sd_balance_interval(sd, 0);
+> -	next = sd->last_balance + interval;
+> +	if (time_after(jiffies+1, sd->last_balance + interval))
+> +		next = jiffies+1;
+> +	else
+> +		next = sd->last_balance + interval;
+>  
+>  	if (time_after(*next_balance, next))
+>  		*next_balance = next;
+> @@ -10974,6 +10977,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>  
+>  out:
+>  	/* Move the next balance forward */
+> +	if (time_after(jiffies+1, this_rq->next_balance))
+> +		this_rq->next_balance = jiffies+1;
 
+jiffies roll over here..
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+Also, what's the point of the update_next_balance() addition in the face
+of this one? AFAICT this hunk completely renders the other hunk useless.
 
-If a tag was not added on purpose, please state why and what changed.
+>  	if (time_after(this_rq->next_balance, next_balance))
+>  		this_rq->next_balance = next_balance;
+
+and you've violated your own premise :-)
+
+Now, this pattern is repeated throughout, if it's a problem here, why
+isn't it a problem in say rebalance_domains() ?
+
+Can we please unify the code across sites instead of growing different
+hacks in different places?
 
