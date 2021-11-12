@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37CA44EDC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512ED44EDCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235416AbhKLUSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:18:47 -0500
-Received: from mail-co1nam11on2087.outbound.protection.outlook.com ([40.107.220.87]:42980
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232902AbhKLUSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:18:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lAoEjFYTmhL8ynS+wy3vWmgcurSlNpGxU+YRjWs3S6qVdoGNONYzF95H+LtRskiob9S9LDDQOKT/IKn18GbC7RD23rqaSWo3D+jUxCs96gAVbVNmrTTO6Kwp3jdf22ogNxN8Ijo2gQFrkZ4tutAfaO7SCcRUXGvRbD4OVBFMe0LbWWRbSoaA3RQv3WXy5SBiDZZj/+SfUKxUEC3/7PoGSq6SO0JxDy6DNsS3r75As5cPxBZJ/ZCev04ra+xJPQZ8AUpOsdDEOTTF5V6atqloiqtpbR5S/U9hKk3oqs91S4CVuHhVZvg6P6Cpv+ObIS+2/nTY6sOiGvIBTXMm0Vo+DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QZi3mFQ8NjQm7ZfSL9XbEonNJpNMKNWxQFFu2zqPtoE=;
- b=SICCvZrRcGSWjsY0EmKpGebpbBMiucDb6NbNfVcWB/kj/srzv6QaS4QepUfsIN+aUF8wmXGJrd9AEc1VdwndBjoXZ02BycqsVlImx4sreDFj/TWrBGK62jYyJyD/Fh3ISirYrVs3cfGwGDtmm29FdgTv/xPk1mwp1h+kt3c8e/5f7OxpXYfomicEpa7uk4V5qF3GdatRij5mTogp3h4am6SVCl27tWVmY9cLUwXtH5I/Iw52qSTRJGPJEVodm/8zl9punRKVtftS46pV0UrpFsSrCca6yUrDuaB+jSFZOpAjd+5xGmxmrs1fF3tTNiX1+bjCKeH2aPfJbN3mCsSA0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=opensource.wdc.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QZi3mFQ8NjQm7ZfSL9XbEonNJpNMKNWxQFFu2zqPtoE=;
- b=PVzYa2PDE4xaIeGJ6sDfnlWuzC3FIMOhNsRcxi8ow+rMhy9GDgX6zqGGDb4Z0t22a9sxxSj+xLgsJHknyd1zAQk9QKOH2QKkXfRNaWVQGrQROqVDIJgrIls7kvY2aOctx51jdyaNFBka9BjtIMcnz6LpR4RKtyBloqitjzArmko=
-Received: from DM5PR19CA0028.namprd19.prod.outlook.com (2603:10b6:3:9a::14) by
- BN6PR12MB1890.namprd12.prod.outlook.com (2603:10b6:404:106::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Fri, 12 Nov
- 2021 20:15:49 +0000
-Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:9a:cafe::79) by DM5PR19CA0028.outlook.office365.com
- (2603:10b6:3:9a::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend
- Transport; Fri, 12 Nov 2021 20:15:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4690.15 via Frontend Transport; Fri, 12 Nov 2021 20:15:48 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 12 Nov
- 2021 14:15:47 -0600
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-CC:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Mario Limonciello" <mario.limonciello@amd.com>,
-        Nehal-bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>
-Subject: [PATCH 2/2] ata: Adjust behavior when StorageD3Enable _DSD is set
-Date:   Fri, 12 Nov 2021 14:15:39 -0600
-Message-ID: <20211112201539.17377-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211112201539.17377-1-mario.limonciello@amd.com>
-References: <20211112201539.17377-1-mario.limonciello@amd.com>
+        id S235519AbhKLUTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231238AbhKLUTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:19:40 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A47C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:49 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id t18so22877543edd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ln4RXyBHR8doDkTvzPRGiuinGe7jyzb0IrpoLwi8jaI=;
+        b=NI9uAcinaqpmJx5ILSYb8lXr26e0VJqphVU5LVvNQTyPCe/3VDYqvtuqe+/DyAePMH
+         CQZD+o3avI3ug403ryG6GwE0OgouZXhed9c2/svOy5d3J0x/doML+D3z48oU2DmlaBAJ
+         L9bpQDojkBXy1zxmyGS4uEKJR7MtcKtD5/luM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ln4RXyBHR8doDkTvzPRGiuinGe7jyzb0IrpoLwi8jaI=;
+        b=1jVXbSsxmuAK4EYf//CluUGktKGyVeYroW13CXXYxL8jDli8dGACmucVTG4vmnNuTc
+         W2S3iGy2G6UFC16UAEs5aY/0sRPBAyPNxa0SIPNdQtyCkoD+lPx3Bp0inix99tUPKizi
+         xYcHAfyOhE6hNyhw4fSlUad2M9DXGqJ8WTWtW8cYqU5kYA+JG7uVhL1VYplIntol/Iw9
+         QZ6yee60jWI6o5TZczcaevRn/mHspR1ZzNu31JYqYk30kQhdhITWZQLFr4vkeLfiHq78
+         ItSUgTH4u42kAqJIfjeZdx17n3lrJvJ5pG6h1gB0mhjZRh4vVti63UQRGmVY3GiW36Wd
+         aO7w==
+X-Gm-Message-State: AOAM532eZBMfvR6sosZdGOTspoU47a3iZscl9jKRsN2HV4fvsCpq8In8
+        OotOtHR681Rxy4Ww+7BmPRD3YmWLo5fuQo0fl8g=
+X-Google-Smtp-Source: ABdhPJzGePBzcvx01b5GsGLi1NWmTk0X0iBq/a+2dffZExMvvs5VN5lMYOcZpkUIlJ/ayHRsPdrzpw==
+X-Received: by 2002:a50:d74e:: with SMTP id i14mr3847171edj.243.1636748196994;
+        Fri, 12 Nov 2021 12:16:36 -0800 (PST)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id h7sm3386962edt.37.2021.11.12.12.16.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 12:16:36 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id o29so8736169wms.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 12:16:36 -0800 (PST)
+X-Received: by 2002:a05:600c:1914:: with SMTP id j20mr37406491wmq.26.1636748195924;
+ Fri, 12 Nov 2021 12:16:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6c4133b0-c0ae-4705-c5b2-08d9a61937bb
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1890:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB18908104A992AE73B4EC37D6E2959@BN6PR12MB1890.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Re0c/VB0Sxh17bEJy1lmBEmvefoawZTFvSY57RuJ8M4gQ3beRW6RZp1apa2SJSuUHpXrJ8T3iN8AUXQcjkuaOFgwLX9wd3TGHQA1yD9LMW3pfttHO2n731RV0lzSYKkt0yaIC0rLLcaUnpDkAR9xh5S7gtnkJi0KN9YdmwcqAx/5YmJxrH444XDw4q140/oxVxn8W+df3QFdU1dDMfryDtePimodEOoAekH2H609Y8fwYXVRvVX5QAwxoNVmWJIHevKU7NnFRX5fm3cFD0K44m3s2xmDHm2IUGqZTYQd5JqDY6gNtqGwFWj91Ny6AS0w7JTs8PmgkkHZ/HReVYbdKhuYHyeH76P2y53zWEflDgjAFvCTN5iZBOfPEoPyKE4N4suJ1BdkNRly4MHqnsSpiFy7j53VIIOOFE6Jqi9RrK0jzd+9us2Z5H+oBsqIuVs2wLZfqodb+mJe3y4K0CAIiRS9YJ+3HcaiKAoH68kSXezh9V2ARHY+ii91A5tm7xRoZmLqBIcYDu7mGkSqm3MKescJOD6ex0IPPy8ExY8dXdMYh0fAkR4DHdTNeDnG/+/0eeA4hr3nDmtZvHVC0eU+8Ul0UrPqG2a5Qd/MD5ADREps+QjQWBYGXPnoY4cY/OZJV17drpZ8t8Ptp+eNjEWOlj1L1W69tq4tDuu9FDvve+p92iwbssJMW5xTt0WGo1wfebkaM+Z4r6QQEUYEWhRSx8cyUbWnbmHyhvmBLNRiF++lopqR0WA/a2IDK43XSYHZIIdtepGmYqYp8LqQHeKh/z+I6IVgemVSEVrqzcEcGobrI0M9XYkhX33HrknqylNjPY8Y7N6xUG23eWWhkKVrGOXyqSSwb80lWOGjeazGeIU=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(356005)(70206006)(36756003)(6916009)(82310400003)(508600001)(966005)(83380400001)(36860700001)(70586007)(4326008)(6666004)(54906003)(86362001)(186003)(44832011)(8936002)(316002)(26005)(47076005)(7696005)(1076003)(2906002)(81166007)(5660300002)(2616005)(426003)(336012)(16526019)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2021 20:15:48.8022
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c4133b0-c0ae-4705-c5b2-08d9a61937bb
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1890
+References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
+In-Reply-To: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 12 Nov 2021 12:16:19 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
+Message-ID: <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
+Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
+To:     Dave Airlie <airlied@gmail.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The StorageD3Enable _DSD is used for the vendor to indicate that the disk
-should be opted into or out of a different behavior based upon the platform
-design.
+On Thu, Nov 11, 2021 at 7:25 PM Dave Airlie <airlied@gmail.com> wrote:
+>
+> I missed a drm-misc-next pull for the main pull last week. It wasn't
+> that major and isn't the bulk of this at all. This has a bunch of
+> fixes all over, a lot for amdgpu and i915.
 
-For AMD's Renoir and Green Sardine platforms it's important that any
-attached SATA storage has transitioned into DevSlp when s2idle is used.
+Ugh.
 
-If the disk is left in active/partial/slumber, then the system is not able
-to resume properly.
+The i915 conflict was trivial, but made me aware of that absolutely
+disgusting "wbinvd_on_all_cpus()" hack.
 
-When the StorageD3Enable _DSD is detected, check the system is using s2idle
-and DevSlp is enabled and if so explicitly wait long enough for the disk to
-enter DevSlp.
+And that thing is much too ugly to survive. I made my merge resolution
+remove that disgusting thing.
 
-Cc: Nehal-bakulchandra Shah <Nehal-bakulchandra.Shah@amd.com>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214091
-Link: https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/ata/libahci.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+That driver is x86-only anyway, so it all seemed completely bogus in
+the first place.
 
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 28430c093a7f..15c293da30ca 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -2322,6 +2322,18 @@ int ahci_port_resume(struct ata_port *ap)
- }
- EXPORT_SYMBOL_GPL(ahci_port_resume);
- 
-+static void ahci_handle_s2idle(struct ata_port *ap)
-+{
-+	void __iomem *port_mmio = ahci_port_base(ap);
-+	u32 devslp;
-+
-+	if (pm_suspend_via_firmware())
-+		return;
-+	devslp = readl(port_mmio + PORT_DEVSLP);
-+	if ((devslp & PORT_DEVSLP_ADSE))
-+		ata_msleep(ap, devslp_idle_timeout);
-+}
-+
- #ifdef CONFIG_PM
- static int ahci_port_suspend(struct ata_port *ap, pm_message_t mesg)
- {
-@@ -2336,6 +2348,9 @@ static int ahci_port_suspend(struct ata_port *ap, pm_message_t mesg)
- 		ata_port_freeze(ap);
- 	}
- 
-+	if (acpi_storage_d3(ap->host->dev))
-+		ahci_handle_s2idle(ap);
-+
- 	ahci_rpm_put_port(ap);
- 	return rc;
- }
--- 
-2.25.1
+And if there is some actual non-x86 work in progress for i915, then
+that wbinvd_on_all_cpus() needs to be replaced with something proper
+and architecture-neutral anyway, most definitely involving a name
+change, and almost certainly also involving a range for the cache
+writeback.
 
+Because that "create broken macro on other architectures" thing is
+*NOT* acceptable.
+
+And I sincerely hope to the gods that no cache-incoherent i915 mess
+ever makes it out of the x86 world. Incoherent IO was always a
+historical mistake and should never ever happen again, so we should
+not spread that horrific pattern around.
+
+                Linus
