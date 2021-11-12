@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228CE44E1BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE26644E1BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 06:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbhKLF5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 00:57:16 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42648 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231713AbhKLF5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231917AbhKLF5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 12 Nov 2021 00:57:08 -0500
-X-UUID: 14228c4ded3a4d2cba7b17f2a6fe71af-20211112
-X-UUID: 14228c4ded3a4d2cba7b17f2a6fe71af-20211112
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39068 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230510AbhKLF5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 00:57:06 -0500
+X-UUID: bf6f5024cc754973af6d202c08bb87c0-20211112
+X-UUID: bf6f5024cc754973af6d202c08bb87c0-20211112
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
         (envelope-from <james.lo@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 386747951; Fri, 12 Nov 2021 13:54:13 +0800
+        with ESMTP id 27916494; Fri, 12 Nov 2021 13:54:13 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Fri, 12 Nov 2021 13:54:12 +0800
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 12 Nov 2021 13:54:12 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Fri, 12 Nov 2021 13:54:12 +0800
@@ -35,9 +35,9 @@ CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
         <linux-mediatek@lists.infradead.org>,
         <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [RESEND, v14 1/3] dt-bindings: spmi: modify the constraint of reg property
-Date:   Fri, 12 Nov 2021 13:54:08 +0800
-Message-ID: <20211112055410.21418-2-james.lo@mediatek.com>
+Subject: [RESEND, v14 2/3] spmi: mediatek: Add support for MT6873/8192
+Date:   Fri, 12 Nov 2021 13:54:09 +0800
+Message-ID: <20211112055410.21418-3-james.lo@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20211112055410.21418-1-james.lo@mediatek.com>
 References: <20211112055410.21418-1-james.lo@mediatek.com>
@@ -48,123 +48,507 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The constraint of reg may larger than 1, so we modify to
-'minItem: 1' and 'maxItem: 2'.
-And adds documentation for the SPMI controller found on
-Mediatek SoCs.
-
-Merge [RESEND,v13,2/4] into [RESEND,v13,1/4] for fix yaml
-error.
-[RESEND,v13,1/4] :
-dt-bindings: spmi: modify the constraint of reg property
-[RESEND,v13,2/4] :
-dt-bindings: spmi: document binding for the Mediatek SPMI
-controller
+Add spmi support for MT6873/8192.
 
 Signed-off-by: James Lo <james.lo@mediatek.com>
 Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
- .../devicetree/bindings/spmi/spmi.yaml        |  3 +-
- 2 files changed, 78 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+ drivers/spmi/Kconfig         |  11 +
+ drivers/spmi/Makefile        |   1 +
+ drivers/spmi/spmi-mtk-pmif.c | 454 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 466 insertions(+)
+ create mode 100644 drivers/spmi/spmi-mtk-pmif.c
 
-diff --git a/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+diff --git a/drivers/spmi/Kconfig b/drivers/spmi/Kconfig
+index 2874b6c26028..737802046314 100644
+--- a/drivers/spmi/Kconfig
++++ b/drivers/spmi/Kconfig
+@@ -34,4 +34,15 @@ config SPMI_MSM_PMIC_ARB
+ 	  This is required for communicating with Qualcomm PMICs and
+ 	  other devices that have the SPMI interface.
+ 
++config SPMI_MTK_PMIF
++	tristate "Mediatek SPMI Controller (PMIC Arbiter)"
++	depends on ARCH_MEDIATEK || COMPILE_TEST
++	help
++	  If you say yes to this option, support will be included for the
++	  built-in SPMI PMIC Arbiter interface on Mediatek family
++	  processors.
++
++	  This is required for communicating with Mediatek PMICs and
++	  other devices that have the SPMI interface.
++
+ endif
+diff --git a/drivers/spmi/Makefile b/drivers/spmi/Makefile
+index 6e092e6f290c..9d974424c8c1 100644
+--- a/drivers/spmi/Makefile
++++ b/drivers/spmi/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_SPMI)	+= spmi.o
+ 
+ obj-$(CONFIG_SPMI_HISI3670)	+= hisi-spmi-controller.o
+ obj-$(CONFIG_SPMI_MSM_PMIC_ARB)	+= spmi-pmic-arb.o
++obj-$(CONFIG_SPMI_MTK_PMIF)	+= spmi-mtk-pmif.o
+diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
 new file mode 100644
-index 000000000000..2445c5e0b0ef
+index 000000000000..3283d0a5903c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spmi/mtk,spmi-mtk-pmif.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/spmi/spmi-mtk-pmif.c
+@@ -0,0 +1,454 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Copyright (c) 2021 MediaTek Inc.
 +
-+title: Mediatek SPMI Controller Device Tree Bindings
++#include <linux/clk.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
++#include <linux/spmi.h>
 +
-+maintainers:
-+  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
++#define SWINF_IDLE	0x00
++#define SWINF_WFVLDCLR	0x06
 +
-+description: |+
-+  On MediaTek SoCs the PMIC is connected via SPMI and the controller allows
-+  for multiple SoCs to control a single SPMI master.
++#define GET_SWINF(x)	(((x) >> 1) & 0x7)
 +
-+allOf:
-+  - $ref: "spmi.yaml"
++#define PMIF_CMD_REG_0		0
++#define PMIF_CMD_REG		1
++#define PMIF_CMD_EXT_REG	2
++#define PMIF_CMD_EXT_REG_LONG	3
 +
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt6873-spmi
-+      - mediatek,mt8195-spmi
++#define PMIF_DELAY_US   10
++#define PMIF_TIMEOUT_US (10 * 1000)
 +
-+  reg:
-+    maxItems: 2
++#define PMIF_CHAN_OFFSET 0x5
 +
-+  reg-names:
-+    items:
-+      - const: pmif
-+      - const: spmimst
++#define PMIF_MAX_CLKS	3
 +
-+  clocks:
-+    minItems: 3
-+    maxItems: 3
++#define SPMI_OP_ST_BUSY 1
 +
-+  clock-names:
-+    items:
-+      - const: pmif_sys_ck
-+      - const: pmif_tmr_ck
-+      - const: spmimst_clk_mux
++struct ch_reg {
++	u32 ch_sta;
++	u32 wdata;
++	u32 rdata;
++	u32 ch_send;
++	u32 ch_rdy;
++};
 +
-+  assigned-clocks:
-+    maxItems: 1
++struct pmif_data {
++	const u32	*regs;
++	const u32	*spmimst_regs;
++	u32	soc_chan;
++};
 +
-+  assigned-clock-parents:
-+    maxItems: 1
++struct pmif {
++	void __iomem	*base;
++	void __iomem	*spmimst_base;
++	struct ch_reg	chan;
++	struct clk_bulk_data clks[PMIF_MAX_CLKS];
++	size_t nclks;
++	const struct pmif_data *data;
++};
 +
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - clock-names
++static const char * const pmif_clock_names[] = {
++	"pmif_sys_ck", "pmif_tmr_ck", "spmimst_clk_mux",
++};
 +
-+unevaluatedProperties: false
++enum pmif_regs {
++	PMIF_INIT_DONE,
++	PMIF_INF_EN,
++	PMIF_ARB_EN,
++	PMIF_CMDISSUE_EN,
++	PMIF_TIMER_CTRL,
++	PMIF_SPI_MODE_CTRL,
++	PMIF_IRQ_EVENT_EN_0,
++	PMIF_IRQ_FLAG_0,
++	PMIF_IRQ_CLR_0,
++	PMIF_IRQ_EVENT_EN_1,
++	PMIF_IRQ_FLAG_1,
++	PMIF_IRQ_CLR_1,
++	PMIF_IRQ_EVENT_EN_2,
++	PMIF_IRQ_FLAG_2,
++	PMIF_IRQ_CLR_2,
++	PMIF_IRQ_EVENT_EN_3,
++	PMIF_IRQ_FLAG_3,
++	PMIF_IRQ_CLR_3,
++	PMIF_IRQ_EVENT_EN_4,
++	PMIF_IRQ_FLAG_4,
++	PMIF_IRQ_CLR_4,
++	PMIF_WDT_EVENT_EN_0,
++	PMIF_WDT_FLAG_0,
++	PMIF_WDT_EVENT_EN_1,
++	PMIF_WDT_FLAG_1,
++	PMIF_SWINF_0_STA,
++	PMIF_SWINF_0_WDATA_31_0,
++	PMIF_SWINF_0_RDATA_31_0,
++	PMIF_SWINF_0_ACC,
++	PMIF_SWINF_0_VLD_CLR,
++	PMIF_SWINF_1_STA,
++	PMIF_SWINF_1_WDATA_31_0,
++	PMIF_SWINF_1_RDATA_31_0,
++	PMIF_SWINF_1_ACC,
++	PMIF_SWINF_1_VLD_CLR,
++	PMIF_SWINF_2_STA,
++	PMIF_SWINF_2_WDATA_31_0,
++	PMIF_SWINF_2_RDATA_31_0,
++	PMIF_SWINF_2_ACC,
++	PMIF_SWINF_2_VLD_CLR,
++	PMIF_SWINF_3_STA,
++	PMIF_SWINF_3_WDATA_31_0,
++	PMIF_SWINF_3_RDATA_31_0,
++	PMIF_SWINF_3_ACC,
++	PMIF_SWINF_3_VLD_CLR,
++};
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/mt8192-clk.h>
++static const u32 mt6873_regs[] = {
++	[PMIF_INIT_DONE] =	0x0000,
++	[PMIF_INF_EN] =		0x0024,
++	[PMIF_ARB_EN] =		0x0150,
++	[PMIF_CMDISSUE_EN] =	0x03B4,
++	[PMIF_TIMER_CTRL] =	0x03E0,
++	[PMIF_SPI_MODE_CTRL] =	0x0400,
++	[PMIF_IRQ_EVENT_EN_0] =	0x0418,
++	[PMIF_IRQ_FLAG_0] =	0x0420,
++	[PMIF_IRQ_CLR_0] =	0x0424,
++	[PMIF_IRQ_EVENT_EN_1] =	0x0428,
++	[PMIF_IRQ_FLAG_1] =	0x0430,
++	[PMIF_IRQ_CLR_1] =	0x0434,
++	[PMIF_IRQ_EVENT_EN_2] =	0x0438,
++	[PMIF_IRQ_FLAG_2] =	0x0440,
++	[PMIF_IRQ_CLR_2] =	0x0444,
++	[PMIF_IRQ_EVENT_EN_3] =	0x0448,
++	[PMIF_IRQ_FLAG_3] =	0x0450,
++	[PMIF_IRQ_CLR_3] =	0x0454,
++	[PMIF_IRQ_EVENT_EN_4] =	0x0458,
++	[PMIF_IRQ_FLAG_4] =	0x0460,
++	[PMIF_IRQ_CLR_4] =	0x0464,
++	[PMIF_WDT_EVENT_EN_0] =	0x046C,
++	[PMIF_WDT_FLAG_0] =	0x0470,
++	[PMIF_WDT_EVENT_EN_1] =	0x0474,
++	[PMIF_WDT_FLAG_1] =	0x0478,
++	[PMIF_SWINF_0_ACC] =	0x0C00,
++	[PMIF_SWINF_0_WDATA_31_0] =	0x0C04,
++	[PMIF_SWINF_0_RDATA_31_0] =	0x0C14,
++	[PMIF_SWINF_0_VLD_CLR] =	0x0C24,
++	[PMIF_SWINF_0_STA] =	0x0C28,
++	[PMIF_SWINF_1_ACC] =	0x0C40,
++	[PMIF_SWINF_1_WDATA_31_0] =	0x0C44,
++	[PMIF_SWINF_1_RDATA_31_0] =	0x0C54,
++	[PMIF_SWINF_1_VLD_CLR] =	0x0C64,
++	[PMIF_SWINF_1_STA] =	0x0C68,
++	[PMIF_SWINF_2_ACC] =	0x0C80,
++	[PMIF_SWINF_2_WDATA_31_0] =	0x0C84,
++	[PMIF_SWINF_2_RDATA_31_0] =	0x0C94,
++	[PMIF_SWINF_2_VLD_CLR] =	0x0CA4,
++	[PMIF_SWINF_2_STA] =	0x0CA8,
++	[PMIF_SWINF_3_ACC] =	0x0CC0,
++	[PMIF_SWINF_3_WDATA_31_0] =	0x0CC4,
++	[PMIF_SWINF_3_RDATA_31_0] =	0x0CD4,
++	[PMIF_SWINF_3_VLD_CLR] =	0x0CE4,
++	[PMIF_SWINF_3_STA] =	0x0CE8,
++};
 +
-+    spmi: spmi@10027000 {
-+        compatible = "mediatek,mt6873-spmi";
-+        reg = <0x10027000 0xe00>,
-+              <0x10029000 0x100>;
-+        reg-names = "pmif", "spmimst";
-+        clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+                 <&infracfg CLK_INFRA_PMIC_TMR>,
-+                 <&topckgen CLK_TOP_SPMI_MST_SEL>;
-+        clock-names = "pmif_sys_ck",
-+                      "pmif_tmr_ck",
-+                      "spmimst_clk_mux";
-+        assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+        assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/spmi/spmi.yaml b/Documentation/devicetree/bindings/spmi/spmi.yaml
-index 1d243faef2f8..f29183a45adc 100644
---- a/Documentation/devicetree/bindings/spmi/spmi.yaml
-+++ b/Documentation/devicetree/bindings/spmi/spmi.yaml
-@@ -25,7 +25,8 @@ properties:
-     pattern: "^spmi@.*"
- 
-   reg:
--    maxItems: 1
-+    maxItems: 2
-+    minItems: 1
- 
-   "#address-cells":
-     const: 2
++enum spmi_regs {
++	SPMI_OP_ST_CTRL,
++	SPMI_GRP_ID_EN,
++	SPMI_OP_ST_STA,
++	SPMI_MST_SAMPL,
++	SPMI_MST_REQ_EN,
++	SPMI_REC_CTRL,
++	SPMI_REC0,
++	SPMI_REC1,
++	SPMI_REC2,
++	SPMI_REC3,
++	SPMI_REC4,
++	SPMI_MST_DBG,
++};
++
++static const u32 mt6873_spmi_regs[] = {
++	[SPMI_OP_ST_CTRL] =	0x0000,
++	[SPMI_GRP_ID_EN] =	0x0004,
++	[SPMI_OP_ST_STA] =	0x0008,
++	[SPMI_MST_SAMPL] =	0x000c,
++	[SPMI_MST_REQ_EN] =	0x0010,
++	[SPMI_REC_CTRL] =	0x0040,
++	[SPMI_REC0] =		0x0044,
++	[SPMI_REC1] =		0x0048,
++	[SPMI_REC2] =		0x004c,
++	[SPMI_REC3] =		0x0050,
++	[SPMI_REC4] =		0x0054,
++	[SPMI_MST_DBG] =	0x00fc,
++};
++
++static u32 pmif_readl(struct pmif *arb, enum pmif_regs reg)
++{
++	return readl(arb->base + arb->data->regs[reg]);
++}
++
++static void pmif_writel(struct pmif *arb, u32 val, enum pmif_regs reg)
++{
++	writel(val, arb->base + arb->data->regs[reg]);
++}
++
++static void mtk_spmi_writel(struct pmif *arb, u32 val, enum spmi_regs reg)
++{
++	writel(val, arb->spmimst_base + arb->data->spmimst_regs[reg]);
++}
++
++static bool pmif_is_fsm_vldclr(struct pmif *arb)
++{
++	u32 reg_rdata;
++
++	reg_rdata = pmif_readl(arb, arb->chan.ch_sta);
++
++	return GET_SWINF(reg_rdata) == SWINF_WFVLDCLR;
++}
++
++static int pmif_arb_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid)
++{
++	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
++	u32 rdata, cmd;
++	int ret;
++
++	/* Check the opcode */
++	if (opc < SPMI_CMD_RESET || opc > SPMI_CMD_WAKEUP)
++		return -EINVAL;
++
++	cmd = opc - SPMI_CMD_RESET;
++
++	mtk_spmi_writel(arb, (cmd << 0x4) | sid, SPMI_OP_ST_CTRL);
++	ret = readl_poll_timeout_atomic(arb->spmimst_base + arb->data->spmimst_regs[SPMI_OP_ST_STA],
++					rdata, (rdata & SPMI_OP_ST_BUSY) == SPMI_OP_ST_BUSY,
++					PMIF_DELAY_US, PMIF_TIMEOUT_US);
++	if (ret < 0)
++		dev_err(&ctrl->dev, "timeout, err = %d\n", ret);
++
++	return ret;
++}
++
++static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
++			      u16 addr, u8 *buf, size_t len)
++{
++	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
++	struct ch_reg *inf_reg;
++	int ret;
++	u32 data, cmd;
++
++	/* Check for argument validation. */
++	if (sid & ~0xf) {
++		dev_err(&ctrl->dev, "exceed the max slv id\n");
++		return -EINVAL;
++	}
++
++	if (len > 4) {
++		dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, but:%zu requested", len);
++
++		return -EINVAL;
++	}
++
++	if (opc >= 0x60 && opc <= 0x7f)
++		opc = PMIF_CMD_REG;
++	else if ((opc >= 0x20 && opc <= 0x2f) || (opc >= 0x38 && opc <= 0x3f))
++		opc = PMIF_CMD_EXT_REG_LONG;
++	else
++		return -EINVAL;
++
++	/* Wait for Software Interface FSM state to be IDLE. */
++	inf_reg = &arb->chan;
++	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
++					data, GET_SWINF(data) == SWINF_IDLE,
++					PMIF_DELAY_US, PMIF_TIMEOUT_US);
++	if (ret < 0) {
++		/* set channel ready if the data has transferred */
++		if (pmif_is_fsm_vldclr(arb))
++			pmif_writel(arb, 1, inf_reg->ch_rdy);
++		dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
++		return ret;
++	}
++
++	/* Send the command. */
++	cmd = (opc << 30) | (sid << 24) | ((len - 1) << 16) | addr;
++	pmif_writel(arb, cmd, inf_reg->ch_send);
++
++	/*
++	 * Wait for Software Interface FSM state to be WFVLDCLR,
++	 * read the data and clear the valid flag.
++	 */
++	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
++					data, GET_SWINF(data) == SWINF_WFVLDCLR,
++					PMIF_DELAY_US, PMIF_TIMEOUT_US);
++	if (ret < 0) {
++		dev_err(&ctrl->dev, "failed to wait for SWINF_WFVLDCLR\n");
++		return ret;
++	}
++
++	data = pmif_readl(arb, inf_reg->rdata);
++	memcpy(buf, &data, len);
++	pmif_writel(arb, 1, inf_reg->ch_rdy);
++
++	return 0;
++}
++
++static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
++			       u16 addr, const u8 *buf, size_t len)
++{
++	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
++	struct ch_reg *inf_reg;
++	int ret;
++	u32 data, cmd;
++
++	if (len > 4) {
++		dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, but:%zu requested", len);
++
++		return -EINVAL;
++	}
++
++	/* Check the opcode */
++	if (opc >= 0x40 && opc <= 0x5F)
++		opc = PMIF_CMD_REG;
++	else if ((opc <= 0xF) || (opc >= 0x30 && opc <= 0x37))
++		opc = PMIF_CMD_EXT_REG_LONG;
++	else if (opc >= 0x80)
++		opc = PMIF_CMD_REG_0;
++	else
++		return -EINVAL;
++
++	/* Wait for Software Interface FSM state to be IDLE. */
++	inf_reg = &arb->chan;
++	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
++					data, GET_SWINF(data) == SWINF_IDLE,
++					PMIF_DELAY_US, PMIF_TIMEOUT_US);
++	if (ret < 0) {
++		/* set channel ready if the data has transferred */
++		if (pmif_is_fsm_vldclr(arb))
++			pmif_writel(arb, 1, inf_reg->ch_rdy);
++		dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
++		return ret;
++	}
++
++	/* Set the write data. */
++	memcpy(&data, buf, len);
++	pmif_writel(arb, data, inf_reg->wdata);
++
++	/* Send the command. */
++	cmd = (opc << 30) | BIT(29) | (sid << 24) | ((len - 1) << 16) | addr;
++	pmif_writel(arb, cmd, inf_reg->ch_send);
++
++	return 0;
++}
++
++static const struct pmif_data mt6873_pmif_arb = {
++	.regs = mt6873_regs,
++	.spmimst_regs = mt6873_spmi_regs,
++	.soc_chan = 2,
++};
++
++static int mtk_spmi_probe(struct platform_device *pdev)
++{
++	struct pmif *arb;
++	struct spmi_controller *ctrl;
++	int err, i;
++	u32 chan_offset;
++
++	ctrl = spmi_controller_alloc(&pdev->dev, sizeof(*arb));
++	if (!ctrl)
++		return -ENOMEM;
++
++	arb = spmi_controller_get_drvdata(ctrl);
++	arb->data = device_get_match_data(&pdev->dev);
++	if (!arb->data) {
++		err = -EINVAL;
++		dev_err(&pdev->dev, "Cannot get drv_data\n");
++		goto err_put_ctrl;
++	}
++
++	arb->base = devm_platform_ioremap_resource_byname(pdev, "pmif");
++	if (IS_ERR(arb->base)) {
++		err = PTR_ERR(arb->base);
++		goto err_put_ctrl;
++	}
++
++	arb->spmimst_base = devm_platform_ioremap_resource_byname(pdev, "spmimst");
++	if (IS_ERR(arb->spmimst_base)) {
++		err = PTR_ERR(arb->spmimst_base);
++		goto err_put_ctrl;
++	}
++
++	arb->nclks = ARRAY_SIZE(pmif_clock_names);
++	for (i = 0; i < arb->nclks; i++)
++		arb->clks[i].id = pmif_clock_names[i];
++
++	err = devm_clk_bulk_get(&pdev->dev, arb->nclks, arb->clks);
++	if (err) {
++		dev_err(&pdev->dev, "Failed to get clocks: %d\n", err);
++		goto err_put_ctrl;
++	}
++
++	err = clk_bulk_prepare_enable(arb->nclks, arb->clks);
++	if (err) {
++		dev_err(&pdev->dev, "Failed to enable clocks: %d\n", err);
++		goto err_put_ctrl;
++	}
++
++	ctrl->cmd = pmif_arb_cmd;
++	ctrl->read_cmd = pmif_spmi_read_cmd;
++	ctrl->write_cmd = pmif_spmi_write_cmd;
++
++	chan_offset = PMIF_CHAN_OFFSET * arb->data->soc_chan;
++	arb->chan.ch_sta = PMIF_SWINF_0_STA + chan_offset;
++	arb->chan.wdata = PMIF_SWINF_0_WDATA_31_0 + chan_offset;
++	arb->chan.rdata = PMIF_SWINF_0_RDATA_31_0 + chan_offset;
++	arb->chan.ch_send = PMIF_SWINF_0_ACC + chan_offset;
++	arb->chan.ch_rdy = PMIF_SWINF_0_VLD_CLR + chan_offset;
++
++	platform_set_drvdata(pdev, ctrl);
++
++	err = spmi_controller_add(ctrl);
++	if (err)
++		goto err_domain_remove;
++
++	return 0;
++
++err_domain_remove:
++	clk_bulk_disable_unprepare(arb->nclks, arb->clks);
++err_put_ctrl:
++	spmi_controller_put(ctrl);
++	return err;
++}
++
++static int mtk_spmi_remove(struct platform_device *pdev)
++{
++	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
++	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
++
++	clk_bulk_disable_unprepare(arb->nclks, arb->clks);
++	spmi_controller_remove(ctrl);
++	spmi_controller_put(ctrl);
++	return 0;
++}
++
++static const struct of_device_id mtk_spmi_match_table[] = {
++	{
++		.compatible = "mediatek,mt6873-spmi",
++		.data = &mt6873_pmif_arb,
++	}, {
++		/* sentinel */
++	},
++};
++MODULE_DEVICE_TABLE(of, mtk_spmi_match_table);
++
++static struct platform_driver mtk_spmi_driver = {
++	.driver		= {
++		.name	= "spmi-mtk",
++		.of_match_table = of_match_ptr(mtk_spmi_match_table),
++	},
++	.probe		= mtk_spmi_probe,
++	.remove		= mtk_spmi_remove,
++};
++module_platform_driver(mtk_spmi_driver);
++
++MODULE_AUTHOR("Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>");
++MODULE_DESCRIPTION("MediaTek SPMI Driver");
++MODULE_LICENSE("GPL");
 -- 
 2.18.0
 
