@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C8B44DF25
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E0444DF26
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhKLAcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:32:54 -0500
-Received: from mga06.intel.com ([134.134.136.31]:44875 "EHLO mga06.intel.com"
+        id S234601AbhKLAc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:32:56 -0500
+Received: from mga02.intel.com ([134.134.136.20]:65259 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234182AbhKLAcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234146AbhKLAcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Nov 2021 19:32:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="293869939"
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220254440"
 X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="293869939"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 16:30:03 -0800
+   d="scan'208";a="220254440"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 16:30:03 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
-   d="scan'208";a="670475757"
+   d="scan'208";a="452948081"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 11 Nov 2021 16:30:02 -0800
+  by orsmga006.jf.intel.com with ESMTP; 11 Nov 2021 16:30:02 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mlKS9-000HJR-OU; Fri, 12 Nov 2021 00:30:01 +0000
-Date:   Fri, 12 Nov 2021 08:29:10 +0800
+        id 1mlKS9-000HJP-O6; Fri, 12 Nov 2021 00:30:01 +0000
+Date:   Fri, 12 Nov 2021 08:29:14 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- a8b76910e465d718effce0cad306a21fa4f3526b
-Message-ID: <618db556.JtrVCjBfxu6+Bm2T%lkp@intel.com>
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ 4716023a8f6a0f4a28047f14dd7ebdc319606b84
+Message-ID: <618db55a.rTW8NMjNR0EQYbwD%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,10 +39,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: a8b76910e465d718effce0cad306a21fa4f3526b  preempt: Restore preemption model selection configs
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
+branch HEAD: 4716023a8f6a0f4a28047f14dd7ebdc319606b84  perf/core: Avoid put_page() when GUP fails
 
-elapsed time: 725m
+elapsed time: 726m
 
 configs tested: 53
 configs skipped: 3
@@ -67,8 +67,8 @@ csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 nios2                            allyesconfig
-nds32                             allnoconfig
 nios2                               defconfig
+nds32                             allnoconfig
 arc                              allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
@@ -77,8 +77,8 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allyesconfig
 s390                                defconfig
-s390                             allmodconfig
 parisc                           allyesconfig
+s390                             allmodconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
@@ -96,14 +96,14 @@ riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 riscv                            allyesconfig
-um                           x86_64_defconfig
 um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
 x86_64                              defconfig
 x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
 x86_64                                  kexec
 x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
