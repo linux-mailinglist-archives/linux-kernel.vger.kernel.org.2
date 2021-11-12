@@ -2,83 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6828944ED96
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F7544EDA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235505AbhKLTyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 14:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235416AbhKLTyt (ORCPT
+        id S235398AbhKLUAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:00:30 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:32808 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232474AbhKLUA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 14:54:49 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C37C061205
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:51:58 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id f20so9239658qtb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:51:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sbMEA9n9Pj/HfzsuX4iVianfftPXl0x7Eo0HpPDJsqs=;
-        b=Yw+p9Uo+5KQGoccvBks5Ci8+ZDlSvu7l93VGRCY8ZYQsu1lz4knSEy8/eb+Lm1NrTH
-         GzipEoLboD7DWs9KzyvxslfEQnOs47b4R+Mj3XTWdKpp9XbQbKGtQ5YEG4ijUfu4jtFE
-         /W10fgxlqEe+6aRVIUBq8hjn0WDG4ehNda55kNT8iGXmOlSHaRwW1cWqtcqPo7/8IsYv
-         ++i9VPM2+sDvzFA/3oGv0pgZ14q/FD3/XGYca2kZucVBmfHmPufcVhCxgT6+p0hlokNp
-         mczuTft5lmdIQk+wmMyhToWgPsUVVogCgYAJYJiCefNKNr/IESGhoapdVJe5hEI4CWJ5
-         GL1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=sbMEA9n9Pj/HfzsuX4iVianfftPXl0x7Eo0HpPDJsqs=;
-        b=gSbiAZe1k+688dtJ8MSrLwBt4DepR9y5Rzdq3udBFhsDJhYW/p0g/7lqHD7qZYFXLj
-         mGxeSi54mTGJh7gcnhI1reUThSVp5QHk0y5Bdc+ryMqhYZHSQBJqUWzKu4ex5c4LLeoB
-         yVN8lAdvIwOQFI7Ec047YG3E5+OdSigedXDab1cQ/Ls6vzL2okyrLS6JmI1YUmrR2OZb
-         XxDDS82OQVEzPJsU1XDDwxep4ZTwM9bq3QiFiJ7zKHp46RAHVQXB6/Fw41ekSED8ZWtW
-         oOOuNNKopXYgNCn506wK8046QFKH95ZPt7s4lWoACsPd8jxeTbXcwQZmT3LgMyCXg0v3
-         7/QQ==
-X-Gm-Message-State: AOAM533SYtasP9kPiEyttuxUtK9v8+LPE3r7/s9g24BX0yuWf1Na8EMP
-        /qGYrwF1adyUdKPdPsGxVY3aRCp+4iZWRcOrn5c=
-X-Google-Smtp-Source: ABdhPJzgXRGarOjDsfXSyoLLQhf4PuMveqEb8UybTzsWaDF3my0/TZkv9ycoscWO5tfBf/dcGT3T28QHSdbjOxuqecM=
-X-Received: by 2002:ac8:74c7:: with SMTP id j7mr18777867qtr.118.1636746717505;
- Fri, 12 Nov 2021 11:51:57 -0800 (PST)
+        Fri, 12 Nov 2021 15:00:29 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51]:48836)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mlcg4-000QrO-Em; Fri, 12 Nov 2021 12:57:36 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:40172 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mlcg3-005hJW-74; Fri, 12 Nov 2021 12:57:35 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch\/x86 maintainers" <x86@kernel.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>
+References: <87y26nmwkb.fsf@disp2133>
+        <20211020174406.17889-9-ebiederm@xmission.com>
+        <874k8htmb2.fsf@email.froward.int.ebiederm.org>
+        <CAMzpN2jkK5sAv-Kg_kVnCEyVySiqeTdUORcC=AdG1gV6r8nUew@mail.gmail.com>
+Date:   Fri, 12 Nov 2021 13:57:02 -0600
+In-Reply-To: <CAMzpN2jkK5sAv-Kg_kVnCEyVySiqeTdUORcC=AdG1gV6r8nUew@mail.gmail.com>
+        (Brian Gerst's message of "Fri, 12 Nov 2021 12:51:32 -0500")
+Message-ID: <87ilwxrvu9.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Received: by 2002:ac8:5a03:0:0:0:0:0 with HTTP; Fri, 12 Nov 2021 11:51:56
- -0800 (PST)
-Reply-To: wmchfa@gmail.com
-From:   William Chalmers <pv.wcha@gmail.com>
-Date:   Fri, 12 Nov 2021 20:51:56 +0100
-Message-ID: <CAO9cJj-OSU5qoJZ85Ow=KAGpF82M3g_cF3aScOinyZwY3Tj3mw@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1mlcg3-005hJW-74;;;mid=<87ilwxrvu9.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19XfSxruRf8CAAJlBQOOZWkHIpRzckguFY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_XMDrugObfuBody_12,XMNoVowels,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4985]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Brian Gerst <brgerst@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 494 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 16 (3.1%), b_tie_ro: 13 (2.6%), parse: 1.26
+        (0.3%), extract_message_metadata: 14 (2.7%), get_uri_detail_list: 1.93
+        (0.4%), tests_pri_-1000: 14 (2.8%), tests_pri_-950: 1.67 (0.3%),
+        tests_pri_-900: 1.26 (0.3%), tests_pri_-90: 66 (13.4%), check_bayes:
+        64 (13.0%), b_tokenize: 7 (1.3%), b_tok_get_all: 10 (2.0%),
+        b_comp_prob: 3.3 (0.7%), b_tok_touch_all: 39 (7.8%), b_finish: 1.53
+        (0.3%), tests_pri_0: 365 (73.9%), check_dkim_signature: 0.50 (0.1%),
+        check_dkim_adsp: 3.5 (0.7%), poll_dns_idle: 1.58 (0.3%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 9 (1.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an actual BUG_ON
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATTENTION,
-        Sir/Madam.
+Brian Gerst <brgerst@gmail.com> writes:
 
-Greetings to you, I am contacting you after going through your
-interesting profile. I am Mr.William Chalmers. I am from London, United
-Kingdom, If this message successfully gets to you, I will like to
-discuss business with you, which you will have an immense benefit from
-if we can work together with, The Group Finance Director of Lloyds
-Banking Group United Kingdom.
+> On Fri, Nov 12, 2021 at 10:41 AM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> "Eric W. Biederman" <ebiederm@xmission.com> writes:
+>>
+>> > The function save_v86_state is only called when userspace was
+>> > operating in vm86 mode before entering the kernel.  Not having vm86
+>> > state in the task_struct should never happen.  So transform the hand
+>> > rolled BUG_ON into an actual BUG_ON to make it clear what is
+>> > happening.
+>>
+>> Now that this change has been merged into Linus' tree I have a report
+>> that it is possible to trigger this new BUG_ON.  Which obviously is not
+>> good.
+>>
+>> We could revert the change but I think that would just be shooting the
+>> messenger.
+>>
+>> Does anyone have an idea where to start to track down what is going on?
+>>
+>> A very quick skim through the code suggests that the only code path
+>> that calls save_v86_state that has not already accessed is
+>> current->thread.vm86 is handle_signal.
+>>
+>> Another quick look suggests that the only place where X86_VM_MASK gets
+>> set in eflags is in do_sys_vm86.  So it appears do_sys_vm86 must
+>> be called before v8086_mode returns true in handle_signal.
+>>
+>> Which seems to suggest that the bug on can't trigger.
+>>
+>> But that is obviously wrong.
+>>
+>> I will keep digging but if anyone has some ideas that would be appreciated.
+>>
+>> Eric
+>
+> It's possible that a null pointer was passed to the vm86 syscall.
+> Since vm86 mode usually requires memory to be mapped at address 0 this
+> wouldn't trigger a fault when reading the vm86_struct data.  It should
+> be fine to remove !vm86->user_vm86 from the BUG_ON(), since the write
+> to userspace can handle a fault.
 
-I am contacting you for a legitimate business transaction strictly for
-you and me alone. I personally discovered a dormant account with a
-total sum of =C2=A3 1,35,000.000.00 - [One-hundred Thirty-Five Million GBP
-Only] here in our bank. The owner of this dormant account died on 4th
-Jan 2012. Since his death, nobody has operated in his account because
-the account has NO BENEFICIARY attached to it. I wish to present you
-as the next of kin to the bank.
+Agreed, and that is plausible.
 
-Kindly get back to me as soon as possible for more details on how to
-proceed further. I look forward to hearing from you soon.
+Still user space would have had to have mapped address 0 to get that
+value set in do_sys_vm86.
 
-Regards,
-Mr.William Chalmers.
+I will see about cooking up a patch for that case regardless.  I am not
+quite convinced, but perhaps the easiest way to tell is to simply remove
+the unnecessary test and ask the fuzzer folks to see if they can still
+hit the BUG_ON.
+
+Eric
+
