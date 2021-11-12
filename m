@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD0F44EEBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1A244EEBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhKLVlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235934AbhKLVlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:41:12 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBE8C06120A;
-        Fri, 12 Nov 2021 13:38:20 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id w1so43119455edd.10;
-        Fri, 12 Nov 2021 13:38:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZV/3xFxWciiOMgBGBUohTkz1VMYErPDsJ+IhZGr78GA=;
-        b=XemI0gYueh58+dbHXxMzNSV7+y5myS2i22WeGcnA/5r0l1GC3UtqlJXWr80sB3TkJq
-         zdQ6HUedKz7ixy4nQQuFkGnJuuGL2mD2OFgB3FwwBgUVbBcqqbgvjdA+K35PJegmltwk
-         q//9EnRH4P/SL2tUOVlsXjFGHp3yNU500E39PfTUp9xXo9FYTb+y8e/1HF+LvEXt+TQj
-         OpgGky6p+7b/79K1h+xErxOSJFDkVU1RUokjS4uslDj1ORKKO+NF7ZJ2IhWJSps6FHl8
-         5FIvzJF/5NLxi9+H/rnaI6xCHZYUK7qWOeOf8Buqz+kX+zNCQX6WmkiyKO/Vy5OoV9bK
-         jQVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZV/3xFxWciiOMgBGBUohTkz1VMYErPDsJ+IhZGr78GA=;
-        b=W2DWJXCO1zqQ+M8ms86kiSVsoe+coxeaA0RDhWVEnhYLgyhok+3ksnafjXC1QTlWIp
-         TsTya7QhpmOr7rxoGoH8FfuiDDQsjENOVyb2xlRYhPKiKL+x1+AWbe81KEbJDBE3JPfx
-         Ws0ZlMXl03meddJhfPf9CnO6azjrHu2cBQIsGwEhsHabXVCB274APLdicmJI/iQ3Mi6x
-         fZGQas5csUXlXBJzXzhzyDD3VKYc0LWhcyu/Sj/UfPr6Tkwdj4RvJKwq7kW8A3pbg5VH
-         TEZ3VKfEf7cIkAj1bkJB5RRFK6/yOQaTjHnc3Y5CTXMIbbi90t8KbBVRHIHKJ72iA53C
-         C0cA==
-X-Gm-Message-State: AOAM531QztBVvOKD7xGe+Ery5XeYjEh/s84fGg0qXHR5fASKhSQ3xE0Q
-        inHN4rx2kRs0RQpiitl0EgNW65H40mX3Z6RpzqQ=
-X-Google-Smtp-Source: ABdhPJwLeJid7MvG7yJVOPBKSZRSXSO9f9WvLgX3nFNSH/1xkAxY/Blo2UGeR3f1hXDqXncemJtT2h1BVKNhwaRQc+A=
-X-Received: by 2002:a50:9ec9:: with SMTP id a67mr13162057edf.238.1636753099232;
- Fri, 12 Nov 2021 13:38:19 -0800 (PST)
+        id S235835AbhKLVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:40:49 -0500
+Received: from mga07.intel.com ([134.134.136.100]:30951 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235790AbhKLVko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:40:44 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10166"; a="296644011"
+X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
+   d="scan'208";a="296644011"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 13:37:53 -0800
+X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
+   d="scan'208";a="590695345"
+Received: from cheemeig-mobl1.gar.corp.intel.com (HELO [10.212.248.140]) ([10.212.248.140])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 13:37:50 -0800
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To:     Marc Orr <marcorr@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com> <YY7I6sgqIPubTrtA@zn.tnic>
+ <YY7Qp8c/gTD1rT86@google.com>
+ <CAA03e5GwHMPYHHq3Nkkq1HnEJUUsw-Vk+5wFCott3pmJY7WuAw@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <48e20b96-3995-6998-56cf-3f15694c5db2@intel.com>
+Date:   Fri, 12 Nov 2021 13:37:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20211112204927.8830-1-Sergey.Semin@baikalelectronics.ru>
- <20211112204927.8830-5-Sergey.Semin@baikalelectronics.ru> <CAHp75VeEaj6zNtdRF65t_xriWe=Agx3WuW8tw6XZzBHCXtTgmw@mail.gmail.com>
-In-Reply-To: <CAHp75VeEaj6zNtdRF65t_xriWe=Agx3WuW8tw6XZzBHCXtTgmw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Nov 2021 23:37:36 +0200
-Message-ID: <CAHp75VcXia53YMyL8uZtHsNRYW9QzrbD9Cy31c4CW8jW-iNitA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] spi: dw: Add Synopsys Component version reading and parsing
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAA03e5GwHMPYHHq3Nkkq1HnEJUUsw-Vk+5wFCott3pmJY7WuAw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:27 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Nov 12, 2021 at 10:52 PM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
+On 11/12/21 1:30 PM, Marc Orr wrote:
+> In this proposal, consider a guest driver instructing a device to DMA
+> write a 1 GB memory buffer. A well-behaved guest driver will ensure
+> that the entire 1 GB is marked shared. But what about a malicious or
+> buggy guest? Let's assume a bad guest driver instructs the device to
+> write guest private memory.
+> 
+> So now, the virtual device, which might be implemented as some host
+> side process, needs to (1) check and lock all 4k constituent RMP
+> entries (so they're not converted to private while the DMA write is
+> taking palce), (2) write the 1 GB buffer, and (3) unlock all 4 k
+> constituent RMP entries? If I'm understanding this correctly, then the
+> synchronization will be prohibitively expensive.
 
-> > +       /*
-> > +        * Retrieve the Synopsys component version if it hasn't been sp=
-ecified
-> > +        * by the platform. Note the CoreKit version ID is encoded as a=
- 4bytes
-> > +        * ASCII string enclosed with '*' symbol.
-> > +        */
-> > +       if (!dws->ver) {
-> > +               u32 comp;
-> > +
-> > +               comp =3D dw_readl(dws, DW_SPI_VERSION);
-> > +               dws->ver =3D (DW_SPI_GET_BYTE(comp, 3) - '0') * 100;
-> > +               dws->ver +=3D (DW_SPI_GET_BYTE(comp, 2) - '0') * 10;
-> > +               dws->ver +=3D (DW_SPI_GET_BYTE(comp, 1) - '0');
-> > +
-> > +               dev_dbg(dev, "Synopsys DWC%sSSI v%u.%02u\n",
-> > +                       (dws->caps & DW_SPI_CAP_DWC_HSSI) ? " " : " APB=
- ",
-> > +                       dws->ver / 100, dws->ver % 100);
->
-> Oh l=C3=A0 l=C3=A0, first you multiply then you divide in the same piece =
-of code!
-> What's wrong with fourcc (and thus keep it in ver filed as is) ? (Also
-> we have %p4cc)
->
-> > +       }
+Are you taking about a 1GB *mapping* here?  As in, something us using a
+1GB page table entry to map the 1GB memory buffer?  That was the only
+case where I knew we needed coordination between neighbor RMP entries
+and host memory accesses.
 
-Have you seen this, btw?
-
-https://elixir.bootlin.com/linux/latest/source/drivers/tty/serial/8250/8250=
-_dwlib.c#L93
-
-
---=20
-With Best Regards,
-Andy Shevchenko
+That 1GB problem _should_ be impossible.  I thought we settled on
+disabling hugetlbfs and fracturing the whole of the direct map down to 4k.
