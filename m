@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9259B44E4D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C311644E4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhKLKvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:51:17 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:56674 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233441AbhKLKvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:51:15 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mlU6W-00076q-2H; Fri, 12 Nov 2021 18:48:20 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mlU6R-0003fz-LQ; Fri, 12 Nov 2021 18:48:15 +0800
-Date:   Fri, 12 Nov 2021 18:48:15 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 5.16
-Message-ID: <20211112104815.GA14105@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20200830223304.GA16882@gondor.apana.org.au>
- <20201026011159.GA2428@gondor.apana.org.au>
- <20201227113221.GA28744@gondor.apana.org.au>
- <20210108035450.GA6191@gondor.apana.org.au>
- <20210708030913.GA32097@gondor.apana.org.au>
- <20210817013601.GA14148@gondor.apana.org.au>
- <20210929023843.GA28594@gondor.apana.org.au>
- <20211029041408.GA3192@gondor.apana.org.au>
+        id S234655AbhKLKzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:55:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233619AbhKLKy7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 05:54:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636714329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lCPS80YSTbxrvBdmWutyocGvup+ukBCT7aUf6G8oGDE=;
+        b=gV5V1YEMGlIJBFUDTsDLbCjWlXPdlTNPSMZkGPGA42y6LPvFWMb0qQXbVgXatyNjsieTo+
+        qHM+MV5nExBrQkbEirhJUIcj88vEqo2GRfkX4qmfXO1EN4oDs0Q6Sc0tsZAxBbUsmIBvQu
+        aWYSH+SoOTz4rzdfydEj4JFnqjIvpmY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-iz5tOEPiOiu7gqOK80vfJg-1; Fri, 12 Nov 2021 05:52:06 -0500
+X-MC-Unique: iz5tOEPiOiu7gqOK80vfJg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74C8015721;
+        Fri, 12 Nov 2021 10:52:03 +0000 (UTC)
+Received: from [10.39.193.118] (unknown [10.39.193.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA02E19D9D;
+        Fri, 12 Nov 2021 10:51:55 +0000 (UTC)
+Message-ID: <ff2ab085-bde9-5d88-e8ce-aa92c165361a@redhat.com>
+Date:   Fri, 12 Nov 2021 11:51:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029041408.GA3192@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+Content-Language: en-US
+To:     Andrew Jones <drjones@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211111162746.100598-1-vkuznets@redhat.com>
+ <20211111162746.100598-2-vkuznets@redhat.com>
+ <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
+ <20211112103851.pmb35qf5bvcukjmg@gator.home>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211112103851.pmb35qf5bvcukjmg@gator.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+On 11/12/21 11:38, Andrew Jones wrote:
+>>
+>> I'd like KVM to be consistent across architectures and have the same
+>> (similar) meaning for KVM_CAP_NR_VCPUS.
+> KVM_CAP_NR_VCPUS seems pretty useless if we just want to tell userspace
+> the same thing it can get with _SC_NPROCESSORS_ONLN. In fact, if userspace
+> knows something we don't about the future onlining of some pcpus, then
+> maybe userspace would prefer to check _SC_NPROCESSORS_CONF.
 
-This push fixes a boot crash regression.
+It's the same for most architectures, but for example PPC has to take 
+into account the handling of threads, which can exist while the VMs run 
+but not in the host.  So KVM_CAP_NR_VCPUS on PPC is _SC_NPROCESSORS_CONF 
+times the number of threads per core.
 
-The following changes since commit 39ef08517082a424b5b65c3dbaa6c0fa9d3303b9:
+If you don't count PPC (not sure about s390), it _is_ pretty useless indeed.
 
-  crypto: testmgr - fix wrong key length for pkcs1pad (2021-10-29 21:04:04 +0800)
+Paolo
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
-
-for you to fetch changes up to beaaaa37c664e9afdf2913aee19185d8e3793b50:
-
-  crypto: api - Fix boot-up crash when crypto manager is disabled (2021-11-09 13:45:48 +0800)
-
-----------------------------------------------------------------
-Herbert Xu (1):
-      crypto: api - Fix boot-up crash when crypto manager is disabled
-
- crypto/algapi.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
