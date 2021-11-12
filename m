@@ -2,149 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67A644E06B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B30E44E072
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 03:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbhKLCnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 21:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbhKLCnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:43:35 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12873C061766;
-        Thu, 11 Nov 2021 18:40:46 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id i9so7666183ilu.8;
-        Thu, 11 Nov 2021 18:40:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JYtrXD23shdyMcsFVgaL3Kb0G11os2lduL5hO5DAisc=;
-        b=jRE5rg1/zaGSX+gVN/bOD8YjB3IaKxvdDoCmy5NcoFuoswXqvRBlIst8meObLmBAxs
-         u/iuQQm9Sdbq38gLkav2/5wyrj5hRbZLNC2yZYHXZndX64i53+t1v/b3YSrFbbT6PMy0
-         537NSp+aaWYstCxLd0AGLdcUiCzol4Thn5IZvGZNcczz1qFiNFgtEXqQDmTiZ6ewZihF
-         JlwJg4FTlauqHGaSdvvOS3CSQLPQaY1aRnSxbCOS4lZ9eppD74hTQpz/MhS5OdftxJ8e
-         Q3rKYFyRn8u70EYZ2hxZGjsCB4hQ3VKG44uS59rBEngDVa7kK51VuXWejwMAMg+P2co4
-         en0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JYtrXD23shdyMcsFVgaL3Kb0G11os2lduL5hO5DAisc=;
-        b=iGd5tHJ1d9vmGbDb02yaRMIzGUhnzdYN2eovIUTOt0pN5+uQCY/ggqK3C5xzDWo1mo
-         6kb6wVwS0i1w6Ix2eAuhz1N2GsI/pNYB7YzEjBnOWYlBdzqXlMDyfXR7ffyxBnJAJASz
-         u4aN3V3JTN+5RAwf0WgsyjYvaOoQyOiawneJIrLvu2ocUZm84iGrxutwDo1Pw8akQ5F7
-         8reYkzquq4kfjefWAyqewGdB2HHso92Dcd1KSL/qOLulyEz8z++gV3zxfRBFFFzjAFx5
-         Yk6CUlEpTkIS9ujkmxkb7vZfknSU/NGdUuzKA4mr5tpB15fWcU9MXX07a4qbl3HYXf7L
-         ZTRw==
-X-Gm-Message-State: AOAM532rZqJ+ShhQoVuZ+42q0X0RNGCoDf6JmkHz2aQ87XbOTmCj0ZTF
-        zSYnQ01VkgEVRAOaIQZDJPTFlEE4ey02g9ZRQwk=
-X-Google-Smtp-Source: ABdhPJx2ylAuHoOxN4N4gLfnyGTlEMXkoeCsHghAswy/PPJwkBYT64Wngb8jz94z0xFcQDtSgx6XsgDViC6DmJSuuiY=
-X-Received: by 2002:a05:6e02:1d1a:: with SMTP id i26mr7591972ila.303.1636684845448;
- Thu, 11 Nov 2021 18:40:45 -0800 (PST)
+        id S234213AbhKLCrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 21:47:43 -0500
+Received: from mga02.intel.com ([134.134.136.20]:61316 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229908AbhKLCrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 21:47:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220270753"
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="220270753"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 18:44:49 -0800
+X-IronPort-AV: E=Sophos;i="5.87,227,1631602800"; 
+   d="scan'208";a="504703291"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2021 18:44:46 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+        <ziy@nvidia.com>, <osalvador@suse.de>, <shy828301@gmail.com>,
+        <zhongjiang-ali@linux.alibaba.com>, <xlpang@linux.alibaba.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] mm: migrate: Support multiple target nodes demotion
+References: <a31dc065a7901bcdca0d9642d0def0f57e865e20.1636683991.git.baolin.wang@linux.alibaba.com>
+Date:   Fri, 12 Nov 2021 10:44:43 +0800
+In-Reply-To: <a31dc065a7901bcdca0d9642d0def0f57e865e20.1636683991.git.baolin.wang@linux.alibaba.com>
+        (Baolin Wang's message of "Fri, 12 Nov 2021 10:27:56 +0800")
+Message-ID: <87y25uks84.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1635232282-3992-1-git-send-email-dillon.minfei@gmail.com> <1635232282-3992-10-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1635232282-3992-10-git-send-email-dillon.minfei@gmail.com>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Fri, 12 Nov 2021 10:40:09 +0800
-Message-ID: <CAL9mu0LVBSorMK9KbZ3kXYcnubi44yPDxzMroKYVYB2c=o+xjQ@mail.gmail.com>
-Subject: Re: [PATCH v7 09/10] clk: stm32: Fix ltdc's clock turn off by
- clk_disable_unused() after system enter shell
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, gnurou@gmail.com,
-        ezequiel@collabora.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        mchehab+huawei@kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        hugues.fruchet@foss.st.com,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, kernel test robot <lkp@intel.com>,
-        kbuild-all@lists.01.org, llvm@lists.linux.dev,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Would you pick up this patch? Thanks.
-
-Best Regards.
-Dillon
-
-On Tue, 26 Oct 2021 at 15:12, Dillon Min <dillon.minfei@gmail.com> wrote:
+> We have some machines with multiple memory types like below, which
+> have one fast (DRAM) memory node and two slow (persistent memory) memory
+> nodes. According to current node demotion policy, if node 0 fills up,
+> its memory should be migrated to node 1, when node 1 fills up, its
+> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
 >
-> stm32's clk driver register two ltdc gate clk to clk core by
-> clk_hw_register_gate() and clk_hw_register_composite()
+> But this is not efficient and suitbale memory migration route
+> for our machine with multiple slow memory nodes. Since the distance
+> between node 0 to node 1 and node 0 to node 2 is equal, and memory
+> migration between slow memory nodes will increase persistent memory
+> bandwidth greatly, which will hurt the whole system's performance.
 >
-> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
-> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
+> Thus for this case, we can treat the slow memory node 1 and node 2
+> as a whole slow memory region, and we should migrate memory from
+> node 0 to node 1 and node 2 if node 0 fills up.
 >
-> both of them point to the same offset of stm32's RCC register. after
-> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
-> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
+> This patch changes the node_demotion data structure to support multiple
+> target nodes, and establishes the migration path to support multiple
+> target nodes with validating if the node distance is the best or not.
 >
-> stm32f469/746/769 have the same issue, fix it.
+> available: 3 nodes (0-2)
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> node 0 size: 62153 MB
+> node 0 free: 55135 MB
+> node 1 cpus:
+> node 1 size: 127007 MB
+> node 1 free: 126930 MB
+> node 2 cpus:
+> node 2 size: 126968 MB
+> node 2 free: 126878 MB
+> node distances:
+> node   0   1   2
+>   0:  10  20  20
+>   1:  20  10  20
+>   2:  20  20  10
 >
-> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
-> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
-> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> Acked-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > ---
-> v7:
-> - collect acked-by, reviewed-by from Gabriel, Patrice.
+> Changes from v2:
+>  - Redefine the DEMOTION_TARGET_NODES macro according to the
+>    MAX_NUMNODES.
+>  - Change node_demotion to a pointer and allocate it dynamically.
 >
->  drivers/clk/clk-stm32f4.c | 4 ----
->  1 file changed, 4 deletions(-)
+> Changes from v1:
+>  - Add a new patch to allocate the node_demotion dynamically.
+>  - Update some comments.
+>  - Simplify some variables' name.
 >
-> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> index af46176ad053..473dfe632cc5 100644
-> --- a/drivers/clk/clk-stm32f4.c
-> +++ b/drivers/clk/clk-stm32f4.c
-> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
->         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
->  };
+> Changes from RFC v2:
+>  - Change to 'short' type for target nodes array.
+>  - Remove nodemask instead selecting target node directly.
+>  - Add WARN_ONCE() if the target nodes exceed the maximum value.
 >
->  static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
-> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
->         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
->  };
+> Changes from RFC v1:
+>  - Re-define the node_demotion structure.
+>  - Set up multiple target nodes by validating the node distance.
+>  - Add more comments.
+> ---
+>  mm/migrate.c | 167 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+>  1 file changed, 132 insertions(+), 35 deletions(-)
 >
->  static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
-> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
->         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
-> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
->  };
->
->  static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
-> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
->         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 23,      "sai2",         "apb2_div" },
-> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 30,      "mdio",         "apb2_div" },
->  };
->
-> --
-> 2.7.4
->
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index cf25b00..9b8a813 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -50,6 +50,7 @@
+>  #include <linux/ptrace.h>
+>  #include <linux/oom.h>
+>  #include <linux/memory.h>
+> +#include <linux/random.h>
+>  
+>  #include <asm/tlbflush.h>
+>  
+> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   *
+>   * This is represented in the node_demotion[] like this:
+>   *
+> - *	{  1, // Node 0 migrates to 1
+> - *	   2, // Node 1 migrates to 2
+> - *	  -1, // Node 2 does not migrate
+> - *	   4, // Node 3 migrates to 4
+> - *	   5, // Node 4 migrates to 5
+> - *	  -1} // Node 5 does not migrate
+> + *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
+> + *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
+> + *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
+> + *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
+> + *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
+> + *	{  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
+> + *
+> + * Moreover some systems may have multiple slow memory nodes.
+> + * Suppose a system has one socket with 3 memory nodes, node 0
+> + * is fast memory type, and node 1/2 both are slow memory
+> + * type, and the distance between fast memory node and slow
+> + * memory node is same. So the migration path should be:
+> + *
+> + *	0 -> 1/2 -> stop
+> + *
+> + * This is represented in the node_demotion[] like this:
+> + *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
+> + *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
+> + *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+>   */
+>  
+>  /*
+> @@ -1135,8 +1149,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   * must be held over all reads to ensure that no cycles are
+>   * observed.
+>   */
+> -static int node_demotion[MAX_NUMNODES] __read_mostly =
+> -	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+> +#define DEFAULT_DEMOTION_TARGET_NODES 15
+> +
+> +#if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
+> +#define DEMOTION_TARGET_NODES	(MAX_NUMNODES - 1)
+> +#else
+> +#define DEMOTION_TARGET_NODES	DEFAULT_DEMOTION_TARGET_NODES
+> +#endif
+> +
+> +struct demotion_nodes {
+> +	unsigned short nr;
+> +	short nodes[DEMOTION_TARGET_NODES];
+> +};
+> +
+> +static struct demotion_nodes *node_demotion __read_mostly;
+>  
+>  /**
+>   * next_demotion_node() - Get the next node in the demotion path
+> @@ -1149,8 +1175,15 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>   */
+>  int next_demotion_node(int node)
+>  {
+> +	struct demotion_nodes *nd;
+> +	unsigned short target_nr, index;
+>  	int target;
+>  
+> +	if (!node_demotion)
+> +		return NUMA_NO_NODE;
+> +
+> +	nd = &node_demotion[node];
+> +
+>  	/*
+>  	 * node_demotion[] is updated without excluding this
+>  	 * function from running.  RCU doesn't provide any
+> @@ -1161,9 +1194,28 @@ int next_demotion_node(int node)
+>  	 * node_demotion[] reads need to be consistent.
+>  	 */
+>  	rcu_read_lock();
+> -	target = READ_ONCE(node_demotion[node]);
+> -	rcu_read_unlock();
+> +	target_nr = READ_ONCE(nd->nr);
+> +
+> +	switch (target_nr) {
+> +	case 0:
+> +		target = NUMA_NO_NODE;
+> +		goto out;
+> +	case 1:
+> +		index = 0;
+> +		break;
+> +	default:
+> +		/*
+> +		 * If there are multiple target nodes, just select one
+> +		 * target node randomly.
+> +		 */
+> +		index = get_random_int() % target_nr;
+> +		break;
+> +	}
+> +
+> +	target = READ_ONCE(nd->nodes[index]);
+>  
+> +out:
+> +	rcu_read_unlock();
+>  	return target;
+>  }
+>  
+> @@ -2974,10 +3026,16 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
+>  /* Disable reclaim-based migration. */
+>  static void __disable_all_migrate_targets(void)
+>  {
+> -	int node;
+> +	int node, i;
+> +
+> +	if (!node_demotion)
+> +		return;
+>  
+> -	for_each_online_node(node)
+> -		node_demotion[node] = NUMA_NO_NODE;
+> +	for_each_online_node(node) {
+> +		node_demotion[node].nr = 0;
+> +		for (i = 0; i < DEMOTION_TARGET_NODES; i++)
+> +			node_demotion[node].nodes[i] = NUMA_NO_NODE;
+> +	}
+>  }
+>  
+>  static void disable_all_migrate_targets(void)
+> @@ -3004,26 +3062,40 @@ static void disable_all_migrate_targets(void)
+>   * Failing here is OK.  It might just indicate
+>   * being at the end of a chain.
+>   */
+> -static int establish_migrate_target(int node, nodemask_t *used)
+> +static int establish_migrate_target(int node, nodemask_t *used,
+> +				    int best_distance)
+>  {
+> -	int migration_target;
+> +	int migration_target, index, val;
+> +	struct demotion_nodes *nd;
+>  
+> -	/*
+> -	 * Can not set a migration target on a
+> -	 * node with it already set.
+> -	 *
+> -	 * No need for READ_ONCE() here since this
+> -	 * in the write path for node_demotion[].
+> -	 * This should be the only thread writing.
+> -	 */
+> -	if (node_demotion[node] != NUMA_NO_NODE)
+> +	if (!node_demotion)
+>  		return NUMA_NO_NODE;
+>  
+> +	nd = &node_demotion[node];
+> +
+>  	migration_target = find_next_best_node(node, used);
+>  	if (migration_target == NUMA_NO_NODE)
+>  		return NUMA_NO_NODE;
+>  
+> -	node_demotion[node] = migration_target;
+> +	/*
+> +	 * If the node has been set a migration target node before,
+> +	 * which means it's the best distance between them. Still
+> +	 * check if this node can be demoted to other target nodes
+> +	 * if they have a same best distance.
+> +	 */
+> +	if (best_distance != -1) {
+> +		val = node_distance(node, migration_target);
+> +		if (val > best_distance)
+> +			return NUMA_NO_NODE;
+> +	}
+> +
+> +	index = nd->nr;
+> +	if (WARN_ONCE(index >= DEMOTION_TARGET_NODES,
+> +		      "Exceeds maximum demotion target nodes\n"))
+> +		return NUMA_NO_NODE;
+> +
+> +	nd->nodes[index] = migration_target;
+> +	nd->nr++;
+>  
+>  	return migration_target;
+>  }
+> @@ -3039,7 +3111,9 @@ static int establish_migrate_target(int node, nodemask_t *used)
+>   *
+>   * The difference here is that cycles must be avoided.  If
+>   * node0 migrates to node1, then neither node1, nor anything
+> - * node1 migrates to can migrate to node0.
+> + * node1 migrates to can migrate to node0. Also one node can
+> + * be migrated to multiple nodes if the target nodes all have
+> + * a same best-distance against the source node.
+>   *
+>   * This function can run simultaneously with readers of
+>   * node_demotion[].  However, it can not run simultaneously
+> @@ -3051,7 +3125,7 @@ static void __set_migration_target_nodes(void)
+>  	nodemask_t next_pass	= NODE_MASK_NONE;
+>  	nodemask_t this_pass	= NODE_MASK_NONE;
+>  	nodemask_t used_targets = NODE_MASK_NONE;
+> -	int node;
+> +	int node, best_distance;
+>  
+>  	/*
+>  	 * Avoid any oddities like cycles that could occur
+> @@ -3080,18 +3154,33 @@ static void __set_migration_target_nodes(void)
+>  	 * multiple source nodes to share a destination.
+>  	 */
+>  	nodes_or(used_targets, used_targets, this_pass);
+> -	for_each_node_mask(node, this_pass) {
+> -		int target_node = establish_migrate_target(node, &used_targets);
+>  
+> -		if (target_node == NUMA_NO_NODE)
+> -			continue;
+> +	for_each_node_mask(node, this_pass) {
+> +		best_distance = -1;
+>  
+>  		/*
+> -		 * Visit targets from this pass in the next pass.
+> -		 * Eventually, every node will have been part of
+> -		 * a pass, and will become set in 'used_targets'.
+> +		 * Try to set up the migration path for the node, and the target
+> +		 * migration nodes can be multiple, so doing a loop to find all
+> +		 * the target nodes if they all have a best node distance.
+>  		 */
+> -		node_set(target_node, next_pass);
+> +		do {
+> +			int target_node =
+> +				establish_migrate_target(node, &used_targets,
+> +							 best_distance);
+> +
+> +			if (target_node == NUMA_NO_NODE)
+> +				break;
+> +
+> +			if (best_distance == -1)
+> +				best_distance = node_distance(node, target_node);
+> +
+> +			/*
+> +			 * Visit targets from this pass in the next pass.
+> +			 * Eventually, every node will have been part of
+> +			 * a pass, and will become set in 'used_targets'.
+> +			 */
+> +			node_set(target_node, next_pass);
+> +		} while (1);
+>  	}
+>  	/*
+>  	 * 'next_pass' contains nodes which became migration
+> @@ -3192,6 +3281,14 @@ static int __init migrate_on_reclaim_init(void)
+>  {
+>  	int ret;
+>  
+> +	/*
+> +	 * Ignore allocation failure, if this kmalloc fails
+> +	 * at boot time, we are likely in bigger trouble.
+> +	 */
+> +	node_demotion = kmalloc_array(nr_node_ids,
+> +				      sizeof(struct demotion_nodes),
+> +				      GFP_KERNEL);
+> +
+
+I think we should WARN_ON() here.
+
+Best Regards,
+Huang, Ying
+
+>  	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_DEAD, "mm/demotion:offline",
+>  					NULL, migration_offline_cpu);
+>  	/*
