@@ -2,123 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996D944E8DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32B444E8DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbhKLOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235074AbhKLOci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:32:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE371C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:29:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3yjn5TF7htvmwDrVuz3mRtuCJAhpYpSdxeHobzEE41A=; b=UmU7h+ft+Z8IuG6ElCKOdGLd5B
-        Wp/4lAirSwbYYmd/3prgwy+XOsHREf9WbPil0JEScF5ITpNnQHAKL305IWXLW+wDhMZnMxoLbtdCm
-        3oFLU5ynIiF33mLFu5zBEsuIwkIPAAvfezi68o9kAHWkVWxTFxRMotN8UO0Tv4PZSB5zhDax12yig
-        YzBLl1zWsac+bXCvRNUh/kFIBhRYzb0JLzBt051zmiDaVw6LTpCxezKoKijwipczAjSxqAuPRRNAB
-        NM8BveSI5s2z3XdV0bY66IYgsHeBjD7gM3lEMHQ/uEhGOFGKCQWEZhWdOiy6PtKYumNGhZ5/IGTCA
-        RSKnVIJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlXYT-003afL-IU; Fri, 12 Nov 2021 14:29:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71FF6300366;
-        Fri, 12 Nov 2021 15:29:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 39E852C6E8EFB; Fri, 12 Nov 2021 15:29:24 +0100 (CET)
-Date:   Fri, 12 Nov 2021 15:29:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com, joel@joelfernandes.org
-Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
-Message-ID: <YY56RBQR912S6ScC@hirez.programming.kicks-ass.net>
-References: <20211112095857.7016-1-vincent.guittot@linaro.org>
- <20211112095857.7016-2-vincent.guittot@linaro.org>
+        id S235309AbhKLOcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:32:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235314AbhKLOc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:32:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02E1660F45;
+        Fri, 12 Nov 2021 14:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636727377;
+        bh=BqMcKNwytUImDzzMWif2u3ije6TBIHnqqJdsyzQVSnk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NajOKHu/Ed3hetUO6Q/t6LbJdbPn7UsD99Zwcovel4Uvu7wtjkuz4X8kNHY7FOZjo
+         s6uZmYHOGmdAM7EICfevhWkm0K0cr7zWQvR9R0hYt33BBGReZN1Xw5siSGR6naVQgZ
+         fi9Mtnj9fOqH9z7FKL6jU3PmZTS6pVmnwLFEkRhqUzw4Gx0p0tL90bErboL0pua9kw
+         4Y+7KksRd+bS2otKlzo8WgYb4yPjC8had2a4a41SlpEWMAlD/3w9FgmRhZPOAqFVT5
+         rS7LHdSbLbERJNxTjrj+Dj+5h6DpOSHdGnsIdspgU2cVfPcbD3ebjF379rEf0/mLgS
+         PzG5aWvMeptzw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2CE5B410A1; Fri, 12 Nov 2021 11:29:33 -0300 (-03)
+Date:   Fri, 12 Nov 2021 11:29:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync files changed by new
+ futex_waitv syscall
+Message-ID: <YY56Tdy3ymJ8slh3@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211112095857.7016-2-vincent.guittot@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 10:58:56AM +0100, Vincent Guittot wrote:
-> In case we skip the newly idle LB entirely or we abort it because we are
-> going to exceed the avg_idle, we have to make sure to not start an update
-> of the blocked load when entering idle
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 13950beb01a2..a162b0ec8963 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10861,7 +10861,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	int this_cpu = this_rq->cpu;
->  	u64 t0, t1, curr_cost = 0;
->  	struct sched_domain *sd;
-> -	int pulled_task = 0;
-> +	int pulled_task = 0, early_stop = 0;
->  
->  	update_misfit_status(NULL, this_rq);
->  
-> @@ -10898,8 +10898,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	if (!READ_ONCE(this_rq->rd->overload) ||
->  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
->  
-> -		if (sd)
-> +		if (sd) {
->  			update_next_balance(sd, &next_balance);
-> +
-> +			/*
-> +			 * We skip new idle LB because there is not enough
-> +			 * time before next wake up. Make sure that we will
-> +			 * not kick NOHZ_NEWILB_KICK
-> +			 */
-> +			early_stop = 1;
-> +		}
->  		rcu_read_unlock();
->  
->  		goto out;
-> @@ -10918,8 +10926,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  		update_next_balance(sd, &next_balance);
->  
-> -		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
-> +		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
-> +			early_stop = 1;
->  			break;
-> +		}
->  
->  		if (sd->flags & SD_BALANCE_NEWIDLE) {
->  
-> @@ -10969,7 +10979,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	if (pulled_task)
->  		this_rq->idle_stamp = 0;
-> -	else
-> +	else if (!early_stop)
->  		nohz_newidle_balance(this_rq);
->  
->  	rq_repin_lock(this_rq, rf);
+To pick the changes in these csets:
 
-Urgh code flow is a mess... Let me see if I can fix some of that.
+  039c0ec9bb77446d ("futex,x86: Wire up sys_futex_waitv()")
+  bf69bad38cf63d98 ("futex: Implement sys_futex_waitv()")
 
-Anyway, does nohz_newidle_balance() want to loose it's ->avg_idle test
-with this on?
+That add support for this new syscall in tools such as 'perf trace'.
+
+For instance, this is now possible:
+
+  # perf trace -e futex_waitv
+  ^C#
+  # perf trace -v -e futex_waitv
+  Using CPUID AuthenticAMD-25-21-0
+  event qualifier tracepoint filter: (common_pid != 807333 && common_pid != 3564) && (id == 449)
+  mmap size 528384B
+  ^C#
+  # perf trace -v -e futex* --max-events 10
+  Using CPUID AuthenticAMD-25-21-0
+  event qualifier tracepoint filter: (common_pid != 812168 && common_pid != 3564) && (id == 202 || id == 449)
+  mmap size 528384B
+           ? (         ): Timer/219310  ... [continued]: futex())                                            = -1 ETIMEDOUT (Connection timed out)
+       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) = 0
+       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())                                            = 0
+       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+  #
+
+That is the filter expression attached to the raw_syscalls:sys_{enter,exit}
+tracepoints.
+
+  $ grep futex_waitv tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+  449	common	futex_waitv		sys_futex_waitv
+  $
+
+This addresses these perf build warnings:
+
+  Warning: Kernel ABI header at 'tools/include/uapi/asm-generic/unistd.h' differs from latest version at 'include/uapi/asm-generic/unistd.h'
+  diff -u tools/include/uapi/asm-generic/unistd.h include/uapi/asm-generic/unistd.h
+  Warning: Kernel ABI header at 'tools/perf/arch/x86/entry/syscalls/syscall_64.tbl' differs from latest version at 'arch/x86/entry/syscalls/syscall_64.tbl'
+  diff -u tools/perf/arch/x86/entry/syscalls/syscall_64.tbl arch/x86/entry/syscalls/syscall_64.tbl
+
+Cc: André Almeida <andrealmeid@collabora.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/asm-generic/unistd.h           | 5 ++++-
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
+index 1c5fb86d455aba95..4557a8b6086f4ffe 100644
+--- a/tools/include/uapi/asm-generic/unistd.h
++++ b/tools/include/uapi/asm-generic/unistd.h
+@@ -880,8 +880,11 @@ __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+ #define __NR_process_mrelease 448
+ __SYSCALL(__NR_process_mrelease, sys_process_mrelease)
+ 
++#define __NR_futex_waitv 449
++__SYSCALL(__NR_futex_waitv, sys_futex_waitv)
++
+ #undef __NR_syscalls
+-#define __NR_syscalls 449
++#define __NR_syscalls 450
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+index 18b5500ea8bfd5fc..fe8f8dd157b4d49c 100644
+--- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -370,6 +370,7 @@
+ 446	common	landlock_restrict_self	sys_landlock_restrict_self
+ 447	common	memfd_secret		sys_memfd_secret
+ 448	common	process_mrelease	sys_process_mrelease
++449	common	futex_waitv		sys_futex_waitv
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+-- 
+2.31.1
+
