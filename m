@@ -2,130 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C83F44E587
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D06D44E589
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 12:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhKLLZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 06:25:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbhKLLZC (ORCPT
+        id S234756AbhKLL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 06:26:15 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:47618 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233994AbhKLL0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 06:25:02 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8F8C061766;
-        Fri, 12 Nov 2021 03:22:11 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id g14so36360650edz.2;
-        Fri, 12 Nov 2021 03:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9V5Di8a8qyE+6jAAu0K6/l3AcCOwFjxWjFK/ohjqHvM=;
-        b=ZruTDvmwL9J3DhYB0V0NebSG2YNkc2mEybtAJg1zCWCe5N5tbzkxPgIEfyTYH7lDT0
-         EKkx6RcH8148+XKgBROyI4XxxUfLtKKbrH5b753u2q1MK2zj1+1d4/S+MJInhIG2ivd/
-         rhi6K1TYKO81ndafBfgeqRj75hdy3aHToS4OkEdVLvk9PwIUqCzIiIbJTCOA40wJISZQ
-         w+C7+vOuBcR18T2UFE1DLmXtu5I2TsjzXXAJZN8InrBF5vCxpsUJjRxZZXmfBsnjrhe/
-         UJmPBDghtGVD0Ri/jx3PiQkksk/lTq7USQ/160hE/IYq87dnXMM8MR/behE7saOo/5Gp
-         wIVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9V5Di8a8qyE+6jAAu0K6/l3AcCOwFjxWjFK/ohjqHvM=;
-        b=3dj1nUPdEvxcZ683UtAZYF8E8oe7Vg8KUrBUTg8nqNTbRnPaR3K6qwcyV1OLGVtO8m
-         kAEpm1ytst0EhADQ/qzL6fBJq0kJ3v7tVXvd70nehR62bb8YdLehY5QExlaI4yOaAFRx
-         jTIZNByBwliHQIYvC1DGqbWRrFvH9IB+j3rFsj+a52Wbmu9bLQ3uCzg1v1aBOAQDrrRP
-         oS4VpkKPhQR/tGcaU1grHXH47tSMj2l7fZ/Kzh8P5UEAQUnqLzCBbP8+OlnR0jmQq8uD
-         eicH+fJX58H339UYqIywc/bS0ziKgHvsQigV82+iz9Wn+AWfPvpv/VfkMkQvFfCYRwxf
-         mSTA==
-X-Gm-Message-State: AOAM531qqbBUiDakdTOpJrlL+xF1fjTEDaZjYzhv4D62uAXg0fdC5L7x
-        PUASFQyeLw0Q6GKviRfWVpo9BUj3M4dz2J7EdOfKhJ/rbBvmbg==
-X-Google-Smtp-Source: ABdhPJynT0/Ydf2hVmCsiNCZ25jcRpNCeBcKZGpTrxDUkkmvTP0NtWl9e2cBnHMISg5oLEKwA+LaVPf5kHVfTuL8iiY=
-X-Received: by 2002:a50:9ec9:: with SMTP id a67mr8043060edf.238.1636716130294;
- Fri, 12 Nov 2021 03:22:10 -0800 (PST)
+        Fri, 12 Nov 2021 06:26:13 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F19FA1FD57;
+        Fri, 12 Nov 2021 11:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636716201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QBv0IJ32FKaFzEGp7qDHmDeh1n1yyxz30LgFzxGXfcQ=;
+        b=lK21GEvXfbXTQUZYOsLOpWBHDYnJl3qz34fF7kwq1NDG6fliugmRkkQElzDaBJj0JZMs/z
+        gi/flzRRykJn6TzCrcfpHU75tMydfzz1jX3lrBW24icdNVLXuKjFDEVHT1E1dHP0YJ+gXU
+        DRCnBx0VXD9HygWue1+FB8nJV4ZL3oc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636716201;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QBv0IJ32FKaFzEGp7qDHmDeh1n1yyxz30LgFzxGXfcQ=;
+        b=BPSX1BKZo5bi52fwkqMqlmH5HEOFHuxwM860fflYLQkHRGMHMYp9eqm4+/JKOwmsjAJq86
+        rv5Yuhq0odSsivAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C220813BE4;
+        Fri, 12 Nov 2021 11:23:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4pUALqlOjmGTYgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 12 Nov 2021 11:23:21 +0000
+Message-ID: <39c249d9-4366-4d34-c294-a111ab4a8bfd@suse.de>
+Date:   Fri, 12 Nov 2021 12:23:21 +0100
 MIME-Version: 1.0
-References: <20211110231436.8866-1-zajec5@gmail.com> <CACRpkdbAS0JiqTQUU0R0yRhVCwagubwsNYLxj1DLE1Ldc+H_JQ@mail.gmail.com>
- <YY4+4Wb/H2ogKnQg@atomide.com>
-In-Reply-To: <YY4+4Wb/H2ogKnQg@atomide.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Nov 2021 13:21:26 +0200
-Message-ID: <CAHp75VeO4yr9fAx_-MHDnRGQn1paWF=59+o-9ZyP5PGSCPU8og@mail.gmail.com>
-Subject: Re: [PATCH RFC] dt-bindings: pinctrl: support specifying pins
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line
+ parameter logic
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Peter Robinson <pbrobinson@gmail.com>
+References: <20211108140648.795268-1-javierm@redhat.com>
+ <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de>
+ <20211112105641.25a4e1a7@eldfell>
+ <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com>
+ <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de>
+ <20211112122239.26b3787c@eldfell>
+ <5bd4ffa9-f44f-ca34-c346-6c530d31e5ec@suse.de>
+ <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------WPqiWkHmVR5VpgUZ3hpP3dts"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 12:16 PM Tony Lindgren <tony@atomide.com> wrote:
-> * Linus Walleij <linus.walleij@linaro.org> [211111 15:32]:
-> > At the time (2011?) it was unclear what kind of data should go into
-> > e.g. header and data files in the kernel (modules) and what should
-> > go into the DT. So the approach to put pin information into the DT
-> > was allowed for pinctrl-single.
-> >
-> > The way I have understood it, DT maintainers have since gotten
-> > a bit wary about (ab)using the DT as a container for "anything data"
-> > and prefer that drivers contain details and derive these from
-> > compatible strings.
-> >
-> > As of today, IIUC the DT maintainers are against this scheme.
->
-> We have some newish tools now compared 2011 though with #pinctrl-cells.
-> And we now have also GENERIC_PINCTRL_GROUPS, GENERIC_PINMUX_FUNCTIONS
-> and GENERIC_PINCONF :)
->
-> The problem with the pinctrl-single binding is that it uses the hardware
-> specific mux values in addition to the mux register offsets. IMO the
-> values should use Linux generic pinctrl defines instead. Just like we
-> do for the gpio and interrupt bindings. And then the generic pinctrl
-> binding would be very similar to the interrupts-extended binding for
-> example.
->
-> And with a generic pinctrl binding pinctrl-single could be updated to
-> parse the generic binding naturally too in addition to the legacy
-> binding.
->
-> > That said, the topic is open in a way. Some people are also annoyed
-> > that some graphics drivers just ask Torvalds to pull 100.000+ lines
-> > of register defnes in some merge windows. The data has to go
-> > somewhere.
->
-> Yes and the amount of SoC specific LOC under drivers/pinctrl is pretty
-> staggering already.
->
-> With all that SoC specific data built into the kernel, it's like going
-> camping with all your pants stuffed into your car instead of just the
-> pants you need :)
->
-> We only need the SoC specific data for the booted SoC, so devicetree
-> and loadable modules makes more sense there compared to the current
-> built-in setup.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------WPqiWkHmVR5VpgUZ3hpP3dts
+Content-Type: multipart/mixed; boundary="------------6elRfkBC45ikD5mFz5xRlQp1";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ Pekka Paalanen <ppaalanen@gmail.com>
+Cc: Jani Nikula <jani.nikula@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, =?UTF-8?Q?Michel_D=c3=a4nzer?=
+ <michel@daenzer.net>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Peter Robinson <pbrobinson@gmail.com>
+Message-ID: <39c249d9-4366-4d34-c294-a111ab4a8bfd@suse.de>
+Subject: Re: [PATCH v4 0/6] Cleanups for the nomodeset kernel command line
+ parameter logic
+References: <20211108140648.795268-1-javierm@redhat.com>
+ <a8d93a19-c7e6-f651-a1cb-9e2742383c73@suse.de>
+ <20211112105641.25a4e1a7@eldfell>
+ <CAFOAJEd6wNDF93Z1Y6-62pnRzth9Fg4+56+jqCe2qmHk-adR1w@mail.gmail.com>
+ <f215e009-94af-fdb5-9ab9-ec5806a0c526@suse.de>
+ <20211112122239.26b3787c@eldfell>
+ <5bd4ffa9-f44f-ca34-c346-6c530d31e5ec@suse.de>
+ <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
+In-Reply-To: <a6014802-7ec0-0470-2dd1-ef650d995a53@redhat.com>
 
-I'm against putting that into DT and here is why.
+--------------6elRfkBC45ikD5mFz5xRlQp1
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-DT is the thing that describes the _platform_. While it's fine to put
-GPIO expander thingy (and we actually do this with labeling schema for
-GPIOs, right?), the SoC level of things is a _hardware_ and with all
-flexibility the DT gives us we will definitely have a deviations on
-_different_ platforms with _the same_ SoC! To work around this we must
-have a validation of the pin names and their functions in many places.
+SGkNCg0KQW0gMTIuMTEuMjEgdW0gMTI6MjAgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
+aWxsYXM6DQo+IE9uIDExLzEyLzIxIDExOjU3LCBUaG9tYXMgWmltbWVybWFubiB3cm90ZToN
+Cj4gDQo+IFtzbmlwXQ0KPiANCj4+Pj4NCj4+Pj4gVGhpcyBpcyB3aGF0IEhXLXNwZWNpZmlj
+IGRyaXZlcnMgd2FudCB0byBxdWVyeSBpbiB0aGVpciBpbml0L3Byb2JpbmcNCj4+Pj4gY29k
+ZS4gVGhlIGFjdHVhbCBzZW1hbnRpY3Mgb2YgdGhpcyBkZWNpc2lvbiBpcyBoaWRkZW4gZnJv
+bSB0aGUgZHJpdmVyLg0KPj4+PiBJdCdzIGFsc28gZWFzaWVyIHRvIHJlYWQgdGhhbiB0aGUg
+b3RoZXIgbmFtZSBJTUhPDQo+Pj4NCj4+PiBPaywgYnV0IHdoYXQgaXMgYSAibmF0aXZlIGRy
+aXZlciI/IE9yIGEgIm5vbi1uYXRpdmUgZHJpdmVyIj8NCj4+PiBJcyB0aGF0IGVzdGFibGlz
+aGVkIGtlcm5lbCB0ZXJtaW5vbG9neT8NCj4+Pg0KPj4+IEknZCB0aGluayBhIG5vbi1uYXRp
+dmUgZHJpdmVyIGlzIHNvbWV0aGluZyB0aGF0IGUuZy4gbmRpc3dyYXBwZXIgaXMNCj4+PiBs
+b2FkaW5nLiBJcyBzaW1wbGVkcm0gbGlrZSBuZGlzd3JhcHBlciBpbiBhIHNlbnNlPyBJSVJD
+LCBzaW1wbGVkcm0gaXMNCj4+PiB0aGUgZHJpdmVyIHRoYXQgd291bGQgbm90IGNvbnN1bHQg
+dGhpcyBmdW5jdGlvbiwgcmlnaHQ/DQo+Pg0KPj4gV2UgdXNlIHRoYXQgdGVybSBmb3IgaHct
+c3BlY2lmaWMgZHJpdmVycy4gQSAnbm9uLW5hdGl2ZScgZHJpdmVyIHdvdWxkIGJlDQo+PiBj
+YWxsZWQgZ2VuZXJpYyBvciBmaXJtd2FyZSBkcml2ZXIuDQo+Pg0KPj4gTXkgY29uY2VybiB3
+aXRoIHRoZSAnbW9kZXNldCcgdGVybSBpcyB0aGF0IGl0IGV4cG9zZXMgYW4gaW1wbGVtZW50
+YXRpb24NCj4+IGRldGFpbCwgd2hpY2ggY2FuIG1pc2xlYWQgYSBkcml2ZXIgdG8gdG8gdGhl
+IHdyb25nIHRoaW5nOiBhIEhXLXNwZWNpZmMNCj4+IGRyaXZlciB0aGF0IGRpc2FibGVzIGl0
+J3MgbW9kZXNldHRpbmcgZnVuY3Rpb25hbGl0eSB3b3VsZCBwYXNzIHRoZSB0ZXN0DQo+PiBm
+b3IgKCFtb2Rlc2V0KS4gQnV0IHRoYXQncyBub3Qgd2hhdCB3ZSB3YW50LCB3ZSB3YW50IHRv
+IGRpc2FibGUgYWxsIG9mDQo+PiB0aGUgZHJpdmVyIGFuZCBub3QgZXZlbiBsb2FkIGl0Lg0K
+Pj4NCj4+IEhvdyBhYm91dCB3ZSBpbnZlcnQgdGhlIHRlc3QgZnVuY3Rpb24gYW5kIHVzZSBz
+b21ldGhpbmcgbGlrZQ0KPj4NCj4+ICAgIGJvb2wgZHJtX2Zpcm13YXJlX2RyaXZlcnNfb25s
+eSgpDQo+Pg0KPiANCj4gVGhhdCBuYW1lIEkgdGhpbmsgaXMgbW9yZSBzZWxmIGV4cGxhbmF0
+b3J5LCBzbyBpdCB3b3JrcyBmb3IgbWUuDQo+IA0KPiBUaGVyZSB3YXMgYWxzbyBhbm90aGVy
+IGJpa2VzaGVkIGFib3V0IHdoZXJlIHRvIHB1dCB0aGUgZnVuY3Rpb24gZGVjbGFyYXRpb24s
+DQo+IEkgYWRkZWQgdG8gPGRybS9kcm1fbW9kZV9jb25maWcuaD4gYnV0IHdpdGggdGhhdCBu
+YW1lIEkgYmVsaWV2ZSB0aGF0IHNob3VsZA0KPiBiZSBpbiA8ZHJtL2RybV9kcnYuaD4gaW5z
+dGVhZC4NCg0KSSBhZ3JlZSB3aXRoIGRybV9kcnYuaC4gSXQncyBhIERSTS13aWRlIGZ1bmN0
+aW9uIGFuZCBpdCBmaXQncyB0aGVyZSANCmJlc3QsIEknZCBzYXkuDQoNCkJlc3QgcmVnYXJk
+cw0KVGhvbWFzDQoNCj4gDQo+IEJlc3QgcmVnYXJkcywgLS0NCj4gSmF2aWVyIE1hcnRpbmV6
+IENhbmlsbGFzDQo+IExpbnV4IEVuZ2luZWVyaW5nDQo+IFJlZCBIYXQNCj4gDQoNCi0tIA0K
+VGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29m
+dHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8
+cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRz
+ZsO8aHJlcjogSXZvIFRvdGV2DQo=
 
-And last but not least the copying it in tons of DT feels like a
-duplication effort.,
+--------------6elRfkBC45ikD5mFz5xRlQp1--
 
-AFAIU the topic, the pin control lacks labeling schema that will
-provide the view from the platform perspective, while driver provides
-from HW perspective.
+--------------WPqiWkHmVR5VpgUZ3hpP3dts
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
--- 
-With Best Regards,
-Andy Shevchenko
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGOTqkFAwAAAAAACgkQlh/E3EQov+Bu
+HRAAoDBopJ1D1I5ch2zGrB0BFmkUtNifVJ6xcu/SN1OX2HpzU6RvCM4RNOXBKvTFJaPamxrn/RJS
+4twjASFewGk9lMGPJ3hgmwsKqS/ol/UoFeH1vtP3VQoEQV1HVSBgbTrD0sQKK6+AH8smz+pUvPf0
+woktuDYzljsygtRxok6FMGN2OqlosWkt947N58ye4dtMJio56gjGG+2+CKYWQDNrX93CsUyl6B2v
+5rB+ZeJW7oYrHUh7llR4/lixMtRFgeo3oNnHPUaiKCcaeZjRD6TcMCivIdQI7azYIiFZckC6zjFT
+dRrIotlTzT6JIb0bKXoe4Datv2pDhmuOnXbTI5xIseSSr/V91v6nAZWXqUU5BU67xUB5LYs64Y3z
+pTy283YPzCDRe3gVeoF70NyBFUM/ypSHS9fL6MoQcFjgDY6oZdvyKlrBPQyk2mXE0tz8BLzEYNiO
+WEgeWaNuKkHeLUyvsCLtVz9HtchliHW30fMwWgmTeAZwDlOpbyu0inK5GPo+OhoDgQjmxcHfcxIo
+eASj7fAJlqqT0dZRIaZxGiFt3Clgca/LCnlVmIiAEiIyccrCVoclNn1T/q+idK9WqNv/Xb4s1gc7
+sf9h7K12RCS+jHzxULpg8fqNCijueU3XaE5TVpjpc2TxYtlxTZZckoaaGXREl71v+lGO6ppO34Am
+uMA=
+=5Jyd
+-----END PGP SIGNATURE-----
+
+--------------WPqiWkHmVR5VpgUZ3hpP3dts--
