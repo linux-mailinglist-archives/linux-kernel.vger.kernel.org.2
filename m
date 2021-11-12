@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090F644EDD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1046244EDDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 21:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhKLUXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 15:23:35 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:41928 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbhKLUXd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:23:33 -0500
-Received: by mail-oi1-f178.google.com with SMTP id u74so19981298oie.8;
-        Fri, 12 Nov 2021 12:20:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FHAHvJXqc7YauDRk++zPCE6QbPKdD9mhBY/GUlSuKMg=;
-        b=2QWwyr1wq0i8eMQGPkDEjKQTVhus9nkByE+am9tMGXOIvN9V+WMjj9Xr7J2cObRU8/
-         jZ6FoXvw7o3EexL9dc5ZBIPEtbJEgPmGTlBjKyc6di154eklKYxnF3rP06CDBfsA1rJy
-         LlQ2mLx3wBrVTYfKGO5syuDidk+J3Ub9ZXm/HhlBRnvlYCebyQXhzihkgw2vLKjA5HaW
-         C9rB0FQ6UxgJBdL8U0f5u6fCGqJAIeL5av1bAgY8Xwub37qZwcq8HzTOdXFvpf09KaOR
-         wN5lXGTMUCQitXN3d4xd4o7GB1kYY/rA7RKoWyWXunLn3ueLEibSq/fK/v6eOL83oMyj
-         JrHQ==
-X-Gm-Message-State: AOAM530jvVPa7TM70fa0WEhY2Ao5TaBi7byGo/6Ua0FXol9ItI8lnjgy
-        3pJO5y3hUjnpumB09ZVMNQ==
-X-Google-Smtp-Source: ABdhPJyKDKafvtu7MZSwgxcSVR4oHySF5h93fYSAI2sePzUnLJDed0Q+bHOoaUdHzhwsjSk81ioqrQ==
-X-Received: by 2002:a05:6808:1283:: with SMTP id a3mr6753537oiw.110.1636748442189;
-        Fri, 12 Nov 2021 12:20:42 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r5sm1536856oiw.20.2021.11.12.12.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 12:20:41 -0800 (PST)
-Received: (nullmailer pid 3302639 invoked by uid 1000);
-        Fri, 12 Nov 2021 20:20:40 -0000
-Date:   Fri, 12 Nov 2021 14:20:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: phy: Introduce Qualcomm eDP PHY
- binding
-Message-ID: <YY7MmEj0xi3Er4z3@robh.at.kernel.org>
-References: <20211103234410.1352424-1-bjorn.andersson@linaro.org>
+        id S235520AbhKLUXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 15:23:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235292AbhKLUXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 15:23:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D16A7610D2;
+        Fri, 12 Nov 2021 20:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636748453;
+        bh=QG1RTkjIm1ym6Mf4xj5ZqBBb9c7wMXQdzUU7jgKmeaQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=k0AetiwU45kCR8l2vRqLMahVLzjopFRewSMfdrW5IK76d4KbbKhPTPUAbUoG38A7u
+         FrktXnR9+LGOywMExkp3R3fP/bYtKy7EaO/KSjsTHYQ/euoHT1s4k8P3L+dsdKhpDN
+         oztbO5Q/C5e3eITvlsgCv13GVh5+Rba2WQHv1HcNanElAOjfxyeQz4hODOAONRuAA5
+         DnOFQMr/NAJfzXE4iqYMEwFU9H7sJhLQOKmVwU9PfYID7jEbM1xwIPMSYACnKTQyCG
+         NoRm83nvXCzs6SWyj15ZdPKSyAoJps6Bf3nX9oybuahu00vf5sc2My99aKuSdoJk6Y
+         byHtJRXYKiAug==
+Date:   Fri, 12 Nov 2021 14:20:51 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 3/8] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+Message-ID: <20211112202051.GA1414166@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211103234410.1352424-1-bjorn.andersson@linaro.org>
+In-Reply-To: <CANCKTBun0MCiH5QWBMQqP+pxAN=+dX=ziB1ga39kdr5CmK=Gfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Nov 2021 16:44:09 -0700, Bjorn Andersson wrote:
-> Introduce a binding for the eDP PHY hardware block found in several
-> different Qualcomm platforms.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v3:
-> - Dropped DP compatible from the binding
-> 
->  .../devicetree/bindings/phy/qcom,edp-phy.yaml | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml
-> 
+On Fri, Nov 12, 2021 at 01:25:11PM -0500, Jim Quinlan wrote:
+> On Thu, Nov 11, 2021 at 5:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Wed, Nov 10, 2021 at 05:14:43PM -0500, Jim Quinlan wrote:
+> > > Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
+> > > allows optional regulators to be attached and controlled by the PCIe RC
+> > > driver.  That being said, this driver searches in the DT subnode (the EP
+> > > node, eg pci-ep@0,0) for the regulator property.
+> > >
+> > > The use of a regulator property in the pcie EP subnode such as
+> > > "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
+> > > file at
+> > >
+> > > https://github.com/devicetree-org/dt-schema/pull/63
+> >
+> > Can you use a lore URL here?  github.com is sort of outside the Linux
+> > ecosystem and this link is more likely to remain useful if it's to
+> > something in kernel.org.
+> Hi Bjorn,
+> I'm afraid I don't know how or if  this github repo transfers
+> information to Linux.  RobH, what should I be doing here?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Does this change get posted to any mailing lists where people can
+review it?  Or would people have to watch the github devicetree-org
+repo if they wanted to do that?  I was assuming this pci-bus.yaml
+change was something that would eventually end up in the Linux kernel
+source tree, but dt-scheme doesn't seem to be based on Linus' tree, so
+I don't know if there's a connection.
+
+Bjorn
