@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C0844E924
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EB444E926
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbhKLOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:49:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232403AbhKLOtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:49:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C419561039;
-        Fri, 12 Nov 2021 14:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636728371;
-        bh=FtxtfwPqOIwsbQD7uHzaZmEXMWTRq5bNtKNI9Y3lgs4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZOr/ZmF78IiY1zE9t+ggdr6eqLjXltRRN2OoCdINZufTKKBrkBtDX7Tbd33BI/Aos
-         AT3ZCVHckwFOSbFXgYKAE78Va2jzBnxXpXf/UHM4ZT7GWAOu+C4+dYO9riTlfmSKp0
-         /sQG2IXa3NCjXcDipWb+8ov4PN8yxWn1LF1xcz7jnfVIMvSMkbtsmbd7RtL8f9qo3S
-         SDeAohe9cEFXk5Q0x1+tXosVmKlY03QB4Sv02g+0B+MC88DWaIzjpoofqUoCzsY+l8
-         7M3pKY1YBtNOThKFMgZRqMZa/gSWShzHbmGoF5KuoNOwdd6F4df12MiQBPNjTBODup
-         xszft8JoQbhMQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 50FA8410A1; Fri, 12 Nov 2021 11:46:07 -0300 (-03)
-Date:   Fri, 12 Nov 2021 11:46:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
-        James Clark <james.clark@arm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 1/3] perf symbols: Add documentation to struct symbol.
-Message-ID: <YY5+L3RBCbR+Mly1@kernel.org>
-References: <20211112035124.94327-1-irogers@google.com>
- <CAM9d7cji1Mtqap+TbMRn6ZeBb1v4ykKv4uBQxKtCQ3Zv9vY_jg@mail.gmail.com>
+        id S235232AbhKLOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:49:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231553AbhKLOtb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:49:31 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AC0C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:46:40 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id t18so19227117edd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WeFvDrUcPGbcaBQPo6VmrhI9Z5gxUYwokkUPX3k4Mk0=;
+        b=QBebM8rMQiV9mScH9ZUQO4Zpeo7TuM4UoJaHl8WwqfZzuh4JO3WyvIRsLh/6Hcpoi6
+         rteynH1OLtBp2ixzP8B0TlSSL8a0NYnuGYgUffGV+lqFk5lkCH/XUjHRv3kQSP92+AxK
+         jm5MMny5iH7S83FtWNDTzi/8MvrZorcbj7aJ9QFrrVRA/k3wvyo+fzNTNE5MUBGqVvP8
+         qUCKPLcpcV9I+TRFv4hKpjSH6PsG9AE82ouvSSGPPr4sLKMQfMQATUjXZ1tF5kIKJg70
+         bv3o7f6HW7q/wVZjclPVOSAxPbCOAugRtW9nZU9nQGbia5UXW5z4mrYoEjXo5HwrdOc8
+         3LgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WeFvDrUcPGbcaBQPo6VmrhI9Z5gxUYwokkUPX3k4Mk0=;
+        b=X4hk+XMHdlNdMnT+ikusGQYiyawLB7mbKJboauvAKy3X9nZBeHcb7HaRYBYJZLL3Y5
+         gUbD6V+aXOHPDhgq3HFKdAXUSGs6PxNw/Bs0mRrHEwrhfJ1EcUPHNGRSntZbmhooAYzX
+         xkWCP/zx3zAJ2DJVZmd0i+rpVPaLz10KztvH2AV6ZPKM5nXmDQI/HP7X0wSDbIvWD1QT
+         7aP3rCx4dECBgoOEmPNgI45yyVgRzXj68OV4HRF548yzb5Jwppkf7SELk7jTcfHP6Qg1
+         qqxDciECnPCPwUZoqwbHsb8VBD7wKBNk7X8C010gUjByxcVBGc+0yHk1o4YUyq8GpgqI
+         dQmA==
+X-Gm-Message-State: AOAM531IcDPIZq2WeNtlpB8UvjfpjaIqzEHBtca5CVxgW+luxFvuLY9f
+        2PxIcjzXZ4GVCWkvJAVuJFZR522PXj2XqDegXFV5+uwOlNFMsA==
+X-Google-Smtp-Source: ABdhPJwbAaJWd8bNqmv+zEgAxyuJ9xSV9pu4jexjV9AxwiLg6vC9YfkLVXdCMmB6gTe8Q7eultwG4oz/JkgGFBD1wGI=
+X-Received: by 2002:a17:907:1deb:: with SMTP id og43mr19716880ejc.189.1636728399055;
+ Fri, 12 Nov 2021 06:46:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cji1Mtqap+TbMRn6ZeBb1v4ykKv4uBQxKtCQ3Zv9vY_jg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20211104190030.20660-1-brgl@bgdev.pl>
+In-Reply-To: <20211104190030.20660-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 12 Nov 2021 15:46:28 +0100
+Message-ID: <CAMRc=MfA=i4xn+Xy4mCg17rCCQfGcp7QUrodYz0YNnxPPd-0Mw@mail.gmail.com>
+Subject: Re: [GIT PULL] configfs-based GPIO simulator for v5.16
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 11, 2021 at 08:04:35PM -0800, Namhyung Kim escreveu:
-> Hi Ian,
-> 
-> On Thu, Nov 11, 2021 at 7:51 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > Refactor some existing comments and then infer the rest.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> For all 3 patches,
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+On Thu, Nov 4, 2021 at 8:01 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> Linus,
+>
+> A while ago I sent you a pull-request for the GPIO subsystem which, in addition
+> to regular GPIO updates, contained a new GPIO simulator module based on
+> configfs that we want to use to test the uAPI and its main user-space user -
+> libgpiod. The PR included changes to configfs itself in the form of an
+> implementation of the concept of committable items. The changes had been in
+> development for several months and the maintainers had been largely
+> unresponsive which made me send it directly to you eventually after gathering
+> some reviews on the linux-gpio mailing list. You then Cc'ed Al who raised some
+> concerns and the patches were pulled out.
+>
+> A couple months have passed with a few more iterations and I still can't get
+> any meaningful reviews from the configfs maintainers (nor NAKs for that
+> matter). I decided to give it another try and send it to you directly again.
+>
+> Since last time I've addressed issues raised by Al (to the best of my ability
+> anyway) and made sure all references are counted correctly (including error
+> paths) and all resources freed. This code has been tested a lot with
+> a development version of libgpiod. The branch I've tagged spent some time in
+> next too with a single issue reported and fixed.
+>
+> Please consider pulling.
+>
+> Best Regards,
+> Bartosz Golaszewski
+>
 
-b4 doesn't catch these Acked-by for the whole series when sent to one of
-the patches, please consider to send your Acked-by/etc to the [PATCH
-0/N] message in that case.
+Hi Linus,
 
-Thanks, applied!
+The merge window is closing soon, so I'd like to send out a gentle
+ping and ask you if you have any comments on these patches and what
+should my next steps be regarding them.
 
-- Arnaldo
-
- 
-> Thanks,
-> Namhyung
-> 
-> 
-> > ---
-> >  tools/perf/util/symbol.h | 17 ++++++++++++++---
-> >  1 file changed, 14 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
-> > index 166196686f2e..3586fa549f44 100644
-> > --- a/tools/perf/util/symbol.h
-> > +++ b/tools/perf/util/symbol.h
-> > @@ -40,22 +40,33 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
-> >                              GElf_Shdr *shp, const char *name, size_t *idx);
-> >  #endif
-> >
-> > -/** struct symbol - symtab entry
-> > - *
-> > - * @ignore - resolvable but tools ignore it (e.g. idle routines)
-> > +/**
-> > + * A symtab entry. When allocated this may be preceded by an annotation (see
-> > + * symbol__annotation), a browser_index (see symbol__browser_index) and rb_node
-> > + * to sort by name (see struct symbol_name_rb_node).
-> >   */
-> >  struct symbol {
-> >         struct rb_node  rb_node;
-> > +       /** Range of symbol [start, end). */
-> >         u64             start;
-> >         u64             end;
-> > +       /** Length of the string name. */
-> >         u16             namelen;
-> > +       /** ELF symbol type as defined for st_info. E.g STT_OBJECT or STT_FUNC. */
-> >         u8              type:4;
-> > +       /** ELF binding type as defined for st_info. E.g. STB_WEAK or STB_GLOBAL. */
-> >         u8              binding:4;
-> > +       /** Set true for kernel symbols of idle routines. */
-> >         u8              idle:1;
-> > +       /** Resolvable but tools ignore it (e.g. idle routines). */
-> >         u8              ignore:1;
-> > +       /** Symbol for an inlined function. */
-> >         u8              inlined:1;
-> > +       /** Architecture specific. Unused except on PPC where it holds st_other. */
-> >         u8              arch_sym;
-> > +       /** Has symbol__annotate2 been performed. */
-> >         bool            annotate2;
-> > +       /** The name of length namelen associated with the symbol. */
-> >         char            name[];
-> >  };
-> >
-> > --
-> > 2.34.0.rc1.387.gb447b232ab-goog
-> >
-
--- 
-
-- Arnaldo
+Best Regards,
+Bartosz Golaszewski
