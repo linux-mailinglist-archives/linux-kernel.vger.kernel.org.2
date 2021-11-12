@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079D244EF6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F25044EF78
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhKLWiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 17:38:14 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:57444 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236011AbhKLWh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 17:37:58 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 906771A208F;
-        Fri, 12 Nov 2021 23:35:06 +0100 (CET)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 52D0C1A2089;
-        Fri, 12 Nov 2021 23:35:06 +0100 (CET)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id B166440A77;
-        Fri, 12 Nov 2021 15:35:05 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH 11/11] arm64: dts: ls1028a-qds: enable optee node
-Date:   Fri, 12 Nov 2021 16:34:57 -0600
-Message-Id: <20211112223457.10599-12-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
-In-Reply-To: <20211112223457.10599-1-leoyang.li@nxp.com>
-References: <20211112223457.10599-1-leoyang.li@nxp.com>
+        id S235978AbhKLWlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 17:41:18 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:35688 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235838AbhKLWlR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 17:41:17 -0500
+Received: by mail-oi1-f178.google.com with SMTP id m6so20636706oim.2;
+        Fri, 12 Nov 2021 14:38:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zVdxqzVctj9Oqf20bPsjcEst9TsvfhlgOE+Wh1Q+xeE=;
+        b=RgI5q/JHo0j/KjsZZN9W2+/4jiVcaEuyDdPLM9BwCIVnr3H8x66shz50KAuk+cR5M2
+         /n+yaaKC++vON4Oz/wD8ybekfJG3QbYWb32KksKqjFENkrgM5ubHVWdx+2+wQXKnMmJQ
+         RRFJ5ClIXk0E8bOMvddNf7jU11eFCmmq2Kk3psvY9aHInpY0RXb5M3VMtpzHbIRNFnRk
+         mNCWEW6yEkAD232Kfs1Cky+HXQgAPHxeJoFTskjNp8MG5FYsiloANiF0muGSZGMfjA1D
+         5SlM72NDDSLagC65kdrF5jjf850QVXUC6l81doHOYQaY0Lvl78cj9B7Y6cVMZSm3Rxya
+         TQVA==
+X-Gm-Message-State: AOAM531kpa0U8Ycg7fmXjfyVYDOCT/nUVWqg+1gy3pLr8+jO4fHPAhdM
+        qajvQwD688wxT1Dl4Fbpcg==
+X-Google-Smtp-Source: ABdhPJxfdumWnbqOr/j0+RwqPdcvWFxEzlA6pRvka0MVXO271xz7EuPSasgVNGp/gtQw6dDZCYyZvw==
+X-Received: by 2002:a54:4616:: with SMTP id p22mr28895162oip.96.1636756705579;
+        Fri, 12 Nov 2021 14:38:25 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k4sm1609123oij.54.2021.11.12.14.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 14:38:25 -0800 (PST)
+Received: (nullmailer pid 3504211 invoked by uid 1000);
+        Fri, 12 Nov 2021 22:38:24 -0000
+Date:   Fri, 12 Nov 2021 16:38:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     jic23@kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v4 2/3] dt-bindings: iio: frequency: add admv1013 doc
+Message-ID: <YY7s4G2LIIqYiZyT@robh.at.kernel.org>
+References: <20211105112930.122017-1-antoniu.miclaus@analog.com>
+ <20211105112930.122017-3-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105112930.122017-3-antoniu.miclaus@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sahil Malhotra <sahil.malhotra@nxp.com>
+On Fri, 05 Nov 2021 13:29:29 +0200, Antoniu Miclaus wrote:
+> Add device tree bindings for the ADMV1013 Upconverter.
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> ---
+>  .../bindings/iio/frequency/adi,admv1013.yaml  | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+> 
 
-Optee node is disabled in SoC dtsi.  We are enabling it on qds board.
-
-Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-index 0e2cc610d138..9c74be22d263 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-@@ -349,6 +349,10 @@ &mscc_felix_port4 {
- 	status = "okay";
- };
- 
-+&optee {
-+	status = "okay";
-+};
-+
- &sai1 {
- 	status = "okay";
- };
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
