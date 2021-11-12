@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401A144E954
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3557344E95B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 16:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbhKLPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 10:02:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231553AbhKLPCA (ORCPT
+        id S235213AbhKLPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 10:03:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231553AbhKLPDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 10:02:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636729149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kuacD5vLivfi9Vhd+sJjK4H2SVQwcnyZPhr4Pvq0lJw=;
-        b=bNHnVVaIhauQSA4QRq43C2xLuiwd7jryt+pn7p4ooZC9yhzcmG/dQ54yhn3tJXab/I8hZI
-        a3NMJOXIoXgCSUMdnn2jqfDgzZJN/+PJMySQ5ULFgbleR75zO5DCiUcXcM8a88H+GoOmUd
-        uVRfQMGrQyRSdge1+9WpqJ7eKDL7KD8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-1Jwery6eOcyaJBZxdvILnQ-1; Fri, 12 Nov 2021 09:59:07 -0500
-X-MC-Unique: 1Jwery6eOcyaJBZxdvILnQ-1
-Received: by mail-ed1-f69.google.com with SMTP id o15-20020a056402438f00b003e32b274b24so8416244edc.21
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:59:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kuacD5vLivfi9Vhd+sJjK4H2SVQwcnyZPhr4Pvq0lJw=;
-        b=oRC/nDE/CaS1UYrYrif+kFc0jvZirf8R8vLQ1LOcIWldrrVAKtnqJWF+mKPDA2thDM
-         CWVuuNTR/uv8VcVvWtbdE16x5OZUusCjJUZ3bQQiyFhSV48w8cHqptz95S7EJp/WXYhx
-         gvDIHsM/QpGvkcYs8jvZV8q/Dxx4lkDC2okO2kkd4VrEWHrcRDLVZCVQyY7LzShDO/2h
-         qVlsfn/DoG8+oNvl6QeYV+1AD/wVOuH50dILct7EqW+hlrZ0KrJoiU99Jx5Uj1avjQht
-         TgbbFS4pGZrJFFTuKKCGCO3Da/N2xVYhHoPaXIsYZVIpTDbzddK/XS593Bhm3KqmB37H
-         6G+g==
-X-Gm-Message-State: AOAM531eTr8sr3CHgrv5chWDVZhbLPgrUF0y64svghzT8+UWbkYzZtY4
-        c1xJH/oDDG+Zq+pA7fxuQf+IgXzYRGXRhJ1bDKG4xxbXioGC3nGBEBITn7dRBviCifFJOJoLGW6
-        ukkepPjp1OXF+ykUbE2N643uNTm06qsUrUr7jKoaP
-X-Received: by 2002:a17:906:6bc4:: with SMTP id t4mr19691819ejs.259.1636729146773;
-        Fri, 12 Nov 2021 06:59:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw1anZwyuhVXMwe01ZXVT6KbWAadtmbZmDfi8OET+3NT+57gF/KYJ3gEvo2cvgh1oD2Mbo+rUGynLBJOHRkUEA=
-X-Received: by 2002:a17:906:6bc4:: with SMTP id t4mr19691794ejs.259.1636729146574;
- Fri, 12 Nov 2021 06:59:06 -0800 (PST)
+        Fri, 12 Nov 2021 10:03:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38683C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 07:00:52 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mlY2j-0002Kw-FN; Fri, 12 Nov 2021 16:00:41 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mlY2f-0009aF-N8; Fri, 12 Nov 2021 16:00:36 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mlY2e-0001S6-HH; Fri, 12 Nov 2021 16:00:36 +0100
+Date:   Fri, 12 Nov 2021 16:00:36 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?5p2O5ZOy?= <sensor1010@163.com>
+Cc:     ulf.hansson@linaro.org, srinivas.pandruvada@linux.intel.com,
+        pali@kernel.org, TheSven73@gmail.com, lznuaa@gmail.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: drivers/mmc/cor/bus: Delete redundant match function
+Message-ID: <20211112150036.6lhhoak4uk5hhgqt@pengutronix.de>
+References: <22161945.a8.17d061e089f.Coremail.sensor1010@163.com>
 MIME-Version: 1.0
-References: <20211111195904.618253-1-wander@redhat.com> <20211111195904.618253-2-wander@redhat.com>
- <YY3GY8ZSH5ACaZZS@google.com> <CAAq0SUkeP0WcVBLmYXAyUxOuRDB3b4brgVsAYF90G+6pYrF4eA@mail.gmail.com>
- <20211112145755.GX641268@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20211112145755.GX641268@paulmck-ThinkPad-P17-Gen-1>
-From:   Wander Costa <wcosta@redhat.com>
-Date:   Fri, 12 Nov 2021 11:58:55 -0300
-Message-ID: <CAAq0SU=t+i+7OUz2XJdugpVLoStDGwCh6i0x_Rua8nNfw+zgRA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] printk: suppress rcu stall warnings caused by slow
- console devices
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wbyaqsxhuvb4rjo2"
+Content-Disposition: inline
+In-Reply-To: <22161945.a8.17d061e089f.Coremail.sensor1010@163.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:58 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Nov 12, 2021 at 11:42:39AM -0300, Wander Costa wrote:
-> > On Thu, Nov 11, 2021 at 10:42 PM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > On (21/11/11 16:59), Wander Lairson Costa wrote:
-> > > >
-> > > > If we have a reasonable large dataset to flush in the printk ring
-> > > > buffer in the presence of a slow console device (like a serial port
-> > > > with a low baud rate configured), the RCU stall detector may report
-> > > > warnings.
-> > > >
-> > > > This patch suppresses RCU stall warnings while flushing the ring buffer
-> > > > to the console.
-> > > >
-> > > [..]
-> > > > +extern int rcu_cpu_stall_suppress;
-> > > > +
-> > > > +static void rcu_console_stall_suppress(void)
-> > > > +{
-> > > > +     if (!rcu_cpu_stall_suppress)
-> > > > +             rcu_cpu_stall_suppress = 4;
-> > > > +}
-> > > > +
-> > > > +static void rcu_console_stall_unsuppress(void)
-> > > > +{
-> > > > +     if (rcu_cpu_stall_suppress == 4)
-> > > > +             rcu_cpu_stall_suppress = 0;
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * console_unlock - unlock the console system
-> > > >   *
-> > > > @@ -2634,6 +2648,9 @@ void console_unlock(void)
-> > > >        * and cleared after the "again" goto label.
-> > > >        */
-> > > >       do_cond_resched = console_may_schedule;
-> > > > +
-> > > > +     rcu_console_stall_suppress();
-> > > > +
-> > > >  again:
-> > > >       console_may_schedule = 0;
-> > > >
-> > > > @@ -2645,6 +2662,7 @@ void console_unlock(void)
-> > > >       if (!can_use_console()) {
-> > > >               console_locked = 0;
-> > > >               up_console_sem();
-> > > > +             rcu_console_stall_unsuppress();
-> > > >               return;
-> > > >       }
-> > > >
-> > > > @@ -2716,8 +2734,10 @@ void console_unlock(void)
-> > > >
-> > > >               handover = console_lock_spinning_disable_and_check();
-> > > >               printk_safe_exit_irqrestore(flags);
-> > > > -             if (handover)
-> > > > +             if (handover) {
-> > > > +                     rcu_console_stall_unsuppress();
-> > > >                       return;
-> > > > +             }
-> > > >
-> > > >               if (do_cond_resched)
-> > > >                       cond_resched();
-> > > > @@ -2738,6 +2758,8 @@ void console_unlock(void)
-> > > >       retry = prb_read_valid(prb, next_seq, NULL);
-> > > >       if (retry && console_trylock())
-> > > >               goto again;
-> > > > +
-> > > > +     rcu_console_stall_unsuppress();
-> > > >  }
-> > >
-> > > May be we can just start touching watchdogs from printing routine?
-> > >
-> > Hrm, console_unlock is called from vprintk_emit [0] with preemption
-> > disabled. and it already has the logic implemented to call
-> > cond_resched when possible [1].
-> >
-> > [0] https://elixir.bootlin.com/linux/latest/source/kernel/printk/printk.c#L2244
-> > [1] https://elixir.bootlin.com/linux/latest/source/kernel/printk/printk.c#L2719
->
-> So when we are having problems is when console_may_schedule == 0?
->
-Exactly.
->                                                         Thanx, Paul
->
 
+--wbyaqsxhuvb4rjo2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 10, 2021 at 03:12:51AM +0800, =E6=9D=8E=E5=93=B2 wrote:
+> HI=EF=BC=9A
+>      I failed to send kernel patch mail with git sendmail,
+>     could  you help me take a look at the submitted patch?
+>     the attachment is a patch file,=20
+>     For convenience, I put the content of the patch in the body of the em=
+ail
+>=20
+>=20
+>                                                                          =
+                   thanks.
+>                                                                          =
+                   lizhe
+> patch :=20
+> |
+> From 40577316f4dbcf35061a14f27f7a777c2f4199a1 Mon Sep 17 00:00:00 2001
+> From: lizhe <sensor1010@163.com>
+> Date: Tue, 9 Nov 2021 10:13:43 -0800
+> Subject: [PATCH] drivers/mmc/cor/bus: Delete redundant match function
+>=20
+>=20
+> When the device and the driver are matching,
+> if the device or the bus to which the device driver belongs
+> does not provide a match function,
+> then the device and the driver are matched by default.
+> function 'driver_match_device' illustrates this mechanism.
+> Because the return value of mmc_bus_match is 1,
+> even if this function is not provided,
+> the function 'driver_match_device' returns 1,
+> so function 'mmc_bus_match' is redundant.
+>=20
+>=20
+> Signed-off-by: lizhe <sensor1010@163.com>
+
+Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Apart from how the patch is put in the mail, a maintainer responsible
+for picking patches up in this area will probably refuse because the
+name in the From line of your mail doesn't match the name used in the
+Signed-off-by: line.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--wbyaqsxhuvb4rjo2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGOgZEACgkQwfwUeK3K
+7AlFoAf8Cau9xfSiQBZyFfnC7a9fAdv42gHWDFrcUV9IRMMMncRI86jgFP5Sp2Ju
++2/DEtNnc1xd+dkPWcJqkt9oDLze6b9yBNmLoBnmeBu2YOofObQ/3UECrpyuiy+H
+B1fmgTG+VQqr8IGqCGrzSwFRlQBkPd1WiMs+9pTvtZDwd72PAaKAzZ3NuEkboAP0
+vQ9QTF9jIxzzXpDrSD2RLb18+RUM3VzD1h1vS2bvCUirSyh86P6XDBTitv0YaMn6
+thsdRIYLypP/ZPnW4Ca2FyGysR4tieWBCY9f5HPG5DLwO8fZyTte2TgKBIwkqYeH
+iLIKwBbnZYvs2LL2wj3/npLzxaRtzg==
+=ed8R
+-----END PGP SIGNATURE-----
+
+--wbyaqsxhuvb4rjo2--
