@@ -2,121 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C9544EFD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DCD44EFDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhKLXBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 18:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhKLXBP (ORCPT
+        id S234257AbhKLXBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 18:01:44 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:46750 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233569AbhKLXBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 18:01:15 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1289C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 14:58:23 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id q124so20656830oig.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 14:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+kLWDjBOEgMtaOJJM6olmmsO9ZOKebdhk4SN7pITZDc=;
-        b=PxML9IrtUiXHEE7CVKrWioEu8UrZNsfdaMHsjmgeA7NmE4PYMmiTKPWPccRGGNfpss
-         UjWUm6FvYcJbRcXEqzuytL0tWgyKcQwtxR5ipqAZ1cS/FZ2Ge9OYHuPUUB7t3frZYjnB
-         2OBDPbsKIT+jexdTtBq3VRwvFY6a0Iup/i+HsaeT7JtuK7M/3O28MGPENnX/TA+/y9EO
-         XdgNcVFHfK05mctCG/fM4WqWv2TO4jAPckTqx0osvXDFeFLmhiTd5E4rzWoUwtPcMjD9
-         cUHo2dEu4XHb/7a96ZIPaZsrFCyrXNsKF2iKNfttEExeSNpLOzgGKampPMU9VKJXfdFt
-         CoxQ==
+        Fri, 12 Nov 2021 18:01:40 -0500
+Received: by mail-ot1-f46.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so16009648otk.13;
+        Fri, 12 Nov 2021 14:58:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+kLWDjBOEgMtaOJJM6olmmsO9ZOKebdhk4SN7pITZDc=;
-        b=53IJz9WHdb/NsalXLwGY+uX0z7g8cWxaPYMispVYCaM7kYi+XeDzKskhBQdzD2kTBi
-         0/Y+B/60Z2/l4vE9NqL0wfPbuyIU+xvEpjvwPwaLE5++Bz4Wrc5v6VWwvMsEPEzFgCX/
-         qFoThuU6Hq/rJ7BH3DmWYXtZuTaXEKNjQSPahPh3/jVWob8B2vKls3iqef8GH35nxXm+
-         LJ2tISQgwz//b3aA5RwLFZSiQgmFrqwBLk3/JuO/WmeROWOqDO1kidJglidtutOduVwC
-         yxP8J6FbRkkQiA6mg6ohscepZAXCp6ahyL061WPlFaBqXiOzvoS3rWWVihGdndEr8W+n
-         7caw==
-X-Gm-Message-State: AOAM531UUWGSEb6kbJ65anKwD5CYYPKv1xkzyshHQwH6U++5/hWSjfTP
-        wO/vNNX3+vJNMynuO6ISTLlxWropq+Yvcq4rrsM=
-X-Google-Smtp-Source: ABdhPJyEs2LppcBiXO8PG2byHA4/cBzJjP42JCJKB570uD0M4uIGkiDHf+Ali76TI/67E28tQF0k6v5sy9PNEfBg1FU=
-X-Received: by 2002:aca:180f:: with SMTP id h15mr15803059oih.120.1636757903427;
- Fri, 12 Nov 2021 14:58:23 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=n70w2ubplDiZAdzqk24kbZs0VlRAwLWhU8ICxlpOJjA=;
+        b=FGlTsBGwxWhD6oeD83AtgukxpAFTvEWpbQTUD7gb50Ma5DgHNyMuCk4G0E7upUuXNT
+         3Rk2+DzbV/1JHOMlTrK818kby+sNPjPck/ZUfkjToU2Z5sauV3nht355/up/aNd6Iz6B
+         nXB1JOvs9zGr0ElphCNBzKPaMRvHj0rVUaGw3lFLyX/b0mASHoF83oG4LXDCzGcci2mQ
+         SCD3N2T2tlXa/DHPFisNk+I5xe27gQN2AmvWfvwzD8nQOGTLVwM9YLwHbkmpjQd0WEll
+         /fuUoZ7QLV1u7T0gERB09doatqtClt/VdleIHlS9O2NnFnVDpOJXuOZ/5hunLOZc229G
+         N4BQ==
+X-Gm-Message-State: AOAM533I6B57dCg8IiZ6YWUiSEf9h4vB84F3PKDZQOv7zmvUbxmChI0Z
+        OTsHqFOZUecYWlOV7du9Lg==
+X-Google-Smtp-Source: ABdhPJyclPgxDJ9KXlC2POWFBgGSHoxPgp2rjJQPATtn61R3v0OFcZJxbAqUJDOxOG6Ief5H0ietBA==
+X-Received: by 2002:a9d:805:: with SMTP id 5mr14501816oty.383.1636757928682;
+        Fri, 12 Nov 2021 14:58:48 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d25sm1530251oti.9.2021.11.12.14.58.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 14:58:48 -0800 (PST)
+Received: (nullmailer pid 3534743 invoked by uid 1000);
+        Fri, 12 Nov 2021 22:58:47 -0000
+Date:   Fri, 12 Nov 2021 16:58:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Edwin Chiu =?utf-8?B?6YKx5Z6C5bOw?= <edwin.chiu@sunplus.com>
+Cc:     Edwin chiu <edwinchiu0505tw@gmail.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bingings:arm:sunplus:add sp7021 compatible string
+ to sunplus,idle-state.yaml
+Message-ID: <YY7xp3qcO68rJJUC@robh.at.kernel.org>
+References: <cover.1636356928.git.edwin.chiu@sunplus.com>
+ <5d2231d33d647d24d2b95c9f652687f7f1dccd2d.1636356928.git.edwin.chiu@sunplus.com>
+ <1636376582.101053.3181499.nullmailer@robh.at.kernel.org>
+ <d2e1fc4e7913459fbc96d845eb73b87b@sphcmbx02.sunplus.com.tw>
 MIME-Version: 1.0
-References: <20211112061651.6509-1-ye.guojin@zte.com.cn>
-In-Reply-To: <20211112061651.6509-1-ye.guojin@zte.com.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 12 Nov 2021 17:58:12 -0500
-Message-ID: <CADnq5_PbjTWCgY-WrNdYna+Dr6F0+OiMEcjk5FpEk9VUSM9U-g@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: fix cond_no_effect.cocci warnings
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
-        Dave Airlie <airlied@linux.ie>, Jerry Zuo <Jerry.Zuo@amd.com>,
-        Vladimir Stempen <vladimir.stempen@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Ye Guojin <ye.guojin@zte.com.cn>, Jun Lei <Jun.Lei@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Jimmy Kizito <Jimmy.Kizito@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2e1fc4e7913459fbc96d845eb73b87b@sphcmbx02.sunplus.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Tue, Nov 09, 2021 at 06:58:24AM +0000, Edwin Chiu 邱垂峰 wrote:
+> Hi Rob:
+> 
+> Look into the full log, it show you check 3 programs
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Context	Check	Description
+> robh/checkpatch	warning	total: 0 errors, 1 warnings, 67 lines checked
+> robh/dt-meta-schema	success	
+> robh/dtbs-check	fail	build log
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> 1) The checkpatch warning is WARNING: From:/Signed-off-by: email address mismatch: 'From: Edwin chiu <edwinchiu0505tw@gmail.com>' != 'Signed-off-by: Edwin chiu <edwin.chiu@sunplus.com>'
+> ==> I want explain to you that <edwin.chiu@sunplus.com> is my email in the company, but it disagree operate by "git send-email".
+>     So I used <edwinchiu0505tw@gmail.com> in my linux system to operate with "git send-email".
+>    Actually I checkpatch in my side was 0 error 0 warning.
 
-Alex
+The email used to send and the author emails are independent in git. 
+There should be a 'From:' line in the resulting patch when the sender 
+and author don't match.
 
-On Fri, Nov 12, 2021 at 1:17 AM <cgel.zte@gmail.com> wrote:
->
-> From: Ye Guojin <ye.guojin@zte.com.cn>
->
-> This was found by coccicheck:
-> ./drivers/gpu/drm/amd/display/dc/core/dc_resource.c, 2516, 7-9, WARNING
-> possible condition with no effect (if == else)
->
-> hdmi_info.bits.YQ0_YQ1 is always YYC_QUANTIZATION_LIMITED_RANGE.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> index fabe1b83bd4f..564163a85d2c 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> @@ -2509,17 +2509,7 @@ static void set_avi_info_frame(
->
->         /* TODO : We should handle YCC quantization */
->         /* but we do not have matrix calculation */
-> -       if (stream->qy_bit == 1) {
-> -               if (color_space == COLOR_SPACE_SRGB ||
-> -                       color_space == COLOR_SPACE_2020_RGB_FULLRANGE)
-> -                       hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
-> -               else if (color_space == COLOR_SPACE_SRGB_LIMITED ||
-> -                                       color_space == COLOR_SPACE_2020_RGB_LIMITEDRANGE)
-> -                       hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
-> -               else
-> -                       hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
-> -       } else
-> -               hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
-> +       hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
->
->         ///VIC
->         format = stream->timing.timing_3d_format;
-> --
-> 2.25.1
->
+Maybe you need to set sendemail.from config option to your corp email.
+
+> 
+> 2) Regarding to dtbs-check issue, your list warnings related to others company's yaml file, it not my yaml file case. 
+>    What is the purpose you want? Or what should I do?
+
+You aren't adding anything custom, so why are you even adding the 
+schema? arm/idle-states.yaml should be enough.
+
+> 
+> 3) Execute=>make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/sunplus/sunplus,idle-state.yaml
+> There are many config select items…..I don't know how to select them.
+> (I execute "make config " and "make all" were pass)
+> Can you teach me how to do "make dtbs_check"?
+
+Did you read Documentation/devicetree/bindings/writing-schema.rst?
+
+To check all dts files (for an arch) and run the validation, do:
+
+make allmodconfig
+make dtbs_check
+
+Rob
+
+> 
+> 邱垂峰 EdwinChiu
+> 智能運算專案
+> T: +886-3-5786005 ext.2590
+> edwin.chiu@sunplus.com
+> 300 新竹科學園區創新一路19號
+> 
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org> 
+> Sent: Monday, November 8, 2021 9:03 PM
+> To: Edwin chiu <edwinchiu0505tw@gmail.com>
+> Cc: robh+dt@kernel.org; daniel.lezcano@linaro.org; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; rafael@kernel.org; linux-pm@vger.kernel.org; Edwin Chiu 邱垂峰 <edwin.chiu@sunplus.com>
+> Subject: Re: [PATCH 1/2] dt-bingings:arm:sunplus:add sp7021 compatible string to sunplus,idle-state.yaml
+> 
+> On Mon, 08 Nov 2021 15:55:09 +0800, Edwin chiu wrote:
+> > Add the compatible string for cpuidle state on sp7021
+> > 
+> > Signed-off-by: Edwin chiu <edwin.chiu@sunplus.com>
+> > ---
+> >  .../bindings/arm/sunplus/sunplus,idle-state.yaml   | 55 ++++++++++++++++++++++
+> >  MAINTAINERS                                        |  6 +++
+> >  2 files changed, 61 insertions(+)
+> >  create mode 100644 
+> > Documentation/devicetree/bindings/arm/sunplus/sunplus,idle-state.yaml
+> > 
+> 
+> Running 'make dtbs_check' with the schema in this patch gives the following warnings. Consider if they are expected or the schema is incorrect. These may not be new warnings.
+> 
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+> 
+> Full log is available here: https://patchwork.ozlabs.org/patch/1552228
+> 
+> 
+> spc: compatible:0: 'arm,idle-state' was expected
+> 	arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8074-dragonboard.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-ifc6540.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-mtp.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-samsung-klte.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dt.yaml
+> 
+> spc: compatible: Additional items are not allowed ('arm,idle-state' was unexpected)
+> 	arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8074-dragonboard.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-ifc6540.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-mtp.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-samsung-klte.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dt.yaml
+> 
+> spc: compatible: ['qcom,idle-state-spc', 'arm,idle-state'] is too long
+> 	arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8074-dragonboard.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-ifc6540.dt.yaml
+> 	arch/arm/boot/dts/qcom-apq8084-mtp.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-samsung-klte.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dt.yaml
+> 	arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dt.yaml
+> 
