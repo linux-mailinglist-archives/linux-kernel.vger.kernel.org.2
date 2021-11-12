@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AD144EBF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D828C44EBF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbhKLR1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233404AbhKLR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:27:51 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08CA760F93;
-        Fri, 12 Nov 2021 17:24:57 +0000 (UTC)
-Date:   Fri, 12 Nov 2021 17:29:42 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] iio/adc: ingenic: fix (MIPS) ingenic-adc build
- errors
-Message-ID: <20211112172942.04553027@jic23-huawei>
-In-Reply-To: <20211110023755.27176-1-rdunlap@infradead.org>
-References: <20211110023755.27176-1-rdunlap@infradead.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235355AbhKLRbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:31:25 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:43413 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232231AbhKLRbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 12:31:22 -0500
+Received: from [128.177.79.46] (helo=csail.mit.edu)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mlaLj-0005KE-Ea; Fri, 12 Nov 2021 12:28:27 -0500
+Date:   Fri, 12 Nov 2021 09:31:36 -0800
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com, joe@perches.com,
+        kuba@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
+ and VMware hypervisor interface
+Message-ID: <20211112173136.GA11364@csail.mit.edu>
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
+ <YYy9P7Rjg9hntmm3@kroah.com>
+ <20211111153916.GA7966@csail.mit.edu>
+ <YY1krlfM5R7uEzJF@kroah.com>
+ <20211111194002.GA8739@csail.mit.edu>
+ <YY4P0lxIDNcOlc+2@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YY4P0lxIDNcOlc+2@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Nov 2021 18:37:55 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> MIPS does not always provide clk*() interfaces and there are no
-> always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
-> is not strong enough to prevent build errors.
+On Fri, Nov 12, 2021 at 07:55:14AM +0100, Greg KH wrote:
+> On Thu, Nov 11, 2021 at 11:40:02AM -0800, Srivatsa S. Bhat wrote:
+> > On Thu, Nov 11, 2021 at 07:45:02PM +0100, Greg KH wrote:
+> > > On Thu, Nov 11, 2021 at 07:39:16AM -0800, Srivatsa S. Bhat wrote:
+> > > > On Thu, Nov 11, 2021 at 07:50:39AM +0100, Greg KH wrote:
+> > > > > On Wed, Nov 10, 2021 at 12:08:16PM -0800, Srivatsa S. Bhat wrote:
+> > > > > > From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > > > 
+> > > > > > Deep has decided to transfer maintainership of the VMware hypervisor
+> > > > > > interface to Srivatsa, and the joint-maintainership of paravirt ops in
+> > > > > > the Linux kernel to Srivatsa and Alexey. Update the MAINTAINERS file
+> > > > > > to reflect this change.
+> > > > > > 
+> > > > > > Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > > > Acked-by: Alexey Makhalov <amakhalov@vmware.com>
+> > > > > > Acked-by: Deep Shah <sdeep@vmware.com>
+> > > > > > Acked-by: Juergen Gross <jgross@suse.com>
+> > > > > > Cc: stable@vger.kernel.org
+> > > > > 
+> > > > > Why are MAINTAINERS updates needed for stable?  That's not normal :(
+> > > > 
+> > > > So that people posting bug-fixes / backports to these subsystems for
+> > > > older kernels (stable and LTS releases) will CC the new subsystem
+> > > > maintainers.
+> > > 
+> > > That's not how stable releases work at all.
+> > > 
+> > > > That's why I added CC stable tag only to the first two
+> > > > patches which add/replace maintainers and not the third patch which is
+> > > > just a cleanup.
+> > > 
+> > > Patches for stable kernels need to go into Linus's tree first, and if
+> > > you have the MAINTAINERS file updated properly there, then you will be
+> > > properly cc:ed.  We do not look at the MAINTAINERS file for the older
+> > > kernel when sending patches out, it's totally ignored as that was the
+> > > snapshot at a point in time, which is usually no longer the true state.
+> > > 
+> > 
+> > Sure, but that's the case for patches that get mainlined (and
+> > subsequently backported to -stable) /after/ this update to the
+> > MAINTAINERS file gets merged into mainline.
+> > 
+> > When adding the CC stable tag, the case I was trying to address was
+> > for patches that are already in mainline but weren't CC'ed to stable,
+> > and at some later point, somebody decides to backport them to older
+> > stable kernels. In that case, there is a chance that the contributor
+> > might run ./get_maintainer.pl against the stable tree (as that's the
+> > tree they are backporting the upstream commit against) and end up not
+> > CC'ing the new maintainers. So, I thought it would be good to keep the
+> > maintainer info updated in the older stable kernels too.
 > 
-> Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
-> since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
-> BOARD setting), there are still the same build errors.
+> I always ask that the current maintainers of the code be cc:ed when
+> asking for commits to be backported to the stable tree, so I think this
+> is not something you need to worry about.  I don't want to have to deal
+> with hundreds of patches to try to keep the MAINTAINERS file "up to
+> date" for this very very rare event.
 > 
-> It looks like depending on MACH_INGENIC is the only thing that is
-> sufficient here in order to prevent build errors.
-> 
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-> 
-> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Artur Rojek <contact@artur-rojek.eu>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-I'm a bit confused.  There are stubs in include/linux/clk.h for these.
-Why do those not apply here? Are these platforms built with CONFIG_CLK but
-don't provide all the functions?
+Sounds good, thank you!
 
-That sounds highly error prone and rather defeats the object of the
-stubs.  Could we either provide the missing stubs, or solve this some other
-way.  I'm not keen to massively cut the build coverage this driver is getting
-by dropping COMPILE_TEST if there is any route to avoid doing so.
+> You can prove me wrong by looking at our email archives and see where I
+> have missed ever doing this in the past 18 years and what the frequency
+> of it is...
+>
 
-Based on the guess than any platform with clks must be able to turn them on
-I grepped for int clk_enable() and there seem to be only two possiblities
-bcm63xx and lantiq as sources of the build breakage.
+I believe you :-)
 
-Jonathan
+> But for now, no, this is not stable kernel material.
+>
 
-> ---
-> v2: use MACH_INGENIC instead of MACH_INGENIC_SOC (thanks, Paul)
-> 
->  drivers/iio/adc/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20211105.orig/drivers/iio/adc/Kconfig
-> +++ linux-next-20211105/drivers/iio/adc/Kconfig
-> @@ -501,7 +501,7 @@ config INA2XX_ADC
->  
->  config INGENIC_ADC
->  	tristate "Ingenic JZ47xx SoCs ADC driver"
-> -	depends on MIPS || COMPILE_TEST
-> +	depends on MACH_INGENIC
->  	select IIO_BUFFER
->  	help
->  	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC unit.
+I understand, and thank you for the clarification!
 
+Regards,
+Srivatsa
