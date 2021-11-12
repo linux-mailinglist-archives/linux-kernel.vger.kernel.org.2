@@ -2,130 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD29344EC48
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC6F44EC3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 18:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbhKLR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 12:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhKLR6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:58:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91246C061766;
-        Fri, 12 Nov 2021 09:55:44 -0800 (PST)
-Date:   Fri, 12 Nov 2021 18:55:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636739741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=QcYZDxEdTseC8UyknnTGMm4qN7M2lOv3FNbjYR8bVJo=;
-        b=FaZEGc3i+CBQJtNRXXc2vz0tpi2onlBTjSgqmfKM8612hhrIPD1ssUkC2w6WBnKoki/CLy
-        2uyYgqi6Ra/WBXJ03+9b1Mxpijek/P6wQWMLIM+cXwGVEfNoZ82EdKr8HWOmAN1ehiy3xv
-        MDcQl58aSRpQ5OwJpbdBMcxQI0MPIHSEXsgyyw6IDFDZgMG9j8SIgwJaMv8OOBX4zNmHxb
-        0eAwThO6BrcRUyAdO8qyJhSKzsn/Wa6PaPHydx+omHwyToLxiVqMRXlHIme/fllz/4zitw
-        o7MlojNV5jkhq5oHAr9sdauHjopuFqVNrJby7WETavO1z+aeyKiaH/H6iTkyyA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636739741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=QcYZDxEdTseC8UyknnTGMm4qN7M2lOv3FNbjYR8bVJo=;
-        b=3OYl0et1EV1E9549KF0DWWLOSojIBhEOfe59arGs9mC4fjsUq5BEF2gxDYoaGuFc8lJd0X
-        6zG9br4hV0qdMwAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.15.2-rt19
-Message-ID: <20211112175540.grp6vgrudiuq66lt@linutronix.de>
+        id S235543AbhKLRyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 12:54:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231919AbhKLRyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 12:54:32 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5DD260EC0;
+        Fri, 12 Nov 2021 17:51:39 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 17:56:25 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] iio:filter:admv8818: Add sysfs ABI documentation
+Message-ID: <20211112175625.4a9f393d@jic23-huawei>
+In-Reply-To: <20211109123127.96399-5-antoniu.miclaus@analog.com>
+References: <20211109123127.96399-1-antoniu.miclaus@analog.com>
+        <20211109123127.96399-5-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Tue, 9 Nov 2021 14:31:27 +0200
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-I'm pleased to announce the v5.15.2-rt19 patch set. 
+> Add initial ABI documentation for admv8818 filter sysfs interfaces.
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> ---
+>  .../ABI/testing/sysfs-bus-iio-filter-admv8818 | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818 b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+> new file mode 100644
+> index 000000000000..7fa5b0819055
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+> @@ -0,0 +1,60 @@
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_high_pass_3db_frequency
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		The cut-off frequency of the ADMV8818 high pass filter. The value is scaled using
+> +		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
+> +		The accepted range of values for the frequencies is between 1.75GHz and 19.9GHz.
+> +
+> +		The default value for the scale is 1000000, therefore MHz frequency values are
+> +		passed as input.
 
-Changes since v5.15.2-rt18:
+I don't think this ABI really works unfortunately.  What we are talking here is a bunch of
+selectable filters and one high pass + one low pass filter max can be enabled at a time.
 
-  - Remove an unused variable in mm/ so that the compiler so there is
-    neither a warning from the compiler nor a complaint from the bot.
-    Reported by kernel test robot <lkp@intel.com>.
+So two options, we either have simply a single
+out_altvoltage_filter_low_pass_3db_frequency
+out_altvoltage_filter_high_pass_3db_frequency
+Probably both with index 0 and index free channels are a silly idea given it's fine to just have
+one with index 0.
 
-Known issues
-     - netconsole triggers WARN.
+or if there is sufficient reason to setup a selectable set of options then
+we could look at indexed filters and a _symbol type selection which may seem
+odd but generalises fairly well from Phase Shift Keying type symbol stuff we
+have had before (though still in staging because no one has cleaned the drivers
+up yet).
 
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
 
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_low_pass_3db_frequency
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		The cut-off frequency of the ADMV8818 low pass filter. The value is scaled using
+> +		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
+> +		The accepted range of values for the frequencies is between 2.05GHz and 18.85GHz.
+> +
+> +		The default value for the scale is 1000000, therefore MHz frequency values are
+> +		passed as input.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_scale
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Scale high pass and lowpass filter frequency values to Hz.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode_available
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Reading this returns the valid values that can be written to the
+> +		on_altvoltage0_mode attribute:
+> +
+> +		- auto -> enable/register the clock rate notifier
 
-The delta patch against v5.15.2-rt18 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15.2-rt18-rt19.patch.xz
+Hmm I'm wondering about the usecases of this.
 
-You can get this release via the git tree at:
+If this is being used with a clk device, then I think only the notifier option makes much
+sense.  If it's not a clk that linux is aware of then manual makes more sense.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15.2-rt19
+> +		- manual -> disable/unregister the clock rate notifier
+> +		- bypass -> bypass LPF/HPF and disable/unregister the clock rate notifier
 
-The RT patch against v5.15.2 can be found here:
+This should be separate enable for the two filters though I think we've use the value 0
+to mean this in the past.  The bypasses look to be per filter anyway, so a single
+mode is insufficiently flexible.
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15.2-rt19.patch.xz
+In the vast majority of cases, mode attributes are not used because they are always device
+specific and hence generic code has no idea what to do with them.
 
-The split quilt queue is available at:
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		This attribute configures the filter mode.
+> +		Reading returns the actual mode.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_bandwidth_3db_frequency
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Store the band pass bandwidth frequency value applied.
+> +		Reading returns the bandwidth frequency scaled.
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15.2-rt19.tar.xz
+The device has no concept of bandpass that I can find so why are we introducing it?
+Let the user set the two filters to achieve this result.  Userspace can do the maths for us :)
 
-Sebastian
+> +
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_center_frequency
+> +KernelVersion:
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Store the band pass center frequency value applied.
+> +		Reading returns the center frequency scaled.
 
-diff --git a/localversion-rt b/localversion-rt
-index 9e7cd66d9f44f..483ad771f201a 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt18
-+-rt19
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index eb714f00c1342..3c5be440ab303 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1881,7 +1881,7 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 	struct vmap_block *vb;
- 	struct vmap_area *va;
- 	unsigned long vb_idx;
--	int node, err, cpu;
-+	int node, err;
- 	void *vaddr;
- 
- 	node = numa_node_id();
-@@ -1918,7 +1918,7 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 		return ERR_PTR(err);
- 	}
- 
--	cpu = get_cpu_light();
-+	get_cpu_light();
- 	vbq = this_cpu_ptr(&vmap_block_queue);
- 	spin_lock(&vbq->lock);
- 	list_add_tail_rcu(&vb->free_list, &vbq->free);
-@@ -1988,7 +1988,6 @@ static void *vb_alloc(unsigned long size, gfp_t gfp_mask)
- 	struct vmap_block *vb;
- 	void *vaddr = NULL;
- 	unsigned int order;
--	int cpu;
- 
- 	BUG_ON(offset_in_page(size));
- 	BUG_ON(size > PAGE_SIZE*VMAP_MAX_ALLOC);
-@@ -2003,7 +2002,7 @@ static void *vb_alloc(unsigned long size, gfp_t gfp_mask)
- 	order = get_order(size);
- 
- 	rcu_read_lock();
--	cpu = get_cpu_light();
-+	get_cpu_light();
- 	vbq = this_cpu_ptr(&vmap_block_queue);
- 	list_for_each_entry_rcu(vb, &vbq->free, free_list) {
- 		unsigned long pages_off;
