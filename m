@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E2B44E3A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1820944E3A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhKLJLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:11:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58002 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234711AbhKLJLW (ORCPT
+        id S234652AbhKLJLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233441AbhKLJLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:11:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636708111;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ujeVOJaP3l3Agh5Fd01V+TO1YiXBRY47fAbGw6BqApM=;
-        b=IP61uZCXgCyr6llBpq4ygb3rGQ0DSZV/WxxMa8d/i70dRbVlJdC0RdtmsJCI1KYEm8WDiN
-        lfQ1zc8X1cEeTjAGuuureteiIv0GUHWTcjRLMtDLSwPcvsdMj6EudCf02JyGGXfVlLAr+J
-        uZLP+Eq4Ok9Zh/73e+kv8EHd59yTXbI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-BQosB3tdOCmrRmjcgTns-g-1; Fri, 12 Nov 2021 04:08:28 -0500
-X-MC-Unique: BQosB3tdOCmrRmjcgTns-g-1
-Received: by mail-lj1-f198.google.com with SMTP id f6-20020a2e9e86000000b00211349f9ce3so2892353ljk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:08:27 -0800 (PST)
+        Fri, 12 Nov 2021 04:11:12 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC1DC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:08:21 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id c8so34645763ede.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:08:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BxpzdVv/JmbTcRqxjO49mI7k8UhxXyTuZr7RPBnx9t4=;
+        b=SiLag2S5hzRYUHlpMmIZI+lJ8BngrTqYEIs36n/kz4NyDtgpjfuWfrmObd8lW8Qe3E
+         GXHcij6GdIH6ns99sc7mZ6jUW+WUnO/p5aa4lxNHb3qMuciScKoYClaz+u2nKsRGCy+P
+         HDkfFTj/Vvam4Cu7Lm2hdY57bUjK8c8q3/ViobZJmx+ObsHjLRDNn1GVAonD24vChyxH
+         tzZhPEraB8Eq7G+k/FWMhedclFO4vkkMmydUchPlxontQtpIdVSmpqB+3rJO6MXDpYR+
+         I/vnw3Nk2wBKamRmQUoKExKkAutKbgmzYrALABLrPq8EMeVCvE09GnRQOGsL7bUOWSQB
+         TXmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ujeVOJaP3l3Agh5Fd01V+TO1YiXBRY47fAbGw6BqApM=;
-        b=K7moxPeL/v+EPVKBiwAYqLFWRW8tHC14xPUp8BzV5VAqMFXxyhrYALX6XPKkGDHhf/
-         GypQiDHochOqCFzZwkfNo/XiM4q4n7aEQjmRDsZnZmJKXhYxVegKx8s2YjUJrTX52rRZ
-         d7VVb33ars0vIDeKx9GJ+Lbs0h6cI2Gjfu66Gklja/e+qDeLUG6hp3Hr6EuL/ebpD7Rl
-         JnonXtvdbnoBCtytUIbGjlIcx20NxlUOR3apJA4M9antQj7gwTfia7ISJVyVIA27TD6/
-         HEDftqQ7iQ2+7y8DXhBNJ0EfAk5mdmjxxI3qxWRNo4FLdRySIUIFValUHSIly2BI7fqt
-         CZJw==
-X-Gm-Message-State: AOAM5328AmfsTfUZ7yc7MA42qMjIQGpsUh5G6GrOhP6O3XAY5JtAYIqs
-        EWgnYi3GHfZy0zDoWD1yiplsknF8F0lpXVOGGLtLDGtcIJp3QoBKpkPgUCprxLeUvQjpAiQgbmw
-        ZmkfuKxZjlRaZqwyprh+F6fDvUqozgMur4Q5dovOH
-X-Received: by 2002:ac2:4341:: with SMTP id o1mr12750433lfl.297.1636708106671;
-        Fri, 12 Nov 2021 01:08:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCc2uOBlvYGYG6DZyxhxuF39PB33M8nb2w4etD6lIMHAvP93dNADJAYeJYTDPnFUoiH+M+IkY/35BQGVeyOL4=
-X-Received: by 2002:ac2:4341:: with SMTP id o1mr12750368lfl.297.1636708106001;
- Fri, 12 Nov 2021 01:08:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BxpzdVv/JmbTcRqxjO49mI7k8UhxXyTuZr7RPBnx9t4=;
+        b=Fg2BJB+ZWCUd6M7HDZcNtEK28pGK7zqxHXODZkX0GMTDVxKkXtXv4wqwNvvBKZJQjf
+         gmZy04n10quntfWXYEmOPiqk4QpesX5LZ3QMxHRmKYuxTdQlurc4dN/OwOin7w5yl57J
+         fBMb6Olp+kmOPBDWgQkEHFYk2bhcumR6BbgKv90oXMHtq4pzmHrLZ/yWGW/weE6TUuDb
+         W0klbOk2DedWafiDG4zBSZGjt6aeTgUNhTkfMGDGkh7Iu8EAIdQBNjaQWTm4NFljSzXR
+         ca4ul04M/gvLsHkEak4njjuAxUV2xdogJDkh6nrIdHM1ZfI1UY/6IHfTDZt2fzCmDgjU
+         S4Sw==
+X-Gm-Message-State: AOAM531X1tIybWxcoxCqFjxhDR9JOXkhQq5t0EhPuem52LzrFeK4K2R9
+        e/T3V1RaRS94fnwyikkSiUs=
+X-Google-Smtp-Source: ABdhPJzZxaAwvcEKZjjYbHJsZBr63GhqyDPRvQ0Lj8zClCa2IJx8dpHdvwussAfZs5V2wE0f46oC4w==
+X-Received: by 2002:a17:906:e115:: with SMTP id gj21mr17473492ejb.348.1636708100492;
+        Fri, 12 Nov 2021 01:08:20 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id p3sm2386691ejy.94.2021.11.12.01.08.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 01:08:19 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH 4/7] staging: r8188eu: remove autoload check
+Date:   Fri, 12 Nov 2021 10:08:18 +0100
+Message-ID: <136395394.ZtFrYW90el@localhost.localdomain>
+In-Reply-To: <20211111212644.9011-4-martin@kaiser.cx>
+References: <20211111212644.9011-1-martin@kaiser.cx> <20211111212644.9011-4-martin@kaiser.cx>
 MIME-Version: 1.0
-References: <20211111191800.21281-1-david@redhat.com> <20211112070113.GA19016@MiWiFi-R3L-srv>
- <21bdcecd-127c-f70e-0c7d-cb1b97caecb0@redhat.com> <20211112090116.GC19016@MiWiFi-R3L-srv>
-In-Reply-To: <20211112090116.GC19016@MiWiFi-R3L-srv>
-From:   David Hildenbrand <david@redhat.com>
-Date:   Fri, 12 Nov 2021 10:08:14 +0100
-Message-ID: <CADFyXm7uS3GN1AnF-iLpUZMFK=MwF3=NGwSZFqXPA+kK182-cQ@mail.gmail.com>
-Subject: Re: [PATCH v1] proc/vmcore: fix clearing user buffer by properly
- using clear_user()
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > "that allows supervisor mode programs to optionally set user-space
-> > memory mappings so that access to those mappings from supervisor mode
-> > will cause a trap. This makes it harder for malicious programs to
-> > "trick" the kernel into using instructions or data from a user-space
-> > program"
->
-> OK, probably. I thought it's triggered in access_ok(), and tried to
-> figure out why. But seems we should do something to check this in
-> access_ok(), otherwise the logic of clear_user/_clear_user is not so
-> reasonable. Anyway, I have learned it, thanks a lot for digging it out.
->
-> By the way, I can't open above wiki article, found below commit from
-> hpa. Maybe we can add some into log to tell this, not strong opinin,
-> leave it to you.
+On Thursday, November 11, 2021 10:26:41 PM CET Martin Kaiser wrote:
+> In Hal_InitPGData88E, the same code is run, regardless of
+> bautoload_fail_flag.
 
-Yes, now that we know the root cause I'll add some more details to the
-patch description and resend -- thanks Baoquan!
+Same comment I made for patch 1/7.
+
+Greetings,
+
+Fabio
+
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 14 ++------------
+>  1 file changed, 2 insertions(+), 12 deletions(-)
+
+
+
+
 
