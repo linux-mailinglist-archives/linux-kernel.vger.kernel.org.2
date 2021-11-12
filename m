@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A5D44E907
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C7D44E90E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhKLOgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:36:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
+        id S232064AbhKLOkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:40:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235106AbhKLOgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:36:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0149860F42;
-        Fri, 12 Nov 2021 14:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636727636;
-        bh=w0k16iULftrqfQDFh2ntgIt+KT+4y7wRk4QXhBGnW4w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DZR4KNTszdd/N92rPjcmeQYmPn0pL4zfRDpRwFfDEoIjRWRmEUFCGd5oTzlc1tWEl
-         UZv1gyxQpVb5AKNtBFRaCTv5dGBvJoZ2R26wDjbheaZi2gX9jpxsbq3u+89OeR2qYw
-         tLcHDFh+9vbyFY1yugnjX+YBZAB476UhujRB/sTK3YmRAdiSVKKJDlbZMlaDZFfKog
-         Lj/e1rEWfCthQYoJNkrpetLkhIV7xVEcnopWUtKrb9pzpOPUQUI5mHAtDY2kD70CuP
-         O2Oq/WAe5GmqWoTJlmeLgbwnPIa1bwiJf2TBdIQ7sxrboZA1Tzf8TOOkcEXy6A88SD
-         LEHpZL/ObOW7A==
-Date:   Fri, 12 Nov 2021 06:33:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        linux-can@vger.kernel.org
-Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
- 5.16-rc1)
-Message-ID: <20211112063355.16cb9d3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
-References: <20211111163301.1930617-1-kuba@kernel.org>
-        <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
-        <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
+        id S232157AbhKLOkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:40:05 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8165560D43;
+        Fri, 12 Nov 2021 14:37:14 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mlXg0-0052T9-8y; Fri, 12 Nov 2021 14:37:12 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH] of/irq: Don't ignore interrupt-controller when interrupt-map failed
+Date:   Fri, 12 Nov 2021 14:36:44 +0000
+Message-Id: <20211112143644.434995-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, chzigotzky@xenosoft.de, robh@kernel.org, bhelgaas@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 18:48:43 -0800 Linus Torvalds wrote:
-> On Thu, Nov 11, 2021 at 5:46 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > Rafael, Srinivas, we're getting 32 bit build failures after pulling back
-> > from Linus today.
-> >
-> > make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
-> > make: *** [Makefile:219: __sub-make] Error 2
-> > ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In f=
-unction =E2=80=98send_mbox_cmd=E2=80=99:
-> > ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37=
-: error: implicit declaration of function =E2=80=98readq=E2=80=99; did you =
-mean =E2=80=98readl=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> >    79 |                         *cmd_resp =3D readq((void __iomem *) (p=
-roc_priv->mmio_base + MBOX_OFFSET_DATA));
-> >       |                                     ^~~~~
-> >       |                                     readl =20
->=20
-> Gaah.
->=20
-> The trivial fix is *probably* just a simple
+Since 041284181226 ("of/irq: Allow matching of an interrupt-map local
+to an interrupt controller"), the irq code favors using an interrupt-map
+over a interrupt-controller property if both are available, while the
+earlier behaviour was to ignore the interrupt-map altogether.
 
-To be sure - are you planning to wait for the fix to come via=20
-the usual path?  We can hold applying new patches to net on the=20
-off chance that you'd apply the fix directly and we can fast=20
-forward again :)=20
+However, we now end-up with the opposite behaviour, which is to
+ignore the interrupt-controller property even if the interrupt-map
+fails to match its input. This new behaviour breaks the AmigaOne
+X1000 machine, which ships with an extremely "creative" (read:
+broken) device tree.
 
-Not that 32bit x86 matters all that much in practice, it's just=20
-for preventing new errors (64b divs, mostly) from sneaking in.
+Fix this by allowing the interrupt-controller property to be selected
+when interrupt-map fails to match anything.
 
-I'm guessing Rafeal may be AFK for the independence day weekend.
+Fixes: 041284181226 ("of/irq: Allow matching of an interrupt-map local to an interrupt controller")
+Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/78308692-02e6-9544-4035-3171a8e1e6d4@xenosoft.de
+Cc: Rob Herring <robh@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/of/irq.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/of/irq.c b/drivers/of/irq.c
+index 32be5a03951f..508fb1717de3 100644
+--- a/drivers/of/irq.c
++++ b/drivers/of/irq.c
+@@ -161,9 +161,10 @@ int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq)
+ 		 * if it is then we are done, unless there is an
+ 		 * interrupt-map which takes precedence.
+ 		 */
++		bool intc = of_property_read_bool(ipar, "interrupt-controller");
++
+ 		imap = of_get_property(ipar, "interrupt-map", &imaplen);
+-		if (imap == NULL &&
+-		    of_property_read_bool(ipar, "interrupt-controller")) {
++		if (imap == NULL && intc) {
+ 			pr_debug(" -> got it !\n");
+ 			return 0;
+ 		}
+@@ -244,8 +245,14 @@ int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq)
+ 
+ 			pr_debug(" -> imaplen=%d\n", imaplen);
+ 		}
+-		if (!match)
++		if (!match) {
++			if (intc) {
++				pr_debug("%pOF interrupt-map failed, using interrupt-controller\n", ipar);
++				return 0;
++			}
++
+ 			goto fail;
++		}
+ 
+ 		/*
+ 		 * Successfully parsed an interrrupt-map translation; copy new
+-- 
+2.30.2
+
