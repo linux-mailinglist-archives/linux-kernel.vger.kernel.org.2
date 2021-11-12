@@ -2,49 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ECF44EE92
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C744EE93
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235736AbhKLVaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:30:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
+        id S235770AbhKLVaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:30:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235702AbhKLVaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:30:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94C24610A2;
-        Fri, 12 Nov 2021 21:27:18 +0000 (UTC)
+        id S235702AbhKLVaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:30:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25BF0610FF;
+        Fri, 12 Nov 2021 21:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636752441;
-        bh=mf1NFqehFwwHUnvV8Idqyi02NlZ+oErngaqk4fic4S4=;
+        s=k20201202; t=1636752446;
+        bh=eoAl5B/8h3ZtzbA9rB3nBcwncqWuJUxuT/UFumATqZQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aDvpP+DFJB4bvRNscJMY96pS4qYVLznkd7+8ok6kJBnfEWAG6Rs/zP85uScisafOM
-         46pLOY/FFDOT/1wXZK0DaCEQyUsM12cnD+i/GLMayaIDICqfqGaaGZB4Qpg76yJSP+
-         5rdDFu6I0kWG6wyXtucDnhxWYhLy9iqpx2x6P+AsjwLnvsapkiFso/9MKWas9CANA7
-         8Vr2e9ZBgnUZaHkRgMcgfaUt8YWDmqRwznBQmt/SOktpPwpkkyri0OISTug1cJb5pL
-         4IgWcF5po7zI6YEXX7bqZaR4C/cfd8+EMTnyUqKmnSFUKcVq+7agKp/uOACy7e8hBb
-         F90d4kadE61lw==
+        b=PyDHCooH3k3+HIQuMCsauOX0epOaMV29t1rOZWKdBiawNsX7KVbHe0BZDf+VJwlvD
+         3nCRB1RWAkUvTKWfOjJQ7k+Gic5ysfd64D7RTx1Iotg8FUvzvEKiKXxZiaI9OODWFk
+         rJQXpWhFujB8vhG+H46Vpwcioq5p1II9amfUdXHq+yqiicVTulezO69s8llcFmmQIo
+         tqQjP8G40R9SwbuQPcLVEMNoYRCAYEkPKmrJyk3O4TkHR0xk3SIA4EtHKJ84k/zW8G
+         XZ8phQJ+dNfrJ6b37g79SH3cxZg+lTAQ7jS+sCr41cmfZ+YXLMSMJqdkHbCRKJOPKh
+         mgpxORkd/4lUw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Bud Liviu-Alexandru <budliviu@gmail.com>,
-        alsa-devel@alsa-project.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        sound-open-firmware@alsa-project.org
-In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
-References: <20211108111132.3800548-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
-Message-Id: <163675243834.742274.3363954435285911217.b4-ty@kernel.org>
-Date:   Fri, 12 Nov 2021 21:27:18 +0000
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, lgirdwood@gmail.com
+Cc:     linux-mediatek@lists.infradead.org, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        dafna.hirschfeld@collabora.com, perex@perex.cz,
+        matthias.bgg@gmail.com, kuninori.morimoto.gx@renesas.com,
+        kernel@collabora.com
+In-Reply-To: <20211111161108.502344-1-angelogioacchino.delregno@collabora.com>
+References: <20211111161108.502344-1-angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8173: Fix debugfs registration for components
+Message-Id: <163675244389.742274.1874559646597511024.b4-ty@kernel.org>
+Date:   Fri, 12 Nov 2021 21:27:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,17 +44,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 12:11:14 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, 11 Nov 2021 17:11:08 +0100, AngeloGioacchino Del Regno wrote:
+> When registering the mt8173-afe-pcm driver, we are also adding two
+> components: one is for the PCM DAIs and one is for the HDMI DAIs, but
+> when debugfs is enabled, we're getting the following issue:
 > 
-> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
-> not built into a the main SOF driver when that is built-in:
-> 
-> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
-> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
-> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
-> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
-> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> [   17.279176] debugfs: Directory '11220000.audio-controller' with parent 'mtk-rt5650' already present!
+> [   17.288345] debugfs: Directory '11220000.audio-controller' with parent 'mtk-rt5650' already present!
 > 
 > [...]
 
@@ -72,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: build compression interface into snd_sof.ko
-      commit: 1218f06cb3c6e2c51699998bc17c0d9a41ab37a6
+[1/1] ASoC: mediatek: mt8173: Fix debugfs registration for components
+      commit: 8c32984bc7da29828260ac514d5d4967f7e8f62d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
