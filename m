@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C7744E617
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D055444E61E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhKLMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
+        id S234864AbhKLMLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbhKLMJn (ORCPT
+        with ESMTP id S231416AbhKLMLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:09:43 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B602BC061203;
-        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id c4so8345834pfj.2;
-        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
+        Fri, 12 Nov 2021 07:11:34 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56876C06127A
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:08:43 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d24so15190506wra.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 04:08:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MIyRtrqfmfv9Q70WA5OuleW3S97RwfmhJIbO/13nPI0=;
-        b=eUrb7nENr9K/JwpH4dsIeY4/ml8fLrNKUXppJa64u3i+7roPNJxy6uMNnHS2YadqUZ
-         yCPkY8CybmqjnJT6khQDAItloHqXM9bZZUIkOdyMYTXVK5m/36NwK9b+FLviishKTAIO
-         YYkRqV+0h3lAmwuQgRtb+P4tkD3JnOCdy4yY9kZx/kG+Q3jVoPT/vSqlN7FP/5HtMBDQ
-         bF/KmXFYQpClbh1z0IYOwhDQmY35nM+9i1KzpdMYL/6e4EjeOlfMYXpmeP+fqyejc+lE
-         S7Gh16ymepXekxve8I7zwHXpMASvM5Ckjgc2m9yXaEGq8hN9bjmfWRmkFbDtISNIgNml
-         s8+w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=otZ0McVJ5SiYRqP7yOEzIbw/1AxWwGOspMcAdakaeds=;
+        b=LQvnnW/sBfmRpWNRpou+Po67N6Z73lHiWzAUWeL56rM8KZQ3wcMuaQRgL4/GQOgHAr
+         NR1N8PTQ7wPb9IWjzJE/t1++yyiwBNJyVLj/9x1KLhsENhmeUAOwV23X9xgrxu9dlZlK
+         seKCNreAhLBnz43Fg9g9UkKZpJNfC9Ft9GORMdYh4HJwBa0vHgHlHtAlp4EhcTk/OdNy
+         wRWINay5dRtLg7UIlQbAA7oPswjbqMCoX1c9wJB1r0beZvHgeuw/9uWDWc9AgbQOUVuV
+         ksKKfkkdm5ZXqiFm2hH26ZX6Uf503hnuuVwow3sJy2yfebYMkBaHDCTwrwEvvfjVLwkv
+         qmSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MIyRtrqfmfv9Q70WA5OuleW3S97RwfmhJIbO/13nPI0=;
-        b=QmMGqb8A9SKjJWwdxDPtH0oiTJpnWh1JdLs+jtnO8hSXAmAGAkAbKy2nwiSiFBO517
-         PJQjSMYHVeA0xWcth6ipXJPT/bb6o4LJJwgHwZTki3ko0g0o7ZqsV19UMyI8vkK5VGrL
-         x8CigZ10grSNVZo5gL1V+bHbwa6v2aIjz8Wg3H4wCp+8ISa6RWVRJzr1djxrxYtHUtt5
-         YQT5ESMO72a61Is3DaAP1FC0yiAZXSpqM0/sUveyXrMkpVnltj6A/NZdHIOEt0ZamcyJ
-         iMAqJNHxeIec1eJlfEY8+ikZlZTeRXQS18C91gOGvmcZ23yVFTRShvBKsmt99/KhUmIj
-         ha8g==
-X-Gm-Message-State: AOAM532c9C+Yq+/oAhUWE7e6EX8cKe/TS7K7lhKIkdl77iAfm8QwYIGN
-        ErrjYPRuhfUJkXfMwLPlBkdl+4L2prr3JDqfQcbSWQ==
-X-Google-Smtp-Source: ABdhPJx8ypXWbxfOJRQS60YeMql/1h8CczQ/+31wcaOfd4KGWHLiyyGTBRhCBrI4M6Pm9qh361QThQ==
-X-Received: by 2002:a63:5c13:: with SMTP id q19mr9459006pgb.350.1636718812226;
-        Fri, 12 Nov 2021 04:06:52 -0800 (PST)
-Received: from fanta-arch.localdomain ([148.163.172.142])
-        by smtp.gmail.com with ESMTPSA id f15sm7058837pfe.171.2021.11.12.04.06.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=otZ0McVJ5SiYRqP7yOEzIbw/1AxWwGOspMcAdakaeds=;
+        b=vRL5GWtBOP5WTt9VfCcz+oEyKqdK3meqgZDZfLPJaRsVjG/38AKex1fMjXU0LwrduJ
+         4BbVSf8FX8KsZo/6P/ALs1xtSKBVAw8HiRxdIK4u1gwhGNwWq5NvvT7gTxcoCW/4KT01
+         EBn2tvzq6yjT1GzEyxbIz9gfe4/aFiO3dK7ugD/t2VSzpJHqAe4/vZkEptEMcBD9utp0
+         dFu50khj24B8gDtivo0RPpvbmuc0YxubpMKtSrGrAFrn8uEpSQ/Sw4s1SosCMaWLtstC
+         TDW5Y10Iwv1J1jBHiB54wfFhHBIYDjkAuV3warLSNT4n4zaGULkwPwSo8cROAx4maBj1
+         O1Ew==
+X-Gm-Message-State: AOAM531Zp159o3wZV01Rh+uydZ1Z98cJe7xY/ejBultLXci5wLbSL9lA
+        d8iFLmQQmVRebfp2sI8AqdFcEg==
+X-Google-Smtp-Source: ABdhPJxBlMEeY7j5TABoz1gcsiHhfYOgh3JsBIzuuI4vMpGemDgBxW2s1QNyVKfFDMXNmN/UEcWvGA==
+X-Received: by 2002:a5d:6e8c:: with SMTP id k12mr17741380wrz.401.1636718921903;
+        Fri, 12 Nov 2021 04:08:41 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id 126sm11086997wmz.28.2021.11.12.04.08.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 04:06:51 -0800 (PST)
-From:   Letu Ren <fantasquex@gmail.com>
-To:     skashyap@marvell.com, jhasan@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
-        Zheyu Ma <zheyuma97@gmail.com>, Wende Tan <twd2.me@gmail.com>
-Subject: [PATCH] scsi: qedf: Fix a UAF bug in __qedf_probe
-Date:   Fri, 12 Nov 2021 20:06:41 +0800
-Message-Id: <20211112120641.16073-1-fantasquex@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Fri, 12 Nov 2021 04:08:41 -0800 (PST)
+Date:   Fri, 12 Nov 2021 12:08:39 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+Subject: Re: [RESEND PATCH v2 04/13] backlight: qcom-wled: Fix off-by-one
+ maximum with default num_strings
+Message-ID: <20211112120839.i6g747vewg6bkyk7@maple.lan>
+References: <20211112002706.453289-1-marijn.suijten@somainline.org>
+ <20211112002706.453289-5-marijn.suijten@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112002706.453289-5-marijn.suijten@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In __qedf_probe, if `qedf->cdev` is NULL which means
-qed_ops->common->probe() failed, then the program will goto label err1,
-scsi_host_put() will free `lport->host` pointer. Because the memory `qedf`
-points to is allocated by libfc_host_alloc(), it will be freed by
-scsi_host_put(). However, the if statement below label err0 only checks
-whether qedf is NULL but doesn't check whether the memory has been freed.
-So a UAF bug occurred.
+On Fri, Nov 12, 2021 at 01:26:57AM +0100, Marijn Suijten wrote:
+> When not specifying num-strings in the DT the default is used, but +1 is
+> added to it which turns WLED3 into 4 and WLED4/5 into 5 strings instead
+> of 3 and 4 respectively, causing out-of-bounds reads and register
+> read/writes.  This +1 exists for a deficiency in the DT parsing code,
+> and is simply omitted entirely - solving this oob issue - by parsing the
+> property separately much like qcom,enabled-strings.
+> 
+> This also allows more stringent checks on the maximum value when
+> qcom,enabled-strings is provided in the DT.  Note that num-strings is
+> parsed after enabled-strings to give it final sign-off over the length,
+> which DT currently utilizes to get around an incorrect fixed read of
+> four elements from that array (has been addressed in a prior patch).
+> 
+> Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  drivers/video/backlight/qcom-wled.c | 51 +++++++++++------------------
+>  1 file changed, 19 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> index 977cd75827d7..c5232478a343 100644
+> --- a/drivers/video/backlight/qcom-wled.c
+> +++ b/drivers/video/backlight/qcom-wled.c
+> @@ -1552,6 +1520,25 @@ static int wled_configure(struct wled *wled)
+>  		}
+>  	}
+> 
+> +	rc = of_property_read_u32(dev->of_node, "qcom,num-strings", &val);
+> +	if (!rc) {
+> +		if (val < 1 || val > wled->max_string_count) {
+> +			dev_err(dev, "qcom,num-strings must be between 1 and %d\n",
+> +				wled->max_string_count);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (string_len > 0) {
+> +			dev_warn(dev, "qcom,num-strings and qcom,enabled-strings are ambiguous\n");
 
-There are two ways to get to the statements below err0. the first one is
-described as before. `qedf` should be set to NULL. The second way is goto
-`err0` directly. In this way `qedf` hasn't been changed and it has the
-initial value `NULL`. So the program wont't go to the if statement in any
-situation.
+This warning occurs even when there is no ambiguity.
 
-The KASAN logs are as follows:
+This could be:
 
-[    2.312969] BUG: KASAN: use-after-free in __qedf_probe+0x5dcf/0x6bc0
-[    2.312969]
-[    2.312969] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    2.312969] Call Trace:
-[    2.312969]  dump_stack_lvl+0x59/0x7b
-[    2.312969]  print_address_description+0x7c/0x3b0
-[    2.312969]  ? __qedf_probe+0x5dcf/0x6bc0
-[    2.312969]  __kasan_report+0x160/0x1c0
-[    2.312969]  ? __qedf_probe+0x5dcf/0x6bc0
-[    2.312969]  kasan_report+0x4b/0x70
-[    2.312969]  ? kobject_put+0x25d/0x290
-[    2.312969]  kasan_check_range+0x2ca/0x310
-[    2.312969]  __qedf_probe+0x5dcf/0x6bc0
-[    2.312969]  ? selinux_kernfs_init_security+0xdc/0x5f0
-[    2.312969]  ? trace_rpm_return_int_rcuidle+0x18/0x120
-[    2.312969]  ? rpm_resume+0xa5c/0x16e0
-[    2.312969]  ? qedf_get_generic_tlv_data+0x160/0x160
-[    2.312969]  local_pci_probe+0x13c/0x1f0
-[    2.312969]  pci_device_probe+0x37e/0x6c0
+	if (string_len > 0 && val != string_len)
 
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
-Co-developed-by: Wende Tan <twd2.me@gmail.com>
-Signed-off-by: Wende Tan <twd2.me@gmail.com>
----
- drivers/scsi/qedf/qedf_main.c | 5 -----
- 1 file changed, 5 deletions(-)
+The warning should also be below the error message on the next if statement.
+Combined these changes allows us to give a much more helpful and assertive
+warning message:
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 42d0d941dba5..3ea552acd82a 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -3683,11 +3683,6 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- err1:
- 	scsi_host_put(lport->host);
- err0:
--	if (qedf) {
--		QEDF_INFO(&qedf->dbg_ctx, QEDF_LOG_DISC, "Probe done.\n");
--
--		clear_bit(QEDF_PROBING, &qedf->flags);
--	}
- 	return rc;
- }
- 
--- 
-2.33.1
+qcom,num-strings mis-matches and will partially override
+qcom,enabled-strings (remove qcom,num-strings?)
 
+
+> +			if (val > string_len) {
+> +				dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
+> +				return -EINVAL;
+> +			}
+> +		}
+
+
+Daniel.
