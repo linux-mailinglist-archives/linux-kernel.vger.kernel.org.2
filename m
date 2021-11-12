@@ -2,128 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22DE44E2B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF83044E2BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhKLH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 02:58:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50031 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233833AbhKLH6a (ORCPT
+        id S233368AbhKLIBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 03:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhKLIBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 02:58:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636703739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lF7lzRoeZrlEIt3gHEFyVsRoWpbej1ntDFwYNAiQdJI=;
-        b=OoH/RlDgLrBZ4NE0Egiv2jYH8u01kIkq7gOxapj3QCEpGv+UEvV8YL1k8ZDawXVwBCBY9L
-        S/PngiPfgXjne44ijbUWRyM9MJdCI2gzYe1HdEMfP3KVnjv+4tEjyXNuQeDess5Ff4y0/O
-        eBFVMOdsntqB/H6Yt6IMd0RSpBwt2rg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-9_r6QefcMoqM24Gxdz9QQg-1; Fri, 12 Nov 2021 02:55:38 -0500
-X-MC-Unique: 9_r6QefcMoqM24Gxdz9QQg-1
-Received: by mail-ed1-f72.google.com with SMTP id w13-20020a05640234cd00b003e2fde5ff8aso7532972edc.14
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:55:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=lF7lzRoeZrlEIt3gHEFyVsRoWpbej1ntDFwYNAiQdJI=;
-        b=TDnlGgu2F1mqkz2ukqZr7upre5llobxcPHtHkfE/Xg1vnkP63T/KtT1cNVkgp7GVOR
-         Oh4eiNGGxe9u9aJ8oM6SNBckNFgun83mkv+KV+zJyRZch08hmUD5ylggo/atXI+AW6IZ
-         Luz8xXYl6hGB2FiMTubGqVUooqY3fzU6pTA3RWZ5UJdx20Wvy+mTKXtR/gE9IzPjc6ks
-         yUGFKufA29VgGhC8qoQT1ik3+lSCQqRDrE03XiGHz8BXSQdqPLDu59lAujT18VHf+L2Q
-         VO+Ox/JWb5zG2tsJN2TZtDkGbVsIVZ9LIwxTgBw9hbLqtv5mWcmxfhJEQlKCvT4X88EO
-         owQQ==
-X-Gm-Message-State: AOAM531/gFO/HGPDKpe5g2QMfJtpgZA8DBLq7aXkfh0MEAtetg70+u4K
-        jqZgy4TqMOCFpmPOjarMN7/cnSslPLyvl74NANpuT9zVlyZIsr45Q1u/F5OYVR3/UhVW+CO/gyR
-        1rKBZmphl1EeSqaKpEsG8OUft
-X-Received: by 2002:a17:907:6e10:: with SMTP id sd16mr17768026ejc.158.1636703737513;
-        Thu, 11 Nov 2021 23:55:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzVTSyaI9bwf+cK3HRTYkkEGrfXsl4Cvt+Fkmz/7JDyaorMKEA4Mec75P9Nt6V8a8edl3Ld8g==
-X-Received: by 2002:a17:907:6e10:: with SMTP id sd16mr17767982ejc.158.1636703737318;
-        Thu, 11 Nov 2021 23:55:37 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id n1sm2700678edf.45.2021.11.11.23.55.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 23:55:36 -0800 (PST)
-Message-ID: <016d5b91-6910-2aca-0db1-a65079449454@redhat.com>
-Date:   Fri, 12 Nov 2021 08:55:31 +0100
+        Fri, 12 Nov 2021 03:01:18 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D99BC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:58:27 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mlRS5-00025P-7C; Fri, 12 Nov 2021 08:58:25 +0100
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mlRS3-00051M-3e; Fri, 12 Nov 2021 08:58:23 +0100
+Date:   Fri, 12 Nov 2021 08:58:23 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
+ support
+Message-ID: <20211112075823.GJ12195@pengutronix.de>
+References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
+ <20211110123640.z5hub3nv37dypa6m@skbuf>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4 01/17] perf: Protect perf_guest_cbs with RCU
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-References: <20211111020738.2512932-1-seanjc@google.com>
- <20211111020738.2512932-2-seanjc@google.com>
- <d784dc27-72d0-d64f-e1f4-a2b9a5f86dd4@redhat.com>
- <YYz03fcDRV9NZnyA@hirez.programming.kicks-ass.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YYz03fcDRV9NZnyA@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211110123640.z5hub3nv37dypa6m@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:07:17 up 267 days,  9:31, 105 users,  load average: 0.13, 0.15,
+ 0.12
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 11:47, Peter Zijlstra wrote:
->> This technically could be RCU_INIT_POINTER but it's not worth a respin.
->> There are dozens of other occurrences, and if somebody wanted they
->> could use Coccinelle to fix all of them.
-> I've been pushing the other way, trying to get rid of RCU_INIT_POINTER()
-> since rcu_assign_pointer(, NULL) actualy DTRT per __builtin_constant_p()
-> etc.
-
-Oh, that's pretty cool to know, thanks!
-
-Paolo
-
-> There's a very few sites where we use RCU_INIT_POINTER() with a !NULL
-> argument, and those are 'special'.
+On Wed, Nov 10, 2021 at 02:36:40PM +0200, Vladimir Oltean wrote:
+> On Mon, Nov 08, 2021 at 12:10:34PM +0100, Oleksij Rempel wrote:
+> > Current driver version is able to handle only one bridge at time.
+> > Configuring two bridges on two different ports would end up shorting this
+> > bridges by HW. To reproduce it:
+> > 
+> > 	ip l a name br0 type bridge
+> > 	ip l a name br1 type bridge
+> > 	ip l s dev br0 up
+> > 	ip l s dev br1 up
+> > 	ip l s lan1 master br0
+> > 	ip l s dev lan1 up
+> > 	ip l s lan2 master br1
+> > 	ip l s dev lan2 up
+> > 
+> > 	Ping on lan1 and get response on lan2, which should not happen.
+> > 
+> > This happened, because current driver version is storing one global "Port VLAN
+> > Membership" and applying it to all ports which are members of any
+> > bridge.
+> > To solve this issue, we need to handle each port separately.
+> > 
+> > This patch is dropping the global port member storage and calculating
+> > membership dynamically depending on STP state and bridge participation.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
 > 
+> Because there wasn't any restriction in the driver against multiple
+> bridges, I would be tempted to send to the "net" tree and provide a
+> Fixes: tag.
 
+This patch looks too intrusive to me. It will be hard to backport it to
+older versions. How about have two patches: add limit to one bridge for
+net and add support for multiple bridges for net-next?
+
+> > +	dp = dsa_to_port(ds, port);
+> > +
+> > +	for (i = 0; i < ds->num_ports; i++) {
+> > +		const struct dsa_port *dpi = dsa_to_port(ds, i);
+> 
+> Other drivers name this "other_dp", I don't think that name is too bad.
+> Also, you can use "dsa_switch_for_each_user_port", which is also more
+> efficient, although you can't if you target 'stable' with this change,
+> since it has been introduced rather recently.
+
+ok
+
+> > +		struct ksz_port *pi = &dev->ports[i];
+> 
+> and this could be "other_p" rather than "pi".
+
+ok
+
+> > +		u8 val = 0;
+> > +
+> > +		if (!dsa_is_user_port(ds, i))
+> >  			continue;
+> > -		p = &dev->ports[i];
+> > -		if (!(dev->member & (1 << i)))
+> > +		if (port == i)
+> >  			continue;
+> > +		if (!dp->bridge_dev || dp->bridge_dev != dpi->bridge_dev)
+> > +			continue;
+> > +
+> > +		pi = &dev->ports[i];
+> > +		if (pi->stp_state != BR_STATE_DISABLED)
+> > +			val |= BIT(dsa_upstream_port(ds, i));
+> >  
+> 
+> This is saying:
+> For each {user port, other port} pair, if the other port isn't DISABLED,
+> then allow the user port to forward towards the CPU port of the other port.
+> What sense does that make? You don't support multiple CPU ports, so this
+> port's CPU port is that port's CPU port, and you have one more (broken)
+> forwarding rule towards the CPU port below.
+
+Ok, understand.
+
+> > -		/* Port is a member of the bridge and is forwarding. */
+> > -		if (p->stp_state == BR_STATE_FORWARDING &&
+> > -		    p->member != dev->member)
+> > -			dev->dev_ops->cfg_port_member(dev, i, dev->member);
+> > +		if (pi->stp_state == BR_STATE_FORWARDING &&
+> > +		    p->stp_state == BR_STATE_FORWARDING) {
+> > +			val |= BIT(port);
+> > +			port_member |= BIT(i);
+> > +		}
+> > +
+> > +		dev->dev_ops->cfg_port_member(dev, i, val);
+> >  	}
+> > +
+> > +	if (p->stp_state != BR_STATE_DISABLED)
+> > +		port_member |= BIT(dsa_upstream_port(ds, port));
+> 
+> Why != DISABLED? I expect that dev_ops->cfg_port_member() affects only
+> data packet forwarding, not control packet forwarding, right?
+
+No. According to the KSZ9477S datasheet:
+"The processor should program the “Static MAC Table” with the entries that it
+needs to receive (for example, BPDU packets). The “overriding” bit should be set
+so that the switch will forward those specific packets to the processor. The
+processor may send packets to the port(s) in this state. Address learning is
+disabled on the port in this state."
+
+This part is not implemented.
+
+In current driver implementation (before or after this patch), all
+packets are forwarded. It looks like, current STP implementation in this driver
+is not complete. If I create a loop, the bridge will permanently toggle one of
+ports between blocking and listening. 
+
+Currently I do not know how to proceed with it. Remove stp callback and
+make proper, straightforward bride_join/leave? Implement common soft STP
+for all switches without HW STP support?
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
