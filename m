@@ -2,112 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA4344E1CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3944244E1D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhKLGTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 01:19:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
+        id S232569AbhKLGVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 01:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhKLGTu (ORCPT
+        with ESMTP id S230464AbhKLGVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 01:19:50 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C098BC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 22:17:00 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id x131so7632905pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 22:17:00 -0800 (PST)
+        Fri, 12 Nov 2021 01:21:04 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9B5C061766;
+        Thu, 11 Nov 2021 22:18:14 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id p18so7560612plf.13;
+        Thu, 11 Nov 2021 22:18:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :content-transfer-encoding;
-        bh=KTlvF4aJyyBVvpF5MzM91QUQSnsEWekyAttC+hNhxt0=;
-        b=EL5+LlxnlvReaYBhiejsr1zFND5Oab45kcPyAjDopD22f7pDXXPd087rMz6BKug2ao
-         2h25n6bt0a24gD2a9B0kEbbIDfNp4gNSKx8//L6ONNyicFNpvHbIl5Pv+zgQjm7e+m1i
-         rE0OtT0ipEOW5s4IZsayNvkpb3aebdtbeHHWcr/iQcAL5Bu72OazuevJWGGzkWkDZtN3
-         1HO/03I5/i/YKp1uu0l2asR+0bexVG4PIcCWc4zR3/Ga9ixF+Dp2Jmo7iZqQxBnM7O8P
-         jGkwx5Fi1Dqp4biuQnmBpJXmHh5tsA+SVGPyfIvjUfnr+su/VUfV3wVAib6VpN8bbKWW
-         sjeg==
+        bh=5SRlNkFjRfdiBfDr1obYB0KVyKvJJMA4RHVo1FAKarg=;
+        b=f1JxmNExUk58tSjMFkXcnWoXMj5XglyEMWLskgFhuoT7g1016gMLMqRvvXobyNVVMy
+         3kt64BQ7vvuw81H2WCK1t4TFX71W+k9KuqC5vldjeB5cnihazDweHFm6URtUUJB8wIRk
+         BsqD8uc7PCETaKxBQdS9rXMm1Dnb7E2uZB/PUPUHflqt+cwNMiL05h8SynUgE4Qm/Jx4
+         Qs7g+6FKFxxKpxSPOi0rIGC08mZFfb8GhCN2b7PQC53DzfX2BUmx0RAHTSlGzkEAcJgA
+         eK23GB1t9Z3iAoiroF+9MvihOdawt7HwrR7jpeMsDhFey/bTHZ1oIQdvovBorzObA5ND
+         Pfgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KTlvF4aJyyBVvpF5MzM91QUQSnsEWekyAttC+hNhxt0=;
-        b=KyFmCSpKtJ93d9Ekz7xZq07revj1bKEVjDU4e9t/wbdnTV9MB4NRdripHdnSYFr/9r
-         w3oMr0cVGNfm8yleCRK0L1O0xM6YbbLfvNyM1gwZPyEfITsOA7ani3E4awVX83Afxqjt
-         Vj4O8lVd/8B3724xUxa2gQorUKZPDBYPG+1ZWfAbmD7ysoDyQYHmdY7dLEXH8vCzB/Y0
-         HhOBLcZKZW1bSyKio1zmRsfcSiWtnq5csaSfS3ICjDCbUkz19PBm6s5BtVITzcG0nr5a
-         y+PB2HoMDbHdbKPYKlFvl3t9ZWda2lxcsYs3GaAh+lQhyuIviT22krFtVdcH7Cb3jL52
-         TdcA==
-X-Gm-Message-State: AOAM531p1/zbpyQjBqktJy5u1DL2rp2JIraxylMzzOeGcE1LALGuG3+H
-        WaKdnNPMBVVEw6vNJQIMyc4=
-X-Google-Smtp-Source: ABdhPJxkOxAft+m9QreNLLuSoiEnM7+2OnxWlWqcVG4wSOaUHimcvgfO1FMGP0U4nwVSfUeIFaVOfw==
-X-Received: by 2002:a63:5009:: with SMTP id e9mr2651164pgb.346.1636697820324;
-        Thu, 11 Nov 2021 22:17:00 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id mg12sm9939611pjb.10.2021.11.11.22.16.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=5SRlNkFjRfdiBfDr1obYB0KVyKvJJMA4RHVo1FAKarg=;
+        b=TxXuPRfj1IFDR1Ycjv2pH+d4GDBpmlfDGivICSk0GBvlAjCRT2kordY3BwjqKAYsf3
+         FPWwGwS/UI63pGT2PqAPZO/DEttOxJ6VID7PtGrbsi0ArD+dfoG9f5c5ksuhFp/+zhgV
+         qtenBKCUEoMrNTNv1VtvpIGsLMj18RVdShsgfYejH6CYpTrZV5Gd5Ie7ZUgqgS0NLN4x
+         +vyVXb0Mf1JxL3xa5EUbV/bxwp85xFDQgMy+d78gNGT5yX2nUMb3hFHRBaOTz5HhOveY
+         fiFBnbknPvFAICSo80m+uSbmUXqZNHxjsPbwg+M7aLG7DEPuNdXv5o6qqBycj51UiT5/
+         ZXuQ==
+X-Gm-Message-State: AOAM530DAddGglWDGPHFMsqSzzBpdOi1JSjb3w8SHZb6boCMhhRy0RJE
+        vJnzMTkbFN9kw7MiFvR59Uk=
+X-Google-Smtp-Source: ABdhPJzw7Rvpd9rFOVTL++YGVvNXz1dBmh7NekLABh5x3g1KRz5I8t0R86Sqk8VSg7KSoBkGshChiw==
+X-Received: by 2002:a17:902:758b:b0:13e:8b1:e49f with SMTP id j11-20020a170902758b00b0013e08b1e49fmr5748125pll.6.1636697894143;
+        Thu, 11 Nov 2021 22:18:14 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:db13:f4cc:63e8:d83c])
+        by smtp.gmail.com with ESMTPSA id h12sm5286822pfv.117.2021.11.11.22.18.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 22:16:59 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        Jun.Lei@amd.com, mario.kleiner.de@gmail.com, Jimmy.Kizito@amd.com,
-        aric.cyr@amd.com, nicholas.kazlauskas@amd.com,
-        vladimir.stempen@amd.com, Dmytro.Laktyushkin@amd.com,
-        Jerry.Zuo@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] drm/amd/display: fix cond_no_effect.cocci warnings
-Date:   Fri, 12 Nov 2021 06:16:51 +0000
-Message-Id: <20211112061651.6509-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Nov 2021 22:18:13 -0800 (PST)
+Date:   Thu, 11 Nov 2021 22:18:10 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v5.16-rc0
+Message-ID: <YY4HIiDhEjGHXyGm@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+Hi Linus,
 
-This was found by coccicheck:
-./drivers/gpu/drm/amd/display/dc/core/dc_resource.c, 2516, 7-9, WARNING
-possible condition with no effect (if == else)
+Please pull from:
 
-hdmi_info.bits.YQ0_YQ1 is always YYC_QUANTIZATION_LIMITED_RANGE.
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+to receive updates for the input subsystem. Just one new driver (Cypress
+StreetFighter touchkey), and no input core changes this time, plus fixes
+and enhancements to existing drivers.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index fabe1b83bd4f..564163a85d2c 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -2509,17 +2509,7 @@ static void set_avi_info_frame(
- 
- 	/* TODO : We should handle YCC quantization */
- 	/* but we do not have matrix calculation */
--	if (stream->qy_bit == 1) {
--		if (color_space == COLOR_SPACE_SRGB ||
--			color_space == COLOR_SPACE_2020_RGB_FULLRANGE)
--			hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
--		else if (color_space == COLOR_SPACE_SRGB_LIMITED ||
--					color_space == COLOR_SPACE_2020_RGB_LIMITEDRANGE)
--			hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
--		else
--			hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
--	} else
--		hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
-+	hdmi_info.bits.YQ0_YQ1 = YYC_QUANTIZATION_LIMITED_RANGE;
- 
- 	///VIC
- 	format = stream->timing.timing_3d_format;
+You will get a merge conflict, please remove
+Documentation/devicetree/bindings/input/cap11xx.txt
+and edit Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+as follows:
+
+diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+index fa0f37a90ac9..d5d6bced3148 100644
+--- a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
++++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+@@ -19,6 +19,7 @@ properties:
+       - microchip,cap1106
+       - microchip,cap1126
+       - microchip,cap1188
++      - microchip,cap1206
+
+   reg:
+     maxItems: 1
+
+
+Changelog:
+---------
+
+Alistair Francis (1):
+      Input: wacom_i2c - use macros for the bit masks
+
+Arnd Bergmann (1):
+      Input: analog - fix invalid snprintf() call
+
+Arvind Yadav (1):
+      Input: palmas-pwrbutton - handle return value of platform_get_irq()
+
+Cai Huoqing (3):
+      Input: elants_i2c - make use of devm_add_action_or_reset()
+      Input: raydium_i2c_ts - make use of the helper function devm_add_action_or_reset()
+      Input: mpr121 - make use of the helper function devm_add_action_or_reset()
+
+Colin Ian King (1):
+      Input: tmdc - fix spelling mistake "Millenium" -> "Millennium"
+
+Daniel Mack (3):
+      Input: ads7846 - add short-hand for spi->dev in probe() function
+      Input: ads7846 - remove custom filter handling functions from pdata
+      Input: ads7846 - switch to devm initialization
+
+Dmitry Torokhov (9):
+      Input: ep93xx_keypad - annotate suspend/resume as __maybe_unused
+      Input: ep93xx_keypad - use BIT() and GENMASK() macros
+      Input: ep93xx_keypad - use dev_pm_set_wake_irq()
+      Input: ep93xx_keypad - switch to using managed resources
+      Input: adxl34x - fix sparse warning
+      Input: ads7846 - set input device bus type and product ID
+      Input: ads7846 - use input_set_capability()
+      Input: ads7846 - do not attempt IRQ workaround when deferring probe
+      Input: cpcap-pwrbutton - do not set input parent explicitly
+
+Hans de Goede (6):
+      Input: goodix - change goodix_i2c_write() len parameter type to int
+      Input: goodix - add a goodix.h header file
+      Input: goodix - refactor reset handling
+      Input: goodix - push error logging up into i2c_read and i2c_write helpers
+      Input: goodix - allow specifying the config filename
+      Input: goodix - add support for controllers without flash
+
+Jesse Taube (1):
+      Input: cap11xx - add support for cap1206
+
+Johan Hovold (1):
+      Input: iforce - fix control-message timeout
+
+John Keeping (2):
+      Input: st1232 - increase "wait ready" timeout
+      Input: st1232 - prefer asynchronous probing
+
+Jonathan Corbet (1):
+      Input: remove unused header <linux/input/cy8ctmg110_pdata.h>
+
+Krzysztof Kozlowski (1):
+      Input: max77693-haptic - drop unneeded MODULE_ALIAS
+
+Len Baker (1):
+      Input: omap-keypad - prefer struct_size over open coded arithmetic
+
+Loic Poulain (1):
+      Input: synaptics-rmi4 - Fix device hierarchy
+
+Lukas Bulwahn (1):
+      MAINTAINERS: rectify entry for CHIPONE ICN8318 I2C TOUCHSCREEN DRIVER
+
+Marek Vasut (6):
+      Input: ili210x - use resolution from ili251x firmware
+      Input: ili210x - export ili251x version details via sysfs
+      Input: ili210x - add ili251x firmware update support
+      Input: ili210x - special case ili251x sample read out
+      Input: ili210x - improve polled sample spacing
+      Input: ili210x - reduce sample period to 15ms
+
+Mark Brown (1):
+      Input: ariel-pwrbutton - add SPI device ID table
+
+Phoenix Huang (1):
+      Input: elantench - fix misreporting trackpoint coordinates
+
+Randy Dunlap (1):
+      Input: max8925_onkey - don't mark comment as kernel-doc
+
+Shawn Guo (2):
+      reboot: export symbol 'reboot_mode'
+      Input: pm8941-pwrkey - respect reboot_mode for warm reset
+
+Stephan Gerhold (2):
+      Input: tm2-touchkey - report scan codes
+      Input: tm2-touchkey - allow changing keycodes from userspace
+
+Takashi Iwai (1):
+      Input: i8042 - Add quirk for Fujitsu Lifebook T725
+
+Tang Bin (1):
+      Input: cpcap-pwrbutton - handle errors from platform_get_irq()
+
+Uwe Kleine-König (2):
+      Input: adxl34x - make adxl34x_remove() return void
+      Input: tsc200x - make tsc200x_remove() return void
+
+Yassine Oudjana (2):
+      Input: cypress-sf - add Cypress StreetFighter touchkey driver
+      dt-bindings: input: Add binding for cypress-sf
+
+simba.hsu (1):
+      Input: raydium_i2c_ts - read device version in bootloader mode
+
+Diffstat:
+--------
+
+ .../devicetree/bindings/input/cypress-sf.yaml      |  61 +++
+ .../bindings/input/microchip,cap11xx.yaml          |   1 +
+ MAINTAINERS                                        |  12 +-
+ drivers/input/joystick/analog.c                    |  18 +-
+ drivers/input/joystick/iforce/iforce-usb.c         |   2 +-
+ drivers/input/joystick/tmdc.c                      |   2 +-
+ drivers/input/keyboard/Kconfig                     |  10 +
+ drivers/input/keyboard/Makefile                    |   1 +
+ drivers/input/keyboard/cap11xx.c                   |  43 +-
+ drivers/input/keyboard/cypress-sf.c                | 224 +++++++++
+ drivers/input/keyboard/ep93xx_keypad.c             | 172 +++----
+ drivers/input/keyboard/mpr121_touchkey.c           |   4 +-
+ drivers/input/keyboard/omap-keypad.c               |   3 +-
+ drivers/input/keyboard/tm2-touchkey.c              |   7 +
+ drivers/input/misc/adxl34x-i2c.c                   |   4 +-
+ drivers/input/misc/adxl34x-spi.c                   |   4 +-
+ drivers/input/misc/adxl34x.c                       |   6 +-
+ drivers/input/misc/adxl34x.h                       |   2 +-
+ drivers/input/misc/ariel-pwrbutton.c               |   7 +
+ drivers/input/misc/cpcap-pwrbutton.c               |   7 +-
+ drivers/input/misc/max77693-haptic.c               |   1 -
+ drivers/input/misc/max8925_onkey.c                 |   2 +-
+ drivers/input/misc/palmas-pwrbutton.c              |   5 +
+ drivers/input/misc/pm8941-pwrkey.c                 |   6 +-
+ drivers/input/mouse/elantech.c                     |  13 +
+ drivers/input/rmi4/rmi_bus.c                       |   1 +
+ drivers/input/serio/i8042-x86ia64io.h              |  14 +
+ drivers/input/touchscreen/Kconfig                  |   1 +
+ drivers/input/touchscreen/Makefile                 |   3 +-
+ drivers/input/touchscreen/ads7846.c                | 200 +++-----
+ drivers/input/touchscreen/elants_i2c.c             |   4 +-
+ drivers/input/touchscreen/goodix.c                 | 231 ++++-----
+ drivers/input/touchscreen/goodix.h                 | 117 +++++
+ drivers/input/touchscreen/goodix_fwupload.c        | 427 ++++++++++++++++
+ drivers/input/touchscreen/ili210x.c                | 559 ++++++++++++++++++++-
+ drivers/input/touchscreen/raydium_i2c_ts.c         |  54 +-
+ drivers/input/touchscreen/st1232.c                 |   3 +-
+ drivers/input/touchscreen/tsc2004.c                |   4 +-
+ drivers/input/touchscreen/tsc2005.c                |   4 +-
+ drivers/input/touchscreen/tsc200x-core.c           |   4 +-
+ drivers/input/touchscreen/tsc200x-core.h           |   2 +-
+ drivers/input/touchscreen/wacom_i2c.c              |  22 +-
+ include/linux/input/cy8ctmg110_pdata.h             |  10 -
+ include/linux/spi/ads7846.h                        |  15 -
+ kernel/reboot.c                                    |   1 +
+ 45 files changed, 1833 insertions(+), 460 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/cypress-sf.yaml
+ create mode 100644 drivers/input/keyboard/cypress-sf.c
+ create mode 100644 drivers/input/touchscreen/goodix.h
+ create mode 100644 drivers/input/touchscreen/goodix_fwupload.c
+ delete mode 100644 include/linux/input/cy8ctmg110_pdata.h
+
+Thanks.
+
+
 -- 
-2.25.1
-
+Dmitry
