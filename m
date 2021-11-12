@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBC544E4CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D4E44E4D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 11:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhKLKqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 05:46:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
+        id S234675AbhKLKrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 05:47:48 -0500
+Received: from elvis.franken.de ([193.175.24.41]:44090 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233189AbhKLKqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 05:46:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2269C60ED5;
-        Fri, 12 Nov 2021 10:43:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636713825;
-        bh=Qj72yeNhSNc7MUPjPv5VU8s3oafXSlRNI19trRuQtDw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nPjf8YdBfWVCfvk6YCZC1jXvdJa7z5K4hm67qa5KEUAjoo2waiZ+MZxUfHj6u6QF/
-         ibmy3d++dweh6bqvgoz10MnVllIuTEDgl9zs0oQLT2LrGvX3hbcMD4G2NTEYRzP8p2
-         H5ec3kCykBSnOwv0h9icaszZ4ulRs+OBOdX4QwQM=
-Date:   Fri, 12 Nov 2021 11:43:43 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Lima <mauro.lima@eclypsium.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Philipp Deppenwiese <philipp.deppenwiese@immu.ne>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Message-ID: <YY5FX/sQZSkBh2vz@kroah.com>
-References: <CAHp75Vcp=hC1oL5FBQDDFe8EBxWB9Po4FKNS9ZGtD3q-yQPtAw@mail.gmail.com>
- <CAHifhD6p9qSm5dv1spz+oPRhRkBZeQspHNEphE49fODacm-S6g@mail.gmail.com>
- <CAHp75Vfk5WHWiQxwmqEzVEymgpvjxKWEZbaQ9+=Et7N63Ps=Ng@mail.gmail.com>
- <CAHifhD5bGZOcZFNsHYFeecikHGUts73U4k6=aUVNTKEeETW5rQ@mail.gmail.com>
- <CAHp75VeSnXfjeNeBLtrR78AmB-18kTeXpknn7-jcPLEeWCrzXQ@mail.gmail.com>
- <CAMj1kXHoRa+9gS7OEZZH2SSZQ8Tf4BUMdh-p=+OvWEb1a6ffFA@mail.gmail.com>
- <CAHp75VckB0RA6zoLRQ2UOcQRgMEf6sNxDGfpsNVr+92eArhD=Q@mail.gmail.com>
- <CAD2FfiH9OcKyUo6xjTfSENrEKF=4kZiGU4rT0FriK6KgKYSzyw@mail.gmail.com>
- <YY4PHacrS4czhEx3@kroah.com>
- <CAD2FfiFTsj63NJTKjOhHU0FZ53uHCnG9SDdfqkj3cGcH=vos=A@mail.gmail.com>
+        id S232791AbhKLKrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 05:47:47 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mlU3D-0003dq-00; Fri, 12 Nov 2021 11:44:55 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 79768C2D8F; Fri, 12 Nov 2021 11:44:47 +0100 (CET)
+Date:   Fri, 12 Nov 2021 11:44:47 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS changes 2nd part for v5.16
+Message-ID: <20211112104447.GA6127@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD2FfiFTsj63NJTKjOhHU0FZ53uHCnG9SDdfqkj3cGcH=vos=A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 10:09:14AM +0000, Richard Hughes wrote:
-> On Fri, 12 Nov 2021 at 06:52, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > Why don't we just export these areas to userspace and let the decoding
-> > of them happen there?
-> 
-> Unless I'm missing something, the patch from Hans-Gert does just that:
-> exposing the IFD BIOS partition that encloses the various EFI file
-> volumes.
+The following changes since commit 36de23a4c5f0b61ceb4812b535422fa6c6e97447:
 
-But it is not tied into the EFI subsystem at all, binding only to those
-resources.  It does not do anything with any efi symbol or access
-control.
+  MIPS: Cobalt: Explain GT64111 early PCI fixup (2021-11-03 17:34:11 +0100)
 
-Again, that's my primary complaint here, the driver HAS to be able to
-tell the kernel what resource it wants to bind to and control, right now
-it just "assumes" that it can have access to a chunk of memory without
-any notification or checks at all, which will cause problems on systems
-that do not follow that assumption.
+are available in the Git repository at:
 
-So while you all are arguing over oddities, the main complaint here of
-"this driver is not ok as-is" seems to keep being ignored for some odd
-reason.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.16_1
 
-I'm going to just ignore this thread now and wait for a new patch to
-review.
+for you to fetch changes up to f78b25ee922ef6faf59a258af1b9388ca894cfd9:
 
-thanks,
+  mips: decompressor: do not copy source files while building (2021-11-10 19:45:06 +0100)
 
-greg k-h
+----------------------------------------------------------------
+- Config updates for BMIPS platform
+- Build fixes
+- Makefile cleanups
+
+----------------------------------------------------------------
+Florian Fainelli (4):
+      MIPS: Allow modules to set board_be_handler
+      MIPS: Update bmips_stb_defconfig
+      MIPS: BMIPS: Enable PCI Kconfig
+      PCI: brcmstb: Allow building for BMIPS_GENERIC
+
+Masahiro Yamada (4):
+      MIPS: VDSO: remove -nostdlib compiler flag
+      MIPS: fix *-pkg builds for loongson2ef platform
+      MIPS: fix duplicated slashes for Platform file path
+      mips: decompressor: do not copy source files while building
+
+Randy Dunlap (2):
+      mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
+      MIPS: boot/compressed/: add __bswapdi2() to target for ZSTD decompression
+
+ arch/mips/Kbuild.platforms             |   2 +-
+ arch/mips/Kconfig                      |   5 ++
+ arch/mips/Makefile                     |   2 +
+ arch/mips/boot/compressed/.gitignore   |   3 -
+ arch/mips/boot/compressed/Makefile     |  12 +--
+ arch/mips/boot/compressed/ashldi3.c    |   2 +
+ arch/mips/boot/compressed/bswapdi.c    |   2 +
+ arch/mips/boot/compressed/bswapsi.c    |   2 +
+ arch/mips/boot/compressed/uart-ath79.c |   2 +
+ arch/mips/configs/bmips_stb_defconfig  | 155 +++++++++++++++++++++++++++++++--
+ arch/mips/dec/setup.c                  |   6 +-
+ arch/mips/include/asm/traps.h          |   2 +-
+ arch/mips/kernel/traps.c               |   8 +-
+ arch/mips/sgi-ip22/ip22-berr.c         |   2 +-
+ arch/mips/sgi-ip22/ip28-berr.c         |   2 +-
+ arch/mips/sgi-ip27/ip27-berr.c         |   2 +-
+ arch/mips/sgi-ip32/ip32-berr.c         |   2 +-
+ arch/mips/sibyte/swarm/setup.c         |   2 +-
+ arch/mips/txx9/generic/setup_tx4927.c  |   2 +-
+ arch/mips/txx9/generic/setup_tx4938.c  |   2 +-
+ arch/mips/txx9/generic/setup_tx4939.c  |   2 +-
+ arch/mips/vdso/Makefile                |   2 +-
+ drivers/bus/brcmstb_gisb.c             |   2 +-
+ drivers/pci/controller/Kconfig         |   3 +-
+ scripts/remove-stale-files             |   5 ++
+ 25 files changed, 192 insertions(+), 39 deletions(-)
+ delete mode 100644 arch/mips/boot/compressed/.gitignore
+ create mode 100644 arch/mips/boot/compressed/ashldi3.c
+ create mode 100644 arch/mips/boot/compressed/bswapdi.c
+ create mode 100644 arch/mips/boot/compressed/bswapsi.c
+ create mode 100644 arch/mips/boot/compressed/uart-ath79.c
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
