@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D93344ED1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625E844ED1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 20:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhKLTQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 14:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235379AbhKLTQ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 14:16:26 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A62CC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:13:35 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id z19-20020a630a53000000b002dc2f4542faso5305206pgk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 11:13:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=GsIi8/iqtr2GLgOD7vsfMp3NlXKV3TgHKavw0IFPKpY=;
-        b=gt7k/aSehR6cQr0L3Jzrt9q7UFuIliY5b0NVuQY/JpWzn+348526bQv7ipD5Ast66n
-         WaqLA8xmZ06AAntCyondqeJwzKAbruZQ+S8xsLRDSc58o7KLPlIqFLB6zgm03lhSjghj
-         uo9F2keim+n85vNmhojyW1G109o9zeFxOgL/JSEmQGysXeyW269NHIszvnl55ajrq7DD
-         vvzaPi8lqIR//koy8Efi4WdQ16mqo50hxlDvPqJAUOGcuIpwI2grylD9ti45kf5fxj4V
-         BwNevQH0mK6mBKdq8rO0Lwjbi+4/V/vNuYi9PvNLm+Jy7AY0UkJvMXfVhLCx4UVkUOEQ
-         OPng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=GsIi8/iqtr2GLgOD7vsfMp3NlXKV3TgHKavw0IFPKpY=;
-        b=PhL0MvfqzvQVTaK40FtP3bcCivBt6livCIP439h6/76/D5cWHYPjasKVEgnCq/8OR5
-         jVMxNTJIYCwREEs8so0LRmwqBwzhPeJkow0iOSjpp8446a+9poGDzKywWIQXvfcAbFYd
-         A/VVssQgrfeXwpT6ieLqEPijVmF7QHddUhqOAYMS37YxFOLWE1M3i9UaIPX+22QQGv+p
-         RE6QinwZNcNsgp3aEFlZ78Q2O3T8HFF0c+LR3O2P5DDtaZHJxG28Txq01S3LeZ4Qit8x
-         NLEJ2cPUNpi8q9FgtqBcd7uuc0OlZx8jxtIRaQjyDji7+lWsb7BWQZXZgEXHlubzjJ/A
-         f6/w==
-X-Gm-Message-State: AOAM531qG4wuedqz53fYmW04rDGUJaLRjDVYtNjkn5bgTXZtBn8vv+Fb
-        RsCqGTrmURccwVgimTIxW8NRwF8ZhtIR3jLuHA==
-X-Google-Smtp-Source: ABdhPJzYh+LCMezXcM7CyllvNk7f0e4nKS6rGcYs6E6xpHxga3UiQLpCIUS3W+BAnuOP8Al6JRqyNnWj/64XDIm53Q==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:b3bc:434c:ee52:f320])
- (user=kaleshsingh job=sendgmr) by 2002:a17:90a:8a82:: with SMTP id
- x2mr20217933pjn.187.1636744414929; Fri, 12 Nov 2021 11:13:34 -0800 (PST)
-Date:   Fri, 12 Nov 2021 11:13:24 -0800
-Message-Id: <20211112191324.1302505-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] tracing/histogram: Fix check for missing operands in an expression
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        zanussi@kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S235614AbhKLTR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 14:17:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235265AbhKLTRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 14:17:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A9D60F0F;
+        Fri, 12 Nov 2021 19:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636744503;
+        bh=he4nr5Zv1gj4KhLHrTt/kC3kiKokVah8k8LJvlxoIRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kU7HDMriA9hhIsiB0T9A9b+mcLYld4tLHPl2C9DwU/nD5vae/RmDMSCpv66q/G12y
+         ul4lU4/LmdD7OddSFchAgI52Gdy+L5UEVLSyPkRsRJTfc10OfKuo1f0epLGQXN0R+G
+         1cNa3K/AYNOUf6lxyLOjGjffTKvVcg9jTuujT143VcQJA5lGVagdXrTD4pcol0UJRo
+         ABdgqB72Q3O0pGUykGDPmqps8j1ZTYn3yxmOlvY92/cnPrhfBZJcrpDF0ULz3tzxCH
+         mbxf7Mhw6JH7anfDf9YyYoIZD9LWVO0W0oRixyXXg2LDm7VNLtFk4wpLdl65HazcxA
+         0YmnomMJh2zow==
+Date:   Fri, 12 Nov 2021 11:15:01 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     tytso@mit.edu, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        hughd@google.com, akpm@linux-foundation.org,
+        linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 2/5] fsverity: Revalidate built-in signatures at
+ file open
+Message-ID: <YY69NaucW+0t474Q@gmail.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-3-roberto.sassu@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112124411.1948809-3-roberto.sassu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a binary operation is detected while parsing an expression string,
-the operand strings are deduced by splitting the experssion string at
-the position of the detected binary operator. Both operand strings are
-sub-strings (can be empty string) of the expression string but will
-never be NULL.
+On Fri, Nov 12, 2021 at 01:44:08PM +0100, Roberto Sassu wrote:
+> Fsverity signatures are validated only upon request by the user by setting
+> the requirement through procfs or sysctl.
+> 
+> However, signatures are validated only when the fsverity-related
+> initialization is performed on the file. If the initialization happened
+> while the signature requirement was disabled, the signature is not
+> validated again.
 
-Currently a NULL check is used for missing operands, fix this by
-checking for empty strings instead.
+I'm not sure this really matters.  If someone has started using a verity file
+before the require_signatures sysctl was set, then there is already a race
+condition; this patch doesn't fix that.  Don't you need to set the
+require_signatures sysctl early enough anyway?
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Fixes: 9710b2f341a0 ("tracing: Fix operator precedence for hist triggers expression")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- kernel/trace/trace_events_hist.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 0abc9a413b4d..328b1f83a3c8 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -2580,7 +2580,8 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 	operand1_str = str;
- 	str = sep+1;
- 
--	if (!operand1_str || !str)
-+	/* Binary operator requires both operands */
-+	if (*operand1_str == '\0' || *str == '\0')
- 		goto free;
- 
- 	operand_flags = 0;
-
-base-commit: 5833291ab6de9c3e2374336b51c814e515e8f3a5
--- 
-2.34.0.rc1.387.gb447b232ab-goog
-
+- Eric
