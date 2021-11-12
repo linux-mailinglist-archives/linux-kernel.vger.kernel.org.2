@@ -2,106 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCF444EF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E344B44EF32
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235466AbhKLWZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 17:25:47 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33850 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhKLWZq (ORCPT
+        id S235970AbhKLWZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 17:25:50 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:37914 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhKLWZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 17:25:46 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7D85D1C0B76; Fri, 12 Nov 2021 23:22:52 +0100 (CET)
-Date:   Fri, 12 Nov 2021 23:22:51 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: Re: [PATCH 5.10 03/77] ARM: 9134/1: remove duplicate memcpy()
- definition
-Message-ID: <20211112222251.GC2999@amd>
-References: <20211101082511.254155853@linuxfoundation.org>
- <20211101082511.897153779@linuxfoundation.org>
+        Fri, 12 Nov 2021 17:25:49 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4HrY4b2NTNz1qwyc;
+        Fri, 12 Nov 2021 23:22:55 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4HrY4b1jBWz1qqkB;
+        Fri, 12 Nov 2021 23:22:55 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id SCeZGLDoE2bf; Fri, 12 Nov 2021 23:22:54 +0100 (CET)
+X-Auth-Info: RW8h+FSRRzkLu9k8ehRaMppl2SdT1LX5nbc4X25EYpVibUHp04OzscLLLfKgurqT
+Received: from igel.home (ppp-46-244-178-12.dynamic.mnet-online.de [46.244.178.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 12 Nov 2021 23:22:54 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id 215462C3936; Fri, 12 Nov 2021 23:22:54 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
+References: <CAHk-=whkh5Qma5rHtiRQXF9jVRXDe=bRG+D+LFu4dZpwP1uWAw@mail.gmail.com>
+        <mhng-8aed9afb-1b05-413b-9808-5d0936c9f131@palmer-ri-x1c9>
+X-Yow:  Yow!  Am I having fun yet?
+Date:   Fri, 12 Nov 2021 23:22:54 +0100
+In-Reply-To: <mhng-8aed9afb-1b05-413b-9808-5d0936c9f131@palmer-ri-x1c9>
+        (Palmer Dabbelt's message of "Fri, 12 Nov 2021 13:52:46 -0800 (PST)")
+Message-ID: <87mtm9rp35.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="q9KOos5vDmpwPx9o"
-Content-Disposition: inline
-In-Reply-To: <20211101082511.897153779@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Nov 12 2021, Palmer Dabbelt wrote:
 
---q9KOos5vDmpwPx9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> I wasn't planning on sending anything else for the merge window.
 
-Hi!
+Not even the KBUILD_EXTMOD build fix?
 
-> commit eaf6cc7165c9c5aa3c2f9faa03a98598123d0afb upstream.
->=20
-> Both the decompressor code and the kasan logic try to override
-> the memcpy() and memmove()  definitions, which leading to a clash
-> in a KASAN-enabled kernel with XZ decompression:
->=20
-> arch/arm/boot/compressed/decompress.c:50:9: error: 'memmove' macro redefi=
-ned [-Werror,-Wmacro-redefined]
->  #define memmove memmove
->         ^
-> arch/arm/include/asm/string.h:59:9: note: previous definition is here
->  #define memmove(dst, src, len) __memmove(dst, src, len)
->         ^
-> arch/arm/boot/compressed/decompress.c:51:9: error: 'memcpy' macro redefin=
-ed [-Werror,-Wmacro-redefined]
->  #define memcpy memcpy
->         ^
-> arch/arm/include/asm/string.h:58:9: note: previous definition is here
->  #define memcpy(dst, src, len) __memcpy(dst, src, len)
->         ^
->=20
-> Here we want the set of functions from the decompressor, so undefine
-> the other macros before the override.
+Andreas.
 
-AFAICT the conflicting defines are not present in v4.4 or v5.10, so
-warnings should not be there and #undefs are not needed.
-
-Best regards,
-								Pavel
-
-> +++ b/arch/arm/boot/compressed/decompress.c
-> @@ -47,7 +47,10 @@ extern char * strchrnul(const char *, in
->  #endif
-> =20
->  #ifdef CONFIG_KERNEL_XZ
-> +/* Prevent KASAN override of string helpers in decompressor */
-> +#undef memmove
->  #define memmove memmove
-> +#undef memcpy
->  #define memcpy memcpy
->  #include "../../../../lib/decompress_unxz.c"
->  #endif
->=20
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---q9KOos5vDmpwPx9o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmGO6TsACgkQMOfwapXb+vKp+QCgpkpTZIuWRDaun+TXrC2xCK8o
-zxwAn3B2BFdt3l+k7RFrHfSoDAWzrqEl
-=JfEA
------END PGP SIGNATURE-----
-
---q9KOos5vDmpwPx9o--
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
