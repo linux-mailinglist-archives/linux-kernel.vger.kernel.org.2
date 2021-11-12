@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AD244E3D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A66444E3D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhKLJds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234763AbhKLJdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:33:47 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B995C061766;
-        Fri, 12 Nov 2021 01:30:57 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so7119360pjb.1;
-        Fri, 12 Nov 2021 01:30:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JH3t0KNJWhDDYHS11aezG3qhLbT6ok5l8z/cPOu+GDU=;
-        b=Je3H/567gu4S2GhyljJPmf1GwwYBkPziCkSmt6Hfq3h07VH/hgDfY7Sarxe/qSVOBX
-         TuWWtkkcRQsekJ8o7cEtnMpMVMPWdBkht1wUKOlVCO6WCFNXYGjDdFRPwA9BYyqRfoJb
-         GqAGGpBhAUMffTsDNPJEWpXpB4NsGPrb++37ZKLp4u4WhiKzsHivkAaVqxLu3IfcZUtj
-         SvsoELl+cR1Y8f2jIwj3JBHfd3+yLYaZBvy28gviJDT8KLl15KB6hwq32E8emredxKXp
-         B4+OGajNBpFGqqP0SzaPI3aCGHGczfFavTYEf1VQpHziG4Da+eI+fWo6dmnl+1mltmtT
-         yLYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JH3t0KNJWhDDYHS11aezG3qhLbT6ok5l8z/cPOu+GDU=;
-        b=ArkC0XlxhgsJY81NQ+EuqtHSfs/vd2gWKSa8MPMX19mpzOcXuLNBJAopjfW187It5X
-         DW3XzQm+MxIvOPbcGHQ/FETn5JHPK8v1XW3AYWNgm8rSt1ZUD15Wi7eia0KsylrEvhgi
-         p1hqoxmFEjSPvricukHe5MlKellypPcRNpIPyRNbXTpkLRtOTleuSd6ql8I+YH6znQiG
-         YQXUSD/TVfgEwEIeAqabM0kopGu15DNStUEUraFNy9/eH3Ti9wZ4OTEBbNKllbPiV4bJ
-         r8Kfi0tvss6nfL1vW+G3i0MEyUCtRmvV1SFNuVMq1S4REpPJlaDRjSov0JbjN0y+A0Of
-         2Cow==
-X-Gm-Message-State: AOAM532PHopXfYZpIPf+72E2ij4PuruO2Tew59LUsEydOBsYnpK4WTie
-        D15jX9c4WVNixfU+/n5tMZZ4pP++A9I=
-X-Google-Smtp-Source: ABdhPJwNZaVMJBDuwZI+/3z9MnV/hKNdaXL6ANa8u2nrFLrUYWdRVZ3gCH0I2z42ER2hR2t4ZvTVzA==
-X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr15896781pjb.93.1636709457191;
-        Fri, 12 Nov 2021 01:30:57 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id pi17sm11657538pjb.34.2021.11.12.01.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 01:30:56 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cm>
-Subject: [PATCH] fs:cifs: convert from atomic_t to refcount_t on tlink->tl_count
-Date:   Fri, 12 Nov 2021 09:30:51 +0000
-Message-Id: <20211112093051.9366-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S234716AbhKLJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:34:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230510AbhKLJet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 04:34:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6672761002
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 09:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636709519;
+        bh=WuGdLjk4kZdTXzkz6D9KLeo+9EaMKDbAwn47PiOrUnk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W4wqrQsaqfH+0vaczhu0ptWoF+13a4rfsZs+FDpCjUVqnzrNUtafU2DTdzVVbBCn/
+         E/UITkYKxJqLUiHYN37cjXRQG5EJPtt7S0wOtlcz7/Fo/UPr2g0AEI65KVs3ySFPMV
+         xLTvzkfydyVQX6w5rAXC0ns0xSOSQxyDulFeDcgQQmZVJSa9sfFJCLaUVJrF6X901q
+         wCC3RPkWo8TCi0oJk4gb7E+k6vLUmHSqVVEyo1yedFZ+42/iLO07xIoB8RH+1jTKde
+         93WFzCCnO3IbNYfd4JOHOa3KxnzWhd7GVlO24myNNfxc5bJbKS+0JzRVZJoeQk9ZyL
+         yeIzkwEmsaE9w==
+Received: by mail-ot1-f42.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso12982884otj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 01:31:59 -0800 (PST)
+X-Gm-Message-State: AOAM531Cho49G/FwHEPrHxowYIxztEwCLoH5koQ0kH9mqTek0oJmfIIq
+        W75Kxdxjii05GZ/IhSzFWlCJ51aC8p6h84Lqdro=
+X-Google-Smtp-Source: ABdhPJxaUac5pOH2DpLzUy2COU649nLSyREtqg65kDnJfaIV9jNfRqMrJl8103gSHK7SN5j0M8TOpgaH4qUf8Rxs7OM=
+X-Received: by 2002:a05:6830:1445:: with SMTP id w5mr11475827otp.112.1636709518685;
+ Fri, 12 Nov 2021 01:31:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1636708842-25787-1-git-send-email-huangzhaoyang@gmail.com>
+In-Reply-To: <1636708842-25787-1-git-send-email-huangzhaoyang@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 12 Nov 2021 10:31:47 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHvo7aXa1X+8dGrmvGimNrX4ONTfG-GWBwZeE1f5r349w@mail.gmail.com>
+Message-ID: <CAMj1kXHvo7aXa1X+8dGrmvGimNrX4ONTfG-GWBwZeE1f5r349w@mail.gmail.com>
+Subject: Re: [RFC PATCH] arch: arm64: have memblocks out of kernel text use
+ section map
+To:     Huangzhaoyang <huangzhaoyang@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chiminghao <chi.minghao@zte.com.cn>
+On Fri, 12 Nov 2021 at 10:21, Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
+>
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+>
+> By comparing the swapper_pg_dir with k54
 
-use refcount_t instead of atomic_t
-which prevents reference counter overflows.
+I take it this means Linux v5.4 ?
 
-Reported-by: Zeal Robot <zealci@zte.com.cm>
-Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
----
- fs/cifs/cifsglob.h | 4 ++--
- fs/cifs/connect.c  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> and previous versions,we find
+> that the linear mappings within which the addr is out of kernel text section
+> will use the smallest pte. It should arise for the sake of rodata_full, which
+> set all memblock use NO_CONT_MAPPINGS.
+>
 
-diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 41e97df4e0e5..a8edaada0fea 100644
---- a/fs/cifs/cifsglob.h
-+++ b/fs/cifs/cifsglob.h
-@@ -8,7 +8,7 @@
-  */
- #ifndef _CIFS_GLOB_H
- #define _CIFS_GLOB_H
--
-+#include <linux/refcount.h>
- #include <linux/in.h>
- #include <linux/in6.h>
- #include <linux/inet.h>
-@@ -1115,7 +1115,7 @@ struct tcon_link {
- #define TCON_LINK_PENDING	1
- #define TCON_LINK_IN_TREE	2
- 	unsigned long		tl_time;
--	atomic_t		tl_count;
-+	refcount_t		tl_count;
- 	struct cifs_tcon	*tl_tcon;
- };
- 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 9637465d23db..4aad8c9acf2e 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -2318,7 +2318,7 @@ cifs_put_tlink(struct tcon_link *tlink)
- 	if (!tlink || IS_ERR(tlink))
- 		return;
- 
--	if (!atomic_dec_and_test(&tlink->tl_count) ||
-+	if (!refcount_dec_and_test(&tlink->tl_count) ||
- 	    test_bit(TCON_LINK_IN_TREE, &tlink->tl_flags)) {
- 		tlink->tl_time = jiffies;
- 		return;
--- 
-2.25.1
+OK so your intent seems to be to use block mappings for the linear
+alias of the kernel text and rodata, right?
 
+What does that achieve? It should make no difference in TLB pressure,
+as the linear alias is rarely referenced (we only kept it around for
+hibernate). So I guess we save a handful of pages for page tables.
+
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  arch/arm64/mm/mmu.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index cfd9deb..14e1bea 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -252,6 +252,8 @@ static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
+>         pmd_clear_fixmap();
+>  }
+>
+> +static bool crash_mem_map __initdata;
+> +
+>  static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
+>                                 unsigned long end, phys_addr_t phys,
+>                                 pgprot_t prot,
+> @@ -259,7 +261,15 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
+>  {
+>         unsigned long next;
+>         pud_t pud = READ_ONCE(*pudp);
+> +       unsigned long len = end - addr;
+> +       phys_addr_t kernel_start = __pa_symbol(_stext);
+> +       phys_addr_t kernel_end = __pa_symbol(__init_begin);
+>
+> +       if (debug_pagealloc_enabled() || crash_mem_map || IS_ENABLED(CONFIG_KFENCE))
+> +               ;
+> +       else if (phys > kernel_end || phys + len < kernel_start) {
+> +               flags &= ~(NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS);
+> +       }
+
+Please don't use empty statements like this, and I'm not sure we even
+need this check: I wouldn't expect debug_pagealloc or KFENCE to ever
+require page granular mappings of this region either.
+
+Also, please add a comment to explain what the condition is meant to
+check (i..e, that the PMD entry covers a part of the linear alias of
+the kernel image, and so there is no need to map it down to pages or
+to avoid contiguous mappings)
+
+>         /*
+>          * Check for initial section mappings in the pgd/pud.
+>          */
+> @@ -483,7 +493,6 @@ void __init mark_linear_text_alias_ro(void)
+>                             PAGE_KERNEL_RO);
+>  }
+>
+> -static bool crash_mem_map __initdata;
+>
+>  static int __init enable_crash_mem_map(char *arg)
+>  {
+> --
+> 1.9.1
+>
