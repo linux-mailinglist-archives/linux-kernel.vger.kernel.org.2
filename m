@@ -2,317 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE3A44EB76
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2076544EB7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbhKLQgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:36:08 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:42906 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235488AbhKLQgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:36:05 -0500
-Received: from zn.tnic (p200300ec2f10ce00d18a941e5c4028b8.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:ce00:d18a:941e:5c40:28b8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91C131EC02AD;
-        Fri, 12 Nov 2021 17:33:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636734793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=h/TsHncJjdrq8Ez3Mrrmi4mEIhgDAK1/8P0J9kgkQaw=;
-        b=etVAmwzzxO+maMIwttxgi5haSSvcNfD8F0QuOkxZyuizIvkNwjkJbWs1VP1ViyZ8eE0GEa
-        vP/ea6wrz0yV63EHwXzkTuoDnpeppdeuj2hqJWlilXs7tiz2JSvCX1x4af05hYLQPpdkWT
-        5SsndWm1PWqG8t+Y3vXs/iIg1id1UXY=
-Date:   Fri, 12 Nov 2021 17:33:05 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 08/12] x86/sev: Park APs on AP Jump Table with GHCB
- protocol version 2
-Message-ID: <YY6XQfmvmpmUiIGj@zn.tnic>
-References: <20210913155603.28383-1-joro@8bytes.org>
- <20210913155603.28383-9-joro@8bytes.org>
+        id S235356AbhKLQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233445AbhKLQjC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 11:39:02 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA4C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:36:10 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id t83so7254391qke.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:36:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1KTTZSFpv5Mx7Y3WJbOlusBXYkGHh9qpD6INjny64qY=;
+        b=gtAruu5K25dKTwTtlOLrRXW03nfMdBP/fraAGMGLUOAq37M1okA3jRzq5kP4P/7AP0
+         9oYK2LEuvkHlibUEMyCuWjUB6JUhniWweOUhsT0jB9Ta5e3BIFhNubJBn6VWlEfGyS8g
+         PWSLn8QXE/rcxgID31lZ1Lt2BJNrlC0DRDUlrkl9khCzvuH2F3YGgk/Q+cGtCQhKJlGa
+         I5JNWUCrDA2GZs00fNnVkjW4ucEg1wWRYKmAaDQJXWCg84cA176vGGXoZV90+0M0JUQc
+         WHzN9XlPq76Bm5eph3fslsJVXMDTeCIMVsWs93lxPCCGvsRfB8IZxjeRex++IoDswHkn
+         NEKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1KTTZSFpv5Mx7Y3WJbOlusBXYkGHh9qpD6INjny64qY=;
+        b=kCnbpJh2PEbR2d3KHBmcNdqHSrLFk+RtspXG5pk0UJOn49Vh2r8KI6QC0FTncwy9sY
+         t84/cVKZtFOUZE784nbgEhvN+CoowH5WBoa+VTuKVBkP8zHjQ1ps/TO07YHquYFiiGsw
+         ULcZx6F/YkICigUBQplC4fDbfKtHI3FbIRZOrVj5oT/4wksWediHcb08IAiS6nqk+jtp
+         bkl+jFc0lF//4e1IWx5e9X4MW7eqm7IDYLL0ycop1RdpsIdwbCkNBK32keQ6625R5owQ
+         eJTE1g2oytsw+l1hIH5IJh2uWJrwH0jGhux2Z9ZI2ASGBFXvINNzh+NdkLFswplL1Bca
+         fp8A==
+X-Gm-Message-State: AOAM530sqWbdicldMXxdB0y0EVS9jNGtl3GbD8m9nKxzrAFcXLnu5d9Y
+        sgNHKkilIvOQEw/vf0UpDgPRTw==
+X-Google-Smtp-Source: ABdhPJwuxg/92hDyW9wy/IXQfi5JAN3/ZbDgxSD1/0rZMEoEbQlseL3MZdNfLTBUs2bK0XZK4+Kdcw==
+X-Received: by 2002:a05:620a:450a:: with SMTP id t10mr13871770qkp.412.1636734970152;
+        Fri, 12 Nov 2021 08:36:10 -0800 (PST)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id o17sm2959085qtv.30.2021.11.12.08.36.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 08:36:09 -0800 (PST)
+Date:   Fri, 12 Nov 2021 11:36:08 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Huangzhaoyang <huangzhaoyang@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
+Message-ID: <YY6X+HPS8A4sLEiO@cmpxchg.org>
+References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
+ <YYGV1TxsZXzGXFmx@cmpxchg.org>
+ <YYqMJLXcQ4a+Lh/4@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913155603.28383-9-joro@8bytes.org>
+In-Reply-To: <YYqMJLXcQ4a+Lh/4@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 05:55:59PM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Tue, Nov 09, 2021 at 03:56:36PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 02, 2021 at 03:47:33PM -0400, Johannes Weiner wrote:
+> > CC peterz as well for rt and timekeeping magic
+> > 
+> > On Fri, Oct 15, 2021 at 02:16:52PM +0800, Huangzhaoyang wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > 
+> > > In an EAS enabled system, there are two scenarios discordant to current design,
+> > > 
+> > > 1. workload used to be heavy uneven among cores for sake of scheduler policy.
+> > > RT task usually preempts CFS task in little core.
+> > > 2. CFS task's memstall time is counted as simple as exit - entry so far, which
+> > > ignore the preempted time by RT, DL and Irqs.
 > 
-> GHCB protocol version 2 adds the MSR-based AP-reset-hold VMGEXIT which
-> does not need a GHCB. Use that to park APs in 16-bit protected mode on
-> the AP Jump Table.
+> It ignores preemption full-stop. I don't see why RT/IRQ should be
+> special cased here.
 > 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/include/asm/realmode.h    |  3 +
->  arch/x86/kernel/sev.c              | 48 ++++++++++++++--
->  arch/x86/realmode/rm/Makefile      | 11 ++--
->  arch/x86/realmode/rm/header.S      |  3 +
->  arch/x86/realmode/rm/sev_ap_park.S | 89 ++++++++++++++++++++++++++++++
->  5 files changed, 144 insertions(+), 10 deletions(-)
->  create mode 100644 arch/x86/realmode/rm/sev_ap_park.S
+> > > With these two constraints, the percpu nonidle time would be mainly consumed by
+> > > none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
+> > > via the proportion of cfs_rq's utilization on the whole rq.
 > 
-> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-> index 29590a4ddf24..668de0a8b1ae 100644
-> --- a/arch/x86/include/asm/realmode.h
-> +++ b/arch/x86/include/asm/realmode.h
-> @@ -23,6 +23,9 @@ struct real_mode_header {
->  	u32	trampoline_header;
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  	u32	sev_es_trampoline_start;
-> +	u32	sev_real_ap_park_asm;
-
-sev_ap_park;
-
-> +	u32	sev_real_ap_park_seg;
-
-sev_ap_park_seg;
-
-> +	u32	sev_ap_park_gdt;
-
-Yap, like thist one.
-
->  #endif
->  #ifdef CONFIG_X86_64
->  	u32	trampoline_pgd;
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index a98eab926682..20b439986d86 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -27,6 +27,7 @@
->  #include <asm/fpu/internal.h>
->  #include <asm/processor.h>
->  #include <asm/realmode.h>
-> +#include <asm/tlbflush.h>
->  #include <asm/traps.h>
->  #include <asm/svm.h>
->  #include <asm/smp.h>
-> @@ -695,6 +696,35 @@ static bool __init sev_es_setup_ghcb(void)
->  }
->  
->  #ifdef CONFIG_HOTPLUG_CPU
-> +void __noreturn sev_jumptable_ap_park(void)
-> +{
-> +	local_irq_disable();
-> +
-> +	write_cr3(real_mode_header->trampoline_pgd);
-> +
-> +	/* Exiting long mode will fail if CR4.PCIDE is set. */
-> +	if (boot_cpu_has(X86_FEATURE_PCID))
-
-cpu_feature_enabled() is what we use everywhere now.
-
-> +		cr4_clear_bits(X86_CR4_PCIDE);
-> +
-> +	asm volatile("xorq	%%r15, %%r15\n"
-> +		     "xorq	%%r14, %%r14\n"
-> +		     "xorq	%%r13, %%r13\n"
-> +		     "xorq	%%r12, %%r12\n"
-> +		     "xorq	%%r11, %%r11\n"
-> +		     "xorq	%%r10, %%r10\n"
-> +		     "xorq	%%r9,  %%r9\n"
-> +		     "xorq	%%r8,  %%r8\n"
-> +		     "xorq	%%rsi, %%rsi\n"
-> +		     "xorq	%%rdi, %%rdi\n"
-> +		     "xorq	%%rsp, %%rsp\n"
-> +		     "xorq	%%rbp, %%rbp\n"
-
-Use xorl and the 32-bit regs is enough - zero extension.
-
-> +		     "ljmpl	*%0" : :
-> +		     "m" (real_mode_header->sev_real_ap_park_asm),
-> +		     "b" (sev_es_jump_table_pa >> 4));
-
-In any case, this asm needs comments: why those regs, why
-sev_es_jump_table_pa >> 4 in rbx (I found later in the patch why) and so
-on.
-
-> diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
-> index 8c1db5bf5d78..6c17f8fd1eb4 100644
-> --- a/arch/x86/realmode/rm/header.S
-> +++ b/arch/x86/realmode/rm/header.S
-> @@ -22,6 +22,9 @@ SYM_DATA_START(real_mode_header)
->  	.long	pa_trampoline_header
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  	.long	pa_sev_es_trampoline_start
-> +	.long	pa_sev_ap_park_asm
-> +	.long	__KERNEL32_CS
-> +	.long	pa_sev_ap_park_gdt;
->  #endif
->  #ifdef CONFIG_X86_64
->  	.long	pa_trampoline_pgd;
-> diff --git a/arch/x86/realmode/rm/sev_ap_park.S b/arch/x86/realmode/rm/sev_ap_park.S
-
-arch/x86/realmode/rm/sev.S
-
-is perfectly fine I guess.
-
-> new file mode 100644
-> index 000000000000..0b63d0569d4d
-> --- /dev/null
-> +++ b/arch/x86/realmode/rm/sev_ap_park.S
-> @@ -0,0 +1,89 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <linux/linkage.h>
-> +#include <asm/segment.h>
-> +#include <asm/page_types.h>
-> +#include <asm/processor-flags.h>
-> +#include <asm/msr-index.h>
-> +#include <asm/sev-ap-jumptable.h>
-> +#include "realmode.h"
-> +
-> +	.section ".text32", "ax"
-> +	.code32
-> +/*
-
-"This is executed by ... when ... "
-
-> + * The following code switches to 16-bit protected mode and sets up the
-> + * execution environment for the AP Jump Table blob. Then it jumps to the AP
-> + * Jump Table to park the AP.
-> + *
-> + * The code was copied from reboot.S and modified to fit the SEV-ES requirements
-> + * for AP parking.
-
-That sentence belongs at most in the commit message.
-
-> When this code is entered, all registers except %EAX-%EDX are
-
-%eax, etc. Lowercase pls.
-
-> + * in reset state.
-> + *
-> + * The AP Jump Table physical base address is in %EBX upon entry.
-> + *
-> + * %EAX, %ECX, %EDX and EFLAGS are undefined. Only use registers %EAX-%EDX and
-> + * %ESP in this code.
-> + */
-> +SYM_CODE_START(sev_ap_park_asm)
-
-sev_ap_park
-
-> +
-> +	/* Switch to trampoline GDT as it is guaranteed < 4 GiB */
-> +	movl	$__KERNEL_DS, %eax
-> +	movl	%eax, %ds
-> +	lgdt	pa_tr_gdt
-> +
-> +	/* Disable paging to drop us out of long mode */
-> +	movl	%cr0, %eax
-> +	btcl	$X86_CR0_PG_BIT, %eax
-> +	movl	%eax, %cr0
-> +
-
-	/* Start executing from 32-bit addresses or so, I guess...
-
-> +	ljmpl	$__KERNEL32_CS, $pa_sev_ap_park_paging_off
-
-Please add a comment also about those pa_ things because they look like
-magic but they're sed-generated into arch/x86/realmode/rm/pasyms.h by
-the Makefile in that same dir.
-
-> +SYM_INNER_LABEL(sev_ap_park_paging_off, SYM_L_GLOBAL)
-
-Global symbol but used only in this file. .L-prefix then?
-
-> +	/* Clear EFER */
-> +	movl	$0, %eax
-> +	movl	$0, %edx
-
-both:	xorl
-
-> +	movl	$MSR_EFER, %ecx
-> +	wrmsr
-> +
-> +	/* Clear CR3 */
-> +	movl	$0, %ecx
-
-ditto
-
-> +	movl	%ecx, %cr3
-> +
-> +	/* Set up the IDT for real mode. */
-> +	lidtl	pa_machine_real_restart_idt
-> +
-> +	/*
-> +	 * Load the GDT with the 16-bit segments for the AP Jump Table
-> +	 */
-
-	/* Load the GDT with the 16-bit segments for the AP Jump Table  */
-
-works too.
-
-> +	lgdtl	pa_sev_ap_park_gdt
-> +
-> +	/* Setup Code and Data segments for AP Jump Table */
-
-	... code and data segments ...
-
-you have been reading too much vendor text where they love to capitalize
-everything.
-
-> +	movw	$SEV_APJT_DS16, %ax
-> +	movw	%ax, %ds
-> +	movw	%ax, %ss
-> +
-> +	/* Jump to the AP Jump Table into 16 bit protected mode */
-> +	ljmpw	$SEV_APJT_CS16, $SEV_APJT_ENTRY
-> +SYM_CODE_END(sev_ap_park_asm)
-> +
-> +	.data
-> +	.balign	16
-> +SYM_DATA_START(sev_ap_park_gdt)
-> +	/* Self-pointer */
-> +	.word	sev_ap_park_gdt_end - sev_ap_park_gdt - 1
-> +	.long	pa_sev_ap_park_gdt
-> +	.word	0
-> +
-> +	/*
-> +	 * Offset 0x8
-> +	 * 32 bit code segment descriptor pointing to AP Jump table base
-> +	 * Setup at runtime in sev_es_setup_ap_jump_table_data().
-> +	 */
-> +	.quad	0
-> +
-> +	/*
-> +	 * Offset 0x10
-> +	 * 32 bit data segment descriptor pointing to AP Jump table base
-> +	 * Setup at runtime in sev_es_setup_ap_jump_table_data().
-> +	 */
-> +	.quad	0
-> +SYM_DATA_END_LABEL(sev_ap_park_gdt, SYM_L_GLOBAL, sev_ap_park_gdt_end)
-> -- 
-> 2.33.0
 > 
+> > > +static unsigned long psi_memtime_fixup(u32 growth)
+> > > +{
+> > > +	struct rq *rq = task_rq(current);
+> > > +	unsigned long growth_fixed = (unsigned long)growth;
+> > > +
+> > > +	if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
+> > > +		return growth_fixed;
+> > > +
+> > > +	if (current->in_memstall)
+> > > +		growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
+> > > +					- rq->avg_irq.util_avg + 1) * growth, 1024);
+> > > +
+> > > +	return growth_fixed;
+> > > +}
+> > > +
+> > >  static void init_triggers(struct psi_group *group, u64 now)
+> > >  {
+> > >  	struct psi_trigger *t;
+> > > @@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+> > >  	}
+> > >  
+> > >  	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
+> > > +		delta = psi_memtime_fixup(delta);
+> > 
+> > Ok, so we want to deduct IRQ and RT preemption time from the memstall
+> > period of an active reclaimer, since it's technically not stalled on
+> > memory during this time but on CPU.
+> > 
+> > However, we do NOT want to deduct IRQ and RT time from memstalls that
+> > are sleeping on refaults swapins, since they are not affected by what
+> > is going on on the CPU.
+> 
+> I think that focus on RT/IRQ is mis-guided here, and the implementation
+> is horrendous.
+> 
+> So the fundamental question seems to be; and I think Johannes is the one
+> to answer that: What time-base do these metrics want to use?
+> 
+> Do some of these states want to account in task-time instead of
+> wall-time perhaps? I can't quite remember, but vague memories are
+> telling me most of the PSI accounting was about blocked tasks, not
+> running tasks, which makes all this rather more complicated.
+> 
+> Randomly scaling time as proposed seems almost certainly wrong. What
+> would that make the stats mean?
 
--- 
-Regards/Gruss,
-    Boris.
+It *could* be argued that IRQs and RT preemptions are CPU stalls.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I'm less convinced we should subtract preemptions from memory stalls.
+
+Yes, when you're reclaiming and you get preempted for whatever reason,
+you're technically stalled on CPU in this moment. However, reclaim
+itself consumes CPU and walltime, and it could be what is causing
+those preemptions to begin with! For example, reclaim could eat up 90%
+of your scheduling timeslice and then cause a preemption when the
+thread is back in userspace and trying to be productive. By consuming
+time, it also drags out the overall timeline for userspace to finish
+its work, and a longer timeline will have more disruptions from
+independent events like IRQs and RT thread wakeups.
+
+So if you *were* to discount CPU contention from memory stalls, it
+would also mean that you'd have to count *memory stalls* when
+userspace experiences CPU contention caused by preceding reclaims. I
+don't think it makes sense to try to go down that road...
+
+They're dependent resources. Just like faster CPUs and faster IO
+devices mean less memory pressure for the same amount of reclaim and
+paging activity, it seems logical that contention of those underlying
+resources will result in longer memory stalls and higher pressure.
