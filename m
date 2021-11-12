@@ -2,173 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCED44E82E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE30844E834
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbhKLOLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:11:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50725 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231718AbhKLOLi (ORCPT
+        id S235128AbhKLOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:12:15 -0500
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:38893 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235029AbhKLOMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:11:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636726127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxQtWinlcX6lChyHWu9bMAkpP2Jfl9hUJ+4/hvRPE0g=;
-        b=Aw2uaT7FCXpFOuj0HMcDK4QqdhVy6/ds2Msouy5DlRpwlIo8fb36bxaSHpPgdm6UTwYPw9
-        Q/FPM7xngtewbfk9KTyfMXNK1DZcV7Di1tZDxQtatKzxJLzeDNE1bJc04igavTCBW44UF2
-        HW7DooGBfPV/PxLA8w3+jkI3/zF37dU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-4So7pAh2NJ-4-mZ42wEURQ-1; Fri, 12 Nov 2021 09:08:46 -0500
-X-MC-Unique: 4So7pAh2NJ-4-mZ42wEURQ-1
-Received: by mail-ed1-f71.google.com with SMTP id s6-20020a056402520600b003e2dea4f9b4so8324106edd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:08:45 -0800 (PST)
+        Fri, 12 Nov 2021 09:12:14 -0500
+Received: by mail-ua1-f52.google.com with SMTP id o26so19088682uab.5;
+        Fri, 12 Nov 2021 06:09:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gxQtWinlcX6lChyHWu9bMAkpP2Jfl9hUJ+4/hvRPE0g=;
-        b=5v8dZaQJgR+5y4MmhQT8QJr5QStPh+7lJN5/wqDUEFPtb3hOt45aIZi9V6va0d3R3h
-         RYD6J0yQfa+Mrsnhn1yOO2OzHWnxvldxrlPYBYBDleDA3kRBNGihs2bkqfYl3dzFoVQO
-         JZOBojERdP93HX9LWrMuyegV6lSaJCQP13WOdmLhZBs0IA5TCSSmhVQDVQi7M5aH9G1z
-         H6B0K0SltWAm9bts/aLtgLladxEASWqqXjepMLPkZOCtCM6fZ6/CSUcOQwFxwG+Y8cmG
-         5MOAlB/HbW+4BnfitRUI8669mzeQ13365J3xUH7HmNOEZ/YHNbxdCXhioHhByP76zVb5
-         g1Bg==
-X-Gm-Message-State: AOAM532M4yNeMAm+ZSeoFyTVbYS6l2t38nmsKnz0UZ6PWK1z7PTAewuQ
-        k+snfplwRsmIW+qk73Whg/NBYrIVB93lpYccMBA0S7MwPCRUb3vwU/OuHwbnjkZhXGHKUxjSg0y
-        OE9/fkbveMOtg2ajb2nkr3JdpCUmeCeX5gvmuyoCa
-X-Received: by 2002:a17:907:9723:: with SMTP id jg35mr21164271ejc.329.1636726124776;
-        Fri, 12 Nov 2021 06:08:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwaTUlLSe6uRh/1ws8e/19OjofJgbKjFniaT0J3MI41FU9FzGJZK8ZjBWpUK4pJbnP9j7d5PbqZp3UN3MDI/aI=
-X-Received: by 2002:a17:907:9723:: with SMTP id jg35mr21164229ejc.329.1636726124497;
- Fri, 12 Nov 2021 06:08:44 -0800 (PST)
+        bh=DhXqfwSlPm16zKdEV1ag+dVLF4h8hJZRSRqMOMtnQqE=;
+        b=pAMihPEe/5UFKRD4T/1DfbLMkJDHEisTHlH1XgSmeAj2IknKzLyfQyjBJbiYlI8VzC
+         BD6g8MLKf+HOnKPZwjLl518QcsbcP629wR6lIS2E3OvVafFvBXprCy4tMCn5H440e2tk
+         a1L6Jz0p3Rny8F6FDXKfA93lXqIu/TGonc8uOeCmTy1/XUbsMEKny0h2O3v0U0DHJRo7
+         SOZnPciXkzQZHGNfd+LaqXOxd7QXyG+ViyFqypjr9DTWfJMyWPBv/327UD2u41ujEq0T
+         owTivkZW7+O/aBh32iHWsWkIv594sNWMadz7draRxntAYnT192iboBikuwyUcX5YPvx9
+         2xpQ==
+X-Gm-Message-State: AOAM5304HWVlUCktLM3ITwL8Gf0awAyR2G1LdtiIR758LNVeLGceCnFz
+        UTpTDVVsJRhVfViCiA3VXDrKrSBN6TluTg==
+X-Google-Smtp-Source: ABdhPJzQ2pUeUXWsBt79uZucsYMSuLGKV7RPpagUhB8nnNXwrU12K4qXxaJanDlhVBz5L0T3xeZuAw==
+X-Received: by 2002:a05:6102:d8d:: with SMTP id d13mr10491858vst.54.1636726161974;
+        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id t1sm4006288vkl.56.2021.11.12.06.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id v3so18954364uam.10;
+        Fri, 12 Nov 2021 06:09:21 -0800 (PST)
+X-Received: by 2002:ab0:15a1:: with SMTP id i30mr22901368uae.122.1636726161283;
+ Fri, 12 Nov 2021 06:09:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20211111195904.618253-1-wander@redhat.com> <20211111195904.618253-2-wander@redhat.com>
- <YY4pmySR3VVHAtYy@alley>
-In-Reply-To: <YY4pmySR3VVHAtYy@alley>
-From:   Wander Costa <wcosta@redhat.com>
-Date:   Fri, 12 Nov 2021 11:08:33 -0300
-Message-ID: <CAAq0SUmePQEOM2AvMfTw8zAnG3k+869wsGSMt9HvFj_wb81i0g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] printk: suppress rcu stall warnings caused by slow
- console devices
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Wander Lairson Costa <wander@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
+References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Nov 2021 15:09:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVw=bDj=Uq+wXzBb_HhG4viHZC0A0znv15htvwwS15oEQ@mail.gmail.com>
+Message-ID: <CAMuHMdVw=bDj=Uq+wXzBb_HhG4viHZC0A0znv15htvwwS15oEQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] RZ/G2L: pinctrl: Support to get/set drive-strength
+ and output-impedance-ohms
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 5:45 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Thu 2021-11-11 16:59:04, Wander Lairson Costa wrote:
-> > If we have a reasonable large dataset to flush in the printk ring
-> > buffer in the presence of a slow console device (like a serial port
-> > with a low baud rate configured), the RCU stall detector may report
-> > warnings.
-> >
-> > This patch suppresses RCU stall warnings while flushing the ring buffer
-> > to the console.
->
-> I have mixed feelings about this patch.
->
-> We already touch watchdogs in several situations to avoid this type
-> of reports. So, there is a precedent.
->
-> On the other hand, it hides a real problem. printk() might cause
-> softlockups, livelockups, and even deadlocks. It might really stall
-> other processes and CPUs. And the stall report might help to
-> understand that the system is not longer responsive because of
-> printk().
->
-Indeed, other use cases might care about these stalls in printk.
-One workaround is to create a syctl to make this feature optional.
+Hi Prabhakar,
 
-> John Ogness is working on the proper solution, handling consoles
-> in a kthread. It is not that easy because we need to handle situations
-> when kthreads do not work, for example, during early boot, panic(),
-> suspend, reboot, kexec. But I believe that we will have it rather
-> sooner than later.
+On Wed, Nov 10, 2021 at 11:46 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> This patch series add support to get/set drive-strength and
+> output-impedance for RZ/G2L SoC. Along with some macro renames
+> and code cleanup.
 >
-I gave a try to the print threads patch set and it does solve the
-problem. I am not
-opposite at all to wait for them to land if it happens in the
-foreseeable future.
+> Cheers,
+> Prabhakar
+>
+> Changes for v3:
+> * Fixed review comments pointed by Geert.
+>
+> Changes for v2:
+> * Fixed review comments pointed by Geert, split up patch 4 from series [1]
+>
+> Note: This patch series is dependent on first two patches of series [1]
+>
+> [1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+> 20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
-> A workaround, is to lower console_loglevel and show only the most
-> important messages. Sometimes, a reasonable solution is to ratelimit
-> repeated messages.
->
-> Which brings the question. What is the motivation for this patch,
-> please?
->
-> Is it motivated by a particular bug report?
-> Or does the experience shows that this report causes more harm than
-> good?
->
-QA has a test case in which they need to load hundreds of SCSI devices,
-and they simulate it using the scsi_debug driver:
+Thank you, will queue in renesas-pinctrl-for-v5.17 with the dependencies.
 
-modprobe scsi_debug virtual_gb=1 add_host=2 num_tgts=600
+Gr{oetje,eeting}s,
 
-This dumps a bunch of messages to print and the serial console driver
-cannot keep up with the data rate, causing an RCU stall. The stall is reported
-in an IRQ context, then the ring buffer flush continues from there,
-and then it causes
-a soft lockup.
+                        Geert
 
-> Best Regards,
-> Petr
->
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-On Fri, Nov 12, 2021 at 5:45 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Thu 2021-11-11 16:59:04, Wander Lairson Costa wrote:
-> > If we have a reasonable large dataset to flush in the printk ring
-> > buffer in the presence of a slow console device (like a serial port
-> > with a low baud rate configured), the RCU stall detector may report
-> > warnings.
-> >
-> > This patch suppresses RCU stall warnings while flushing the ring buffer
-> > to the console.
->
-> I have mixed feelings about this patch.
->
-> We already touch watchdogs in several situations to avoid this type
-> of reports. So, there is a precedent.
->
-> On the other hand, it hides a real problem. printk() might cause
-> softlockups, livelockups, and even deadlocks. It might really stall
-> other processes and CPUs. And the stall report might help to
-> understand that the system is not longer responsive because of
-> printk().
->
-> John Ogness is working on the proper solution, handling consoles
-> in a kthread. It is not that easy because we need to handle situations
-> when kthreads do not work, for example, during early boot, panic(),
-> suspend, reboot, kexec. But I believe that we will have it rather
-> sooner than later.
->
-> A workaround, is to lower console_loglevel and show only the most
-> important messages. Sometimes, a reasonable solution is to ratelimit
-> repeated messages.
->
-> Which brings the question. What is the motivation for this patch,
-> please?
->
-> Is it motivated by a particular bug report?
-> Or does the experience shows that this report causes more harm than
-> good?
->
-> Best Regards,
-> Petr
->
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
