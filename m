@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B7E44E0B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AD144E0AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbhKLDPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 22:15:20 -0500
-Received: from mout.gmx.net ([212.227.17.20]:40909 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhKLDPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 22:15:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636686735;
-        bh=432XySQCRmn4r9Ix6S+dj3IqXDHREI8FFsRi1lAzCGM=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=O1NbxJyvdw/tElGf7eyhewuAmAdpzavMdGCaUSgTwGINUR49/34GOba/tntVnNy+j
-         FxjSw+BBzEJ7FA0LYzHn26nWgmAoNXRAlVJV6/rqKRMuNL8SoQDPpy63bfDz/B4hPR
-         uiUw7Ft849zXuCt8nv2tY2fi7i5esxT/BLQac0FA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDhhX-1mtNbl2SBT-00Aqia; Fri, 12
- Nov 2021 04:12:15 +0100
-Message-ID: <9ee991e8-0d32-658a-8a9a-09a7d1d88ee8@gmx.com>
-Date:   Fri, 12 Nov 2021 11:12:09 +0800
+        id S234563AbhKLDPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 22:15:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhKLDPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 22:15:14 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C42C061766;
+        Thu, 11 Nov 2021 19:12:24 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id u18so13084105wrg.5;
+        Thu, 11 Nov 2021 19:12:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kyyZCz/c64azEPJMrNfaspdkXcPIMlzhsfOAzsY+TAE=;
+        b=bFrZhtd396ogw8yZKWVmQz4qUxlLV3mRx+DOSPzglfO68HAdSTIzTziS3BGLnLkzp1
+         nraR4q1e7wgtKrk0UiP8xV+WbTz+wtgEjKznjqLTT//V6ylR3EHiqcpC5FKY3MfpSM/Y
+         KpQGLPykD4Rj3uPh+qJ/noKbKrY8yTB7Ewvwy6i339xRqB1+nhw8Sspgz0B7Rzk0556w
+         zIsRa+34BXvVh88xpriCafP4dVUC2X8nWL4u+cCiquTDqhnE7+X4hp2tiG+uY7j3E5Wg
+         7NU4oVfBv1t4r0e20OWisng37Gre2J35pGBz2HQ/y+0+NDhxZUXSVa7IdzDm19IEnGEp
+         v+9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kyyZCz/c64azEPJMrNfaspdkXcPIMlzhsfOAzsY+TAE=;
+        b=S3nuG+i9m5qO3gWB9rkEw7YDD/AkkZezi/w+SsB1qUIDeDN5TWs0WD36UQ0UHboZy1
+         zHJgWS4/yvrS4UeUQFbB2uWA2cNEhN4nT7P3brZN6Nqf4AuXqACGcGzuBao+vN4XRd6J
+         0ZkLjHCYt9saSgJvNjAE9iKB8DOxhlozTlVQSThSRCzZQzvm9AkWAkYwbK62LbMpArEB
+         AA+3bBQiOdyOIo2eHGaA9XjOeNnrkZ0E1b4ZdJ8KRVhN2+A1jI0Q2hqGF3j+XhOsI72D
+         0WS49T/w1viIWibWPS1WCJmATpOgLVB/NEZrlSKR2BZJGKWZUFE3wcCEyUeQUu6Kgi66
+         iUXw==
+X-Gm-Message-State: AOAM530goV7c4PdhgQDcdqhV04BG5ip5tGMZgVKIKGAm8yiJfI3NNQaE
+        Ufg8GwBqg6ImK86tK5disDsYYKefoV7+Onu6E48=
+X-Google-Smtp-Source: ABdhPJxhzBSjyltJHOdHti0F2wT56KUnqMQSEjQAo0b9yjUNN3VlovELHxvMToJqLnIdVLSPtlclqXwgqOH/Gqymh/0=
+X-Received: by 2002:a5d:658c:: with SMTP id q12mr14618865wru.34.1636686743350;
+ Thu, 11 Nov 2021 19:12:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] fs:btrfs: remove unneeded variable
-Content-Language: en-US
-To:     cgel.zte@gmail.com, clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chiminghao <chi.minghao@zte.com.cn>
-References: <20211112024950.5098-1-chi.minghao@zte.com.cn>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211112024950.5098-1-chi.minghao@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jQAUnfBSqdP/Sz1v7s/ZimLNbDTFVgUFOKn7hEiLePZwSGCGwjn
- cBiTzMKPzBDKIMgDjfHky2h1I/KDsWvwfd+LZO11J7FpnL7pv5EUjBZezPVZn29lN+PEyIq
- YS9PXSp7WuLxRMCJb8zDV/+IvIOPcLL20v0k/Q/psYcT0J9vGuhWpuUqzsilZ1YMJ/hvOzo
- UrMGvi1duiTVL4cbMeC/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PPxwJVFTU/Q=:sbnlMvUTaHfhr09P+2wHkG
- 5EiXtItSHVcsJg5i+g/oRj4EiC6vDzU4UD7d1bs9ysQfYqdsmaZ8k5Sgv3NksjkIW4IBqxuxZ
- wMRf5qaLdrCWhDUeIvfmKtpFRe74XeIzcTF2VmBTKN6yxURLvjx+c4qMwueiSrVOna49pvhBk
- wdTSO1A0jQibabK6daXibibsBJoQQFR0XjR2Qea6JBxiwPrRvE3SMfShpFuBtjog5rN2K9m7M
- y58xdltO5W9DOWn5CqW8ZQ3lDrFyXvSBeqBuu0Pbip3ktl4Oms+j7e5h28xKObz5XkJkL/BJ/
- 1IGKtNHjQnM1Lyks/53e7dPrk7tZgbq/DObR2mPZvSAd1NmAj9zNtQuderDRpQoO4+A/GJpim
- 58FBJ7BN3qP+kWhJsgfu5ZqAK8y/i4Ig53NHzyh8LvPxw6hzJEcWjsL4gGO5yQyIjUCs3GNVF
- 0HJtVLiK6+TegPlazeypVVt1a4Lue4JHpf4pci1eehDqTGWdwChzxSy4Vf+ytnqtkcSvBc7Iq
- MtVba6lLTB88EAC2/8DL/iLtThR5St2Pa1V1aFNFz/HM4o/Dq0sDT1C9HEhiEASnTa56ky6ei
- 3GrynoE28W+N3elfcxPYN5lglIvLyXABsvH2VeNbOUY1M5KuDwYTa+dh0ev3PNAy4m0rEkiLo
- rO1U0ZVYCGAKHBb6a2Ydr5c6SIB5+d1Si52hmM3cE/Zuyjaz5x10/+LfgawID179fOp+ySbd5
- 3cM/lHqpHLGXrblrtoH6MpsJlzaqelTpkaRwY4JeGAxuMpW03uI7nXQHEeLLT2rMX/yBhOydk
- IUHfHWHcOGdL1f+wDYiqnXPH2qXZ45oamknz4BGj/cMKWfrI0ykJYc5u0xbM10BNmmio93hd+
- EytM4QNRT+GtNZHCCyV6sab7yL6hCDrZASOmkuPqvNHQ5MDP08ifP+YUCq/MbFFu8f4dAWaH8
- pwGWMlWtxc0B5TFUGs27X+xSoJubj2FH8TmA3iP2Ewq1w15Kt1LyDzMOdbkJoc0y+n8xWMkX3
- c1tx8tA4A8+BmdJfAaaEZOKo6ZhWig/Up5ayqHOYwkAroqNuyACkDUlW+7e0W66DFTwzCLwWt
- SBrsjY/dVeBR8Y=
+References: <20211111145847.1487241-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20211111145847.1487241-1-mudongliangabcd@gmail.com>
+From:   Alexander Aring <alex.aring@gmail.com>
+Date:   Thu, 11 Nov 2021 22:12:12 -0500
+Message-ID: <CAB_54W6K+FTTRxLbUHp8csBbtJf=E+JU-zd3q7mQZpa-LHTX8A@mail.gmail.com>
+Subject: Re: [PATCH v2] net: ieee802154: fix shift-out-of-bound in nl802154_new_interface
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Thu, 11 Nov 2021 at 09:59, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> In nl802154_new_interface, if type retrieved from info->attr is
+> NL802154_IFTYPE_UNSPEC(-1), i.e., less than NL802154_IFTYPE_MAX,
+> it will trigger a shift-out-of-bound bug in BIT(type) [1].
+>
+> Fix this by adding a condition to check if the variable type is
+> larger than NL802154_IFTYPE_UNSPEC(-1).
+>
 
-On 2021/11/12 10:49, cgel.zte@gmail.com wrote:
-> From: chiminghao <chi.minghao@zte.com.cn>
->
-> Fix the following coccicheck REVIEW:
-> ./fs/btrfs/extent_map.c:299:5-8 REVIEW Unneeded variable
->
-> Reported-by: Zeal Robot <zealci@zte.com.cm>
-> Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+Thanks.
 
-IIRC the @ret is reserved there as we're not handling the !em case with
-error number, nor is the only caller properly handling the possible error.
+I just sent another patch to fix this issue. The real problem here is
+that the enum type doesn't fit into the u32 netlink range as I
+mentioned some months ago. [0] Sorry for the delayed fix.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/extent_map.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 5a36add21305..1dcb5486ccb6 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tr=
-ee, struct extent_map *em)
->   int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 le=
-n,
->   		       u64 gen)
->   {
-> -	int ret =3D 0;
->   	struct extent_map *em;
->   	bool prealloc =3D false;
->
-> @@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
- u64 start, u64 len,
->   	free_extent_map(em);
->   out:
->   	write_unlock(&tree->lock);
-> -	return ret;
-> +	return 0;
->
->   }
->
->
+- Alex
+
+[0] https://lore.kernel.org/linux-wpan/CAB_54W62WZCcPintGnu-kqzCmgAH7EsJxP9oaeD2NVZ03e_2Wg@mail.gmail.com/T/#t
