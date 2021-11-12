@@ -2,167 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085DF44DF39
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B67844DF37
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhKLAkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:40:33 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50067 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233817AbhKLAka (ORCPT
+        id S234550AbhKLAkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:40:00 -0500
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:39779 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233817AbhKLAj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:40:30 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 726E85806AA;
-        Thu, 11 Nov 2021 19:37:40 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 11 Nov 2021 19:37:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Amj+GKg1xaYB+qEwrWqLPDdzpoi6vZrivMpCmLbM3NY=; b=Y5EuWWjg
-        ZuahwLuVtuHlygEHy2d7GMVO6b7gaob0CdMiuMPO/nbnt0jNBj06IGVFlM3dEoMb
-        6OPc/Q5ALXN1qYU8ZOJiWt1dA5saFSUMZsegrfoggXAdc/Cb+j3625rezL4+9YR+
-        G7c7ihlj/mwuIWf61bwZvbbmG0JQ2kaOc+fycXsZuWXCb2IbdTwHmZK8b+84hHYI
-        blL30eTX6+rHE7+VTlknot+8hnDgMIjiINOVNGC9qK54Wz6GJqCJ0HCY8rzp4dFv
-        RFwUMiuHEM+YfEyxBJX0xGt6BOjHlITiMFD4e+uQEbH7F0XkMKTbOBzwGS6be/Ph
-        sf6t3LJ7njNOLA==
-X-ME-Sender: <xms:U7eNYR10pKHCAgAsvtjmWg0y7lVj5swmTrKNrXr8U8DzCsLB_Vpdng>
-    <xme:U7eNYYGaCQx3Eh82V1MysuSbnlKTlhJy__NGht2ER7GJ2-gC0EIRkZXQ0nLDAatOh
-    UX1m2dM4TMawaPNBDk>
-X-ME-Received: <xmr:U7eNYR4HMwWkRDzCSX2a_ZOIE_Yv3N6vSAnH3bVjQ7MNE-LuVPTU_bNsZ_RSk0Do_WHQHAMF6fYYjv1ydoNl05Ic21DplnnVMQk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddvgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
-    fhohhrsghiugguvghnjfgurhculdehtddtmdenucfjughrpefvkffhufffsedttdertddt
-    tdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmie
-    ekkhdrohhrgheqnecuhfhorhgsihguuggvnhfjughrpefvkffhufffsedttdertddttddp
-    vffkhffuffestddtredttddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:U7eNYe1nqudRxPxEnsoMLBrOiqL3H-AToKbPZ7f-EWGyw6x1RvHv5A>
-    <xmx:U7eNYUHyrE2nXlGi4QExHsR4PeoNfpGC7um-5kGk9W3WsCS3o3gbDg>
-    <xmx:U7eNYf8nHKfIMX8oUXx5zZZQhZMqplTR9zQRgaKhKy3_XP9Oo0AH4Q>
-    <xmx:VLeNYQgsH2uAuHU6vU73OiyfJXUDm0kENCDA2ducGqM9x5fkYk9UIA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Nov 2021 19:37:36 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Mike Rapoport" <rppt@kernel.org>, "Sam Creasey" <sammy@sammy.net>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Message-Id: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k: Enable memtest functionality
-Date:   Fri, 12 Nov 2021 11:36:41 +1100
+        Thu, 11 Nov 2021 19:39:59 -0500
+Received: by mail-ed1-f46.google.com with SMTP id r12so30832613edt.6;
+        Thu, 11 Nov 2021 16:37:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R1tUfUsW9yxfyVmNsT2W35onz8Yo0bOTMnqcIJ1wUhc=;
+        b=upgF0pyrzwrtnYQhtNoozMC5Pjm1NmKLw6E/irGmVtifAzM/vTD7I5XdS4qhMU57o3
+         j+Aoeti8yydKQwbJVTkorjr4C9Omt1wFSPL9ztBrxw73YPGGEXJwBmDhkRbc//XM7Kjo
+         gs/hZpHwCpQXtMEryTkzZ1QJxtF6AvM3r6ZlWX/RFyfnA5qRw3+ySr1dxm0rh5wUdh4R
+         oplB7bsBX6I13f87VjT5l+Kt+QSzCzcrwx91e0rF8UrTz0s0ythOcZIkW3heFwk4yBYV
+         Vok4Rmn259yh4OZeVkNdKYKUBruEUViwOSI74rG8j95zwME7f6CigVRRQ5KquipYUUi5
+         xJWQ==
+X-Gm-Message-State: AOAM530jXCwJwstOB/X053nzdrjznijzpF8YFnKUOKpWJ/Lm4QypdAI1
+        zgScrmsIQEkXJXzwH1A1z6c=
+X-Google-Smtp-Source: ABdhPJwPnxK6FC4BIfe/lkhIF828ja5edt407OTCenhE6XVpenIhvw+b0OdNEv6X6UuF4fuzGcyDiw==
+X-Received: by 2002:a50:f08b:: with SMTP id v11mr15560307edl.96.1636677427655;
+        Thu, 11 Nov 2021 16:37:07 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id h6sm794056edz.40.2021.11.11.16.37.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 16:37:07 -0800 (PST)
+Date:   Fri, 12 Nov 2021 01:37:05 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, bhelgaas@google.com,
+        shawnguo@kernel.org, leoyang.li@nxp.com,
+        gustavo.pimentel@synopsys.com, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, roy.zang@nxp.com
+Subject: Re: [PATCHv5 6/6] PCI: layerscape: Add power management support
+Message-ID: <YY23MeAa0U/r4lbO@rocinante>
+References: <20210407030948.3845-1-Zhiqiang.Hou@nxp.com>
+ <20210407030948.3845-7-Zhiqiang.Hou@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210407030948.3845-7-Zhiqiang.Hou@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the memtest functionality and rearrange some code to prevent it
-from clobbering the initrd.
+Hi,
 
-The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
-For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
-on Sun 3.
+[...]
+> +/* PF Message Command Register */
+> +#define LS_PCIE_PF_MCR		0x2c
+> +#define PF_MCR_PTOMR		BIT(0)
+> +#define PF_MCR_EXL2S		BIT(1)
+> +
+> +/* LS1021A PEXn PM Write Control Register */
+> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
+> +#define PMXMTTURNOFF		BIT(31)
+> +#define SCFG_PEXSFTRSTCR	0x190
+> +#define PEXSR(idx)		BIT(idx)
+> +
+> +/* LS1043A PEX PME control register */
+> +#define SCFG_PEXPMECR		0x144
+> +#define PEXPME(idx)		BIT(31 - (idx) * 4)
+> +
+> +/* LS1043A PEX LUT debug register */
+> +#define LS_PCIE_LDBG	0x7fc
+> +#define LDBG_SR		BIT(30)
+> +#define LDBG_WE		BIT(31)
 
-The SLIME source code at
-http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
-indicates that no BI_RAMDISK entry is ever passed to the kernel due
-to #ifdef 0 around the relevant code.
+A small nitpick: a consistent capitalisation of "control" and "debug", and
+"register" in the comments above.
 
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Sam Creasey <sammy@sammy.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Are there any other Linux bootloaders on Sun 3?
----
-Changed since v1:
- - Updated documentation.
----
- Documentation/admin-guide/kernel-parameters.txt |  2 +-
- arch/m68k/Kconfig                               |  1 +
- arch/m68k/kernel/setup_mm.c                     | 15 ++++++---------
- arch/m68k/mm/motorola.c                         |  2 ++
- 4 files changed, 10 insertions(+), 10 deletions(-)
+[...]
+> +static void ls_pcie_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +{
+> +	if (pcie->big_endian)
+> +		return iowrite32be(val, pcie->lut_base + off);
+> +
+> +	return iowrite32(val, pcie->lut_base + off);
+> +
+> +}
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc0..ac42b421a95c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2924,7 +2924,7 @@
- 			both parameters are enabled, hugetlb_free_vmemmap takes
- 			precedence over memory_hotplug.memmap_on_memory.
- 
--	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
-+	memtest=	[KNL,X86,ARM,M68K,PPC,RISCV] Enable memtest
- 			Format: <integer>
- 			default : 0 <disable>
- 			Specifies the number of memtest passes to be
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0b50da08a9c5..0e96066b3c46 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -9,6 +9,7 @@ config M68K
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
- 	select ARCH_NO_PREEMPT if !COLDFIRE
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
- 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 4b51bfd38e5f..49e573b94326 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
- 		panic("No configuration setup");
- 	}
- 
--	paging_init();
--
--#ifdef CONFIG_NATFEAT
--	nf_init();
--#endif
--
--#ifndef CONFIG_SUN3
- #ifdef CONFIG_BLK_DEV_INITRD
- 	if (m68k_ramdisk.size) {
- 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
-@@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
-+	paging_init();
-+
-+#ifdef CONFIG_NATFEAT
-+	nf_init();
-+#endif
-+
- #ifdef CONFIG_ATARI
- 	if (MACH_IS_ATARI)
- 		atari_stram_reserve_pages((void *)availmem);
-@@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
--#endif /* !CONFIG_SUN3 */
--
- /* set ISA defs early as possible */
- #if defined(CONFIG_ISA) && defined(MULTI_ISA)
- 	if (MACH_IS_Q40) {
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 9f3f77785aa7..5b6575eb6d02 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -455,6 +455,8 @@ void __init paging_init(void)
- 
- 	flush_tlb_all();
- 
-+	early_memtest(min_addr, max_addr);
-+
- 	/*
- 	 * initialize the bad page table and bad page to point
- 	 * to a couple of allocated pages
--- 
-2.26.3
+Surplus newline above after the return statement.
 
+[...]
+> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +{
+> +	if (pcie->big_endian)
+> +		return iowrite32be(val, pcie->pf_base + off);
+> +
+> +	return iowrite32(val, pcie->pf_base + off);
+> +
+> +}
+
+Surplus newline above after the return statement.
+
+[...]
+> +static void ls_pcie_send_turnoff_msg(struct ls_pcie *pcie)
+> +{
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_PTOMR;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_PTOMR), 100, 10000);
+> +	if (ret)
+> +		dev_info(pcie->pci->dev, "poll turn off message timeout\n");
+> +}
+
+Would this dev_info() be more of a warning or an error?  A timeout is
+potentially a problem, correct?
+
+[...]
+> +static void ls1021a_pcie_send_turnoff_msg(struct ls_pcie *pcie)
+> +{
+> +	u32 val;
+> +
+> +	if (!pcie->scfg) {
+> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
+> +		return;
+> +	}
+> +
+> +	/* Send Turn_off message */
+> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
+> +	val |= PMXMTTURNOFF;
+> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
+> +
+> +	mdelay(10);
+
+We often, customary, document why a particular mdelay() is needed.  You
+also did this in other part of the code, so perhaps adding a note here (and
+everywhere else) would be nice for keeping the consistency.
+
+[...]
+> +static void ls_pcie_exit_from_l2(struct ls_pcie *pcie)
+> +{
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_EXL2S;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_EXL2S), 100, 10000);
+> +	if (ret)
+> +		dev_info(pcie->pci->dev, "poll exit L2 state timeout\n");
+> +}
+
+Similarly to the question above: is this timeout something more severe and
+would warrant a warning or an error here instead?
+
+[...]
+> +static void ls1021a_pcie_exit_from_l2(struct ls_pcie *pcie)
+> +{
+> +	u32 val;
+> +
+> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
+> +	val |= PEXSR(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
+> +
+> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
+> +	val &= ~PEXSR(pcie->index);
+> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
+> +
+> +	mdelay(1);
+
+Aside of documenting this mdelay() here, if possible, would 1 be enough?
+Everywhere else you seem to use 10 consistently.
+
+> +
+> +	ls_pcie_retrain_link(pcie);
+> +}
+> +static void ls1043a_pcie_exit_from_l2(struct ls_pcie *pcie)
+
+Missing newline above to separate code blocks.
+
+> +{
+> +	u32 val;
+> +
+> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val |= LDBG_WE;
+> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val |= LDBG_SR;
+> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val &= ~LDBG_SR;
+> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val &= ~LDBG_WE;
+> +	ls_pcie_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	mdelay(1);
+
+See comment above.
+
+[...]
+> +static int ls1021a_pcie_pm_init(struct ls_pcie *pcie)
+> +{
+> +	struct device *dev = pcie->pci->dev;
+> +	u32 index[2];
+> +	int ret;
+> +
+> +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node,
+> +						     "fsl,pcie-scfg");
+> +	if (IS_ERR(pcie->scfg)) {
+> +		ret = PTR_ERR(pcie->scfg);
+> +		dev_err(dev, "No syscfg phandle specified\n");
+> +		pcie->scfg = NULL;
+> +		return ret;
+> +	}
+> +
+> +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg",
+> +					 index, 2);
+> +	if (ret) {
+> +		pcie->scfg = NULL;
+> +		return ret;
+> +	}
+> +
+> +	pcie->index = index[1];
+> +
+> +	return 0;
+> +}
+
+Just an idea: what about using goto for error handling?
+
+(...)
+	if (IS_ERR(pcie->scfg)) {
+		ret = PTR_ERR(pcie->scfg);
+		dev_err(dev, "No syscfg phandle specified\n");
+		goto error;
+	}
+
+	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg",
+					 index, 2);
+	if (ret)
+		goto error;
+
+	pcie->index = index[1];
+
+	return 0;
+
+error:
+	pcie->scfg = NULL;
+	return ret;
+}
+
+Not necessarily better or worse compared with your version, so it would be
+more of a matter of personal preference here.
+
+> +static int ls_pcie_suspend_noirq(struct device *dev)
+> +{
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +	struct dw_pcie *pci = pcie->pci;
+> +	u32 val;
+> +	int ret;
+> +
+> +	if (!ls_pcie_pm_check(pcie))
+> +		return 0;
+> +
+> +	pcie->drvdata->pm_ops->send_turn_off_message(pcie);
+> +
+> +	/* 10ms timeout to check L2 ready */
+> +	ret = readl_poll_timeout(pci->dbi_base + PCIE_PORT_DEBUG0,
+> +				 val, LS_PCIE_IS_L2(val), 100, 10000);
+> +	if (ret) {
+> +		dev_err(dev, "PCIe link enter L2 timeout! ltssm = 0x%x\n", val);
+> +		return ret;
+> +	}
+
+The error message above could be improve to be more like an error stating
+that something failed and such, as currently it looks like a debug message,
+unless it was intended as such.
+
+[...]
+> +static int ls_pcie_resume_noirq(struct device *dev)
+> +{
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +	struct dw_pcie *pci = pcie->pci;
+> +	int ret;
+> +
+> +	if (!ls_pcie_pm_check(pcie))
+> +		return 0;
+> +
+> +	ls_pcie_set_dstate(pcie, 0x0);
+> +
+> +	pcie->drvdata->pm_ops->exit_from_l2(pcie);
+> +
+> +	dw_pcie_setup_rc(&pci->pp);
+> +
+> +	/* delay 10 ms to access EP */
+> +	mdelay(10);
+> +
+> +	ret = ls_pcie_host_init(&pci->pp);
+> +	if (ret) {
+> +		dev_err(dev, "ls_pcie_host_init failed! ret = 0x%x\n", ret);
+> +		return ret;
+> +	}
+
+A small nitpick: error messages that are directed at end users should have
+a little more context than just the function name.
+
+	Krzysztof
