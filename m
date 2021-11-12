@@ -2,102 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C0244E66C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF8A44E670
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 13:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhKLMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 07:37:55 -0500
-Received: from mga18.intel.com ([134.134.136.126]:19873 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhKLMhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 07:37:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="220016356"
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="220016356"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 04:35:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="492985802"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 12 Nov 2021 04:35:01 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 56979C5; Fri, 12 Nov 2021 14:35:03 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v1 1/1] i2c: designware: Fix the kernel doc description for struct dw_i2c_dev
-Date:   Fri, 12 Nov 2021 14:34:59 +0200
-Message-Id: <20211112123459.73538-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S234927AbhKLMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 07:37:57 -0500
+Received: from relay08.th.seeweb.it ([5.144.164.169]:50737 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234881AbhKLMh4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 07:37:56 -0500
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 237123F1EA;
+        Fri, 12 Nov 2021 13:35:03 +0100 (CET)
+Date:   Fri, 12 Nov 2021 13:35:01 +0100
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+Subject: Re: [RESEND PATCH v2 04/13] backlight: qcom-wled: Fix off-by-one
+ maximum with default num_strings
+Message-ID: <20211112123501.pz5e6g7gavlinung@SoMainline.org>
+Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>, Bryan Wu <cooloney@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+References: <20211112002706.453289-1-marijn.suijten@somainline.org>
+ <20211112002706.453289-5-marijn.suijten@somainline.org>
+ <20211112120839.i6g747vewg6bkyk7@maple.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112120839.i6g747vewg6bkyk7@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-$ scripts/kernel-doc -none drivers/i2c/busses/i2c-designware-core.h
-warning: Function parameter or member 'rst' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'get_clk_rate_khz' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'flags' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'functionality' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'master_cfg' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'set_sda_hold_time' not described in 'dw_i2c_dev'
-warning: Function parameter or member 'rinfo' not described in 'dw_i2c_dev'
+On 2021-11-12 12:08:39, Daniel Thompson wrote:
+> On Fri, Nov 12, 2021 at 01:26:57AM +0100, Marijn Suijten wrote:
+> > When not specifying num-strings in the DT the default is used, but +1 is
+> > added to it which turns WLED3 into 4 and WLED4/5 into 5 strings instead
+> > of 3 and 4 respectively, causing out-of-bounds reads and register
+> > read/writes.  This +1 exists for a deficiency in the DT parsing code,
+> > and is simply omitted entirely - solving this oob issue - by parsing the
+> > property separately much like qcom,enabled-strings.
+> > 
+> > This also allows more stringent checks on the maximum value when
+> > qcom,enabled-strings is provided in the DT.  Note that num-strings is
+> > parsed after enabled-strings to give it final sign-off over the length,
+> > which DT currently utilizes to get around an incorrect fixed read of
+> > four elements from that array (has been addressed in a prior patch).
+> > 
+> > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > ---
+> >  drivers/video/backlight/qcom-wled.c | 51 +++++++++++------------------
+> >  1 file changed, 19 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > index 977cd75827d7..c5232478a343 100644
+> > --- a/drivers/video/backlight/qcom-wled.c
+> > +++ b/drivers/video/backlight/qcom-wled.c
+> > @@ -1552,6 +1520,25 @@ static int wled_configure(struct wled *wled)
+> >  		}
+> >  	}
+> > 
+> > +	rc = of_property_read_u32(dev->of_node, "qcom,num-strings", &val);
+> > +	if (!rc) {
+> > +		if (val < 1 || val > wled->max_string_count) {
+> > +			dev_err(dev, "qcom,num-strings must be between 1 and %d\n",
+> > +				wled->max_string_count);
+> > +			return -EINVAL;
+> > +		}
+> > +
+> > +		if (string_len > 0) {
+> > +			dev_warn(dev, "qcom,num-strings and qcom,enabled-strings are ambiguous\n");
+> 
+> The warning should also be below the error message on the next if statement.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/busses/i2c-designware-core.h | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Agreed.
 
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 60a2e750cee9..4b26cba40139 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -191,23 +191,26 @@ struct reset_control;
-  * @cmd_complete: tx completion indicator
-  * @clk: input reference clock
-  * @pclk: clock required to access the registers
-+ * @rst: optional reset for the controller
-  * @slave: represent an I2C slave device
-+ * @get_clk_rate_khz: callback to retrieve IP specific bus speed
-  * @cmd_err: run time hadware error code
-  * @msgs: points to an array of messages currently being transferred
-  * @msgs_num: the number of elements in msgs
-- * @msg_write_idx: the element index of the current tx message in the msgs
-- *	array
-+ * @msg_write_idx: the element index of the current tx message in the msgs array
-  * @tx_buf_len: the length of the current tx buffer
-  * @tx_buf: the current tx buffer
-- * @msg_read_idx: the element index of the current rx message in the msgs
-- *	array
-+ * @msg_read_idx: the element index of the current rx message in the msgs array
-  * @rx_buf_len: the length of the current rx buffer
-  * @rx_buf: the current rx buffer
-  * @msg_err: error status of the current transfer
-  * @status: i2c master status, one of STATUS_*
-  * @abort_source: copy of the TX_ABRT_SOURCE register
-  * @irq: interrupt number for the i2c master
-+ * @flags: platform specific flags like type of IO accessors or model
-  * @adapter: i2c subsystem adapter node
-+ * @functionality: I2C_FUNC_* ORed bits to reflect what controller does support
-+ * @master_cfg: configuration for the master device
-  * @slave_cfg: configuration for the slave device
-  * @tx_fifo_depth: depth of the hardware tx fifo
-  * @rx_fifo_depth: depth of the hardware rx fifo
-@@ -228,7 +231,9 @@ struct reset_control;
-  * @disable: function to disable the controller
-  * @disable_int: function to disable all interrupts
-  * @init: function to initialize the I2C hardware
-+ * @set_sda_hold_time: callback to retrieve IP specific SDA hold timing
-  * @mode: operation mode - DW_IC_MASTER or DW_IC_SLAVE
-+ * @rinfo: I²C GPIO recovery information
-  * @suspended: set to true if the controller is suspended
-  *
-  * HCNT and LCNT parameters can be used if the platform knows more accurate
--- 
-2.33.0
+> This warning occurs even when there is no ambiguity.
+> 
+> This could be:
+> 
+> 	if (string_len > 0 && val != string_len)
+> 
+> Combined these changes allows us to give a much more helpful and assertive
+> warning message:
+> 
+> qcom,num-strings mis-matches and will partially override
+> qcom,enabled-strings (remove qcom,num-strings?)
 
+I want to let the user know it's set regardless of whether they're
+equivalent; no need to set both.
+
+How about:
+
+    Only one of qcom,num-strings or qcom,enabled-strings should be set
+
+That should be more descriptive?  Otherwise, let me know if you really
+want to allow users to (unnecessarily) set both - or if it can / should
+be caught in DT validation instead.
+
+- Marijn
+
+> > +			if (val > string_len) {
+> > +				dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
+> > +				return -EINVAL;
+> > +			}
+> > +		}
+> 
+> 
+> Daniel.
