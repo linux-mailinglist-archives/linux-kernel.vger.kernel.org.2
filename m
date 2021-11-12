@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD8844EE4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1617944EE51
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhKLVGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:06:50 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:55972 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232902AbhKLVGt (ORCPT
+        id S235753AbhKLVGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:06:54 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:52887 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235742AbhKLVGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:06:49 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51]:60772)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mldiG-000PLF-Ip; Fri, 12 Nov 2021 14:03:57 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42346 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mldiE-005q4x-MH; Fri, 12 Nov 2021 14:03:55 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Brian Gerst <brgerst@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch\/x86 maintainers" <x86@kernel.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-9-ebiederm@xmission.com>
-        <874k8htmb2.fsf@email.froward.int.ebiederm.org>
-        <CAMzpN2jkK5sAv-Kg_kVnCEyVySiqeTdUORcC=AdG1gV6r8nUew@mail.gmail.com>
-        <87ilwxrvu9.fsf@email.froward.int.ebiederm.org>
-        <CAHk-=widK1vko2EN9PtV3jTo02u-expXxozui-fsK-0uKrcGHg@mail.gmail.com>
-Date:   Fri, 12 Nov 2021 15:03:47 -0600
-In-Reply-To: <CAHk-=widK1vko2EN9PtV3jTo02u-expXxozui-fsK-0uKrcGHg@mail.gmail.com>
-        (Linus Torvalds's message of "Fri, 12 Nov 2021 12:40:48 -0800")
-Message-ID: <87ee7lqe6k.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 12 Nov 2021 16:06:52 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D495032006F5;
+        Fri, 12 Nov 2021 16:04:00 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 12 Nov 2021 16:04:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=8FPYXt
+        YY8uMK6gqNCM+Tfz9ygESeiWIujQT9sQlrWCQ=; b=jjc6aydAZiU4si6xn1cHmj
+        OV3/K2KFFqqZT9MosJWJAicnWvse2/7lciSG7tXTWtGXAVK1zYf1fdIkCfO71Qsg
+        T8j7jqThjbgQiLNGs0pwk/8nZjfGKqKzq6Vz08S5oAPL+c+58cd16VucVQ9a/DdX
+        p6XPNzfGniCErpx37tD6ChyTEwXncBiBYrH7o8rkDJU/3YOBhEPrPEfDRB822i6o
+        lnleGV/LWc01GtFPMkjG5xYCkLYCteXnbOzmTtg5euOXNDcLCK5ixwSF7aCQtuyF
+        tCgMwvC16brPiQg7cnwQ/o6/famn9pzJgwOWfy8UCXkC0kB/1ix4AEbWH3fzAFlA
+        ==
+X-ME-Sender: <xms:v9aOYVX94JxMj5_H_XJD6iyU9whVgFp9sf85c2QU825wJO9S8Du12A>
+    <xme:v9aOYVlXuHf4PStuQTu3SLUwAVnBT0pTnP9PeUPcGg1eHIWX-YjkCnKQQykMD_cHG
+    22bckA4P6FQNedUKqI>
+X-ME-Received: <xmr:v9aOYRZ_Y0PWhxfW_uP_huB7DhyvwDuiblaJNs6_uV1MXZ-Q-G98EBneV9NXehYrsI0tIOz1fPFn4HEKckgO1D1cYe3sCXltSSo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdefgddugeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:v9aOYYVMtpZgVlgIrLY9CJbHzJgpgpTLaiGP8r77G6wcL3_c0dVYOw>
+    <xmx:v9aOYfnWPRHFR9KWh_p6Dt22zqMOXp4Z_WrD1WnWbxZRd8zJsVkZHg>
+    <xmx:v9aOYVfa6oKK3xavmdBqFJyxGOIxw34xt4H8RIdBKBx4KYg0FQYf2Q>
+    <xmx:wNaOYYCiHzIep0uKiIb0Ih0f4BSVCHSL2Mys_ukFZtXhfBo2S_bnyw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Nov 2021 16:03:57 -0500 (EST)
+Date:   Sat, 13 Nov 2021 08:03:52 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH] m68k: Enable memtest functionality
+In-Reply-To: <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
+Message-ID: <9a70775c-25f8-a7e5-43b6-5aa385bf729f@linux-m68k.org>
+References: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org> <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mldiE-005q4x-MH;;;mid=<87ee7lqe6k.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/0weWzQHy+vPmnfGK2Bbf/rbjlXYKZyIU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4996]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 539 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 9 (1.7%), b_tie_ro: 8 (1.5%), parse: 0.76 (0.1%),
-        extract_message_metadata: 14 (2.5%), get_uri_detail_list: 0.93 (0.2%),
-        tests_pri_-1000: 24 (4.5%), tests_pri_-950: 1.22 (0.2%),
-        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 261 (48.5%), check_bayes:
-        260 (48.2%), b_tokenize: 6 (1.1%), b_tok_get_all: 6 (1.1%),
-        b_comp_prob: 1.95 (0.4%), b_tok_touch_all: 243 (45.1%), b_finish: 0.78
-        (0.1%), tests_pri_0: 216 (40.0%), check_dkim_signature: 0.47 (0.1%),
-        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 0.62 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 09/20] signal/vm86_32: Replace open coded BUG_ON with an actual BUG_ON
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Fri, 12 Nov 2021, Geert Uytterhoeven wrote:
 
-> On Fri, Nov 12, 2021 at 11:57 AM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
->>
->> Still user space would have had to have mapped address 0 to get that
->> value set in do_sys_vm86.
->
-> You have to map address 0 anyway just to get vm86 mode to work.
->
-> vm86 mode fundamentally requires the low 1MB of virtual memory to be
-> mapped, since there is no virtual memory offset in the vm86 model.
+> > index 9f3f77785aa7..5b6575eb6d02 100644
+> > --- a/arch/m68k/mm/motorola.c
+> > +++ b/arch/m68k/mm/motorola.c
+> > @@ -455,6 +455,8 @@ void __init paging_init(void)
+> >
+> >         flush_tlb_all();
+> >
+> > +       early_memtest(min_addr, max_addr);
+> 
+> So this is available only if MMU_MOTOROLA, not for Sun-3, Coldfire, or 
+> nommu.
+> 
 
-True.
-
-However that also means if struct vm86plus_struct is at address 0
-instead of the 16bit interrupt table something is badly wrong.
-
-Still if we are going to check for userspace being silly that it should
-be in do_sys_vm86.
-
-I have managed to get the fuzzer that hit the problem to run and with
-the test for !vm86->user_vm86 removed the BUG_ON is not being hit.
-
-I am going to keep running it for a bit just to make certain, and
-then I will put together a proper patch.
-
-Eric
+That's because I can't test the others. If anyone would be willing to test 
+a patch like this for Coldfire etc., please let me know and I'll send one.
