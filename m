@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F303744E389
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78A844E38C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 09:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhKLJAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:00:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232841AbhKLJAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:00:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEACC60174;
-        Fri, 12 Nov 2021 08:57:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636707461;
-        bh=qwF10LzYUh/5T7JHWf40NdpKnvbq6HmmRAes4RqYG9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RkzpijkuJR7isJmsqb3vJObv84vsHuJCywYtLAewq/l6RU795dN/5TonQ5smxvnhx
-         nTqGqoxHalnd3THNbe1cpphNzNlOke9k3BJk7gYBr6EvgvpV+uPy9CykqBcLgH3O7h
-         qy+uwz2gPs43olIlXLFi3whrLrINZp0Z7CtHV0cM=
-Date:   Fri, 12 Nov 2021 09:57:38 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aayush Agarwal <aayush.a.agarwal@oracle.com>
-Cc:     Evan Xuan <jian.xuan@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Lee Jones <lee.jones@linaro.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: cavium/nitrox - Fix 'File exists' error in
- 'nitrox_probe()'
-Message-ID: <YY4sgh89YZNpIjGt@kroah.com>
-References: <20211112085401.29306-1-aayush.a.agarwal@oracle.com>
+        id S234697AbhKLJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:01:01 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:58914 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232841AbhKLJA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 04:00:58 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9011721B19;
+        Fri, 12 Nov 2021 08:58:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636707486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GkR05k/DFv96yXZ/lJqoljojL8CyJn6KLqBUIDP3Z+w=;
+        b=a/xykZk+UMhhumwe44SfoAxX9MWc8wbnfDMF0R08z5/IQS52lnWPpK7SL4TDXXMo06fBtM
+        NL1A653z0Tfn9EwjsKxwdqgMcF4/mLlNnsb5KJDRFfcKexusg610SfPsqoEs5B+lO5pfhn
+        99WTvZx3A9jR+QMYhgw9a2HhJVFWcn8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 41233A3B81;
+        Fri, 12 Nov 2021 08:58:06 +0000 (UTC)
+Date:   Fri, 12 Nov 2021 09:58:05 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
+ exit_mmap
+Message-ID: <YY4snVzZZZYhbigV@dhcp22.suse.cz>
+References: <CAJuCfpFOOgs9uZSW2Tp6uBW23rLHFeSA8o5WYQ_D_ykUcKL64Q@mail.gmail.com>
+ <YYrLe2u2zbmu4LfL@dhcp22.suse.cz>
+ <CAJuCfpG0d34yRhuvOj9NX9zMp=6jWLqFPfUGV0sOO6OrwNC89A@mail.gmail.com>
+ <YYrQ/hENQPn6Mk3v@dhcp22.suse.cz>
+ <CAJuCfpFT4-mdHHZ2i43hyJQ4dRKb7sRwnAL8GfRnZu3ecE26Ew@mail.gmail.com>
+ <YYrVmi2xdo1Gr2Bb@dhcp22.suse.cz>
+ <CAJuCfpGrYa2Ws4GrVp_nRqVEw8j_cGXk+gprLYUx7NWUOC-uRQ@mail.gmail.com>
+ <CAJuCfpHJnVG7PMhKW-Snz38az-Bv=QCFXa7DxD=KgEMbHJOi6A@mail.gmail.com>
+ <YYzgZARxi8csprIx@dhcp22.suse.cz>
+ <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211112085401.29306-1-aayush.a.agarwal@oracle.com>
+In-Reply-To: <CAJuCfpEK+yruF8D9rzS44N3n6OLASL7nK2dfNj9daWpk-BguwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 12:54:00AM -0800, Aayush Agarwal wrote:
-> When two cavium cards are inserted and on booting OS,
-> nitrox_debugfs_init() is called twice and thus tries to create
-> 'n5pf' directory twice inside '/'. This causes the 'File exists' error.
+On Thu 11-11-21 07:02:42, Suren Baghdasaryan wrote:
+> On Thu, Nov 11, 2021 at 1:20 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 10-11-21 17:49:37, Suren Baghdasaryan wrote:
+> > > On Tue, Nov 9, 2021 at 1:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > >
+> > > > On Tue, Nov 9, 2021 at 12:10 PM Michal Hocko <mhocko@suse.com> wrote:
+> > [...]
+> > > > > Yes, those can run concurrently. One thing I completely forgot about is
+> > > > > 27ae357fa82b ("mm, oom: fix concurrent munlock and oom reaper unmap, v3")
+> > > > > which is about interaction with the munlock.
+> > >
+> > > Agrh! This interaction with the munlock you mentioned requires us to
+> > > take mmap_write_lock before munlock_vma_pages_all and that prevents
+> > > __oom_reap_task_mm from running concurrently with unmap_vmas. The
+> > > reapers would not be as effective as they are now after such a change
+> > > :(
+> >
+> > __oom_reap_task_mm will not run concurrently with unmap_vmas even
+> > with the current code. The mmap_sem barrier right before munlock code
+> > prevents that.
 > 
-> This error was handled before
-> 'commit 97a93b2b5839 ("crypto: cavium/nitrox - no need to check return
-> value of debugfs_create functions")'
-> 
-> This commit handles the error by redirecting the code by checking
-> if 'n5pf' directory exists already using 'debugfs_lookup()' function.
-> 
-> Tested-by: Evan Xuan <jian.xuan@oracle.com>
-> Signed-off-by: Aayush Agarwal <aayush.a.agarwal@oracle.com>
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> index 6c61817996a3..1eee05e30f05 100644
-> --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-> +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> @@ -7,6 +7,7 @@
->  #include <linux/mutex.h>
->  #include <linux/pci.h>
->  #include <linux/pci_ids.h>
-> +#include <linux/debugfs.h>
->  
->  #include "nitrox_dev.h"
->  #include "nitrox_common.h"
-> @@ -479,6 +480,13 @@ static int nitrox_probe(struct pci_dev *pdev,
->  	if (err)
->  		goto pf_hw_fail;
->  
-> +	struct dentry *check_dir = debugfs_lookup(KBUILD_MODNAME, NULL);
-> +
-> +	if (check_dir != NULL) {
-> +		dput(check_dir);
-> +		goto pf_hw_fail;
+> You are right, it will run concurrently with another
+> __oom_reap_task_mm in the exit_mmap. But I thought we wanted to get
+> rid of that call to __oom_reap_task_mm in exit_mmap or did I
+> misunderstand?
 
-Why is this a "failure"?
-
-> +	}
-> +
->  	nitrox_debugfs_init(ndev);
-
-Why not just put the "check" logic in this function instead?
-You want to have per-device directories in debugfs for this device,
-right?  If so, then this function should handle that, not the
-nitrox_probe() call.
-
-thanks,
-
-greg k-h
+I do not remember this to be objective or the motivation. IIRC we wanted
+to make the locking more robust which would help your process_mrelease
+use case. This one currently suffers from a much heavier cost if it
+turns out to be the last holder of the reference count on the address
+space.
+-- 
+Michal Hocko
+SUSE Labs
