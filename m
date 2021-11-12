@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956B644E81D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263DD44E821
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhKLOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:09:01 -0500
-Received: from mga06.intel.com ([134.134.136.31]:13791 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhKLOI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:08:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10165"; a="293960316"
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="293960316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 06:05:55 -0800
-X-IronPort-AV: E=Sophos;i="5.87,229,1631602800"; 
-   d="scan'208";a="504900797"
-Received: from sbacanu-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.217.145])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 06:05:53 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Michel =?utf-8?Q?D=C3=A4nzer?= <michel@daenzer.net>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: Re: [PATCH v5 4/6] drm: Decouple nomodeset from CONFIG_VGA_CONSOLE
-In-Reply-To: <20211112133230.1595307-5-javierm@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211112133230.1595307-1-javierm@redhat.com> <20211112133230.1595307-5-javierm@redhat.com>
-Date:   Fri, 12 Nov 2021 16:05:50 +0200
-Message-ID: <87zgq931vl.fsf@intel.com>
+        id S235090AbhKLOJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:09:26 -0500
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:42725 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhKLOJY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:09:24 -0500
+Received: by mail-ua1-f46.google.com with SMTP id t13so18990409uad.9;
+        Fri, 12 Nov 2021 06:06:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zlta2e0Kmh1OEmvd3Ns7gc/huQsdwkVywjp4rCDaKvw=;
+        b=tvuVggLnq4HZ3iCRBdFIqZcL1+Ba73m9doLMozIvbRtZC/EN3YS1JRO8u/gC5P7mdJ
+         iNIzOofJcu7IK6RM/b/Q8Z2DkLpqP1aNj3xtJbcWRoGVgi7rFOT6ZvJg/sxITOG7jP9b
+         qbMrkI21I5MuX03jNItnatQLfmtQxvgCfehFuBrf//Y0hTuUGuQmHrUhjhFIYL2QRmlF
+         R14033zPnIp12Y38v2mRU+amLfkQuCaFBtrMcGZsvhGbjOMQLQqhV9Cpdb/J1e8UEtcT
+         ShesqXFCcr9TxxZRyV1HmzJCoPDfMA9xT2lYFxRGxopJMoYiE8u5zN6Bx56Zu2Vd56Ke
+         BkiQ==
+X-Gm-Message-State: AOAM533q6Ey4nOEbia7o9t8QPPbHfXjIwWVCD/8O50HxDeC1YYw4UVKw
+        mnFUlN8G4jL3o4CNdywrmAP6JEXhbDujow==
+X-Google-Smtp-Source: ABdhPJy6A+92KiyJNAlg9fiRj626xsjOpMPj6yt29O346KA1PBWTIrkPr/BdMmCtFhUX30DOcmBLBQ==
+X-Received: by 2002:a67:b643:: with SMTP id e3mr10408104vsm.33.1636725993358;
+        Fri, 12 Nov 2021 06:06:33 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id n3sm3986610vkq.6.2021.11.12.06.06.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 06:06:32 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id ay21so18977815uab.12;
+        Fri, 12 Nov 2021 06:06:32 -0800 (PST)
+X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr10590939vsb.9.1636725992447;
+ Fri, 12 Nov 2021 06:06:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211110224622.16022-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211110224622.16022-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Nov 2021 15:06:21 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVGeuabyQPYE2JPMzg_Kt0r-MxFr62SobQNLzFoWLo=8g@mail.gmail.com>
+Message-ID: <CAMuHMdVGeuabyQPYE2JPMzg_Kt0r-MxFr62SobQNLzFoWLo=8g@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] pinctrl: renesas: pinctrl-rzg2l: Add helper
+ functions to read/write pin config
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
-> This relationship was only for historical reasons and the nomodeset option
-> should be available even on platforms that don't enable CONFIG_VGA_CONSOLE.
+Hi Prabhakar,
+
+On Wed, Nov 10, 2021 at 11:46 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add helper functions to read/read modify write pin config.
 >
-> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Acked-by: Jani Nikula <jani.nikula@intel.com>
-> Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> Switch to use helper functions for pins supporting PIN_CONFIG_INPUT_ENABLE
+> capabilities.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
->
-> (no changes since v1)
->
->  drivers/gpu/drm/Kconfig  | 6 ++++++
->  drivers/gpu/drm/Makefile | 2 +-
->  include/drm/drm_drv.h    | 4 ----
->  3 files changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git drivers/gpu/drm/Kconfig drivers/gpu/drm/Kconfig
-> index fb144617055b..483d534eb074 100644
-> --- drivers/gpu/drm/Kconfig
-> +++ drivers/gpu/drm/Kconfig
-> @@ -8,6 +8,7 @@
->  menuconfig DRM
->  	tristate "Direct Rendering Manager (XFree86 4.1.0 and higher DRI support)"
->  	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && HAS_DMA
-> +	select DRM_NOMODESET
->  	select DRM_PANEL_ORIENTATION_QUIRKS
->  	select HDMI
->  	select FB_CMDLINE
-> @@ -493,6 +494,11 @@ config DRM_EXPORT_FOR_TESTS
->  config DRM_PANEL_ORIENTATION_QUIRKS
->  	tristate
->  
-> +# Separate option because nomodeset parameter is global and expected built-in
-> +config DRM_NOMODESET
-> +	bool
-> +	default n
-> +
->  config DRM_LIB_RANDOM
->  	bool
->  	default n
-> diff --git drivers/gpu/drm/Makefile drivers/gpu/drm/Makefile
-> index c74810c285af..fa16d3e0bbdc 100644
-> --- drivers/gpu/drm/Makefile
-> +++ drivers/gpu/drm/Makefile
-> @@ -33,7 +33,7 @@ drm-$(CONFIG_DRM_PRIVACY_SCREEN) += drm_privacy_screen.o drm_privacy_screen_x86.
->  
->  obj-$(CONFIG_DRM_DP_AUX_BUS) += drm_dp_aux_bus.o
->  
-> -obj-$(CONFIG_VGA_CONSOLE) += drm_nomodeset.o
-> +obj-$(CONFIG_DRM_NOMODESET) += drm_nomodeset.o
->  
->  drm_cma_helper-y := drm_gem_cma_helper.o
->  obj-$(CONFIG_DRM_GEM_CMA_HELPER) += drm_cma_helper.o
-> diff --git include/drm/drm_drv.h include/drm/drm_drv.h
-> index 89e26a732175..da0c836fe8e1 100644
-> --- include/drm/drm_drv.h
-> +++ include/drm/drm_drv.h
-> @@ -601,10 +601,6 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
->  
->  int drm_dev_set_unique(struct drm_device *dev, const char *name);
->  
-> -#ifdef CONFIG_VGA_CONSOLE
->  extern bool drm_firmware_drivers_only(void);
+> v2->v3
+> * Dropped duplicate masking in rzg2l_read_pin_config
+> * Dropped port_pin flag
+> * Dropped spinlocks around read/write
 
-I'm not bikeshedding this series anymore, but please follow up with a
-patch removing the extern keyword. It's useless.
+You do need the spinlock in the read-modify-write case.
+No worries, I'll add it back while applying.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.17.
 
-BR,
-Jani.
+Gr{oetje,eeting}s,
 
+                        Geert
 
-> -#else
-> -static inline bool drm_firmware_drivers_only(void) { return false; }
-> -#endif
->  
->  #endif
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
