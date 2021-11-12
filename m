@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8501C44DFDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD69244DFDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 02:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhKLBoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 20:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S232126AbhKLBox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 20:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhKLBow (ORCPT
+        with ESMTP id S229908AbhKLBou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:44:52 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F9AC061766;
-        Thu, 11 Nov 2021 17:42:02 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id m14so31632141edd.0;
-        Thu, 11 Nov 2021 17:42:02 -0800 (PST)
+        Thu, 11 Nov 2021 20:44:50 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEBDC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 17:42:00 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so5838603pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 17:42:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C1DKB9QPoswajpoT5zwf2dnAIQyIiBvEOX2LE4AoRaM=;
-        b=FnY0Zq7uRksikoidOWVyVjuGm/jR9uhk4UCwmn0o1Akz2lm95Gf/LcTNcQ2qxvzItP
-         tzOr3zpPMZhgSybA4LXXWUu0e0AZNv++csiJnLgKpv6wJ+BmaxbPhh+T05x+qt7cT+Mo
-         zHQl6az9oVOlLbXH8i4CIcqgsZm7NphhUwtHxzUxyA4lbVfZTOZNe5127pMdmwBOlJph
-         HpIBKNGb6+MUF0Zi1Xx7jE4rvoPj3FodqMzqPFpUz78Wb/zxqioQcXuvZhwiWLBUSvl6
-         ocUPUnmzloUzkrpUaUr1+x70bZjz2EQkae0ydSa4ZSyRHkDtz3MwHWyoRl/VcZrOJOBb
-         z29g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8/uPIhj4a152zs5ky6AQ+g9VVeaVVjatNXSvVlJ4M8w=;
+        b=jGVvYXLEDwf7XWXN29xWSuesfdQB5MMOhcMxTooJpId4NfOcPDh2MmF7YcTpTJM/Yw
+         nd21pyL3cm/wGdDuZiWkVny0on5DlxNAESk5RNSA4NBr3n774ER4T3EWw/hh2TtErDbM
+         NrHBIb98nMPEkiKja6s40mFtwsgiJiHZvWFr8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C1DKB9QPoswajpoT5zwf2dnAIQyIiBvEOX2LE4AoRaM=;
-        b=ZDEHAfiJElNGoBRzHNpeOLxHLh7hmhlrFYdK2IvmJRay8GFHqS7J3sE6qmuTGNsmJW
-         Je2VnNqgjAyrcjVI04XtwTEoosAdIxlwkNdyJ+fZQmty2cn81494LNTPL9Bv07UfTOLk
-         O8tun5R1IKMMj6/ixOoyMtC7CbSMJxLPc6zqfdH44jT53+s4A+niOmNyKx/lzef+8oQm
-         DpC1cVDZzAxELDERNuutL0QHHO7Kd2m3e/p9fwF6Y5I5piQThZly0TXTz9HUXKK2vo9j
-         +gNPkJ8K+3tKtGgrOMIWKnB2rHK6mVls1pUqP0FnBgNZ4miuIRpDgTfDEQxbIskBqkG4
-         IoyQ==
-X-Gm-Message-State: AOAM532vVvnihTagFdkkB96g2fqEZ/SvKcrqrh+nye6+Qn6fTs+9q9fS
-        LcSmz4Nd0wMjYLqmOlDzAfgo69NWFMme+zvB2w2CSXZG17s=
-X-Google-Smtp-Source: ABdhPJyp+brCCHZoPLdQuR+DxpRxnrLERSJSAhhfU+xiBwZFo4TJH6AZLKCNbvNQ4g2Yv49NsVzKbX/5HHTyvjO5yBY=
-X-Received: by 2002:a50:da48:: with SMTP id a8mr15904831edk.146.1636681321216;
- Thu, 11 Nov 2021 17:42:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8/uPIhj4a152zs5ky6AQ+g9VVeaVVjatNXSvVlJ4M8w=;
+        b=gZhf5SycSyIJoSXI30LP2Z84LST1iqiji8k+l7/VfLsSVnEQmrSUI1J5YVW+/Osm/q
+         eaftHo11e620CekRhwhjUYD0qSna0TbZVpt7zCZt5TgVwaz3aH1FtJGRIOB4DJlpeK9z
+         tgD1dMjN65AVpE+Q2ptqeoeTC6a/sBQpb2xdACjHGCgJUT0f4z+2W/VRdq/ftahWgozu
+         7/2erOJIvyLGC6h9MqF26X5PZ0zbyVGZmi5896q0hp9LGn2XPSGX+pm41kqdAEBkzYvN
+         x6toFDLzLlyQiuA0yu0UQBLbW799rM4I73EbKxZcmwrMRm/H4Lglil08xzN/o3miSF7P
+         fskA==
+X-Gm-Message-State: AOAM531ubFZwLUh14ZMUS4kU484zTaYef0NcDA/qhb3x4F8gjAlJR0VF
+        B6NbCDp6KWN/xxwivZaDTUo89x48JTmebA==
+X-Google-Smtp-Source: ABdhPJySEwe+TRB70395FlI2vkJcM8K0z4UD8H+SEWFS6ye9JiRUvwbe0VT7MHKQ83VNa2JS7VasGg==
+X-Received: by 2002:a17:90a:3b02:: with SMTP id d2mr13066830pjc.159.1636681320128;
+        Thu, 11 Nov 2021 17:42:00 -0800 (PST)
+Received: from google.com ([240f:75:7537:3187:d5e0:1bf2:605:ae8e])
+        by smtp.gmail.com with ESMTPSA id s30sm4387004pfg.17.2021.11.11.17.41.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Nov 2021 17:41:59 -0800 (PST)
+Date:   Fri, 12 Nov 2021 10:41:55 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Wander Lairson Costa <wander@redhat.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v2 1/1] printk: suppress rcu stall warnings caused by
+ slow console devices
+Message-ID: <YY3GY8ZSH5ACaZZS@google.com>
+References: <20211111195904.618253-1-wander@redhat.com>
+ <20211111195904.618253-2-wander@redhat.com>
 MIME-Version: 1.0
-References: <20211111133530.2156478-1-imagedong@tencent.com> <20211111060827.5906a2f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211111060827.5906a2f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 12 Nov 2021 09:40:47 +0800
-Message-ID: <CADxym3bk5+3t9jFmEgCBBYHWvNJx6BJGdjk+-zqiQaJPtLM=Ug@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/2] net: snmp: tracepoint support for snmp
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111195904.618253-2-wander@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On (21/11/11 16:59), Wander Lairson Costa wrote:
+> 
+> If we have a reasonable large dataset to flush in the printk ring
+> buffer in the presence of a slow console device (like a serial port
+> with a low baud rate configured), the RCU stall detector may report
+> warnings.
+> 
+> This patch suppresses RCU stall warnings while flushing the ring buffer
+> to the console.
+> 
+[..]
+> +extern int rcu_cpu_stall_suppress;
+> +
+> +static void rcu_console_stall_suppress(void)
+> +{
+> +	if (!rcu_cpu_stall_suppress)
+> +		rcu_cpu_stall_suppress = 4;
+> +}
+> +
+> +static void rcu_console_stall_unsuppress(void)
+> +{
+> +	if (rcu_cpu_stall_suppress == 4)
+> +		rcu_cpu_stall_suppress = 0;
+> +}
+> +
+>  /**
+>   * console_unlock - unlock the console system
+>   *
+> @@ -2634,6 +2648,9 @@ void console_unlock(void)
+>  	 * and cleared after the "again" goto label.
+>  	 */
+>  	do_cond_resched = console_may_schedule;
+> +
+> +	rcu_console_stall_suppress();
+> +
+>  again:
+>  	console_may_schedule = 0;
+>  
+> @@ -2645,6 +2662,7 @@ void console_unlock(void)
+>  	if (!can_use_console()) {
+>  		console_locked = 0;
+>  		up_console_sem();
+> +		rcu_console_stall_unsuppress();
+>  		return;
+>  	}
+>  
+> @@ -2716,8 +2734,10 @@ void console_unlock(void)
+>  
+>  		handover = console_lock_spinning_disable_and_check();
+>  		printk_safe_exit_irqrestore(flags);
+> -		if (handover)
+> +		if (handover) {
+> +			rcu_console_stall_unsuppress();
+>  			return;
+> +		}
+>  
+>  		if (do_cond_resched)
+>  			cond_resched();
+> @@ -2738,6 +2758,8 @@ void console_unlock(void)
+>  	retry = prb_read_valid(prb, next_seq, NULL);
+>  	if (retry && console_trylock())
+>  		goto again;
+> +
+> +	rcu_console_stall_unsuppress();
+>  }
 
-On Thu, Nov 11, 2021 at 10:08 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-[...]
->
-> I feel like I have seen this idea before. Is this your first posting?
->
-> Would you mind including links to previous discussion if you're aware
-> of any?
-
-This is the first time that I post this patch. Do you mean that someone
-else has done this before? Sorry, I didn't find it~
-
->
-> Regardless:
->
->
-> # Form letter - net-next is closed
->
-> We have already sent the networking pull request for 5.16
-> and therefore net-next is closed for new drivers, features,
-> code refactoring and optimizations. We are currently accepting
-> bug fixes only.
->
-> Please repost when net-next reopens after 5.16-rc1 is cut.
->
-
-Ok, I'll repost it later. By the way, is this idea acceptable? In fact,
-I also introduced the snmp-tracepoint for ICMP, TCP and IP.
-
-Thanks!
-Menglong Dong
-
-> Look out for the announcement on the mailing list or check:
-> http://vger.kernel.org/~davem/net-next.html
->
-> RFC patches sent for review only are obviously welcome at any time.
+May be we can just start touching watchdogs from printing routine?
