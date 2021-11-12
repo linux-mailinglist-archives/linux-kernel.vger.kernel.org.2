@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D60344E0E8
+	by mail.lfdr.de (Postfix) with ESMTP id 58FC244E0E9
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 04:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhKLDyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 22:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S234575AbhKLDyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 22:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhKLDyb (ORCPT
+        with ESMTP id S234545AbhKLDyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 22:54:31 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D50C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 19:51:41 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id z19-20020aa79593000000b0049472f5e52dso5001706pfj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 19:51:41 -0800 (PST)
+        Thu, 11 Nov 2021 22:54:33 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A170C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 19:51:43 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso12828042ybj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 19:51:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dZYNpRCmI52Lfxv1Kj3qct987pZvSTrOpR4mQ6ymhN8=;
-        b=i4cNwQvus/YiDhCC0IHfXGa/XH/0Y8aRqnRNARp5wYC6gEoRAsfbCApJl6NZFokkWe
-         5FGwevkhG6yYNvjl0duKyRom/0IGy7ViK5bBbGRhU+cjW3aUvDJljeCDxIDDfw8lWjk3
-         dbL9rqA/Mfq862JdU9h67Zt6pkJxSIxUQvW6PQr51ffojmbkdUo1oOKMBYR46LLCooez
-         SrxbNcw9Z45F/RHZLGI7McH954PM+X+NWFLiG7H5RDbbI5b96/XN9N6E6vPI0DWnZHoI
-         a+ZWxtTOc1vAwfY+1JCYB4xqO4YJl5GTftIawP8AGxraZw/mUzYlZK0b4iGEbrG86Rti
-         ssAg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=HqqMV268AXgL1rVcGsniXEAH/wkIQoU3POJ40rKEUPc=;
+        b=NEIWIeXqBf8lPIVFFpIPKTVDLKOdFW7L2BnoSw6Ryn19k3x1i+CfrxGWUatEfVT4k4
+         At15y6LSB5Om3/HS/ecUgZ8+pXDuhUvkc0eJCIvJ4OT0b9XOINsQ6jNAd2eGmfiO/OqE
+         wNQJkBTZrZIW7n7Hx97Y29BeJqTgdDrr53DO5SmxS62kqP2nghkbWJkRVapmXhWJD0zJ
+         5cizopKqu0/pMkhZKNnRNf1nqWiICGcDSht8EYAcQKVfOeg5muBVnzAq8r2ZFU77jzuN
+         N9vyxbxLSLkxPNiJ+pBwRAg/y4HO4ZhNCbMV2+oKNAhmH5kTlbY5uiej9BhBp9mEGBJa
+         TJNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dZYNpRCmI52Lfxv1Kj3qct987pZvSTrOpR4mQ6ymhN8=;
-        b=VWsZ8S3mveXSznoTyfBpkLz6oiPQGtF/HvjnXrb+1LMXXQI4zlBAnT1eMvY1rueUrO
-         OsykqXLUoKl0E9pQRLYOZh8jVTxEiu1Eie5DpU2pkTb6+BTz8Rt60B9w5OYJbF/FcWGm
-         rNMgTug/e83jhNWkb83fYp903oJmkCnYlB54RKj2GaYY2C7Obvdvk/prbMEXZ0zyEIWm
-         9Bx0emXL/lBBcnk9nMT3bOoEcZkMnsD4DSp12ohOjIxARTST1jjfvUCyoh19mlpgXj7Z
-         1Bhujn5Rpd7HtpZje7pDOcAI93DaDxMU/0KtVoSMCkLstrqHYNDPWBcP/0uNUYfiS/vr
-         /zdg==
-X-Gm-Message-State: AOAM533LrAUjEWBSd9kfRTZurD5s8+mzjviTxecYeadXsVHPuKP9oYu6
-        kbeMELdKD2PRZdSpmPjvf/Ho8i2gC3O3
-X-Google-Smtp-Source: ABdhPJz+k3+zNqvB/iPXMR9Ncht2dhzxLGzJA6paC6lYLz7qyPX3/tUCCwv/Qwz2Cii71Hhwbj4dEICz7VYQ
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=HqqMV268AXgL1rVcGsniXEAH/wkIQoU3POJ40rKEUPc=;
+        b=hrtfXCTWxlxXPjHbeiDL3ED50BAX/XFpjYY7KpdgBzAAK+1V2j0PhbtgJeaVxPP8+q
+         0ANMGGf9ugHeLRPk1AopU2Me3LYk6WmJjITJte0l9q2tmb+0WR2ywxNTUrZun0piLkY4
+         ngTz3bIz0GRQGv9H9fB95AJjChVxT4NwqGcyQ83J3rzBflMRdvrX9yjBitBq2oCsBtdy
+         Zva1ssxpP+tvkBMxnh7yfVy4oSaSefsFunBERD63N/92etETJ4PPG5EBCPqF8e2TvB29
+         S/YdSCXeMruuAxbwVz58pF5qdp0JknNLiZAUaJvCuvgjc4u5uFfpQbAGG9UgbmEtNy7d
+         mNcA==
+X-Gm-Message-State: AOAM530XKS9GXO0sthJeY4Ipmt8jDH86PyiUG359cI4vcWP84sih10Et
+        fY6OeVesRWORRT0u86zh4qQ2pxToAPrb
+X-Google-Smtp-Source: ABdhPJwoMeiSlF2KwM8I7iD9tp9PXpkFePSIlADswSv/USkurc160W1Dul+x7g1pjUAHGTmeg1GX/yA/+DwO
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:5ce9:74ca:7ed9:75f2])
- (user=irogers job=sendgmr) by 2002:a63:2683:: with SMTP id
- m125mr7988050pgm.277.1636689100511; Thu, 11 Nov 2021 19:51:40 -0800 (PST)
-Date:   Thu, 11 Nov 2021 19:51:22 -0800
-Message-Id: <20211112035124.94327-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:944:: with SMTP id u4mr13771731ybm.31.1636689102376;
+ Thu, 11 Nov 2021 19:51:42 -0800 (PST)
+Date:   Thu, 11 Nov 2021 19:51:23 -0800
+In-Reply-To: <20211112035124.94327-1-irogers@google.com>
+Message-Id: <20211112035124.94327-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20211112035124.94327-1-irogers@google.com>
 X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH 1/3] perf symbols: Add documentation to struct symbol.
+Subject: [PATCH 2/3] perf symbols: Bit pack to save a byte
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -66,54 +70,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor some existing comments and then infer the rest.
+Use a bit field alongside the earlier bit fields.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/symbol.h | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ tools/perf/util/annotate.c | 2 +-
+ tools/perf/util/symbol.h   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 8511af55fc3a..5d982933b3a2 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -3132,7 +3132,7 @@ int symbol__annotate2(struct map_symbol *ms, struct evsel *evsel,
+ 	notes->nr_events = nr_pcnt;
+ 
+ 	annotation__update_column_widths(notes);
+-	sym->annotate2 = true;
++	sym->annotate2 = 1;
+ 
+ 	return 0;
+ 
 diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
-index 166196686f2e..3586fa549f44 100644
+index 3586fa549f44..fbf866d82dcc 100644
 --- a/tools/perf/util/symbol.h
 +++ b/tools/perf/util/symbol.h
-@@ -40,22 +40,33 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
- 			     GElf_Shdr *shp, const char *name, size_t *idx);
- #endif
- 
--/** struct symbol - symtab entry
-- *
-- * @ignore - resolvable but tools ignore it (e.g. idle routines)
-+/**
-+ * A symtab entry. When allocated this may be preceded by an annotation (see
-+ * symbol__annotation), a browser_index (see symbol__browser_index) and rb_node
-+ * to sort by name (see struct symbol_name_rb_node).
-  */
- struct symbol {
- 	struct rb_node	rb_node;
-+	/** Range of symbol [start, end). */
- 	u64		start;
- 	u64		end;
-+	/** Length of the string name. */
- 	u16		namelen;
-+	/** ELF symbol type as defined for st_info. E.g STT_OBJECT or STT_FUNC. */
- 	u8		type:4;
-+	/** ELF binding type as defined for st_info. E.g. STB_WEAK or STB_GLOBAL. */
- 	u8		binding:4;
-+	/** Set true for kernel symbols of idle routines. */
- 	u8		idle:1;
-+	/** Resolvable but tools ignore it (e.g. idle routines). */
+@@ -62,10 +62,10 @@ struct symbol {
  	u8		ignore:1;
-+	/** Symbol for an inlined function. */
+ 	/** Symbol for an inlined function. */
  	u8		inlined:1;
-+	/** Architecture specific. Unused except on PPC where it holds st_other. */
- 	u8		arch_sym;
 +	/** Has symbol__annotate2 been performed. */
- 	bool		annotate2;
-+	/** The name of length namelen associated with the symbol. */
++	u8		annotate2:1;
+ 	/** Architecture specific. Unused except on PPC where it holds st_other. */
+ 	u8		arch_sym;
+-	/** Has symbol__annotate2 been performed. */
+-	bool		annotate2;
+ 	/** The name of length namelen associated with the symbol. */
  	char		name[];
  };
- 
 -- 
 2.34.0.rc1.387.gb447b232ab-goog
 
