@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EA244E928
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8804D44E92B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235197AbhKLOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235087AbhKLOuZ (ORCPT
+        id S235228AbhKLOuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:50:46 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40606 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235087AbhKLOuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:50:25 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F0DC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:47:34 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id v64so24260417ybi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TENmM+b+eVB4P/zDy3UnHYAYthCGpmUgpPD+yn3PYxo=;
-        b=O+i3XUXHLL/m8rmepquFi+6eguZx4OkpUQPHVHCmZyUwQhlJaYMJKqxT5Jrvfe2DyL
-         Sj0x2M4hfDfrD68DgP2J/V5fEqU12AyJi+ESItEbK9oaljgtKpCywmWdLJjukvSkXGbx
-         Zp0iQ0BnF67J3MzTe1FXx8OAxqC9qJ9m7HYjMkind+iEjDAkFuSwUgFjbnfQHUDojSIe
-         DWvXnNDycyB0UfoHC43IsnPR3TGapGjNlcb8WSrhlYR5BIORw6MNe9S3GwPBS1M6Rknj
-         lvIaS9wnHwoahepz4lyHKEH6Vi2W1TZNWpcPXIQeUVRl3i8Yc2Y9wv4fx1XR6kQW4+PT
-         XDxQ==
+        Fri, 12 Nov 2021 09:50:44 -0500
+Received: by mail-ot1-f54.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so6188430otj.7;
+        Fri, 12 Nov 2021 06:47:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TENmM+b+eVB4P/zDy3UnHYAYthCGpmUgpPD+yn3PYxo=;
-        b=4VDfY6UYU2WfWIfoe+v1Mpkvy3ZatnclDdApURPi/s3I7MSR1Ih8JxbTty5KmT5HOC
-         oxSqqRv2ugUbn+WLOUkgc38hub6aHeRwdZ00ZB/t30GYJXgYIuACoSsXeaiSg6SFAz7l
-         HyKUtZ05I72kyKkG7lB8KnKK+bZac/NlfiP/P0p20gh2SLZb5fLPdlLblSDNZ+1mvsRm
-         UxMCCOmn7vNOaAx5FN+Z0lNhEEpwK32SU5MlH1MPZ4cssoGL4lKVMVvHsLBGqUv9K/7p
-         P0CDjkToSxOcvIXx2p3fQtZ8JKXWARSYMcVWW5hI87Q+X8xCN0ycaUwOjzeF5QnCKe+t
-         y16g==
-X-Gm-Message-State: AOAM533zh/yvMBAmMpIxfmtH6b+Lsf4Xv0GKbNcFWM1v37ZZl93trW8p
-        L/WI/5P2oHQ2bBzrrA0UKdLr9zPetSqlHXZAz9+dsA==
-X-Google-Smtp-Source: ABdhPJyh5TF/DwwKqzgxh8Tkv3gOV8eNhc/bSA1ckZk9WWW2t6NPAlExmeAU4mO3ERQGTCNKQXOcOL+TucuVH7fVCaU=
-X-Received: by 2002:a25:2157:: with SMTP id h84mr17857692ybh.425.1636728452458;
- Fri, 12 Nov 2021 06:47:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MqpVUsLYNqsJjO4ImeTejjx8SUZnfDjbhJPSiiUyJOQ=;
+        b=A1p7E+UYgvNA54JZTL1hP/+5/+sFOb/b2Fk0QJ/RLnZzUU0iWjaEZU56xUIOP4BVUX
+         XUx1NKwBk3bN45K7/NRWrD4V5Eidlr14V/RrKdWsa0ReBYJPO+oShdGZYzX4beeO4fvI
+         Kje0iB5JKToZBtuYnjVZ5qYRB0VhbA3lv+DVDb0KxInI1g4gxSTaY7GJFO5qr9cRB/Hw
+         Tb9shpKUAKKq4pG/WrUzQFQZ1uttrS0SNKv1fY+M8pe7Ika9U//D7rmg5QSojxftLwOg
+         dgMKSF07HFmWSlHodjeC9oi9K40VNZmsgseQtmKWDkGdey7FlzwN4IIpaYzoarCH/ZNo
+         mPUg==
+X-Gm-Message-State: AOAM530EBSYF6+HZUMEYAkAoGg+hRv1nySj2zKVKjAtOQLmtz/NA2gRZ
+        uy/7qQGYk9Ldwi67b6NPTA==
+X-Google-Smtp-Source: ABdhPJzDQAhXlkjwRvi5urW+7d003gcUAFjnSG2AHX4B3iXy467gNUrRe93n1Idba1w8d58aLwaeMw==
+X-Received: by 2002:a9d:326:: with SMTP id 35mr11139198otv.41.1636728473571;
+        Fri, 12 Nov 2021 06:47:53 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g26sm1280650ots.25.2021.11.12.06.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 06:47:52 -0800 (PST)
+Received: (nullmailer pid 2736205 invoked by uid 1000);
+        Fri, 12 Nov 2021 14:47:46 -0000
+Date:   Fri, 12 Nov 2021 08:47:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        David Airlie <airlied@linux.ie>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-mips@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
+        Kees Cook <keescook@chromium.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        letux-kernel@openphoenux.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>,
+        Harry Wentland <harry.wentland@amd.com>
+Subject: Re: [PATCH v6 3/8] dt-bindings: display: Add ingenic,jz4780-dw-hdmi
+ DT Schema
+Message-ID: <YY5+kgNRlKHIGPlO@robh.at.kernel.org>
+References: <cover.1636573413.git.hns@goldelico.com>
+ <70f2abb5277369721cb352eb50daa407bee3fd04.1636573413.git.hns@goldelico.com>
+ <1636642646.871896.3774079.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20211112095857.7016-1-vincent.guittot@linaro.org>
- <20211112095857.7016-2-vincent.guittot@linaro.org> <YY56RBQR912S6ScC@hirez.programming.kicks-ass.net>
-In-Reply-To: <YY56RBQR912S6ScC@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 12 Nov 2021 15:47:21 +0100
-Message-ID: <CAKfTPtCGnQc+knLbm=zR-a5T2yEJOZo3CWTJcwHgGdZQ0uYyog@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com, joel@joelfernandes.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636642646.871896.3774079.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 at 15:29, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Nov 12, 2021 at 10:58:56AM +0100, Vincent Guittot wrote:
-> > In case we skip the newly idle LB entirely or we abort it because we are
-> > going to exceed the avg_idle, we have to make sure to not start an update
-> > of the blocked load when entering idle
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Thu, Nov 11, 2021 at 08:57:26AM -0600, Rob Herring wrote:
+> On Wed, 10 Nov 2021 20:43:28 +0100, H. Nikolaus Schaller wrote:
+> > From: Sam Ravnborg <sam@ravnborg.org>
+> > 
+> > Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+> > Based on .txt binding from Zubair Lutfullah Kakakhel
+> > 
+> > We also add add generic ddc-i2c-bus to synopsys,dw-hdmi.yaml
+> > 
+> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: devicetree@vger.kernel.org
 > > ---
-> >  kernel/sched/fair.c | 18 ++++++++++++++----
-> >  1 file changed, 14 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 13950beb01a2..a162b0ec8963 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -10861,7 +10861,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >       int this_cpu = this_rq->cpu;
-> >       u64 t0, t1, curr_cost = 0;
-> >       struct sched_domain *sd;
-> > -     int pulled_task = 0;
-> > +     int pulled_task = 0, early_stop = 0;
-> >
-> >       update_misfit_status(NULL, this_rq);
-> >
-> > @@ -10898,8 +10898,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >       if (!READ_ONCE(this_rq->rd->overload) ||
-> >           (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
-> >
-> > -             if (sd)
-> > +             if (sd) {
-> >                       update_next_balance(sd, &next_balance);
-> > +
-> > +                     /*
-> > +                      * We skip new idle LB because there is not enough
-> > +                      * time before next wake up. Make sure that we will
-> > +                      * not kick NOHZ_NEWILB_KICK
-> > +                      */
-> > +                     early_stop = 1;
-> > +             }
-> >               rcu_read_unlock();
-> >
-> >               goto out;
-> > @@ -10918,8 +10926,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >
-> >               update_next_balance(sd, &next_balance);
-> >
-> > -             if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
-> > +             if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
-> > +                     early_stop = 1;
-> >                       break;
-> > +             }
-> >
-> >               if (sd->flags & SD_BALANCE_NEWIDLE) {
-> >
-> > @@ -10969,7 +10979,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >
-> >       if (pulled_task)
-> >               this_rq->idle_stamp = 0;
-> > -     else
-> > +     else if (!early_stop)
-> >               nohz_newidle_balance(this_rq);
-> >
-> >       rq_repin_lock(this_rq, rf);
->
-> Urgh code flow is a mess... Let me see if I can fix some of that.
+> >  .../display/bridge/synopsys,dw-hdmi.yaml      |  3 +
+> >  .../bindings/display/ingenic-jz4780-hdmi.yaml | 76 +++++++++++++++++++
 
-yeah, I haven't find a better way
+This goes in display/bridge/. And use compatible string for the file 
+name: ingenic,jz4780-hdmi.yaml
 
->
-> Anyway, does nohz_newidle_balance() want to loose it's ->avg_idle test
-> with this on?
+> >  2 files changed, 79 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml:36:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.example.dt.yaml: hdmi@10180000: 'clock-names', 'ddc-i2c-bus', 'interrupt-parent', 'interrupts', 'reg' do not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
 
-This test still covers cases with short newly idle balance. Being
-conservative, people never complained that the update of blocked load
-average of idle CPUs doesn't happen often enough. It's most often the
-opposite
+I think you need to use 'unevaluatedPropertes' instead of 
+'additionalProperties' if you are getting these properties from 
+synopsys,dw-hdmi.yaml.
+
+Rob
