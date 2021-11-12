@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B569C44E204
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729AC44E20B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 07:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhKLGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 01:45:29 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58174 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhKLGp1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 01:45:27 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AC6gUr7056414;
-        Fri, 12 Nov 2021 00:42:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1636699350;
-        bh=1P38wV/BK74lYrHDkeWs2IVOShjF3pDbyYeEWfZZ0D0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qB+dbLhmXC/HK0CRWnlCQNpu7m7uvzFQJ4U0EK0Nf0c59PeVoNStUgSByoQEEfpZZ
-         UpCg/6gIkT3petBzN19W1jbJJfzYuZqMOuhBArp9jvLjbuIMC9KuJHjnzasjNT7T51
-         xvcegTvRfQ2+b8bD6irThRrsaj6gKbOO4g1mkYzc=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AC6gUME082454
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Nov 2021 00:42:30 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 12
- Nov 2021 00:42:30 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 12 Nov 2021 00:42:30 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AC6gUeb049000;
-        Fri, 12 Nov 2021 00:42:30 -0600
-Date:   Fri, 12 Nov 2021 00:42:30 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Vihas Mak <makvihas@gmail.com>
-CC:     <ssantosh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] soc: ti: Use DEFINE_DEBUGFS_ATTRIBUTE
-Message-ID: <20211112064230.c6acyxudgbs7lmsf@predator>
-References: <20211110191707.GA98778@makvihas>
+        id S232710AbhKLGvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 01:51:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230259AbhKLGvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 01:51:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55E3D60F45;
+        Fri, 12 Nov 2021 06:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636699731;
+        bh=qXKu3Oe2wMvXvs1f/dFwbf2Z0G6CVAGucvDoGOiPeyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1IWVkOD+N2zw7/XHibGVlA4XQGlT5LpWnWjy3MrcML8q/p2jkH8fCLFKmiw4v6n77
+         yrvbSuh7jNlnskjVDGNd3NAKoSGbKMqco3hIOw3xzXVcsIRxYcnbWIxuwQdZIDh6+O
+         0Wfr/VvROtR/uoBwsdlvxHKm/h55i3ehDwtaFoMM=
+Date:   Fri, 12 Nov 2021 07:48:47 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jack Pham <jackp@codeaurora.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] usb: gadget: f_fs: Use stream_open() for endpoint
+ files
+Message-ID: <YY4OT37EoO23s+Hm@kroah.com>
+References: <20211111120636.GA11612@hu-pkondeti-hyd.qualcomm.com>
+ <1636632958-22802-1-git-send-email-quic_pkondeti@quicinc.com>
+ <YY0WvD57FGums0a8@kroah.com>
+ <20211112031730.GB11612@hu-pkondeti-hyd.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110191707.GA98778@makvihas>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20211112031730.GB11612@hu-pkondeti-hyd.qualcomm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 00:47-20211111, Vihas Mak wrote:
-> Use DEFINE_DEBUGFS_ATTRIBUTE instead of DEFINE_SIMPLE_ATTRIBUTE as
-> pm_sr_fops is used to create a debugfs file.
+On Fri, Nov 12, 2021 at 08:47:30AM +0530, Pavan Kondeti wrote:
+> Hi Greg,
 > 
-> This solves following warning generated by coccicheck:
+> On Thu, Nov 11, 2021 at 02:12:28PM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 11, 2021 at 05:45:56PM +0530, Pavankumar Kondeti wrote:
+> > > Function fs endpoint files does not have the notion of file position.
+> > > So switch to stream like functionality. This allows concurrent threads
+> > > to be blocked in the ffs read/write operations which use ffs_mutex_lock().
+> > > The ffs mutex lock deploys interruptible wait. Otherwise, threads are
+> > > blocking for the mutex lock in __fdget_pos(). For whatever reason, ff the
+> > > host does not send/receive data for longer time, hung task warnings
+> > > are observed.
+> > 
+> > So the current code is broken?  What commit caused it to break?
 > 
-> ./drivers/soc/ti/smartreflex.c:815:0-23: WARNING: pm_sr_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+> This is not a serious bug that can affect functionality. if hung_task_panic
+> sysctl is not enabled, probably nobody would notice this except an obscure
+> warning in the kernel dmesg log. It is all about the task state while
+> it is blocked for I/O. The function fs code uses interruptible wait but
+> we are not reaching there and getting blocked at VFS layer due to the below
+> commit introduced from 3.14 kernel.
 > 
-> Signed-off-by: Vihas Mak <makvihas@gmail.com>
-> ---
->  drivers/soc/ti/smartreflex.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> commit 9c225f2655e36a470c4f58dbbc99244c5fc7f2d4
+> Author: Linus Torvalds <torvalds@linux-foundation.org>
+> Date:   Mon Mar 3 09:36:58 2014 -0800
 > 
-> diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
-> index b5b2fa538..14b69307d 100644
-> --- a/drivers/soc/ti/smartreflex.c
-> +++ b/drivers/soc/ti/smartreflex.c
-> @@ -812,7 +812,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
->  	return 0;
->  }
->  
-> -DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
-> +DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
->  			omap_sr_autocomp_store, "%llu\n");
->  
+>     vfs: atomic f_pos accesses as per POSIX
+> 
+>     Our write() system call has always been atomic in the sense that you get
+>     the expected thread-safe contiguous write, but we haven't actually
+>     guaranteed that concurrent writes are serialized wrt f_pos accesses, so
+>     threads (or processes) that share a file descriptor and use "write()"
+>     concurrently would quite likely overwrite each others data.
+> 
+> We have uncovered this issue via customer bug report which happens very rarely.
+> It only happens like when host does not pull the data for a very long time.
+> Since function fs does not care about file position, thought stream_open()
+> is the right thing to do here.
+> 
+> > 
+> > Doesn't this change cause a change in behavior for existing userspace
+> > tools, or will they still work as-is?
+> > 
+> 
+> I don't think it affects user space as it just changes the task state from 
+> UNINTERRUPTIBLE to INTERRUPTIBLE while waiting for the USB transfers to
+> finish. However there is a slight change to the O_NONBLOCK behavior.
+> Earlier threads that are using O_NONBLOCK are also getting blocked
+> inside fdget_pos(). Now they reach to f_fs and error code is returned. IOW,
+> we are actually fixing the non blocking behavior here.
+> 
+> PS: I believe you asked these questions since the commit description does not
+> cover it. I can happily add all this information to it. Since it is all historical,
+> I did not mention it.
 
-Same as https://lore.kernel.org/linux-arm-kernel/1619523673-120782-1-git-send-email-yang.lee@linux.alibaba.com/
+Please add all of this to the commit log description so that we can
+properly understand it in the future.
 
-Santosh: could you pick the original patch up?
+thnaks,
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+greg k-h
