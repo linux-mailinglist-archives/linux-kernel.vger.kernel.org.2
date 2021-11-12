@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9405344EEE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281CB44EEEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 22:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhKLVzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 16:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+        id S235817AbhKLV4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 16:56:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhKLVzj (ORCPT
+        with ESMTP id S230388AbhKLV4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:55:39 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941D9C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:52:48 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id np3so7805982pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 13:52:48 -0800 (PST)
+        Fri, 12 Nov 2021 16:56:48 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82638C061766;
+        Fri, 12 Nov 2021 13:53:57 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id y196so8882791wmc.3;
+        Fri, 12 Nov 2021 13:53:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ANGtRiBuH7W5lz4MAhh+1EIghppJj6tpt87fCZ9Im08=;
-        b=EEfeFvaAPlQ5UrnzruceLnzgqGeLnQNeSft5NxoAHIx125qUbbMgbakB+xT6q4ZtHT
-         JDhzBM84OdmsPG1SJ2ixCFGlr1//0kU5lB8p9PB7POOmlpYjltmR39TN4TZDtP+zx/IP
-         URN9ems4qD3EkiNQ8tajXbs1suzS3uBJYgjYV96LK5R5FeaDQBgOiPNdDvABVnNU9pPM
-         NYomEwmwPSnTiSQoLHD41hkjgOln46OIPJuSncYTZfystCW4HZhMjKWd3+NmFZISCox9
-         ZjdSt8S2tuKQLK7E9SBLgYuXt70cJy7eimM0QJrvpnb0uVu40kssaiYl79rCrHeNjcpi
-         sX1Q==
+        bh=7cFjb/lDzzlXVJnZfz1as4jhxMaf6Lx1QqAEp4XJUqg=;
+        b=b7A7QfCdpPbJyRls7yWUAUdTlkwy3RQjasXDIK1XYMULHIJesVfghnCB7HtJTBufD+
+         28TiYhXDBw/CBMBf9NjgvPY6RzeW3ri3Y8WFfjPEOWHJTufXAlBRPAQM8qo5UCiwB0+e
+         Xb6VWNn/dVLjdsgKmqdOxgyPdFFJnSEdn31QuAIRTOoWvNHMd/FOevUzujWDLy6p/iis
+         3562u+JfAFhdkIlm+2uFycueXlJMZHTe7Lx+ilP/cvTFWNrnKmUYBrREwRHoTkuMPChg
+         OGRq7tCKCmcAZ5E3HMeXCQYO2Dof3CSp/g9h+OlzkiotzC5NVasOrZSKKKgYr4wavD8g
+         ewdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ANGtRiBuH7W5lz4MAhh+1EIghppJj6tpt87fCZ9Im08=;
-        b=2uZ/4cuSoDrb6g4apBIIiVCUciBDZSRZ82/Pz05IGvSxPBws/N+RAd/Qi4E0Bn74iI
-         kHUYDIis1rgE0zNdsbFPHHdxK+ura09CiUQu0Zu01BfxGYb/JvQQRz+6ChRRVThtCSPG
-         6VRXpXjTUK7Cdv9RWsW84/5UIWj5cwP+f0u5MiNE/vlA2KdwxYKXCokBqHplkYIRRkxG
-         y4Bgy1MdCxYZKScM13VU2+fY7LFCUUjjj19rebExMD2cS4SApME70Ad5ep/xktIB2dNe
-         LRd0HfHK5XN+zQqluQpNpXh5b4K5ArY9uTdOCouzquaWiWNz564eIz0XPr4PQaKpoaQm
-         LS8A==
-X-Gm-Message-State: AOAM530+7o30dnrrPv8DZReGwwRFJPquZHWcKPc8YF7HrGI6pPkAKOFZ
-        Hvfl1u6LhwKQQt8VN7lUcoQEylmkFdA1NQ==
-X-Google-Smtp-Source: ABdhPJyC7MkUqX+Vo06PtKpg4AaN1sPiv/QSwbIQMW5YrbN4z210PwCJTcTJytum2Q1jSD4kIX5nIw==
-X-Received: by 2002:a17:902:860b:b0:143:87bf:648f with SMTP id f11-20020a170902860b00b0014387bf648fmr11696909plo.11.1636753967481;
-        Fri, 12 Nov 2021 13:52:47 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z1sm5461684pge.4.2021.11.12.13.52.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7cFjb/lDzzlXVJnZfz1as4jhxMaf6Lx1QqAEp4XJUqg=;
+        b=idxDUffSbuuX9OPsei54Vb8pa2b1jlcdzWU6jatibhip2bkoJ2/EaDzrUq/XmiEBsi
+         Wwl7LTp5gn3hXP8/avX9NqK0N10cRPWuJRbF8j8sJvwF+osjiVy+VssotYwvPFCSsuf0
+         Hbdgs9gI5TarijFHBMJkArL4ZKwyIoen8djxBV6oK5Qa8Ua/hL0qVuLqejPPcqPOE6aF
+         RrAjPm3+jQZchdM9Utr0imHwSh64cp9jCXqnwZOmX0RdA1M5AN/iAJGfbatcw7JWu3Hb
+         5sHifdIrqo+iHyJNlDyzc8JzCUNt9T4mDWUiM1ELHFLq8Qly9Bkd97sctnCQc4ZvI4bv
+         YcaQ==
+X-Gm-Message-State: AOAM531Kp/Ga7UWUJgWKEOXSpMGfRg4eD5KVd4M3uWy5GPGiufgizi7o
+        R+tflRbhjbHb31MKfN3RR9IAcAXaoP7eLg==
+X-Google-Smtp-Source: ABdhPJyMgtVQZ/MpQOF2AuJPkBhdoZDSBgAEp2yBjG4kGYPpC5oDwfVmPAPAyiUNosNf6yzsdztpxw==
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr20178245wmc.39.1636754035994;
+        Fri, 12 Nov 2021 13:53:55 -0800 (PST)
+Received: from localhost.localdomain ([197.49.250.127])
+        by smtp.gmail.com with ESMTPSA id x21sm12498686wmc.14.2021.11.12.13.53.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 13:52:46 -0800 (PST)
-Date:   Fri, 12 Nov 2021 13:52:46 -0800 (PST)
-X-Google-Original-Date: Fri, 12 Nov 2021 13:52:44 PST (-0800)
-Subject:     Re: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
-In-Reply-To: <CAHk-=whkh5Qma5rHtiRQXF9jVRXDe=bRG+D+LFu4dZpwP1uWAw@mail.gmail.com>
-CC:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-8aed9afb-1b05-413b-9808-5d0936c9f131@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 12 Nov 2021 13:53:55 -0800 (PST)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     sohaib.amhmd@gmail.com, rickyman7@gmail.com, irogers@google.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf bench: flush stats when pipe it to a file or to tee
+Date:   Fri, 12 Nov 2021 23:53:12 +0200
+Message-Id: <20211112215313.108823-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 13:37:46 PST (-0800), Linus Torvalds wrote:
-> On Fri, Nov 12, 2021 at 9:32 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> RISC-V Patches for the 5.16 Merge Window, Part 1
->
-> What's "part 1" about this?
->
-> This was sent on a Friday of the second week of the merge window.
->
-> No way in hell is there going to be a "part 2" that I would possibly
-> accept at this stage. It's late as-is.
+The output of perf bench gets buffered when I pipe it to a file or to
+tee, in such a way that I can see it only at the end.
 
-Sorry that was misleading, I guess I just wrote "Part 1" as a matter of 
-habit because it was the first merge window PR I sent out (it's late 
-because I changed jobs and my test suite wasn't playing nice with the 
-new computers).  I wasn't planning on sending anything else for the 
-merge window.
+E.g.
+$ perf bench internals synthesize -t
+< output comes out fine after each test run >
+
+$ perf bench internals synthesize -t | tee file.txt
+< output comes out only at the end of all tests >
+
+See, also:
+$ perf bench mem all | tee file.txt
+$ perf bench sched all | tee file.txt
+$ perf bench internals all -t | tee file.txt
+$ perf bench internals all | tee file.txt
+
+Suggested-by: Riccardo Mancini <rickyman7@gmail.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+---
+ tools/perf/bench/find-bit-bench.c | 1 +
+ tools/perf/bench/synthesize.c     | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
+index 22b5cfe97023..39fb4184fbcb 100644
+--- a/tools/perf/bench/find-bit-bench.c
++++ b/tools/perf/bench/find-bit-bench.c
+@@ -113,6 +113,7 @@ static int do_for_each_set_bit(unsigned int num_bits)
+
+ 		if (use_of_val == accumulator)  /* Try to avoid compiler tricks. */
+ 			printf("\n");
++		fflush(stdout);
+ 	}
+ 	bitmap_free(to_test);
+ 	return 0;
+diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+index 7401ebbac100..d21d311df61b 100644
+--- a/tools/perf/bench/synthesize.c
++++ b/tools/perf/bench/synthesize.c
+@@ -92,6 +92,7 @@ static int do_run_single_threaded(struct perf_session *session,
+ 		update_stats(&event_stats, atomic_read(&event_count));
+ 	}
+
++	fflush(stdout);
+ 	time_average = avg_stats(&time_stats);
+ 	time_stddev = stddev_stats(&time_stats);
+ 	printf("  Average %ssynthesis took: %.3f usec (+- %.3f usec)\n",
+@@ -186,6 +187,7 @@ static int do_run_multi_threaded(struct target *target,
+ 		perf_session__delete(session);
+ 	}
+
++	fflush(stdout);
+ 	time_average = avg_stats(&time_stats);
+ 	time_stddev = stddev_stats(&time_stats);
+ 	printf("    Average synthesis took: %.3f usec (+- %.3f usec)\n",
+--
+2.25.1
+
