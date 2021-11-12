@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A0A44EB81
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E18944EB84
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 17:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhKLQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 11:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbhKLQmZ (ORCPT
+        id S235445AbhKLQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 11:42:30 -0500
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:63030 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235425AbhKLQm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:42:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035DCC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 08:39:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=US2LVy9rrFWMWH9Jn1bAl+TRbKz4CCjVMY+Q65Udfp4=; b=c4GRwQ9nyqyLiGMWlGxOly7iFA
-        RPMTYzYqK9CH2VlsopIlm4Q4nlpgTuRcBUcV/92MkMjnAVKQqECNL3oVSKxEmG8TeRFsUQH3h0Nqu
-        UtCVvKM/xcULSn8doXr6wi+RzRfD+RLaQNh8ds3FnxxcujQ3hkqVR/60VQzcAKsjif5gZxGOPcaAL
-        JtmxoJbqHoIw4tZrzQ4I7tlP+e+qe0izfUt7BRV1uXffxntso8YTBupDkT3EaLETynhGBDCQIQJ0b
-        kEHHCsF8Q0/rG2JkeGjzLhtTRYKykStRj1PfzVlnOokX9xxpHTSQh88q9bph+SiPw1vnlaQqSpFI0
-        LtQuseFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlZaC-003fyx-8r; Fri, 12 Nov 2021 16:39:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E3FF630001B;
-        Fri, 12 Nov 2021 17:39:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CAFB22CEFE160; Fri, 12 Nov 2021 17:39:19 +0100 (CET)
-Date:   Fri, 12 Nov 2021 17:39:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, kim.phillips@amd.com,
-        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
-        mpe@ellerman.id.au, maddy@linux.ibm.com
-Subject: Re: [PATCH v2 03/13] perf/x86/amd: add AMD Fam19h Branch Sampling
- support
-Message-ID: <YY6YtwqSIWxP7GfR@hirez.programming.kicks-ass.net>
-References: <20211111084415.663951-1-eranian@google.com>
- <20211111084415.663951-4-eranian@google.com>
+        Fri, 12 Nov 2021 11:42:29 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id lZaQmTkjd1UGBlZaQmGHpS; Fri, 12 Nov 2021 17:39:37 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Fri, 12 Nov 2021 17:39:37 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     anil.gurumurthy@qlogic.com, sudarsana.kalluru@qlogic.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, satishkh@cisco.com,
+        sebaddel@cisco.com, kartilak@cisco.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, njavali@marvell.com,
+        mrangankar@marvell.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] scsi: Remove redundant 'flush_workqueue()' calls
+Date:   Fri, 12 Nov 2021 17:39:33 +0100
+Message-Id: <feb3511c02b9df0848c9cac8af3daf87d9ea5821.1636734915.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111084415.663951-4-eranian@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 12:44:05AM -0800, Stephane Eranian wrote:
-> +/*
-> + * Because of the way BRS operates with an inactive and active phases, and
-> + * the link to one counter, it is not possible to have two events using BRS
-> + * scheduled at the same time. There would be an issue with enforcing the
-> + * period of each one and given that the BRS saturates, it would not be possible
-> + * to guarantee correlated content for all events. Therefore, in situations
-> + * where multiple events want to use BRS, the kernel enforces mutual exclusion.
-> + * Exclusion is enforced by chosing only one counter for events using BRS.
-> + * The event scheduling logic will then automatically multiplex the
-> + * events and ensure that at most one event is actively using BRS.
-> + *
-> + * The BRS counter could be any counter, but there is no constraint on Fam19h,
-> + * therefore all counters are equal and thus we pick the first one: PMC0
-> + */
-> +static struct event_constraint amd_fam19h_brs_cntr0_constraint =
-> +	EVENT_CONSTRAINT(0, 0x1, AMD64_RAW_EVENT_MASK);
-> +
-> +static struct event_constraint amd_fam19h_brs_pair_cntr0_constraint =
-> +	__EVENT_CONSTRAINT(0, 0x1, AMD64_RAW_EVENT_MASK, 1, 0, PERF_X86_EVENT_PAIR);
-> +
-> +static struct event_constraint *
-> +amd_get_event_constraints_f19h(struct cpu_hw_events *cpuc, int idx,
-> +			  struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	bool has_brs = is_amd_brs(hwc);
-> +
-> +	/*
-> +	 * In case BRS is used with an event requiring a counter pair,
-> +	 * the kernel allows it but only on counter 0 & 1 to enforce
-> +	 * multiplexing requiring to protect BRS in case of multiple
-> +	 * BRS users
-> +	 */
-> +	if (amd_is_pair_event_code(hwc)) {
-> +		return has_brs ? &amd_fam19h_brs_pair_cntr0_constraint
-> +			       : &pair_constraint;
-> +	}
-> +
-> +	if (has_brs)
-> +		return &amd_fam19h_brs_cntr0_constraint;
-> +
-> +	return &unconstrained;
-> +}
+'destroy_workqueue()' already drains the queue before destroying it, so
+there is no need to flush it explicitly.
 
-That still allows BRS to be used together with unrelated counters and it
-*will* destroy their utility by delaying the NMI.
+Remove the redundant 'flush_workqueue()' calls.
 
-BRS could perhaps share the PMU with !sampling counters, but sharing
-with sampling counters is just asking for trouble.
+This was generated with coccinelle:
+
+@@
+expression E;
+@@
+- 	flush_workqueue(E);
+	destroy_workqueue(E);
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/scsi/bfa/bfad_im.c    | 1 -
+ drivers/scsi/fnic/fnic_main.c | 4 +---
+ drivers/scsi/lpfc/lpfc_init.c | 1 -
+ drivers/scsi/qedi/qedi_main.c | 2 --
+ drivers/scsi/qla2xxx/qla_os.c | 1 -
+ 5 files changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/scsi/bfa/bfad_im.c b/drivers/scsi/bfa/bfad_im.c
+index 759d2bb1ecdd..b5c1729974ac 100644
+--- a/drivers/scsi/bfa/bfad_im.c
++++ b/drivers/scsi/bfa/bfad_im.c
+@@ -756,7 +756,6 @@ void
+ bfad_destroy_workq(struct bfad_im_s *im)
+ {
+ 	if (im && im->drv_workq) {
+-		flush_workqueue(im->drv_workq);
+ 		destroy_workqueue(im->drv_workq);
+ 		im->drv_workq = NULL;
+ 	}
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index 44dbaa662d94..806aaf411d10 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -1145,10 +1145,8 @@ static void __exit fnic_cleanup_module(void)
+ {
+ 	pci_unregister_driver(&fnic_driver);
+ 	destroy_workqueue(fnic_event_queue);
+-	if (fnic_fip_queue) {
+-		flush_workqueue(fnic_fip_queue);
++	if (fnic_fip_queue)
+ 		destroy_workqueue(fnic_fip_queue);
+-	}
+ 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_MAX]);
+ 	kmem_cache_destroy(fnic_sgl_cache[FNIC_SGL_CACHE_DFLT]);
+ 	kmem_cache_destroy(fnic_io_req_cache);
+diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
+index ba17a8f740a9..93decd6c7ab1 100644
+--- a/drivers/scsi/lpfc/lpfc_init.c
++++ b/drivers/scsi/lpfc/lpfc_init.c
+@@ -8529,7 +8529,6 @@ static void
+ lpfc_unset_driver_resource_phase2(struct lpfc_hba *phba)
+ {
+ 	if (phba->wq) {
+-		flush_workqueue(phba->wq);
+ 		destroy_workqueue(phba->wq);
+ 		phba->wq = NULL;
+ 	}
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 1dec814d8788..542dde3a1cfd 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2422,13 +2422,11 @@ static void __qedi_remove(struct pci_dev *pdev, int mode)
+ 		iscsi_host_remove(qedi->shost);
+ 
+ 		if (qedi->tmf_thread) {
+-			flush_workqueue(qedi->tmf_thread);
+ 			destroy_workqueue(qedi->tmf_thread);
+ 			qedi->tmf_thread = NULL;
+ 		}
+ 
+ 		if (qedi->offload_thread) {
+-			flush_workqueue(qedi->offload_thread);
+ 			destroy_workqueue(qedi->offload_thread);
+ 			qedi->offload_thread = NULL;
+ 		}
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index abcd30917263..9f9d2f075bbe 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -3922,7 +3922,6 @@ qla2x00_free_device(scsi_qla_host_t *vha)
+ 
+ 	/* Flush the work queue and remove it */
+ 	if (ha->wq) {
+-		flush_workqueue(ha->wq);
+ 		destroy_workqueue(ha->wq);
+ 		ha->wq = NULL;
+ 	}
+-- 
+2.30.2
+
