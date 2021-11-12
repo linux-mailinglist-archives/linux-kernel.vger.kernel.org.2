@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCED44E809
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D0D44E801
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhKLODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:03:40 -0500
-Received: from hosting.gsystem.sk ([212.5.213.30]:50790 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhKLODi (ORCPT
+        id S231749AbhKLOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhKLOAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:03:38 -0500
-X-Greylist: delayed 315 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Nov 2021 09:03:37 EST
-Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 603507A003B;
-        Fri, 12 Nov 2021 14:55:31 +0100 (CET)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hid-multitouch: Fix Iiyama ProLite T1931SAW (0eef:0001 again!)
-Date:   Fri, 12 Nov 2021 14:55:11 +0100
-Message-Id: <20211112135511.29573-1-linux@zary.sk>
-X-Mailer: git-send-email 2.20.1
+        Fri, 12 Nov 2021 09:00:41 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67D3C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:57:50 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id y3so23908883ybf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VSKUxPWOEasaZQl1GngXqjbP0Aix+VFnz4Hm7DYF6XE=;
+        b=F1T67C3i/OAfelGdr3K3aL4a1xSgF6xQeHA5fyl1wJ29m7nmrKaek5hSFosWeu9XQw
+         9vQ5Q9rMeLh3jEnRUWZfH51dI0UMKIw0s2HwqCrCia2ORdx7kfaEhXaXx9GlYGt8WnNH
+         8mZT5yMf5TZappLJ+mRF7l9rQaSqEOusQkXiS/TA7NgVafQLJUVju1qvuTSwsuk5DZ/n
+         FFYKaE2GDZ30yuf2fhQM2hru6RMPTw9VAq/ZcgfXmA0S6l8weMwky8o5w+zyZmxJO1E8
+         scXI0ewEPnQbLQ73feDDTxtd7r9TDlkhzNKvMMasUCybmfN8r64JaulwGktrbsNCV496
+         FNPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VSKUxPWOEasaZQl1GngXqjbP0Aix+VFnz4Hm7DYF6XE=;
+        b=1TrUgz9VkWlwIeMGlNuXnc6BKWbqK6hseY1BscQlz3xsodVg1MYf2lnhe6vkO65Jpu
+         CX1plE6j5LCRgYsN5jCpLa46u0kESkaxrPqSUb040J6o3VDSaMwpeIIZNGsMlLKKXdxU
+         F4BE+nnS2zAzgg0HktudgG5NAdLsDHZc8CfaN2PWJpMsXpYBN+4xQaa4p5V3IUoGEupa
+         1Bm4VeOb6EGyBoWdA6qQfDvXXRd+l5I1ikskHXQLvJ2/VqG9ge4X3E5oa36EC5o8+4re
+         /7ESy4ypf9x9wvbkxqRb66rVGPNGgdFVYLgSbq2dwLIA1FjXt62XlwNM7Mq+GHtFjcHZ
+         MhyA==
+X-Gm-Message-State: AOAM531aetTUXmDnOtOuCVcvR4X9cZ/RHSMn2YTtFtK4ts6taln3PDQj
+        SCkGaSs4SD6Cy7fgVhcHu8ZJMT09DvLPyG65V91u3cH3gq0=
+X-Google-Smtp-Source: ABdhPJzX8bK0czmopKRlAureGtI582T55Dza8C6L6AWEliHUNaSZMvQ0JwHCGW2c4aLN5P1HXlgQcaVXkczrkTUgYFY=
+X-Received: by 2002:a25:bdce:: with SMTP id g14mr16855977ybk.352.1636725470026;
+ Fri, 12 Nov 2021 05:57:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a81:1812:0:0:0:0:0 with HTTP; Fri, 12 Nov 2021 05:57:49
+ -0800 (PST)
+Reply-To: bartholomieuakakpo226@gmail.com
+From:   BARTHOLOMIEU AKAKPO <asaadmohseniq@gmail.com>
+Date:   Fri, 12 Nov 2021 13:57:49 +0000
+Message-ID: <CAC=9U7EMbGcLo+qYsjguut2zNB6y834qd8sUUf_G0nuki+xMSQ@mail.gmail.com>
+Subject: Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Iiyama ProLite T1931SAW does not work with Linux - input devices are
-created but cursor does not move.
-
-It has the infamous 0eef:0001 ID which has been reused for various
-devices before.
-
-It seems to require export_all_inputs = true.
-Add it to mt_devices[] as MT_CLS_WIN_8 to fix the problem.
-Hopefully there are no HID devices using this ID that will break.
-It should not break non-HID devices (handled by usbtouchscreen).
-
-Signed-off-by: Ondrej Zary <linux@zary.sk>
----
- drivers/hid/hid-multitouch.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index e1afddb7b33d..099daf590392 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1888,6 +1888,11 @@ static const struct hid_device_id mt_devices[] = {
- 		MT_USB_DEVICE(USB_VENDOR_ID_CVTOUCH,
- 			USB_DEVICE_ID_CVTOUCH_SCREEN) },
- 
-+	/* eGalax devices (SAW) */
-+	{ .driver_data = MT_CLS_WIN_8,
-+		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-+			USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER) },
-+
- 	/* eGalax devices (resistive) */
- 	{ .driver_data = MT_CLS_EGALAX,
- 		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
--- 
-Ondrej Zary
-
+Good day dear friend. My name is BARTHOLOMIEU; I'm the senior partner
+at BARTHOLOMIEU AKAKPO & Associate Law Firm based in Togo republic.
+I want us to claim the sum of (US$ 10,950,777.00) from the BTCI bank
+Lome Togo security company. You get 40% from the total amount.
+We work together and there will be success at the end. Reply for more details.
