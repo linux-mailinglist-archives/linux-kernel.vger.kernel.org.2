@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586C444E866
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD37044E86B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhKLOTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:19:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:38394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235189AbhKLOTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:19:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AE4FED1;
-        Fri, 12 Nov 2021 06:17:00 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D0E63F70D;
-        Fri, 12 Nov 2021 06:16:57 -0800 (PST)
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xuewen.yan@unisoc.com, Ke Wang <Ke.Wang@unisoc.com>
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org>
- <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
- <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
- <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
- <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
- <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
- <CAB8ipk_0YxWnS-k+HLPnL7DRR1MM+WH-xQfna7jD_+TQ0vKi8Q@mail.gmail.com>
- <05a2e61e-9c55-8f8d-5e72-9854613e53c9@arm.com>
- <CAB8ipk-r0LOudU7+ijVGS5mu2stKY8DBZ3BhKfbFcOgZj2VaQA@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <1aa4afe4-3c30-a9c9-561b-bd692c569ae0@arm.com>
-Date:   Fri, 12 Nov 2021 15:16:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235169AbhKLOUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231718AbhKLOUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 09:20:40 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB6BC061766;
+        Fri, 12 Nov 2021 06:17:50 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 131so24005719ybc.7;
+        Fri, 12 Nov 2021 06:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7bya5EY6Rtb/Z58QHqc1Yqz/uwIXxrwWi+NWj4OOJwY=;
+        b=SNCxVjhxB41VV0TMVB4Yb5O7A/e0usUCGDRJbA59hI9FcV75zusPXOhxjaCOHnY63l
+         xzjUA9g20k45C10zi09cCdoXjAR81AdIv70h+PMiRb8d9NsnJZ11a/M6aS8JW+nfioy5
+         N114uES71jHbyGZGJbBjEakxL2MohNprJZzunyBMaHQskyYH4VevvjcMg1rXOYjPtisB
+         QUxVSxSHEwJZuuf4qd3TdlviYljmtNnQQH1/N2Dzabx5yEdMj2ZvTYd+OxxjT9nQryyU
+         4UlwQFoDxK3IV6gX9A81XvZzmuJQux0hQc61Iygkn36ub+ogYuFlHPmev76kwgntQfJW
+         /gYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7bya5EY6Rtb/Z58QHqc1Yqz/uwIXxrwWi+NWj4OOJwY=;
+        b=TzZUqW8usNZnEVFhTuZaGTS4873kMAdcG3iOJY2JA1Y4CHT7tQgg1RNjWxoHmhKzI4
+         ZatsrFqnKDkWdVFv/db2zBCleEKgrCe6uPsebwWVnKf6aasb76C4u3CpLgtu4xIytCVH
+         UCeMmu6ceERRnNw8AaFj47zjqCLqqviA3bRXNTZR8/TSnCkbgVz4obpSC/8a1MuyLEiU
+         E7D/7IDj0VF4138zJlhsLvzndWu7Sa3N5m5aYnkmoCRDuIJcmfA5zFR5+Nq3TEbNMKH/
+         A1fXAq/SGNzl6N6+lnaUf4pLrH6lgLrmyEuBbwj8l3k1pPCgcCqXM468LEu62A56r17y
+         RO8w==
+X-Gm-Message-State: AOAM532ArWYBf90HolKE0o1ibd8zJkbShlqV3vdEOHS7A2Dy0bLSmy93
+        9osUBMSXkXy1vMN9dQzvJz+0cLxAFNyGIEAinryBTtRNcdoayw==
+X-Google-Smtp-Source: ABdhPJx/oBs4d/v2DIBjYFnAf47VgGeIBILgIJFBB1Cko+QVsxWfzKhDpObLW/8dD2e42h2j++Jm/dv4XAFL173djkQ=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr16220460ybq.328.1636726669394;
+ Fri, 12 Nov 2021 06:17:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAB8ipk-r0LOudU7+ijVGS5mu2stKY8DBZ3BhKfbFcOgZj2VaQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211110224622.16022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211110224622.16022-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVGeuabyQPYE2JPMzg_Kt0r-MxFr62SobQNLzFoWLo=8g@mail.gmail.com>
+In-Reply-To: <CAMuHMdVGeuabyQPYE2JPMzg_Kt0r-MxFr62SobQNLzFoWLo=8g@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 12 Nov 2021 14:17:23 +0000
+Message-ID: <CA+V-a8sJuYg5_aSc5toAy10YXDBe4GMcyE8xMJ+TTT0KhPCxeA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] pinctrl: renesas: pinctrl-rzg2l: Add helper
+ functions to read/write pin config
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2021 06:36, Xuewen Yan wrote:
-> Hi Dietmar
-> On Tue, Nov 9, 2021 at 5:43 PM Dietmar Eggemann
-> <dietmar.eggemann@arm.com> wrote:
->>
->> On 08/11/2021 09:49, Xuewen Yan wrote:
->>> Hi Dietmar
->>>
->>> On Sat, Nov 6, 2021 at 1:20 AM Dietmar Eggemann
->>> <dietmar.eggemann@arm.com> wrote:
->>>>
->>>> On 05/11/2021 06:58, Zhaoyang Huang wrote:
+Hi Geert,
 
-[...]
+Thank you for the review.
 
->>>> Even the CFS part (cpu_rq(CPUx)->cfs.avg.util_avg) can be larger than
->>>> the original cpu capacity (rq->cpu_capacity_orig).
->>>>
->>>> Have a look at cpu_util(). capacity_orig_of(CPUx) and
->>>> arch_scale_cpu_capacity(CPUx) both returning rq->cpu_capacity_orig.
->>>>
->>>
->>> Well, your means is we should not use the 1024 and should use the
->>> original cpu capacity?
->>> And maybe use the "sched_cpu_util()" is a good choice just like this:
->>>
->>> +       if (current->in_memstall)
->>> +               growth_fixed = div64_ul(cpu_util_cfs(rq) * growth,
->>> sched_cpu_util(rq->cpu, capacity_orig_of(rq->cpu)));
->>
->> Not sure about this. In case util_cfs=0 you would get scale=0.
-> 
-> Yes , we should consider it. In addition, it also should be considered
-> when util_cfs > capacity_orig because of the UTIL_EST......
+On Fri, Nov 12, 2021 at 2:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Nov 10, 2021 at 11:46 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add helper functions to read/read modify write pin config.
+> >
+> > Switch to use helper functions for pins supporting PIN_CONFIG_INPUT_ENABLE
+> > capabilities.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> > v2->v3
+> > * Dropped duplicate masking in rzg2l_read_pin_config
+> > * Dropped port_pin flag
+> > * Dropped spinlocks around read/write
+>
+> You do need the spinlock in the read-modify-write case.
+>
+Ouch I mistook your comment of dropping the lock entirely!
+> No worries, I'll add it back while applying.
+>
+Thank you.
 
-We should ]-clamp cpu_util_cfs() with capacity_orig_of(), like we
-currently do for the CFS internal cpu_util(). In fact, we should only
-use one function for this. Sent a patch out:
+Cheers,
+Prabhakar
 
-https://lkml.kernel.org/r/20211112141349.155713-1-dietmar.eggemann@arm.com%3E
-
-[...]
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-pinctrl-for-v5.17.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
