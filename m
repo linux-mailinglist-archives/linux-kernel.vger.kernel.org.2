@@ -2,103 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E23544EF00
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583F144EF02
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 23:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235776AbhKLWGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 17:06:08 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:34586 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233932AbhKLWGH (ORCPT
+        id S234321AbhKLWGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 17:06:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31149 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233029AbhKLWGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 17:06:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1636754596;
-        bh=/9QwVcTLua6z+d1c/3wGd8Od7TGrEfK0gk0sAioZaBo=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=StL9FWBe/XxvyDm7w/4OTLSkUrPSqVjSnD+t+t591W4tW1L+onSVYqRqSys0QmTDL
-         wcx7rzZdibfzH8QcsNnHrajCDm8eJqqrfQpSYYcoiz9bTeRSu66VSWvCqaK+T7spXe
-         YxfHZ7eMZp40K3nN167pQgRndkRz6BZa9+LLscOA=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8F3111280910;
-        Fri, 12 Nov 2021 17:03:16 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id arEcRqOXOer5; Fri, 12 Nov 2021 17:03:16 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1636754596;
-        bh=/9QwVcTLua6z+d1c/3wGd8Od7TGrEfK0gk0sAioZaBo=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=StL9FWBe/XxvyDm7w/4OTLSkUrPSqVjSnD+t+t591W4tW1L+onSVYqRqSys0QmTDL
-         wcx7rzZdibfzH8QcsNnHrajCDm8eJqqrfQpSYYcoiz9bTeRSu66VSWvCqaK+T7spXe
-         YxfHZ7eMZp40K3nN167pQgRndkRz6BZa9+LLscOA=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 12 Nov 2021 17:06:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636754599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aHecVeHqCvAtGHYXk6Nr/Lq6X6UdkK02UVclA5l2QwU=;
+        b=I2wUGo3ADHBwFR27X6zpYCIOtPL0AG2k+jR9o3tLmNqUBnYLrXPs61YY94cqqv4Xol/i2+
+        mAdDP9spxHgcItKA2hkxVSudQmeQdYwJv2vufQWdy1UaS7/I0KLVaNhULF9H8TedScmgDf
+        a7uWDRQ/PMN2sjXcLZIoOn7dWW7M4s4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-d0ZG5qS7NwOr-8O_bHKLHg-1; Fri, 12 Nov 2021 17:03:18 -0500
+X-MC-Unique: d0ZG5qS7NwOr-8O_bHKLHg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0848512808DB;
-        Fri, 12 Nov 2021 17:03:15 -0500 (EST)
-Message-ID: <2dcf1dcf98216096c52cbd69553ce71edf62a3c5.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] final round of SCSI updates for the 5.15+ merge
- window
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 12 Nov 2021 17:03:14 -0500
-In-Reply-To: <CAHk-=wgJz2-KgygzF6s4D80=ib0AmP99TGd3Wgc_GqyKg1=pHA@mail.gmail.com>
-References: <d9405d786496756564b31540cc73a9d22cc97730.camel@HansenPartnership.com>
-         <CAHk-=wgJz2-KgygzF6s4D80=ib0AmP99TGd3Wgc_GqyKg1=pHA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B592875109;
+        Fri, 12 Nov 2021 22:03:17 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B02185D9D3;
+        Fri, 12 Nov 2021 22:03:16 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] Second batch of KVM changes for Linux 5.16 merge window
+Date:   Fri, 12 Nov 2021 17:03:15 -0500
+Message-Id: <20211112220315.3995734-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-12 at 12:34 -0800, Linus Torvalds wrote:
-> On Fri, Nov 12, 2021 at 5:43 AM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > This series is all the stragglers that didn't quite make the first
-> > merge window pull.  It's mostly minor updates and bug fixes of
-> > merge window code but it also has two driver updates: ufs and
-> > qla2xxx.
-> 
-> Hmm? No diffstat?
-> 
-> I suspect it's because there's a merge in there, and thus multiple
-> merge base commits, and the autogenerated diffstat ends up being
-> worthless.
+Linus,
 
-Um, no, it's because I forgot, sorry.
+The following changes since commit debe436e77c72fcee804fb867f275e6d31aa999c:
 
-> In that situation, the nice thing to do is to at least tell me why
-> there's no diffstat, but optimally you can do a temporary throw-away
-> merge in a temporary branch just to get the diffstat.
-> 
-> And yes, "git request-pull" could do that, automating this all and
-> reporting any conflicts at the same time.
-> 
-> But git historically did *not* do that just because it requires a
-> working tree and can be messy, and because the "just do the diff from
-> the merge base" works fine for maintainers that don't do merges
-> themselves, and so the only maintainers that can hit this issue are
-> the maintainers that also should be able to do that temporary merge
-> thing on their own.
-> 
-> Anyway, I don't require that temporary merge, but I _do_ really want
-> to get notified of "look, I did the diffstat, and it was useless
-> garbage, so I'm not including it here".
-> 
-> Because as-is, this just looks like an incomplete pull request.
-> 
-> I've done the pull, verified the shortlog, and checked that the
-> (proper) diffstat all looks sane. But I am writing this email just to
-> say "you could have done so much better".
+  Merge tag 'ext4_for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2021-11-10 17:05:37 -0800)
 
-Will do next time, sorry.
+are available in the Git repository at:
 
-James
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
+for you to fetch changes up to 84886c262ebcfa40751ed508268457af8a20c1aa:
+
+  Merge tag 'kvmarm-fixes-5.16-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master (2021-11-12 16:01:55 -0500)
+
+----------------------------------------------------------------
+New x86 features:
+
+* Guest API and guest kernel support for SEV live migration
+
+* SEV and SEV-ES intra-host migration
+
+Bugfixes and cleanups for x86:
+
+* Fix misuse of gfn-to-pfn cache when recording guest steal time / preempted status
+
+* Fix selftests on APICv machines
+
+* Fix sparse warnings
+
+* Fix detection of KVM features in CPUID
+
+* Cleanups for bogus writes to MSR_KVM_PV_EOI_EN
+
+* Fixes and cleanups for MSR bitmap handling
+
+* Cleanups for INVPCID
+
+* Make x86 KVM_SOFT_MAX_VCPUS consistent with other architectures
+
+Bugfixes for ARM:
+
+* Fix finalization of host stage2 mappings
+
+* Tighten the return value of kvm_vcpu_preferred_target()
+
+* Make sure the extraction of ESR_ELx.EC is limited to architected bits
+
+----------------------------------------------------------------
+Ashish Kalra (3):
+      EFI: Introduce the new AMD Memory Encryption GUID.
+      x86/kvm: Add guest support for detecting and enabling SEV Live Migration feature.
+      x86/kvm: Add kexec support for SEV Live Migration.
+
+Brijesh Singh (2):
+      x86/kvm: Add AMD SEV specific Hypercall3
+      mm: x86: Invoke hypercall when page encryption status is changed
+
+David Woodhouse (1):
+      KVM: x86: Fix recording of guest steal time / preempted status
+
+Jim Mattson (1):
+      kvm: x86: Convert return type of *is_valid_rdpmc_ecx() to bool
+
+Junaid Shahid (1):
+      kvm: mmu: Use fast PF path for access tracking of huge pages when possible
+
+Mark Rutland (1):
+      KVM: arm64: Extract ESR_ELx.EC only
+
+Maxim Levitsky (1):
+      KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ active
+
+Paolo Bonzini (8):
+      Merge branch 'kvm-guest-sev-migration' into kvm-master
+      KVM: generalize "bugged" VM to "dead" VM
+      KVM: SEV: provide helpers to charge/uncharge misc_cg
+      Merge branch 'kvm-sev-move-context' into kvm-master
+      Merge branch 'kvm-5.16-fixes' into kvm-master
+      KVM: x86: move guest_pv_has out of user_access section
+      KVM: SEV: unify cgroup cleanup code for svm_vm_migrate_from
+      Merge tag 'kvmarm-fixes-5.16-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master
+
+Paul Durrant (1):
+      KVM: x86: Make sure KVM_CPUID_FEATURES really are KVM_CPUID_FEATURES
+
+Peter Gonda (5):
+      KVM: SEV: Refactor out sev_es_state struct
+      KVM: SEV: Add support for SEV intra host migration
+      KVM: SEV: Add support for SEV-ES intra host migration
+      selftest: KVM: Add open sev dev helper
+      selftest: KVM: Add intra host migration tests
+
+Quentin Perret (1):
+      KVM: arm64: Fix host stage-2 finalization
+
+Randy Dunlap (1):
+      KVM: arm64: nvhe: Fix a non-kernel-doc comment
+
+Sean Christopherson (6):
+      KVM: x86/mmu: Properly dereference rcu-protected TDP MMU sptep iterator
+      KVM: x86: Add helper to consolidate core logic of SET_CPUID{2} flows
+      KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in use
+      KVM: nVMX: Handle dynamic MSR intercept toggling
+      KVM: VMX: Macrofy the MSR bitmap getters and setters
+      KVM: nVMX: Clean up x2APIC MSR handling for L2
+
+Vipin Sharma (2):
+      KVM: VMX: Add a helper function to retrieve the GPR index for INVPCID, INVVPID, and INVEPT
+      KVM: Move INVPCID type check from vmx and svm to the common kvm_handle_invpcid()
+
+Vitaly Kuznetsov (3):
+      KVM: x86: Rename kvm_lapic_enable_pv_eoi()
+      KVM: x86: Don't update vcpu->arch.pv_eoi.msr_val when a bogus value was written to MSR_KVM_PV_EOI_EN
+      KVM: x86: Drop arbitrary KVM_SOFT_MAX_VCPUS
+
+YueHaibing (1):
+      KVM: arm64: Change the return type of kvm_vcpu_preferred_target()
+
+ Documentation/virt/kvm/api.rst                     |  14 +
+ arch/arm64/include/asm/esr.h                       |   1 +
+ arch/arm64/include/asm/kvm_host.h                  |   2 +-
+ arch/arm64/kvm/arm.c                               |   5 +-
+ arch/arm64/kvm/guest.c                             |   7 +-
+ arch/arm64/kvm/hyp/hyp-entry.S                     |   2 +-
+ arch/arm64/kvm/hyp/nvhe/host.S                     |   2 +-
+ arch/arm64/kvm/hyp/nvhe/setup.c                    |  14 +-
+ arch/arm64/kvm/hyp/nvhe/sys_regs.c                 |   2 +-
+ arch/x86/include/asm/kvm_host.h                    |   6 +-
+ arch/x86/include/asm/kvm_para.h                    |  12 +
+ arch/x86/include/asm/mem_encrypt.h                 |   4 +
+ arch/x86/include/asm/paravirt.h                    |   6 +
+ arch/x86/include/asm/paravirt_types.h              |   1 +
+ arch/x86/include/asm/processor.h                   |   5 +-
+ arch/x86/include/asm/set_memory.h                  |   1 +
+ arch/x86/include/uapi/asm/kvm_para.h               |   1 +
+ arch/x86/kernel/kvm.c                              | 109 +++++++-
+ arch/x86/kernel/paravirt.c                         |   1 +
+ arch/x86/kvm/cpuid.c                               |  93 +++++--
+ arch/x86/kvm/hyperv.c                              |   4 +-
+ arch/x86/kvm/lapic.c                               |  23 +-
+ arch/x86/kvm/lapic.h                               |   2 +-
+ arch/x86/kvm/mmu/mmu.c                             |  10 +-
+ arch/x86/kvm/mmu/tdp_mmu.c                         |   2 +-
+ arch/x86/kvm/pmu.c                                 |   2 +-
+ arch/x86/kvm/pmu.h                                 |   4 +-
+ arch/x86/kvm/svm/avic.c                            |   3 +-
+ arch/x86/kvm/svm/pmu.c                             |   5 +-
+ arch/x86/kvm/svm/sev.c                             | 299 +++++++++++++++++----
+ arch/x86/kvm/svm/svm.c                             |  14 +-
+ arch/x86/kvm/svm/svm.h                             |  28 +-
+ arch/x86/kvm/vmx/nested.c                          | 166 +++++-------
+ arch/x86/kvm/vmx/pmu_intel.c                       |   7 +-
+ arch/x86/kvm/vmx/vmx.c                             |  73 +----
+ arch/x86/kvm/vmx/vmx.h                             |  33 +++
+ arch/x86/kvm/x86.c                                 | 147 +++++++---
+ arch/x86/mm/mem_encrypt.c                          |  72 ++++-
+ arch/x86/mm/pat/set_memory.c                       |   6 +
+ include/linux/efi.h                                |   1 +
+ include/linux/kvm_host.h                           |  12 +-
+ include/uapi/linux/kvm.h                           |   1 +
+ tools/testing/selftests/kvm/Makefile               |   3 +-
+ tools/testing/selftests/kvm/include/kvm_util.h     |   1 +
+ .../selftests/kvm/include/x86_64/svm_util.h        |   2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c         |  24 +-
+ tools/testing/selftests/kvm/lib/x86_64/svm.c       |  13 +
+ .../selftests/kvm/x86_64/sev_migrate_tests.c       | 203 ++++++++++++++
+ virt/kvm/kvm_main.c                                |  10 +-
+ 49 files changed, 1088 insertions(+), 370 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
 
