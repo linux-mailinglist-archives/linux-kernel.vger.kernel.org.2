@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B5044EFF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597B344EFF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 00:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhKLXPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 18:15:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S234973AbhKLXPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 18:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhKLXPL (ORCPT
+        with ESMTP id S234281AbhKLXPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 18:15:11 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6434EC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:12:20 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id d11so21387836ljg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:12:20 -0800 (PST)
+        Fri, 12 Nov 2021 18:15:22 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31559C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:12:31 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso8810202pjo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 15:12:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iMTvT7NsOtiVrtb1ierayNB1hBIVaQnurs1N94fLgF8=;
-        b=ersYV9JSN6rOg3zxZlrbNSTpFEgDl1UVqBfTJhN1zQ3nZ/fL+Uz/r80g3jc1Y4wCcj
-         6CEDOJyZGpVJPgR6W+Y3rlx/AljcLlvRUYImunH3HBi6IgN4HgHbbJU3MkEJ/+JUiiSx
-         Yb99wopDfmk2MEBWI564gXfQQbK56cb2l3NPARPHdu4GklGGSZ7F6/mVwNHKjcGJ6zk4
-         OPii0OdHtbiSUNbqdM7RF9CZ8Vf09USAcWTVVaI0F4vJvtKoDwcQKgmgQgdRObJtD4Yk
-         4TYgzvcyiuoyX55Lk5nn5oFssD40zA3OqYmbdymWqBIuVfObmph5EghMhDh7lma+39oF
-         ZA2g==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YN0gzQIJL08vzHcPeLEA4tfqqEc6asHK/4BMIe2BKNc=;
+        b=FEajFmA/aBOXJRoP3vDCAhWw3jkkoXif6pQ1WdVLqEgBvEisui6TTXl/sow3VHj8Tv
+         yOlkZSuL//dwcJlt0uyn3Xmq1V7HVJ7KuMhvPAwhAt8hDuMLkDueFUNxSvoNr60wWn1Z
+         DjDO/b7Flwha8P8ycD6mibOYVhDuQz+7VrOjo99sqsDhIHwDgkUyHRGp/885vBef+vjv
+         0Ps3ZcOAdUOReCbTJ7Qynx9I+MzADrmYbTrGDBxoo66m40tZJvmOZyMHSkjYEtb5sYKy
+         UxRRiV5HU6z1rOSnSRl6yWPWs/5BwzxqchPtq/++YHONvJBRDy0v/WBxnk5bSs1BB7P1
+         fOWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iMTvT7NsOtiVrtb1ierayNB1hBIVaQnurs1N94fLgF8=;
-        b=0mvq/wbXLqRLPKmVfmZsxQNmggJS7dWU/kZLhf8/9vXiVSp8LM5kx+3EazfHcNVvVM
-         d8HkMARvs2JU2ft7PsKgnsiBMNuc4OVYMJzGPZRnJIa2+Q3Y4udaWamVDc4jMkhQ4k5d
-         qcHsFWtA73gxC+WIB60FWzacEW4BquhYq+VCJjiqOc6aB1d+jOt5zHcJc06k3/l4JQS3
-         /bYjw2Tnvdso4Pi/u78aj2TVdKTfOG7hBQPzl+VzoUtvyE2seC9RnlFu1d4MAVDIOs1x
-         kfV/bguxa5/YyAyVl7hRz2utPUDuTjrxLVoEmUDAvDCEu2ZYoA7wEHbQcVt/AhIdaugm
-         Hs7g==
-X-Gm-Message-State: AOAM531J7Aov/+vWcQBrYFA+d5X4fv7AzlYCwOtByQQDi6TB0y1sCFjd
-        znWRV63Jo9ReLW2fFuCVoAIIOJDrHxvP9Qle3XQMSg==
-X-Google-Smtp-Source: ABdhPJydU+hzM9MotqBxJ2F97X4iN4bm+1rkOt+Kax0ud7PwjIKZFoahzTavEcVxq70QB9KNwcWvpJ5XcjMWnenIhzY=
-X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr11130345ljf.83.1636758738318;
- Fri, 12 Nov 2021 15:12:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20211111154930.3603189-1-pbonzini@redhat.com>
-In-Reply-To: <20211111154930.3603189-1-pbonzini@redhat.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 12 Nov 2021 16:12:06 -0700
-Message-ID: <CAMkAt6qtNcOSP93SYsj_s4EfbyV9L5K0aHgTBT+PJ5uJ-zjM1g@mail.gmail.com>
-Subject: Re: [PATCH v12 0/7] Add AMD SEV and SEV-ES intra host migration support
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=YN0gzQIJL08vzHcPeLEA4tfqqEc6asHK/4BMIe2BKNc=;
+        b=pL9LR7s2Cepmmmj5mR5pULZZRSMbDB3aLkYZymwupEeigBRK6/8nlJxCxpxdJSMQIG
+         CAtQRlsOC5lRlrvEJpk5UUW8XCETFPd2OE5jlRMKo7GPqoyzPPKnCSvN5FhkfPMIZYuz
+         i/+FbomsfBzeVouG751grqcj0D4Vup2L0ZoQA3tkkGKbU7OuzyNvJe9TCjox+HFvqH+I
+         yqe6/42mDh55XYc2aiZFThcWrr5nDvaRC58xhURHiU9hwOJsPpzxf7xNmSyRjAJvFYMt
+         MNaolUjGD9mg7ghSimg6fJrufXfxcW6csFNJtNxGxE6BikdG5D3oZpSFKGhEgINuIDEU
+         xhig==
+X-Gm-Message-State: AOAM53119gHDJbrXmj6NwvwN11ADEA1yJ9bwz+Y7ghTNgGko05rFyNco
+        unrhLRjmHMx0Rs447Pfxf15rDQ==
+X-Google-Smtp-Source: ABdhPJxWiwrcloi7si8eaFR6sCnPnQxXQFhUG+k2OUwKTF+/eZqlwvfk+H/9ArZZhXnJPac+y8JdTw==
+X-Received: by 2002:a17:902:b28b:b0:142:4abc:ac20 with SMTP id u11-20020a170902b28b00b001424abcac20mr12236925plr.88.1636758750688;
+        Fri, 12 Nov 2021 15:12:30 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x125sm7422624pfd.105.2021.11.12.15.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 15:12:30 -0800 (PST)
+Date:   Fri, 12 Nov 2021 15:12:30 -0800 (PST)
+X-Google-Original-Date: Fri, 12 Nov 2021 15:12:29 PST (-0800)
+Subject:     Re: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
+In-Reply-To: <87mtm9rp35.fsf@igel.home>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     schwab@linux-m68k.org
+Message-ID: <mhng-6cc11053-b031-4ee5-875f-fa18095839db@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 8:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Fri, 12 Nov 2021 14:22:54 PST (-0800), schwab@linux-m68k.org wrote:
+> On Nov 12 2021, Palmer Dabbelt wrote:
 >
-> This is a fixed version of Peter Gonda's series.  The main change is
-> that it uses the "bugged" VM implementation (now renamed to "dead")
-> to ensure the source VM is inoperational, and that it correctly
-> charges the current cgroup for the ASID.
+>> I wasn't planning on sending anything else for the merge window.
 >
-> I also renamed the capability to KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM,
-> since it is similar to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM.
->
-> Paolo Bonzini (2):
->   KVM: generalize "bugged" VM to "dead" VM
->   KVM: SEV: provide helpers to charge/uncharge misc_cg
+> Not even the KBUILD_EXTMOD build fix?
 
-Thanks for these Paolo! I took a quick look through these. I can send
-some additional testing for the new "dead" VM functionality on the
-source side VM and I'll try to test when the cgroup is maxed out we
-can still do an intra-host migration (make sure we aren't charging
-double during the migration) in a follow up patch. I guess the cgroup
-stuff in general could use some testing.
+Sorry, I hadn't seen that one.  I found some bugs in my test suite when 
+getting it to run on the new machines so I've got some new failures I'm 
+working through, which is sort of blocking up everything right now.  
+Everything in this PR was tested the old way so I'm confident in it, but 
+I usually do a merge with Linus' tree and test that before sending a PR.  
+In hindsight it might have been better to skip that this time around, 
+given all the headaches getting things up and running, but it's too late 
+for that now.
 
-Also thanks for the detailed reviews Sean.
-
->
-> Peter Gonda (5):
->   KVM: SEV: Refactor out sev_es_state struct
->   KVM: SEV: Add support for SEV intra host migration
->   KVM: SEV: Add support for SEV-ES intra host migration
->   selftest: KVM: Add open sev dev helper
->   selftest: KVM: Add intra host migration tests
->
->  Documentation/virt/kvm/api.rst                |  15 +
->  arch/x86/include/asm/kvm_host.h               |   1 +
->  arch/x86/kvm/svm/sev.c                        | 303 +++++++++++++++---
->  arch/x86/kvm/svm/svm.c                        |   9 +-
->  arch/x86/kvm/svm/svm.h                        |  28 +-
->  arch/x86/kvm/x86.c                            |   8 +-
->  include/linux/kvm_host.h                      |  12 +-
->  include/uapi/linux/kvm.h                      |   1 +
->  tools/testing/selftests/kvm/Makefile          |   3 +-
->  .../testing/selftests/kvm/include/kvm_util.h  |   1 +
->  .../selftests/kvm/include/x86_64/svm_util.h   |   2 +
->  tools/testing/selftests/kvm/lib/kvm_util.c    |  24 +-
->  tools/testing/selftests/kvm/lib/x86_64/svm.c  |  13 +
->  .../selftests/kvm/x86_64/sev_migrate_tests.c  | 203 ++++++++++++
->  virt/kvm/kvm_main.c                           |  10 +-
->  15 files changed, 551 insertions(+), 82 deletions(-)
->  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
->
-> --
-> 2.27.0
->
+I'd like to get back on a more solid footing before trying to pick up 
+more stuff -- I guess that's a pretty trivial fix, but anything in the 
+build system can run into wrinkles (also looks like it was broken in 
+5.15, so it'll have to get backported).
