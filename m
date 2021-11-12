@@ -2,114 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3976644E272
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0647144E285
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhKLHoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 02:44:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232791AbhKLHoP (ORCPT
+        id S233806AbhKLHph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 02:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233885AbhKLHpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 02:44:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636702884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LmIYVgQWINOS/4GPj7vitVLbYIw2tQyXzHOCJlZ5erE=;
-        b=UxZhEqJGMm6mkqEnPEhkGCOBuG2nL0w6JJGw3DMOf/FQwuXNQPIJ4fu7zXSOz2WDG/4kdE
-        QhGsCf57aH4BaXL7MEk1LnKZUAs9ojIe/thshGDttaNK7zrZmBldymL607gI1OMHuw3Nsj
-        j299/FxdfNIwcS338jSetHf/q3J+ohA=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-sC5bvMJMOo-zfTFzOSsEBw-1; Fri, 12 Nov 2021 02:41:23 -0500
-X-MC-Unique: sC5bvMJMOo-zfTFzOSsEBw-1
-Received: by mail-pl1-f200.google.com with SMTP id j6-20020a17090276c600b0014377d8ede3so3883444plt.21
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:41:23 -0800 (PST)
+        Fri, 12 Nov 2021 02:45:33 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39975C06120D
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:42:43 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso9151890wml.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:42:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
+        b=L0G7vqzIu4OmVtWPcfcfA5NzLtPk2i0H7s2BzObNlHQTFEkm03sqk/2QHQ4kjpk9BH
+         XMXouE5QpmwrxFfo6B5ZLvuccwWWhT/w9Ko9Yi7L+7BfDDnicqyRLnT+TM8ck5H5bQEY
+         cyD6P6qfh9iWldNqTQR7o5UJ+sXkSMXyDzLNU6kkBq7ka/+ZuUqEk/qcSbQ3GxXC7kiU
+         cm9dyledHK9n0gr3crraQGaAfhd3vfTQwfXVu/kwmwojjE1dRCSgNEVgeiJJB70r7ke9
+         OYePQHHEPa/usZJXytv516/nCeAGVXFsmZBOHnIcNaOTOhsULeXowN7ikvsxKqOo/gxw
+         3O2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LmIYVgQWINOS/4GPj7vitVLbYIw2tQyXzHOCJlZ5erE=;
-        b=PYurhCy2LsdrD4Z9C8Of4GzfkkEeMDGCBMn9CQFid473kvpkiP96YPREMHWcNg2SKj
-         y7r1/+bwhNri4Cu4QCMI1pfm2qXhBg8p4jvV0ZSp1TVBlBUagtX8jXo2QYHJmfalmloc
-         Tzg+7lWNcKweaITuDj/z5iujBwzsb1MtMq+L7Iq+DluhXDJtK0sHlJUZhiv86L+hEGVv
-         cWGkbF4J8rk4I6LgryVPhBJReAHdcwRW3KAXVTcZ11+0tE3ARRS3vw6T5JDVl5ktQcoH
-         J8gxrLtIfw1vmCbepK7JlTVGeauEHocCQ52nbymAi7SNJ3h1pSLbFJF5ji5tPpqFLNn+
-         SZjA==
-X-Gm-Message-State: AOAM532EZddQJvbQEsQtZj9XPHuHAvPF6Kt4vpFDjVOv25B45mtkVo2o
-        n4zAwuxvo4AUApUxXzO6IuuK58olBmcaEM6lt33AJGEqMXXoCJgFogLhL8is9S8s8dBHfi86bzw
-        dsVc+rwKxwKFUoKYHLmm91db+
-X-Received: by 2002:a17:90a:6583:: with SMTP id k3mr34161321pjj.147.1636702882449;
-        Thu, 11 Nov 2021 23:41:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwYU6pU2s+wZvuogOQ3U+/jYMIOI6bwB5fRtApXzVv4JQPB8e07gFu11espB+vV+ZhMupPz8w==
-X-Received: by 2002:a17:90a:6583:: with SMTP id k3mr34161288pjj.147.1636702882161;
-        Thu, 11 Nov 2021 23:41:22 -0800 (PST)
-Received: from xz-m1.local ([94.177.118.141])
-        by smtp.gmail.com with ESMTPSA id w5sm5755612pfu.219.2021.11.11.23.41.17
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
+        b=Z/BfmAQ2UKUlub7qvlZvEleSQV786fme2PzxH31V7hkNnJyV4/mh38WLqQoUr0EO/N
+         ed9xoh57+TKk27q7tKN3hzNm1Z9LwXJPWGpUV1/vW43Wu2dMGOwzjYhzLew3yoqtxZVI
+         vlZtvWRRJ4tI7JWwAqQrgp5X7sWv+HWS9N/7wYFbsIYJiwFtmoUKdsww4zcZmG7+PvbK
+         XwwYazQ42/93DjHGPyjIUGSg2EJHMvnmcLTa+q9184CdgQnjtwIbsk81zpSZ90DAXTWp
+         hkG9zLqlTBiUjV/nN/fBu2PtcIuRjhz3aE5qv0MI8haaiWOP7eAtfmgj0IsFDSwOazHg
+         hYwg==
+X-Gm-Message-State: AOAM532FwK7jdMo3ZaJzgTPNxm13Jq/kZLY4G9qatJKJqA/2IzS3lDmP
+        Q+Fz5h30XRL6Ic0wxfG4telTPA==
+X-Google-Smtp-Source: ABdhPJyYtg+MHn61GMl0MRFqSO/sm1wnHgrm7yORmq7WT7ihtvN7d0mp317CBhRDaom5mAlXGDszmg==
+X-Received: by 2002:a05:600c:2107:: with SMTP id u7mr32377342wml.82.1636702961238;
+        Thu, 11 Nov 2021 23:42:41 -0800 (PST)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id q8sm4978469wrx.71.2021.11.11.23.42.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 23:41:21 -0800 (PST)
-Date:   Fri, 12 Nov 2021 15:41:14 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YY4amnb1kcBEVw3E@xz-m1.local>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <c5ed86d0-8af6-f54f-e352-8871395ad62e@redhat.com>
- <YYuCaNXikls/9JhS@t490s>
- <793685d2-be3f-9a74-c9a3-65c486e0ef1f@redhat.com>
- <YYuJd9ZBQiY50dVs@xz-m1.local>
- <8032a24c-3800-16e5-41b7-5565e74d3863@redhat.com>
- <CAHS8izPKN96M2GbHBC6_-XCr1pYy7uA-vNw2FHe01XbYMVdKUQ@mail.gmail.com>
+        Thu, 11 Nov 2021 23:42:40 -0800 (PST)
+Date:   Fri, 12 Nov 2021 07:42:37 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alexandre torgue <alexandre.torgue@foss.st.com>,
+        jonathan cameron <jic23@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        olivier moysan <olivier.moysan@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        maxime coquelin <mcoquelin.stm32@gmail.com>,
+        Matt Mackall <mpm@selenic.com>, vinod koul <vkoul@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        baolin wang <baolin.wang7@gmail.com>,
+        linux-spi@vger.kernel.org, david airlie <airlied@linux.ie>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        netdev@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        ohad ben-cohen <ohad@wizery.com>, linux-gpio@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Le Ray <erwan.leray@foss.st.com>,
+        herbert xu <herbert@gondor.apana.org.au>,
+        michael turquette <mturquette@baylibre.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Christophe Roullier <christophe.roullier@foss.st.com>,
+        linux-serial@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ludovic Barre <ludovic.barre@foss.st.com>,
+        "david s . miller" <davem@davemloft.net>,
+        Lionel Debieve <lionel.debieve@foss.st.com>,
+        linux-i2c@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        thierry reding <thierry.reding@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        philippe cornu <philippe.cornu@foss.st.com>,
+        linux-rtc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        alsa-devel@alsa-project.org, Zhang Rui <rui.zhang@intel.com>,
+        linux-crypto@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-iio@vger.kernel.org, pascal Paillet <p.paillet@foss.st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        linux-pm@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stephen boyd <sboyd@kernel.org>,
+        dillon min <dillon.minfei@gmail.com>,
+        devicetree@vger.kernel.org,
+        yannick fertre <yannick.fertre@foss.st.com>,
+        linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        linux-phy@lists.infradead.org,
+        benjamin gaignard <benjamin.gaignard@linaro.org>,
+        sam ravnborg <sam@ravnborg.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-clk@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+        arnaud pouliquen <arnaud.pouliquen@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        dmaengine@vger.kernel.org, linux-media@vger.kernel.org,
+        daniel vetter <daniel@ffwll.ch>, Marc Zyngier <maz@kernel.org>,
+        bjorn andersson <bjorn.andersson@linaro.org>,
+        lars-peter clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3 2/5] dt-bindings: mfd: timers: Update maintainers for
+ st,stm32-timers
+Message-ID: <YY4a7ZxzhNq6Or+t@google.com>
+References: <20211110150144.18272-1-patrice.chotard@foss.st.com>
+ <20211110150144.18272-3-patrice.chotard@foss.st.com>
+ <YYwjPAoCtuM6iycz@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHS8izPKN96M2GbHBC6_-XCr1pYy7uA-vNw2FHe01XbYMVdKUQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYwjPAoCtuM6iycz@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:42:25AM -0800, Mina Almasry wrote:
-> Sorry, yes I should update the commit message with this info. The
-> issues with smaps are:
-> 1. Performance: I've pinged our network service folks to obtain a
-> rough perf comparison but I haven't been able to get one. I can try to
-> get a performance measurement myself but Peter seems to be also seeing
-> this.
+On Wed, 10 Nov 2021, Rob Herring wrote:
 
-No I was not seeing any real issues in my environment, but I remembered people
-complaining about it because smaps needs to walk the whole memory of the
-process, then if one program is only interested in some small portion of the
-whole memory, it'll be slow because smaps will still need to walk all the
-memory anyway.
+> On Wed, 10 Nov 2021 16:01:41 +0100, patrice.chotard@foss.st.com wrote:
+> > From: Patrice Chotard <patrice.chotard@foss.st.com>
+> > 
+> > Benjamin has left the company, remove his name from maintainers.
+> > 
+> > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> > ---
+> >  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> 
+> Lee indicated he was going to pick this one up, so:
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-> 2. smaps output is human readable and a bit convoluted for userspace to parse.
+Since you already merged the treewide patch, you may as well take
+this too.  We'll work through any conflicts that may occur as a
+result.
 
-IMHO this is not a major issue.  AFAIK lots of programs will still try to parse
-human readable output like smaps to get some solid numbers.  It's just that
-it'll be indeed an perf issue if it's only a part of the memory that is of
-interest.
-
-Could we consider exporting a new smaps interface that:
-
-  1. allows to specify a range of memory, and,
-  2. expose information as "struct mem_size_stats" in binary format
-     (we may want to replace "unsigned long" with "u64", then also have some
-      versioning or having a "size" field for the struct, though; seems doable)
-
-I'm wondering whether this could be helpful in even more scenarios.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
-Peter Xu
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
