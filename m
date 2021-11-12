@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9175D44E3A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA1C44E3A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 10:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbhKLJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 04:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234621AbhKLJMk (ORCPT
+        id S234718AbhKLJNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 04:13:39 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:16696 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233978AbhKLJNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 04:12:40 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ACDC061767;
-        Fri, 12 Nov 2021 01:09:50 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id m15so3649136pgu.11;
-        Fri, 12 Nov 2021 01:09:50 -0800 (PST)
+        Fri, 12 Nov 2021 04:13:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OL4QYJUzHptOBxtdYKxpiQov6ltgvIZBysaXTy9bid0=;
-        b=ngCXF6ZSTvcaFDFIP/mtK0DKp/1d+0IzNH9AQ86KKHCvEUA9o0BMT5RSCryTAuqPWx
-         YN/a/hBZ5sQ16yJz2yluP3/XDyo86hwxkRhhTLcQXYBBCqbmKgU5EVmQnat+JTNpizwy
-         6Rej6iHucmrp8OUSMQRfe7KLfqL72r2OWba1WSnDSjyFZe6BwiEZpdN9y/6XXzvRtcew
-         KI/iVg9O/siu9zREWL4TSnaGdUEFLRD62hLHiATJVrs1RRchtpw3V/9jnzinMfO4G+EY
-         VxvQ7qudvB94ZCoaZZbt7QyeEhgBWKH2DHHrsSirL65DTc+3XL36xRuwG19g7WCHh1/z
-         mELQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OL4QYJUzHptOBxtdYKxpiQov6ltgvIZBysaXTy9bid0=;
-        b=JKYQ2zlVdruuWVmb2DEGSursd1W9v4PHAVC1Pw+OgD0g+0GS12ys9tKEQohDFHOejT
-         s6aKPhFWQFlinxy6q2Cm9cUkUVqut54wYLSDfPwMXDkoVbGjzoBIZxRMC6cZb7G+FxJv
-         HBCY8cTu9nLQdva8j1rM7LBCa0dLEDX01hgu3X8GlfhcX/hdujjb9zZlPDuIGBHxcirV
-         gRz7D7IZG0KpiEya6h/6R7I0M/8PnITSP/ni6MhCbAlyWHwCUHWYHsyGga4m4HIQ2h5N
-         4xIbKpqsU3rPcfAyZzOgpc0QbQ4FqsYnNoQV3VuuNEq6h6L8YuMXdcbhNd9s+G2V7mGp
-         CWPQ==
-X-Gm-Message-State: AOAM530dS4NZCXoWCwkkKMjYuAu5ZsPd0bgpREkrGARdOHcS1yzYgRhf
-        Lt/Tasv40gyAaFlTESpnthE=
-X-Google-Smtp-Source: ABdhPJz/4WZOhYg5nibpGGCOEU4kc1wY/olHV1QOv5CYlN4JhIkwZR5ulYHM0vDjyYdFuy4Z9ums6g==
-X-Received: by 2002:a05:6a00:248b:b0:49f:9d7f:84e2 with SMTP id c11-20020a056a00248b00b0049f9d7f84e2mr12612297pfv.40.1636708190107;
-        Fri, 12 Nov 2021 01:09:50 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id qe2sm2311752pjb.42.2021.11.12.01.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 01:09:49 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     rafael@kernel.org
-Cc:     daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com,
-        ran.jianping@zte.com.cn, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] tools/thermal: remove unneeded variable
-Date:   Fri, 12 Nov 2021 09:09:46 +0000
-Message-Id: <20211112090946.9026-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636708246; x=1668244246;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nBm8KL50rPBclGGcQhaFKFJmx/7KYwhmoc+YLXPGjzI=;
+  b=YWPOe6nT5G4pKGiMXDRydsk6ieIEu9XD663dmde6TzYKQ+mWxNX2Y6gK
+   5Ns4EL4v7lrWhVhUEwcfdhsDbZWMjUOqhvv54WuY4vVFnIEueujMkcY2S
+   Psnwa8FqX108eEQk0xcQ2WeCRnb3bPmdYJvPTJHqhWRMq1MVENhgr1pq2
+   4=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 12 Nov 2021 01:10:46 -0800
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 01:10:45 -0800
+Received: from jinlmao-gv.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 12 Nov 2021 01:10:42 -0800
+Date:   Fri, 12 Nov 2021 17:10:38 +0800
+From:   Jinlong <quic_jinlmao@quicinc.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Tao Zhang <quic_taozha@quicinc.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        "Leo Yan" <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>
+Subject: Re: [PATCH 05/10] Coresight: Add interface for TPDM BC subunit
+Message-ID: <20211112091034.GA28079@jinlmao-gv.ap.qualcomm.com>
+References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
+ <1634801936-15080-6-git-send-email-quic_taozha@quicinc.com>
+ <20211104180106.GD491267@p14s>
+ <20211105082625.GE25738@jinlmao-gv.ap.qualcomm.com>
+ <20211112084228.GA24524@jinlmao-gv.ap.qualcomm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211112084228.GA24524@jinlmao-gv.ap.qualcomm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
+On Fri, Nov 12, 2021 at 04:42:31PM +0800, Jinlong wrote:
+> [....]
+> 
+> > >  	&tpdm_attr_grp,
+> > > > +	&tpdm_bc_attr_grp,
+> > > 
+> > > It is quite tedious to review all these options at the same time as the core
+> > > drivers.  I suggest to concentrate on the base functionality for now.  When that
+> > > is merged we can add configuration options such as these.
+> > > 
+> > > I am out of time for this patchset and as such will not review the remaining
+> > > patches - those will have to wait for another iteration.
+> > > 
+> > > Thanks,
+> > > Mathieu
+> > 
+> > 
+> > Thank your for all the comments.
+> > We will update the patches.
+> > 
+> > Thanks
+> > Jinlong Mao 
+> > 
+>
 
-Fix the following coccicheck review:
-/tools/thermal/tmon/pid.c:57:5-8: Unneeded variable
+Correct the typo.
 
-Remove unneeded variable used to store return value.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- tools/thermal/tmon/pid.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/thermal/tmon/pid.c b/tools/thermal/tmon/pid.c
-index c54edb4f630c..296f69c00c57 100644
---- a/tools/thermal/tmon/pid.c
-+++ b/tools/thermal/tmon/pid.c
-@@ -54,7 +54,6 @@ static double xk_1, xk_2; /* input temperature x[k-#] */
-  */
- int init_thermal_controller(void)
- {
--	int ret = 0;
+ Hi Mathieu,
  
- 	/* init pid params */
- 	p_param.ts = ticktime;
-@@ -65,7 +64,7 @@ int init_thermal_controller(void)
+ We will reduce the code changes.
+ There will be code changes below for next version:
  
- 	p_param.t_target = target_temp_user;
+ 1. coresight: add support to enable more coresight paths
+ 2. Basic function for TPDM(only enable/disable functions)
+ 3. TPDA driver
  
--	return ret;
-+	return 0;
- }
- 
- void controller_reset(void)
--- 
-2.25.1
-
+ Is that ok for you ?
+> 
+> > > 
+> > > >  	NULL,
+> > > >  };
+> > > >  
+> > > > -- 
+> > > > 2.17.1
+> > > > 
