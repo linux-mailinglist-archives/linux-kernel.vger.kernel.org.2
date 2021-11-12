@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C9644E72A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F1344E733
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhKLNV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S234088AbhKLNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhKLNV2 (ORCPT
+        with ESMTP id S232949AbhKLNWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:21:28 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAE5C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:18:38 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id m15so4104361pgu.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:18:38 -0800 (PST)
+        Fri, 12 Nov 2021 08:22:20 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A07C061203
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:19:30 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso6781180wmf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 05:19:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AJJvgLkaj1ldPKqgEqYsJV1bKUGA/M9apuGLSVBki7o=;
-        b=nThlzJQiU2cDw+giTSlT/gHFuBTPFIBTNttRtPpKK+ymN6AbOn8NfOcsQKpVaAwv4r
-         RCMoTrVlDXVHSHEgW4xHXLJssjj0o5cswunHtVrDlk/PWSQvY79fYnYlkqhYQOFDX6g8
-         wjpl1eBVwUpjZJXn36ueF9xt7aVBfKuNhwy19d+HpRlWAck9Abp2J6WuJ+qdQbnVGgq7
-         i4JuuPxa5vbNVgZsod0gxUuxpa+BBaJN1cGUVkibC1eeMb08Hm/21LK1eA9NJZIFu5cJ
-         dgMFbcv/fUYZ1xI3LpLGp7CChxy4pt+fE15wSqiQJfM3Mr+P3UIO4yUZg4mtxjmyVEql
-         Xt5A==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1eaJViV6yW2w/7feIrBH34EYgKSWZrLiHMX+rKu9+Ec=;
+        b=JPsAx3UoeFB+Q+s++U4FCu9KL6kCzcAnqEpWrv7us5Q47qsbYMibg+3wsg3saypWim
+         Z1o6kg+CKkjkt+e13H9Z+KCcUatH5Ps8kLtjxM6L/aFOWaHUxsJbGOe8wE55cQU0pwIl
+         0QHqmb3CVT1SxOJ2PbV8+qc3h4Pj/uWNGFmO6vHR6/xjoVJ0GhZa7+q9IXOr5aJflESk
+         KVJXQP27EhfQGYIB2oNfvQo214Hi0kPolGTDCay/fBgoeaY07j0X5QoAUcqA/upPxgY/
+         fbL70uvsybKZeUMWVsQXSxN2w5VN2XiiS5DcA5cWoRXZ/OoCe6n+G3lYI7CWaEW/+yif
+         Z2zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AJJvgLkaj1ldPKqgEqYsJV1bKUGA/M9apuGLSVBki7o=;
-        b=IjZ9WMUpp5LZZcODmVAswSStXhTnMhJpIMMnvo3zYJY3uZ+CwC7xQbGQkoLQAVKatm
-         tlmlA+aRd3sJvu7sk9xiHU86vhlq44I2USf4KvDIJ8Cs8pI1eSOESkCIUCxRB571FXK6
-         HSHxo0lMiD3kXjA1zhqszyxSfL6GIfUHKBHyWVjb9LUbzXT7PEYXt2nyUvsz7w2GU2QT
-         5Y/RPTMJHc8jpH+7T2oZZQ1zOs0FYeaF6ht6hUQN8yG+56L5f9ifY/qKYivRPXEIbPuP
-         3A2FtCn34dT2dnUo44Cu7gmKaMJQNmGEccrYvor5eI8J2Ae3ZOcxvV72ia6jzX0GVUJM
-         tj+A==
-X-Gm-Message-State: AOAM533zfG55ryDvoF5LnSxQ+0vTOOQTArrERCYu4XVR2JhIoYwwPpJz
-        QT8I0r9IIiZYzsBWQzTyAlI=
-X-Google-Smtp-Source: ABdhPJzjHBEzYfDkyhbnLuvks7Kb1S7Cqymv/Ya//rLQbl6y5ZfIne/bW6SHIhFuCrR6wzqO+3cv+w==
-X-Received: by 2002:a05:6a00:a10:b0:412:448c:89c7 with SMTP id p16-20020a056a000a1000b00412448c89c7mr13568800pfh.83.1636723117570;
-        Fri, 12 Nov 2021 05:18:37 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id a13sm6983537pfv.99.2021.11.12.05.18.35
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1eaJViV6yW2w/7feIrBH34EYgKSWZrLiHMX+rKu9+Ec=;
+        b=2MzgRt5q0xMgdxyp+ApOZA8eREJesxeRvyWu8s0Avtoy8VH86cxFPnpBMSc3MLmh53
+         cfE2Y5MfxnRi2KA4vlhiCbqKSMJIKYc27/l/m3f3dlRo9B/GJf4kHz9k3GcbUVJwu159
+         afKX09yDopIMpNa+BIoCqpZL8VyzFsrGfPH0kNUSF5ZQyiZRiexb4ao7bupvunn3S2TY
+         /u8IosusqDYSOho8hpUMKOeTVBnnLmMRCesrKTMtVm2mFuFYnCs80uWy8Kvis4rM+rTx
+         y/iiTLXIk1F4ziK1RTAIjiI0Pmp0HExM04i/IxCJ6RNYQ/yLH/9pNxBlRXhTUEpYztOJ
+         HoTQ==
+X-Gm-Message-State: AOAM531PZX5qbuuPTqA0VrBs83hEcUx0crT5FPZ6P+JzgVWtCqTNPoRf
+        xGDrDxh2QZ5JKMuogcWDoz5PgPg+HSi76J4f
+X-Google-Smtp-Source: ABdhPJy8PaKQk1FMOFQ+Jw0w8lm3dSgQdxGTQKA3ULTMRo8aBRFcqJUNv4Q/Nt8CFeZvX5gA0SUbZw==
+X-Received: by 2002:a1c:1fd6:: with SMTP id f205mr34655741wmf.98.1636723168587;
+        Fri, 12 Nov 2021 05:19:28 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f3sm11409384wmb.12.2021.11.12.05.19.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 05:18:37 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     phil@philpotter.co.uk
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        linux@roeck-us.net, martin@kaiser.cx, dan.carpenter@oracle.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] staging: r8188eu: remove unneeded variable
-Date:   Fri, 12 Nov 2021 13:18:30 +0000
-Message-Id: <20211112131830.11418-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Nov 2021 05:19:27 -0800 (PST)
+Date:   Fri, 12 Nov 2021 13:19:25 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>
+Subject: Re: [RESEND PATCH v2 04/13] backlight: qcom-wled: Fix off-by-one
+ maximum with default num_strings
+Message-ID: <20211112131925.fqallv3z73ehc6y3@maple.lan>
+References: <20211112002706.453289-1-marijn.suijten@somainline.org>
+ <20211112002706.453289-5-marijn.suijten@somainline.org>
+ <20211112120839.i6g747vewg6bkyk7@maple.lan>
+ <20211112123501.pz5e6g7gavlinung@SoMainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112123501.pz5e6g7gavlinung@SoMainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Fri, Nov 12, 2021 at 01:35:01PM +0100, Marijn Suijten wrote:
+> On 2021-11-12 12:08:39, Daniel Thompson wrote:
+> > On Fri, Nov 12, 2021 at 01:26:57AM +0100, Marijn Suijten wrote:
+> > > +		if (string_len > 0) {
+> > > +			dev_warn(dev, "qcom,num-strings and qcom,enabled-strings are ambiguous\n");
+> > 
+> > The warning should also be below the error message on the next if statement.
+> 
+> Agreed.
+> 
+> > This warning occurs even when there is no ambiguity.
+> > 
+> > This could be:
+> > 
+> > 	if (string_len > 0 && val != string_len)
+> > 
+> > Combined these changes allows us to give a much more helpful and assertive
+> > warning message:
+> > 
+> > qcom,num-strings mis-matches and will partially override
+> > qcom,enabled-strings (remove qcom,num-strings?)
+> 
+> I want to let the user know it's set regardless of whether they're
+> equivalent; no need to set both.
+> 
+> How about:
+> 
+>     Only one of qcom,num-strings or qcom,enabled-strings should be set
+> 
+> That should be more descriptive?  Otherwise, let me know if you really
+> want to allow users to (unnecessarily) set both - or if it can / should
+> be caught in DT validation instead.
 
-Fix the following coccicheck review:
-./drivers/staging/r8188eu/core/rtw_ap.c: 1094: 5-8: Unneeded variable
+Yes. I can live with that text. Let's use that.
 
-Remove unneeded variable used to store return value.
+Maybe I wouldn't if there gazilions of existing DTs with both
+properties but IIRC the number is likely to be small or zero
+(although we couldn't be 100% sure which).
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/staging/r8188eu/core/rtw_ap.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index c78feeb9c862..d103a92ee2f1 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -1091,7 +1091,6 @@ u8 ap_free_sta(struct adapter *padapter, struct sta_info *psta,
- int rtw_sta_flush(struct adapter *padapter)
- {
- 	struct list_head *phead, *plist;
--	int ret = 0;
- 	struct sta_info *psta = NULL;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-@@ -1101,7 +1100,7 @@ int rtw_sta_flush(struct adapter *padapter)
- 	DBG_88E(FUNC_NDEV_FMT"\n", FUNC_NDEV_ARG(padapter->pnetdev));
- 
- 	if ((pmlmeinfo->state & 0x03) != WIFI_FW_AP_STATE)
--		return ret;
-+		return 0;
- 
- 	spin_lock_bh(&pstapriv->asoc_list_lock);
- 	phead = &pstapriv->asoc_list;
-@@ -1124,7 +1123,7 @@ int rtw_sta_flush(struct adapter *padapter)
- 
- 	associated_clients_update(padapter, true);
- 
--	return ret;
-+	return 0;
- }
- 
- /* called > TSR LEVEL for USB or SDIO Interface*/
--- 
-2.25.1
-
+Daniel.
