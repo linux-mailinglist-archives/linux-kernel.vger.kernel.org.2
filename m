@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B789044E28B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EE544E28D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 08:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbhKLHqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 02:46:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57431 "EHLO
+        id S233737AbhKLHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 02:47:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30606 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233387AbhKLHqQ (ORCPT
+        by vger.kernel.org with ESMTP id S234569AbhKLHqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 02:46:16 -0500
+        Fri, 12 Nov 2021 02:46:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636703005;
+        s=mimecast20190719; t=1636703041;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2+bbLPuvp6j+cegdNKlEPJqnoq6OmsKUa3Sntf90VmI=;
-        b=gbA/Ns77ZiSf75JXhS+rFC3ZTasLE7WIG1evsZr7njY6xETxEHtyYvqXl7hjLy8Srya3rZ
-        MAFtBGJlHk+ZDGT3P9dnEE6KsDG/K8pydIh9iKMLbOa2oHlI8Tutmxfd++ZSnIwgLH4Rsm
-        BqIh8nMfJgIS8j1OClfAOLoqRUdnRRM=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-k1wuWBEcPnSvWsyrf8Pxpw-1; Fri, 12 Nov 2021 02:43:24 -0500
-X-MC-Unique: k1wuWBEcPnSvWsyrf8Pxpw-1
-Received: by mail-pf1-f200.google.com with SMTP id g142-20020a625294000000b004946d789d14so5318807pfb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 23:43:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2+bbLPuvp6j+cegdNKlEPJqnoq6OmsKUa3Sntf90VmI=;
-        b=7f04ip43qhy6YZwDhTudDPmf8cSog5VVSMvZ9h1RtFSPBWHqRWzuO/zToND9IkYBkC
-         wZ8puaHhN/pDA+XczmLwCmvYPSAi1IVLADPiUvcVHA+SHs62KApiMCvDVlL4HoIHJiAb
-         wD9tDLr5aAsdwDrx2uJ1juE7IRqz+MLotTvjXL9aln4e0LNCd/pTTkTTxlepvrM7h5zi
-         QPt26aV8yFfY0+hwQvRKBZqO9q0FyKzgpiUE6rgRFWUmZPb227XGNhumhCXwX9KitKkN
-         OcbXSCYJxcupajQwm8k4okccdyeMZxNbMgb3QYmq/S11gWZ5BxP2HLZYVMvu2mwCofZc
-         LK9A==
-X-Gm-Message-State: AOAM531f3T9olIf7duDIJEDygSnExEgunzq6fqNTUymuwLBchh+v2AN2
-        8SKzBVTJ5bCH7Vu/Y9E+hshq+jByoNSIO9DKE5JE1Vd3X9lJVDIlqp5GPxNCOWpIAUOiDMgKiIv
-        HOXUFlSZnrNHY0eePKeqcFL/j
-X-Received: by 2002:a62:e907:0:b0:4a0:3a71:9712 with SMTP id j7-20020a62e907000000b004a03a719712mr11992010pfh.73.1636703003574;
-        Thu, 11 Nov 2021 23:43:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyW65zsGOp0tOg78dGWcQxPMcJVbcn+Q5ElOLrsIyJjMaVrE4YLHP5pKzdyX2p+4jQg0KZ6Bg==
-X-Received: by 2002:a62:e907:0:b0:4a0:3a71:9712 with SMTP id j7-20020a62e907000000b004a03a719712mr11991987pfh.73.1636703003370;
-        Thu, 11 Nov 2021 23:43:23 -0800 (PST)
-Received: from xz-m1.local ([94.177.118.141])
-        by smtp.gmail.com with ESMTPSA id h12sm5667373pfv.117.2021.11.11.23.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 23:43:22 -0800 (PST)
-Date:   Fri, 12 Nov 2021 15:43:16 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YY4bFPkfUhlpUqvo@xz-m1.local>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
+        bh=of5gwDBwxdcYh6K59nXNYWEL/33AGRMxrOyNV/fv1+8=;
+        b=S4zlMOd0jiZnGKFSOaNjf8CXW/L04VomG3a4Aut3GlxPk37bLRDQoyfPDnjpwNk/0fAZ5Z
+        44nzZWi2Bn8l9Htwm5CWtchuYGyzps8t091GsgqYnLGyrfn9A9UIWcJzx+zPjITfQhEJhl
+        bI0N8tkK+bGygnErCHeIDOG/3wl2iIg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-aByo8f2oOyW0e1bO26HJOA-1; Fri, 12 Nov 2021 02:43:57 -0500
+X-MC-Unique: aByo8f2oOyW0e1bO26HJOA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AF8A19200C2;
+        Fri, 12 Nov 2021 07:43:55 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D7281057F55;
+        Fri, 12 Nov 2021 07:43:48 +0000 (UTC)
+Message-ID: <556d68697f5cd30e32307b1c56ae51b42f87cd4f.camel@redhat.com>
+Subject: Re: [PATCH v5 2/7] nSVM: introduce smv->nested.save to cache save
+ area fields
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 12 Nov 2021 09:43:47 +0200
+In-Reply-To: <49852dbc-548d-5bf1-6254-ec69d3041961@redhat.com>
+References: <20211103140527.752797-1-eesposit@redhat.com>
+         <20211103140527.752797-3-eesposit@redhat.com>
+         <49852dbc-548d-5bf1-6254-ec69d3041961@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:50:13AM -0800, Mina Almasry wrote:
-> On Tue, Nov 9, 2021 at 11:03 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
-> > "PM_HUGE" (as THP also means HUGE already)?
-> >
+On Thu, 2021-11-11 at 14:52 +0100, Paolo Bonzini wrote:
+> On 11/3/21 15:05, Emanuele Giuseppe Esposito wrote:
+> > Note that in svm_set_nested_state() we want to cache the L2
+> > save state only if we are in normal non guest mode, because
+> > otherwise it is not touched.
 > 
-> So I want to make it clear that the flag is set only when the page is
-> PMD mappend and is a THP (not hugetlbfs or some other PMD device
-> mapping). PM_THP would imply the flag is set only if the underlying
-> page is THP without regard to whether it's actually PMD mapped or not.
+> I think that call to nested_copy_vmcb_save_to_cache is not necessary at 
+> all, because svm->nested.save is not used afterwards and is not valid 
+> after VMRUN.
 
-I see, that's fine.
+Yes, but since setting nested state is absolutely not performance critical,
+having it do the same thing as normal VMRUN is always better.
 
-However as I mentioned I still think HUGE and THP dup with each other.
-Meanwhile, "MAPPING" does not sound like a boolean status on whether it's thp
-mapped..
+Best regards,
+	Maxim Levitsky
 
-If you still prefer this approach, how about PM_THP_MAPPED?
+> 
+> The relevant checks have already been done before:
+> 
+>          if (!(vcpu->arch.efer & EFER_SVME)) {
+>                  /* GIF=1 and no guest mode are required if SVME=0.  */
+>                  if (kvm_state->flags != KVM_STATE_NESTED_GIF_SET)
+>                          return -EINVAL;
+>          }
+> 
+> 	...
+> 
+>          /*
+>           * Processor state contains L2 state.  Check that it is
+>           * valid for guest mode (see nested_vmcb_check_save).
+>           */
+>          cr0 = kvm_read_cr0(vcpu);
+>          if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
+>                  goto out_free;
+> 
+> (and all other checks are done by KVM_SET_SREGS, KVM_SET_DEBUGREGS etc.)
+> 
+> Paolo
+> 
 
--- 
-Peter Xu
 
