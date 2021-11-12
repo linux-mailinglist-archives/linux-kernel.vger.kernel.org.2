@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A25544DF3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E3F44DF40
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhKLAlY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Nov 2021 19:41:24 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:40331 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbhKLAlW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:41:22 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1AC0cN3C1001395, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1AC0cN3C1001395
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 12 Nov 2021 08:38:23 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 12 Nov 2021 08:38:22 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 11 Nov 2021 19:38:22 -0500
-Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
- RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
- 15.01.2308.015; Fri, 12 Nov 2021 08:38:22 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rtw89: Fix crash by loading compressed firmware file
-Thread-Topic: [PATCH] rtw89: Fix crash by loading compressed firmware file
-Thread-Index: AQHX0hU7VE24GGCl002qwvOXgdMXQqv0AUsAgACX6Q///34ogIAAjK5D///UggCAAArHAIAJHR/Q///AsAAADsiKgAAn5IYA
-Date:   Fri, 12 Nov 2021 00:38:21 +0000
-Message-ID: <489f31a2f323487da829d67480f09b52@realtek.com>
-References: <20211105071725.31539-1-tiwai@suse.de>
-        <s5hpmrfgj93.wl-tiwai@suse.de>  <87zgqjqaae.fsf@codeaurora.org>
-        <s5hh7crgflg.wl-tiwai@suse.de>  <87v917q8hw.fsf@codeaurora.org>
-        <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
-        <s5h5yt6fxpf.wl-tiwai@suse.de>  <68f61525b26f46578a62b2a54d775c17@realtek.com>
-        <s5hv90z5hlh.wl-tiwai@suse.de> <s5hwnle4y00.wl-tiwai@suse.de>
-In-Reply-To: <s5hwnle4y00.wl-tiwai@suse.de>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/11/11_=3F=3F_10:30:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S234547AbhKLAoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:44:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231965AbhKLAoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Nov 2021 19:44:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id AE76361260;
+        Fri, 12 Nov 2021 00:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636677670;
+        bh=qc0RLnESA3nFtjBnn0Qt5J8mmMt6Ufa2sTbacnDgLZQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uuQoihRGGxhilFOmYBJWixZFrumlMMs4dCVpgftV/kICN2P9w4dsNqP5B3OYs5QM4
+         d644I+Wop2GZGI1ydFIrjsGHVBy/MY/dcBx+qXW3DhVmSLs96JCQjmWDdTH9LJ/PxS
+         jyGKC57Hba9vWsEzVp44uT4C5tBnv3Kf0etlliMlWwfl03PjhccREUIU7xo8u5ZX6W
+         HpGexm1kYMX+NesNQeGUvSy2WXySKJ/HQDvxUiI0+8gndfHBc+KnC90iAL7v6NNROp
+         Ok0/EM0ulM7g0ktI9hMVK9AyMwlcHn1M1MK1xmOJuNMMIa5I3/x1fkouFczkVyiPBX
+         s2PXsk73biQtA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9E54B60074;
+        Fri, 12 Nov 2021 00:41:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/12/2021 00:25:28
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 167215 [Nov 11 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;bugzilla.opensuse.org:7.1.1;realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/12/2021 00:29:00
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH linux-next] ipv6: Remove assignment to 'newinet'
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163667767064.21646.9365544142891525487.git-patchwork-notify@kernel.org>
+Date:   Fri, 12 Nov 2021 00:41:10 +0000
+References: <20211111092346.159994-1-luo.penghao@zte.com.cn>
+In-Reply-To: <20211111092346.159994-1-luo.penghao@zte.com.cn>
+To:     luo penghao <cgel.zte@gmail.com>
+Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo.penghao@zte.com.cn,
+        zealci@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Thursday, November 11, 2021 9:34 PM
-> To: Pkshih <pkshih@realtek.com>
-> Cc: kvalo@codeaurora.org; linux-wireless@vger.kernel.org; Larry.Finger@gmail.com;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
-> 
-> On Thu, 11 Nov 2021 07:31:06 +0100,
-> Takashi Iwai wrote:
-> >
-> > On Thu, 11 Nov 2021 03:28:09 +0100,
-> > Pkshih wrote:
-> > > Please check if my patch works on your platform.
-> > > Thanks you.
-> > >
-> > > [1] https://lore.kernel.org/linux-wireless/20211111021457.13776-1-pkshih@realtek.com/T/#t
-> >
-> > Thanks.  I'll ask people testing those patches.
-> 
-> The patches have been confirmed to work.
-> Feel free to put the tag
-> 
-> BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1188303
-> 
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I have sent v2 with BugLink and Tested-by tags.
-If anything is improper, please let me know.
+On Thu, 11 Nov 2021 09:23:46 +0000 you wrote:
+> From: luo penghao <luo.penghao@zte.com.cn>
+> 
+> The same statement will overwrite it afterwards. meanwhile, the
+> assignment is in the if statement, the variable will not be used
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+> 
+> [...]
 
---
-Ping-Ke
+Here is the summary with links:
+  - [linux-next] ipv6: Remove assignment to 'newinet'
+    https://git.kernel.org/netdev/net-next/c/70bf363d7adb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
