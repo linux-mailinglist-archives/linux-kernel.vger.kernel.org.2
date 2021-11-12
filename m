@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7776844DECA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC5244DECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 01:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhKLADn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Nov 2021 19:03:43 -0500
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:33387 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhKLADm (ORCPT
+        id S234448AbhKLAG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Nov 2021 19:06:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57396 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234146AbhKLAG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Nov 2021 19:03:42 -0500
-Received: by mail-pj1-f41.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so5012519pjj.0;
-        Thu, 11 Nov 2021 16:00:53 -0800 (PST)
+        Thu, 11 Nov 2021 19:06:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636675446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+aI3vIA8L2jTbmaVH9PAGWa1rUBVm1aF92U3pHIQZow=;
+        b=DoLkf3EEuoQm3tEPhwfe86gtwXfafh9U8cmsmlNMUaaJsvTNXCqf/QSsZbGCuCx0PyxJJ8
+        BTqrrXxkD4GT7ZkFagJ5KY3ISWoymnuBw1K70XAreSEgeU/F/chmDoY3bHkf5/VirHkXlm
+        S8Zbx1TEmXh/pT6F8FKZzPFQBp9gEzw=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-pDZD5aHTPeiTwg6bSdQUWA-1; Thu, 11 Nov 2021 19:04:04 -0500
+X-MC-Unique: pDZD5aHTPeiTwg6bSdQUWA-1
+Received: by mail-qk1-f200.google.com with SMTP id j6-20020a05620a288600b0045e5d85ca17so5232663qkp.16
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Nov 2021 16:04:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XGHZ26K2ZnTdtM9Vpe3wWAEf07Z04ZfkU4P5oNhWnoo=;
-        b=jyq7etcftIf8kruXN+h36v3bnLYdnBrAm21geAcwt9/3udAN8loL8Xkb8Zj1CNOS3V
-         mw+vP9AzpCvPyGv12VyZxuXeBWTlQCeKPIuI671x3FTTshZpSnz3mWS6fAsO3iqFLWBw
-         OljWDvb+aRBJPh7S3Y+31QtSd8kfCKdZfX8fc8tM7juuOAxUrigPUaVTLWPLNDby89la
-         GOzt3zWFckuQpNnw71AXqJR40cJNUxcWhmZ3aQtCbnhyhnfszv20aIHxDMnO9mZJe21f
-         8biwfwtrhcBjEazG6asjtocIFKpfrT4FJnGrDgt+mhqcb6bNIfad0UdPWdM3gn8Jor+c
-         cuug==
-X-Gm-Message-State: AOAM532moL9aeNe6NIa97sme8IR1/Pvqbr0haMPyHq1Sgt+jkXOSNRK4
-        g94M+oBkGrJnhimfB8ETevc=
-X-Google-Smtp-Source: ABdhPJzcd9mdPRgXPHgt4Ji2bt4ozpzXtBL50vxOCskZCd67vSddBhyBW9fvPEpZflJXmLhznAK+gg==
-X-Received: by 2002:a17:903:4053:b0:143:6d84:984c with SMTP id n19-20020a170903405300b001436d84984cmr3449505pla.37.1636675252787;
-        Thu, 11 Nov 2021 16:00:52 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id z30sm4042467pfg.30.2021.11.11.16.00.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 16:00:52 -0800 (PST)
-Date:   Fri, 12 Nov 2021 01:00:43 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     linux-pci@vger.kernel.org, mst@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
-Message-ID: <YY2uqx4LC2J5F/w9@rocinante>
-References: <20211111090225.946381-1-kraxel@redhat.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+aI3vIA8L2jTbmaVH9PAGWa1rUBVm1aF92U3pHIQZow=;
+        b=Wj1UMNgimB18+6DYjRyzz8uIWU3TbboA2ERS+1tgoQzqPQ3a1nhojsD3lkNeDxDD0w
+         dGl/O+XHlxByLN7rtC9x9IT68Be7T8YvsqRIcUURzlWpQ3/pgTlITnu9efBPBJG28/NY
+         oYyiaWGE4FHCsktTEO0lFNgQO3isZROLy5ROMBrjuF2erwF9rgQRkwEvlGo5eY4KHMHt
+         xZV9EMoG2YzEbXYrREDtx2jpeOybBKCcKlFqOdMSxQCEzAIZmNkPiFl1qCbErGhTpNmP
+         RaeBWxBaoXEO7JyEVysAYNomnXcecDV6w5M3Psz61hFXCf3r3N1ekUP0XGz9n6gVn0KN
+         SBLA==
+X-Gm-Message-State: AOAM532KK3CdfTHs30UxaI40CescRApA50LGDrDHL5WUGkAKw5lYdxPf
+        30IZHLDTesIrW0AAdBmtYC8HPmK+ju1DwaQFz2OMMyYDQ2DH6md3Mm6KA1p34yjWKUGbfBk/P8D
+        JUdcIVUPwvqgvPnkL+12Emvek
+X-Received: by 2002:ac8:5996:: with SMTP id e22mr11956145qte.373.1636675443936;
+        Thu, 11 Nov 2021 16:04:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJymwzqftQwSVQz3EVwVZALeAzcSvuKspR4FbE1BNS8tjVDd4h2McovAbqJCNwooPT1nnA4EMA==
+X-Received: by 2002:ac8:5996:: with SMTP id e22mr11956129qte.373.1636675443741;
+        Thu, 11 Nov 2021 16:04:03 -0800 (PST)
+Received: from [10.0.0.96] ([24.225.241.171])
+        by smtp.gmail.com with ESMTPSA id o2sm2346985qtw.17.2021.11.11.16.04.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Nov 2021 16:04:03 -0800 (PST)
+Message-ID: <0f144d68-37c8-1e4a-1516-a3a572f06f8f@redhat.com>
+Date:   Thu, 11 Nov 2021 19:06:18 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211111090225.946381-1-kraxel@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] tipc: check for null after calling kmemdup
+Content-Language: en-US
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20211111205916.37899-1-tadeusz.struk@linaro.org>
+From:   Jon Maloy <jmaloy@redhat.com>
+In-Reply-To: <20211111205916.37899-1-tadeusz.struk@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gerd,
 
-> The PCIe specification asks the OS to wait five seconds after the
-> attention button has been pressed before actually un-plugging the
-> device.  This gives the operator the chance to cancel the operation
-> by pressing the attention button again within those five seconds.
-> 
-> For physical hardware this makes sense.  Picking the wrong button
-> by accident can easily happen and it can be corrected that way.
-> 
-> For virtual hardware the benefits are questionable.  Typically
-> users find the five second delay annoying.
-> 
-> This patch adds the fast_virtual_unplug module parameter to the
-> pciehp driver.  When enabled (which is the default) the linux
-> kernel will simply skip the delay for virtual pcie ports, which
-> reduces the total time for the unplug operation from 6-7 seconds
-> to 1-2 seconds.
-> 
-> Virtual pcie ports are identified by PCI ID.  For now the qemu
-> pcie root ports are detected, other hardware can be added easily.
 
-Bjorn asked to correct the PCIe references, whereas I would ask you to
-change "linux" to "Linux", "qemu" to "QEMU", and generally capitalise
-things where and as needed throughout.
+On 11/11/21 15:59, Tadeusz Struk wrote:
+> kmemdup can return a null pointer so need to check for it, otherwise
+> the null key will be dereferenced later in tipc_crypto_key_xmit as
+> can be seen in the trace [1].
+>
+> Cc: Jon Maloy <jmaloy@redhat.com>
+> Cc: Ying Xue <ying.xue@windriver.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: tipc-discussion@lists.sourceforge.net
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org # 5.15, 5.14, 5.10
+>
+> [1] https://syzkaller.appspot.com/bug?id=bca180abb29567b189efdbdb34cbf7ba851c2a58
+>
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> ---
+>   net/tipc/crypto.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
+> index dc60c32bb70d..988a343f9fd5 100644
+> --- a/net/tipc/crypto.c
+> +++ b/net/tipc/crypto.c
+> @@ -597,6 +597,11 @@ static int tipc_aead_init(struct tipc_aead **aead, struct tipc_aead_key *ukey,
+>   	tmp->cloned = NULL;
+>   	tmp->authsize = TIPC_AES_GCM_TAG_SIZE;
+>   	tmp->key = kmemdup(ukey, tipc_aead_key_size(ukey), GFP_KERNEL);
+> +	if (!tmp->key) {
+> +		free_percpu(tmp->tfm_entry);
+> +		kfree_sensitive(tmp);
+> +		return -ENOMEM;
+> +	}
+>   	memcpy(&tmp->salt, ukey->key + keylen, TIPC_AES_GCM_SALT_SIZE);
+>   	atomic_set(&tmp->users, 0);
+>   	atomic64_set(&tmp->seqno, 0);
+Acked-by: Jon Maloy <jmaloy@redhat.com>
 
->   * @request_result: result of last user request submitted to the IRQ thread
->   * @requester: wait queue to wake up on completion of user request,
->   *	used for synchronous slot enable/disable request via sysfs
-> + * @is_virtual: virtual machine pcie port.
-
-It would be "PCIe" here too for consistency.
-
-> +	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
-> +	    dev->port->device == 0x000c)
-> +		/* qemu pcie root port */
-> +		ctrl->is_virtual = true;
-
-I would personally move the comment above the if-statement as it looks
-a little awkward added like that.  You could also add a little bit more
-detail why this is set for QEMU and what it's needed, etc.  Also, if you
-don't mind, let's change it to "QEMU" in the comment for consistency.
-
-> -		schedule_delayed_work(&ctrl->button_work, 5 * HZ);
-> +		if (ctrl->is_virtual && fast_virtual_unplug) {
-> +			schedule_delayed_work(&ctrl->button_work, 1);
-> +		} else {
-> +			schedule_delayed_work(&ctrl->button_work, 5 * HZ);
-> +		}
-
-The brackets are fine but technically not needed above as per the kernel
-coding style.
-
-	Krzysztof
