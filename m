@@ -2,69 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1319C44E937
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9126544E941
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 15:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235153AbhKLOxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 09:53:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        id S235243AbhKLO6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 09:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232157AbhKLOxo (ORCPT
+        with ESMTP id S235215AbhKLO6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:53:44 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2ECC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:50:53 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id n85so8661906pfd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:50:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=OJFaAvd7GlEm9sLQzZ0K2kUpk1J6bx0UoUore+iwmww=;
-        b=AmuK8tgORSgG/P7WJT2Isg1Qfhu1KQ/KFXBU7+84G4XP9hALaWHPiJ67qw35FVJypI
-         UctzO3rU+LSQocALZfMNh3IRZMUSXaYJKLn3LZQSKrcm04dqWPSmIalWsFeC+xnyR8jD
-         qw1gRzxB7cj0FR7uZvVEvLQgjK6HqqmDdt0n5EXzOJXkse2QJOwvX1dtBu+09dP/17jo
-         VfMUOwLcOzkV95cYAlE4+S2/WB4B34rJ/QIB+/h1en0ghxxggkov4VrBXFzYTdahz/MN
-         DRC+K2SPNCwF+M0uhWaRCA0JA3zNGYrtU4FXigeFS+zVzJPwe+pcOoJ/CmgdxlXBm9bu
-         qayg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=OJFaAvd7GlEm9sLQzZ0K2kUpk1J6bx0UoUore+iwmww=;
-        b=O0wLi3oMCkBjSgL/BYQlcFCdZyRHx8Yncy3+XKNeOpbaRQuImooC1nwlRkLox0jKlP
-         InOLse0+T1lb1F6CoCxg5YvXUwdS4riCTorKXuGcuhu8LGBBc+kvvj6bObSZSfaxRgHE
-         +OZGN91/5tDF7O8aUlyz5N7UcUxRoJwO1oaX0nPjo8fTsHmuLl2Yy9oV9vS5CINVdodi
-         SxkkA8CBX77J5T1bAxnRoAllHbXiO+TRHBHJRKnlSlL4dC7WbaHQps5OOxsF48C8UOkQ
-         Xp+CehEXFWa2McViH0h0JKF01HpR09nDkb/+6Okxft0xvk2lDVGYqFSNbhSoANW4VRVA
-         VG4A==
-X-Gm-Message-State: AOAM530x/KUrt/EBVL2oDXh+PJea8w+reC39ThHJlbduvv+e8C4f0ENi
-        Kz4UHbQxL7FMvpM9tnF5AgiMGR+DTg5B0XfwL3g=
-X-Google-Smtp-Source: ABdhPJw7So/ipVrdfXQzcu8uCQyiKCOEYUa7kkzaFkKqiRqI85bifGoqFcez0P9lxjlVVZHAv8iCFR8K9N9VK3mbckk=
-X-Received: by 2002:a65:5606:: with SMTP id l6mr10391710pgs.160.1636728653061;
- Fri, 12 Nov 2021 06:50:53 -0800 (PST)
+        Fri, 12 Nov 2021 09:58:14 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78C4C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 06:55:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sSTlqEqVyFN0rDOCb7kaZNs7CaBfwerBRghmXFsGs3Y=; b=BUSvOg7lubYe71hUFGWgXBwMWL
+        JAi84DFrGmzWF/oLa3YoBufaqvLNVLO24lpBsKuxjJjrVipWKimVW+9+eC46z41iIl0Hf1l+URvQE
+        JSEX3VFGOnTEgYOGYuE4j8dftMSlZaWmXyLSUr0WuiPUwySpi5sOwI+jdIWFH+eYIQ1VCStFjt6Rx
+        bPFMsGgC8aHn46J0P6HPj6aL1JKDKUyHvYnWPhxwn8exxTIm781NZT+ELMC0AKDJspMo8hJ9aLisV
+        T52AzK90xKu0EvWWMIv/98ybKllkewL2EUCChVqlae3x2klqoDzubobfomi6wxPNeKU1w8p8oucRu
+        ww9mnrbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlXxH-00FdyU-Ev; Fri, 12 Nov 2021 14:55:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 103C430001B;
+        Fri, 12 Nov 2021 15:55:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E27B8209F2A7A; Fri, 12 Nov 2021 15:55:01 +0100 (CET)
+Date:   Fri, 12 Nov 2021 15:55:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com, joel@joelfernandes.org
+Subject: Re: [PATCH 1/2] sched/fair: skip newidle update stats
+Message-ID: <YY6ARaFrpuWYqege@hirez.programming.kicks-ass.net>
+References: <20211112095857.7016-1-vincent.guittot@linaro.org>
+ <20211112095857.7016-2-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:c27:b0:43:14a:bbe3 with HTTP; Fri, 12 Nov 2021
- 06:50:52 -0800 (PST)
-Reply-To: enzocarranza99@gmail.com
-From:   ENZO CARRANZA <bryanwalker534@gmail.com>
-Date:   Fri, 12 Nov 2021 17:50:52 +0300
-Message-ID: <CAKxfBbS3c7-VviaWt5G6tBsPOU_aMV3BYwOy1Om9z7sq3J6N6A@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112095857.7016-2-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
-I work for REPUTABLE BANK and my name is Mr. Enzo Carranza. I'm
-excited to approach you and present you with a lucrative proposition
-that I've prepared for you. Please respond as soon as possible if you
-are interested in the details.
 
-Please email me at (enzocarranza99@gmail.com) or fax me at (+34 932 71 56 35).
 
-Kind regards
-Mr. Enzo Carranza
-Financial Management Consultant.
+Subject: sched/fair: Simplify newidle_balance()
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Fri Nov 12 15:46:26 CET 2021
+
+Move rq_{un,re}pin_lock() next to raw_spin_rq_{un,}lock().
+
+Remove all rcu_read_{,un}lock(), since we have preempt/irqs disabled
+over the whole function and those hold off RCU (again).
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/sched/fair.c |   23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10884,15 +10884,6 @@ static int newidle_balance(struct rq *th
+ 	if (!cpu_active(this_cpu))
+ 		return 0;
+ 
+-	/*
+-	 * This is OK, because current is on_cpu, which avoids it being picked
+-	 * for load-balance and preemption/IRQs are still disabled avoiding
+-	 * further scheduler activity on it and we're being very careful to
+-	 * re-start the picking loop.
+-	 */
+-	rq_unpin_lock(this_rq, rf);
+-
+-	rcu_read_lock();
+ 	sd = rcu_dereference_check_sched_domain(this_rq->sd);
+ 
+ 	if (!READ_ONCE(this_rq->rd->overload) ||
+@@ -10908,18 +10899,22 @@ static int newidle_balance(struct rq *th
+ 			 */
+ 			early_stop = 1;
+ 		}
+-		rcu_read_unlock();
+ 
+ 		goto out;
+ 	}
+-	rcu_read_unlock();
+ 
++	/*
++	 * This is OK, because current is on_cpu, which avoids it being picked
++	 * for load-balance and preemption/IRQs are still disabled avoiding
++	 * further scheduler activity on it and we're being very careful to
++	 * re-start the picking loop.
++	 */
++	rq_unpin_lock(this_rq, rf);
+ 	raw_spin_rq_unlock(this_rq);
+ 
+ 	t0 = sched_clock_cpu(this_cpu);
+ 	update_blocked_averages(this_cpu);
+ 
+-	rcu_read_lock();
+ 	for_each_domain(this_cpu, sd) {
+ 		int continue_balancing = 1;
+ 		u64 domain_cost;
+@@ -10953,9 +10948,9 @@ static int newidle_balance(struct rq *th
+ 		    this_rq->ttwu_pending)
+ 			break;
+ 	}
+-	rcu_read_unlock();
+ 
+ 	raw_spin_rq_lock(this_rq);
++	rq_repin_lock(this_rq, rf);
+ 
+ 	if (curr_cost > this_rq->max_idle_balance_cost)
+ 		this_rq->max_idle_balance_cost = curr_cost;
+@@ -10982,8 +10977,6 @@ static int newidle_balance(struct rq *th
+ 	else if (!early_stop)
+ 		nohz_newidle_balance(this_rq);
+ 
+-	rq_repin_lock(this_rq, rf);
+-
+ 	return pulled_task;
+ }
+ 
