@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C96744E6F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7337244E701
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Nov 2021 14:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhKLNF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 08:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        id S234993AbhKLNJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 08:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234998AbhKLNFT (ORCPT
+        with ESMTP id S231652AbhKLNJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 08:05:19 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F920C0613F5;
-        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id n8so8350706plf.4;
-        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
+        Fri, 12 Nov 2021 08:09:22 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B5AC061766;
+        Fri, 12 Nov 2021 05:06:31 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id s13so15445553wrb.3;
+        Fri, 12 Nov 2021 05:06:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5DDh4jKNY942Gl/i8dUbs2Mkijh1sNJCdeUegqogFsE=;
-        b=Z8vBO/pyAz/7yfuKfpeCMeHOJ4L6xdiskutvoNm8WPJDgUwbkRs0MS0ZcLJ64KOsPF
-         QQckZ2PTSjadOr3TV0vDHmJbywE6jtZHFdeqDOxW1YT8NgVThXbNo3sCRBjtaFIe3uoD
-         IFq2IyHux9Op/sb93+3c9n85m24IeKRFQIYUxT8ahQDUYkl8Yw5GT4hxQycvTO+ByEkM
-         GYBjZi7fvomL6x0DNp+6TmQ3S2we7YiKWvyTz4LWbQfdJXA6NFI1rylioeAf+8EIw3xI
-         umxWVvQcLGCdg7twPIBx0kr/8/pTT+0978oeOEtzbrOEXPC91VaH4oJWrxgxiO0GaO5n
-         iM3g==
+        bh=8Yrfd/ijTqnwsVY0AsIgyAz4+oo/Nt1kqDk4QVJjw1A=;
+        b=Jvhp3tqpaMCssceziTTb044FnhBOR+aHEZh+gECgv1H6MZqm3k3hDR8kBzYnmCR142
+         85hR/qVOvWuehXjL14CZyRsvBMR0/PXLX/CEcCY+zOC9dhgRma7U19cbEeeA356Tt8Sz
+         m1dUlwsbKzTun+Q8WpsTqyU4YW85g35OIYfmqpS5fFdIWmLcpF4yvLtPr8Aig+XEMHjw
+         XmkYeeTrqH58D3x0dRLb77Yvj0wldCD36n5aDXJIw0JfpGXa6WbOs+mcs7s+S2Z86gjw
+         F32J1rrEgTn1OQ28aJMrevDvve4lLySk582dL24RnB3Twyh4drwgrwgobz6AZ9PfmqLC
+         uAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5DDh4jKNY942Gl/i8dUbs2Mkijh1sNJCdeUegqogFsE=;
-        b=GDmj6YQRRRX236aoxLQGtEx/Gbb2c8TJl8S3McRQ2ZrJbxzNc64duE/B8XEhYHj5LK
-         Y+x2yie+qTvrz5EBPYHRrIZykswguvPLGlFDRWEEfYQgCrkR+75T/OWzf8JLiC549Ht6
-         5m43aVr9QWTyoADIf5JunV/KGKQ71uhPG/vy7AFzKlTl2Uz3GmE/QYbPdMx3ljTVdoLC
-         /+mQ2qJj4FWsDMHtsB7igRFQcCm3VR2w4yZpW5bS33ju1YAeYekGNwCemy/gq+lJHVa1
-         rV0Bn3/+sjm8KdEsH0v7V7osgPqijq+IdrP6k03J+1WIQoijaVYM+HA1La9wUFBQGEag
-         cYig==
-X-Gm-Message-State: AOAM532lWWtfhNRFuN9z4HUCVnk/bQ2lpOi/+ZuprGSvLkrzAJCnHbSu
-        grFbI3qNfPoz1xC3BKmkQ/0=
-X-Google-Smtp-Source: ABdhPJy6tZtAnigJMcLzG99Dwhc4diNcfzyLltbIEChePSsJosJRZDjox+cnwSfVKYVuW4L/MQA98g==
-X-Received: by 2002:a17:903:248f:b0:143:8e81:4d7c with SMTP id p15-20020a170903248f00b001438e814d7cmr7827668plw.1.1636722147064;
-        Fri, 12 Nov 2021 05:02:27 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d15sm7331493pfu.12.2021.11.12.05.02.25
+        bh=8Yrfd/ijTqnwsVY0AsIgyAz4+oo/Nt1kqDk4QVJjw1A=;
+        b=HlrfHth3FPW5qa175bonFgON/EkcwW3is3Cg42hkQW144sL5spK1Dnj0pg3rQ7KtC1
+         PGduNLS0QulQMZbwEwW/vAbrfHVHTqY1Ab0AFKQ5lkephO7AgmqjbG0SncWO4bLA1nps
+         FlExoJQpcraRU/gR+Eqvt2Hbu/Q0sveZCSzZGat6ik2gui0sK4ELIOkuPHuDfmSgvjCe
+         ryHpLOT8A7hcShDxYCESChy9zd98XxKtnFfrs2ihdIaL2C2QoHtji9qypRFxqw5+aixh
+         /yAG+bZNHm2bD+CwkX3kYtYupttCJn5PsLvqBwL4ZVGzpv+v1CA8SI9Y74vIQpsbXolC
+         w4cw==
+X-Gm-Message-State: AOAM533FSJu7/8ANxCMox+sYyUoZF0WatERPlj8YsrrKcsEhfp0TSyCi
+        3roku+u1fLlZUgfwjldAVqQl9B1982Sanw==
+X-Google-Smtp-Source: ABdhPJwLcB4mQF84pkJgqXGTyb3auYnMOC1x6fc19EOw78pFtAg4mHlrY/+DFBNdYFeKmMDuRuXX1A==
+X-Received: by 2002:a5d:69c5:: with SMTP id s5mr17837746wrw.283.1636722390119;
+        Fri, 12 Nov 2021 05:06:30 -0800 (PST)
+Received: from localhost ([193.209.96.43])
+        by smtp.gmail.com with ESMTPSA id g13sm5354445wmk.37.2021.11.12.05.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 05:02:26 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     james.smart@broadcom.com
-Cc:     dick.kennedy@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] scsi: lpfc: remove unneeded variable
-Date:   Fri, 12 Nov 2021 13:02:20 +0000
-Message-Id: <20211112130220.10741-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Nov 2021 05:06:29 -0800 (PST)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] memory: tegra: Add Tegra234 support
+Date:   Fri, 12 Nov 2021 14:06:22 +0100
+Message-Id: <20211112130627.3682795-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+From: Thierry Reding <treding@nvidia.com>
 
-Fix the following coccicheck review:
-./drivers/scsi/lpfc/lpfc_sli.c: 3655: 5-7: Unneeded variable
+Hi,
 
-Remove unneeded variable used to store return value.
+this series adds support to the Tegra memory controller driver for the
+version found on the new Tegra234 SoC. It is mostly similar to that on
+earlier chips, except that the memory clients differ.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/scsi/lpfc/lpfc_sli.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This also updates the device tree binding with a missing property and
+ensures that all versions of the memory controller device tree nodes can
+be properly validated.
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 53f154a301b5..93596cdd66a7 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -3652,7 +3652,6 @@ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
- 			  struct lpfc_iocbq *saveq)
- {
- 	struct lpfc_iocbq *cmdiocbp;
--	int rc = 1;
- 	unsigned long iflag;
- 
- 	cmdiocbp = lpfc_sli_iocbq_lookup(phba, pring, saveq);
-@@ -3777,7 +3776,7 @@ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
- 		}
- 	}
- 
--	return rc;
-+	return 1;
- }
- 
- /**
+Finally, the device trees for Tegra234 are updated and memory client
+nodes are hooked up to the memory controller via interconnect
+properties.
+
+Thierry
+
+Thierry Reding (5):
+  dt-bindings: memory: tegra: Document #interconnect-cells property
+  dt-bindings: memory: tegra: Add Tegra234 support
+  memory: tegra: Add Tegra234 support
+  arm64: tegra: Add memory controller on Tegra234
+  arm64: tegra: Hook up MMC and BPMP to memory controller
+
+ .../nvidia,tegra186-mc.yaml                   | 14 +++-
+ arch/arm64/boot/dts/nvidia/tegra234.dtsi      | 57 +++++++++++++
+ drivers/memory/tegra/Makefile                 |  1 +
+ drivers/memory/tegra/mc.c                     |  3 +
+ drivers/memory/tegra/mc.h                     |  7 +-
+ drivers/memory/tegra/tegra186-emc.c           |  3 +
+ drivers/memory/tegra/tegra234.c               | 81 +++++++++++++++++++
+ include/dt-bindings/clock/tegra234-clock.h    |  9 +++
+ include/dt-bindings/memory/tegra234-mc.h      | 32 ++++++++
+ 9 files changed, 203 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/memory/tegra/tegra234.c
+ create mode 100644 include/dt-bindings/memory/tegra234-mc.h
+
 -- 
-2.25.1
+2.33.1
 
