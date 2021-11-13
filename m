@@ -2,120 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5159E44F05E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 02:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACA244F061
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 02:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhKMBHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 20:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        id S235178AbhKMBH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 20:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhKMBHN (ORCPT
+        with ESMTP id S229524AbhKMBH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 20:07:13 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFDCC061766;
-        Fri, 12 Nov 2021 17:04:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=W3pYbR+KVmnwM9kipI6oWi9/VlOqRdBW9731D/Unbls=; b=SirK07t7fUZav/KZHpehdWm2dg
-        smFKrI3HxOycN0XM7e5Z3I3VjABmpRwkJ9ojak4flvNLdePbVfQnhJu2CBAVGyJZIhjxgM/B1vjeQ
-        a2m66ITzael0Za5s9QT1rtT1CNiPhRa1ETLIofTfB/97h2Bi8wY1LfQuey1dIlJjBv7b3Ar3F+nlO
-        ZRKXc6Fb8CxrGsCMX+FEgPWoWmXwNMHah01n1yPtBDfDKb1jTvwM8ycck2w0dvtVYkixVQNdp5nAK
-        FndQ6j8iOUsGxN0821G9gIRw37/hr13KRusgBWRh4wQtcRZcQFEidlFbrdgxYXMN0XJKLb+fFCksU
-        DDu7SfhQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlhSv-00BxSy-9a; Sat, 13 Nov 2021 01:04:21 +0000
-Subject: Re: [PATCH v5 1/8] leds: add support for hardware driven LEDs
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20211112153557.26941-1-ansuelsmth@gmail.com>
- <20211112153557.26941-2-ansuelsmth@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <523edf1d-ec7d-5915-0212-d7ab0b1ce1d6@infradead.org>
-Date:   Fri, 12 Nov 2021 17:04:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 12 Nov 2021 20:07:57 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57E7C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 17:05:05 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id q124so21105648oig.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 17:05:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DoF0Ia8gB0FxoSQiktgrGCfWwj/V1cH0vVB1clEUCF8=;
+        b=ITzc7+0kQAmWYXhAmimjxk82k/xEHCZWzT11EGl6cC4US/AA6CdOSxt2/jxS65Pbon
+         gVK1LxS+XjqBptYCnBxT+xssYafJgGOXbQKtCLgnEo1GtdMp3vGkdvJi6PHKckIWhTtC
+         lMYdIFk+xe0I6v3rWZSEjGWeo0INV2c397fXmkwk0VJG5vMdswi6/Ks5W6G01/b0t7LC
+         kkGPrHLDDvGNB7Qq9M8ABsvwZ3itgj8jDy4oLw4ywUj62edmEdy7czKTT49bEZqLX9nW
+         EJsVkcxQzXB5cgCTe71IjiVXt+daJzQsVSqicpvQw7TpfAwa43bgEPFCfTRzZyby95ct
+         ef4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DoF0Ia8gB0FxoSQiktgrGCfWwj/V1cH0vVB1clEUCF8=;
+        b=7pre5+FFjMrtiI9krOP8zUDCNzrTTiDDZC9lXpgTHb4FB7Es2KtmAgJyTHjvQXZ38N
+         aVNutzWxIqmYq1xr+ErnblOQq5yEUzqPqOmOmFlleFkcaVHcAJYIp3L+rQEUcB39gvzl
+         FDPDwIBDV2zxkXSYXZK60Pn0DCZpNxE/2FAVU1q9eEWMQK6FPUYUa71JWQ2odBAmDhZN
+         CpZnT83H5GdnnKP+ZpFqEJMkqTzab/jw6daXztUqBqHQ0DzyzPnnsUohsJJRMi7WY8V9
+         06Jzk30lycnCCXMzn96YO6C11h1p7FcZswQu9sCsSGorsSrONIJ4jGuBiW4oq8NO+g4F
+         fwZA==
+X-Gm-Message-State: AOAM530hz5xO8417fkQ1BmFXCAAkuWlc/P3ArvfmdIUnEnvWDdQfGHsg
+        rEdBJNp1Tc4tp9IjY6V+IGiVWQCQw6oJeqddLcXVbSmn+U8rsiVS
+X-Google-Smtp-Source: ABdhPJwv/XgVHaUA1q6+Mn4hnMhye2TH34P12buJknP56UzIvmoiJ+A2b/hM8L6/u//Um7uyezPz6zvi6Zn/D64nllw=
+X-Received: by 2002:a54:4515:: with SMTP id l21mr16407083oil.15.1636765504954;
+ Fri, 12 Nov 2021 17:05:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211112153557.26941-2-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com> <YY7I6sgqIPubTrtA@zn.tnic> <YY7Qp8c/gTD1rT86@google.com>
+ <CAA03e5GwHMPYHHq3Nkkq1HnEJUUsw-Vk+5wFCott3pmJY7WuAw@mail.gmail.com>
+ <2cb3217b-8af5-4349-b59f-ca4a3703a01a@www.fastmail.com> <CAA03e5Fw9cRnb=+eJmzEB+0QmdgaGZ7=fPTUYx7f55mGVXLRMA@mail.gmail.com>
+ <CAMkAt6q9Wsw_KYypyZxhA1gkd=kFepk5rC5QeZ6Vo==P6=EAxg@mail.gmail.com> <YY8Mi36N/e4PzGP0@google.com>
+In-Reply-To: <YY8Mi36N/e4PzGP0@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Fri, 12 Nov 2021 17:04:53 -0800
+Message-ID: <CAA03e5F=7T3TcJBksiJ9ovafX65YfzAc0S+uYu5LjfTQ60yC7w@mail.gmail.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 7:35 AM, Ansuel Smith wrote:
-> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
-> index cd155ead8703..e5d266919a19 100644
-> --- a/Documentation/leds/leds-class.rst
-> +++ b/Documentation/leds/leds-class.rst
-> @@ -169,6 +169,38 @@ Setting the brightness to zero with brightness_set() callback function
->   should completely turn off the LED and cancel the previously programmed
->   hardware blinking function, if any.
->   
-> +Hardware driven LEDs
-> +===================================
-> +
-> +Some LEDs can be driven by hardware (for example an LED connected to
-> +an ethernet PHY or an ethernet switch can be configured to blink on activity on
-> +the network, which in software is done by the netdev trigger).
-> +
-> +To do such offloading, LED driver must support this and a supported trigger must
-> +be used.
-> +
-> +LED driver should declare the correct control mode supported and should set
-> +the LED_SOFTWARE_CONTROLLED or LED_HARDWARE_CONTROLLED bit in the flags
-> +parameter.
-> +The trigger will check these bits and fail to activate if the control mode
-> +is not supported. By default if a LED driver doesn't declare a control mode,
+On Fri, Nov 12, 2021 at 4:53 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, Nov 12, 2021, Peter Gonda wrote:
+> > On Fri, Nov 12, 2021 at 2:43 PM Marc Orr <marcorr@google.com> wrote:
+> > >
+> > > On Fri, Nov 12, 2021 at 1:39 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > > > Let's consider a very very similar scenario: consider a guest driver
+> > > > setting up a 1 GB DMA buffer.  The virtual device, implemented as host
+> > > > process, needs to (1) map (and thus lock *or* be prepared for faults) in
+> > > > 1GB / 4k pages of guest memory (so they're not *freed* while the DMA
+> > > > write is taking place), (2) write the buffer, and (3) unlock all the
+> > > > pages.  Or it can lock them at setup time and keep them locked for a long
+> > > > time if that's appropriate.
+> > > >
+> > > > Sure, the locking is expensive, but it's nonnegotiable.  The RMP issue is
+> > > > just a special case of the more general issue that the host MUST NOT
+> > > > ACCESS GUEST MEMORY AFTER IT'S FREED.
+> > >
+> > > Good point.
+> >
+> > Thanks for the responses Andy.
+> >
+> > Having a way for userspace to lock pages as shared was an idea I just
+> > proposed the simplest solution to start the conversation.
+>
+> Assuming you meant that to read:
+>
+>   Having a way for userspace to lock pages as shared is an alternative idea; I
+>   just proposed the simplest solution to start the conversation.
+>
+> The unmapping[*] guest private memory proposal is essentially that, a way for userspace
+> to "lock" the state of a page by requiring all conversions to be initiated by userspace
+> and by providing APIs to associate a pfn 1:1 with a KVM instance, i.e. lock a pfn to
+> a guest.
+>
+> Andy's DMA example brings up a very good point though.  If the shared and private
+> variants of a given GPA are _not_ required to point at a single PFN, which is the
+> case in the current unmapping proposal, userspace doesn't need to do any additional
+> juggling to track guest conversions across multiple processes.
+>
+> Any process that's accessing guest (shared!) memory simply does its locking as normal,
+> which as Andy pointed out, is needed for correctness today.  If the guest requests a
+> conversion from shared=>private without first ensuring the gfn is unused (by a host
+> "device"), the host will side will continue accessing the old, shared memory, which it
+> locked, while the guest will be doing who knows what.  And if the guest provides a GPA
+> that isn't mapped shared in the VMM's address space, it's conceptually no different
+> than if the guest provided a completely bogus GPA, which again needs to be handled today.
+>
+> In other words, if done properly, differentiating private from shared shouldn't be a
+> heavy lift for host userspace.
+>
+> [*] Actually unmapping memory may not be strictly necessary for SNP because a
+>     #PF(RMP) is likely just as good as a #PF(!PRESENT) when both are treated as
+>     fatal, but the rest of the proposal that allows KVM to understand the stage
+>     of a page and exit to userspace accordingly applies.
 
-                                 if an LED driver
+Thanks for this explanation. When you write "while the guest will be
+doing who knows what":
 
-> +bit LED_SOFTWARE_CONTROLLED is assumed and set.
-> +
-> +The LED must implement 3 main APIs:
-> +- hw_control_status(): This asks the LED driver if hardware mode is enabled
-> +    or not.
-> +- hw_control_start(): This will simply enable the hardware mode for the LED
-> +    and the LED driver should reset any active blink_mode.
-> +- hw_control_stop(): This will simply disable the hardware mode for the LED.
-> +    It's advised to the driver to put the LED in the old state but this is not
-> +    enforced and putting the LED off is also accepted.
-> +
-> +If LED_HARDWARE_CONTROLLED bit is the only control mode set (LED_SOFTWARE_CONTROLLED
-> +not set) set hw_control_status/start/stop is optional as the LED supports only
+Isn't that a large weakness of this proposal? To me, it seems better
+for debuggability to corrupt the private memory (i.e., convert the
+page to shared) so the guest can detect the issue via a PVALIDATE
+failure.
 
-             ^^^ is that an extra "set"?  I can't quite read this sentence.
-
-And it would be better with a comma added, like so:
-
-   not set),
-
-
-> +hardware mode and any software only trigger will reject activation.
-
-                          software-only
-
-> +
-> +On init an LED driver that support a hardware mode should reset every blink mode
-
-                               supports
-
-> +set by default.
-
-
--- 
-~Randy
+The main issue I see with corrupting the guest memory is that we may
+not know whether the host is at fault or the guest. Though, we can
+probably in many cases be sure it's the host, if the pid associated
+with the page fault is NOT a process associated with virtualization.
+But if it is a process associated with virtualization, we legitimately
+might not know. (I think if the pid is the kernel itself, it's
+probably a host-side bug, but I'm still not confident on this; for
+example, the guest might be able to coerce KVM's built-in emulator to
+write guest private memory.)
