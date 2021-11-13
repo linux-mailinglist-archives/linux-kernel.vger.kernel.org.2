@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A43144F1BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1378944F1BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhKMGKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 01:10:31 -0500
-Received: from smtpbg128.qq.com ([106.55.201.39]:59444 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229487AbhKMGK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 01:10:29 -0500
-X-QQ-mid: bizesmtp49t1636783584t7l1s577
-Received: from localhost.localdomain (unknown [125.69.41.88])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 14:06:22 +0800 (CST)
-X-QQ-SSF: 01000000000000C0F000B00A0000000
-X-QQ-FEAT: ZHWZeLXy+8deiOhJyhemFt2XLUKQnkjQhPsS1KmTkVATSnjhBqZq2OsFqLNNW
-        Jv90wTSzP/R9q/FEGDhOWsl1C4uqv0pcqrgm1pJ1CFSYawhXJOn8x2gKSojprt7Jo8m2Rvm
-        kzUYUdOoNyPyKxEqbjFh3U3HlKBaECJDO8L2AE+wZFu9LGMa+I80MzShUaGtsz6q4OTP928
-        DwB5ephWjn60d3KtKR3lRLW1JAUFiEq6EtvPAJ7THGYk4mWFNbdOJzlkuQ/wTfyktvEhlT6
-        JsYl104vU5wdGfhwBSPwVWy+yIIbgTEp6Qv5PHbHXtqmyvHqaS5ml6qF+QitJ0duRf9ZmyB
-        vmODddjhRpxHktVDzD5/YxNiEi1UFVTErPLvPK3
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     daniel.lezcano@linaro.org
-Cc:     rafael@kernel.org, adobriyan@gmail.com, wangborong@cdjrlc.com,
-        mingo@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpuidle: menu: Fix typo in a comment
-Date:   Sat, 13 Nov 2021 14:06:18 +0800
-Message-Id: <20211113060618.220832-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S233763AbhKMGKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 01:10:34 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:49139 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229487AbhKMGKd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 01:10:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636783661; x=1668319661;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Pp8JfTGNCrtvO19aZcBYoe2ILjUc/Tzny+fyjlfwUzE=;
+  b=P1uCqc0lp4K8+oy18Ts/C+Hks/c9LPCEsYOL736STP+oeuH/GTKIP8wH
+   HLs2VOXJJMGBQP20unMOacA5M9fJVo1qhiQi6gFvI8ceEcOsShBvE6Stq
+   opbrRaL9cxLwBSUZSUqdWw7lFyIfnPJf6w88Q8CXBzcSbQBqo5rdbyj89
+   Q=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 Nov 2021 22:07:41 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 22:07:41 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 12 Nov 2021 22:07:40 -0800
+Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 12 Nov 2021 22:07:39 -0800
+Date:   Sat, 13 Nov 2021 01:07:37 -0500
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: KASAN + CPU soft-hotplug = stack-out-of-bounds at
+ cpuinfo_store_cpu
+Message-ID: <YY9WKU/cnQI4xqNE@qian-HP-Z2-SFF-G5-Workstation>
+References: <YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double word `these' in a comment is repeated, thus
-one of them should be removed.
+On Fri, Nov 12, 2021 at 11:50:19PM -0500, Qian Cai wrote:
+> FYI, running CPU soft-hotplug with KASAN on arm64 defconfig will
+> always trigger a stack-out-of-bounds below.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- drivers/cpuidle/governors/menu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Actually, KASAN is not enough to trigger. It needs some addition
+debugging options to reproduce. I'll narrow it down later. Anyway,
+this one will reproduce.
 
-diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
-index 2e5670446991..c4922684f305 100644
---- a/drivers/cpuidle/governors/menu.c
-+++ b/drivers/cpuidle/governors/menu.c
-@@ -34,7 +34,7 @@
-  * 1) Energy break even point
-  * 2) Performance impact
-  * 3) Latency tolerance (from pmqos infrastructure)
-- * These these three factors are treated independently.
-+ * These three factors are treated independently.
-  *
-  * Energy break even point
-  * -----------------------
--- 
-2.33.0
-
+http://lsbug.org/tmp/config-bad-14rc1.txt
