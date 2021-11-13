@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14FE44F2EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83BF44F2F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235900AbhKML5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 06:57:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
+        id S235933AbhKML5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 06:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234811AbhKML53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235634AbhKML53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 13 Nov 2021 06:57:29 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96F9E61051;
+        by mail.kernel.org (Postfix) with ESMTPSA id E689D61106;
         Sat, 13 Nov 2021 11:54:37 +0000 (UTC)
 Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1mlrcB-005BG2-P0; Sat, 13 Nov 2021 11:54:35 +0000
+        id 1mlrcC-005BG2-3E; Sat, 13 Nov 2021 11:54:36 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -30,9 +30,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         Rob Herring <robh+dt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4/8] irqchip/apple-aic: Wire PMU interrupts
-Date:   Sat, 13 Nov 2021 11:54:25 +0000
-Message-Id: <20211113115429.4027571-5-maz@kernel.org>
+Subject: [PATCH 5/8] irqchip/apple-aic: Move PMU-specific registers to their own include file
+Date:   Sat, 13 Nov 2021 11:54:26 +0000
+Message-Id: <20211113115429.4027571-6-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211113115429.4027571-1-maz@kernel.org>
 References: <20211113115429.4027571-1-maz@kernel.org>
@@ -46,81 +46,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary code to configure and P and E-core PMU interrupts
-with their respective affinities. When such an interrupt fires, map
-it onto the right pseudo-interrupt.
+As we are about to have a PMU driver, move the PMU bits from the AIC
+driver into a common include file.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/irq-apple-aic.c | 34 +++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ arch/arm64/include/asm/apple_m1_pmu.h | 19 +++++++++++++++++++
+ drivers/irqchip/irq-apple-aic.c       | 11 +----------
+ 2 files changed, 20 insertions(+), 10 deletions(-)
+ create mode 100644 arch/arm64/include/asm/apple_m1_pmu.h
 
+diff --git a/arch/arm64/include/asm/apple_m1_pmu.h b/arch/arm64/include/asm/apple_m1_pmu.h
+new file mode 100644
+index 000000000000..b848af7faadc
+--- /dev/null
++++ b/arch/arm64/include/asm/apple_m1_pmu.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef __ASM_APPLE_M1_PMU_h
++#define __ASM_APPLE_M1_PMU_h
++
++#include <linux/bits.h>
++#include <asm/sysreg.h>
++
++/* Core PMC control register */
++#define SYS_IMP_APL_PMCR0_EL1	sys_reg(3, 1, 15, 0, 0)
++#define PMCR0_IMODE		GENMASK(10, 8)
++#define PMCR0_IMODE_OFF		0
++#define PMCR0_IMODE_PMI		1
++#define PMCR0_IMODE_AIC		2
++#define PMCR0_IMODE_HALT	3
++#define PMCR0_IMODE_FIQ		4
++#define PMCR0_IACT		BIT(11)
++
++#endif /* __ASM_APPLE_M1_PMU_h */
 diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-aic.c
-index 30ca80ccda8b..23f5f10e974e 100644
+index 23f5f10e974e..9663166fd97f 100644
 --- a/drivers/irqchip/irq-apple-aic.c
 +++ b/drivers/irqchip/irq-apple-aic.c
-@@ -155,7 +155,7 @@
- #define SYS_IMP_APL_UPMSR_EL1		sys_reg(3, 7, 15, 6, 4)
- #define UPMSR_IACT			BIT(0)
- 
--#define AIC_NR_FIQ		4
-+#define AIC_NR_FIQ		6
- #define AIC_NR_SWIPI		32
- 
- /*
-@@ -207,6 +207,11 @@ static bool __is_pcore(u64 mpidr)
- 	return MPIDR_AFFINITY_LEVEL(mpidr, 2) == 1;
- }
- 
-+static bool is_pcore(void)
-+{
-+	return __is_pcore(read_cpuid_mpidr());
-+}
-+
- /*
-  * IRQ irqchip
+@@ -55,6 +55,7 @@
+ #include <linux/limits.h>
+ #include <linux/of_address.h>
+ #include <linux/slab.h>
++#include <asm/apple_m1_pmu.h>
+ #include <asm/exception.h>
+ #include <asm/sysreg.h>
+ #include <asm/virt.h>
+@@ -109,16 +110,6 @@
+  * Note: sysreg-based IPIs are not supported yet.
   */
-@@ -420,16 +425,10 @@ static void __exception_irq_entry aic_handle_fiq(struct pt_regs *regs)
- 						  aic_irqc->nr_hw + AIC_TMR_EL02_VIRT);
- 	}
  
--	if ((read_sysreg_s(SYS_IMP_APL_PMCR0_EL1) & (PMCR0_IMODE | PMCR0_IACT)) ==
--			(FIELD_PREP(PMCR0_IMODE, PMCR0_IMODE_FIQ) | PMCR0_IACT)) {
--		/*
--		 * Not supported yet, let's figure out how to handle this when
--		 * we implement these proprietary performance counters. For now,
--		 * just mask it and move on.
--		 */
--		pr_err_ratelimited("PMC FIQ fired. Masking.\n");
--		sysreg_clear_set_s(SYS_IMP_APL_PMCR0_EL1, PMCR0_IMODE | PMCR0_IACT,
--				   FIELD_PREP(PMCR0_IMODE, PMCR0_IMODE_OFF));
-+	if (read_sysreg_s(SYS_IMP_APL_PMCR0_EL1) & PMCR0_IACT) {
-+		int irq = is_pcore() ? AIC_CPU_PMU_P : AIC_CPU_PMU_E;
-+		generic_handle_domain_irq(aic_irqc->hw_domain,
-+					  aic_irqc->nr_hw + irq);
- 	}
- 
- 	if (FIELD_GET(UPMCR0_IMODE, read_sysreg_s(SYS_IMP_APL_UPMCR0_EL1)) == UPMCR0_IMODE_FIQ &&
-@@ -469,7 +468,18 @@ static int aic_irq_domain_map(struct irq_domain *id, unsigned int irq,
- 				    handle_fasteoi_irq, NULL, NULL);
- 		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(irq)));
- 	} else {
--		irq_set_percpu_devid(irq);
-+		switch (hw - ic->nr_hw) {
-+		case AIC_CPU_PMU_P:
-+			irq_set_percpu_devid_partition(irq, &ic->pcore_mask);
-+			break;
-+		case AIC_CPU_PMU_E:
-+			irq_set_percpu_devid_partition(irq, &ic->ecore_mask);
-+			break;
-+		default:
-+			irq_set_percpu_devid(irq);
-+			break;
-+		}
-+
- 		irq_domain_set_info(id, irq, hw, &fiq_chip, id->host_data,
- 				    handle_percpu_devid_irq, NULL, NULL);
- 	}
+-/* Core PMC control register */
+-#define SYS_IMP_APL_PMCR0_EL1		sys_reg(3, 1, 15, 0, 0)
+-#define PMCR0_IMODE			GENMASK(10, 8)
+-#define PMCR0_IMODE_OFF			0
+-#define PMCR0_IMODE_PMI			1
+-#define PMCR0_IMODE_AIC			2
+-#define PMCR0_IMODE_HALT		3
+-#define PMCR0_IMODE_FIQ			4
+-#define PMCR0_IACT			BIT(11)
+-
+ /* IPI request registers */
+ #define SYS_IMP_APL_IPI_RR_LOCAL_EL1	sys_reg(3, 5, 15, 0, 0)
+ #define SYS_IMP_APL_IPI_RR_GLOBAL_EL1	sys_reg(3, 5, 15, 0, 1)
 -- 
 2.30.2
 
