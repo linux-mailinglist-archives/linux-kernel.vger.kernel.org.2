@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FF044F4D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C26144F4D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhKMTSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 14:18:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54962 "EHLO mail.kernel.org"
+        id S236085AbhKMTSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 14:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236153AbhKMTSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236157AbhKMTSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 13 Nov 2021 14:18:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A98FE611EE;
-        Sat, 13 Nov 2021 19:15:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 03E5561245;
+        Sat, 13 Nov 2021 19:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636830931;
-        bh=BMDCJ5c3VOClVu1cOYSmwdRyxt45zSfhSlSMmm9jqjw=;
+        s=k20201202; t=1636830932;
+        bh=jrEIaCJQqMtHj3+6l6JnuEKRgDCeQq+eprzHmqaP/zE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ELxHM+UF354/mPvsjNe8gjPkuuwOzvg0MdhGc9XV6Kg3FiXtN2koYOXq94mqsAEWD
-         vuoQnuwp25ENk65244werxXaTL0prsIdi5XMdV1KqEyg1TX16L+hsPksStcbsHLOUy
-         ZsQp5MZly6Y6XqZH0RiHYLwuFIDweVwT20Orr+Nw3YUybvNvclSsCifT3cVa8KKDeL
-         fe+WW/rxxRpOZakoodfGNeoDnnf85Gy1CMIa6Ibu8GqOoGZEOsQQ2Wr6fK5LtDvkjm
-         AXFUCp3NmIrzCxHYn2PM9x3RN/O1Dnwv7F/NE/8/AVpeDY7YtR53DWQ2XqhV0wpW7q
-         PqKtN9rs+qdwg==
+        b=NTEVjYE7prf3o/eiUWrDbGdRLO8myYP4AiPdaJGWWJkbRmPmv/315SwIARxCHflvJ
+         ESd4yg/9oTSfcfiPeLpwfD3bAPlbM4g0QX2s7UtvDI4HV8DwBW1Fw9B033sI02KeN0
+         cPpFlkxPfQQX6cwj6vIIEix6kS1WoPGKUiwk8YZt55WedWhgePYSb+UNgB2dUYtAt5
+         qjT7eqWkEBaDBjo9YMA36wey54jV+GgTP3ZrD7VI32blq+ClXwmpILMtLji+XEEBVr
+         rCSya0Wl6mkn+W+Ag7XpJX3jHKWRMnK2ZnqeDYS7Z9dvA32OK+WsXa8koE16DGi8pb
+         1SPtIeWmakddA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 91C2860721;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F23D160987;
         Sat, 13 Nov 2021 19:15:31 +0000 (UTC)
-Subject: Re: [GIT PULL ] signal/vm86_32: Remove pointless test in BUG_ON
+Subject: Re: [GIT PULL] tracing: Three small fixes for 5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87y25toy2g.fsf_-_@email.froward.int.ebiederm.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-9-ebiederm@xmission.com>
-        <874k8htmb2.fsf@email.froward.int.ebiederm.org>
-        <CAMzpN2jkK5sAv-Kg_kVnCEyVySiqeTdUORcC=AdG1gV6r8nUew@mail.gmail.com>
-        <87ilwxrvu9.fsf@email.froward.int.ebiederm.org>
-        <CAHk-=widK1vko2EN9PtV3jTo02u-expXxozui-fsK-0uKrcGHg@mail.gmail.com>
-        <87ee7lqe6k.fsf@email.froward.int.ebiederm.org>
-        <CAHk-=whf-nR4xDSEDtXeowFn4QQKY3s_MXoM8Ha-dPiOzFzUxQ@mail.gmail.com>
-        <CAHk-=wjU1Nf+zzFgwE5bAGSq2W9DifmKDsAOFuZcaaHq3vEQ8w@mail.gmail.com> <87y25toy2g.fsf_-_@email.froward.int.ebiederm.org>
+In-Reply-To: <20211113083520.26ec84ee@rorschach.local.home>
+References: <20211113083520.26ec84ee@rorschach.local.home>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87y25toy2g.fsf_-_@email.froward.int.ebiederm.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exit-cleanups-for-v5.16
-X-PR-Tracked-Commit-Id: c7a9b6471c8ee6a2180fc5f2f7a1e284754bdfc5
+X-PR-Tracked-Message-Id: <20211113083520.26ec84ee@rorschach.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16-4
+X-PR-Tracked-Commit-Id: 1cab6bce42e62bba2ff2c2370d139618c1828b42
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d4fa09e514cdb51fc7a2289c445c44ba0c87117b
-Message-Id: <163683093158.10343.13792820646469910637.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 7c3737c706073792133deeefae33ab17fd06e0c2
+Message-Id: <163683093198.10343.2152856711886622919.pr-tracker-bot@kernel.org>
 Date:   Sat, 13 Nov 2021 19:15:31 +0000
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 15:37:11 -0600:
+The pull request you sent on Sat, 13 Nov 2021 08:35:20 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exit-cleanups-for-v5.16
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16-4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d4fa09e514cdb51fc7a2289c445c44ba0c87117b
+https://git.kernel.org/torvalds/c/7c3737c706073792133deeefae33ab17fd06e0c2
 
 Thank you!
 
