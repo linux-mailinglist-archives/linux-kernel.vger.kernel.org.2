@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9543C44F5A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 23:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81D644F5A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 23:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhKMWP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 17:15:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53649 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231129AbhKMWP6 (ORCPT
+        id S232474AbhKMWdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 17:33:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhKMWc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 17:15:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636841585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yVoMOfDwy8Q0m/39gh0gDNPU0gOTI/GsdwFXBbgGHLc=;
-        b=JQPCefiBs3gqQc+yirk0ZeoQa6lC9Y2i446RVrDtT28nO5Gbif8LdJnvVVpan5zEwtec4D
-        GFGO4yGcw6MXWHbv9RDH9R21Ann7XygDufplYdl/9Bs/UCHTpq2QLOP7nAXqxzgPQn91Cz
-        jHTNFs818OVuyZ+57BSP3va8OIiYuYo=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-INELyM9yOWmQexlwFsXoZQ-1; Sat, 13 Nov 2021 17:13:03 -0500
-X-MC-Unique: INELyM9yOWmQexlwFsXoZQ-1
-Received: by mail-pj1-f70.google.com with SMTP id a16-20020a17090aa51000b001a78699acceso6450085pjq.8
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 14:13:03 -0800 (PST)
+        Sat, 13 Nov 2021 17:32:58 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D20C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 14:30:05 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id e3so16959335edu.4
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 14:30:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t/8BrQDY4QMPS2nacboOjM/lCVglZ4d38pfjPWfMGuM=;
+        b=hRjv9mmmDbyoeVA0CMPq5xGs+wSrdWBsg0EdyTC7L4UHamhN+U905uFl9m9eU7xE4V
+         13854VR2dwJZXLtuUsGJglkXqe7TAY3ixO5TImJDWuQJpNizD68bzfAVDF5AWAao2wTD
+         hVZshSaSZ+y31GFTuProMSv2mpvAgl95tNnLDbwqMifZS8luwe7WxFE0SuPpD7dIDXmv
+         Zy0IlEXxWdIrGVywmeokT/mjF6RqIbg3tYoWsYl9vKKTcjYVCM1PUCwg/8uBVJby605l
+         STMKw2kEh81zbOV7OlAwhWW6geZNJho8z8NDOHHkZLMaM/tldFppntaBYjkgEDkCGoWx
+         Rp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yVoMOfDwy8Q0m/39gh0gDNPU0gOTI/GsdwFXBbgGHLc=;
-        b=KGAdo/uLkQelNtcwMDum5KFaZ5Up2zZFXJtG1+rhBwb2MidAFYjI6z8uaeifJNjeYC
-         EU3p2VNNImT8OrZVFtfXUFvmuEkDjevLfKVihumtCPTP/pVBUmzGWyG2YJbwik0bkH9v
-         etkuYsfUt+y78ww8BZdIkgTqFFQ4pnhtfWTJeDGY3ToC8qo1G2fZBPBkZB0FSwBZSW+f
-         MyyWW92ZMhu02+tboE+vWJ6ZLv8+iaJlIrrDvX24yJ36Usy4YX27gqYuCbj9ueNFOXrN
-         x3/ejWCPsKDgU/lhy5UexuwhNc4C3+qRFQbguZlMHDFsoLCbTRfr71AoCnwC7iXgydH8
-         w+gA==
-X-Gm-Message-State: AOAM5307v1uY7wN8LkQ7ni0nNoB7fdH6A8okPRZ7vuvaMs2JiVfQmn+A
-        JaP3hziadxHc5uhDnMcUhKMm038w42FIygwlpL4wD/t9W9R73IHEOBlEAloy1qTo2cjjOdrPYRm
-        isc0h7PGUXrEDXAEYdrC8clCH
-X-Received: by 2002:a05:6a00:ac1:b0:44c:4dc6:b897 with SMTP id c1-20020a056a000ac100b0044c4dc6b897mr23381716pfl.25.1636841582788;
-        Sat, 13 Nov 2021 14:13:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzZMYhHkvNs9tAiwjcm5+NqPix2hrqBvesc82Cx/xOQI7yWfXLU6nEamlLc+J8xq/t8pAiAoQ==
-X-Received: by 2002:a05:6a00:ac1:b0:44c:4dc6:b897 with SMTP id c1-20020a056a000ac100b0044c4dc6b897mr23381699pfl.25.1636841582534;
-        Sat, 13 Nov 2021 14:13:02 -0800 (PST)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j6sm7908688pgf.60.2021.11.13.14.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Nov 2021 14:13:02 -0800 (PST)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, yilun.xu@intel.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] fpga: dfl: pci: generalize find_dfls_by_vsec()
-Date:   Sat, 13 Nov 2021 14:12:52 -0800
-Message-Id: <20211113221252.4062704-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t/8BrQDY4QMPS2nacboOjM/lCVglZ4d38pfjPWfMGuM=;
+        b=T3t7oHRX3bdcxcAlLRW9b4uCJWJgFiilYiV9thotnFx6sGMGl/IdLg2v6D8XW0frX3
+         ltrJmvLQmjm/UC99U0D7q9cGrFxUg9viM1X6xjDg3QX2F4pshL/vfWsFbJ0u8GW2FWaB
+         iUAlTgMX66bxLpk9Vnk94oddK9OEOzQhcvfHyOmhdTsSjdG4Tp7zUomy4C9QfUuSl70j
+         Q9h7tli2ryEzOzI3bIBajxUjN75UVQ6+rbW7jQdVnt1hJU+U73aYfs9Y8vf4mQXvON6z
+         YXw4HWD5ZIBuyhsxHEoxjwIFhsAaLlBrg5JM4MCus6bix1H0b32C6+5cFlrqTaw+8+Wy
+         6xmQ==
+X-Gm-Message-State: AOAM5309iEP1lnIgtDH8z98wGR5KbgbLoJWYy5MYUHOX0ifmsELHAc85
+        3shLSDet0Xmy6NJ+pk8Q8sLDZJwZk/0v5bqJTC1v6vliXbg=
+X-Google-Smtp-Source: ABdhPJyvx1/28UPunkTlxeYgNt5OytWgywAl/h+fgA7lZGzRxdW80lotD3MlVdRcykABhWG9zIukrCu8dBJ2egLaPf8=
+X-Received: by 2002:a17:907:dab:: with SMTP id go43mr30941491ejc.537.1636842604012;
+ Sat, 13 Nov 2021 14:30:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <CAHP4M8V2WEQ0LgHp7PHdBMYFp+_frn=7GLQVF7=faqapojQ+2g@mail.gmail.com>
+ <628a49dc-f6f7-5aa4-8a4d-4f2ed19b7f3f@kernel.dk> <e87601bd-21c4-00b0-9500-054bca8abced@kernel.dk>
+ <CAHk-=wjgZVY-skWP1vW2Cw+His+3eESATM_+QDYp=wFEsVv=qw@mail.gmail.com> <CAHk-=wh2fa20a-qe+8q8no3_2MD-DokXvKNDhDC6qMJyCTvnPw@mail.gmail.com>
+In-Reply-To: <CAHk-=wh2fa20a-qe+8q8no3_2MD-DokXvKNDhDC6qMJyCTvnPw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Sat, 13 Nov 2021 14:29:52 -0800
+Message-ID: <CAHbLzkp_SGYbjK27-TPajxbKYJDCv==8Oj4TzP6MdTNoBtve0A@mail.gmail.com>
+Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        Ajay Garg <ajaygargnsit@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sat, Nov 13, 2021 at 12:23 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sat, Nov 13, 2021 at 12:16 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Neither of the fixes were sent to me, and honestly, I think the real
+> > issue is that the original commit is just too broken for words.
+>
+> Side note: the one you pointed to (by Ajay), had the comment that it
+> could be done differently as an optimization.
+>
+> And I very much agree with that, although I think it would be a lot
+> more than an optimization: just doing
+>
+>         if (error)
+>                 return ERR_PTR(error);
+>
+> earlier in the function would have avoided the issue entirely, and
+> would have made the code a lot easier to read too.
+>
+> But what made me decide to just revert it entirely was that the
+> original commit that caused this all also had stuff like this:
+>
+> -       return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +       ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +
+> +       if (*pagep && PageHWPoison(*pagep)) {
+> +               unlock_page(*pagep);
+> +               put_page(*pagep);
+> +               ret = -EIO;
+> +       }
+> +
+> +       return ret;
+>
+> which is another example of exactly the same issue: ignoring errors,
+> and then acting on other information and creating new errors.
+>
+> Again, that code should have checked and handled errors first, and
+> then - if there wasn't an error - added that new HWpoison handling.
+>
+> So that just made me go "this is not worth fixing up, this just needs
+> re-doing", and thus I just went for the revert instead.
 
-find_dfls_by_vsec() is a general dfl function.
-Although dfl has multiple vendors, only Intel is supported.
-Move vsec and vendor id to an array variable.
-Other vendors can append the array to enable their support.
+I'm so sorry for the inconvenience.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/dfl-pci.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+The above snippet is actually ok since if *pagep returned via
+shmem_getpage()'s parameter is not NULL, then ret is 0. When
+shmem_getpage() returns error code, *pagep is NULL IIUC. So it
+actually doesn't ignore errors then create and return new error.
 
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index 4d68719e608f..9dc0815c8274 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -136,19 +136,36 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
- 	return table;
- }
- 
--static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
-+struct dfl_vsec {
-+	u16 vendor;
-+	u16 id;
-+};
-+
-+static struct dfl_vsec vsecs[] = {
-+	{ PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS },
-+};
-+
-+static int find_dfls_by_vsec(struct pci_dev *pcidev,
-+			     struct dfl_fpga_enum_info *info)
- {
- 	u32 bir, offset, vndr_hdr, dfl_cnt, dfl_res;
- 	int dfl_res_off, i, bars, voff = 0;
- 	resource_size_t start, len;
- 
--	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
--		vndr_hdr = 0;
--		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
-+	for (i = 0; i < ARRAY_SIZE(vsecs); i++) {
-+		if (pcidev->vendor != vsecs[i].vendor)
-+			continue;
-+
-+		while ((voff =
-+			pci_find_next_ext_capability(pcidev, voff,
-+						     PCI_EXT_CAP_ID_VNDR))) {
-+			vndr_hdr = 0;
-+			pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER,
-+					      &vndr_hdr);
- 
--		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS &&
--		    pcidev->vendor == PCI_VENDOR_ID_INTEL)
--			break;
-+			if (PCI_VNDR_HEADER_ID(vndr_hdr) == vsecs[i].id)
-+				break;
-+		}
- 	}
- 
- 	if (!voff) {
--- 
-2.26.3
+But I do agree it seems tricky for someone who is not familiar with
+shmem code. And if shmem code is changed in the future it may be error
+prone. I could rewrite it to:
 
+if (ret < 0)
+    goto out;
+
+ if (*pagep && PageHWPoison(*pagep)) {
+               unlock_page(*pagep);
+              put_page(*pagep);
+              ret = -EIO;
+}
+
+out:
+    return ret;
+
+And fold in Ajay's fix (will take Muchun's version which returns error
+earlier). Hopefully it still can make -rc1. Of course rc2 is fine
+either.
+
+>
+>                    Linus
