@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0BA44F4CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7893744F4CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhKMTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 14:18:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
+        id S236143AbhKMTSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 14:18:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236116AbhKMTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 14:18:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id EF4FA61207;
-        Sat, 13 Nov 2021 19:15:23 +0000 (UTC)
+        id S236096AbhKMTSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 14:18:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 71455611EE;
+        Sat, 13 Nov 2021 19:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636830924;
-        bh=HbIGjanIo6WOBMZpTzWFyuh961Oo9a+51Nb/ULQtlT4=;
+        s=k20201202; t=1636830925;
+        bh=tfzTtNy72HuvUkMo0//95tonC/+HNaj2B9WkA50DDoQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QGqrzj2gqlf3duZcagh+tI+XpXRotn9td0FmodHz0kv4nQyc5d3qc8Xnk9P/TYOGz
-         oIkfKtGCr4y7T8sbcijhfOT7mBowjNMZUqDxXkhLyBsWya08w8awUO+zFeiYCWpYub
-         7g6qqt+1q7QOcE2oN38TQ5qDGz0OZB21OCSgTJZ0mA5bfjFYIHf/MOuXzhsQX3Z7sD
-         J+LyH3dSJ7m7EsrcKw1cuCr0zLjS8nek0yxcAlvZ4ny24SmeSpPmpYE8eyltBulxWl
-         z4vKXt/XgS78QPg+3V1FSHZTRIDUbnLcYeA99rTLHF23RREZ3WjqHB0ZFFp8dM/XYo
-         i6y5xSDIcDoPA==
+        b=jAjGyqF0G9azvaphb37IRXsw+nEGwdRFhcXJQHZdwoCciOWxoZvgOKZdI8tSlVfgd
+         /AlTbkocW5yYhYbx8VlmRzmT2wxCOe/Dla2tM2CEtqiZImfYHZPvqtWxKFcJCsdV0j
+         adyGEXk+Xvx1a4kq5HTi0cAQR2gDta1Y3FCA28RGfArQ2ncx0jJKahwvwUs93QhXLL
+         bWIDiUXkq9U8AAhddu+JYQDW1ilHNjUCsY0Erh8JqBmNcNKXfg92KDbDR23P7uvsSm
+         st14J9FFJELYIVdFR5sXVWclPSafZwlMqJfmQQg55cDp2ibU01HaHtB7Ar7RF7PgGS
+         33sMwfgD11MGw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E99F960987;
-        Sat, 13 Nov 2021 19:15:23 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS changes 2nd part for v5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B83F60987;
+        Sat, 13 Nov 2021 19:15:25 +0000 (UTC)
+Subject: Re: [GIT PULL] Second batch of KVM changes for Linux 5.16 merge window
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211112104447.GA6127@alpha.franken.de>
-References: <20211112104447.GA6127@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211112104447.GA6127@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.16_1
-X-PR-Tracked-Commit-Id: f78b25ee922ef6faf59a258af1b9388ca894cfd9
+In-Reply-To: <20211112220315.3995734-1-pbonzini@redhat.com>
+References: <20211112220315.3995734-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211112220315.3995734-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 84886c262ebcfa40751ed508268457af8a20c1aa
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4218a96faf917b13ddc6af505bfb9b6a4e60bbc4
-Message-Id: <163683092394.10343.15762345267517404168.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Nov 2021 19:15:23 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 4d6fe79fdeccb8f3968d71bc633e622d43f1309c
+Message-Id: <163683092543.10343.8830796288766749205.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Nov 2021 19:15:25 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 11:44:47 +0100:
+The pull request you sent on Fri, 12 Nov 2021 17:03:15 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.16_1
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4218a96faf917b13ddc6af505bfb9b6a4e60bbc4
+https://git.kernel.org/torvalds/c/4d6fe79fdeccb8f3968d71bc633e622d43f1309c
 
 Thank you!
 
