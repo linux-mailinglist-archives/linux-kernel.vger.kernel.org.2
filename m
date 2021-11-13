@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CEA44F045
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9625C44F047
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhKMAzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 19:55:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S235236AbhKMAzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 19:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhKMAzL (ORCPT
+        with ESMTP id S230300AbhKMAzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 19:55:11 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE2FC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:19 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id m9so13453287iop.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:19 -0800 (PST)
+        Fri, 12 Nov 2021 19:55:21 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE6C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:30 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id r8so13376100iog.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ar+96otnAzeN5XyQtZwRbRvg/01cns8FSyH4rDQT4T4=;
-        b=EGyRVXShdBOHi4a5JP4tWIcCl0qnPG5C3nLBIQVAP3oPkc2D14VyhTCDf7WNGPpRWr
-         mqinLcayYYsxIC9Uqr88/5qSk85g0nMYmUhOLIr1YMBQRgvwgY3WTPCSU3lMRDcrnE+d
-         I6OXzQ9Pqmk6L5tz0hqrgUcLf1+d8cQjHVzuU=
+        bh=WDMoJWVS3cLt8gel5ZAdj4e1dI2U2C9Sa5cKlc5Ze5g=;
+        b=VG6EBwWgoJT2XTaKLIKToQkj/22xaDKEfaape+fbpwoDlL9hAcuqpP9I9+NMEKFmcL
+         +u+fJF0Bm03Ggu4f2IMorqe1uYl+AniZrw98Kukh9eZtiAf4oSEQvlh70BY+iTAfVP8I
+         zPBa4aWBkNCMAkySS5Tphpbq4Dk4nOZIbAqWg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ar+96otnAzeN5XyQtZwRbRvg/01cns8FSyH4rDQT4T4=;
-        b=Sw4PTe+vb6tvKS81A8g0yIsDt0SkN5aMMcpVnYLNLl5gcdaNmXcvohiqLHEq3gW7LD
-         QgsOvGcym4BNLb/HsZIFpz6zjK/DyiWi+ihkw6mOh38QNJUvVU1YDdaBd7SPtgHFaz/t
-         grwesRXNV1QnBeCSlo9IYTPqd8CYgyepqbv6LDGt94COJ548cumhVBU7S0lSAC6w3Eaj
-         tgM6n32w17W8KtH4Zo1VM3NOm792Z4ozn+MuQizM34uViKGb0SQaFJw/mZ1rh3H6e4Lt
-         nBABlQbPEstc+RnExGrEhuDHSkiX0FzOCPkg0sLPjaC4VlntqtXcwakiStOrR5ZaFdI9
-         FbVA==
-X-Gm-Message-State: AOAM533KjTi0M0VS43/NJcCDaL76iCHJl5Y/3jNKqz6aYACXwSw+cIpF
-        VclU4kVO/q1Ya0aNeZs55m0I8Q1WwtHe0A==
-X-Google-Smtp-Source: ABdhPJxbP55T7iR44wq4CK2sdaT2ufMzvNjJU6ePes/q3VsSpJ1LjGmu0t2YNsPaSBhobWLj5i5N4A==
-X-Received: by 2002:a5d:9ed6:: with SMTP id a22mr13404685ioe.167.1636764738168;
-        Fri, 12 Nov 2021 16:52:18 -0800 (PST)
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
-        by smtp.gmail.com with ESMTPSA id h14sm4565009ils.75.2021.11.12.16.52.15
+        bh=WDMoJWVS3cLt8gel5ZAdj4e1dI2U2C9Sa5cKlc5Ze5g=;
+        b=JWRO3VRq/sePv9WrZhP+FCcKZw2/E6Kqio31tdudu4FkMxEjkDwTeOwzl/4AUrX/Py
+         C0v4ON6Fx18kG8b2/TVEb4ldhhV3Rm1erfDUOqxhBymnUPRT7bXuIX1vGuigwzKn4nPL
+         RRxzqBN9ltUQr/gzCX8AwX/BqH8a/J0rtbqfV6Osfq2jG3MDPwLojxSv8frJGqXISlgu
+         zZUnnxZmFj4iGaAxMwS1ShGhmMqOztvnAWiUSD9mDr+oVs60jCsswz/BLCmnqVDIt6MZ
+         5k2/koJStmZot2LaKsWJdOO3byL7bYi4lxsOb8O2JhT1F+Yl7r0jBmm1QUIvEWsXZ03I
+         xWRQ==
+X-Gm-Message-State: AOAM532mVtMIbf5vMa/mv7jugCadkPP267cQNvs4/Z4iei6uaGLhviEa
+        eyE8c1yv/HOoT3S0c0vWa/L6nkt+veGDTA==
+X-Google-Smtp-Source: ABdhPJyajeC+a8EhX9YaL8sZwEs1005FPO5RGlxTyRCeERRaCLGJ4qkEMhPdasSxixTeXjxygt+ppw==
+X-Received: by 2002:a02:a314:: with SMTP id q20mr14922278jai.104.1636764749261;
+        Fri, 12 Nov 2021 16:52:29 -0800 (PST)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
+        by smtp.gmail.com with ESMTPSA id k8sm4818278ilu.23.2021.11.12.16.52.27
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 16:52:17 -0800 (PST)
-Received: by mail-io1-f53.google.com with SMTP id x10so13368643ioj.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:15 -0800 (PST)
-X-Received: by 2002:a5d:9753:: with SMTP id c19mr13234220ioo.136.1636764735260;
- Fri, 12 Nov 2021 16:52:15 -0800 (PST)
+        Fri, 12 Nov 2021 16:52:28 -0800 (PST)
+Received: by mail-io1-f49.google.com with SMTP id c3so13378874iob.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:27 -0800 (PST)
+X-Received: by 2002:a05:6638:190f:: with SMTP id p15mr15051440jal.82.1636764747377;
+ Fri, 12 Nov 2021 16:52:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211103234018.4009771-1-briannorris@chromium.org> <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
-In-Reply-To: <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
+References: <20211103234018.4009771-1-briannorris@chromium.org> <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+In-Reply-To: <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 12 Nov 2021 16:52:03 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
-Message-ID: <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
+Date:   Fri, 12 Nov 2021 16:52:15 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
+Message-ID: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
 To:     Brian Norris <briannorris@chromium.org>
 Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -80,67 +80,82 @@ Hi,
 
 On Wed, Nov 3, 2021 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
 >
-> To improve panel self-refresh exit latency, we speculatively start
-> exiting when we
-> receive input events. Occasionally, this may lead to false positives,
-> but most of the time we get a head start on coming out of PSR. Depending
-> on how userspace takes to produce a new frame in response to the event,
-> this can completely hide the exit latency.
+> A variety of applications have found it useful to listen to
+> user-initiated input events to make decisions within a DRM driver, given
+> that input events are often the first sign that we're going to start
+> doing latency-sensitive activities:
 >
-> In local tests on Chrome OS (Rockchip RK3399 eDP), we've found that the
-> input notifier gives us about a 50ms head start over the
-> fb-update-initiated exit.
+>  * Panel self-refresh: software-directed self-refresh (e.g., with
+>    Rockchip eDP) is especially latency sensitive. In some cases, it can
+>    take 10s of milliseconds for a panel to exit self-refresh, which can
+>    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+>    with an input_handler boost, that preemptively exits self-refresh
+>    whenever there is input activity.
 >
-> Leverage a new drm_input_helper library to get easy access to
-> likely-relevant input event callbacks.
-
-So IMO this is a really useful thing and I'm in support of it landing.
-It's not much code and it clearly gives a big benefit. However, I
-would request a CONFIG option to control this so that if someone
-really finds some use case where it isn't needed or if they find a
-good way to do this in userspace without latency problems then they
-can turn it off. Does that sound reasonable?
-
-
-> Inspired-by: Kristian H. Kristensen <hoegsberg@google.com>
+>  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+>    render new frames immediately after user activity. Powering up the
+>    GPU can take enough time that it is worthwhile to start this process
+>    as soon as there is input activity. Many Chrome OS systems also ship
+>    with an input_handler boost that powers up the GPU.
+>
+> This patch provides a small helper library that abstracts some of the
+> input-subsystem details around picking which devices to listen to, and
+> some other boilerplate. This will be used in the next patch to implement
+> the first bullet: preemptive exit for panel self-refresh.
+>
+> Bits of this are adapted from code the Android and/or Chrome OS kernels
+> have been carrying for a while.
+>
 > Signed-off-by: Brian Norris <briannorris@chromium.org>
 > ---
-> This was in part picked up from:
 >
->   https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
->   [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
+>  drivers/gpu/drm/Makefile           |   3 +-
+>  drivers/gpu/drm/drm_input_helper.c | 143 +++++++++++++++++++++++++++++
+>  include/drm/drm_input_helper.h     |  22 +++++
+>  3 files changed, 167 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/gpu/drm/drm_input_helper.c
+>  create mode 100644 include/drm/drm_input_helper.h
 >
-> with significant rewrites/reworks:
->
->  - moved to common drm_input_helper and drm_self_refresh_helper
->    implementation
->  - track state only through crtc->state->self_refresh_active
->
-> Note that I'm relatively unfamiliar with DRM locking expectations, but I
-> believe access to drm_crtc->state (which helps us track redundant
-> transitions) is OK under the locking provided by
-> drm_atomic_get_crtc_state().
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index 0dff40bb863c..378761685b47 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -49,7 +49,8 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o drm_dp_helper.o \
+>                 drm_scdc_helper.o drm_gem_atomic_helper.o \
+>                 drm_gem_framebuffer_helper.o \
+>                 drm_atomic_state_helper.o drm_damage_helper.o \
+> -               drm_format_helper.o drm_self_refresh_helper.o
+> +               drm_format_helper.o drm_self_refresh_helper.o \
+> +               drm_input_helper.o
 
-Yeah, I'm no expert here either. I gave a review a shot anyway since
-it's been all quiet, but adult supervision is probably required...
+Note that the Makefile part conflicts with drm-misc-next right now.
+It's not very hard to resolve, but since this would likely land there
+maybe it'd be nice to resolve?
 
-I can believe that you are safe from corrupting things, but I think
-you still have locking problems, don't you? What about this:
+Other than that, this seems sane to me and much better than copying
+this between places, so assuming that the build problems get resolved
+then I'm happy.
 
-1. PSR is _not_ active but we're 1 microsecond away from entering PSR
+I guess one random thought I had is whether there would be an
+appropriate place to put this that _wasn't_ in DRM. I still wonder
+whether we'll ever try to upstream something like the cpufreq boost
+driver that we're carrying around and using in Chrome OS. If so, it
+would want to use these same helpers and it'd be pretty awkward for it
+to have to reach into DRM. ...any chance we could just land these
+helpers somewhere more generic?
 
-2. Input event comes through.
 
-3. Start executing drm_self_refresh_transition(false).
+> +struct drm_input_handler {
+> +       struct input_handler handler;
+> +       void *priv;
+> +       void (*callback)(void *priv);
+> +};
 
-4. PSR timer expires and starts executing drm_self_refresh_transition(true).
-
-5. Input event "wins the race" but sees that PSR is already disabled => noop
-
-6. PSR timer gets the lock now. Starts PSR transition.
-
-Wouldn't it be better to cancel / reschedule any PSR entry as soon as
-you see the input event?
+Super bike-sheddy comment is that "void *" data arguments are not
+super common in the kernel. I would have expected the callback
+function to just be passed a pointer to the "struct drm_input_handler"
+and it could find any other data it needed via "container_of". I won't
+insist though. ;-)
 
 
 -Doug
