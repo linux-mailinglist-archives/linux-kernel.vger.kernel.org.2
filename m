@@ -2,82 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363EA44F2C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F0244F2D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235713AbhKMLcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 06:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48850 "EHLO mail.kernel.org"
+        id S235645AbhKMLll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 06:41:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235377AbhKMLcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 06:32:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9B7610A1;
-        Sat, 13 Nov 2021 11:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636802999;
-        bh=4t4C5M9a84MkDb+tGoXF7AaK6vfmBvpn5F+aRzl4JOY=;
-        h=Subject:To:Cc:From:Date:From;
-        b=OVSfjMjijHCs0/lSPzreKJq0bUtPMsZQgiVMFW/uyWeKUiMSn6rgabSS4K57plp+a
-         4WVyFjHHHuHS3gpggl6UxD956Zbjh61qVrQPSzunxD6gamQ7f48Pm5bdRZ7AI1NQ+c
-         5SURbYyxjhm4vx6UTZZik9cNgh10W/rkgEkkQZ3A=
-Subject: FAILED: patch "[PATCH] scsi: scsi_ioctl: Validate command size" failed to apply to 5.14-stable tree
-To:     tadeusz.struk@linaro.org, bvanassche@acm.org, hch@lst.de,
-        jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        stable@vger.kernel.org
-Cc:     <stable@vger.kernel.org>
-From:   <gregkh@linuxfoundation.org>
-Date:   Sat, 13 Nov 2021 12:29:49 +0100
-Message-ID: <1636802989232252@kroah.com>
+        id S232925AbhKMLlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 06:41:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70EA2610A1;
+        Sat, 13 Nov 2021 11:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636803528;
+        bh=XnFsCOh7+ZQSvOwVOReC7fne9fxxNTruS9Wkfka6JZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S4gQK/TR/e8aa1qGhRiCxvwcgRYnKzPW3ga3Vj2AUhROup7f3YPZSGDqwsnUJc52w
+         +L6FnKtCp5cVkKD6tjQzr17/CoUMwP33aPODqbewUZnBpMD+HJNn/G1yLhFJGd3yNu
+         A0lXhgqsWUuISH4VAYYBdlBab3Cn3an5CmsHsGrP1krtCSBDbI8DPSDciRvdU//9Fl
+         WXQ3JTIMpZ+ctuyPnKy0pbJxuZ8O+o3nvwHAiijbI+fPMVkfZcsS+RJioZjV6Ki3kg
+         ofSNhvXCUFHwoTdopFhyJY9GC33KlooDijJ3LENwSdYDcqTMbWBQbFMc3K7w+vrgMw
+         KId3eVvIzPikQ==
+Received: by pali.im (Postfix)
+        id 5DD69819; Sat, 13 Nov 2021 12:38:46 +0100 (CET)
+Date:   Sat, 13 Nov 2021 12:38:46 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 3/8] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+Message-ID: <20211113113846.oqdnov2hvbmlx5hi@pali>
+References: <20211110221456.11977-1-jim2101024@gmail.com>
+ <20211110221456.11977-4-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110221456.11977-4-jim2101024@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday 10 November 2021 17:14:43 Jim Quinlan wrote:
+> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
+> allows optional regulators to be attached and controlled by the PCIe RC
+> driver.  That being said, this driver searches in the DT subnode (the EP
+> node, eg pci-ep@0,0) for the regulator property.
+> 
+> The use of a regulator property in the pcie EP subnode such as
+> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
+> file at
+> 
+> https://github.com/devicetree-org/dt-schema/pull/63
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  .../bindings/pci/brcm,stb-pcie.yaml           | 23 +++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> index 508e5dce1282..ef2427320b7d 100644
+> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> @@ -158,5 +158,28 @@ examples:
+>                                   <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
+>                      brcm,enable-ssc;
+>                      brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
+> +
+> +                    /* PCIe bridge */
+> +                    pci@0,0 {
 
-The patch below does not apply to the 5.14-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+Hello! I think that above comment should be "PCIe Root Port" (and not
+PCIe bridge) as this node really describes Root Port device in PCIe Root
+Complex (correct me if I deduced it wrongly). lspci (-vv) show type of
+device on the line "Capabilities: [..] Express".
 
-thanks,
-
-greg k-h
-
------------------- original commit in Linus's tree ------------------
-
-From 20aaef52eb08f1d987d46ad26edb8f142f74d83a Mon Sep 17 00:00:00 2001
-From: Tadeusz Struk <tadeusz.struk@linaro.org>
-Date: Wed, 3 Nov 2021 10:06:58 -0700
-Subject: [PATCH] scsi: scsi_ioctl: Validate command size
-
-Need to make sure the command size is valid before copying the command from
-user space.
-
-Link: https://lore.kernel.org/r/20211103170659.22151-1-tadeusz.struk@linaro.org
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: James E.J. Bottomley <jejb@linux.ibm.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: <linux-scsi@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.15, 5.14, 5.10
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-
-diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
-index 6ff2207bd45a..a06c61f22742 100644
---- a/drivers/scsi/scsi_ioctl.c
-+++ b/drivers/scsi/scsi_ioctl.c
-@@ -347,6 +347,8 @@ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
- {
- 	struct scsi_request *req = scsi_req(rq);
- 
-+	if (hdr->cmd_len < 6)
-+		return -EMSGSIZE;
- 	if (copy_from_user(req->cmd, hdr->cmdp, hdr->cmd_len))
- 		return -EFAULT;
- 	if (!scsi_cmd_allowed(req->cmd, mode))
-
+> +                            #address-cells = <3>;
+> +                            #size-cells = <2>;
+> +                            reg = <0x0 0x0 0x0 0x0 0x0>;
+> +                            compatible = "pciclass,0604";
+> +                            device_type = "pci";
+> +                            vpcie3v3-supply = <&vreg7>;
+> +                            ranges;
+> +
+> +                            /* PCIe endpoint */
+> +                            pci-ep@0,0 {
+> +                                    assigned-addresses =
+> +                                        <0x82010000 0x0 0xf8000000 0x6 0x00000000 0x0 0x2000>;
+> +                                    reg = <0x0 0x0 0x0 0x0 0x0>;
+> +                                    compatible = "pci14e4,1688";
+> +                                    #address-cells = <3>;
+> +                                    #size-cells = <2>;
+> +
+> +                                    ranges;
+> +                            };
+> +                    };
+>              };
+>      };
+> -- 
+> 2.17.1
+> 
