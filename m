@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A03644F2B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7995C44F2C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhKMLWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 06:22:50 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:36585 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231735AbhKMLWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 06:22:49 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1C2D7580AD8;
-        Sat, 13 Nov 2021 06:19:57 -0500 (EST)
-Received: from imap47 ([10.202.2.97])
-  by compute3.internal (MEProxy); Sat, 13 Nov 2021 06:19:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=cGhqfy13haD7LzgLYmXe59yMHYPr
-        xi1YR0jX4iy4R5I=; b=cDwBkIuUEm5HCYb0VkTZXHCrGjdG4XHz6ARTtu9y6RDn
-        odKxTSrlX+uxjMdWKvFY7iNJ62j1A594J7RGfmDCeIdNIvPrsGv5v7vbIF2Py2Ob
-        3DUSI0BLwmSQMS6q3MZ7hfOqJWMNlTsnwubtiKsW6+YTXefQkoarYQoyC631jB5m
-        vNdPLYtgHPmoc/k9wda/mmd1K6feEgfVCS76kgGkJGc8qMqaVWjzOmdPdK6EhHw1
-        urJqlvOLDLS9aQPORkFkd6rEEBUTJorOuDHiqOB9LT5AJSitDpc512/Ret5aq+dx
-        1W0rBZ3C0ehHnlb/UFaK/cOy50yeGNGdY2Fgai3zrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cGhqfy
-        13haD7LzgLYmXe59yMHYPrxi1YR0jX4iy4R5I=; b=YPlWDAc2KT1EKlvZpiKh/E
-        IvyZOoLWLOaO0XJ1TcwbHtTO1MOU+Npx3uZOnRw/WTIUjw9P48WeSweyAxolAw7r
-        5u44DZ/plcV+3mpZGlU6WktmSSL3ltE6ZAShlTkbHoD5g5AJgDjvvmwq9fyC8bFA
-        BmVhXmFmH4RV4lnNKIG9rcOsSfUAIqLGhM15cxVO/OpIGPQ6BgVd8q11Gv1TBSuR
-        kk3UJXvzXI/VaFVsIsLpC1nsS6TVdMsQ4gOXjFYrYAt3uXfPjp7RrPu13WltgqGU
-        YIINZe0rOTHWJiSv78pIuBkglMaFJzYnJE8sueeDRhLPi3ABrh84BqXMj+mCxJIQ
-        ==
-X-ME-Sender: <xms:XJ-PYTVIC-bnLLwWQzdADdmcMeGnWwMkWmFrHdKwTraLc4uIS7P5-A>
-    <xme:XJ-PYbl4f-RRDIpIAbdFOfaJValX5vptSazhZbO2jKWJpgMSXMHGjO2GZE6SvxoIi
-    OSYVBQdA1uLgOVidns>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdehgddvjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhvvghn
-    ucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrth
-    htvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudehvdef
-    keffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
-    hvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:XJ-PYfb0qICOBlSdNRDPvQcJmfIQiaduCPzrc6xS1KnWVBw8uLRpkw>
-    <xmx:XJ-PYeW8sP_rBYGDNDGT9-z7Ev8upH-aiIiO7ldEYQpDxZoEeA0niw>
-    <xmx:XJ-PYdnvVZ3ShlIH_pU0cN5izE-PdCgAkgFxpRlv2m-clyPevhL0BA>
-    <xmx:XZ-PYf4G93PsR1J8lvUvxWdB8t43qQsFbr9fgqhfi2pmM-CGtTtoxA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 65F5F27400FB; Sat, 13 Nov 2021 06:19:56 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <0fc06d43-fcca-4cc5-a0e2-9a066bfb7702@www.fastmail.com>
-In-Reply-To: <20211113111410.GB10073@jannau.net>
-References: <20211113094732.73889-1-sven@svenpeter.dev>
- <20211113094732.73889-2-sven@svenpeter.dev>
- <20211113111410.GB10073@jannau.net>
-Date:   Sat, 13 Nov 2021 12:19:35 +0100
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Janne Grunau" <j@jannau.net>
-Cc:     "Wim Van Sebroeck" <wim@linux-watchdog.org>,
-        "Guenter Roeck" <linux@roeck-us.net>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] watchdog: Add Apple SoC watchdog driver
-Content-Type: text/plain
+        id S235216AbhKMLco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 06:32:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232651AbhKMLcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 06:32:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2AAE610A1;
+        Sat, 13 Nov 2021 11:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636802991;
+        bh=pHeBUWNebUqeYruCKfRLKGzisnqx/EQVpK5MyytRgrw=;
+        h=Subject:To:Cc:From:Date:From;
+        b=alj8lCL6g8sme9GmNjWF9ncKMqZHmnCXaJN/YjZnXCnw2sumQ2FvF8Bq72sFaVGhs
+         4DLruAEb5hlHMOyXh5CvkgNY0pXGEsIIufymt3/kwS0ehvZw5lXciH5zzLMATwFl+j
+         Qrdzj0eKwtzIzZvQYgVxSDjaTWjXZWG9mbLzqwoI=
+Subject: FAILED: patch "[PATCH] scsi: scsi_ioctl: Validate command size" failed to apply to 5.10-stable tree
+To:     tadeusz.struk@linaro.org, bvanassche@acm.org, hch@lst.de,
+        jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        stable@vger.kernel.org
+Cc:     <stable@vger.kernel.org>
+From:   <gregkh@linuxfoundation.org>
+Date:   Sat, 13 Nov 2021 12:29:48 +0100
+Message-ID: <1636802988108163@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janne,
 
-On Sat, Nov 13, 2021, at 12:14, Janne Grunau wrote:
-> On 2021-11-13 10:47:32 +0100, Sven Peter wrote:
->> Add support for the watchdog timer found in Apple SoCs. This driver is
->> also required to reboot these machines.
->
-> Tested on a M1 Max with
-> compatibe = "apple,t6000-wdt", "apple,wdt";
-> MacOS 12 on the same machine does not use the watchdog for reset. MacOS 
-> log output suggests that it uses a "pgmr" call for reset.
->
-> Feel free to add
-> Tested-by: Janne Grunau <j@jannau.net>
+The patch below does not apply to the 5.10-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-Awesome, thanks for testing this!
-I suspect that they added an additional reset path for the Pro/Max variants.
-On my M1 macOS seems to only use this watchdog to reset the machine.
+thanks,
 
-And if I understand the linux reset infrastructure correctly it's still fine
-to have this as a "fallback" reset notifier even on the Pro/Max and add support
-for the proper "pmgr" reset notifier eventually with a higher priority. 
+greg k-h
 
+------------------ original commit in Linus's tree ------------------
 
-Best,
+From 20aaef52eb08f1d987d46ad26edb8f142f74d83a Mon Sep 17 00:00:00 2001
+From: Tadeusz Struk <tadeusz.struk@linaro.org>
+Date: Wed, 3 Nov 2021 10:06:58 -0700
+Subject: [PATCH] scsi: scsi_ioctl: Validate command size
 
-Sven
+Need to make sure the command size is valid before copying the command from
+user space.
+
+Link: https://lore.kernel.org/r/20211103170659.22151-1-tadeusz.struk@linaro.org
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: <linux-scsi@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <stable@vger.kernel.org> # 5.15, 5.14, 5.10
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
+index 6ff2207bd45a..a06c61f22742 100644
+--- a/drivers/scsi/scsi_ioctl.c
++++ b/drivers/scsi/scsi_ioctl.c
+@@ -347,6 +347,8 @@ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
+ {
+ 	struct scsi_request *req = scsi_req(rq);
+ 
++	if (hdr->cmd_len < 6)
++		return -EMSGSIZE;
+ 	if (copy_from_user(req->cmd, hdr->cmdp, hdr->cmd_len))
+ 		return -EFAULT;
+ 	if (!scsi_cmd_allowed(req->cmd, mode))
+
