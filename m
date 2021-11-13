@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D74B44F066
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 02:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE97D44F06A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 02:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhKMBMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 20:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhKMBMn (ORCPT
+        id S233946AbhKMBP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 20:15:28 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30938 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhKMBP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 20:12:43 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB78C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 17:09:51 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id bk14so21112081oib.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 17:09:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=k6fomv0sdqyhGG3g2MPtJX0afBVvlWccl4oJlzfMn9Y=;
-        b=bVYiKKwQq6W07fuU5EeeEuzDga4j9Cm5CLBGUGSZwJafblBv7RtRB/IaSbcbyMYSCr
-         3zzrWAp8NX3CIAlWD5FeXQG6/jH7+yScSlyTzVfThWqhJpxAecofK329q2zTcce05p6E
-         +aseknIkunN0ZadABb5BKr6cCzSn8Gem61FTxtHclFPUoTd6nRcSCQEHFpaczdESchEI
-         Y2yPD2F17teTUN8Z5gZa8pxh8B3kYObttJcMf7YDJ8qe7796CpD4eSfvcZq76OPDXgRG
-         aTnNbESvgH0ZuOKtdGuCTo9enuhqsEiOat3BRB9Y9S2ot/29Kw49K8XJ+kNzV6gFQdEe
-         AhkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=k6fomv0sdqyhGG3g2MPtJX0afBVvlWccl4oJlzfMn9Y=;
-        b=MV7faSkJHOG8KPGE66y/sX3oP20VII6GL1fcR5V7XcYo4wiawftbwQTqeXd3YWQevF
-         7Uhd2eB6u0mjVIgCT68xdzoRzAIwVIlTBkbGgh31eXA50pP8V3/+EBT3ae/0Ps94BFRt
-         PLBhYSG3DsrOeq3KBXXKgXDS6DCo/7daYlZ5CESmVxnTN4PgvpN376udnXyAbrzw2ikd
-         R8O+VZS7Li9f9Avl44KGftaN2e5CdueCPXk/A+OkyWa8G38+k0u1sQjWGtGodryd75gn
-         eSBRJyfv4L+P4A9j843kaRxbxLLarb1Qo80UAa9HTHlP6mXTh+HZlbCGxXR97BOwCBJi
-         QgNw==
-X-Gm-Message-State: AOAM530VdGmMSXUlkIg3bpbCWXFhRALLU7xYA35ItuPUz6ZZCkvv6HJL
-        PFh931nQQrqMz3y6QOhgbudFPLmXEMcewbFZJVA=
-X-Google-Smtp-Source: ABdhPJwkJJndwplsDZd4Bm1qhyqirDAW7ESLRnOvZkLOsIrIVsYzj0ZqtvjrLaESljibl3aVINPqlEHybknpBEFJX6E=
-X-Received: by 2002:a05:6808:168a:: with SMTP id bb10mr30545688oib.99.1636765790844;
- Fri, 12 Nov 2021 17:09:50 -0800 (PST)
+        Fri, 12 Nov 2021 20:15:27 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hrckj6h58zcb76;
+        Sat, 13 Nov 2021 09:07:41 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 13 Nov 2021 09:12:33 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 13 Nov 2021 09:12:32 +0800
+Subject: Re: [PATCH 5.4 00/17] 5.4.159-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211110182002.206203228@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <8af87374-9c2e-c835-97b6-7eb4743f9c20@huawei.com>
+Date:   Sat, 13 Nov 2021 09:12:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:ac9:684f:0:0:0:0:0 with HTTP; Fri, 12 Nov 2021 17:09:50
- -0800 (PST)
-Reply-To: asameraa950@gmail.com
-From:   Samera Ali <jeminaali147@gmail.com>
-Date:   Fri, 12 Nov 2021 17:09:50 -0800
-Message-ID: <CAG2sCxzB2nVoj-1vHZwoQ2L3=ty11j1nxJHTXOvhLvndUVOeOA@mail.gmail.com>
-Subject: Hey dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211110182002.206203228@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey dear
 
-Nice to meet you, Am Miss samera I found your email here in google
-search and I picked interest to contact you. I've something very
-important which I would like to discuss with you and I would
-appreciate if you respond back to me through my email address as to
-tell you more about me with my photos, my private email as fellows??
-[ asameraa950@gmail.com ]
 
-From, samera ali
+On 2021/11/11 2:43, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.159 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 12 Nov 2021 18:19:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.159-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 5.4.159-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.159-rc1
+Commit: 1422b7f3f43d27856aa1eaf04eac12fc7e565f66
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
