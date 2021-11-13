@@ -2,190 +2,789 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE1044F32D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8E444F332
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhKMNFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 08:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235306AbhKMNFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 08:05:10 -0500
-Received: from smtp-42a8.mail.infomaniak.ch (smtp-42a8.mail.infomaniak.ch [IPv6:2001:1600:4:17::42a8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACADC061767
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 05:02:13 -0800 (PST)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Hrwb60SPVzMpqmc;
-        Sat, 13 Nov 2021 14:02:10 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4HrwZv5yQNzlh8T4;
-        Sat, 13 Nov 2021 14:01:59 +0100 (CET)
-Subject: Re: [PATCH v16 1/3] fs: Add trusted_for(2) syscall implementation and
- related sysctl
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Paul Moore <paul@paul-moore.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20211110190626.257017-1-mic@digikod.net>
- <20211110190626.257017-2-mic@digikod.net>
- <8a22a3c2-468c-e96c-6516-22a0f029aa34@gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <5312f022-96ea-5555-8d17-4e60a33cf8f8@digikod.net>
-Date:   Sat, 13 Nov 2021 14:02:02 +0100
-User-Agent: 
+        id S235800AbhKMNHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 08:07:24 -0500
+Received: from rosenzweig.io ([138.197.143.207]:48386 "EHLO rosenzweig.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231589AbhKMNHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 08:07:23 -0500
+Date:   Sat, 13 Nov 2021 08:04:24 -0500
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, dougallj@gmail.com
+Subject: Re: [PATCH 8/8] drivers/perf: Add Apple icestorm/firestorm CPU PMU
+ driver
+Message-ID: <YY+32A1gdLzCP0TA@sunset>
+References: <20211113115429.4027571-1-maz@kernel.org>
+ <20211113115429.4027571-9-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <8a22a3c2-468c-e96c-6516-22a0f029aa34@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211113115429.4027571-9-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cc'ing Dougall who has worked with the CPU performance counters
+extensively and might be able to shine light on the interpretations.
 
-On 12/11/2021 20:16, Alejandro Colomar (man-pages) wrote:
-> Hi Mickaël,
-
-Hi Alejandro,
-
+On Sat, Nov 13, 2021 at 11:54:29AM +0000, Marc Zyngier wrote:
+> Add a new, weird and wonderful driver for the equally weird Apple
+> PMU HW. Although the PMU itself is functional, we don't know much
+> about the events yet, so this can be considered as yet another
+> random number generator...
 > 
-> On 11/10/21 20:06, Mickaël Salaün wrote:
->> diff --git a/fs/open.c b/fs/open.c
->> index f732fb94600c..96a80abec41b 100644
->> --- a/fs/open.c
->> +++ b/fs/open.c
->> @@ -480,6 +482,114 @@ SYSCALL_DEFINE2(access, const char __user *,
->> filename, int, mode)
->>       return do_faccessat(AT_FDCWD, filename, mode, 0);
->>   }
->>   +#define TRUST_POLICY_EXEC_MOUNT            BIT(0)
->> +#define TRUST_POLICY_EXEC_FILE            BIT(1)
->> +
->> +int sysctl_trusted_for_policy __read_mostly;
->> +
->> +/**
-> ...
->> + */
->> +SYSCALL_DEFINE3(trusted_for, const int, fd, const enum
->> trusted_for_usage, usage,
+> Nonetheless, it can reliably count at least cycles and instructions
+> in the usually wonky big-little way. For anything else, it of course
+> supports raw event numbers.
 > 
-> Please, don't use enums for interfaces.  They are implementation defined
-> types, and vary between compilers and within the same compiler also
-> depending on optimization flags.
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/include/asm/apple_m1_pmu.h |  45 ++
+>  drivers/perf/Kconfig                  |   7 +
+>  drivers/perf/Makefile                 |   1 +
+>  drivers/perf/apple_m1_cpu_pmu.c       | 632 ++++++++++++++++++++++++++
+>  4 files changed, 685 insertions(+)
+>  create mode 100644 drivers/perf/apple_m1_cpu_pmu.c
 > 
-> C17::6.7.2.2.4:
-> [
-> Each enumerated type shall be compatible with char,
-> a signed integer type, or an unsigned integer type.
-> The choice of type is implementation-defined,130)
-> but shall be capable of representing the values of
-> all the members of the enumeration.
-> ]
-> 
-> See also:
-> <https://stackoverflow.com/questions/366017/what-is-the-size-of-an-enum-in-c>
-> 
-> 
-> So, please use only standard integer types for interfaces.
-> 
-> And in the case of enums, since the language specifies that enumeration
-> constants (the macro-like identifiers) are of type int, it makes sense
-> for functions to use int.
-> 
-> C17::6.7.2.2.3:
-> [
-> The identifiers in an enumerator list are declared as constants
-> that have type int and may appear wherever such are permitted.
-> ]
-> 
-> I'd use an int for the API/ABI, even if it's expected to be assigned
-> values of 'enum trusted_for_usage' (that should be specified in the
-> manual page in DESCRIPTION, but not in SYNOPSIS, which should specify int).
-> 
-> 
-> 
-> TL;DR:
-> 
-> ISO C specifies that for the following code:
-> 
->     enum foo {BAR};
-> 
->     enum foo foobar;
-> 
-> typeof(foo)    shall be int
-> typeof(foobar) is implementation-defined
-
-I tested with some version of GCC (from 4.9 to 11) and clang (10 and 11)
-with different optimizations and the related sizes are at least the same
-as for the int type.
-
-> 
-> Since foobar = BAR; assigns an int, the best thing to do to avoid
-> implementation-defined behavior, is to declare foobar as int too.
-
-OK, so it should be enough to change the syscall argument type from enum
-trusted_for_usage to int, but we can keep the UAPI with the enum (i.e.
-we don't need to change the value to #define TRUSTED_FOR_EXECUTION 1) right?
-
-> 
-> 
->> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
->> index 528a478dbda8..c535e0e43cc8 100644
->> --- a/include/linux/syscalls.h
->> +++ b/include/linux/syscalls.h
->> @@ -462,6 +463,7 @@ asmlinkage long sys_fallocate(int fd, int mode,
->> loff_t offset, loff_t len);
->>   asmlinkage long sys_faccessat(int dfd, const char __user *filename,
->> int mode);
->>   asmlinkage long sys_faccessat2(int dfd, const char __user *filename,
->> int mode,
->>                      int flags);
->> +asmlinkage long sys_trusted_for(int fd, enum trusted_for_usage usage,
->> u32 flags);
-> 
-> Same here.
-> 
->>   asmlinkage long sys_chdir(const char __user *filename);
->>   asmlinkage long sys_fchdir(unsigned int fd);
->>   asmlinkage long sys_chroot(const char __user *filename);
-> 
-> Thanks,
-> Alex
-> 
+> diff --git a/arch/arm64/include/asm/apple_m1_pmu.h b/arch/arm64/include/asm/apple_m1_pmu.h
+> index b848af7faadc..99483b19b99f 100644
+> --- a/arch/arm64/include/asm/apple_m1_pmu.h
+> +++ b/arch/arm64/include/asm/apple_m1_pmu.h
+> @@ -6,8 +6,21 @@
+>  #include <linux/bits.h>
+>  #include <asm/sysreg.h>
+>  
+> +/* Counters */
+> +#define SYS_IMP_APL_PMC0_EL1	sys_reg(3, 2, 15, 0, 0)
+> +#define SYS_IMP_APL_PMC1_EL1	sys_reg(3, 2, 15, 1, 0)
+> +#define SYS_IMP_APL_PMC2_EL1	sys_reg(3, 2, 15, 2, 0)
+> +#define SYS_IMP_APL_PMC3_EL1	sys_reg(3, 2, 15, 3, 0)
+> +#define SYS_IMP_APL_PMC4_EL1	sys_reg(3, 2, 15, 4, 0)
+> +#define SYS_IMP_APL_PMC5_EL1	sys_reg(3, 2, 15, 5, 0)
+> +#define SYS_IMP_APL_PMC6_EL1	sys_reg(3, 2, 15, 6, 0)
+> +#define SYS_IMP_APL_PMC7_EL1	sys_reg(3, 2, 15, 7, 0)
+> +#define SYS_IMP_APL_PMC8_EL1	sys_reg(3, 2, 15, 9, 0)
+> +#define SYS_IMP_APL_PMC9_EL1	sys_reg(3, 2, 15, 10, 0)
+> +
+>  /* Core PMC control register */
+>  #define SYS_IMP_APL_PMCR0_EL1	sys_reg(3, 1, 15, 0, 0)
+> +#define PMCR0_CNT_ENABLE_0_7	GENMASK(7, 0)
+>  #define PMCR0_IMODE		GENMASK(10, 8)
+>  #define PMCR0_IMODE_OFF		0
+>  #define PMCR0_IMODE_PMI		1
+> @@ -15,5 +28,37 @@
+>  #define PMCR0_IMODE_HALT	3
+>  #define PMCR0_IMODE_FIQ		4
+>  #define PMCR0_IACT		BIT(11)
+> +#define PMCR0_PMI_ENABLE_0_7	GENMASK(19, 12)
+> +#define PMCR0_STOP_CNT_ON_PMI	BIT(20)
+> +#define PMCR0_CNT_GLOB_L2C_EVT	BIT(21)
+> +#define PMCR0_DEFER_PMI_TO_ERET	BIT(22)
+> +#define PMCR0_ALLOW_CNT_EN_EL0	BIT(30)
+> +#define PMCR0_CNT_ENABLE_8_9	GENMASK(33, 32)
+> +#define PMCR0_PMI_ENABLE_8_9	GENMASK(45, 44)
+> +
+> +#define SYS_IMP_APL_PMCR1_EL1	sys_reg(3, 1, 15, 1, 0)
+> +#define PMCR1_COUNT_A64_EL0_0_7	GENMASK(15, 8)
+> +#define PMCR1_COUNT_A64_EL1_0_7	GENMASK(23, 16)
+> +#define PMCR1_COUNT_A64_EL0_8_9	GENMASK(41, 40)
+> +#define PMCR1_COUNT_A64_EL1_8_9	GENMASK(49, 48)
+> +
+> +#define SYS_IMP_APL_PMCR2_EL1	sys_reg(3, 1, 15, 2, 0)
+> +#define SYS_IMP_APL_PMCR3_EL1	sys_reg(3, 1, 15, 3, 0)
+> +#define SYS_IMP_APL_PMCR4_EL1	sys_reg(3, 1, 15, 4, 0)
+> +
+> +#define SYS_IMP_APL_PMESR0_EL1	sys_reg(3, 1, 15, 5, 0)
+> +#define PMESR0_EVT_CNT_2	GENMASK(7, 0)
+> +#define PMESR0_EVT_CNT_3	GENMASK(15, 8)
+> +#define PMESR0_EVT_CNT_4	GENMASK(23, 16)
+> +#define PMESR0_EVT_CNT_5	GENMASK(31, 24)
+> +
+> +#define SYS_IMP_APL_PMESR1_EL1	sys_reg(3, 1, 15, 6, 0)
+> +#define PMESR1_EVT_CNT_6	GENMASK(7, 0)
+> +#define PMESR1_EVT_CNT_7	GENMASK(15, 8)
+> +#define PMESR1_EVT_CNT_8	GENMASK(23, 16)
+> +#define PMESR1_EVT_CNT_9	GENMASK(31, 24)
+> +
+> +#define SYS_IMP_APL_PMSR_EL1	sys_reg(3, 1, 15, 13, 0)
+> +#define PMSR_OVERFLOW		GENMASK(9, 0)
+>  
+>  #endif /* __ASM_APPLE_M1_PMU_h */
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 4374af292e6d..a6af7bcb82ef 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -139,6 +139,13 @@ config ARM_DMC620_PMU
+>  	  Support for PMU events monitoring on the ARM DMC-620 memory
+>  	  controller.
+>  
+> +config APPLE_M1_CPU_PMU
+> +	bool "Apple M1 CPU PMU support"
+> +	depends on ARM_PMU && ARCH_APPLE
+> +	help
+> +	  Provides support for the non-architectural CPU PMUs present on
+> +	  the Apple M1 SoCs and derivatives.
+> +
+>  source "drivers/perf/hisilicon/Kconfig"
+>  
+>  endmenu
+> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+> index 5260b116c7da..1c8cffc8c326 100644
+> --- a/drivers/perf/Makefile
+> +++ b/drivers/perf/Makefile
+> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
+>  obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
+>  obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+>  obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+> +obj-$(CONFIG_APPLE_M1_CPU_PMU) += apple_m1_cpu_pmu.o
+> diff --git a/drivers/perf/apple_m1_cpu_pmu.c b/drivers/perf/apple_m1_cpu_pmu.c
+> new file mode 100644
+> index 000000000000..bc991fc892eb
+> --- /dev/null
+> +++ b/drivers/perf/apple_m1_cpu_pmu.c
+> @@ -0,0 +1,632 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * CPU PMU driver for the Apple M1 and derivatives
+> + *
+> + * Copyright (C) 2021 Google LLC
+> + *
+> + * Author: Marc Zyngier <maz@kernel.org>
+> + *
+> + * Most of the information used in this driver was provided by the
+> + * Asahi Linux project. The rest was experimentally discovered.
+> + */
+> +
+> +#include <linux/of.h>
+> +#include <linux/perf/arm_pmu.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <asm/apple_m1_pmu.h>
+> +#include <asm/irq_regs.h>
+> +#include <asm/perf_event.h>
+> +
+> +#define M1_PMU_NR_COUNTERS		10
+> +
+> +#define M1_PMU_CFG_EVENT		GENMASK(7, 0)
+> +
+> +#define ANY_BUT_0_1			GENMASK(9, 2)
+> +#define ONLY_2_TO_7			GENMASK(7, 2)
+> +#define ONLY_2_4_6			(BIT(2) | BIT(4) | BIT(6))
+> +#define ONLY_5_6_7			GENMASK(7, 5)
+> +
+> +/*
+> + * Description of the events we actually know about, as well as those with
+> + * a specific counter affinity. Yes, this is a grand total of two known
+> + * counters, and the rest is anybody's guess.
+> + *
+> + * Not all counters can count all events. Counters #0 and #1 are wired to
+> + * count cycles and instructions respectively, and some events have
+> + * bizarre mappings (every other counter, or even *one* counter). These
+> + * restrictins equally apply to both P and E cores.
+> + *
+> + * It is worth noting that the PMUs attached to P and E cores are likely
+> + * to be different because the underlying uarches are different. At the
+> + * moment, we don't really need to distinguish between the two because we
+> + * know next to nothing about the events themselves, and we already have
+> + * per cpu-type PMU abstractions.
+> + *
+> + * If we eventually find out that the events are different across
+> + * implementations, we'll have to introduce per cpu-type tables.
+> + */
+> +enum m1_pmu_events {
+> +	M1_PMU_PERFCTR_UNKNOWN_01	= 0x01,
+> +	M1_PMU_PERFCTR_CPU_CYCLES	= 0x02,
+> +	M1_PMU_PERFCTR_INSTRUCTIONS	= 0x8c,
+> +	M1_PMU_PERFCTR_UNKNOWN_8d	= 0x8d,
+> +	M1_PMU_PERFCTR_UNKNOWN_8e	= 0x8e,
+> +	M1_PMU_PERFCTR_UNKNOWN_8f	= 0x8f,
+> +	M1_PMU_PERFCTR_UNKNOWN_90	= 0x90,
+> +	M1_PMU_PERFCTR_UNKNOWN_93	= 0x93,
+> +	M1_PMU_PERFCTR_UNKNOWN_94	= 0x94,
+> +	M1_PMU_PERFCTR_UNKNOWN_95	= 0x95,
+> +	M1_PMU_PERFCTR_UNKNOWN_96	= 0x96,
+> +	M1_PMU_PERFCTR_UNKNOWN_97	= 0x97,
+> +	M1_PMU_PERFCTR_UNKNOWN_98	= 0x98,
+> +	M1_PMU_PERFCTR_UNKNOWN_99	= 0x99,
+> +	M1_PMU_PERFCTR_UNKNOWN_9a	= 0x9a,
+> +	M1_PMU_PERFCTR_UNKNOWN_9b	= 0x9b,
+> +	M1_PMU_PERFCTR_UNKNOWN_9c	= 0x9c,
+> +	M1_PMU_PERFCTR_UNKNOWN_9f	= 0x9f,
+> +	M1_PMU_PERFCTR_UNKNOWN_bf	= 0xbf,
+> +	M1_PMU_PERFCTR_UNKNOWN_c0	= 0xc0,
+> +	M1_PMU_PERFCTR_UNKNOWN_c1	= 0xc1,
+> +	M1_PMU_PERFCTR_UNKNOWN_c4	= 0xc4,
+> +	M1_PMU_PERFCTR_UNKNOWN_c5	= 0xc5,
+> +	M1_PMU_PERFCTR_UNKNOWN_c6	= 0xc6,
+> +	M1_PMU_PERFCTR_UNKNOWN_c8	= 0xc8,
+> +	M1_PMU_PERFCTR_UNKNOWN_ca	= 0xca,
+> +	M1_PMU_PERFCTR_UNKNOWN_cb	= 0xcb,
+> +	M1_PMU_PERFCTR_UNKNOWN_f5	= 0xf5,
+> +	M1_PMU_PERFCTR_UNKNOWN_f6	= 0xf6,
+> +	M1_PMU_PERFCTR_UNKNOWN_f7	= 0xf7,
+> +	M1_PMU_PERFCTR_UNKNOWN_f8	= 0xf8,
+> +	M1_PMU_PERFCTR_UNKNOWN_fd	= 0xfd,
+> +	M1_PMU_PERFCTR_LAST		= M1_PMU_CFG_EVENT,
+> +
+> +	/*
+> +	 * From this point onwards, these are not actual HW events,
+> +	 * but attributes that get stored in hw->config_base.
+> +	 */
+> +	M1_PMU_CFG_COUNT_USER		= BIT(8),
+> +	M1_PMU_CFG_COUNT_KERNEL		= BIT(9),
+> +};
+> +
+> +/*
+> + * Per-event affinity table. Most events can be installed on counter
+> + * 2-9, but there are a numbre of exceptions. Note that this table
+> + * has been created experimentally, and I wouldn't be surprised if more
+> + * counters had strange affinities.
+> + */
+> +static const u16 m1_pmu_event_affinity[M1_PMU_PERFCTR_LAST + 1] = {
+> +	[0 ... M1_PMU_PERFCTR_LAST]	= ANY_BUT_0_1,
+> +	[M1_PMU_PERFCTR_UNKNOWN_01]	= BIT(7),
+> +	[M1_PMU_PERFCTR_CPU_CYCLES]	= ANY_BUT_0_1 | BIT(0),
+> +	[M1_PMU_PERFCTR_INSTRUCTIONS]	= BIT(7) | BIT(1),
+> +	[M1_PMU_PERFCTR_UNKNOWN_8d]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_8e]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_8f]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_90]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_93]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_94]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_95]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_96]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_97]	= BIT(7),
+> +	[M1_PMU_PERFCTR_UNKNOWN_98]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_99]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_9a]	= BIT(7),
+> +	[M1_PMU_PERFCTR_UNKNOWN_9b]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_9c]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_9f]	= BIT(7),
+> +	[M1_PMU_PERFCTR_UNKNOWN_bf]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c0]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c1]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c4]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c5]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c6]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_c8]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_ca]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_cb]	= ONLY_5_6_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_f5]	= ONLY_2_4_6,
+> +	[M1_PMU_PERFCTR_UNKNOWN_f6]	= ONLY_2_4_6,
+> +	[M1_PMU_PERFCTR_UNKNOWN_f7]	= ONLY_2_4_6,
+> +	[M1_PMU_PERFCTR_UNKNOWN_f8]	= ONLY_2_TO_7,
+> +	[M1_PMU_PERFCTR_UNKNOWN_fd]	= ONLY_2_4_6,
+> +};
+> +
+> +static const unsigned m1_pmu_perf_map[PERF_COUNT_HW_MAX] = {
+> +	PERF_MAP_ALL_UNSUPPORTED,
+> +	[PERF_COUNT_HW_CPU_CYCLES]	= M1_PMU_PERFCTR_CPU_CYCLES,
+> +	[PERF_COUNT_HW_INSTRUCTIONS]	= M1_PMU_PERFCTR_INSTRUCTIONS,
+> +	/* No idea about the rest yet */
+> +};
+> +
+> +/* sysfs definitions */
+> +static ssize_t m1_pmu_events_sysfs_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *page)
+> +{
+> +	struct perf_pmu_events_attr *pmu_attr;
+> +
+> +	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
+> +
+> +	return sprintf(page, "event=0x%04llx\n", pmu_attr->id);
+> +}
+> +
+> +#define M1_PMU_EVENT_ATTR(name, config)					\
+> +	PMU_EVENT_ATTR_ID(name, m1_pmu_events_sysfs_show, config)
+> +
+> +static struct attribute *m1_pmu_event_attrs[] = {
+> +	M1_PMU_EVENT_ATTR(cycles, M1_PMU_PERFCTR_CPU_CYCLES),
+> +	M1_PMU_EVENT_ATTR(instructions, M1_PMU_PERFCTR_INSTRUCTIONS),
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group m1_pmu_events_attr_group = {
+> +	.name = "events",
+> +	.attrs = m1_pmu_event_attrs,
+> +};
+> +
+> +PMU_FORMAT_ATTR(event, "config:0-7");
+> +
+> +static struct attribute *m1_pmu_format_attrs[] = {
+> +	&format_attr_event.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group m1_pmu_format_attr_group = {
+> +	.name = "format",
+> +	.attrs = m1_pmu_format_attrs,
+> +};
+> +
+> +/* Low level accessors. No synchronisation. */
+> +#define PMU_READ_COUNTER(_idx)						\
+> +	case _idx:	return read_sysreg_s(SYS_IMP_APL_PMC## _idx ##_EL1)
+> +
+> +#define PMU_WRITE_COUNTER(_val, _idx)					\
+> +	case _idx:							\
+> +		write_sysreg_s(_val, SYS_IMP_APL_PMC## _idx ##_EL1);	\
+> +		return
+> +
+> +static u64 m1_pmu_read_hw_counter(unsigned int index)
+> +{
+> +	switch (index) {
+> +		PMU_READ_COUNTER(0);
+> +		PMU_READ_COUNTER(1);
+> +		PMU_READ_COUNTER(2);
+> +		PMU_READ_COUNTER(3);
+> +		PMU_READ_COUNTER(4);
+> +		PMU_READ_COUNTER(5);
+> +		PMU_READ_COUNTER(6);
+> +		PMU_READ_COUNTER(7);
+> +		PMU_READ_COUNTER(8);
+> +		PMU_READ_COUNTER(9);
+> +	}
+> +
+> +	BUG();
+> +}
+> +
+> +static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+> +{
+> +	switch (index) {
+> +		PMU_WRITE_COUNTER(val, 0);
+> +		PMU_WRITE_COUNTER(val, 1);
+> +		PMU_WRITE_COUNTER(val, 2);
+> +		PMU_WRITE_COUNTER(val, 3);
+> +		PMU_WRITE_COUNTER(val, 4);
+> +		PMU_WRITE_COUNTER(val, 5);
+> +		PMU_WRITE_COUNTER(val, 6);
+> +		PMU_WRITE_COUNTER(val, 7);
+> +		PMU_WRITE_COUNTER(val, 8);
+> +		PMU_WRITE_COUNTER(val, 9);
+> +	}
+> +
+> +	BUG();
+> +}
+> +
+> +#define get_bit_offset(index, mask)	(__ffs(mask) + (index))
+> +
+> +static void __m1_pmu_enable_counter(unsigned int index, bool en)
+> +{
+> +	u64 val, bit;
+> +
+> +	switch (index) {
+> +	case 0 ... 7:
+> +		bit = BIT(get_bit_offset(index, PMCR0_CNT_ENABLE_0_7));
+> +		break;
+> +	case 8 ... 9:
+> +		bit = BIT(get_bit_offset(index - 8, PMCR0_CNT_ENABLE_8_9));
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +
+> +	if (en)
+> +		val |= bit;
+> +	else
+> +		val &= ~bit;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +}
+> +
+> +static void m1_pmu_enable_counter(unsigned int index)
+> +{
+> +	__m1_pmu_enable_counter(index, true);
+> +}
+> +
+> +static void m1_pmu_disable_counter(unsigned int index)
+> +{
+> +	__m1_pmu_enable_counter(index, false);
+> +}
+> +
+> +static void __m1_pmu_enable_counter_interrupt(unsigned int index, bool en)
+> +{
+> +	u64 val, bit;
+> +
+> +	switch (index) {
+> +	case 0 ... 7:
+> +		bit = BIT(get_bit_offset(index, PMCR0_PMI_ENABLE_0_7));
+> +		break;
+> +	case 8 ... 9:
+> +		bit = BIT(get_bit_offset(index - 8, PMCR0_PMI_ENABLE_8_9));
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +
+> +	if (en)
+> +		val |= bit;
+> +	else
+> +		val &= ~bit;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +}
+> +
+> +static void m1_pmu_enable_counter_interrupt(unsigned int index)
+> +{
+> +	__m1_pmu_enable_counter_interrupt(index, true);
+> +}
+> +
+> +static void m1_pmu_disable_counter_interrupt(unsigned int index)
+> +{
+> +	__m1_pmu_enable_counter_interrupt(index, false);
+> +}
+> +
+> +static void m1_pmu_configure_counter(unsigned int index, u8 event,
+> +				     bool user, bool kernel)
+> +{
+> +	u64 val, user_bit, kernel_bit;
+> +	int shift;
+> +
+> +	switch (index) {
+> +	case 0 ... 7:
+> +		user_bit = BIT(get_bit_offset(index, PMCR1_COUNT_A64_EL0_0_7));
+> +		kernel_bit = BIT(get_bit_offset(index, PMCR1_COUNT_A64_EL1_0_7));
+> +		break;
+> +	case 8 ... 9:
+> +		user_bit = BIT(get_bit_offset(index - 8, PMCR1_COUNT_A64_EL0_8_9));
+> +		kernel_bit = BIT(get_bit_offset(index - 8, PMCR1_COUNT_A64_EL1_8_9));
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR1_EL1);
+> +
+> +	if (user)
+> +		val |= user_bit;
+> +	else
+> +		val &= ~user_bit;
+> +
+> +	if (kernel)
+> +		val |= kernel_bit;
+> +	else
+> +		val &= ~kernel_bit;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR1_EL1);
+> +
+> +	switch (index) {
+> +	case 0 ... 1:
+> +		/* 0 and 1 have fixed events */
+> +		break;
+> +	case 2 ... 5:
+> +		shift = (index - 2) * 8;
+> +		val = read_sysreg_s(SYS_IMP_APL_PMESR0_EL1);
+> +		val &= ~((u64)0xff << shift);
+> +		val |= (u64)event << shift;
+> +		write_sysreg_s(val, SYS_IMP_APL_PMESR0_EL1);
+> +		break;
+> +	case 6 ... 9:
+> +		shift = (index - 6) * 8;
+> +		val = read_sysreg_s(SYS_IMP_APL_PMESR1_EL1);
+> +		val &= ~((u64)0xff << shift);
+> +		val |= (u64)event << shift;
+> +		write_sysreg_s(val, SYS_IMP_APL_PMESR1_EL1);
+> +		break;
+> +	}
+> +}
+> +
+> +/* arm_pmu backend */
+> +static void m1_pmu_enable_event(struct perf_event *event)
+> +{
+> +	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long flags;
+> +	bool user, kernel;
+> +	u8 evt;
+> +
+> +	evt = event->hw.config_base & M1_PMU_CFG_EVENT;
+> +	user = event->hw.config_base & M1_PMU_CFG_COUNT_USER;
+> +	kernel = event->hw.config_base & M1_PMU_CFG_COUNT_KERNEL;
+> +
+> +	raw_spin_lock_irqsave(&cpuc->pmu_lock, flags);
+> +
+> +	m1_pmu_disable_counter_interrupt(event->hw.idx);
+> +	m1_pmu_disable_counter(event->hw.idx);
+> +	isb();
+> +
+> +	m1_pmu_configure_counter(event->hw.idx, evt, user, kernel);
+> +	m1_pmu_enable_counter(event->hw.idx);
+> +	m1_pmu_enable_counter_interrupt(event->hw.idx);
+> +	isb();
+> +
+> +	raw_spin_unlock_irqrestore(&cpuc->pmu_lock, flags);
+> +}
+> +
+> +static void __m1_pmu_disable_event(struct perf_event *event)
+> +{
+> +	m1_pmu_disable_counter_interrupt(event->hw.idx);
+> +	m1_pmu_disable_counter(event->hw.idx);
+> +	isb();
+> +}
+> +
+> +static void m1_pmu_disable_event(struct perf_event *event)
+> +{
+> +	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&cpuc->pmu_lock, flags);
+> +
+> +	__m1_pmu_disable_event(event);
+> +
+> +	raw_spin_unlock_irqrestore(&cpuc->pmu_lock, flags);
+> +}
+> +
+> +static irqreturn_t m1_pmu_handle_irq(struct arm_pmu *cpu_pmu)
+> +{
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +	irqreturn_t ret = IRQ_HANDLED;
+> +	struct pt_regs *regs;
+> +	u64 overflow, state;
+> +	unsigned long flags;
+> +	int idx;
+> +
+> +	raw_spin_lock_irqsave(&cpuc->pmu_lock, flags);
+> +	state = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +	overflow = read_sysreg_s(SYS_IMP_APL_PMSR_EL1);
+> +	if (!overflow) {
+> +		ret = IRQ_NONE;
+> +		goto out;
+> +	}
+> +
+> +	regs = get_irq_regs();
+> +
+> +	for (idx = 0; idx < cpu_pmu->num_events; idx++) {
+> +		struct perf_event *event = cpuc->events[idx];
+> +		struct perf_sample_data data;
+> +
+> +		if (!event)
+> +			continue;
+> +
+> +		armpmu_event_update(event);
+> +		perf_sample_data_init(&data, 0, event->hw.last_period);
+> +		if (!armpmu_event_set_period(event))
+> +			continue;
+> +
+> +		if (perf_event_overflow(event, &data, regs))
+> +			__m1_pmu_disable_event(event);
+> +	}
+> +
+> +out:
+> +	state &= ~PMCR0_IACT;
+> +	write_sysreg_s(state, SYS_IMP_APL_PMCR0_EL1);
+> +	isb();
+> +
+> +	raw_spin_unlock_irqrestore(&cpuc->pmu_lock, flags);
+> +
+> +	return ret;
+> +}
+> +
+> +static u64 m1_pmu_read_counter(struct perf_event *event)
+> +{
+> +	return m1_pmu_read_hw_counter(event->hw.idx);
+> +}
+> +
+> +static void m1_pmu_write_counter(struct perf_event *event, u64 value)
+> +{
+> +	m1_pmu_write_hw_counter(value, event->hw.idx);
+> +	isb();
+> +}
+> +
+> +static int m1_pmu_get_event_idx(struct pmu_hw_events *cpuc,
+> +				struct perf_event *event)
+> +{
+> +	unsigned long evtype = event->hw.config_base & M1_PMU_CFG_EVENT;
+> +	unsigned long affinity = m1_pmu_event_affinity[evtype];
+> +	int idx;
+> +
+> +	/*
+> +	 * Place the event on the first free counter that can count
+> +	 * this event.
+> +	 *
+> +	 * We could do a better job if we had a view of all the events
+> +	 * counting on the PMU at any given time, and by placing the
+> +	 * most constraint events first.
+> +	 */
+> +	for_each_set_bit(idx, &affinity, M1_PMU_NR_COUNTERS) {
+> +		if (!test_and_set_bit(idx, cpuc->used_mask))
+> +			return idx;
+> +	}
+> +
+> +	return -EAGAIN;
+> +}
+> +
+> +static void m1_pmu_clear_event_idx(struct pmu_hw_events *cpuc,
+> +				   struct perf_event *event)
+> +{
+> +	clear_bit(event->hw.idx, cpuc->used_mask);
+> +}
+> +
+> +static void m1_pmu_start(struct arm_pmu *cpu_pmu)
+> +{
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long flags;
+> +	u64 val;
+> +
+> +	raw_spin_lock_irqsave(&cpuc->pmu_lock, flags);
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +	val &= ~PMCR0_IMODE;
+> +	val |= FIELD_PREP(PMCR0_IMODE, PMCR0_IMODE_FIQ);
+> +	val |= PMCR0_STOP_CNT_ON_PMI;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +	isb();
+> +
+> +	raw_spin_unlock_irqrestore(&cpuc->pmu_lock, flags);
+> +}
+> +
+> +static void __m1_pmu_stop(void)
+> +{
+> +	u64 val;
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +	val &= ~PMCR0_IMODE;
+> +	val |= FIELD_PREP(PMCR0_IMODE, PMCR0_IMODE_OFF);
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +	isb();
+> +}
+> +
+> +static void m1_pmu_stop(struct arm_pmu *cpu_pmu)
+> +{
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&cpuc->pmu_lock, flags);
+> +
+> +	__m1_pmu_stop();
+> +
+> +	raw_spin_unlock_irqrestore(&cpuc->pmu_lock, flags);
+> +}
+> +
+> +static int m1_pmu_map_event(struct perf_event *event)
+> +{
+> +	/*
+> +	 * Although the counters are 48bit wide, bit 47 is what
+> +	 * triggers the overflow interrupt. Advertise the counters
+> +	 * being 47bit wide to mimick the behaviour of the ARM PMU.
+> +	 */
+> +	event->hw.flags |= ARMPMU_EVT_47BIT;
+> +	return armpmu_map_event(event, &m1_pmu_perf_map, NULL, M1_PMU_CFG_EVENT);
+> +}
+> +
+> +static void m1_pmu_reset(void *info)
+> +{
+> +	int i;
+> +
+> +	__m1_pmu_stop();
+> +
+> +	for (i = 0; i < M1_PMU_NR_COUNTERS; i++) {
+> +		m1_pmu_disable_counter(i);
+> +		m1_pmu_disable_counter_interrupt(i);
+> +		m1_pmu_write_hw_counter(0, i);
+> +	}
+> +
+> +	isb();
+> +}
+> +
+> +static int m1_pmu_set_event_filter(struct hw_perf_event *event,
+> +				   struct perf_event_attr *attr)
+> +{
+> +	unsigned long config_base = 0;
+> +
+> +	if (!attr->exclude_kernel)
+> +		config_base |= M1_PMU_CFG_COUNT_KERNEL;
+> +	if (!attr->exclude_user)
+> +		config_base |= M1_PMU_CFG_COUNT_USER;
+> +
+> +	event->config_base = config_base;
+> +
+> +	return 0;
+> +}
+> +
+> +static int m1_pmu_init(struct arm_pmu *cpu_pmu)
+> +{
+> +	cpu_pmu->handle_irq	  = m1_pmu_handle_irq;
+> +	cpu_pmu->enable		  = m1_pmu_enable_event;
+> +	cpu_pmu->disable	  = m1_pmu_disable_event;
+> +	cpu_pmu->read_counter	  = m1_pmu_read_counter;
+> +	cpu_pmu->write_counter	  = m1_pmu_write_counter;
+> +	cpu_pmu->get_event_idx	  = m1_pmu_get_event_idx;
+> +	cpu_pmu->clear_event_idx  = m1_pmu_clear_event_idx;
+> +	cpu_pmu->start		  = m1_pmu_start;
+> +	cpu_pmu->stop		  = m1_pmu_stop;
+> +	cpu_pmu->map_event	  = m1_pmu_map_event;
+> +	cpu_pmu->reset		  = m1_pmu_reset;
+> +	cpu_pmu->set_event_filter = m1_pmu_set_event_filter;
+> +
+> +	cpu_pmu->num_events	  = M1_PMU_NR_COUNTERS;
+> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = &m1_pmu_events_attr_group;
+> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = &m1_pmu_format_attr_group;
+> +	return 0;
+> +}
+> +
+> +/* Device driver gunk */
+> +static int m1_pmu_ice_init(struct arm_pmu *cpu_pmu)
+> +{
+> +	cpu_pmu->name = "apple_icestorm_pmu";
+> +	return m1_pmu_init(cpu_pmu);
+> +}
+> +
+> +static int m1_pmu_fire_init(struct arm_pmu *cpu_pmu)
+> +{
+> +	cpu_pmu->name = "apple_firestorm_pmu";
+> +	return m1_pmu_init(cpu_pmu);
+> +}
+> +
+> +static const struct of_device_id m1_pmu_of_device_ids[] = {
+> +	{ .compatible = "apple,icestorm-pmu",	.data = m1_pmu_ice_init, },
+> +	{ .compatible = "apple,firestorm-pmu",	.data = m1_pmu_fire_init, },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, m1_pmu_of_device_ids);
+> +
+> +static int m1_pmu_device_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	ret = arm_pmu_device_probe(pdev, m1_pmu_of_device_ids, NULL);
+> +	if (!ret) {
+> +		/*
+> +		 * If probe succeeds, taint the kernel as this is all
+> +		 * undocumented, implementation defined black magic.
+> +		 */
+> +		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver m1_pmu_driver = {
+> +	.driver		= {
+> +		.name			= "apple-m1-cpu-pmu",
+> +		.of_match_table		= m1_pmu_of_device_ids,
+> +		.suppress_bind_attrs	= true,
+> +	},
+> +	.probe		= m1_pmu_device_probe,
+> +};
+> +
+> +module_platform_driver(m1_pmu_driver);
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.30.2
 > 
