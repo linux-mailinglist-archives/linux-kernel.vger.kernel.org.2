@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E287544F365
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F0044F366
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235814AbhKMNkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 08:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhKMNkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 08:40:35 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CB4C061766;
-        Sat, 13 Nov 2021 05:37:43 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso9977162pjb.2;
-        Sat, 13 Nov 2021 05:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=IRy9ruURmvdITp6JartVAHmE1TEeRSrqEIJePZ/fx3U=;
-        b=gGH7noEByFITMs9LrNhUqLg0wTMaE/7EqHLaRncleJ88yipV6iBgRlk1WTRfHyXX/M
-         9xet7DiORH3qCJ53gAQ9q3Vf7e7urwn7oV9X/jJCQtJ9+8eMRkz4dWrcQ2YTJzu4sb+I
-         8l+s+NOjjchACvKW+UEhtRMKIRDa4I7WNJeXFO5ZgRlQw2oQAj2uizErJNWnYmkGnDvI
-         iyevRJYYbHaPcfcjogQqkEY48BhlT9h3g6ql22sWRIgR6vbqyEiCUPOHgLRYGAvgGTLK
-         wInK2DDKAhbbUkwHUOL1ZTIE6zMsCosLADpRaZXsMC7+bUyEaRkZkuIy20/vJaYtDaD/
-         QjCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=IRy9ruURmvdITp6JartVAHmE1TEeRSrqEIJePZ/fx3U=;
-        b=tViucfsYSS1RsCh6C6ebifG3NWDNToXqL5pzCvQMsTlnQ9PBwdLhN56A8BPxUJgQrr
-         AsIJGG8YLFSiiqXwe4j3uZ+hRj6Jim7VPEBZMIWEuPR4rPxESJQTQCVTW+sI91K77uvE
-         j5IUpPaZO/2ieAkW7n1eXtYRcIcd5AbG3fyyUfyDCUkZSXnPkxaT6tS0hJU2DgGLnMo+
-         quphBv7V5iXXlJD0Yreb4aIKARCy3rv5jZGSqN7YNOgON+10yuUPbmwNiW8epQ3YWOCo
-         IqElH60eRGKaiGvb/uP6lHzNTqVb9Kuw9dd4nohDKqvUioar7oYWAs1Vil9ZgRTnDCJ2
-         aZfA==
-X-Gm-Message-State: AOAM533g/izOciorq0E1kX2EIogCv+MldKiCzxZkiY0hbj/4MDMAeMul
-        MkXS0hYt0BcgGFilKRW5Yx/t5+rasyk=
-X-Google-Smtp-Source: ABdhPJygtaq31MdPjIneNzyYTHKf47oJqoRVGcLYfTh1Eyv8tjnoRl8tkLNDb15W0izhhiksA32KWA==
-X-Received: by 2002:a17:902:e0d4:b0:142:8897:94e2 with SMTP id e20-20020a170902e0d400b00142889794e2mr17361330pla.58.1636810663285;
-        Sat, 13 Nov 2021 05:37:43 -0800 (PST)
-Received: from pc ([223.197.3.99])
-        by smtp.gmail.com with ESMTPSA id h186sm7999905pfg.64.2021.11.13.05.37.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 13 Nov 2021 05:37:42 -0800 (PST)
-Date:   Sat, 13 Nov 2021 21:37:34 +0800
-From:   Zhaoyu Liu <zackary.liu.pro@gmail.com>
-To:     corbet@lwn.net, rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: ftrace: fix the wrong path of tracefs
-Message-ID: <20211113133722.GA11656@pc>
+        id S235870AbhKMNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 08:40:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhKMNkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 08:40:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E2B561051;
+        Sat, 13 Nov 2021 13:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636810680;
+        bh=1n037ptkBRztnyf51N7U+6F0EfKr+shikhl40lxA1Us=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mKJYSplWDFT1uwiB+7sF6dcqvvWBAj1moiOYLX+7XQLhItxSnS7GJBzSTw3wikd+i
+         cIKu/IzA+ZVTeyyKjfzzOI5ODqnKv5gfX2LKnb3hpOO2gpYcbY0fDwOmWhwCY+gH5f
+         GU5GwEGAT0gZI6r42sA/r4CO4nkNA8l5BWrkJzNmP37ds4U6wRIXvefgMlLw2LL4R9
+         RZ3Y2Uh2PJuDnuYaN4+/RK2WfyfqVYIRaozgdXlkQ2rg5YP2HRpjoVlgZyuw7U35J2
+         W0VeIe0LSsUdhrmHbgceT5Cd/cebWoNTVtjNBYRh7xOvfl0CmYF0KjHEkmeh0+7ej3
+         csX2p3gbzRyrQ==
+Date:   Sat, 13 Nov 2021 08:37:59 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tools/lib/lockdep: drop liblockdep
+Message-ID: <YY+/t75dqrkDA9CM@sashalap>
+References: <20211112151602.1378857-1-sashal@kernel.org>
+ <CAHk-=wiAWDZRzzG8T7fiBBESM9S-Uzy7OFVY9iv-UwjpAbhp-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHk-=wiAWDZRzzG8T7fiBBESM9S-Uzy7OFVY9iv-UwjpAbhp-Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete "tracing" due to it has been included in /proc/mounts.
-Delete "echo nop > $tracefs/tracing/current_tracer", maybe
-this command is redundant.
+On Fri, Nov 12, 2021 at 11:16:14AM -0800, Linus Torvalds wrote:
+>On Fri, Nov 12, 2021 at 7:16 AM Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> TL;DR: While a tool like liblockdep is useful, it probably doesn't
+>> belong within the kernel tree.
+>
+>I have eagerly applied this patch, because I wasn't too happy with
+>that thing in the first place.
 
-Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
----
- Documentation/trace/ftrace.rst | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Thank you for providing the room for this experiment nonetheless.
 
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 4e5b26f03d5b..b3166c4a7867 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -2442,11 +2442,10 @@ Or this simple script!
-   #!/bin/bash
- 
-   tracefs=`sed -ne 's/^tracefs \(.*\) tracefs.*/\1/p' /proc/mounts`
--  echo nop > $tracefs/tracing/current_tracer
--  echo 0 > $tracefs/tracing/tracing_on
--  echo $$ > $tracefs/tracing/set_ftrace_pid
--  echo function > $tracefs/tracing/current_tracer
--  echo 1 > $tracefs/tracing/tracing_on
-+  echo 0 > $tracefs/tracing_on
-+  echo $$ > $tracefs/set_ftrace_pid
-+  echo function > $tracefs/current_tracer
-+  echo 1 > $tracefs/tracing_on
-   exec "$@"
- 
- 
+>However - I do note that there's signs of liblockdep in the
+>tools/include/ directory still.
+>
+>Some of those headers may now be dead, and should be removed, but I
+>didn't end up trying to figure it out, so I left them alone.
+>
+>This stupid shell command
+>
+>    git grep -il liblockdep tools/include/ |
+>        sed 's:tools/include/::' |
+>        while read i; do echo; echo $i:; echo; git grep $i tools/ ; done
+>
+>seems to say that yes, the <linux/module.h> header in the tools
+>directory is still used, but the rest of them seem to only reference
+>other dead headers.
+>
+>Hmm? It would be lovely to clean those headers up too and get rid of
+>them - because those headers are very much part of why I hated the
+>whole liblockdep mess, and why I was so happy to immediately apply
+>this patch..
+
+Yup, there are remenants in the common header directory which need more
+careful auditing before removing. I'll send a follow-up patch during one
+of the early -rc cycles.
+
+Thanks!
+
 -- 
-2.17.1
-
+Thanks,
+Sasha
