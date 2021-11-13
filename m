@@ -2,171 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4463A44F1F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 08:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EB044F1F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 08:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhKMHFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 02:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhKMHFW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 02:05:22 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFF6C061767;
-        Fri, 12 Nov 2021 23:02:30 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id y7so10313803plp.0;
-        Fri, 12 Nov 2021 23:02:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=t3HtgqZ9lXJnfnTm5YvKEnib5/55ENu4R0VlpnRrsMM=;
-        b=Obd06hzN7HFneA6LaM1rUUZzt0pi1uExyqnis6phkevDFBO4/NAE3CjBMa3BKDZht0
-         vrQcpfa0YMtn9JRVqnjHGrqznCpiYwvUsxCssrHqiMQ5dnKrlPue0uBmr+VBPCKjPGKG
-         /h4tmGMCgY5jh6xmjN4Z5RKON8WaW8HWge0tVegOAtCsfZxmmvjtpxwPRhvnzobq5jDU
-         DjWtqFq7NRLzSrxhBiFsvAUrgMO04gAkSFY1wfSRxbPRtIrqsMUw9id0nKPsuYiDe/hv
-         AsVLWfjyIl+4AeBvhy0381wvxQW3GCVjpyPPKLi1DvKKRS/+sRJODW78cda9AJyPKLh4
-         T+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=t3HtgqZ9lXJnfnTm5YvKEnib5/55ENu4R0VlpnRrsMM=;
-        b=ormQpcSaa5tlwbQGDxqIhIC/Pg29a/gpTaTERnYu0UBZqzjFPT05pGKk34mJI79sEG
-         bYGuRh8MlNZcL6M06gbipxftVrH9Q19QNcmLe+C/o+63oco3L9x14LfgtyDc+ANYUZZg
-         b8sl1qeDlU6A4FD21GdeLJimdiw4pYvKx7X/4F2xAIOx+bzEBap57zCkNIZOEEUqrb56
-         Jwx3BFoFs+o7hlz28/WUp/7H4S4Ho0USY0a6wcHv+GNYUW6xIU3hPxfjtOLu6plGIqH5
-         1s+LfeheMfb8YTViml18BL96gWumJaU79PkBSpgW+mGWsEBHbHXQrDpMbO3GUm1YjL7N
-         OwDQ==
-X-Gm-Message-State: AOAM532YFSOGADOJkOEn3ksRyN/Lmf5eTSgMgy6sRo8MdmqA2iqH958r
-        TCLxZJPgQdwzhLwm4y7bJlq4CWstVK0=
-X-Google-Smtp-Source: ABdhPJye84ThKKbLEGGiWrYe4aUuE6mNmwxdCDrWN/w7SrtioObGfdbVTse5Cwu3zJJtNH4WqJa98Q==
-X-Received: by 2002:a17:90a:6b44:: with SMTP id x4mr25303556pjl.27.1636786949862;
-        Fri, 12 Nov 2021 23:02:29 -0800 (PST)
-Received: from [10.1.1.26] (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id n13sm8360612pfj.188.2021.11.12.23.02.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Nov 2021 23:02:29 -0800 (PST)
-Subject: Re: [PATCH 4/5] block: move queue enter logic into
- blk_mq_submit_bio()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20211104182201.83906-1-axboe@kernel.dk>
- <20211104182201.83906-5-axboe@kernel.dk> <YYQoLzMn7+s9hxpX@infradead.org>
- <2865c289-7014-2250-0f5b-a9ed8770d0ec@kernel.dk>
- <YYQo4ougXZvgv11X@infradead.org>
- <8c6163f4-0c0f-5254-5f79-9074f5a73cfe@kernel.dk>
- <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk>
- <YYQr3jl3avsuOUAJ@infradead.org>
- <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk>
- <YYQuyt2/y1MgzRi0@infradead.org>
- <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
- <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
- <yq1sfw2g7xr.fsf@ca-mkp.ca.oracle.com>
- <CAMuHMdVdwwT5yQPpQ5Frr-Un5OMk9LX3sF_zocOejrouSjaO-w@mail.gmail.com>
- <fbe43b88-720f-6956-60ea-18e07d73244e@gmail.com>
- <CAMuHMdXe4bA-a968cUcdaCKesMtkMc+qs=4L8nF2QQ0rWvAVHw@mail.gmail.com>
- <39bfc824-61d8-02a8-30fe-e9ea0efae100@gmail.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <4586fc98-1350-c0f0-594d-888514cba277@gmail.com>
-Date:   Sat, 13 Nov 2021 20:02:23 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S234876AbhKMHIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 02:08:53 -0500
+Received: from mail-eopbgr50062.outbound.protection.outlook.com ([40.107.5.62]:27974
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229553AbhKMHIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 02:08:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bKQO57fFf5ACpuNkdvrSNpZfCNxu8m/tJFcZOcPJXlum6e/8YAEStQNC7X7rUlcO5piYOh5t6B6Exunjq5JdAoYe5dOAA3NRZ2fQKPLgwyfYYomHafYkzD1fvoK1dYENw+mbgyUo+LXpNc8W6ZvWBIpBn3HV3685iSehRBgLBWatxevwlm3e8700/mIDBFlsxa3XI9wwuMDD72C1nVHpR5CHkpLX4L1/+ds+Qis/ynRi5wzYwTw4Js4LlHplsyySzyo6scQXtS31tE9ZNRbsnZU9jrRmaDkSlKHkGjAP4KiHU8B6XiEnkipbs4Yh790eV4IaEH8Qu6JeHUEMKB0yqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wEMTb8LxiWDS0MTmdcIlyx2eGZIw/LEihcSk1/piqkI=;
+ b=exiQBC6WAUR0sAawniEjxCyO4E/g8Z1bWyI+sC5eAELiCX9KT14YPHgVOQelW0echgOp4gqp6IXC1yj54B46kH21xq6KaMAjJgkK0xpA+2p/ZndM1MY+mrxVOxwDGVNUhUsypiynErW2FxIVSxaYTIC+D+d4ovY8+YRqmkL7IloXjWCqkQMni4IQIy1Itrk+HVPAJPjlxM4ik+4nZweDnSTgFX2kcIuGk+k7eWnVKP+Hr/wC5CIl01wjbiF2mAxRcOif6mhmYvqPx8qZyeoFb6mGU6F3iHA6sSvVglsAP7w0X5dUV8eUcp6SK85SHS4pvFJJ3NeE4tlRDMpjRIKxig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wEMTb8LxiWDS0MTmdcIlyx2eGZIw/LEihcSk1/piqkI=;
+ b=BVQjqPtlqgZNDmoR9RrkDL1c829n7YRLn3a90oXjWatDLdU4Q33l0VhWPe0m9m8I7rX6NZcjKoadI1nPeH4Bu6C6woY6cMIk19VyoO9OVxdXjZlyyyvLh+IVTq2XT5ly0cqtCBk/YmOlNKpFCuHY8an+Im303tecKU0fvBcyCVg=
+Received: from AS8PR04MB8946.eurprd04.prod.outlook.com (2603:10a6:20b:42d::18)
+ by AS8PR04MB8995.eurprd04.prod.outlook.com (2603:10a6:20b:42e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Sat, 13 Nov
+ 2021 07:05:56 +0000
+Received: from AS8PR04MB8946.eurprd04.prod.outlook.com
+ ([fe80::60be:d568:a436:894b]) by AS8PR04MB8946.eurprd04.prod.outlook.com
+ ([fe80::60be:d568:a436:894b%5]) with mapi id 15.20.4690.026; Sat, 13 Nov 2021
+ 07:05:56 +0000
+From:   Leo Li <leoyang.li@nxp.com>
+To:     Sahil Malhotra <sahil.malhotra@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 11/11] arm64: dts: ls1028a-qds: enable optee node
+Thread-Topic: [PATCH 11/11] arm64: dts: ls1028a-qds: enable optee node
+Thread-Index: AQHX2BWMXZftU7n3BUyclmJD3bgkI6wBAXKAgAAH3gA=
+Date:   Sat, 13 Nov 2021 07:05:55 +0000
+Message-ID: <AS8PR04MB89462E6950AAEBCCE28FD6538F969@AS8PR04MB8946.eurprd04.prod.outlook.com>
+References: <20211112223457.10599-1-leoyang.li@nxp.com>
+ <20211112223457.10599-12-leoyang.li@nxp.com>
+ <DB7PR04MB532234C5ECD4B0F76A5F451F82969@DB7PR04MB5322.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB532234C5ECD4B0F76A5F451F82969@DB7PR04MB5322.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9d9f7240-1b60-48bd-8e8b-08d9a67409cd
+x-ms-traffictypediagnostic: AS8PR04MB8995:
+x-microsoft-antispam-prvs: <AS8PR04MB899592B494A2E9C843BEFA5C8F969@AS8PR04MB8995.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kLR9iC9N1J6rhleF6Mfb8Q/vY7iclVCAJSGoZrOxtdirW3d76KzBUD/ixCItM780fPIanZCzLbsPfAX0Tz0ssxlW9KQ4dXMNMcQnJx50Yd/deripMW6Xh6+equ5+qhe99EOZjBybS7SmPVc/gCfduThqOEWCq4Khv5rUhDERJx4F/dEDKcnzc/00IZNG8Y09+5mTVRAJmeulud8tkPpxk5/X9rrxgMvWJTvMYoZpPfl6fg6biUBwrZW3uxnWKmBr7Za5HpHmnqQLdArsw8A04e46I5CFPmRA1K6ly/h3myGYVjo/zSUK4L/3IDzoMLGwDKPufFTvHcjiVXeOizo8KqIv00M3rNBCC0/Bd1thM45WvkEE/VBl2/Mvk8520FGU33cZ0kFX0HgPB0pldRIyn+N8qM0Uhg55Ahm3plh9VQpkRRsvHfsVyI+KHFutJUdYmK4JpRBENg1+RUHdu6+o6BAYsEjNEKM06mri5h8qC0pVa/6lwkx/1ck2UGsVb20PIUY5FFJCtaPFWThMoZ4SJL8nhCfdznlClQyoUtoPG3yXuZNeyTEAyDnkaBCQHR/2UHTJi5XIGmmMNCOPV0vHpySR5q26/VYukbYkjVFSe0y8Su1+NR+OWaN9h7RRL6odOpGME2zX8dNNVAucJXuqssZl93Z+5MxXfG0vKXP6nrPomeD2CFB4TEyqnx/ELWGBCQvUallUQhHsaiTL32d8lg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8946.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66446008)(33656002)(55016002)(26005)(66556008)(83380400001)(38070700005)(76116006)(66476007)(66946007)(64756008)(5660300002)(52536014)(8936002)(38100700002)(122000001)(54906003)(8676002)(508600001)(7696005)(6506007)(53546011)(186003)(86362001)(110136005)(4326008)(2906002)(316002)(9686003)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5z7fTBTJI9v95Q0uPBuBDyiNzaDlWrTuF1mqkCrSdc/wB91l2orq6qVYnJiU?=
+ =?us-ascii?Q?netUAU9OPMtkKJEd/G/B69/y+oOwSz0LKfkT0NAS4XZCs/1LCJjKBHs6IzBX?=
+ =?us-ascii?Q?t1JRKvyc5LQ80Q01mVSccoas22UrdlZd+ckvU7tjKvjy1KJzz4oRJ5Hfstin?=
+ =?us-ascii?Q?R3ien9fb94vmj4xdJZYCQ3b3aBGqOaynbLEMauUIt1tOKRYTlMtngxUbc3in?=
+ =?us-ascii?Q?2/7WV7L7jcprVeQiQG97NGnlC/mWLLm5YqLJIsf0z0C57TZKOf0vds8ZbjFP?=
+ =?us-ascii?Q?NeVAGpNwKdf80lOM6ojXH9+85AlXlXxTwYIQyia50iRSG8EhnfdA6lE1pOW7?=
+ =?us-ascii?Q?qr92UmEFlebcJskhK2vcbdFqpu4b0sHSG1u9GgUFvU6cOYhMklPS25YRME6i?=
+ =?us-ascii?Q?/hGJG6v2l76dE16ESNxFiYqoxeGy7Y5th4i2kz9my1Q05Eu8O18/CVAPaCPi?=
+ =?us-ascii?Q?RCyjEX+Pig3zzdCDie58ClO0SmTg5qELsKCW9fKXPDYhjvLgX+N3I/dA/vo+?=
+ =?us-ascii?Q?yfYMWHAOQeVUgqu9tTiWR9Yy2L5h9Qf+HPrcRJmbrYeFYG2MG27YMATbAEOS?=
+ =?us-ascii?Q?zJz29rtmhzy95hII5WvBJo07XAX1PbDPty7ozhULB9DTJyBvsTlIPT6FfoLq?=
+ =?us-ascii?Q?kmv7OSZ1r2bgwqOoSky9B3U1pt4Byp++Tg6eJOwf+wRVuOA2miU2FmTGzVPy?=
+ =?us-ascii?Q?0Aqlt9U5b+Ra82lfVkLw1ZImX9JNmCSSEMQVYdPwpQTi6Yfmv7KzBcrc2gQk?=
+ =?us-ascii?Q?PbqBOQcmkBDchIecXHS1dFvcbhg06cAzHN2kPbG4A2LfLLPHw2Dkb190Bohh?=
+ =?us-ascii?Q?kjEVpqXkDcvAOmz3tbsi6KLuAlsj+zGc2htagauiWKBBdGjCIu3tVNKbkwwC?=
+ =?us-ascii?Q?qlWKeTMk7Er500Mk+5pQRBHWL/W/Ak36OBD4sZEsh7kSE4mCwwX+wBzJfSIO?=
+ =?us-ascii?Q?xlU5aXGV6VnHt2ftY+a5F5kNhIq5244K4oBRoinBNQRdn4LrTtdAUt/mJ5Um?=
+ =?us-ascii?Q?TxVj8Z6kjLbQ+chREDpLOIVsxthsdTo57zy+gFk5bA8kSUDzenXOJVDWcuMA?=
+ =?us-ascii?Q?NRMe6hCvZQ6mtlmJKMy1T+hvL32gsjgNc/LbkKyhmK2DSuT+et1J2rzJZn5q?=
+ =?us-ascii?Q?wwAZOfBAQKXwvB82dMhRzvs37hZcYlyb83B/6NuJCsU3FDiV++z09V0LU4hZ?=
+ =?us-ascii?Q?ZNv94Xhj8kKsTkKD2nXT1od3vvnpTE1ru1/3Vcsv3JJFfaJMt1Nz4wETaLk9?=
+ =?us-ascii?Q?Yu6As3MRsgFhaJ662Fh7AlyyzSR2qnTb5PtIBM7IZAB+PJ0EA0hoMGaeiF7h?=
+ =?us-ascii?Q?ccj3RCMvTjazL6m8p0WTfxyAiYMBaXoXaOOe0epWgjhp2J3V/E5VIetHRHqG?=
+ =?us-ascii?Q?EfgJmNlQXjblkxt7gULmiCcwiJfh5XzJgyRcEVidcQClNv33XGlTSZL3iA2c?=
+ =?us-ascii?Q?yObDQcKGFMarENyIcomHohhngBgpOTuZLO1fAcTi8hOhrHgRHXoWjLHR3ez2?=
+ =?us-ascii?Q?EMrT32ukUuFIiV4QuU6jpA2HM1qutuHekQQpnXFu60BhYU8GO40PtyS3185Z?=
+ =?us-ascii?Q?bdbhunATbdsxTm9rfmqxOeJWsyRc3Z6qthbtHSusZaxcIvcbsief0Hj1KXu+?=
+ =?us-ascii?Q?kw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <39bfc824-61d8-02a8-30fe-e9ea0efae100@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8946.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d9f7240-1b60-48bd-8e8b-08d9a67409cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2021 07:05:55.9792
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X0J4UOxUOhOxw7pvUow4fHLOAQc73NpcPSlextKqvR68sYvKJwFEmylTQkJzM9i6OXYHpzRuP6AFAB0Gie0ajg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8995
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert, Jens,
 
-On 13/11/21 11:34, Michael Schmitz wrote:
-> Hi Geert,
->
-> On 12/11/21 20:37, Geert Uytterhoeven wrote:
->> Hi Michael,
->>
->> On Thu, Nov 11, 2021 at 10:35 PM Michael Schmitz
->> <schmitzmic@gmail.com> wrote:
->>> how easy is that to reproduce?
->>
->> Fairly easy: it happens either on mounting, or after a few seconds
->> booting
->> into my old Debian userspace.
->
-> I must be too thick for this:
->
-> EXT4-fs (sda1): Cannot load crc32c driver.
-> VFS: Cannot open root device "sda1" or unknown-block(8,1): error -80
->
-> (linux-block 5833291ab6de, from kernel.org)
->
-> Same config on m68k 5.15 works just fine.
 
-FWIW - I had to revert cad439fc040efe5f4381e3a7d583c5c200dbc186 to 
-overcome this, and reproduce Geert's finding.
+> -----Original Message-----
+> From: Sahil Malhotra <sahil.malhotra@nxp.com>
+> Sent: Saturday, November 13, 2021 12:37 AM
+> To: Leo Li <leoyang.li@nxp.com>; Bjorn Helgaas <bhelgaas@google.com>;
+> Rob Herring <robh+dt@kernel.org>; Shawn Guo <shawnguo@kernel.org>
+> Cc: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Leo Li
+> <leoyang.li@nxp.com>
+> Subject: RE: [PATCH 11/11] arm64: dts: ls1028a-qds: enable optee node
+>=20
+> Hi Leo,
+>=20
+> We support OP-TEE on LS1028A-RDB only as of now.
+> LS1028A-QDS doesn't support OP-TEE.
 
-Cheers,
+I thought it was supported as you were adding the o-tee node to the soc dts=
+i.
 
-	Michael
+We will drop this patch then.
 
->
-> But this looks resolved now, so I'll punt for now ...
->
-> Cheers,
->
->     Michael
->
->>
->>> sd_setup_read_write_cmnd() does not validate the request's FUA flag
->>> against sdkp->DPOFUA (not suggesting that it should ...). I'd like to
->>> try and trace when such a mismatch happens.
->>
->> Thanks!
->>
->>> On 12/11/21 03:48, Geert Uytterhoeven wrote:
->>>> On Thu, Nov 11, 2021 at 2:19 PM Martin K. Petersen
->>>> <martin.petersen@oracle.com> wrote:
->>>>>> sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK
->>>>>> driverbyte=DRIVER_OK cmd_age=0s
->>>>>> sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
->>>>>> sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
->>>>>> sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
->>>>>> critical target error, dev sda, sector 1 op 0x1:(WRITE) flags
->>>>>> 0x20800 phys_seg 1 prio class 0
->>>>>> Buffer I/O error on dev sda1, logical block 0, lost sync page write
->>>>>
->>>>> Peculiar. That write command looks OK to me. I wonder if it's the FUA
->>>>> bit that trips it?
->>>>>
->>>>> What does:
->>>>>
->>>>> # dmesg | grep FUA
->>>>>
->>>>> say?
->>>>
->>>> sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't
->>>> support DPO or FUA
->>
->> Gr{oetje,eeting}s,
->>
->>                         Geert
->>
->> --
->> Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
->> geert@linux-m68k.org
->>
->> In personal conversations with technical people, I call myself a
->> hacker. But
->> when I'm talking to journalists I just say "programmer" or something
->> like that.
->>                                 -- Linus Torvalds
->>
+Regards,
+Leo
+>=20
+> Regards,
+> Sahil Malhotra
+>=20
+> -----Original Message-----
+> From: Li Yang <leoyang.li@nxp.com>
+> Sent: Saturday, November 13, 2021 4:05 AM
+> To: Bjorn Helgaas <bhelgaas@google.com>; Rob Herring
+> <robh+dt@kernel.org>; Shawn Guo <shawnguo@kernel.org>
+> Cc: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Sahil
+> Malhotra <sahil.malhotra@nxp.com>; Leo Li <leoyang.li@nxp.com>
+> Subject: [PATCH 11/11] arm64: dts: ls1028a-qds: enable optee node
+>=20
+> From: Sahil Malhotra <sahil.malhotra@nxp.com>
+>=20
+> Optee node is disabled in SoC dtsi.  We are enabling it on qds board.
+>=20
+> Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
+> Signed-off-by: Li Yang <leoyang.li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+> b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+> index 0e2cc610d138..9c74be22d263 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+> @@ -349,6 +349,10 @@ &mscc_felix_port4 {
+>  	status =3D "okay";
+>  };
+>=20
+> +&optee {
+> +	status =3D "okay";
+> +};
+> +
+>  &sai1 {
+>  	status =3D "okay";
+>  };
+> --
+> 2.25.1
+
