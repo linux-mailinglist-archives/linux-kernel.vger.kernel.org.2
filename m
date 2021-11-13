@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C5C44F4A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B6244F4AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbhKMSpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 13:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S236021AbhKMS6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 13:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhKMSps (ORCPT
+        with ESMTP id S230363AbhKMS6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 13:45:48 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB477C061767
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:42:55 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso19489652otj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kaGFJIxAKkKIuYdo9AHZ52Soms2ncoMLEdTxz5A3SVc=;
-        b=O+48aBw7uEeBDrttRvg3Xz2isTQxfzpM+LkvAeA8Y3Kd7Fqk63xiOH6uiNzwtMnrk5
-         1PfdBpo/FrYNAdXT/TBmwkNLuU4TF3S62svL1I+ESG4VjOxr5NOw8DHSP36NtfjZ0lVt
-         9k9JnCcOLXbu+ECXX+gRCauBK9v+OsCfXSMiPXgp+VJsoGaq7Vqp5BnpEGcdMcKAjebB
-         OgMpSSiL5Sj0q74I9FkgMlS9uB+RHUKdjYzLcrgNyYSgdb0bR74ksgQca0n/ESLiH/GT
-         7y1QrQ6a35xfu5wja7ScD5T9OV3KQxwCDqoiI2Z0PNoi3jT/tTPj2XeSkb3klxDyc7NM
-         djCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kaGFJIxAKkKIuYdo9AHZ52Soms2ncoMLEdTxz5A3SVc=;
-        b=A2QLqskU7iBm5XEEWwJr/PEe+GtbFry2VxFChTGlHOUYqa1GXKMCqFY+xXjH7H/a1T
-         EHIKfourqmNl1KlMHsfzGGg8cJcPQoYUnRWTn4wtYHgpA4TowqIppry14xlDkEsUuw8m
-         LTa8hOJQ5FAsZ+yFeWvOumCG5JizT8Ph3Yj2SevT36ipvnMnSAFjKxPkbE3oIGcu8GtZ
-         lad2412DC7JJr+9jjUWV9X/uJskXjZOw1v16uzCQhtIMATIKB3EHcJrroKSpRi25Gzsi
-         +8lo9ypEXUPIHJK3rysN+G0nb4hTP8hAVCbGfmA/WvUzt6F1QRyuWjjDO2ekL9esixzQ
-         eQ1A==
-X-Gm-Message-State: AOAM530wFaBfWWSOcwAG1z4Cj1YxIgfi7HpXc++rwtpRG4afNb3SUv4d
-        S5ZRAWnlzyGAaWkl6Nt/Zy5RjQ==
-X-Google-Smtp-Source: ABdhPJwxPkvaW2WfYzXVaBN/aT2CHDx3KhcipxEd5vMzaPz+HWLzvn73VO/sQB1X3YPkxnZdgJLjWg==
-X-Received: by 2002:a05:6830:12c3:: with SMTP id a3mr20180849otq.24.1636828975194;
-        Sat, 13 Nov 2021 10:42:55 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q15sm1944191otk.81.2021.11.13.10.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Nov 2021 10:42:54 -0800 (PST)
-Date:   Sat, 13 Nov 2021 12:42:52 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom-pmic-gpio: Add support for pm8019
-Message-ID: <YZAHLLJPXRT/c1eA@builder.lan>
-References: <20211112115342.17100-1-konrad.dybcio@somainline.org>
- <20211112115342.17100-2-konrad.dybcio@somainline.org>
+        Sat, 13 Nov 2021 13:58:36 -0500
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DBAC061766
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:55:44 -0800 (PST)
+Received: from dslb-188-096-147-224.188.096.pools.vodafone-ip.de ([188.96.147.224] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mlyBd-0002H8-7X; Sat, 13 Nov 2021 19:55:37 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 00/15] staging: r8188eu: more efuse cleanup
+Date:   Sat, 13 Nov 2021 19:55:03 +0100
+Message-Id: <20211113185518.23941-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112115342.17100-2-konrad.dybcio@somainline.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12 Nov 05:53 CST 2021, Konrad Dybcio wrote:
+This series removes some more unused parts of the efuse code.
 
-> PM8019 provides 6 GPIOs. Add a compatible to support that.
-> 
+Martin Kaiser (15):
+  staging: r8188eu: remove efuse type from definition functions
+  staging: r8188eu: remove efuse type from read functions
+  staging: r8188eu: remove test code for efuse shadow map
+  staging: r8188eu: merge small adapter info helpers
+  staging: r8188eu: rtl8188e_EfuseGetCurrentSize is now unused
+  staging: r8188eu: rtl8188e_Efuse_PgPacketRead is now unused
+  staging: r8188eu: merge Efuse_ReadAllMap into EFUSE_ShadowMapUpdate
+  staging: r8188eu: use efuse map length define directly
+  staging: r8188eu: rtl8188e_EFUSE_GetEfuseDefinition is unused
+  staging: r8188eu: remove defines for efuse type
+  staging: r8188eu: efuse_OneByteRead is unused
+  staging: r8188eu: efuse_OneByteWrite is unused
+  staging: r8188eu: remove bt efuse definitions
+  staging: r8188eu: remove fake efuse variables
+  staging: r8188eu: remove the efuse_hal structure
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+ drivers/staging/r8188eu/core/rtw_efuse.c      | 162 +-------
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 370 +-----------------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  42 +-
+ drivers/staging/r8188eu/include/hal_intf.h    |   8 +-
+ .../staging/r8188eu/include/rtl8188e_hal.h    |   2 -
+ drivers/staging/r8188eu/include/rtw_efuse.h   |  79 +---
+ 6 files changed, 50 insertions(+), 613 deletions(-)
 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> index 5283d5e9e8bc..1ae3895a7ff3 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> @@ -1151,6 +1151,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
->  	{ .compatible = "qcom,pm7325-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pm8005-gpio", .data = (void *) 4 },
->  	{ .compatible = "qcom,pm8008-gpio", .data = (void *) 2 },
-> +	{ .compatible = "qcom,pm8019-gpio", .data = (void *) 6 },
->  	/* pm8150 has 10 GPIOs with holes on 2, 5, 7 and 8 */
->  	{ .compatible = "qcom,pm8150-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pmc8180-gpio", .data = (void *) 10 },
-> -- 
-> 2.33.1
-> 
+-- 
+2.20.1
+
