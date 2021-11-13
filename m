@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7893744F4CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8DB44F4D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbhKMTSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 14:18:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
+        id S236175AbhKMTS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 14:18:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236096AbhKMTSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 14:18:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 71455611EE;
-        Sat, 13 Nov 2021 19:15:25 +0000 (UTC)
+        id S236083AbhKMTSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 14:18:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id BBD0661207;
+        Sat, 13 Nov 2021 19:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636830925;
-        bh=tfzTtNy72HuvUkMo0//95tonC/+HNaj2B9WkA50DDoQ=;
+        s=k20201202; t=1636830927;
+        bh=vGztLKDMmt5bakawHIdWP23Y5DPaFQ58oxzRnG8INTA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jAjGyqF0G9azvaphb37IRXsw+nEGwdRFhcXJQHZdwoCciOWxoZvgOKZdI8tSlVfgd
-         /AlTbkocW5yYhYbx8VlmRzmT2wxCOe/Dla2tM2CEtqiZImfYHZPvqtWxKFcJCsdV0j
-         adyGEXk+Xvx1a4kq5HTi0cAQR2gDta1Y3FCA28RGfArQ2ncx0jJKahwvwUs93QhXLL
-         bWIDiUXkq9U8AAhddu+JYQDW1ilHNjUCsY0Erh8JqBmNcNKXfg92KDbDR23P7uvsSm
-         st14J9FFJELYIVdFR5sXVWclPSafZwlMqJfmQQg55cDp2ibU01HaHtB7Ar7RF7PgGS
-         33sMwfgD11MGw==
+        b=rxnWgAsna1C7EOrgHz6c/ydBKLpnaevY2rGgBQ/HcnBUMcrFMbUI3aoUWRKusxksI
+         iX543UcWahTj/XviTnrL9AuFaarYcvMl3RwelwW4sDBuGMSt2RzH91hKAKs55yWbJL
+         OzDuoqHW+L+et/Zrd2+AV1M9iEkZhzUsE5BpUOT2y3V4zdsF2X8MDJ3nP1mHtlq0Fx
+         uBQRG1jlGt3ixDkNP/TEtXlyNGDXUrLr2w40yAsAxuHtjey9gS2iF/tERExNFVBDy6
+         DZaBX+PLs+t5JaYuEIVICRDovpg8AvUH7v2uZmP8+okGVyAdWhFZtN6M/8XiDSJ4xd
+         oqKTi/fEwr8VA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B83F60987;
-        Sat, 13 Nov 2021 19:15:25 +0000 (UTC)
-Subject: Re: [GIT PULL] Second batch of KVM changes for Linux 5.16 merge window
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF52060721;
+        Sat, 13 Nov 2021 19:15:27 +0000 (UTC)
+Subject: Re: [GIT PULL] SELinux fix / revert for v5.16 (#1)
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211112220315.3995734-1-pbonzini@redhat.com>
-References: <20211112220315.3995734-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211112220315.3995734-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 84886c262ebcfa40751ed508268457af8a20c1aa
+In-Reply-To: <CAHC9VhQVodwxiEheuUM=XgwdytuCE0boQ-h4xt=SqOTHv0PffA@mail.gmail.com>
+References: <CAHC9VhQVodwxiEheuUM=XgwdytuCE0boQ-h4xt=SqOTHv0PffA@mail.gmail.com>
+X-PR-Tracked-List-Id: <selinux.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAHC9VhQVodwxiEheuUM=XgwdytuCE0boQ-h4xt=SqOTHv0PffA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20211112
+X-PR-Tracked-Commit-Id: 32a370abf12f82c8383e430c21365f5355d8b288
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d6fe79fdeccb8f3968d71bc633e622d43f1309c
-Message-Id: <163683092543.10343.8830796288766749205.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Nov 2021 19:15:25 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: 0a90729278ae7b31084d2d436b0eee4d83b11506
+Message-Id: <163683092771.10343.13397904709006773847.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Nov 2021 19:15:27 +0000
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 17:03:15 -0500:
+The pull request you sent on Fri, 12 Nov 2021 18:19:03 -0500:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20211112
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d6fe79fdeccb8f3968d71bc633e622d43f1309c
+https://git.kernel.org/torvalds/c/0a90729278ae7b31084d2d436b0eee4d83b11506
 
 Thank you!
 
