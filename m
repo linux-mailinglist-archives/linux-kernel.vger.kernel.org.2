@@ -2,53 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A61044F367
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFB444F368
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhKMNlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 08:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50374 "EHLO mail.kernel.org"
+        id S234327AbhKMNnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 08:43:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231672AbhKMNlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 08:41:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E29361073;
-        Sat, 13 Nov 2021 13:38:26 +0000 (UTC)
+        id S230021AbhKMNnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 08:43:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F294361073;
+        Sat, 13 Nov 2021 13:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636810706;
-        bh=Qn+vg24tCnpAkIyiaQnUebCpLrWWTisLgtwoHrOJzxw=;
+        s=k20201202; t=1636810826;
+        bh=jQzRLt4dErQKFo4RaHfJ9zEivHlqGx2hhtKxApIRPNk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ku6KTgBEkJWAAAfTM8zAQXQKQVp7fPOskfXGHank59FuNad6glXH4fMwg71wxH+Jg
-         3UdH614OwRZf88ImjzZWuV3no1U4z96cAMMfjJ+axLqMUKAkLosIFjcehkp0bnWuwm
-         SP+uKdvvQpk0q4b5DrxS1pNP8n36f3uNKN/LsvHEWsbpDObs95ShUtlYa/K22mWQwi
-         2OUfqmTfwjYaOqZFvlyPykjybI4zZylqZUW0hl/X0yq+NCCc5I0yX4FqDWMfnGRrWE
-         zmdI4lu1G2Ry+z0ieASJeZZsA7Ev9ZP/KLf20D9+D4XzOs7ti3iICwNn0EMntfBFu7
-         yBrw722ON/f3g==
-Date:   Sat, 13 Nov 2021 08:38:25 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     linux-kernel@vger.kernel.org, bvanassche@acm.org,
-        gregkh@linuxfoundation.org
-Subject: Re: Is tools/lib/lockdep dead?
-Message-ID: <YY+/0VqcJCvBSu34@sashalap>
-References: <20211109195307.532354f9@hermes.local>
+        b=mQ7kEGbvm4+5vvhbK58uedwsYXlnBH68hRaa+YML0TdevwsnhjtVoAsM0cxHrU0F6
+         iFwzkLWMziBPJuA1pBFwK078ElNCmiB03j134se+C7I8eId8I5X+PCdqcbM8aIF+wD
+         qWNjqlpNQ0T9PD+3tU0YaSAbv/0za8xdnYNEwGuTii9VPTqTw80FtqAWVKcdPLer6k
+         mkU/MC9JjQG5+HrC1Udq78i4sKbuF92H1urU1TSTiB39P1xEBLIAO4Osa/QzSOIOqm
+         H+YV+MT+hO8ngvD33bPi9HcVctCTKJNXkeSSuhz7J8oNfn8zKUqCHwVjtbzHmevyF1
+         RhuFPR8kIY8xA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 77563410A1; Sat, 13 Nov 2021 10:40:23 -0300 (-03)
+Date:   Sat, 13 Nov 2021 10:40:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        linux-perf-users@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH 1/2] perf tools: Add more weak libbpf functions
+Message-ID: <YY/AR2Dcaws0BAE9@kernel.org>
+References: <20211109140707.1689940-1-jolsa@kernel.org>
+ <20211109140707.1689940-2-jolsa@kernel.org>
+ <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211109195307.532354f9@hermes.local>
+In-Reply-To: <CAP-5=fVS2AwZ9bP4BjF9GDcZqmw5fwUZ6OGXdgMnFj3w_2OTaw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 07:53:07PM -0800, Stephen Hemminger wrote:
->Tried building tools/lib/lockdep and it appears to be unbuildable
->for quite a while.
->
->   - last real commit was in 2019
->
->   - still has Sasha's old email in MAINTAINERS
+Em Tue, Nov 09, 2021 at 10:49:53AM -0800, Ian Rogers escreveu:
+> On Tue, Nov 9, 2021 at 6:07 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > We hit the window where perf uses libbpf functions, that did not
+> > make it to the official libbpf release yet and it's breaking perf
+> > build with dynamicly linked libbpf.
+> >
+> > Fixing this by providing the new interface as weak functions which
+> > calls the original libbpf functions. Fortunatelly the changes were
+> > just renames.
+> 
+> Could we just provide these functions behind a libbpf version #if ?
+> Weak symbols break things in subtle ways, under certain circumstances
+> the weak symbol is preferred over the strong due to lazy object file
+> resolution:
+> https://maskray.me/blog/2021-06-20-symbol-processing#archive-processing
+> This bit me last week, but in general you get away with it as the lazy
+> object file will get processed in an archive exposing the strong
+> symbol. With an #if you either get a linker error for 2 definitions or
+> 0 definitions, and it's clear what is broken.
+> 
+> In the past we had problems due to constant propagation from weak
+> const variables, where #if was the solution:
+> https://lore.kernel.org/lkml/20191001003623.255186-1-irogers@google.com/
+> 
+> There was some recent conversation on libbpf version for pahole here:
+> https://lore.kernel.org/bpf/CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com/T/
+> https://lore.kernel.org/bpf/20211021183330.460681-1-irogers@google.com/
 
-Yup, and now it's officially gone.
+Valid concerns and we should improve the situation, but I'm going with
+Jiri's stopgap solution so as to have everything buildind for v5.16,
+which window is closing.
 
--- 
+We can improve this in followup patches.
+
 Thanks,
-Sasha
+
+- Arnaldo
