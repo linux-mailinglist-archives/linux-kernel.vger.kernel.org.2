@@ -2,136 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA6644F114
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DD644F116
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhKMDpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 22:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhKMDpp (ORCPT
+        id S235649AbhKMDqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 22:46:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232113AbhKMDqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 22:45:45 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6A8C061766;
-        Fri, 12 Nov 2021 19:42:53 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so9187271pjb.1;
-        Fri, 12 Nov 2021 19:42:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ey7VzgXF+r6CB0MM7r2mh3u+lhRQ2Cx2jmHmCPqFkI0=;
-        b=WFPwxEO+35l2OBZrdX6jjDMJZ0uyaEXbNSQqInGWdUebIcKE3vg3o1ncB30/a8rqbc
-         7dadMkJviYB5luqmjJGTa6d5UWuaba+UZSV8iv8eAHVmDNLTvUFkzczIQ1Toxz3Fhkaw
-         6aEO6Sh6vdDn3VVNEv8ac33A9WuPKhT2HsiDlE0NsizjBQjpXeJM8AVVdbyJdPy99UA+
-         7/hKQdU9BE6L7JErzD20Kb8dRTJUrGjxlWRyBzqCb5mwoyQd8R/BssnqKtB9vqKjt5wM
-         JAcrAjkeB9ZBMvsMbaBwcRzmSCP/swvaa83joNopH+yDkIIwjL82cFY1vQ5P7NlwZ/CO
-         tcyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ey7VzgXF+r6CB0MM7r2mh3u+lhRQ2Cx2jmHmCPqFkI0=;
-        b=Vs2f/17jiuovJiWUcEdYa2Hfnd4jjuSgC6ytYYzODES4kImFKunE9FZ5mxfP/WKkhH
-         Gu4JEI9YFzJUc9IFN/NiwT3tsD+eCrOTKSVS/pEkR09PN//N0Mu0zCzHMhCvJX07FRtb
-         eqm5pnfBFeYrCJpMltEyb620wHX58Obx4GfvPlXjjxLKGkSXRvTm03E/g35VVWf9NfiX
-         R9Rqawe2oEdTwW3PEkLlSAA0xtdN0+WHoe7mgc7yTUXS6RZGSPCiqAWVgF9pA0/B2OZU
-         Jh3lA8+sLeRHVO9+s09LOFU2o0U2MKLnZd+L89MJkVJV1aw0x06BQxu8dIrMl3S2RGRI
-         Gr5A==
-X-Gm-Message-State: AOAM532RlJhduYyBPt1IQRkZnC1SatzV3NWQOdemyL4/KZ2Tx6bGhg3U
-        JDkXt7Ayz35lS/DASehh706UDhCsCqeLa1WhRH8=
-X-Google-Smtp-Source: ABdhPJwb8DmjJU8Cmm3xS4cjfLlLFr0lmkXPwRHlmIgWmxscjjuDu9kaNBpudE/biRPTsnmuXckTyQ==
-X-Received: by 2002:a17:90b:1c87:: with SMTP id oo7mr18342123pjb.159.1636774973489;
-        Fri, 12 Nov 2021 19:42:53 -0800 (PST)
-Received: from fanta-arch.tsinghua.edu.cn ([148.163.172.142])
-        by smtp.gmail.com with ESMTPSA id f21sm1497000pfc.191.2021.11.12.19.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 19:42:52 -0800 (PST)
-From:   Letu Ren <fantasquex@gmail.com>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
-        Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH v2] net: igbvf: fix double free in `igbvf_probe`
-Date:   Sat, 13 Nov 2021 11:42:34 +0800
-Message-Id: <20211113034235.8153-1-fantasquex@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Fri, 12 Nov 2021 22:46:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636775003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SmlGc1AnnP8jkr12IdGrXkJsXLjR708dzHG5hUo8F6M=;
+        b=SqAppHQ1ma6oz/9UoDidQJjEZ3pTq9wlWqg6iFo23XnSDGi82TQDmRih9Xpc1Vq6gtJVYO
+        ayZ4fVT11UlKWJBDCNoE8PFMj/YaZ8IQxqQkD5JT5MbTNcnVZB+UHctRO2L2TtJj54aOmN
+        6TiZDzTNX9h/yg2oE0afh59D2wIbf/g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-TiuMfSklPJW9PyJYPB5lsQ-1; Fri, 12 Nov 2021 22:43:19 -0500
+X-MC-Unique: TiuMfSklPJW9PyJYPB5lsQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2315802C8F;
+        Sat, 13 Nov 2021 03:43:17 +0000 (UTC)
+Received: from [10.22.16.14] (unknown [10.22.16.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 66EE818A50;
+        Sat, 13 Nov 2021 03:43:16 +0000 (UTC)
+Message-ID: <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
+Date:   Fri, 12 Nov 2021 22:43:15 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
+ clocksources
+Content-Language: en-US
+To:     Feng Tang <feng.tang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20211110221732.272986-1-longman@redhat.com>
+ <20211110221732.272986-2-longman@redhat.com>
+ <20211111045703.GA15896@shbuild999.sh.intel.com>
+ <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211112054417.GA29845@shbuild999.sh.intel.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211112054417.GA29845@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In `igbvf_probe`, if register_netdev() fails, the program will go to
-label err_hw_init, and then to label err_ioremap. In free_netdev() which
-is just below label err_ioremap, there is `list_for_each_entry_safe` and
-`netif_napi_del` which aims to delete all entries in `dev->napi_list`.
-The program has added an entry `adapter->rx_ring->napi` which is added by
-`netif_napi_add` in igbvf_alloc_queues(). However, adapter->rx_ring has
-been freed below label err_hw_init. So this a UAF.
+On 11/12/21 00:44, Feng Tang wrote:
+> On Thu, Nov 11, 2021 at 06:43:11AM -0800, Paul E. McKenney wrote:
+>> On Thu, Nov 11, 2021 at 12:57:03PM +0800, Feng Tang wrote:
+>>> On Wed, Nov 10, 2021 at 05:17:31PM -0500, Waiman Long wrote:
+>>>> Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
+>>>> detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
+>>>> threshold"), it is found that tsc clocksource fallback to hpet can
+>>>> sometimes happen on both Intel and AMD systems especially when they are
+>>>> running stressful benchmarking workloads. Of the 23 systems tested with
+>>>> a v5.14 kernel, 10 of them have switched to hpet clock source during
+>>>> the test run.
+>>>>
+>>>> The result of falling back to hpet is a drastic reduction of performance
+>>>> when running benchmarks. For example, the fio performance tests can
+>>>> drop up to 70% whereas the iperf3 performance can drop up to 80%.
+>>>>
+>>>> 4 hpet fallbacks happened during bootup. They were:
+>>>>
+>>>>    [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
+>>>>    [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
+>>>>    [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
+>>>>    [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
+>>>>
+>>>> Other fallbacks happen when the systems were running stressful
+>>>> benchmarks. For example:
+>>>>
+>>>>    [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
+>>>>    [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
+>>>>
+>>>> Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
+>>>> changed the skew margin from 100us to 50us. I think this is too small
+>>>> and can easily be exceeded when running some stressful workloads on
+>>>> a thermally stressed system.  So it is switched back to 100us. On
+>>>> the other hand, it doesn't look like we need to increase the minimum
+>>>> uncertainty margin. So it is kept the same at 100us too.
+>>>>
+>>>> Even a maximum skew margin of 100us may be too small in for some systems
+>>>> when booting up especially if those systems are under thermal stress. To
+>>>> eliminate the case that the large skew is due to the system being too
+>>>> busy slowing down the reading of both the watchdog and the clocksource,
+>>>> a final check is done by reading watchdog time again and comparing the
+>>>> consecutive watchdog timing read delay against WATCHDOG_MAX_SKEW/2. If
+>>>> that delay exceeds the limit, we assume that the system is just too
+>>>> busy. A warning will be printed to the console and the watchdog check
+>>>> is then skipped for this round. For example:
+>>>>
+>>>>    [    8.789316] clocksource: timekeeping watchdog on CPU13: hpet consecutive read-back delay of 174541ns, system too busy
+>>>   
+>>>
+>>> I think it may be better to add more details about the root cause, other
+>>> than that it looks good to me, as we tested similar patch on our test
+>>> platforms.
+>>>
+>>> Reviewed-by: Feng Tang <feng.tang@intel.com>
+>> Thank you both!
+>>
+>> I agree on the bit about root cause.  Would it make sense to compare the
+>> difference between HPET reads 1 and 2 (containing the read of the TSC)
+>> and the difference between HPET reads 2 and 3?  If the 2-1 difference was
+>> no more than (say) 8/7ths of the 3-2 difference, or the 2-1 difference
+>> was no more than (say) 20 microseconds more than the 3-2 difference,
+>> this could be considered a good-as-it-gets read, ending the retry loop.
+>> Then if the 3-1 difference was greater than the default (100 microseconds
+>> in current -rcu), that difference could be substituted for that particular
+>> clocksource watchdog check.  With a console message noting the unusually
+>> high overhead (but not a splat).
+>>
+>> So if it took 75 microseconds for each HPET read and 1 microsecond for
+>> the TSC read, then 226 microseconds would be substituted for the default
+>> of 100 microseconds for that cycle's skew cutoff.  Unless the previous
+>> skew cutoff was larger, in which case the previous cutoff should be
+>> used instead.  Either way, the current cutoff is recorded for comparison
+>> for the next clocksource watchdog check.
+>>
+>> If the 3-1 difference was greater than 62.5 milliseconds, a warning should
+>> probably be emitted anyway.
+>   
+> I can test the patch with our cases that could reproduce the problem.
+>
+>> Or did you have something else in mind?
+> I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
+> the delay between watchdog's (HPET here) read were not linear, that
+> from debug data, sometimes the 3-2 difference could be bigger or much
+> bigger than the 2-1 difference.
+>
+> The reason could be the gap between 2 reads depends hugely on the system
+> pressure at that time that 3 HPET read happens. On our test box (a
+> 2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
+> about 2.5 us,  while under the stress it could be bumped to from 6 us
+> to 2800 us.
+>
+> So I think checking the 3-2 difference plus increasing the max retries
+> to 10 may be a simple way, if the watchdog read is found to be
+> abnormally long, we skip this round of check.
 
-In terms of how to patch the problem, we can refer to igbvf_remove() and
-delete the entry before `adapter->rx_ring`.
+On one of the test system, I had measured that normal delay 
+(hpet->tsc->hpet) was normally a bit over 2us. It was a bit more than 
+4us at bootup time. However, the same system under stress could have a 
+delay of over 200us at bootup time. When I measured the consecutive hpet 
+delay, it was about 180us. So hpet read did dominate the total 
+clocksource read delay.
 
-The KASAN logs are as follows:
+I would not suggest increasing the max retries as it may still fail in 
+most cases because the system stress will likely not be going away 
+within a short time. So we are likely just wasting cpu times. I believe 
+we should just skip it if it is the watchdog read that is causing most 
+of the delay.
 
-[   35.126075] BUG: KASAN: use-after-free in free_netdev+0x1fd/0x450
-[   35.127170] Read of size 8 at addr ffff88810126d990 by task modprobe/366
-[   35.128360]
-[   35.128643] CPU: 1 PID: 366 Comm: modprobe Not tainted 5.15.0-rc2+ #14
-[   35.129789] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[   35.131749] Call Trace:
-[   35.132199]  dump_stack_lvl+0x59/0x7b
-[   35.132865]  print_address_description+0x7c/0x3b0
-[   35.133707]  ? free_netdev+0x1fd/0x450
-[   35.134378]  __kasan_report+0x160/0x1c0
-[   35.135063]  ? free_netdev+0x1fd/0x450
-[   35.135738]  kasan_report+0x4b/0x70
-[   35.136367]  free_netdev+0x1fd/0x450
-[   35.137006]  igbvf_probe+0x121d/0x1a10 [igbvf]
-[   35.137808]  ? igbvf_vlan_rx_add_vid+0x100/0x100 [igbvf]
-[   35.138751]  local_pci_probe+0x13c/0x1f0
-[   35.139461]  pci_device_probe+0x37e/0x6c0
-[   35.165526]
-[   35.165806] Allocated by task 366:
-[   35.166414]  ____kasan_kmalloc+0xc4/0xf0
-[   35.167117]  foo_kmem_cache_alloc_trace+0x3c/0x50 [igbvf]
-[   35.168078]  igbvf_probe+0x9c5/0x1a10 [igbvf]
-[   35.168866]  local_pci_probe+0x13c/0x1f0
-[   35.169565]  pci_device_probe+0x37e/0x6c0
-[   35.179713]
-[   35.179993] Freed by task 366:
-[   35.180539]  kasan_set_track+0x4c/0x80
-[   35.181211]  kasan_set_free_info+0x1f/0x40
-[   35.181942]  ____kasan_slab_free+0x103/0x140
-[   35.182703]  kfree+0xe3/0x250
-[   35.183239]  igbvf_probe+0x1173/0x1a10 [igbvf]
-[   35.184040]  local_pci_probe+0x13c/0x1f0
-
-Fixes: d4e0fe01a38a0 (igbvf: add new driver to support 82576 virtual functions)
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
----
-Changes in v2:
-    - Add fixes tag
----
- drivers/net/ethernet/intel/igbvf/netdev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
-index d32e72d953c8..d051918dfdff 100644
---- a/drivers/net/ethernet/intel/igbvf/netdev.c
-+++ b/drivers/net/ethernet/intel/igbvf/netdev.c
-@@ -2861,6 +2861,7 @@ static int igbvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	return 0;
- 
- err_hw_init:
-+	netif_napi_del(&adapter->rx_ring->napi);
- 	kfree(adapter->tx_ring);
- 	kfree(adapter->rx_ring);
- err_sw_init:
--- 
-2.33.1
+Cheers,
+Longman
 
