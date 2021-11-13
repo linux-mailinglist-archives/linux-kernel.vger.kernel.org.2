@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A3A44F55C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 22:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA98344F563
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 22:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhKMVKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 16:10:38 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:64085 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhKMVKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 16:10:37 -0500
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 56ef4aee;
-        Sat, 13 Nov 2021 22:07:42 +0100 (CET)
-Date:   Sat, 13 Nov 2021 22:07:42 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org, sven@svenpeter.dev,
-        wim@linux-watchdog.org, linux@roeck-us.net, marcan@marcan.st,
-        alyssa@rosenzweig.io, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20211113094732.73889-1-sven@svenpeter.dev> (message from Sven
-        Peter on Sat, 13 Nov 2021 10:47:31 +0100)
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: Add Apple Watchdog
-References: <20211113094732.73889-1-sven@svenpeter.dev>
-Message-ID: <d3cad37524f7debf@bloch.sibelius.xs4all.nl>
+        id S236086AbhKMVOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 16:14:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230189AbhKMVN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 16:13:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CD6760EFE;
+        Sat, 13 Nov 2021 21:11:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636837865;
+        bh=DNAiApXHVj+drlYL00cNv7Qe2n+gbdgDqCvHvFDCwxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YRWRBbKTMRvWcWeYJ/2nb/265oeUe2ykcri9ENfzyntmrA8TqswTaM3VPfbvtlpae
+         I7Tu9UR5oDNb7L22DzN5i70fy6oVqMG6RsGEGFZMmYjp/CFlLLJpQ9o9c4InbULHBG
+         XYHac6vZ4LBkP9Mq6GKUteZhJhYKuGu2VLW6zx0oh+FVibxOxJDBNUo59GvgKLaHnz
+         kJfI/Nf2jwzcAFhEpTxOZRKLUu89nyucbuOfvKym8f37BnIHEUPGHZD2eAIQdlpsjR
+         SaIsai2e4umLVXbT9W4/rlSPZtW8ip3J2HkYNl8cXKsGqRb4VU9HX+8qiYd6LLJGHh
+         X91AS8XMLMPnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4EB274088E; Sat, 13 Nov 2021 18:11:02 -0300 (-03)
+Date:   Sat, 13 Nov 2021 18:11:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Subject: Re: [PATCH v2 11/22] perf test: Convert watch point tests to test
+ cases.
+Message-ID: <YZAp5kGiZ3gP+5Zd@kernel.org>
+References: <20211013174604.747276-1-irogers@google.com>
+ <20211013174604.747276-12-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013174604.747276-12-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Sven Peter <sven@svenpeter.dev>
-> Date: Sat, 13 Nov 2021 10:47:31 +0100
+Em Wed, Oct 13, 2021 at 10:45:53AM -0700, Ian Rogers escreveu:
+> Use null terminated array of test cases rather than the previous sub
+> test functions.
 > 
-> Apple SoCs come with a simple embedded watchdog. This watchdog is also
-> required in order to reset the SoC.
-> 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  .../bindings/watchdog/apple,wdt.yaml          | 52 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
+>  tools/perf/tests/wp.c | 128 ++++++++++--------------------------------
+>  1 file changed, 30 insertions(+), 98 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml b/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
-> new file mode 100644
-> index 000000000000..e58c56a6fdf6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/apple,wdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple SoC Watchdog
-> +
-> +allOf:
-> +  - $ref: "watchdog.yaml#"
+> diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
+> index 904bdf2dcf81..2c0513257b15 100644
+> --- a/tools/perf/tests/wp.c
+> +++ b/tools/perf/tests/wp.c
+> @@ -62,8 +62,12 @@ static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
+>  	return fd;
+>  }
+>  
 
-I believew this should be:
-
-  - $ref: /schemas/watchdog/watchdog.yaml#
-
-with that fixed:
-
-Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
+  65     6.29 ubuntu:16.04-x-s390           : FAIL gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.9)
+    tests/wp.c:24:12: error: 'wp_read' defined but not used [-Werror=unused-function]
+     static int wp_read(int fd, long long *count, int size)
+                ^
+    tests/wp.c:51:12: error: '__event' defined but not used [-Werror=unused-function]
+     static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
+                ^
+    cc1: all warnings being treated as errors
+    /git/perf-5.15.0/tools/build/Makefile.build:139: recipe for target 'tests' failed
+    make[3]: *** [tests] Error 2
 
 
-> +
-> +maintainers:
-> +  - Sven Peter <sven@svenpeter.dev>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - apple,t8103-wdt
-> +          - apple,t6000-wdt
-> +      - const: apple,wdt
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    wdt: watchdog@50000000 {
-> +        compatible = "apple,t8103-wdt", "apple,wdt";
-> +        reg = <0x50000000 0x4000>;
-> +        clocks = <&clk>;
-> +        interrupts = <AIC_IRQ 123 IRQ_TYPE_LEVEL_HIGH>;
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5b7a13f706fa..ba480837724d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1749,6 +1749,7 @@ F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->  F:	Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
->  F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
->  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
-> +F:	Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
->  F:	arch/arm64/boot/dts/apple/
->  F:	drivers/i2c/busses/i2c-pasemi-core.c
->  F:	drivers/i2c/busses/i2c-pasemi-platform.c
-> -- 
-> 2.25.1
-> 
-> 
+Trying with:
+
+
+diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
+index 2c0513257b15c041..820d942b30c390e9 100644
+--- a/tools/perf/tests/wp.c
++++ b/tools/perf/tests/wp.c
+@@ -48,6 +48,7 @@ static void get__perf_event_attr(struct perf_event_attr *attr, int wp_type,
+ 	attr->exclude_hv     = 1;
+ }
+ 
++#ifndef __s390x__
+ static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
+ {
+ 	int fd;
+@@ -61,6 +62,7 @@ static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
+ 
+ 	return fd;
+ }
++#endif
+ 
+ static int test__wp_ro(struct test_suite *test __maybe_unused,
+ 		       int subtest __maybe_unused)
