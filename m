@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83BF44F2F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C2044F2F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 12:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235933AbhKML5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 06:57:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55990 "EHLO mail.kernel.org"
+        id S235966AbhKML5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 06:57:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhKML53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 06:57:29 -0500
+        id S235684AbhKML5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 06:57:30 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E689D61106;
-        Sat, 13 Nov 2021 11:54:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ED6A61156;
+        Sat, 13 Nov 2021 11:54:38 +0000 (UTC)
 Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1mlrcC-005BG2-3E; Sat, 13 Nov 2021 11:54:36 +0000
+        id 1mlrcC-005BG2-Bq; Sat, 13 Nov 2021 11:54:36 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -30,9 +30,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         Rob Herring <robh+dt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5/8] irqchip/apple-aic: Move PMU-specific registers to their own include file
-Date:   Sat, 13 Nov 2021 11:54:26 +0000
-Message-Id: <20211113115429.4027571-6-maz@kernel.org>
+Subject: [PATCH 6/8] arm64: apple: t8301: Add PMU nodes
+Date:   Sat, 13 Nov 2021 11:54:27 +0000
+Message-Id: <20211113115429.4027571-7-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211113115429.4027571-1-maz@kernel.org>
 References: <20211113115429.4027571-1-maz@kernel.org>
@@ -46,70 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we are about to have a PMU driver, move the PMU bits from the AIC
-driver into a common include file.
+Advertise the two PMU nodes for the t8103 SoC.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/include/asm/apple_m1_pmu.h | 19 +++++++++++++++++++
- drivers/irqchip/irq-apple-aic.c       | 11 +----------
- 2 files changed, 20 insertions(+), 10 deletions(-)
- create mode 100644 arch/arm64/include/asm/apple_m1_pmu.h
+ arch/arm64/boot/dts/apple/t8103.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/include/asm/apple_m1_pmu.h b/arch/arm64/include/asm/apple_m1_pmu.h
-new file mode 100644
-index 000000000000..b848af7faadc
---- /dev/null
-+++ b/arch/arm64/include/asm/apple_m1_pmu.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef __ASM_APPLE_M1_PMU_h
-+#define __ASM_APPLE_M1_PMU_h
-+
-+#include <linux/bits.h>
-+#include <asm/sysreg.h>
-+
-+/* Core PMC control register */
-+#define SYS_IMP_APL_PMCR0_EL1	sys_reg(3, 1, 15, 0, 0)
-+#define PMCR0_IMODE		GENMASK(10, 8)
-+#define PMCR0_IMODE_OFF		0
-+#define PMCR0_IMODE_PMI		1
-+#define PMCR0_IMODE_AIC		2
-+#define PMCR0_IMODE_HALT	3
-+#define PMCR0_IMODE_FIQ		4
-+#define PMCR0_IACT		BIT(11)
-+
-+#endif /* __ASM_APPLE_M1_PMU_h */
-diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-aic.c
-index 23f5f10e974e..9663166fd97f 100644
---- a/drivers/irqchip/irq-apple-aic.c
-+++ b/drivers/irqchip/irq-apple-aic.c
-@@ -55,6 +55,7 @@
- #include <linux/limits.h>
- #include <linux/of_address.h>
- #include <linux/slab.h>
-+#include <asm/apple_m1_pmu.h>
- #include <asm/exception.h>
- #include <asm/sysreg.h>
- #include <asm/virt.h>
-@@ -109,16 +110,6 @@
-  * Note: sysreg-based IPIs are not supported yet.
-  */
+diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+index fc8b2bb06ffe..d2e9afde3729 100644
+--- a/arch/arm64/boot/dts/apple/t8103.dtsi
++++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+@@ -96,6 +96,18 @@ timer {
+ 			     <AIC_FIQ AIC_TMR_HV_VIRT IRQ_TYPE_LEVEL_HIGH>;
+ 	};
  
--/* Core PMC control register */
--#define SYS_IMP_APL_PMCR0_EL1		sys_reg(3, 1, 15, 0, 0)
--#define PMCR0_IMODE			GENMASK(10, 8)
--#define PMCR0_IMODE_OFF			0
--#define PMCR0_IMODE_PMI			1
--#define PMCR0_IMODE_AIC			2
--#define PMCR0_IMODE_HALT		3
--#define PMCR0_IMODE_FIQ			4
--#define PMCR0_IACT			BIT(11)
--
- /* IPI request registers */
- #define SYS_IMP_APL_IPI_RR_LOCAL_EL1	sys_reg(3, 5, 15, 0, 0)
- #define SYS_IMP_APL_IPI_RR_GLOBAL_EL1	sys_reg(3, 5, 15, 0, 1)
++	pmu-e {
++		compatible = "apple,icestorm-pmu";
++		interrupt-parent = <&aic>;
++		interrupts = <AIC_FIQ AIC_CPU_PMU_E IRQ_TYPE_LEVEL_HIGH>;
++	};
++
++	pmu-p {
++		compatible = "apple,firestorm-pmu";
++		interrupt-parent = <&aic>;
++		interrupts = <AIC_FIQ AIC_CPU_PMU_P IRQ_TYPE_LEVEL_HIGH>;
++	};
++
+ 	clk24: clock-24m {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
 -- 
 2.30.2
 
