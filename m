@@ -2,573 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5084644F043
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CEA44F045
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhKMAxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 19:53:50 -0500
-Received: from mga01.intel.com ([192.55.52.88]:6174 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231618AbhKMAxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 19:53:48 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10166"; a="256953711"
-X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
-   d="scan'208";a="256953711"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 16:50:53 -0800
-X-IronPort-AV: E=Sophos;i="5.87,230,1631602800"; 
-   d="scan'208";a="670841155"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 16:50:52 -0800
-Date:   Fri, 12 Nov 2021 16:50:52 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: Re: [PATCH V7 08/18] x86/entry: Preserve PKRS MSR across exceptions
-Message-ID: <20211113005051.GN3538886@iweiny-DESK2.sc.intel.com>
-References: <20210804043231.2655537-1-ira.weiny@intel.com>
- <20210804043231.2655537-9-ira.weiny@intel.com>
+        id S232340AbhKMAzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 19:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhKMAzL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 19:55:11 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE2FC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:19 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id m9so13453287iop.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ar+96otnAzeN5XyQtZwRbRvg/01cns8FSyH4rDQT4T4=;
+        b=EGyRVXShdBOHi4a5JP4tWIcCl0qnPG5C3nLBIQVAP3oPkc2D14VyhTCDf7WNGPpRWr
+         mqinLcayYYsxIC9Uqr88/5qSk85g0nMYmUhOLIr1YMBQRgvwgY3WTPCSU3lMRDcrnE+d
+         I6OXzQ9Pqmk6L5tz0hqrgUcLf1+d8cQjHVzuU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ar+96otnAzeN5XyQtZwRbRvg/01cns8FSyH4rDQT4T4=;
+        b=Sw4PTe+vb6tvKS81A8g0yIsDt0SkN5aMMcpVnYLNLl5gcdaNmXcvohiqLHEq3gW7LD
+         QgsOvGcym4BNLb/HsZIFpz6zjK/DyiWi+ihkw6mOh38QNJUvVU1YDdaBd7SPtgHFaz/t
+         grwesRXNV1QnBeCSlo9IYTPqd8CYgyepqbv6LDGt94COJ548cumhVBU7S0lSAC6w3Eaj
+         tgM6n32w17W8KtH4Zo1VM3NOm792Z4ozn+MuQizM34uViKGb0SQaFJw/mZ1rh3H6e4Lt
+         nBABlQbPEstc+RnExGrEhuDHSkiX0FzOCPkg0sLPjaC4VlntqtXcwakiStOrR5ZaFdI9
+         FbVA==
+X-Gm-Message-State: AOAM533KjTi0M0VS43/NJcCDaL76iCHJl5Y/3jNKqz6aYACXwSw+cIpF
+        VclU4kVO/q1Ya0aNeZs55m0I8Q1WwtHe0A==
+X-Google-Smtp-Source: ABdhPJxbP55T7iR44wq4CK2sdaT2ufMzvNjJU6ePes/q3VsSpJ1LjGmu0t2YNsPaSBhobWLj5i5N4A==
+X-Received: by 2002:a5d:9ed6:: with SMTP id a22mr13404685ioe.167.1636764738168;
+        Fri, 12 Nov 2021 16:52:18 -0800 (PST)
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
+        by smtp.gmail.com with ESMTPSA id h14sm4565009ils.75.2021.11.12.16.52.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Nov 2021 16:52:17 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id x10so13368643ioj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:15 -0800 (PST)
+X-Received: by 2002:a5d:9753:: with SMTP id c19mr13234220ioo.136.1636764735260;
+ Fri, 12 Nov 2021 16:52:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804043231.2655537-9-ira.weiny@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20211103234018.4009771-1-briannorris@chromium.org> <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
+In-Reply-To: <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 12 Nov 2021 16:52:03 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
+Message-ID: <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 09:32:21PM -0700, 'Ira Weiny' wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> The PKRS MSR is not managed by XSAVE.  It is preserved through a context
-> switch but this support leaves exception handling code open to memory
-> accesses during exceptions.
-> 
-> 2 possible places for preserving this state were considered,
-> irqentry_state_t or pt_regs.[1]  pt_regs was much more complicated and
-> was potentially fraught with unintended consequences.[2]  However, Andy
-> came up with a way to hide additional values on the stack which could be
-> accessed as "extended_pt_regs".[3]
+Hi,
 
-Andy,
+On Wed, Nov 3, 2021 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
+>
+> To improve panel self-refresh exit latency, we speculatively start
+> exiting when we
+> receive input events. Occasionally, this may lead to false positives,
+> but most of the time we get a head start on coming out of PSR. Depending
+> on how userspace takes to produce a new frame in response to the event,
+> this can completely hide the exit latency.
+>
+> In local tests on Chrome OS (Rockchip RK3399 eDP), we've found that the
+> input notifier gives us about a 50ms head start over the
+> fb-update-initiated exit.
+>
+> Leverage a new drm_input_helper library to get easy access to
+> likely-relevant input event callbacks.
 
-I'm preparing to send V8 of this PKS work.  But I have not seen any feed back
-since I originally implemented this in V4[1].
+So IMO this is a really useful thing and I'm in support of it landing.
+It's not much code and it clearly gives a big benefit. However, I
+would request a CONFIG option to control this so that if someone
+really finds some use case where it isn't needed or if they find a
+good way to do this in userspace without latency problems then they
+can turn it off. Does that sound reasonable?
 
-Does this meets your expectations?  Are there any issues you can see with this
-code?
 
-I would appreciate your feedback.
-
-Thanks,
-Ira
-
-[1] https://lore.kernel.org/lkml/20210322053020.2287058-9-ira.weiny@intel.com/
-
-> This method allows for; any place
-> which has struct pt_regs can get access to the extra information; no
-> extra information is added to irq_state; and pt_regs is left intact for
-> compatibility with outside tools like BPF.
-> 
-> To simplify, the assembly code only adds space on the stack.  The
-> setting or use of any needed values are left to the C code.  While some
-> entry points may not use this space it is still added where ever pt_regs
-> is passed to the C code for consistency.
-> 
-> Each nested exception gets another copy of this extended space allowing
-> for any number of levels of exception handling.
-> 
-> In the assembly, a macro is defined to allow a central place to add
-> space for other uses should the need arise.
-> 
-> Finally export pkrs_{save|restore}_irq to the common code to allow
-> it to preserve the current task's PKRS in the new extended pt_regs if
-> enabled.
-> 
-> Peter, Thomas, Andy, Dave, and Dan all suggested parts of the patch or
-> aided in the development of the patch..
-> 
-> [1] https://lore.kernel.org/lkml/CALCETrVe1i5JdyzD_BcctxQJn+ZE3T38EFPgjxN1F577M36g+w@mail.gmail.com/
-> [2] https://lore.kernel.org/lkml/874kpxx4jf.fsf@nanos.tec.linutronix.de/#t
-> [3] https://lore.kernel.org/lkml/CALCETrUHwZPic89oExMMe-WyDY8-O3W68NcZvse3=PGW+iW5=w@mail.gmail.com/
-> 
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Suggested-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+> Inspired-by: Kristian H. Kristensen <hoegsberg@google.com>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 > ---
-> Changes for V7:
-> 	Rebased to 5.14 entry code
-> 	declare write_pkrs() in pks.h
-> 	s/INIT_PKRS_VALUE/pkrs_init_value
-> 	Remove unnecessary INIT_PKRS_VALUE def
-> 	s/pkrs_save_set_irq/pkrs_save_irq/
-> 		The inital value for exceptions is best managed
-> 		completely within the pkey code.
-> ---
->  arch/x86/entry/calling.h               | 26 +++++++++++++
->  arch/x86/entry/common.c                | 54 ++++++++++++++++++++++++++
->  arch/x86/entry/entry_64.S              | 22 ++++++-----
->  arch/x86/entry/entry_64_compat.S       |  6 +--
->  arch/x86/include/asm/pks.h             | 18 +++++++++
->  arch/x86/include/asm/processor-flags.h |  2 +
->  arch/x86/kernel/head_64.S              |  7 ++--
->  arch/x86/mm/fault.c                    |  3 ++
->  include/linux/pkeys.h                  | 11 +++++-
->  kernel/entry/common.c                  | 14 ++++++-
->  10 files changed, 143 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-> index a4c061fb7c6e..a2f94677c3fd 100644
-> --- a/arch/x86/entry/calling.h
-> +++ b/arch/x86/entry/calling.h
-> @@ -63,6 +63,32 @@ For 32-bit we have the following conventions - kernel is built with
->   * for assembly code:
->   */
->  
-> +/*
-> + * __call_ext_ptregs - Helper macro to call into C with extended pt_regs
-> + * @cfunc:		C function to be called
-> + *
-> + * This will ensure that extended_ptregs is added and removed as needed during
-> + * a call into C code.
-> + */
-> +.macro __call_ext_ptregs cfunc annotate_retpoline_safe:req
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +	/* add space for extended_pt_regs */
-> +	subq    $EXTENDED_PT_REGS_SIZE, %rsp
-> +#endif
-> +	.if \annotate_retpoline_safe == 1
-> +		ANNOTATE_RETPOLINE_SAFE
-> +	.endif
-> +	call	\cfunc
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +	/* remove space for extended_pt_regs */
-> +	addq    $EXTENDED_PT_REGS_SIZE, %rsp
-> +#endif
-> +.endm
-> +
-> +.macro call_ext_ptregs cfunc
-> +	__call_ext_ptregs \cfunc, annotate_retpoline_safe=0
-> +.endm
-> +
->  .macro PUSH_REGS rdx=%rdx rax=%rax save_ret=0
->  	.if \save_ret
->  	pushq	%rsi		/* pt_regs->si */
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index 6c2826417b33..a0d1d5519dba 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -19,6 +19,7 @@
->  #include <linux/nospec.h>
->  #include <linux/syscalls.h>
->  #include <linux/uaccess.h>
-> +#include <linux/pkeys.h>
->  
->  #ifdef CONFIG_XEN_PV
->  #include <xen/xen-ops.h>
-> @@ -34,6 +35,7 @@
->  #include <asm/io_bitmap.h>
->  #include <asm/syscall.h>
->  #include <asm/irq_stack.h>
-> +#include <asm/pks.h>
->  
->  #ifdef CONFIG_X86_64
->  
-> @@ -252,6 +254,56 @@ SYSCALL_DEFINE0(ni_syscall)
->  	return -ENOSYS;
->  }
->  
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +
-> +void show_extended_regs_oops(struct pt_regs *regs, unsigned long error_code)
-> +{
-> +	struct extended_pt_regs *ept_regs = extended_pt_regs(regs);
-> +
-> +	if (cpu_feature_enabled(X86_FEATURE_PKS) && (error_code & X86_PF_PK))
-> +		pr_alert("PKRS: 0x%x\n", ept_regs->thread_pkrs);
-> +}
-> +
-> +/*
-> + * PKRS is a per-logical-processor MSR which overlays additional protection for
-> + * pages which have been mapped with a protection key.
-> + *
-> + * Context switches save the MSR in the task struct thus taking that value to
-> + * other processors if necessary.
-> + *
-> + * To protect against exceptions having access to this memory save the current
-> + * thread value and set the PKRS value to be used during the exception.
-> + */
-> +void pkrs_save_irq(struct pt_regs *regs)
-> +{
-> +	struct extended_pt_regs *ept_regs;
-> +
-> +	BUILD_BUG_ON(sizeof(struct extended_pt_regs)
-> +			!= EXTENDED_PT_REGS_SIZE
-> +				+ sizeof(struct pt_regs));
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	ept_regs = extended_pt_regs(regs);
-> +	ept_regs->thread_pkrs = current->thread.saved_pkrs;
-> +	write_pkrs(pkrs_init_value);
-> +}
-> +
-> +void pkrs_restore_irq(struct pt_regs *regs)
-> +{
-> +	struct extended_pt_regs *ept_regs;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	ept_regs = extended_pt_regs(regs);
-> +	write_pkrs(ept_regs->thread_pkrs);
-> +	current->thread.saved_pkrs = ept_regs->thread_pkrs;
-> +}
-> +
-> +#endif /* CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS */
-> +
->  #ifdef CONFIG_XEN_PV
->  #ifndef CONFIG_PREEMPTION
->  /*
-> @@ -309,6 +361,8 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
->  
->  	inhcall = get_and_clear_inhcall();
->  	if (inhcall && !WARN_ON_ONCE(state.exit_rcu)) {
-> +		/* Normally called by irqentry_exit, restore pkrs here */
-> +		pkrs_restore_irq(regs);
->  		irqentry_exit_cond_resched();
->  		instrumentation_end();
->  		restore_inhcall(inhcall);
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index e38a4cf795d9..1c390975a3de 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -332,7 +332,7 @@ SYM_CODE_END(ret_from_fork)
->  		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
->  	.endif
->  
-> -	call	\cfunc
-> +	call_ext_ptregs \cfunc
->  
->  	jmp	error_return
->  .endm
-> @@ -435,7 +435,7 @@ SYM_CODE_START(\asmsym)
->  
->  	movq	%rsp, %rdi		/* pt_regs pointer */
->  
-> -	call	\cfunc
-> +	call_ext_ptregs \cfunc
->  
->  	jmp	paranoid_exit
->  
-> @@ -496,7 +496,7 @@ SYM_CODE_START(\asmsym)
->  	 * stack.
->  	 */
->  	movq	%rsp, %rdi		/* pt_regs pointer */
-> -	call	vc_switch_off_ist
-> +	call_ext_ptregs vc_switch_off_ist
->  	movq	%rax, %rsp		/* Switch to new stack */
->  
->  	UNWIND_HINT_REGS
-> @@ -507,7 +507,7 @@ SYM_CODE_START(\asmsym)
->  
->  	movq	%rsp, %rdi		/* pt_regs pointer */
->  
-> -	call	kernel_\cfunc
-> +	call_ext_ptregs kernel_\cfunc
->  
->  	/*
->  	 * No need to switch back to the IST stack. The current stack is either
-> @@ -542,7 +542,7 @@ SYM_CODE_START(\asmsym)
->  	movq	%rsp, %rdi		/* pt_regs pointer into first argument */
->  	movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
->  	movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
-> -	call	\cfunc
-> +	call_ext_ptregs \cfunc
->  
->  	jmp	paranoid_exit
->  
-> @@ -781,7 +781,7 @@ SYM_CODE_START_LOCAL(exc_xen_hypervisor_callback)
->  	movq	%rdi, %rsp			/* we don't return, adjust the stack frame */
->  	UNWIND_HINT_REGS
->  
-> -	call	xen_pv_evtchn_do_upcall
-> +	call_ext_ptregs xen_pv_evtchn_do_upcall
->  
->  	jmp	error_return
->  SYM_CODE_END(exc_xen_hypervisor_callback)
-> @@ -987,7 +987,7 @@ SYM_CODE_START_LOCAL(error_entry)
->  	/* Put us onto the real thread stack. */
->  	popq	%r12				/* save return addr in %12 */
->  	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
-> -	call	sync_regs
-> +	call_ext_ptregs sync_regs
->  	movq	%rax, %rsp			/* switch stack */
->  	ENCODE_FRAME_POINTER
->  	pushq	%r12
-> @@ -1042,7 +1042,7 @@ SYM_CODE_START_LOCAL(error_entry)
->  	 * as if we faulted immediately after IRET.
->  	 */
->  	mov	%rsp, %rdi
-> -	call	fixup_bad_iret
-> +	call_ext_ptregs fixup_bad_iret
->  	mov	%rax, %rsp
->  	jmp	.Lerror_entry_from_usermode_after_swapgs
->  SYM_CODE_END(error_entry)
-> @@ -1148,7 +1148,7 @@ SYM_CODE_START(asm_exc_nmi)
->  
->  	movq	%rsp, %rdi
->  	movq	$-1, %rsi
-> -	call	exc_nmi
-> +	call_ext_ptregs exc_nmi
->  
->  	/*
->  	 * Return back to user mode.  We must *not* do the normal exit
-> @@ -1184,6 +1184,8 @@ SYM_CODE_START(asm_exc_nmi)
->  	 * +---------------------------------------------------------+
->  	 * | pt_regs                                                 |
->  	 * +---------------------------------------------------------+
-> +	 * | (Optionally) extended_pt_regs                           |
-> +	 * +---------------------------------------------------------+
->  	 *
->  	 * The "original" frame is used by hardware.  Before re-enabling
->  	 * NMIs, we need to be done with it, and we need to leave enough
-> @@ -1360,7 +1362,7 @@ end_repeat_nmi:
->  
->  	movq	%rsp, %rdi
->  	movq	$-1, %rsi
-> -	call	exc_nmi
-> +	call_ext_ptregs exc_nmi
->  
->  	/* Always restore stashed CR3 value (see paranoid_entry) */
->  	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
-> diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-> index 0051cf5c792d..53254d29d5c7 100644
-> --- a/arch/x86/entry/entry_64_compat.S
-> +++ b/arch/x86/entry/entry_64_compat.S
-> @@ -136,7 +136,7 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
->  .Lsysenter_flags_fixed:
->  
->  	movq	%rsp, %rdi
-> -	call	do_SYSENTER_32
-> +	call_ext_ptregs do_SYSENTER_32
->  	/* XEN PV guests always use IRET path */
->  	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
->  		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-> @@ -253,7 +253,7 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
->  	UNWIND_HINT_REGS
->  
->  	movq	%rsp, %rdi
-> -	call	do_fast_syscall_32
-> +	call_ext_ptregs do_fast_syscall_32
->  	/* XEN PV guests always use IRET path */
->  	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
->  		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-> @@ -410,6 +410,6 @@ SYM_CODE_START(entry_INT80_compat)
->  	cld
->  
->  	movq	%rsp, %rdi
-> -	call	do_int80_syscall_32
-> +	call_ext_ptregs do_int80_syscall_32
->  	jmp	swapgs_restore_regs_and_return_to_usermode
->  SYM_CODE_END(entry_INT80_compat)
-> diff --git a/arch/x86/include/asm/pks.h b/arch/x86/include/asm/pks.h
-> index e7727086cec2..76960ec71b4b 100644
-> --- a/arch/x86/include/asm/pks.h
-> +++ b/arch/x86/include/asm/pks.h
-> @@ -4,15 +4,33 @@
->  
->  #ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
->  
-> +struct extended_pt_regs {
-> +	u32 thread_pkrs;
-> +	/* Keep stack 8 byte aligned */
-> +	u32 pad;
-> +	struct pt_regs pt_regs;
-> +};
-> +
->  void setup_pks(void);
->  void pkrs_write_current(void);
->  void pks_init_task(struct task_struct *task);
-> +void write_pkrs(u32 new_pkrs);
-> +
-> +static inline struct extended_pt_regs *extended_pt_regs(struct pt_regs *regs)
-> +{
-> +	return container_of(regs, struct extended_pt_regs, pt_regs);
-> +}
-> +
-> +void show_extended_regs_oops(struct pt_regs *regs, unsigned long error_code);
->  
->  #else /* !CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS */
->  
->  static inline void setup_pks(void) { }
->  static inline void pkrs_write_current(void) { }
->  static inline void pks_init_task(struct task_struct *task) { }
-> +static inline void write_pkrs(u32 new_pkrs) { }
-> +static inline void show_extended_regs_oops(struct pt_regs *regs,
-> +					   unsigned long error_code) { }
->  
->  #endif /* CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS */
->  
-> diff --git a/arch/x86/include/asm/processor-flags.h b/arch/x86/include/asm/processor-flags.h
-> index 02c2cbda4a74..4a41fc4cf028 100644
-> --- a/arch/x86/include/asm/processor-flags.h
-> +++ b/arch/x86/include/asm/processor-flags.h
-> @@ -53,4 +53,6 @@
->  # define X86_CR3_PTI_PCID_USER_BIT	11
->  #endif
->  
-> +#define EXTENDED_PT_REGS_SIZE 8
-> +
->  #endif /* _ASM_X86_PROCESSOR_FLAGS_H */
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index d8b3ebd2bb85..90e76178b6b4 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -319,8 +319,7 @@ SYM_CODE_START_NOALIGN(vc_boot_ghcb)
->  	movq    %rsp, %rdi
->  	movq	ORIG_RAX(%rsp), %rsi
->  	movq	initial_vc_handler(%rip), %rax
-> -	ANNOTATE_RETPOLINE_SAFE
-> -	call	*%rax
-> +	__call_ext_ptregs *%rax, annotate_retpoline_safe=1
->  
->  	/* Unwind pt_regs */
->  	POP_REGS
-> @@ -397,7 +396,7 @@ SYM_CODE_START_LOCAL(early_idt_handler_common)
->  	UNWIND_HINT_REGS
->  
->  	movq %rsp,%rdi		/* RDI = pt_regs; RSI is already trapnr */
-> -	call do_early_exception
-> +	call_ext_ptregs do_early_exception
->  
->  	decl early_recursion_flag(%rip)
->  	jmp restore_regs_and_return_to_kernel
-> @@ -421,7 +420,7 @@ SYM_CODE_START_NOALIGN(vc_no_ghcb)
->  	/* Call C handler */
->  	movq    %rsp, %rdi
->  	movq	ORIG_RAX(%rsp), %rsi
-> -	call    do_vc_no_ghcb
-> +	call_ext_ptregs do_vc_no_ghcb
->  
->  	/* Unwind pt_regs */
->  	POP_REGS
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index e133c0ed72a0..a4ce7cef0260 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -32,6 +32,7 @@
->  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
->  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
->  #include <asm/vdso.h>			/* fixup_vdso_exception()	*/
-> +#include <asm/pks.h>
->  
->  #define CREATE_TRACE_POINTS
->  #include <asm/trace/exceptions.h>
-> @@ -547,6 +548,8 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
->  		 (error_code & X86_PF_PK)    ? "protection keys violation" :
->  					       "permissions violation");
->  
-> +	show_extended_regs_oops(regs, error_code);
-> +
->  	if (!(error_code & X86_PF_USER) && user_mode(regs)) {
->  		struct desc_ptr idt, gdt;
->  		u16 ldtr, tr;
-> diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
-> index 580238388f0c..76eb19a37942 100644
-> --- a/include/linux/pkeys.h
-> +++ b/include/linux/pkeys.h
-> @@ -52,6 +52,15 @@ enum pks_pkey_consumers {
->  	PKS_KEY_NR_CONSUMERS
->  };
->  extern u32 pkrs_init_value;
-> -#endif
-> +
-> +void pkrs_save_irq(struct pt_regs *regs);
-> +void pkrs_restore_irq(struct pt_regs *regs);
-> +
-> +#else /* !CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS */
-> +
-> +static inline void pkrs_save_irq(struct pt_regs *regs) { }
-> +static inline void pkrs_restore_irq(struct pt_regs *regs) { }
-> +
-> +#endif /* CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS */
->  
->  #endif /* _LINUX_PKEYS_H */
-> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> index bf16395b9e13..aa0b1e8dd742 100644
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -6,6 +6,7 @@
->  #include <linux/livepatch.h>
->  #include <linux/audit.h>
->  #include <linux/tick.h>
-> +#include <linux/pkeys.h>
->  
->  #include "common.h"
->  
-> @@ -364,7 +365,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
->  		instrumentation_end();
->  
->  		ret.exit_rcu = true;
-> -		return ret;
-> +		goto done;
->  	}
->  
->  	/*
-> @@ -379,6 +380,8 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
->  	trace_hardirqs_off_finish();
->  	instrumentation_end();
->  
-> +done:
-> +	pkrs_save_irq(regs);
->  	return ret;
->  }
->  
-> @@ -404,7 +407,12 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
->  	/* Check whether this returns to user mode */
->  	if (user_mode(regs)) {
->  		irqentry_exit_to_user_mode(regs);
-> -	} else if (!regs_irqs_disabled(regs)) {
-> +		return;
-> +	}
-> +
-> +	pkrs_restore_irq(regs);
-> +
-> +	if (!regs_irqs_disabled(regs)) {
->  		/*
->  		 * If RCU was not watching on entry this needs to be done
->  		 * carefully and needs the same ordering of lockdep/tracing
-> @@ -458,11 +466,13 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
->  	ftrace_nmi_enter();
->  	instrumentation_end();
->  
-> +	pkrs_save_irq(regs);
->  	return irq_state;
->  }
->  
->  void noinstr irqentry_nmi_exit(struct pt_regs *regs, irqentry_state_t irq_state)
->  {
-> +	pkrs_restore_irq(regs);
->  	instrumentation_begin();
->  	ftrace_nmi_exit();
->  	if (irq_state.lockdep) {
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
+> This was in part picked up from:
+>
+>   https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
+>   [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
+>
+> with significant rewrites/reworks:
+>
+>  - moved to common drm_input_helper and drm_self_refresh_helper
+>    implementation
+>  - track state only through crtc->state->self_refresh_active
+>
+> Note that I'm relatively unfamiliar with DRM locking expectations, but I
+> believe access to drm_crtc->state (which helps us track redundant
+> transitions) is OK under the locking provided by
+> drm_atomic_get_crtc_state().
+
+Yeah, I'm no expert here either. I gave a review a shot anyway since
+it's been all quiet, but adult supervision is probably required...
+
+I can believe that you are safe from corrupting things, but I think
+you still have locking problems, don't you? What about this:
+
+1. PSR is _not_ active but we're 1 microsecond away from entering PSR
+
+2. Input event comes through.
+
+3. Start executing drm_self_refresh_transition(false).
+
+4. PSR timer expires and starts executing drm_self_refresh_transition(true).
+
+5. Input event "wins the race" but sees that PSR is already disabled => noop
+
+6. PSR timer gets the lock now. Starts PSR transition.
+
+Wouldn't it be better to cancel / reschedule any PSR entry as soon as
+you see the input event?
+
+
+-Doug
