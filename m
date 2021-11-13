@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352D144F315
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 13:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8110644F314
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 13:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbhKMMc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 07:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhKMMc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 07:32:28 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E95C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:29:35 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso8623978wmc.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:29:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=qnm9LknuqQqaF0Y9qfNH4Kx0Ou3DshsV1xxjH0V/Yec=;
-        b=kcNXVCn19gW0U2c6Mlc6vEgi+41+PKhUO7k0QQZD7lDWDAENFIdm+dH3Oq9XSZEfih
-         EJWbYBts99SEORbeIYDU7O22fY1N6sSDv1MK1qSQswXe/KWanfaa4uYwCs5TW9uQEUf4
-         4EYFTTwPkjxh+RybPIs/ycrpu2n3IppHootX1CWLaMadREoZk+jQA+2YMZWpPV8bUQVb
-         PdB4TMkeSkDkTh5WznU+vrr+3rsLHpjsyuRFRTZ+zpF0AlDONQrqV6QY7bdI+7Ir48iR
-         2O5ls2IHu2JZaxE6VCUTSR8MvIt/Vbyp982NWJaNWik+7+sFPwPBJjkqZfXEoItelwYi
-         j+6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=qnm9LknuqQqaF0Y9qfNH4Kx0Ou3DshsV1xxjH0V/Yec=;
-        b=Z93hMR7M+engXQdWEjDUyEYMfOLKkSP80kMJoLcmkGCpMlBcJv6xvqiaAX8Pb+Yli9
-         S/s4MZi7An/WKJZPV54sK7eGkOzYWoaE1LSQmuWVXZ5TPksd0TVs9l2A072YeKI3Bg1k
-         j0csJQThp75rl6ZNG/hxUGprG5R1tvrfYWSG6Lbjjg+10XjMEq/VlAbFjFK6WjlUZmNw
-         Xu8rp0h8qqKuf7dfhmbZtAaEzJLt12txSmUCjmwokQsjb4BCxztKDNqCKMDoDVzE6Hs3
-         NS9MLLdQlWdLblvH/PCXfgUmIqVQe1wPrVB6P9olAJB7tir4KqR8I2zw9WSw97B31t2B
-         R1Mg==
-X-Gm-Message-State: AOAM533ZgzT/SLIS+1DC6CNzmdmVAqo2v5rN9mOZGtpMTxXT52a8Hk73
-        ZLMTCUvvhaSorDeSxfVkG+1hD/QMU17uvwYUt4XHumSTD/8=
-X-Google-Smtp-Source: ABdhPJwvgClgliVb9n3Cu3B+flSAJ34+/WD4Ug8ELlJGLljlJqu/U3qfZxNShCcy4zeBKkxk6Fstn6v2/xYsyKmG1s8=
-X-Received: by 2002:a1c:f008:: with SMTP id a8mr43196605wmb.140.1636806102948;
- Sat, 13 Nov 2021 04:21:42 -0800 (PST)
+        id S235660AbhKMM2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 07:28:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhKMM2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 07:28:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AE2A61075;
+        Sat, 13 Nov 2021 12:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636806352;
+        bh=ez+K7Q6nN+J4K14Z0eLFaOK3VUeeeFzaYOkRWOtmpLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BxHIoKYCpbJqfGTsOTTlPnAtuoRcNOYyUazCOpGB3UY9D6wYSq/FEjIPjgBT3LXow
+         65kUu1EI9p8uY3RHTOASUFqNyVluQzB0qyqGlexN/S7kg98A/Sp09bAbjVAHKNqfFr
+         gI9nIlyW53diNXmtslHAKcbB0AbewFz0gT3Lkzv3mPivjEN0Q6jJndPggIxIigkpvz
+         j9bbW6Z5KIBXJ5QIGhrT8reDdjo8qFPKf8uzAtYjD/m6yBs6jZydYniNMuM4MwkbfQ
+         NKTfWd6f3S2kT5h94gGskBj8mxMpPR9vKGUulxDdN44u/xZswPmFCnJ4ouXIWtYCkq
+         1UzpyYMGc00Dg==
+Date:   Sat, 13 Nov 2021 20:25:44 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     gregkh@linuxfoundation.org, balbi@kernel.org,
+        valentina.manea.m@gmail.com, shuah@kernel.org, johan@kernel.org,
+        zhengyongjun3@huawei.com, colin.king@intel.com, trix@redhat.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] usb: Remove redundant 'flush_workqueue()' calls
+Message-ID: <20211113122544.GA3972@Peter>
+References: <563123a8117d6cafae3f134e497587bd2b8bb7f4.1636734453.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Received: by 2002:a05:6000:245:0:0:0:0 with HTTP; Sat, 13 Nov 2021 04:21:42
- -0800 (PST)
-Reply-To: caixabank224@gmail.com
-From:   CAIXABANK <jamesonwards901@gmail.com>
-Date:   Sun, 14 Nov 2021 00:21:42 +1200
-Message-ID: <CACgR1TgqbHaiXurUgJZDksq9mX7WX5F=qRxh7Q3dE2PWfZBPsg@mail.gmail.com>
-Subject: URGENT RESPONSE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <563123a8117d6cafae3f134e497587bd2b8bb7f4.1636734453.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21-11-12 17:30:16, Christophe JAILLET wrote:
+> 'destroy_workqueue()' already drains the queue before destroying it, so
+> there is no need to flush it explicitly.
+> 
+> Remove the redundant 'flush_workqueue()' calls.
+> 
+> This was generated with coccinelle:
+> 
+> @@
+> expression E;
+> @@
+> - 	flush_workqueue(E);
+> 	destroy_workqueue(E);
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/usb/chipidea/otg.c           | 5 ++---
+
+Acked-by: Peter Chen <peter.chen@kernel.or> # for chipidea part
+>  drivers/usb/gadget/udc/mv_udc_core.c | 4 +---
+>  drivers/usb/host/u132-hcd.c          | 1 -
+>  drivers/usb/phy/phy-mv-usb.c         | 5 +----
+>  drivers/usb/usbip/usbip_event.c      | 1 -
+>  5 files changed, 4 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
+> index 8dd59282827b..7b53274ef966 100644
+> --- a/drivers/usb/chipidea/otg.c
+> +++ b/drivers/usb/chipidea/otg.c
+> @@ -255,10 +255,9 @@ int ci_hdrc_otg_init(struct ci_hdrc *ci)
+>   */
+>  void ci_hdrc_otg_destroy(struct ci_hdrc *ci)
+>  {
+> -	if (ci->wq) {
+> -		flush_workqueue(ci->wq);
+> +	if (ci->wq)
+>  		destroy_workqueue(ci->wq);
+> -	}
+> +
+>  	/* Disable all OTG irq and clear status */
+>  	hw_write_otgsc(ci, OTGSC_INT_EN_BITS | OTGSC_INT_STATUS_BITS,
+>  						OTGSC_INT_STATUS_BITS);
+> diff --git a/drivers/usb/gadget/udc/mv_udc_core.c b/drivers/usb/gadget/udc/mv_udc_core.c
+> index 7f24ce400b59..b6d34dda028b 100644
+> --- a/drivers/usb/gadget/udc/mv_udc_core.c
+> +++ b/drivers/usb/gadget/udc/mv_udc_core.c
+> @@ -2084,10 +2084,8 @@ static int mv_udc_remove(struct platform_device *pdev)
+>  
+>  	usb_del_gadget_udc(&udc->gadget);
+>  
+> -	if (udc->qwork) {
+> -		flush_workqueue(udc->qwork);
+> +	if (udc->qwork)
+>  		destroy_workqueue(udc->qwork);
+> -	}
+>  
+>  	/* free memory allocated in probe */
+>  	dma_pool_destroy(udc->dtd_pool);
+> diff --git a/drivers/usb/host/u132-hcd.c b/drivers/usb/host/u132-hcd.c
+> index ae882d76612b..d879d6af5710 100644
+> --- a/drivers/usb/host/u132-hcd.c
+> +++ b/drivers/usb/host/u132-hcd.c
+> @@ -3211,7 +3211,6 @@ static void __exit u132_hcd_exit(void)
+>  	platform_driver_unregister(&u132_platform_driver);
+>  	printk(KERN_INFO "u132-hcd driver deregistered\n");
+>  	wait_event(u132_hcd_wait, u132_instances == 0);
+> -	flush_workqueue(workqueue);
+>  	destroy_workqueue(workqueue);
+>  }
+>  
+> diff --git a/drivers/usb/phy/phy-mv-usb.c b/drivers/usb/phy/phy-mv-usb.c
+> index 576d925af77c..86503b7d695c 100644
+> --- a/drivers/usb/phy/phy-mv-usb.c
+> +++ b/drivers/usb/phy/phy-mv-usb.c
+> @@ -648,10 +648,8 @@ static int mv_otg_remove(struct platform_device *pdev)
+>  {
+>  	struct mv_otg *mvotg = platform_get_drvdata(pdev);
+>  
+> -	if (mvotg->qwork) {
+> -		flush_workqueue(mvotg->qwork);
+> +	if (mvotg->qwork)
+>  		destroy_workqueue(mvotg->qwork);
+> -	}
+>  
+>  	mv_otg_disable(mvotg);
+>  
+> @@ -825,7 +823,6 @@ static int mv_otg_probe(struct platform_device *pdev)
+>  err_disable_clk:
+>  	mv_otg_disable_internal(mvotg);
+>  err_destroy_workqueue:
+> -	flush_workqueue(mvotg->qwork);
+>  	destroy_workqueue(mvotg->qwork);
+>  
+>  	return retval;
+> diff --git a/drivers/usb/usbip/usbip_event.c b/drivers/usb/usbip/usbip_event.c
+> index 086ca76dd053..26513540bcdb 100644
+> --- a/drivers/usb/usbip/usbip_event.c
+> +++ b/drivers/usb/usbip/usbip_event.c
+> @@ -137,7 +137,6 @@ int usbip_init_eh(void)
+>  
+>  void usbip_finish_eh(void)
+>  {
+> -	flush_workqueue(usbip_queue);
+>  	destroy_workqueue(usbip_queue);
+>  	usbip_queue = NULL;
+>  }
+> -- 
+> 2.30.2
+> 
+
 -- 
- Congratulations!
 
-The United Nations has come into conclusion to endorse compensation
-fund payment of six million us dollars ($ 6 000 000.00 ) to lucky
-beneficiaries across the globe
-through the help of the newly elected president due to covid-19 (
-coronavirus ) that has cause economic melt down in different countries
-and global hazard to so many lives.
- The United Nations has instructed the swiss world bank to release
-compensation fund payment in collaboration with caixa bank in spain.
-The payment will be issue into atm visa card and send it to lucky
-beneficary who apply for it via caixa bank in spain through diplomatic
-courier service company close to the beneficiary country.
+Thanks,
+Peter Chen
 
-This is the information caixa bank management require to deliver
-compensation fund payment to beneficiary country door step.
-
-1. Your name:
-2. Home address:
-3. City:
-4. Country:
-5. Occupation:
-6. Sex:
-7. Marital status:
-8. Age:
-9. Passport / ID card/ Drivers lience
-10.Phone number:
-
-Contact our email id: ( caixabank224gmail.com ) for your payment
-
-Thanks
-
-Caixa bank management
