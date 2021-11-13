@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE0144F140
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C86D44F141
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbhKMEjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 23:39:44 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:47270 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235676AbhKMEjk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 23:39:40 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4aew9087521;
-        Fri, 12 Nov 2021 22:36:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1636778200;
-        bh=o9QI+P32hrMzdaBdjFKIkKx5SwYc/dNO7pYI5MlU/iM=;
-        h=From:To:CC:Subject:Date;
-        b=jG/d3E5+tnlMjfMcdCQ2u+BTa2SZHMXh7w9pIRl7KYoK5dec2DYik9LrxGN4tlysu
-         cDj+X3kLr55Ht/UG5iomiM8l8G3jLOTWraJdjkf7ZXi9dsfMTd1c9B1FRjaG6inXZX
-         ic0oMoObyKUE4QWPEOiJz3+lnK04dBG7UwxGILw8=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AD4aedY088900
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Nov 2021 22:36:40 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 12
- Nov 2021 22:36:40 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 12 Nov 2021 22:36:40 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4aedB048978;
-        Fri, 12 Nov 2021 22:36:40 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
-        <linux-omap@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] arm64: dts: ti: k3-j721e: Fix the L2 cache sets
-Date:   Fri, 12 Nov 2021 22:36:39 -0600
-Message-ID: <20211113043639.4413-1-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
+        id S235697AbhKMEna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 23:43:30 -0500
+Received: from smtpbg604.qq.com ([59.36.128.82]:36216 "EHLO smtpbg604.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232329AbhKMEn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 23:43:28 -0500
+X-QQ-mid: bizesmtp41t1636778421tkvo9okg
+Received: from localhost.localdomain (unknown [125.69.41.88])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 13 Nov 2021 12:40:20 +0800 (CST)
+X-QQ-SSF: 01000000000000C0F000C00A0000000
+X-QQ-FEAT: FXvDfBZI5O4ZPSh7w95J4xYXfclSDsGXKPecStb0FuWMtQfjyoscsC5z5WinO
+        umbYfA61YWKdGgpiBBmiedBniwB+lCgl8na3yUuzDGhVjcOy4GA9JFfRKO/Y5WBc/ODX9pb
+        XJuHfcCAEpyRoBZl4GgUqWphQKOwwtQYi56K6hzis3TEGy3x7ta9TSnnmIP1uYI61j71WVw
+        Vw8ql8us1UXgRMeWxRUGXsXfKkjOc5P0SH2GmWomPzN+1/Wdaio8eSnv2FYIj/TIwGru1f3
+        qoFBTDJqRJqxeXEajHfrpoxYprzUQOH1HOlH/8o7QM/K6A4iH5bp9SLvZYVmLckDD0leYmd
+        zG/4UV7wbUuqmP1PSiSfazf9D7jmdQGgj8oU1Wy
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     benh@kernel.crashing.org
+Cc:     wangborong@cdjrlc.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: Remove a repeated word in a comment
+Date:   Sat, 13 Nov 2021 12:40:18 +0800
+Message-Id: <20211113044018.130835-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A72's L2 cache[1] on J721e[2] is 1MB. A53's L2 is fixed line length of
-64 bytes and 16-way set-associative cache structure.
+The double word `up' in a comment is repeated, thus one of
+them should be removed.
 
-1MB of L2 / 64 (line length) = 16384 ways
-16384 ways / 16 = 1024 sets
-
-Fix the l2 cache-sets.
-
-[1] https://developer.arm.com/documentation/100095/0003/Level-2-Memory-System/About-the-L2-memory-system
-[2] http://www.ti.com/lit/pdf/spruil1
-
-Fixes: 2d87061e70de ("arm64: dts: ti: Add Support for J721E SoC")
-Reported-by: Peng Fan <peng.fan@nxp.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- arch/arm64/boot/dts/ti/k3-j721e.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/macintosh/mediabay.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-index 214359e7288b..0f674bc8f1c7 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-@@ -88,7 +88,7 @@ L2_0: l2-cache0 {
- 		cache-level = <2>;
- 		cache-size = <0x100000>;
- 		cache-line-size = <64>;
--		cache-sets = <2048>;
-+		cache-sets = <1024>;
- 		next-level-cache = <&msmc_l3>;
- 	};
+diff --git a/drivers/macintosh/mediabay.c b/drivers/macintosh/mediabay.c
+index eab7e83c11c4..ec23094263e7 100644
+--- a/drivers/macintosh/mediabay.c
++++ b/drivers/macintosh/mediabay.c
+@@ -129,7 +129,7 @@ enum {
+ /*
+  * Functions for polling content of media bay
+  */
+- 
++
+ static u8
+ ohare_mb_content(struct media_bay_info *bay)
+ {
+@@ -331,12 +331,12 @@ static void keylargo_mb_un_reset_ide(struct media_bay_info* bay)
  
+ static inline void set_mb_power(struct media_bay_info* bay, int onoff)
+ {
+-	/* Power up up and assert the bay reset line */
++	/* Power up and assert the bay reset line */
+ 	if (onoff) {
+ 		bay->ops->power(bay, 1);
+ 		bay->state = mb_powering_up;
+ 		pr_debug("mediabay%d: powering up\n", bay->index);
+-	} else { 
++	} else {
+ 		/* Make sure everything is powered down & disabled */
+ 		bay->ops->power(bay, 0);
+ 		bay->state = mb_powering_down;
+@@ -577,7 +577,7 @@ static int media_bay_attach(struct macio_dev *mdev,
+ 		macio_release_resources(mdev);
+ 		return -ENOMEM;
+ 	}
+-	
++
+ 	i = media_bay_count++;
+ 	bay = &media_bays[i];
+ 	bay->mdev = mdev;
+@@ -745,7 +745,7 @@ static int __init media_bay_init(void)
+ 	if (!machine_is(powermac))
+ 		return 0;
+ 
+-	macio_register_driver(&media_bay_driver);	
++	macio_register_driver(&media_bay_driver);
+ 
+ 	return 0;
+ }
 -- 
-2.32.0
+2.33.0
 
