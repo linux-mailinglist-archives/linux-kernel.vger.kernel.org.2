@@ -2,91 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC2344F055
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336E444F0B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 03:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbhKMA6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 19:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhKMA6v (ORCPT
+        id S233745AbhKMCAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 21:00:32 -0500
+Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:7682 "EHLO
+        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230300AbhKMCAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 19:58:51 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7718AC061766;
-        Fri, 12 Nov 2021 16:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=yfWFwVygX4LELuhhE6JdpYKcH8c3JWQlsq941prq5Ok=; b=OL1i8crCCeuXAAYZJvt8gS6caB
-        o96+WNDhTQzTk67rlv/KjBMBKfTEOV7EisLAROIM6bKw5vAh6J5uEL2/llqpjONqQI9ssP/LTh30I
-        nIcGUtCcutjWVSqIlrT/XmE+J9BAjektGfw80/8ypuRQEk5f6abgjjfKqdlR792OXeUY5nRz0dCP3
-        cw6Ztic4dRqwhfennUWA+zZ2OUdPWhew4YCHhr4kbVdvTPBmGDvbml8u3kVKeTkBy4/vISqiQD531
-        7smFbbzGrB35b8lI8NHS5skxiVFkIgSHJwVYMGEU+evtQ5+pwQ4WEefPUATW39Ba6H+A0lnMeCR2L
-        9ohCNFZQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mlhKq-00BxJ4-1p; Sat, 13 Nov 2021 00:56:00 +0000
-Subject: Re: [PATCH v5 2/8] leds: document additional use of blink_set for
- hardware control
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20211112153557.26941-1-ansuelsmth@gmail.com>
- <20211112153557.26941-3-ansuelsmth@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5ef01f7d-b250-73e5-3f06-d03aba1304c7@infradead.org>
-Date:   Fri, 12 Nov 2021 16:55:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211112153557.26941-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 12 Nov 2021 21:00:30 -0500
+X-Greylist: delayed 5230 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Nov 2021 21:00:30 EST
+Received: from pps.filterd (m0105196.ppops.net [127.0.0.1])
+        by mx0a-00268f01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ACNheHo024559;
+        Sat, 13 Nov 2021 00:29:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=equinix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=pps202002;
+ bh=4A9Pues6LSGMukRLEqwP55OoZa28n0TnE+PEJ8epx58=;
+ b=l0/ytF0gThPOb7ZC4fo9Pd7/BfA//uMp+sMnDqAbdcxxlFYceL1RQ3bVwIHUmPeKCly8
+ HU5YhqC+OwpDhnyeGIT7x+vPjY3CgEPT1Hr5V4Hpm3vtKxQHy0Tvl8bpmqZOKq+1YqNE
+ vlmaxhYF14FMMSzlABZOWuLjX5e1UF6woxqis12kIh8/lWZ0GgwI/yJEGPEn0NtSyrv4
+ A79axUwn9mky4OQ920mDCm1qGBG9sXRmo9o6T/xe3xDNdL9E3lTo2ero8sOPPEuNtth8
+ cKRIKM9B2gF0iqlLgUQoMisUg46VtGGkOl4xsNBJlnS39YZg6BcNUeSXkJ8O6mBOUtfE PA== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by mx0a-00268f01.pphosted.com (PPS) with ESMTPS id 3c9y170px2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 13 Nov 2021 00:29:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OsTz8jIiLQCM5Msuaz02io0+PeX9eoa5qJAgOaPNjAZRsgaNkGYyrNZG7NcEQtItZhcRu+jQmOBuFVM2N6tPvK+rpy5/Pleiqtqj6sGXxxMdcyWwnGxGPlp50TDOVM3Nqcw9L+5i3KujKxItZjykZVLLwDP0tSSg4HCEU9KfJTFBgAIZkI9Mt3ZV6uMa8/ozKGarEDr01ApKfKju+7tv7tKLSWOuKzhnONAKO44DtiPItU1bOhdSO8qyNF3d1DTBcJ4RQ+r5vaV8Y/TaQ+W38jFh+G/2WTQrC4LqDZnMtRxcwAKIgUmIqV7D2rsF//cRFowa5df+zV4qZg47wyfBWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4A9Pues6LSGMukRLEqwP55OoZa28n0TnE+PEJ8epx58=;
+ b=NSQ6uLJXON32jzPkq8uPqgj9KgSIzbKc2LPs/Acym8vb5nTd8wVr0YyonjtQ9sq+Ue67e5rkMClFkXgUq3TTrJmA/7+OBV6oVxp344dL3evhkb8h95kE4w7HZUhWFIjGcdwS0Orga2fLOnW+DIhgbm808tf/Dpq+mTTDzBQzi73gXvRxAJObyarHi6rZAQXbUAJ25ajpoEuaxtP2kyu3sITsM4pyHqfJ1P8iox9hnG35CgQI2zuXQnFGL0Jd2fnO89YbAd2Nn1PxvxaWzpF1WjCnwZ/hgxdlZPE3BBQNA827W4J5gRNLRXI5cP/lrPs1pF5y5G/mw4BT34+3QnIQNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+Received: from DM8PR04MB8007.namprd04.prod.outlook.com (2603:10b6:5:314::20)
+ by DM8PR04MB8072.namprd04.prod.outlook.com (2603:10b6:8::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4669.16; Sat, 13 Nov 2021 00:29:49 +0000
+Received: from DM8PR04MB8007.namprd04.prod.outlook.com
+ ([fe80::61fc:37a:892f:c6b9]) by DM8PR04MB8007.namprd04.prod.outlook.com
+ ([fe80::61fc:37a:892f:c6b9%8]) with mapi id 15.20.4690.019; Sat, 13 Nov 2021
+ 00:29:49 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Adriana Kobylak <anoo@linux.ibm.com>
+CC:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "olof@lixom.net" <olof@lixom.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bruce.mitchell@linux.vnet.ibm.com" 
+        <bruce.mitchell@linux.vnet.ibm.com>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        Adriana Kobylak <anoo@us.ibm.com>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "liuxiwei1013@gmail.com" <liuxiwei1013@gmail.com>
+Subject: Re: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
+Thread-Topic: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
+Thread-Index: AQHX2CWQN+kzq+WgkUO16L1HWdMoKw==
+Date:   Sat, 13 Nov 2021 00:29:48 +0000
+Message-ID: <20211113002948.GE14774@packtop>
+References: <20211112202931.2379145-1-anoo@linux.ibm.com>
+In-Reply-To: <20211112202931.2379145-1-anoo@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=equinix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ca2c00df-bb3a-4f7f-acbd-08d9a63cb39a
+x-ms-traffictypediagnostic: DM8PR04MB8072:
+x-microsoft-antispam-prvs: <DM8PR04MB807209E0F93FDA98ED317FD7C3969@DM8PR04MB8072.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vUgJJK4nsXOOamf1AY6IrVzcB0QdnuAX8oFOmopmYVBcpv4LbH7lV3C5Dnz8jchIPtLCmQ1X7v9GqYVOJGAKCF7tITGD+Dud7p2lUC+VPYYcX9+RuG/hNkuH7IsMThRfnJJVWYYURpkGt3asqYDJzwnm4eqqTcks1yoLYvZncm0kUPeRW6SVA7wpkeJjOBedc3bQZXDiKb8Wu7WeQNMyv1MTk25nOR04RIioaiOO4Sg6ezDEtvZOosPlicIF2Fc5quQafGX/KmRNOIDfunl/As0+dYGj/jMVMGDn1kMb9xY6RIrDpIHOUsM0+qA7vc9hjHBM88pHysQLqR9MjMiQLmB7wfbkohyTV0p3/AtUR6RFSTT2mYu8IQbBVkLOJ8pb7VHDLsUVZcEerK0b3e+9FafKjrMLw0vW/1JrFOIx+K9nzOJYHwQ5t0yqjS0xvr7iiE3aXE2Sg9lowHPF5WfiPwa9qQZ6YFrqQx2yALxtCbA+bqbtUBqBVoksUHAeOOrHDN+LZomFTyn+M6kGTgwfu/UhJkwIFoKyimXfaVXAerH6CXYOK/tNzT2HvY0ib3+UNF9cpMFgeZtXlDo73ECC5La7PcAcC87xoK/XK6girnafYjZTq08EU9+uMqQPfC4jxfXx1re9HC7/p8LonHNw6Jh5gAwJWetJV4W050nwRJqsh7K2dSKG3ddqEInqK1OqS6h7nhhIOEHauu4/6KQ5Ag==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8007.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(91956017)(9686003)(26005)(1076003)(76116006)(5660300002)(8936002)(6512007)(71200400001)(6506007)(6916009)(508600001)(83380400001)(33716001)(122000001)(33656002)(38100700002)(186003)(86362001)(8676002)(66946007)(64756008)(2906002)(4326008)(38070700005)(66446008)(66556008)(7416002)(66476007)(6486002)(316002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?coQ4TnLk9kF2u2fYOaArGROf16aBFQGN2L0no4xSx1ylf2qhqffIs2z+OIbE?=
+ =?us-ascii?Q?3plHlzdqpPfC0jv++spzbKipA7CZI5Ph1xQl9jOxI1rp7Duzh7fNheyml6vi?=
+ =?us-ascii?Q?C/qTdD+p2E/yS3fn/sZx0PmIpL5B1Y6TAHvSQ49XMPIgKI9Ew5ENtsYNfECt?=
+ =?us-ascii?Q?+qvVzoOc3o45EqTow+PdXbyALERBqnCncLiFIlFIfmTPh8cpA7U5o2YueaEm?=
+ =?us-ascii?Q?ZZjcmnRLyeHBlTXyGVasUIbkQG1VY7i6xgD3bz01RH2eb3weBPQNJAuwVAS0?=
+ =?us-ascii?Q?BG2NqQAF9sjHJxFfEb2vPCQ0q0gGjum72ZYpOwINupWEh3H+Y4XeC6u02o2H?=
+ =?us-ascii?Q?Ntb+KMJYiuSoytjgY5192+80SH9ykbRsWIUxE/zLc0xmw9Jjbl3Ji4beJyCP?=
+ =?us-ascii?Q?yh4VbaaYiC7v7mO1UEGkPlTRn7MLaR/w3tpthsiGmNPlf+/pJMaB27kJciAE?=
+ =?us-ascii?Q?WM+/6c12s7zMF11qw0MXEx/h7s8ALQsnHnNC5nG/TOWh8t9GI41V2eqJgBsw?=
+ =?us-ascii?Q?UR+PWCfq5w1vzaHlpqXqyn4ovHwoz2TlYt4mjaENAhknewOE0rmPiP/iARY5?=
+ =?us-ascii?Q?A19BxCfJkjeM4yEPak/JmgFVCUtP74Na/A5Icrb+ne6rcpNCE7zrss49WpXt?=
+ =?us-ascii?Q?nwv4bqaPaBSiNQY9kFBd173i+QB4caJvuTombVWF73YpkzVl49KLoGBZqVm2?=
+ =?us-ascii?Q?+eC0ZybeieVEvHrnt0WQVOYXSmHNpDHKX77LQnb9N0qDtB2czjPSJE7KzReX?=
+ =?us-ascii?Q?0ZVGOeh/MTZ5uPt4l1DznHm1WFmjwKjTwcC+iY4G2eQy1hbGDRLsgu7b9/Gq?=
+ =?us-ascii?Q?FVtJkgCXiV+lf+LjEELV9OG0VeMKEr9gKOoA5mvLLcg+PX341T2vQAQlse5Z?=
+ =?us-ascii?Q?GmUnvrvJ6y5dKAYzBebSgwbNAscxI/SMzYZUn/YLB6lrKQY2JjGn7mseoox3?=
+ =?us-ascii?Q?cwQL9sWqDa89xJOvhdW80U6XXXqLw35kPCC2mNXgJ46ZamUe9FGN+Lxpv9/Y?=
+ =?us-ascii?Q?NUyuIxq+5slk71k5tZEsowxPMs85brpy8a6t6dPetJAzo/p0/3fEIM5pXuUR?=
+ =?us-ascii?Q?JvE7NTBV8y71mnNfE7SFAnD5gjRi2Ybqre06vgJogkmj89wr86wJvQcGL+D9?=
+ =?us-ascii?Q?eqsVOmUCyowlz2syCh6gKQgkOO8tduWysBKcj5Ucr7xW2GQtmcsXZwK3BhU4?=
+ =?us-ascii?Q?QbDEX5RmLXdnrlRheaASxrmRQmXPCLTBHGE2ngGFeht8BEzIfcfTBLPIAcP3?=
+ =?us-ascii?Q?5Rx5P1gKwTOduSvAXB26Bnfr5KxN7FVZeIqybgXRgc/UJ0B4dnSGPk+31TBp?=
+ =?us-ascii?Q?r8WWShUNptTcA3ELh2VjghJzZlju0L3W8Y5fWjxXXyc5XXmf6FBGvD285CPk?=
+ =?us-ascii?Q?R54TZKyNLC2AXDhl9cR3eomgPeEgSkuPHhF/JKb4WFBLc0MuNdYxgJ53nl5f?=
+ =?us-ascii?Q?0ZP2z3qNjTqcAppuMajaxJdJOVl1tY7UuEShemzmtjNJjPND7/9OnjEEKFVP?=
+ =?us-ascii?Q?PVnXrscWgis1JyYsQ3fGUDOu+W5Bh/etdVbl+0MvlqmmKGeEYZ34EArotD9Z?=
+ =?us-ascii?Q?7sArRPA2uA6ILF2572o5hV5Eh6aPUgNsKBrxBTKITymhYeKrZVoba8VtksV+?=
+ =?us-ascii?Q?KbG/K/Yo4cm8E0kYhqh+i94=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1354B30831F79A4D950C2588FDA5F76A@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8007.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca2c00df-bb3a-4f7f-acbd-08d9a63cb39a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2021 00:29:48.9669
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4n2HHvLyafsI3CRs3i7IS1+ObfV3BbHPTvR6zHirVPIWqk7wyqocpbDBbbbCRxZK+Phg37Y3IvKWV5sdBrRl8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB8072
+X-Proofpoint-GUID: 7Jr8PpaxYAVg7WofsPXagLItqQ2p5-Il
+X-Proofpoint-ORIG-GUID: 7Jr8PpaxYAVg7WofsPXagLItqQ2p5-Il
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-12_05,2021-11-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1011 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111130000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 7:35 AM, Ansuel Smith wrote:
-> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
-> index e5d266919a19..fa6e1cfc4628 100644
-> --- a/Documentation/leds/leds-class.rst
-> +++ b/Documentation/leds/leds-class.rst
-> @@ -202,6 +202,23 @@ hardware mode and any software only trigger will reject activation.
->   On init an LED driver that support a hardware mode should reset every blink mode
->   set by default.
->   
-> +Once a trigger has declared support for hardware-controlled blinks, it will use
-> +blink_set() to try to offload his trigger on activation/configuration.
+On Fri, Nov 12, 2021 at 12:29:31PM PST, Adriana Kobylak wrote:
+>From: Adriana Kobylak <anoo@us.ibm.com>
+>
+>Add support to detect USB flash drives and create the /dev/sd* devices.
+>Also add support for vfat to support USB drives formatted as FAT32.
+>This support will be used to enable firmware updates via USB flash
+>drives where the firmware image is stored in the USB drive and it's
+>plugged into the BMC USB port.
+>
 
-                                  this trigger
-
-> +blink_set() will return 0 if the requested modes set in trigger_data can be
-> +controlled by hardware or an error if both of the bitmap modes are not supported by
-> +the hardware or there was a problem in the configuration.
-> +
-> +Following blink_set logic, setting brightness to LED_OFF with hardware control active
-> +will reset any active blink mode and disable hardware control setting the LED to off.
-> +
-> +It's in the LED driver's interest to know how to elaborate the trigger data and report support
-> +for a particular set of blink modes. For this exact reason explicit support for the specific
-> +trigger is mandatory or the driver returns -EOPNOTSUPP if asked to enter hardware mode
-> +with a not supported trigger.
-> +If the driver returns -EOPNOTSUPP on hw_control_configure(), the trigger activation will
-> +fail as the driver doesn't support that specific hardware blink mode or doesn't know
-> +how to handle the provided trigger data.
+Hmm, how common is it for BMCs to have a USB port?  Perhaps it's more so
+than I realize, but at least in my (admittedly somewhat limited)
+experience I've yet to encounter one that does, so I'm wondering how
+appropriate these options are for the aspeed-g5 defconfig if they might
+just end up as a bunch of code that's never executed on most BMCs.
 
 
--- 
-~Randy
+Zev
+
+>Signed-off-by: Adriana Kobylak <anoo@us.ibm.com>
+>Tested-by: Adriana Kobylak <anoo@us.ibm.com>
+>---
+> arch/arm/configs/aspeed_g5_defconfig | 9 +++++++--
+> 1 file changed, 7 insertions(+), 2 deletions(-)
+>
+>diff --git a/arch/arm/configs/aspeed_g5_defconfig b/arch/arm/configs/aspee=
+d_g5_defconfig
+>index bee9422919aa..1b0d82c64ad4 100644
+>--- a/arch/arm/configs/aspeed_g5_defconfig
+>+++ b/arch/arm/configs/aspeed_g5_defconfig
+>@@ -37,11 +37,9 @@ CONFIG_KEXEC=3Dy
+> CONFIG_VFP=3Dy
+> CONFIG_NEON=3Dy
+> CONFIG_KERNEL_MODE_NEON=3Dy
+>-CONFIG_FIRMWARE_MEMMAP=3Dy
+> CONFIG_KPROBES=3Dy
+> CONFIG_JUMP_LABEL=3Dy
+> CONFIG_MODULES=3Dy
+>-# CONFIG_BLK_DEV_BSG is not set
+> # CONFIG_BLK_DEBUG_FS is not set
+> # CONFIG_MQ_IOSCHED_DEADLINE is not set
+> # CONFIG_MQ_IOSCHED_KYBER is not set
+>@@ -98,6 +96,7 @@ CONFIG_NET_NCSI=3Dy
+> CONFIG_DEVTMPFS=3Dy
+> CONFIG_DEVTMPFS_MOUNT=3Dy
+> # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+>+CONFIG_FIRMWARE_MEMMAP=3Dy
+> CONFIG_MTD=3Dy
+> CONFIG_MTD_BLOCK=3Dy
+> CONFIG_MTD_PARTITIONED_MASTER=3Dy
+>@@ -111,6 +110,8 @@ CONFIG_BLK_DEV_LOOP=3Dy
+> CONFIG_BLK_DEV_NBD=3Dy
+> CONFIG_EEPROM_AT24=3Dy
+> CONFIG_EEPROM_AT25=3Dy
+>+CONFIG_SCSI=3Dy
+>+CONFIG_BLK_DEV_SD=3Dy
+> CONFIG_NETDEVICES=3Dy
+> CONFIG_NETCONSOLE=3Dy
+> # CONFIG_NET_VENDOR_ALACRITECH is not set
+>@@ -230,6 +231,7 @@ CONFIG_USB_DYNAMIC_MINORS=3Dy
+> CONFIG_USB_EHCI_HCD=3Dy
+> CONFIG_USB_EHCI_ROOT_HUB_TT=3Dy
+> CONFIG_USB_EHCI_HCD_PLATFORM=3Dy
+>+CONFIG_USB_STORAGE=3Dy
+> CONFIG_USB_GADGET=3Dy
+> CONFIG_USB_ASPEED_VHUB=3Dy
+> CONFIG_USB_CONFIGFS=3Dy
+>@@ -277,6 +279,7 @@ CONFIG_FSI_OCC=3Dy
+> CONFIG_EXT4_FS=3Dy
+> CONFIG_FANOTIFY=3Dy
+> CONFIG_OVERLAY_FS=3Dy
+>+CONFIG_VFAT_FS=3Dy
+> CONFIG_TMPFS=3Dy
+> CONFIG_JFFS2_FS=3Dy
+> # CONFIG_JFFS2_FS_WRITEBUFFER is not set
+>@@ -292,6 +295,8 @@ CONFIG_PSTORE_PMSG=3Dy
+> CONFIG_PSTORE_FTRACE=3Dy
+> CONFIG_PSTORE_RAM=3Dy
+> # CONFIG_NETWORK_FILESYSTEMS is not set
+>+CONFIG_NLS_CODEPAGE_437=3Dy
+>+CONFIG_NLS_ISO8859_1=3Dy
+> CONFIG_HARDENED_USERCOPY=3Dy
+> CONFIG_FORTIFY_SOURCE=3Dy
+> CONFIG_CRYPTO_HMAC=3Dy
+>--=20
+>2.25.1
+>=
