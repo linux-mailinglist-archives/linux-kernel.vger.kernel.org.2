@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD91544F19E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 06:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E01844F1AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 06:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhKMFvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 00:51:50 -0500
-Received: from smtpbg126.qq.com ([106.55.201.22]:18050 "EHLO smtpbg587.qq.com"
+        id S231637AbhKMF5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 00:57:22 -0500
+Received: from smtpbg127.qq.com ([109.244.180.96]:38479 "EHLO smtpbg.qq.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229487AbhKMFvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 00:51:45 -0500
-X-QQ-mid: bizesmtp51t1636782518t4rlqw4m
+        id S229487AbhKMF5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 00:57:13 -0500
+X-QQ-mid: bizesmtp45t1636782849t9o9xcuq
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 13:48:37 +0800 (CST)
+        id ; Sat, 13 Nov 2021 13:54:06 +0800 (CST)
 X-QQ-SSF: 01000000000000C0F000C00A0000000
-X-QQ-FEAT: W6nSwEQQYT/zLvTaMck+UA5HuWSWNNTR2iRVR/PtD0oRdGmXXAaG2q1qySIui
-        ZWFWtsaUl+n1dd7/vZXqUQuB+yOuoJvmMqfd475Y2jJNp2w0xFwPPlmyQsGKCMGm1zuh6/d
-        6DiSAMRKDGeU+x5SZlt8Fj1k8pHxWZqWF6Tne/9Pmf1F+H6Ipsmok8R199U0dgNOQKkVUsG
-        ayKSC4sbkzqo9fBfmEnDSpeUItI9pLYTlN/1OmM1TWOEp5oY73NrpDFJr8zNvi2BeDLRdNU
-        5d5uZUFPWJuVm3LxOq7R6JXzLElOjYsDxQovrQwqNnQRQ5eai3hVPwBlfosnQCY+DoBOrS6
-        /GcK614YFmgg5y4vBIAc3H/RM1vOw==
+X-QQ-FEAT: L6rHWLmoHCItUu55IwoZIMoD1g78HOTasIjmHf0nGt1cX/qeqjugVLWaJ4dUZ
+        X7r+ck8prpVH/O4REzs4c4pBtFfRBD8GoYg3KbqxWDdD0Eg1D65rSND+awCpgicviWINd8m
+        Zz+RbMqIgQmSR/pQuSgGYRt4yqUQIheNTPe2FVqP3lEpRmZs8APdzE4okN8HI7/wXvRGxJZ
+        yCS6or7BmSOoX9j5syxZtTgz2BQCrJUD1w9YNmoaologKNEAY08e47vwBSW6TvZ8CUceEGz
+        KuubXQfOCkqmFlVxAE6tsYn9fk5nHN1qn6jeFQ2QX31qtDNgUxV3LLvHkEK9thJW1QCP+O1
+        XAosP0oGZ/baKf11drLGlv5zr6MaIpSzMv1w2JA
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     hdegoede@redhat.com
-Cc:     corentin.chary@gmail.com, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] platform/x86: samsung-laptop: Fix typo in a comment
-Date:   Sat, 13 Nov 2021 13:48:27 +0800
-Message-Id: <20211113054827.199517-1-wangborong@cdjrlc.com>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] soc: qcom: qmi: Fix a typo in a comment
+Date:   Sat, 13 Nov 2021 13:53:58 +0800
+Message-Id: <20211113055358.206533-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `it' is repeated in a comment, therefore one of them
-is removed.
+The double word `client' in a comment is repeated, thus one of
+them should be removed.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/platform/x86/samsung-laptop.c | 2 +-
+ drivers/soc/qcom/qmi_interface.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index 7ee010aa740a..c1d9ed9b7b67 100644
---- a/drivers/platform/x86/samsung-laptop.c
-+++ b/drivers/platform/x86/samsung-laptop.c
-@@ -152,7 +152,7 @@ struct sabi_config {
- 
- static const struct sabi_config sabi_configs[] = {
- 	{
--		/* I don't know if it is really 2, but it it is
-+		/* I don't know if it is really 2, but it is
- 		 * less than 3 anyway */
- 		.sabi_version = 2,
- 
+diff --git a/drivers/soc/qcom/qmi_interface.c b/drivers/soc/qcom/qmi_interface.c
+index 1a03eaa38c46..c8c4c730b135 100644
+--- a/drivers/soc/qcom/qmi_interface.c
++++ b/drivers/soc/qcom/qmi_interface.c
+@@ -96,7 +96,7 @@ static void qmi_recv_del_server(struct qmi_handle *qmi,
+  * @node:	id of the dying node
+  *
+  * Signals the client that all previously registered services on this node are
+- * now gone and then calls the bye callback to allow the client client further
++ * now gone and then calls the bye callback to allow the client further
+  * cleaning up resources associated with this remote.
+  */
+ static void qmi_recv_bye(struct qmi_handle *qmi,
 -- 
 2.33.0
 
