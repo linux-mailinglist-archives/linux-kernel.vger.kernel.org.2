@@ -2,68 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FF244F276
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 11:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EE744F26F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 11:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235796AbhKMKiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 05:38:25 -0500
-Received: from smtp4.jd.com ([59.151.64.78]:2049 "EHLO smtp4.jd.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231803AbhKMKiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 05:38:23 -0500
-X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Nov 2021 05:38:23 EST
-Received: from JDCloudMail06.360buyAD.local (172.31.68.39) by
- JDCloudMail08.360buyAD.local (172.31.68.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Sat, 13 Nov 2021 18:20:19 +0800
-Received: from JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913]) by
- JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913%5]) with mapi id
- 15.01.2375.007; Sat, 13 Nov 2021 18:20:19 +0800
-From:   =?gb2312?B?u8bA1g==?= <huangle1@jd.com>
-To:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
- vcpu_load_eoi_exitmap()
-Thread-Topic: [PATCH] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
- vcpu_load_eoi_exitmap()
-Thread-Index: AQHX2HeasmdWyt4tWUajKJXYCzbqzA==
-Date:   Sat, 13 Nov 2021 10:20:19 +0000
-Message-ID: <1300eda19bce40d5a539bc431446da5e@jd.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.31.14.18]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S235773AbhKMKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 05:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232003AbhKMKYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 05:24:24 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D44C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 02:21:32 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id m20so2196430edc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 02:21:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ecovIr3cgAtR+3fYnJ5+gVzcYeZtoVQWk0eRWV5BA60=;
+        b=dF9S9AHlGYB4O2sQGUKorbkrzvOWrHQ864io9IZdPvNyyFCmx0ngbxjFMrChpU2nQF
+         Euh+Q9zczwVLex0vzFLldVyQkfF/IQvXtqUN8nJSxD7TZ0zp+/lQJeh62jRwHED/M9Bz
+         hwnMMdGEjbGcMYwPPn7lgu4r7hqlDWXPK92i8FIXYnjBebeu1w388o7Pvi+RWgdZ/SZS
+         6Ntc/vKkhTII0SEulIIIbPhehb1bCtdeiWnCBc73uHYfjMBdsFG6wgV7yXNr8VfOnldf
+         iAwCcDDrG0b3SQul1PxebtwDWdO4PXW55BK4jmVuZeE7wRKEmBcjKMhT8RyYuY+MRL6/
+         R9Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ecovIr3cgAtR+3fYnJ5+gVzcYeZtoVQWk0eRWV5BA60=;
+        b=c3HQVQ5L8RcPfWkdXoOLm3+D0sOdxNZcPeP3jnLPGVNyOB1J+3zXtf6hCWhXVwV1i4
+         CK/v1GLIcAPmdBkTGJgKonsstWRvZajP9TkLzxlUiimgDE53F9ActGJTo0IFkDk4f6tV
+         V/1vkyjrDUwyTzyfFCPJAfvNR92QsxVBCuWeef3dbFTJpxgGOJ+ppeSHz94jE1Q/udhU
+         7teBrK2/gSzJdb1sLtRw4C0BhRnVVpz72xJiVAMaX3qiO+B/F+3mxmB0j0VvYk5j1R3Y
+         9CFW1QsdGHAyJeNasgWjIELadYyAjxQJKR9tFztP1bpSIlOP1LsY3jvKtz5Wi7A5X5I6
+         KjfA==
+X-Gm-Message-State: AOAM533uR6oPZWRqTkLOmXQKT8F4J7bTyoBavq6nw8pKQxqwh1UCri7X
+        Nrsi9Hj+N23luD88Nn7vu5QWRi73pHQ=
+X-Google-Smtp-Source: ABdhPJxdk/MUFzyatk1yugomiILDuKYPh2gffhsNDkiSVq+0zSdCeo00SkxCGyahxRx2o9siG2mrqg==
+X-Received: by 2002:a17:907:72c7:: with SMTP id du7mr28654805ejc.424.1636798891363;
+        Sat, 13 Nov 2021 02:21:31 -0800 (PST)
+Received: from tom-desktop.station (net-93-150-197-192.cust.dsl.teletu.it. [93.150.197.192])
+        by smtp.gmail.com with ESMTPSA id e19sm4212840edu.47.2021.11.13.02.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Nov 2021 02:21:30 -0800 (PST)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Karolina Drobnik <karolinadrobnik@gmail.com>,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: fix camelcase in bRadioOff
+Date:   Sat, 13 Nov 2021 11:21:20 +0100
+Message-Id: <20211113102126.82904-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gdmNwdV9sb2FkX2VvaV9leGl0bWFwKCksIGN1cnJlbnRseSB0aGUgZW9pX2V4aXRfYml0bWFw
-WzRdIGFycmF5IGlzDQppbml0aWFsaXplZCBvbmx5IHdoZW4gSHlwZXItViBjb250ZXh0IGlzIGF2
-YWlsYWJsZSwgaW4gb3RoZXIgcGF0aCBpdCBpcw0KanVzdCBwYXNzZWQgdG8ga3ZtX3g4Nl9vcHMu
-bG9hZF9lb2lfZXhpdG1hcCgpIGRpcmVjdGx5IGZyb20gb24gdGhlIHN0YWNrLA0Kd2hpY2ggd291
-bGQgY2F1c2UgdW5leHBlY3RlZCBpbnRlcnJ1cHQgZGVsaXZlcnkvaGFuZGxpbmcgaXNzdWVzLCBl
-LmcuIGFuDQoqb2xkKiBsaW51eCBrZXJuZWwgdGhhdCByZWxpZXMgb24gUElUIHRvIGRvIGNsb2Nr
-IGNhbGlicmF0aW9uIG9uIEtWTSBtaWdodA0KcmFuZG9tbHkgZmFpbCB0byBib290Lg0KDQpGaXgg
-aXQgYnkgcGFzc2luZyBpb2FwaWNfaGFuZGxlZF92ZWN0b3JzIHRvIGxvYWRfZW9pX2V4aXRtYXAo
-KSB3aGVuIEh5cGVyLVYNCmNvbnRleHQgaXMgbm90IGF2YWlsYWJsZS4NCg0KU2lnbmVkLW9mZi1i
-eTogSHVhbmcgTGUgPGh1YW5nbGUxQGpkLmNvbT4NCi0tLQ0KZGlmZiAtLWdpdCBhL2FyY2gveDg2
-L2t2bS94ODYuYyBiL2FyY2gveDg2L2t2bS94ODYuYw0KaW5kZXggZGM3ZWI1ZmRkZmQzLi4wNjk5
-ODMyNTA0YzkgMTAwNjQ0DQotLS0gYS9hcmNoL3g4Ni9rdm0veDg2LmMNCisrKyBiL2FyY2gveDg2
-L2t2bS94ODYuYw0KQEAgLTk1NDcsMTEgKzk1NDcsMTQgQEAgc3RhdGljIHZvaWQgdmNwdV9sb2Fk
-X2VvaV9leGl0bWFwKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkNCiAJaWYgKCFrdm1fYXBpY19od19l
-bmFibGVkKHZjcHUtPmFyY2guYXBpYykpDQogCQlyZXR1cm47DQogDQotCWlmICh0b19odl92Y3B1
-KHZjcHUpKQ0KLQkJYml0bWFwX29yKCh1bG9uZyAqKWVvaV9leGl0X2JpdG1hcCwNCi0JCQkgIHZj
-cHUtPmFyY2guaW9hcGljX2hhbmRsZWRfdmVjdG9ycywNCi0JCQkgIHRvX2h2X3N5bmljKHZjcHUp
-LT52ZWNfYml0bWFwLCAyNTYpOw0KKwlpZiAoIXRvX2h2X3ZjcHUodmNwdSkpIHsNCisJCXN0YXRp
-Y19jYWxsKGt2bV94ODZfbG9hZF9lb2lfZXhpdG1hcCkoDQorCQkJdmNwdSwgKHU2NCAqKXZjcHUt
-PmFyY2guaW9hcGljX2hhbmRsZWRfdmVjdG9ycyk7DQorCQlyZXR1cm47DQorCX0NCiANCisJYml0
-bWFwX29yKCh1bG9uZyAqKWVvaV9leGl0X2JpdG1hcCwgdmNwdS0+YXJjaC5pb2FwaWNfaGFuZGxl
-ZF92ZWN0b3JzLA0KKwkJICB0b19odl9zeW5pYyh2Y3B1KS0+dmVjX2JpdG1hcCwgMjU2KTsNCiAJ
-c3RhdGljX2NhbGwoa3ZtX3g4Nl9sb2FkX2VvaV9leGl0bWFwKSh2Y3B1LCBlb2lfZXhpdF9iaXRt
-YXApOw0KIH0NCiANCg==
+Replace camel case variable bRadioOff with snake case
+variable radio_off.
+Drop Hungarian notation prefix in `bRadioOff` variable.
+Change it to use snake case.
+
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ drivers/staging/vt6655/card.c        | 4 ++--
+ drivers/staging/vt6655/device.h      | 2 +-
+ drivers/staging/vt6655/device_main.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
+index 26e08fec6e6a..eac7c234f9db 100644
+--- a/drivers/staging/vt6655/card.c
++++ b/drivers/staging/vt6655/card.c
+@@ -404,7 +404,7 @@ bool CARDbSetBeaconPeriod(struct vnt_private *priv,
+  */
+ void CARDbRadioPowerOff(struct vnt_private *priv)
+ {
+-	if (priv->bRadioOff)
++	if (priv->radio_off)
+ 		return;
+ 
+ 	switch (priv->byRFType) {
+@@ -429,7 +429,7 @@ void CARDbRadioPowerOff(struct vnt_private *priv)
+ 
+ 	bb_set_deep_sleep(priv, priv->local_id);
+ 
+-	priv->bRadioOff = true;
++	priv->radio_off = true;
+ 	pr_debug("chester power off\n");
+ 	MACvRegBitsOn(priv->port_offset, MAC_REG_GPIOCTL0,
+ 		      LED_ACTSET);  /* LED issue */
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 4706bde1ec1d..3768791d9744 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -221,7 +221,7 @@ struct vnt_private {
+ 	bool bBarkerPreambleMd;
+ 
+ 	bool bRadioControlOff;
+-	bool bRadioOff;
++	bool radio_off;
+ 	bool bEnablePSMode;
+ 	unsigned short wListenInterval;
+ 	bool bPWBitOn;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index 212d2a287b2c..e74caf22d75a 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -369,7 +369,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 	/* Set Short Slot Time, xIFS, and RSPINF. */
+ 	priv->wCurrentRate = RATE_54M;
+ 
+-	priv->bRadioOff = false;
++	priv->radio_off = false;
+ 
+ 	priv->byRadioCtl = SROMbyReadEmbedded(priv->port_offset,
+ 					      EEP_OFS_RADIOCTL);
+-- 
+2.25.1
+
