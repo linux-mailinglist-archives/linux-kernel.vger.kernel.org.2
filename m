@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F5944F131
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF28B44F134
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhKME3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 23:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235653AbhKME3S (ORCPT
+        id S235707AbhKME3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 23:29:42 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40664 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235653AbhKME3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 23:29:18 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB4EC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 20:26:26 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso9252278pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 20:26:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=a8tq8/rGUt4iJhEk4ctvcJeQppYEsm/E9muAYaJHQW8=;
-        b=o3v517VZMgHlOz+MkCBxVKmrK4FGjZ/lMH+Gb3HEnJKJUWmjuFd6XUW2G7X5wu5X3Y
-         44GIsAGWji4smRtQe6rd55cKERPdpxZPsf7bGqd/Lk4Nte44+JG7AOFVNgO3dr8OYxSr
-         fTOsVpXZDwioicPlh1ff+5cI8XcS24TyLaLky9FrWovWYcxRn34y//3fMH8nbghfYc1u
-         2bSwVFA1LIPQhG5bFioBeb1XCAN+QJyjJqXzrowd96q0+EieuJhCMEtZfNymyF0BJcfM
-         Xmi9v1lWcWjXvZc4loaKMn2IKK2lRSVDgWbzMw250xzUWunHH20HDtGsE+hqA6QDaOaE
-         rJYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=a8tq8/rGUt4iJhEk4ctvcJeQppYEsm/E9muAYaJHQW8=;
-        b=yz8Amiqg6ZKswB66CECGOb++6ZVJyAUXdYp/MZs4Ur6swO7YZDN3QLipuJ7pCi39ol
-         zxeGhW74JgA04tFfoQLKR6LPJkKWDacR9gQeyxvn0RDQo0yhmKTJjh83/Aw/CSjn4sp5
-         p2vY0BPIZwPnTFCY38zsaZlIyOmwf1tlmttcECiHlEjrLU0t7kYp5gQLgwF/Br4kDGXL
-         h3kxt4snvuF48YUBw64+iw0ZrpfGkb30sXnwc7fUI8DT/i++GstmBu+iZiQK8BXW690Q
-         NkU+kJ3l4gTdN8BVu72iGDoJ5wrFcz8Z4h1Cperq5swDcTAioul0XuhOVKA7FpI9lPmK
-         HmeQ==
-X-Gm-Message-State: AOAM533JP6p/R94df6iVNWK+0KYx5C5kzwjIAL8pU8DEse8ZAS2jj04H
-        bZh1ydxqnayVRpAnjITfOoc=
-X-Google-Smtp-Source: ABdhPJzJhSqvJg/J1jgFKi8xsdRU7/fz4C4JIyIL8ie2NuHnl8E/d2wptZjYl+uwmUqmPsYB/KREFQ==
-X-Received: by 2002:a17:902:db12:b0:142:3ac:7ec3 with SMTP id m18-20020a170902db1200b0014203ac7ec3mr14114201plx.2.1636777586078;
-        Fri, 12 Nov 2021 20:26:26 -0800 (PST)
-Received: from [10.230.0.248] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id bt2sm6270489pjb.57.2021.11.12.20.26.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 20:26:25 -0800 (PST)
-Message-ID: <f3203445-0950-fa2d-a21e-3e349b0a4a2a@gmail.com>
-Date:   Fri, 12 Nov 2021 20:26:23 -0800
+        Fri, 12 Nov 2021 23:29:41 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4QgNZ005480;
+        Fri, 12 Nov 2021 22:26:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636777602;
+        bh=AzxwH1X9ows2Erct7pYAUSmPXFfFQD/w7RCW6wE/p34=;
+        h=From:To:CC:Subject:Date;
+        b=Lh1WQRdW6m2geHcICcadRnf2oFNdjUIDwVREtyz3nFJbw0QTNy38RzO0sE8YmHBlR
+         ikPg5PxuNjrr8q0AJlw2yT0njjsRIfTMkLGrQDPJbzdI+yFDzITRuA6FE0E8razN8/
+         +BOLrRJCjTfgZzudsIYHQ2Lvask/QDRFMYdkm8eA=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AD4QgG0061509
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Nov 2021 22:26:42 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 12
+ Nov 2021 22:26:42 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 12 Nov 2021 22:26:42 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4QgFL034758;
+        Fri, 12 Nov 2021 22:26:42 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
+        <linux-omap@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2] arm64: dts: ti: k3-j7200: Correct the d-cache-sets info
+Date:   Fri, 12 Nov 2021 22:26:40 -0600
+Message-ID: <20211113042640.30955-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 2/2] ARM: multi_v7_defconfig: Enable BCM23550 and BCM53573
-Content-Language: en-US
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211030025715.13296-1-f.fainelli@gmail.com>
- <20211030025715.13296-2-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211030025715.13296-2-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A72 Cluster (chapter 1.3.1 [1]) has 48KB Icache, 32KB Dcache and 1MB L2 Cache
+ - ICache is 3-way set-associative
+ - Dcache is 2-way set-associative
+ - Line size are 64bytes
 
+32KB (Dcache)/64 (fixed line length of 64 bytes) = 512 ways
+512 ways / 2 (Dcache is 2-way per set) = 256 sets.
 
-On 10/29/2021 7:57 PM, Florian Fainelli wrote:
-> Enable the BCM23550 and BCM53573 SoCs to have all of the ARM 32-bit SoCs
-> enabled.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+So, correct the d-cache-sets info.
 
-Applied to defconfig/next.
+[1] https://www.ti.com/lit/pdf/spruiu1
+
+Fixes: d361ed88455f ("arm64: dts: ti: Add support for J7200 SoC")
+Reported-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+
+Changes since V1:
+* subject line fixup to stay in sync with other patches
+* type in chapter (',' replaced with '.')
+
+V1: https://lore.kernel.org/linux-arm-kernel/20211113024348.29257-1-nm@ti.com/T/#u
+
+ arch/arm64/boot/dts/ti/k3-j7200.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
+index 47567cb260c2..958587d3a33d 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
+@@ -62,7 +62,7 @@ cpu0: cpu@0 {
+ 			i-cache-sets = <256>;
+ 			d-cache-size = <0x8000>;
+ 			d-cache-line-size = <64>;
+-			d-cache-sets = <128>;
++			d-cache-sets = <256>;
+ 			next-level-cache = <&L2_0>;
+ 		};
+ 
+@@ -76,7 +76,7 @@ cpu1: cpu@1 {
+ 			i-cache-sets = <256>;
+ 			d-cache-size = <0x8000>;
+ 			d-cache-line-size = <64>;
+-			d-cache-sets = <128>;
++			d-cache-sets = <256>;
+ 			next-level-cache = <&L2_0>;
+ 		};
+ 	};
 -- 
-Florian
+2.32.0
+
