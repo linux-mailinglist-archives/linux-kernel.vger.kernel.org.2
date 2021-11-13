@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D3A44F135
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2F44F13A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhKMEaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 23:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhKME36 (ORCPT
+        id S234290AbhKMEjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 23:39:37 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42078 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhKMEjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 23:29:58 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4129C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 20:27:06 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id y5so10124924pfb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 20:27:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Dihtd0Vnp/rZO5LQCW93aavoGyTzYqfehYYeK45wdfc=;
-        b=qhOeVWh7hZBLXxy9qU8IXd2aWSDmVpIm09dA8YEfBck3QdYBIBKh2ldoJXqDIPlGgU
-         ff9AtnH5gelUZtgIvwiNB5Nu8LKC9CawFdAkeh9ZXcJWs7ZrqbBpgdXgBEi1ENU3UxxA
-         B4z54M4EZzR06YEwekrfoAtBc1XX2edgPoxewynPzHc/5wgIh/TyFV/t3CKFCtSbVBM/
-         fe5TJKq0UZO9jOnFtSofqG+SulSHYnAixb5/Egv7kL2zh5rt6ZXQxSxmzl9llCmhQeNs
-         Hpv+f4efW6btXisqyncE6aS0N8YWg/I0gZjIv+QGL/sx31u9oeO+QMPNktMSPLgfT629
-         fHTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Dihtd0Vnp/rZO5LQCW93aavoGyTzYqfehYYeK45wdfc=;
-        b=JCivQO9RiOewtZeJCaJXpV4ZrIiegFYB54vVaF5iibAHZ1xxJSmg2T5d5uOtkOf057
-         Cct+8ZRdS6FPU7wIkvtE2TH/PzX5IHkcRQuc8lbltbwDtZ3Yey7DnbaoQsXBf9ObIHRa
-         VP6aIu7f9KP4h9vvI1+pO50ctRsrOeRf/8ezNNJuzACklV2BOJfcIzYIAirQ20R2LUET
-         vdY0W5C+++drKD3tTfcuSoGi2Z2BbIyBEhH4bARbPClo8Si19BVlnpoq6RJEAIYX9aqS
-         wo1L5urWSWpoHGiea88zOgVShDHJavffup0NR7rplvlozQ99pFD58MeCUkdhpcUNcFfl
-         6m3w==
-X-Gm-Message-State: AOAM530/J0bff+IP59GkyX1ipcSgqukSGGZrq4s/rqXClj3MweF54+sd
-        R4KJ4nm8TP34TOVcSQ45jFY=
-X-Google-Smtp-Source: ABdhPJxZIAVujV/ZIzZqY3zJpm6j8b2FjaW/R2GrghADUhDbcDeXRRMCFLSIDw4L800HDGMCKeoSKg==
-X-Received: by 2002:a63:2b48:: with SMTP id r69mr13144720pgr.421.1636777626111;
-        Fri, 12 Nov 2021 20:27:06 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-193-225.oc.oc.cox.net. [68.4.193.225])
-        by smtp.gmail.com with ESMTPSA id v13sm8621746pfu.38.2021.11.12.20.27.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 20:27:05 -0800 (PST)
-Message-ID: <a82f3028-ea64-b3a9-4b14-8474ebb78d79@gmail.com>
-Date:   Fri, 12 Nov 2021 20:27:03 -0800
+        Fri, 12 Nov 2021 23:39:35 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4aclm008317;
+        Fri, 12 Nov 2021 22:36:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1636778198;
+        bh=f8LgJZNnJCqu2PSnY9a5BSValDnYokfnws05hp1+1AY=;
+        h=From:To:CC:Subject:Date;
+        b=ZvkPdtjYzbGwzGyrL1FcE9KXymkCNcA0GR4s47Yp+Hv124/rxTAPqQCqwFotbZ+Je
+         Ys04A6FD7cyYx5DB9vxbO8UWq1kbFU1Mi9tIqcZ2at9vQPrLGYqNSv2+pIjsyszWQ9
+         TZBcFJbUJZXDs7p0E/2CXnsfudYbnmtxo++n+rTI=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AD4acbg088877
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Nov 2021 22:36:38 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 12
+ Nov 2021 22:36:38 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 12 Nov 2021 22:36:37 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AD4abM7045449;
+        Fri, 12 Nov 2021 22:36:37 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
+        <linux-omap@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] arm64: dts: ti: k3-am642: Fix the L2 cache sets
+Date:   Fri, 12 Nov 2021 22:36:35 -0600
+Message-ID: <20211113043635.4296-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] arm64: defconfig: Enable additional Broadcom STB drivers
-Content-Language: en-US
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Adam Ford <aford173@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Nishanth Menon <nm@ti.com>, Fabio Estevam <festevam@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211029191505.22593-1-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211029191505.22593-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A53's L2 cache[1] on AM642[2] is 256KB. A53's L2 is fixed line length
+of 64 bytes and 16-way set-associative cache structure.
 
+256KB of L2 / 64 (line length) = 4096 ways
+4096 ways / 16 = 256 sets
 
-On 10/29/2021 12:15 PM, Florian Fainelli wrote:
-> Enable the following drivers as modular:
-> 
-> - NAND controller with CONFIG_MTD_NAND_BRCMNAND
-> - AHCI/SATA controller driver with CONFIG_AHCI_BRCM
-> - Starfighter 2 Ethernet switch driver with CONFIG_NET_DSA_BCM_SF2
-> - USB drivers (OHCI, EHCI, XHCI) with CONFIG_USB_BRCMSTB
-> - Watchdog with CONFIG_BCM7038_WDT
-> - PWM with CONFIG_PWM_BRCMSTB
-> - SYSTEMPORT Ethernet controller with CONFIG_SYSTEMPORT
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fix the l2 cache-sets.
 
-Applied to defconfig-arm64/next.
+[1] https://developer.arm.com/documentation/ddi0500/j/Level-2-Memory-System/About-the-L2-memory-system?lang=en
+[2] https://www.ti.com/lit/pdf/spruim2
+
+Fixes: 8abae9389bdb ("arm64: dts: ti: Add support for AM642 SoC")
+Reported-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am642.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am642.dtsi b/arch/arm64/boot/dts/ti/k3-am642.dtsi
+index e2b397c88401..8a76f4821b11 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am642.dtsi
+@@ -60,6 +60,6 @@ L2_0: l2-cache0 {
+ 		cache-level = <2>;
+ 		cache-size = <0x40000>;
+ 		cache-line-size = <64>;
+-		cache-sets = <512>;
++		cache-sets = <256>;
+ 	};
+ };
 -- 
-Florian
+2.32.0
+
