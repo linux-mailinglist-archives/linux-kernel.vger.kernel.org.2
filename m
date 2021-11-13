@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24C444F0EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E4C44F0EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbhKMDGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 22:06:25 -0500
-Received: from smtpbg128.qq.com ([106.55.201.39]:62504 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232113AbhKMDGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 22:06:22 -0500
-X-QQ-mid: bizesmtp32t1636772602ta95ix04
+        id S235574AbhKMDOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 22:14:55 -0500
+Received: from smtpbg604.qq.com ([59.36.128.82]:38370 "EHLO smtpbg604.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232113AbhKMDOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 22:14:54 -0500
+X-QQ-mid: bizesmtp32t1636773081tu786nmz
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 11:03:20 +0800 (CST)
-X-QQ-SSF: 01000000000000C0F000B00A0000000
-X-QQ-FEAT: dpyQmELDBxG1OItickMQYTESO2OdECCehQIMsi2B1turkahKi08atFxdHOtMG
-        Ex0eWfL00C0aKle3wwz032vaTrcqXyP9T7ZKkh4Qq2WDC/XzJxTHrgtOGnbx5keq91MsilD
-        iVftgjVsVGzH4MuPstdMNI3Y+H976jhoksqhAAlIAHfZ92QtAdtPE8f24FWa8OsbVjoqRCC
-        wxvBVnpEhKbcVdWwr3rymcvBO5jt8LPJWBFJ0J/DS/o00p6rE7RFkKAIujPIgyKx4mi/jzV
-        a345drR+gx3KneRvBAae9HpfZsz4oqFAvtqOF2Qqj/dPkFtuCo1htMCHAcj+GTvmSaUmydN
-        ZtefdUS
+        id ; Sat, 13 Nov 2021 11:11:19 +0800 (CST)
+X-QQ-SSF: 01000000000000C0F000000A0000000
+X-QQ-FEAT: qfvbM89F700Weup9tOdjzXXvc8HF98cSSrZGlKTVRH4kBv4IPyPqPOMESiZ6V
+        RtwTh/SpUneGijNdySXGSjsjYcyMbVwaLRFNlU2NzDZwYnlSFRCYad+Bsz7SsERF2Dib2iN
+        HIwptU9I4eq/EizgfOTbcGPQ45m9W8k/Y3yBD6jBs1b9U3ywC4LgnXS2qalRv73Brf6nncr
+        7aEa1J2625wQnnzivUE1MAYb6mK1WGdwNpqOOwaH2/HFaaiCqavhJry0Ll+UZ6EbjJh3Xv2
+        6XWOza4jvXNrerMZMSdhFZKCUVL8zS/OG4fXIpRpCivJJtqL8lvOEWgM4W3t2ZBd90xEp51
+        wBL9di7jz6B4qKA/PIEoJj/RGeniw==
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     ardb@kernel.org
-Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     krzysztof.kozlowski@canonical.com
+Cc:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ia64: Fix typo in a comment
-Date:   Sat, 13 Nov 2021 11:03:16 +0800
-Message-Id: <20211113030316.22650-1-wangborong@cdjrlc.com>
+Subject: [PATCH] ARM: s3c: Fix typo in one comment
+Date:   Sat, 13 Nov 2021 11:11:17 +0800
+Message-Id: <20211113031117.33727-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `the' in a comment is repeated, thus it should be removed.
+The double `would' in the comment might be repeated. Remove one of them
+from the comment.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- arch/ia64/kernel/uncached.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-s3c/mach-gta02.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/ia64/kernel/uncached.c b/arch/ia64/kernel/uncached.c
-index 51883a66aeb5..816803636a75 100644
---- a/arch/ia64/kernel/uncached.c
-+++ b/arch/ia64/kernel/uncached.c
-@@ -171,7 +171,7 @@ static int uncached_add_chunk(struct uncached_pool *uc_pool, int nid)
-  * @n_pages: number of contiguous pages to allocate
-  *
-  * Allocate the specified number of contiguous uncached pages on the
-- * the requested node. If not enough contiguous uncached pages are available
-+ * requested node. If not enough contiguous uncached pages are available
-  * on the requested node, roundrobin starting with the next higher node.
-  */
- unsigned long uncached_alloc_page(int starting_nid, int n_pages)
+diff --git a/arch/arm/mach-s3c/mach-gta02.c b/arch/arm/mach-s3c/mach-gta02.c
+index 418939ce0fc3..174b2e55ea16 100644
+--- a/arch/arm/mach-s3c/mach-gta02.c
++++ b/arch/arm/mach-s3c/mach-gta02.c
+@@ -393,9 +393,9 @@ static struct s3c2410_nand_set __initdata gta02_nand_sets[] = {
+ 	[0] = {
+ 		/*
+ 		 * This name is also hard-coded in the boot loaders, so
+-		 * changing it would would require all users to upgrade
+-		 * their boot loaders, some of which are stored in a NOR
+-		 * that is considered to be immutable.
++		 * changing it would require all users to upgrade their
++		 * boot loaders, some of which are stored in a NOR that
++		 * is considered to be immutable.
+ 		 */
+ 		.name		= "neo1973-nand",
+ 		.nr_chips	= 1,
 -- 
 2.33.0
 
