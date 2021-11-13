@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0A44F12B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0DE44F128
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhKMEXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 23:23:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60570 "EHLO mail.kernel.org"
+        id S235675AbhKMEXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 23:23:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235645AbhKMEXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235604AbhKMEXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Nov 2021 23:23:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id CD13A61156;
+Received: by mail.kernel.org (Postfix) with ESMTPS id B767C61105;
         Sat, 13 Nov 2021 04:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1636777209;
-        bh=Vn/y4HuxFNGZs8+Sz1Od1OysTfu2eC5W5z1AsF3vlkk=;
+        bh=xHCEyQgmmneU5BQvjkALsnRvAKyNzijjKS1VT4RgCNo=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QK86idkK8cF231GyLc7hmXZLTabCLJDRJdXZh9t0HK7AKra5vNAQzzpzQ3SjQBIBQ
-         wa3H5cBkH6SNhFvQ3Ygqb0rK+prvexLwaGRvxn657Jh1ojb3XmT7WsI765Kt1ZdvPZ
-         MQwfpkiZ/BM1vdCvxZJ4EhRSX6NGVZ6Vudji9qcUUgNuY2+xCxSCNRwRuTwMbICsnK
-         UeSouU5ENpmzKuwCwLFCqUlRRWYRUyBRlrsRL2B9Tb9+SkeMcAcnlBqZS3hMVn7nGH
-         eXCarhJNG4WLia4Ugj72jTuAhfkv6gwy297+jYUvTUrYpKo0l3CrWDmPKj80ml3wYs
-         quFyLpkXjwhLw==
+        b=BnNfEhCopjuBaqXjOo0IxsE3xbcJ+nvuFpzME+HXZCC9Hz6EgZI+xxgB8cjM1dMwb
+         8MC/gNwycqotQCQNWc74ZSiWJ9y+H3BvllXfPkmu7dk0CkqGQ1+CkIAh5v9QaNjK62
+         upCfzcbrYKTEF7YfovWBTxmj/z3SlqHDaEz75wp1IFXk7jAzzmF9E/Mb9xLDVsXjta
+         /QF/CxMuUgIfQxkWXljZp6RfZXnyK5KQy1SZEMaPR7/5xxpisOKS3pjbmkK1DadOBZ
+         E6+PJD4qrw1MsI22S9shmMBcOshZAkCsNFGMl68Uv2xdSS0STdTKpz+tQN+R94lPNv
+         DzfYu8Aov84Mw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B837660987;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A13F5609F4;
         Sat, 13 Nov 2021 04:20:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net/ipa: ipa_resource: Fix wrong for loop range
+Subject: Re: [PATCH v1] hamradio: remove needs_free_netdev to avoid UAF
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163677720974.27008.15285644696445470681.git-patchwork-notify@kernel.org>
+Message-Id: <163677720965.27008.11067084190149438214.git-patchwork-notify@kernel.org>
 Date:   Sat, 13 Nov 2021 04:20:09 +0000
-References: <20211111183724.593478-1-konrad.dybcio@somainline.org>
-In-Reply-To: <20211111183724.593478-1-konrad.dybcio@somainline.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        elder@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211111141402.7551-1-linma@zju.edu.cn>
+In-Reply-To: <20211111141402.7551-1-linma@zju.edu.cn>
+To:     Lin Ma <linma@zju.edu.cn>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jirislaby@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,20 +48,22 @@ Hello:
 This patch was applied to netdev/net.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu, 11 Nov 2021 19:37:24 +0100 you wrote:
-> The source group count was mistakenly assigned to both dst and src loops.
-> Fix it to make IPA probe and work again.
+On Thu, 11 Nov 2021 22:14:02 +0800 you wrote:
+> The former patch "defer 6pack kfree after unregister_netdev" reorders
+> the kfree of two buffer after the unregister_netdev to prevent the race
+> condition. It also adds free_netdev() function in sixpack_close(), which
+> is a direct copy from the similar code in mkiss_close().
 > 
-> Fixes: 4fd704b3608a ("net: ipa: record number of groups in data")
-> Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> However, in sixpack driver, the flag needs_free_netdev is set to true in
+> sp_setup(), hence the unregister_netdev() will free the netdev
+> automatically. Therefore, as the sp is netdev_priv, use-after-free
+> occurs.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2] net/ipa: ipa_resource: Fix wrong for loop range
-    https://git.kernel.org/netdev/net/c/27df68d579c6
+  - [v1] hamradio: remove needs_free_netdev to avoid UAF
+    https://git.kernel.org/netdev/net/c/81b1d548d00b
 
 You are awesome, thank you!
 -- 
