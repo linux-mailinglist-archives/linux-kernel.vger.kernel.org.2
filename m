@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D97644F4C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F2344F4C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbhKMTSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 14:18:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53484 "EHLO mail.kernel.org"
+        id S236102AbhKMTSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 14:18:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236033AbhKMTSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 14:18:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 659FC611EE;
-        Sat, 13 Nov 2021 19:15:11 +0000 (UTC)
+        id S236067AbhKMTSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 14:18:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8C8A961212;
+        Sat, 13 Nov 2021 19:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636830911;
-        bh=ScIWgWYvJ8P2kY6dDbMwPLMWNZW3j6/OQjomJoWBAfs=;
+        s=k20201202; t=1636830917;
+        bh=JzR3pVK7LZYBBHWydczhhSiaC67QWH23BHog+2FNuXo=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=O2zgksMRjJ7SJfuyYYyF/p97SWJ8qTruV48d8gYPcj9+RTgefUbsDEwsfvslQXwES
-         ptbwD8uRAWHnKdIuFX3l2qiRrgWEV8I/ToTSbnkPlQF1mSP96d9DyYgpd+Y2EUVUl4
-         FpizGcCJauYBsilxIsYHqtfsFriC1nv9rN84Qv0B6AnZ4H9cG9nOuNVY4v7LUWnsXk
-         lWX2VOyyzwL7zHpMfhMysopWSeS6XxonSDbHDrFsf72y+7llenICpOtfgRAmvcD5LO
-         +AJU02E4vzMvucyaYAuQK1Xr3G/MPbyRBzUPthGSFuVS8P8ffhtOaDy7RU+yD/pMlb
-         pzQvlfLOVFdbg==
+        b=CboHqiwY9d2A+GwqTjpn+/f8oqEBcFzgsud9RkprLMX5q8CxFlvTQcU0m/NXgFfdO
+         Hk3gINzAyiyXdJwk0IVUEcBBrptbWlV6FjxyawTSavIuuT8IdR4hf1jrrN/tOg6erS
+         5ilq42Elf7QgQfppaqxoqIfNF2QgGmFMwQ3M63neot8pNewp0+SaH0JNSrinEgT3Fb
+         P4+RL6Eur4VzvPUfDkOQtta6pqdlN8tfOMYo+Kkci+eAgiF6mH5SbxevCne6lZCUud
+         QYKTPJ410QHQkUneXe+lNX7wg9k6ALHm4EhOhJDS53ZnlK/JHVYv2hQDqdpzH7lq25
+         i5Mqdu8QJA7GQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 52A3860987;
-        Sat, 13 Nov 2021 19:15:11 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.16 Merge Window, Part 1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8660260721;
+        Sat, 13 Nov 2021 19:15:17 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 patches for the 5.16 merge window #2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-109b0503-bc7c-4da8-8621-28aec8d9df59@palmer-ri-x1c9>
-References: <mhng-109b0503-bc7c-4da8-8621-28aec8d9df59@palmer-ri-x1c9>
-X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
-X-PR-Tracked-Message-Id: <mhng-109b0503-bc7c-4da8-8621-28aec8d9df59@palmer-ri-x1c9>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.16-mw1
-X-PR-Tracked-Commit-Id: ffa7a9141bb70702744a312f904b190ca064bdd7
+In-Reply-To: <your-ad-here.call-01636811772-ext-9507@work.hours>
+References: <your-ad-here.call-01636811772-ext-9507@work.hours>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <your-ad-here.call-01636811772-ext-9507@work.hours>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-2
+X-PR-Tracked-Commit-Id: a4751f157c194431fae9e9c493f456df8272b871
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b89f311d7e25eb246376ac10de46d6ecc6b6ed5c
-Message-Id: <163683091127.10343.18209516046778739113.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Nov 2021 19:15:11 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
+X-PR-Merge-Commit-Id: be427a88a3dc2de30688b08d078f4f4c1bb035d6
+Message-Id: <163683091754.10343.7064421671859878721.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Nov 2021 19:15:17 +0000
+To:     Vasily Gorbik <gor@linux.ibm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Nov 2021 09:32:15 -0800 (PST):
+The pull request you sent on Sat, 13 Nov 2021 14:56:12 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.16-mw1
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b89f311d7e25eb246376ac10de46d6ecc6b6ed5c
+https://git.kernel.org/torvalds/c/be427a88a3dc2de30688b08d078f4f4c1bb035d6
 
 Thank you!
 
