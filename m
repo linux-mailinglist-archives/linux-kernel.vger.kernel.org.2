@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826BA44F547
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FCF44F54B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhKMUfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 15:35:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232555AbhKMUdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 15:33:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D5FDD6056B;
-        Sat, 13 Nov 2021 20:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636835416;
-        bh=i2TZ5HNt0MYmClRUEdpi+Q4Zg/bLHVZMMBe1c77UJtY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=N7dMTYnn0VW7BtFLxcvPSJZmTZweNnGMcEapoOKQJAXtIkPtHnPyd9w0OPHTSlML4
-         sWqZE6+a0HLfdJSt9LQwI0m2Pb7m584m788qnRFtOttWPCu5B2fUQ6jKQRTl5RPSre
-         ytx71Liq/6tYw3IB+T7j8/tOacTx2dSKr4EAocPwQjYVnfhKNF0/H8j63+JFy3sR3M
-         Rjdq4OS+1JuD+SgfeP0+G6RkJ6HrjMoBklMIl7lIDDKxaETp/tjBXfrRioIpg4CBKx
-         omyhGqg/ZKMcaALonPZgf82XnlzKFCxGDFHiEz2/T/vyab1rGBGZTSrslSsi/jNuio
-         rGxaol3G6yNEA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C56AB608FE;
-        Sat, 13 Nov 2021 20:30:16 +0000 (UTC)
-Subject: Re: [GIT PULL] smb3 client fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5msPS_afwd3goRMC5vrmtKg0qSYcvX6qe0rs+f80M7OD0w@mail.gmail.com>
-References: <CAH2r5msPS_afwd3goRMC5vrmtKg0qSYcvX6qe0rs+f80M7OD0w@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5msPS_afwd3goRMC5vrmtKg0qSYcvX6qe0rs+f80M7OD0w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc-part2-smb3-client-fixes
-X-PR-Tracked-Commit-Id: 46bb1b9484aeaf701da50c9ee063f3e93ce2a37b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c8103c2718eb99aab954187ca5be14f3d994c9be
-Message-Id: <163683541675.15395.13921707940238231740.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Nov 2021 20:30:16 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S234436AbhKMUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 15:44:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhKMUoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 15:44:39 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDA5C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:41:46 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id y196so10537837wmc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:41:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=znqfsEnlktjZeaYUl3uU6wdVUZvKPQCplrE2NccVU2E=;
+        b=J4IY9fizfH5EC4xc3HLziLsEe0fMKuL+2kHqXiMI4vxUR98rLWlHUpF/yIpo8ea1bq
+         U8XBxAZkeKCkCymVn8ciJqcdXo1+5r2jKuwz3EuzPFrbYZE22fNA96JLkMT5QppXAKdY
+         fBt5MVpxlkRZXj1d4CIr7CBBet6hU42sGXOZqOhBqn0eWT8WvAJ8J3+TrW5O+KAja4pZ
+         gA/eFphAWZtG3CF+rAX3Gk++NAc1+oFkj4X/enfdphpZY+Zy6L/i2bvuTnaLF7kMu/+y
+         yLa35tvdIkqpSrGQt0yAtyuWhIVbOpHLMd+9dNL/r6Pmgzoy1tYULOUnnCFn/P+dYMXy
+         qEPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=znqfsEnlktjZeaYUl3uU6wdVUZvKPQCplrE2NccVU2E=;
+        b=47FvhtamCyewWt8C8IeoJA6bo+nxhFJl4fVwKwIXHyh4CxhzDMOw5XMyMJb4eyJ2B1
+         SybLbBbQkoc110vVCWfoetL66GOwAgrtU4Dm+K6lKfV+1KvEKtrFhRyL1IwsSKHm8tA1
+         he691lgxhsIF2mJtUbtPKn3edO2zGvm6RH+H8tT+9Rkd4QbveU1JGOyiChJL3OBsKfuh
+         rgjFFGwLVtOONyAdcRc0jUWe62t28bVG/nhC+Z1RHZFL2BbD/CCxC4GgM8F15TVsUSNo
+         hjq1uaBDq1OWDH6Ih+pzGaTv7OSfBPTZdIxGJg6lC9peF7JUNOt5On6BhflanOEyjWoD
+         DtSg==
+X-Gm-Message-State: AOAM532/HaOCQv0bjvpQZ1nVf6vXQ/+EGE6fUpWcqMMWYoW/yTsrZDJP
+        AOemauOPI+/YDdBv1+djwrTXOB7xa10=
+X-Google-Smtp-Source: ABdhPJyQxFHrqfKREVguc1TQr0R6psqjvP35yrvtLo7ZwWKjXq0/NLWYgjrO7fqjlRiwp0vBLQ1Ftg==
+X-Received: by 2002:a05:600c:500b:: with SMTP id n11mr31195115wmr.38.1636836105430;
+        Sat, 13 Nov 2021 12:41:45 -0800 (PST)
+Received: from localhost.localdomain (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net. [86.13.91.161])
+        by smtp.gmail.com with ESMTPSA id a9sm9144289wrt.66.2021.11.13.12.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Nov 2021 12:41:45 -0800 (PST)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] device property: Check fwnode->secondary when finding properties
+Date:   Sat, 13 Nov 2021 20:41:41 +0000
+Message-Id: <20211113204141.520924-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Nov 2021 14:17:53 -0600:
+fwnode_property_get_reference_args() searches for named properties
+against a fwnode_handle, but these could instead be against the fwnode's
+secondary. If the property isn't found against the primary, check the
+secondary to see if it's there instead.
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc-part2-smb3-client-fixes
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+---
+ drivers/base/property.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c8103c2718eb99aab954187ca5be14f3d994c9be
-
-Thank you!
-
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index f1f35b48ab8b..7bac12b32fcb 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -478,8 +478,16 @@ int fwnode_property_get_reference_args(const struct fwnode_handle *fwnode,
+ 				       unsigned int nargs, unsigned int index,
+ 				       struct fwnode_reference_args *args)
+ {
+-	return fwnode_call_int_op(fwnode, get_reference_args, prop, nargs_prop,
+-				  nargs, index, args);
++	int ret;
++
++	ret = fwnode_call_int_op(fwnode, get_reference_args, prop, nargs_prop,
++				 nargs, index, args);
++
++	if (ret < 0 && !IS_ERR_OR_NULL(fwnode->secondary))
++		ret = fwnode_call_int_op(fwnode->secondary, get_reference_args,
++					 prop, nargs_prop, nargs, index, args);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(fwnode_property_get_reference_args);
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
