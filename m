@@ -2,302 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B0844F496
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D778A44F49E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235995AbhKMSkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 13:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S236014AbhKMSp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 13:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235785AbhKMSkH (ORCPT
+        with ESMTP id S233692AbhKMSpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 13:40:07 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0E6C061200
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:37:14 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso19415370otj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:37:14 -0800 (PST)
+        Sat, 13 Nov 2021 13:45:25 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BC9C061767
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:42:32 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id s139so24946129oie.13
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 10:42:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lBHywRpokRI7Qe0yqZeJ3KaigI4SOFSs5dfQfhbid/Q=;
-        b=n1Bbd2g97KuW6F0KhlT2d8/u7S3SzQ9h1l+jiq5mLG0HPYkc4OyWjNYEV9X0SV2Dbp
-         M/plKr0yeDFS0tjcMrLk4TDr9b0+errpXnIT3GaG3G6XmaGdtBd+fbX4XBVjjOXqj3n5
-         tMd+xKtadRWsakVCMFeZZ9/NI1d/mzx76nenzz3xzjSrLFBowpwZ+BTh6VsWoTbEY2OU
-         Y0hvHFJOq5K0GY+TOgRJNaTUC3Rgz8EkhIDdejHYnxa8NJJdCpFSz1IVrrATX/9n4nDK
-         thaDi0b7kXP3XC2Q46i2Mt5G4ffyAAoRN6SyrkuaIlDBveccWp/U64vfP5Xl2HDQvY0N
-         V3QA==
+        bh=QkrpAypr0OTjJ7opmeUn4VhkKZWdSv1cB+fyJgMkf5w=;
+        b=WCPMm+i8ULb0yHdbEqnrVYTYM4jz2riuNptnwQ2+Xl3531POFp2CnU0ca4B3arM9Q3
+         eUcF9I/HArOom66D2Mw27q03VzyNoZsAzf7KmSOBjE3EepLzPVwpX+XyC8v+kKAWoKC3
+         5yEqIxsFU0eOIqIWicuCME8JTmq6AFAzRa8kKKN90dwGyMSy8AcGtUhYH4K1bB1XsClN
+         gydBC/IjajX/AOZwj6CovpXp1OxAKZLPMBi3fzoldD/jteDoyUQ0+m+yQ04z+JQyKP/P
+         R8Mv5CTL2SOkKBwLA9spoUppXncFcGwArs/KDuzTy5pbo+3hvs1PiX7EGUYFSi16nPyW
+         PEHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lBHywRpokRI7Qe0yqZeJ3KaigI4SOFSs5dfQfhbid/Q=;
-        b=S9jqRW4jnkWj+l9jznpHlv7aaGSgZqlxegk6gxaxIIKjicYzP6Baa7sl8txeJCGJwp
-         SGFViBotAFLqGi7CnVyDcvHEI8Ii9AYROnFOoMYFWY7GLuYhBZHuI1iOOWwDKaqfYeTU
-         18/YPsuZWuts0mmCjBh1Iy/uo9U1gv/1fFm8zy5r9VZ2pauF73vX5XRq612yz96JmHMk
-         WhOb8M3M7S+ff/tD3+JH4tiZC155FKUU7/09dYL6Q9l9F7cBDPmwaErMCAxVNJ1xp3q/
-         V03ERhRl4+ZH30eRIZoQuJ0Wog52a9nUFQ43l+vRpA4UUXCh4s5MW2fxaPdw73ozikfp
-         6Onw==
-X-Gm-Message-State: AOAM532AUDk6EGunpRQ3uPRHoAQbunRwUsjs6+g5llhadqhdh8xX+nZl
-        EEL3JhCa0HozGKUOVhWhxw6lEA==
-X-Google-Smtp-Source: ABdhPJwp+XC6gkEXEpj4MRUN3kMw2rTiCX3unC++4Yk9g5MbGEkw+ILZiQXo/fn9K6gzS99leZYYSg==
-X-Received: by 2002:a9d:6641:: with SMTP id q1mr20172517otm.323.1636828633822;
-        Sat, 13 Nov 2021 10:37:13 -0800 (PST)
+        bh=QkrpAypr0OTjJ7opmeUn4VhkKZWdSv1cB+fyJgMkf5w=;
+        b=A7rvhiQWeD+1WOdCBzX2zeJac/tgn0mk+DlESh2puB7X+cyMFSKjk+ybR2uziC2a6E
+         q9ur5jay4e7+ZHWG0fMcYUlCqyRjs13DmzwcVt20/9LOGKx8RcbtdOw36o/ZH9uEZtM7
+         gjCkwGBziInYjQ08czTzQTksZNY2zy4SdJh3/bGYWZa34X2AF6Num9YpqmuJRzCEkVc9
+         oHveIcEPzuqhk8UJTezTfOI5MDWGTrb9GO8kMsz4OHlQONeDdQM0RE+zuV+ecK6+3IZw
+         XEbk0z92zqc6D6DS0W6ZNafra4uEctT6JqSl2zUHQATtFdMX8A5z8SGv0XP7gT7Mp1UV
+         C+yw==
+X-Gm-Message-State: AOAM5333TRqm4MFIQgTKQiu9ntY0N36DjipjJP/lQIi5ZtrgtPOZPy4k
+        diIbWYy1F7M1Vy7j5yYEyT/lfe9yy3evRw==
+X-Google-Smtp-Source: ABdhPJyMjHWSTAouFYB0Z4fwvsZdxvGR6yb6S9JvA6wYXvmlgN6wcOykJ9AGGJoNqtWoIxIiCsk+cQ==
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr15685920oiw.51.1636828952074;
+        Sat, 13 Nov 2021 10:42:32 -0800 (PST)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g26sm2014455ots.25.2021.11.13.10.37.12
+        by smtp.gmail.com with ESMTPSA id bn41sm1550547oib.18.2021.11.13.10.42.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Nov 2021 10:37:13 -0800 (PST)
-Date:   Sat, 13 Nov 2021 12:37:08 -0600
+        Sat, 13 Nov 2021 10:42:31 -0800 (PST)
+Date:   Sat, 13 Nov 2021 12:42:26 -0600
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Katherine Perez <kaperez@linux.microsoft.com>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] arm64: dts: qcom: sm8150: add DSI display
- nodes
-Message-ID: <YZAF1OWJsIq9wGP2@builder.lan>
-References: <20211113023955.105989-1-kaperez@linux.microsoft.com>
- <20211113023955.105989-4-kaperez@linux.microsoft.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom,pmic-gpio: Add
+ compatible for PM8019
+Message-ID: <YZAHEhV8U5m1O6B1@builder.lan>
+References: <20211112115342.17100-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211113023955.105989-4-kaperez@linux.microsoft.com>
+In-Reply-To: <20211112115342.17100-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12 Nov 20:39 CST 2021, Katherine Perez wrote:
+On Fri 12 Nov 05:53 CST 2021, Konrad Dybcio wrote:
 
-> Add DSI controller and PHY nodes to sm8150.
+> Add pmic-gpio compatible string for pm8019 pmic.
 > 
-> Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
 > ---
->  arch/arm64/boot/dts/qcom/sm8150.dtsi | 183 ++++++++++++++++++++++++++-
->  1 file changed, 179 insertions(+), 4 deletions(-)
+> Changes since v1:
+> - Rebase, txt was converted into yaml in meantime
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index 38dbc39103ba..afa612daefa1 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -3261,6 +3261,35 @@ camnoc_virt: interconnect@ac00000 {
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
->  
-> +		dsi_opp_table: dsi-opp-table {
-
-As this isn't a mmio device, can we please move it outside of /soc as
-well?
-
-> +			compatible = "operating-points-v2";
-> +
-> +			opp-19200000 {
-> +				opp-hz = /bits/ 64 <19200000>;
-> +				required-opps = <&rpmhpd_opp_min_svs>;
-> +			};
-> +
-> +			opp-180000000 {
-> +				opp-hz = /bits/ 64 <180000000>;
-> +				required-opps = <&rpmhpd_opp_low_svs>;
-> +			};
-> +
-> +			opp-275000000 {
-> +				opp-hz = /bits/ 64 <275000000>;
-> +				required-opps = <&rpmhpd_opp_svs>;
-> +			};
-> +
-> +			opp-328580000 {
-> +				opp-hz = /bits/ 64 <328580000>;
-> +				required-opps = <&rpmhpd_opp_svs_l1>;
-> +			};
-> +
-> +			opp-358000000 {
-> +				opp-hz = /bits/ 64 <358000000>;
-> +				required-opps = <&rpmhpd_opp_nom>;
-> +			};
-> +		};
-> +
->  		mdss: mdss@ae00000 {
->  			compatible = "qcom,sm8150-mdss";
->  			reg = <0 0x0ae00000 0 0x1000>;
-> @@ -3351,6 +3380,152 @@ opp-460000000 {
->  					};
->  				};
->  			};
-> +
-> +			dsi0: dsi@ae94000 {
-
-If you change the label to mdss_dsi0: instead, they group nicely with
-the other mdss related nodes in your device's dts.
-
-
-Apart from that I think this series looks good.
-
-Thanks,
-Bjorn
-
-> +				compatible = "qcom,mdss-dsi-ctrl";
-> +				reg = <0 0x0ae94000 0 0x400>;
-> +				reg-names = "dsi_ctrl";
-> +
-> +				interrupt-parent = <&mdss>;
-> +				interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_ESC0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&gcc GCC_DISP_HF_AXI_CLK>;
-> +				clock-names = "byte",
-> +					      "byte_intf",
-> +					      "pixel",
-> +					      "core",
-> +					      "iface",
-> +					      "bus";
-> +
-> +				assigned-clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK_SRC>, <&dispcc DISP_CC_MDSS_PCLK0_CLK_SRC>;
-> +				assigned-clock-parents = <&dsi0_phy 0>, <&dsi0_phy 1>;
-> +
-> +				operating-points-v2 = <&dsi_opp_table>;
-> +				power-domains = <&rpmhpd SM8150_MMCX>;
-> +
-> +				phys = <&dsi0_phy>;
-> +				phy-names = "dsi";
-> +
-> +				status = "disabled";
-> +
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@0 {
-> +						reg = <0>;
-> +						dsi0_in: endpoint {
-> +							remote-endpoint = <&dpu_intf1_out>;
-> +						};
-> +					};
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +						dsi0_out: endpoint {
-> +						};
-> +					};
-> +				};
-> +			};
-> +
-> +			dsi0_phy: dsi-phy@ae94400 {
-> +				compatible = "qcom,dsi-phy-7nm-8150";
-> +				reg = <0 0x0ae94400 0 0x200>,
-> +				      <0 0x0ae94600 0 0x280>,
-> +				      <0 0x0ae94900 0 0x260>;
-> +				reg-names = "dsi_phy",
-> +					    "dsi_phy_lane",
-> +					    "dsi_pll";
-> +
-> +				#clock-cells = <1>;
-> +				#phy-cells = <0>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&rpmhcc RPMH_CXO_CLK>;
-> +				clock-names = "iface", "ref";
-> +
-> +				status = "disabled";
-> +			};
-> +
-> +			dsi1: dsi@ae96000 {
-> +				compatible = "qcom,mdss-dsi-ctrl";
-> +				reg = <0 0x0ae96000 0 0x400>;
-> +				reg-names = "dsi_ctrl";
-> +
-> +				interrupt-parent = <&mdss>;
-> +				interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_BYTE1_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_BYTE1_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_PCLK1_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_ESC1_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&gcc GCC_DISP_HF_AXI_CLK>;
-> +				clock-names = "byte",
-> +					      "byte_intf",
-> +					      "pixel",
-> +					      "core",
-> +					      "iface",
-> +					      "bus";
-> +
-> +				assigned-clocks = <&dispcc DISP_CC_MDSS_BYTE1_CLK_SRC>, <&dispcc DISP_CC_MDSS_PCLK1_CLK_SRC>;
-> +				assigned-clock-parents = <&dsi1_phy 0>, <&dsi1_phy 1>;
-> +
-> +				operating-points-v2 = <&dsi_opp_table>;
-> +				power-domains = <&rpmhpd SM8150_CX>;
-> +
-> +				phys = <&dsi1_phy>;
-> +				phy-names = "dsi";
-> +
-> +				status = "disabled";
-> +
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@0 {
-> +						reg = <0>;
-> +						dsi1_in: endpoint {
-> +							remote-endpoint = <&dpu_intf2_out>;
-> +						};
-> +					};
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +						dsi1_out: endpoint {
-> +						};
-> +					};
-> +				};
-> +			};
-> +
-> +			dsi1_phy: dsi-phy@ae96400 {
-> +				compatible = "qcom,dsi-phy-7nm-8150";
-> +				reg = <0 0x0ae96400 0 0x200>,
-> +				      <0 0x0ae96600 0 0x280>,
-> +				      <0 0x0ae96900 0 0x260>;
-> +				reg-names = "dsi_phy",
-> +					    "dsi_phy_lane",
-> +					    "dsi_pll";
-> +
-> +				#clock-cells = <1>;
-> +				#phy-cells = <0>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&rpmhcc RPMH_CXO_CLK>;
-> +				clock-names = "iface", "ref";
-> +
-> +				status = "disabled";
-> +			};
->  		};
->  
->  		dispcc: clock-controller@af00000 {
-> @@ -3359,10 +3534,10 @@ dispcc: clock-controller@af00000 {
->  			power-domains = <&rpmhpd SM8150_MMCX>;
->  			required-opps = <&rpmhpd_opp_low_svs>;
->  			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> -				 <0>,
-> -				 <0>,
-> -				 <0>,
-> -				 <0>,
-> +				 <&dsi0_phy 0>,
-> +				 <&dsi0_phy 1>,
-> +				 <&dsi1_phy 0>,
-> +				 <&dsi1_phy 1>,
->  				 <0>,
->  				 <0>;
->  			clock-names = "bi_tcxo",
+>  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> index 8952b4cc1262..55a46dec56b6 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -26,6 +26,7 @@ properties:
+>            - qcom,pm8005-gpio
+>            - qcom,pm8008-gpio
+>            - qcom,pm8018-gpio
+> +          - qcom,pm8019-gpio
+>            - qcom,pm8038-gpio
+>            - qcom,pm8058-gpio
+>            - qcom,pm8150-gpio
 > -- 
-> 2.31.1
+> 2.33.1
 > 
