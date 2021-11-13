@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD93144F37D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0547944F37E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhKMN7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 08:59:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25784 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231672AbhKMN7Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 08:59:16 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ADDmalM018510;
-        Sat, 13 Nov 2021 13:56:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=bm2MrVKzRD7vOZkmsx85ztld55uuB9NzmmCtB+YYem0=;
- b=NfK02pqbN3dQO8M+e3G+glf3FGGoKoTSx2Qrqqkrb/B2H0QU3Ljg1bdua9IopQnXdCfx
- Ls8nJncniZ+Tl8H4/MXXyG0JID6OQX68HLBsaXv59xGc9+dgaXQu9iHuaXET8sI8xTbh
- MKAsRcu7BogCXct5CP5D/0815PYxpGwrX01EwQzXraK+em3OiOEK82b9dlH5uktcMXuE
- dOSIjMfYHv3uK/FytWuWr+T+LaawX5uB6DENvLHUmlLX6jqt40OV0fF5JZEqPuPOc8DY
- +gMbUZZgIdr3XxCOy09PnQ+pgnnUgJnTLBiYhjmHAEfrfiuQGW+zLj0QS5juty2a1rT4 +g== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3caejsg2f2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Nov 2021 13:56:20 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1ADDrbf5013523;
-        Sat, 13 Nov 2021 13:56:18 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 3ca50922h2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Nov 2021 13:56:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1ADDuEf963176980
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 13 Nov 2021 13:56:14 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9ACC3A405C;
-        Sat, 13 Nov 2021 13:56:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A6C9A405B;
-        Sat, 13 Nov 2021 13:56:14 +0000 (GMT)
-Received: from localhost (unknown [9.171.15.66])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 13 Nov 2021 13:56:14 +0000 (GMT)
-Date:   Sat, 13 Nov 2021 14:56:12 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 patches for the 5.16 merge window #2
-Message-ID: <your-ad-here.call-01636811772-ext-9507@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: z3YIaRqDXdjE-4eFvBE8qNq6DSPutvns
-X-Proofpoint-GUID: z3YIaRqDXdjE-4eFvBE8qNq6DSPutvns
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S235864AbhKMOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 09:00:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhKMOAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 09:00:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1BCC60C41;
+        Sat, 13 Nov 2021 13:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636811850;
+        bh=0AtVhdkknb9GPuF56icg85mM7xQAkWdQJj8a8JDqWjA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RZRIOdjl5z3gc8V3uGhG6+Y86nX60FOrZBOco3P7Y8WwKgkCkGjzyYLNazciWzK3j
+         4CX+kAAsi39iWCdnIOqfPOp1zy4S7mUp4VJPUqW/IWDCGvABxcs+1QXz1jYk2qS9zF
+         9YfAzGfvNtO07rgN3jkE7A9buo+3hU8QOrhQgHVrFzVGCf+VNV/hvXRziiOr3DO8GR
+         FYZi0bxgQfxWScxcWyS6rkwXIsEMIxMu1Ug6k9Xt0DhE0m43WlKKWvhb+wCXmeoZjC
+         /3k2DH95IfCdilRVGELrJUVOKticXraJzXNAFkbpd9wAtFYk3Wy2Y63Ir9KSOOK6Qa
+         u3PNoCS8pvSoA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 563EB410A2; Sat, 13 Nov 2021 10:57:27 -0300 (-03)
+Date:   Sat, 13 Nov 2021 10:57:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync arch prctl headers with
+ the kernel sources
+Message-ID: <YY/ER104k852WOTK@kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-13_02,2021-11-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- spamscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111130077
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Em Sat, Nov 13, 2021 at 10:50:11AM -0300, Arnaldo Carvalho de Melo escreveu:
+To pick the changes in this cset:
 
-please pull the second round of s390 changes for 5.16. One change touches
-common PCI code to export a function and has been acked-by Bjorn Helgaas:
-https://lore.kernel.org/all/20210928181014.GA713179@bhelgaas/
+  db8268df0983adc2 ("x86/arch_prctl: Add controls for dynamic XSTATE components")
 
-Thank you,
-Vasily
+This picks these new prctls:
 
-The following changes since commit 0b707e572a1955b892dfcb32e7b573fab78767d9:
+  $ tools/perf/trace/beauty/x86_arch_prctl.sh > /tmp/before
+  $ cp arch/x86/include/uapi/asm/prctl.h tools/arch/x86/include/uapi/asm/prctl.h
+  $ tools/perf/trace/beauty/x86_arch_prctl.sh > /tmp/after
+  $ diff -u /tmp/before /tmp/after
+  --- /tmp/before	2021-11-13 10:42:52.787308809 -0300
+  +++ /tmp/after	2021-11-13 10:43:02.295558837 -0300
+  @@ -6,6 +6,9 @@
+   	[0x1004 - 0x1001]= "GET_GS",
+   	[0x1011 - 0x1001]= "GET_CPUID",
+   	[0x1012 - 0x1001]= "SET_CPUID",
+  +	[0x1021 - 0x1001]= "GET_XCOMP_SUPP",
+  +	[0x1022 - 0x1001]= "GET_XCOMP_PERM",
+  +	[0x1023 - 0x1001]= "REQ_XCOMP_PERM",
+   };
 
-  Merge tag 's390-5.16-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-11-06 14:48:06 -0700)
+   #define x86_arch_prctl_codes_2_offset 0x2001
+  $
 
-are available in the Git repository at:
+With this 'perf trace' can translate those numbers into strings and use
+the strings in filter expressions:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-2
+  # perf trace -e prctl
+       0.000 ( 0.011 ms): DOM Worker/3722622 prctl(option: SET_NAME, arg2: 0x7f9c014b7df5)     = 0
+       0.032 ( 0.002 ms): DOM Worker/3722622 prctl(option: SET_NAME, arg2: 0x7f9bb6b51580)     = 0
+       5.452 ( 0.003 ms): StreamT~ns #30/3722623 prctl(option: SET_NAME, arg2: 0x7f9bdbdfeb70) = 0
+       5.468 ( 0.002 ms): StreamT~ns #30/3722623 prctl(option: SET_NAME, arg2: 0x7f9bdbdfea70) = 0
+      24.494 ( 0.009 ms): IndexedDB #556/3722624 prctl(option: SET_NAME, arg2: 0x7f562a32ae28) = 0
+      24.540 ( 0.002 ms): IndexedDB #556/3722624 prctl(option: SET_NAME, arg2: 0x7f563c6d4b30) = 0
+     670.281 ( 0.008 ms): systemd-userwo/3722339 prctl(option: SET_NAME, arg2: 0x564be30805c8) = 0
+     670.293 ( 0.002 ms): systemd-userwo/3722339 prctl(option: SET_NAME, arg2: 0x564be30800f0) = 0
+  ^C#
 
-for you to fetch changes up to a4751f157c194431fae9e9c493f456df8272b871:
+This addresses these perf build warnings:
 
-  s390/cio: check the subchannel validity for dev_busid (2021-11-08 14:17:49 +0100)
+  Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/prctl.h' differs from latest version at 'arch/x86/include/uapi/asm/prctl.h'
+  diff -u tools/arch/x86/include/uapi/asm/prctl.h arch/x86/include/uapi/asm/prctl.h
 
-----------------------------------------------------------------
-s390 updates for the 5.16 merge window #2
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Chang S. Bae <chang.seok.bae@intel.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/arch/x86/include/uapi/asm/prctl.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-- Add PCI automatic error recovery.
-
-- Fix tape driver timer initialization broken during timers api cleanup.
-
-- Fix bogus CPU measurement counters values on CPUs offlining.
-
-- Check the validity of subchanel before reading other fields in
-  the schib in cio code.
-
-----------------------------------------------------------------
-Niklas Schnelle (4):
-      s390/pci: refresh function handle in iomap
-      s390/pci: implement reset_slot for hotplug slot
-      PCI: Export pci_dev_lock()
-      s390/pci: implement minimal PCI error recovery
-
-Sven Schnelle (1):
-      s390/tape: fix timer initialization in tape_std_assign()
-
-Thomas Richter (1):
-      s390/cpumf: cpum_cf PMU displays invalid value after hotplug remove
-
-Vineeth Vijayan (1):
-      s390/cio: check the subchannel validity for dev_busid
-
- arch/s390/include/asm/pci.h        |   6 +-
- arch/s390/kernel/perf_cpum_cf.c    |   4 +-
- arch/s390/pci/pci.c                | 148 +++++++++++++++++++++++-
- arch/s390/pci/pci_event.c          | 230 ++++++++++++++++++++++++++++++++++++-
- arch/s390/pci/pci_insn.c           |   4 +-
- arch/s390/pci/pci_irq.c            |   9 ++
- drivers/pci/hotplug/s390_pci_hpc.c |  24 ++++
- drivers/pci/pci.c                  |   3 +-
- drivers/s390/char/tape_std.c       |   3 +-
- drivers/s390/cio/css.c             |   4 +-
- include/linux/pci.h                |   1 +
- 11 files changed, 417 insertions(+), 19 deletions(-)
+diff --git a/tools/arch/x86/include/uapi/asm/prctl.h b/tools/arch/x86/include/uapi/asm/prctl.h
+index 5a6aac9fa41f7b56..754a078568171451 100644
+--- a/tools/arch/x86/include/uapi/asm/prctl.h
++++ b/tools/arch/x86/include/uapi/asm/prctl.h
+@@ -10,6 +10,10 @@
+ #define ARCH_GET_CPUID		0x1011
+ #define ARCH_SET_CPUID		0x1012
+ 
++#define ARCH_GET_XCOMP_SUPP	0x1021
++#define ARCH_GET_XCOMP_PERM	0x1022
++#define ARCH_REQ_XCOMP_PERM	0x1023
++
+ #define ARCH_MAP_VDSO_X32	0x2001
+ #define ARCH_MAP_VDSO_32	0x2002
+ #define ARCH_MAP_VDSO_64	0x2003
+-- 
+2.31.1
