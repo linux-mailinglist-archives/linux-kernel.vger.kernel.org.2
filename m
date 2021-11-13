@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62444F536
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802CA44F539
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbhKMUTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 15:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        id S234429AbhKMUVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 15:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbhKMUTR (ORCPT
+        with ESMTP id S232383AbhKMUU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 15:19:17 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F25C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:16:24 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id v11so52627142edc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:16:24 -0800 (PST)
+        Sat, 13 Nov 2021 15:20:58 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4612C061766;
+        Sat, 13 Nov 2021 12:18:05 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id k2so18339190lji.4;
+        Sat, 13 Nov 2021 12:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fUJ4RyiarGckKo6VaSVoc1S73NVAy1M1UHBUtVn+dXA=;
-        b=EaXFmIPMUnTgemqp00jPWEfQekTJEO+Ri6p4PaQ/16UHBdOb9ItZ0WOZOFZUkNiiRi
-         FZyi/kGYjiDPRfQKh3bwlsZq+60tiJynG7F3+ibuuppJcsSf9a30BqwExZcV38EvafA8
-         JIIu4eL7YOOKdKpH1945V2GZXkPy7E8ziEZDE=
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ItFCirRn3T8waY/fyyukZFQbnLVtvNhCT/YKsr2/SBc=;
+        b=AXD/2Z8zS81I90dhhsnw3LISpIyyjWyHVuhFGW3a+KeIO+TZ+JSiYZZpygBs2eCbvr
+         ntU5DGacdXh9d8CCsiqiTyorrYd3zx1AXrKot3V99bIvGtIipOp3k0IjOSW8wROKtqh4
+         1mpqGR86ISPT10IsMT6nMuYQGinIbz7vNDa+Sn7dCghgEwViWDT9YanARDdtHz7BbPhe
+         Z4Ykn6M9rW1YJNkSXYOjQlZ2571EZ4k+T3j4a3Sam9QxHslr666zGv44c5AQNvZYJWDm
+         hrpqXV4t4fP/Q9dV6drTlTlKe+XosIpxJTPjLF/M63sIBPeHLzzWIk2Mr4FQY2BnbsFx
+         MPIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fUJ4RyiarGckKo6VaSVoc1S73NVAy1M1UHBUtVn+dXA=;
-        b=MS079tyGo3PB1T2G7DjSvd4Get3YhP8pXz40eSf1p32axTa4XujsNxmt1VWsl2FK2I
-         X3qbHEZI+BXUQmXOkyPvFJnwmKKsEFmYDUFpnm40wthFW96HOCjrd9SQ4qFVxwyizJX5
-         X0SUswWlXTr0Bdh1Ir6W+RFFJpoGP7eCNpL3v/whvxdKRLpKwrmmbBqubSx8X6v0bsM8
-         cgha6xiy8pLyRui7jIHbavTOThBu0B0RyRCZ4AIzZpqBAuCACSs2K4X78TjraQlM0XnI
-         aLrRk9xNLH5UMb9lb1pY0pQov/1V+P25cqyUKhII7lleSwqGKOaip3nrObXOlmmSWWMs
-         X+4w==
-X-Gm-Message-State: AOAM533w0BsErr/I+OHdJzneyFuRtYkERtGT7ITHTwNuEU9aV1MIHHEO
-        MPTjPHcoVrRl7Twf/zSDAtRQ6zpy3/xiWzUo5SU=
-X-Google-Smtp-Source: ABdhPJxZs71NW6EjRRZkFPupSev2l3mRsRIGUsV52lS5301wy4PS6dNAQNXDlX76isafhb9OOmROFw==
-X-Received: by 2002:a17:906:e85:: with SMTP id p5mr32183164ejf.159.1636834583108;
-        Sat, 13 Nov 2021 12:16:23 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id s16sm4689583edt.30.2021.11.13.12.16.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Nov 2021 12:16:22 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id o29so10538688wms.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:16:20 -0800 (PST)
-X-Received: by 2002:a1c:7405:: with SMTP id p5mr44079154wmc.152.1636834580292;
- Sat, 13 Nov 2021 12:16:20 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ItFCirRn3T8waY/fyyukZFQbnLVtvNhCT/YKsr2/SBc=;
+        b=txG3ipV7hhJUmgXBaBscqsC5noF2CS0HaPM+w4gjmrX7zfjZ+oFCSR6m3Nu9qVaoxn
+         CeUzHyVb5zBOFqkQD2Ra1iL1ZQ09LToSxdZ3g9RyF0wYClhX3LgXap9BO9Qmjf9Xxhrq
+         3ngSz/luBDFovEWG867f825OTS6nmtxL5zyWulw4DR2b4KP64MEFUV0Lu2qxSRUdcb2Q
+         r7d9NWNATANheDxfT1+wEZf4NFifjVtO9EP9OB0W5rooHPgI9UVuarhTGnlf0V+UBWl3
+         UP5Z+qDCVzNWkUbGFQBrN/SMDFlW02NYa/k26vCiQw8538hA6FJeV4foHHeCaUwTndRv
+         9Ctg==
+X-Gm-Message-State: AOAM531UA8FQUQM6JZyp2e+N9OakGK+I94r8Z57gl/vXF1pq3suM/H8p
+        7uVi0+SDfQJCUEx25hQyBQCtjIoIRAoY3e1c5uIoJyluXtA=
+X-Google-Smtp-Source: ABdhPJyKsAfrNpeniAbumBSjyLoApYagYQCNmtPmz3rjynf2N1SlfQqq/rhG2KUoB8Oh3Y0+X7rrsr7x7RqmMAYfNk8=
+X-Received: by 2002:a2e:a588:: with SMTP id m8mr26120420ljp.23.1636834684171;
+ Sat, 13 Nov 2021 12:18:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20211111084617.6746-1-ajaygargnsit@gmail.com> <CAHP4M8V2WEQ0LgHp7PHdBMYFp+_frn=7GLQVF7=faqapojQ+2g@mail.gmail.com>
- <628a49dc-f6f7-5aa4-8a4d-4f2ed19b7f3f@kernel.dk> <e87601bd-21c4-00b0-9500-054bca8abced@kernel.dk>
-In-Reply-To: <e87601bd-21c4-00b0-9500-054bca8abced@kernel.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 13 Nov 2021 12:16:04 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjgZVY-skWP1vW2Cw+His+3eESATM_+QDYp=wFEsVv=qw@mail.gmail.com>
-Message-ID: <CAHk-=wjgZVY-skWP1vW2Cw+His+3eESATM_+QDYp=wFEsVv=qw@mail.gmail.com>
-Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
-To:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     Ajay Garg <ajaygargnsit@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 13 Nov 2021 14:17:53 -0600
+Message-ID: <CAH2r5msPS_afwd3goRMC5vrmtKg0qSYcvX6qe0rs+f80M7OD0w@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 9:21 AM Jens Axboe <axboe@kernel.dk> wrote:
->
-> Maybe Andrew is out - Linus, if you follow this thread, there are two
-> proposed fixes for this. It'd be nice to have one of them in -rc1.
+Please pull the following changes since commit
+b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb:
 
-Neither of the fixes were sent to me, and honestly, I think the real
-issue is that the original commit is just too broken for words.
+  Merge tag '5.16-rc-part1-smb3-client-fixes' of
+git://git.samba.org/sfrench/cifs-2.6 (2021-11-06 16:47:53 -0700)
 
-The error handling in that commit is just entirely lacking.
+are available in the Git repository at:
 
-I've reverted the commit rather than try to fix up the breakage.
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc-part2-smb3-client-fixes
 
-Because at some point it's just better to say "that was broken" rather
-than try to fix it up. And that original commit was too broken to be
-worth fixing up. It already had one fix for uninitialized variables
-before it even hit my tree, and then caused problems and had obvious
-broken error handling.
+for you to fetch changes up to 46bb1b9484aeaf701da50c9ee063f3e93ce2a37b:
 
-             Linus
+  cifs: do not duplicate fscache cookie for secondary channels
+(2021-11-12 23:29:08 -0600)
+
+----------------------------------------------------------------
+23 cifs/smb3 fixes, including:
+- improvements to reconnect and multichannel
+- a performance improvement (additional use of SMB3 compounding)
+- DFS code cleanup and improvements
+- various trivial Coverity fixes
+- two fscache fixes
+- an fsync fix
+
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/836
+----------------------------------------------------------------
+Paulo Alcantara (8):
+      cifs: fix print of hdr_flags in dfscache_proc_show()
+      cifs: introduce new helper for cifs_reconnect()
+      cifs: convert list_for_each to entry variant
+      cifs: split out dfs code from cifs_reconnect()
+      cifs: set a minimum of 120s for next dns resolution
+      cifs: support nested dfs links over reconnect
+      cifs: fix memory leak of smb3_fs_context_dup::server_hostname
+      cifs: fix potential use-after-free bugs
+
+Shyam Prasad N (7):
+      cifs: nosharesock should not share socket with future sessions
+      cifs: send workstation name during ntlmssp session setup
+      cifs: for compound requests, use open handle if possible
+      cifs: do not negotiate session if session already exists
+      cifs: protect session channel fields with chan_lock
+      cifs: connect individual channel servers to primary channel server
+      cifs: do not duplicate fscache cookie for secondary channels
+
+Steve French (8):
+      smb3: do not error on fsync when readonly
+      smb3: remove trivial dfs compile warning
+      smb3: add additional null check in SMB2_ioctl
+      smb3: add additional null check in SMB2_open
+      smb3: add additional null check in SMB2_tcon
+      cifs: release lock earlier in dequeue_mid error case
+      smb3: add additional null check in SMB311_posix_mkdir
+      smb3: do not setup the fscache_super_cookie until fsinfo initialized
+
+ fs/cifs/cifs_debug.c   |    7 +-
+ fs/cifs/cifs_dfs_ref.c |   59 +--
+ fs/cifs/cifs_fs_sb.h   |    5 -
+ fs/cifs/cifsglob.h     |   47 +-
+ fs/cifs/cifsproto.h    |   10 +-
+ fs/cifs/connect.c      | 1468
++++++++++++++++++++++++++++++++++-----------------------------
+ fs/cifs/dfs_cache.c    |   46 +-
+ fs/cifs/file.c         |   35 +-
+ fs/cifs/fs_context.c   |   36 +-
+ fs/cifs/fs_context.h   |    1 +
+ fs/cifs/fscache.c      |    8 +
+ fs/cifs/misc.c         |   64 +--
+ fs/cifs/ntlmssp.h      |    4 +-
+ fs/cifs/sess.c         |  240 ++++++----
+ fs/cifs/smb2inode.c    |   22 +-
+ fs/cifs/smb2ops.c      |   10 +-
+ fs/cifs/smb2pdu.c      |   52 ++-
+ fs/cifs/transport.c    |    3 +
+ 18 files changed, 1184 insertions(+), 933 deletions(-)
+
+--
+Thanks,
+
+Steve
