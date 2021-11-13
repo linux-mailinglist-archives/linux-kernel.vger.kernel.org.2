@@ -2,160 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9625C44F047
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2365D44F04C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 01:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbhKMAzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 19:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        id S235209AbhKMAzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 19:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhKMAzV (ORCPT
+        with ESMTP id S232571AbhKMAzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 19:55:21 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE6C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:30 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id r8so13376100iog.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WDMoJWVS3cLt8gel5ZAdj4e1dI2U2C9Sa5cKlc5Ze5g=;
-        b=VG6EBwWgoJT2XTaKLIKToQkj/22xaDKEfaape+fbpwoDlL9hAcuqpP9I9+NMEKFmcL
-         +u+fJF0Bm03Ggu4f2IMorqe1uYl+AniZrw98Kukh9eZtiAf4oSEQvlh70BY+iTAfVP8I
-         zPBa4aWBkNCMAkySS5Tphpbq4Dk4nOZIbAqWg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WDMoJWVS3cLt8gel5ZAdj4e1dI2U2C9Sa5cKlc5Ze5g=;
-        b=JWRO3VRq/sePv9WrZhP+FCcKZw2/E6Kqio31tdudu4FkMxEjkDwTeOwzl/4AUrX/Py
-         C0v4ON6Fx18kG8b2/TVEb4ldhhV3Rm1erfDUOqxhBymnUPRT7bXuIX1vGuigwzKn4nPL
-         RRxzqBN9ltUQr/gzCX8AwX/BqH8a/J0rtbqfV6Osfq2jG3MDPwLojxSv8frJGqXISlgu
-         zZUnnxZmFj4iGaAxMwS1ShGhmMqOztvnAWiUSD9mDr+oVs60jCsswz/BLCmnqVDIt6MZ
-         5k2/koJStmZot2LaKsWJdOO3byL7bYi4lxsOb8O2JhT1F+Yl7r0jBmm1QUIvEWsXZ03I
-         xWRQ==
-X-Gm-Message-State: AOAM532mVtMIbf5vMa/mv7jugCadkPP267cQNvs4/Z4iei6uaGLhviEa
-        eyE8c1yv/HOoT3S0c0vWa/L6nkt+veGDTA==
-X-Google-Smtp-Source: ABdhPJyajeC+a8EhX9YaL8sZwEs1005FPO5RGlxTyRCeERRaCLGJ4qkEMhPdasSxixTeXjxygt+ppw==
-X-Received: by 2002:a02:a314:: with SMTP id q20mr14922278jai.104.1636764749261;
-        Fri, 12 Nov 2021 16:52:29 -0800 (PST)
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
-        by smtp.gmail.com with ESMTPSA id k8sm4818278ilu.23.2021.11.12.16.52.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 16:52:28 -0800 (PST)
-Received: by mail-io1-f49.google.com with SMTP id c3so13378874iob.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 16:52:27 -0800 (PST)
-X-Received: by 2002:a05:6638:190f:: with SMTP id p15mr15051440jal.82.1636764747377;
- Fri, 12 Nov 2021 16:52:27 -0800 (PST)
+        Fri, 12 Nov 2021 19:55:43 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFCFC061766;
+        Fri, 12 Nov 2021 16:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=vS9RsdabAwyFhYcmzcLUuXES/pza4Xr5axksmwSiF6U=; b=T7nGPd0G8rl6ro46O1ayFEK+tW
+        NbNlQcq5WSrmJbVbdLxvT3phpR5Ki+44FESmqsUg+U1V+BUDzkYB74am5DVXKYEOPbllF3AAzPo7m
+        ZoJcwxXoXXnBAftFWtEjO1+ec45lHO00j344+7CAlfYjuu40vzIsjpyK+4mdWw88WIujOW38hBw5C
+        2ghFbARJbKdDl2S13o2b8AVn7l/1k2MeZ94IT/WPVe8upFNLPke1wz/k2wMa4E36zeNj3XjU4hS+1
+        G/soOP9El5CzCLH9ufIsZtgFbzgBQ+2nv5/1DGTr7TzCbBRzE5m3jvp29Rn6IbYKt/3G8lg/zf2Vu
+        VBY5Ecng==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlhHn-00Bx7U-Ck; Sat, 13 Nov 2021 00:52:51 +0000
+Subject: Re: [PATCH v5 6/8] leds: trigger: add hardware-phy-activity trigger
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <20211112153557.26941-1-ansuelsmth@gmail.com>
+ <20211112153557.26941-7-ansuelsmth@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ec0620e4-becd-c3c9-9006-6e04009a7b99@infradead.org>
+Date:   Fri, 12 Nov 2021 16:52:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211103234018.4009771-1-briannorris@chromium.org> <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
-In-Reply-To: <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 12 Nov 2021 16:52:15 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
-Message-ID: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211112153557.26941-7-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/12/21 7:35 AM, Ansuel Smith wrote:
+> diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
+> index 18a8970bfae6..ea7b33995e8d 100644
+> --- a/drivers/leds/trigger/Kconfig
+> +++ b/drivers/leds/trigger/Kconfig
+> @@ -162,4 +162,31 @@ config LEDS_TRIGGER_TTY
+>   
+>   	  When build as a module this driver will be called ledtrig-tty.
+>   
+> +config LEDS_TRIGGER_HARDWARE_PHY_ACTIVITY
+> +	tristate "LED Trigger for PHY Activity for Hardware Controlled LED"
 
-On Wed, Nov 3, 2021 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> A variety of applications have found it useful to listen to
-> user-initiated input events to make decisions within a DRM driver, given
-> that input events are often the first sign that we're going to start
-> doing latency-sensitive activities:
->
->  * Panel self-refresh: software-directed self-refresh (e.g., with
->    Rockchip eDP) is especially latency sensitive. In some cases, it can
->    take 10s of milliseconds for a panel to exit self-refresh, which can
->    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
->    with an input_handler boost, that preemptively exits self-refresh
->    whenever there is input activity.
->
->  * GPU drivers: on GPU-accelerated desktop systems, we may need to
->    render new frames immediately after user activity. Powering up the
->    GPU can take enough time that it is worthwhile to start this process
->    as soon as there is input activity. Many Chrome OS systems also ship
->    with an input_handler boost that powers up the GPU.
->
-> This patch provides a small helper library that abstracts some of the
-> input-subsystem details around picking which devices to listen to, and
-> some other boilerplate. This will be used in the next patch to implement
-> the first bullet: preemptive exit for panel self-refresh.
->
-> Bits of this are adapted from code the Android and/or Chrome OS kernels
-> have been carrying for a while.
->
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
->
->  drivers/gpu/drm/Makefile           |   3 +-
->  drivers/gpu/drm/drm_input_helper.c | 143 +++++++++++++++++++++++++++++
->  include/drm/drm_input_helper.h     |  22 +++++
->  3 files changed, 167 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/drm_input_helper.c
->  create mode 100644 include/drm/drm_input_helper.h
->
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 0dff40bb863c..378761685b47 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -49,7 +49,8 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o drm_dp_helper.o \
->                 drm_scdc_helper.o drm_gem_atomic_helper.o \
->                 drm_gem_framebuffer_helper.o \
->                 drm_atomic_state_helper.o drm_damage_helper.o \
-> -               drm_format_helper.o drm_self_refresh_helper.o
-> +               drm_format_helper.o drm_self_refresh_helper.o \
-> +               drm_input_helper.o
+	                                           Hardware-controlled
 
-Note that the Makefile part conflicts with drm-misc-next right now.
-It's not very hard to resolve, but since this would likely land there
-maybe it'd be nice to resolve?
+> +	help
+> +	  This allows LEDs to run by hardware and offloaded based on some
 
-Other than that, this seems sane to me and much better than copying
-this between places, so assuming that the build problems get resolved
-then I'm happy.
+	                   to be run by hardware and be offloaded based on some
 
-I guess one random thought I had is whether there would be an
-appropriate place to put this that _wasn't_ in DRM. I still wonder
-whether we'll ever try to upstream something like the cpufreq boost
-driver that we're carrying around and using in Chrome OS. If so, it
-would want to use these same helpers and it'd be pretty awkward for it
-to have to reach into DRM. ...any chance we could just land these
-helpers somewhere more generic?
+> +	  rules. The LED will blink or be on based on the PHY
+
+	                            or be "on"
+or:	                            or be ON
+[for about the third time]
+
+> +	  activity for example on packet receive or based on the link speed.
 
 
-> +struct drm_input_handler {
-> +       struct input_handler handler;
-> +       void *priv;
-> +       void (*callback)(void *priv);
-> +};
-
-Super bike-sheddy comment is that "void *" data arguments are not
-super common in the kernel. I would have expected the callback
-function to just be passed a pointer to the "struct drm_input_handler"
-and it could find any other data it needed via "container_of". I won't
-insist though. ;-)
-
-
--Doug
+-- 
+~Randy
