@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5E444F1CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE2444F1D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhKMG3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 01:29:47 -0500
-Received: from smtpbg128.qq.com ([106.55.201.39]:59865 "EHLO smtpbg587.qq.com"
+        id S234592AbhKMGdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 01:33:47 -0500
+Received: from smtpbg126.qq.com ([106.55.201.22]:18538 "EHLO smtpbg587.qq.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229487AbhKMG3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 01:29:44 -0500
-X-QQ-mid: bizesmtp51t1636784777tgdf0y1a
+        id S229487AbhKMGdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 01:33:46 -0500
+X-QQ-mid: bizesmtp53t1636785027tbx8xaqy
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 14:26:15 +0800 (CST)
+        id ; Sat, 13 Nov 2021 14:30:25 +0800 (CST)
 X-QQ-SSF: 01000000000000C0F000B00A0000000
-X-QQ-FEAT: 3uawQE1sH+291VbBBWnryed0ntvm7R6avfLrXgIcdCpjaQtx7yWViNbybxB31
-        uayKxrAeLP5YmUF3X5cba2dcLdT8r5bYWWE7vXZvC3i5OrUMXAwqvWD8vk7KyFDKMt5+pX2
-        CRgEZnAMH6BVSXL3M2C74xYSDKM56njRagvOfWYswjvgDn4G5DrkQJoVpfSGq8H5IVmbPa+
-        COLFF73PtitYD3hLUOHulzc/qMHi9DAnFmIv6ISaK/jaZMrOImJDzds1nPJ3XSaKrGeMYdp
-        LVSd5FOCt8F6Hy8iwoCpmu981Evs9p9gtnusWCHQ5Ps6ubrgWvVDEcHKltwytDdSo1cCPio
-        TExq5vZNffCiA+YSVC1X0R4Y/GZYQ==
+X-QQ-FEAT: 2xJC0nfhYEoa6nV8L0JoP4JC50g8rN9TfoRuZ2twf0TsDz0SYtWSnej+9Hgym
+        8hCTX6j1kS6/S+2VyXdt2P5dXj5rFVs4Ngm1RzmovFMK8iLGqrvNRNKjBG+jYQfujCm71vI
+        TqFmn4pO5LPKCEMbpa4dtfIfUk3eCAdOP0IFbBX1QaXkLHeiTizMOPqKZJavdKwis04qkCk
+        H7m9nDhKO447czrV7Zp/DZvxft1d+Crk6wG7MzuIfTb/OG3cmUaJFmTqVJkVdB4nSf2sSLt
+        vQjSkENTR7nmWRXWMynThXMvhGzC6IhJFTksI9PDgO3T8+A6XC3woulnE2vGF/VNOc1MJjr
+        zLpiGLgVOECAOAHSMJBHtJfFqA3PM7z6XiqPFKN
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     damien.lemoal@opensource.wdc.com
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ata: pata_ali: no need to initialise statics to 0
-Date:   Sat, 13 Nov 2021 14:26:14 +0800
-Message-Id: <20211113062614.246352-1-wangborong@cdjrlc.com>
+To:     davem@davemloft.net
+Cc:     herbert@gondor.apana.org.au, thomas.lendacky@amd.com,
+        john.allen@amd.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] crypto: ccp: ccp-dev: no need to initialise statics to 0
+Date:   Sat, 13 Nov 2021 14:30:23 +0800
+Message-Id: <20211113063023.251246-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -43,21 +44,21 @@ Static variables do not need to be initialized to 0.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/ata/pata_ali.c | 2 +-
+ drivers/crypto/ccp/ccp-dev.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_ali.c b/drivers/ata/pata_ali.c
-index b7ff63ed3bbb..ab28a6707b94 100644
---- a/drivers/ata/pata_ali.c
-+++ b/drivers/ata/pata_ali.c
-@@ -37,7 +37,7 @@
- #define DRV_NAME "pata_ali"
- #define DRV_VERSION "0.7.8"
+diff --git a/drivers/crypto/ccp/ccp-dev.c b/drivers/crypto/ccp/ccp-dev.c
+index 9ce4b68e9c48..c531d13d971f 100644
+--- a/drivers/crypto/ccp/ccp-dev.c
++++ b/drivers/crypto/ccp/ccp-dev.c
+@@ -31,7 +31,7 @@
+ #define MAX_CCPS 32
  
--static int ali_atapi_dma = 0;
-+static int ali_atapi_dma;
- module_param_named(atapi_dma, ali_atapi_dma, int, 0644);
- MODULE_PARM_DESC(atapi_dma, "Enable ATAPI DMA (0=disable, 1=enable)");
+ /* Limit CCP use to a specifed number of queues per device */
+-static unsigned int nqueues = 0;
++static unsigned int nqueues;
+ module_param(nqueues, uint, 0444);
+ MODULE_PARM_DESC(nqueues, "Number of queues per CCP (minimum 1; default: all available)");
  
 -- 
 2.33.0
