@@ -2,69 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B092044F1B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A43144F1BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 07:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbhKMGEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 01:04:25 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:56688 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhKMGEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 01:04:24 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mlm6V-0000DN-1f; Sat, 13 Nov 2021 14:01:31 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mlm6J-0005Tm-Km; Sat, 13 Nov 2021 14:01:19 +0800
-Date:   Sat, 13 Nov 2021 14:01:19 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com, liulongfang@huawei.com
-Subject: Re: [PATCH v3 2/6] crypto: hisilicon/sec - add ahash alg features
- for Kunpeng920
-Message-ID: <20211113060119.GA21020@gondor.apana.org.au>
-References: <20211022091055.15369-1-yekai13@huawei.com>
- <20211022091055.15369-3-yekai13@huawei.com>
+        id S232210AbhKMGKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 01:10:31 -0500
+Received: from smtpbg128.qq.com ([106.55.201.39]:59444 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229487AbhKMGK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 01:10:29 -0500
+X-QQ-mid: bizesmtp49t1636783584t7l1s577
+Received: from localhost.localdomain (unknown [125.69.41.88])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 13 Nov 2021 14:06:22 +0800 (CST)
+X-QQ-SSF: 01000000000000C0F000B00A0000000
+X-QQ-FEAT: ZHWZeLXy+8deiOhJyhemFt2XLUKQnkjQhPsS1KmTkVATSnjhBqZq2OsFqLNNW
+        Jv90wTSzP/R9q/FEGDhOWsl1C4uqv0pcqrgm1pJ1CFSYawhXJOn8x2gKSojprt7Jo8m2Rvm
+        kzUYUdOoNyPyKxEqbjFh3U3HlKBaECJDO8L2AE+wZFu9LGMa+I80MzShUaGtsz6q4OTP928
+        DwB5ephWjn60d3KtKR3lRLW1JAUFiEq6EtvPAJ7THGYk4mWFNbdOJzlkuQ/wTfyktvEhlT6
+        JsYl104vU5wdGfhwBSPwVWy+yIIbgTEp6Qv5PHbHXtqmyvHqaS5ml6qF+QitJ0duRf9ZmyB
+        vmODddjhRpxHktVDzD5/YxNiEi1UFVTErPLvPK3
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     daniel.lezcano@linaro.org
+Cc:     rafael@kernel.org, adobriyan@gmail.com, wangborong@cdjrlc.com,
+        mingo@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cpuidle: menu: Fix typo in a comment
+Date:   Sat, 13 Nov 2021 14:06:18 +0800
+Message-Id: <20211113060618.220832-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022091055.15369-3-yekai13@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 05:10:51PM +0800, Kai Ye wrote:
->
-> +static int sec_ahash_export(struct ahash_request *req, void *out)
-> +{
-> +	/*
-> +	 * This function dumps the
-> +	 * entire state of the ongoing transformation into a provided block of
-> +	 * data so it can be @import'ed back later on.
-> +	 */
-> +	struct sec_req *sreq = ahash_request_ctx(req);
-> +	struct sec_auth_ctx *a_ctx = &sreq->ctx->a_ctx;
-> +	u8 mac_len = a_ctx->mac_len;
-> +
-> +	memcpy(out, &sreq->hash_req, sizeof(struct sec_ahash_req));
+The double word `these' in a comment is repeated, thus
+one of them should be removed.
 
-So this structure seems to contain a bunch of metadata but not
-the actual hash state.
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ drivers/cpuidle/governors/menu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	/* Export the partial hash data */
-> +	memcpy(out + sizeof(struct sec_ahash_req), a_ctx->metamac, mac_len);
-
-This looks like it could be the hash state, but mac_len is clamped
-at digest size so it's way too small to contain the entire hash
-state.
-
-How is this supposed to work?
-
-Thanks,
+diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
+index 2e5670446991..c4922684f305 100644
+--- a/drivers/cpuidle/governors/menu.c
++++ b/drivers/cpuidle/governors/menu.c
+@@ -34,7 +34,7 @@
+  * 1) Energy break even point
+  * 2) Performance impact
+  * 3) Latency tolerance (from pmqos infrastructure)
+- * These these three factors are treated independently.
++ * These three factors are treated independently.
+  *
+  * Energy break even point
+  * -----------------------
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.33.0
+
