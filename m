@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C86D44F141
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3717444F146
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 05:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhKMEna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 23:43:30 -0500
-Received: from smtpbg604.qq.com ([59.36.128.82]:36216 "EHLO smtpbg604.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhKMEn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 23:43:28 -0500
-X-QQ-mid: bizesmtp41t1636778421tkvo9okg
-Received: from localhost.localdomain (unknown [125.69.41.88])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 12:40:20 +0800 (CST)
-X-QQ-SSF: 01000000000000C0F000C00A0000000
-X-QQ-FEAT: FXvDfBZI5O4ZPSh7w95J4xYXfclSDsGXKPecStb0FuWMtQfjyoscsC5z5WinO
-        umbYfA61YWKdGgpiBBmiedBniwB+lCgl8na3yUuzDGhVjcOy4GA9JFfRKO/Y5WBc/ODX9pb
-        XJuHfcCAEpyRoBZl4GgUqWphQKOwwtQYi56K6hzis3TEGy3x7ta9TSnnmIP1uYI61j71WVw
-        Vw8ql8us1UXgRMeWxRUGXsXfKkjOc5P0SH2GmWomPzN+1/Wdaio8eSnv2FYIj/TIwGru1f3
-        qoFBTDJqRJqxeXEajHfrpoxYprzUQOH1HOlH/8o7QM/K6A4iH5bp9SLvZYVmLckDD0leYmd
-        zG/4UV7wbUuqmP1PSiSfazf9D7jmdQGgj8oU1Wy
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     benh@kernel.crashing.org
-Cc:     wangborong@cdjrlc.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: Remove a repeated word in a comment
-Date:   Sat, 13 Nov 2021 12:40:18 +0800
-Message-Id: <20211113044018.130835-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S235580AbhKMExO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 23:53:14 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:37896 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232958AbhKMExM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 23:53:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636779021; x=1668315021;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=9Z7JEgNqK69mdItEfNZmsW5+aKBPzFg+GccRl7MFlYo=;
+  b=fUTDJlH53vIPUOdnBVnHUM6BypbZ/uBPIOYCgtSxuNu3T0RwXsNyr3JG
+   naoeOZNo+5xw8pfs7gRTHJDZ912+h1Lb2e7HS34fAkxd7Xa9tNnlt8v2q
+   Sq11f2hxvQeAt8H0x+Y/sDTnsE9IZl/Y/Wh05jo6fqY3FdxFOrwKAm0W7
+   4=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 12 Nov 2021 20:50:19 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2021 20:50:19 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 12 Nov 2021 20:50:19 -0800
+Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 12 Nov 2021 20:50:18 -0800
+Date:   Fri, 12 Nov 2021 23:50:16 -0500
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: KASAN + CPU soft-hotplug = stack-out-of-bounds at cpuinfo_store_cpu
+Message-ID: <YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double word `up' in a comment is repeated, thus one of
-them should be removed.
+FYI, running CPU soft-hotplug with KASAN on arm64 defconfig will
+always trigger a stack-out-of-bounds below. I am not right sure where
+exactly KASAN pointed at, so I am just doing the brute-force
+bisect. The progress so far:
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- drivers/macintosh/mediabay.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+# git bisect log
+git bisect start
+# bad: [e73f0f0ee7541171d89f2e2491130c7771ba58d3] Linux 5.14-rc1
+git bisect bad e73f0f0ee7541171d89f2e2491130c7771ba58d3
+# good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+git bisect good 62fb9874f5da54fdb243003b386128037319b219
+# bad: [e058a84bfddc42ba356a2316f2cf1141974625c9] Merge tag 'drm-next-2021-07-01' of git://anongit.freedesktop.org/drm/drm
+git bisect bad e058a84bfddc42ba356a2316f2cf1141974625c9
+# bad: [a6eaf3850cb171c328a8b0db6d3c79286a1eba9d] Merge tag 'sched-urgent-2021-06-30' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad a6eaf3850cb171c328a8b0db6d3c79286a1eba9d
+# bad: [31e798fd6f0ff0acdc49c1a358b581730936a09a] Merge tag 'media/v5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media
+git bisect bad 31e798fd6f0ff0acdc49c1a358b581730936a09a
 
-diff --git a/drivers/macintosh/mediabay.c b/drivers/macintosh/mediabay.c
-index eab7e83c11c4..ec23094263e7 100644
---- a/drivers/macintosh/mediabay.c
-+++ b/drivers/macintosh/mediabay.c
-@@ -129,7 +129,7 @@ enum {
- /*
-  * Functions for polling content of media bay
-  */
-- 
-+
- static u8
- ohare_mb_content(struct media_bay_info *bay)
- {
-@@ -331,12 +331,12 @@ static void keylargo_mb_un_reset_ide(struct media_bay_info* bay)
- 
- static inline void set_mb_power(struct media_bay_info* bay, int onoff)
- {
--	/* Power up up and assert the bay reset line */
-+	/* Power up and assert the bay reset line */
- 	if (onoff) {
- 		bay->ops->power(bay, 1);
- 		bay->state = mb_powering_up;
- 		pr_debug("mediabay%d: powering up\n", bay->index);
--	} else { 
-+	} else {
- 		/* Make sure everything is powered down & disabled */
- 		bay->ops->power(bay, 0);
- 		bay->state = mb_powering_down;
-@@ -577,7 +577,7 @@ static int media_bay_attach(struct macio_dev *mdev,
- 		macio_release_resources(mdev);
- 		return -ENOMEM;
- 	}
--	
-+
- 	i = media_bay_count++;
- 	bay = &media_bays[i];
- 	bay->mdev = mdev;
-@@ -745,7 +745,7 @@ static int __init media_bay_init(void)
- 	if (!machine_is(powermac))
- 		return 0;
- 
--	macio_register_driver(&media_bay_driver);	
-+	macio_register_driver(&media_bay_driver);
- 
- 	return 0;
- }
--- 
-2.33.0
+I am going to test the "arm64-upstream" merge request next which has
+some interesting arm64/cpuinfo patches.
 
+ BUG: KASAN: stack-out-of-bounds in vsnprintf
+ Read of size 8 at addr ffff800016297db8 by task swapper/0/0
+
+ CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15.0-next-20211110 #157
+ Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
+ Call trace:
+  dump_backtrace
+  show_stack
+  dump_stack_lvl
+  print_address_description.constprop.0
+  kasan_report
+  __asan_report_load8_noabort
+  vsnprintf
+  vsnprintf at /root/linux-next/lib/vsprintf.c:2807
+  vprintk_store
+  vprintk_store at /root/linux-next/kernel/printk/printk.c:2138 (discriminator 5)
+  vprintk_emit
+  vprintk_emit at /root/linux-next/kernel/printk/printk.c:2232
+  vprintk_default
+  vprintk_default at /root/linux-next/kernel/printk/printk.c:2260
+  vprintk
+  vprintk at /root/linux-next/kernel/printk/printk_safe.c:50
+  _printk
+  printk at /root/linux-next/kernel/printk/printk.c:2264
+  __cpuinfo_store_cpu
+  __cpuinfo_store_cpu at /root/linux-next/arch/arm64/kernel/cpuinfo.c:412
+  cpuinfo_store_cpu
+  cpuinfo_store_cpu at /root/linux-next/arch/arm64/kernel/cpuinfo.c:418
+  secondary_start_kernel
+  secondary_start_kernel at /root/linux-next/arch/arm64/kernel/smp.c:241
+  __secondary_switched
+
+
+ addr ffff800016297db8 is located in stack of task swapper/0/0 at offset 136 in frame:
+  _printk
+
+ this frame has 1 object:
+  [32, 64) 'args'
+
+ Memory state around the buggy address:
+  ffff800016297c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff800016297d00: 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00 f3 f3
+ >ffff800016297d80: f3 f3 00 00 00 00 f3 f3 00 00 00 00 00 00 00 00
+                                         ^
+  ffff800016297e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff800016297e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
