@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCA744F206
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 08:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E6344F208
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 08:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbhKMHgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 02:36:38 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:45784 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229487AbhKMHgh (ORCPT
+        id S234955AbhKMHmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 02:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhKMHme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 02:36:37 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UwIp4zI_1636788815;
-Received: from e02h04404.eu6sqa(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0UwIp4zI_1636788815)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 13 Nov 2021 15:33:43 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        guwen@linux.alibaba.com, tonylu@linux.alibaba.com
-Subject: [PATCH net v2] net/smc: Transfer remaining wait queue entries during fallback
-Date:   Sat, 13 Nov 2021 15:33:35 +0800
-Message-Id: <1636788815-29902-1-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 13 Nov 2021 02:42:34 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB45C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Nov 2021 23:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1ZlGfwZLOlCg9D47cdd/t53MBwf6+56wY9caM1o2VUM=; b=BqwgwSfSB1ez7UVe/m2YuLJAmX
+        MMfhwOjBfQMARCnl8MTPG5sjQ87dD1IvEIdyknP0DnqRSbmwrP+3izwkTyy3kHpep+S7eR+W5hpNy
+        klniVFKWlQp9zIb0hoIA2okVmyWabSu4NqJViqgeIYyZAZoy4SLS5RlvQxI2T4WOAwCnqdtyBziqP
+        iGPSdGOLbm0tZC3fsJsZG2KrzeDNktcRA7A3ayb78FYzFM6dc9GApEd0ZilYoEyar0WEYlVd5br6l
+        MptZkFP5zb96vSPKIrfX1y4r9H3+jTIFWOuT8F7AbGGozNUFFM0gfH/+9RbopHpOp79+mEW4L1CoW
+        Yo4E59Yw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlnd6-00FmZu-Fx; Sat, 13 Nov 2021 07:39:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D942230001B;
+        Sat, 13 Nov 2021 08:39:14 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 93F25205E4DB6; Sat, 13 Nov 2021 08:39:14 +0100 (CET)
+Date:   Sat, 13 Nov 2021 08:39:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Brian Chen <brianchen118@gmail.com>, brianc118@fb.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] psi: fix PSI_MEM_FULL state when tasks are in memstall
+ and doing reclaim
+Message-ID: <YY9rohAcZ/1IGNDd@hirez.programming.kicks-ass.net>
+References: <20211110213312.310243-1-brianchen118@gmail.com>
+ <YY6cAFtHOhw2zEc7@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YY6cAFtHOhw2zEc7@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SMC fallback is incomplete currently. There may be some
-wait queue entries remaining in smc socket->wq, which should
-be removed to clcsocket->wq during the fallback.
+On Fri, Nov 12, 2021 at 11:53:20AM -0500, Johannes Weiner wrote:
+> On Wed, Nov 10, 2021 at 09:33:12PM +0000, Brian Chen wrote:
+> > We've noticed cases where tasks in a cgroup are stalled on memory but
+> > there is little memory FULL pressure since tasks stay on the runqueue
+> > in reclaim.
+> > 
+> > A simple example involves a single threaded program that keeps leaking
+> > and touching large amounts of memory. It runs in a cgroup with swap
+> > enabled, memory.high set at 10M and cpu.max ratio set at 5%. Though
+> > there is significant CPU pressure and memory SOME, there is barely any
+> > memory FULL since the task enters reclaim and stays on the runqueue.
+> > However, this memory-bound task is effectively stalled on memory and
+> > we expect memory FULL to match memory SOME in this scenario.
+> > 
+> > The code is confused about memstall && running, thinking there is a
+> > stalled task and a productive task when there's only one task: a
+> > reclaimer that's counted as both. To fix this, we redefine the
+> > condition for PSI_MEM_FULL to check that all running tasks are in an
+> > active memstall instead of checking that there are no running tasks.
+> > 
+> >         case PSI_MEM_FULL:
+> > -               return unlikely(tasks[NR_MEMSTALL] && !tasks[NR_RUNNING]);
+> > +               return unlikely(tasks[NR_MEMSTALL] &&
+> > +                       tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING]);
+> > 
+> > This will capture reclaimers. It will also capture tasks that called
+> > psi_memstall_enter() and are about to sleep, but this should be
+> > negligible noise.
+> > 
+> > Signed-off-by: Brian Chen <brianchen118@gmail.com>
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> This bug essentially causes us to count memory-some in walltime and
+> memory-full in tasktime, which can be quite confusing and misleading
+> in combined CPU and memory pressure situations.
+> 
+> The fix looks good to me, thanks Brian.
+> 
+> The bug's been there since the initial psi commit, so I don't think a
+> stable backport is warranted.
+> 
+> Peter, absent objections, can you please pick this up through -tip?
 
-For example, in nginx/wrk benchmark, this issue causes an
-all-zeros test result:
+Yep can do. Note that our psi_group_cpu data structure is now completely
+filled (the extra tasks state filled the last hole):
 
-server: nginx -g 'daemon off;'
-client: smc_run wrk -c 1 -t 1 -d 5 http://11.200.15.93/index.html
+struct psi_group_cpu {
+	seqcount_t                 seq __attribute__((__aligned__(64))); /*     0     4 */
+	unsigned int               tasks[5];             /*     4    20 */
+	u32                        state_mask;           /*    24     4 */
+	u32                        times[7];             /*    28    28 */
+	u64                        state_start;          /*    56     8 */
+	/* --- cacheline 1 boundary (64 bytes) --- */
+	u32                        times_prev[2][7] __attribute__((__aligned__(64))); /*    64    56 */
 
-  Running 5s test @ http://11.200.15.93/index.html
-     1 threads and 1 connections
-     Thread Stats   Avg      Stdev     Max   ± Stdev
-     	Latency     0.00us    0.00us   0.00us    -nan%
-	Req/Sec     0.00      0.00     0.00      -nan%
-	0 requests in 5.00s, 0.00B read
-     Requests/sec:      0.00
-     Transfer/sec:       0.00B
-
-The reason for this all-zeros result is that when wrk used SMC
-to replace TCP, it added an eppoll_entry into smc socket->wq
-and expected to be notified if epoll events like EPOLL_IN/
-EPOLL_OUT occurred on the smc socket.
-
-However, once a fallback occurred, wrk switches to use clcsocket.
-Now it is clcsocket->wq instead of smc socket->wq which will
-be woken up. The eppoll_entry remaining in smc socket->wq does
-not work anymore and wrk stops the test.
-
-This patch fixes this issue by removing remaining wait queue
-entries from smc socket->wq to clcsocket->wq during the fallback.
-
-Link: https://www.spinics.net/lists/netdev/msg779769.html
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
----
-v1->v2
-Correct the wrong usage of spin_lock_irqsave().
----
- net/smc/af_smc.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 0cf7ed2..f32f822 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -562,6 +562,10 @@ static void smc_stat_fallback(struct smc_sock *smc)
- 
- static void smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
- {
-+	wait_queue_head_t *smc_wait = sk_sleep(&smc->sk);
-+	wait_queue_head_t *clc_wait = sk_sleep(smc->clcsock->sk);
-+	unsigned long flags;
-+
- 	smc->use_fallback = true;
- 	smc->fallback_rsn = reason_code;
- 	smc_stat_fallback(smc);
-@@ -571,6 +575,16 @@ static void smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
- 		smc->clcsock->file->private_data = smc->clcsock;
- 		smc->clcsock->wq.fasync_list =
- 			smc->sk.sk_socket->wq.fasync_list;
-+
-+		/* There may be some entries remaining in
-+		 * smc socket->wq, which should be removed
-+		 * to clcsocket->wq during the fallback.
-+		 */
-+		spin_lock_irqsave(&smc_wait->lock, flags);
-+		spin_lock(&clc_wait->lock);
-+		list_splice_init(&smc_wait->head, &clc_wait->head);
-+		spin_unlock(&clc_wait->lock);
-+		spin_unlock_irqrestore(&smc_wait->lock, flags);
- 	}
- }
- 
--- 
-1.8.3.1
+	/* size: 128, cachelines: 2, members: 6 */
+	/* padding: 8 */
+	/* forced alignments: 2 */
+} __attribute__((__aligned__(64)));
 
