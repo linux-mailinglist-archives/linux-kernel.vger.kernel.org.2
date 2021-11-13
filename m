@@ -2,194 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CF344F40A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 16:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9740244F413
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 17:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhKMPvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 10:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhKMPvP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 10:51:15 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C153DC061766;
-        Sat, 13 Nov 2021 07:48:22 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id bu11so8359946qvb.0;
-        Sat, 13 Nov 2021 07:48:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXbQA6YsK/Yb8I1ufwTowmeWehU5ZLa6WqLwd/WJnR0=;
-        b=ImBzKERFqdjBGrGwyXdvLPxokVVH/YOD6syxy5Ry7EoZ7JA1ZgRpH36/Ir2IBUSx8W
-         gS0HmCEFLrPn8WeyKPwEHIKMJ8MsoQKXk07euxX0IcdQLNiTUxjGZQqX9d7aI435mJq7
-         QePMM1Q6vqImAExonnt61+8iV7HOUhqKsJvwCo+s5DSG0p8dfVub4pnX3y3g9rWeXJGP
-         s9Mi2AmGn/L6seJC8NjdI8dnnTh/v07eZIEcb9LSYEY+5wguwcQdBUGlxdKg1fR7SASX
-         PlYXoa7CPenBQheitAgVSHtWNxpkfdc6wMn6uumIY9JQJs7Eb1xfWp0PpdG4DXYQNu/x
-         ADAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXbQA6YsK/Yb8I1ufwTowmeWehU5ZLa6WqLwd/WJnR0=;
-        b=Gk/WIU2vM07u3Zx6rEpgVFkjLlWAMk/MWTkuCjka30m4LQZGnLWqzbzMDMv6E1UllS
-         ihwXA/9gtyQUHELXOKx+KSrvrPSxr0lxLoFMhe2gLXOvd7Xef9mSKhYvSsTk3BX4Ytpj
-         BPMxZl8PChFqowG88kF/0bxsSPNUfGZ0qMUa4GFV1MWA7B9Fiin6uWmCI5VMBCASjFWx
-         lmyCapcRQOLv8LmCN1t4zArH3HaRo7qok6UzXpm+3JC6In1gdhvCJTPblhDcONtAo9BS
-         EGfS5GlQbsjpw9kLl1vGLedPh6hlUvwetHMxU86q8a77csS0tbLISRGPp4H6U4o9+r3u
-         HOGA==
-X-Gm-Message-State: AOAM531SEEUOXfA1ss0BGonTBbQ8kl6lo5bFZc8OBCevLOyozQ4rGt+8
-        CM6W8SKzoGhAJxF/82OaX7TrB/Usws++vsuuPzs=
-X-Google-Smtp-Source: ABdhPJwHPNIdUDZB1WofY0EyhE09P++WglgHkH4uOkSjWwuZbEIP1MOmjqdsr8nWmrB6p2F41NZVSXMsSppxTlGYQ68=
-X-Received: by 2002:a05:6214:f2d:: with SMTP id iw13mr23317601qvb.13.1636818501919;
- Sat, 13 Nov 2021 07:48:21 -0800 (PST)
+        id S235962AbhKMQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 11:15:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231912AbhKMQPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 11:15:32 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A12160F6E;
+        Sat, 13 Nov 2021 16:12:37 +0000 (UTC)
+Date:   Sat, 13 Nov 2021 16:17:24 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Cc:     <linux-kernel@vger.kernel.org>, <lars@metafoo.de>,
+        <linux-iio@vger.kernel.org>, <git@xilinx.com>,
+        <michal.simek@xilinx.com>, <pmeerw@pmeerw.net>,
+        <devicetree@vger.kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v8 2/4] iio: adc: Add Xilinx AMS driver
+Message-ID: <20211113161724.371e4bcf@jic23-huawei>
+In-Reply-To: <20211108210509.29870-3-anand.ashok.dumbre@xilinx.com>
+References: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
+        <20211108210509.29870-3-anand.ashok.dumbre@xilinx.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211108084142.4692-1-laoar.shao@gmail.com> <YY6JhZK/oiLUwHyZ@alley>
-In-Reply-To: <YY6JhZK/oiLUwHyZ@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 13 Nov 2021 23:47:45 +0800
-Message-ID: <CALOAHbA5LBHyJn=EC1roHYt7ar-QqHzLE=KHQ6uC=a__3Pwxfw@mail.gmail.com>
-Subject: Re: [PATCH] kthread: dynamically allocate memory to store kthread's
- full name
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:34 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-11-08 08:41:42, Yafang Shao wrote:
-> > When I was implementing a new per-cpu kthread cfs_migration, I found the
-> > comm of it "cfs_migration/%u" is truncated due to the limitation of
-> > TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-> > all with the same name "cfs_migration/1", which will confuse the user. This
-> > issue is not critical, because we can get the corresponding CPU from the
-> > task's Cpus_allowed. But for kthreads correspoinding to other hardware
-> > devices, it is not easy to get the detailed device info from task comm,
-> > for example,
-> >
-> > After this change, the full name of these truncated kthreads will be
-> > displayed via /proc/[pid]/comm:
-> >
-> > --- a/fs/proc/array.c
-> > +++ b/fs/proc/array.c
-> > @@ -102,6 +103,8 @@ void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
-> >
-> >       if (p->flags & PF_WQ_WORKER)
-> >               wq_worker_comm(tcomm, sizeof(tcomm), p);
->
-> Just for record. I though that this patch obsoleted wq_worker_comm()
-> but it did not. wq_worker_comm() returns different values
-> depending on the last proceed work item and has to stay.
->
+On Mon, 8 Nov 2021 21:05:07 +0000
+Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com> wrote:
 
-Right. worker comm is changed dynamically, which is combined by
-(task_comm+worker_desc) or (task_comm-worker_desc).
-I planned to remove the whole worker->desc and set it dynamically to
-the new kthread full_name but I found it may not be a good idea.
+> The AMS includes an ADC as well as on-chip sensors that can be used to
+> sample external voltages and monitor on-die operating conditions, such
+> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
+> PL-SYSMON block is capable of monitoring off chip voltage and
+> temperature.
+> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
+> from an external master. Out of these interfaces currently only DRP is
+> supported.
+> Other block PS-SYSMON is memory mapped to PS.
+> The AMS can use internal channels to monitor voltage and temperature as
+> well as one primary and up to 16 auxiliary channels for measuring
+> external voltages.
+> The voltage and temperature monitoring channels also have event
+> capability which allows to generate an interrupt when their value falls
+> below or raises above a set threshold.
+> 
+> Co-developed-by: Manish Narani <manish.narani@xilinx.com>
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Hi Anand,
 
++Cc Andy for a question on of_iomap() and whether we should add something similar
+to the generic firmware handling.  Personally I'd be happy with leaving it for
+now on basis of it being something to come back and tidy up later, but would
+like your opinion as you are more familiar with that stuff.
 
-> > +     else if (p->flags & PF_KTHREAD)
-> > +             get_kthread_comm(tcomm, sizeof(tcomm), p);
-> >       else
-> >               __get_task_comm(tcomm, sizeof(tcomm), p);
-> >
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -121,6 +135,7 @@ void free_kthread_struct(struct task_struct *k)
->
-> Hmm, there is the following comment:
->
->         /*
->          * Can be NULL if this kthread was created by kernel_thread()
->          * or if kmalloc() in kthread() failed.
->          */
->         kthread = to_kthread(k);
->
-> And indeed, set_kthread_struct() is called only by kthread()
-> and init_idle().
->
-> For example, call_usermodehelper_exec_sync() calls kernel_thread()
-> but given @fn does not call set_kthread_struct(). Also init_idle()
-> continues even when the allocation failed.
->
+Given you are going around again, I've picked out a few minor things on a final
+read through to clean up but subject to the above and review from others I'm happy
+with this now and hopefully can pick up v9.
 
-Yes, it really can be NULL.
+Thanks,
 
->
-> >  #ifdef CONFIG_BLK_CGROUP
-> >       WARN_ON_ONCE(kthread && kthread->blkcg_css);
-> >  #endif
-> > +     kfree(kthread->full_name);
->
-> Hence, we have to make sure that it is not NULL here. I suggest
-> something like:
->
-
-Agreed.  I will do it.
-
-> void free_kthread_struct(struct task_struct *k)
-> {
->         struct kthread *kthread;
->
->         /*
->          * Can be NULL if this kthread was created by kernel_thread()
->          * or if kmalloc() in kthread() failed.
->          */
->         kthread = to_kthread(k);
->         if (!kthread)
->                 return;
->
-> #ifdef CONFIG_BLK_CGROUP
->         WARN_ON_ONCE(kthread->blkcg_css);
-> #endif
->         kfree(kthread->full_name);
->         kfree(kthread);
-> }
->
->
-> Side note: The possible NULL pointer looks dangerous to
->     me. to_kthread() is dereferenced without any check on
->     several locations.
->
->     For example, kthread_create_on_cpu() looks safe. It is a kthread
->     crated by kthread(). It will exists only when the allocation
->     succeeded.
->
->     kthread_stop() is probably safe only because it used only for
->     the classic kthreads created by kthread(). But the API
->     is not safe.
->
->     kthread_use_mm() is probably used only by classic kthreads as
->     well. But it is less clear to me.
->
->     All this unsafe APIs looks like a ticking bomb to me. But
->     it is beyond this patchset.
->
-
-I will analyze it in depth and try to dismantle this ticking bomb.
+Jonathan
 
 
--- 
-Thanks
-Yafang
+> ---
+>  drivers/iio/adc/Kconfig      |   15 +
+>  drivers/iio/adc/Makefile     |    1 +
+>  drivers/iio/adc/xilinx-ams.c | 1452 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 1468 insertions(+)
+>  create mode 100644 drivers/iio/adc/xilinx-ams.c
+> 
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index af168e1c9fdb..6d711f401326 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -1278,4 +1278,19 @@ config XILINX_XADC
+>  	  The driver can also be build as a module. If so, the module will be called
+>  	  xilinx-xadc.
+>  
+> +config XILINX_AMS
+> +	tristate "Xilinx AMS driver"
+> +	depends on ARCH_ZYNQMP || COMPILE_TEST
+> +	depends on HAS_IOMEM
+> +	help
+> +	  Say yes here to have support for the Xilinx AMS for Ultrascale/Ultrascale+
+> +	  System Monitor. With this you can measure and monitor the Voltages and
+> +          Temperature values on the SOC.
+
+Already noted in other review thread
+
+> +
+> +	  The driver supports Voltage and Temperature monitoring on Xilinx Ultrascale
+> +	  devices.
+> +
+> +	  The driver can also be built as a module. If so, the module will be called
+> +	  xilinx-ams.
+> +
+>  endmenu
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index d68550f493e3..8ced2a3a153f 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -114,4 +114,5 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
+>  obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
+>  xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
+>  obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
+> +obj-$(CONFIG_XILINX_AMS) += xilinx-ams.o
+>  obj-$(CONFIG_SD_ADC_MODULATOR) += sd_adc_modulator.o
+> diff --git a/drivers/iio/adc/xilinx-ams.c b/drivers/iio/adc/xilinx-ams.c
+> new file mode 100644
+> index 000000000000..6e325c4f0a5d
+> --- /dev/null
+> +++ b/drivers/iio/adc/xilinx-ams.c
+> @@ -0,0 +1,1452 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx AMS driver
+> + *
+> + *  Copyright (C) 2021 Xilinx, Inc.
+> + *
+> + *  Manish Narani <mnarani@xilinx.com>
+> + *  Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>
+> + */
+> +
+> +#include <linux/bits.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/of_address.h>
+
+So this is the last of specific header needed for of_iomap() and
+similar.
+
+> +#include <linux/overflow.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/slab.h>
+> +
+> +#include <linux/iio/events.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
+> +
+
+...
+
+> +/**
+> + * struct ams - Driver data for xilinx-ams
+> + * @base: physical base address of device
+> + * @ps_base: physical base address of PS device
+> + * @pl_base: physical base address of PL device
+> + * @clk: clocks associated with the device
+> + * @dev: pointer to device struct
+> + * @lock: to handle multiple user interaction
+> + * @intr_lock: to protect interrupt mask values
+> + * @alarm_mask: alarm configuration
+> + * @masked_alarm: currently masked due to alarm
+> + * @intr_mask: interrupt configuration
+> + * @irq: interrupt number of the sysmon
+
+Run kernel-doc script over the file and fix the warnings.  Here you
+dropped the field in this version but missed the docs.
+
+> + * @ams_unmask_work: re-enables event once the event condition disappears
+> + *
+> + * This structure contains necessary state for Sysmon driver to operate
+> + */
+> +struct ams {
+> +	void __iomem *base;
+> +	void __iomem *ps_base;
+> +	void __iomem *pl_base;
+> +	struct clk *clk;
+> +	struct device *dev;
+> +	struct mutex lock;
+> +	spinlock_t intr_lock;
+> +	unsigned int alarm_mask;
+> +	unsigned int masked_alarm;
+> +	u64 intr_mask;
+> +	struct delayed_work ams_unmask_work;
+> +};
+> +
+
+...
+
+
+> +
+> +static int ams_init_module(struct iio_dev *indio_dev, struct fwnode_handle *np,
+> +			   struct iio_chan_spec *channels)
+> +{
+> +	struct ams *ams = iio_priv(indio_dev);
+> +	struct device *dev = indio_dev->dev.parent;
+> +	struct device_node *node;
+> +	int num_channels = 0;
+> +	int ret;
+> +
+> +	node = to_of_node(np);
+> +	if (fwnode_property_match_string(np, "compatible",
+> +					 "xlnx,zynqmp-ams-ps") == 0) {
+> +		ams->ps_base = of_iomap(node, 0);
+> +		if (!ams->ps_base)
+> +			return -ENXIO;
+> +		ret = devm_add_action_or_reset(dev, ams_iounmap, ams->ps_base);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* add PS channels to iio device channels */
+> +		memcpy(channels + num_channels, ams_ps_channels,
+> +		       sizeof(ams_ps_channels));
+> +		num_channels += ARRAY_SIZE(ams_ps_channels);
+> +	} else if (fwnode_property_match_string(np, "compatible",
+> +						"xlnx,zynqmp-ams-pl") == 0) {
+> +		ams->pl_base = of_iomap(node, 0);
+
+Hmm. So of_iomap() leaves us dependent on dt specific calls. Whilst it doesn't
+exactly look hard to create a generic version covering at least dt and acpi
+I don' think there is an equivalent acpi function currently defined.
+
+Andy, do you think this is a good thing to add to the generic firmware node
+handling?  It's a bit specialist as most of the time this will be wrapped up
+in the platform device handling or similar rather than being in a child node like this.
+
+
+> +		if (!ams->pl_base)
+> +			return -ENXIO;
+> +
+> +		ret = devm_add_action_or_reset(dev, ams_iounmap, ams->pl_base);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* Copy only first 10 fix channels */
+> +		memcpy(channels + num_channels, ams_pl_channels,
+> +		       AMS_PL_MAX_FIXED_CHANNEL * sizeof(*channels));
+> +		num_channels += AMS_PL_MAX_FIXED_CHANNEL;
+> +
+> +		num_channels = ams_get_ext_chan(np, channels,
+> +						num_channels);
+> +	} else if (fwnode_property_match_string(np, "compatible",
+> +						"xlnx,zynqmp-ams") == 0) {
+> +		/* add AMS channels to iio device channels */
+> +		memcpy(channels + num_channels, ams_ctrl_channels,
+> +		       sizeof(ams_ctrl_channels));
+> +		num_channels += ARRAY_SIZE(ams_ctrl_channels);
+> +	} else {
+> +		return -EINVAL;
+> +	}
+> +
+> +	return num_channels;
+> +}
+> +
+> +static int ams_parse_dt(struct iio_dev *indio_dev, struct platform_device *pdev)
+
+Almost nothing in here is dt specific now, so you could rename it ams_parse_firmware()
+
+> +{
+> +	struct ams *ams = iio_priv(indio_dev);
+> +	struct iio_chan_spec *ams_channels, *dev_channels;
+> +	struct fwnode_handle *child_node = NULL, *fwnode = dev_fwnode(&pdev->dev);
+> +	int ret, ch_cnt = 0, i, rising_off, falling_off;
+> +	unsigned int num_channels = 0;
+> +
+> +	/* Initialize buffer for channel specification */
+> +	ams_channels = kzalloc(sizeof(ams_ps_channels) +
+> +			       sizeof(ams_pl_channels) +
+> +			       sizeof(ams_ctrl_channels), GFP_KERNEL);
+> +	if (!ams_channels)
+> +		return -ENOMEM;
+> +
+> +	if (fwnode_device_is_available(fwnode)) {
+> +		ret = ams_init_module(indio_dev, fwnode, ams_channels);
+> +		if (ret < 0)
+> +			goto err;
+> +
+> +		num_channels += ret;
+> +	}
+> +
+> +	fwnode_for_each_child_node(fwnode, child_node) {
+> +		if (fwnode_device_is_available(child_node)) {
+> +			ret = ams_init_module(indio_dev, child_node,
+> +					      ams_channels + num_channels);
+> +			if (ret < 0) {
+> +				fwnode_handle_put(child_node);
+> +				goto err;
+> +			}
+> +
+> +			num_channels += ret;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < num_channels; i++) {
+> +		ams_channels[i].channel = ch_cnt++;
+> +
+> +		if (ams_channels[i].scan_index < AMS_CTRL_SEQ_BASE) {
+> +			/* set threshold to max and min for each channel */
+> +			falling_off =
+> +				ams_get_alarm_offset(ams_channels[i].scan_index,
+> +						     IIO_EV_DIR_FALLING);
+> +			rising_off =
+> +				ams_get_alarm_offset(ams_channels[i].scan_index,
+> +						     IIO_EV_DIR_RISING);
+> +			if (ams_channels[i].scan_index >= AMS_PS_SEQ_MAX) {
+> +				writel(AMS_ALARM_THR_MIN,
+> +				       ams->pl_base + falling_off);
+> +				writel(AMS_ALARM_THR_MAX,
+> +				       ams->pl_base + rising_off);
+> +			} else {
+> +				writel(AMS_ALARM_THR_MIN,
+> +				       ams->ps_base + falling_off);
+> +				writel(AMS_ALARM_THR_MAX,
+> +				       ams->ps_base + rising_off);
+> +			}
+> +		}
+> +	}
+> +
+> +	dev_channels = devm_kzalloc(&pdev->dev, sizeof(*dev_channels) *
+> +				    num_channels, GFP_KERNEL);
+> +	if (!dev_channels) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	memcpy(dev_channels, ams_channels,
+> +	       sizeof(*ams_channels) * num_channels);
+> +	indio_dev->channels = dev_channels;
+> +	indio_dev->num_channels = num_channels;
+> +
+> +	ret = 0;
+> +err:
+> +	kfree(ams_channels);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct iio_info iio_ams_info = {
+> +	.read_raw = &ams_read_raw,
+> +	.read_event_config = &ams_read_event_config,
+> +	.write_event_config = &ams_write_event_config,
+> +	.read_event_value = &ams_read_event_value,
+> +	.write_event_value = &ams_write_event_value,
+> +};
+> +
+
+...
+
+> +static int __maybe_unused ams_resume(struct device *dev)
+> +{
+> +	struct ams *ams = iio_priv(dev_get_drvdata(dev));
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(ams->clk);
+
+Given clk_prepare_enable() uses if (ret) to check in all paths we
+it will not ever return a positive value so you can shorten this to
+
+	return clk_prepare_enable(ams->clk);
+
+and drop the local variable ret.
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+...
+
+Jonathan
+
+
