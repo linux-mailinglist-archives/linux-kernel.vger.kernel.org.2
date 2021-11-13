@@ -2,158 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EBC44F358
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FB144F35C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 14:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhKMNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 08:32:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
+        id S235287AbhKMNiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 08:38:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230021AbhKMNc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 08:32:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D40460F70;
-        Sat, 13 Nov 2021 13:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636810174;
-        bh=kVuaHpj7gjt39OEKcsqnJuPd2nH8iPI9QdS+gAsJj2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WLJmRobWcYrv7x1qeIUymM71S43zMm7k3U0dGSeQsFrENkQlPF6AZtXlbmngRU5K0
-         FEGAgVO6jFrC8q8ZeiPC/pBpguQOiTMrG9oJPLgLPgDlwnZdXqeI1/zN2+1AmWd90Y
-         iF0MRn6Ai+AqbZ0/eFiuJpSF4J2bGsny3cCmtD7fU0eUhFKzur9d/bm5+6TWk1mPZC
-         Xp9gutYXnKFPMSDH6jXAdWh4MprtKkl4fKhMMGaGyDwZnLc9Lh9nwh6cvdMxAsdU/s
-         ZlUS+0H4VFHeZP/JhFqo6qPPouS3LsKx1Oml2kIL8lhC0favcjvTJQfu+FA6aG554D
-         WhW5U1M0NdQoA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 90259410A1; Sat, 13 Nov 2021 10:29:31 -0300 (-03)
-Date:   Sat, 13 Nov 2021 10:29:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
-        Sohaib Mohamed <sohaib.amhmd@gmail.com>, eranian@google.com
-Subject: Re: [PATCH v3 03/22] perf test: Make each test/suite its own struct.
-Message-ID: <YY+9uyPCJ3A0x616@kernel.org>
-References: <20211104064208.3156807-1-irogers@google.com>
- <20211104064208.3156807-4-irogers@google.com>
- <YY+4WNB6GGWrkzvT@kernel.org>
+        id S230021AbhKMNiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 08:38:15 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4659861051;
+        Sat, 13 Nov 2021 13:35:22 +0000 (UTC)
+Date:   Sat, 13 Nov 2021 08:35:20 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] tracing: Three small fixes for 5.16
+Message-ID: <20211113083520.26ec84ee@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YY+4WNB6GGWrkzvT@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Nov 13, 2021 at 10:06:32AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Nov 03, 2021 at 11:41:49PM -0700, Ian Rogers escreveu:
-> > By switching to an array of pointers to tests (later to be suites)
-> > the definition of the tests can be moved to the file containing the
-> > tests.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/arch/arm/include/arch-tests.h     |   2 +-
-> >  tools/perf/arch/arm/tests/arch-tests.c       |  18 +-
-> >  tools/perf/arch/arm64/include/arch-tests.h   |   2 +-
-> >  tools/perf/arch/arm64/tests/arch-tests.c     |  11 +-
-> >  tools/perf/arch/powerpc/include/arch-tests.h |   2 +-
-> >  tools/perf/arch/powerpc/tests/arch-tests.c   |  11 +-
-> >  tools/perf/arch/x86/include/arch-tests.h     |   2 +-
-> >  tools/perf/arch/x86/tests/arch-tests.c       |  47 ++--
-> >  tools/perf/tests/builtin-test.c              | 273 ++++++++++++-------
-> >  tools/perf/tests/dwarf-unwind.c              |   7 +-
-> >  tools/perf/tests/tests.h                     |   8 +-
-> >  11 files changed, 215 insertions(+), 168 deletions(-)
-> > 
-> > diff --git a/tools/perf/arch/arm/include/arch-tests.h b/tools/perf/arch/arm/include/arch-tests.h
-> > index c62538052404..37039e80f18b 100644
-> > --- a/tools/perf/arch/arm/include/arch-tests.h
-> > +++ b/tools/perf/arch/arm/include/arch-tests.h
-> > @@ -2,6 +2,6 @@
-> >  #ifndef ARCH_TESTS_H
-> >  #define ARCH_TESTS_H
-> >  
-> > -extern struct test arch_tests[];
-> > +extern struct test *arch_tests[];
-> >  
-> >  #endif
-> > diff --git a/tools/perf/arch/arm/tests/arch-tests.c b/tools/perf/arch/arm/tests/arch-tests.c
-> > index 6848101a855f..5287729026ab 100644
-> > --- a/tools/perf/arch/arm/tests/arch-tests.c
-> > +++ b/tools/perf/arch/arm/tests/arch-tests.c
-> > @@ -3,18 +3,12 @@
-> >  #include "tests/tests.h"
-> >  #include "arch-tests.h"
-> >  
-> > -struct test arch_tests[] = {
-> > +DEFINE_SUITE("Vectors page", vectors_page);
-> > +
-> > +struct test *arch_tests[] = {
-> >  #ifdef HAVE_DWARF_UNWIND_SUPPORT
-> > -	{
-> > -		.desc = "DWARF unwind",
-> > -		.func = test__dwarf_unwind,
-> > -	},
-> > +	&dwarf_unwind,
-> >  #endif
-> > -	{
-> > -		.desc = "Vectors page",
-> > -		.func = test__vectors_page,
-> > -	},
-> > -	{
-> > -		.func = NULL,
-> > -	},
-> > +	&vectors_pages,
-> 
-> Its "vector_page", not plural, I'm fixing it up from this point onwards.
 
-Also had to add this, now fixing up the fallout in the following patches
-to see if this builds on arm 32-bit.
+Linus,
 
-- Arnaldo
+Three tracing fixes:
 
-diff --git a/tools/perf/arch/arm/tests/arch-tests.c b/tools/perf/arch/arm/tests/arch-tests.c
-index ee1ee83ee6a17f38..8276740f7ff86db4 100644
---- a/tools/perf/arch/arm/tests/arch-tests.c
-+++ b/tools/perf/arch/arm/tests/arch-tests.c
-@@ -3,8 +3,6 @@
- #include "tests/tests.h"
- #include "arch-tests.h"
+ - Make local osnoise_instances static
+
+ - Copy just actual size of histogram strings
+
+ - Properly check missing operands in histogram expressions
+
+
+Please pull the latest trace-v5.16-4 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.16-4
+
+Tag SHA1: 1e06c15eb016180a996fd2bd3838fa1ca9ea21d6
+Head SHA1: 1cab6bce42e62bba2ff2c2370d139618c1828b42
+
+
+Daniel Bristot de Oliveira (1):
+      tracing/osnoise: Make osnoise_instances static
+
+Kalesh Singh (1):
+      tracing/histogram: Fix check for missing operands in an expression
+
+Masami Hiramatsu (1):
+      tracing/histogram: Do not copy the fixed-size char array field over the field size
+
+----
+ kernel/trace/trace_events_hist.c | 12 +++++++-----
+ kernel/trace/trace_osnoise.c     |  3 ++-
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+---------------------------
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 8ff572a31fd3..1475d7347fe0 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1953,9 +1953,10 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 		if (!hist_field->type)
+ 			goto free;
  
--DEFINE_SUITE("Vectors page", vectors_page);
--
- struct test *arch_tests[] = {
- #ifdef HAVE_DWARF_UNWIND_SUPPORT
- 	&dwarf_unwind,
-diff --git a/tools/perf/arch/arm/tests/vectors-page.c b/tools/perf/arch/arm/tests/vectors-page.c
-index 7ffdd79971c89220..dac7b32afb655608 100644
---- a/tools/perf/arch/arm/tests/vectors-page.c
-+++ b/tools/perf/arch/arm/tests/vectors-page.c
-@@ -9,8 +9,7 @@
+-		if (field->filter_type == FILTER_STATIC_STRING)
++		if (field->filter_type == FILTER_STATIC_STRING) {
+ 			hist_field->fn = hist_field_string;
+-		else if (field->filter_type == FILTER_DYN_STRING)
++			hist_field->size = field->size;
++		} else if (field->filter_type == FILTER_DYN_STRING)
+ 			hist_field->fn = hist_field_dynstring;
+ 		else
+ 			hist_field->fn = hist_field_pstring;
+@@ -2580,7 +2581,8 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 	operand1_str = str;
+ 	str = sep+1;
  
- #define VECTORS__MAP_NAME "[vectors]"
+-	if (!operand1_str || !str)
++	/* Binary operator requires both operands */
++	if (*operand1_str == '\0' || *str == '\0')
+ 		goto free;
  
--int test__vectors_page(struct test *test __maybe_unused,
--		       int subtest __maybe_unused)
-+static int test__vectors_page(struct test *test __maybe_unused, int subtest __maybe_unused)
- {
- 	void *start, *end;
+ 	operand_flags = 0;
+@@ -3025,7 +3027,7 @@ static inline void __update_field_vars(struct tracing_map_elt *elt,
+ 			char *str = elt_data->field_var_str[j++];
+ 			char *val_str = (char *)(uintptr_t)var_val;
  
-@@ -22,3 +21,5 @@ int test__vectors_page(struct test *test __maybe_unused,
+-			strscpy(str, val_str, STR_VAR_LEN_MAX);
++			strscpy(str, val_str, val->size);
+ 			var_val = (u64)(uintptr_t)str;
+ 		}
+ 		tracing_map_set_var(elt, var_idx, var_val);
+@@ -4920,7 +4922,7 @@ static void hist_trigger_elt_update(struct hist_trigger_data *hist_data,
  
- 	return TEST_OK;
- }
+ 				str = elt_data->field_var_str[idx];
+ 				val_str = (char *)(uintptr_t)hist_val;
+-				strscpy(str, val_str, STR_VAR_LEN_MAX);
++				strscpy(str, val_str, hist_field->size);
+ 
+ 				hist_val = (u64)(uintptr_t)str;
+ 			}
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 3e4a1651e329..7520d43aed55 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -55,7 +55,8 @@ struct osnoise_instance {
+ 	struct list_head	list;
+ 	struct trace_array	*tr;
+ };
+-struct list_head osnoise_instances;
 +
-+DEFINE_SUITE("Vectors page", vectors_page);
++static struct list_head osnoise_instances;
+ 
+ static bool osnoise_has_registered_instances(void)
+ {
