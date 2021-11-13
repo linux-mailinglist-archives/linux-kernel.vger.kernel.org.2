@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7B544F586
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 22:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEA244F59D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 23:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbhKMVjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 16:39:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45598 "EHLO mail.kernel.org"
+        id S234772AbhKMWKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 17:10:14 -0500
+Received: from mga04.intel.com ([192.55.52.120]:20757 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234306AbhKMVjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 16:39:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7261060E9B;
-        Sat, 13 Nov 2021 21:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636839386;
-        bh=kA00sl16Wz+fTC6dvTZqWvwDl/ATVl0hIrqyB5JqMFk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=A93+fKM5P6uBMPwMaRoqlvg4KRPZ2DCcaVTYYKgu+sclJO3C28Yol0uTPimu+6Or5
-         6LgBxJzM4raXLq57horkWAP5RPvbzfbxzCpXVaYwa7SJHUk/NvLtKdC4cZdeNa8Trl
-         aPAhanUYpzZaOlkjRQkBplvySwBmaFVRC+rkUJ+n+IB+k9wluv+YqCcJJ9JE56qxMJ
-         t5+un7Kf4Oeu2R5HxyOTU/FHnGeKDubYXe2Dfry2G16xv9a36QERbGnwRSkwssLoIp
-         UnNmCGBVPhzsCa9rxbdjXAytR615qjZaQNPFT6xBxjaK3WZy1SuyUYUie/N/nHPG5I
-         EtqmnsG6ceYIA==
-Date:   Sat, 13 Nov 2021 15:41:25 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [GIT PULL] Enable -Wimplicit-fallthrough for Clang for 5.16-rc1
-Message-ID: <20211113214125.GA23640@embeddedor>
+        id S231416AbhKMWKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 17:10:13 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10167"; a="232008755"
+X-IronPort-AV: E=Sophos;i="5.87,232,1631602800"; 
+   d="scan'208";a="232008755"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2021 14:07:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,232,1631602800"; 
+   d="scan'208";a="493477317"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 13 Nov 2021 14:07:18 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mm1B7-000KbC-V7; Sat, 13 Nov 2021 22:07:17 +0000
+Date:   Sun, 14 Nov 2021 06:07:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2021.11.10a] BUILD SUCCESS
+ cfbd3769397911e7f1561fa57b4490b1e4fed9de
+Message-ID: <61903705.QxKUyeS7pMYRaZVq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3906fe9bb7f1a2c8667ae54e967dc8690824f4ea:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.11.10a
+branch HEAD: cfbd3769397911e7f1561fa57b4490b1e4fed9de  fixup! rcu-tasks:  Create per-CPU callback lists
 
-  Linux 5.15-rc7 (2021-10-25 11:30:31 -0700)
+elapsed time: 1562m
 
-are available in the Git repository at:
+configs tested: 53
+configs skipped: 3
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/enable-clang-fallthrough-5.16-rc1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-for you to fetch changes up to 428a8bf629ecc118d1eadbb629312c25fde2103f:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nios2                            allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-  Makefile: Enable -Wimplicit-fallthrough for Clang (2021-11-13 15:24:33 -0600)
-
-----------------------------------------------------------------
-Enable -Wimplicit-fallthrough for Clang for 5.16-rc1
-
-Hi Linus,
-
-Please, pull the following patch that enables -Wimplicit-fallthrough
-for Clang 14+, globally.
-
-We had almost 40,000[1] of these issues for Clang in the beginning,
-and now I think we are in good shape and it is now possible to enable
--Wimplicit-fallthrough for Clang, with this finally getting rid of
-the unintentional fallthrough bug-class in the kernel, entirely. :)
-
-I have to say that I'm sending this pull-request this late in the
-merge window, intentionally. I first wated to make sure that no other
-warning shows up before sending it.
-
-This patch has been baking in linux-next for a couple of developement
-cycles, now. So, I think we are pretty much ready to merge it into
-mainline.
-
-[1] https://github.com/KSPP/linux/issues/115
-
-Thanks!
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      Makefile: Enable -Wimplicit-fallthrough for Clang
-
- Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
