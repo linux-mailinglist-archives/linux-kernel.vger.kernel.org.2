@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2437A44F53D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CBF44F53E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234983AbhKMUYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 15:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbhKMUYd (ORCPT
+        id S236009AbhKMUY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 15:24:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20706 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232203AbhKMUYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 15:24:33 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AC5C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:21:40 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id c3so15776880iob.6
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:21:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PRtrotC7yQ1PrBoDQpI8uzdE+jeqJk3Tru6SSc7SL9c=;
-        b=ndr+MYiHDHZEcgKWy0JRyuQ4KGUZYN6+9Yq2CxuQUusQq3Kg9wDqx1fMW391Q8/KFP
-         021v9u+yUJaJxBqo6UOrbp5lesyDiLfrIhAMLb08yU3WId4DDLf3jaxtlWFO/QONf6ms
-         MySdKXUBI3ijksFRYHluXhbZPmSQJHdLcZpOLIAivOrbbmZJhndHOjod2i0MY6annzXU
-         wK3AWoOc6/zpgd9PbU7ap5VwCHnTL/rExlv9wYRKS6FJH6u2x4iMJ9imlr6LSfVNqrVx
-         TWX2Ek3IFF902S06lAzCg2B/CJu9tttHBBGnol2BObV2OVcVLRpJWTCrFZQumZ2awtyz
-         0pIg==
+        Sat, 13 Nov 2021 15:24:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636834921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2F/RqjtwTDKHqbmFyTCtAaLezofMM+3SAjDwL4WYfjk=;
+        b=Il8Gj9OfVXN0dSVKu4KJa5QBcb0mPO0P3XdrvskzQK5ZN2e81HyIi7h/ZIuzYVn0JmCbOO
+        j4sLXZzjC1fOALLaXJdxUNtsvQrRVFEzmjNCs91lxQOl+Bz66oxDr2xXvsVjgRHWLGIbE+
+        uI4oWiu9x6T4jmG8EcUFMCi3kURQM3I=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-BKhO4GU4P2WXrBt7l5tzxQ-1; Sat, 13 Nov 2021 15:21:59 -0500
+X-MC-Unique: BKhO4GU4P2WXrBt7l5tzxQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 201-20020a1c04d2000000b003335bf8075fso5020421wme.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:21:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PRtrotC7yQ1PrBoDQpI8uzdE+jeqJk3Tru6SSc7SL9c=;
-        b=K+Yr7CTD/qmD6J2FNSoecmsRQq4PgMpuKqUFEOgP74WMVm3qyGOvbXIAmoJsAkgN+8
-         VgmvhOVOA/p+saguN2sVAN3fD/4Zrt+pQCJj/lop69e+4hgV7HqZGjjWS18Awv2ebWQ8
-         t4JDUpCuE3zNRGozGzTPbKsGoQqgChA4NTsO4Ouvovui3W3kgtxwEfWsBuJ+uKKUPjqm
-         fAHOWDdqAunYrtPT2nU2Rpa/bkG2Mdyx4wY5Uz7tWWCTWAbeSEuQArf1hZ6j907qJZx+
-         gZxeK1eYTOJ43APgF3cnS05Oyd3P0OUqpF+YRaMSdaKLXVL8Gshf4p7em4eKLolbiLIf
-         52Pw==
-X-Gm-Message-State: AOAM533tLiV729f2XuzVsZTBI3MGnTxraw5CrGvbX4KIhz5uH3XIrzhN
-        bqHqiholO0Y80b/z8VZhCqpdapm5vDd9In9O
-X-Google-Smtp-Source: ABdhPJyO3pxnCczbmt6f4j4mtMF0RPmDjqusCGzdmPW0XBJEkrtZLZdc1Ztkn9g6r0dRij4PslR8JQ==
-X-Received: by 2002:a05:6602:2585:: with SMTP id p5mr11745011ioo.65.1636834900217;
-        Sat, 13 Nov 2021 12:21:40 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id g10sm7114831ila.34.2021.11.13.12.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Nov 2021 12:21:39 -0800 (PST)
-Subject: Re: [PATCH] mm: shmem: do not call PageHWPoison on a ERR-page
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Yang Shi <shy828301@gmail.com>
-Cc:     Ajay Garg <ajaygargnsit@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211111084617.6746-1-ajaygargnsit@gmail.com>
- <CAHP4M8V2WEQ0LgHp7PHdBMYFp+_frn=7GLQVF7=faqapojQ+2g@mail.gmail.com>
- <628a49dc-f6f7-5aa4-8a4d-4f2ed19b7f3f@kernel.dk>
- <e87601bd-21c4-00b0-9500-054bca8abced@kernel.dk>
- <CAHk-=wjgZVY-skWP1vW2Cw+His+3eESATM_+QDYp=wFEsVv=qw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0e2ad5ac-020f-7e2b-4e15-c875b4634546@kernel.dk>
-Date:   Sat, 13 Nov 2021 13:21:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2F/RqjtwTDKHqbmFyTCtAaLezofMM+3SAjDwL4WYfjk=;
+        b=ygiOsvlQIKxWpge8ol0CpoZluhjcoZ5MS/c+uRKXdIgmp7ZlSxhLK+0KOUNM86w1wR
+         Pacah3EOe7TzgPrei1OIW7uV67VZrKsDK/oJ6yj/U9MsEE+ETNY+0sCLCZxQdideu0/9
+         i5oNEPnNbbbju53ZkwAbn5m+3il1Nn3j/iQ64uc16R/yxUAktoLZMMu3OWXLQfT2nvkA
+         NFTOmg0rLODffFLHFOjOKrgDICQWGJvPEOFbpgJ2e/vNUfZXE4gNL5S+CuK7PqvWQQMY
+         lyuZ7ZYHLdBF3EXy/eR+SxB4ntuByvT5qhz84+iAdu19oBOqoTVlYlyASGLzA5kMykUb
+         dDyg==
+X-Gm-Message-State: AOAM53322NGeMvWZ8iepYMOjyifOVf7rtR+nt11H1mRzFIZI14AtoKdA
+        rKvScXNIBEoJi47/DGymzPliZtTbvZ4RAwwrII/S26iw1184UEsvNHz6ll0/ptmJuxifw7B8FTM
+        PEKmhMMhOEwZMBPXMstNUtR3M/PKX0YiYR1BwtGLK
+X-Received: by 2002:a5d:43c5:: with SMTP id v5mr31811215wrr.11.1636834918441;
+        Sat, 13 Nov 2021 12:21:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzvqhfKWTCnwIY4T3+XKKRpmPT2+dOSNYismuaVwHbxo7aKrTV7NWW08xEzDGvONPamHxoBM3Hbj1P73gNHmAk=
+X-Received: by 2002:a5d:43c5:: with SMTP id v5mr31811191wrr.11.1636834918255;
+ Sat, 13 Nov 2021 12:21:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjgZVY-skWP1vW2Cw+His+3eESATM_+QDYp=wFEsVv=qw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CABvMjLTVZaU8vMW__2BDo6FnjFa_bsh2S-kEmg=KV4KTsFiUzA@mail.gmail.com>
+In-Reply-To: <CABvMjLTVZaU8vMW__2BDo6FnjFa_bsh2S-kEmg=KV4KTsFiUzA@mail.gmail.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Sat, 13 Nov 2021 21:21:47 +0100
+Message-ID: <CACO55tuDQ9UC2rr=_Hsowvujk49oNK1zWfHj3jMnhEqsTAnh0Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/core: fix the uninitialized use in nvkm_ioctl_map()
+To:     Yizhuo Zhai <yzhai003@ucr.edu>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/21 1:16 PM, Linus Torvalds wrote:
-> On Sat, Nov 13, 2021 at 9:21 AM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> Maybe Andrew is out - Linus, if you follow this thread, there are two
->> proposed fixes for this. It'd be nice to have one of them in -rc1.
-> 
-> Neither of the fixes were sent to me, and honestly, I think the real
-> issue is that the original commit is just too broken for words.
-> 
-> The error handling in that commit is just entirely lacking.
-> 
-> I've reverted the commit rather than try to fix up the breakage.
-> 
-> Because at some point it's just better to say "that was broken" rather
-> than try to fix it up. And that original commit was too broken to be
-> worth fixing up. It already had one fix for uninitialized variables
-> before it even hit my tree, and then caused problems and had obvious
-> broken error handling.
+something seems to have messed with the patch so it doesn't apply correctly.
 
-Thanks, that obviously fixes the problem as far as I'm concerned as well.
-
--- 
-Jens Axboe
+On Thu, Jun 17, 2021 at 9:39 AM Yizhuo Zhai <yzhai003@ucr.edu> wrote:
+>
+> In function nvkm_ioctl_map(), the variable "type" could be
+> uninitialized if "nvkm_object_map()" returns error code,
+> however, it does not check the return value and directly
+> use the "type" in the if statement, which is potentially
+> unsafe.
+>
+> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/core/ioctl.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+> b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+> index d777df5a64e6..7f2e8482f167 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
+> @@ -266,6 +266,8 @@ nvkm_ioctl_map(struct nvkm_client *client,
+>                 ret = nvkm_object_map(object, data, size, &type,
+>                                       &args->v0.handle,
+>                                       &args->v0.length);
+> +               if (ret)
+> +                       return ret;
+>                 if (type == NVKM_OBJECT_MAP_IO)
+>                         args->v0.type = NVIF_IOCTL_MAP_V0_IO;
+>                 else
+> --
+> 2.17.1
+>
 
