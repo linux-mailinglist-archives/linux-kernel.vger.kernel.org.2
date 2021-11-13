@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC2D44F10A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052BB44F10C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 04:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbhKMDcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Nov 2021 22:32:18 -0500
-Received: from smtpbg604.qq.com ([59.36.128.82]:56677 "EHLO smtpbg604.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232113AbhKMDcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Nov 2021 22:32:17 -0500
-X-QQ-mid: bizesmtp42t1636774110tco0shkf
-Received: from localhost.localdomain (unknown [125.69.41.88])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 13 Nov 2021 11:28:28 +0800 (CST)
-X-QQ-SSF: 01000000000000C0F000B00A0000000
-X-QQ-FEAT: 5YkfsBQ8D09UoePCN3Atr56y9jtXDPlgLiS+yJNjn2fIH+5IAQGCshWXG0+X4
-        CYTeTrKTcD4RCEOeyCru52XrnBRShZ+suTsmcfFzi6ZnZAQwMHYxnY+kuly2X62jpRUj32e
-        LguzkqWXRLok4PAVLQEAH3VlTNrDVzk8lApce9EhvE55flsxPi8hxaCd1k/MLRU81tvtrL2
-        mhuZ0AJRhvws3Llx57ZGG1JzDYYz3EZ/o/+Gi8gR5uta7ygdXQNDehZQBpvHc0xn2njGRKS
-        j78shJ3cXgvedAhUzuGuJLaESFVVm2kAwUVajOOBnYS3A7hHtsubfBWh/lKEGH7p35fUunI
-        eBQxqVAre3P+KoX2WqWTUPrvbM77A==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     tglx@linutronix.de
-Cc:     ardb@kernel.org, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, dvhart@infradead.org,
-        andy@infradead.org, hpa@zytor.com, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] x86/efi: Remove a repeated word in a comment
-Date:   Sat, 13 Nov 2021 11:28:26 +0800
-Message-Id: <20211113032826.57606-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S235638AbhKMDcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Nov 2021 22:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235216AbhKMDcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Nov 2021 22:32:23 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1A1C061766;
+        Fri, 12 Nov 2021 19:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=oLWNo6Ai7vMt6whPOWzKumar63316lzKDpoNdaiFnWE=; b=AbKnsyEuVsi4VI676DCER2/PoC
+        eAy4oKTNe/E+dTSH+2Sw0UV0nhcxh+eO97I8yR0G2VQGGGhlxg+sEbl2kcYECuh8Hb+abJkXFieOI
+        BqRQoC2FUfI+jhVhI++Rdi5X/CdOiPF+gyCLg5JM1q6mlem6wS+JBVY9NuLh0B6Gd/MOAq/o//qcz
+        tZlIKWMIklPGJXdzdypugLcHu9b8s1mbMqUDIDMqheel6CWj5Wda3XCzwgQ2cIYMuR+PjRcaQEU4r
+        apa0HGnNL8R/VbT+SVUfnBSvXbv5m1Z+PCA9FqPJwULEyrJOWH+/zBANsLxjzfvmgZukZJXxieFkn
+        nzZ6O5xA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mljjO-00C6f1-I5; Sat, 13 Nov 2021 03:29:30 +0000
+Subject: Re: [PATCH] MIPS: Remove a repeated word in a comment
+To:     Jason Wang <wangborong@cdjrlc.com>, tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211113032552.53817-1-wangborong@cdjrlc.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <140c9f26-a6ee-8063-16f1-9df9fbdf75e8@infradead.org>
+Date:   Fri, 12 Nov 2021 19:29:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+In-Reply-To: <20211113032552.53817-1-wangborong@cdjrlc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The repeated word `there' in a comment is redundant, thus
-one of them was removed from the comment.
+On 11/12/21 7:25 PM, Jason Wang wrote:
+> The repeated word `the' in a comment is redundant, thus one
+> of them was removed from the comment.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/x86/platform/efi/efi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index 147c30a81f15..2a970fb27744 100644
---- a/arch/x86/platform/efi/efi.c
-+++ b/arch/x86/platform/efi/efi.c
-@@ -189,7 +189,7 @@ static void __init do_add_efi_memmap(void)
- }
- 
- /*
-- * Given add_efi_memmap defaults to 0 and there there is no alternative
-+ * Given add_efi_memmap defaults to 0 and there is no alternative
-  * e820 mechanism for soft-reserved memory, import the full EFI memory
-  * map if soft reservations are present and enabled. Otherwise, the
-  * mechanism to disable the kernel's consideration of EFI_MEMORY_SP is
+Thanks.
+
+> ---
+>   arch/mips/mm/c-octeon.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/mm/c-octeon.c b/arch/mips/mm/c-octeon.c
+> index ec2ae501539a..490322b01f91 100644
+> --- a/arch/mips/mm/c-octeon.c
+> +++ b/arch/mips/mm/c-octeon.c
+> @@ -332,7 +332,7 @@ static void co_cache_error_call_notifiers(unsigned long val)
+>   }
+>   
+>   /*
+> - * Called when the the exception is recoverable
+> + * Called when the exception is recoverable
+>    */
+>   
+>   asmlinkage void cache_parity_error_octeon_recoverable(void)
+> 
+
+
 -- 
-2.33.0
-
+~Randy
