@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BB444F31C
+	by mail.lfdr.de (Postfix) with ESMTP id E47EC44F31D
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 13:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhKMMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 07:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S235791AbhKMMoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 07:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235684AbhKMMoT (ORCPT
+        with ESMTP id S234327AbhKMMoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 07:44:19 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535C0C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:41:27 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id q124so23578514oig.3
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:41:27 -0800 (PST)
+        Sat, 13 Nov 2021 07:44:20 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2514BC061767
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:41:28 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id t19so23621554oij.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 04:41:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XSfIOglWz9pr//EwjQ0vQkhjya/qOXeZVMUtT+Y8e24=;
-        b=OVQgMdPYK+be8w3QdElxh3zlHDocHZL1b7gwLlay1HpP26szLNTNBRo+UtU91xd53k
-         LNbeon7FnIuUu3ijoBIRV4WodPcIx/UgEC4tx0RIbqiOflPePG4BBCcC3J1b5glh4aZW
-         FLz5ofM7Ne9gWLtVeI1Rpt51D33jJVXOEVEXi9KPsTTTLRtgC/HIvBtQOL9PXjvO+jlK
-         KgOhGAMCtbBO0Jo4DgXz/kNhu9oizxaehl7f+3HHY843oIHb87DDxqJbP4uW7BEGUgaV
-         VHEcBHOxs+2WUVJ0mXIaTogKMFwkk88OqETwatvX0/rJKnmH4Gb66TfiJtRjQAX56dqd
-         9kew==
+        bh=qdl0+bVbKQVCShGaAXh7Gbue18kYPAyPlbRt1h2vfHs=;
+        b=MxfuSfczuZdwCfcPnS5//ENCCidKJ3vjCbOy1nr5QV5l4uz/QlIPLuTqDwHATkLVpk
+         KqhzEsPAgzuo4Vr6Q+wIJqDauQ+sbL5OsNgr9/8wt0b834hUdZ2iz4dh/E4sFaH6/x8Y
+         lLxQBbYWthHRKp48P0pQa58eSaARgC/UDqfOTvvfbyeN2WnhTYQCl5r8300/pxnS5oK0
+         tbIAfM740tUeKmtvcNvVyH/irId1Gb3FflJRMe21kt5CA9swCAkj3fixnPJcakq0xDiT
+         iBwCrVzXBfBDPli/Il+mnJtiEBn0GijnuugaNURqiBIwai6UvsYabJfeez+d2eIhL8Eg
+         iQfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XSfIOglWz9pr//EwjQ0vQkhjya/qOXeZVMUtT+Y8e24=;
-        b=BCJPzhMSMoqXRcRB4dz2nvegTBLFygQJmj0MMvlWURVqfEQVUTiI3kBJa8MrxSaYKc
-         lQ5Q3lFU5t6v7pY9T8MoL+yBkSX8s0L4PxhvyqLVfwZeEuK9mSdRw7YRGUzSS8cLpWPA
-         iX7zgCcBfSOKcCRSwR0aPWu2bO4L0xSd7+DKpCGYPhhorzdF/cyHAYIoik3nkP9DWIRo
-         Gg+pgiVQ8b5sYbmvJtwWmjoJSXcQcO2icHMliBaeax129ErJ/ImA0kejQd6c0R+jYHvu
-         1/GUqetf7GJCd48mXUWyBQ7SHSv+o/e2/KRHHz2ovI/bykHp9Fp0uIRqr+xOl3UVgzYC
-         moeg==
-X-Gm-Message-State: AOAM533vIbwOMpkWRpM1gfdBF5chdRPzc7bmk1rWEOtCs3PBch68XmIo
-        F2goQXGIxof/faS4UeHklWMW3poJhA==
-X-Google-Smtp-Source: ABdhPJz/aQ7g6R9kk1tZnkUYw6n03c3M6DOGLdUCFyEYXSz4dlLQV5J1AzopeVhpuVXEW0TZAzgDBg==
-X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr19391648oib.40.1636807286601;
-        Sat, 13 Nov 2021 04:41:26 -0800 (PST)
+        bh=qdl0+bVbKQVCShGaAXh7Gbue18kYPAyPlbRt1h2vfHs=;
+        b=tS7TiF5vjyBWw9F0N/himl0bBoaosU8frdAaVw+YLO+zdIUf/0mvM8UMQZP+IBRc7V
+         br/tfWTh7Jmn6Mk5GvFWwGqn6HE5lXQduOykCViZUqluGhU7TQqbXq8ww3Bgm6OSut4c
+         FwbjDLs9SczTXCZrgrAdOacrBm4KjZTGzR7ENMPiFQ3fHLo/MHv4naaqBYKAzXbNpjSR
+         MhQXoKLUMn+Z3TY+5lREE9HmEVBSps1rQpMX4VaHihSOou+hArHsNfysnO51GITehM8c
+         zYphCnhzCvYK+ZSh/PCN+uk1oMu6/Z0kJcxYxL8py2dhI0oslL8qWRy2G3Q9nHTFp5f2
+         OYgg==
+X-Gm-Message-State: AOAM533dAnLhBUV05VnwuRCYpBx0h40rUVOUvl3OZ5SxtyzIpJ9SqFMz
+        s4LQPInUdLtl3coCm51Vzj/2udlbQw==
+X-Google-Smtp-Source: ABdhPJzQRdpYmKMnwvZQgos+d8jb5bx505f73d7b+cn+8GcRRNriInr8aoNUe8ymrjY6ePnUsB8tgg==
+X-Received: by 2002:a54:4791:: with SMTP id o17mr19998045oic.114.1636807287454;
+        Sat, 13 Nov 2021 04:41:27 -0800 (PST)
 Received: from citadel.. (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id x8sm1796675otg.31.2021.11.13.04.41.25
+        by smtp.gmail.com with ESMTPSA id x8sm1796675otg.31.2021.11.13.04.41.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Nov 2021 04:41:26 -0800 (PST)
+        Sat, 13 Nov 2021 04:41:27 -0800 (PST)
 From:   Brian Gerst <brgerst@gmail.com>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
         Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 2/3] x86/relocs: Make absolute percpu relocations conditional
-Date:   Sat, 13 Nov 2021 07:40:34 -0500
-Message-Id: <20211113124035.9180-3-brgerst@gmail.com>
+Subject: [PATCH 3/3] x86_64: Use relative per-cpu offsets
+Date:   Sat, 13 Nov 2021 07:40:35 -0500
+Message-Id: <20211113124035.9180-4-brgerst@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211113124035.9180-1-brgerst@gmail.com>
 References: <20211113124035.9180-1-brgerst@gmail.com>
@@ -66,141 +66,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The per-cpu section is currently linked at virtual address 0, because
+older compilers hardcoded the stack protector canary value at a fixed
+offset from the start of the GS segment.  Use a standard relative offset
+as the GS base when the stack protector is disabled, or a newer compiler
+is used that supports a configurable location for the stack canary.
+
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 ---
- arch/x86/Kconfig                  |  4 ++++
- arch/x86/boot/compressed/Makefile |  3 ++-
- arch/x86/tools/relocs.c           |  4 ++--
- arch/x86/tools/relocs.h           |  4 ++--
- arch/x86/tools/relocs_common.c    | 11 ++++++++---
- init/Kconfig                      |  1 -
- 6 files changed, 18 insertions(+), 9 deletions(-)
+ arch/x86/Kconfig               |  2 +-
+ arch/x86/include/asm/percpu.h  |  4 ++--
+ arch/x86/kernel/head_64.S      |  4 ----
+ arch/x86/kernel/setup_percpu.c |  2 +-
+ arch/x86/kernel/vmlinux.lds.S  | 14 ++++++--------
+ 5 files changed, 10 insertions(+), 16 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8268910e09cd..832a6626df72 100644
+index 832a6626df72..fae7724505bd 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -402,6 +402,10 @@ config STACKPROTECTOR_FIXED
- 	depends on X86_64 && STACKPROTECTOR
+@@ -403,7 +403,7 @@ config STACKPROTECTOR_FIXED
  	default y if !$(cc-option,-mstack-protector-guard-reg=gs)
  
-+config X86_ABSOLUTE_PERCPU
-+	def_bool X86_64 && SMP
-+	select KALLSYMS_ABSOLUTE_PERCPU
-+
+ config X86_ABSOLUTE_PERCPU
+-	def_bool X86_64 && SMP
++	def_bool STACKPROTECTOR_FIXED && SMP
+ 	select KALLSYMS_ABSOLUTE_PERCPU
+ 
  menu "Processor type and features"
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index a3c33b79fb86..8294781bb483 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -16,7 +16,7 @@
+ #define PER_CPU_VAR(var)	var
+ #endif	/* SMP */
  
- config SMP
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 431bf7f846c3..ff493f262f2a 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -112,8 +112,9 @@ $(obj)/vmlinux.bin: vmlinux FORCE
- targets += $(patsubst $(obj)/%,%,$(vmlinux-objs-y)) vmlinux.bin.all vmlinux.relocs
+-#ifdef CONFIG_X86_64_SMP
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ #define INIT_PER_CPU_VAR(var)  init_per_cpu__##var
+ #else
+ #define INIT_PER_CPU_VAR(var)  var
+@@ -59,7 +59,7 @@
+ #define DECLARE_INIT_PER_CPU(var) \
+        extern typeof(var) init_per_cpu_var(var)
  
- CMD_RELOCS = arch/x86/tools/relocs
-+relocs-flags-$(CONFIG_X86_ABSOLUTE_PERCPU) += --absolute-percpu
- quiet_cmd_relocs = RELOCS  $@
--      cmd_relocs = $(CMD_RELOCS) $< > $@;$(CMD_RELOCS) --abs-relocs $<
-+      cmd_relocs = $(CMD_RELOCS) $(relocs-flags-y) $< > $@;$(CMD_RELOCS) --abs-relocs $<
- $(obj)/vmlinux.relocs: vmlinux FORCE
- 	$(call if_changed,relocs)
+-#ifdef CONFIG_X86_64_SMP
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ #define init_per_cpu_var(var)  init_per_cpu__##var
+ #else
+ #define init_per_cpu_var(var)  var
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 6e396ffb1610..c1b6209a01ca 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -339,12 +339,8 @@ SYM_DATA(initial_code,	.quad x86_64_start_kernel)
+ #ifdef CONFIG_STACKPROTECTOR_FIXED
+ SYM_DATA(initial_gs,	.quad INIT_PER_CPU_VAR(fixed_percpu_data))
+ #else
+-#ifdef CONFIG_SMP
+-SYM_DATA(initial_gs,	.quad __per_cpu_load)
+-#else
+ SYM_DATA(initial_gs,	.quad 0)
+ #endif
+-#endif
  
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 3f5d39768287..bad375444cee 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -1166,7 +1166,7 @@ static void print_reloc_info(void)
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
+diff --git a/arch/x86/kernel/setup_percpu.c b/arch/x86/kernel/setup_percpu.c
+index 5afd98559193..4c0020a6ced9 100644
+--- a/arch/x86/kernel/setup_percpu.c
++++ b/arch/x86/kernel/setup_percpu.c
+@@ -26,7 +26,7 @@
+ DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
+ EXPORT_PER_CPU_SYMBOL(cpu_number);
  
- void process(FILE *fp, int use_real_mode, int as_text,
- 	     int show_absolute_syms, int show_absolute_relocs,
--	     int show_reloc_info)
-+	     int show_reloc_info, int absolute_percpu)
- {
- 	regex_init(use_real_mode);
- 	read_ehdr(fp);
-@@ -1174,7 +1174,7 @@ void process(FILE *fp, int use_real_mode, int as_text,
- 	read_strtabs(fp);
- 	read_symtabs(fp);
- 	read_relocs(fp);
--	if (ELF_BITS == 64)
-+	if (ELF_BITS == 64 && absolute_percpu)
- 		percpu_init();
- 	if (show_absolute_syms) {
- 		print_absolute_symbols();
-diff --git a/arch/x86/tools/relocs.h b/arch/x86/tools/relocs.h
-index 4c49c82446eb..dcf323f6102f 100644
---- a/arch/x86/tools/relocs.h
-+++ b/arch/x86/tools/relocs.h
-@@ -32,8 +32,8 @@ enum symtype {
+-#ifdef CONFIG_X86_64
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ #define BOOT_PERCPU_OFFSET ((unsigned long)__per_cpu_load)
+ #else
+ #define BOOT_PERCPU_OFFSET 0
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index c475d21d2126..18e1deb9fa52 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -102,10 +102,10 @@ jiffies = jiffies_64;
+ PHDRS {
+ 	text PT_LOAD FLAGS(5);          /* R_E */
+ 	data PT_LOAD FLAGS(6);          /* RW_ */
+-#ifdef CONFIG_X86_64
+-#ifdef CONFIG_SMP
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ 	percpu PT_LOAD FLAGS(6);        /* RW_ */
+ #endif
++#ifdef CONFIG_X86_64
+ 	init PT_LOAD FLAGS(7);          /* RWE */
+ #endif
+ 	note PT_NOTE FLAGS(0);          /* ___ */
+@@ -215,7 +215,7 @@ SECTIONS
+ 		__init_begin = .; /* paired with __init_end */
+ 	}
  
- void process_32(FILE *fp, int use_real_mode, int as_text,
- 		int show_absolute_syms, int show_absolute_relocs,
--		int show_reloc_info);
-+		int show_reloc_info, int absolute_percpu);
- void process_64(FILE *fp, int use_real_mode, int as_text,
- 		int show_absolute_syms, int show_absolute_relocs,
--		int show_reloc_info);
-+		int show_reloc_info, int absolute_percpu);
- #endif /* RELOCS_H */
-diff --git a/arch/x86/tools/relocs_common.c b/arch/x86/tools/relocs_common.c
-index 6634352a20bc..aa5fdea1e87a 100644
---- a/arch/x86/tools/relocs_common.c
-+++ b/arch/x86/tools/relocs_common.c
-@@ -19,7 +19,7 @@ static void usage(void)
- int main(int argc, char **argv)
- {
- 	int show_absolute_syms, show_absolute_relocs, show_reloc_info;
--	int as_text, use_real_mode;
-+	int as_text, use_real_mode, absolute_percpu;
- 	const char *fname;
- 	FILE *fp;
- 	int i;
-@@ -30,6 +30,7 @@ int main(int argc, char **argv)
- 	show_reloc_info = 0;
- 	as_text = 0;
- 	use_real_mode = 0;
-+	absolute_percpu = 0;
- 	fname = NULL;
- 	for (i = 1; i < argc; i++) {
- 		char *arg = argv[i];
-@@ -54,6 +55,10 @@ int main(int argc, char **argv)
- 				use_real_mode = 1;
- 				continue;
- 			}
-+			if (strcmp(arg, "--absolute-percpu") == 0) {
-+				absolute_percpu = 1;
-+				continue;
-+			}
- 		}
- 		else if (!fname) {
- 			fname = arg;
-@@ -75,11 +80,11 @@ int main(int argc, char **argv)
- 	if (e_ident[EI_CLASS] == ELFCLASS64)
- 		process_64(fp, use_real_mode, as_text,
- 			   show_absolute_syms, show_absolute_relocs,
--			   show_reloc_info);
-+			   show_reloc_info, absolute_percpu);
- 	else
- 		process_32(fp, use_real_mode, as_text,
- 			   show_absolute_syms, show_absolute_relocs,
--			   show_reloc_info);
-+			   show_reloc_info, absolute_percpu);
- 	fclose(fp);
- 	return 0;
- }
-diff --git a/init/Kconfig b/init/Kconfig
-index 11f8a845f259..f8da0e5b7663 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1716,7 +1716,6 @@ config KALLSYMS_ALL
- config KALLSYMS_ABSOLUTE_PERCPU
- 	bool
- 	depends on KALLSYMS
--	default X86_64 && SMP
+-#if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ 	/*
+ 	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
+ 	 * output PHDR, so the next output section - .init.text - should
+@@ -339,7 +339,7 @@ SECTIONS
+ 		EXIT_DATA
+ 	}
  
- config KALLSYMS_BASE_RELATIVE
- 	bool
+-#if !defined(CONFIG_X86_64) || !defined(CONFIG_SMP)
++#ifndef CONFIG_X86_ABSOLUTE_PERCPU
+ 	PERCPU_SECTION(INTERNODE_CACHE_BYTES)
+ #endif
+ 
+@@ -474,7 +474,7 @@ SECTIONS
+ . = ASSERT((_end - LOAD_OFFSET <= KERNEL_IMAGE_SIZE),
+ 	   "kernel image bigger than KERNEL_IMAGE_SIZE");
+ 
+-#ifdef CONFIG_X86_64
++#ifdef CONFIG_X86_ABSOLUTE_PERCPU
+ /*
+  * Per-cpu symbols which need to be offset from __per_cpu_load
+  * for the boot processor.
+@@ -483,13 +483,11 @@ SECTIONS
+ INIT_PER_CPU(gdt_page);
+ INIT_PER_CPU(irq_stack_backing_store);
+ 
+-#ifdef CONFIG_STACKPROTECTOR_FIXED
+ INIT_PER_CPU(fixed_percpu_data);
+ . = ASSERT((fixed_percpu_data == 0),
+            "fixed_percpu_data is not at start of per-cpu area");
+-#endif
+ 
+-#endif /* CONFIG_X86_64 */
++#endif /* CONFIG_X86_ABSOLUTE_PERCPU */
+ 
+ #ifdef CONFIG_KEXEC_CORE
+ #include <asm/kexec.h>
 -- 
 2.31.1
 
