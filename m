@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F2344F4C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0BA44F4CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 20:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhKMTSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 14:18:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
+        id S236110AbhKMTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 14:18:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236067AbhKMTSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 14:18:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8C8A961212;
-        Sat, 13 Nov 2021 19:15:17 +0000 (UTC)
+        id S236116AbhKMTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 14:18:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id EF4FA61207;
+        Sat, 13 Nov 2021 19:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636830917;
-        bh=JzR3pVK7LZYBBHWydczhhSiaC67QWH23BHog+2FNuXo=;
+        s=k20201202; t=1636830924;
+        bh=HbIGjanIo6WOBMZpTzWFyuh961Oo9a+51Nb/ULQtlT4=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CboHqiwY9d2A+GwqTjpn+/f8oqEBcFzgsud9RkprLMX5q8CxFlvTQcU0m/NXgFfdO
-         Hk3gINzAyiyXdJwk0IVUEcBBrptbWlV6FjxyawTSavIuuT8IdR4hf1jrrN/tOg6erS
-         5ilq42Elf7QgQfppaqxoqIfNF2QgGmFMwQ3M63neot8pNewp0+SaH0JNSrinEgT3Fb
-         P4+RL6Eur4VzvPUfDkOQtta6pqdlN8tfOMYo+Kkci+eAgiF6mH5SbxevCne6lZCUud
-         QYKTPJ410QHQkUneXe+lNX7wg9k6ALHm4EhOhJDS53ZnlK/JHVYv2hQDqdpzH7lq25
-         i5Mqdu8QJA7GQ==
+        b=QGqrzj2gqlf3duZcagh+tI+XpXRotn9td0FmodHz0kv4nQyc5d3qc8Xnk9P/TYOGz
+         oIkfKtGCr4y7T8sbcijhfOT7mBowjNMZUqDxXkhLyBsWya08w8awUO+zFeiYCWpYub
+         7g6qqt+1q7QOcE2oN38TQ5qDGz0OZB21OCSgTJZ0mA5bfjFYIHf/MOuXzhsQX3Z7sD
+         J+LyH3dSJ7m7EsrcKw1cuCr0zLjS8nek0yxcAlvZ4ny24SmeSpPmpYE8eyltBulxWl
+         z4vKXt/XgS78QPg+3V1FSHZTRIDUbnLcYeA99rTLHF23RREZ3WjqHB0ZFFp8dM/XYo
+         i6y5xSDIcDoPA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8660260721;
-        Sat, 13 Nov 2021 19:15:17 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 patches for the 5.16 merge window #2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E99F960987;
+        Sat, 13 Nov 2021 19:15:23 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS changes 2nd part for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01636811772-ext-9507@work.hours>
-References: <your-ad-here.call-01636811772-ext-9507@work.hours>
-X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01636811772-ext-9507@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-2
-X-PR-Tracked-Commit-Id: a4751f157c194431fae9e9c493f456df8272b871
+In-Reply-To: <20211112104447.GA6127@alpha.franken.de>
+References: <20211112104447.GA6127@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211112104447.GA6127@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.16_1
+X-PR-Tracked-Commit-Id: f78b25ee922ef6faf59a258af1b9388ca894cfd9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: be427a88a3dc2de30688b08d078f4f4c1bb035d6
-Message-Id: <163683091754.10343.7064421671859878721.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Nov 2021 19:15:17 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+X-PR-Merge-Commit-Id: 4218a96faf917b13ddc6af505bfb9b6a4e60bbc4
+Message-Id: <163683092394.10343.15762345267517404168.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Nov 2021 19:15:23 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Nov 2021 14:56:12 +0100:
+The pull request you sent on Fri, 12 Nov 2021 11:44:47 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.16_1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/be427a88a3dc2de30688b08d078f4f4c1bb035d6
+https://git.kernel.org/torvalds/c/4218a96faf917b13ddc6af505bfb9b6a4e60bbc4
 
 Thank you!
 
