@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC6A44F526
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A4A44F52A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 21:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhKMUFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 15:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
+        id S234953AbhKMUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 15:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236057AbhKMUFN (ORCPT
+        with ESMTP id S230136AbhKMUHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 15:05:13 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640C1C061767
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:02:20 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so19703539otl.3
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 12:02:20 -0800 (PST)
+        Sat, 13 Nov 2021 15:07:43 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF6FC061766;
+        Sat, 13 Nov 2021 12:04:51 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id t21so11147251plr.6;
+        Sat, 13 Nov 2021 12:04:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y0rkE2eXHspUlHAthWH1b6o7jeh50VMqJ9wHRaI24M4=;
-        b=aW9u9fGnts+Kui5gr1eOEqMyRfk/k5aY6qpEB/k9DiK9Ec191wxXRBV04evzKbA5tZ
-         W21Mbviqpsbn6FP9XSQaRkHEInqMWxC3I/QHbIcooFKwG3+w0mqiBq3vNbaT+ItOUjGg
-         aaaZyIVDLVaQ4gNU4KOa5Dsmwff/18yZLg7nROCBRt5Hw3+HHPD+lrczcuX+rRrnZ+DF
-         fKUL29m8MOrtRf4Dwe23c2d3lX6txELLc4hrqWUt2vzFBRs2m9B3Ia1DTPR7cmye6W9S
-         13PqMdIDn3a32d17JwKLKyj8AbBOSfwF9mAegcmrn2FRfe5yDmTtT/Tqk32EUVrX+p7O
-         OkQA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Tb74LrSzA8PWHlBbQ2QqZoirlUR2jOkJqwuP2JlwP2g=;
+        b=fr2NExjejAaBCjGfUF1PZQ/UEzdEpY12IHDphNFvVXzELU5LQT1rXxsc8B/Wez8kQN
+         JVBQGc+eK8ziRSxV0q8O2uai0W85hXj9z6rHl/XQ0bslcahVWRu5jqGBUhR9SJZSPMmN
+         86XY4kIhxoWcEQ6BEdwrlJ5i0MMpORjzjR8Is7mmInx1KRsqus4Ccr7b64/Cc/xO8pu7
+         8wtTXypOWY1epP+DVM8wsqJRgCVAT2P3nCJoH89TfZ758E3ALc/XawdLvAKkcdJp3HWO
+         4G818aaD2Zx0AdhP6zp/OfHEAjDA2bkBagfAFsCvwzxfSFtnCbqKqupq/Ceeu2V7TjYa
+         Rgsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y0rkE2eXHspUlHAthWH1b6o7jeh50VMqJ9wHRaI24M4=;
-        b=i0BCdgaFWB0f33i9Z3SeRckQIy5N6lV810m4C55igGwnTg7PMRq1GgGYWKO6cOORal
-         C1NH0gqF/iAyrZNGIdTdU2UwgvmBFnK/WgAvLMHWkTpeirM68iW5cT78EuE8bYs3GMZ7
-         j/OEEMJXMTTzBxkEwk+AjtRscwH/DVhaD3c2FOj2qNT7o0Ju/Ll05pOnKfhxd36EYVpt
-         jRizw9/BrxTMg2GiSDfmECDkehb0hVu5wZZEKlXm+N57t4JrwLHCYvUdQqazFlAj5VsV
-         DcNDNZ0rg/zvg6SmaAVdOqROIGfBw6KCAwiSoIYJt75BSrDppzRNL+nuDqB+TJsn2awV
-         /ncg==
-X-Gm-Message-State: AOAM530p+JlfzwfYzqo+0Tr815LWaCX6cUXvUS3d46bd1u9yT7cMvHbq
-        3RQe8xo+qLVOvuY6RYOVKcXXhA==
-X-Google-Smtp-Source: ABdhPJw/kvtWC5smOrH3f2SEC50UhtAALVArUdA8Hr+wIxdsYsdMw9Bg+kp/KqmSdjZ4B6wdAxw/EA==
-X-Received: by 2002:a9d:a64:: with SMTP id 91mr20346988otg.198.1636833739698;
-        Sat, 13 Nov 2021 12:02:19 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q12sm1935177otl.66.2021.11.13.12.02.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Tb74LrSzA8PWHlBbQ2QqZoirlUR2jOkJqwuP2JlwP2g=;
+        b=Yfm+gLQgzD868vRpjQXsOFU5Su9S41EhL4T4DSCg5p2bx+tkBUagAccGMQlDJU7Li9
+         zgdY5Kt9SJXLe9824JW0URLfd/KeBnYLXEkt/+eGYxFmKtImRWJ4CkWUCGZfbRSt8vYw
+         rJTeYTrncT1gkhoPPpPHa6acRWAYlaxnzj9DbdioeCeuFu9dJr4VLOYL933WOJzv/jLz
+         Sf2OcFr0efoZ/kjrxy8DCmTD6j2DFGAJLApMSg2WPlWYYJVDrVWYjUPa2Ei2jsjZBtnV
+         r+tpbZ44YTGF1tde3e/SVdTPyq7Z1q6mRjSmvBPkQyaRP/HggwlSAVEVcw/EqFVvCzbG
+         UUng==
+X-Gm-Message-State: AOAM533iM1Aq9/OW2UOT+vb+fQjH/V8iFP2KeQqCOmzog+7HQuUiilp9
+        5ijCpdj0WvKl3HbVtf5yTZJMu/OIj88=
+X-Google-Smtp-Source: ABdhPJxSzOFn3lMaparm0oRAqDqKpnDPf90DElYcRINmAqDZtXL6YFmz0+o+lMheasGAXbtcHJHfeQ==
+X-Received: by 2002:a17:902:e8d4:b0:143:88c2:e2c9 with SMTP id v20-20020a170902e8d400b0014388c2e2c9mr20246258plg.12.1636833890966;
+        Sat, 13 Nov 2021 12:04:50 -0800 (PST)
+Received: from makvihas ([103.85.9.85])
+        by smtp.gmail.com with ESMTPSA id h23sm9988328pfn.109.2021.11.13.12.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Nov 2021 12:02:19 -0800 (PST)
-Date:   Sat, 13 Nov 2021 14:02:14 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v5 09/22] dt-bindings: qcom-qce: Move 'clocks' to
- optional properties
-Message-ID: <YZAZxmsp5WLeOBuF@builder.lan>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-10-bhupesh.sharma@linaro.org>
+        Sat, 13 Nov 2021 12:04:50 -0800 (PST)
+Date:   Sun, 14 Nov 2021 01:34:48 +0530
+From:   Vihas Mak <makvihas@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: thrustmaster: fix sparse warnings
+Message-ID: <20211113200448.GA1111164@makvihas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110105922.217895-10-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
+Changed 0 to NULL to fix following sparse warnings:
 
-> QCom QCE block on some SoCs like ipq6018 don't
-> require clock as the required property, so the properties
-> 'clocks' and 'clock-names' can be moved instead in the dt-bindings
-> to the 'optional' properties section.
-> 
-> Otherwise, running 'make dtbs_check' leads to the following
-> errors:
-> 
-> dma-controller@7984000: clock-names:0: 'bam_clk' was expected
-> 	arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> 
-> dma-controller@7984000: clock-names: Additional items are not allowed ('bam_clk' was unexpected)
-> 	arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> 
-> dma-controller@7984000: clock-names: ['iface_clk', 'bam_clk'] is too long
-> 	arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> 
-> dma-controller@7984000: clocks: [[9, 138], [9, 137]] is too long
-> 	arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> index 30deaa0fa93d..f35bdb9ee7a8 100644
-> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> @@ -53,8 +53,6 @@ properties:
->  required:
->    - compatible
->    - reg
-> -  - clocks
-> -  - clock-names
+    drivers/hid/hid-thrustmaster.c:208:43: warning: Using plain integer as NULL pointer
+    drivers/hid/hid-thrustmaster.c:241:17: warning: Using plain integer as NULL pointer
+    drivers/hid/hid-thrustmaster.c:275:37: warning: Using plain integer as NULL pointer
 
-I would prefer that we make this conditional on the compatible. That
-said, if this only applies to ipq6018 I think we should double check the
-fact that there's no clock there...
+Signed-off-by: Vihas Mak <makvihas@gmail.com>
+---
+ drivers/hid/hid-thrustmaster.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-For the sake of making progress on the series, I think you should omit
-this patch from the next version.
+diff --git a/drivers/hid/hid-thrustmaster.c b/drivers/hid/hid-thrustmaster.c
+index d44550aa8..3a5333424 100644
+--- a/drivers/hid/hid-thrustmaster.c
++++ b/drivers/hid/hid-thrustmaster.c
+@@ -205,7 +205,7 @@ static void thrustmaster_model_handler(struct urb *urb)
+ 	struct tm_wheel *tm_wheel = hid_get_drvdata(hdev);
+ 	uint16_t model = 0;
+ 	int i, ret;
+-	const struct tm_wheel_info *twi = 0;
++	const struct tm_wheel_info *twi = NULL;
+ 
+ 	if (urb->status) {
+ 		hid_err(hdev, "URB to get model id failed with error %d\n", urb->status);
+@@ -238,7 +238,7 @@ static void thrustmaster_model_handler(struct urb *urb)
+ 		tm_wheel->usb_dev,
+ 		usb_sndctrlpipe(tm_wheel->usb_dev, 0),
+ 		(char *)tm_wheel->change_request,
+-		0, 0, // We do not expect any response from the wheel
++		NULL, 0, // We do not expect any response from the wheel
+ 		thrustmaster_change_handler,
+ 		hdev
+ 	);
+@@ -272,7 +272,7 @@ static void thrustmaster_remove(struct hid_device *hdev)
+ static int thrustmaster_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ {
+ 	int ret = 0;
+-	struct tm_wheel *tm_wheel = 0;
++	struct tm_wheel *tm_wheel = NULL;
+ 
+ 	ret = hid_parse(hdev);
+ 	if (ret) {
+-- 
+2.25.1
 
-Regards,
-Bjorn
-
->    - dmas
->    - dma-names
->  
-> -- 
-> 2.31.1
-> 
