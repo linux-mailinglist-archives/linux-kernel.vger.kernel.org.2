@@ -2,154 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E97B44F3F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 16:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7D144F403
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 16:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235913AbhKMPhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 10:37:52 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:59732 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhKMPhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 10:37:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=m/VPwTzIcUamU0kbv8QB/cFesCTqMC4F5Df7zmeye+c=; b=4GsTtK0PrJ2WsG7s8nD9R4R+c3
-        kPZsNka/L9w891OWL8XZWifwMQduur258iy+J19u2XtAOL7Vz4XeHbViFMKWaOnFFaVNvzWj5968Z
-        YAgLyDYs+/bPL9Z0KTHzOlLUYIwvFhar1tnnP5sBwXxtvbfRwtHf+8HvSF4ctfqsl5YI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mlv3K-00DLR0-6P; Sat, 13 Nov 2021 16:34:50 +0100
-Date:   Sat, 13 Nov 2021 16:34:50 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Denis Kirjanov <dkirjanov@suse.de>, Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Vincent Shih =?utf-8?B?5pa96YyV6bS7?= 
-        <vincent.shih@sunplus.com>
-Subject: Re: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Message-ID: <YY/bGkVEKLS75sU0@lunn.ch>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <cover.1636620754.git.wells.lu@sunplus.com>
- <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
- <cba74b41-7159-60e5-ec1f-007b27e72b22@suse.de>
- <07c59ab058a746c694b1c3a746525009@sphcmbx02.sunplus.com.tw>
+        id S235990AbhKMPlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 10:41:50 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35390 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235852AbhKMPlo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 10:41:44 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 58A8E21637;
+        Sat, 13 Nov 2021 15:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636817931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=IGF9TPrWn13/UCWuSji8YkEHN6atEML8YmuJlRMd8D4=;
+        b=rcUVtr+6M6EeSTYiMrTj2tKzBFvOY6jwpKBscxTHXfjZ5of01vXSl6XH0QdIWFbrtBLurO
+        fjqLFhlIivBYE6vFbvdWckzEA0VMBtyeZo9puCLf2np/zvRza7+Ht+/omiW5kIi5JBXCj0
+        MH2O7SOtcjfpO/9VEi3cO3K/MhFfnpQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636817931;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=IGF9TPrWn13/UCWuSji8YkEHN6atEML8YmuJlRMd8D4=;
+        b=YHEeVAO2k48uX82cDj+1VNllTpNwCOT4+F0q9IsJ/6CG2dmlSRSJR2eEyW6xFmVxIrKQKl
+        f/Qnjv5EKR/gp7BA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 4FCD3A3B81;
+        Sat, 13 Nov 2021 15:38:51 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH stable-5.4.y 1/2] ALSA: mixer: oss: Fix racy access to slots
+Date:   Sat, 13 Nov 2021 16:38:45 +0100
+Message-Id: <20211113153846.10996-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07c59ab058a746c694b1c3a746525009@sphcmbx02.sunplus.com.tw>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +//define MAC interrupt status bit
-> > please embrace all comments with /* */
-> 
-> Do you mean to modify comment, for example,
-> 
-> //define MAC interrupt status bit
-> 
-> to 
-> 
-> /* define MAC interrupt status bit */
+commit 411cef6adfb38a5bb6bd9af3941b28198e7fb680 upstream.
 
-Yes. The Kernel is written in C, so C style comments are preferred
-over C++ comments, even if later versions of the C standard allow C++
-style comments.
+The OSS mixer can reassign the mapping slots dynamically via proc
+file.  Although the addition and deletion of those slots are protected
+by mixer->reg_mutex, the access to slots aren't, hence this may cause
+UAF when the slots in use are deleted concurrently.
 
-You should also read the netdev FAQ, which makes some specific
-comments about how multi-line comments should be formatted.
+This patch applies the mixer->reg_mutex in all appropriate code paths
+(i.e. the ioctl functions) that may access slots.
 
-> Yes, I'll add error check in next patch as shown below:
-> 
-> 		rx_skbinfo[j].mapping = dma_map_single(&comm->pdev->dev, skb->data,
-> 						       comm->rx_desc_buff_size,
-> 						       DMA_FROM_DEVICE);
-> 		if (dma_mapping_error(&comm->pdev->dev, rx_skbinfo[j].mapping))
-> 			goto mem_alloc_fail;
+Reported-by: syzbot+9988f17cf72a1045a189@syzkaller.appspotmail.com
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/00000000000036adc005ceca9175@google.com
+Link: https://lore.kernel.org/r/20211020164846.922-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
-If it is clear how to fix the code, just do it. No need to tell us
-what you are going to do, we will see the change when reviewing the
-next version.
+Please apply to older stable kernels, too
 
-> > > +/* Transmit a packet (called by the kernel) */
-> > > +static int ethernet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-> > > +{
-> > > +	struct sp_mac *mac = netdev_priv(ndev);
-> > > +	struct sp_common *comm = mac->comm;
-> > > +	u32 tx_pos;
-> > > +	u32 cmd1;
-> > > +	u32 cmd2;
-> > > +	struct mac_desc *txdesc;
-> > > +	struct skb_info *skbinfo;
-> > > +	unsigned long flags;
-> > > +
-> > > +	if (unlikely(comm->tx_desc_full == 1)) {
-> > > +		// No TX descriptors left. Wait for tx interrupt.
-> > > +		netdev_info(ndev, "TX descriptor queue full when xmit!\n");
-> > > +		return NETDEV_TX_BUSY;
-> > Do you really have to return NETDEV_TX_BUSY?
-> 
-> (tx_desc_full == 1) means there is no TX descriptor left in ring buffer.
-> So there is no way to do new transmit. Return 'busy' directly.
-> I am not sure if this is a correct process or not.
-> Could you please teach is there any other way to take care of this case?
-> Drop directly?
+ sound/core/oss/mixer_oss.c | 43 +++++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
+
+diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
+index 7eb54df5556d..fd567611f67e 100644
+--- a/sound/core/oss/mixer_oss.c
++++ b/sound/core/oss/mixer_oss.c
+@@ -130,11 +130,13 @@ static int snd_mixer_oss_devmask(struct snd_mixer_oss_file *fmixer)
  
-There are a few hundred examples to follow, other MAC drivers. What do
-they do when out of TX buffers? Find the most common pattern, and
-follow it.
+ 	if (mixer == NULL)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	for (chn = 0; chn < 31; chn++) {
+ 		pslot = &mixer->slots[chn];
+ 		if (pslot->put_volume || pslot->put_recsrc)
+ 			result |= 1 << chn;
+ 	}
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
+ }
+ 
+@@ -146,11 +148,13 @@ static int snd_mixer_oss_stereodevs(struct snd_mixer_oss_file *fmixer)
+ 
+ 	if (mixer == NULL)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	for (chn = 0; chn < 31; chn++) {
+ 		pslot = &mixer->slots[chn];
+ 		if (pslot->put_volume && pslot->stereo)
+ 			result |= 1 << chn;
+ 	}
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
+ }
+ 
+@@ -161,6 +165,7 @@ static int snd_mixer_oss_recmask(struct snd_mixer_oss_file *fmixer)
+ 
+ 	if (mixer == NULL)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	if (mixer->put_recsrc && mixer->get_recsrc) {	/* exclusive */
+ 		result = mixer->mask_recsrc;
+ 	} else {
+@@ -172,6 +177,7 @@ static int snd_mixer_oss_recmask(struct snd_mixer_oss_file *fmixer)
+ 				result |= 1 << chn;
+ 		}
+ 	}
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
+ }
+ 
+@@ -182,11 +188,12 @@ static int snd_mixer_oss_get_recsrc(struct snd_mixer_oss_file *fmixer)
+ 
+ 	if (mixer == NULL)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	if (mixer->put_recsrc && mixer->get_recsrc) {	/* exclusive */
+-		int err;
+ 		unsigned int index;
+-		if ((err = mixer->get_recsrc(fmixer, &index)) < 0)
+-			return err;
++		result = mixer->get_recsrc(fmixer, &index);
++		if (result < 0)
++			goto unlock;
+ 		result = 1 << index;
+ 	} else {
+ 		struct snd_mixer_oss_slot *pslot;
+@@ -201,7 +208,10 @@ static int snd_mixer_oss_get_recsrc(struct snd_mixer_oss_file *fmixer)
+ 			}
+ 		}
+ 	}
+-	return mixer->oss_recsrc = result;
++	mixer->oss_recsrc = result;
++ unlock:
++	mutex_unlock(&mixer->reg_mutex);
++	return result;
+ }
+ 
+ static int snd_mixer_oss_set_recsrc(struct snd_mixer_oss_file *fmixer, int recsrc)
+@@ -214,6 +224,7 @@ static int snd_mixer_oss_set_recsrc(struct snd_mixer_oss_file *fmixer, int recsr
+ 
+ 	if (mixer == NULL)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	if (mixer->get_recsrc && mixer->put_recsrc) {	/* exclusive input */
+ 		if (recsrc & ~mixer->oss_recsrc)
+ 			recsrc &= ~mixer->oss_recsrc;
+@@ -239,6 +250,7 @@ static int snd_mixer_oss_set_recsrc(struct snd_mixer_oss_file *fmixer, int recsr
+ 			}
+ 		}
+ 	}
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
+ }
+ 
+@@ -250,6 +262,7 @@ static int snd_mixer_oss_get_volume(struct snd_mixer_oss_file *fmixer, int slot)
+ 
+ 	if (mixer == NULL || slot > 30)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	pslot = &mixer->slots[slot];
+ 	left = pslot->volume[0];
+ 	right = pslot->volume[1];
+@@ -257,15 +270,21 @@ static int snd_mixer_oss_get_volume(struct snd_mixer_oss_file *fmixer, int slot)
+ 		result = pslot->get_volume(fmixer, pslot, &left, &right);
+ 	if (!pslot->stereo)
+ 		right = left;
+-	if (snd_BUG_ON(left < 0 || left > 100))
+-		return -EIO;
+-	if (snd_BUG_ON(right < 0 || right > 100))
+-		return -EIO;
++	if (snd_BUG_ON(left < 0 || left > 100)) {
++		result = -EIO;
++		goto unlock;
++	}
++	if (snd_BUG_ON(right < 0 || right > 100)) {
++		result = -EIO;
++		goto unlock;
++	}
+ 	if (result >= 0) {
+ 		pslot->volume[0] = left;
+ 		pslot->volume[1] = right;
+ 	 	result = (left & 0xff) | ((right & 0xff) << 8);
+ 	}
++ unlock:
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
+ }
+ 
+@@ -278,6 +297,7 @@ static int snd_mixer_oss_set_volume(struct snd_mixer_oss_file *fmixer,
+ 
+ 	if (mixer == NULL || slot > 30)
+ 		return -EIO;
++	mutex_lock(&mixer->reg_mutex);
+ 	pslot = &mixer->slots[slot];
+ 	if (left > 100)
+ 		left = 100;
+@@ -288,10 +308,13 @@ static int snd_mixer_oss_set_volume(struct snd_mixer_oss_file *fmixer,
+ 	if (pslot->put_volume)
+ 		result = pslot->put_volume(fmixer, pslot, left, right);
+ 	if (result < 0)
+-		return result;
++		goto unlock;
+ 	pslot->volume[0] = left;
+ 	pslot->volume[1] = right;
+- 	return (left & 0xff) | ((right & 0xff) << 8);
++	result = (left & 0xff) | ((right & 0xff) << 8);
++ unlock:
++	mutex_lock(&mixer->reg_mutex);
++	return result;
+ }
+ 
+ static int snd_mixer_oss_ioctl1(struct snd_mixer_oss_file *fmixer, unsigned int cmd, unsigned long arg)
+-- 
+2.26.2
 
-You should also thinking about the netdev_info(). Do you really want
-to spam the kernel log? Say you are connected to a 10/Half link, and
-the application is trying to send UDP at 100Mbps, Won't you see a lot
-of these messages? change it to _debug(), or rate limit it.
-
-> static void ethernet_tx_timeout(struct net_device *ndev, unsigned int txqueue)
-> {
-> 	struct sp_mac *mac = netdev_priv(ndev);
-> 	struct net_device *ndev2;
-> 	unsigned long flags;
-> 
-> 	netdev_err(ndev, "TX timed out!\n");
-> 	ndev->stats.tx_errors++;
-> 
-> 	spin_lock_irqsave(&mac->comm->tx_lock, flags);
-> 	netif_stop_queue(ndev);
-> 	ndev2 = mac->next_ndev;
-> 	if (ndev2)
-> 		netif_stop_queue(ndev2);
-> 
-> 	hal_mac_stop(mac);
-> 	hal_mac_init(mac);
-> 	hal_mac_start(mac);
-> 
-> 	// Accept TX packets again.
-> 	netif_trans_update(ndev);
-> 	netif_wake_queue(ndev);
-> 	if (ndev2) {
-> 		netif_trans_update(ndev2);
-> 		netif_wake_queue(ndev2);
-> 	}
-> 
-> 	spin_unlock_irqrestore(&mac->comm->tx_lock, flags);
-> }
-> 
-> Is that ok?
-
-This ndev2 stuff is not nice. You probably need a cleaner abstract of
-two netdev's sharing one TX and RX ring. See if there are any other
-switchdev drivers with a similar structure you can copy. Maybe
-cpsw_new.c? But be careful with that driver. cpsw is a bit of a mess
-due to an incorrect initial design with respect to its L2 switch. A
-lot of my initial comments are to stop you making the same mistakes.
-
-    Andrew
