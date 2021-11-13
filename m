@@ -2,207 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2615C44F467
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E1044F479
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 19:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhKMSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 13:07:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhKMSHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 13:07:24 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B88360FBF;
-        Sat, 13 Nov 2021 18:04:30 +0000 (UTC)
-Date:   Sat, 13 Nov 2021 18:09:16 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Iain Hunter <drhunter95@gmail.com>
-Cc:     Daniel Baluta <daniel.baluta@nxp.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] add binding for iio adc driver for TI ADS1018
-Message-ID: <20211113180916.66b6864b@jic23-huawei>
-In-Reply-To: <CALC81-vcr7qfd4BJN0CPKOPXLwbGS8ceab4BEVrzmkQFtd9W6w@mail.gmail.com>
-References: <20211108184327.439460-1-drhunter95@gmail.com>
-        <08278938-2a19-efc8-b111-73aa9ab2c28d@nxp.com>
-        <CALC81-vcr7qfd4BJN0CPKOPXLwbGS8ceab4BEVrzmkQFtd9W6w@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235951AbhKMSRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 13:17:42 -0500
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:33536 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233656AbhKMSRk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 13:17:40 -0500
+Received: by mail-wm1-f51.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso9017764wmh.0;
+        Sat, 13 Nov 2021 10:14:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:reply-to
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=qJpFgDmQX4NgXIPsmsa3L8Op/10DaprZpinixut55a0=;
+        b=pMcvvArxOLA28CrlEMufpftzTLA8cj3vWPvsuP3iNk9gyPdl9GXeGdDLFyCYLxDH8N
+         BJxISe0UTSE950QzsVrxVWaBnDdraDJtSDmC0StCMpPN00JhPMchvqLCJnvOFRLbawON
+         T9iOLxPwu1QlNeHpc59a9ET0CA3KMlkQYQjKbeRqwE3Fb9dluT26Ed49K+qsg3PWVyvB
+         TE8jAZrPA7wIC28y+QJ2Z7NGxeaFn5Q0KUaMPCsjgt/aZWtGed88G15bEqatfn/BI++U
+         Y2auy4rdh2YwHsoqvNOGCUivw4R1WDrege/UsO4PyfIM1pGJ995aMoBMmRlUticQZWrw
+         QHlw==
+X-Gm-Message-State: AOAM533LbW+sWr/rpbvSVWfMaVBod3dwQ94pj+GVZ3bk3hUeRiFVKeL/
+        N8tavEllbMNMkcD+pt/Q1oI=
+X-Google-Smtp-Source: ABdhPJySvDqEIK8+A9iIm0gq0uH+YP8Ng3lmMG7/q64IpdcsRxTBcPM1NXj/RYt+u7AjGEpgcD8v+w==
+X-Received: by 2002:a05:600c:4108:: with SMTP id j8mr27714558wmi.139.1636827286595;
+        Sat, 13 Nov 2021 10:14:46 -0800 (PST)
+Received: from [10.9.0.26] ([46.166.133.199])
+        by smtp.gmail.com with ESMTPSA id l18sm9308857wrt.81.2021.11.13.10.14.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Nov 2021 10:14:46 -0800 (PST)
+Message-ID: <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+Date:   Sat, 13 Nov 2021 21:14:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+ <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+From:   Alexander Popov <alex.popov@linux.com>
+In-Reply-To: <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 10:00:14 +0000
-Iain Hunter <drhunter95@gmail.com> wrote:
-
-> Hi Daniel,
-> I'm happy to add myself. I assume that is just a case of re-submitting the
-> patch with my name instead of yours. Is that correct?
-
-That would be perfect.  Thanks for taking this on,
-
-A few comments below from me.
-
-Jonathan
-
-> Iain
+On 13.11.2021 00:26, Linus Torvalds wrote:
+> On Fri, Nov 12, 2021 at 10:52 AM Alexander Popov <alex.popov@linux.com> wrote:
+>>
+>> Hello everyone!
+>> Friendly ping for your feedback.
 > 
-> On Mon, Nov 8, 2021 at 6:45 PM Daniel Baluta <daniel.baluta@nxp.com> wrote:
-> 
-> > This looks good to me with the only mention that I don't actually have
-> > time to maintain this :(.
-> >
-> > Perhaps you can add yourself?
-> >
-> > On 11/8/21 8:43 PM, Iain Hunter wrote:  
-> > > Add a new binding for new IIO ADS1018 driver.
-> > >
-> > > Signed-off-by: Iain Hunter <drhunter95@gmail.com>
-> > > ---
-> > >   .../bindings/iio/adc/ti,ads1018.yaml          | 109 ++++++++++++++++++
-> > >   1 file changed, 109 insertions(+)
-> > >   create mode 100644  
-> > Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml  
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml  
-> > b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml  
-> > > new file mode 100644
-> > > index 000000000000..ba0fdfba2c45
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
-> > > @@ -0,0 +1,109 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/ti,ads1018.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: TI ADS1018 4 channel SPI analog to digital converter
-> > > +
-> > > +maintainers:
-> > > +  - Daniel Baluta <daniel.baluta@nxp.com>
-> > > +
-> > > +description: |
-> > > +  Datasheet at: https://www.ti.com/lit/gpn/ads1018
-> > > +  Supports both single ended and differential channels.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: ti,ads1018
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  "#address-cells":
-> > > +    const: 1
-> > > +
-> > > +  "#size-cells":
-> > > +    const: 0
-> > > +
-> > > +  "#io-channel-cells":
-> > > +    const: 1
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - "#address-cells"
-> > > +  - "#size-cells"
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +patternProperties:
-> > > +  "^channel@[0-7]+$":
-> > > +    type: object
-> > > +    description:
-> > > +      Child nodes needed for each channel that the platform uses.
-> > > +
-> > > +    properties:
-> > > +      reg:
-> > > +        description: |
-> > > +          0: Voltage over AIN0 and AIN1.
-> > > +          1: Voltage over AIN0 and AIN3.
-> > > +          2: Voltage over AIN1 and AIN3.
-> > > +          3: Voltage over AIN2 and AIN3.
-> > > +          4: Voltage over AIN0 and GND.
-> > > +          5: Voltage over AIN1 and GND.
-> > > +          6: Voltage over AIN2 and GND.
-> > > +          7: Voltage over AIN3 and GND.
+> I still haven't heard a compelling _reason_ for this all, and why
+> anybody should ever use this or care?
 
-This should map to the generic channel description in
-adc.yaml.  If we need to extend that then we can do that rather than a
-separate device specific definition.
+Ok, to sum up:
 
-Note that is relatively new, so there are lots of drivers with older
-bindings in tree that do things more closely to what you have here.
+Killing the process that hit a kernel warning complies with the Fail-Fast 
+principle [1]. pkill_on_warn sysctl allows the kernel to stop the process when 
+the **first signs** of wrong behavior are detected.
+
+By default, the Linux kernel ignores a warning and proceeds the execution from 
+the flawed state. That is opposite to the Fail-Fast principle.
+A kernel warning may be followed by memory corruption or other negative effects, 
+like in CVE-2019-18683 exploit [2] or many other cases detected by the SyzScope 
+project [3]. pkill_on_warn would prevent the system from the errors going after 
+a warning in the process context.
+
+At the same time, pkill_on_warn does not kill the entire system like 
+panic_on_warn. That is the middle way of handling kernel warnings.
+Linus, it's similar to your BUG_ON() policy [4]. The process hitting BUG_ON() is 
+killed, and the system proceeds to work. pkill_on_warn just brings a similar 
+policy to WARN_ON() handling.
+
+I believe that many Linux distros (which don't hit WARN_ON() here and there) 
+will enable pkill_on_warn because it's reasonable from the safety and security 
+points of view.
+
+And I'm sure that the ELISA project by the Linux Foundation (Enabling Linux In 
+Safety Applications [5]) would support the pkill_on_warn sysctl.
+[Adding people from this project to CC]
+
+I hope that I managed to show the rationale.
+
+Best regards,
+Alexander
 
 
-> > > +        items:
-> > > +          - minimum: 0
-> > > +            maximum: 7
-> > > +
-> > > +      ti,gain:
-> > > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > > +        minimum: 0
-> > > +        maximum: 5
-> > > +        description: |
-> > > +          pga is the programmable gain amplifier (values are full scale)
-> > > +          0: +/- 6.144 V
-> > > +          1: +/- 4.096 V
-> > > +          2: +/- 2.048 V (default)
-> > > +          3: +/- 1.024 V
-> > > +          4: +/- 0.512 V
-> > > +          5: +/- 0.256 V
-
-Why a DT property? Normally we'd leave this to userspace control.
-
-> > > +
-> > > +      ti,datarate:
-> > > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > > +        minimum: 0
-> > > +        maximum: 6
-> > > +        description: |
-> > > +          Data acquisition rate in samples per second
-
-Why is this a DT property?
-
-If we do keep it as such use the actual values (via an enum)
-and rename it to add -hz which will then remove the nee for the
-$ref
-
-> > > +          0: 128
-> > > +          1: 250
-> > > +          2: 490
-> > > +          3: 920
-> > > +          4: 1600 (default)
-> > > +          5: 2400
-> > > +          6: 3300
-> > > +
-> > > +    required:
-> > > +      - reg
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    spi {
-> > > +        #address-cells = <1>;
-> > > +        #size-cells = <0>;
-> > > +
-> > > +        adc@1 {
-> > > +            compatible = "ti,ads1018";
-> > > +            reg = <0x1>;
-> > > +            #address-cells = <1>;
-> > > +            #size-cells = <0>;
-> > > +            channel@4 {
-> > > +              reg = <4>;
-> > > +              ti,gain = <3>;
-> > > +              ti,datarate = <5>;
-> > > +            };
-> > > +        };
-> > > +    };
-> > > +...  
-> >  
-
+[1]: https://en.wikipedia.org/wiki/Fail-fast
+[2]: https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+[3]: https://www.usenix.org/system/files/sec22summer_zou.pdf
+[4]: http://lkml.iu.edu/hypermail/linux/kernel/1610.0/01217.html
+[5]: https://elisa.tech/
