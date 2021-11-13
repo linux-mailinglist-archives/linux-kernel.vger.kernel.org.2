@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4556844F388
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 15:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B89C44F38A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Nov 2021 15:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhKMOOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 09:14:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37964 "EHLO mail.kernel.org"
+        id S235887AbhKMOOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 09:14:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231672AbhKMOOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 09:14:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C153460F51;
-        Sat, 13 Nov 2021 14:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636812676;
-        bh=t9CShlrauEAsztx26mv4Lvg2o8CuZu2WW6wTb8AXz3c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D6coJK3qOSEpAJVLfCmIWRKcIws9pFpiWpIc46Kb16AnBUH7uUcyXodHlykJXvyJC
-         8T2egcJDjF+uPOzkQlLBgkv9yzw5dWN/JXW0pdNHNBhYL3Tmwkx1hJhOq30cDVaKs1
-         68Im7ohvYMj/h5aZ4wOrwjJbqdi2m4aQqNpOwWJ4=
-Date:   Sat, 13 Nov 2021 15:11:13 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Liu Junqi <liujunqi@pku.edu.cn>
-Cc:     linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: mt7621-dma: reindent to avoid '(' at the end
- of line
-Message-ID: <YY/HgcL/iF09sNcQ@kroah.com>
-References: <20211113135952.365607-1-liujunqi@pku.edu.cn>
+        id S231672AbhKMOOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 09:14:40 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A28DE60E90;
+        Sat, 13 Nov 2021 14:11:47 +0000 (UTC)
+Date:   Sat, 13 Nov 2021 09:11:45 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Cc:     corbet@lwn.net, mingo@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: ftrace: fix the wrong path of tracefs
+Message-ID: <20211113091145.05ba14b5@rorschach.local.home>
+In-Reply-To: <20211113133722.GA11656@pc>
+References: <20211113133722.GA11656@pc>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211113135952.365607-1-liujunqi@pku.edu.cn>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 09:59:52PM +0800, Liu Junqi wrote:
-> A change to make the code more like typical coding style.
+On Sat, 13 Nov 2021 21:37:34 +0800
+Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
+
+> Delete "tracing" due to it has been included in /proc/mounts.
+> Delete "echo nop > $tracefs/tracing/current_tracer", maybe
+> this command is redundant.
 > 
-> Signed-off-by: Liu Junqi <liujunqi@pku.edu.cn>
+> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+Jon,
+
+Can you take this through your tree?
+
+Thanks,
+
+-- Steve
+
+
 > ---
-> I'm a kernel newbie and it's my first time to send a patch following the "Write and Submit your first Linux kernel Patch" video on youtube.
-> The first version was rejected because of putting a '*' at the beginning of a line, and this version is exactly what Joe Perches advised in the reply to the original patch email.
-> Please let me know if I got anything wrong ^_^
+>  Documentation/trace/ftrace.rst | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 4e5b26f03d5b..b3166c4a7867 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -2442,11 +2442,10 @@ Or this simple script!
+>    #!/bin/bash
+>  
+>    tracefs=`sed -ne 's/^tracefs \(.*\) tracefs.*/\1/p' /proc/mounts`
+> -  echo nop > $tracefs/tracing/current_tracer
+> -  echo 0 > $tracefs/tracing/tracing_on
+> -  echo $$ > $tracefs/tracing/set_ftrace_pid
+> -  echo function > $tracefs/tracing/current_tracer
+> -  echo 1 > $tracefs/tracing/tracing_on
+> +  echo 0 > $tracefs/tracing_on
+> +  echo $$ > $tracefs/set_ftrace_pid
+> +  echo function > $tracefs/current_tracer
+> +  echo 1 > $tracefs/tracing_on
+>    exec "$@"
+>  
+>  
 
-Take a look at the link that my patch-bot told youto read.  It will show
-you how to write a "this changed in this version" type of text below the
---- line.
-
-Please do that and try again.
-
-thanks,
-
-greg k-h
