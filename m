@@ -2,147 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6194A44F877
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE55944F87F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhKNOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 09:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhKNOY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:24:27 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4463C061200
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 06:21:31 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id t30so25130221wra.10
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 06:21:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p8lk+q4Y2CquVO9sqmu4dSc1gvfHGQ8MpCynAwi+U0M=;
-        b=tmyGi86bjZW/7vtxIzqiUXXSul5Ye8VTLY6C1i8poScsrQmwey4pUrTupOUd2E5T/O
-         U6eX0di3bcDtRIs3BuWvdCD++Z4pOHXG2V7/QjHQvO431WlrLRjiIwM9WemrClq0gXC7
-         +Xwgxx1lTobE+ZE2jpjTNbPkawHwTRWgGn7pR4xCufUfAXa+44eXTTKOtS99KaHF6/+R
-         X8NSkvmce0zWcaFSbInWCw47Cpi/bqA/D2uBq+Lg4zTA1l4KCZa5rfTWtLhA0NbTHWly
-         iswWc8J+xnA9MCX3kJHw267Gkq+v0ts2CP9PZtr0/CC3u0DB5j2rE/ahsAFpiporeeH8
-         D3iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p8lk+q4Y2CquVO9sqmu4dSc1gvfHGQ8MpCynAwi+U0M=;
-        b=nMtgkk8UVbMjnSo674USFWUjrGovOEXAIFoKKZseNcKUp+OTzboyFOMHVR9+gNWs3w
-         61qjwCze/bgOFRZ8xijqKh5UAEVP9pW1kUv4+3754AwdC5jqioROLzknGBpn9rHbTCsA
-         6452JKZEwWFUnHxkLd7y82HiM83+99KW6L/GlzyK2vLz5YPReiTe9+f5nL8z9VX+p2pg
-         qDmphEoy+DDnDq1mWBEANNKLpwZkJSjQ0WjLsiOpYiKhtuvtBXrlt0klxUnAn0+M5cZS
-         vRORAFuNb3GfHo4EmYvDOUqvFZqN3XpF0znZT5nWj/X1aYXDVTSQDknAN6E8mFHgDYBq
-         qAOg==
-X-Gm-Message-State: AOAM533KlqOr3x1n86VEpG5zW+lJNRzacAvwGwMuwx7W/gngenPgMKIN
-        V5bfywyZ4V/uWf/TKZT07WiLLQ==
-X-Google-Smtp-Source: ABdhPJz1rGJhN4paD+q9e5k6x6AlTsEg1AdYORqZcrmrG1v2dBBnBwDrylK3vuq8tZdXbfsQe80dtQ==
-X-Received: by 2002:adf:f042:: with SMTP id t2mr38984084wro.180.1636899689743;
-        Sun, 14 Nov 2021 06:21:29 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:48e0:47e8:1868:a12e])
-        by smtp.gmail.com with ESMTPSA id 9sm14717028wry.0.2021.11.14.06.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 06:21:29 -0800 (PST)
-Date:   Sun, 14 Nov 2021 15:21:22 +0100
-From:   Marco Elver <elver@google.com>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>, glider@google.com
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Message-ID: <YZEbYmzy64uai7Af@elver.google.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
- <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
- <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
- <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
- <CAHk-=wg+UMNYrR59Z31MhxMzdUEiZMQ1RF9jQvAb6HGBO5EyEA@mail.gmail.com>
+        id S231796AbhKNO3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 09:29:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229563AbhKNO2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 09:28:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7C5461027;
+        Sun, 14 Nov 2021 14:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636899949;
+        bh=ZV2Hx3+pIL6mKU8se/mh5FSio88H9eOPjUCiqqBfNMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WEXnx6VbLq/G2BMMPxLRQ7erP972PFzRoh0VTTIJKNZMRst2e9JgagN4H/KGNaG1F
+         O9mxp+qs7h8l1cvr6dgs2wVo2R+uDexa4twqzLBQyg9lDdAIZZNmhyg2JOcy7NqIm2
+         +/TAd42dHuaga7bCxwMnOVWjZBTRpDQIGtW4Wh6OI/wNUg3dYxKmDe7BwPbTJxjUzN
+         PE84zJNVgFZpigvIy4Qvu7Gd7yUSaYfpWX5aPunG3QkGxYRp668Um3fDSycfg0YFFA
+         CHDy81cKJLPRZeg4CrXOBH+IIEaTljLV3Y5vd7sZ5eUj8ysfIs0L3bekdoe1yQ4xkp
+         TcoWd7YsZL+Dg==
+Date:   Sun, 14 Nov 2021 09:25:48 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: AUTOSEL series truncated was -- Re: [PATCH AUTOSEL 5.15 001/146]
+ dma-buf: WARN on dmabuf release with pending attachments
+Message-ID: <YZEcbEY4HkvZYdOh@sashalap>
+References: <20211108174453.1187052-1-sashal@kernel.org>
+ <20211109075423.GA16766@amd>
+ <3957633e-9596-e329-c79b-b45e9993d139@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wg+UMNYrR59Z31MhxMzdUEiZMQ1RF9jQvAb6HGBO5EyEA@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <3957633e-9596-e329-c79b-b45e9993d139@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 11:58AM -0800, Linus Torvalds wrote:
-> On Sat, Nov 13, 2021 at 10:14 AM Alexander Popov <alex.popov@linux.com> wrote:
-[...]
-> Honestly, if the intent is to not have to parse the dmesg output, then
-> I think it would be much better to introduce a new /proc file to read
-> the kernel tainting state, and then some test manager process could be
-> able to poll() that file or something. Not sending a signal to random
-> targets, but have a much more explicit model.
-> 
-> That said, I'm not convinced that "just read the kernel message log"
-> is in any way wrong either.
+On Tue, Nov 09, 2021 at 08:05:23AM -0800, Randy Dunlap wrote:
+>On 11/8/21 11:54 PM, Pavel Machek wrote:
+>>Hi!
+>>
+>>This series is truncated .. I only got first patches. Similary, 5.10
+>>series is truncated, [PATCH AUTOSEL 5.10 035/101] media: s5p-mfc: Add
+>>checking to s5p_mfc_probe... is last one I got.
+>>
+>>I got all the patches before that, so I believe it is not problem on
+>>my side, but I'd not mind someone confirming they are seeing the same
+>>problem...
+>
+>Yes, several of the patch series were incomplete for me also...
 
-We had this problem of "need to get errors/warnings that appear in the
-kernel log" without actually polling the kernel log all the time. Since
-5.12 there's the 'error_report' tracepoint for exactly this purpose [1].
+Odd. I'll keep a closer look next time I send a series out to figure out
+what's going on.
 
-Right now it only generates events on KASAN and KFENCE reports, but we
-imagined it's easy enough to extend with more types. Like WARN, should
-the need arise (you'd have to add it if you decide to go down that
-route).
+Thanks for the heads-up!
 
-So you could implement a close-enough variant of the whole thing in
-userspace using what tracepoints give you by just monitoring the trace
-pipe. It'd be much easier to experiment with different policies as well.
-
-[1] https://git.kernel.org/torvalds/c/9c0dee54eb91d48cca048bd7bd2c1f4a166e0252 
+-- 
+Thanks,
+Sasha
