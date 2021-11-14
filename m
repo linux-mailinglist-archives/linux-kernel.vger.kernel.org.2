@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19E444FC4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 23:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E8144FC54
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 23:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhKNWkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 17:40:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28370 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231652AbhKNWkT (ORCPT
+        id S234892AbhKNWwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 17:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231469AbhKNWvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 17:40:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636929442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x4YT30S8B3Cq0sBg53RRKKFsT3rjgCYg2jd6C8drWHE=;
-        b=GEjgYX+Qn1ojKy58njT5p6xuwS3NXvyOEFYxMjDjyR11tmrGQsUpTJy3DFMr0UC4WXSs78
-        UTEH1Xk/nwrUFeu1mH0NwjwWWcEAt1jIUek5RszAzWfwSB3/NBBKjZUzHJqFe/x+elATmL
-        d9QsaV/xlSmyFVsdR0zr61EwEiernIk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-3-X8jA-INMm5i5g6L9rqiQ-1; Sun, 14 Nov 2021 17:37:21 -0500
-X-MC-Unique: 3-X8jA-INMm5i5g6L9rqiQ-1
-Received: by mail-wr1-f72.google.com with SMTP id q5-20020a5d5745000000b00178abb72486so2826423wrw.9
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 14:37:21 -0800 (PST)
+        Sun, 14 Nov 2021 17:51:23 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09FC061746;
+        Sun, 14 Nov 2021 14:48:28 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id b1so32505540lfs.13;
+        Sun, 14 Nov 2021 14:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kq8l3SK94Kza+Lx51oJZ5qCJhBwYc4lAosdZK3UHqnQ=;
+        b=qtRkpBbFoFU56CCdNTDVCSNE7ZBrmPXjL0VdA9CknRqF1Ki/b/UPICEJGr0uH7Vr8u
+         hHT+0VoFBiOtPYxX+xSbBstOS7O5bHwFu6VifA7FwcLl5Ki1pGPwLxVKWzHS5k8fTgDE
+         N+d1D8Ul7rwhBfxIqI+8Vm4c8p/DgSleVoKfKgUm+VKw0BshWBZDS/bhWWhjBvWYWYZS
+         6+AvKMujMvJOIlxHyS4NFaOQq6/a+hO/XRu10ChcZzCoTlHiIwE82og6+V2F1YnIXqYl
+         WQ1NyAE7c7VrmjzZhDdWXOBV8Tpi7/ntAuVLnwPLhh1HUHTJFVgevhcPAeiMo+IZm5zm
+         n6PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x4YT30S8B3Cq0sBg53RRKKFsT3rjgCYg2jd6C8drWHE=;
-        b=CfMj+fqQ4Uj5X+gTPCSzH4ekcbKyKT/Wb9f5eBKmq37PPnldsQMDs0ta9elZw04jZI
-         1wsZvXbFlmsVqqOtorH9J/NEk99g5dDsJOHQ0KqCziRbjxUooPc6dXUEIiNY6u/ybawK
-         eQYM+brVxIdGdVHdSDmL6ieHfhrIVYcfq9RfsM7Fq3P0jJatjfHP4f271nBAelwGDLg5
-         TVQlp19rJD9ajQxNgOtzGmUvFbhndaN74dx7OygDyLerIUHaBBUajAdzhRZ8dcVTt4+E
-         m756XIu8blFd2ulnQMshUmGoDKpcYLcTTVEX/DL5zqJESKlZFu/z/bGj3EhSJMM8/Jie
-         81tA==
-X-Gm-Message-State: AOAM532+3XXzkKCZ216U1M9Q2beE/MQVT7Y6DMxeUzW0QFKo1S4In+JI
-        fF054dh7mww59bd5lU6ohPhb/FLFQGo6VYqOfNy4bOoLtX7Sl4jEvAhLf8wxLl+RbfjW1r814Na
-        F2lBg9kJqlM8QJ3zVIgIW1u25
-X-Received: by 2002:a05:600c:500d:: with SMTP id n13mr23666471wmr.174.1636929440189;
-        Sun, 14 Nov 2021 14:37:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxTdPCucF4deLdPv8e0iTIatgJZaRpLkkEqy+Aw1oSxfylMhpeTSFRvKeVkjK9aJjXcpriCuQ==
-X-Received: by 2002:a05:600c:500d:: with SMTP id n13mr23666459wmr.174.1636929440033;
-        Sun, 14 Nov 2021 14:37:20 -0800 (PST)
-Received: from redhat.com ([2.55.156.154])
-        by smtp.gmail.com with ESMTPSA id z11sm12223014wrt.58.2021.11.14.14.37.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kq8l3SK94Kza+Lx51oJZ5qCJhBwYc4lAosdZK3UHqnQ=;
+        b=OC0qrYE8+oPpEwPYG38eop118sQDhS5gf3T7QcZ15BrbOzmmn2lDrP7Ufe7wz6nhIF
+         jbWbGI+H4DLsmtYgExHjMy4tBeYvE+eX+xZ1Ihhzf7tXrmDnEL9d/+rzDZO9TFk2x/D1
+         RLmmvjhCj8SGAIPXNqa92zqBWEGJ2VHeL0JN0898caJW6Yx/YfyMMBxPdsidS+BulM0c
+         NE8PBU0BGCRQheel8ET1s/5iL97FrHsOE/TGlJywjlRosOACPS4213hKoNdB0kApaZHx
+         d6Gbn3VmHB5QDgXYCnzzW0bguaS5dSzGma2zQ1BZuWiofujf9MIHVtpSn4oUYZ4FjEz5
+         gnaw==
+X-Gm-Message-State: AOAM533zjRW+M2RBUeGnbCtlkx+jRu6OM7jvn4Feq/tS4F9cRTa4lIPw
+        jmO9myx6zznWpyfVCHW+ggD09xqIRRE=
+X-Google-Smtp-Source: ABdhPJzvOBq1gK6yT7oQyDY5RONej39BkP3mhL2dgUyGTkVI1OBLFz7i1UXqizTMVMVM9WccB1HLDg==
+X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr24802279lfu.59.1636930106612;
+        Sun, 14 Nov 2021 14:48:26 -0800 (PST)
+Received: from localhost.localdomain (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
+        by smtp.gmail.com with ESMTPSA id h1sm1228591lfu.277.2021.11.14.14.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 14:37:19 -0800 (PST)
-Date:   Sun, 14 Nov 2021 17:37:15 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
-Message-ID: <20211114173550-mutt-send-email-mst@kernel.org>
-References: <20211111090225.946381-1-kraxel@redhat.com>
- <20211114163958.GA7211@wunner.de>
- <20211114122249-mutt-send-email-mst@kernel.org>
- <20211114180604.GA23907@wunner.de>
+        Sun, 14 Nov 2021 14:48:26 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Add NVIDIA Tegra114 support to video decoder driver
+Date:   Mon, 15 Nov 2021 01:47:29 +0300
+Message-Id: <20211114224732.11550-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114180604.GA23907@wunner.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 07:06:04PM +0100, Lukas Wunner wrote:
-> On Sun, Nov 14, 2021 at 12:24:43PM -0500, Michael S. Tsirkin wrote:
-> > On Sun, Nov 14, 2021 at 05:39:58PM +0100, Lukas Wunner wrote:
-> > > Why does virtual hardware implement the Attention Button if it's
-> > > perceived as annoying?  Just amend qemu so that it doesn't advertise
-> > > presence of an Attention Button to get rid of the delay.  (Clear the
-> > > Attention Button Present bit in the Slot Capabilities register.)
-> > 
-> > Because we want ability to request device removal from outside the
-> > guest.
-> 
-> Please elaborate.  Does "outside the guest" mean on the host?
-> How do you represent the Attention Button outside the guest
-> and route events through to the guest?
+Video decoder of Tegra114/124 SoCs uses additional memory buffer required
+for decoding of protected content. We won't support that content, but it
+is impossible to disable access to the buffer, hence a stub buffer needs
+to be provided. This series enables decoder driver only for Tegra114
+because Tegra124 support requires more non-trivial changes on both kernel
+and userspace sides.
 
-The usual way, using kvm ioctls.
+Changelog:
 
-> 
-> > > An Attention Button doesn't make any sense for virtual hardware
-> > > except to test or debug support for it in the kernel.  Just make
-> > > presence of the Attention Button optional and be done with it.
-> > > 
-> > > You'll still be able to bring down the slot in software via the
-> > > "remove" attribute in sysfs.
-> > 
-> > This requires guest specific code though. Emulating the attention button
-> > works in a guest independent way.
-> 
-> It sounds like you're using the Attention Button because it does
-> almost, but not quite what you want for your specific use case.
-> Now you're trying to change its behavior in a way that deviates
-> from the spec to align it with your use case.
-> 
-> Why don't you just trigger surprise-removal from outside the guest?
-> 
-> Thanks,
-> 
-> Lukas
+v2: - Changed tegra_vde_alloc_bo() to return errno and fix unassigned
+      error code in tegra_vde_probe().
 
-Because linux does not handle it well for all devices.  Fixing that
-requires fixing all drivers.
+Dmitry Osipenko (1):
+  media: staging: tegra-vde: Reorder misc device registration
+
+Thierry Reding (2):
+  media: staging: tegra-vde: Support reference picture marking
+  media: staging: tegra-vde: Properly mark invalid entries
+
+ drivers/staging/media/tegra-vde/vde.c | 147 +++++++++++++++++++++++---
+ drivers/staging/media/tegra-vde/vde.h |  18 ++++
+ 2 files changed, 152 insertions(+), 13 deletions(-)
 
 -- 
-MST
+2.33.1
 
