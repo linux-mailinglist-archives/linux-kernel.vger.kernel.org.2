@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD3344FC49
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 23:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19E444FC4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 23:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhKNWhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 17:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhKNWhZ (ORCPT
+        id S234835AbhKNWkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 17:40:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28370 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231652AbhKNWkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 17:37:25 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123B3C061746;
-        Sun, 14 Nov 2021 14:34:21 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id b40so38298725lfv.10;
-        Sun, 14 Nov 2021 14:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p+aN2Fw/pl9sOfjBfLZbMXZ2NVqQ0RZKH9knWs/miVs=;
-        b=l55D4wFasj6Crr+0ib/nhlP3nTxm0LEBZCljqCdzXY6kmqhI0yBTEwP+7/EoEHA6KB
-         Avm0kmrzMJce7c2z6BCuO07OTjE/mA6eN0YbjbTsu+6QKh3sRhGt0Vc0eNs3bKsJiAUt
-         Pu5rs7226aJjzC2ZNo7ZaYrelcY6659c7wt15xMIwbolyMAop3oXLLr3XAuZZGiqdNfu
-         LDoLMRUuOCKfcnTg5f+tz2wMQhnMkVhtuAGZmXMy3o3vv3Sfj9X+LKLRkFn4M1DuHg0a
-         6GYL3WMlFY9Elnq8TiBBUT8d4069/LFBRiv/atT+atrFsaEdY22JPFZnOH5jdQ53Vyqk
-         zbTQ==
+        Sun, 14 Nov 2021 17:40:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636929442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x4YT30S8B3Cq0sBg53RRKKFsT3rjgCYg2jd6C8drWHE=;
+        b=GEjgYX+Qn1ojKy58njT5p6xuwS3NXvyOEFYxMjDjyR11tmrGQsUpTJy3DFMr0UC4WXSs78
+        UTEH1Xk/nwrUFeu1mH0NwjwWWcEAt1jIUek5RszAzWfwSB3/NBBKjZUzHJqFe/x+elATmL
+        d9QsaV/xlSmyFVsdR0zr61EwEiernIk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-3-X8jA-INMm5i5g6L9rqiQ-1; Sun, 14 Nov 2021 17:37:21 -0500
+X-MC-Unique: 3-X8jA-INMm5i5g6L9rqiQ-1
+Received: by mail-wr1-f72.google.com with SMTP id q5-20020a5d5745000000b00178abb72486so2826423wrw.9
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 14:37:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p+aN2Fw/pl9sOfjBfLZbMXZ2NVqQ0RZKH9knWs/miVs=;
-        b=EdlfiaNKTgsiZGNhXiojK04/1uFnkHsCeC95eKFOKov6BkZpen5CKhI85IFiL94VbI
-         KoSt+5xjJm01pkzi3z5OCGeYYSvQHNGZpy59yfucbduYxiWS8TuOZl9W1AYprbak+7XN
-         bUx4WB/5b8HM7EdfvDneTiJ7DMIwWPvNW60FiSF4k7VQOFNeaiWnsXCIpt4F6dTBResr
-         azFtpiATotxFl5E+/1kXioN1dV3QZ4AJE47DyTIED1kGuNlI+aBMWCeVkDAFQsA1yCc7
-         7KHTM1pDihAaBvyc7Fens9S1m48/vyAGHwuHlSrZ3ysvKcR3xvW+2NZf5FHXUDhhyw86
-         k99Q==
-X-Gm-Message-State: AOAM532z4n4f9AREwmiqeAwZ2ParYmOZffnOBF/hwk4qwwZuZihb3oPB
-        Z8tHpdWcz6SEnF2FUJe+/JkympTK0eg=
-X-Google-Smtp-Source: ABdhPJx0Fia6fhfP5IM0wKyq+kUl/IAPLqCO8a5Ry8I/ZbsJ6BeZhkgM6kr70/4ASveBq0YiT9LQUw==
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr29984746lfs.162.1636929259383;
-        Sun, 14 Nov 2021 14:34:19 -0800 (PST)
-Received: from [192.168.2.145] (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
-        by smtp.googlemail.com with ESMTPSA id f17sm1203461lfk.145.2021.11.14.14.34.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 14:34:19 -0800 (PST)
-Subject: Re: [PATCH v1 1/3] media: staging: tegra-vde: Support reference
- picture marking
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anton Bambura <jenneron@protonmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211114222353.22435-1-digetx@gmail.com>
- <20211114222353.22435-2-digetx@gmail.com>
-Message-ID: <42b24cd0-ac37-3cfe-1fb2-d6292015318a@gmail.com>
-Date:   Mon, 15 Nov 2021 01:34:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x4YT30S8B3Cq0sBg53RRKKFsT3rjgCYg2jd6C8drWHE=;
+        b=CfMj+fqQ4Uj5X+gTPCSzH4ekcbKyKT/Wb9f5eBKmq37PPnldsQMDs0ta9elZw04jZI
+         1wsZvXbFlmsVqqOtorH9J/NEk99g5dDsJOHQ0KqCziRbjxUooPc6dXUEIiNY6u/ybawK
+         eQYM+brVxIdGdVHdSDmL6ieHfhrIVYcfq9RfsM7Fq3P0jJatjfHP4f271nBAelwGDLg5
+         TVQlp19rJD9ajQxNgOtzGmUvFbhndaN74dx7OygDyLerIUHaBBUajAdzhRZ8dcVTt4+E
+         m756XIu8blFd2ulnQMshUmGoDKpcYLcTTVEX/DL5zqJESKlZFu/z/bGj3EhSJMM8/Jie
+         81tA==
+X-Gm-Message-State: AOAM532+3XXzkKCZ216U1M9Q2beE/MQVT7Y6DMxeUzW0QFKo1S4In+JI
+        fF054dh7mww59bd5lU6ohPhb/FLFQGo6VYqOfNy4bOoLtX7Sl4jEvAhLf8wxLl+RbfjW1r814Na
+        F2lBg9kJqlM8QJ3zVIgIW1u25
+X-Received: by 2002:a05:600c:500d:: with SMTP id n13mr23666471wmr.174.1636929440189;
+        Sun, 14 Nov 2021 14:37:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxTdPCucF4deLdPv8e0iTIatgJZaRpLkkEqy+Aw1oSxfylMhpeTSFRvKeVkjK9aJjXcpriCuQ==
+X-Received: by 2002:a05:600c:500d:: with SMTP id n13mr23666459wmr.174.1636929440033;
+        Sun, 14 Nov 2021 14:37:20 -0800 (PST)
+Received: from redhat.com ([2.55.156.154])
+        by smtp.gmail.com with ESMTPSA id z11sm12223014wrt.58.2021.11.14.14.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 14:37:19 -0800 (PST)
+Date:   Sun, 14 Nov 2021 17:37:15 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211114173550-mutt-send-email-mst@kernel.org>
+References: <20211111090225.946381-1-kraxel@redhat.com>
+ <20211114163958.GA7211@wunner.de>
+ <20211114122249-mutt-send-email-mst@kernel.org>
+ <20211114180604.GA23907@wunner.de>
 MIME-Version: 1.0
-In-Reply-To: <20211114222353.22435-2-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114180604.GA23907@wunner.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.11.2021 01:23, Dmitry Osipenko пишет:
-> +	vde->secure_bo = tegra_vde_alloc_bo(vde, DMA_FROM_DEVICE, 4096);
-> +	if (!vde->secure_bo) {
-> +		dev_err(dev, "Failed to allocate secure BO\n");
-> +		goto err_pm_runtime;
-> +	}
+On Sun, Nov 14, 2021 at 07:06:04PM +0100, Lukas Wunner wrote:
+> On Sun, Nov 14, 2021 at 12:24:43PM -0500, Michael S. Tsirkin wrote:
+> > On Sun, Nov 14, 2021 at 05:39:58PM +0100, Lukas Wunner wrote:
+> > > Why does virtual hardware implement the Attention Button if it's
+> > > perceived as annoying?  Just amend qemu so that it doesn't advertise
+> > > presence of an Attention Button to get rid of the delay.  (Clear the
+> > > Attention Button Present bit in the Slot Capabilities register.)
+> > 
+> > Because we want ability to request device removal from outside the
+> > guest.
+> 
+> Please elaborate.  Does "outside the guest" mean on the host?
+> How do you represent the Attention Button outside the guest
+> and route events through to the guest?
 
-My eye just caught that by accident err variable isn't assigned to
--ENOMEM here. I'll make v2 shortly.
+The usual way, using kvm ioctls.
+
+> 
+> > > An Attention Button doesn't make any sense for virtual hardware
+> > > except to test or debug support for it in the kernel.  Just make
+> > > presence of the Attention Button optional and be done with it.
+> > > 
+> > > You'll still be able to bring down the slot in software via the
+> > > "remove" attribute in sysfs.
+> > 
+> > This requires guest specific code though. Emulating the attention button
+> > works in a guest independent way.
+> 
+> It sounds like you're using the Attention Button because it does
+> almost, but not quite what you want for your specific use case.
+> Now you're trying to change its behavior in a way that deviates
+> from the spec to align it with your use case.
+> 
+> Why don't you just trigger surprise-removal from outside the guest?
+> 
+> Thanks,
+> 
+> Lukas
+
+Because linux does not handle it well for all devices.  Fixing that
+requires fixing all drivers.
+
+-- 
+MST
+
