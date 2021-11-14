@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F17B44FBA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF5A44FBA2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbhKNUq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 15:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S236347AbhKNUrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 15:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbhKNUqh (ORCPT
+        with ESMTP id S236299AbhKNUqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 15:46:37 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4F5C061746;
+        Sun, 14 Nov 2021 15:46:40 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DCAC061746;
         Sun, 14 Nov 2021 12:43:43 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id y196so12157735wmc.3;
+Received: by mail-wm1-x335.google.com with SMTP id y196so12157753wmc.3;
         Sun, 14 Nov 2021 12:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wrR3UPlCzUG7xn47afzQ6lXIB1wVcH1LZzlTZ62d7lU=;
-        b=PNedUQ/X9lQEwEB/R5eL6v59Ce0d49E8cqW/5dTgVDmZATKuwQwHEK+IrXgF7caE+T
-         ymfk/zSfAYKP1ZoEED/90bP2rRk5mUXnGREddTR8TLQ4ycKkAXE8YAzxiC9M0szGXES6
-         utWKiXIxcLPy2JSexQkmuzIbIY6Ndds+w5YfbH2L0+dqlYGbGymrsbk1LV1ilLacM7Fj
-         3XNBr1IU/FXWfesvLDAD4WXShK3CPmhnD7nDM1933KlA31JdKTz3SUCKBT1Os24g8JWb
-         Y/Oo6g4eqvlGtNEycWQ5sMoAkCPUgqGexP53NJGSsXDCiUpIaYJWjCNMgr9jo7VZ8yr+
-         xH+w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kP3xYHTgf3xiqvDKR6oSKFaK/9w+EGSR3L/Lkf7VsQI=;
+        b=lAzy2bWFZq2Zin54Yg0kAwXMjeDJEtweIebrF0xO0GOO5NkHV9312Jc288Cwori1Zy
+         w4/jfkpbR4SokHguodLQe/jJanwzQcFAiCtkdUBCYp/PaSjfSWD6Dgz4CdLiBu+BUmpC
+         MjfM9w37cJxk69Aj08wuJt3vvrgR2iOL2jUKUsw636ECbOuuvNX/pVc8BTPMDaQoHfEr
+         smeftQSGueZY3A3eAsZW948Ljshe+dMcHL9qrPLCXVkySn2o+pDpZK2CqxwlIi16bdAl
+         04t3eLPDXEHJN5n4Ikwsgton6LveXaEgb6SmSWaxn3WrUdZ6OdlfVbG78Mr0RocCc57K
+         fU+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wrR3UPlCzUG7xn47afzQ6lXIB1wVcH1LZzlTZ62d7lU=;
-        b=3q3HYw18AoGkbHxssbuiryoLGeCnn4D3cTKoikPQ8kN7gHQBGuLlm6sRdLEM8Ygupv
-         66PgwnRg3GwI+UGMI9y4AdMg21j9TNVyq8Peps6L8al2rjtJ/nGwPrcOwvTxsCo1tF6t
-         9kithKgBHkVnFM/jOCRyVqCtTHVX/09+fHtsf6uYY/ZvNBZVEZ2HtNuaMgw/9qN/+70K
-         RcWxifXNO/5p64w7zMPkYoSUFfpT/NqKvQGVumybC3LRsfVBgo4LyzBBWr/cw676Yax9
-         wOJ8cCRYDW874lt15t2hmYWskadYnk8wV273vIhWD20+LMoxpjXQ/0HNpHxViJm07kQg
-         FCtg==
-X-Gm-Message-State: AOAM531i0YpCklds6rLe14E/p30C7aiFtTiJHMCptERfyGwdzucJ3pWy
-        G0JXKj4j+9QU5weuPxnB3hU=
-X-Google-Smtp-Source: ABdhPJwH7L0kGHd7O8e0FNLfFky4paf91nfNiJSEtPSUkWQ6SIaqgI7nR353PGk2zjl9N8MpfuANIw==
-X-Received: by 2002:a05:600c:1c07:: with SMTP id j7mr56197441wms.12.1636922621776;
-        Sun, 14 Nov 2021 12:43:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kP3xYHTgf3xiqvDKR6oSKFaK/9w+EGSR3L/Lkf7VsQI=;
+        b=Kovgo+VgIoH/GfJWec7wEsQqo/ZRv6GiJAV19I5PTSqZbcO31wCqLTwWh9NI6/YlzD
+         LgW9cqX3b7RB6WapUgIMuGqHFTsa/7bRMNBa68kkCqrWMRuIDctvERZPfzvKHY+M4gl1
+         12IyyaIN0y737HVCuC4+iP0XDgppO5XUPT8flUFDnKMh8sP9515ZzCLqToIeb+/jQmMW
+         iFZkxmpXYQa9slbY4XDAc2US8B3ic8IVoBiks4V/Egesjl4C7VFu8c4ZHj4Akm7RHk2s
+         7eBqvaDQkEs+oCHEElKYh1meWlXcULJ2ySBrhIPxma797cx0DeQ8e8KKN6GUiTIQE/66
+         LYzQ==
+X-Gm-Message-State: AOAM531WV2/qcSov8X1x/GRT7cZTEwchnymUIVbw/3Ek+pEBbDXMooeN
+        qnvvGpUqqptDoCPreYZcuSA=
+X-Google-Smtp-Source: ABdhPJxeTDf5dBMTjMgL/1GC8axroAWjiyIS35II9SYiAeyu3WJ3ec4+ujpo1+0qwcLPOUbFyQFNog==
+X-Received: by 2002:a7b:c2a1:: with SMTP id c1mr5103680wmk.112.1636922622505;
+        Sun, 14 Nov 2021 12:43:42 -0800 (PST)
 Received: from ubuntu-laptop.speedport.ip (p200300e94719c9aa03f58ab728c81581.dip0.t-ipconnect.de. [2003:e9:4719:c9aa:3f5:8ab7:28c8:1581])
         by smtp.gmail.com with ESMTPSA id m14sm16673630wrp.28.2021.11.14.12.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 12:43:41 -0800 (PST)
+        Sun, 14 Nov 2021 12:43:42 -0800 (PST)
 From:   Bean Huo <huobean@gmail.com>
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     beanhuo@micron.com
-Subject: [PATCH v1 0/2] Two change for mmc-utils
-Date:   Sun, 14 Nov 2021 21:43:29 +0100
-Message-Id: <20211114204331.39555-1-huobean@gmail.com>
+Subject: [PATCH v1 1/2] mmc-utils: Use memcpy instead of strncpy
+Date:   Sun, 14 Nov 2021 21:43:30 +0100
+Message-Id: <20211114204331.39555-2-huobean@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211114204331.39555-1-huobean@gmail.com>
+References: <20211114204331.39555-1-huobean@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -65,19 +67,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bean Huo <beanhuo@micron.com>
 
-Hi Uffe,
-   Two changes for mmc-utils, please have a take look at it.
+The -Wstringop-truncation warning added in GCC 8.0:
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82944
 
-Kind regards,
-Bean
+If you use the GCC > v8.0, you probably will get this compilation error:
 
-Bean Huo (2):
-  mmc-utils: Use memcpy instead of strncpy
-  mmc-utils: Add note for CMDQ_MODE_EN runtime value
+error: ‘__builtin_strncpy’ output may be truncated copying 8
+bytes from a string of length 511 [-Werror=stringop-truncation]
 
- mmc_cmds.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Use memcpy instead of strncpy to avoid this compilation error.
 
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ mmc_cmds.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mmc_cmds.c b/mmc_cmds.c
+index 205e6e5b89f9..ecbde3937c81 100644
+--- a/mmc_cmds.c
++++ b/mmc_cmds.c
+@@ -1835,7 +1835,8 @@ int do_read_extcsd(int nargs, char **argv)
+ 
+ 	if (ext_csd_rev >= 7) {
+                 memset(lbuf, 0, sizeof(lbuf));
+-		strncpy(lbuf, (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION], 8);
++		memcpy(lbuf, (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION], 8);
++		lbuf[8] = '\0';
+ 		printf("eMMC Firmware Version: %s\n", lbuf);
+ 		printf("eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x%02x\n",
+ 			ext_csd[EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]);
 -- 
 2.25.1
 
