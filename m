@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5DE44FB54
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829E744FB5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbhKNTxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 14:53:46 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:57382 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236510AbhKNTuL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 14:50:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636919238; x=1668455238;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=4C0I4YERPpT7n947dVQeZpCOPyoTOARzQaqepHDnkYg=;
-  b=YjXEuOTw1x8Ug7tpQirsfNWPFF1E8wHnR2T1vl9Q04YRzgtmduq0qzNh
-   p45i4mS6ctD9aYi7+5KXc38Dr4Za0OjCJdk9AVCxSHOpLmZHFX4/h0Ecx
-   wWRUeEwhFTLy6gfTZXKVeY1bi5zvFbzL5+DnPiGIfaWAHEsffv8bY9yZ1
-   Y=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 14 Nov 2021 11:47:13 -0800
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
-  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 11:47:11 -0800
-Received: from [10.110.80.240] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Sun, 14 Nov
- 2021 11:47:12 -0800
-Subject: Re: [PATCH 13/16] arm64: dts: qcom: Add support for Xperia 1 III / 5
- III
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>
-CC:     <martin.botka@somainline.org>,
-        <angelogioacchino.delregno@somainline.org>,
-        <marijn.suijten@somainline.org>, <jamipkettunen@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211114012755.112226-1-konrad.dybcio@somainline.org>
- <20211114012755.112226-13-konrad.dybcio@somainline.org>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-Message-ID: <51341a10-c0a5-079e-b7f1-159d42211bf3@quicinc.com>
-Date:   Sun, 14 Nov 2021 11:47:13 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211114012755.112226-13-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+        id S236204AbhKNT7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 14:59:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231469AbhKNT70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 14:59:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 76F0960EE4;
+        Sun, 14 Nov 2021 19:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636919783;
+        bh=iSaxqWGrpbBDnhDlWwcm0yMAT/hKpBkVMJ4X1ZupjHk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=UBsKFZ1QZGu1jwXV++twRVcH3naCJ3KjTtXoJq/6ctuXhfSlTqKkhsyyA75Cmg8Fl
+         1ciCjob8S0JJi/+bXg5FZRmgXv4ZN4jmSlL4et357BV2Hka1Oj82spqjOTn48ueYRm
+         WDn4pGiSAwLB+9kT4CV3h4YsvaY/HgY5xLf39YpJrPxzMHQthKOLmkkJVYQ6qgyBq0
+         MWDB8e2iXSVvz/pOCilhui2UOl7YHwKU1sMaU24MSASmAX31GOMUp4JfxBvipihNBU
+         JC1Hk3stbQgTFxInmHkQXuvPL5T7AYKDKvddPYU6OqXHg9woOoPF9J1cP6+VoXy/51
+         sjiaAYNDhdAwg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6A8A6609D7;
+        Sun, 14 Nov 2021 19:56:23 +0000 (UTC)
+Subject: Re: [GIT PULL] few more parisc architecture fixes for kernel v5.16-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YZFcHM+23JDGpXTE@ls3530>
+References: <YZFcHM+23JDGpXTE@ls3530>
+X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YZFcHM+23JDGpXTE@ls3530>
+X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.16/parisc-3
+X-PR-Tracked-Commit-Id: 3ec18fc7831e7d79e2d536dd1f3bc0d3ba425e8a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c3b68c27f58a07130382f3fa6320c3652ad76f15
+Message-Id: <163691978342.22669.4510866585488919513.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Nov 2021 19:56:23 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Sven Schnelle <svens@stackframe.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+The pull request you sent on Sun, 14 Nov 2021 19:57:32 +0100:
 
-On 11/13/2021 5:27 PM, Konrad Dybcio wrote:
-> 
-> Then, you need to flash it on the device and get rid of all the
-> vendor_boot/dtbo mess:
-> 
-> fastboot flash boot boot.img-sony-xperia-pdx215
-> fastboot erase vendor_boot
-> fastboot flash dtbo emptydtbo.img
-> fastboot reboot
-> 
-> Where emptydtbo.img is a tiny file that consists of 2 bytes (all zeroes), doing
-> a "fastboot erase" won't cut it, the bootloader will go crazy and things will
-> fall apart when it tries to overlay random bytes from an empty partition onto a
-> perfectly good appended DTB.
+> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.16/parisc-3
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c3b68c27f58a07130382f3fa6320c3652ad76f15
 
-I will check on this part and see if we can make simpler support 
-fastboot erase dtbo without the extra emptydtbo.
+Thank you!
 
----Trilok Soni
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
