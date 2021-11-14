@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1AF44F6FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA9744F700
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhKNGFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 01:05:52 -0500
-Received: from smtpbg604.qq.com ([59.36.128.82]:55737 "EHLO smtpbg604.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhKNGFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 01:05:51 -0500
-X-QQ-mid: bizesmtp43t1636869746t2squ0kq
+        id S235110AbhKNGME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 01:12:04 -0500
+Received: from smtpbg126.qq.com ([106.55.201.22]:24254 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229537AbhKNGMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 01:12:02 -0500
+X-QQ-mid: bizesmtp34t1636870141t6olfinn
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 14 Nov 2021 14:02:24 +0800 (CST)
+        id ; Sun, 14 Nov 2021 14:09:00 +0800 (CST)
 X-QQ-SSF: 01000000002000C0F000B00A0000000
-X-QQ-FEAT: Mzskoac49OiIv0KUitNHgBb3kgXFZxiGEiqTBvjSiDqRqg3yXuxl3T342JbHl
-        4g++JaVU0TN+1b89QYqwytK3N9VD2AwPd06cj/sJiTrh6+60krhMot3ZJ7ymCx6/+F1OQoW
-        vg5EyYg3eJ7FmovozeHiTiDTeUwxOMz8fVLeCpAsAzCThmgiXgbQX7rvUZ4OnTE2zU74AWM
-        fUyxv9ekDP9hjT0NxJLqDgA5fsGB60s6SWgr8FHYORSJqwr4YZQj1q66/FIX3kWuuoM/2tN
-        7TxQFoFFI+szTmwDjybybDhSCrExiaOtrOKHym0pTan0iEhXewZPMiIzLqkQTaoOPCKC4vS
-        ePvi43zoXYdPWJy5AFO16G6e9ICmkjWiOEvgBLl
+X-QQ-FEAT: lC5HeAtE+yY7ieI7k5ozcsT2mHbmUCx7ecPfiLQCJcdRW/HMeiQe9BFfGAp+t
+        j46q9+ju91OdN4ziKKXkkJA5ZA+w2LJcOga3IYFgAymVXZEQPLdU8+mcf1989/ohjhVoHv8
+        usK6mPB/qayQ3EJUU6P6ovXmUptfFZimbhW7FqvvHkAvI5yO1ban2qoabkIOxyhFlaEhell
+        3ZPOO6FMS2QChk+zAHV/2iqAzCwbkn+VqCH8KhkbvJhA7nOC6DGfFIz8J/r8epgsk+2EPM5
+        MtKjOy36xHHiOvaEscnNffjVafnVWMuzqQat4sNNvjtk3Sz8t963WPZROqKoiVBBQtUGaWm
+        U3RFoHxYxMwoMDQgF3ytugx2Xplrh3bMX3wayKpDTIZ0sG0DXw=
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] igb: remove never changed variable `ret_val'
-Date:   Sun, 14 Nov 2021 14:02:22 +0800
-Message-Id: <20211114060222.231075-1-wangborong@cdjrlc.com>
+To:     vkoul@kernel.org
+Cc:     salah.triki@gmail.com, wangborong@cdjrlc.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: ppc4xx: remove unused variable `rval'
+Date:   Sun, 14 Nov 2021 14:08:56 +0800
+Message-Id: <20211114060856.239314-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable used for return status in `igb_write_xmdio_reg' function
-is never changed  and this function is just need return 0. Thus, the
-`ret_val' can be removed and return 0 at the end of the
-`igb_write_xmdio_reg' function.
+The variable used for returning status in
+`ppc440spe_adma_dma2rxor_prep_src' function is never changed
+and this function just need to return 0. Thus, the `rval' can
+be removed and return 0 from `ppc440spe_adma_dma2rxor_prep_src'.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/net/ethernet/intel/igb/e1000_i210.c | 3 +--
+ drivers/dma/ppc4xx/adma.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/e1000_i210.c b/drivers/net/ethernet/intel/igb/e1000_i210.c
-index 9265901455cd..b9b9d35494d2 100644
---- a/drivers/net/ethernet/intel/igb/e1000_i210.c
-+++ b/drivers/net/ethernet/intel/igb/e1000_i210.c
-@@ -792,7 +792,6 @@ s32 igb_write_xmdio_reg(struct e1000_hw *hw, u16 addr, u8 dev_addr, u16 data)
-  **/
- s32 igb_init_nvm_params_i210(struct e1000_hw *hw)
+diff --git a/drivers/dma/ppc4xx/adma.c b/drivers/dma/ppc4xx/adma.c
+index e2b5129c5f84..5e46e347e28b 100644
+--- a/drivers/dma/ppc4xx/adma.c
++++ b/drivers/dma/ppc4xx/adma.c
+@@ -3240,7 +3240,6 @@ static int ppc440spe_adma_dma2rxor_prep_src(
+ 		struct ppc440spe_rxor *cursor, int index,
+ 		int src_cnt, u32 addr)
  {
--	s32 ret_val = 0;
- 	struct e1000_nvm_info *nvm = &hw->nvm;
- 
- 	nvm->ops.acquire = igb_acquire_nvm_i210;
-@@ -813,7 +812,7 @@ s32 igb_init_nvm_params_i210(struct e1000_hw *hw)
- 		nvm->ops.validate = NULL;
- 		nvm->ops.update   = NULL;
+-	int rval = 0;
+ 	u32 sign;
+ 	struct ppc440spe_adma_desc_slot *desc = hdesc;
+ 	int i;
+@@ -3348,7 +3347,7 @@ static int ppc440spe_adma_dma2rxor_prep_src(
+ 		break;
  	}
--	return ret_val;
+ 
+-	return rval;
 +	return 0;
  }
  
