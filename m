@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7030244FB7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C30544FB7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236371AbhKNULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 15:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        id S236223AbhKNUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 15:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234591AbhKNUKm (ORCPT
+        with ESMTP id S234480AbhKNUKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Nov 2021 15:10:42 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03991C061767;
-        Sun, 14 Nov 2021 12:07:45 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 207so30765745ljf.10;
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE48CC061766;
+        Sun, 14 Nov 2021 12:07:44 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id b40so37672782lfv.10;
         Sun, 14 Nov 2021 12:07:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XpgIfSS+RMObgLYbwSybA25conQ/tCzGIbJEqeoL6Oo=;
-        b=RtBUNRlgubtcgBLuCmKNmb6TsQ1nE2Y4S2lFCwr+wGhTLZYVml1Dzi/wX0UvHjG8yo
-         VaG9HqBAuUOQ+0QG4q0vVWzWzPmjqID6xOdhxhEFGu/umpzpRiQFovLWyS0dZz62SLSy
-         5fd5nY8gg+5weAZ8zGtt1sqT4MLRwCZ2sQOEWcSJxM8JsgpvxDnn4PV7+lcbsrztRc82
-         nJNRx85jgPCveYDOSrsebXUxW8P4tXR+OLM4M3SPMgYiULUX4a7s3ztIbMZoB2xz/l0j
-         6UWKmrym8TBWsv04vC6MvRZhbIkCCJ2HgGytsCptiLHXz+n8WH/dVxosjVbWzLve/4d7
-         1LxQ==
+        bh=AkpRlmm9VStWG/9FSC9RiFG1Zeod4XIWPGAv7duUBTE=;
+        b=PjQ4peGmad+WSgds8M0XV2NpLMbZmdfcTTKXkxWa2Rihcjk6oNINHI/9VGt8B+sYeo
+         Wa4MwE4a7q95OhG+l9SbYtU7nq20TiinBgeDVSkDRw7Ai40WbP/YcX5hA1EmaoEPwsYU
+         pOS1L5XxWSjDga9h/naONRKDbsNQc8kcFGESlcAAg+LLALEI1Dq1P60rCqVnh44dnkNw
+         9RghuTdUsG1E+KwFMaxawAuhU4pDhS5B4uI9K1pdH1KZDO9F+8FFahYmwPox8a3SD+69
+         k5ogDMOGo1JJTLFxupz6ZzrmrM7NIh8hYV1liuSPk1qY83wDSXXYTBCjLYXEf2ktbLQ6
+         8pzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XpgIfSS+RMObgLYbwSybA25conQ/tCzGIbJEqeoL6Oo=;
-        b=1K5Oxj1CuTpJ2T2CyTA2w++UnY6T5Mr/AfUAB2/KTXg6mRUnEeT6I2DABGnzrfCfSJ
-         wHk2rEWajDrqpzPfxaEQplzKbmsoYyfsDFULmI8+vJZUlhRsYFqKGRVQGxYPe/uowAo9
-         Yggv5lQVR+aM7uilSrSdT3R3WYaibYhbftnrZrB9BrDoK4sDxDSZcpqF321b3f2EQq/G
-         nN52YWNNe1Rh6m4ZZwmXL8NabWRCEcMK9xGk4jL9PdHzs3F3ZbaR3qHHrZbAb83w6Pre
-         nIyPwl/uKScaQ0iLKy3ru7eIrwZmWf2zXsfFhttvN8xYPeRjAKlwJKs8/2rDwKLUPt0R
-         0liA==
-X-Gm-Message-State: AOAM533pr8B7RyYn1WeqNDbquIlKJEp63b8fF6Lw17cI/wp1qlvwrLaX
-        k3uzkWugDZEXDwbbM1jk6bw=
-X-Google-Smtp-Source: ABdhPJwk5a8XUw/2bm1F0b0gxOiSzOZ2k6gDKu70LNL3EoxZrFn/R6f+EsiQ84Y5hT1mJXaXTTqTgQ==
-X-Received: by 2002:a2e:9702:: with SMTP id r2mr33446069lji.482.1636920462712;
-        Sun, 14 Nov 2021 12:07:42 -0800 (PST)
+        bh=AkpRlmm9VStWG/9FSC9RiFG1Zeod4XIWPGAv7duUBTE=;
+        b=SM5xSYU343JDKCIIjdaLp1HMTtaouOOGlnB0Hldies39yJcKsghaH8QglXP2XxUwNJ
+         1RkjoW+kk6pF//INLZvTi0KNylZleNl2WqKzit7rtBwAjRYQFwU5jbCUaFQbe0w+BQ3U
+         jMyQxXjoodRBj22bfcDwAjjifs7ftqnOHjpsU+NlUQpEaWoGW1g2EX7rLS/5M3J0ig4J
+         1pd+COBTr9ahDvtB9NGIKhzb8Ql5ntP+wmOZ/FEcEkWhJZDbiap7y3iN+z2xdU7Vk7K4
+         LtPlnwqmXQry5cCRcn0EO/w02u/GSfDR6wgEKCoZoumwigoB6zPvsMUUk+AzW2WqZS63
+         kEqA==
+X-Gm-Message-State: AOAM533UHz5CsJ9HKLyMg9ctQRbNfmvdo3dDsKeOCUmsWF7Zz4/fszXd
+        PhnGHOwWRmdrcPu6Sqy61Sg=
+X-Google-Smtp-Source: ABdhPJxRrlmzgYLBs1cyCcjph5vdi0HNwlsqJKW2fr1Y0Sz5Qj5qhssjE9F0Y5GxBliN2art+/jhUw==
+X-Received: by 2002:a05:6512:a91:: with SMTP id m17mr20960941lfu.690.1636920463400;
+        Sun, 14 Nov 2021 12:07:43 -0800 (PST)
 Received: from localhost.localdomain (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
         by smtp.gmail.com with ESMTPSA id d30sm1204644lfv.58.2021.11.14.12.07.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 12:07:42 -0800 (PST)
+        Sun, 14 Nov 2021 12:07:43 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Anton Bambura <jenneron@protonmail.com>
 Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/2] dt-bindings: sharp,lq101r1sx01: Add compatible for LQ101R1SX03
-Date:   Sun, 14 Nov 2021 23:07:16 +0300
-Message-Id: <20211114200717.28986-2-digetx@gmail.com>
+Subject: [PATCH v1 2/2] drm/panel: sharp: lq101r1sx01: Support LQ101R1SX03
+Date:   Sun, 14 Nov 2021 23:07:17 +0300
+Message-Id: <20211114200717.28986-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211114200717.28986-1-digetx@gmail.com>
 References: <20211114200717.28986-1-digetx@gmail.com>
@@ -71,28 +71,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Anton Bambura <jenneron@protonmail.com>
 
-LQ101R1SX03 is compatible with LQ101R1SX01, document it.
+LQ101R1SX03 is compatible with LQ101R1SX01, add compatible to the driver.
 
 Signed-off-by: Anton Bambura <jenneron@protonmail.com>
 ---
- .../devicetree/bindings/display/panel/sharp,lq101r1sx01.yaml  | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/sharp,lq101r1sx01.yaml b/Documentation/devicetree/bindings/display/panel/sharp,lq101r1sx01.yaml
-index a679d3647dbd..f7514eb9ebda 100644
---- a/Documentation/devicetree/bindings/display/panel/sharp,lq101r1sx01.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/sharp,lq101r1sx01.yaml
-@@ -30,7 +30,9 @@ allOf:
+diff --git a/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c b/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
+index f8cd2a42ed13..bbd1d889e069 100644
+--- a/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
++++ b/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
+@@ -304,6 +304,7 @@ static const struct drm_panel_funcs sharp_panel_funcs = {
  
- properties:
-   compatible:
--    const: sharp,lq101r1sx01
-+    enum:
-+      - sharp,lq101r1sx01
-+      - sharp,lq101r1sx03
- 
-   reg: true
-   power-supply: true
+ static const struct of_device_id sharp_of_match[] = {
+ 	{ .compatible = "sharp,lq101r1sx01", },
++	{ .compatible = "sharp,lq101r1sx03", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, sharp_of_match);
 -- 
 2.33.1
 
