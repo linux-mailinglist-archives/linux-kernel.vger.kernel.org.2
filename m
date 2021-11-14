@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB3F44F9CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201F044F9CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhKNRpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:45:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbhKNRpn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:45:43 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C62C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:42:46 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id x15so61264835edv.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rpEU5W9fM9uUVputwI2dthK1R1N2dgY5w9BBuptA+Sc=;
-        b=gUfny8hjPYP1FEGMwIPomSxZAtuH8z6Ff4PAyQPVy6dNS+TQpINAkJs+JrJ8DC5bR0
-         ZFAZGNCXYoscJ7Mb7/N5GnZ31bfW1HdvZstDcllHeHL2sLrVoEGRGJ1sfEC6V7189Lq3
-         FrH2et+3GkYXHjzZXLnI5IBrq2u6twWB/Cjnw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rpEU5W9fM9uUVputwI2dthK1R1N2dgY5w9BBuptA+Sc=;
-        b=eW8ohufKFq1H7iu0w2Rj218rGPbyxct03a3Wq1WUcmQaTHcnFcfTb67Jli1g2SUIbk
-         sSByhUIcKLDf20zAfGh5AnIIHfnIqQG2EOtU72m59J0zAnwCi/pw+VylUktbFawLKzlC
-         /MP+qoD6kLoWmSnMrKH1B+lRVAE5czXrOExERQEuds1pTdbpfo4bp5VM2Nbn0DOPsH5e
-         k406HqDCaogXdzCXt2hak76J/fBnm30ZssLXoks9i/LKn7BI90Zas+4TDSiilsh+lZgo
-         0awxf9M2nlX8mwGHraGpP3y++TJMFLsWd/szpMejZBzzDw2EsR44u/qiIgZIG+R/rM68
-         3QZw==
-X-Gm-Message-State: AOAM532EQ+jNdCR0iUZoXJVGmqi/DuKBsSptmktq0mX8i0FMyaZJo1KX
-        wOvjipAY+cX3HEK+9teqoglJ1iq+kdn0l1sefkk=
-X-Google-Smtp-Source: ABdhPJyrVcXLZFYoopKjQ9pvoofNryxrxDGTTAvf06Y6ls4o6CqYHPY3oT133I3vWI/wfTeO2NrEUg==
-X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr45952884edd.347.1636911764187;
-        Sun, 14 Nov 2021 09:42:44 -0800 (PST)
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id t16sm6258942edd.18.2021.11.14.09.42.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 09:42:43 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so10661592wmd.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:42:43 -0800 (PST)
-X-Received: by 2002:a05:600c:1d97:: with SMTP id p23mr35436818wms.144.1636911763086;
- Sun, 14 Nov 2021 09:42:43 -0800 (PST)
+        id S236182AbhKNRqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:46:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236157AbhKNRqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 12:46:05 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E6B760FE3;
+        Sun, 14 Nov 2021 17:43:11 +0000 (UTC)
+Date:   Sun, 14 Nov 2021 12:43:09 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] tracing: Three small fixes for 5.16
+Message-ID: <20211114124309.799dc917@rorschach.local.home>
+In-Reply-To: <CAHk-=wjREUihCGrtRBwfX47y_KrLCGjiq3t6QtoNJpmVrAEb1w@mail.gmail.com>
+References: <20211113083520.26ec84ee@rorschach.local.home>
+        <CAHk-=wjREUihCGrtRBwfX47y_KrLCGjiq3t6QtoNJpmVrAEb1w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <YZDxFAYjVp2nRteh@zn.tnic>
-In-Reply-To: <YZDxFAYjVp2nRteh@zn.tnic>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Nov 2021 09:42:27 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
-Message-ID: <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
-Subject: Re: [GIT PULL] sched/urgent for v5.16-rc1
-To:     Borislav Petkov <bp@suse.de>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 3:21 AM Borislav Petkov <bp@suse.de> wrote:
->
-> - Avoid touching ~100 config files in order to be able to select
-> the preemption model
+On Sat, 13 Nov 2021 10:26:29 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Heh. Too late for those of us who build our kernels during the merge
-window who now end up seeing that question again, but I appreciate it.
+> On Sat, Nov 13, 2021 at 5:35 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> >  - Copy just actual size of histogram strings  
+> 
+> I have pulled this, but I think it's wrong. Or at least it looks
+> _very_ suspicious.
+> 
+> > -                       strscpy(str, val_str, STR_VAR_LEN_MAX);
+> > +                       strscpy(str, val_str, val->size);  
+> 
+> So now it doesn't overrun the source string any more, but I don't see
+> what protects it from not overrunning the destination - which is
+> indeed STR_VAR_LEN_MAX.
+> 
+> Maybe 'val->size' is guaranteed to be sufficiently limited, but that
+> sure as hell isn't obvious at least lkocally.
 
-             Linus
+Ideally this should be checked on the time the histogram is created.
+But looking into it, the size could be determined by the size of a
+string of an event field. Now in practice, no event field should be
+bigger than 256 bytes, but nothing prevents it from happening.
+
+I'll add logic here to include:
+
+	size = min(val->size, STR_VAR_LEN_MAX);
+
+and use that instead.
+
+-- Steve
