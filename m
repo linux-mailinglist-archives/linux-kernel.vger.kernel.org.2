@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728EB44FBC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558E944FBCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhKNVXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 16:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        id S236382AbhKNV3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 16:29:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236408AbhKNVWp (ORCPT
+        with ESMTP id S236355AbhKNV2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 16:22:45 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1A2C061204
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:19:42 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id e3so26337577edu.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:19:42 -0800 (PST)
+        Sun, 14 Nov 2021 16:28:46 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA0C061766
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:25:51 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id y12so6292546eda.12
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:25:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kLOzaJoltjKDQvEecFuRyMKdXpesuCtjS9ImEoetX68=;
-        b=A6imnwSJ5wijhFoiuKjwmqxVd2U5hUIwuDALT577iJiJfKzSv3cYYkDsVT0CmJpHjf
-         5Fku9qXEQDUbAYgg+dxRr5Iab7Cnp7PIDhz1EmhL9SVS6htM66mxHHcZasRZYpGwAAYD
-         gQ4EfHLNgnsPG4SxZkDwu/bu2O3ew33sMOq1s=
+        bh=tZSSynsKcz8SQQ9wlQiwyLd1LjN5A0/Q7Az2vBog8fs=;
+        b=f/viiwPOa9QV59R4dkB8sPRey//vAi2MFsdmXxOnQDPgzBE5u6TsL8/xevZYp8DEoj
+         E9DBrfwFkIxLTkn+Ciwp2Pk5aalk/Tl6op7yjcFs+9R219irGePGGHcCsQImGNUgixv8
+         J51bTeoO3LyQrNlcHCfVtoFUoRdWd7B/iriEQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kLOzaJoltjKDQvEecFuRyMKdXpesuCtjS9ImEoetX68=;
-        b=IcftUC/pl9V7Zqn4z2+jPaGSXQqC6GD3VL0FZxMx5l5qQIyFs9dqn3eJbtOl/NYLCP
-         Xpv/+yOndB0P1KBM7dQSHE4Flspw88aG9Y8DgoQv91B2mUTBjIbKKjXGFho49msznSo8
-         JbYO7qloRhs4ecd53WfAiMbUFCPFev9pEUZNwdsT770eTLo1TbX2h6SRMr/e2fOw16Cb
-         X6AbhU5aqx0g5tf+lft1qqzi2D/PKej+HUw6hEduiTsUw735kX0S/NFrv2ue0zuKOApl
-         xQ0aT0mElsudph13KsQqaS0gt0WFnM+GpHC8kuWf6BeBAbUyVNhhWBn1hQXyGLUs0FHZ
-         QTnQ==
-X-Gm-Message-State: AOAM533DMjdSb+tdg0w4y9y939ilm2Lzwq1XP/E25Ocz0Un9n6Dz5If7
-        doDjYzywsYyKhLwg5i5b+NP0mfHixI4GsPif
-X-Google-Smtp-Source: ABdhPJwtm1eOibNeNgRLDh/qcCelJzSnTRm6bhkWaJxdiB/Hb0Ckt+ojZpW3GPEFLQlpbxBB5HjZqA==
-X-Received: by 2002:a05:6402:26cb:: with SMTP id x11mr46015216edd.127.1636924781261;
-        Sun, 14 Nov 2021 13:19:41 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id d4sm6268495edk.78.2021.11.14.13.19.39
+        bh=tZSSynsKcz8SQQ9wlQiwyLd1LjN5A0/Q7Az2vBog8fs=;
+        b=4esID4V5VkS58vz3RMgStTAj7UBg0ACfvNTR/HxfsKvY4C3sv3Se0FfXo0sYF27RvQ
+         NdGbjwmimANbb9U633V9jf9k8fis6p1LME7Q63vfdMrfDAEABTuy3jjSEPN/0BtUsI9T
+         pM8lp52BKROweGY21/XdfSiqt3VQzCJnBsizcsBcqF0uDwzuEXaYiJD51uwmcHv2zAGP
+         1og772bq5tfFwDVO8InxZMYOT2tM24b4PLjM2oHR+l/ZWNSBOVyiA6eWP7zy/CeUTLog
+         zqy1dk4B157lSqoU2h2fIb5M4uNL/WVoe818RVXC92fGVtYENF1G5d7zPHlnS99q+/di
+         mlmQ==
+X-Gm-Message-State: AOAM531OfO24QCEb1sCsmboGrUoNsKe0CFeGoH6GMn1Mpmjq6lam1eja
+        wUAHR79F+UcBrH4i7J/HV8a61/2teJjO2elW
+X-Google-Smtp-Source: ABdhPJx1+yf5k+rVJS+GcvaC4ganin4aWVJIE+UIbPEKM6a6Lc2M56lUbmkZWaiBg3pTYTMgrgeTBA==
+X-Received: by 2002:a17:907:1c0a:: with SMTP id nc10mr43430447ejc.211.1636925150323;
+        Sun, 14 Nov 2021 13:25:50 -0800 (PST)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id nc30sm5688151ejc.35.2021.11.14.13.25.48
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 13:19:40 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id i12so11374424wmq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:19:39 -0800 (PST)
-X-Received: by 2002:a7b:c005:: with SMTP id c5mr55506005wmb.155.1636924779662;
- Sun, 14 Nov 2021 13:19:39 -0800 (PST)
+        Sun, 14 Nov 2021 13:25:49 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso14192273wml.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:25:48 -0800 (PST)
+X-Received: by 2002:a1c:7405:: with SMTP id p5mr51964221wmc.152.1636925148688;
+ Sun, 14 Nov 2021 13:25:48 -0800 (PST)
 MIME-Version: 1.0
-References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
- <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com> <CAPM=9tw=NTZ-1NbGupgg42gOA1aFKZ2C6wt++q5BxaocaUbmFA@mail.gmail.com>
-In-Reply-To: <CAPM=9tw=NTZ-1NbGupgg42gOA1aFKZ2C6wt++q5BxaocaUbmFA@mail.gmail.com>
+References: <20211114005725.GA27075@embeddedor> <YZF9MY6rRLQwdTgM@archlinux-ax161>
+In-Reply-To: <YZF9MY6rRLQwdTgM@archlinux-ax161>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Nov 2021 13:19:23 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjpPWyH5ff0LE8Mmt6OEiYbD3LwpvpD==FFZfTMTzL2FQ@mail.gmail.com>
-Message-ID: <CAHk-=wjpPWyH5ff0LE8Mmt6OEiYbD3LwpvpD==FFZfTMTzL2FQ@mail.gmail.com>
-Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Matthew Auld <matthew.auld@intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Date:   Sun, 14 Nov 2021 13:25:32 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgqEfw1wFcj98VxyvnoDsUhmYm_P_KuFOpEWe5zmYAp1w@mail.gmail.com>
+Message-ID: <CAHk-=wgqEfw1wFcj98VxyvnoDsUhmYm_P_KuFOpEWe5zmYAp1w@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 1:00 PM Dave Airlie <airlied@gmail.com> wrote:
+On Sun, Nov 14, 2021 at 1:18 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> i915 will no longer be x86-64 only in theory, since Intel now produces
-> PCIe graphics cards using the same hw designs.
+> It feels a little odd to have this in Kconfig but if it works and gets
+> the warning enabled, then so be it.
 
-Well, at least in my tree, it still has the "depends on X86", along
-with several other x86-only things (like "select INTEL_GTT", which is
-also x86-only)
+We've actually been actively moving more and more of the compiler
+flags configuration to Kconfig time.
 
-So by the time that non-x86 theory becomes reality, hopefully the i915
-people will also have figured out how to do the cache flushing
-properly.
+The Kconfig language makes it fairly easy and natural to do these
+days, and in some cases the compiler flags end up having a number of
+other dependencies (not in this case, but look at things like
+CC_HAS_KASAN_GENERIC etc, where the existence of some compiler flag
+ends up then also affecting whether other options can be enabled).
 
-And hopefully that "do it properly" ends up being simply that the
-particular configuration that ends up being portable simply doesn't
-need to do it at all and can statically just not build it,
-sidestepping the issue entirely.
+So the whole "move it to config time" ends up being the direction
+we've been going, and the only really unusual case here is that it
+ends up being done as a string config rather than as a boolean.
 
-Fingers crossed.
+And that's just because the different compilers also have different
+flags in this case ;(
 
-.. of course, I'm also sure some clueless hardware engineer is still
-convinced that non-coherent IO is the way to go for graphics, and that
-doing cross-CPU IPIs to write back all caches is somehow still a valid
-model. Because some people were still convinced about that not _that_
-long ago. Hopefully reality (perhaps in the form of Apple) has caused
-people to finally reconsider.
-
-                 Linus
+              Linus
