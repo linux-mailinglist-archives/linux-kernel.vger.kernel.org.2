@@ -2,65 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA65144F9ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A4644F9EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhKNS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 13:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbhKNS0S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 13:26:18 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16CCC061767
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 10:23:21 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id t13so30103649uad.9
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 10:23:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fWotsnz0II9bazVt4fqMmIeyj26rS51DjWynUAN6/Zs=;
-        b=AxZcYwI08Ye/Y5WxzvM4Dz1rU2Ce39plAEIZTPMi6l1H5MaN5HgufETlzeF9CQ6i9C
-         liojBA1SjuzCqNTY7IyA9FcivbdzGBuFk2o6CZIjJxRBBlvc1GU+W5Z8OcHwXvCLCkJb
-         iA0ZQQN7fi/HvFMIihrv7urOjKe0aQufMyTkg0n2a4dg+v+7UQHfSpM3vkkN8BSeunm+
-         2YjHmsnjjpIKR7AhX/Ee5LjeG8Ug/S+OBH+mYg2wTCMCMwJ9WU8ddQYMJgbIUov85u+D
-         JamuyJYvNMHo7xFZ7zhOWRqgAPibw12LEb0HN0XedFOuPGXsyD2+YfT0pSRE3g4CZ3HI
-         G8jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fWotsnz0II9bazVt4fqMmIeyj26rS51DjWynUAN6/Zs=;
-        b=ykqO9qOdznYIvlBQE4qv6L0EL5Lqf0NZlvmPsQ/ym8wSHg//FknzzwseCdtSDSVAri
-         UFXb8v25OllS3F2BeMwbIJBaaaUKNbC24n57aoEkGP/IJrBDH8bwu8TA8QOJxEv98R5k
-         WA5sshFVulYSEVefu2uKk1uQTtN3MNLQ1Uf0BRIFiQixWscO5y4S5JSOOu9hycnLTAaW
-         m+0Mb4liIrC6I+gIatujVjchUbj3yxXEWjdiSkRqukcGpJxDAagYtqEziY04i5ZGXUrW
-         U8PJi3gmgtTqafH5wWaX3h6rcA1hJhZwaQz49iMJXK+fd/hVmI7nyl3xjNIHC0GROM+r
-         BMgg==
-X-Gm-Message-State: AOAM530pBVULdK7l5zMyiS4a6WkargIjA0hq2YJDGZGPmuhx9S/jDjDx
-        gfhHmocpABC3od7bhs0C+7TOIokrVDZirIEioyQ=
-X-Google-Smtp-Source: ABdhPJyy0MGTxFUW/JLqt0d6F+eFsVMLvnGOjmp6K89aHP/J3SYDRAKeUBRITgkVfjiwemKz+LT9oGK/pBjvNgCn25I=
-X-Received: by 2002:a05:6102:214f:: with SMTP id h15mr33899554vsg.60.1636914199254;
- Sun, 14 Nov 2021 10:23:19 -0800 (PST)
+        id S235272AbhKNSbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 13:31:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231128AbhKNSbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 13:31:33 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC5F861026;
+        Sun, 14 Nov 2021 18:28:35 +0000 (UTC)
+Date:   Sun, 14 Nov 2021 13:28:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] tracing: Add length protection to histogram string copies
+Message-ID: <20211114132834.183429a4@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a59:bdc2:0:b0:23d:38f4:931b with HTTP; Sun, 14 Nov 2021
- 10:23:18 -0800 (PST)
-Reply-To: mrsbill.chantal2021@gmail.hu
-From:   mrs bill chantal <edfrrwas@gmail.com>
-Date:   Sun, 14 Nov 2021 19:23:18 +0100
-Message-ID: <CAAsFSuvNKzUixQ=ieKMA7Lv-Zh8WSsZZwcHTqUHs3Y5Z2m_3xg@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear
-You Have Been Compensated With The Sum Of 4.4 Million Dollars In This
-United Nation The Payment Will Be Issue Into Atm Visa Card And Send To
-You From The  Bank. You Can Contact My Uk WhatsApp Number :
-+442031292097
-THANKS
-MRS  Chantal Lawrence
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+
+The string copies to the histogram storage has a max size of 256 bytes
+(defined by MAX_FILTER_STR_VAL). Only the string size of the event field
+needs to be copied to the event storage, but no more than what is in the
+event storage. Although nothing should be bigger than 256 bytes, there's
+no protection against overwriting of the storage if one day there is.
+
+Copy no more than the destination size, and enforce it.
+
+Also had to turn MAX_FILTER_STR_VAL into an unsigned int, to keep the
+min() comparison of the string sizes of comparable types.
+
+Link: https://lore.kernel.org/all/CAHk-=wjREUihCGrtRBwfX47y_KrLCGjiq3t6QtoNJpmVrAEb1w@mail.gmail.com/
+
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 63f84ae6b82b ("tracing/histogram: Do not copy the fixed-size char array field over the field size")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ include/linux/trace_events.h     | 2 +-
+ kernel/trace/trace_events_hist.c | 9 +++++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 50453b287615..2d167ac3452c 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -673,7 +673,7 @@ struct trace_event_file {
+ 
+ #define PERF_MAX_TRACE_SIZE	8192
+ 
+-#define MAX_FILTER_STR_VAL	256	/* Should handle KSYM_SYMBOL_LEN */
++#define MAX_FILTER_STR_VAL	256U	/* Should handle KSYM_SYMBOL_LEN */
+ 
+ enum event_trigger_type {
+ 	ETT_NONE		= (0),
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 1475d7347fe0..34afcaebd0e5 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3026,8 +3026,10 @@ static inline void __update_field_vars(struct tracing_map_elt *elt,
+ 		if (val->flags & HIST_FIELD_FL_STRING) {
+ 			char *str = elt_data->field_var_str[j++];
+ 			char *val_str = (char *)(uintptr_t)var_val;
++			unsigned int size;
+ 
+-			strscpy(str, val_str, val->size);
++			size = min(val->size, STR_VAR_LEN_MAX);
++			strscpy(str, val_str, size);
+ 			var_val = (u64)(uintptr_t)str;
+ 		}
+ 		tracing_map_set_var(elt, var_idx, var_val);
+@@ -4914,6 +4916,7 @@ static void hist_trigger_elt_update(struct hist_trigger_data *hist_data,
+ 			if (hist_field->flags & HIST_FIELD_FL_STRING) {
+ 				unsigned int str_start, var_str_idx, idx;
+ 				char *str, *val_str;
++				unsigned int size;
+ 
+ 				str_start = hist_data->n_field_var_str +
+ 					hist_data->n_save_var_str;
+@@ -4922,7 +4925,9 @@ static void hist_trigger_elt_update(struct hist_trigger_data *hist_data,
+ 
+ 				str = elt_data->field_var_str[idx];
+ 				val_str = (char *)(uintptr_t)hist_val;
+-				strscpy(str, val_str, hist_field->size);
++
++				size = min(hist_field->size, STR_VAR_LEN_MAX);
++				strscpy(str, val_str, size);
+ 
+ 				hist_val = (u64)(uintptr_t)str;
+ 			}
+-- 
+2.31.1
+
