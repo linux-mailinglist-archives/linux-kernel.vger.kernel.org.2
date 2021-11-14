@@ -2,115 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1E344F9F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF8C44F9F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhKNSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 13:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236112AbhKNSc4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 13:32:56 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBFFC061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 10:29:58 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id s14so14295888ilv.10
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 10:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bk1kS/XrodSTgHr2aFvqwnuh3hvmct9PH9DLNGKfjfA=;
-        b=DL9rvNCgh+4g7/jwfzxas1EGyGpWBk51o68+Z7WTqxfxlH+XMMUt9Ex5Hew6Vvx6fl
-         QKWgC5GZfVFImv2tND26vUhxHZ/QAL24su7euKvqi5WdD4fJlxGdYjWeOKOM9WTE8bp/
-         KrtxTo66GbkFZ3wWCv0oobA3DeWLY0AlmPtyG9YeS8SklnQn/XbsIa75RhiGTKPdtbGr
-         8Zk/8ayV+m3uIycDcu2iiU8ZHOY/pjZQgZJQdgiWuBLsnGnUQkv5tvhWsQkm5HXp/nd+
-         2GlqqMT771q5wXr1TLBPKCxlQv1EOQNVatJN8aLT3MWz1hYBtF0QSeip1lIPDam0yGYc
-         2ynw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bk1kS/XrodSTgHr2aFvqwnuh3hvmct9PH9DLNGKfjfA=;
-        b=5kwXkNTXpf2izqI+J8N9wdMzCCwiGa8h4r5tvX6bFcgvrDChkQCLEAbtzMXqhHoCzN
-         pdjPKXpEkuNJ5OjJtjNe8gw4Ybitm7AhjZuhdlvlN9cfKbC4JqQwyF8cMikCAqMEYTRU
-         oWGhhT5NC8OoMEtqeyUblN3oshOqzO9bf9qiNGqjflevYPJtkzS9XhhGd2mxlXhUFAmX
-         rb5Id0tZ2r2WZdM25ZXPat2zqbQGR4gqskrSIh3T++cu2ZENh5lYWcUuj9EjT/qdUgzc
-         a7Nw3z81zdglq+mDVSYhJuXq8q+45BMsmbZpG2ZKFQ7igqLe5xM+5DNJnx+cGZn15aFN
-         vQ/Q==
-X-Gm-Message-State: AOAM532/GlAUquctq20ISZvlUUPag10Ew2JOntxqjxSHb4idxJp/UsdL
-        BGzj1H5037+DJpt/I8Ac2xkPB8JEgnNgKmkH6Q==
-X-Google-Smtp-Source: ABdhPJzd5CAJwWb9QRkWPS2TK2wfg1GyhVdOu2nZaM2F3P5YYz8FX+7UjTtB9TuDtmOjlJ6Mp8OvWM7OpagKmA53s8o=
-X-Received: by 2002:a05:6e02:190b:: with SMTP id w11mr18895429ilu.211.1636914597654;
- Sun, 14 Nov 2021 10:29:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20211113124035.9180-1-brgerst@gmail.com> <20211113124035.9180-4-brgerst@gmail.com>
- <719e0170-7645-4787-8c3a-676f34068c27@www.fastmail.com> <CAMzpN2gbOzsmnAh330+zk+ZZQmk-xNdUdCar6WaPrvHtgzknTA@mail.gmail.com>
- <20211114110305.GN174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211114110305.GN174703@worktop.programming.kicks-ass.net>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Sun, 14 Nov 2021 13:29:46 -0500
-Message-ID: <CAMzpN2jWs8heND7PydKw9CCZ0cjvJgxLMwXXQj45rwR6twpJLw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] x86_64: Use relative per-cpu offsets
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234643AbhKNSi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 13:38:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231128AbhKNSio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 13:38:44 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39715610FE;
+        Sun, 14 Nov 2021 18:35:50 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mmKM0-005L1D-02; Sun, 14 Nov 2021 18:35:48 +0000
+Date:   Sun, 14 Nov 2021 18:35:47 +0000
+Message-ID: <87h7ceegak.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 8/8] drivers/perf: Add Apple icestorm/firestorm CPU PMU driver
+In-Reply-To: <YZES+gF7WdCiCwAe@sunset>
+References: <20211113115429.4027571-1-maz@kernel.org>
+        <20211113115429.4027571-9-maz@kernel.org>
+        <YZES+gF7WdCiCwAe@sunset>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: alyssa@rosenzweig.io, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, will@kernel.org, marcan@marcan.st, sven@svenpeter.dev, robh+dt@kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 6:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Sun, 14 Nov 2021 13:45:30 +0000,
+Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
+> 
+> > +/* Counters */
+> > +#define SYS_IMP_APL_PMC0_EL1	sys_reg(3, 2, 15, 0, 0)
+> > +#define SYS_IMP_APL_PMC1_EL1	sys_reg(3, 2, 15, 1, 0)
+> > +#define SYS_IMP_APL_PMC2_EL1	sys_reg(3, 2, 15, 2, 0)
+> > +#define SYS_IMP_APL_PMC3_EL1	sys_reg(3, 2, 15, 3, 0)
+> > +#define SYS_IMP_APL_PMC4_EL1	sys_reg(3, 2, 15, 4, 0)
+> > +#define SYS_IMP_APL_PMC5_EL1	sys_reg(3, 2, 15, 5, 0)
+> > +#define SYS_IMP_APL_PMC6_EL1	sys_reg(3, 2, 15, 6, 0)
+> > +#define SYS_IMP_APL_PMC7_EL1	sys_reg(3, 2, 15, 7, 0)
+> --gap--
+> > +#define SYS_IMP_APL_PMC8_EL1	sys_reg(3, 2, 15, 9, 0)
+> > +#define SYS_IMP_APL_PMC9_EL1	sys_reg(3, 2, 15, 10, 0)
+> 
+> Do we know what the gap is?
+
+If it exists, it is an IMPDEF register.
+
+> 
+> > +/*
+> > + * Description of the events we actually know about, as well as those with
+> > + * a specific counter affinity. Yes, this is a grand total of two known
+> > + * counters, and the rest is anybody's guess.
+> > + *
+> > + * Not all counters can count all events. Counters #0 and #1 are wired to
+> > + * count cycles and instructions respectively, and some events have
+> > + * bizarre mappings (every other counter, or even *one* counter). These
+> > + * restrictins equally apply to both P and E cores.
+> 
+> restrictions
+> 
+> > +/* Low level accessors. No synchronisation. */
+> > +#define PMU_READ_COUNTER(_idx)						\
+> > +	case _idx:	return read_sysreg_s(SYS_IMP_APL_PMC## _idx ##_EL1)
+> > +
+> > +#define PMU_WRITE_COUNTER(_val, _idx)					\
+> > +	case _idx:							\
+> > +		write_sysreg_s(_val, SYS_IMP_APL_PMC## _idx ##_EL1);	\
+> > +		return
+> > +
+> > +static u64 m1_pmu_read_hw_counter(unsigned int index)
+> > +{
+> > +	switch (index) {
+> > +		PMU_READ_COUNTER(0);
+> > +		PMU_READ_COUNTER(1);
+> > +		PMU_READ_COUNTER(2);
+> > +		PMU_READ_COUNTER(3);
+> > +		PMU_READ_COUNTER(4);
+> > +		PMU_READ_COUNTER(5);
+> > +		PMU_READ_COUNTER(6);
+> > +		PMU_READ_COUNTER(7);
+> > +		PMU_READ_COUNTER(8);
+> > +		PMU_READ_COUNTER(9);
+> > +	}
+> > +
+> > +	BUG();
+> > +}
+> > +
+> > +static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+> > +{
+> > +	switch (index) {
+> > +		PMU_WRITE_COUNTER(val, 0);
+> > +		PMU_WRITE_COUNTER(val, 1);
+> > +		PMU_WRITE_COUNTER(val, 2);
+> > +		PMU_WRITE_COUNTER(val, 3);
+> > +		PMU_WRITE_COUNTER(val, 4);
+> > +		PMU_WRITE_COUNTER(val, 5);
+> > +		PMU_WRITE_COUNTER(val, 6);
+> > +		PMU_WRITE_COUNTER(val, 7);
+> > +		PMU_WRITE_COUNTER(val, 8);
+> > +		PMU_WRITE_COUNTER(val, 9);
+> > +	}
+> > +
+> > +	BUG();
+> > +}
+> 
+> Probbaly cleaner to use a single switch and no macros, registers become
+> greppable and the code is shorter too. Caveat: didn't check if it
+> compiles.
+
+I can tell you haven't!
+
+> 
+> 	static inline u64 m1_pmu_hw_counter(unsigned int index)
+> 	{
+> 		switch (index) {
+> 		case 0: return SYS_IMP_APL_PMC0_EL1;
+> 		case 1: return SYS_IMP_APL_PMC1_EL1;
+> 		case 2: return SYS_IMP_APL_PMC2_EL1;
+> 		case 3: return SYS_IMP_APL_PMC3_EL1;
+> 		case 4: return SYS_IMP_APL_PMC4_EL1;
+> 		case 5: return SYS_IMP_APL_PMC5_EL1;
+> 		case 6: return SYS_IMP_APL_PMC6_EL1;
+> 		case 7: return SYS_IMP_APL_PMC7_EL1;
+> 		case 8: return SYS_IMP_APL_PMC8_EL1;
+> 		case 9: return SYS_IMP_APL_PMC9_EL1;
+> 		}
+> 
+> 		BUG();
+> 	}
+> 
+> 	static u64 m1_pmu_read_hw_counter(unsigned int index) {
+> 		return read_sysreg_s(m1_pmu_hw_counter(index));
+
+read/write_sysreg_s() cannot take a variable as a parameter. They rely
+on direct macro expansion to generate the inline asm. See the various
+examples all over the code base where we have similar constructs for
+this exact reason.
+
+> 	}
+> 
+> 
+> 	static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+> 	{
+> 		write_sysreg_s(val, m1_pmu_hw_counter(index));
+> 	}
+> 
+> > +static void __m1_pmu_enable_counter(unsigned int index, bool en)
+> > +{
+> > +	u64 val, bit;
+> > +
+> > +	switch (index) {
+> > +	case 0 ... 7:
+> > +		bit = BIT(get_bit_offset(index, PMCR0_CNT_ENABLE_0_7));
+> > +		break;
+> > +	case 8 ... 9:
+> > +		bit = BIT(get_bit_offset(index - 8, PMCR0_CNT_ENABLE_8_9));
+> > +		break;
+> > +	default:
+> > +		BUG();
+> > +	}
+> > +
+> > +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> > +
+> > +	if (en)
+> > +		val |= bit;
+> > +	else
+> > +		val &= ~bit;
+> > +
+> > +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> > +}
+> ...
+> > +static void __m1_pmu_enable_counter_interrupt(unsigned int index, bool en)
+> > +{
+> > +	u64 val, bit;
+> > +
+> > +	switch (index) {
+> > +	case 0 ... 7:
+> > +		bit = BIT(get_bit_offset(index, PMCR0_PMI_ENABLE_0_7));
+> > +		break;
+> > +	case 8 ... 9:
+> > +		bit = BIT(get_bit_offset(index - 8, PMCR0_PMI_ENABLE_8_9));
+> > +		break;
+> > +	default:
+> > +		BUG();
+> > +	}
+> > +
+> > +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> > +
+> > +	if (en)
+> > +		val |= bit;
+> > +	else
+> > +		val &= ~bit;
+> > +
+> > +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> > +}
+> 
+> These two helper functions have basically the same logic -- maybe
+> worth combining?
+
+I've tried, and I find the result pretty unconvincing, see below.
+
+diff --git a/drivers/perf/apple_m1_cpu_pmu.c b/drivers/perf/apple_m1_cpu_pmu.c
+index bc991fc892eb..40f9e14b12da 100644
+--- a/drivers/perf/apple_m1_cpu_pmu.c
++++ b/drivers/perf/apple_m1_cpu_pmu.c
+@@ -223,29 +223,38 @@ static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+ 
+ #define get_bit_offset(index, mask)	(__ffs(mask) + (index))
+ 
+-static void __m1_pmu_enable_counter(unsigned int index, bool en)
++static void __m1_pmu_write_pmcr0(unsigned int index, bool en, u64 mask)
+ {
+ 	u64 val, bit;
+ 
++	bit = BIT(get_bit_offset(index, mask));
++	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
++
++	if (en)
++		val |= bit;
++	else
++		val &= ~bit;
++
++	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
++}
++
++static void __m1_pmu_enable_counter(unsigned int index, bool en)
++{
++	u64 mask;
++
+ 	switch (index) {
+ 	case 0 ... 7:
+-		bit = BIT(get_bit_offset(index, PMCR0_CNT_ENABLE_0_7));
++		mask = PMCR0_CNT_ENABLE_0_7;
+ 		break;
+ 	case 8 ... 9:
+-		bit = BIT(get_bit_offset(index - 8, PMCR0_CNT_ENABLE_8_9));
++		mask = PMCR0_CNT_ENABLE_8_9;
++		index -= 8;
+ 		break;
+ 	default:
+ 		BUG();
+ 	}
+ 
+-	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+-
+-	if (en)
+-		val |= bit;
+-	else
+-		val &= ~bit;
+-
+-	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
++	__m1_pmu_write_pmcr0(index, en, mask);
+ }
+ 
+ static void m1_pmu_enable_counter(unsigned int index)
+@@ -260,27 +269,21 @@ static void m1_pmu_disable_counter(unsigned int index)
+ 
+ static void __m1_pmu_enable_counter_interrupt(unsigned int index, bool en)
+ {
+-	u64 val, bit;
++	u64 mask;
+ 
+ 	switch (index) {
+ 	case 0 ... 7:
+-		bit = BIT(get_bit_offset(index, PMCR0_PMI_ENABLE_0_7));
++		mask =  PMCR0_PMI_ENABLE_0_7;
+ 		break;
+ 	case 8 ... 9:
+-		bit = BIT(get_bit_offset(index - 8, PMCR0_PMI_ENABLE_8_9));
++		mask = PMCR0_PMI_ENABLE_8_9;
++		index -= 8;
+ 		break;
+ 	default:
+ 		BUG();
+ 	}
+ 
+-	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+-
+-	if (en)
+-		val |= bit;
+-	else
+-		val &= ~bit;
+-
+-	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
++	__m1_pmu_write_pmcr0(index, en, mask);
+ }
+ 
+ static void m1_pmu_enable_counter_interrupt(unsigned int index)
+
 >
-> On Sat, Nov 13, 2021 at 11:54:19PM -0500, Brian Gerst wrote:
-> > On Sat, Nov 13, 2021 at 8:18 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > >
-> > >
-> > >
-> > > On Sat, Nov 13, 2021, at 4:40 AM, Brian Gerst wrote:
-> > > > The per-cpu section is currently linked at virtual address 0, because
-> > > > older compilers hardcoded the stack protector canary value at a fixed
-> > > > offset from the start of the GS segment.  Use a standard relative offset
-> > > > as the GS base when the stack protector is disabled, or a newer compiler
-> > > > is used that supports a configurable location for the stack canary.
-> > >
-> > > Can you explain the benefit?  Also, I think we should consider dropping support for the fixed model like we did on x86_32.
-> >
-> > This patch probably makes more sense if we drop the fixed model, as
-> > that gets rid of alot of code that works around having to link the
-> > percpu section differently.
->
-> Can someone spell out these benefits please? To me having per-cpu start
-> at 0 makes perfect sense, how does not having that make things better?
+> > +static void m1_pmu_configure_counter(unsigned int index, u8 event,
+> > +				     bool user, bool kernel)
+> > +{
+> ....
+> > +	switch (index) {
+> > +	case 0 ... 1:
+> > +		/* 0 and 1 have fixed events */
+> > +		break;
+> > +	case 2 ... 5:
+> > +		shift = (index - 2) * 8;
+> > +		val = read_sysreg_s(SYS_IMP_APL_PMESR0_EL1);
+> > +		val &= ~((u64)0xff << shift);
+> > +		val |= (u64)event << shift;
+> > +		write_sysreg_s(val, SYS_IMP_APL_PMESR0_EL1);
+> > +		break;
+> > +	case 6 ... 9:
+> > +		shift = (index - 6) * 8;
+> > +		val = read_sysreg_s(SYS_IMP_APL_PMESR1_EL1);
+> > +		val &= ~((u64)0xff << shift);
+> > +		val |= (u64)event << shift;
+> > +		write_sysreg_s(val, SYS_IMP_APL_PMESR1_EL1);
+> > +		break;
+> > +	}
+> > +}
+> 
+> I'd love an explanation what's happening here.
 
-The best reason is that the percpu section is currently not subject to
-KASLR.  It actually needs extra support to counter the effects of
-relocation.  There have also been a number of linker bugs over the
-years that have had to be worked around.
+PMESR{0,1} contain the event numbers for counters 2-5, resp 6-9, and
+we happily shove an event number there. Is that the sort of
+information you are after?
 
-If we were to decide to drop the fixed stack protector the diffstat
-would look something like:
+> 
+> > +	/*
+> > +	 * Place the event on the first free counter that can count
+> > +	 * this event.
+> > +	 *
+> > +	 * We could do a better job if we had a view of all the events
+> > +	 * counting on the PMU at any given time, and by placing the
+> > +	 * most constraint events first.
+> > +	 */
+> 
+> constraining
+> 
+> > +static int m1_pmu_device_probe(struct platform_device *pdev)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = arm_pmu_device_probe(pdev, m1_pmu_of_device_ids, NULL);
+> > +	if (!ret) {
+> > +		/*
+> > +		 * If probe succeeds, taint the kernel as this is all
+> > +		 * undocumented, implementation defined black magic.
+> > +		 */
+> > +		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> 
+> What are the implications of this taint? You could say that about every
+> driver we've written for the M1, but...
 
- arch/x86/Makefile                         |  19 ++--
- arch/x86/boot/compressed/misc.c           |  12 ---
- arch/x86/entry/entry_64.S                 |   2 +-
- arch/x86/include/asm/percpu.h             |  22 -----
- arch/x86/include/asm/processor.h          |  24 ++---
- arch/x86/include/asm/stackprotector.h     |  13 +--
- arch/x86/kernel/asm-offsets_64.c          |   6 --
- arch/x86/kernel/cpu/common.c              |   8 +-
- arch/x86/kernel/head_64.S                 |  11 ++-
- arch/x86/kernel/irq_64.c                  |   1 -
- arch/x86/kernel/vmlinux.lds.S             |  33 -------
- arch/x86/tools/relocs.c                   | 143 +-----------------------------
- arch/x86/xen/xen-head.S                   |  10 +--
- scripts/gcc-x86_64-has-stack-protector.sh |   2 +-
- 14 files changed, 35 insertions(+), 271 deletions(-)
+This taint status appears on the kernel crash, telling people the
+kernel is using CPU features that are not documented and about which
+we can only hope that they work as we think they work. The same thing
+takes place with KVM and the use of unadvertised GICv3 CPU registers.
 
---
-Brian Gerst
+Ideally, this would happen at early boot because of the fixed VHE
+crap, but this is more effort that it deserves.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
