@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D1E44F5CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17A944F5CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhKNAaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 19:30:39 -0500
-Received: from mail-pf1-f179.google.com ([209.85.210.179]:34305 "EHLO
-        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhKNAai (ORCPT
+        id S233999AbhKNApq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 19:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhKNApo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 19:30:38 -0500
-Received: by mail-pf1-f179.google.com with SMTP id r130so11672403pfc.1;
-        Sat, 13 Nov 2021 16:27:45 -0800 (PST)
+        Sat, 13 Nov 2021 19:45:44 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCA7C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 16:42:51 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id p37so25117165uae.8
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 16:42:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
+        b=U0DTrpKxgHQR07w8p1iV9Ryr02cAqy0SeQL+yTJ7btrLaNJzwp15PbETEKeBEanY8D
+         YXh23Sywbr+iymo0WWq3pEugSN+llyINEVl79zgR5JNm3mM/P3FuIgC85r6K1/chH88m
+         rYtpB3ZECGYf8mdVbbH+kGo22H5LPCd+u0j4/1V/Ep9KCzIby0/PNPFEoCJv4czkrgGR
+         dTEC+pgXB8hEAmRSz7nNqPwO6VLWWI69ZWZaueBzxgNUy4vI/V/t/DH92OFfwQWy7sTN
+         07BfVpXsLA0VRg7NXuIXDmdYZWsznHmdkWZJ6JygxHCPOy7fC2uZ/4j2cGSFfnuEdyNE
+         AIvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=+oBTOAeAOBo/l6duXeY1ufFCIwljJ+hfBntn1UB5fUs=;
-        b=8MiYvIqHMRCl6O5S/F1TKzue3qieWNmTVc77NmDIcWHGbxdFd1oLILfQZNF9vAo8v4
-         g8wpvNRYVKOUfoquybIKLMWw4zz69jag7llenPSzg2HmXm7TN94DIXIYXOwazx6NoVkl
-         dzGEDk1Nos00nisj02jHck78Aav7BhR9WEk9tr+pUj4oHEkqZtVo3Uouu9Q9zjm1PjjB
-         kctN5e5Ab+TMmD3rUTKdnf8lFR05gIFVVS4rfKYfmzYn7NuwHWUqIwTJJ+jKT3ckYZDj
-         I6oNQt2aUxECQwYIivjJEAcv9gJLn6d6f4L289Z7FNG5Ppk9S3TF3CUdE2a5JRzRaLtH
-         FU3A==
-X-Gm-Message-State: AOAM533uWLO2P0e4odvnnuRMpfairqN2zlQhcl0LX+D81BukPXd5URDA
-        xDSSlSUO7LAqa5iTPr9f9bM=
-X-Google-Smtp-Source: ABdhPJzEqs+gA4zXLA79ik0+E6F9PReOJA0XW3hPLl0Hmpn8wlmZ5GZ3QYBu3fE9mkRWuvWXtJTukQ==
-X-Received: by 2002:a63:3348:: with SMTP id z69mr17542430pgz.177.1636849665301;
-        Sat, 13 Nov 2021 16:27:45 -0800 (PST)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id t4sm11199537pfg.155.2021.11.13.16.27.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Nov 2021 16:27:44 -0800 (PST)
-Message-ID: <a18f709c-9674-31a5-68ac-a61ca9d8c94e@acm.org>
-Date:   Sat, 13 Nov 2021 16:27:42 -0800
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
+        b=S+quYQuOsC4jvLXBBlEHN2YjGbTJ7KPLy+RPkLOZX85PQWvthobIL9fgnQnCmV0h3F
+         oE42wTXMFoVKkaRlaLU/M62AKRD9ac2JHC00+v/mPiS3Xc8ZXI7QVM9OJdHMLVKeBIVA
+         vFkBLZaawMdosPm7RS6kDXDn+whK1hUfpyfmQROiHnENxu+T9IQkeOrv5lJNPeGXN1zs
+         ekOWc42SaqCOSaii0SMuDmQ6FCf0ZSVXf9bCh/hVte0hW3bJ+wInfKUjAh0OjzsIoKQ8
+         P0YuZfB1fhp+ZDJLHevhPG4ZlsVhMKAdy3/ZvwI3dmy79026VDCYb3l5KJaYWbw6UbBx
+         jhkg==
+X-Gm-Message-State: AOAM532pCbdgF6oP82gRB19kzGFpZxn/CK7C1V9omWxWinxX9Opgnmza
+        qmlUFeOc008iyfLkDH8aVPs7yiIkjKbj9NOO188=
+X-Google-Smtp-Source: ABdhPJx+oi79EkVorojn7V1fk4mZs7yg7YMcTTMtWRwi5qQpQyaHIz5IdGcmX8ylemxvLsX4V8xsrNdpfit3dXimM3g=
+X-Received: by 2002:a05:6102:cd3:: with SMTP id g19mr27346738vst.14.1636850570372;
+ Sat, 13 Nov 2021 16:42:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v1] scsi: ufs: ufshpb: Fix sparse warning in
- ufshpb_set_hpb_read_to_upiu()
-Content-Language: en-US
-To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org,
-        daejun7.park@samsung.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20211111222452.384089-1-huobean@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20211111222452.384089-1-huobean@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Sender: zerbomaliki@gmail.com
+Received: by 2002:a59:8e4e:0:b0:260:cc3:673b with HTTP; Sat, 13 Nov 2021
+ 16:42:49 -0800 (PST)
+From:   "Dr. Hamza Kabore" <hamzakabore97@gmail.com>
+Date:   Sat, 13 Nov 2021 16:42:49 -0800
+X-Google-Sender-Auth: bqWXQmfI4LaD2HSaVv5DCRJwcuA
+Message-ID: <CANEya-joogOaxZc1P1Aic0G3oVm7f4XWCqJnu5oGfxHoWXFbeQ@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/21 14:24, Bean Huo wrote:
-> -		ppn_tmp = swab64(ppn);
-> +		ppn_tmp = (__force __be64)swab64((__force u64)ppn);
+-- 
+Hello,
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Greetings and hope this email finds you well?
+
+I am Dr. Hamza Kabore, the  chief Medical consultant at a reputable
+clinic here in Ouagadougou, Burkina Faso and I have a Patient who
+hails from the Republic of philippines but unfortunately is in Coma
+right now due to complications from a Cancer disease and she has the
+sum of $10.7 Million United States (Ten Million seven Hundred
+Thousand) Dollars she wants me to guide you on, so that her Bank can
+transfer it to you for charity purposes.
+
+Please, I will like you to contact me on this email
+(hamzakabore97@gmail.com) for further details as this is a very
+sensitive issue that needs urgent attention from you and I want to
+maintain the promised I made to the woman before she entered Coma,
+never to betray her by looking for another person other than you that
+she choosed and selected for the offer among the people she got their
+email contacts in her quest for an honest person oversea to help her
+wholeheartedly in handling this project to fulfill her wish.
+
+Best Regards,
+
+Dr. Hamza Kabore on behalf of
+Mrs. Sismer Shirley Acojedo
