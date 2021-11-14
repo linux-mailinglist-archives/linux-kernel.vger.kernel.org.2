@@ -2,252 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C2444F7A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 12:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B7244F7A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 12:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhKNLgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 06:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        id S235116AbhKNLiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 06:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhKNLgQ (ORCPT
+        with ESMTP id S233170AbhKNLiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 06:36:16 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8E1C061746;
-        Sun, 14 Nov 2021 03:33:22 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id m20so12387492edc.5;
-        Sun, 14 Nov 2021 03:33:22 -0800 (PST)
+        Sun, 14 Nov 2021 06:38:00 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11A1C061746
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 03:35:06 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id p2so28570530uad.11
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 03:35:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ogu/YhyQO8ICUmENU2FAy3SJRpIJSF2lRArsc1NLhYg=;
-        b=OGFWL0sRErovz1CmXuD79Pc+BM+1UMzkkpVIsjQEYcS8LH3zaft7m/2u0GqYdhFVER
-         cyyCr19jjWUWi3MLXoNrj8bCscylE2dFkS3+IU6gu98WhAWb/cRhxGhvbI+UMsyktXXh
-         cWvuxc04U1tdViB+snjeyJIGIZlM1Bph3WkgNMK8T5eqiBt9gYJczxa/xxWd1ndmxXOa
-         ljvV685pSS2gvNNJwwqlwd79dkufWsh4utGL6WYcdfK75EbWnV5EzIY/2gsbhR9uVOUh
-         o36ALtbxYCLXmmnHWQfTmfsoe2/6MpW+UAaZfuJE7mkPOaRIKcEHOiwErQRo7SQT5cSd
-         9qng==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gxjGJOQmRZX28FeM6SVMQPOfPppgdjqxFiHT9DPBCiw=;
+        b=Qyzvhke/vkvakifnAeRDFKN65IDEJPq75z2aScv+l7/1MfQb4xgGwjdb+SCT9+iR90
+         4gp5sOV++8LzQu23CYCuj7HSBBhLiFMr3wxkZZnQaPbrsZBJT573vWjZBKZVcSOg9cXk
+         PsL/v9SelgKk2XsbFKDW217G74AK3TnS8onU0EgVkBc302jDyoajYeaAZ7nfcqh2mayk
+         71wjWEwSvlVoBaDXQkc2ciEUa9p+qJJRt4i+E7q1FNiT8FM6RvnFq3zlgj5F6GAuKvkd
+         yatqJGlcpZA05xsFnhnj2qySnjYJ8GXM34fXlEPajLWE9ryu10KxK+aUMruKReDFGw0P
+         yx8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ogu/YhyQO8ICUmENU2FAy3SJRpIJSF2lRArsc1NLhYg=;
-        b=IhshUQrx03BeywvPNoLJDHrELkD9BqKsvba96CzeNn48Y3Idye2BqiwWVHUNcwhBNU
-         jEeWVcsBTIZKO+QQXnEBeTevo1yG+0LnWedYC5+djPG76jfrkHY15WUyIbUaxgMvpdd/
-         ocamTt09zy1NXfhcw4s7tX3wqtvmfnsAa9Oa9IxlMTOzzUNAnqXdZenF5Ru1Xu23oGyb
-         MzgWBJxm4Dm0BS9hkuwdxjOO7q19BNBTeQeHLzUjC9W+n0a83TBEAUrdAVXJA93NP0wL
-         bzaDwCFJ39ktQRc7UJMsMXowo8U8QXG+6TOVRjss0Iv//9XRliV/QRAPtqfborcQs+vy
-         FvpQ==
-X-Gm-Message-State: AOAM531J6QIRqj0mm4RuVB+nrxOSANx13Cdemh+WoKfFeKmiiNq1uIbG
-        OASVC2FF0MTpEz7GEQtXREA=
-X-Google-Smtp-Source: ABdhPJwV64eWsyJF9IcerkYBp/vULP771LGHIpnfkZPUzLrrkmMRTLPAowgjZeLBZWvUEFXBZNEkNQ==
-X-Received: by 2002:aa7:c3c8:: with SMTP id l8mr2270702edr.278.1636889600864;
-        Sun, 14 Nov 2021 03:33:20 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id m11sm5789601edd.58.2021.11.14.03.33.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 03:33:20 -0800 (PST)
-Subject: Re: [PATCH v3 3/3] arm64: dts: rockchip: add naneng combo phy nodes
- for rk3568
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>, heiko@sntech.de,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
-        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com,
-        p.zabel@pengutronix.de, cl@rock-chips.com
-References: <20211025080632.32063-1-yifeng.zhao@rock-chips.com>
- <20211025080632.32063-4-yifeng.zhao@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <167392de-8b5e-6877-94aa-66d9368e96a7@gmail.com>
-Date:   Sun, 14 Nov 2021 12:33:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gxjGJOQmRZX28FeM6SVMQPOfPppgdjqxFiHT9DPBCiw=;
+        b=Ybq8maC47oz9Frt7y1cF7UALSddeEROToB1l+lxGnIyAgQUQYwfyblz/E/prTibtkP
+         ZBwAS8VwHF+MNMfbaXRNi1C6i5Mf0HAhbHwQl4NUxE71Me6MRrah7UAqOrd1ZmZfnRLz
+         mnJ4/xD1uynJf/rBe3GRjld3qFGOzsJ55ttM2hyvonYudFUWM5OLhYNNcMihTnAwcCJv
+         h3cTLTPR+RqfFFxnxVhWkMcgB4NBTMpQkGC3SXlNCVRHDBlWKyok9wyUDB7rdppPyUuz
+         yOUYgDtuw8fWRmF82mSMo4ie7Hssa5AGzo/OMcRgs/+YyinV5nYEDg7N1umUiIy0Atuy
+         vtDQ==
+X-Gm-Message-State: AOAM532OPifvZfil+2Q0zRqhGd5YYTBGpL3Fk0sFa8BRyl0tOmF8RStD
+        cseXTHFskiXStnOGLpdM8tHMWJLQ0h2yjpsagZQ=
+X-Google-Smtp-Source: ABdhPJw1fgifwBENwVu+GZ+yFZvMlmOs1rhmb3NAWdHTuwzoyzd7MA295mJR9cq3xLfp2q0gwvyp/Tfoo5dFOOuhjkg=
+X-Received: by 2002:a05:6102:3a11:: with SMTP id b17mr30895649vsu.28.1636889705649;
+ Sun, 14 Nov 2021 03:35:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211025080632.32063-4-yifeng.zhao@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202111141959.UefyvLfa-lkp@intel.com>
+In-Reply-To: <202111141959.UefyvLfa-lkp@intel.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sun, 14 Nov 2021 12:34:54 +0100
+Message-ID: <CAMhs-H_yugWd4v1OnBR8iqTVQS_T-S3pdrJbZq=MC646QSyb4Q@mail.gmail.com>
+Subject: Re: drivers/pci/controller/pcie-mt7621.c:224:13: error: implicit
+ declaration of function 'mips_cps_numiocu'
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yifeng,
+Hi,
 
-Add more compatible strings to:
-Documentation/devicetree/bindings/mfd/syscon.yaml
-Also add mfd maintainers and list to CC.
+On Sun, Nov 14, 2021 at 12:13 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   c8c109546a19613d323a319d0c921cb1f317e629
+> commit: 2bdd5238e756aac3ecbffc7c22b884485e84062e PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
+> date:   3 weeks ago
+> config: mips-randconfig-r001-20211114 (attached as .config)
+> compiler: mips64-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2bdd5238e756aac3ecbffc7c22b884485e84062e
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 2bdd5238e756aac3ecbffc7c22b884485e84062e
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/pci/controller/pcie-mt7621.c: In function 'setup_cm_memory_region':
+> >> drivers/pci/controller/pcie-mt7621.c:224:13: error: implicit declaration of function 'mips_cps_numiocu' [-Werror=implicit-function-declaration]
+>      224 |         if (mips_cps_numiocu(0)) {
+>          |             ^~~~~~~~~~~~~~~~
+> >> drivers/pci/controller/pcie-mt7621.c:232:17: error: implicit declaration of function 'write_gcr_reg1_base'; did you mean 'write_gc0_ebase'? [-Werror=implicit-function-declaration]
+>      232 |                 write_gcr_reg1_base(entry->res->start);
+>          |                 ^~~~~~~~~~~~~~~~~~~
+>          |                 write_gc0_ebase
+> >> drivers/pci/controller/pcie-mt7621.c:233:17: error: implicit declaration of function 'write_gcr_reg1_mask'; did you mean 'write_gc0_pagemask'? [-Werror=implicit-function-declaration]
+>      233 |                 write_gcr_reg1_mask(mask | CM_GCR_REGn_MASK_CMTGT_IOCU0);
+>          |                 ^~~~~~~~~~~~~~~~~~~
+>          |                 write_gc0_pagemask
+> >> drivers/pci/controller/pcie-mt7621.c:233:44: error: 'CM_GCR_REGn_MASK_CMTGT_IOCU0' undeclared (first use in this function)
+>      233 |                 write_gcr_reg1_mask(mask | CM_GCR_REGn_MASK_CMTGT_IOCU0);
+>          |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/pci/controller/pcie-mt7621.c:233:44: note: each undeclared identifier is reported only once for each function it appears in
+>    In file included from include/linux/device.h:15,
+>                     from include/linux/of_platform.h:9,
+>                     from drivers/pci/controller/pcie-mt7621.c:26:
+> >> drivers/pci/controller/pcie-mt7621.c:235:46: error: implicit declaration of function 'read_gcr_reg1_base'; did you mean 'read_gc0_ebase'? [-Werror=implicit-function-declaration]
+>      235 |                          (unsigned long long)read_gcr_reg1_base(),
+>          |                                              ^~~~~~~~~~~~~~~~~~
+>    include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+>      110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+>          |                                     ^~~~~~~~~~~
+>    drivers/pci/controller/pcie-mt7621.c:234:17: note: in expansion of macro 'dev_info'
+>      234 |                 dev_info(dev, "PCI coherence region base: 0x%08llx, mask/settings: 0x%08llx\n",
+>          |                 ^~~~~~~~
+> >> drivers/pci/controller/pcie-mt7621.c:236:46: error: implicit declaration of function 'read_gcr_reg1_mask'; did you mean 'read_gc0_pagemask'? [-Werror=implicit-function-declaration]
+>      236 |                          (unsigned long long)read_gcr_reg1_mask());
+>          |                                              ^~~~~~~~~~~~~~~~~~
+>    include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+>      110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+>          |                                     ^~~~~~~~~~~
+>    drivers/pci/controller/pcie-mt7621.c:234:17: note: in expansion of macro 'dev_info'
+>      234 |                 dev_info(dev, "PCI coherence region base: 0x%08llx, mask/settings: 0x%08llx\n",
+>          |                 ^~~~~~~~
+>    cc1: some warnings being treated as errors
 
-On 10/25/21 10:06 AM, Yifeng Zhao wrote:
-> Add the core dt-node for the rk3568's naneng combo phys.
-> 
-> Signed-off-by:  Zhao <yifeng.zhao@rock-chips.com>
+These functions are MIPS specific arch headers included in
+'arch/mips/include/asm'. There is no specific include for this files
+in driver code since MIPS platforms include directly this directory
+through cflags and driver compiles without problem. But, yes, passing
+-Werror got this ugly implicit stuff as errors.
+We are currently thinking of a way to move this MIPS
+specific stuff into ralink platform code to allow this driver to
+properly be compile tested for any architecture [0]. If the specific
+MIPS code finally is not moved anywhere, I will send a patch to
+explicitly include the MIPS needed headers here.
+
+Bjorn, if you prefer me to send a patch for this first, let me know.
+
+Best regards,
+     Sergio Paracuellos
+
+[0]: https://lore.kernel.org/linux-mips/CAMhs-H8ShoaYiFOOzJaGC68nZz=V365RXN_Kjuj=fPFENGJiiw@mail.gmail.com/T/#t
+
+>
+>
+> vim +/mips_cps_numiocu +224 drivers/pci/controller/pcie-mt7621.c
+>
+> e51844bf825169 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-24  210
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  211  static int setup_cm_memory_region(struct pci_host_bridge *host)
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  212  {
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  213       struct mt7621_pcie *pcie = pci_host_bridge_priv(host);
+> d936550784a23b drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  214       struct device *dev = pcie->dev;
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  215       struct resource_entry *entry;
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  216       resource_size_t mask;
+> 8571c62d45cb7e drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  217
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  218       entry = resource_list_first_type(&host->windows, IORESOURCE_MEM);
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  219       if (!entry) {
+> 2bdd5238e756aa drivers/pci/controller/pcie-mt7621.c    Sergio Paracuellos 2021-09-22  220               dev_err(dev, "cannot get memory resource\n");
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  221               return -EINVAL;
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  222       }
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  223
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15 @224       if (mips_cps_numiocu(0)) {
+> d2bac2fd6daa91 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  225               /*
+> d2bac2fd6daa91 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  226                * FIXME: hardware doesn't accept mask values with 1s after
+> d4e3a1f6cea79e drivers/staging/mt7621-pci/pci-mt7621.c NeilBrown          2018-05-04  227                * 0s (e.g. 0xffef), so it would be great to warn if that's
+> d2bac2fd6daa91 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  228                * about to happen
+> d2bac2fd6daa91 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  229                */
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14  230               mask = ~(entry->res->end - entry->res->start);
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  231
+> b15606e63ea90c drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2021-06-14 @232               write_gcr_reg1_base(entry->res->start);
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15 @233               write_gcr_reg1_mask(mask | CM_GCR_REGn_MASK_CMTGT_IOCU0);
+> d936550784a23b drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-11-04  234               dev_info(dev, "PCI coherence region base: 0x%08llx, mask/settings: 0x%08llx\n",
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15 @235                        (unsigned long long)read_gcr_reg1_base(),
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15 @236                        (unsigned long long)read_gcr_reg1_mask());
+> 03f152e31f4ae8 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  237       }
+> 09dd629eeabb8a drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2020-03-18  238
+> 8571c62d45cb7e drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  239       return 0;
+> 8571c62d45cb7e drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  240  }
+> 8571c62d45cb7e drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  241
+>
+> :::::: The code at line 224 was first introduced by commit
+> :::::: 03f152e31f4ae89c37ab240f45dd77c8a916dd26 staging: mt7621-pci: MIPS/ralink: add MT7621 pcie driver
+>
+> :::::: TO: John Crispin <blogic@openwrt.org>
+> :::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
 > ---
-> 
-> Changes in v3:
-> - Move pipe_phy_grf0 to rk3568.dtsi
-> 
-> Changes in v2:
-> - Move phy0 to rk3568.dtsi
-> 
->  arch/arm64/boot/dts/rockchip/rk3568.dtsi | 21 +++++++++++
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 47 ++++++++++++++++++++++++
->  2 files changed, 68 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> index 2fd313a295f8..4db5d3c2a04e 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> @@ -8,6 +8,11 @@
->  / {
->  	compatible = "rockchip,rk3568";
->  
-> +	pipe_phy_grf0: syscon@fdc70000 {
-
-> +		compatible = "rockchip,pipe-phy-grf", "syscon";
-
-Compatible strings are supposed to be SOC related.
-
-compatible = "rockchip,rk3568-pipe-phy-grf", "syscon";
-
-
-> +		reg = <0x0 0xfdc70000 0x0 0x1000>;
-> +	};
-> +
->  	qos_pcie3x1: qos@fe190080 {
->  		compatible = "rockchip,rk3568-qos", "syscon";
->  		reg = <0x0 0xfe190080 0x0 0x20>;
-> @@ -71,6 +76,22 @@
->  			queue0 {};
->  		};
->  	};
-> +
-> +	combphy0_us: phy@fe820000 {
-> +		compatible = "rockchip,rk3568-naneng-combphy";
-> +		reg = <0x0 0xfe820000 0x0 0x100>;
-
-> +		#phy-cells = <1>;
-
-Dump things with "#" down the list above status.
-> +		clocks = <&pmucru CLK_PCIEPHY0_REF>, <&cru PCLK_PIPEPHY0>,
-> +			 <&cru PCLK_PIPE>;
-> +		clock-names = "ref", "apb", "pipe";
-> +		assigned-clocks = <&pmucru CLK_PCIEPHY0_REF>;
-> +		assigned-clock-rates = <100000000>;
-> +		resets = <&cru SRST_P_PIPEPHY0>, <&cru SRST_PIPEPHY0>;
-
-> +		reset-names = "combphy-apb", "combphy";
-
-There are 2 resets. When the reset order does matter then use
-devm_reset_control_array_get() to get the resets.
-The use of reset-names is then not needed.
-
-> +		rockchip,pipe-grf = <&pipegrf>;
-> +		rockchip,pipe-phy-grf = <&pipe_phy_grf0>;
-> +		status = "disabled";
-> +	};
->  };
->  
->  &cpu0_opp_table {
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index 46d9552f6028..4380580d061b 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -214,11 +214,26 @@
->  		};
->  	};
->  
-> +	pipegrf: syscon@fdc50000 {
-> +		compatible = "rockchip,rk3568-pipegrf", "syscon";
-
-compatible = "rockchip,rk3568-pipe-grf", "syscon";
-
-> +		reg = <0x0 0xfdc50000 0x0 0x1000>;
-> +	};
-> +
->  	grf: syscon@fdc60000 {
->  		compatible = "rockchip,rk3568-grf", "syscon", "simple-mfd";
->  		reg = <0x0 0xfdc60000 0x0 0x10000>;
->  	};
->  
-> +	pipe_phy_grf1: syscon@fdc80000 {
-> +		compatible = "rockchip,pipe-phy-grf", "syscon";
-
-Compatible strings are supposed to be SOC related.
-
-compatible = "rockchip,rk3568-pipe-phy-grf", "syscon";
-
-> +		reg = <0x0 0xfdc80000 0x0 0x1000>;
-> +	};
-> +
-> +	pipe_phy_grf2: syscon@fdc90000 {
-
-> +		compatible = "rockchip,pipe-phy-grf", "syscon";
-
-Compatible strings are supposed to be SOC related.
-
-compatible = "rockchip,rk3568-pipe-phy-grf", "syscon";
-
-> +		reg = <0x0 0xfdc90000 0x0 0x1000>;
-> +	};
-> +
->  	pmucru: clock-controller@fdd00000 {
->  		compatible = "rockchip,rk3568-pmucru";
->  		reg = <0x0 0xfdd00000 0x0 0x1000>;
-> @@ -1077,6 +1092,38 @@
->  		status = "disabled";
->  	};
->  
-> +	combphy1_usq: phy@fe830000 {
-> +		compatible = "rockchip,rk3568-naneng-combphy";
-> +		reg = <0x0 0xfe830000 0x0 0x100>;
-
-> +		#phy-cells = <1>;
-dito
-
-> +		clocks = <&pmucru CLK_PCIEPHY1_REF>, <&cru PCLK_PIPEPHY1>,
-> +			 <&cru PCLK_PIPE>;
-> +		clock-names = "ref", "apb", "pipe";
-> +		assigned-clocks = <&pmucru CLK_PCIEPHY1_REF>;
-> +		assigned-clock-rates = <100000000>;
-> +		resets = <&cru SRST_P_PIPEPHY1>, <&cru SRST_PIPEPHY1>;
-
-> +		reset-names = "combphy-apb", "combphy";
-
-dito
-
-> +		rockchip,pipe-grf = <&pipegrf>;
-> +		rockchip,pipe-phy-grf = <&pipe_phy_grf1>;
-> +		status = "disabled";
-> +	};
-> +
-> +	combphy2_psq: phy@fe840000 {
-> +		compatible = "rockchip,rk3568-naneng-combphy";
-> +		reg = <0x0 0xfe840000 0x0 0x100>;
-
-> +		#phy-cells = <1>;
-
-dito
-
-> +		clocks = <&pmucru CLK_PCIEPHY2_REF>, <&cru PCLK_PIPEPHY2>,
-> +			 <&cru PCLK_PIPE>;
-> +		clock-names = "ref", "apb", "pipe";
-> +		assigned-clocks = <&pmucru CLK_PCIEPHY2_REF>;
-> +		assigned-clock-rates = <100000000>;
-> +		resets = <&cru SRST_P_PIPEPHY2>, <&cru SRST_PIPEPHY2>;
-
-> +		reset-names = "combphy-apb", "combphy";
-
-dito
-
-> +		rockchip,pipe-grf = <&pipegrf>;
-> +		rockchip,pipe-phy-grf = <&pipe_phy_grf2>;
-> +		status = "disabled";
-> +	};
-> +
->  	pinctrl: pinctrl {
->  		compatible = "rockchip,rk3568-pinctrl";
->  		rockchip,grf = <&grf>;
-> 
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
