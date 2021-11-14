@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D997844FBA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9450244FBAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhKNUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 15:47:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236292AbhKNUqk (ORCPT
+        id S236328AbhKNVBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 16:01:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234970AbhKNVBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 15:46:40 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6898FC061766;
-        Sun, 14 Nov 2021 12:43:44 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso14163479wmc.2;
-        Sun, 14 Nov 2021 12:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t59DxpPWwMue5RvBJJrR6c6rMf+S15IuR0boHpCGISA=;
-        b=cn37UUnd7mty4NkCYRYIU//vLJq1dSG3j7qZ96s7YdtNV7vRNjxw0F9QcEcB85JoNH
-         tC1vVd3eOBLoyXqYVRIlAvGamCjJirmU7NIrBqOIHQvAOVGjwOvUS7aGtgNjq1faboqw
-         nLE/O8oVh+23c65OsIzJIMiV4hFychbMO2tyosHj8RlpHj4BlXQ9PWDnoRQ4myGtt98o
-         VHMbl2WrKOKLFGIR7hTsX01LSlVWR6qLytbZ8p73xI+Yq8FpZykoWhfcDjVvNDef6PqD
-         VJ4pWGUM3FQNnITEDjBfimHvJ1x8u3Vh6sEU9KKsAGO874s2u+C6ryXQWJMi5N86K0rj
-         YtRA==
+        Sun, 14 Nov 2021 16:01:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636923498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pnp8pM+/uuwUVD415q7LbGa5W5h6Fo7vf4H24zop064=;
+        b=LTHMTCZsWq43yPOh/J8lKO9KvTXvgmaNjGbpGl+PR16iGrTPfS9moG6we7Eue7IR8dYilm
+        7NjXdmAfU9YEbTuft5rBfgw4oeXpGJWrdLU/7o2Ue0Bvd+OcfGEMWV9tWAaBuCi1XawyZp
+        0sawqTHrFg7M7sO4pd1awN8xjp3Lb2Q=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-hPuOV6BPOWaVE3Jz8Mg1kg-1; Sun, 14 Nov 2021 15:58:17 -0500
+X-MC-Unique: hPuOV6BPOWaVE3Jz8Mg1kg-1
+Received: by mail-ed1-f69.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso12300718edb.19
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 12:58:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t59DxpPWwMue5RvBJJrR6c6rMf+S15IuR0boHpCGISA=;
-        b=LFbd67ICr1e0k8lEREcIuT+tLm6g+VF9kWVCEYnVSfzbfAMOuN2eOIpgxcskwYGEGm
-         Who1nVfJkem9ZloADDMaK/4xWBkiSPH5nD1PJILyRPT3lSZytvNlSR2te7rYYxJq8iM6
-         kC5p2hEmNNVcvkDCJf+K8QRKs8Z5aJKciqVnTt0XcPD63vuqrC7QBPITdco4iJf1Fn8e
-         0FIMFSJZMdzIxPoJLJ2wYxAIa3//pBsFnrcOnzS2NLuu5EBQWucpnek/hzlXWdcot6m6
-         upzX6fUdEg9iX9pCAq2/0QwnbEG0tHwHPD5FYvDAxAB0mDPOzPlA31icAv2xp829EN0S
-         RCgg==
-X-Gm-Message-State: AOAM531lO0NKHmrjotKfTZrnkiDuxmSoIe1Aj9b4IADB0Vh6ZsJB4XRk
-        kKZkLbNVhVZFhZyTaoCdi3t2klw0/BEKGKcs
-X-Google-Smtp-Source: ABdhPJxxIBImxTmgseQ+6VqtwL3Fb0QWxrp5KN8gOzH9i1PhXGIzrVNDfbAiXDoJv3QZsLH6GEucPQ==
-X-Received: by 2002:a05:600c:299:: with SMTP id 25mr5940634wmk.77.1636922623126;
-        Sun, 14 Nov 2021 12:43:43 -0800 (PST)
-Received: from ubuntu-laptop.speedport.ip (p200300e94719c9aa03f58ab728c81581.dip0.t-ipconnect.de. [2003:e9:4719:c9aa:3f5:8ab7:28c8:1581])
-        by smtp.gmail.com with ESMTPSA id m14sm16673630wrp.28.2021.11.14.12.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 12:43:42 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-Subject: [PATCH v1 2/2] mmc-utils: Add note for CMDQ_MODE_EN runtime value
-Date:   Sun, 14 Nov 2021 21:43:31 +0100
-Message-Id: <20211114204331.39555-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211114204331.39555-1-huobean@gmail.com>
-References: <20211114204331.39555-1-huobean@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=pnp8pM+/uuwUVD415q7LbGa5W5h6Fo7vf4H24zop064=;
+        b=G4dOEjG5u8lK9d48n5bgeiVw9M8Ge8M+G2XqjEzvGZ91H3ATnBlYaon56YI0cG2yOm
+         6KYWFAiMWtR8xRPFgeyOPEn+C3QuGkClfTeVJF/Df0ePLF9dhcATQvxaFUnSgrT26Jwd
+         z6j0l5pxFLLTDbNujJF4LbfS27ddo9rkvwfj8MOzqyrXLFgAlIlT1nVbLYFTmMYITZpI
+         rWAMhMhFjPB6TuQ5pZY6hgtt7mjG9HFvedmPRaZsWRQwuAyHXYfuESXZVP1PoYiCQxbq
+         SwIezdckMvX5EYvEPWu+FxZYJzmB2DzKKmq1ZU1A3/dt3U+osTWnIWmdvoF51U4V+EjA
+         QXfA==
+X-Gm-Message-State: AOAM531NdkT5/s+FI6NO58+5gKExNYLAX6pvPKePVNNAbe+Cb4VReUnB
+        l7CB4p+TCBG8IdgoPdkdyxHCDUuvCyN/9Rtj3RywVEDhR6IHDpvjydgYJKc4dhySYCb+Irzm8uQ
+        lpXNsgLe7I5pLIFd/EhGWu4QD
+X-Received: by 2002:a50:d492:: with SMTP id s18mr48552248edi.145.1636923496646;
+        Sun, 14 Nov 2021 12:58:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyg14BGQiR3vH+syGpF58gTCsuYq8609RRTO6bbqnEexzVDYDB92LyXrOkZY4aJzL0T04ChcA==
+X-Received: by 2002:a50:d492:: with SMTP id s18mr48552222edi.145.1636923496528;
+        Sun, 14 Nov 2021 12:58:16 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gb2sm5475548ejc.52.2021.11.14.12.58.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Nov 2021 12:58:16 -0800 (PST)
+Message-ID: <029e4c99-3aa5-fdb8-6ddc-fd3b144e4253@redhat.com>
+Date:   Sun, 14 Nov 2021 21:58:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] usb: dwc3: leave default DMA for PCI devices
+Content-Language: en-US
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
+Cc:     balbi@kernel.org, arnd@arndb.de, hch@lst.de, sven@svenpeter.dev,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211113142959.27191-1-fabioaiuto83@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211113142959.27191-1-fabioaiuto83@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Hi,
 
-Since the Linux kernel commit 70b52f090805 ("mmc: block: Disable CMDQ on
-the ioctl path"), CMDQ in CMDQ_MODE_EN[15] is disabled before reading EXT_CSD.
-Therefore, it is more accurate to use sysfs node to check CMDQ_MODE_EN value.
-Add a note print to highlight.
+On 11/13/21 15:29, Fabio Aiuto wrote:
+> in case of a PCI dwc3 controller, leave the default DMA
+> mask. Calling of a 64 bit DMA mask breaks the driver on
+> cherrytrail based tablets like Cyberbook T116.
+> 
+> Fixes: 45d39448b4d0 ("usb: dwc3: support 64 bit DMA in platform driver")
+> Reported-by: Hans De Goede <hdegoede@redhat.com>
+> Tested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- mmc_cmds.c | 2 ++
- 1 file changed, 2 insertions(+)
+I can confirm that this fixes things for me to:
 
-diff --git a/mmc_cmds.c b/mmc_cmds.c
-index ecbde3937c81..46c5f5faae02 100644
---- a/mmc_cmds.c
-+++ b/mmc_cmds.c
-@@ -1885,6 +1885,8 @@ int do_read_extcsd(int nargs, char **argv)
- 		       (ext_csd[EXT_CSD_CMDQ_DEPTH] & 0x1f) + 1);
- 		printf("Command Enabled [CMDQ_MODE_EN]: 0x%02x\n",
- 		       ext_csd[EXT_CSD_CMDQ_MODE_EN]);
-+		printf("Note: CMDQ_MODE_EN may not indicate the runtime CMDQ ON or OFF.\n"
-+		       "Please check sysfs node '/sys/devices/.../mmc_host/mmcX/mmcX:XXXX/cmdq_en'\n");
- 	}
- out_free:
- 	return ret;
--- 
-2.25.1
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/usb/dwc3/core.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index 643239d7d370..f4c09951b517 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -1594,9 +1594,11 @@ static int dwc3_probe(struct platform_device *pdev)
+>  
+>  	dwc3_get_properties(dwc);
+>  
+> -	ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+> -	if (ret)
+> -		return ret;
+> +	if (!dwc->sysdev_is_parent) {
+> +		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	dwc->reset = devm_reset_control_array_get_optional_shared(dev);
+>  	if (IS_ERR(dwc->reset))
+> 
 
