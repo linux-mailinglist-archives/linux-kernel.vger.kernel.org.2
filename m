@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A15C44F7AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 12:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A21944F7AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 12:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbhKNLpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 06:45:15 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:44179 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233656AbhKNLoF (ORCPT
+        id S234736AbhKNLqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 06:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233656AbhKNLq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 06:44:05 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id F0CF83200BF9;
-        Sun, 14 Nov 2021 06:41:10 -0500 (EST)
-Received: from imap47 ([10.202.2.97])
-  by compute3.internal (MEProxy); Sun, 14 Nov 2021 06:41:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=5cl08X2+DCDlK2nOayAZZUJPZ4Sp
-        r05TPDFj50fKBUk=; b=Hunl7HyBsvYIB3K4TYZPIUW7g4gBOe0Ej8WkUrs+0Hv/
-        2RwSFokwZhS4X+95I9AtmTS68ZCzdaFwrOevkQ7EH0FBUVRa9ZBudNVviFIlv0YR
-        3y7GPAowYt2bwkiHkB5jdk2O24tz1rldkpddOZmdyANmVT5Rq8ubH1lKC5B3TO44
-        RAhrBAUlUB9OZ10/CIM+7lNNMXLozJ0q9k6LlKdvdmzfiFs0m8NlAlDizQKaHJLt
-        u/m/4Me+o3r+/g/gh3K1zj7zK1103xmcQauqo5yXjyoiK342WR32kiKng5tV+yhs
-        H2Ej0R+nmeSo38/FQbwUn+YtOyWCG1Sqmtd7WmzL7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=5cl08X
-        2+DCDlK2nOayAZZUJPZ4Spr05TPDFj50fKBUk=; b=Hl1S8to6mXq8ZJEBTWLzZz
-        PIQs+o/RBA2+mLsh2vhbCnPPYv7ekf7V/ljJbQ7XfPbutQ7ZfUKpM03xH3IunmXZ
-        NxI/61bFmi9YbFkY3+r8B5gruRp1tsKq5SfJJRN4Wo9oWGqykbA3bpunfN8/o9MF
-        jPTUsutmdiB5UTkkarPQ3vUEc5PDwTck/i6w3eufyyf/onm9vdxNcs6oelVis7HW
-        g6REl/ASPRsEdZoDh8aol+OSxc02VoaZ7mGyE0xf6Y7BT1cXPshzffZb2XKBJ+C4
-        KLAkuYaEV6RAgLxLCWX0lTL9rbhpbAjz283xn32kZ+5Nus+MqUURv0+9adqn4ZBQ
-        ==
-X-ME-Sender: <xms:1fWQYdDrT6lezfOnKeHqihTUXVVecLV9jy2n5MTD0R4BZrE-awNrPQ>
-    <xme:1fWQYbhjmvD-imumM1s4I4FPb_jTlauU9IaStRz8zbcA0vCDcwRNZUmrBMVoC3scU
-    mmuxlymIqByziQEBiU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdejgdeftdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhvvghn
-    ucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrth
-    htvghrnhephedtffelvdffgeevjeeggedvueejtdetfefgleffhedttedukeettefhteek
-    uedunecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghnphgvthgv
-    rhdruggvvh
-X-ME-Proxy: <xmx:1fWQYYkdVJysBJjAKfEV9__SfKdYdD-fJ-bMny1joY9T5MasKtAMLQ>
-    <xmx:1fWQYXwViW8SrPeNl3kBQv_sqIGn3u-65GY5ffN20z4B-y-B72wx1g>
-    <xmx:1fWQYSRSPzmEUFuQS7-mjNVUstVw2j3_6RI9xY0GiloIMJEkO2bOGQ>
-    <xmx:1vWQYfRLxG2P3SE06gcVOiBSRJNHCG97H-RxcIWTwoQlMRPG-ud3yg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B9BA2274013E; Sun, 14 Nov 2021 06:41:09 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <fc541162-928c-4318-bc2a-06da0cbdf5e8@www.fastmail.com>
-In-Reply-To: <d3cad37524f7debf@bloch.sibelius.xs4all.nl>
-References: <20211113094732.73889-1-sven@svenpeter.dev>
- <d3cad37524f7debf@bloch.sibelius.xs4all.nl>
-Date:   Sun, 14 Nov 2021 12:40:48 +0100
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Mark Kettenis" <mark.kettenis@xs4all.nl>
-Cc:     "Rob Herring" <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        "Wim Van Sebroeck" <wim@linux-watchdog.org>,
-        "Guenter Roeck" <linux@roeck-us.net>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: Add Apple Watchdog
-Content-Type: text/plain
+        Sun, 14 Nov 2021 06:46:27 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4008EC061746
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 03:43:21 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id e3so21919866edu.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 03:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H75V4Gyv1omQl5DQYHu02p1pO9X8AXcURgokHKae96Q=;
+        b=Sy9hcUWOjTIBSTNwcNQM0Lj2aE1rniLUGyjKZlGEoMV3Za3alcTZqc6FvgXwBeyQOl
+         wWCuCY3MToEuDTqqKYU7ATjfR3GYEpIrIeKBEDVH134N2ATrl6ItKCIyZoJ0Ky8br0UF
+         oF9/Jjm3useAUO/d+Mbg4kd/8L8blKgXeJpSkOBh85oJ8ssbR5FwCSUCt3kOedaz8yKu
+         ts8OYd6QjRQFJfBYB4IR8LFwsjVJVkSOy/TLo+Mp5ZIkYNuDa/XR+6Ag1ZKcS2xXTPzR
+         PrFyC7+YzSstJ3/22HjC+hYofwP5AXE+BCfdlLwMlqe9QpoxIvFPQ7em/4ASoqVcIrwu
+         IRYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H75V4Gyv1omQl5DQYHu02p1pO9X8AXcURgokHKae96Q=;
+        b=npkH7K5H1qwgEf7zHOcYDXgisOvDcCZfYOb8LpYT3wEZYqnZyuOVIRBPUxUPZMzlnU
+         5EhEyxAU1H2zQL3H7uZwHQiiJa+leTHjTH/7fDhrkslQOxikRS/aqXkKIfjZSu14gNtl
+         YEJxJ+g+N2lIC3RhWraBi+WABZmen9t5XK3iOUbJ68VSNOOMh9doTeZFWfyw0oAQBUZl
+         1nNVKT9kztNxojH8DDJOU2o0MPXp/ADr96HH2Ds3mLi3RKrnYj2tn5V1C88ktyOgZF77
+         l9TcOaM3S9izcCI8Qkx6sMqfhrxKitMwP9rXm9ba1wZQ8xxz7R3sFnFJshzz54lFV4Kr
+         dX9w==
+X-Gm-Message-State: AOAM530muuZQUo3ElvV3FYA6oJsLjZXnnT9+6aiu9Up1meA6yMo+XzY/
+        kh1PZfeUzt+sb+M6CtRl94kvvzZuhDldaSPOjco=
+X-Google-Smtp-Source: ABdhPJy4dgE/S9l1WUJ4J3a7culKJNXrO5gJ4iQLujCNBoag9GqC0h4sQ5SJnyciO596uRtZuDJJjwrBBX1paZWbUlY=
+X-Received: by 2002:a50:fd16:: with SMTP id i22mr35107169eds.224.1636890199854;
+ Sun, 14 Nov 2021 03:43:19 -0800 (PST)
+MIME-Version: 1.0
+References: <202111141153.mtggZgGq-lkp@intel.com>
+In-Reply-To: <202111141153.mtggZgGq-lkp@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 14 Nov 2021 13:42:43 +0200
+Message-ID: <CAHp75VffPmtu-aer8rNA3ctoGTmvjTJYH44CRLsMVHSjcPc+qQ@mail.gmail.com>
+Subject: Re: drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused
+ variable 'fwbug_cards_ids'
+To:     kernel test robot <lkp@intel.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sat, Nov 13, 2021, at 22:07, Mark Kettenis wrote:
->> From: Sven Peter <sven@svenpeter.dev>
->> Date: Sat, 13 Nov 2021 10:47:31 +0100
->> 
->> Apple SoCs come with a simple embedded watchdog. This watchdog is also
->> required in order to reset the SoC.
->> 
->> Signed-off-by: Sven Peter <sven@svenpeter.dev>
->> ---
->>  .../bindings/watchdog/apple,wdt.yaml          | 52 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 53 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml b/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
->> new file mode 100644
->> index 000000000000..e58c56a6fdf6
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/watchdog/apple,wdt.yaml
->> @@ -0,0 +1,52 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/watchdog/apple,wdt.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Apple SoC Watchdog
->> +
->> +allOf:
->> +  - $ref: "watchdog.yaml#"
+On Sun, Nov 14, 2021 at 5:15 AM kernel test robot <lkp@intel.com> wrote:
 >
-> I believew this should be:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   c8c109546a19613d323a319d0c921cb1f317e629
+> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+> date:   4 weeks ago
+> config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386
 >
->   - $ref: /schemas/watchdog/watchdog.yaml#
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
-> with that fixed:
+> All errors (new ones prefixed by >>):
 >
-> Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
->
+> >> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
+>    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
+>                                      ^
+>    1 error generated.
 
-Thanks for the review!
-Almost all the other YAML watchdog bindings just use '$ref: "watchdog.yaml#"'.
-Only arm,sp805.yaml uses '$ref: /schemas/watchdog/watchdog.yaml#'.
+Perhaps something like
 
+  if (!dmi_check_system(bt_fwbug_list))
+    return 0;
+  if (!pci_dev_present(fwbug_cards_ids))
+    return 0;
 
-Sven
- 
+  vdbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_RFKILL, FW_BUG "disable
+bluetooth subdriver for Intel cards\n");
+  return 1;
+
+would work?
+
+-- 
+With Best Regards,
+Andy Shevchenko
