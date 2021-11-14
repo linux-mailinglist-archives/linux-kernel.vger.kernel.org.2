@@ -2,230 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E342844F8D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 16:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5243344F8E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 16:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235248AbhKNPsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 10:48:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
+        id S235657AbhKNP5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 10:57:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236073AbhKNPsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 10:48:43 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09E9560E94;
-        Sun, 14 Nov 2021 15:45:46 +0000 (UTC)
-Date:   Sun, 14 Nov 2021 15:50:33 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/3] dt-bindings: iio: frequency: add admv1013 doc
-Message-ID: <20211114155033.52056f69@jic23-huawei>
-In-Reply-To: <20211105112930.122017-3-antoniu.miclaus@analog.com>
-References: <20211105112930.122017-1-antoniu.miclaus@analog.com>
-        <20211105112930.122017-3-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231888AbhKNP5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 10:57:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7660A60EE7;
+        Sun, 14 Nov 2021 15:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636905247;
+        bh=e6EKCNY1meTaB/MlLVOStavoTOWIpiBVqrz0KfiQHGI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=t0GWortgkwsKROAlwlusIxBv+8rsILaLMX2aIkMbQNSW25Sz4PKvmBlc7VE1hR2Xo
+         il37HTBb7V+lV9UWQoeCFZJbDeT6rE1su5w66oeTvmGsiAbuD2I8zR+xjJ48+2NYCU
+         /Fr6GU5CrQ3d8ykiXnCG4fY/kD4wf8FIEotmycQydFMVXt+QXRgYk6ytFZ+32wkxUo
+         kT5dacDz9jTJ6sj2KR0+cfrO422GbLnGF6RsUD4ecF82C4bD9duDT9k4BYLFAIlG2a
+         iHsrl9bmdquGaLKbAy4eX4/OnUe5fWJ9Krc7oIpcjly2E1IuKzoKZ2g6LkhMCCvMut
+         MbABN/G166DlQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3FCBF5C055E; Sun, 14 Nov 2021 07:54:07 -0800 (PST)
+Date:   Sun, 14 Nov 2021 07:54:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
+ clocksources
+Message-ID: <20211114155407.GB641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211110221732.272986-1-longman@redhat.com>
+ <20211110221732.272986-2-longman@redhat.com>
+ <20211111045703.GA15896@shbuild999.sh.intel.com>
+ <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211112054417.GA29845@shbuild999.sh.intel.com>
+ <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Nov 2021 13:29:29 +0200
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
-
-> Add device tree bindings for the ADMV1013 Upconverter.
+On Fri, Nov 12, 2021 at 10:43:15PM -0500, Waiman Long wrote:
+> On 11/12/21 00:44, Feng Tang wrote:
+> > On Thu, Nov 11, 2021 at 06:43:11AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Nov 11, 2021 at 12:57:03PM +0800, Feng Tang wrote:
+> > > > On Wed, Nov 10, 2021 at 05:17:31PM -0500, Waiman Long wrote:
+> > > > > Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
+> > > > > detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
+> > > > > threshold"), it is found that tsc clocksource fallback to hpet can
+> > > > > sometimes happen on both Intel and AMD systems especially when they are
+> > > > > running stressful benchmarking workloads. Of the 23 systems tested with
+> > > > > a v5.14 kernel, 10 of them have switched to hpet clock source during
+> > > > > the test run.
+> > > > > 
+> > > > > The result of falling back to hpet is a drastic reduction of performance
+> > > > > when running benchmarks. For example, the fio performance tests can
+> > > > > drop up to 70% whereas the iperf3 performance can drop up to 80%.
+> > > > > 
+> > > > > 4 hpet fallbacks happened during bootup. They were:
+> > > > > 
+> > > > >    [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
+> > > > >    [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
+> > > > >    [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
+> > > > >    [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
+> > > > > 
+> > > > > Other fallbacks happen when the systems were running stressful
+> > > > > benchmarks. For example:
+> > > > > 
+> > > > >    [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
+> > > > >    [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
+> > > > > 
+> > > > > Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
+> > > > > changed the skew margin from 100us to 50us. I think this is too small
+> > > > > and can easily be exceeded when running some stressful workloads on
+> > > > > a thermally stressed system.  So it is switched back to 100us. On
+> > > > > the other hand, it doesn't look like we need to increase the minimum
+> > > > > uncertainty margin. So it is kept the same at 100us too.
+> > > > > 
+> > > > > Even a maximum skew margin of 100us may be too small in for some systems
+> > > > > when booting up especially if those systems are under thermal stress. To
+> > > > > eliminate the case that the large skew is due to the system being too
+> > > > > busy slowing down the reading of both the watchdog and the clocksource,
+> > > > > a final check is done by reading watchdog time again and comparing the
+> > > > > consecutive watchdog timing read delay against WATCHDOG_MAX_SKEW/2. If
+> > > > > that delay exceeds the limit, we assume that the system is just too
+> > > > > busy. A warning will be printed to the console and the watchdog check
+> > > > > is then skipped for this round. For example:
+> > > > > 
+> > > > >    [    8.789316] clocksource: timekeeping watchdog on CPU13: hpet consecutive read-back delay of 174541ns, system too busy
+> > > > 
+> > > > I think it may be better to add more details about the root cause, other
+> > > > than that it looks good to me, as we tested similar patch on our test
+> > > > platforms.
+> > > > 
+> > > > Reviewed-by: Feng Tang <feng.tang@intel.com>
+> > > Thank you both!
+> > > 
+> > > I agree on the bit about root cause.  Would it make sense to compare the
+> > > difference between HPET reads 1 and 2 (containing the read of the TSC)
+> > > and the difference between HPET reads 2 and 3?  If the 2-1 difference was
+> > > no more than (say) 8/7ths of the 3-2 difference, or the 2-1 difference
+> > > was no more than (say) 20 microseconds more than the 3-2 difference,
+> > > this could be considered a good-as-it-gets read, ending the retry loop.
+> > > Then if the 3-1 difference was greater than the default (100 microseconds
+> > > in current -rcu), that difference could be substituted for that particular
+> > > clocksource watchdog check.  With a console message noting the unusually
+> > > high overhead (but not a splat).
+> > > 
+> > > So if it took 75 microseconds for each HPET read and 1 microsecond for
+> > > the TSC read, then 226 microseconds would be substituted for the default
+> > > of 100 microseconds for that cycle's skew cutoff.  Unless the previous
+> > > skew cutoff was larger, in which case the previous cutoff should be
+> > > used instead.  Either way, the current cutoff is recorded for comparison
+> > > for the next clocksource watchdog check.
+> > > 
+> > > If the 3-1 difference was greater than 62.5 milliseconds, a warning should
+> > > probably be emitted anyway.
+> > I can test the patch with our cases that could reproduce the problem.
+> > 
+> > > Or did you have something else in mind?
+> > I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
+> > the delay between watchdog's (HPET here) read were not linear, that
+> > from debug data, sometimes the 3-2 difference could be bigger or much
+> > bigger than the 2-1 difference.
+> > 
+> > The reason could be the gap between 2 reads depends hugely on the system
+> > pressure at that time that 3 HPET read happens. On our test box (a
+> > 2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
+> > about 2.5 us,  while under the stress it could be bumped to from 6 us
+> > to 2800 us.
+> > 
+> > So I think checking the 3-2 difference plus increasing the max retries
+> > to 10 may be a simple way, if the watchdog read is found to be
+> > abnormally long, we skip this round of check.
 > 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> On one of the test system, I had measured that normal delay
+> (hpet->tsc->hpet) was normally a bit over 2us. It was a bit more than 4us at
+> bootup time. However, the same system under stress could have a delay of
+> over 200us at bootup time. When I measured the consecutive hpet delay, it
+> was about 180us. So hpet read did dominate the total clocksource read delay.
 
-My high frequency theory etc is rather rusty being nearly 20 years since I last
-looked at this stuff so I may have some interpretations below wrong...
+Thank you both for the data!
 
-My main concern here is that most of the powerdown entries prevent the device
-doing anything useful so as far as I can tell would make no sense to ever set.
+> I would not suggest increasing the max retries as it may still fail in most
+> cases because the system stress will likely not be going away within a short
+> time. So we are likely just wasting cpu times. I believe we should just skip
+> it if it is the watchdog read that is causing most of the delay.
 
-Jonathan
+If anything, adding that extra read would cause me to -reduce- the number
+of retries to avoid increasing the per-watchdog overhead.
 
-> ---
->  .../bindings/iio/frequency/adi,admv1013.yaml  | 119 ++++++++++++++++++
->  1 file changed, 119 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> new file mode 100644
-> index 000000000000..47993253a586
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> @@ -0,0 +1,119 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/frequency/adi,admv1013.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ADMV1013 Microwave Upconverter
-> +
-> +maintainers:
-> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-> +
-> +description: |
-> +   Wideband, microwave upconverter optimized for point to point microwave
-> +   radio designs operating in the 24 GHz to 44 GHz frequency range.
-> +
-> +   https://www.analog.com/en/products/admv1013.html
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,admv1013
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 1000000
-> +
-> +  clocks:
-> +    description:
-> +      Definition of the external clock.
+Thoughts?
 
-I mention elsewhere that this isn't exactly a clock in the normal sense
-given we are modulating a signal onto it's frequency multiplied form but
-meh I guess it might be fed by something looking clock like...
-
-> +    minItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: lo_in
-> +
-> +  clock-output-names:
-> +    maxItems: 1
-
-Does it actually make sense to handle the output as a clock? It has a multiple
-GHz bandwidth.
-
-> +
-> +  vcm-supply:
-> +    description:
-> +      Analog voltage regulator.
-
-> +
-> +  adi,vga-powerdown:
-> +    description:
-> +      Power Down the Voltage Gain Amplifier Circuit available at
-> +      BG_RBIAS2 pin.
-
-Is that all it does?  Datasheet is a bit vague, but I'm guessing this
-also leaves the device not doing anything useful so makes little sense
-to expose.
-
-> +    type: boolean
-> +
-> +  adi,mixer-powerdown:
-> +    description:
-> +      Power Down the Mixer Circuit. Enable to put the block in
-> +      a power down state.
-As below. Device doesn't do anything useful with the mixer disabled
-so I don't think this is something for DT.
-> +    type: boolean
-> +
-> +  adi,quad-powerdown:
-> +    description:
-> +      Power Down the Quadrupler. Enable to put the block in
-> +      a power down state.
-
-I'm struggling a bit with the affect of this when reading the datasheet, but
-I think it means the device is pointless as we have no LO signal and hence no
-output.  Hence I don't think we should have this in DT.
-
-> +    type: boolean
-> +
-> +  adi,bg-powerdown:
-> +    description:
-> +      Power Down the Transmitter Band Gap. Enable to put the part in
-> +      a power down state.
-> +    type: boolean
-Another one where I think disabling it in DT makes the device pointless.
-These are absolutely things you might want to wire up in power management
-callbacks, but not have in DT.
-
-> +
-> +  adi,mixer-if-enable:
-> +    description:
-> +      Enable the Intermediate Frequency Mode. Either IF Mode or I/Q Mode
-> +      can be enabled at a time.
-How do we enable IQ mode?   Is this better described as a choice of mode?
-IQ vs IF?  If so make it an appropriate enum rather than this which kind
-of suggests it's enabling the mixer which is not hte case.
-
-> +    type: boolean
-> +
-> +  adi,detector-enable:
-> +    description:
-> +      Enable the Envelope Detector available at output pins VENV_P and
-> +      VENV_N. Disable to reduce power consumption.
-
-So the reason you'd turn this off is it isn't wired to anything.  What might
-it be wired to?  My guess is it would be to an ADC, probably also wired to the
-host processor?   If so this should be represented as a consumer node of the
-ADC so that we can provide the envelope reading if it is wired up.  If it is
-not wired up then we turn it off.
-
-> +    type: boolean
-> +
-> +  adi,quad-se-mode:
-> +    description:
-> +      Switch the LO path from differential to single-ended operation.
-> +      Set value 6 for Single-Ended Mode, Negative Side Disabled.
-> +      Set value 9 for Single-Ended Mode, Positive Side Disabled.
-> +      Set value 12 for Differential Mode.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [6, 9, 12]
-
-Datasheet is rather unclear on this to my mind.  From the point of view
-of how it is used it is about the LO inputs, not the quadrupler at all,
-that just happens to be the first unit to care about this.
-I'm also not keen on magic numbers where they can be avoided and these
-are particularly 'magic'.
-
-So maybe
-adi,local-oscilator-mode
-enum [diff, se-pos, se-neg] 
-
-?
-> +
-> +  '#clock-cells':
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - vcm-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      admv1013@0{
-> +        compatible = "adi,admv1013";
-> +        reg = <0>;
-> +        spi-max-frequency = <1000000>;
-> +        clocks = <&admv1013_lo>;
-> +        clock-names = "lo_in";
-> +        vcm-supply = <&vcm>;
-> +        adi,quad-se-mode = <12>;
-> +        adi,mixer-if-enable;
-> +        adi,detector-enable;
-> +      };
-> +    };
-> +...
-
+							Thanx, Paul
