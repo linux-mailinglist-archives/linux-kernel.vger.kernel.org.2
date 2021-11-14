@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BB144F871
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6194A44F877
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhKNOTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 09:19:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234393AbhKNOTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:19:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6375360EE7;
-        Sun, 14 Nov 2021 14:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636899374;
-        bh=yNa8nfA17W0IA0dH0cmt1uaH3DN4+9mcx2CuNZRUwKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EyCV+DBbQuAF3GeFCQDYKg9JxWDhPIZf/OkuAlCgQeO9fd8X9igtRfKzOvxlD9CqC
-         huhdOr9Hw7Nhv21f0+TkXRH+qlX9MoMhbjBfXhqDaVchSQjonk1MDdr4vRCu1WvwMK
-         1kR31ALEcXgf0wgO4n/ekREC5/T35nnm4EIN5pFupRwgFxfnlNCYoDbxx8lg3JkNmf
-         +7N98eZe1BAtcpT8bVLbJlKkHJOflTef+W6cO9N36LJ0Ui4uvblq8BQlGf2gPBbFI7
-         c3pgyCGI4y34mddOIspcVlg1vqMfgIt2EiOSMfbRpC6zt1vaV8cSYaZpeY4mpNF2lN
-         BnBFeOKjKx03w==
-Date:   Sun, 14 Nov 2021 09:16:13 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>, tytso@mit.edu,
-        jaegeuk@kernel.org, corbet@lwn.net, linux-fscrypt@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 021/101] fscrypt: allow 256-bit master keys
- with AES-256-XTS
-Message-ID: <YZEaLdsj7mA6WM8W@sashalap>
-References: <20211108174832.1189312-1-sashal@kernel.org>
- <20211108174832.1189312-21-sashal@kernel.org>
- <YYnTeBCwn6fd/kVU@gmail.com>
+        id S232277AbhKNOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 09:24:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhKNOY1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 09:24:27 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4463C061200
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 06:21:31 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id t30so25130221wra.10
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 06:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=p8lk+q4Y2CquVO9sqmu4dSc1gvfHGQ8MpCynAwi+U0M=;
+        b=tmyGi86bjZW/7vtxIzqiUXXSul5Ye8VTLY6C1i8poScsrQmwey4pUrTupOUd2E5T/O
+         U6eX0di3bcDtRIs3BuWvdCD++Z4pOHXG2V7/QjHQvO431WlrLRjiIwM9WemrClq0gXC7
+         +Xwgxx1lTobE+ZE2jpjTNbPkawHwTRWgGn7pR4xCufUfAXa+44eXTTKOtS99KaHF6/+R
+         X8NSkvmce0zWcaFSbInWCw47Cpi/bqA/D2uBq+Lg4zTA1l4KCZa5rfTWtLhA0NbTHWly
+         iswWc8J+xnA9MCX3kJHw267Gkq+v0ts2CP9PZtr0/CC3u0DB5j2rE/ahsAFpiporeeH8
+         D3iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p8lk+q4Y2CquVO9sqmu4dSc1gvfHGQ8MpCynAwi+U0M=;
+        b=nMtgkk8UVbMjnSo674USFWUjrGovOEXAIFoKKZseNcKUp+OTzboyFOMHVR9+gNWs3w
+         61qjwCze/bgOFRZ8xijqKh5UAEVP9pW1kUv4+3754AwdC5jqioROLzknGBpn9rHbTCsA
+         6452JKZEwWFUnHxkLd7y82HiM83+99KW6L/GlzyK2vLz5YPReiTe9+f5nL8z9VX+p2pg
+         qDmphEoy+DDnDq1mWBEANNKLpwZkJSjQ0WjLsiOpYiKhtuvtBXrlt0klxUnAn0+M5cZS
+         vRORAFuNb3GfHo4EmYvDOUqvFZqN3XpF0znZT5nWj/X1aYXDVTSQDknAN6E8mFHgDYBq
+         qAOg==
+X-Gm-Message-State: AOAM533KlqOr3x1n86VEpG5zW+lJNRzacAvwGwMuwx7W/gngenPgMKIN
+        V5bfywyZ4V/uWf/TKZT07WiLLQ==
+X-Google-Smtp-Source: ABdhPJz1rGJhN4paD+q9e5k6x6AlTsEg1AdYORqZcrmrG1v2dBBnBwDrylK3vuq8tZdXbfsQe80dtQ==
+X-Received: by 2002:adf:f042:: with SMTP id t2mr38984084wro.180.1636899689743;
+        Sun, 14 Nov 2021 06:21:29 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:48e0:47e8:1868:a12e])
+        by smtp.gmail.com with ESMTPSA id 9sm14717028wry.0.2021.11.14.06.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 06:21:29 -0800 (PST)
+Date:   Sun, 14 Nov 2021 15:21:22 +0100
+From:   Marco Elver <elver@google.com>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>, glider@google.com
+Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
+Message-ID: <YZEbYmzy64uai7Af@elver.google.com>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+ <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+ <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+ <CAHk-=wg+UMNYrR59Z31MhxMzdUEiZMQ1RF9jQvAb6HGBO5EyEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYnTeBCwn6fd/kVU@gmail.com>
+In-Reply-To: <CAHk-=wg+UMNYrR59Z31MhxMzdUEiZMQ1RF9jQvAb6HGBO5EyEA@mail.gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 05:48:40PM -0800, Eric Biggers wrote:
->On Mon, Nov 08, 2021 at 12:47:11PM -0500, Sasha Levin wrote:
->> From: Eric Biggers <ebiggers@google.com>
->>
->> [ Upstream commit 7f595d6a6cdc336834552069a2e0a4f6d4756ddf ]
->>
->> fscrypt currently requires a 512-bit master key when AES-256-XTS is
->> used, since AES-256-XTS keys are 512-bit and fscrypt requires that the
->> master key be at least as long any key that will be derived from it.
->>
->> However, this is overly strict because AES-256-XTS doesn't actually have
->> a 512-bit security strength, but rather 256-bit.  The fact that XTS
->> takes twice the expected key size is a quirk of the XTS mode.  It is
->> sufficient to use 256 bits of entropy for AES-256-XTS, provided that it
->> is first properly expanded into a 512-bit key, which HKDF-SHA512 does.
->>
->> Therefore, relax the check of the master key size to use the security
->> strength of the derived key rather than the size of the derived key
->> (except for v1 encryption policies, which don't use HKDF).
->>
->> Besides making things more flexible for userspace, this is needed in
->> order for the use of a KDF which only takes a 256-bit key to be
->> introduced into the fscrypt key hierarchy.  This will happen with
->> hardware-wrapped keys support, as all known hardware which supports that
->> feature uses an SP800-108 KDF using AES-256-CMAC, so the wrapped keys
->> are wrapped 256-bit AES keys.  Moreover, there is interest in fscrypt
->> supporting the same type of AES-256-CMAC based KDF in software as an
->> alternative to HKDF-SHA512.  There is no security problem with such
->> features, so fix the key length check to work properly with them.
->>
->> Reviewed-by: Paul Crowley <paulcrowley@google.com>
->> Link: https://lore.kernel.org/r/20210921030303.5598-1-ebiggers@kernel.org
->> Signed-off-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->I don't expect any problem with backporting this, but I don't see how this
->follows the stable kernel rules (Documentation/process/stable-kernel-rules.rst).
->I don't see what distinguishes this patch from ones that don't get picked up by
->AUTOSEL; it seems pretty arbitrary to me.
+On Sat, Nov 13, 2021 at 11:58AM -0800, Linus Torvalds wrote:
+> On Sat, Nov 13, 2021 at 10:14 AM Alexander Popov <alex.popov@linux.com> wrote:
+[...]
+> Honestly, if the intent is to not have to parse the dmesg output, then
+> I think it would be much better to introduce a new /proc file to read
+> the kernel tainting state, and then some test manager process could be
+> able to poll() that file or something. Not sending a signal to random
+> targets, but have a much more explicit model.
+> 
+> That said, I'm not convinced that "just read the kernel message log"
+> is in any way wrong either.
 
-It is, to some extent. My understanding was that this is a minor fix to
-make something that should have worked, work.
+We had this problem of "need to get errors/warnings that appear in the
+kernel log" without actually polling the kernel log all the time. Since
+5.12 there's the 'error_report' tracepoint for exactly this purpose [1].
 
--- 
-Thanks,
-Sasha
+Right now it only generates events on KASAN and KFENCE reports, but we
+imagined it's easy enough to extend with more types. Like WARN, should
+the need arise (you'd have to add it if you decide to go down that
+route).
+
+So you could implement a close-enough variant of the whole thing in
+userspace using what tracepoints give you by just monitoring the trace
+pipe. It'd be much easier to experiment with different policies as well.
+
+[1] https://git.kernel.org/torvalds/c/9c0dee54eb91d48cca048bd7bd2c1f4a166e0252 
