@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811FC44F714
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 08:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B50F44F716
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 08:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbhKNHJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 02:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhKNHJM (ORCPT
+        id S232666AbhKNHO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 02:14:59 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27130 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhKNHOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 02:09:12 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71925C061570;
-        Sat, 13 Nov 2021 23:06:14 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r4so8882244edy.12;
-        Sat, 13 Nov 2021 23:06:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=lTAWwzCDf/mzTJzs3+RMQBARAQp9pv2hNSSRu5s7rGk=;
-        b=NGPyaC4HyGyzJ1rKSXlYLIF3VYW8ANrzasd9imWyXZqYrXhBJ7DUUlveK95P0k2VYN
-         P6IIViIwJUInUM9i0uuZFCtD/JGcYvtDsPeEUs2htU8GOq7tLuhx4WXXbIpXVTTPXITd
-         UlxWBBACwBl4C//AQzbFtgJ2VZd22A29zTs+CrmeXKhtKOBinlr4oaFSlUvEsxYaMsE7
-         dPkLTtufvXehyY4S/ac91T0E29V/PyoQh6Yesbf1jvhsH8vEwdmTH4soage/Vbg+8BNz
-         ehINbCd8WTPOyqtHlqEIKQYYKvbJXkLNKjpc5xDruwC8WlGboho6HoMyPjadDbQ21nmx
-         63zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=lTAWwzCDf/mzTJzs3+RMQBARAQp9pv2hNSSRu5s7rGk=;
-        b=6lItKKDm0TPQlw8NJx4tutF9U9TeMjWJpMveoDf7wUXRrAGNJTfs4vyOWMZa7WU33G
-         Q4zfiHw8XiJMK2jJ+Kh1jWWHt7GRRcfxwNmY+tU0l93hH0E3IMLf9Z0jnnfex5Ftpj+C
-         r/TrT0fFkMUsLhl62QtuUeRvLTRv1YnyXWK0freII7acZKIF9slw1OFCuoVnF+Zjgm1W
-         FZPoda6eaGLkuYN2a2o2spGbVgOBSSFu7FHcWHXkdJ7eqOhtEN/Ymwfe233tip1P3Vp1
-         Au8UVG0S8GupQeyGEcNYj/TpgEt8uMjGlLvpkgtNOI5xMIWUeXNrOY3E4Z+yywcbDwqu
-         jHaQ==
-X-Gm-Message-State: AOAM533Ow04PlzDppIaVgCbKQtcmvPyqAPXuBkpC0qSr47gEPKm/Xm31
-        PNzav3E1Wnuy/lcctciCNVYZ97rrALPxFFQ7Sj6FwCPx
-X-Google-Smtp-Source: ABdhPJz6F7eb7ZlPz+uZ1ryBjKV5MJY+6g8VTzYPNDQv8d/IMiyQJel1uICTBXlYxhNSBRKxb1cJsAgM4Rtiu1G511Y=
-X-Received: by 2002:a17:906:b084:: with SMTP id x4mr35926642ejy.214.1636873572801;
- Sat, 13 Nov 2021 23:06:12 -0800 (PST)
+        Sun, 14 Nov 2021 02:14:51 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HsNjs0VLxz1DJQ7;
+        Sun, 14 Nov 2021 15:09:37 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (7.193.23.208) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 14 Nov 2021 15:11:55 +0800
+Received: from [10.174.185.179] (10.174.185.179) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 14 Nov 2021 15:11:54 +0800
+Subject: Re: [PATCH] KVM: arm64: remove unneeded comparison
+To:     Jason Wang <wangborong@cdjrlc.com>
+CC:     <catalin.marinas@arm.com>, <maz@kernel.org>, <will@kernel.org>,
+        <james.morse@arm.com>, <alexandru.elisei@arm.com>,
+        <suzuki.poulose@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
+References: <20211114064026.277024-1-wangborong@cdjrlc.com>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <2b9f6a42-825f-1141-06db-932732a0cf99@huawei.com>
+Date:   Sun, 14 Nov 2021 15:11:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
- <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
- <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com> <CAOuPNLg_YwyhK6iPZZbRWe57Kkr1d8LjJaDniCvvOqk4t2-Sog@mail.gmail.com>
-In-Reply-To: <CAOuPNLg_YwyhK6iPZZbRWe57Kkr1d8LjJaDniCvvOqk4t2-Sog@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Sun, 14 Nov 2021 12:36:01 +0530
-Message-ID: <CAOuPNLgYhm=goOiABjUFsAvRW+s2NqHjHYdm5MA9PvoUAMxOpg@mail.gmail.com>
-Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
- gives SQUASHFS error: xz decompression failed, data probably corrupt
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        dm-devel@redhat.com, Phillip Lougher <phillip@squashfs.org.uk>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Daniel Rosenberg <drosen@google.com>, astrachan@google.com,
-        speed.eom@samsung.com, Sami Tolvanen <samitolvanen@google.com>,
-        snitzer@redhat.com, squashfs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211114064026.277024-1-wangborong@cdjrlc.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Adding squashfs-devel to get opinion from squashfs side.
+Hi,
 
-On Fri, 12 Nov 2021 at 12:48, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> Hi,
->
-> On Tue, 9 Nov 2021 at 21:04, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> > > > We only get these squashfs errors flooded in the boot logs:
-> > > > {{{
-> > > > ....
-> > > > [    5.153479] device-mapper: init: dm-0 is ready
-> > > > [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
-> > > > ....
-> > > > [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
-> > > > [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
-> > > > [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
-> > > > [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
-> > > > [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
-> > > > [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
-> > > > [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
-> > > > ....
-> > > > }}}
-> > > >
->
-> One more observation:
-> When I disable FEC flag in bootloader, I see the below error:
-> [    8.360791] device-mapper: verity: 253:0: data block 2 is corrupted
-> [    8.361134] device-mapper: verity: 253:0: data block 3 is corrupted
-> [    8.366016] SQUASHFS error: squashfs_read_data failed to read block 0x1106
-> [    8.379652] SQUASHFS error: Unable to read data cache entry [1106]
-> [    8.379680] SQUASHFS error: Unable to read page, block 1106, size 7770
->
-> Also, now I see that the decompress error is gone, but the read error
-> is still there.
->
-> This seems to me that dm-verity detects some corrupted blocks but with
-> FEC it auto corrects itself, how when dm-verity auto corrects itself,
-> the squashfs decompression algorithm somehow could not understand it.
->
-> So, it seems like there is some mis-match between the way FEC
-> correction and the squashfs decompression happens ?
->
-> Is this issue seen by anybody else here ?
->
+On 2021/11/14 14:40, Jason Wang wrote:
+> The unsigned expression compared with zero `target < 0' is
+> unneeded and its result is always false. we can also check the
+> target's value returned from `kvm_target_cpu' is one of the
+> KVM_* macros, and these macros are defined greater than or equal
+> to 0.
+> Therefore, the comparison code block:
+>     if (target < 0)
+>         return -ENODEV;
+> is unneeded. We can safely remove it.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  arch/arm64/kvm/guest.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5ce26bedf23c..1605cb71dd52 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -873,9 +873,6 @@ int kvm_vcpu_preferred_target(struct kvm_vcpu_init *init)
+>  {
+>  	u32 target = kvm_target_cpu();
+>  
+> -	if (target < 0)
+> -		return -ENODEV;
+> -
+>  	memset(init, 0, sizeof(*init));
+>  
+>  	/*
 
-The squashfs version used by Kernel:
-[    0.355958] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+FYI there's already a similar change in mainline now:
 
-The squashfs version available on Ubuntu:
-mksquashfs version 4.3-git (2014/06/09)
-
-The squashfs version used by Yocto 2.6:
-squashfs-tools/0001-squashfs-tools-Allow-setting-selinux-xattrs-through-.patch:61:
-   printf("mksquashfs version 4.3-git (2014/09/12)\n");
-
-We create dm-verity squashfs image using version 4.3 whereas, the
-kernel uses 4.0 version to decompress it.
-Is there something missing here?
-
-When FEC (Forward Error Correction) comes into picture, then squashfs
-decompress fails.
-When we remove FEC flag from dm-verity then decompress works but read
-error still occurs.
-This seems as if something is missing either in FEC handling or either
-in squashfs decompress logic.
-
-Just wanted to know if there are any fixes already available in the
-mainline for this ?
-
+https://git.kernel.org/torvalds/c/08e873cb70f3
 
 Thanks,
-Pintu
+Zenghui
