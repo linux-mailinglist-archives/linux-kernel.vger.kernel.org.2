@@ -2,435 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CFD44F8E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 16:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4398D44F8E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 16:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbhKNP4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 10:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231888AbhKNP42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 10:56:28 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 424C260EE7;
-        Sun, 14 Nov 2021 15:53:32 +0000 (UTC)
-Date:   Sun, 14 Nov 2021 15:58:18 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] iio: frequency: admv1013: add support for
- ADMV1013
-Message-ID: <20211114155818.5f945bc9@jic23-huawei>
-In-Reply-To: <20211105112930.122017-2-antoniu.miclaus@analog.com>
-References: <20211105112930.122017-1-antoniu.miclaus@analog.com>
-        <20211105112930.122017-2-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235283AbhKNQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:01:30 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37598 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhKNQBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 11:01:24 -0500
+Received: by mail-io1-f71.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso9676897iov.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 07:58:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SbWVnq+nDvSmXuudTBjUq/oCHiJqjz9hQVixkgRbnxQ=;
+        b=U0MxenwYFb7Lug8FIKz9CUGN+mERToDKjdM7Y5WfrFX8qRFa5BpUdDtsRYU4FGv/oN
+         HlVhuDeWeYHI6rQoCOm1r9h7RCO2A81cZVy1Lv3V1omLnHtPS8R8Tvf91+f40qo6W2sz
+         N1PfDHwygyesw6/s+f9s5AvNBSkK7IeZz+mrsQw0mC0vaRaGM39MkgULqm/uwGVH5C97
+         +7TZwSmdHzO6ub4O9N6H5PuvO2f4OESqandGomOLepWgnaBhmKEF9+cRp97kNPrFy5Dk
+         NLxurIDTDee/pFWHwRJkIiD9yo1X34lPOH5tO+XDSyrsUGq5Djwwiki0Eo35i8ljwDC5
+         JcXw==
+X-Gm-Message-State: AOAM530FN/eHrhkcIGhOlJHk7aqTj8W6RU83ICIx9PC/+hRxpz4LfABf
+        pHPj/7QuMpg+b+N003r2Q5XIwGuKMsUeSPTCfwU89+1uXtVq
+X-Google-Smtp-Source: ABdhPJxvPwO1HHNr/AXIppzJ5JfMMiQyDq67g0m3DGxzFB3Kbko9+vhUXqQaa6Njv3BCMCMJm8gJr8pWI3b5zZ5kMsZ2nSxh/WrB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:1134:: with SMTP id f20mr23936092jar.6.1636905510478;
+ Sun, 14 Nov 2021 07:58:30 -0800 (PST)
+Date:   Sun, 14 Nov 2021 07:58:30 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007ba8cd05d0c1c3b0@google.com>
+Subject: [syzbot] possible deadlock in console_lock_spinning_enable (2)
+From:   syzbot <syzbot+3cc1054e15babd5f4cd2@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Nov 2021 13:29:28 +0200
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+Hello,
 
-> The ADMV1013 is a wideband, microwave upconverter optimized
-> for point to point microwave radio designs operating in the
-> 24 GHz to 44 GHz radio frequency (RF) range.
-> 
-> Datasheet:
-> https://www.analog.com/media/en/technical-documentation/data-sheets/ADMV1013.pdf
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+syzbot found the following issue on:
 
-Hmm. Representing the LO signal as a clock seems a little interesting
-but I guess that does let us use the clock framework to at least understand
-it's frequency etc.
+HEAD commit:    debe436e77c7 Merge tag 'ext4_for_linus' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=162b3b8ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2897a869f0607967
+dashboard link: https://syzkaller.appspot.com/bug?extid=3cc1054e15babd5f4cd2
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 
-A few fairly trivial comments inline, but most of the discussion around this
-is going to focus on ABI + DT bindings in the other patches.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Jonathan
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3cc1054e15babd5f4cd2@syzkaller.appspotmail.com
 
-> ---
-> changes in v4:
->  - add extended info for the LO feedthrough offset calibration
->  drivers/iio/frequency/Kconfig    |  11 +
->  drivers/iio/frequency/Makefile   |   1 +
->  drivers/iio/frequency/admv1013.c | 631 +++++++++++++++++++++++++++++++
->  3 files changed, 643 insertions(+)
->  create mode 100644 drivers/iio/frequency/admv1013.c
-> 
-> diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
-> index 240b81502512..411b3b961e46 100644
-> --- a/drivers/iio/frequency/Kconfig
-> +++ b/drivers/iio/frequency/Kconfig
-> @@ -49,5 +49,16 @@ config ADF4371
->  
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called adf4371.
-> +
-> +config ADMV1013
-> +	tristate "Analog Devices ADMV1013 Microwave Upconverter"
-> +	depends on SPI && COMMON_CLK
-> +	help
-> +	  Say yes here to build support for Analog Devices ADMV1013
-> +	  24 GHz to 44 GHz, Wideband, Microwave Upconverter.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called admv1013.
-> +
->  endmenu
->  endmenu
-> diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
-> index 518b1e50caef..559922a8196e 100644
-> --- a/drivers/iio/frequency/Makefile
-> +++ b/drivers/iio/frequency/Makefile
-> @@ -7,3 +7,4 @@
->  obj-$(CONFIG_AD9523) += ad9523.o
->  obj-$(CONFIG_ADF4350) += adf4350.o
->  obj-$(CONFIG_ADF4371) += adf4371.o
-> +obj-$(CONFIG_ADMV1013) += admv1013.o
-> diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
-> new file mode 100644
-> index 000000000000..e3d99afe5ecc
-> --- /dev/null
-> +++ b/drivers/iio/frequency/admv1013.c
-> @@ -0,0 +1,631 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * ADMV1013 driver
-> + *
-> + * Copyright 2021 Analog Devices Inc.
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/device.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/notifier.h>
-> +#include <linux/property.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/units.h>
-> +
-> +#include <asm/unaligned.h>
-> +
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 0
+======================================================
+WARNING: possible circular locking dependency detected
+5.15.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.5/6725 is trying to acquire lock:
+ffffffff8cb12260 (console_owner){-.-.}-{0:0}, at: console_lock_spinning_enable+0x2d/0x60 kernel/printk/printk.c:1778
 
-> +
-> +struct admv1013_state {
-> +	struct spi_device	*spi;
-> +	struct clk		*clkin;
-> +	/* Protect against concurrent accesses to the device and to data */
-> +	struct mutex		lock;
-> +	struct regulator	*reg;
-> +	struct notifier_block	nb;
-> +	unsigned int		quad_se_mode;
-> +	bool			vga_pd;
-> +	bool			mixer_pd;
-> +	bool			quad_pd;
-> +	bool			bg_pd;
-> +	bool			mixer_if_en;
-> +	bool			det_en;
-> +	u8			data[3] ____cacheline_aligned;
-> +};
-> +
-> +static int __admv1013_spi_read(struct admv1013_state *st, unsigned int reg,
-> +			       unsigned int *val)
-> +{
-> +	int ret;
-> +	struct spi_transfer t = {0};
-> +
-> +	st->data[0] = 0x80 | (reg << 1);
+but task is already holding lock:
+ffff8880893d4958 (&port->lock){-.-.}-{2:2}, at: pty_write+0xc5/0x170 drivers/tty/pty.c:120
 
-FIELD_PREP()
-
-> +	st->data[1] = 0x0;
-> +	st->data[2] = 0x0;
-> +
-> +	t.rx_buf = &st->data[0];
-> +	t.tx_buf = &st->data[0];
-> +	t.len = 3;
-> +
-> +	ret = spi_sync_transfer(st->spi, &t, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*val = (get_unaligned_be24(&st->data[0]) >> 1) & GENMASK(15, 0);
-
-FIELD_GET and GENMASK(16, 1) is slightly more readable.
-
-> +
-> +	return ret;
-> +}
-> +
-> +
-> +static int __admv1013_spi_write(struct admv1013_state *st,
-> +				unsigned int reg,
-> +				unsigned int val)
-> +{
-> +	put_unaligned_be24((val << 1) | (reg << 17), &st->data[0]);
-
-Looks like a place where FIELD_PREP and appropriate masks would be useful.
-
-> +
-> +	return spi_write(st->spi, &st->data[0], 3);
-> +}
-
-blank line.
-
-...
-
-> +
-> +static int admv1013_write_raw(struct iio_dev *indio_dev,
-> +			      struct iio_chan_spec const *chan,
-> +			      int val, int val2, long info)
-> +{
-> +	struct admv1013_state *st = iio_priv(indio_dev);
-> +
-> +	switch (info) {
-> +	case IIO_CHAN_INFO_PHASE:
-> +		if (chan->channel2 == IIO_MOD_I)
-> +			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
-> +							ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
-
-line too long.  Uses some local variables for the various parameters to reduce the length.
-
-> +							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, val));
-> +		else
-> +			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_Q,
-> +							ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
-> +							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, val));
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int admv1013_update_quad_filters(struct admv1013_state *st)
-> +{
-> +	unsigned int filt_raw;
-> +	u64 rate = clk_get_rate(st->clkin);
-> +
-> +	if (rate >= (5400 * HZ_PER_MHZ) && rate <= (7000 * HZ_PER_MHZ))
-> +		filt_raw = 15;
-> +	else if (rate >= (5400 * HZ_PER_MHZ) && rate <= (8000 * HZ_PER_MHZ))
-> +		filt_raw = 10;
-> +	else if (rate >= (6600 * HZ_PER_MHZ) && rate <= (9200 * HZ_PER_MHZ))
-> +		filt_raw = 5;
-> +	else
-> +		filt_raw = 0;
-> +
-> +	return __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
-> +					ADMV1013_QUAD_FILTERS_MSK,
-> +					FIELD_PREP(ADMV1013_QUAD_FILTERS_MSK, filt_raw));
-> +}
-> +
-> +static int admv1013_update_mixer_vgate(struct admv1013_state *st)
-> +{
-> +	unsigned int vcm, mixer_vgate;
-> +
-> +	vcm = regulator_get_voltage(st->reg);
-> +
-> +	if (vcm >= 0 && vcm < 1800000)
-> +		mixer_vgate = (2389 * vcm / 1000000 + 8100) / 100;
-> +	else if (vcm > 1800000 && vcm < 2600000)
-> +		mixer_vgate = (2375 * vcm / 1000000 + 125) / 100;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return __admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
-> +				 ADMV1013_MIXER_VGATE_MSK,
-> +				 FIELD_PREP(ADMV1013_MIXER_VGATE_MSK, mixer_vgate));
-> +}
-> +
-> +static int admv1013_reg_access(struct iio_dev *indio_dev,
-> +			       unsigned int reg,
-> +			       unsigned int write_val,
-> +			       unsigned int *read_val)
-> +{
-> +	struct admv1013_state *st = iio_priv(indio_dev);
-> +
-> +	if (read_val)
-> +		return admv1013_spi_read(st, reg, read_val);
-> +	else
-> +		return admv1013_spi_write(st, reg, write_val);
-> +}
-> +
-> +static const struct iio_info admv1013_info = {
-> +	.read_raw = admv1013_read_raw,
-> +	.write_raw = admv1013_write_raw,
-> +	.debugfs_reg_access = &admv1013_reg_access,
-> +};
-> +
-> +static int admv1013_freq_change(struct notifier_block *nb, unsigned long action, void *data)
-> +{
-> +	struct admv1013_state *st = container_of(nb, struct admv1013_state, nb);
-> +	int ret;
-> +
-> +	if (action == POST_RATE_CHANGE) {
-> +		mutex_lock(&st->lock);
-> +		ret = notifier_from_errno(admv1013_update_quad_filters(st));
-> +		mutex_unlock(&st->lock);
-> +		return ret;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +#define _ADMV1013_EXT_INFO(_name, _shared, _ident) { \
-> +		.name = _name, \
-> +		.read = admv1013_read, \
-> +		.write = admv1013_write, \
-> +		.private = _ident, \
-> +		.shared = _shared, \
-> +}
-> +
-> +static const struct iio_chan_spec_ext_info admv1013_ext_info[] = {
-> +	_ADMV1013_EXT_INFO("lo_feedthrough_offset_calib_positive", IIO_SEPARATE,
-> +			   ADMV1013_LO_FEED_OFFSET_CALIB_P),
-> +	_ADMV1013_EXT_INFO("lo_feedthrough_offset_calib_negative", IIO_SEPARATE,
-> +			   ADMV1013_LO_FEED_OFFSET_CALIB_N),
-> +	{ },
-> +};
-> +
-> +#define ADMV1013_CHAN_PHASE(_channel, rf_comp) {		\
-> +	.type = IIO_ALTVOLTAGE,					\
-> +	.modified = 1,						\
-> +	.output = 1,						\
-> +	.indexed = 1,						\
-> +	.channel2 = IIO_MOD_##rf_comp,				\
-> +	.channel = _channel,					\
-> +	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE)		\
-> +	}
-> +
-> +#define ADMV1013_FEED_LO_CALIB(_channel, rf_comp,  _admv1013_ext_info) {\
-> +	.type = IIO_ALTVOLTAGE,					\
-> +	.modified = 1,						\
-> +	.output = 1,						\
-> +	.indexed = 1,						\
-> +	.channel2 = IIO_MOD_##rf_comp,				\
-> +	.channel = _channel,					\
-> +	.ext_info = _admv1013_ext_info,				\
-> +	}
-> +
-> +static const struct iio_chan_spec admv1013_channels[] = {
-> +	ADMV1013_CHAN_PHASE(0, I),
-> +	ADMV1013_CHAN_PHASE(0, Q),
-> +	ADMV1013_FEED_LO_CALIB(0, I, admv1013_ext_info),
-> +	ADMV1013_FEED_LO_CALIB(0, Q, admv1013_ext_info),
-> +};
-> +
-> +static int admv1013_init(struct admv1013_state *st)
-> +{
-> +	int ret;
-> +	unsigned int chip_id, enable_reg, enable_reg_msk;
-> +	struct spi_device *spi = st->spi;
-> +
-> +	/* Perform a software reset */
-> +	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
-> +					 ADMV1013_SPI_SOFT_RESET_MSK,
-> +					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 1));
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
-> +					 ADMV1013_SPI_SOFT_RESET_MSK,
-> +					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 0));
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = __admv1013_spi_read(st, ADMV1013_REG_SPI_CONTROL, &chip_id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	chip_id = FIELD_GET(ADMV1013_CHIP_ID_MSK, chip_id);
-> +	if (chip_id != ADMV1013_CHIP_ID) {
-> +		dev_err(&spi->dev, "Invalid Chip ID.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = __admv1013_spi_write(st, ADMV1013_REG_VVA_TEMP_COMP, 0xE700);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
-> +					 ADMV1013_QUAD_SE_MODE_MSK,
-> +					 FIELD_PREP(ADMV1013_QUAD_SE_MODE_MSK, st->quad_se_mode));
-
-Try to avoid very long lines where it doesn't affect readability.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = admv1013_update_mixer_vgate(st);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = admv1013_update_quad_filters(st);
-> +	if (ret)
-> +		return ret;
-> +
-> +	enable_reg_msk = ADMV1013_VGA_PD_MSK |
-> +			ADMV1013_MIXER_PD_MSK |
-> +			ADMV1013_QUAD_PD_MSK |
-> +			ADMV1013_BG_PD_MSK |
-> +			ADMV1013_MIXER_IF_EN_MSK |
-> +			ADMV1013_DET_EN_MSK;
-> +
-> +	enable_reg = FIELD_PREP(ADMV1013_VGA_PD_MSK, st->vga_pd) |
-> +			FIELD_PREP(ADMV1013_MIXER_PD_MSK, st->mixer_pd) |
-> +			FIELD_PREP(ADMV1013_QUAD_PD_MSK, st->quad_pd ? 7 : 0) |
-> +			FIELD_PREP(ADMV1013_BG_PD_MSK, st->bg_pd) |
-> +			FIELD_PREP(ADMV1013_MIXER_IF_EN_MSK, st->mixer_if_en) |
-> +			FIELD_PREP(ADMV1013_DET_EN_MSK, st->det_en);
-> +
-> +	return __admv1013_spi_update_bits(st, ADMV1013_REG_ENABLE, enable_reg_msk, enable_reg);
-> +}
-...
-
-> +
-> +static int admv1013_properties_parse(struct admv1013_state *st)
-> +{
-> +	int ret;
-> +	struct spi_device *spi = st->spi;
-> +
-> +	st->vga_pd = device_property_read_bool(&spi->dev, "adi,vga-powerdown");
-> +	st->mixer_pd = device_property_read_bool(&spi->dev, "adi,mixer-powerdown");
-> +	st->quad_pd = device_property_read_bool(&spi->dev, "adi,quad-powerdown");
-> +	st->bg_pd = device_property_read_bool(&spi->dev, "adi,bg-powerdown");
-> +	st->mixer_if_en = device_property_read_bool(&spi->dev, "adi,mixer-if-enable");
-> +	st->det_en = device_property_read_bool(&spi->dev, "adi,detector-enable");
-
-Comments on these in the binding doc review.
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-> +
-> +	ret = device_property_read_u32(&spi->dev, "adi,quad-se-mode", &st->quad_se_mode);
-> +	if (ret)
-> +		st->quad_se_mode = 12;
-> +
-> +	st->reg = devm_regulator_get(&spi->dev, "vcm");
-> +	if (IS_ERR(st->reg))
-> +		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
-> +				     "failed to get the common-mode voltage\n");
-> +
-> +	st->clkin = devm_clk_get(&spi->dev, "lo_in");
-> +	if (IS_ERR(st->clkin))
-> +		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
-> +				     "failed to get the LO input clock\n");
-> +
-> +	return 0;
-> +}
-> +
+-> #2 (&port->lock){-.-.}-{2:2}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd1/0x120 kernel/locking/spinlock.c:162
+       tty_port_tty_get+0x21/0xe0 drivers/tty/tty_port.c:289
+       tty_port_default_wakeup+0x11/0x40 drivers/tty/tty_port.c:48
+       serial8250_tx_chars+0x68e/0x8a0 drivers/tty/serial/8250/8250_port.c:1845
+       serial8250_handle_irq+0x2fd/0x3e0 drivers/tty/serial/8250/8250_port.c:1932
+       serial8250_default_handle_irq+0xaf/0x190 drivers/tty/serial/8250/8250_port.c:1949
+       serial8250_interrupt+0xa3/0x1e0 drivers/tty/serial/8250/8250_core.c:126
+       __handle_irq_event_percpu+0x20d/0x730 kernel/irq/handle.c:158
+       handle_irq_event_percpu kernel/irq/handle.c:198 [inline]
+       handle_irq_event+0x10a/0x300 kernel/irq/handle.c:215
+       handle_edge_irq+0x245/0xbe0 kernel/irq/chip.c:822
+       generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
+       handle_irq arch/x86/kernel/irq.c:231 [inline]
+       __common_interrupt+0xce/0x1e0 arch/x86/kernel/irq.c:250
+       common_interrupt+0x9f/0xc0 arch/x86/kernel/irq.c:240
+       asm_common_interrupt+0x1e/0x40
+       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+       _raw_spin_unlock_irqrestore+0xd4/0x130 kernel/locking/spinlock.c:194
+       spin_unlock_irqrestore include/linux/spinlock.h:404 [inline]
+       uart_write+0x6ad/0x920 drivers/tty/serial/serial_core.c:598
+       do_output_char+0x638/0x940 drivers/tty/n_tty.c:444
+       process_output drivers/tty/n_tty.c:511 [inline]
+       n_tty_write+0xe95/0x1320 drivers/tty/n_tty.c:2300
+       do_tty_write drivers/tty/tty_io.c:1038 [inline]
+       file_tty_write+0x5c5/0x9a0 drivers/tty/tty_io.c:1110
+       do_iter_readv_writev+0x54f/0x740
+       do_iter_write+0x21e/0x7b0 fs/read_write.c:851
+       vfs_writev fs/read_write.c:924 [inline]
+       do_writev+0x279/0x470 fs/read_write.c:967
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #1 (&port_lock_key){-.-.}-{2:2}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd1/0x120 kernel/locking/spinlock.c:162
+       serial8250_console_write+0x19c/0xf30 drivers/tty/serial/8250/8250_port.c:3358
+       console_unlock+0xb00/0xe90 kernel/printk/printk.c:2711
+       vprintk_emit+0xba/0x140 kernel/printk/printk.c:2245
+       _printk+0xcf/0x118 kernel/printk/printk.c:2266
+       register_console+0x6bd/0x9a0 kernel/printk/printk.c:3051
+       univ8250_console_init+0x41/0x43 drivers/tty/serial/8250/8250_core.c:680
+       console_init+0x52/0x97 kernel/printk/printk.c:3151
+       start_kernel+0x32d/0x56e init/main.c:1064
+       secondary_startup_64_no_verify+0xb1/0xbb
+
+-> #0 (console_owner){-.-.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3063 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3186 [inline]
+       validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3801
+       __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5027
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       console_lock_spinning_enable+0x52/0x60 kernel/printk/printk.c:1781
+       console_unlock+0x834/0xe90 kernel/printk/printk.c:2708
+       vprintk_emit+0xba/0x140 kernel/printk/printk.c:2245
+       _printk+0xcf/0x118 kernel/printk/printk.c:2266
+       fail_dump lib/fault-inject.c:45 [inline]
+       should_fail+0x366/0x4b0 lib/fault-inject.c:146
+       should_failslab+0x5/0x20 mm/slab_common.c:1320
+       slab_pre_alloc_hook mm/slab.h:494 [inline]
+       slab_alloc_node mm/slub.c:3148 [inline]
+       slab_alloc mm/slub.c:3242 [inline]
+       __kmalloc+0x94/0x380 mm/slub.c:4419
+       kmalloc include/linux/slab.h:595 [inline]
+       tty_buffer_alloc drivers/tty/tty_buffer.c:177 [inline]
+       __tty_buffer_request_room+0x1f0/0x540 drivers/tty/tty_buffer.c:275
+       tty_insert_flip_string_fixed_flag+0x92/0x2c0 drivers/tty/tty_buffer.c:321
+       tty_insert_flip_string include/linux/tty_flip.h:42 [inline]
+       pty_write+0xe9/0x170 drivers/tty/pty.c:122
+       tty_put_char+0x115/0x180 drivers/tty/tty_io.c:3174
+       do_output_char+0x583/0x940 drivers/tty/n_tty.c:485
+       __process_echoes+0x2a3/0x930 drivers/tty/n_tty.c:736
+       flush_echoes drivers/tty/n_tty.c:826 [inline]
+       __receive_buf drivers/tty/n_tty.c:1579 [inline]
+       n_tty_receive_buf_common+0x7c2d/0x81d0 drivers/tty/n_tty.c:1674
+       tiocsti drivers/tty/tty_io.c:2310 [inline]
+       tty_ioctl+0xe30/0x17d0 drivers/tty/tty_io.c:2719
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:874 [inline]
+       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:860
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  console_owner --> &port_lock_key --> &port->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&port->lock);
+                               lock(&port_lock_key);
+                               lock(&port->lock);
+  lock(console_owner);
+
+ *** DEADLOCK ***
+
+6 locks held by syz-executor.5/6725:
+ #0: ffff888084da5098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:252
+ #1: ffff8880893d60b8 (&port->buf.lock/1){+.+.}-{3:3}, at: tiocsti drivers/tty/tty_io.c:2308 [inline]
+ #1: ffff8880893d60b8 (&port->buf.lock/1){+.+.}-{3:3}, at: tty_ioctl+0xdba/0x17d0 drivers/tty/tty_io.c:2719
+ #2: ffff888084da52e8 (&o_tty->termios_rwsem/1){++++}-{3:3}, at: n_tty_receive_buf_common+0x8e/0x81d0 drivers/tty/n_tty.c:1637
+ #3: ffffc90017a63378 (&ldata->output_lock){+.+.}-{3:3}, at: flush_echoes drivers/tty/n_tty.c:824 [inline]
+ #3: ffffc90017a63378 (&ldata->output_lock){+.+.}-{3:3}, at: __receive_buf drivers/tty/n_tty.c:1579 [inline]
+ #3: ffffc90017a63378 (&ldata->output_lock){+.+.}-{3:3}, at: n_tty_receive_buf_common+0x7be1/0x81d0 drivers/tty/n_tty.c:1674
+ #4: ffff8880893d4958 (&port->lock){-.-.}-{2:2}, at: pty_write+0xc5/0x170 drivers/tty/pty.c:120
+ #5: ffffffff8c9f9f00 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0xa1/0x140 kernel/printk/printk.c:2244
+
+stack backtrace:
+CPU: 0 PID: 6725 Comm: syz-executor.5 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ check_noncircular+0x2f9/0x3b0 kernel/locking/lockdep.c:2143
+ check_prev_add kernel/locking/lockdep.c:3063 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3186 [inline]
+ validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3801
+ __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5027
+ lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+ console_lock_spinning_enable+0x52/0x60 kernel/printk/printk.c:1781
+ console_unlock+0x834/0xe90 kernel/printk/printk.c:2708
+ vprintk_emit+0xba/0x140 kernel/printk/printk.c:2245
+ _printk+0xcf/0x118 kernel/printk/printk.c:2266
+ fail_dump lib/fault-inject.c:45 [inline]
+ should_fail+0x366/0x4b0 lib/fault-inject.c:146
+ should_failslab+0x5/0x20 mm/slab_common.c:1320
+ slab_pre_alloc_hook mm/slab.h:494 [inline]
+ slab_alloc_node mm/slub.c:3148 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ __kmalloc+0x94/0x380 mm/slub.c:4419
+ kmalloc include/linux/slab.h:595 [inline]
+ tty_buffer_alloc drivers/tty/tty_buffer.c:177 [inline]
+ __tty_buffer_request_room+0x1f0/0x540 drivers/tty/tty_buffer.c:275
+ tty_insert_flip_string_fixed_flag+0x92/0x2c0 drivers/tty/tty_buffer.c:321
+ tty_insert_flip_string include/linux/tty_flip.h:42 [inline]
+ pty_write+0xe9/0x170 drivers/tty/pty.c:122
+ tty_put_char+0x115/0x180 drivers/tty/tty_io.c:3174
+ do_output_char+0x583/0x940 drivers/tty/n_tty.c:485
+ __process_echoes+0x2a3/0x930 drivers/tty/n_tty.c:736
+ flush_echoes drivers/tty/n_tty.c:826 [inline]
+ __receive_buf drivers/tty/n_tty.c:1579 [inline]
+ n_tty_receive_buf_common+0x7c2d/0x81d0 drivers/tty/n_tty.c:1674
+ tiocsti drivers/tty/tty_io.c:2310 [inline]
+ tty_ioctl+0xe30/0x17d0 drivers/tty/tty_io.c:2719
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fa76cdb3ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa76a2e7188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fa76cec70e0 RCX: 00007fa76cdb3ae9
+RDX: 0000000020000100 RSI: 0000000000005412 RDI: 0000000000000004
+RBP: 00007fa76a2e71d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff471d4ccf R14: 00007fa76a2e7300 R15: 0000000000022000
+ </TASK>
+CPU: 0 PID: 6725 Comm: syz-executor.5 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail+0x384/0x4b0 lib/fault-inject.c:146
+ should_failslab+0x5/0x20 mm/slab_common.c:1320
+ slab_pre_alloc_hook mm/slab.h:494 [inline]
+ slab_alloc_node mm/slub.c:3148 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ __kmalloc+0x94/0x380 mm/slub.c:4419
+ kmalloc include/linux/slab.h:595 [inline]
+ tty_buffer_alloc drivers/tty/tty_buffer.c:177 [inline]
+ __tty_buffer_request_room+0x1f0/0x540 drivers/tty/tty_buffer.c:275
+ tty_insert_flip_string_fixed_flag+0x92/0x2c0 drivers/tty/tty_buffer.c:321
+ tty_insert_flip_string include/linux/tty_flip.h:42 [inline]
+ pty_write+0xe9/0x170 drivers/tty/pty.c:122
+ tty_put_char+0x115/0x180 drivers/tty/tty_io.c:3174
+ do_output_char+0x583/0x940 drivers/tty/n_tty.c:485
+ __process_echoes+0x2a3/0x930 drivers/tty/n_tty.c:736
+ flush_echoes drivers/tty/n_tty.c:826 [inline]
+ __receive_buf drivers/tty/n_tty.c:1579 [inline]
+ n_tty_receive_buf_common+0x7c2d/0x81d0 drivers/tty/n_tty.c:1674
+ tiocsti drivers/tty/tty_io.c:2310 [inline]
+ tty_ioctl+0xe30/0x17d0 drivers/tty/tty_io.c:2719
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fa76cdb3ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa76a2e7188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fa76cec70e0 RCX: 00007fa76cdb3ae9
+RDX: 0000000020000100 RSI: 0000000000005412 RDI: 0000000000000004
+RBP: 00007fa76a2e71d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff471d4ccf R14: 00007fa76a2e7300 R15: 0000000000022000
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
