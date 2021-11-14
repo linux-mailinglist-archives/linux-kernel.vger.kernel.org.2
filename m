@@ -2,105 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF8744F92E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D7444F933
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbhKNQ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:57:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231831AbhKNQ5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:57:25 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A11C60C4D;
-        Sun, 14 Nov 2021 16:54:26 +0000 (UTC)
-Date:   Sun, 14 Nov 2021 16:59:13 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>
-Subject: Re: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
-Message-ID: <20211114165913.55a90249@jic23-huawei>
-In-Reply-To: <20211114163444.21669-1-rdunlap@infradead.org>
-References: <20211114163444.21669-1-rdunlap@infradead.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S236035AbhKNRFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:05:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60572 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229725AbhKNRFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 12:05:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636909331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pdzvmRxzWAJAKI2bnZiBldjj4kRy/zRG6nAZE9MeWk4=;
+        b=fZYrC1EejgxXYad0lTKvXM+TIygjVxDp8bfuWGXPdL6mnd0lpRwS783Ek/DlGEFKEvSQDL
+        c3yAbdtJO8/u7lwjWvvDMuh1kUTbH/hY4RDDBRDHyWPyUq4DpjqN/dmr1xK7MkzXaDA3dQ
+        Vj6TLwtz4Hvheuv5JkynGiEP9+3mpaw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-y7ckd-eUNZ6KCRcw0gm0vA-1; Sun, 14 Nov 2021 12:02:10 -0500
+X-MC-Unique: y7ckd-eUNZ6KCRcw0gm0vA-1
+Received: by mail-qv1-f70.google.com with SMTP id fn12-20020ad45d6c000000b003bd9c921c0eso13682151qvb.21
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:02:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pdzvmRxzWAJAKI2bnZiBldjj4kRy/zRG6nAZE9MeWk4=;
+        b=3+WwFBnoYo/ilS2nhGY0CcuLR32GxoXQ/q6HolnU2JmNZvDL+x9hqpHEMbTvCugZ1/
+         XW/wI/V3jCCgitqyhtqLOnF71X+U4eHh6/06ZLwm1OFpZCD53pgf3wpLzGK79viQkU25
+         s5I9GqQtoyOHuEDxXRHfKT9zGx4wsCWkmGXt6l86eqXj5v3kWB3LrpDBxslQubweIeUx
+         K3N3vnqk87G/QvOZNdrCP78NGyNF8qn3aPE/hS/xwndUSWPtBvSjYjZPrcLDJ11kWDt1
+         SFUdBCM3FjAMyDRB2FGWUnmQrE7EX5Z6h6q5UJd2tkyuZ97ythO2oo6q23gBdmroOwK1
+         DRLg==
+X-Gm-Message-State: AOAM533DVnV3/PR1vmwSygqQfU/NEU8q10WFSTtqKeYIgdi/W+VC1Ms6
+        UjrGmRYAO8rmRxWrpja7OBNmm+qo4rbniUCkevFjHEZjP9tJvGZQnUMWm1+UKX3Bp793MDWrakK
+        o9G0V4nsjowWnUkqbvbDjgFrW
+X-Received: by 2002:a05:620a:1aa0:: with SMTP id bl32mr25781571qkb.140.1636909329884;
+        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy3fsX0amBg4KTKwAHXzq/1xbMBf+qUOnM2ajFU/qgxaFvHPrBXqfnJ+OC0Ym2EN8YEGm8e1g==
+X-Received: by 2002:a05:620a:1aa0:: with SMTP id bl32mr25781536qkb.140.1636909329631;
+        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id o5sm5403526qkl.50.2021.11.14.09.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
+Date:   Sun, 14 Nov 2021 18:02:04 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH 2/2] perf parse-events: Architecture specific leader
+ override
+Message-ID: <YZFBDI6oPMidX0KO@krava>
+References: <20211113071548.372572-1-irogers@google.com>
+ <20211113071548.372572-2-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211113071548.372572-2-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Nov 2021 08:34:44 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-> clk_get_parent(), so add a simple implementation of that
-> function so that callers of it will build without errors.
+On Fri, Nov 12, 2021 at 11:15:48PM -0800, Ian Rogers wrote:
+> Currently topdown events must appear after a slots event:
 > 
-> Fixes these build errors:
+> $ perf stat -e '{slots,topdown-fe-bound}' /bin/true
 > 
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+>  Performance counter stats for '/bin/true':
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
+>          3,183,090      slots
+>            986,133      topdown-fe-bound
+> 
+> Reversing the events yields:
+> 
+> $ perf stat -e '{topdown-fe-bound,slots}' /bin/true
+> Error:
+> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (topdown-fe-bound).
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+why is this actually failing?
 
-I wonder a bit if it makes sense to fix only the ones we hit given there
-look to be other missing definitions in this subarch.
-clk_has_parent() for example appears to also be missing.
+> 
+> For metrics the order of events is determined by iterating over a
+> hashmap, and so slots isn't guaranteed to be first which can yield this
+> error.
+> 
+> Change the set_leader in parse-events, called when a group is closed, so
+> that rather than always making the first event the leader, if the slots
+> event exists then it is made the leader. It is then moved to the head of
+> the evlist otherwise it won't be opened in the correct order.
+> 
+> The result is:
+> 
+> $ perf stat -e '{topdown-fe-bound,slots}' /bin/true
+> 
+>  Performance counter stats for '/bin/true':
+> 
+>          3,274,795      slots
+>          1,001,702      topdown-fe-bound
+> 
+> A problem with this approach is the slots event is identified by name,
+> names can be overwritten like 'cpu/slots,name=foo/' and this causes the
+> leader change to fail.
 
-Do we have the same issue with mips/lantiq?
+would it be better then to move this shuffle to the metric code directly,
+and make sure it only spits 'good' order of events?
 
-Jonathan
+and keep "-e '{topdown-fe-bound,slots}'" to fail if user specifies that on
+the command line
 
-
-> Cc: Artur Rojek <contact@artur-rojek.eu>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: Jonas Gorski <jonas.gorski@gmail.com>
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-> v1 and v2 were:
-> [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
+>  tools/perf/arch/x86/util/evlist.c | 17 +++++++++++++++++
+>  tools/perf/util/evlist.h          |  1 +
+>  tools/perf/util/parse-events.c    | 16 +++++++++++-----
+>  tools/perf/util/parse-events.h    |  4 ++--
+>  tools/perf/util/parse-events.y    | 12 ++++++++----
+>  5 files changed, 39 insertions(+), 11 deletions(-)
 > 
->  arch/mips/bcm63xx/clk.c |    7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> --- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
-> +++ linux-next-20211112/arch/mips/bcm63xx/clk.c
-> @@ -381,6 +381,13 @@ void clk_disable(struct clk *clk)
->  
->  EXPORT_SYMBOL(clk_disable);
->  
-> +struct clk *clk_get_parent(struct clk *clk)
+> diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
+> index 0b0951030a2f..1624372b2da2 100644
+> --- a/tools/perf/arch/x86/util/evlist.c
+> +++ b/tools/perf/arch/x86/util/evlist.c
+> @@ -17,3 +17,20 @@ int arch_evlist__add_default_attrs(struct evlist *evlist)
+>  	else
+>  		return parse_events(evlist, TOPDOWN_L1_EVENTS, NULL);
+>  }
+> +
+> +struct evsel *arch_evlist__leader(struct list_head *list)
 > +{
-> +	return NULL;
+> +	struct evsel *evsel, *first;
+> +
+> +	first = list_entry(list->next, struct evsel, core.node);
+> +
+> +	if (!pmu_have_event("cpu", "slots"))
+> +		return first;
+> +
+> +	__evlist__for_each_entry(list, evsel) {
+> +		if (evsel->pmu_name && !strcmp(evsel->pmu_name, "cpu") &&
+> +			evsel->name && strstr(evsel->name, "slots"))
+> +			return evsel;
+> +	}
+> +	return first;
+> +}
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 97bfb8d0be4f..993437ffe429 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -110,6 +110,7 @@ int __evlist__add_default_attrs(struct evlist *evlist,
+>  	__evlist__add_default_attrs(evlist, array, ARRAY_SIZE(array))
+>  
+>  int arch_evlist__add_default_attrs(struct evlist *evlist);
+> +struct evsel *arch_evlist__leader(struct list_head *list);
+>  
+>  int evlist__add_dummy(struct evlist *evlist);
+>  
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 6308ba739d19..a2f4c086986f 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -1821,22 +1821,28 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
+>  	return ret;
+>  }
+>  
+> -void parse_events__set_leader(char *name, struct list_head *list,
+> -			      struct parse_events_state *parse_state)
+> +__weak struct evsel *arch_evlist__leader(struct list_head *list)
+> +{
+> +	return list_entry(list->next, struct evsel, core.node);
 > +}
 > +
-> +EXPORT_SYMBOL(clk_get_parent);
-> +
->  unsigned long clk_get_rate(struct clk *clk)
+> +struct list_head *parse_events__set_leader(char *name, struct list_head *list,
+> +					struct parse_events_state *parse_state)
 >  {
->  	if (!clk)
+>  	struct evsel *leader;
+>  
+>  	if (list_empty(list)) {
+>  		WARN_ONCE(true, "WARNING: failed to set leader: empty list");
+> -		return;
+> +		return NULL;
+>  	}
+>  
+>  	if (parse_events__set_leader_for_uncore_aliase(name, list, parse_state))
+> -		return;
+> +		return NULL;
+>  
+> -	leader = list_entry(list->next, struct evsel, core.node);
+> +	leader = arch_evlist__leader(list);
+>  	__perf_evlist__set_leader(list, &leader->core);
+>  	leader->group_name = name ? strdup(name) : NULL;
+> +	return &leader->core.node;
+>  }
+>  
+>  /* list_event is assumed to point to malloc'ed memory */
+> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> index c7fc93f54577..8a6e6b4d5cbe 100644
+> --- a/tools/perf/util/parse-events.h
+> +++ b/tools/perf/util/parse-events.h
+> @@ -211,8 +211,8 @@ int parse_events_copy_term_list(struct list_head *old,
+>  
+>  enum perf_pmu_event_symbol_type
+>  perf_pmu__parse_check(const char *name);
+> -void parse_events__set_leader(char *name, struct list_head *list,
+> -			      struct parse_events_state *parse_state);
+> +struct list_head *parse_events__set_leader(char *name, struct list_head *list,
+> +					struct parse_events_state *parse_state);
+>  void parse_events_update_lists(struct list_head *list_event,
+>  			       struct list_head *list_all);
+>  void parse_events_evlist_error(struct parse_events_state *parse_state,
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index 174158982fae..5358c400f938 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -199,20 +199,24 @@ group_def
+>  group_def:
+>  PE_NAME '{' events '}'
+>  {
+> -	struct list_head *list = $3;
+> +	struct list_head *new_head, *list = $3;
+>  
+>  	inc_group_count(list, _parse_state);
+> -	parse_events__set_leader($1, list, _parse_state);
+> +	new_head = parse_events__set_leader($1, list, _parse_state);
+> +	if (new_head)
+> +		list_move(new_head, list);
+
+why not put these last 2 lines to parse_events__set_leader as well?
+
+>  	free($1);
+>  	$$ = list;
+>  }
+>  |
+>  '{' events '}'
+>  {
+> -	struct list_head *list = $2;
+> +	struct list_head *new_head, *list = $2;
+>  
+>  	inc_group_count(list, _parse_state);
+> -	parse_events__set_leader(NULL, list, _parse_state);
+> +	new_head = parse_events__set_leader(NULL, list, _parse_state);
+> +	if (new_head)
+> +		list_move(new_head, list);
+
+same
+
+thanks,
+jirka
 
