@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB6344F6F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 06:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1AF44F6FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhKNF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 00:59:43 -0500
-Received: from smtpbg604.qq.com ([59.36.128.82]:45714 "EHLO smtpbg604.qq.com"
+        id S234444AbhKNGFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 01:05:52 -0500
+Received: from smtpbg604.qq.com ([59.36.128.82]:55737 "EHLO smtpbg604.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232939AbhKNF7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 00:59:42 -0500
-X-QQ-mid: bizesmtp41t1636869333tlg1bn5s
+        id S229537AbhKNGFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 01:05:51 -0500
+X-QQ-mid: bizesmtp43t1636869746t2squ0kq
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 14 Nov 2021 13:55:31 +0800 (CST)
+        id ; Sun, 14 Nov 2021 14:02:24 +0800 (CST)
 X-QQ-SSF: 01000000002000C0F000B00A0000000
-X-QQ-FEAT: 7nM+eLZz0bZ/0iG06QaU/Zg9CREKbPpcyJSPGzKP8pxr0+Fy5gaTGdRGgelnW
-        L6XmdApV9MjTdmUx7wzbvoTOcsPqQHZUhrxEVzzm311WTZYzSIRe8raE67rRQhjKvRCOCR+
-        SN8opLf0+A8DIC1gX5iK+CM2KxRxea0KZ6vDA8maSOCE3XgY16wD+hZ8GpC//QkVycxA3TU
-        sNlZtZ4VuuZQgn6mfOfuDtT76cAHGB/fak/exQSPGv1zYA0+qw2LFf3ffBdEUKNh2UtmtuU
-        V/560drfEvdgMHdMe0Jn1+0Yuwp2Ni0M84nfwIItje5xMeVt2AP1Ld0tnE4b/2JagmcbaZk
-        VeGw/JmjANDafMMfrQzeFqPYH3q/A==
+X-QQ-FEAT: Mzskoac49OiIv0KUitNHgBb3kgXFZxiGEiqTBvjSiDqRqg3yXuxl3T342JbHl
+        4g++JaVU0TN+1b89QYqwytK3N9VD2AwPd06cj/sJiTrh6+60krhMot3ZJ7ymCx6/+F1OQoW
+        vg5EyYg3eJ7FmovozeHiTiDTeUwxOMz8fVLeCpAsAzCThmgiXgbQX7rvUZ4OnTE2zU74AWM
+        fUyxv9ekDP9hjT0NxJLqDgA5fsGB60s6SWgr8FHYORSJqwr4YZQj1q66/FIX3kWuuoM/2tN
+        7TxQFoFFI+szTmwDjybybDhSCrExiaOtrOKHym0pTan0iEhXewZPMiIzLqkQTaoOPCKC4vS
+        ePvi43zoXYdPWJy5AFO16G6e9ICmkjWiOEvgBLl
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] sched: remove unneeded semicolon
-Date:   Sun, 14 Nov 2021 13:55:29 +0800
-Message-Id: <20211114055529.221612-1-wangborong@cdjrlc.com>
+Subject: [PATCH] igb: remove never changed variable `ret_val'
+Date:   Sun, 14 Nov 2021 14:02:22 +0800
+Message-Id: <20211114060222.231075-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,26 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The semicolon after `}' is unneeded. So, just remove it.
+The variable used for return status in `igb_write_xmdio_reg' function
+is never changed  and this function is just need return 0. Thus, the
+`ret_val' can be removed and return 0 at the end of the
+`igb_write_xmdio_reg' function.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- kernel/sched/core_sched.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igb/e1000_i210.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-index 517f72b008f5..f945b0c373db 100644
---- a/kernel/sched/core_sched.c
-+++ b/kernel/sched/core_sched.c
-@@ -203,7 +203,7 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
- 	default:
- 		err = -EINVAL;
- 		goto out;
--	};
-+	}
+diff --git a/drivers/net/ethernet/intel/igb/e1000_i210.c b/drivers/net/ethernet/intel/igb/e1000_i210.c
+index 9265901455cd..b9b9d35494d2 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_i210.c
++++ b/drivers/net/ethernet/intel/igb/e1000_i210.c
+@@ -792,7 +792,6 @@ s32 igb_write_xmdio_reg(struct e1000_hw *hw, u16 addr, u8 dev_addr, u16 data)
+  **/
+ s32 igb_init_nvm_params_i210(struct e1000_hw *hw)
+ {
+-	s32 ret_val = 0;
+ 	struct e1000_nvm_info *nvm = &hw->nvm;
  
- 	if (type == PIDTYPE_PID) {
- 		__sched_core_set(task, cookie);
+ 	nvm->ops.acquire = igb_acquire_nvm_i210;
+@@ -813,7 +812,7 @@ s32 igb_init_nvm_params_i210(struct e1000_hw *hw)
+ 		nvm->ops.validate = NULL;
+ 		nvm->ops.update   = NULL;
+ 	}
+-	return ret_val;
++	return 0;
+ }
+ 
+ /**
 -- 
 2.33.0
 
