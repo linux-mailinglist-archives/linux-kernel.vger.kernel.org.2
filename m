@@ -2,133 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D226C44FBD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29FC44FBE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhKNV3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 16:29:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236366AbhKNV2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 16:28:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E964361073;
-        Sun, 14 Nov 2021 21:25:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636925158;
-        bh=2spCuxQ2K3w5slj51MhDystRvnTlw57S5B68mW15EH4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eu0e7TsmbEXqaAdVV4okGHXQANWcGiGCwwplUSSacG/XCUO7tLEOhJdcsHVT7SSQ6
-         MfktXA+0Nq6Q1caoiSysp3DGrphv3JFpDBs7H8vIIF1WuOVnC5MbQFSnETukvWwhLW
-         9nhrgEzh1vAmPenKqewBlw4dZg2jj5O0LFOZ+OcA7h20KZQOzkNvFrZXl0oSdeltM2
-         n19Sra6J27rDg3Vz/4WiDteC4GY844CH1+3LakI7TS9AOAzubBKxoudzFvhYkwixbq
-         /fWvbfM1h5oAGMfTs2XxXq4+4NrpenqkJTdtZtAhDiJKx8HMMiGIX7AWgGmDwV9Hal
-         l0lYQZ7gm2VPQ==
-Date:   Sun, 14 Nov 2021 15:31:00 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
-Message-ID: <20211114213100.GA41124@embeddedor>
-References: <20211114005725.GA27075@embeddedor>
- <YZF9MY6rRLQwdTgM@archlinux-ax161>
+        id S234970AbhKNV7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 16:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231469AbhKNV7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 16:59:49 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42762C061766
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:56:51 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id g14so63016939edz.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z+a45scJUghbWle9ZBsDg+s+2wzuH5GEQRWeFAD8t7E=;
+        b=AKBJYmPfyiaYmwd7oyncnL6zw9NtPWAJSbT7wJ9CoM5XRX4y7lYR4azZmAWJhnkbx3
+         wApEFEVRRFjCRlk8LcnF6jhjQwm5wv7r4B6Skyc7KmZmOOftQeLeqyS9W4PEM5aCIXOK
+         3C2t8LKXJCZlA74FYaRzy+O2yuqZGrD9mvi+IO33lc7L6Yucfzu+gveGnyIDEh2HehQo
+         GXFDuQDrEVz3+SlIQXV7z/Scjb381zZkmaPcGnIu7xzfs3l25xVRGofL7jjsWciVrfFx
+         LQ7c+cenNltzXc/rnPZhVahuvpT8J2ioVmkhvGdpu+lB9nG1RnYh946IZT2OyC/m7P+O
+         T77w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z+a45scJUghbWle9ZBsDg+s+2wzuH5GEQRWeFAD8t7E=;
+        b=1OYJFqOfu18fHIsJU/DsbVWB1NDvRjBBj7sR797pzNV9KYGKbRE6AeABfnEQlUrMqj
+         fWxlNAfGesU+zzuTEt2+mStAkoCtIL7+/6uq+AvEIrN7RD5EouIXiUAIW4Rq2LwFx04/
+         VGrMl90IHvUqxUa3/7oG6p55HQYSPFLfKNtCx6kJVdJ8vLgf8JK1Mak+ugK0fItCUSrs
+         YNGpgf64+6EUsy0afjJ5S6SZkNgsycOzxENJErevsVrBeMVfqeE5Gc1V/jrCLNJRHQQu
+         hNYoRqTSSbgtrRUDsogWdeYdsGPpTI6HpuVp4o69TlWwLEhrxL78wQB6z8qtpn0nWkUE
+         sEyA==
+X-Gm-Message-State: AOAM5302m3UMYqACCahl20qzqGkOUGtj656LD9p6VIBQv6j+bN10HUqU
+        ld46c/l3mdiC3lVHxvcKCMBC4rttJ1UNEiRHDsTEpg==
+X-Google-Smtp-Source: ABdhPJyomQczgvwHG7w6id4jh3N0ebh0Ihr1LveJ55TvN/g341+OWtesIcRAQSmVB1tvezeAr3cMSOUbMM62omekLG0=
+X-Received: by 2002:a05:6402:190d:: with SMTP id e13mr47552746edz.339.1636927009693;
+ Sun, 14 Nov 2021 13:56:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZF9MY6rRLQwdTgM@archlinux-ax161>
+References: <20211111041500.17363-1-yunfei.dong@mediatek.com> <20211111041500.17363-16-yunfei.dong@mediatek.com>
+In-Reply-To: <20211111041500.17363-16-yunfei.dong@mediatek.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Sun, 14 Nov 2021 18:56:37 -0300
+Message-ID: <CAAEAJfBWgP1fMsEQQEa=2Rk810oHzDo609TzicYgwPbU8AMunQ@mail.gmail.com>
+Subject: Re: [PATCH v10, 15/19] dt-bindings: media: mtk-vcodec: Adds decoder
+ dt-bindings for mt8192
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Irui Wang <irui.wang@mediatek.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 02:18:41PM -0700, Nathan Chancellor wrote:
-> On Sat, Nov 13, 2021 at 06:57:25PM -0600, Gustavo A. R. Silva wrote:
-> > Add Kconfig support for -Wimplicit-fallthrough for both GCC and Clang.
-> > 
-> > The compiler option is under configuration CC_IMPLICIT_FALLTHROUGH,
-> > which is enabled by default.
-> > 
-> > Special thanks to Nathan Chancellor who fixed the Clang bug[1][2]. This
-> > bugfix only appears in Clang 14.0.0, so older versions still contain
-> > the bug and -Wimplicit-fallthrough won't be enabled for them, for now.
-> > 
-> > This concludes a long journey and now we are finally getting rid
-> > of the unintentional fallthrough bug-class in the kernel, entirely. :)
-> > 
-> > [1] https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
-> > [2] https://bugs.llvm.org/show_bug.cgi?id=51094
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> > Co-developed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> This appears to do the right thing with both clang-13 and clang-14.
-> 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+Yunfei,
 
-Thanks, Nathan.
+On Thu, 11 Nov 2021 at 01:15, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
+>
+> Adds decoder dt-bindings for mt8192.
+>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>  .../media/mediatek,vcodec-subdev-decoder.yaml | 261 ++++++++++++++++++
+>  1 file changed, 261 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-subdev-decoder.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-subdev-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-subdev-decoder.yaml
+> new file mode 100644
+> index 000000000000..1886fae6e39d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-subdev-decoder.yaml
+> @@ -0,0 +1,261 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/media/mediatek,vcodec-subdev-decoder.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Mediatek Video Decode Accelerator With Multi Hardware
+> +
+> +maintainers:
+> +  - Yunfei Dong <yunfei.dong@mediatek.com>
+> +
+> +description: |
+> +  Mediatek Video Decode is the video decode hardware present in Mediatek
+> +  SoCs which supports high resolution decoding functionalities. Required
+> +  main and subdev device node.
+> +
+> +  About the Decoder Hardware Block Diagram, please check below:
+> +
+> +    +---------------------------------+------------------------------------+
+> +    |                                 |                                    |
+> +    | input -> lat HW -> lat buffer --|--> lat buffer -> core HW -> output
+ |
 
---
-Gustavo
+To be completely honest, I can't really understand what is the meaning
+of the blocks
+with input -> lat hw -> lat buffer, and how this means lat- and core-
+are children of some parent.
 
-> 
-> It feels a little odd to have this in Kconfig but if it works and gets
-> the warning enabled, then so be it.
-> 
-> > ---
-> >  Makefile     | 6 +-----
-> >  init/Kconfig | 5 +++++
-> >  2 files changed, 6 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Makefile b/Makefile
-> > index 30c7c81d0437..f18a50daad00 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -786,7 +786,7 @@ stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      := -fstack-protector-strong
-> >  KBUILD_CFLAGS += $(stackp-flags-y)
-> >  
-> >  KBUILD_CFLAGS-$(CONFIG_WERROR) += -Werror
-> > -KBUILD_CFLAGS += $(KBUILD_CFLAGS-y)
-> > +KBUILD_CFLAGS += $(KBUILD_CFLAGS-y) $(CONFIG_CC_IMPLICIT_FALLTHROUGH)
-> >  
-> >  ifdef CONFIG_CC_IS_CLANG
-> >  KBUILD_CPPFLAGS += -Qunused-arguments
-> > @@ -798,10 +798,6 @@ KBUILD_CFLAGS += -Wno-gnu
-> >  KBUILD_CFLAGS += -mno-global-merge
-> >  else
-> >  
-> > -# Warn about unmarked fall-throughs in switch statement.
-> > -# Disabled for clang while comment to attribute conversion happens and
-> > -# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
-> > -KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
-> >  # gcc inanely warns about local variables called 'main'
-> >  KBUILD_CFLAGS += -Wno-main
-> >  endif
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 11f8a845f259..b0582cd3e096 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -885,6 +885,11 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-> >  config CC_HAS_INT128
-> >  	def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0) && 64BIT
-> >  
-> > +config CC_IMPLICIT_FALLTHROUGH
-> > +	string
-> > +	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
-> > +	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
-> > +
-> >  #
-> >  # For architectures that know their GCC __int128 support is sound
-> >  #
-> > -- 
-> > 2.27.0
-> > 
-> > 
+> +    |            ||                   |                     ||             |
+> +    +------------||-------------------+---------------------||-------------+
+> +                 ||       lat thread  |  core thread        ||     <parent>
+> +    -------------||-----------------------------------------||----------------
+> +                 ||                                         ||     <child>
+> +                 \/ <----------------HW index-------------->\/
+> +           +------------------------------------------------------+
+> +           |                    enable/disable                    |
+> +           |           clk     power    irq    iommu port         |
+> +           |                 (lat/lat soc/core0/core1)            |
+> +           +------------------------------------------------------+
+> +
+> +  As above, <parent> mean in main device, <child> mean in subdev device. The information
+> +  of each hardware will be stored in subdev device. There are two workqueues in main device:
+> +  lat and core. Enable/disable the lat clk/power/irq when lat need to work through hardware
+> +  index, core is the same.
+> +
+> +  Normally the smi common may not the same for each hardware, can't combine all hardware in
+> +  one node, or leading to iommu fault when access dram data.
+> +
+
+To what extent the lat- and core- devices are really "children"
+or "subdevices" of the  video-codec@16000000 device?
+
+I.e. what resources do they share? What are the details of
+their bus topology?
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/mt8192-larb-port.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +    #include <dt-bindings/power/mt8192-power.h>
+> +
+> +    video-codec@16000000 {
+> +        compatible = "mediatek,mt8192-vcodec-dec";
+> +        reg = <0x16000000 0x1000>;             /* VDEC_SYS */
+> +        mediatek,scp = <&scp>;
+> +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
+> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        ranges;
+> +        vcodec-lat@16010000 {
+> +            compatible = "mediatek,mtk-vcodec-lat";
+> +            reg = <0x16010000 0x800>;
+> +            interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
+> +            iommus = <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD2_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_AVC_MV_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_PRED_RD_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_TILE_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_WDMA_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_LAT0_RG_CTRL_DMA_EXT>,
+> +                <&iommu0 M4U_PORT_L5_VDEC_UFO_ENC_EXT>;
+> +            clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+> +                <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
+> +                <&vdecsys_soc CLK_VDEC_SOC_LAT>,
+> +                <&vdecsys_soc CLK_VDEC_SOC_LARB1>,
+> +                <&topckgen CLK_TOP_MAINPLL_D4>;
+> +            clock-names = "sel", "soc-vdec", "soc-lat", "vdec", "top";
+> +            assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+> +            assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+> +            power-domains = <&spm MT8192_POWER_DOMAIN_VDEC>;
+> +        };
+> +
+> +        vcodec-core@16025000 {
+> +            compatible = "mediatek,mtk-vcodec-core";
+> +            reg = <0x16025000 0x1000>;
+
+The children address space might need some thinking.
+In other words,
+
+video-codec@16000000 {
+
+  vcodec-lat@16010000 {
+  }
+
+  vcodec-core@16025000 {
+  }
+}
+
+Your proposal has vcodec-lat as children of video-codec, but its address space
+are really on the same level, instead of children being contained in
+the parent address space:
+
+video-codec@16000000 {
+
+  vcodec-lat@10000 {
+  }
+
+  vcodec-core@25000 {
+  }
+}
+
+I think this last tree makes more sense from a device-tree point of view.
+The ranges property allows you to put the right translation information,
+so the device driver itself will get the correct address 0x16000000 + 0x25000.
+
+You might find that the ranges property is tricky to understand at first.
+
+Thanks,
+Ezequiel
+
+
+> +            interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
+> +            iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_UFO_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_PP_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_PRED_RD_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_PRED_WR_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_PPWRAP_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_TILE_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_VLD_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_VLD2_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_AVC_MV_EXT>,
+> +                <&iommu0 M4U_PORT_L4_VDEC_RG_CTRL_DMA_EXT>;
+> +            clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+> +                <&vdecsys CLK_VDEC_VDEC>,
+> +                <&vdecsys CLK_VDEC_LAT>,
+> +                <&vdecsys CLK_VDEC_LARB1>,
+> +                <&topckgen CLK_TOP_MAINPLL_D4>;
+> +            clock-names = "sel", "soc-vdec", "soc-lat", "vdec", "top";
+> +            assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+> +            assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+> +            power-domains = <&spm MT8192_POWER_DOMAIN_VDEC2>;
+> +        };
+> +    };
+> --
+> 2.25.1
+>
