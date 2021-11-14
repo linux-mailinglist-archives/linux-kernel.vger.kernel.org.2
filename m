@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A1144F6F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 06:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB6344F6F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 06:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhKNF7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 00:59:09 -0500
-Received: from smtpbg604.qq.com ([59.36.128.82]:39612 "EHLO smtpbg604.qq.com"
+        id S233621AbhKNF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 00:59:43 -0500
+Received: from smtpbg604.qq.com ([59.36.128.82]:45714 "EHLO smtpbg604.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhKNF7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 00:59:08 -0500
-X-QQ-mid: bizesmtp50t1636869215tj5i0zs0
+        id S232939AbhKNF7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 00:59:42 -0500
+X-QQ-mid: bizesmtp41t1636869333tlg1bn5s
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 14 Nov 2021 13:53:34 +0800 (CST)
+        id ; Sun, 14 Nov 2021 13:55:31 +0800 (CST)
 X-QQ-SSF: 01000000002000C0F000B00A0000000
-X-QQ-FEAT: F3yR32iATbj7zgJd4OfOTFZ4Jln/cK0WR1Cg+SbDW0cqJ2SNgB2MXngvnAgpo
-        iVjaRRhM1FE3M5g2B1+IFLMeQovqRK+KpzxZqnXkh0LqpDEY9IjMV2uDCvTf0Lft4lp2JC/
-        jiiXvuRoXHloixReVGMclO5B1TpvVnF5HuYybS4p3ncuYTwJNrDFfMHgcAaCYDyrJmGRf8X
-        8qvQ7zyglXYmfJzgMJ/rDZxfOxa2Y+d19JTXNdTPNyAUIznOFawGXdQwLyaQUwJUX57JYKz
-        gdi6LJS6sl5lo3nUWqlxwBLACmBQAICZkc8hdv+9dEtX3XkqaqMBSVu6uCMF4k/ZhpuTPf0
-        qM26zWjHhreGw4pjX+y6EhcULateQ==
+X-QQ-FEAT: 7nM+eLZz0bZ/0iG06QaU/Zg9CREKbPpcyJSPGzKP8pxr0+Fy5gaTGdRGgelnW
+        L6XmdApV9MjTdmUx7wzbvoTOcsPqQHZUhrxEVzzm311WTZYzSIRe8raE67rRQhjKvRCOCR+
+        SN8opLf0+A8DIC1gX5iK+CM2KxRxea0KZ6vDA8maSOCE3XgY16wD+hZ8GpC//QkVycxA3TU
+        sNlZtZ4VuuZQgn6mfOfuDtT76cAHGB/fak/exQSPGv1zYA0+qw2LFf3ffBdEUKNh2UtmtuU
+        V/560drfEvdgMHdMe0Jn1+0Yuwp2Ni0M84nfwIItje5xMeVt2AP1Ld0tnE4b/2JagmcbaZk
+        VeGw/JmjANDafMMfrQzeFqPYH3q/A==
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     kristo@kernel.org
-Cc:     nm@ti.com, ssantosh@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
         Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] firmware: ti_sci: rm: remove unneeded semicolon
-Date:   Sun, 14 Nov 2021 13:53:33 +0800
-Message-Id: <20211114055333.217919-1-wangborong@cdjrlc.com>
+Subject: [PATCH] sched: remove unneeded semicolon
+Date:   Sun, 14 Nov 2021 13:55:29 +0800
+Message-Id: <20211114055529.221612-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,22 +46,22 @@ The semicolon after `}' is unneeded. So, just remove it.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/firmware/ti_sci.c | 2 +-
+ kernel/sched/core_sched.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 235c7e7869aa..5ae2040b8b02 100644
---- a/drivers/firmware/ti_sci.c
-+++ b/drivers/firmware/ti_sci.c
-@@ -1759,7 +1759,7 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
- 		desc->num = resp->range_num;
- 		desc->start_sec = resp->range_start_sec;
- 		desc->num_sec = resp->range_num_sec;
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index 517f72b008f5..f945b0c373db 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -203,7 +203,7 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ 	default:
+ 		err = -EINVAL;
+ 		goto out;
 -	};
 +	}
  
- fail:
- 	ti_sci_put_one_xfer(&info->minfo, xfer);
+ 	if (type == PIDTYPE_PID) {
+ 		__sched_core_set(task, cookie);
 -- 
 2.33.0
 
