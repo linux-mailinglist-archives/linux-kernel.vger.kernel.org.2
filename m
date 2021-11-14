@@ -2,214 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213BE44F7C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 13:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2D644F7E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 13:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbhKNMMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 07:12:06 -0500
-Received: from smtp-190a.mail.infomaniak.ch ([185.125.25.10]:54287 "EHLO
-        smtp-190a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231147AbhKNMMB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 07:12:01 -0500
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HsWMM73kGzMpvZb;
-        Sun, 14 Nov 2021 13:09:03 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4HsWMH5cBRzlh8Tl;
-        Sun, 14 Nov 2021 13:08:59 +0100 (CET)
-Subject: Re: [PATCH v16 1/3] fs: Add trusted_for(2) syscall implementation and
- related sysctl
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Paul Moore <paul@paul-moore.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20211110190626.257017-1-mic@digikod.net>
- <20211110190626.257017-2-mic@digikod.net>
- <8a22a3c2-468c-e96c-6516-22a0f029aa34@gmail.com>
- <5312f022-96ea-5555-8d17-4e60a33cf8f8@digikod.net>
- <34779736-e875-c3e0-75d5-0f0a55d729aa@gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <ebaba192-1f0b-eb5e-0914-a0c885afdac6@digikod.net>
-Date:   Sun, 14 Nov 2021 13:09:06 +0100
-User-Agent: 
+        id S236161AbhKNMd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 07:33:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235836AbhKNMdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 07:33:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 46B7E611C9;
+        Sun, 14 Nov 2021 12:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636893008;
+        bh=KM8Xw/g9t+dzP4NyY4YRMWajkkOTzRxvGF8HLjuy7t8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=siU5F68YwtCi6JKvEo0dPtkZVUo2whhVuJHQgUFL500tc2SE5WqoekkyvnsMDNLTH
+         Vb70NI732tIpDu8/FVDajgWxn36pty0z87SHJaCswqkEzu3C39bCuihKE2wW3vKlT7
+         sYis+t2IGAso9v3JOnPveqORnv2DxSUbx5kYvFCbN3sKwaNlH9jJM29PwlX7xfPxoJ
+         46Qd3cswuVAzkn8u4SbEwUc8Sj0swCX+TOGP+5bXKneJJTz0exy6GOELw/AdRln12F
+         +h98D4ZsN+g/9j0IAVrCE4EtpC8gWPFNElpYQphBVyMHKbQgHTgaP1cLwYKvCdlmEL
+         TeNh00frnumew==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3D6C16097A;
+        Sun, 14 Nov 2021 12:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <34779736-e875-c3e0-75d5-0f0a55d729aa@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH linux-next] ipv4: drop unused assignment
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163689300824.19604.1599603648864829790.git-patchwork-notify@kernel.org>
+Date:   Sun, 14 Nov 2021 12:30:08 +0000
+References: <20211111091809.159707-1-luo.penghao@zte.com.cn>
+In-Reply-To: <20211111091809.159707-1-luo.penghao@zte.com.cn>
+To:     luo penghao <cgel.zte@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo.penghao@zte.com.cn,
+        zealci@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-On 13/11/2021 20:56, Alejandro Colomar (man-pages) wrote:
-> Hi Mickaël,
-> 
-> On 11/13/21 14:02, Mickaël Salaün wrote:
->>> TL;DR:
->>>
->>> ISO C specifies that for the following code:
->>>
->>>      enum foo {BAR};
->>>
->>>      enum foo foobar;
->>>
->>> typeof(foo)    shall be int
->>> typeof(foobar) is implementation-defined
->>
->> I tested with some version of GCC (from 4.9 to 11) and clang (10 and 11)
->> with different optimizations and the related sizes are at least the same
->> as for the int type.
-> 
-> GCC has -fshort-enums to make enum types be as short as possible.  I
-> expected -Os to turn this on, since it saves space, but it doesn't.
-> 
-> Still, not relying on enum == int is better, IMO.
-> 
->>
->>>
->>> Since foobar = BAR; assigns an int, the best thing to do to avoid
->>> implementation-defined behavior, is to declare foobar as int too.
->>
->> OK, so it should be enough to change the syscall argument type from enum
->> trusted_for_usage to int, but we can keep the UAPI with the enum (i.e.
->> we don't need to change the value to #define TRUSTED_FOR_EXECUTION 1)
->> right?
-> 
-> Correct.  The enumerations are guaranteed to be int (except in case of
-> UB, see below), so they'll be (almost) the same as a #define after the
-> preprocessor.
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Thanks for the detailed explanation! I'll send a new patch taking into
-account your suggestion.
+On Thu, 11 Nov 2021 09:18:09 +0000 you wrote:
+> From: luo penghao <luo.penghao@zte.com.cn>
+> 
+> The assignment in the if statement will be overwritten by the
+> following statement
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+> 
+> [...]
 
-> 
-> 
-> If you do
-> 
-> enum foo {
->     FOO = 1L << INT_WIDTH
-> };
-> 
-> since that doesn't fit in either int or unsigned int,
-> it is Undefined Behavior,
-> and here GCC decides to use long for FOO.
-> 
-> +++++++++ UB example ++++++++++++++
-> 
-> $ cat foo.c
->     #include <limits.h>
->     #include <stdio.h>
-> 
-> 
->     enum foo {
->         FOO = 1L << UINT_WIDTH
->     };
-> 
->     int main(void)
->     {
->         printf("\tsizeof(enum foo) = %zu\n", sizeof(enum foo));
->         printf("\tsizeof(FOO)      = %zu\n", sizeof(FOO));
->     }
-> 
-> $ cc foo.c -Wall -Wextra -Werror -Wpedantic -pedantic-errors -std=c2x
-> foo.c:6:23: error: ISO C restricts enumerator values to range of 'int'
-> [-Wpedantic]
->     6 |                 FOO = 1L << UINT_WIDTH
->       |                       ^~
-> $ cc foo.c -Wall -Wextra -Werror -std=c2x
-> $ ./a.out
->     sizeof(enum foo) = 8
->     sizeof(FOO)      = 8
-> 
-> +++++++++++++ -fshort-enums example +++++++++++++++
-> 
-> $ cat foo.c
->     #include <stdio.h>
-> 
-> 
->     enum foo {
->         FOO = 1
->     };
-> 
->     int main(void)
->     {
->         printf("\tsizeof(enum foo) = %zu\n", sizeof(enum foo));
->         printf("\tsizeof(FOO)      = %zu\n", sizeof(FOO));
->     }
-> 
-> $ cc foo.c -Wall -Wextra -Werror -Wpedantic -pedantic-errors -fshort-enums
-> $ ./a.out
->     sizeof(enum foo) = 1
->     sizeof(FOO)      = 4
-> 
-> ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> 
-> Cheers,
-> Alex
-> 
-> 
->>
->>>
->>>
->>>> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
->>>> index 528a478dbda8..c535e0e43cc8 100644
->>>> --- a/include/linux/syscalls.h
->>>> +++ b/include/linux/syscalls.h
->>>> @@ -462,6 +463,7 @@ asmlinkage long sys_fallocate(int fd, int mode,
->>>> loff_t offset, loff_t len);
->>>>    asmlinkage long sys_faccessat(int dfd, const char __user *filename,
->>>> int mode);
->>>>    asmlinkage long sys_faccessat2(int dfd, const char __user *filename,
->>>> int mode,
->>>>                       int flags);
->>>> +asmlinkage long sys_trusted_for(int fd, enum trusted_for_usage usage,
->>>> u32 flags);
->>>
->>> Same here.
->>>
->>>>    asmlinkage long sys_chdir(const char __user *filename);
->>>>    asmlinkage long sys_fchdir(unsigned int fd);
->>>>    asmlinkage long sys_chroot(const char __user *filename);
->>>
->>> Thanks,
->>> Alex
->>>
->>>
-> 
+Here is the summary with links:
+  - [linux-next] ipv4: drop unused assignment
+    https://git.kernel.org/netdev/net-next/c/ef14102914f3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
