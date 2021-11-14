@@ -2,69 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E230844F5C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D1E44F5CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbhKNAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 19:06:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229988AbhKNAGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 19:06:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 770B860E90;
-        Sun, 14 Nov 2021 00:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636848236;
-        bh=PMTPg84tWVzIsSb/8MD2eDPfMjwfUddrlfdVPu0SH/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RD+sKFvattwHGDiSNWzBWlWi4PLpz6StgLwuPOzkfWGhMYAa5s8cUgTL7rrLywD54
-         O6FHr6TOonkdgGsqUZvEmwTi72LgwSeYOf3NldkiN8AvJPNHCMWnAQsxJVwDLTCg8z
-         P9TeBmGb6WZbFn/uO+K7n2l34RHn8Vo1JO2bAcAapqz+z168fNkXHsDcoQm+dzXSGU
-         JhfYuT+0q2eF5GVTVwgYiSJR9x55GH5TmwOcGSMNp+L6UQttsX+4h3dcxAa455Tkxh
-         2b7I6X93Znoknvoid1HzblwOqumKbQnnAPkKAgjK5lCQa+HxfBloqqEVfyzRJp0tLI
-         QH5J+wJGQwF3Q==
-Date:   Sat, 13 Nov 2021 18:08:56 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [GIT PULL] Enable -Wimplicit-fallthrough for Clang for 5.16-rc1
-Message-ID: <20211114000856.GA25846@embeddedor>
-References: <20211113214125.GA23640@embeddedor>
- <CAHk-=wj-yyR1s1LcnTspgpcriyX-nDruzSmEneA2U=bOj9gCuQ@mail.gmail.com>
+        id S233500AbhKNAaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 19:30:39 -0500
+Received: from mail-pf1-f179.google.com ([209.85.210.179]:34305 "EHLO
+        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhKNAai (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 19:30:38 -0500
+Received: by mail-pf1-f179.google.com with SMTP id r130so11672403pfc.1;
+        Sat, 13 Nov 2021 16:27:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+oBTOAeAOBo/l6duXeY1ufFCIwljJ+hfBntn1UB5fUs=;
+        b=8MiYvIqHMRCl6O5S/F1TKzue3qieWNmTVc77NmDIcWHGbxdFd1oLILfQZNF9vAo8v4
+         g8wpvNRYVKOUfoquybIKLMWw4zz69jag7llenPSzg2HmXm7TN94DIXIYXOwazx6NoVkl
+         dzGEDk1Nos00nisj02jHck78Aav7BhR9WEk9tr+pUj4oHEkqZtVo3Uouu9Q9zjm1PjjB
+         kctN5e5Ab+TMmD3rUTKdnf8lFR05gIFVVS4rfKYfmzYn7NuwHWUqIwTJJ+jKT3ckYZDj
+         I6oNQt2aUxECQwYIivjJEAcv9gJLn6d6f4L289Z7FNG5Ppk9S3TF3CUdE2a5JRzRaLtH
+         FU3A==
+X-Gm-Message-State: AOAM533uWLO2P0e4odvnnuRMpfairqN2zlQhcl0LX+D81BukPXd5URDA
+        xDSSlSUO7LAqa5iTPr9f9bM=
+X-Google-Smtp-Source: ABdhPJzEqs+gA4zXLA79ik0+E6F9PReOJA0XW3hPLl0Hmpn8wlmZ5GZ3QYBu3fE9mkRWuvWXtJTukQ==
+X-Received: by 2002:a63:3348:: with SMTP id z69mr17542430pgz.177.1636849665301;
+        Sat, 13 Nov 2021 16:27:45 -0800 (PST)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id t4sm11199537pfg.155.2021.11.13.16.27.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Nov 2021 16:27:44 -0800 (PST)
+Message-ID: <a18f709c-9674-31a5-68ac-a61ca9d8c94e@acm.org>
+Date:   Sat, 13 Nov 2021 16:27:42 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj-yyR1s1LcnTspgpcriyX-nDruzSmEneA2U=bOj9gCuQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v1] scsi: ufs: ufshpb: Fix sparse warning in
+ ufshpb_set_hpb_read_to_upiu()
+Content-Language: en-US
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org,
+        daejun7.park@samsung.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20211111222452.384089-1-huobean@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20211111222452.384089-1-huobean@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 03:20:19PM -0800, Linus Torvalds wrote:
-> On Sat, Nov 13, 2021 at 1:36 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-[..]
-> Wouldn't something like this (TOTALLY UNTESTED!) work and do the right thing?
-> 
-> This seems like a natural for a Kconfig decision.
-> 
-> Also, does -Wimplicit-fallthrough=5 work with clang too? That would
-> simplify things a bit, and then we could just use a regular boolean
-> and do
-> 
->   KBUILD_CFLAGS-$(CC_IMPLICIT_FALLTHROUGH) += -Wimplicit-fallthrough=5
+On 11/11/21 14:24, Bean Huo wrote:
+> -		ppn_tmp = swab64(ppn);
+> +		ppn_tmp = (__force __be64)swab64((__force u64)ppn);
 
-It doesn't work:
-
-error: unknown warning option '-Wimplicit-fallthrough=5'; did you mean '-Wimplicit-fallthrough'? [-Werror,-Wunknown-warning-option]
-
-However, your patch does work. :)
-
-I'll send it as a proper patch, shortly.
-
-Thanks
---
-Gustavo
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
