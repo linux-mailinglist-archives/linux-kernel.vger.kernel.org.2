@@ -2,165 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40BF44FA08
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A577244FA0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhKNTC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 14:02:57 -0500
-Received: from 113.196.136.162.ll.static.sparqnet.net ([113.196.136.162]:47692
-        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234564AbhKNTCx (ORCPT
+        id S236198AbhKNTF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 14:05:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231128AbhKNTFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 14:02:53 -0500
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.112
-        by mg01.sunplus.com with MailGates ESMTP Server V5.0(25031:0:AUTH_RELAY)
-        (envelope-from <wells.lu@sunplus.com>); Mon, 15 Nov 2021 02:59:48 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 15 Nov 2021 02:59:48 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Mon, 15 Nov
- 2021 02:59:48 +0800
-From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-CC:     =?utf-8?B?VmluY2VudCBTaGloIOaWvemMlem0uw==?= 
-        <vincent.shih@sunplus.com>
-Subject: RE: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Topic: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Index: AQHX1ttDZ0jKVsi7r0auZS2tEQF+d6wAAtwAgAMgyAA=
-Date:   Sun, 14 Nov 2021 18:59:48 +0000
-Message-ID: <e06c11ec6dec4d379f5cda27c9f47c43@sphcmbx02.sunplus.com.tw>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <cover.1636620754.git.wells.lu@sunplus.com>
- <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
- <a8c656b8-a564-6aa6-7ca4-50e7a0bd65a1@gmail.com>
-In-Reply-To: <a8c656b8-a564-6aa6-7ca4-50e7a0bd65a1@gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.39]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 14 Nov 2021 14:05:50 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA46C061746
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 11:02:50 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id x15so61858604edv.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 11:02:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b+ABDQXsBUyVLtXlNRqtyl8o9biKyBrTUCqIxKOLyuU=;
+        b=B9CeaN2r881/Way6TIyQtHvBfngi1muQE0Rs1xXkaiOWQpY38MhI/PYz1Nkr8b7MZd
+         8tGS4oeixS7lNGh/1Sz24bNtp83CmlDiM0h5wzKRVjhx0PDFpXvYDzgwWjlGDSfD0RYp
+         WwYqXN4OPhSw8PcyeudfXH958VRg8C5BBRRmE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b+ABDQXsBUyVLtXlNRqtyl8o9biKyBrTUCqIxKOLyuU=;
+        b=YkoaU4Q1zU7OuajtToL1ZwSxzM8XjJ2eE4zF+o3tuWnZoewOdv8ZU47o+FOKYN3DIb
+         krV0imzT3S7cO+0O3QLE9uZJuJWr1c+gGaftNBB6pIwm2d306tcUqTRLGfIFMz3QM0M2
+         1aS70QZOiXtPnIUMMcRj4paE47wiUCSIvyzA6IjBmR7ZvyocoCI3uqEAul8IeF9r5jjw
+         XhhwaCT9widnwCy40aJaeKbcvYzWzsx4VyePEH5V/OY50BQwJ4Lhqbk8xbEmRgp6UwSj
+         9taMVgIp8Btr/wmEqtY1RRGFVxNj0tAKkJLLsdZ4PPhplPvy3m3uP7KTnAUdeVUa8RJo
+         zJiw==
+X-Gm-Message-State: AOAM530SUkbou01miwJfawCgq7MciknvbD/hA8LYSQUc+MH3Usnda0Dl
+        dJj9saRSPDN3zMlrVa98Q7FXYcohXrXKJTCp7Ys=
+X-Google-Smtp-Source: ABdhPJwG/vxRfa3KZOTYDifNPFngXF57DdeqUSMlqUbUE0QTWCkJ5+ykBV07YZ8TOJW3RQbE3P7vAw==
+X-Received: by 2002:a17:907:7d86:: with SMTP id oz6mr40253509ejc.193.1636916568554;
+        Sun, 14 Nov 2021 11:02:48 -0800 (PST)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id u14sm6153793edj.74.2021.11.14.11.02.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Nov 2021 11:02:48 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id u1so26165140wru.13
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 11:02:47 -0800 (PST)
+X-Received: by 2002:adf:d1e2:: with SMTP id g2mr39177688wrd.105.1636916567700;
+ Sun, 14 Nov 2021 11:02:47 -0800 (PST)
 MIME-Version: 1.0
+References: <163689642456.3249160.13397023971040961440.tglx@xen13> <163689642744.3249160.6971106813056927807.tglx@xen13>
+In-Reply-To: <163689642744.3249160.6971106813056927807.tglx@xen13>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 14 Nov 2021 11:02:31 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjQxHwdC61ore062Hc5PAF2o6CJnDG_NsQe+e599RovJw@mail.gmail.com>
+Message-ID: <CAHk-=wjQxHwdC61ore062Hc5PAF2o6CJnDG_NsQe+e599RovJw@mail.gmail.com>
+Subject: Re: [GIT pull] timers/urgent for v5.16-rc1
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCj4gT24gMTEvMTEvMjEgMTowNCBBTSwgV2VsbHMgTHUgd3JvdGU6DQo+ID4gQWRkIGRy
-aXZlciBmb3IgU3VucGx1cyBTUDcwMjEuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBXZWxscyBM
-dSA8d2VsbHMubHVAc3VucGx1cy5jb20+DQo+ID4gLS0tDQo+IA0KPiBbc25pcF0NCj4gDQo+ID4g
-K3UzMiBtZGlvX3JlYWQoc3RydWN0IHNwX21hYyAqbWFjLCB1MzIgcGh5X2lkLCB1MTYgcmVnbnVt
-KSB7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+ICsNCj4gPiArCXJldCA9IGhhbF9tZGlvX2FjY2Vzcyht
-YWMsIE1ESU9fUkVBRF9DTUQsIHBoeV9pZCwgcmVnbnVtLCAwKTsNCj4gPiArCWlmIChyZXQgPCAw
-KQ0KPiA+ICsJCXJldHVybiAtRU9QTk9UU1VQUDsNCj4gPiArDQo+ID4gKwlyZXR1cm4gcmV0Ow0K
-PiA+ICt9DQo+ID4gKw0KPiA+ICt1MzIgbWRpb193cml0ZShzdHJ1Y3Qgc3BfbWFjICptYWMsIHUz
-MiBwaHlfaWQsIHUzMiByZWdudW0sIHUxNiB2YWwpIHsNCj4gPiArCWludCByZXQ7DQo+ID4gKw0K
-PiA+ICsJcmV0ID0gaGFsX21kaW9fYWNjZXNzKG1hYywgTURJT19XUklURV9DTUQsIHBoeV9pZCwg
-cmVnbnVtLCB2YWwpOw0KPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gKwkJcmV0dXJuIC1FT1BOT1RT
-VVBQOw0KPiA+ICsNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+IA0KPiBZb3Ugc2hvdWxkIG5v
-dCBiZSBleHBvc2luZyB0aGVzZSBmdW5jdGlvbnMsIGlmIHlvdSBkbywgdGhhdCBtZWFucyBhbm90
-aGVyIHBhcnQgb2YgeW91cg0KPiBjb2RlIHBlcmZvcm1zIE1ESU8gYnVzIHJlYWQvd3JpdGUgb3Bl
-cmF0aW9ucyB3aXRob3V0IHVzaW5nIHRoZSBhcHByb3ByaWF0ZSBsYXllciwgc28gbm8uDQoNClll
-cywgSSdsbCByZS1kZWNsYXJlIHRoZSB0d28gZnVuY3Rpb25zIGFzIHN0YXRpYyBmdW5jdGlvbnMu
-DQoNCg0KPiA+ICsNCj4gPiArc3RhdGljIGludCBtaWlfcmVhZChzdHJ1Y3QgbWlpX2J1cyAqYnVz
-LCBpbnQgcGh5X2lkLCBpbnQgcmVnbnVtKSB7DQo+ID4gKwlzdHJ1Y3Qgc3BfbWFjICptYWMgPSBi
-dXMtPnByaXY7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIG1kaW9fcmVhZChtYWMsIHBoeV9pZCwgcmVn
-bnVtKTsgfQ0KPiA+ICsNCj4gPiArc3RhdGljIGludCBtaWlfd3JpdGUoc3RydWN0IG1paV9idXMg
-KmJ1cywgaW50IHBoeV9pZCwgaW50IHJlZ251bSwgdTE2DQo+ID4gK3ZhbCkgew0KPiA+ICsJc3Ry
-dWN0IHNwX21hYyAqbWFjID0gYnVzLT5wcml2Ow0KPiA+ICsNCj4gPiArCXJldHVybiBtZGlvX3dy
-aXRlKG1hYywgcGh5X2lkLCByZWdudW0sIHZhbCk7IH0NCj4gPiArDQo+ID4gK3UzMiBtZGlvX2lu
-aXQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYp
-DQo+IA0KPiBUaG9zZSBmdW5jdGlvbiBuYW1lcyBuZWVkIHRvIGJlIHByZWZpeGVkIHdpdGggc3Bf
-IHRvIGRlbm90ZSB0aGUgZHJpdmVyIGxvY2FsIHNjb3BlLCB0aGlzDQo+IGFwcGxpZXMgZm9yIHlv
-dXIgZW50aXJlIHBhdGNoIHNldC4NCg0KWWVzLCBJJ2xsIGFkZCB2ZW5kb3Itc3BlY2lmaWVkIHBy
-ZWZpeCB0byB0aGUgdHdvIGZ1bmN0aW9ucyBhbmQgYWxsIHRoZSBvdGhlciBmdW5jdGlvbnMgaW4N
-CnRoZSBkcml2ZXJzLg0KDQoNCj4gW3NuaXBdDQo+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L25ldC9ldGhlcm5ldC9zdW5wbHVzL3NwX21kaW8uaA0KPiA+IGIvZHJpdmVycy9uZXQvZXRoZXJu
-ZXQvc3VucGx1cy9zcF9tZGlvLmgNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4
-IDAwMDAwMDAuLmQ3MDg2MjQNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvc3VucGx1cy9zcF9tZGlvLmgNCj4gPiBAQCAtMCwwICsxLDIwIEBADQo+ID4g
-Ky8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wICovDQo+ID4gKy8qIENvcHlyaWdo
-dCBTdW5wbHVzIFRlY2hub2xvZ3kgQ28uLCBMdGQuDQo+ID4gKyAqICAgICAgIEFsbCByaWdodHMg
-cmVzZXJ2ZWQuDQo+ID4gKyAqLw0KPiA+ICsNCj4gPiArI2lmbmRlZiBfX1NQX01ESU9fSF9fDQo+
-ID4gKyNkZWZpbmUgX19TUF9NRElPX0hfXw0KPiA+ICsNCj4gPiArI2luY2x1ZGUgInNwX2RlZmlu
-ZS5oIg0KPiA+ICsjaW5jbHVkZSAic3BfaGFsLmgiDQo+ID4gKw0KPiA+ICsjZGVmaW5lIE1ESU9f
-UkVBRF9DTUQgICAgICAgICAgIDB4MDINCj4gPiArI2RlZmluZSBNRElPX1dSSVRFX0NNRCAgICAg
-ICAgICAweDAxDQo+ID4gKw0KPiA+ICt1MzIgIG1kaW9fcmVhZChzdHJ1Y3Qgc3BfbWFjICptYWMs
-IHUzMiBwaHlfaWQsIHUxNiByZWdudW0pOw0KPiA+ICt1MzIgIG1kaW9fd3JpdGUoc3RydWN0IHNw
-X21hYyAqbWFjLCB1MzIgcGh5X2lkLCB1MzIgcmVnbnVtLCB1MTYgdmFsKTsNCj4gDQo+IFBsZWFz
-ZSBzY29wZSB5b3VyIGZ1bmN0aW9ucyBiZXR0ZXIsIGFuZCBuYW1lIHRoZW0gc3BfbWRpb19yZWFk
-LCBldGMuDQo+IGJlY2F1c2UgbWRpb19yZWFkKCkgaXMgd2F5IHRvbyBnZW5lcmljLiBBbHNvLCBj
-YW4geW91IHBsZWFzZSBmb2xsb3cgdGhlIHNhbWUgcHJvdG90eXBlDQo+IGFzIHdoYXQgaW5jbHVk
-ZS9saW51eC9tZGlvLmggaGFzIGZvciB0aGUgbWRpb2J1cy0+cmVhZCBhbmQgLT53cml0ZSBjYWxs
-cywgdGhhdCBpcyBwaHlfaWQNCj4gaXMgaW50LCByZWdudW0gaXMgdTMyLCBldGMuDQoNClllcywg
-SSdsbCByZS1kZWNsYXJlIHRoZSB0d28gZnVuY3Rpb25zLCBtZGlvX3JlYWQoKSBhbmQgbWRpb193
-cml0ZSgpLCBhcyBzdGF0aWMgDQpmdW5jdGlvbnMgYW5kIGFkZCB2ZW5kb3Itc3BlY2lmaWVkIHBy
-ZWZpeCB0byB0aGVtLg0KDQpUaGUgd3JvbmcgZGVjbGFyYXRpb24gb2YgdGhlIHR3byBmdW5jdGlv
-bnMgd2lsbCBiZSByZW1vdmVkIGZyb20gdGhlIGhlYWRlciBmaWxlLg0KDQoNCj4gPiArdTMyICBt
-ZGlvX2luaXQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0IG5ldF9kZXZpY2UN
-Cj4gPiArKm5kZXYpOyB2b2lkIG1kaW9fcmVtb3ZlKHN0cnVjdCBuZXRfZGV2aWNlICpuZGV2KTsN
-Cj4gPiArDQo+ID4gKyNlbmRpZg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5l
-dC9zdW5wbHVzL3NwX3BoeS5jDQo+ID4gYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9zdW5wbHVzL3Nw
-X3BoeS5jDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwLi5kZjZk
-ZjNhDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L3N1
-bnBsdXMvc3BfcGh5LmMNCj4gPiBAQCAtMCwwICsxLDY0IEBADQo+ID4gKy8vIFNQRFgtTGljZW5z
-ZS1JZGVudGlmaWVyOiBHUEwtMi4wDQo+ID4gKy8qIENvcHlyaWdodCBTdW5wbHVzIFRlY2hub2xv
-Z3kgQ28uLCBMdGQuDQo+ID4gKyAqICAgICAgIEFsbCByaWdodHMgcmVzZXJ2ZWQuDQo+ID4gKyAq
-Lw0KPiA+ICsNCj4gPiArI2luY2x1ZGUgInNwX3BoeS5oIg0KPiA+ICsjaW5jbHVkZSAic3BfbWRp
-by5oIg0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgbWlpX2xpbmtjaGFuZ2Uoc3RydWN0IG5ldF9k
-ZXZpY2UgKm5ldGRldikgeyB9DQo+IA0KPiBEb2VzIHlvdXIgTUFDIGZ1bGx5IGF1dG8tY29uZmln
-dXJlIGJhc2VkIG9uIHRoZSBQSFkncyBsaW5rIHBhcmFtZXRlcnMsIGlmIHNvLCBob3cgZG9lcw0K
-PiBpdCBkbyBpdD8gWW91IG1vc3QgY2VydGFpbmx5IG5lZWQgdG8gYWN0IG9uIGR1cGxleCBjaGFu
-Z2VzLCBvciBzcGVlZCBjaGFuZ2VzIG5vPw0KDQpZZXMsIGl0IGRvZXMuIFNQNzAyMSBNQUMgY29t
-bXVuaWNhdGVzIHdpdGggUEhZIGF1dG9tYXRpY2FsbHkuDQpJdCByZWFkcyBsaW5rIHN0YXR1cyAo
-aGFsZi0gb3IgZnVsbC1kdXBsZXgsIDEwTSBvciAxMDBNKSBmcm9tIFBIWSANCmFuZCBzZXRzIGl0
-c2VsZiBhdXRvbWF0aWNhbGx5Lg0KSXQgYWxzbyByZWFkcyBwb3J0IHN0YXR1cyAobGluayB1cCBv
-ciBkb3duKSBhbmQgZ2VuZXJhdGVzIA0KaW50ZXJydXB0IHRvIGRyaXZlci4NCg0KDQo+ID4gKw0K
-PiA+ICtpbnQgc3BfcGh5X3Byb2JlKHN0cnVjdCBuZXRfZGV2aWNlICpuZGV2KSB7DQo+ID4gKwlz
-dHJ1Y3Qgc3BfbWFjICptYWMgPSBuZXRkZXZfcHJpdihuZGV2KTsNCj4gPiArCXN0cnVjdCBwaHlf
-ZGV2aWNlICpwaHlkZXY7DQo+ID4gKwlpbnQgaTsNCj4gPiArDQo+ID4gKwlwaHlkZXYgPSBvZl9w
-aHlfY29ubmVjdChuZGV2LCBtYWMtPnBoeV9ub2RlLCBtaWlfbGlua2NoYW5nZSwNCj4gPiArCQkJ
-CTAsIG1hYy0+cGh5X21vZGUpOw0KPiA+ICsJaWYgKCFwaHlkZXYpIHsNCj4gPiArCQluZXRkZXZf
-ZXJyKG5kZXYsICJcIiVzXCIgZmFpbGVkIHRvIGNvbm5lY3QgdG8gcGh5IVxuIiwgbmRldi0+bmFt
-ZSk7DQo+ID4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJZm9yIChp
-ID0gMDsgaSA8IHNpemVvZihwaHlkZXYtPnN1cHBvcnRlZCkgLyBzaXplb2YobG9uZyk7IGkrKykN
-Cj4gPiArCQlwaHlkZXYtPmFkdmVydGlzaW5nW2ldID0gcGh5ZGV2LT5zdXBwb3J0ZWRbaV07DQo+
-ID4gKw0KPiA+ICsJcGh5ZGV2LT5pcnEgPSBQSFlfTUFDX0lOVEVSUlVQVDsNCj4gPiArCW1hYy0+
-cGh5X2RldiA9IHBoeWRldjsNCj4gPiArDQo+ID4gKwkvLyBCdWcgd29ya2Fyb3VuZDoNCj4gPiAr
-CS8vIEZsb3ctY29udHJvbCBvZiBwaHkgc2hvdWxkIGJlIGVuYWJsZWQuIE1BQyBmbG93LWNvbnRy
-b2wgd2lsbCByZWZlcg0KPiA+ICsJLy8gdG8gdGhlIGJpdCB0byBkZWNpZGUgdG8gZW5hYmxlIG9y
-IGRpc2FibGUgZmxvdy1jb250cm9sLg0KPiA+ICsJbWRpb193cml0ZShtYWMsIG1hYy0+cGh5X2Fk
-ZHIsIDQsIG1kaW9fcmVhZChtYWMsIG1hYy0+cGh5X2FkZHIsIDQpIHwNCj4gPiArKDEgPDwgMTAp
-KTsNCj4gDQo+IFRoaXMgaXMgYSBsYXllcmluZyB2aW9sYXRpb24sIGFuZCB5b3Ugc2hvdWxkIG5v
-dCBiZSBkb2luZyB0aG9zZSB0aGluZ3MgaGVyZSwgaWYgeW91IG5lZWQNCj4gdG8gYWR2ZXJ0aXNl
-IGZsb3cgY29udHJvbCwgdGhlbiBwbGVhc2Ugc2V0IEFEVkVSVElTRV9QQVVTRV9DQVAgYW5kL29y
-IEFEVkVSVElTRV9QQVVTRV9BU1lNDQo+IGFjY29yZGluZ2x5LCBzZWUgd2hldGhlcg0KPiBwaHlf
-c2V0X2FzeW1fcGF1c2UoKSBjYW4gZG8gd2hhdCB5b3UgbmVlZCBpdCB0by4NCg0KWWVzLCBJJ2xs
-IHJlbW92ZSB0aGUgc3RhdGVtZW50LCBpbnN0ZWFkLCB1c2UgcGh5X3NldF9hc3ltX3BhdXNlKCku
-DQoNCg0KPiA+ICsNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICt2b2lkIHNw
-X3BoeV9zdGFydChzdHJ1Y3QgbmV0X2RldmljZSAqbmRldikgew0KPiA+ICsJc3RydWN0IHNwX21h
-YyAqbWFjID0gbmV0ZGV2X3ByaXYobmRldik7DQo+ID4gKw0KPiA+ICsJaWYgKG1hYy0+cGh5X2Rl
-dikNCj4gPiArCQlwaHlfc3RhcnQobWFjLT5waHlfZGV2KTsNCj4gPiArfQ0KPiA+ICsNCj4gPiAr
-dm9pZCBzcF9waHlfc3RvcChzdHJ1Y3QgbmV0X2RldmljZSAqbmRldikgew0KPiA+ICsJc3RydWN0
-IHNwX21hYyAqbWFjID0gbmV0ZGV2X3ByaXYobmRldik7DQo+ID4gKw0KPiA+ICsJaWYgKG1hYy0+
-cGh5X2RldikNCj4gPiArCQlwaHlfc3RvcChtYWMtPnBoeV9kZXYpOw0KPiA+ICt9DQo+ID4gKw0K
-PiA+ICt2b2lkIHNwX3BoeV9yZW1vdmUoc3RydWN0IG5ldF9kZXZpY2UgKm5kZXYpIHsNCj4gPiAr
-CXN0cnVjdCBzcF9tYWMgKm1hYyA9IG5ldGRldl9wcml2KG5kZXYpOw0KPiA+ICsNCj4gPiArCWlm
-IChtYWMtPnBoeV9kZXYpIHsNCj4gPiArCQlwaHlfZGlzY29ubmVjdChtYWMtPnBoeV9kZXYpOw0K
-PiA+ICsJCW1hYy0+cGh5X2RldiA9IE5VTEw7DQo+ID4gKwl9DQo+IA0KPiBUaGUgbmV0X2Rldmlj
-ZSBzdHJ1Y3R1cmUgYWxyZWFkeSBjb250YWlucyBhIHBoeV9kZXZpY2UgcG9pbnRlciwgeW91IGRv
-bid0IG5lZWQgdG8gaGF2ZQ0KPiBvbmUgaW4geW91ciBzcF9tYWMgc3RydWN0dXJlLCB0b28uDQoN
-ClllcywgSSdsbCByZW1vdmUgcGh5X2RldmljZSBmcm9tIHN0cnVjdCBzcF9tYWMuDQoNCg0KPiAt
-LQ0KPiBGbG9yaWFuDQoNClRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgcmV2aWV3Lg0KDQo=
+On Sun, Nov 14, 2021 at 5:31 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> +       /*
+> +        * A copied work entry from the old task is not meaningful, clear it.
+> +        * N.B. init_task_work will not do this.
+> +        */
+> +       memset(&p->posix_cputimers_work.work, 0,
+> +              sizeof(p->posix_cputimers_work.work));
+> +       init_task_work(&p->posix_cputimers_work.work,
+> +                      posix_cpu_timers_work);
+
+Ugh.
+
+Instead of the added four lines of comment, and two lines of
+"memset()", maybe this should just have made init_task_work() DTRT?
+
+Yes,. I see this:
+
+        /* Protect against double add, see task_tick_numa and task_numa_work */
+        p->numa_work.next               = &p->numa_work;
+        ...
+        init_task_work(&p->numa_work, task_numa_work);
+
+but I think that one is so subtle and such a special case that it
+should have been updated - just make that magic special flag happen
+after the init_task_work.
+
+A lot of the other cases seem to zero-initialize things elsewhere
+(generally with kzalloc()), but I note that at least
+io_ring_exit_work() seems to have this:
+
+        struct io_tctx_exit exit;
+        ...
+        init_task_work(&exit.task_work, io_tctx_exit_cb);
+
+and the ->next pointer is never set to NULL.
+
+Now, in 99% of all cases the ->next pointer simply doesn't matter,
+because task_work_add() will only set it, not caring about the old
+value.
+
+But apparently it matters for posix_cputimers_work and for numa_work,
+and so I think it's very illogical that init_task_work() will not
+actually initialize it properly.
+
+Hmm?
+
+I've pulled this, but it really looks like the wrong solution to the
+whole "uninitialized data".
+
+And that task_tick_numa() special case is truly horrendous, and really
+should go after the init_task_work() regardless, exactly because you'd
+expect that init_task_work() to initialize the work even if it doesn't
+happen to right now.
+
+Or is somebody doing init_task_work() to only change the work-function
+on an already initialized work entry? Becuase that sounds both racy
+and broken to me, and none of the things I looked at from a quick grep
+looked like that at all.
+
+              Linus
