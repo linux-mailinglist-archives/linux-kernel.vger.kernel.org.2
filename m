@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE64544FB8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8C444FB90
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236291AbhKNUWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 15:22:21 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:56191 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235996AbhKNUWF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 15:22:05 -0500
-Received: from [192.168.0.107] ([92.117.251.175]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MvJs9-1mUY221NxZ-00rDrN; Sun, 14 Nov 2021 21:19:03 +0100
-Message-ID: <45a9979b-39a1-7d76-2c0f-8270481c1d74@cpellegrino.de>
-Date:   Sun, 14 Nov 2021 21:19:02 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] HID: magicmouse: prevent division by 0 on scroll
-Content-Language: en-US
-To:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211114025327.146897-1-linux@cpellegrino.de>
- <20211114153354.GA7246@elementary>
-From:   Claudia Pellegrino <linux@cpellegrino.de>
-In-Reply-To: <20211114153354.GA7246@elementary>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ACLputIHXJMA3r3UcWsiY+36cUGjlClAiALyoyno1byBR2GpKQA
- RhvaBZfFL9g2IrfZ40vG+CJQE0Jqsc+4Qx+ao5ZLAIGzo4DMjV7PMvheIY/3FZgXjmsPGZb
- Zxe4WjcDVM/OT4DuQ3TYoQk05+5VPFJK+LefE00V0hdYX5VseByWipLc2kjLmQaOjMaoX6r
- FtXxBy3PfNkyx49dSHEsg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h1hWCZGxFGg=:ViBfk5Jxx8DVklakf/OWH+
- gl3YfbHSP7xtGpdJpKEqXTBiM3Fd7XgpYIMqyaDOcPBNfE7xtyzk+KUKwEWYFP5k/MdtoI3yV
- bhqbbaT3QvXL1xM2OV/6YCFZvL/RNrPrOrM8MkaZGSyhERHv/1sBdjTDteU5wGxseK0QccB1w
- B84+TyrDpaBHTE9PWvpDPiK0Isn3lB185U2NstjHsOJ/ONedPKU74suse7AJKeSZ9se40pOkI
- JQnRPPWxYk5UjOhgJbxjJKQszr8oW8fxuNIdhyPFDREys7D/GZcpS+3twBE0M3yu/bNyFLs3q
- 0uPVDMAXb4CkJOr8oXOQ/rhMBcGisjm0t789wvNKDmXoRZs39hVVtu1LHw9tsT1vCH7iMVvhu
- fvW8tks2DBCUqGhBSygxx+RBo2WRPeVYGrqSf9L96d9d8zW1T98v0zuPhy4rd/OIZVSgqUxAc
- dqmCRkjgr9fsaDl/pWTN0BFTDXJ7iIgAJAOWW7ALMm0MSrPmTemgQuykN5wHpQqXesZdoJUaO
- wyL4TLH+aEczHGmGSGCaa8KJtd5EzlU6frbfOy6byR1SCqs7QvZLbcHnkLMTSZSMQFgmLWCRE
- TcDv4m6mariOCy0XLfy+WmWnW4nMlRIgcZMdW7U8wu7NEPKizogvZO/FZvkJJIA6TV1M7qmA/
- Mrmte1Ar2281/UhcKWtAcftFX8g3bAq+ouScIJOmGBjpGkg7nUhSfjUOCm9zp5Su3mic=
+        id S236220AbhKNU1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 15:27:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231436AbhKNU1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 15:27:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1100060462;
+        Sun, 14 Nov 2021 20:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636921467;
+        bh=R/2ceRnbMhu2ZUu2GczjarustDgI4bmWSaWhmHf/n7M=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Qdupi9mbbrV/3XaDYCO3LIOZO7gAlKdAaHXTJ5HUiOQXnWdLdz4Z239ocGadwkyqQ
+         j+nNoPx5+o3EiDShErF17zM7YREuqxX8ZdjDt0u9G72iykjyRLU5ktVOFXHU+aVeN5
+         fGrC01jK3vdEPqtvs7YngZ2kAvkTUJUbO0fFhE1AVQoq27pNx38aWZ8xYvZ4bpPGNA
+         Gil09OYjjMZaK4haMNkcrZyFE0himBEXXo/b0gEdWobqhGk7scOI0Zxcrv0kmh6nZI
+         RUp9aaoEC/uzM+11OuojZhzxIf9Xa9aDK/a8r8F56Ux9dioqEC0ljqw60z8kp8bjEM
+         ETroySmokMJhw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EF17B609F7;
+        Sun, 14 Nov 2021 20:24:26 +0000 (UTC)
+Subject: Re: [GIT PULL] xfs: cleanups and resyncs for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211114172309.GE24307@magnolia>
+References: <20211114172309.GE24307@magnolia>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211114172309.GE24307@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-5
+X-PR-Tracked-Commit-Id: 4a6b35b3b3f28df81fea931dc77c4c229cbdb5b2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ce49bfc8d0372212ccd7d1c1b45c60b077f77684
+Message-Id: <163692146690.4278.335385691531056076.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Nov 2021 20:24:26 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi José,
+The pull request you sent on Sun, 14 Nov 2021 09:23:09 -0800:
 
-> I can confirm both that the bug is present and that your patch fixes it.
-Thanks for your testing and feedback!
-And kudos for implementing the feature in the first place.
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-5
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ce49bfc8d0372212ccd7d1c1b45c60b077f77684
 
-Regards
-Claudia
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
