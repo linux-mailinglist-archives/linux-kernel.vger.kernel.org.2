@@ -2,197 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422D544F825
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 14:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EAE44F82B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 14:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhKNNrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 08:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhKNNr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 08:47:28 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D1DC061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 05:44:34 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id u60so38334491ybi.9
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 05:44:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XiL4sazgjnRcq78QU16A4FxwkDV5n8t9TKCfKPhOGWc=;
-        b=3oNlfvHeHCnq0x3+Hdkw6nCI++VSaUBJeBDm8k3FtH/emg9+7H++TSlsQwxngCJjy9
-         vHzAlSJH7NAx/0lBfGH+UrUgnxP14gIQGX0rg1fBcdT/La5xo7/xjCSTlponZk70XuqH
-         Fx8TkRTd0dI5gt0K+hnZgXDLgUzp+DILMu8i4sHWxWa2EHQqI28VzT/jkkoY+MoDn2Cv
-         oTKGqHPRX6Wk7FgMPuKsKwSq7WENNeCr83h+fIhADsRx3bjNjWO5islwxVW+axDCCfMh
-         alDDLsaPbwKU7hEh3YB4B/3Y9l980afHwT5m+eovTsejcJ99Z6SeU2EsGnKVFPs3eSBw
-         ZJFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XiL4sazgjnRcq78QU16A4FxwkDV5n8t9TKCfKPhOGWc=;
-        b=ih0smTi/73okLYnrBxcQaJc2uvbbnn8N+vSkYAncG3KjtWNL++OY9PBpzovM6Q29HM
-         z65vhH5r/5mWhcwHZ6NpidVF306wKjRZAUvdD0CdhHTYbyC6h/QdV+4awqn4ISTRGpeN
-         dGrdgkFyFQp9o0tqZ/Ym5S8SXg6RQ9e6p4aloasGf9B2qZCyeTrQVsqpptJCXXbaHMFv
-         WcCicJdD74aQC5XxbsA4tK+Q9FMgUHNEzbPBajzSBr40ziIdFfoX9+M6fmKNSEvwjIGf
-         Ktnop4Ff7fVA6Vu4toH475pgFMn6Vs26/04je6skD3hSQy4iN6OuIDnMGVEFt7ysieUb
-         vZ1A==
-X-Gm-Message-State: AOAM5314mpaxIXI6u1wMCYbObipCQjwlSxfjstFenhwn/1G926kBnzyi
-        ivFA2rvWjF9mh6mOk+0nDhYjLYQuiRw9gKMoJ/kh3g==
-X-Google-Smtp-Source: ABdhPJw//e9xfUXRSj/P3NnV+MQYvHcC5UtGgf5hdCBInyairlNUjoM/JYQydjIh8rF5bHLUFfdH+0IP3JdX9BGZGTs=
-X-Received: by 2002:a25:ef0b:: with SMTP id g11mr32894341ybd.404.1636897473416;
- Sun, 14 Nov 2021 05:44:33 -0800 (PST)
+        id S236002AbhKNNst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 08:48:49 -0500
+Received: from rosenzweig.io ([138.197.143.207]:48438 "EHLO rosenzweig.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234703AbhKNNsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 08:48:37 -0500
+Date:   Sun, 14 Nov 2021 08:45:30 -0500
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 8/8] drivers/perf: Add Apple icestorm/firestorm CPU PMU
+ driver
+Message-ID: <YZES+gF7WdCiCwAe@sunset>
+References: <20211113115429.4027571-1-maz@kernel.org>
+ <20211113115429.4027571-9-maz@kernel.org>
 MIME-Version: 1.0
-References: <20211111015037.4092956-1-almasrymina@google.com>
- <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
- <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com> <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
- <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com> <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
-In-Reply-To: <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 14 Nov 2021 21:43:55 +0800
-Message-ID: <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
-Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-To:     Shakeel Butt <shakeelb@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211113115429.4027571-9-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 3:15 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Sat, Nov 13, 2021 at 6:48 AM Mina Almasry <almasrymina@google.com> wro=
-te:
-> >
-> > On Fri, Nov 12, 2021 at 6:45 PM Muchun Song <songmuchun@bytedance.com> =
-wrote:
-> > >
-> > > On Sat, Nov 13, 2021 at 7:36 AM Mike Kravetz <mike.kravetz@oracle.com=
-> wrote:
-> > > >
-> > > > Subject:   Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-> > > >
-> > > > To:        Muchun Song <songmuchun@bytedance.com>, Mina Almasry <al=
-masrymina@google.com>
-> > > >
-> > > > Cc:        Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <s=
-huah@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Oscar Salvador <osalva=
-dor@suse.de>, Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@goog=
-le.com>, Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>, Ya=
-ng Yao <ygyao@google.com>, Joanna Li <joannali@google.com>, Cannon Matthews=
- <cannonmatthews@google.com>, Linux Memory Management List <linux-mm@kvack.=
-org>, LKML <linux-kernel@vger.kernel.org>
-> > > >
-> > > > Bcc:
-> > > >
-> > > > -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D# Don't remove this line #=3D-=
-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
-> > > >
-> > > > On 11/10/21 6:36 PM, Muchun Song wrote:
-> > > >
-> > > > > On Thu, Nov 11, 2021 at 9:50 AM Mina Almasry <almasrymina@google.=
-com> wrote:
-> > > >
-> > > > >>
-> > > >
-> > > > >> +struct hugetlb_cgroup_per_node {
-> > > >
-> > > > >> +       /* hugetlb usage in pages over all hstates. */
-> > > >
-> > > > >> +       atomic_long_t usage[HUGE_MAX_HSTATE];
-> > > >
-> > > > >
-> > > >
-> > > > > Why do you use atomic? IIUC, 'usage' is always
-> > > >
-> > > > > increased/decreased under hugetlb_lock except
-> > > >
-> > > > > hugetlb_cgroup_read_numa_stat() which is always
-> > > >
-> > > > > reading it. So I think WRITE_ONCE/READ_ONCE
-> > > >
-> > > > > is enough.
-> > > >
-> > > >
-> > > >
-> > > > Thanks for continuing to work this, I was traveling and unable to
-> > > >
-> > > > comment.
-> > >
-> > > Have a good time.
-> > >
-> > > >
-> > > >
-> > > >
-> > > > Unless I am missing something, I do not see a reason for WRITE_ONCE=
-/READ_ONCE
-> > >
-> > > Because __hugetlb_cgroup_commit_charge and
-> > > hugetlb_cgroup_read_numa_stat can run parallely,
-> > > which meets the definition of data race. I believe
-> > > KCSAN could report this race. I'm not strongly
-> > > suggest using WRITE/READ_ONCE() here. But
-> > > in theory it should be like this. Right?
-> > >
-> >
-> > My understanding is that the (only) potential problem here is
-> > read_numa_stat() reading an intermediate garbage value while
-> > commit_charge() is happening concurrently. This will only happen on
-> > archs where the writes to an unsigned long aren't atomic. On archs
-> > where writes to an unsigned long are atomic, there is no race, because
-> > read_numa_stat() will only ever read the value before the concurrent
-> > write or after the concurrent write, both of which are valid. To cater
-> > to archs where the writes to unsigned long aren't atomic, we need to
-> > use an atomic data type.
-> >
-> > I'm not too familiar but my understanding from reading the
-> > documentation is that WRITE_ONCE/READ_ONCE don't contribute anything
-> > meaningful here:
-> >
-> > /*
-> > * Prevent the compiler from merging or refetching reads or writes. The
-> > * compiler is also forbidden from reordering successive instances of
-> > * READ_ONCE and WRITE_ONCE, but only when the compiler is aware of some
-> > * particular ordering. One way to make the compiler aware of ordering i=
-s to
-> > * put the two invocations of READ_ONCE or WRITE_ONCE in different C
-> > * statements.
-> > ...
-> >
-> > I can't see a reason why we care about the compiler merging or
-> > refetching reads or writes here. As far as I can tell the problem is
-> > atomicy of the write.
-> >
->
-> We have following options:
->
-> 1) Use atomic type for usage.
-> 2) Use "unsigned long" for usage along with WRITE_ONCE/READ_ONCE.
-> 3) Use hugetlb_lock for hugetlb_cgroup_read_numa_stat as well.
->
-> All options are valid but we would like to avoid (3).
->
-> What if we use "unsigned long" type but without READ_ONCE/WRITE_ONCE.
-> The potential issues with that are KCSAN will report this as race and
-> possible garbage value on archs which do not support atomic writes to
-> unsigned long.
+> +/* Counters */
+> +#define SYS_IMP_APL_PMC0_EL1	sys_reg(3, 2, 15, 0, 0)
+> +#define SYS_IMP_APL_PMC1_EL1	sys_reg(3, 2, 15, 1, 0)
+> +#define SYS_IMP_APL_PMC2_EL1	sys_reg(3, 2, 15, 2, 0)
+> +#define SYS_IMP_APL_PMC3_EL1	sys_reg(3, 2, 15, 3, 0)
+> +#define SYS_IMP_APL_PMC4_EL1	sys_reg(3, 2, 15, 4, 0)
+> +#define SYS_IMP_APL_PMC5_EL1	sys_reg(3, 2, 15, 5, 0)
+> +#define SYS_IMP_APL_PMC6_EL1	sys_reg(3, 2, 15, 6, 0)
+> +#define SYS_IMP_APL_PMC7_EL1	sys_reg(3, 2, 15, 7, 0)
+--gap--
+> +#define SYS_IMP_APL_PMC8_EL1	sys_reg(3, 2, 15, 9, 0)
+> +#define SYS_IMP_APL_PMC9_EL1	sys_reg(3, 2, 15, 10, 0)
 
-At least I totally agree with you. Thanks for your detailed explanation.
+Do we know what the gap is?
 
->
-> Shakeel
+> +/*
+> + * Description of the events we actually know about, as well as those with
+> + * a specific counter affinity. Yes, this is a grand total of two known
+> + * counters, and the rest is anybody's guess.
+> + *
+> + * Not all counters can count all events. Counters #0 and #1 are wired to
+> + * count cycles and instructions respectively, and some events have
+> + * bizarre mappings (every other counter, or even *one* counter). These
+> + * restrictins equally apply to both P and E cores.
+
+restrictions
+
+> +/* Low level accessors. No synchronisation. */
+> +#define PMU_READ_COUNTER(_idx)						\
+> +	case _idx:	return read_sysreg_s(SYS_IMP_APL_PMC## _idx ##_EL1)
+> +
+> +#define PMU_WRITE_COUNTER(_val, _idx)					\
+> +	case _idx:							\
+> +		write_sysreg_s(_val, SYS_IMP_APL_PMC## _idx ##_EL1);	\
+> +		return
+> +
+> +static u64 m1_pmu_read_hw_counter(unsigned int index)
+> +{
+> +	switch (index) {
+> +		PMU_READ_COUNTER(0);
+> +		PMU_READ_COUNTER(1);
+> +		PMU_READ_COUNTER(2);
+> +		PMU_READ_COUNTER(3);
+> +		PMU_READ_COUNTER(4);
+> +		PMU_READ_COUNTER(5);
+> +		PMU_READ_COUNTER(6);
+> +		PMU_READ_COUNTER(7);
+> +		PMU_READ_COUNTER(8);
+> +		PMU_READ_COUNTER(9);
+> +	}
+> +
+> +	BUG();
+> +}
+> +
+> +static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+> +{
+> +	switch (index) {
+> +		PMU_WRITE_COUNTER(val, 0);
+> +		PMU_WRITE_COUNTER(val, 1);
+> +		PMU_WRITE_COUNTER(val, 2);
+> +		PMU_WRITE_COUNTER(val, 3);
+> +		PMU_WRITE_COUNTER(val, 4);
+> +		PMU_WRITE_COUNTER(val, 5);
+> +		PMU_WRITE_COUNTER(val, 6);
+> +		PMU_WRITE_COUNTER(val, 7);
+> +		PMU_WRITE_COUNTER(val, 8);
+> +		PMU_WRITE_COUNTER(val, 9);
+> +	}
+> +
+> +	BUG();
+> +}
+
+Probbaly cleaner to use a single switch and no macros, registers become
+greppable and the code is shorter too. Caveat: didn't check if it
+compiles.
+
+	static inline u64 m1_pmu_hw_counter(unsigned int index)
+	{
+		switch (index) {
+		case 0: return SYS_IMP_APL_PMC0_EL1;
+		case 1: return SYS_IMP_APL_PMC1_EL1;
+		case 2: return SYS_IMP_APL_PMC2_EL1;
+		case 3: return SYS_IMP_APL_PMC3_EL1;
+		case 4: return SYS_IMP_APL_PMC4_EL1;
+		case 5: return SYS_IMP_APL_PMC5_EL1;
+		case 6: return SYS_IMP_APL_PMC6_EL1;
+		case 7: return SYS_IMP_APL_PMC7_EL1;
+		case 8: return SYS_IMP_APL_PMC8_EL1;
+		case 9: return SYS_IMP_APL_PMC9_EL1;
+		}
+
+		BUG();
+	}
+
+	static u64 m1_pmu_read_hw_counter(unsigned int index) {
+		return read_sysreg_s(m1_pmu_hw_counter(index));
+	}
+
+
+	static void m1_pmu_write_hw_counter(u64 val, unsigned int index)
+	{
+		write_sysreg_s(val, m1_pmu_hw_counter(index));
+	}
+
+> +static void __m1_pmu_enable_counter(unsigned int index, bool en)
+> +{
+> +	u64 val, bit;
+> +
+> +	switch (index) {
+> +	case 0 ... 7:
+> +		bit = BIT(get_bit_offset(index, PMCR0_CNT_ENABLE_0_7));
+> +		break;
+> +	case 8 ... 9:
+> +		bit = BIT(get_bit_offset(index - 8, PMCR0_CNT_ENABLE_8_9));
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +
+> +	if (en)
+> +		val |= bit;
+> +	else
+> +		val &= ~bit;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +}
+...
+> +static void __m1_pmu_enable_counter_interrupt(unsigned int index, bool en)
+> +{
+> +	u64 val, bit;
+> +
+> +	switch (index) {
+> +	case 0 ... 7:
+> +		bit = BIT(get_bit_offset(index, PMCR0_PMI_ENABLE_0_7));
+> +		break;
+> +	case 8 ... 9:
+> +		bit = BIT(get_bit_offset(index - 8, PMCR0_PMI_ENABLE_8_9));
+> +		break;
+> +	default:
+> +		BUG();
+> +	}
+> +
+> +	val = read_sysreg_s(SYS_IMP_APL_PMCR0_EL1);
+> +
+> +	if (en)
+> +		val |= bit;
+> +	else
+> +		val &= ~bit;
+> +
+> +	write_sysreg_s(val, SYS_IMP_APL_PMCR0_EL1);
+> +}
+
+These two helper functions have basically the same logic -- maybe worth combining?
+
+> +static void m1_pmu_configure_counter(unsigned int index, u8 event,
+> +				     bool user, bool kernel)
+> +{
+....
+> +	switch (index) {
+> +	case 0 ... 1:
+> +		/* 0 and 1 have fixed events */
+> +		break;
+> +	case 2 ... 5:
+> +		shift = (index - 2) * 8;
+> +		val = read_sysreg_s(SYS_IMP_APL_PMESR0_EL1);
+> +		val &= ~((u64)0xff << shift);
+> +		val |= (u64)event << shift;
+> +		write_sysreg_s(val, SYS_IMP_APL_PMESR0_EL1);
+> +		break;
+> +	case 6 ... 9:
+> +		shift = (index - 6) * 8;
+> +		val = read_sysreg_s(SYS_IMP_APL_PMESR1_EL1);
+> +		val &= ~((u64)0xff << shift);
+> +		val |= (u64)event << shift;
+> +		write_sysreg_s(val, SYS_IMP_APL_PMESR1_EL1);
+> +		break;
+> +	}
+> +}
+
+I'd love an explanation what's happening here.
+
+> +	/*
+> +	 * Place the event on the first free counter that can count
+> +	 * this event.
+> +	 *
+> +	 * We could do a better job if we had a view of all the events
+> +	 * counting on the PMU at any given time, and by placing the
+> +	 * most constraint events first.
+> +	 */
+
+constraining
+
+> +static int m1_pmu_device_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	ret = arm_pmu_device_probe(pdev, m1_pmu_of_device_ids, NULL);
+> +	if (!ret) {
+> +		/*
+> +		 * If probe succeeds, taint the kernel as this is all
+> +		 * undocumented, implementation defined black magic.
+> +		 */
+> +		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+> +	}
+> +
+> +	return ret;
+> +}
+
+What are the implications of this taint? You could say that about every
+driver we've written for the M1, but...
