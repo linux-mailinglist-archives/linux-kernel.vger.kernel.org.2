@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5417B44F9D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B436E44F9D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236146AbhKNRz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:55:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
+        id S236334AbhKNR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:56:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhKNRzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:55:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 42358608FE;
-        Sun, 14 Nov 2021 17:52:27 +0000 (UTC)
+        id S236154AbhKNRze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 12:55:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id AAB8861077;
+        Sun, 14 Nov 2021 17:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636912347;
-        bh=HcIt+1H5ZwCqWSNhS3Zbxl3eT+i+IoUwBRUTJvsuok4=;
+        s=k20201202; t=1636912357;
+        bh=kO6PoQMdres4jWtjAxy8VSxK2DgqrzLBmJAbA0R64p4=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HgvbVrGceamAluVHheREaA6A8EVV2F2+DgM2/dTD7UbgGKGlnvOKddKJ3njLT5JUV
-         pNgbGanw59CV8RQ2eJalIUkGmK056L/xsp3fylJEsTYHez0b667eqBC4Lh7LGPo4AY
-         0L2+6nMQjl2nCFU/a85B1Vw+qpXXwtKefgMQ+XYNZm4W+yO6kpTx0JO0MHEi0oERi7
-         J5vNslf+V5H47g22ju3kukYbmtpGdgHOCnX51QZ8zlOrpMJsxDsoxs2CHbLZq1qERK
-         53+o4e3MDfBWJo+bj/AAkvkPGezg3aQoriW3O4Qk0jJNAGXgxafYMhMLErkxG6GXsq
-         VX1QegauXzzWw==
+        b=qiGG9rOrP5dmhdnVX0nX5/ud8kY5TWnUnsVM8A5R1HDdHW+KoXk6ydXVIEAs7HfnS
+         oESGN45SWyyX7pIXvknXez/Ye3gN/RX+RpA6F/19U+crUOQZ5Of5X71QgFDeZ1vk+H
+         1YJWNL1/4pnDgTjVT6vQDky/uvWvUSc4oMKHwBqM2IPGqyscbvXCaziiCz3cpbvb74
+         fIa5dLtXHev5XjixmBmct8VDbnKYM125i5kmm5k8PUVrzJgFDRdDVfceULBBeIBywJ
+         vy8FO9SDVliEdUwLTOYiZqJF8MDzbxXI3OPYREyHnChwOILZY8lawtKGsE+qWjVBbL
+         kRryCaAb4Tgmw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2BA26609D7;
-        Sun, 14 Nov 2021 17:52:27 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools changes for v5.16: 2nd batch
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A45686095A;
+        Sun, 14 Nov 2021 17:52:37 +0000 (UTC)
+Subject: Re: [GIT PULL] sched/urgent for v5.16-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211114012258.33507-1-acme@kernel.org>
-References: <20211114012258.33507-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211114012258.33507-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.16-2021-11-13
-X-PR-Tracked-Commit-Id: ac96f463cc9aebb00ca7bbee47efb0794dfd0f3f
+In-Reply-To: <YZDxFAYjVp2nRteh@zn.tnic>
+References: <YZDxFAYjVp2nRteh@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YZDxFAYjVp2nRteh@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.16_rc1
+X-PR-Tracked-Commit-Id: a8b76910e465d718effce0cad306a21fa4f3526b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 35c8fad4a703fdfa009ed274f80bb64b49314cde
-Message-Id: <163691234711.31405.9427532504370663937.pr-tracker-bot@kernel.org>
-Date:   Sun, 14 Nov 2021 17:52:27 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+X-PR-Merge-Commit-Id: fc661f2dcb7e41dcda9ae862efb822bb2f461646
+Message-Id: <163691235766.31405.435556343359456049.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Nov 2021 17:52:37 +0000
+To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        German Gomez <german.gomez@arm.com>,
-        Guo Zhengkui <guozhengkui@vivo.com>,
-        Ian Rogers <irogers@google.com>,
-        James Clark <james.clark@arm.com>,
-        Kajol Jain <kjain@linux.ibm.com>, Leo Yan <leo.yan@linaro.org>,
-        Like Xu <likexu@tencent.com>,
-        Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Nov 2021 22:22:58 -0300:
+The pull request you sent on Sun, 14 Nov 2021 12:20:52 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.16-2021-11-13
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.16_rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/35c8fad4a703fdfa009ed274f80bb64b49314cde
+https://git.kernel.org/torvalds/c/fc661f2dcb7e41dcda9ae862efb822bb2f461646
 
 Thank you!
 
