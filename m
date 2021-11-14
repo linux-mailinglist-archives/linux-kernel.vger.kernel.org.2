@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B59044F918
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3984544F91D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhKNQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:43:03 -0500
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:49373 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhKNQm7 (ORCPT
+        id S236167AbhKNQoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:44:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235272AbhKNQn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:42:59 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 44AB4100D940E;
-        Sun, 14 Nov 2021 17:39:58 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 160972B0CF5; Sun, 14 Nov 2021 17:39:58 +0100 (CET)
-Date:   Sun, 14 Nov 2021 17:39:58 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     linux-pci@vger.kernel.org, mst@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
-Message-ID: <20211114163958.GA7211@wunner.de>
-References: <20211111090225.946381-1-kraxel@redhat.com>
+        Sun, 14 Nov 2021 11:43:58 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F50C061746;
+        Sun, 14 Nov 2021 08:41:03 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id b15so60493271edd.7;
+        Sun, 14 Nov 2021 08:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lyZJLsZ5/TWd3NStdktYvMZTubMFBn2FLa8gh1z/nug=;
+        b=hkj6kHSlpMVk4CZY6LNpv0TzFaBQfQIs/VqaUM5Ewn24WCHXwS2GlG93QEhpopV/Fm
+         YPJ/tKc6leIdHVIVBbJHMuHdDrBXYirqXNfVgDKWMEcrA55CJ+1dEbO/haWpzyaZrWHk
+         vovPCl6lFCW5zGi34bg5Ax+Dgxt5IUF65zC12OL4t93LTeGaQP7+uiOv4SL1haj1BB1Y
+         CY+q5aKjeYg5sm0aBv9tcgYzm2sY8KcZD7X/XZPY3F99tO7jyx6SNV8pfau5Pykxt4Ed
+         UusBMpevcXSjIDCiLU/vcSDteEIhfvBCoeDD/8OCJxw96/7NIeud1kLgq2yi5LgyTAcf
+         kfjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lyZJLsZ5/TWd3NStdktYvMZTubMFBn2FLa8gh1z/nug=;
+        b=kMxl4vdv2V9QldOuOw3MVLgXh92d0MG9EIjk0+gRd6cGDbwIftzTgkcrIz1iDYGkVn
+         HJkpCEvcCuqxWovJdxdtc2OcM67qq7rOC3jKWyixbUTwthH8uIocGZBIUp8qC870fPmA
+         OpkmliWH8E4ebAV/eCN3NE3Me4ZDR0mAq6MvHIwpKka2GfWaOK6JKrleyzH8pLITLTvh
+         bEBHmXaAtXHcwinCpes3ikWmiRQ1miurX0zORnR2qzm1YMF7p2kPy1h48+bT8sz+LR3d
+         RcF2Jy8Xo11WPMPrzZOo+CleGsU2U4RODgIWWZLa684/0km9fWT8gDRyKk9WIyoEVnIl
+         COsA==
+X-Gm-Message-State: AOAM532W64ukMKSxCxfbZ06CjbRIeL35boSEauIZmfflDhOROLGkXz9z
+        nQ7PxVGEJv4iAq6XAT5k30u69tb2y57wlNYkI7TwlFl+YdM=
+X-Google-Smtp-Source: ABdhPJwGAGuQp+5WefeXVaLtnzBsjZjeKyjIyHYFgoSq4xVQYwGNzr6C+rHDRJJ4IhThlzecrRX0UOSiD+DIVaov/8w=
+X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr15958820ejb.69.1636908061637;
+ Sun, 14 Nov 2021 08:41:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111090225.946381-1-kraxel@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211114163444.21669-1-rdunlap@infradead.org>
+In-Reply-To: <20211114163444.21669-1-rdunlap@infradead.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 14 Nov 2021 18:40:25 +0200
+Message-ID: <CAHp75Veeppry=SHk0NUxpHVKbefCgRqDvi+PFJCiCABDSYg-HQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 10:02:24AM +0100, Gerd Hoffmann wrote:
-> The PCIe specification asks the OS to wait five seconds after the
+On Sun, Nov 14, 2021 at 6:34 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+> clk_get_parent(), so add a simple implementation of that
+> function so that callers of it will build without errors.
+>
+> Fixes these build errors:
+>
+> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
 
-The spec reference Bjorn asked for is: PCIe r5.0, sec. 6.7.1.5
+Some nit-picks below.
+Otherwise looks good to me,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> attention button has been pressed before actually un-plugging the
-> device.  This gives the operator the chance to cancel the operation
-> by pressing the attention button again within those five seconds.
-> 
-> For physical hardware this makes sense.  Picking the wrong button
-> by accident can easily happen and it can be corrected that way.
-> 
-> For virtual hardware the benefits are questionable.  Typically
-> users find the five second delay annoying.
+Suggested-by?
 
-Why does virtual hardware implement the Attention Button if it's
-perceived as annoying?  Just amend qemu so that it doesn't advertise
-presence of an Attention Button to get rid of the delay.  (Clear the
-Attention Button Present bit in the Slot Capabilities register.)
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Artur Rojek <contact@artur-rojek.eu>
+> Cc: Paul Cercueil <paul@crapouillou.net>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: Jonas Gorski <jonas.gorski@gmail.com>
+> ---
+> v1 and v2 were:
+> [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
 
-An Attention Button doesn't make any sense for virtual hardware
-except to test or debug support for it in the kernel.  Just make
-presence of the Attention Button optional and be done with it.
+> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
 
-You'll still be able to bring down the slot in software via the
-"remove" attribute in sysfs.
+Not sure why it's here. What does (the location of) this tag mean?
 
-Same for the 1 second delay in remove_board().  That's mandated by
-PCIe r5.0, sec. 6.7.1.8, but it's only observed if a Power Controller
-is present.  So just clear the Power Controller Present bit in the
-Slot Capabilities register and the delay is gone.
+>  arch/mips/bcm63xx/clk.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> --- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
+> +++ linux-next-20211112/arch/mips/bcm63xx/clk.c
+> @@ -381,6 +381,13 @@ void clk_disable(struct clk *clk)
+>
+>  EXPORT_SYMBOL(clk_disable);
+>
+> +struct clk *clk_get_parent(struct clk *clk)
+> +{
+> +       return NULL;
+> +}
 
-
-> @@ -109,6 +110,8 @@ struct controller {
->  	unsigned int ist_running;
->  	int request_result;
->  	wait_queue_head_t requester;
 > +
-> +	bool is_virtual;
->  };
 
-This is a quirk for a specific device, so please move it further up to the
-/* capabilities and quirks */ section of struct controller.
+Perhaps it's not needed even if the rest have it (I mean blank line).
 
-
-> @@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
->  		goto err_out_shutdown_notification;
->  	}
->  
-> +	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
-> +	    dev->port->device == 0x000c)
-> +		/* qemu pcie root port */
-> +		ctrl->is_virtual = true;
+> +EXPORT_SYMBOL(clk_get_parent);
 > +
+>  unsigned long clk_get_rate(struct clk *clk)
+>  {
+>         if (!clk)
 
-Move this to pcie_init() in pciehp_hpc.c below the existing quirks for
-hotplug_user_indicators and is_thunderbolt.
-
-
-> +static bool fast_virtual_unplug = true;
-> +module_param(fast_virtual_unplug, bool, 0644);
-
-An integer parameter to configure a custom delay would be nicer IMO.
-Of course, anything else than 5 sec deviates from the spec.
-
-Thanks,
-
-Lukas
+-- 
+With Best Regards,
+Andy Shevchenko
