@@ -2,158 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB0444FA16
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D3A44FA1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 20:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhKNTOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 14:14:48 -0500
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:34804 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236231AbhKNTOo (ORCPT
+        id S236177AbhKNTWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 14:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236196AbhKNTWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 14:14:44 -0500
-Received: by mail-ua1-f44.google.com with SMTP id n6so13712650uak.1;
-        Sun, 14 Nov 2021 11:11:23 -0800 (PST)
+        Sun, 14 Nov 2021 14:22:32 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6979EC061746;
+        Sun, 14 Nov 2021 11:19:36 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id k23so2543759lje.1;
+        Sun, 14 Nov 2021 11:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Smx2GT4U6hH7iOi/1cAa+TyFVS+CT1sHsL8FpqzaNu4=;
+        b=jyJ8oMAhhusNAOyaTldgTm6ov6aZJo7J45gYTadmnWyN7IpoLSjbpGT4OiU8zSIsQb
+         LzLYKv8U7x/mRTEeJo3/EcFLrRG13C8f2MjGYEquJ1TiaZbEMcfq8a/V0/sX5B1rdGXp
+         UaP/INv3Z9zFgoLYFpaICBY44t/ouP0XJ0H6BXOBQmCnI97oy7ATSqc57EtFuaexJrbL
+         Kg8dZxEEinoEm/+HcZYmdtIU02uxyNpOZKKfzYrJ4hMrQwQSTJ3UjIVcahvRvFpvG5Mb
+         tAlexfKhawnR+Wgu8D2IDZfch/xTjiTALKUuky0UIpIhpom9juIgwllRbR1aODWodS3M
+         lzbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Sknt59G7NNuQ4Eiu1wyh6p23EFcYGDA0b1KDBZyFXw=;
-        b=LL3JGMB2RccvlA5j6Magq7CxV92Nz3BsC/tQQ2wwhtr3LAJWyNJ1jZRPV5ZmwxOmyB
-         72n6Vj560XD4isHc/Iyu2DY2UFqVDgpnL2VKVYK1jBAee+Bv840Il26xF/2CDKZa3BDj
-         NjFAVp85q9WSGA6SblDHtnnHLBpbrLAsVYNeGqYN1+903RrM/NKR/23Fre/lqGXWO2qj
-         aUb2g65J8MqvRnhP8GcA2h4awPFeJVOfWGCJF5pmECAPwJ0cDmxy601uGRY0udTTQjkE
-         oB1ys9dEHKLYghaqJhDJlBwRD7WefQq1SRRhpM5krNuHvjpfQ81xLoxT6naeLOdBU0M4
-         XCSw==
-X-Gm-Message-State: AOAM530wvVqRBGqM7S8cOcyQM6jQnt0gHTC10PzDJ1780pTvUmqo4se/
-        n2K45ob+tAQWUFOaLxo5cy3rxOIpHCuuWg==
-X-Google-Smtp-Source: ABdhPJzqdlbsEs5KQQtqZrLrI6Utz4fvnNwCGHzOCplarahvTji8sdzDOgqVzqRW06qr6wkBSecECw==
-X-Received: by 2002:ab0:3049:: with SMTP id x9mr49248710ual.55.1636917083009;
-        Sun, 14 Nov 2021 11:11:23 -0800 (PST)
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
-        by smtp.gmail.com with ESMTPSA id c23sm7726257vko.8.2021.11.14.11.11.21
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Smx2GT4U6hH7iOi/1cAa+TyFVS+CT1sHsL8FpqzaNu4=;
+        b=k9BmxhQO3RLSDWkHZjlIkgsdEKvad/kTdR2fVmnBMxSgLaMlEw4yTFjjB/KVzJ38O7
+         G/X9K29ZQXgUBMQ43E9fqeBkEtZJuXzKIwJ0b3hJHhW4T+SF6RoAnfMaHsIkhCKGf5yc
+         ltyhzL+2TA7LLkwycOMposRmNVeb99Srl0F6J82E55WJwWyLcek0/QT4kfA7e8GriBXY
+         KfXQE1nFv5YbUXui4KMLDaISyqrnERVf+yOsCuS8wevcC9uVHV8gY5NDIU40TVlfQh1p
+         +M5UTN3Bto5Yx27LbihVnue5+AYW9N+Mfx6VCTPWuA9m/BrxLAk9IiYmvbafRsZG3GUA
+         UWUQ==
+X-Gm-Message-State: AOAM531VY0vowNrSQ1IsUnymq2/kf56tKiJp8d7mmEbZsdS/s9foJFZO
+        NcU1sdQXz5m+9nNa78B6k7eRgPOdEnQ=
+X-Google-Smtp-Source: ABdhPJzI9fS20qwc93wj1B/cBFKmjS/NEKhioBTw85bvrmdUlSYHx/3ku6lcga7NsytXKzsikLxCyw==
+X-Received: by 2002:a2e:3c13:: with SMTP id j19mr4771535lja.311.1636917574668;
+        Sun, 14 Nov 2021 11:19:34 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id b14sm1192840lfs.174.2021.11.14.11.19.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 11:11:22 -0800 (PST)
-Received: by mail-vk1-f175.google.com with SMTP id 84so7993704vkc.6;
-        Sun, 14 Nov 2021 11:11:21 -0800 (PST)
-X-Received: by 2002:a1f:f24f:: with SMTP id q76mr49851846vkh.11.1636917081468;
- Sun, 14 Nov 2021 11:11:21 -0800 (PST)
+        Sun, 14 Nov 2021 11:19:33 -0800 (PST)
+Message-ID: <52dbf9c9-0fa6-d4c6-ed6e-bba39e6e921b@gmail.com>
+Date:   Sun, 14 Nov 2021 22:19:29 +0300
 MIME-Version: 1.0
-References: <20211109013058.22224-1-nickrterrell@gmail.com> <CA+icZUVV+RfrW__qvT04Rigx1dTeDT4ah+KdAVhXWMab=13t_g@mail.gmail.com>
-In-Reply-To: <CA+icZUVV+RfrW__qvT04Rigx1dTeDT4ah+KdAVhXWMab=13t_g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 14 Nov 2021 20:11:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWqBAwVnfuwmonT1hESB4P+EH0p0dtszdrZLJGxBbU2gw@mail.gmail.com>
-Message-ID: <CAMuHMdWqBAwVnfuwmonT1hESB4P+EH0p0dtszdrZLJGxBbU2gw@mail.gmail.com>
-Subject: Re: [GIT PULL] zstd changes for v5.16
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Paul Jones <paul@pauljones.id.au>,
-        Tom Seewald <tseewald@gmail.com>,
-        Jean-Denis Girard <jd.girard@sysnux.pf>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Content-Language: en-US
+To:     Wells Lu <wellslutw@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        p.zabel@pengutronix.de
+Cc:     Wells Lu <wells.lu@sunplus.com>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 10:12 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> On Tue, Nov 9, 2021 at 2:24 AM Nick Terrell <nickrterrell@gmail.com> wrote:
-> > I am sending you a pull request to add myself as the maintainer of zstd and
-> > update the zstd version in the kernel, which is now 4 years out of date,
-> > to the latest zstd release. This includes bug fixes, much more extensive fuzzing,
-> > and performance improvements. And generates the kernel zstd automatically
-> > from upstream zstd, so it is easier to keep the zstd verison up to date, and we
-> > don't fall so far out of date again.
+Hi, Wells!
 
-> is it possible to have an adapted version of your work for Linux
-> v5.15.y which is a new kernel with LongTerm Support (see [1])?
+On 11/3/21 14:02, Wells Lu wrote:
 
-Let's wait a bit before porting this to stable...
+[code snip]
 
-bloat-o-meter output for an atari_defconfig build with the old/new zstd
-code (i.e. before/after commit e0c1b49f5b674cca ("lib: zstd: Upgrade to
-latest upstream zstd version 1.4.10"):
+> +		if (comm->dual_nic) {
+> +			struct net_device *net_dev2 = mac->next_netdev;
+> +
+> +			if (!netif_running(net_dev2)) {
+> +				mac_hw_stop(mac);
+> +
+> +				mac2 = netdev_priv(net_dev2);
+> +
 
-vmlinux:
+(*)
 
-    add/remove: 96/28 grow/shrink: 28/29 up/down: 51766/-38162 (13604)
-    CONFIG_ZSTD_DECOMPRESS=y due to CONFIG_RD_ZSTD=y (which is the default)
+> +				// unregister and free net device.
+> +				unregister_netdev(net_dev2);
+> +				free_netdev(net_dev2);
+> +				mac->next_netdev = NULL;
+> +				pr_info(" Unregistered and freed net device \"eth1\"!\n");
+> +
+> +				comm->dual_nic = 0;
+> +				mac_switch_mode(mac);
+> +				rx_mode_set(net_dev);
+> +				mac_hw_addr_del(mac2);
+> +
 
-    Not a small increase, but acceptable, I guess?
+mac2 is net_dev2 private data (*), so it will become freed after 
+free_netdev() call.
 
-lib/zstd/zstd_compress.ko:
+FWIW the latest `smatch` should warn about this type of bugs.
 
-    CONFIG_ZSTD_COMPRESS=m
+> +				// If eth0 is up, turn on lan 0 and 1 when
+> +				// switching to daisy-chain mode.
+> +				if (comm->enable & 0x1)
+> +					comm->enable = 0x3;
 
-    add/remove: 183/38 grow/shrink: 58/37 up/down: 346620/-51074 (295546)
-    Function                                     old     new   delta
-    ZSTD_compressBlock_btultra_dictMatchState       -   27802  +27802
-    ZSTD_compressBlock_btopt_dictMatchState        -   27614  +27614
-    ZSTD_compressBlock_doubleFast_dictMatchState       -   24420  +24420
-    ZSTD_compressBlock_btultra_extDict             -   24376  +24376
-    ZSTD_compressBlock_fast_dictMatchState         -   16712  +16712
-    ZSTD_compressBlock_btultra2                    -   15432  +15432
-    ZSTD_compressBlock_btopt_extDict            9052   24096  +15044
-    ZSTD_initStats_ultra                           -   15040  +15040
-    ZSTD_compressBlock_btultra                     -   14802  +14802
-    ZSTD_compressBlock_doubleFast_extDict_generic    2432   12216   +9784
-    ZSTD_compressBlock_doubleFast               8846   16342   +7496
-    ZSTD_compressBlock_fast_extDict_generic     1254    8556   +7302
-    ZSTD_compressBlock_btopt                    8826   15184   +6358
-    ZSTD_compressBlock_fast                     3896    9532   +5636
-    ZSTD_compressBlock_lazy2_extDict            6940   11578   +4638
-    ZSTD_compressSuperBlock                        -    4440   +4440
-    ZSTD_resetCCtx_internal                        -    3736   +3736
-    ZSTD_HcFindBestMatch_dedicatedDictSearch_selectMLS.constprop
--    3706   +3706
-    ...
+[code snip]
 
-    An increase of 288 KiB?
-    My first thought was bloat-a-meter doesn't handle modules correctly.
-    So I enabled CONFIG_CRYPTO_ZSTD=y, which made CONFIG_ZSTD_COMPRESS=y,
-    and the impact on vmlinux is:
+> +static int l2sw_remove(struct platform_device *pdev)
+> +{
+> +	struct net_device *net_dev;
+> +	struct net_device *net_dev2;
+> +	struct l2sw_mac *mac;
+> +
+> +	net_dev = platform_get_drvdata(pdev);
+> +	if (!net_dev)
+> +		return 0;
+> +	mac = netdev_priv(net_dev);
+> +
+> +	// Unregister and free 2nd net device.
+> +	net_dev2 = mac->next_netdev;
+> +	if (net_dev2) {
+> +		unregister_netdev(net_dev2);
+> +		free_netdev(net_dev2);
+> +	}
+> +
 
-        add/remove: 288/0 grow/shrink: 5/0 up/down: 432712/0 (432712)
+Is it save here to free mac->next_netdev before unregistering "parent" 
+netdev? I haven't checked the whole code, just asking :)
 
-    Whoops...
+> +	sysfs_remove_group(&pdev->dev.kobj, &l2sw_attribute_group);
+> +
+> +	mac->comm->enable = 0;
+> +	soc0_stop(mac);
+> +
+> +	napi_disable(&mac->comm->rx_napi);
+> +	netif_napi_del(&mac->comm->rx_napi);
+> +	napi_disable(&mac->comm->tx_napi);
+> +	netif_napi_del(&mac->comm->tx_napi);
+> +
+> +	mdio_remove(net_dev);
+> +
+> +	// Unregister and free 1st net device.
+> +	unregister_netdev(net_dev);
+> +	free_netdev(net_dev);
+> +
+> +	clk_disable(mac->comm->clk);
+> +
+> +	// Free 'common' area.
+> +	kfree(mac->comm);
 
-    All of the top functions above just call ZSTD_compressBlock_opt_generic()
-    with different parameters. Looks like the forced inlining
+Same here with `mac`.
 
-        FORCE_INLINE_TEMPLATE size_t
-        ZSTD_compressBlock_opt_generic(ZSTD_matchState_t* ms,
-                                       seqStore_t* seqStore,
-                                       U32 rep[ZSTD_REP_NUM],
-                                 const void* src, size_t srcSize,
-                                 const int optLevel,
-                                 const ZSTD_dictMode_e dictMode)
+> +	return 0;
+> +}
 
-    is not that suitable for the kernel...
 
-Gr{oetje,eeting}s,
+I haven't read the whole thread, i am sorry if these questions were 
+already discussed.
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With regards,
+Pavel Skripkin
