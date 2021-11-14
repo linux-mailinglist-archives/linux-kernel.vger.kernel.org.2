@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FB544F9E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1274944F9E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhKNSGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 13:06:08 -0500
-Received: from kirsty.vergenet.net ([202.4.237.240]:58656 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234525AbhKNSFG (ORCPT
+        id S235621AbhKNSJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 13:09:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhKNSJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 13:05:06 -0500
-Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 469AC25AEF5;
-        Mon, 15 Nov 2021 05:02:09 +1100 (AEDT)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id E537B27F0; Sun, 14 Nov 2021 19:02:06 +0100 (CET)
-Date:   Sun, 14 Nov 2021 19:02:06 +0100
-From:   Simon Horman <horms@verge.net.au>
-To:     Julian Anastasov <ja@ssi.bg>, pablo@netfilter.org
-Cc:     GuoYong Zheng <zhenggy@chinatelecom.cn>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
-Message-ID: <20211114180206.GA2757@vergenet.net>
-References: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
- <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
+        Sun, 14 Nov 2021 13:09:03 -0500
+X-Greylist: delayed 5166 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 14 Nov 2021 10:06:07 PST
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15855C061746;
+        Sun, 14 Nov 2021 10:06:05 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 647C0100D940E;
+        Sun, 14 Nov 2021 19:06:04 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 434BE2BC2E5; Sun, 14 Nov 2021 19:06:04 +0100 (CET)
+Date:   Sun, 14 Nov 2021 19:06:04 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211114180604.GA23907@wunner.de>
+References: <20211111090225.946381-1-kraxel@redhat.com>
+ <20211114163958.GA7211@wunner.de>
+ <20211114122249-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
-Organisation: Horms Solutions BV
+In-Reply-To: <20211114122249-mutt-send-email-mst@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 11:56:36AM +0200, Julian Anastasov wrote:
+On Sun, Nov 14, 2021 at 12:24:43PM -0500, Michael S. Tsirkin wrote:
+> On Sun, Nov 14, 2021 at 05:39:58PM +0100, Lukas Wunner wrote:
+> > Why does virtual hardware implement the Attention Button if it's
+> > perceived as annoying?  Just amend qemu so that it doesn't advertise
+> > presence of an Attention Button to get rid of the delay.  (Clear the
+> > Attention Button Present bit in the Slot Capabilities register.)
 > 
-> 	Hello,
-> 
-> On Fri, 5 Nov 2021, GuoYong Zheng wrote:
-> 
-> > The dest variable is not used after ip_vs_new_dest anymore in
-> > ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
+> Because we want ability to request device removal from outside the
+> guest.
+
+Please elaborate.  Does "outside the guest" mean on the host?
+How do you represent the Attention Button outside the guest
+and route events through to the guest?
+
+
+> > An Attention Button doesn't make any sense for virtual hardware
+> > except to test or debug support for it in the kernel.  Just make
+> > presence of the Attention Button optional and be done with it.
 > > 
-> > Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
+> > You'll still be able to bring down the slot in software via the
+> > "remove" attribute in sysfs.
 > 
-> 	Looks good to me for -next, thanks!
-> 
-> Acked-by: Julian Anastasov <ja@ssi.bg>
+> This requires guest specific code though. Emulating the attention button
+> works in a guest independent way.
 
-Thanks GuoYong,
+It sounds like you're using the Attention Button because it does
+almost, but not quite what you want for your specific use case.
+Now you're trying to change its behavior in a way that deviates
+from the spec to align it with your use case.
 
-Acked-by: Simon Horman <horms@verge.net.au>
+Why don't you just trigger surprise-removal from outside the guest?
 
-Pablo, please consider this for nf-next at your convenience.
+Thanks,
 
-> 
-> > ---
-> >  net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
-> >  1 file changed, 2 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> > index e62b40b..494399d 100644
-> > --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> > +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> > @@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
-> >   *	Create a destination for the given service
-> >   */
-> >  static int
-> > -ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
-> > -	       struct ip_vs_dest **dest_p)
-> > +ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
-> >  {
-> >  	struct ip_vs_dest *dest;
-> >  	unsigned int atype, i;
-> > @@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
-> >  	spin_lock_init(&dest->stats.lock);
-> >  	__ip_vs_update_dest(svc, dest, udest, 1);
-> >  
-> > -	*dest_p = dest;
-> > -
-> >  	LeaveFunction(2);
-> >  	return 0;
-> >  
-> > @@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
-> >  		/*
-> >  		 * Allocate and initialize the dest structure
-> >  		 */
-> > -		ret = ip_vs_new_dest(svc, udest, &dest);
-> > +		ret = ip_vs_new_dest(svc, udest);
-> >  	}
-> >  	LeaveFunction(2);
-> >  
-> > -- 
-> > 1.8.3.1
-> 
-> Regards
-> 
-> --
-> Julian Anastasov <ja@ssi.bg>
-> 
+Lukas
