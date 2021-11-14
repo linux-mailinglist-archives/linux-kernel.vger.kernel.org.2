@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C30544FB7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9C244FB80
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 21:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236223AbhKNUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 15:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S236250AbhKNUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 15:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbhKNUKm (ORCPT
+        with ESMTP id S232346AbhKNUMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 15:10:42 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE48CC061766;
-        Sun, 14 Nov 2021 12:07:44 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id b40so37672782lfv.10;
-        Sun, 14 Nov 2021 12:07:44 -0800 (PST)
+        Sun, 14 Nov 2021 15:12:19 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85869C061746;
+        Sun, 14 Nov 2021 12:09:23 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so11489759pja.1;
+        Sun, 14 Nov 2021 12:09:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AkpRlmm9VStWG/9FSC9RiFG1Zeod4XIWPGAv7duUBTE=;
-        b=PjQ4peGmad+WSgds8M0XV2NpLMbZmdfcTTKXkxWa2Rihcjk6oNINHI/9VGt8B+sYeo
-         Wa4MwE4a7q95OhG+l9SbYtU7nq20TiinBgeDVSkDRw7Ai40WbP/YcX5hA1EmaoEPwsYU
-         pOS1L5XxWSjDga9h/naONRKDbsNQc8kcFGESlcAAg+LLALEI1Dq1P60rCqVnh44dnkNw
-         9RghuTdUsG1E+KwFMaxawAuhU4pDhS5B4uI9K1pdH1KZDO9F+8FFahYmwPox8a3SD+69
-         k5ogDMOGo1JJTLFxupz6ZzrmrM7NIh8hYV1liuSPk1qY83wDSXXYTBCjLYXEf2ktbLQ6
-         8pzw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Nj+oxSX/c3z55ECc6E1sqG8puAX/WDZIVVJffo9MIU=;
+        b=IuCl7VIm2KIapGhBYDwqQraU2CCe8kI2wOVKMMb4/TueOPYH0p/qni4XBxWevydhM3
+         yat9GBWYNNtfvFuxCN56xDOf0O44GUSE4XyVcq4gqGFcHIeNBduVB7TpgLvxhJSYh2rt
+         oYCfH9tfK6JidnW3E4ashRn4POqA8g/qMcYbs1XYBh9TOtCcrw53nSF3/uJ8fHyFw347
+         wKMg5nhy6H87qEdY9jYXD0dkWkVvG/zPhJKjQQCyBt5H2zGYOYBtxbZBxlXVumZLqTkK
+         uc750RhkMpxz03fT00tQ20I+qqxl17t3Qdb4kgWcbRvekWBb/eazkRFObjBbnVyNsPos
+         p2hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AkpRlmm9VStWG/9FSC9RiFG1Zeod4XIWPGAv7duUBTE=;
-        b=SM5xSYU343JDKCIIjdaLp1HMTtaouOOGlnB0Hldies39yJcKsghaH8QglXP2XxUwNJ
-         1RkjoW+kk6pF//INLZvTi0KNylZleNl2WqKzit7rtBwAjRYQFwU5jbCUaFQbe0w+BQ3U
-         jMyQxXjoodRBj22bfcDwAjjifs7ftqnOHjpsU+NlUQpEaWoGW1g2EX7rLS/5M3J0ig4J
-         1pd+COBTr9ahDvtB9NGIKhzb8Ql5ntP+wmOZ/FEcEkWhJZDbiap7y3iN+z2xdU7Vk7K4
-         LtPlnwqmXQry5cCRcn0EO/w02u/GSfDR6wgEKCoZoumwigoB6zPvsMUUk+AzW2WqZS63
-         kEqA==
-X-Gm-Message-State: AOAM533UHz5CsJ9HKLyMg9ctQRbNfmvdo3dDsKeOCUmsWF7Zz4/fszXd
-        PhnGHOwWRmdrcPu6Sqy61Sg=
-X-Google-Smtp-Source: ABdhPJxRrlmzgYLBs1cyCcjph5vdi0HNwlsqJKW2fr1Y0Sz5Qj5qhssjE9F0Y5GxBliN2art+/jhUw==
-X-Received: by 2002:a05:6512:a91:: with SMTP id m17mr20960941lfu.690.1636920463400;
-        Sun, 14 Nov 2021 12:07:43 -0800 (PST)
-Received: from localhost.localdomain (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
-        by smtp.gmail.com with ESMTPSA id d30sm1204644lfv.58.2021.11.14.12.07.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Nj+oxSX/c3z55ECc6E1sqG8puAX/WDZIVVJffo9MIU=;
+        b=YoP2+woCqwy8brrP4hLmePI6rVfaQmnTe4JCgfRjYi69Upa0Fdd0PHdMaZNBDrBfkG
+         d0TSZcKh35Pfwh8cq9b7PeASvsvxKuXm2CpLRqYBIpESg12VhoypH7LRuOlBKbYyEwN5
+         9i1efyhgobCELKSlGk4DwqkMnVTh9aM1B07g3nohBzLKQYQpKyNqq5Weee3N8FVFup0B
+         OMUY4OJ9g0utftCE/bHSycYJEcx/nXivazSnN/rBVwrvd0ih0vZw0zdTe2+veJodIlg3
+         hyNRKdxbXog2Fo78HYqBCTCDlBzk9MkcPExMDcDzhh4YikSNN52xO98ThDsKpQbF4uD4
+         DITQ==
+X-Gm-Message-State: AOAM530by9xxOZ8FaM91ZFOooeJ794l6cXwPVzZ46QO09NfMtXd1Btb5
+        mYM/CAqqVFW8wOzTkA5sPKrq6U8JuuiaDg==
+X-Google-Smtp-Source: ABdhPJwuJ+OxtBtDWYllww/wd9EdAd7SjOmtJN4Sh7D5MNzQjMSbfpRQg1nv/5+aexHdRUQazD21yA==
+X-Received: by 2002:a17:90a:8043:: with SMTP id e3mr41373127pjw.130.1636920562867;
+        Sun, 14 Nov 2021 12:09:22 -0800 (PST)
+Received: from localhost.localdomain ([2406:7400:63:9777:151e:e959:105:10d])
+        by smtp.gmail.com with ESMTPSA id e7sm9737869pgk.90.2021.11.14.12.09.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 12:07:43 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Anton Bambura <jenneron@protonmail.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] drm/panel: sharp: lq101r1sx01: Support LQ101R1SX03
-Date:   Sun, 14 Nov 2021 23:07:17 +0300
-Message-Id: <20211114200717.28986-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211114200717.28986-1-digetx@gmail.com>
-References: <20211114200717.28986-1-digetx@gmail.com>
+        Sun, 14 Nov 2021 12:09:22 -0800 (PST)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH 0/1] PCI: Intial KUnit test fixture for resource assignment
+Date:   Mon, 15 Nov 2021 01:38:45 +0530
+Message-Id: <cover.1636919579.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Bambura <jenneron@protonmail.com>
+Currently it's hard to deubg issues in the resource assignment code of
+the PCI because of the long reproduction cycles between the developer
+trying to fix the code and the user testing it due to the lack of
+hardware device with the developer [1].
 
-LQ101R1SX03 is compatible with LQ101R1SX01, add compatible to the driver.
+[1]:
+https://lore.kernel.org/all/20210621123714.GA3286648@bjorn-Precision-5520/
 
-Signed-off-by: Anton Bambura <jenneron@protonmail.com>
----
- drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c | 1 +
- 1 file changed, 1 insertion(+)
+Bjorn, suggested that it would be really good if we could have a test
+fixture for debugging/testing resource assignment. 
 
-diff --git a/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c b/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
-index f8cd2a42ed13..bbd1d889e069 100644
---- a/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
-+++ b/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.c
-@@ -304,6 +304,7 @@ static const struct drm_panel_funcs sharp_panel_funcs = {
- 
- static const struct of_device_id sharp_of_match[] = {
- 	{ .compatible = "sharp,lq101r1sx01", },
-+	{ .compatible = "sharp,lq101r1sx03", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, sharp_of_match);
+The patch attached along with the cover letter is an attempt to lay the
+foundation and also have a proof of concept to show that it is possible 
+to have a test fixture to debug the resource assignment code.
+
+Since there are a lot of things which happens during the resource
+assignement phase, the first version only tests the __pci_read_base()
+function since that was the most easiest to set up.
+
+Hopefully, in the future patches I'll be able to write more KUnit tests
+for the other parts responsible during the resource assignment phase and
+get closer to the goal of having a complete test fixtures :)
+
+Thanks,
+Naveen
+
+
+Naveen Naidu (1):
+  PCI: Add KUnit tests for __pci_read_base()
+
+ drivers/pci/Kconfig              |   4 +
+ drivers/pci/Makefile             |   3 +
+ drivers/pci/pci-read-base-test.c | 740 +++++++++++++++++++++++++++++++
+ 3 files changed, 747 insertions(+)
+ create mode 100644 drivers/pci/pci-read-base-test.c
+
 -- 
-2.33.1
+2.25.1
 
