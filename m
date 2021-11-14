@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813A844F912
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1241144F915
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhKNQht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhKNQhp (ORCPT
+        id S235895AbhKNQik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:38:40 -0500
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:55357 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234584AbhKNQid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:37:45 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2528EC061746;
-        Sun, 14 Nov 2021 08:34:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=OUXnxEsE3vKg0RZs07T16Pv1PQAOQdxWCDDV7x9zuxs=; b=0vF2S7KfVGtQBCp10pux0sTZOQ
-        cOS+NOVpF1UZWvRgCKUJ2RFu2bsG42Dd1mX6JSO4HM+SJ3y0+Sk2H/1LVTPTfjJBOEjzApzekvNnz
-        CJcY8hnskK0kIXEKzpLNCvzJtJSDLEqqpHBsXxCzC/AhlY7Fg8Qx1lLvNf3BY9GGRx6xk/+YX0WFO
-        bv4nzEwUXlfmKbje3wSBPPzEknkyPOz07ikNQAs6565ucRA8cOJ3XhRnVfbSND4LcYiAnGlG6J2qq
-        cnZyJ4AEKm3PJjpiTEoNtPWiDmQY+91J4fLGtQGhKdtfCb22Xm5NAG6d0Aebuncvs5WaynrHRJBaz
-        GY7kF8Lw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmISs-00DqEd-SR; Sun, 14 Nov 2021 16:34:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>
-Subject: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
-Date:   Sun, 14 Nov 2021 08:34:44 -0800
-Message-Id: <20211114163444.21669-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 14 Nov 2021 11:38:33 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id mITgmJfNg3ptZmITgmae6T; Sun, 14 Nov 2021 17:35:36 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 14 Nov 2021 17:35:36 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     arnd@arndb.de
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] sched: Remove a useless #include
+Date:   Sun, 14 Nov 2021 17:35:34 +0100
+Message-Id: <20d09d5e3e540fda4108ec7358c598bf8d4dcb3c.1636907727.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-clk_get_parent(), so add a simple implementation of that
-function so that callers of it will build without errors.
+unlikely() is not used anymore since commit ff80a77f20f8 ("sched: simplify
+sched_find_first_bit()") in 2007.
 
-Fixes these build errors:
+So this include can be removed.
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Jonas Gorski <jonas.gorski@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-v1 and v2 were:
-[PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
+Compile tested only on my x86_64 Ubuntu like environment.
 
- arch/mips/bcm63xx/clk.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+It also looks to me that the only needed include is <linux/bitops.h> and
+that <asm/types.h> is of no use.
+---
+ include/asm-generic/bitops/sched.h | 1 -
+ 1 file changed, 1 deletion(-)
 
---- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
-+++ linux-next-20211112/arch/mips/bcm63xx/clk.c
-@@ -381,6 +381,13 @@ void clk_disable(struct clk *clk)
+diff --git a/include/asm-generic/bitops/sched.h b/include/asm-generic/bitops/sched.h
+index 86470cfcef60..c3b7d50d6711 100644
+--- a/include/asm-generic/bitops/sched.h
++++ b/include/asm-generic/bitops/sched.h
+@@ -2,7 +2,6 @@
+ #ifndef _ASM_GENERIC_BITOPS_SCHED_H_
+ #define _ASM_GENERIC_BITOPS_SCHED_H_
  
- EXPORT_SYMBOL(clk_disable);
+-#include <linux/compiler.h>	/* unlikely() */
+ #include <asm/types.h>
  
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+
-+EXPORT_SYMBOL(clk_get_parent);
-+
- unsigned long clk_get_rate(struct clk *clk)
- {
- 	if (!clk)
+ /*
+-- 
+2.30.2
+
