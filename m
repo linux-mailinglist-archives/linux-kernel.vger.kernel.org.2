@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6175444F659
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 04:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB69444F65D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 04:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbhKNDqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 22:46:06 -0500
-Received: from mga18.intel.com ([134.134.136.126]:22361 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230441AbhKNDqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 22:46:05 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10167"; a="220186334"
-X-IronPort-AV: E=Sophos;i="5.87,233,1631602800"; 
-   d="scan'208";a="220186334"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2021 19:43:11 -0800
-X-IronPort-AV: E=Sophos;i="5.87,233,1631602800"; 
-   d="scan'208";a="505432270"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.28.38]) ([10.255.28.38])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2021 19:43:08 -0800
-Message-ID: <33598dac-d91c-c9b8-4f70-b3a0f9f20c23@intel.com>
-Date:   Sun, 14 Nov 2021 11:43:06 +0800
+        id S236128AbhKNDuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 22:50:12 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:49830 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232666AbhKNDuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 22:50:10 -0500
+Received: by mail-io1-f72.google.com with SMTP id k19-20020a5d8b13000000b005e970e1ee16so6927371ion.16
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 19:47:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=biEAlanjXu5KZeV9Gu9FU+bDJjKpZ2YbWs2R3M2bcbg=;
+        b=k7ize/vRO/ZAu9N3pJsVBTV2e4+mAMcUTPJO0hJ2fD2zIu2KeD2c+JKC56erqCJTsw
+         Ve6StAWSfsDY1Nxlo6Avi1JmR3YDCaq1LlMTJeFN2yylmVSjxMrG1vpqgHafNUL9AcRM
+         dWsM0xSkMboXzlTO7o4SXL7yBlVDq6Jj8s+DIhpadv6sG95v8TwulPBT5hrnj2WaJMPE
+         /oQ54OMpfMOLlNQlJi2PFoAuLCeVDoYQvNZ3ThHJGhpMwvo160n6RK3mRc9W1Aax4P6H
+         4jYFAoMsuOD5/D1J1t45ClLpjoL1L5AhxBx9o2IvBUsQ6p2diu2Z1H0xnBWAyXjXwJIO
+         zCVg==
+X-Gm-Message-State: AOAM530zhSOnrYvndOP0mM8TZX2JwAglGzFYn3hEf6PNqCYthzb8SYF9
+        W/zcyxzxkzBY1lOsuzjNNaQEiqFSihghi2yuBoXykBd9Ha47
+X-Google-Smtp-Source: ABdhPJw3imt+67b1yx3kVEiE/+yRzr8SduEln1gJPpEflAHp9Naeb4L5yP/1RvpuokljiQz8XzSNWQ/8ypuCecUrLFbEYxs25iav
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [PATCH 10/11] KVM: Disallow read-only memory for x86 TDX
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, Kai Huang <kai.huang@intel.com>
-References: <20211112153733.2767561-1-xiaoyao.li@intel.com>
- <20211112153733.2767561-11-xiaoyao.li@intel.com>
- <YY6b4n8xPaKspoNI@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <YY6b4n8xPaKspoNI@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:1506:: with SMTP id b6mr11131891jat.31.1636861636892;
+ Sat, 13 Nov 2021 19:47:16 -0800 (PST)
+Date:   Sat, 13 Nov 2021 19:47:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069e12f05d0b78c2d@google.com>
+Subject: [syzbot] BUG: MAX_LOCKDEP_CHAINS too low! (3)
+From:   syzbot <syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andy@greyhouse.net, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, j.vosburgh@gmail.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/2021 12:52 AM, Sean Christopherson wrote:
-> On Fri, Nov 12, 2021, Xiaoyao Li wrote:
->> From: Isaku Yamahata <isaku.yamahata@intel.com>
->>
->> TDX doesn't expose permission bits to the VMM in the SEPT tables, i.e.,
->> doesn't support read-only private memory.
->>
->> Introduce kvm_arch_support_readonly_mem(), which returns true except for
->> x86. x86 has its own implementation based on vm_type that returns faluse
->> for TDX VM.
->>
->> Propagate it to KVM_CAP_READONLY_MEM to allow reporting on a per-VM
->> basis.
-> 
-> Assuming KVM gains support for private memslots (or memslots that _may_ be mapped
-> private), this is incorrect, the restriction on read-only memory only applies to
-> private memory.  Userspace should still be allowed to create read-only shared memory.
-> Ditto for dirty-logging in the next patch.
+Hello,
 
-Yes. I had the same concern before sending it out. :)
-But I forgot to mention it.
+syzbot found the following issue on:
 
-> When this patch was originally created, it was "correct" because there was no
-> (proposed) concept of a private memslot or of a memslot that can be mapped private.
-> 
-> So these two patches at least need to wait until KVM has a defind ABI for managing
-> guest private memory.
-> 
+HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16adc769b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a249628ae32ea7de3a2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-I'll drop the two patches for next submission.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com
+
+BUG: MAX_LOCKDEP_CHAINS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 31504 Comm: kworker/u4:13 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bond1944 bond_mii_monitor
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ add_chain_cache kernel/locking/lockdep.c:3649 [inline]
+ lookup_chain_cache_add kernel/locking/lockdep.c:3748 [inline]
+ validate_chain kernel/locking/lockdep.c:3769 [inline]
+ __lock_acquire.cold+0x372/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ lock_timer_base+0x5a/0x1f0 kernel/time/timer.c:946
+ __mod_timer+0x398/0xe30 kernel/time/timer.c:1019
+ __queue_delayed_work+0x1a7/0x270 kernel/workqueue.c:1678
+ queue_delayed_work_on+0x105/0x120 kernel/workqueue.c:1703
+ queue_delayed_work include/linux/workqueue.h:517 [inline]
+ bond_mii_monitor+0x95b/0x1af0 drivers/net/bonding/bond_main.c:2759
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
