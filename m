@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17A944F5CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB2844F5D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 01:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhKNApq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Nov 2021 19:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhKNApo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Nov 2021 19:45:44 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCA7C061766
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 16:42:51 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id p37so25117165uae.8
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 16:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
-        b=U0DTrpKxgHQR07w8p1iV9Ryr02cAqy0SeQL+yTJ7btrLaNJzwp15PbETEKeBEanY8D
-         YXh23Sywbr+iymo0WWq3pEugSN+llyINEVl79zgR5JNm3mM/P3FuIgC85r6K1/chH88m
-         rYtpB3ZECGYf8mdVbbH+kGo22H5LPCd+u0j4/1V/Ep9KCzIby0/PNPFEoCJv4czkrgGR
-         dTEC+pgXB8hEAmRSz7nNqPwO6VLWWI69ZWZaueBzxgNUy4vI/V/t/DH92OFfwQWy7sTN
-         07BfVpXsLA0VRg7NXuIXDmdYZWsznHmdkWZJ6JygxHCPOy7fC2uZ/4j2cGSFfnuEdyNE
-         AIvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
-        b=S+quYQuOsC4jvLXBBlEHN2YjGbTJ7KPLy+RPkLOZX85PQWvthobIL9fgnQnCmV0h3F
-         oE42wTXMFoVKkaRlaLU/M62AKRD9ac2JHC00+v/mPiS3Xc8ZXI7QVM9OJdHMLVKeBIVA
-         vFkBLZaawMdosPm7RS6kDXDn+whK1hUfpyfmQROiHnENxu+T9IQkeOrv5lJNPeGXN1zs
-         ekOWc42SaqCOSaii0SMuDmQ6FCf0ZSVXf9bCh/hVte0hW3bJ+wInfKUjAh0OjzsIoKQ8
-         P0YuZfB1fhp+ZDJLHevhPG4ZlsVhMKAdy3/ZvwI3dmy79026VDCYb3l5KJaYWbw6UbBx
-         jhkg==
-X-Gm-Message-State: AOAM532pCbdgF6oP82gRB19kzGFpZxn/CK7C1V9omWxWinxX9Opgnmza
-        qmlUFeOc008iyfLkDH8aVPs7yiIkjKbj9NOO188=
-X-Google-Smtp-Source: ABdhPJx+oi79EkVorojn7V1fk4mZs7yg7YMcTTMtWRwi5qQpQyaHIz5IdGcmX8ylemxvLsX4V8xsrNdpfit3dXimM3g=
-X-Received: by 2002:a05:6102:cd3:: with SMTP id g19mr27346738vst.14.1636850570372;
- Sat, 13 Nov 2021 16:42:50 -0800 (PST)
-MIME-Version: 1.0
-Sender: zerbomaliki@gmail.com
-Received: by 2002:a59:8e4e:0:b0:260:cc3:673b with HTTP; Sat, 13 Nov 2021
- 16:42:49 -0800 (PST)
-From:   "Dr. Hamza Kabore" <hamzakabore97@gmail.com>
-Date:   Sat, 13 Nov 2021 16:42:49 -0800
-X-Google-Sender-Auth: bqWXQmfI4LaD2HSaVv5DCRJwcuA
-Message-ID: <CANEya-joogOaxZc1P1Aic0G3oVm7f4XWCqJnu5oGfxHoWXFbeQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S234790AbhKNAqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Nov 2021 19:46:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229988AbhKNAqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Nov 2021 19:46:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9821960F6E;
+        Sun, 14 Nov 2021 00:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636850597;
+        bh=kSQEnUJSy37aGANrQ0WdPrI9GiTPhxp3CH9jlHblAPo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=t81FBQMT9zJaqYM4DVlFdGCyh6sbvtGes3NVDeMmoXbeqDi164d6XajAGsQ0fK8EO
+         hfyFhNKirhXaqa0yr44VdyHdNZ9w89WXHV47MXn3W18Vz8nKk/hN/MtQhfcNeejJWb
+         MmU7cGI1MU/jz8j9YgNx+5+IPlOTdbZO/FR2f8OuOwecSrvfsKK9/Zw6e8l5mG8MQu
+         EZ9MaGj8mACg5OphZSz6ARieCBVkHEdF7ifinbTACHd09lrd9Yg/an8dz/7SHnMInd
+         hyGHNCqkFL1MwD8zHsMkBJoK1veHfZyv9vWJejJyTaE/Q0u/hRZolTKwyznpro1qpo
+         kDXJiqM3nSf9w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 785F9609E9;
+        Sun, 14 Nov 2021 00:43:17 +0000 (UTC)
+Subject: Re: [GIT PULL] zstd changes for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211109013058.22224-1-nickrterrell@gmail.com>
+References: <20211109013058.22224-1-nickrterrell@gmail.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211109013058.22224-1-nickrterrell@gmail.com>
+X-PR-Tracked-Remote: git@github.com:terrelln/linux.git tags/zstd-for-linus-v5.16
+X-PR-Tracked-Commit-Id: 0a8ea235837cc39f27c45689930aa97ae91d5953
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c8c109546a19613d323a319d0c921cb1f317e629
+Message-Id: <163685059743.28431.13950472778417333186.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Nov 2021 00:43:17 +0000
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Tom Seewald <tseewald@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Jean-Denis Girard <jd.girard@sysnux.pf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon,  8 Nov 2021 17:30:58 -0800:
+
+> git@github.com:terrelln/linux.git tags/zstd-for-linus-v5.16
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c8c109546a19613d323a319d0c921cb1f317e629
+
+Thank you!
+
 -- 
-Hello,
-
-Greetings and hope this email finds you well?
-
-I am Dr. Hamza Kabore, the  chief Medical consultant at a reputable
-clinic here in Ouagadougou, Burkina Faso and I have a Patient who
-hails from the Republic of philippines but unfortunately is in Coma
-right now due to complications from a Cancer disease and she has the
-sum of $10.7 Million United States (Ten Million seven Hundred
-Thousand) Dollars she wants me to guide you on, so that her Bank can
-transfer it to you for charity purposes.
-
-Please, I will like you to contact me on this email
-(hamzakabore97@gmail.com) for further details as this is a very
-sensitive issue that needs urgent attention from you and I want to
-maintain the promised I made to the woman before she entered Coma,
-never to betray her by looking for another person other than you that
-she choosed and selected for the offer among the people she got their
-email contacts in her quest for an honest person oversea to help her
-wholeheartedly in handling this project to fulfill her wish.
-
-Best Regards,
-
-Dr. Hamza Kabore on behalf of
-Mrs. Sismer Shirley Acojedo
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
