@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E3E44F70D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E533244F70F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhKNGoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 01:44:18 -0500
-Received: from smtpbg127.qq.com ([109.244.180.96]:17001 "EHLO smtpbg.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229469AbhKNGoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 01:44:16 -0500
-X-QQ-mid: bizesmtp31t1636872029td6k2uq2
-Received: from localhost.localdomain (unknown [125.69.41.88])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 14 Nov 2021 14:40:27 +0800 (CST)
-X-QQ-SSF: 01000000002000C0F000C00A0000000
-X-QQ-FEAT: XwMLFaztUQgg4HPywJhWjL3+jGKnrZMzxf7F0clzzs3LgAJk9jOR+hP3XdaCX
-        lafjBJI5ykQrQz5McRCtxOw9jeCi2MBm0CyME6iZ6CfaH9Tqrx3X6h09EpeTzGHrTrKTjFK
-        p/28iD0qmT71IB5vuCAK1Yoaw00rg9NIWkkT/NDLIqJXtQD6ohqfliEFKsFXJCrkvRwUHGD
-        CvxwDHgHuwmvVmSW9O0/smk7KPYlvmKfGqxqEgNzqaVkBGyInr9WW24FRSr8rI7e9xh1wLY
-        nEycAMD903Tj6f6M1uUtJeO58ur60ZAn6c6T+Fy1Thnh0jvibJlE4SLg7M0W598xSCXhQnP
-        ImvmUtQu9ud/s5vBP2rvVcveiYL+WiABEl9LRIn
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     catalin.marinas@arm.com
-Cc:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
-        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] KVM: arm64: remove unneeded comparison
-Date:   Sun, 14 Nov 2021 14:40:26 +0800
-Message-Id: <20211114064026.277024-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S233544AbhKNGuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 01:50:15 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36761 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhKNGuL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 01:50:11 -0500
+Received: by mail-il1-f198.google.com with SMTP id i9-20020a056e0212c900b0026ee2c287baso8100657ilm.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Nov 2021 22:47:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LCwzLR4I63yDgwhrq1dWlJa+/GBTxd12sS+YpVFDcXs=;
+        b=kwErNqC/6XRIlgz6FMe1UrLYINgzkOKFFIWcMOnOGUTugLmwYloszystkq9Fpa1g9g
+         VqwwmntmQvnrCj8lr0BMkJwFKh/xEaSqWNsFKakVNAsM2pg1uaL/a1n5C1eAu0I5unIN
+         Nc60zYN+5JdctxEGh+UO5/GgW5DSvCINExLpK0Peo9NpWDdHnYYGJM1VRv39wwagBi+t
+         kD1fggaAnbDEpcrr3WnmHz0PHBeO9JLf5voU/8ttGyH97bzk0MkicmQwqMpehXlLcwMb
+         XgBX2EJvElcueHzhLFqJIRdrroLvD4awKT5nC8bBbnvDNdi4G8aVJNwYqlxOBJbnNqFE
+         zMAw==
+X-Gm-Message-State: AOAM531sZxwk7Gtvdfp3f/bv6aAdDA7i1YJmxRkgfNU9fTKvzK0Vmc5j
+        x9dsWqlKf6Sxh3KxrvXW2wl98fUFoUJ1Z7rRIkq4aoH7w1fT
+X-Google-Smtp-Source: ABdhPJwwTOOYHPAL+ZpWXWpvlEqGQoWNgRHMFSbeqmhUOyuNAwHFv+HIejP7cywip6RyjIBwbhDrg1RlwMafznDslU4FFiT9A4J/
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam1
+X-Received: by 2002:a92:2a06:: with SMTP id r6mr16851877ile.34.1636872437900;
+ Sat, 13 Nov 2021 22:47:17 -0800 (PST)
+Date:   Sat, 13 Nov 2021 22:47:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000342e7105d0ba10d0@google.com>
+Subject: [syzbot] WARNING in nbd_dev_add (2)
+From:   syzbot <syzbot+5e8112c15ddb3db8416d@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The unsigned expression compared with zero `target < 0' is
-unneeded and its result is always false. we can also check the
-target's value returned from `kvm_target_cpu' is one of the
-KVM_* macros, and these macros are defined greater than or equal
-to 0.
-Therefore, the comparison code block:
-    if (target < 0)
-        return -ENODEV;
-is unneeded. We can safely remove it.
+Hello,
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+syzbot found the following issue on:
+
+HEAD commit:    cb690f5238d7 Merge tag 'for-5.16/drivers-2021-11-09' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17736888b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9d7259f0deb293aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=5e8112c15ddb3db8416d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5e8112c15ddb3db8416d@syzkaller.appspotmail.com
+
+RDX: 0000000000000000 RSI: 0000000020000380 RDI: 0000000000000005
+RBP: 00007f2388d2e1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffcef734a5f R14: 00007f2388d2e300 R15: 0000000000022000
+ </TASK>
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5223 at block/genhd.c:547 device_add_disk+0x338/0xef0 block/genhd.c:547
+Modules linked in:
+CPU: 1 PID: 5223 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:device_add_disk+0x338/0xef0 block/genhd.c:547
+Code: 74 08 3c 03 0f 8e 93 09 00 00 8b 5d 00 bf 03 01 00 00 89 de e8 39 ee ae fd 81 fb 03 01 00 00 0f 84 16 02 00 00 e8 08 ec ae fd <0f> 0b 41 bc 01 00 00 00 e8 fb eb ae fd 44 89 e0 48 83 c4 38 5b 5d
+RSP: 0018:ffffc90019027460 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 000000000000002b RCX: ffffc9000fb72000
+RDX: 0000000000040000 RSI: ffffffff83c8d798 RDI: 0000000000000003
+RBP: ffff88807652f000 R08: 0000000000000103 R09: ffff888016beea43
+R10: ffffffff83c8d787 R11: 0000000000000000 R12: 00000000ffffffea
+R13: ffff88807652f080 R14: ffff88807652f008 R15: ffff888016beea08
+FS:  00007f2388d2e700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2bc23000 CR3: 0000000034919000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ add_disk include/linux/genhd.h:212 [inline]
+ nbd_dev_add+0x8d9/0xcd0 drivers/block/nbd.c:1818
+ nbd_genl_connect+0x11f3/0x1930 drivers/block/nbd.c:1948
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
+ genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f238b7b8ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2388d2e188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f238b8cbf60 RCX: 00007f238b7b8ae9
+RDX: 0000000000000000 RSI: 0000000020000380 RDI: 0000000000000005
+RBP: 00007f2388d2e1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffcef734a5f R14: 00007f2388d2e300 R15: 0000000000022000
+ </TASK>
+
+
 ---
- arch/arm64/kvm/guest.c | 3 ---
- 1 file changed, 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-index 5ce26bedf23c..1605cb71dd52 100644
---- a/arch/arm64/kvm/guest.c
-+++ b/arch/arm64/kvm/guest.c
-@@ -873,9 +873,6 @@ int kvm_vcpu_preferred_target(struct kvm_vcpu_init *init)
- {
- 	u32 target = kvm_target_cpu();
- 
--	if (target < 0)
--		return -ENODEV;
--
- 	memset(init, 0, sizeof(*init));
- 
- 	/*
--- 
-2.33.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
