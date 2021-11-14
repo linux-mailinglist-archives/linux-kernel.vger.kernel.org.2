@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BF044F920
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D1344F924
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhKNQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhKNQqK (ORCPT
+        id S236073AbhKNQsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:48:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233073AbhKNQsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:46:10 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A09C061746;
-        Sun, 14 Nov 2021 08:43:15 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so11215977pjc.4;
-        Sun, 14 Nov 2021 08:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Yx8d6qiTYuCnN0n/4csVjohFQlFV+Cv5r3+Yrax2t30=;
-        b=a8QTZr46AwVtz5PUDxyaqXCUa/jm7B3dWkrhGhxBCEwi+owkmomrrt6MnRIr8Dymi1
-         378Qjas4ER7lzBVfSQebkYha+1w0V09zvl863scqZ0N5uhY9G2gRAbm0YxkUy73m8+ST
-         yHyQtUP5ztJZRqoAlrI0DAqNK6SoToQ0rHGCEhUWNeOmTCwQLJ4z78hokc3r0JH1cfm1
-         1Snue/MP1iYZAPucvHVpnp86+QN7OgmM3uQ4g3pFGzX8TchEA+luJQEnL/2Kc7Ue7nhh
-         XftHTxdT5tPkefsetqBUgYLo/B18u+yZnmZfZobwGnZG9jzYu9LmNZgy+ijuTKrS96o4
-         xoow==
+        Sun, 14 Nov 2021 11:48:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636908343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QoFiN2BeuuneYmBzR1Avi/ftAkvwS1Pn1GsZePUSVR8=;
+        b=PrNaGnoTXomA7LMdZ2inzewCsVTjcL1PYfJJF5tEhNH05qdownvzclRMUqDBMD3vG1lmiU
+        wazR0BnEM0oOfVvxuCvyveVHGbsgdogG6rd1LTgREV52Nd+PFBK7BgDmrqVFjJpz1bsBFt
+        7kLtjiGgq97/DGLFSKE7QiYSdR+lrdE=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-HGSEMVvbOoOvju26taJdxw-1; Sun, 14 Nov 2021 11:45:42 -0500
+X-MC-Unique: HGSEMVvbOoOvju26taJdxw-1
+Received: by mail-qk1-f200.google.com with SMTP id h8-20020a05620a284800b0045ec745583cso9175507qkp.6
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 08:45:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Yx8d6qiTYuCnN0n/4csVjohFQlFV+Cv5r3+Yrax2t30=;
-        b=b6WeVVA2Us0Cd6OmOpeFbkvih5pjNVm/Pt4Qhzyx4eE50bthn/152CFbEuELEFPYZe
-         wIUqnWiQ4q0be9RvPKHDwUJCpUZU4gW3yS9eK7NWseeYF+NYXHwNr4gfY3u7BZSvLHHI
-         2dtu9VXtkEjB5CdDA2L+dOxNBWd1socTOjnxgHRS/Wh8zSFyv1VbwaUTtwFqT7W47Qso
-         gcD3Or6O1IK3bGk/nyoKnKYn517v0lP7qrlf0exS2HlmFrPjE65KByUVi4xX30h95ZCo
-         U8c57mH3x6TLV+xs4yJO5/2dan/O+zdQ8+iaao2KSiRc7cHegfLNSJaAYi5+UzhqezZK
-         t8KQ==
-X-Gm-Message-State: AOAM531GeSwKSgVx+vWWlwuSJrs43XMq6mbs93zOYPvyNGyRpq8btTt+
-        xKsibp2ecwvASqnh5tYZI7nFPEE50D/kIQjA
-X-Google-Smtp-Source: ABdhPJxnjjKc9stt3/5ghte6UGoRioJVJR72NxEBsPFrhxajNCwAus173Nv6r+zoayrGnlAd5QyGuQ==
-X-Received: by 2002:a17:90b:3a83:: with SMTP id om3mr38875639pjb.0.1636908194902;
-        Sun, 14 Nov 2021 08:43:14 -0800 (PST)
-Received: from makvihas ([103.81.92.175])
-        by smtp.gmail.com with ESMTPSA id t15sm12217143pfl.186.2021.11.14.08.43.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QoFiN2BeuuneYmBzR1Avi/ftAkvwS1Pn1GsZePUSVR8=;
+        b=T4zN5yJ64FxfuOvGkR4bS+p3MfcpMu9gHbKBff0/ei/XIAvAPP6AXL2EIIv7U+dmR7
+         naGx7id31QEVjHVRQJkBwDKxkQoOWxJWetYNS/DOZZIGnqteEs17d4RdA4vfgzIcYiLp
+         kDtB+zMEdrmIcWBRVD/mMDx9ySVO2le+GDD/vbHVk0M1s19UXsgm44cH4ahJmskol/nA
+         i+3dh/++3rjYpIIp3iHw2mRNQoqLnRwc6TFKuOzN+fWvn3oeBb5MwWXyYHuAAQ3pcvdT
+         u9P+OlZePRNOB6mccLTUTuzaN2HDheN+JWhh+GYgZwwJzz8BpcIk1KIkx/jZWimzc9zN
+         JcXQ==
+X-Gm-Message-State: AOAM533hymibzwHw1UesDzZn1jWkNDTsqNGEfae2ViWgGRV3a451gs0W
+        KetJqw35+IFcLBaP+rUrTF6cEN7PqVbW+0iCaQcJlZSCU/glKRvAJzefT9hINFMyiEZLGg7NwzW
+        /GXEWKkXNMpdK2MQixh0kEQEH
+X-Received: by 2002:a05:620a:1226:: with SMTP id v6mr25339490qkj.240.1636908341407;
+        Sun, 14 Nov 2021 08:45:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwTryy8Pyh13onNw+q4N8CRdW/BIdUIn4ZiRaanr7SxiBqH2XcgsEPVTMavQy6d+9KAS6D8sg==
+X-Received: by 2002:a05:620a:1226:: with SMTP id v6mr25339476qkj.240.1636908341234;
+        Sun, 14 Nov 2021 08:45:41 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id r20sm1832287qkp.21.2021.11.14.08.45.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 08:43:14 -0800 (PST)
-Date:   Sun, 14 Nov 2021 22:13:12 +0530
-From:   Vihas Mak <makvihas@gmail.com>
-To:     pbonzini@redhat.com
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: fix cocci warnings
-Message-ID: <20211114164312.GA28736@makvihas>
+        Sun, 14 Nov 2021 08:45:40 -0800 (PST)
+Date:   Sun, 14 Nov 2021 17:45:37 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Oleg Latin <oleglatin@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org, nfraser@codeweavers.com,
+        peterz@infradead.org, dmtrmonakhov@yandex-team.ru
+Subject: Re: [PATCH] perf: add missing cpu entry in json output
+Message-ID: <YZE9MT6b2QmYedMm@krava>
+References: <20211112115738.175001-1-oleglatin@yandex-team.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211112115738.175001-1-oleglatin@yandex-team.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 0 to false and 1 to true to fix following cocci warnings:
+On Fri, Nov 12, 2021 at 02:57:38PM +0300, Oleg Latin wrote:
+> After converting perf.data with 'perf covert data --to-json' the
+> resulting json file missing cpu entries:
+> 
+> 	{
+> 	    "timestamp": 5716840788599,
+> 	    "pid": 79661,
+> 	    "tid": 79661,
+> 	    "comm": "python3",
+> 	    "callchain": [
+> 		{
+> 		    "ip": "0xffffffffafd05fc0"
+> 		}
+> 	    ]
+> 	},
+> 
+> Seems addr_location::thread::cpu is never assigned during
+> machine__resolve() call. This patch uses addr_location::cpu to store it
+> in json file.
+> 
+> Signed-off-by: Oleg Latin <oleglatin@yandex-team.ru>
 
-        arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
-        arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Signed-off-by: Vihas Mak <makvihas@gmail.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
----
- arch/x86/kvm/mmu/mmu.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+thanks,
+jirka
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 337943799..2fcea4a78 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1454,7 +1454,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- {
- 	u64 *sptep;
- 	struct rmap_iterator iter;
--	int need_flush = 0;
-+	bool need_flush = false;
- 	u64 new_spte;
- 	kvm_pfn_t new_pfn;
- 
-@@ -1466,7 +1466,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 		rmap_printk("spte %p %llx gfn %llx (%d)\n",
- 			    sptep, *sptep, gfn, level);
- 
--		need_flush = 1;
-+		need_flush = true;
- 
- 		if (pte_write(pte)) {
- 			pte_list_remove(kvm, rmap_head, sptep);
-@@ -1482,7 +1482,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- 	if (need_flush && kvm_available_flush_tlb_with_range()) {
- 		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
--		return 0;
-+		return false;
- 	}
- 
- 	return need_flush;
-@@ -1623,8 +1623,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- 	for_each_rmap_spte(rmap_head, &iter, sptep)
- 		if (is_accessed_spte(*sptep))
--			return 1;
--	return 0;
-+			return true;
-+	return false;
- }
- 
- #define RMAP_RECYCLE_THRESHOLD 1000
--- 
-2.25.1
+> ---
+>  tools/perf/util/data-convert-json.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
+> index f1ab6edba446..b0e3d69c6835 100644
+> --- a/tools/perf/util/data-convert-json.c
+> +++ b/tools/perf/util/data-convert-json.c
+> @@ -168,8 +168,8 @@ static int process_sample_event(struct perf_tool *tool,
+>  	output_json_key_format(out, true, 3, "pid", "%i", al.thread->pid_);
+>  	output_json_key_format(out, true, 3, "tid", "%i", al.thread->tid);
+>  
+> -	if (al.thread->cpu >= 0)
+> -		output_json_key_format(out, true, 3, "cpu", "%i", al.thread->cpu);
+> +	if (al.cpu >= 0)
+> +		output_json_key_format(out, true, 3, "cpu", "%i", al.cpu);
+>  
+>  	output_json_key_string(out, true, 3, "comm", thread__comm_str(al.thread));
+>  
+> -- 
+> 2.25.1
+> 
 
