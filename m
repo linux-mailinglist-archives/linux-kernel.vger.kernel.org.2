@@ -2,69 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE55944F87F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BD244F896
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 15:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhKNO3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 09:29:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhKNO2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:28:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7C5461027;
-        Sun, 14 Nov 2021 14:25:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636899949;
-        bh=ZV2Hx3+pIL6mKU8se/mh5FSio88H9eOPjUCiqqBfNMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WEXnx6VbLq/G2BMMPxLRQ7erP972PFzRoh0VTTIJKNZMRst2e9JgagN4H/KGNaG1F
-         O9mxp+qs7h8l1cvr6dgs2wVo2R+uDexa4twqzLBQyg9lDdAIZZNmhyg2JOcy7NqIm2
-         +/TAd42dHuaga7bCxwMnOVWjZBTRpDQIGtW4Wh6OI/wNUg3dYxKmDe7BwPbTJxjUzN
-         PE84zJNVgFZpigvIy4Qvu7Gd7yUSaYfpWX5aPunG3QkGxYRp668Um3fDSycfg0YFFA
-         CHDy81cKJLPRZeg4CrXOBH+IIEaTljLV3Y5vd7sZ5eUj8ysfIs0L3bekdoe1yQ4xkp
-         TcoWd7YsZL+Dg==
-Date:   Sun, 14 Nov 2021 09:25:48 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: AUTOSEL series truncated was -- Re: [PATCH AUTOSEL 5.15 001/146]
- dma-buf: WARN on dmabuf release with pending attachments
-Message-ID: <YZEcbEY4HkvZYdOh@sashalap>
-References: <20211108174453.1187052-1-sashal@kernel.org>
- <20211109075423.GA16766@amd>
- <3957633e-9596-e329-c79b-b45e9993d139@infradead.org>
+        id S232056AbhKNOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 09:42:55 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50822 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229563AbhKNOmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 09:42:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UwSyb1p_1636900788;
+Received: from 192.168.0.103(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UwSyb1p_1636900788)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 14 Nov 2021 22:39:49 +0800
+Message-ID: <d953e533-e175-17ba-c065-dfd1354a858f@linux.alibaba.com>
+Date:   Sun, 14 Nov 2021 22:40:35 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <3957633e-9596-e329-c79b-b45e9993d139@infradead.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v3] mm: migrate: Support multiple target nodes demotion
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>,
+        zhongjiang-ali@linux.alibaba.com,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <a31dc065a7901bcdca0d9642d0def0f57e865e20.1636683991.git.baolin.wang@linux.alibaba.com>
+ <CAHbLzkpTo0yW9YWPyE6omiiP2QiwMRETe1ZJ1x4sEJCk0WZOkg@mail.gmail.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <CAHbLzkpTo0yW9YWPyE6omiiP2QiwMRETe1ZJ1x4sEJCk0WZOkg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 08:05:23AM -0800, Randy Dunlap wrote:
->On 11/8/21 11:54 PM, Pavel Machek wrote:
->>Hi!
+
+
+On 2021/11/13 3:05, Yang Shi wrote:
+> On Thu, Nov 11, 2021 at 6:28 PM Baolin Wang
+> <baolin.wang@linux.alibaba.com> wrote:
 >>
->>This series is truncated .. I only got first patches. Similary, 5.10
->>series is truncated, [PATCH AUTOSEL 5.10 035/101] media: s5p-mfc: Add
->>checking to s5p_mfc_probe... is last one I got.
+>> We have some machines with multiple memory types like below, which
+>> have one fast (DRAM) memory node and two slow (persistent memory) memory
+>> nodes. According to current node demotion policy, if node 0 fills up,
+>> its memory should be migrated to node 1, when node 1 fills up, its
+>> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
 >>
->>I got all the patches before that, so I believe it is not problem on
->>my side, but I'd not mind someone confirming they are seeing the same
->>problem...
->
->Yes, several of the patch series were incomplete for me also...
+>> But this is not efficient and suitbale memory migration route
+>> for our machine with multiple slow memory nodes. Since the distance
+>> between node 0 to node 1 and node 0 to node 2 is equal, and memory
+>> migration between slow memory nodes will increase persistent memory
+>> bandwidth greatly, which will hurt the whole system's performance.
+>>
+>> Thus for this case, we can treat the slow memory node 1 and node 2
+>> as a whole slow memory region, and we should migrate memory from
+>> node 0 to node 1 and node 2 if node 0 fills up.
+>>
+>> This patch changes the node_demotion data structure to support multiple
+>> target nodes, and establishes the migration path to support multiple
+>> target nodes with validating if the node distance is the best or not.
+>>
+>> available: 3 nodes (0-2)
+>> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+>> node 0 size: 62153 MB
+>> node 0 free: 55135 MB
+>> node 1 cpus:
+>> node 1 size: 127007 MB
+>> node 1 free: 126930 MB
+>> node 2 cpus:
+>> node 2 size: 126968 MB
+>> node 2 free: 126878 MB
+>> node distances:
+>> node   0   1   2
+>>    0:  10  20  20
+>>    1:  20  10  20
+>>    2:  20  20  10
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>> Changes from v2:
+>>   - Redefine the DEMOTION_TARGET_NODES macro according to the
+>>     MAX_NUMNODES.
+>>   - Change node_demotion to a pointer and allocate it dynamically.
+>>
+>> Changes from v1:
+>>   - Add a new patch to allocate the node_demotion dynamically.
+>>   - Update some comments.
+>>   - Simplify some variables' name.
+>>
+>> Changes from RFC v2:
+>>   - Change to 'short' type for target nodes array.
+>>   - Remove nodemask instead selecting target node directly.
+>>   - Add WARN_ONCE() if the target nodes exceed the maximum value.
+>>
+>> Changes from RFC v1:
+>>   - Re-define the node_demotion structure.
+>>   - Set up multiple target nodes by validating the node distance.
+>>   - Add more comments.
+>> ---
+>>   mm/migrate.c | 167 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+>>   1 file changed, 132 insertions(+), 35 deletions(-)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index cf25b00..9b8a813 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -50,6 +50,7 @@
+>>   #include <linux/ptrace.h>
+>>   #include <linux/oom.h>
+>>   #include <linux/memory.h>
+>> +#include <linux/random.h>
+>>
+>>   #include <asm/tlbflush.h>
+>>
+>> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>    *
+>>    * This is represented in the node_demotion[] like this:
+>>    *
+>> - *     {  1, // Node 0 migrates to 1
+>> - *        2, // Node 1 migrates to 2
+>> - *       -1, // Node 2 does not migrate
+>> - *        4, // Node 3 migrates to 4
+>> - *        5, // Node 4 migrates to 5
+>> - *       -1} // Node 5 does not migrate
+>> + *     {  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
+>> + *     {  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
+>> + *     {  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
+>> + *     {  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
+>> + *     {  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
+>> + *     {  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
+>> + *
+>> + * Moreover some systems may have multiple slow memory nodes.
+>> + * Suppose a system has one socket with 3 memory nodes, node 0
+>> + * is fast memory type, and node 1/2 both are slow memory
+>> + * type, and the distance between fast memory node and slow
+>> + * memory node is same. So the migration path should be:
+>> + *
+>> + *     0 -> 1/2 -> stop
+>> + *
+>> + * This is represented in the node_demotion[] like this:
+>> + *     { nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
+>> + *     { nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
+>> + *     { nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+>>    */
+>>
+>>   /*
+>> @@ -1135,8 +1149,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>    * must be held over all reads to ensure that no cycles are
+>>    * observed.
+>>    */
+>> -static int node_demotion[MAX_NUMNODES] __read_mostly =
+>> -       {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+>> +#define DEFAULT_DEMOTION_TARGET_NODES 15
+>> +
+>> +#if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
+>> +#define DEMOTION_TARGET_NODES  (MAX_NUMNODES - 1)
+>> +#else
+>> +#define DEMOTION_TARGET_NODES  DEFAULT_DEMOTION_TARGET_NODES
+>> +#endif
+>> +
+>> +struct demotion_nodes {
+>> +       unsigned short nr;
+>> +       short nodes[DEMOTION_TARGET_NODES];
+>> +};
+>> +
+>> +static struct demotion_nodes *node_demotion __read_mostly;
+>>
+>>   /**
+>>    * next_demotion_node() - Get the next node in the demotion path
+>> @@ -1149,8 +1175,15 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>    */
+>>   int next_demotion_node(int node)
+>>   {
+>> +       struct demotion_nodes *nd;
+>> +       unsigned short target_nr, index;
+>>          int target;
+>>
+>> +       if (!node_demotion)
+>> +               return NUMA_NO_NODE;
+>> +
+>> +       nd = &node_demotion[node];
+>> +
+>>          /*
+>>           * node_demotion[] is updated without excluding this
+>>           * function from running.  RCU doesn't provide any
+>> @@ -1161,9 +1194,28 @@ int next_demotion_node(int node)
+>>           * node_demotion[] reads need to be consistent.
+>>           */
+>>          rcu_read_lock();
+>> -       target = READ_ONCE(node_demotion[node]);
+>> -       rcu_read_unlock();
+>> +       target_nr = READ_ONCE(nd->nr);
+>> +
+>> +       switch (target_nr) {
+>> +       case 0:
+>> +               target = NUMA_NO_NODE;
+>> +               goto out;
+>> +       case 1:
+>> +               index = 0;
+>> +               break;
+>> +       default:
+>> +               /*
+>> +                * If there are multiple target nodes, just select one
+>> +                * target node randomly.
+>> +                */
+>> +               index = get_random_int() % target_nr;
+> 
+> Sorry for chiming in late. I don't get why not select demotion targe > node interleave? TBH, it makes more sense to me. Random is ok, but at
+> least I'd expect to see some explanation about why random is used.
 
-Odd. I'll keep a closer look next time I send a series out to figure out
-what's going on.
+My first version patch[1] already did round-robin to select target node. 
+For interleave (or round-robin), we should introduce another member to 
+record last selected target node, as Dave and Ying said, that will cause 
+cache ping-pong to hurt performance, or introduce per-cpu data to avoid 
+this, which seems more complicated now.
 
-Thanks for the heads-up!
-
--- 
-Thanks,
-Sasha
+[1] 
+https://lore.kernel.org/all/c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com/
