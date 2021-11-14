@@ -2,246 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594E544F9BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC39F44F9C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhKNRW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:22:26 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:33776 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236142AbhKNRWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:22:06 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:57094)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mmJ9q-007faX-VQ; Sun, 14 Nov 2021 10:19:11 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:44950 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mmJ9p-00G2wk-Cs; Sun, 14 Nov 2021 10:19:10 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        Marko =?utf-8?B?TcOka2Vsw6Q=?= <marko.makela@mariadb.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211101034147.6203-1-khuey@kylehuey.com>
-        <877ddqabvs.fsf@disp2133>
-        <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
-        <87fsse8maf.fsf@disp2133>
-        <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
-        <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
-Date:   Sun, 14 Nov 2021 11:19:03 -0600
-In-Reply-To: <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
-        (Kyle Huey's message of "Mon, 8 Nov 2021 15:58:21 -0800")
-Message-ID: <87czn2k648.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231888AbhKNR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:26:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhKNR0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 12:26:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD91360EB9;
+        Sun, 14 Nov 2021 17:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636910589;
+        bh=kQGuEYYiOrRDCpWGkbcW29M7DIXgWvDHAW/+sLNn9Zg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iP8xLB2t39R2aDC+1F5dTodDZIrWS3fPOXzdbtdNjHq96OqzUqgXOAjXM7eMpmHQ5
+         eg6YS8+pBf7hBq/OpAz9RHQgHzJcrJUC7CBRBl8IxdGfAzsHjpF7PJzJ8n+L+oZSoU
+         cfTFKsBvbLAI0rrU/iWmx2Ej2ylqu1MQtljWj1IWkmFfFdLVrwR3/+4G61Yia6XXNn
+         EET3HAsKkdb3x0mjT7Ob+7iWvo6nt4ZJw1aE5uE5XCe+bKf9kG6FGIyWVx11mc/alu
+         xCCIvklQwayx4aByHY0amqw5ZJfmjA1m2oO58o+27HuRaNz4xGo9f/HndQfoLi4wLz
+         ScfzdU+3PnBxQ==
+Date:   Sun, 14 Nov 2021 09:23:09 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
+Subject: [GIT PULL] xfs: cleanups and resyncs for 5.16
+Message-ID: <20211114172309.GE24307@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mmJ9p-00G2wk-Cs;;;mid=<87czn2k648.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19mfFWN13wU0r5Lw9cLz95XrBEFQ8aNTGk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kyle Huey <me@kylehuey.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 996 ms - load_scoreonly_sql: 0.17 (0.0%),
-        signal_user_changed: 17 (1.7%), b_tie_ro: 14 (1.4%), parse: 2.7 (0.3%),
-         extract_message_metadata: 34 (3.4%), get_uri_detail_list: 8 (0.8%),
-        tests_pri_-1000: 23 (2.3%), tests_pri_-950: 1.73 (0.2%),
-        tests_pri_-900: 1.34 (0.1%), tests_pri_-90: 70 (7.0%), check_bayes: 67
-        (6.7%), b_tokenize: 17 (1.7%), b_tok_get_all: 11 (1.1%), b_comp_prob:
-        4.6 (0.5%), b_tok_touch_all: 31 (3.1%), b_finish: 1.01 (0.1%),
-        tests_pri_0: 569 (57.1%), check_dkim_signature: 1.03 (0.1%),
-        check_dkim_adsp: 2.7 (0.3%), poll_dns_idle: 249 (25.0%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 270 (27.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] signal: SIGKILL can cause signal effects to appear at PTRACE_EVENT_EXIT without tracer notification
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kyle Huey <me@kylehuey.com> writes:
+Hi Linus,
 
-> On Tue, Nov 2, 2021 at 12:09 PM Kyle Huey <me@kylehuey.com> wrote:
->>
->> On Tue, Nov 2, 2021 at 11:07 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> >
->> > Kyle Huey <me@kylehuey.com> writes:
->> >
->> > > On Tue, Nov 2, 2021 at 7:09 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> > >>
->> > >> Kyle Huey <me@kylehuey.com> writes:
->> > >>
->> > >> > rr, a userspace record and replay debugger[0], uses the recorded register
->> > >> > state at PTRACE_EVENT_EXIT to find the point in time at which to cease
->> > >> > executing the program during replay.
->> > >> >
->> > >> > If a SIGKILL races with processing another signal in get_signal, it is
->> > >> > possible for the kernel to decline to notify the tracer of the original
->> > >> > signal. But if the original signal had a handler, the kernel proceeds
->> > >> > with setting up a signal handler frame as if the tracer had chosen to
->> > >> > deliver the signal unmodified to the tracee. When the kernel goes to
->> > >> > execute the signal handler that it has now modified the stack and registers
->> > >> > for, it will discover the pending SIGKILL, and terminate the tracee
->> > >> > without executing the handler. When PTRACE_EVENT_EXIT is delivered to
->> > >> > the tracer, however, the effects of handler setup will be visible to
->> > >> > the tracer.
->> > >> >
->> > >> > Because rr (the tracer) was never notified of the signal, it is not aware
->> > >> > that a signal handler frame was set up and expects the state of the program
->> > >> > at PTRACE_EVENT_EXIT to be a state that will be reconstructed naturally
->> > >> > by allowing the program to execute from the last event. When that fails
->> > >> > to happen during replay, rr will assert and die.
->> > >> >
->> > >> > The following patches add an explicit check for a newly pending SIGKILL
->> > >> > after the ptracer has been notified and the siglock has been reacquired.
->> > >> > If this happens, we stop processing the current signal and proceed
->> > >> > immediately to handling the SIGKILL. This makes the state reported at
->> > >> > PTRACE_EVENT_EXIT the unmodified state of the program, and also avoids the
->> > >> > work to set up a signal handler frame that will never be used.
->> > >> >
->> > >> > This issue was originally reported by the credited rr user.
->> > >> >
->> > >> > [0] https://rr-project.org/
->> > >>
->> > >> If I read this correctly the problem is not precisely that the rr
->> > >> debugger is never notified about the signal, but rather that the program
->> > >> is killed with SIGKILL before rr can read the notification and see which
->> > >> signal it is.
->> > >
->> > > The precise problem is that the kernel made a modification to the
->> > > tracee state (setting up the signal handler frame) without telling the
->> > > tracer about it (delivering the ptrace notification for the pending
->> > > non-SIGKILL signal).
->> >
->> > Except the kernel did make it to ptrace_stop.  The stop just did not
->> > fully happen because of SIGKILL.  I expect SIGCHLD was sent to the
->> > tracer as part of that stop that never fully happened.
->>
->> I don't know whether SIGCHLD was sent to the tracer (rr doesn't use it
->> directly) but waiting on the process does not produce a wait status
->> corresponding to the signal delivery stop for the original signal.
->> Waiting on the tracee skips immediately from whatever the preceding
->> ptrace event was to the PTRACE_EVENT_EXIT.
->>
->> (In our particular case, if it had been notified of the signal, we
->> would have chosen to suppress the signal, because the signal in
->> question is a SIGSEGV from an rdtsc instruction that has been disabled
->> via prctl(PR_SET_TSC, PR_TSC_SIGSEGV) and we emulate it in the tracer
->> due to its non-deterministic behavior. So we really don't expect to
->> see the tracee signal handler.)
->>
->> > > That can be fixed either by not modifying the
->> > > tracee state here or by telling the tracer about the signal (that will
->> > > never actually run). I suspect we'll all agree that the former seems
->> > > preferable.
->> > >
->> > >> This definitely sounds like a quality of implementation issue.
->> > >>
->> > >> The solution that is proposed in your patches simply drops the signal
->> > >> when SIGKILL is pending.
->> > >
->> > > That's right.
->> > >
->> > >> I think we can have a slightly better of quality of implementation
->> > >> than that (as well as a simpler implementation) by requeuing the
->> > >> signal instead of simply dropping it.  Something like the below.
->> > >
->> > > What is the benefit of requeueing the signal? All pending signals will
->> > > be dropped when the SIGKILL is processed, no?
->> >
->> > Not before PTRACE_EVENT_EXIT.  In fact the pending signals are not
->> > actually flushed until the thread or the entire process is reaped.
->> >
->> > Further the coredump code makes some attempt to write out the
->> > pending signals.  The code appears to predate siginfo support
->> > in the kernel so it misses a lot but it is there.
->> >
->> > The real advantage is that it keeps the logic of dealing with weird
->> > ptrace_stop logic in ptrace_signal where it belongs.  It also allows the
->> > common (and missing in this case) idiom of goto relock to be used.
->> >
->> > So I think changing ptrace_signal will be much more maintainable.
->>
->> Ok.
->>
->> > >> Can you test that and see if it works for you?
->> > >
->> > > It does not work. This triggers an infinite loop in get_signal, as we
->> > > dequeue the signal, attempt to notify the ptracer, see the pending
->> > > sigkill, requeue the signal, go around the loop, dequeue the original
->> > > signal ...
->> >
->> > Apologies I made a bit of a thinko.  That change also needs to change
->> > the handling of if (signr == 0) after ptrace_signal.
->> >
->> > Which means it would need to be something like the below.
->> >
->> > diff --git a/kernel/signal.c b/kernel/signal.c
->> > index 056a107e3cbc..eddb745b34a7 100644
->> > --- a/kernel/signal.c
->> > +++ b/kernel/signal.c
->> > @@ -2610,7 +2610,8 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
->> >         }
->> >
->> >         /* If the (new) signal is now blocked, requeue it.  */
->> > -       if (sigismember(&current->blocked, signr)) {
->> > +       if (sigismember(&current->blocked, signr) ||
->> > +           signal_group_exit(current->signal)) {
->> >                 send_signal(signr, info, current, PIDTYPE_PID);
->> >                 signr = 0;
->> >         }
->> > @@ -2764,8 +2765,10 @@ bool get_signal(struct ksignal *ksig)
->> >                 if (unlikely(current->ptrace) && (signr != SIGKILL) &&
->> >                     !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
->> >                         signr = ptrace_signal(signr, &ksig->info);
->> > -                       if (!signr)
->> > -                               continue;
->> > +                       if (!signr) {
->> > +                               spin_unlock_irq(&sighand->siglock);
->> > +                               goto relock;
->> > +                       }
->> >                 }
->> >
->> >                 ka = &sighand->action[signr-1];
->> >
->> > Eric
->>
->> Yeah that appears to fix the issue.
->>
->> - Kyle
->
-> Is there anything else I need to do here or are you going to take it
-> from here?
+Please pull this branch containing a handful of code cleanups for 5.16.
 
-No pinging me is the helpful thing to do.  I sometimes get distracted.
+The most "exciting" aspect of this branch is that the xfsprogs
+maintainer and I have worked through the last of the code discrepancies
+between kernel and userspace libxfs such that there are no code
+differences between the two except for #includes.  IOWs, diff suffices
+to demonstrate that the userspace tools behave the same as the kernel,
+and kernel-only bits are clearly marked in the /kernel/ source code
+instead of just the userspace source.
 
-The merge window closes sometime later today and then v5.16-rc1 will be
-out.  Then I will have a good base to work against.
+The branch merges cleanly against upstream as of a few minutes ago.
+Please let me know if anything else strange happens during the merge
+process.
 
-Until then I can't really merge anything.
+--D
 
-Eric
+The following changes since commit 2a09b575074ff3ed23907b6f6f3da87af41f592b:
+
+  xfs: use swap() to make code cleaner (2021-10-30 09:28:55 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-5
+
+for you to fetch changes up to 4a6b35b3b3f28df81fea931dc77c4c229cbdb5b2:
+
+  xfs: sync xfs_btree_split macros with userspace libxfs (2021-11-11 09:13:39 -0800)
+
+----------------------------------------------------------------
+Minor tweaks for 5.16:
+ * Clean up open-coded swap() calls.
+ * A little bit of #ifdef golf to complete the reunification of the
+   kernel and userspace libxfs source code.
+
+----------------------------------------------------------------
+Darrick J. Wong (1):
+      xfs: sync xfs_btree_split macros with userspace libxfs
+
+Eric Sandeen (1):
+      xfs: #ifdef out perag code for userspace
+
+Yang Guang (1):
+      xfs: use swap() to make dabtree code cleaner
+
+ fs/xfs/libxfs/xfs_ag.c       | 2 ++
+ fs/xfs/libxfs/xfs_ag.h       | 8 +++++---
+ fs/xfs/libxfs/xfs_btree.c    | 4 ++++
+ fs/xfs/libxfs/xfs_da_btree.c | 5 +----
+ 4 files changed, 12 insertions(+), 7 deletions(-)
