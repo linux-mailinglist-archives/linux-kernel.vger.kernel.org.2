@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA9744F700
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51C144F705
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 07:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbhKNGME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 01:12:04 -0500
-Received: from smtpbg126.qq.com ([106.55.201.22]:24254 "EHLO smtpbg587.qq.com"
+        id S235162AbhKNGSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 01:18:41 -0500
+Received: from smtpbg128.qq.com ([106.55.201.39]:51078 "EHLO smtpbg587.qq.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229537AbhKNGMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 01:12:02 -0500
-X-QQ-mid: bizesmtp34t1636870141t6olfinn
+        id S229537AbhKNGSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 01:18:40 -0500
+X-QQ-mid: bizesmtp31t1636870518t26qdgq0
 Received: from localhost.localdomain (unknown [125.69.41.88])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 14 Nov 2021 14:09:00 +0800 (CST)
+        id ; Sun, 14 Nov 2021 14:15:17 +0800 (CST)
 X-QQ-SSF: 01000000002000C0F000B00A0000000
-X-QQ-FEAT: lC5HeAtE+yY7ieI7k5ozcsT2mHbmUCx7ecPfiLQCJcdRW/HMeiQe9BFfGAp+t
-        j46q9+ju91OdN4ziKKXkkJA5ZA+w2LJcOga3IYFgAymVXZEQPLdU8+mcf1989/ohjhVoHv8
-        usK6mPB/qayQ3EJUU6P6ovXmUptfFZimbhW7FqvvHkAvI5yO1ban2qoabkIOxyhFlaEhell
-        3ZPOO6FMS2QChk+zAHV/2iqAzCwbkn+VqCH8KhkbvJhA7nOC6DGfFIz8J/r8epgsk+2EPM5
-        MtKjOy36xHHiOvaEscnNffjVafnVWMuzqQat4sNNvjtk3Sz8t963WPZROqKoiVBBQtUGaWm
-        U3RFoHxYxMwoMDQgF3ytugx2Xplrh3bMX3wayKpDTIZ0sG0DXw=
+X-QQ-FEAT: k0yT7W7BRd2VRWWiQujtHiX3xQoNiuNYMFT0DoPO0z3Uo3znn2QbcyTmsDfNo
+        ar7wVhLS9oX3ajjtFcMM8Dz7e/D89XhAS9Xnh/Z3a1IBnWScf/g+ul1B5W6jHtcsaY6R1Qk
+        nn0VUsR1+9i/dGxoO4JS5RxjBcayC/gz8na74unuw3r3dm32csqn3SnUf1m8chRvmpHsTK+
+        bF7cWdpryQPqIsde7vOFKB2nYF6KXUXYi1JYrTs154DrN4IulDDGmXgYHQi+UfOfbu+UMWI
+        tu2AO+8ABSeJblX7kZpanQbya7mGgMhc9iJybxq/c3PXSfo+bxebvS9FOwB4fAEnlHP3+6x
+        ieXsPV+Np7d599p8FqzRcI1i4qnAKbR0xl74Nmz
 X-QQ-GoodBg: 0
 From:   Jason Wang <wangborong@cdjrlc.com>
-To:     vkoul@kernel.org
-Cc:     salah.triki@gmail.com, wangborong@cdjrlc.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: ppc4xx: remove unused variable `rval'
-Date:   Sun, 14 Nov 2021 14:08:56 +0800
-Message-Id: <20211114060856.239314-1-wangborong@cdjrlc.com>
+To:     josef@toxicpanda.com
+Cc:     clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] btrfs: remove unneeded variable ret
+Date:   Sun, 14 Nov 2021 14:15:15 +0800
+Message-Id: <20211114061515.247865-1-wangborong@cdjrlc.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable used for returning status in
-`ppc440spe_adma_dma2rxor_prep_src' function is never changed
-and this function just need to return 0. Thus, the `rval' can
-be removed and return 0 from `ppc440spe_adma_dma2rxor_prep_src'.
+The variable `ret' used for returning status in function
+`unpin_extent_cache' is never changed. we can return 0
+and remove the `ret' variable.
 
 Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/dma/ppc4xx/adma.c | 3 +--
+ fs/btrfs/extent_map.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/ppc4xx/adma.c b/drivers/dma/ppc4xx/adma.c
-index e2b5129c5f84..5e46e347e28b 100644
---- a/drivers/dma/ppc4xx/adma.c
-+++ b/drivers/dma/ppc4xx/adma.c
-@@ -3240,7 +3240,6 @@ static int ppc440spe_adma_dma2rxor_prep_src(
- 		struct ppc440spe_rxor *cursor, int index,
- 		int src_cnt, u32 addr)
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 5a36add21305..ac432bed6052 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 		       u64 gen)
  {
--	int rval = 0;
- 	u32 sign;
- 	struct ppc440spe_adma_desc_slot *desc = hdesc;
- 	int i;
-@@ -3348,7 +3347,7 @@ static int ppc440spe_adma_dma2rxor_prep_src(
- 		break;
- 	}
+-	int ret = 0;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
  
--	return rval;
+@@ -328,8 +327,8 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 	free_extent_map(em);
+ out:
+ 	write_unlock(&tree->lock);
+-	return ret;
+ 
 +	return 0;
  }
  
- /**
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
 -- 
 2.33.0
 
