@@ -2,59 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2235844F9D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B3C44F9D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236277AbhKNR4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:56:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236157AbhKNRze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:55:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5D5B661027;
-        Sun, 14 Nov 2021 17:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636912357;
-        bh=B3Z9rAHL2B50JJYtsvY8HBlec4By9dSHxAPLGzufG0k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=idyOYq9iwARTHzjWb5Dtot4F7ZjhH3/t5BYgzAge2LCyvvDHccRz64DMJfeioOPl+
-         FbdWDCwnA6K5GX+l/0T9Y7aHtf2rTmh19vvRNIVFUhPvwyNYX1CEmkUM0vCFLDh6m5
-         iRvlhq5EHFVH7eEhVXxSR/Qjp6dDVpckPoRhZ9MXjzPa160/T4+2Alud7SAZOUMOgm
-         33e0IICPEpW8kzpXti1TdC9ENq0vXnFShgf5P3LdEiNxixFP/6VBWTXbj946mhdt7S
-         RAKu3W1oRJg6jByF+9wD8FyqxR5HTEEUG+JC+WuBOQTgdx7CXQPCm5rCa7lFPaqHV1
-         R2bnkJCj8jxGA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 57B5F609D7;
-        Sun, 14 Nov 2021 17:52:37 +0000 (UTC)
-Subject: Re: [GIT PULL] perf/urgent for v5.16-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YZDnxpLswv1HwBaz@zn.tnic>
-References: <YZDnxpLswv1HwBaz@zn.tnic>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YZDnxpLswv1HwBaz@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.16_rc1
-X-PR-Tracked-Commit-Id: 4716023a8f6a0f4a28047f14dd7ebdc319606b84
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f7018be29253b89175d03284f8f49ac4ffed0472
-Message-Id: <163691235735.31405.14996335258402373786.pr-tracker-bot@kernel.org>
-Date:   Sun, 14 Nov 2021 17:52:37 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        id S235182AbhKNSBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 13:01:13 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:40358 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhKNSBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 13:01:09 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DBA232190B;
+        Sun, 14 Nov 2021 17:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636912694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pm/+XZb1gEqqWc+ddieV4Hp6KrJXh2SiK5CQkRhwEf4=;
+        b=q4g0CIZg6zF/7PeT8ZLCd45q1zon4zWeOo7jTNDR+aU6G534U792II/PnzpIAdJuZCO9kV
+        4gfKy4wkel3jdAsra4MDrGQzC5f4m16a2NatjX87G4iC+6Kq+zTSs1hG//yMm64w3cKAWf
+        HO10PsHdsSq1IhmT/ts1HkKntQHlCG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636912694;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pm/+XZb1gEqqWc+ddieV4Hp6KrJXh2SiK5CQkRhwEf4=;
+        b=aUM6RNQ6p2fEBI/o5x6w/75Wt8lNWfhfShqjAGLD0JA42/H7PznmQx9UwdPewJMtI9tvwK
+        B4uycuH5VBsah/Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C62DB13A98;
+        Sun, 14 Nov 2021 17:58:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xOP+LzZOkWFGEwAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 14 Nov 2021 17:58:14 +0000
+Date:   Sun, 14 Nov 2021 18:58:06 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: [GIT PULL] sched/urgent for v5.16-rc1
+Message-ID: <YZFOLprnkH+LdSY+@zn.tnic>
+References: <YZDxFAYjVp2nRteh@zn.tnic>
+ <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 14 Nov 2021 11:41:10 +0100:
+On Sun, Nov 14, 2021 at 09:42:27AM -0800, Linus Torvalds wrote:
+> Heh. Too late for those of us who build our kernels during the merge
+> window who now end up seeing that question again, but I appreciate it.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.16_rc1
+Adding the involved parties to Cc in order for them to feel the
+appreciation. :)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f7018be29253b89175d03284f8f49ac4ffed0472
+But yah, it keeps happening every so often that people reorg. stuff and
+old Kconfig items get queried again. Oh well, when one does allmodconfig
+builds and that especially with clang, there's no shortage of build-time
+querying.
 
-Thank you!
+I even tend to do
+
+  yes "" | make ...
+
+so that the thing gets built already.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
