@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3C944FBB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A03B44FBC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 22:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236357AbhKNVDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 16:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbhKNVDv (ORCPT
+        id S236394AbhKNVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 16:22:30 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:34466 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236332AbhKNVVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 16:03:51 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94754C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:00:56 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b15so62385669edd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VLydiT80fkzm1nSBPnsz/oh91R9+RWCWhLY9vbO/POc=;
-        b=HremuCy+b4/gXnq04jxWJOwd+GtHq4kDaqtxzuqZ6yoo2e6E0mh8//7cnW08QrZiYw
-         mXsDxvvWGNseMbnktMAxQt9Bta9YvNDFFKgmTNO7+zwpmhkUwdulkayrnL1G94UWxmjO
-         lD8KNcl1KesfISQbLm31YKTDMiveW4G9F7J6atWnA2PPezgNwphGLpTGHNxCNK6WLD4t
-         ko+WifWaEqPh3E3LhZEt/SAKwgnfCByI2d5HqsP9KbL0jfaSx9GicFWsP+MCkL417aal
-         kXMT720ZoEZ3TuTMu7i/yAmgAuZ51m+Kjthtv1CApwjbaAb4wtFbiVtPWT2qcrDsxdyP
-         V8jw==
+        Sun, 14 Nov 2021 16:21:22 -0500
+Received: by mail-io1-f71.google.com with SMTP id k20-20020a5d97d4000000b005da6f3b7dc7so9805285ios.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 13:18:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VLydiT80fkzm1nSBPnsz/oh91R9+RWCWhLY9vbO/POc=;
-        b=vjJ+N1AMHuQ+9od0NxB8R+s8PAKMtzHmobQN5O+tewz3NAmsqtd0PbV0c88sFPq1QR
-         AiAdj1KP+lJpbLM8qJtY9UMXZOpn7f2nDl2mrCiDn2q9+GWIfbLlGARFgQayqDW/D12p
-         fL1xAN0ouWZLId6ivP0byPARDB1Z7B56UFul2LO+HAF+X+/W4IoVhDFl83SQ0Me69QQ5
-         qbV0rip0OLnSLCkU4eIrM7DsERzI9kcy4BwHtK1dFps91+mge7B3BgyLUGkLeRiDaWrB
-         paYur3uW+h174jXt8JLOOzpaC6Ivx+ntXVsUr5abmdx1GuleQwqkQS4doif4Ene0Qlyv
-         2M1A==
-X-Gm-Message-State: AOAM5338ipnvuXtdGDa2rmxxCYDDjLhmtP3SkkeJjaFyu2om6vHKw2lP
-        2mKUj40J7J1Q7wizojwNELGnc5SVoeByE8tQ/lo=
-X-Google-Smtp-Source: ABdhPJzc0w601CEdSXYexgtN/EWynGjvsNEqRo7PjVsoHtwd3a61oAD0Q2tHz+1U6Bx6o7qDQ8XPzxzD7Zv0T4bjxN0=
-X-Received: by 2002:a17:906:5d06:: with SMTP id g6mr42995465ejt.3.1636923655147;
- Sun, 14 Nov 2021 13:00:55 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wtlL2dfA4YC3bHXJU8Z2/QOleRGN2befQJrpDJMCO7g=;
+        b=eZbWQGhikltf8DcIleYfu1675PotafBp41XgYSvvas7JznSbN58lreaJBG9h9lkXDt
+         qV3oZzh6b7v55rjbXMXtCT2G9J1zLoEYActmLhs0lWZsoALWkbkHiapgE/JK/BBNWPya
+         rtbPohzUWKZQBGVkGGyiKn+f+eyAOl/4hXFrWU38l+JZgMV0npn755DESYiXmEL047Ir
+         +lNmgSRYt3CInF0lnoGUrDEC00+cxiCgYdSk3P+jyUFJwfqdooxHt711NI/KznNVrL1W
+         8/59RczB+cAyebvfZUjkB8uJ68vLyRzjhPexocCF/+Nx5hF0WzI4WhGT6eU1pik+Gbs4
+         EWwQ==
+X-Gm-Message-State: AOAM531yRUyGYb/qEMiEiLraUmG62C0XPbDV5X/rQEaHJMsX4djmxpk/
+        eReSzGwklhZU6vnM/jRmniUX/D/AZLvqjZNn0GBPOV676UkF
+X-Google-Smtp-Source: ABdhPJzfUTZftQgHft8c8YtQOoyKvfnU37s3KNU9k6dSdWkMLgGkGfxhcJDmu3+l4XdilhP6Zln08H/snf0VT6lCE5NeOveoF0Ea
 MIME-Version: 1.0
-References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
- <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Mon, 15 Nov 2021 07:00:42 +1000
-Message-ID: <CAPM=9tw=NTZ-1NbGupgg42gOA1aFKZ2C6wt++q5BxaocaUbmFA@mail.gmail.com>
-Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Auld <matthew.auld@intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr18195748ill.225.1636924708274;
+ Sun, 14 Nov 2021 13:18:28 -0800 (PST)
+Date:   Sun, 14 Nov 2021 13:18:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2c99905d0c63bcf@google.com>
+Subject: [syzbot] general protection fault in nldev_stat_set_doit (2)
+From:   syzbot <syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com>
+To:     aharonl@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, markzhang@nvidia.com, netao@nvidia.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Nov 2021 at 06:16, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Nov 11, 2021 at 7:25 PM Dave Airlie <airlied@gmail.com> wrote:
-> >
-> > I missed a drm-misc-next pull for the main pull last week. It wasn't
-> > that major and isn't the bulk of this at all. This has a bunch of
-> > fixes all over, a lot for amdgpu and i915.
->
-> Ugh.
->
-> The i915 conflict was trivial, but made me aware of that absolutely
-> disgusting "wbinvd_on_all_cpus()" hack.
->
-> And that thing is much too ugly to survive. I made my merge resolution
-> remove that disgusting thing.
->
-> That driver is x86-only anyway, so it all seemed completely bogus in
-> the first place.
->
-> And if there is some actual non-x86 work in progress for i915, then
-> that wbinvd_on_all_cpus() needs to be replaced with something proper
-> and architecture-neutral anyway, most definitely involving a name
-> change, and almost certainly also involving a range for the cache
-> writeback.
->
-> Because that "create broken macro on other architectures" thing is
-> *NOT* acceptable.
->
-> And I sincerely hope to the gods that no cache-incoherent i915 mess
-> ever makes it out of the x86 world. Incoherent IO was always a
-> historical mistake and should never ever happen again, so we should
-> not spread that horrific pattern around.
+Hello,
 
-i915 will no longer be x86-64 only in theory, since Intel now produces
-PCIe graphics cards using the same hw designs. These shouldn't AFAIK
-require the same incoherent architecture, though PCIe unsnooped
-transactions are a thing in the real world.
+syzbot found the following issue on:
 
-The thing is the same driver needs to build/work for the integrated
-and discrete cards, hence this hack, but I'm sure someone can Intel
-can do better.
+HEAD commit:    70701b83e208 tcp: Fix uninitialized access in skb frags ar..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1654c32ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=9111d2255a9710e87562
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-I'll leave it to Daniel to figure out who/how.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Dave.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 6744 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
+RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
+RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
+Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
+RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
+RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
+RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
+R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
+FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7effa0867ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007eff9dddd188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007effa097af60 RCX: 00007effa0867ae9
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007effa08c1f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc008a753f R14: 00007eff9dddd300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace bacb470dc6c820de ]---
+RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
+RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
+RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
+Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
+RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
+RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
+RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
+R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
+FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	fa                   	cli
+   1:	4c 8b a4 24 f8 02 00 	mov    0x2f8(%rsp),%r12
+   8:	00
+   9:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  10:	fc ff df
+  13:	c7 84 24 80 00 00 00 	movl   $0x0,0x80(%rsp)
+  1a:	00 00 00 00
+  1e:	49 8d 7c 24 04       	lea    0x4(%r12),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
+  2e:	48 89 f8             	mov    %rdi,%rax
+  31:	83 e0 07             	and    $0x7,%eax
+  34:	83 c0 03             	add    $0x3,%eax
+  37:	38 d0                	cmp    %dl,%al
+  39:	7c 08                	jl     0x43
+  3b:	84 d2                	test   %dl,%dl
+  3d:	0f                   	.byte 0xf
+  3e:	85 02                	test   %eax,(%rdx)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
