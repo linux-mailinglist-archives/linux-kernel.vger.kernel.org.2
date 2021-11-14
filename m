@@ -2,142 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22C644F8F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B25B44F8FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhKNQSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:18:05 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:45870 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234744AbhKNQSB (ORCPT
+        id S235473AbhKNQTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:19:12 -0500
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:56242 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235827AbhKNQTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:18:01 -0500
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 969A920C35F2;
-        Sun, 14 Nov 2021 08:15:06 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 969A920C35F2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636906507;
-        bh=X6psgr8IIimAoDb415er2gByzlMAjh9kHi8G85RXHX0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mDPTsVgink3+0ruTibJnay+XhUQP+W7VAU43dPcmocnbs21yxIzvtufa6g2erU6OD
-         IqNaC24ReiDHpHK0whGSVptBU+55QPcQyY5Hxquhm/RLxcrjOUlpmk6tWadfNYJCA+
-         DD1MJvGByeVWR2WUGsKk/fjFcuQr45En17B4BW1o=
-Subject: Re: [PATCH v10 01/11] arm64: Select STACKTRACE in arch/arm64/Kconfig
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-2-madvenka@linux.microsoft.com>
- <20211022180243.GL86184@C02TD0UTHF1T.local>
- <20211112174405.GA5977@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <208a4149-306d-2115-cf1e-1035d61dc07f@linux.microsoft.com>
-Date:   Sun, 14 Nov 2021 10:15:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sun, 14 Nov 2021 11:19:06 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id mIAomJU7s3ptZmIApmabW3; Sun, 14 Nov 2021 17:16:09 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 14 Nov 2021 17:16:09 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] sched/rt: Slightly optimize 'init_rt_rq()'
+Date:   Sun, 14 Nov 2021 17:16:05 +0100
+Message-Id: <c9b56712763de62c90b71907323a6b0e5b61b249.1636906450.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20211112174405.GA5977@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I reviewed the changes briefly. They look good. I will take a more detailed look this week.
+'MAX_RT_PRIO' is 100. Instead of clearing bits in 'array->bitmap' one at a
+time, use 'bitmap_clear()' which will do the same but much faster
 
-Thanks for doing this!
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Not sure that this patch is really of any use, but it is the occasion for
+me to spot that there seems to be an off by one in the rt scheduler.
 
-Once this is part of v5.16-rc2, I will send out version 11 on top of that with the rest of
-the patches in my series.
+'array->bitmap' is MAX_RT_PRIO+1 long. (see [1])
+The last bit seems to be reserved as a sentinel.
 
-Madhavan
+Shouldn't this sentinel, in the code above, be set as:
+  __set_bit(MAX_RT_PRIO + 1, array->bitmap);
+?
 
-On 11/12/21 11:44 AM, Mark Rutland wrote:
-> On Fri, Oct 22, 2021 at 07:02:43PM +0100, Mark Rutland wrote:
->> On Thu, Oct 14, 2021 at 09:58:37PM -0500, madvenka@linux.microsoft.com wrote:
->>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>>
->>> Currently, there are multiple functions in ARM64 code that walk the
->>> stack using start_backtrace() and unwind_frame() or start_backtrace()
->>> and walk_stackframe(). They should all be converted to use
->>> arch_stack_walk(). This makes maintenance easier.
->>>
->>> To do that, arch_stack_walk() must always be defined. arch_stack_walk()
->>> is within #ifdef CONFIG_STACKTRACE. So, select STACKTRACE in
->>> arch/arm64/Kconfig.
->>
->> I'd prefer if we could decouple ARCH_STACKWALK from STACKTRACE, so that
->> we don't have to expose /proc/*/stack unconditionally, which Peter
->> Zijlstra has a patch for:
->>
->>   https://lore.kernel.org/lkml/20211022152104.356586621@infradead.org/
->>
->> ... but regardless the rest of the series looks pretty good, so I'll go
->> review that, and we can figure out how to queue the bits and pieces in
->> the right order.
-> 
-> FWIW, it looks like the direction of travel there is not go and unify
-> the various arch unwinders, but I would like to not depend on
-> STACKTRACE. Regardless, the initial arch_stack_walk() cleanup patches
-> all look good, so I reckon we should try to get those out of the way and
-> queue those for arm64 soon even if we need some more back-and-forth over
-> the later part of the series.
-> 
-> With that in mind, I've picked up Peter's patch decoupling
-> ARCH_STACKWALK from STACKTRACE, and rebased the initial patches from
-> this series atop. Since there's some subtltety in a few cases (and this
-> was easy to miss while reviewing), I've expanded the commit messages
-> with additional rationale as to why each transformation is safe.
-> I've pushed that to:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/arch-stack-walk
-> 
-> There's a dependency on:
-> 
->   https://lore.kernel.org/r/20211029162245.39761-1-mark.rutland@arm.com
-> 
-> ... which was queued for v5.16-rc1, but got dropped due to a conflict,
-> and I'm expecting it to be re-queued as a fix for v5.16-rc2 shortly
-> after v5.16-rc1 is tagged. Hopefully that means we have a table base by
-> v5.16-rc2.
-> 
-> I'll send the preparatory series as I've prepared it shortly after
-> v5.16-rc1 so that people can shout if I've messed something up.
-> 
-> Hopefully it's easy enough to use that as a base for the more involved
-> rework later in this series.
-> 
-> Thanks,
-> Mark.
-> 
->> Thanks,
->> Mark.
->>
->>>
->>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->>> ---
->>>  arch/arm64/Kconfig | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>> index fdcd54d39c1e..bfb0ce60d820 100644
->>> --- a/arch/arm64/Kconfig
->>> +++ b/arch/arm64/Kconfig
->>> @@ -35,6 +35,7 @@ config ARM64
->>>  	select ARCH_HAS_SET_DIRECT_MAP
->>>  	select ARCH_HAS_SET_MEMORY
->>>  	select ARCH_STACKWALK
->>> +	select STACKTRACE
->>>  	select ARCH_HAS_STRICT_KERNEL_RWX
->>>  	select ARCH_HAS_STRICT_MODULE_RWX
->>>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->>> -- 
->>> 2.25.1
->>>
+I don't know if it is an issue or not, but it looks odd to me.
+
+[1]: https://elixir.bootlin.com/linux/latest/source/kernel/sched/sched.h#L254
+---
+ kernel/sched/rt.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index bb945f8faeca..fc2e9c5e874a 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -81,10 +81,9 @@ void init_rt_rq(struct rt_rq *rt_rq)
+ 	int i;
+ 
+ 	array = &rt_rq->active;
+-	for (i = 0; i < MAX_RT_PRIO; i++) {
++	for (i = 0; i < MAX_RT_PRIO; i++)
+ 		INIT_LIST_HEAD(array->queue + i);
+-		__clear_bit(i, array->bitmap);
+-	}
++	bitmap_clear(array->bitmap, 0, MAX_RT_PRIO);
+ 	/* delimiter for bitsearch: */
+ 	__set_bit(MAX_RT_PRIO, array->bitmap);
+ 
+-- 
+2.30.2
+
