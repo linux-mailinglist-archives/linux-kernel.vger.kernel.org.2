@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B3C44F9D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FB544F9E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 19:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbhKNSBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 13:01:13 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:40358 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhKNSBJ (ORCPT
+        id S234325AbhKNSGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 13:06:08 -0500
+Received: from kirsty.vergenet.net ([202.4.237.240]:58656 "EHLO
+        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234525AbhKNSFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 13:01:09 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DBA232190B;
-        Sun, 14 Nov 2021 17:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636912694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pm/+XZb1gEqqWc+ddieV4Hp6KrJXh2SiK5CQkRhwEf4=;
-        b=q4g0CIZg6zF/7PeT8ZLCd45q1zon4zWeOo7jTNDR+aU6G534U792II/PnzpIAdJuZCO9kV
-        4gfKy4wkel3jdAsra4MDrGQzC5f4m16a2NatjX87G4iC+6Kq+zTSs1hG//yMm64w3cKAWf
-        HO10PsHdsSq1IhmT/ts1HkKntQHlCG0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636912694;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pm/+XZb1gEqqWc+ddieV4Hp6KrJXh2SiK5CQkRhwEf4=;
-        b=aUM6RNQ6p2fEBI/o5x6w/75Wt8lNWfhfShqjAGLD0JA42/H7PznmQx9UwdPewJMtI9tvwK
-        B4uycuH5VBsah/Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C62DB13A98;
-        Sun, 14 Nov 2021 17:58:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xOP+LzZOkWFGEwAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 14 Nov 2021 17:58:14 +0000
-Date:   Sun, 14 Nov 2021 18:58:06 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [GIT PULL] sched/urgent for v5.16-rc1
-Message-ID: <YZFOLprnkH+LdSY+@zn.tnic>
-References: <YZDxFAYjVp2nRteh@zn.tnic>
- <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
+        Sun, 14 Nov 2021 13:05:06 -0500
+Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
+        by kirsty.vergenet.net (Postfix) with ESMTPA id 469AC25AEF5;
+        Mon, 15 Nov 2021 05:02:09 +1100 (AEDT)
+Received: by madeliefje.horms.nl (Postfix, from userid 7100)
+        id E537B27F0; Sun, 14 Nov 2021 19:02:06 +0100 (CET)
+Date:   Sun, 14 Nov 2021 19:02:06 +0100
+From:   Simon Horman <horms@verge.net.au>
+To:     Julian Anastasov <ja@ssi.bg>, pablo@netfilter.org
+Cc:     GuoYong Zheng <zhenggy@chinatelecom.cn>, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
+Message-ID: <20211114180206.GA2757@vergenet.net>
+References: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
+ <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wiMYyYUsMC8kMkCUvAnq3usC98Tw9_ogkznS+2anzvR5A@mail.gmail.com>
+In-Reply-To: <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
+Organisation: Horms Solutions BV
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 09:42:27AM -0800, Linus Torvalds wrote:
-> Heh. Too late for those of us who build our kernels during the merge
-> window who now end up seeing that question again, but I appreciate it.
+On Sat, Nov 13, 2021 at 11:56:36AM +0200, Julian Anastasov wrote:
+> 
+> 	Hello,
+> 
+> On Fri, 5 Nov 2021, GuoYong Zheng wrote:
+> 
+> > The dest variable is not used after ip_vs_new_dest anymore in
+> > ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
+> > 
+> > Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
+> 
+> 	Looks good to me for -next, thanks!
+> 
+> Acked-by: Julian Anastasov <ja@ssi.bg>
 
-Adding the involved parties to Cc in order for them to feel the
-appreciation. :)
+Thanks GuoYong,
 
-But yah, it keeps happening every so often that people reorg. stuff and
-old Kconfig items get queried again. Oh well, when one does allmodconfig
-builds and that especially with clang, there's no shortage of build-time
-querying.
+Acked-by: Simon Horman <horms@verge.net.au>
 
-I even tend to do
+Pablo, please consider this for nf-next at your convenience.
 
-  yes "" | make ...
-
-so that the thing gets built already.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
+> 
+> > ---
+> >  net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
+> >  1 file changed, 2 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> > index e62b40b..494399d 100644
+> > --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> > +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> > @@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+> >   *	Create a destination for the given service
+> >   */
+> >  static int
+> > -ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
+> > -	       struct ip_vs_dest **dest_p)
+> > +ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
+> >  {
+> >  	struct ip_vs_dest *dest;
+> >  	unsigned int atype, i;
+> > @@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+> >  	spin_lock_init(&dest->stats.lock);
+> >  	__ip_vs_update_dest(svc, dest, udest, 1);
+> >  
+> > -	*dest_p = dest;
+> > -
+> >  	LeaveFunction(2);
+> >  	return 0;
+> >  
+> > @@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+> >  		/*
+> >  		 * Allocate and initialize the dest structure
+> >  		 */
+> > -		ret = ip_vs_new_dest(svc, udest, &dest);
+> > +		ret = ip_vs_new_dest(svc, udest);
+> >  	}
+> >  	LeaveFunction(2);
+> >  
+> > -- 
+> > 1.8.3.1
+> 
+> Regards
+> 
+> --
+> Julian Anastasov <ja@ssi.bg>
+> 
