@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1F544F90E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B59044F918
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 17:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhKNQhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 11:37:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235895AbhKNQgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 11:36:48 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S235295AbhKNQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 11:43:03 -0500
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:49373 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231831AbhKNQm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 11:42:59 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E890D6109E;
-        Sun, 14 Nov 2021 16:33:50 +0000 (UTC)
-Date:   Sun, 14 Nov 2021 16:38:38 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-Message-ID: <20211114163838.41015ae2@jic23-huawei>
-In-Reply-To: <CAN8YU5PjJ9e8_RuLpY0JgLek-+HwxOLJ61MAGBqqzbqd6KWuYA@mail.gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20211028101840.24632-1-andrea.merello@gmail.com>
-        <20211028101840.24632-11-andrea.merello@gmail.com>
-        <20211028121001.73d8abbe@jic23-huawei>
-        <CAN8YU5PjJ9e8_RuLpY0JgLek-+HwxOLJ61MAGBqqzbqd6KWuYA@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 44AB4100D940E;
+        Sun, 14 Nov 2021 17:39:58 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 160972B0CF5; Sun, 14 Nov 2021 17:39:58 +0100 (CET)
+Date:   Sun, 14 Nov 2021 17:39:58 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     linux-pci@vger.kernel.org, mst@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211114163958.GA7211@wunner.de>
+References: <20211111090225.946381-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111090225.946381-1-kraxel@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 11:12:58 +0100
-Andrea Merello <andrea.merello@gmail.com> wrote:
+On Thu, Nov 11, 2021 at 10:02:24AM +0100, Gerd Hoffmann wrote:
+> The PCIe specification asks the OS to wait five seconds after the
 
-> Just an inline comment; OK for the rest.
+The spec reference Bjorn asked for is: PCIe r5.0, sec. 6.7.1.5
 
-> > > +#include <linux/i2c.h>  
-> >
-> > Why?  I'm not seeing an i2c specific calls in here.  
+> attention button has been pressed before actually un-plugging the
+> device.  This gives the operator the chance to cancel the operation
+> by pressing the attention button again within those five seconds.
 > 
-> Because of the definition of struct i2c_client, that is being accessed
-> in lines like this
-> dev_err(&client->dev, "Unable to init register map");
+> For physical hardware this makes sense.  Picking the wrong button
+> by accident can easily happen and it can be corrected that way.
+> 
+> For virtual hardware the benefits are questionable.  Typically
+> users find the five second delay annoying.
 
-doh. I was clearly being a bit unobservant that day.
+Why does virtual hardware implement the Attention Button if it's
+perceived as annoying?  Just amend qemu so that it doesn't advertise
+presence of an Attention Button to get rid of the delay.  (Clear the
+Attention Button Present bit in the Slot Capabilities register.)
 
+An Attention Button doesn't make any sense for virtual hardware
+except to test or debug support for it in the kernel.  Just make
+presence of the Attention Button optional and be done with it.
+
+You'll still be able to bring down the slot in software via the
+"remove" attribute in sysfs.
+
+Same for the 1 second delay in remove_board().  That's mandated by
+PCIe r5.0, sec. 6.7.1.8, but it's only observed if a Power Controller
+is present.  So just clear the Power Controller Present bit in the
+Slot Capabilities register and the delay is gone.
+
+
+> @@ -109,6 +110,8 @@ struct controller {
+>  	unsigned int ist_running;
+>  	int request_result;
+>  	wait_queue_head_t requester;
+> +
+> +	bool is_virtual;
+>  };
+
+This is a quirk for a specific device, so please move it further up to the
+/* capabilities and quirks */ section of struct controller.
+
+
+> @@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
+>  		goto err_out_shutdown_notification;
+>  	}
+>  
+> +	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
+> +	    dev->port->device == 0x000c)
+> +		/* qemu pcie root port */
+> +		ctrl->is_virtual = true;
+> +
+
+Move this to pcie_init() in pciehp_hpc.c below the existing quirks for
+hotplug_user_indicators and is_thunderbolt.
+
+
+> +static bool fast_virtual_unplug = true;
+> +module_param(fast_virtual_unplug, bool, 0644);
+
+An integer parameter to configure a custom delay would be nicer IMO.
+Of course, anything else than 5 sec deviates from the spec.
+
+Thanks,
+
+Lukas
