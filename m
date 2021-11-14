@@ -2,267 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D7444F933
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D5544F941
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236035AbhKNRFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:05:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60572 "EHLO
+        id S236164AbhKNRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:06:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33580 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229725AbhKNRFJ (ORCPT
+        by vger.kernel.org with ESMTP id S229725AbhKNRGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:05:09 -0500
+        Sun, 14 Nov 2021 12:06:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636909331;
+        s=mimecast20190719; t=1636909426;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pdzvmRxzWAJAKI2bnZiBldjj4kRy/zRG6nAZE9MeWk4=;
-        b=fZYrC1EejgxXYad0lTKvXM+TIygjVxDp8bfuWGXPdL6mnd0lpRwS783Ek/DlGEFKEvSQDL
-        c3yAbdtJO8/u7lwjWvvDMuh1kUTbH/hY4RDDBRDHyWPyUq4DpjqN/dmr1xK7MkzXaDA3dQ
-        Vj6TLwtz4Hvheuv5JkynGiEP9+3mpaw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-y7ckd-eUNZ6KCRcw0gm0vA-1; Sun, 14 Nov 2021 12:02:10 -0500
-X-MC-Unique: y7ckd-eUNZ6KCRcw0gm0vA-1
-Received: by mail-qv1-f70.google.com with SMTP id fn12-20020ad45d6c000000b003bd9c921c0eso13682151qvb.21
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:02:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pdzvmRxzWAJAKI2bnZiBldjj4kRy/zRG6nAZE9MeWk4=;
-        b=3+WwFBnoYo/ilS2nhGY0CcuLR32GxoXQ/q6HolnU2JmNZvDL+x9hqpHEMbTvCugZ1/
-         XW/wI/V3jCCgitqyhtqLOnF71X+U4eHh6/06ZLwm1OFpZCD53pgf3wpLzGK79viQkU25
-         s5I9GqQtoyOHuEDxXRHfKT9zGx4wsCWkmGXt6l86eqXj5v3kWB3LrpDBxslQubweIeUx
-         K3N3vnqk87G/QvOZNdrCP78NGyNF8qn3aPE/hS/xwndUSWPtBvSjYjZPrcLDJ11kWDt1
-         SFUdBCM3FjAMyDRB2FGWUnmQrE7EX5Z6h6q5UJd2tkyuZ97ythO2oo6q23gBdmroOwK1
-         DRLg==
-X-Gm-Message-State: AOAM533DVnV3/PR1vmwSygqQfU/NEU8q10WFSTtqKeYIgdi/W+VC1Ms6
-        UjrGmRYAO8rmRxWrpja7OBNmm+qo4rbniUCkevFjHEZjP9tJvGZQnUMWm1+UKX3Bp793MDWrakK
-        o9G0V4nsjowWnUkqbvbDjgFrW
-X-Received: by 2002:a05:620a:1aa0:: with SMTP id bl32mr25781571qkb.140.1636909329884;
-        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy3fsX0amBg4KTKwAHXzq/1xbMBf+qUOnM2ajFU/qgxaFvHPrBXqfnJ+OC0Ym2EN8YEGm8e1g==
-X-Received: by 2002:a05:620a:1aa0:: with SMTP id bl32mr25781536qkb.140.1636909329631;
-        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id o5sm5403526qkl.50.2021.11.14.09.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 09:02:09 -0800 (PST)
-Date:   Sun, 14 Nov 2021 18:02:04 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH 2/2] perf parse-events: Architecture specific leader
- override
-Message-ID: <YZFBDI6oPMidX0KO@krava>
-References: <20211113071548.372572-1-irogers@google.com>
- <20211113071548.372572-2-irogers@google.com>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0CORimeqElOX/M4pFCvyzfpcvlAoEavGiWy4Y5391ao=;
+        b=M0yrbtyCXfd8WBKEZCJ+WAJRy6of9Uw7EP3iIpF3mw17c6ltvyOza5HrNPry6/hq5qxKhZ
+        pY1dpVdbPkFo3eg2yMZbNOQatf72lxHM3xI/IfrLyiJVLib096a0yd5x6hlk8g4FvRvGW4
+        tn2JLEvu0BgjCUEFZlRrlD3kfKBb7HQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-S46hBzzkM4ujprpMT6GTxQ-1; Sun, 14 Nov 2021 12:03:43 -0500
+X-MC-Unique: S46hBzzkM4ujprpMT6GTxQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A6CC15720;
+        Sun, 14 Nov 2021 17:03:40 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7220557CAD;
+        Sun, 14 Nov 2021 17:03:36 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: [PATCH v2 00/20] power-suppy/i2c/extcon: Fix charger setup on Xiaomi Mi Pad 2 and Lenovo Yogabook
+Date:   Sun, 14 Nov 2021 18:03:15 +0100
+Message-Id: <20211114170335.66994-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211113071548.372572-2-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:15:48PM -0800, Ian Rogers wrote:
-> Currently topdown events must appear after a slots event:
-> 
-> $ perf stat -e '{slots,topdown-fe-bound}' /bin/true
-> 
->  Performance counter stats for '/bin/true':
-> 
->          3,183,090      slots
->            986,133      topdown-fe-bound
-> 
-> Reversing the events yields:
-> 
-> $ perf stat -e '{topdown-fe-bound,slots}' /bin/true
-> Error:
-> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (topdown-fe-bound).
+Hi All,
 
-why is this actually failing?
+This is version 2 of my series previously titled:
+"[PATCH 00/13] power-suppy/i2c/extcon: Add support for cht-wc PMIC
+without USB-PD support".
 
-> 
-> For metrics the order of events is determined by iterating over a
-> hashmap, and so slots isn't guaranteed to be first which can yield this
-> error.
-> 
-> Change the set_leader in parse-events, called when a group is closed, so
-> that rather than always making the first event the leader, if the slots
-> event exists then it is made the leader. It is then moved to the head of
-> the evlist otherwise it won't be opened in the correct order.
-> 
-> The result is:
-> 
-> $ perf stat -e '{topdown-fe-bound,slots}' /bin/true
-> 
->  Performance counter stats for '/bin/true':
-> 
->          3,274,795      slots
->          1,001,702      topdown-fe-bound
-> 
-> A problem with this approach is the slots event is identified by name,
-> names can be overwritten like 'cpu/slots,name=foo/' and this causes the
-> leader change to fail.
+So far almost all the kernel code surrounding the Cherry Trail Whiskey Cove
+PMIC has been developed on the GPD win / pocket devices and it has various
+assumption based on that. In the mean time I've learned (and gotten access
+to) about 2 more designs and none of the 3 now known designs use a single
+standard setup for the charger, fuel-gauge and other chips surrounding the
+PMIC / charging+data USB port:
 
-would it be better then to move this shuffle to the metric code directly,
-and make sure it only spits 'good' order of events?
+1. The GPD Win and GPD Pocket mini-laptops, these are really 2 models
+but the Pocket re-uses the GPD Win's design in a different housing:
 
-and keep "-e '{topdown-fe-bound,slots}'" to fail if user specifies that on
-the command line
+The WC PMIC is connected to a TI BQ24292i charger, paired with
+a Maxim MAX17047 fuelgauge + a FUSB302 USB Type-C Controller +
+a PI3USB30532 USB switch, for a fully functional Type-C port.
 
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/arch/x86/util/evlist.c | 17 +++++++++++++++++
->  tools/perf/util/evlist.h          |  1 +
->  tools/perf/util/parse-events.c    | 16 +++++++++++-----
->  tools/perf/util/parse-events.h    |  4 ++--
->  tools/perf/util/parse-events.y    | 12 ++++++++----
->  5 files changed, 39 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
-> index 0b0951030a2f..1624372b2da2 100644
-> --- a/tools/perf/arch/x86/util/evlist.c
-> +++ b/tools/perf/arch/x86/util/evlist.c
-> @@ -17,3 +17,20 @@ int arch_evlist__add_default_attrs(struct evlist *evlist)
->  	else
->  		return parse_events(evlist, TOPDOWN_L1_EVENTS, NULL);
->  }
-> +
-> +struct evsel *arch_evlist__leader(struct list_head *list)
-> +{
-> +	struct evsel *evsel, *first;
-> +
-> +	first = list_entry(list->next, struct evsel, core.node);
-> +
-> +	if (!pmu_have_event("cpu", "slots"))
-> +		return first;
-> +
-> +	__evlist__for_each_entry(list, evsel) {
-> +		if (evsel->pmu_name && !strcmp(evsel->pmu_name, "cpu") &&
-> +			evsel->name && strstr(evsel->name, "slots"))
-> +			return evsel;
-> +	}
-> +	return first;
-> +}
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index 97bfb8d0be4f..993437ffe429 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -110,6 +110,7 @@ int __evlist__add_default_attrs(struct evlist *evlist,
->  	__evlist__add_default_attrs(evlist, array, ARRAY_SIZE(array))
->  
->  int arch_evlist__add_default_attrs(struct evlist *evlist);
-> +struct evsel *arch_evlist__leader(struct list_head *list);
->  
->  int evlist__add_dummy(struct evlist *evlist);
->  
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 6308ba739d19..a2f4c086986f 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1821,22 +1821,28 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
->  	return ret;
->  }
->  
-> -void parse_events__set_leader(char *name, struct list_head *list,
-> -			      struct parse_events_state *parse_state)
-> +__weak struct evsel *arch_evlist__leader(struct list_head *list)
-> +{
-> +	return list_entry(list->next, struct evsel, core.node);
-> +}
-> +
-> +struct list_head *parse_events__set_leader(char *name, struct list_head *list,
-> +					struct parse_events_state *parse_state)
->  {
->  	struct evsel *leader;
->  
->  	if (list_empty(list)) {
->  		WARN_ONCE(true, "WARNING: failed to set leader: empty list");
-> -		return;
-> +		return NULL;
->  	}
->  
->  	if (parse_events__set_leader_for_uncore_aliase(name, list, parse_state))
-> -		return;
-> +		return NULL;
->  
-> -	leader = list_entry(list->next, struct evsel, core.node);
-> +	leader = arch_evlist__leader(list);
->  	__perf_evlist__set_leader(list, &leader->core);
->  	leader->group_name = name ? strdup(name) : NULL;
-> +	return &leader->core.node;
->  }
->  
->  /* list_event is assumed to point to malloc'ed memory */
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index c7fc93f54577..8a6e6b4d5cbe 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -211,8 +211,8 @@ int parse_events_copy_term_list(struct list_head *old,
->  
->  enum perf_pmu_event_symbol_type
->  perf_pmu__parse_check(const char *name);
-> -void parse_events__set_leader(char *name, struct list_head *list,
-> -			      struct parse_events_state *parse_state);
-> +struct list_head *parse_events__set_leader(char *name, struct list_head *list,
-> +					struct parse_events_state *parse_state);
->  void parse_events_update_lists(struct list_head *list_event,
->  			       struct list_head *list_all);
->  void parse_events_evlist_error(struct parse_events_state *parse_state,
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index 174158982fae..5358c400f938 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -199,20 +199,24 @@ group_def
->  group_def:
->  PE_NAME '{' events '}'
->  {
-> -	struct list_head *list = $3;
-> +	struct list_head *new_head, *list = $3;
->  
->  	inc_group_count(list, _parse_state);
-> -	parse_events__set_leader($1, list, _parse_state);
-> +	new_head = parse_events__set_leader($1, list, _parse_state);
-> +	if (new_head)
-> +		list_move(new_head, list);
+2. The Xiaomi Mi Pad 2:
 
-why not put these last 2 lines to parse_events__set_leader as well?
+The WC PMIC is connected to a TI BQ25890 charger, paired with
+a TI BQ27520 fuelgauge, using the TI BQ25890 for BC1.2 charger type
+detection, for a USB-2 only Type-C port without PD.
 
->  	free($1);
->  	$$ = list;
->  }
->  |
->  '{' events '}'
->  {
-> -	struct list_head *list = $2;
-> +	struct list_head *new_head, *list = $2;
->  
->  	inc_group_count(list, _parse_state);
-> -	parse_events__set_leader(NULL, list, _parse_state);
-> +	new_head = parse_events__set_leader(NULL, list, _parse_state);
-> +	if (new_head)
-> +		list_move(new_head, list);
+3. The Lenovo Yoga Book YB1-X90 / Lenovo Yoga Book YB1-X91 series:
 
-same
+The WC PMIC is connected to a TI BQ25892 charger, paired with
+a TI BQ27542 fuelgauge, using the WC PMIC for BC1.2 charger type
+detection and using the BQ25892's Mediatek Pump Express+ (1.0)
 
-thanks,
-jirka
+###
+
+Unlike what is normal on X86 this diversity in designs is not handled /
+abstracted away by the ACPI tables.
+
+This series takes care of making sure that charging and device/host mode
+switching also works on the Xiaomi Mi Pad 2 and the Lenovo Yogabook.
+
+New in version 2 of this patch-set:
+- This is all about Whiskey Cove based designs, instead of going roundabout
+  and (ab)using drivers/platform/x86/touchscreen_dmi.c to add
+  device-properties on the WC I2C-dev and then check for that, just add a new
+  intel_cht_wc_get_model() helper to the intel_soc_pmic_chtwc.c MFD-driver.
+- Extend the series to not only fix things on the Mi Pad 2, but also on the
+  Lenovo Yogabook YB1-X90*/-X91* models.
+
+Patches  1-13: Prepare the bq25890 power_supply driver to fully support
+               the Mi Pad 2 and the Yogabook
+               Note this includes a new version of the 3 bq25890 cleanup /
+               fixes patches send earlier by Yauhen Kharuzhy
+Patch 14:      Adds the intel_cht_wc_get_model() helper
+Patch 15:      Uses this intel_cht_wc_get_model() value to instantiate an
+               i2c-client with the right type and properties for the charger
+               IC used on the board (instead of harcoding the GPD values)
+Patches 16-20: Modify the extcon code to provide charger-detection results
+               to the charger driver and to take care of the Vbus boost
+               regulator control (for host-mode) and device/host mode
+               switching
+
+I've tried to keep the power_supply patches as generic as possible while
+focussing some of the special handling these boards need in the
+WC PMIC MFD and cell drivers, which will only get loaded on these boards.
+
+Since some of the later patches depend on some of the power_supply changes;
+and since the Whiskey Cove MFD and cell drivers generally do not see much
+changes I believe that it would be best to merge the entire series through
+Sebastian's linux-power-supply tree.
+
+Lee, Wolfram and Chanwoo, may we please have your Ack for merging this
+entire series through Sebastian's linux-power-supply tree?
+
+Regards,
+
+Hans
+
+
+Hans de Goede (16):
+  power: supply: core: Refactor
+    power_supply_set_input_current_limit_from_supplier()
+  power: supply: bq25890: Add a bq25890_rw_init_data() helper
+  power: supply: bq25890: Add support to skip reset at probe() /
+    remove()
+  power: supply: bq25890: Add support to read back the settings from the
+    chip
+  power: supply: bq25890: Enable charging on boards where we skip reset
+  power: supply: bq25890: Drop dev->platform_data == NULL check
+  power: supply: bq25890: Add bq25890_set_otg_cfg() helper
+  power: supply: bq25890: Add support for registering the Vbus boost
+    converter as a regulator
+  power: supply: bq25890: On the bq25892 set the IINLIM based on
+    external charger detection
+  mfd: intel_soc_pmic_chtwc: Add intel_cht_wc_get_model() helper
+    function
+  i2c: cht-wc: Make charger i2c-client instantiation board/device-model
+    specific
+  extcon: intel-cht-wc: Use new intel_cht_wc_get_model() helper
+  extcon: intel-cht-wc: Support devs with Micro-B / USB-2 only Type-C
+    connectors
+  extcon: intel-cht-wc: Refactor cht_wc_extcon_get_charger()
+  extcon: intel-cht-wc: Add support for registering a power_supply
+    class-device
+  extcon: intel-cht-wc: Report RID_A for ACA adapters
+
+Yauhen Kharuzhy (4):
+  power: supply: bq25890: Fix ADC continuous conversion setting when
+    charging
+  power: supply: bq25890: Rename IILIM field to IINLIM
+  power: supply: bq25890: Reduce reported CONSTANT_CHARGE_CURRENT_MAX
+    for low temperatures
+  power: supply: bq25890: Support higher charging voltages through Pump
+    Express+ protocol
+
+ drivers/extcon/Kconfig                   |   3 +-
+ drivers/extcon/extcon-intel-cht-wc.c     | 242 +++++++++++++--
+ drivers/i2c/busses/i2c-cht-wc.c          | 120 ++++++--
+ drivers/mfd/intel_soc_pmic_chtwc.c       |  46 +++
+ drivers/power/supply/bq24190_charger.c   |  10 +-
+ drivers/power/supply/bq25890_charger.c   | 374 +++++++++++++++++++----
+ drivers/power/supply/power_supply_core.c |  57 ++--
+ include/linux/mfd/intel_soc_pmic.h       |   9 +
+ include/linux/power/bq25890_charger.h    |  15 +
+ include/linux/power_supply.h             |   5 +-
+ 10 files changed, 744 insertions(+), 137 deletions(-)
+ create mode 100644 include/linux/power/bq25890_charger.h
+
+-- 
+2.31.1
 
