@@ -2,90 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC39F44F9C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9029044F9C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Nov 2021 18:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbhKNR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 12:26:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230314AbhKNR0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 12:26:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD91360EB9;
-        Sun, 14 Nov 2021 17:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636910589;
-        bh=kQGuEYYiOrRDCpWGkbcW29M7DIXgWvDHAW/+sLNn9Zg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iP8xLB2t39R2aDC+1F5dTodDZIrWS3fPOXzdbtdNjHq96OqzUqgXOAjXM7eMpmHQ5
-         eg6YS8+pBf7hBq/OpAz9RHQgHzJcrJUC7CBRBl8IxdGfAzsHjpF7PJzJ8n+L+oZSoU
-         cfTFKsBvbLAI0rrU/iWmx2Ej2ylqu1MQtljWj1IWkmFfFdLVrwR3/+4G61Yia6XXNn
-         EET3HAsKkdb3x0mjT7Ob+7iWvo6nt4ZJw1aE5uE5XCe+bKf9kG6FGIyWVx11mc/alu
-         xCCIvklQwayx4aByHY0amqw5ZJfmjA1m2oO58o+27HuRaNz4xGo9f/HndQfoLi4wLz
-         ScfzdU+3PnBxQ==
-Date:   Sun, 14 Nov 2021 09:23:09 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: cleanups and resyncs for 5.16
-Message-ID: <20211114172309.GE24307@magnolia>
+        id S236142AbhKNR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 12:27:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230314AbhKNR1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 12:27:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636910692;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0eTbrRxjbA64Zx9WNO2uiMv5Y0nrApNayM9DZmVQeYc=;
+        b=BpZY6tqm6SgzyDLy25UscSDFnAtPw4q1GZYFzejg3FIxYu+mLTg/EUNsfZP3rhO85BAAVG
+        ab4akOlSyJV+jDGacUTT0bSchh265IGdzV4W4DDVHqGuFx/12KW6jJnCO4ExvaJFp1RxLH
+        GFCutqTmaE/UAwnX47wZ602rtutbB5I=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-yaI0jtJpNc-B3GV2vp3iFg-1; Sun, 14 Nov 2021 12:24:51 -0500
+X-MC-Unique: yaI0jtJpNc-B3GV2vp3iFg-1
+Received: by mail-ed1-f69.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so12039151edd.11
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 09:24:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0eTbrRxjbA64Zx9WNO2uiMv5Y0nrApNayM9DZmVQeYc=;
+        b=lgLEj5mgBiGHuJ9XHF1tMzs0GlulO8lW6mseMPVmbMN9CjJRo+tNjvJPgRR6ozQa7r
+         yHDpZElqmjMA9/heMZ3ZUm/aLQPGhsZ9wAWsJrZ+nz3NIAWAcKBKBAll0UKxfvsgf6cW
+         dr7nuWpDCNOSebftqRTSrO1SDYynWP0Z/7scZ8b9eaLYFc0QVFZSwB0RqWGtB4EFjk3L
+         z5FT0dWmrU2dDvT0WIaIJ2A1aXBUCr10q1iBZR2wvrhoul74u8b9+KKL5PGzEqxJ0uf5
+         cRhCEDfwRBgnDaF+2tbjEpJrkPMMs1L4k1b/nh8PYI9iZTqdTENdrT1h2qY+be3iA2Ym
+         SF+A==
+X-Gm-Message-State: AOAM532WcT2aJpZikHTVmElwpOiAUshAPabM4pcplBVjH08ABJM8UrEE
+        9F4i+dj6dusMF+Z3UnumxD5hiGKpUGPIo7ow486myJZaXy9C1s/nMElTNPGyo4cOAlcH6Rn9rMR
+        SUrHoNBEKA5U/GeLqXMfJV40E
+X-Received: by 2002:a05:6402:289e:: with SMTP id eg30mr5168455edb.253.1636910690115;
+        Sun, 14 Nov 2021 09:24:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyVDFEImH81X2cJ5JKDajX5WCtDc9Yo8LEOO+Q0ESb8jkLBlA+9W3/Uz1RiCiP17b7tpdn71w==
+X-Received: by 2002:a05:6402:289e:: with SMTP id eg30mr5168434edb.253.1636910689962;
+        Sun, 14 Nov 2021 09:24:49 -0800 (PST)
+Received: from redhat.com ([2.55.156.154])
+        by smtp.gmail.com with ESMTPSA id h7sm310118ede.40.2021.11.14.09.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 09:24:49 -0800 (PST)
+Date:   Sun, 14 Nov 2021 12:24:43 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211114122249-mutt-send-email-mst@kernel.org>
+References: <20211111090225.946381-1-kraxel@redhat.com>
+ <20211114163958.GA7211@wunner.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211114163958.GA7211@wunner.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Nov 14, 2021 at 05:39:58PM +0100, Lukas Wunner wrote:
+> On Thu, Nov 11, 2021 at 10:02:24AM +0100, Gerd Hoffmann wrote:
+> > The PCIe specification asks the OS to wait five seconds after the
+> 
+> The spec reference Bjorn asked for is: PCIe r5.0, sec. 6.7.1.5
+> 
+> > attention button has been pressed before actually un-plugging the
+> > device.  This gives the operator the chance to cancel the operation
+> > by pressing the attention button again within those five seconds.
+> > 
+> > For physical hardware this makes sense.  Picking the wrong button
+> > by accident can easily happen and it can be corrected that way.
+> > 
+> > For virtual hardware the benefits are questionable.  Typically
+> > users find the five second delay annoying.
+> 
+> Why does virtual hardware implement the Attention Button if it's
+> perceived as annoying?  Just amend qemu so that it doesn't advertise
+> presence of an Attention Button to get rid of the delay.  (Clear the
+> Attention Button Present bit in the Slot Capabilities register.)
 
-Please pull this branch containing a handful of code cleanups for 5.16.
+Because we want ability to request device removal from outside the
+guest.
 
-The most "exciting" aspect of this branch is that the xfsprogs
-maintainer and I have worked through the last of the code discrepancies
-between kernel and userspace libxfs such that there are no code
-differences between the two except for #includes.  IOWs, diff suffices
-to demonstrate that the userspace tools behave the same as the kernel,
-and kernel-only bits are clearly marked in the /kernel/ source code
-instead of just the userspace source.
+> An Attention Button doesn't make any sense for virtual hardware
+> except to test or debug support for it in the kernel.  Just make
+> presence of the Attention Button optional and be done with it.
+> 
+> You'll still be able to bring down the slot in software via the
+> "remove" attribute in sysfs.
 
-The branch merges cleanly against upstream as of a few minutes ago.
-Please let me know if anything else strange happens during the merge
-process.
+This requires guest specific code though. Emulating the attention button
+works in a guest independent way.
 
---D
+> Same for the 1 second delay in remove_board().  That's mandated by
+> PCIe r5.0, sec. 6.7.1.8, but it's only observed if a Power Controller
+> is present.  So just clear the Power Controller Present bit in the
+> Slot Capabilities register and the delay is gone.
+> 
+> 
+> > @@ -109,6 +110,8 @@ struct controller {
+> >  	unsigned int ist_running;
+> >  	int request_result;
+> >  	wait_queue_head_t requester;
+> > +
+> > +	bool is_virtual;
+> >  };
+> 
+> This is a quirk for a specific device, so please move it further up to the
+> /* capabilities and quirks */ section of struct controller.
+> 
+> 
+> > @@ -227,6 +227,11 @@ static int pciehp_probe(struct pcie_device *dev)
+> >  		goto err_out_shutdown_notification;
+> >  	}
+> >  
+> > +	if (dev->port->vendor == PCI_VENDOR_ID_REDHAT &&
+> > +	    dev->port->device == 0x000c)
+> > +		/* qemu pcie root port */
+> > +		ctrl->is_virtual = true;
+> > +
+> 
+> Move this to pcie_init() in pciehp_hpc.c below the existing quirks for
+> hotplug_user_indicators and is_thunderbolt.
+> 
+> 
+> > +static bool fast_virtual_unplug = true;
+> > +module_param(fast_virtual_unplug, bool, 0644);
+> 
+> An integer parameter to configure a custom delay would be nicer IMO.
+> Of course, anything else than 5 sec deviates from the spec.
+> 
+> Thanks,
+> 
+> Lukas
 
-The following changes since commit 2a09b575074ff3ed23907b6f6f3da87af41f592b:
-
-  xfs: use swap() to make code cleaner (2021-10-30 09:28:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-5
-
-for you to fetch changes up to 4a6b35b3b3f28df81fea931dc77c4c229cbdb5b2:
-
-  xfs: sync xfs_btree_split macros with userspace libxfs (2021-11-11 09:13:39 -0800)
-
-----------------------------------------------------------------
-Minor tweaks for 5.16:
- * Clean up open-coded swap() calls.
- * A little bit of #ifdef golf to complete the reunification of the
-   kernel and userspace libxfs source code.
-
-----------------------------------------------------------------
-Darrick J. Wong (1):
-      xfs: sync xfs_btree_split macros with userspace libxfs
-
-Eric Sandeen (1):
-      xfs: #ifdef out perag code for userspace
-
-Yang Guang (1):
-      xfs: use swap() to make dabtree code cleaner
-
- fs/xfs/libxfs/xfs_ag.c       | 2 ++
- fs/xfs/libxfs/xfs_ag.h       | 8 +++++---
- fs/xfs/libxfs/xfs_btree.c    | 4 ++++
- fs/xfs/libxfs/xfs_da_btree.c | 5 +----
- 4 files changed, 12 insertions(+), 7 deletions(-)
