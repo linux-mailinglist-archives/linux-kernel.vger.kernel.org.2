@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2781E4518AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA334451DD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348427AbhKOXFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:05:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59656 "EHLO mail.kernel.org"
+        id S1344772AbhKPAeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243223AbhKOSzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:55:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A2F6347F;
-        Mon, 15 Nov 2021 18:11:17 +0000 (UTC)
+        id S1343910AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2714D63603;
+        Mon, 15 Nov 2021 18:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999878;
-        bh=ZFO3A1aLs7UM3wgRW6/wf0hSRY6OOaENZhff+KKRNes=;
+        s=korg; t=1637002116;
+        bh=9pPerbehqC6kt+NUjCdEae89pMNvRT6x2OzqoxRqx5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ydgoIDfpNVNlFfKrKu3pYpSs6SoS6QGc0Z+lM1fEYhpegvhj5tCkzsTJ2elZH8WAP
-         jGxhKt2NCH6cXZzfE/3Hh0outJ5hvf9ZY3QqUUzkOgw9XBOftHKH9VFFaXstV6m1YU
-         bWNV67f/tI3BCcui1Qve/UpUwcoFrjtXwM2/mNVo=
+        b=tacTZTZHO9i78fH5ZxQxx6xmOl/8BL8NW5yV5OS2uQO7LPE9Ye35HWIzMKArsFpD9
+         4YnNIoMjnSb8Vi/forIeqXlVv8x2jQD1/NV2a+opHVEpIKk+dAl+IPR10501eZnSV3
+         ap8zN9EGJzdMghfyTMLzn7obUexwtpjwj5jZZENI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 455/849] mt76: fix build error implicit enumeration conversion
+        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 443/917] thermal/drivers/qcom/lmh: make QCOM_LMH depends on QCOM_SCM
 Date:   Mon, 15 Nov 2021 17:58:58 +0100
-Message-Id: <20211115165435.683794554@linuxfoundation.org>
+Message-Id: <20211115165443.800371557@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-[ Upstream commit adedbc643f02f5a3193b8dcc5cfca97b4c988667 ]
+[ Upstream commit 9e5a4fb8423081d0efbf165c71c7f4abdf5f918c ]
 
-drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:114:10: error: implicit
-conversion from enumeration type 'enum mt76_cipher_type' to different
-enumeration type 'enum mcu_cipher_type' [-Werror,-Wenum-conversion]
-                return MT_CIPHER_NONE;
-                ~~~~~~ ^~~~~~~~~~~~~~
+Without QCOM_SCM, build failed, avoid like below:
 
-drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:114:10: error: implicit
-conversion from enumeration type 'enum mt76_cipher_type' to different
-enumeration type 'enum mcu_cipher_type' [-Werror,-Wenum-conversion]
-                return MT_CIPHER_NONE;
-                ~~~~~~ ^~~~~~~~~~~~~~
+aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+aarch64-linux-gnu-ld: drivers/thermal/qcom/lmh.o: in function `lmh_probe':
+/data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:141: undefined reference to `qcom_scm_lmh_dcvsh_available'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:144: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:149: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:154: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:159: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:166: undefined reference to `qcom_scm_lmh_profile_change'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:173: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:180: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:187: undefined reference to `qcom_scm_lmh_dcvsh'
+make[1]: *** [/data/arm/workspace/kernel-build/linux/Makefile:1183: vmlinux] Error 1
+make[1]: Leaving directory '/data/arm/workspace/kernel-build/linux/build'
+make: *** [Makefile:219: __sub-make] Error 2
+make: Leaving directory '/data/arm/workspace/kernel-build/linux'
 
-Fixes: c368362c36d3 ("mt76: fix iv and CCMP header insertion")
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fixes: 53bca371cdf7 ("thermal/drivers/qcom: Add support for LMh driver")
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+Link: https://lore.kernel.org/r/20211009015853.3509559-1-liu.yun@linux.dev
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/thermal/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index caf2033c5c17e..c08c7398f9b85 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -1201,7 +1201,7 @@ mt7915_mcu_sta_key_tlv(struct mt7915_sta *msta, struct sk_buff *skb,
- 		u8 cipher;
+diff --git a/drivers/thermal/qcom/Kconfig b/drivers/thermal/qcom/Kconfig
+index 7d942f71e5328..bfd889422dd32 100644
+--- a/drivers/thermal/qcom/Kconfig
++++ b/drivers/thermal/qcom/Kconfig
+@@ -34,7 +34,7 @@ config QCOM_SPMI_TEMP_ALARM
  
- 		cipher = mt7915_mcu_get_cipher(key->cipher);
--		if (cipher == MT_CIPHER_NONE)
-+		if (cipher == MCU_CIPHER_NONE)
- 			return -EOPNOTSUPP;
- 
- 		sec_key = &sec->key[0];
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index 68840e55ede7a..8329b705c2ca2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -620,7 +620,7 @@ mt7921_mcu_sta_key_tlv(struct mt7921_sta *msta, struct sk_buff *skb,
- 		u8 cipher;
- 
- 		cipher = mt7921_mcu_get_cipher(key->cipher);
--		if (cipher == MT_CIPHER_NONE)
-+		if (cipher == MCU_CIPHER_NONE)
- 			return -EOPNOTSUPP;
- 
- 		sec_key = &sec->key[0];
+ config QCOM_LMH
+ 	tristate "Qualcomm Limits Management Hardware"
+-	depends on ARCH_QCOM
++	depends on ARCH_QCOM && QCOM_SCM
+ 	help
+ 	  This enables initialization of Qualcomm limits management
+ 	  hardware(LMh). LMh allows for hardware-enforced mitigation for cpus based on
 -- 
 2.33.0
 
