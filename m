@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDD745161F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44287451623
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhKOVMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:12:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55782 "EHLO mail.kernel.org"
+        id S1349048AbhKOVN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:13:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240970AbhKOSO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:14:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ADF961AF0;
-        Mon, 15 Nov 2021 17:49:11 +0000 (UTC)
+        id S238945AbhKOSOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:14:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C996F633DB;
+        Mon, 15 Nov 2021 17:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998551;
-        bh=6mP6RjwkhXnCTrgHMdecmo4xKg5p+03f7FOady1kDx8=;
+        s=korg; t=1636998568;
+        bh=fZyoex3Xh9SqjGK4bzXXvL+Yb+kn2e8dDp1t2zGQWag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uYNQJMXJ6QeeDuAK3SySZ4ztnstQIRer6/i2tuajMJETOm9FyYdJoNj8mHFOQpFT6
-         Hlyby/Kj9r49biwtAAErQEDlVi7U3+M6LZp/01Qk94lWQLNeNEp9fU4sriD/199j1d
-         XGMD2fQJK/fC9LcZBd36A1CsdqD0UhYEHvl+h8aw=
+        b=aN5HD01d9E2Mu5edhwMyDlwVlkLpCjLcixRN5+rf4PhpZdRSFxTKZ0JJJdPZID5ly
+         ll7p0elAs+cNbei08f1hxYVgSJcwIvTah0dF27e8atsqkgoLHPml1QTAaWvm16Y4L5
+         0wj1kWTIVaH1VCtIYEpus6seNqJqrdYEf81/mWjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 5.10 551/575] powerpc/bpf: Validate branch ranges
-Date:   Mon, 15 Nov 2021 18:04:36 +0100
-Message-Id: <20211115165402.741769165@linuxfoundation.org>
+        stable@vger.kernel.org, Jack Andersen <jackoalan@gmail.com>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.10 556/575] mfd: dln2: Add cell for initializing DLN2 ADC
+Date:   Mon, 15 Nov 2021 18:04:41 +0100
+Message-Id: <20211115165402.916963222@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,103 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+From: Jack Andersen <jackoalan@gmail.com>
 
-upstream commit 3832ba4e283d7052b783dab8311df7e3590fed93
+commit 313c84b5ae4104e48c661d5d706f9f4c425fd50f upstream.
 
-Add checks to ensure that we never emit branch instructions with
-truncated branch offsets.
+This patch extends the DLN2 driver; adding cell for adc_dln2 module.
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/71d33a6b7603ec1013c9734dd8bdd4ff5e929142.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
-[drop ppc32 changes]
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+The original patch[1] fell through the cracks when the driver was added
+so ADC has never actually been usable. That patch did not have ACPI
+support which was added in v5.9, so the oldest supported version this
+current patch can be backported to is 5.10.
+
+[1] https://www.spinics.net/lists/linux-iio/msg33975.html
+
+Cc: <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Jack Andersen <jackoalan@gmail.com>
+Signed-off-by: Noralf Trønnes <noralf@tronnes.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20211018112541.25466-1-noralf@tronnes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/net/bpf_jit.h        |   26 ++++++++++++++++++++------
- arch/powerpc/net/bpf_jit_comp64.c |    8 ++++++--
- 2 files changed, 26 insertions(+), 8 deletions(-)
+ drivers/mfd/dln2.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -12,6 +12,7 @@
+--- a/drivers/mfd/dln2.c
++++ b/drivers/mfd/dln2.c
+@@ -50,6 +50,7 @@ enum dln2_handle {
+ 	DLN2_HANDLE_GPIO,
+ 	DLN2_HANDLE_I2C,
+ 	DLN2_HANDLE_SPI,
++	DLN2_HANDLE_ADC,
+ 	DLN2_HANDLES
+ };
  
- #include <asm/types.h>
- #include <asm/ppc-opcode.h>
-+#include <asm/code-patching.h>
+@@ -653,6 +654,7 @@ enum {
+ 	DLN2_ACPI_MATCH_GPIO	= 0,
+ 	DLN2_ACPI_MATCH_I2C	= 1,
+ 	DLN2_ACPI_MATCH_SPI	= 2,
++	DLN2_ACPI_MATCH_ADC	= 3,
+ };
  
- #ifdef PPC64_ELF_ABI_v1
- #define FUNCTION_DESCR_SIZE	24
-@@ -24,13 +25,26 @@
- #define EMIT(instr)		PLANT_INSTR(image, ctx->idx, instr)
+ static struct dln2_platform_data dln2_pdata_gpio = {
+@@ -683,6 +685,16 @@ static struct mfd_cell_acpi_match dln2_a
+ 	.adr = DLN2_ACPI_MATCH_SPI,
+ };
  
- /* Long jump; (unconditional 'branch') */
--#define PPC_JMP(dest)		EMIT(PPC_INST_BRANCH |			      \
--				     (((dest) - (ctx->idx * 4)) & 0x03fffffc))
-+#define PPC_JMP(dest)							      \
-+	do {								      \
-+		long offset = (long)(dest) - (ctx->idx * 4);		      \
-+		if (!is_offset_in_branch_range(offset)) {		      \
-+			pr_err_ratelimited("Branch offset 0x%lx (@%u) out of range\n", offset, ctx->idx);			\
-+			return -ERANGE;					      \
-+		}							      \
-+		EMIT(PPC_INST_BRANCH | (offset & 0x03fffffc));		      \
-+	} while (0)
- /* "cond" here covers BO:BI fields. */
--#define PPC_BCC_SHORT(cond, dest)	EMIT(PPC_INST_BRANCH_COND |	      \
--					     (((cond) & 0x3ff) << 16) |	      \
--					     (((dest) - (ctx->idx * 4)) &     \
--					      0xfffc))
-+#define PPC_BCC_SHORT(cond, dest)					      \
-+	do {								      \
-+		long offset = (long)(dest) - (ctx->idx * 4);		      \
-+		if (!is_offset_in_cond_branch_range(offset)) {		      \
-+			pr_err_ratelimited("Conditional branch offset 0x%lx (@%u) out of range\n", offset, ctx->idx);		\
-+			return -ERANGE;					      \
-+		}							      \
-+		EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | (offset & 0xfffc));					\
-+	} while (0)
++/* Only one ADC port supported */
++static struct dln2_platform_data dln2_pdata_adc = {
++	.handle = DLN2_HANDLE_ADC,
++	.port = 0,
++};
 +
- /* Sign-extended 32-bit immediate load */
- #define PPC_LI32(d, i)		do {					      \
- 		if ((int)(uintptr_t)(i) >= -32768 &&			      \
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -224,7 +224,7 @@ static void bpf_jit_emit_func_call_rel(u
- 	EMIT(PPC_RAW_BLRL());
- }
- 
--static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
-+static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
- {
- 	/*
- 	 * By now, the eBPF program has already setup parameters in r3, r4 and r5
-@@ -285,7 +285,9 @@ static void bpf_jit_emit_tail_call(u32 *
- 	bpf_jit_emit_common_epilogue(image, ctx);
- 
- 	EMIT(PPC_RAW_BCTR());
++static struct mfd_cell_acpi_match dln2_acpi_match_adc = {
++	.adr = DLN2_ACPI_MATCH_ADC,
++};
 +
- 	/* out: */
-+	return 0;
- }
+ static const struct mfd_cell dln2_devs[] = {
+ 	{
+ 		.name = "dln2-gpio",
+@@ -702,6 +714,12 @@ static const struct mfd_cell dln2_devs[]
+ 		.platform_data = &dln2_pdata_spi,
+ 		.pdata_size = sizeof(struct dln2_platform_data),
+ 	},
++	{
++		.name = "dln2-adc",
++		.acpi_match = &dln2_acpi_match_adc,
++		.platform_data = &dln2_pdata_adc,
++		.pdata_size = sizeof(struct dln2_platform_data),
++	},
+ };
  
- /* Assemble the body code between the prologue & epilogue */
-@@ -1010,7 +1012,9 @@ cond_branch:
- 		 */
- 		case BPF_JMP | BPF_TAIL_CALL:
- 			ctx->seen |= SEEN_TAILCALL;
--			bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			ret = bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			if (ret < 0)
-+				return ret;
- 			break;
- 
- 		default:
+ static void dln2_stop(struct dln2_dev *dln2)
 
 
