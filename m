@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D4B450938
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE480450929
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236692AbhKOQJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:09:18 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:35860 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236643AbhKOQHw (ORCPT
+        id S236680AbhKOQGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236627AbhKOQG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:07:52 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFB0QTG014964;
-        Mon, 15 Nov 2021 08:04:35 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=8+4pwPrKISBXsKXOqqXMdZkX46tBf57hggQl4pDKRTs=;
- b=TMCOWZbpdHN1vEnBJjtXjHD3lwBqt3s8Tkl6ts3qxH0FpPwYvpXj9z1OGfxDuSVrAox6
- 6sjDKOrJV7YpNnr98X2Dy1ZqmofGg7d++rQXIqO9fDjExxnQq2xTeyK2tiQl6hoAPh+U
- Yaf0WrU7uv7rB4F/ObMDHgLES7pMb/I9GVAWzW+3RQN2YODGQ9Uty2oU3NPhI7SLaok3
- ggYLXfRSmTFE5sf5jR2RJo/7D7PSsMyBrkSR1lomw7jr0TXSuYX2RpIuXHM2qA6vfM3F
- pCZxjAr/47XHQdcAILZiTDpPNx4YW7acyOoebNiarVxi+BFnhZHXhRVha9ugTN6ZnRZV aQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3cbea8k0dj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 08:04:35 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 15 Nov
- 2021 08:04:33 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 15 Nov 2021 08:04:33 -0800
-Received: from localhost.localdomain (unknown [10.110.150.170])
-        by maili.marvell.com (Postfix) with ESMTP id 859723F7041;
-        Mon, 15 Nov 2021 08:04:33 -0800 (PST)
-From:   Wojciech Bartczak <wbartczak@marvell.com>
-To:     <linux-mmc@vger.kernel.org>
-CC:     <rric@kernel.org>, <ulf.hansson@linaro.org>, <beanhuo@micron.com>,
-        <tanxiaofei@huawei.com>, <wbartczak@marvell.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: cavium: Ensure proper mapping between request and interrupt
-Date:   Mon, 15 Nov 2021 08:02:26 -0800
-Message-ID: <20211115160226.20885-1-wbartczak@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Nov 2021 11:06:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207BFC061714;
+        Mon, 15 Nov 2021 08:03:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qkUydK/JEpz1c2gCYWSYemddT0P7Gi6azgiiqazupB4=; b=UuWeihRGHAaodRxfmRwxonWNv4
+        BDZIGfo/ORjAo8uV4/sfJfXy1Bi5Px4Tmo/D24gJjyNphP4WA0HBaTVDzxSItgHL7ISKDnGU+BcGH
+        q0czvecHi403XDDlHZjKMWdnl5suM9VDeccTmxKVjttW7bkuoPtcUgTPCBUr5pdY4A2BvDbJti8rA
+        6Ie8/x6ezNC8u45jfRzA1mWQJBMVjzjydMh1MczP0lNAmGLsBoXqRB3TndFwZDfvz1wrGnHnu51VK
+        OGZagW4a3+MP3ULFxJ/sGAGAjqfKLZC17xj3UEclfOJz7k66atZN/UBXV/OzDEDqZWUo4/Q81V7ih
+        L2s9sceQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmeS2-005p33-No; Mon, 15 Nov 2021 16:03:22 +0000
+Date:   Mon, 15 Nov 2021 16:03:22 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J . Wong " <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 04/28] fs: Rename AS_THP_SUPPORT and
+ mapping_thp_support
+Message-ID: <YZKEyrrH4SjqV8W7@casper.infradead.org>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-5-willy@infradead.org>
+ <YYo0L60o7ThqGzlX@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: T7eKzbIN6KJ3Abv2qg-jF2OYp4oWMIhy
-X-Proofpoint-ORIG-GUID: T7eKzbIN6KJ3Abv2qg-jF2OYp4oWMIhy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_10,2021-11-15_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYo0L60o7ThqGzlX@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MMC block in octeontx2 uses architecture, where data lines are
-shared between up to three supported cards. To keep the track of the
-request hardware reports bus_id for the command complete interrupt.
-At the same time the driver keeps information about the request on the
-fly. This change combines these information to ensure proper mapping
-between the request and the response.
+On Tue, Nov 09, 2021 at 12:41:19AM -0800, Christoph Hellwig wrote:
+> On Mon, Nov 08, 2021 at 04:05:27AM +0000, Matthew Wilcox (Oracle) wrote:
+> > These are now indicators of multi-page folio support, not THP support.
+> 
+> Given that we don't use the large foltio term anywhere else this really
+> needs to grow a comment explaining what the flag means.
 
-Signed-off-by: Wojciech Bartczak <wbartczak@marvell.com>
----
- drivers/mmc/host/cavium.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+I think I prefer the term 'large' to 'multi'.  What would you think to
+this patch (not on top of any particular branch; just to show the scope
+of it ...)
 
-diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-index 95a41983c6c0..24ea03f5a7c0 100644
---- a/drivers/mmc/host/cavium.c
-+++ b/drivers/mmc/host/cavium.c
-@@ -438,6 +438,8 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	struct mmc_request *req;
- 	u64 emm_int, rsp_sts;
- 	bool host_done;
-+	struct cvm_mmc_slot *slot;
-+	int bus_id;
- 
- 	if (host->need_irq_handler_lock)
- 		spin_lock(&host->irq_handler_lock);
-@@ -455,7 +457,19 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	if (!req)
- 		goto out;
- 
-+	slot = mmc_priv(req->host);
-+
-+	/* Get response */
- 	rsp_sts = readq(host->base + MIO_EMM_RSP_STS(host));
-+	/* Map request to cvm_mmc_slot */
-+	bus_id = FIELD_GET(MIO_EMM_RSP_STS_BUS_ID, rsp_sts);
-+	if (bus_id != slot->bus_id) {
-+		dev_err(mmc_classdev(slot->mmc),
-+			"Remapping, request for slot %d, interrupt for %d!\n",
-+			slot->bus_id, bus_id);
-+		slot = host->slot[bus_id];
-+	}
-+
- 	/*
- 	 * dma_val set means DMA is still in progress. Don't touch
- 	 * the request and wait for the interrupt indicating that
-@@ -493,8 +507,9 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	    (rsp_sts & MIO_EMM_RSP_STS_DMA_PEND))
- 		cleanup_dma(host, rsp_sts);
- 
-+	if (mrq->done)
-+		mrq->done(mrq);
- 	host->current_req = NULL;
--	req->done(req);
- 
- no_req_done:
- 	if (host->dmar_fixup_done)
-@@ -669,6 +684,7 @@ static void cvm_mmc_dma_request(struct mmc_host *mmc,
- 		set_wdog(slot, data->timeout_ns);
- 
- 	WARN_ON(host->current_req);
-+	mrq->host = mmc;
- 	host->current_req = mrq;
- 
- 	emm_dma = prepare_ext_dma(mmc, mrq);
-@@ -776,6 +792,7 @@ static void cvm_mmc_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 	mods = cvm_mmc_get_cr_mods(cmd);
- 
- 	WARN_ON(host->current_req);
-+	mrq->host = mmc;
- 	host->current_req = mrq;
- 
- 	if (cmd->data) {
--- 
-2.17.1
++++ b/include/linux/page-flags.h
+@@ -692,7 +692,7 @@ static inline bool folio_test_single(struct folio *folio)
+        return !folio_test_head(folio);
+ }
+
+-static inline bool folio_test_multi(struct folio *folio)
++static inline bool folio_test_large(struct folio *folio)
+ {
+        return folio_test_head(folio);
+ }
++++ b/mm/filemap.c
+@@ -192,9 +192,9 @@ static void filemap_unaccount_folio(struct address_space *mapping,
+        __lruvec_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
+        if (folio_test_swapbacked(folio)) {
+                __lruvec_stat_mod_folio(folio, NR_SHMEM, -nr);
+-               if (folio_test_multi(folio))
++               if (folio_test_large(folio))
+                        __lruvec_stat_mod_folio(folio, NR_SHMEM_THPS, -nr);
+-       } else if (folio_test_multi(folio)) {
++       } else if (folio_test_large(folio)) {
+                __lruvec_stat_mod_folio(folio, NR_FILE_THPS, -nr);
+                filemap_nr_thps_dec(mapping);
+        }
+@@ -236,7 +236,7 @@ void filemap_free_folio(struct address_space *mapping, struct folio *folio)
+        if (freepage)
+                freepage(&folio->page);
+
+-       if (folio_test_multi(folio) && !folio_test_hugetlb(folio)) {
++       if (folio_test_large(folio) && !folio_test_hugetlb(folio)) {
+                folio_ref_sub(folio, folio_nr_pages(folio));
+                VM_BUG_ON_FOLIO(folio_ref_count(folio) <= 0, folio);
+        } else {
++++ b/mm/memcontrol.c
+@@ -5558,7 +5558,7 @@ static int mem_cgroup_move_account(struct page *page,
+
+        VM_BUG_ON(from == to);
+        VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
+-       VM_BUG_ON(compound && !folio_test_multi(folio));
++       VM_BUG_ON(compound && !folio_test_large(folio));
+
+        /*
+         * Prevent mem_cgroup_migrate() from looking at
 
