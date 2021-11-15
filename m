@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F16E4519C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2C5451F1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349696AbhKOX1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:27:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1355603AbhKPAig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245043AbhKOTS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18268634F6;
-        Mon, 15 Nov 2021 18:27:17 +0000 (UTC)
+        id S1344783AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D899E636C8;
+        Mon, 15 Nov 2021 19:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000838;
-        bh=L3uN9+P0S+XDR1GSymcw8svx8SwkYmssDHTWKkk9RI4=;
+        s=korg; t=1637003067;
+        bh=reufAu6yogWRdslKweeyV7v5Tl/MKvbnnDnoqxorVr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cq1lYdWqjFEA5/TM4aWdDEU4ui+vcg1QCk2xXqBPzJMJeW/xpL4hlEfTdRQsGHC87
-         mZXbd9/9jMUZ7kt6tqjM5oLs6R+f9+bMZo9ZL1DBPFxLDk7oZIr0/i0NQhxAGqGsPL
-         JKMmkuOFMlXFUvtsLI2rgS5et1/f3wiSIHHPYOCI=
+        b=IecYc2mSERvxGYkScvprs2rratPPPGN6yToIJohA9C/kWnoCu+3bdZn4mIIgcQ5k1
+         qdP5T7CF7aa/pNgGWjpAuMsDAqzfAoB98I2iwTgHfIJVbOo5O++8GbMoWCbuU0UyA1
+         n3FmxONGbJgPn+rWnwb1OIwd5PVp8qhrRCjwbM7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 810/849] io-wq: fix queue stalling race
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 798/917] mfd: core: Add missing of_node_put for loop iteration
 Date:   Mon, 15 Nov 2021 18:04:53 +0100
-Message-Id: <20211115165447.641713539@linuxfoundation.org>
+Message-Id: <20211115165456.028853188@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,70 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 0242f6426ea78fbe3933b44f8c55ae93ec37f6cc upstream.
+[ Upstream commit 002be81140075e17a1ebd5c3c55e356fbab0ddad ]
 
-We need to set the stalled bit early, before we drop the lock for adding
-us to the stall hash queue. If not, then we can race with new work being
-queued between adding us to the stall hash and io_worker_handle_work()
-marking us stalled.
+Early exits from for_each_child_of_node() should decrement the
+node reference counter.  Reported by Coccinelle:
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  drivers/mfd/mfd-core.c:197:2-24: WARNING:
+    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
+
+Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20210528115126.18370-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/mfd/mfd-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -436,8 +436,7 @@ static bool io_worker_can_run_work(struc
- }
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+index 79f5c6a18815a..684a011a63968 100644
+--- a/drivers/mfd/mfd-core.c
++++ b/drivers/mfd/mfd-core.c
+@@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
+ 			if (of_device_is_compatible(np, cell->of_compatible)) {
+ 				/* Ignore 'disabled' devices error free */
+ 				if (!of_device_is_available(np)) {
++					of_node_put(np);
+ 					ret = 0;
+ 					goto fail_alias;
+ 				}
+@@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
+ 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+ 				if (ret == -EAGAIN)
+ 					continue;
++				of_node_put(np);
+ 				if (ret)
+ 					goto fail_alias;
  
- static struct io_wq_work *io_get_next_work(struct io_wqe *wqe,
--					   struct io_worker *worker,
--					   bool *stalled)
-+					   struct io_worker *worker)
- 	__must_hold(wqe->lock)
- {
- 	struct io_wq_work_node *node, *prev;
-@@ -475,10 +474,14 @@ static struct io_wq_work *io_get_next_wo
- 	}
- 
- 	if (stall_hash != -1U) {
-+		/*
-+		 * Set this before dropping the lock to avoid racing with new
-+		 * work being added and clearing the stalled bit.
-+		 */
-+		wqe->flags |= IO_WQE_FLAG_STALLED;
- 		raw_spin_unlock(&wqe->lock);
- 		io_wait_on_hash(wqe, stall_hash);
- 		raw_spin_lock(&wqe->lock);
--		*stalled = true;
- 	}
- 
- 	return NULL;
-@@ -518,7 +521,6 @@ static void io_worker_handle_work(struct
- 
- 	do {
- 		struct io_wq_work *work;
--		bool stalled;
- get_next:
- 		/*
- 		 * If we got some work, mark us as busy. If we didn't, but
-@@ -527,12 +529,9 @@ get_next:
- 		 * can't make progress, any work completion or insertion will
- 		 * clear the stalled flag.
- 		 */
--		stalled = false;
--		work = io_get_next_work(wqe, worker, &stalled);
-+		work = io_get_next_work(wqe, worker);
- 		if (work)
- 			__io_worker_busy(wqe, worker, work);
--		else if (stalled)
--			wqe->flags |= IO_WQE_FLAG_STALLED;
- 
- 		raw_spin_unlock_irq(&wqe->lock);
- 		if (!work)
+-- 
+2.33.0
+
 
 
