@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86199452112
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BC9451AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359699AbhKPA6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:58:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
+        id S1351352AbhKOXle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:41:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343826AbhKOTWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343828AbhKOTWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:22:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8355F635F1;
-        Mon, 15 Nov 2021 18:46:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D80635F2;
+        Mon, 15 Nov 2021 18:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002015;
-        bh=PzEUd0t1C2mtRwyKJhg2re0zJ/0SLCVCQwZJawrxHN0=;
+        s=korg; t=1637002020;
+        bh=9V0xfq1pZHTHLowIkoCjJ7cS7Qyf39rtxP8WkmGKoRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=he6O2vCUTATgIUclWRbDSzUxmqoSWrgi0jkguGC25Ik8vs2zR173yZvnQv/F0ZwqJ
-         V/QBY4JmKs3bq2lL3q+BGL9oeX/PSt0nDZJl2sgVBiPCJyZpyGwWTorqPqXGqGcd+P
-         tInzCV2xmwwVUbaYBR385It16nL6iviqjwr5Mh20=
+        b=ZN53YLJ/TkaM1P7vHw6DGI56ejpEwuKBMXDxb7F/3IsAgauR9yNaKcu0ZcyX0OGK8
+         C+okk/sRYgMSN6LK3m5/l9V3bOIoGqsAvhwfNZZ1o7TKbw2Ls2L6+rOo9Q8dqOEKuz
+         zRJTQy3u+THHcm/rAVD+sjhZBFop/qH9g1xE0eqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 406/917] rcu: Always inline rcu_dynticks_task*_{enter,exit}()
-Date:   Mon, 15 Nov 2021 17:58:21 +0100
-Message-Id: <20211115165442.558885324@linuxfoundation.org>
+Subject: [PATCH 5.15 407/917] rcu: Fix rcu_dynticks_curr_cpu_in_eqs() vs noinstr
+Date:   Mon, 15 Nov 2021 17:58:22 +0100
+Message-Id: <20211115165442.593517721@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -44,69 +44,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 7663ad9a5dbcc27f3090e6bfd192c7e59222709f ]
+[ Upstream commit 74aece72f95f399dd29363669dc32a1344c8fab4 ]
 
-RCU managed to grow a few noinstr violations:
+  vmlinux.o: warning: objtool: rcu_nmi_enter()+0x36: call to __kasan_check_read() leaves .noinstr.text section
 
-  vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x0: call to rcu_dynticks_task_trace_enter() leaves .noinstr.text section
-  vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0xe: call to rcu_dynticks_task_trace_exit() leaves .noinstr.text section
+noinstr cannot have atomic_*() functions in because they're explicitly
+annotated, use arch_atomic_*().
 
-Fix them by adding __always_inline to the relevant trivial functions.
-
-Also replace the noinstr with __always_inline for the existing
-rcu_dynticks_task_*() functions since noinstr would force noinline
-them, even when empty, which seems silly.
-
-Fixes: 7d0c9c50c5a1 ("rcu-tasks: Avoid IPIing userspace/idle tasks if kernel is so built")
+Fixes: 2be57f732889 ("rcu: Weaken ->dynticks accesses and updates")
 Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index d070059163d70..0d21a5cdc7247 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1480,7 +1480,7 @@ static void rcu_bind_gp_kthread(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bce848e50512e..bdd1dc6de71ab 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -327,7 +327,7 @@ static void rcu_dynticks_eqs_online(void)
+  */
+ static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+-	return !(atomic_read(this_cpu_ptr(&rcu_data.dynticks)) & 0x1);
++	return !(arch_atomic_read(this_cpu_ptr(&rcu_data.dynticks)) & 0x1);
  }
  
- /* Record the current task on dyntick-idle entry. */
--static void noinstr rcu_dynticks_task_enter(void)
-+static __always_inline void rcu_dynticks_task_enter(void)
- {
- #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
- 	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
-@@ -1488,7 +1488,7 @@ static void noinstr rcu_dynticks_task_enter(void)
- }
- 
- /* Record no current task on dyntick-idle exit. */
--static void noinstr rcu_dynticks_task_exit(void)
-+static __always_inline void rcu_dynticks_task_exit(void)
- {
- #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
- 	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
-@@ -1496,7 +1496,7 @@ static void noinstr rcu_dynticks_task_exit(void)
- }
- 
- /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
--static void rcu_dynticks_task_trace_enter(void)
-+static __always_inline void rcu_dynticks_task_trace_enter(void)
- {
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-@@ -1505,7 +1505,7 @@ static void rcu_dynticks_task_trace_enter(void)
- }
- 
- /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
--static void rcu_dynticks_task_trace_exit(void)
-+static __always_inline void rcu_dynticks_task_trace_exit(void)
- {
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ /*
 -- 
 2.33.0
 
