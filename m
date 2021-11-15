@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8605C4506F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA83D4506FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236581AbhKOOcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234216AbhKOOc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:32:28 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BADC061746
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:29:31 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id m14so73070757edd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:29:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0UUMiNTFIKe2uX/Ero+b5gxkPdB4ZNp4W0PHC433LjQ=;
-        b=CtfLfjT+krpI3rNBs3m6jKFvdItW0jh32PIhCCJJJ58lns5DKon+y/AGNm1kkm65QB
-         aI5lTkbhn76f6tLlmhfSkbot5QS1+vQAPTrbp4KOSNF+9R3aqak9NJILsYRcJUrLaCL/
-         amKEtAih/gk1FTJ4ZcicuYqKRgXJyjetXMIqE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=0UUMiNTFIKe2uX/Ero+b5gxkPdB4ZNp4W0PHC433LjQ=;
-        b=xgqUKqyVPPXVJjZLlzMCqQxasX6bMV2ZEG8K/9Vet80IBPTD8Whrkxh3VQXcq4JDa2
-         s8nkdPHWeyfukk7RTwfn8QEEM8ojXD2Q4aJMn1auH0l34MBNXiJjex/zH4TEtiB0NOMO
-         8cDJtztmU1ZnmXbAJkUWiXofgGJVgkPe5aIbLHQ5knMqkatvjOKkK4AKSBABIMZG5wZU
-         UaW5XcounhmLcrSWrFOX6CAL7YyergxYA/kC4rVxPpvv1yKpeozf+GqjGZ0pYEIdPcpB
-         kI31fv27oPAkx2GDSHNGgIsYHQF972f8lAS/7K9u614W2wbMiC1kwYbIIaIU3glE5phe
-         aQCw==
-X-Gm-Message-State: AOAM531mengE8oZ9WbskI2UUaqBK3+/7I0Wra3xtA5hPYSQEJbn6dZvD
-        T3dKcv6in6kdLX4B78mzvkbBVfrx7N9GDg==
-X-Google-Smtp-Source: ABdhPJy7ye2Lcy7XtgIltmNJsEFp9VrxRsZFhHZn733SnYbJbPwuBIUAcRDXvTkI1eolOjbzI0y8qA==
-X-Received: by 2002:a50:8dcb:: with SMTP id s11mr55166334edh.318.1636986570621;
-        Mon, 15 Nov 2021 06:29:30 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id s4sm6885990ejn.25.2021.11.15.06.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 06:29:30 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:29:28 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
-Message-ID: <YZJuyJPdrJIc3mP+@phenom.ffwll.local>
-Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
- <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
- <CAPM=9tw=NTZ-1NbGupgg42gOA1aFKZ2C6wt++q5BxaocaUbmFA@mail.gmail.com>
- <CAHk-=wjpPWyH5ff0LE8Mmt6OEiYbD3LwpvpD==FFZfTMTzL2FQ@mail.gmail.com>
- <1ff1389b-bf4c-cd09-8bfd-d4303d100eee@linux.intel.com>
+        id S236540AbhKOOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:34:07 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:23852 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236557AbhKOOcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:32:51 -0500
+Received: from localhost.localdomain (unknown [222.205.2.245])
+        by mail-app4 (Coremail) with SMTP id cS_KCgAHDyvXbpJhuPsPBQ--.20703S4;
+        Mon, 15 Nov 2021 22:29:43 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     netdev@vger.kernel.org
+Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        kuba@kernel.org, jirislaby@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v0] NFC: reorganize the functions in nci_request
+Date:   Mon, 15 Nov 2021 22:29:38 +0800
+Message-Id: <20211115142938.8109-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ff1389b-bf4c-cd09-8bfd-d4303d100eee@linux.intel.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+X-CM-TRANSID: cS_KCgAHDyvXbpJhuPsPBQ--.20703S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWxGw43Kw4rtr15ZrykGrg_yoW8Gw4rp3
+        95KFyayFyxZ3y7Ar40yw18Xw15ZF10ka97Ga4Ykw1xCr9xXrnrtr1DtFW5Xryfu395ZFW3
+        XFy5ta4Fkr1UWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUO4
+        E_DUUUU
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:18:53AM +0100, Thomas Hellström wrote:
-> On 11/14/21 22:19, Linus Torvalds wrote:
-> > On Sun, Nov 14, 2021 at 1:00 PM Dave Airlie <airlied@gmail.com> wrote:
-> > > i915 will no longer be x86-64 only in theory, since Intel now produces
-> > > PCIe graphics cards using the same hw designs.
-> > Well, at least in my tree, it still has the "depends on X86", along
-> > with several other x86-only things (like "select INTEL_GTT", which is
-> > also x86-only)
+There is a possible data race as shown below:
 
-Yeah it's work in progress and 12+ years of x86 pile up high&deep aren't
-easy to fix. So please assume the depends on X86 is gone already (and
-select INTEL_GTT is optional, it's only needed for igfx older than about 8
-years or so), but we can't do that yet because all the build boots would
-run out of air screaming so much :-)
+thread-A in nci_request()       | thread-B in nci_close_device()
+                                | mutex_lock(&ndev->req_lock);
+test_bit(NCI_UP, &ndev->flags); |
+...                             | test_and_clear_bit(NCI_UP, &ndev->flags)
+mutex_lock(&ndev->req_lock);    |
+                                |
 
-> > So by the time that non-x86 theory becomes reality, hopefully the i915
-> > people will also have figured out how to do the cache flushing
-> > properly.
-> > 
-> > And hopefully that "do it properly" ends up being simply that the
-> > particular configuration that ends up being portable simply doesn't
-> > need to do it at all and can statically just not build it,
-> > sidestepping the issue entirely.
-> > 
-> > Fingers crossed.
-> 
-> For non-x86 / discrete graphics, plan is only coherent mappings, although
-> the "Just not build it" part hasn't been properly figured out yet I guess.
-> But point taken.
+This race will allow __nci_request() to be awaked while the device is
+getting removed.
 
-Yeah for non-x86 it'll be standard dma-api all the way down. For x86 that
-ship sailed long ago, but also I'm not clear on why we added a new cache
-flush primitive for that instead of just continuing to use clflush like
-we've done since forever. For x86 integrated gpu we _know_ which cpu is
-there, clflush will exist. So any new horrors shouldn't be needed, not
-sure why a wbinvd_on_all_cpus slipped in.
--Daniel
+Similar to commit e2cb6b891ad2 ("bluetooth: eliminate the potential race
+condition when removing the HCI controller"). this patch alters the
+function sequence in nci_request() to prevent the data races between the
+nci_close_device().
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ net/nfc/nci/core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 6fd873aa86be..2ab2d6a1a143 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -144,12 +144,15 @@ inline int nci_request(struct nci_dev *ndev,
+ {
+ 	int rc;
+ 
+-	if (!test_bit(NCI_UP, &ndev->flags))
+-		return -ENETDOWN;
+-
+ 	/* Serialize all requests */
+ 	mutex_lock(&ndev->req_lock);
+-	rc = __nci_request(ndev, req, opt, timeout);
++	/* check the state after obtaing the lock against any races
++	 * from nci_close_device when the device gets removed.
++	 */
++	if (test_bit(NCI_UP, &ndev->flags))
++		rc = __nci_request(ndev, req, opt, timeout);
++	else
++		rc = -ENETDOWN;
+ 	mutex_unlock(&ndev->req_lock);
+ 
+ 	return rc;
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.33.1
+
