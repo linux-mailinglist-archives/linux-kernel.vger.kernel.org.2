@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3000B45234A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E519B452347
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344005AbhKPBXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:23:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1356214AbhKPBXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:23:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244470AbhKOTPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244473AbhKOTPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:15:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0CB634C0;
-        Mon, 15 Nov 2021 18:21:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 394E5634C5;
+        Mon, 15 Nov 2021 18:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000481;
-        bh=ji5dLCwblGr5Eu07zARlCaYRqrv2zsmztEiA+7MAGRg=;
+        s=korg; t=1637000483;
+        bh=XXV5DhqosJISImTDClXn7QvhAA/4o2ZnsXX8ytXUbLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JvSL7NqywwLmHybh2BPwzGS62pg0h140mimI7Fzh30qmqzi9oVE22lVfyYNAL2qgM
-         Qf+gzWiTzZEoRceuZ5JKP8MCGbg6PPkf6+8YvJtxg4zpRJ/UWCJmJxWS5YAVG2elSy
-         7xRO9H2YjLkKYCRBln869D1z0UV0nUK/Bv6H8W9g=
+        b=FPkdijgX+1zczA9+b4vanexDUwIrWJwo8trCFrowg82OOazWHkVOByj93m+e/Ybz+
+         qlKxw1xZ0vWwL114qtHzrXQXFKncs/BtzuRkyFz2S326HepzOxgMEo6tbL+MVZ5a6p
+         XLuJZONpJmCFdMCcfYVJaa6AqxAlEoWHj8lgLeH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 642/849] phy: Sparx5 Eth SerDes: Fix return value check in sparx5_serdes_probe()
-Date:   Mon, 15 Nov 2021 18:02:05 +0100
-Message-Id: <20211115165441.998742417@linuxfoundation.org>
+        stable@vger.kernel.org, Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 643/849] serial: xilinx_uartps: Fix race condition causing stuck TX
+Date:   Mon, 15 Nov 2021 18:02:06 +0100
+Message-Id: <20211115165442.030915901@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,41 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-[ Upstream commit b4dc97ab0a629eda8bda20d96ef47dac08a505d9 ]
+[ Upstream commit 88b20f84f0fe47409342669caf3e58a3fc64c316 ]
 
-In case of error, the function devm_ioremap() returns NULL
-pointer not ERR_PTR(). The IS_ERR() test in the return value
-check should be replaced with NULL test.
+xilinx_uartps .start_tx() clears TXEMPTY when enabling TXEMPTY to avoid
+any previous TXEVENT event asserting the UART interrupt. This clear
+operation is done immediately after filling the TX FIFO.
 
-Fixes: 2ff8a1eeb5aa ("phy: Add Sparx5 ethernet serdes PHY driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210909072149.2934047-1-yangyingliang@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+However, if the bytes inserted by cdns_uart_handle_tx() are consumed by
+the UART before the TXEMPTY is cleared, the clear operation eats the new
+TXEMPTY event as well, causing cdns_uart_isr() to never receive the
+TXEMPTY event. If there are bytes still queued in circbuf, TX will get
+stuck as they will never get transferred to FIFO (unless new bytes are
+queued to circbuf in which case .start_tx() is called again).
+
+While the racy missed TXEMPTY occurs fairly often with short data
+sequences (e.g. write 1 byte), in those cases circbuf is usually empty
+so no action on TXEMPTY would have been needed anyway. On the other
+hand, longer data sequences make the race much more unlikely as UART
+takes longer to consume the TX FIFO. Therefore it is rare for this race
+to cause visible issues in general.
+
+Fix the race by clearing the TXEMPTY bit in ISR *before* filling the
+FIFO.
+
+The TXEMPTY bit in ISR will only get asserted at the exact moment the
+TX FIFO *becomes* empty, so clearing the bit before filling FIFO does
+not cause an extra immediate assertion even if the FIFO is initially
+empty.
+
+This is hard to reproduce directly on a normal system, but inserting
+e.g. udelay(200) after cdns_uart_handle_tx(port), setting 4000000 baud,
+and then running "dd if=/dev/zero bs=128 of=/dev/ttyPS0 count=50"
+reliably reproduces the issue on my ZynqMP test system unless this fix
+is applied.
+
+Fixes: 85baf542d54e ("tty: xuartps: support 64 byte FIFO size")
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Link: https://lore.kernel.org/r/20211026102741.2910441-1-anssi.hannula@bitwise.fi
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/microchip/sparx5_serdes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/microchip/sparx5_serdes.c b/drivers/phy/microchip/sparx5_serdes.c
-index 4076580fc2cd9..ab1b0986aa671 100644
---- a/drivers/phy/microchip/sparx5_serdes.c
-+++ b/drivers/phy/microchip/sparx5_serdes.c
-@@ -2475,10 +2475,10 @@ static int sparx5_serdes_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 	iomem = devm_ioremap(priv->dev, iores->start, resource_size(iores));
--	if (IS_ERR(iomem)) {
-+	if (!iomem) {
- 		dev_err(priv->dev, "Unable to get serdes registers: %s\n",
- 			iores->name);
--		return PTR_ERR(iomem);
-+		return -ENOMEM;
- 	}
- 	for (idx = 0; idx < ARRAY_SIZE(sparx5_serdes_iomap); idx++) {
- 		struct sparx5_serdes_io_resource *iomap = &sparx5_serdes_iomap[idx];
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 962e522ccc45c..d5e243908d9fd 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -601,9 +601,10 @@ static void cdns_uart_start_tx(struct uart_port *port)
+ 	if (uart_circ_empty(&port->state->xmit))
+ 		return;
+ 
++	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
++
+ 	cdns_uart_handle_tx(port);
+ 
+-	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+ 	/* Enable the TX Empty interrupt */
+ 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+ }
 -- 
 2.33.0
 
