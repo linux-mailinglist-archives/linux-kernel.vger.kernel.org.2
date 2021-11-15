@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EB045196B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EA245202C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347520AbhKOXTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:19:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S1358001AbhKPAt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244788AbhKOTRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D1860EB9;
-        Mon, 15 Nov 2021 18:23:48 +0000 (UTC)
+        id S1344599AbhKOTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F7F963698;
+        Mon, 15 Nov 2021 19:00:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000628;
-        bh=dV4hGvuZGVteA08oWH5rElC3A1hJD84RH5jhOVC0+eE=;
+        s=korg; t=1637002850;
+        bh=lsK4NtStt7bCYYBoRbBL/bYDlvgbP/fC4WL50yzicpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zs2iYvUiDfUt3scSOhWJ2owOkrtl7rcBkfUJ1aywTUivKku5lwnbCSakSMeTeBulX
-         etonVBNC0zGy4775Y5XneLrijdr/o3VGiW4/lutYK8UkvYe/gghswl359QOz/4ZNdC
-         TnIG+Xdeq+XwHiMul6hufx32DA+T4bkfE/UpEOaI=
+        b=Hb9RKDmH2fkISoN7Ilg9Xh0hAbf6ppsOZPUtc/YX1qbrFgvkLS2N4HrjlFoJM7mOV
+         t8iJKv+5DKOtQUCpNdDDYCx6jP2PAdvDQ4wOXnsUPFj8oWa/dumbHPX+fVA+/Upu9r
+         9vYetmPhH5/NilUO1Ddanc/hWaK9r066AVnWmSa8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chenyuan Mi <cymi20@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Lyude Paul <lyude@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
+        stable@vger.kernel.org, John Keeping <john@metanate.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 731/849] drm/nouveau/svm: Fix refcount leak bug and missing check against null bug
+Subject: [PATCH 5.15 719/917] Input: st1232 - increase "wait ready" timeout
 Date:   Mon, 15 Nov 2021 18:03:34 +0100
-Message-Id: <20211115165444.980663886@linuxfoundation.org>
+Message-Id: <20211115165453.285543915@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chenyuan Mi <cymi20@fudan.edu.cn>
+From: John Keeping <john@metanate.com>
 
-[ Upstream commit 6bb8c2d51811eb5e6504f49efe3b089d026009d2 ]
+[ Upstream commit 2667f6b7af99e81958fa97c03bb519fcb09d0055 ]
 
-The reference counting issue happens in one exception handling path of
-nouveau_svmm_bind(). When cli->svm.svmm is null, the function forgets
-to decrease the refcount of mm increased by get_task_mm(), causing a
-refcount leak.
+I have a ST1633 touch controller which fails to probe due to a timeout
+waiting for the controller to become ready.  Increasing the minimum
+delay to 100ms ensures that the probe sequence completes successfully.
 
-Fix this issue by using mmput() to decrease the refcount in the
-exception handling path.
+The ST1633 datasheet says nothing about the maximum delay here and the
+ST1232 I2C protocol document says "wait until" with no notion of a
+timeout.
 
-Also, the function forgets to do check against null when get mm
-by get_task_mm().
+Since this only runs once during probe, being generous with the timout
+seems reasonable and most likely the device will become ready
+eventually.
 
-Fix this issue by adding null check after get mm by get_task_mm().
+(It may be worth noting that I saw this issue with a PREEMPT_RT patched
+kernel which probably has tighter wakeups from usleep_range() than other
+preemption models.)
 
-Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Fixes: 822cab6150d3 ("drm/nouveau/svm: check for SVM initialized before migrating")
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210907122633.16665-1-cymi20@fudan.edu.cn
-Link: https://gitlab.freedesktop.org/drm/nouveau/-/merge_requests/14
+Fixes: f605be6a57b4 ("Input: st1232 - wait until device is ready before reading resolution")
+Signed-off-by: John Keeping <john@metanate.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210929152609.2421483-1-john@metanate.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_svm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/input/touchscreen/st1232.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index b0c3422cb01fa..9985bfde015a6 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -162,10 +162,14 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
- 	 */
+diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
+index 6abae665ca71d..9d1dea6996a22 100644
+--- a/drivers/input/touchscreen/st1232.c
++++ b/drivers/input/touchscreen/st1232.c
+@@ -92,7 +92,7 @@ static int st1232_ts_wait_ready(struct st1232_ts_data *ts)
+ 	unsigned int retries;
+ 	int error;
  
- 	mm = get_task_mm(current);
-+	if (!mm) {
-+		return -EINVAL;
-+	}
- 	mmap_read_lock(mm);
- 
- 	if (!cli->svm.svmm) {
- 		mmap_read_unlock(mm);
-+		mmput(mm);
- 		return -EINVAL;
- 	}
- 
+-	for (retries = 10; retries; retries--) {
++	for (retries = 100; retries; retries--) {
+ 		error = st1232_ts_read_data(ts, REG_STATUS, 1);
+ 		if (!error) {
+ 			switch (ts->read_buf[0]) {
 -- 
 2.33.0
 
