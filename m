@@ -2,185 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9274507C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C4F4507D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhKOPFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S232252AbhKOPGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhKOPFS (ORCPT
+        with ESMTP id S232203AbhKOPGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:05:18 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62642C061570;
-        Mon, 15 Nov 2021 07:02:19 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id np3so13074323pjb.4;
-        Mon, 15 Nov 2021 07:02:19 -0800 (PST)
+        Mon, 15 Nov 2021 10:06:46 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9E9C061714;
+        Mon, 15 Nov 2021 07:03:49 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 13so36156068ljj.11;
+        Mon, 15 Nov 2021 07:03:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=d8PXUffPazSmYKKzNF/TGrdTUsuiK6Ny9wBNo2wwLbI=;
-        b=ZLjifqPVgG2iMUclzUkQFWnuYLDCosIK2s/DssPdmERUSiTTyhAQ2r9NczmX/DfRsJ
-         9uR/8NQOuM/qTdRd3gWcldBpnB1BtEkmf1PLyijjoRkYcvWVV7nV0VQHG2CoNXHp7/dA
-         e7+F0echaqpDANjSaIY8bpLY/q0wDIrsl86hDhhpnqPHPZnsP+XPEGfwSY05RZyXncKs
-         gK0g/QXWpzAD5PqJq65HQ+LfFhyGS8Cq+0hZKEoIRB9UFzyT2TEghyZBnYzN2CwL2m6G
-         TMRMaygYLovpTe3J+CoTHQt5mRAMgZ93E3/LJt917HDy3+cCf/vmSbCNFO6tXDu96i5W
-         4Xgw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CSy92pFzsZRQzB8VSXcLRKMYjJ0F9fLrjJbRvXaFW4I=;
+        b=maZVkPyfoqAvNfNKkmvlE4j9m0HscMl9azH23A/OPinJb7T38nGyoe/+uvalwRzJqi
+         Eu93zi+hiw3sec70zIU5onuVhhilgiv8YXxgiYhpSktBTIpz1LPu/Jm3fzlcHWaNf9YY
+         ceJVuQ2+zymkILD+nbqxzVVU/2QAAL+dnm/PAXLiZrKlgcc3y69EgNBdJwAghpo8pwVm
+         7BZH2SNZ34UnjCUU78vgB5/fAWMlSNybr8svPRmveUsionHGnIeNN76LAHgprPQ+p6sw
+         U1Gwnz7NUC6EbJjts4YwAPsqAjYx4ld8PUmgyoF0yKizfMg/osQtzh7OwfbZt7Liz6Gh
+         1g1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=d8PXUffPazSmYKKzNF/TGrdTUsuiK6Ny9wBNo2wwLbI=;
-        b=Q/yRsVk+749oTPkHMkf3nwKRNz6PcOML/BgEGng86fLLwFSlcsclYpkSi+MyAv2epL
-         gOhDr4F8ScVg9f4TwECeKcTnlaXdFvBnukaT2GG3sHQ2Zsz52oT2C22STNy9/OmjngFz
-         lpQ7PKAvFSyk8p4pvVKBDrCOWvOLh1afTWkli/2xbPm0ua1D8Vph00efzkGaVpIn56gm
-         BLd1xaXs1ImPdtShp+t2WAtcU3kuHNUHFU8ibJQ9Zv9aCYtz/LNzsy75evotVRBohBA5
-         ulD3/KBEAM06JJwU9Pqy3mbvo6ozJfuMrjkFpWph6edi6G+YAG3eww+Iq72uoCaJsjiA
-         m6FQ==
-X-Gm-Message-State: AOAM531LIWoZNEFKCyr0W2X9kpXSLkqW3uFZAGIX5Ra1/T5Z7YqCQAHF
-        TQ5bIKVF97lRhNoITAfd9EH1sx9WV2UfWUzhnqQ=
-X-Google-Smtp-Source: ABdhPJwkHtTTW3ES4uV67rzJ33QwTWk2CJ0+UlwIlbg7igYYS/+l83BQ0mb2AQZ2n9xhwKLRKCLDbQScz2TG7PWmHOs=
-X-Received: by 2002:a17:90a:7481:: with SMTP id p1mr26437282pjk.169.1636988538858;
- Mon, 15 Nov 2021 07:02:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CSy92pFzsZRQzB8VSXcLRKMYjJ0F9fLrjJbRvXaFW4I=;
+        b=QrZ0TGG6htjTXQLfr1l7E1DFysPwhOUvwHNm33aRMEc/9+ouCxgLURQZanqtoedQOI
+         WII1PAWpn2A9CoDI6F4iA3B3EybFjJRHVD5wOv8QZS4g4ml3fxexETmcTIU6Ln/zS5ev
+         w1y6A7ds8s2tPOCJkE5pxMx+Dv8D1dVFJ+5v2cvjEpJCnhK5L8RA1zgygOHWPk9bV7sq
+         NIj3CnHWD3iSh/HT59fPd8Hhe3JuB6nbEwDipruaPkFkH4bpUqlJpfHvziUMr9gL9esv
+         kF/UTGmN061tl87gnhc594wtbq6Jl1pPDYuyz+T7+UDL1tC/wLW2mKEbws3foSFEUjaC
+         FvHA==
+X-Gm-Message-State: AOAM5325TnPYN8Q/DKdQKxPz/mJ1Eq7aWdycKHUvBa0D8aVovw+KgBFp
+        TNmlOyPgO98Bd5o1aWYs/FU=
+X-Google-Smtp-Source: ABdhPJyBVpX01ZHfU2xqkwDDNB3FVin+WSkejS84XjXa/HNXYkSGrFQBjOuQKBLF8/FJL9tiqrt6Eg==
+X-Received: by 2002:a2e:b894:: with SMTP id r20mr41473581ljp.304.1636988627290;
+        Mon, 15 Nov 2021 07:03:47 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id d4sm1442920lfg.153.2021.11.15.07.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 07:03:46 -0800 (PST)
+Date:   Mon, 15 Nov 2021 18:03:44 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mark Brown <broonie@kernel.org>,
+        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] spi: dw: Add a symbols namespace for the core
+ module
+Message-ID: <20211115150344.sgrqqnl7nudntrqx@mobilestation>
+References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
+ <20211114223026.13359-2-Sergey.Semin@baikalelectronics.ru>
+ <YZJuPrnhupbnPxGt@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20211019130809.21281-1-o.rempel@pengutronix.de>
- <20211020050459.GE16320@pengutronix.de> <CAPwXO5b=z1nhQCo55A_XuK-Es2o7TrL2Vj6AkRSXa3Wxh0s8sA@mail.gmail.com>
- <20211021172048.GE2298@pengutronix.de> <CAPwXO5bWoAvZgQLQHa6CsFmZ2bcUQ9pJQBBL3F+goppMeAKkFQ@mail.gmail.com>
- <8692108c-1b46-3d3d-6911-300ac27c2980@ysoft.com> <20211111091627.GG12195@pengutronix.de>
-In-Reply-To: <20211111091627.GG12195@pengutronix.de>
-From:   Petr Benes <petrben@gmail.com>
-Date:   Mon, 15 Nov 2021 16:02:07 +0100
-Message-ID: <CAPwXO5anM809k+wuSYU9LR9vLAyutaMNo6kceCHOZHPmZUbnUw@mail.gmail.com>
-Subject: Re: [PATCH v2] thermal: imx: implement runtime PM support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZJuPrnhupbnPxGt@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Mon, Nov 15, 2021 at 04:27:10PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 01:30:21AM +0300, Serge Semin wrote:
+> > The exported from the DW SPI driver core symbols are only used by the
+> > spi-dw-{dma,mmio,pci,bt1}.o objects. Add these symbols to a separate
+> > namespace then and make sure the depended modules have it imported.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> Thanks!
+> 
 
-On Thu, 11 Nov 2021 at 10:16, Oleksij Rempel <o.rempel@pengutronix.de> wrot=
-e:
->
-> On Wed, Nov 10, 2021 at 11:07:31AM +0100, Michal Vok=C3=A1=C4=8D wrote:
-> > On 25. 10. 21 13:06, Petr Benes wrote:
-> > > Hi Oleksij,
-> > >
-> > > On Thu, 21 Oct 2021 at 19:21, Oleksij Rempel <o.rempel@pengutronix.de=
-> wrote:
-> > > >
-> > > > Hi Petr,
-> > > >
-> > > > On Wed, Oct 20, 2021 at 05:53:03PM +0200, Petr Benes wrote:
-> > > > > On Wed, 20 Oct 2021 at 07:05, Oleksij Rempel <o.rempel@pengutroni=
-x.de> wrote:
-> > > > > >
-> > > > > > Hi Petr and Michal,
-> > > > > >
-> > > > > > I forgot to add you for v2 in CC. Please test/review this versi=
-on.
-> > > > >
-> > > > > Hi Oleksij,
-> > > > >
-> > > > > It works good. with PM as well as without PM. The only minor issu=
-e I found is,
-> > > > > that the first temperature reading (when the driver probes) fails=
-. That is
-> > > > > (val & soc_data->temp_valid_mask) =3D=3D 0) holds true. How does
-> > > > > pm_runtime_resume_and_get() behave in imx_thermal_probe()?
-> > > > > Does it go through imx_thermal_runtime_resume() with usleep_range=
-()?
-> > > >
-> > > > How exactly did you reproduce it? Even more or less understanding h=
-ow
-> > >
-> > > I just placed my debug print into get_temp()
-> > >
-> > >      if ((val & soc_data->temp_valid_mask) =3D=3D 0) {
-> > >          dev_dbg(&tz->device, "temp measurement never finished\n");
-> > >          printk("Wrong temperature reading!!!!!!\n");
-> > >          return -EAGAIN;
-> > >      }
-> > >
-> > > > this can potentially happen, i never had this issue on my HW. Is it=
- something
-> > > > HW specific?
-> > >
-> > > IMHO it is just product of the following sequence:
-> > >
-> > > pm_runtime_set_active(&pdev->dev);
-> > > pm_runtime_enable(data->dev);
-> > > pm_runtime_resume_and_get(data->dev);
-> > > thermal_zone_device_enable(data->tz);
-> > >
-> > > With assumption imx_thermal_runtime_resume() didn't run,
-> > > hence the sensor didn't get enough time to come up.
-> > >
-> > > I didn't have time to spend it on and you have better knowledge of th=
-e
-> > > area. If it is not that straightforward I can try to diagnose it bett=
-er.
-> > >
-> > Hi Oleksij,
-> > Did you manage to further debug and reproduce this problem?
-> > Do you plan to send the v3?
-> >
-> > Regarding your question about the HW - this problem occured once we
-> > upgraded the SoC on our SBC from i.MX6DL to i.MX6Q/QP. With the DualLit=
-e
-> > we never had this problem but the Quad is getting hot quite fast.
-> > We have pretty limited cooling options so the core is operated at its
-> > upper temperature limits when fully loaded.
->
-> Hi Michal,
->
-> Sorry, I was busy and lost this topic from my radar. I was not able to
-> reproduce it on my i.MX6Q and i.MX6QP died after other thermal voltage
-> experiments. Please, if you able to reproduce it, try to investigate
-> what is wrong, for example increasing wakeup time and/or and tracing
-> sleap/wake/get sequences.
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> See also below.
 
-Seems it is just as easy as calling usleep_range(20, 50) when you switch on
-the sensor and enable temperature measurement in imx_thermal_probe().
-So, we are sure the sensor is configured and _ready_.
+Thanks. But see below.
 
-You call pm_runtime_set_active(), pm_runtime_enable(), and
-pm_runtime_resume_and_get(). The last one doesn't call the resume
-callback (which correctly handles waiting for the sensor) as the device
-is already active.
+> 
+> > ---
+> > 
+> > Changelog v2:
+> > - This is a new patch created as of Andy' suggestion.
+> > ---
+> >  drivers/spi/spi-dw-bt1.c  |  1 +
+> >  drivers/spi/spi-dw-core.c | 14 +++++++-------
+> >  drivers/spi/spi-dw-dma.c  |  7 +++++--
+> >  drivers/spi/spi-dw-mmio.c |  1 +
+> >  drivers/spi/spi-dw-pci.c  |  1 +
+> >  5 files changed, 15 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
+> > index 5be6b7b80c21..ac7e4f30d1da 100644
+> > --- a/drivers/spi/spi-dw-bt1.c
+> > +++ b/drivers/spi/spi-dw-bt1.c
+> > @@ -339,3 +339,4 @@ module_platform_driver(dw_spi_bt1_driver);
+> >  MODULE_AUTHOR("Serge Semin <Sergey.Semin@baikalelectronics.ru>");
+> >  MODULE_DESCRIPTION("Baikal-T1 System Boot SPI Controller driver");
+> >  MODULE_LICENSE("GPL v2");
+> > +MODULE_IMPORT_NS(SPI_DW_CORE);
+> > diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> > index a305074c482e..a14940403ab4 100644
+> > --- a/drivers/spi/spi-dw-core.c
+> > +++ b/drivers/spi/spi-dw-core.c
+> > @@ -106,7 +106,7 @@ void dw_spi_set_cs(struct spi_device *spi, bool enable)
+> >  	else
+> >  		dw_writel(dws, DW_SPI_SER, 0);
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_set_cs);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_set_cs, SPI_DW_CORE);
+> >  
+> >  /* Return the max entries we can fill into tx fifo */
+> >  static inline u32 tx_max(struct dw_spi *dws)
+> > @@ -210,7 +210,7 @@ int dw_spi_check_status(struct dw_spi *dws, bool raw)
+> >  
+> >  	return ret;
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_check_status);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_check_status, SPI_DW_CORE);
+> >  
+> >  static irqreturn_t dw_spi_transfer_handler(struct dw_spi *dws)
+> >  {
+> > @@ -345,7 +345,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
+> >  		dws->cur_rx_sample_dly = chip->rx_sample_dly;
+> >  	}
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_update_config);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_update_config, SPI_DW_CORE);
+> >  
+> >  static void dw_spi_irq_setup(struct dw_spi *dws)
+> >  {
+> > @@ -945,7 +945,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+> >  	spi_controller_put(master);
+> >  	return ret;
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_add_host);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_add_host, SPI_DW_CORE);
+> >  
+> >  void dw_spi_remove_host(struct dw_spi *dws)
+> >  {
+> > @@ -960,7 +960,7 @@ void dw_spi_remove_host(struct dw_spi *dws)
+> >  
+> >  	free_irq(dws->irq, dws->master);
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_remove_host);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_remove_host, SPI_DW_CORE);
+> >  
+> >  int dw_spi_suspend_host(struct dw_spi *dws)
+> >  {
+> > @@ -973,14 +973,14 @@ int dw_spi_suspend_host(struct dw_spi *dws)
+> >  	spi_shutdown_chip(dws);
+> >  	return 0;
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_suspend_host);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_suspend_host, SPI_DW_CORE);
+> >  
+> >  int dw_spi_resume_host(struct dw_spi *dws)
+> >  {
+> >  	spi_hw_init(&dws->master->dev, dws);
+> >  	return spi_controller_resume(dws->master);
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_resume_host);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_resume_host, SPI_DW_CORE);
+> >  
+> >  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
+> >  MODULE_DESCRIPTION("Driver for DesignWare SPI controller core");
+> > diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
+> > index a09831c62192..5687ec05d627 100644
+> > --- a/drivers/spi/spi-dw-dma.c
+> > +++ b/drivers/spi/spi-dw-dma.c
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/dmaengine.h>
+> >  #include <linux/irqreturn.h>
+> >  #include <linux/jiffies.h>
+> > +#include <linux/module.h>
+> >  #include <linux/pci.h>
+> >  #include <linux/platform_data/dma-dw.h>
+> >  #include <linux/spi/spi.h>
+> > @@ -17,6 +18,8 @@
+> >  
+> >  #include "spi-dw.h"
+> 
 
-On some SoCs the timing leads to a failure of the temperature readout
-in thermal_zone_device_enable() which follows. I've seen it on i.MX6DL,
-but cannot reproduce it on i.MX6QP for example.
+> > +MODULE_IMPORT_NS(SPI_DW_CORE);
+> 
+> I would rather see this at the end of file, but it should work either way.
 
-Regards,
-Petr
+I've just realized it, do I really need the
+namespace imported in this object at all?.. It's linked into the
+spi-dw-core.ko. See drivers/spi/Makefile:
+obj-$(CONFIG_SPI_DESIGNWARE)            += spi-dw.o
+spi-dw-y                                := spi-dw-core.o
+spi-dw-$(CONFIG_SPI_DW_DMA)             += spi-dw-dma.o
+so the object must have got the same namespace.
 
->
-> Regards,
-> Oleksij
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
+Yeah, most likely I shouldn't have used the MODULE_IMPORT_NS() here...
+
+-Sergey
+
+> 
+> >  #define RX_BUSY		0
+> >  #define RX_BURST_LEVEL	16
+> >  #define TX_BUSY		1
+> > @@ -638,7 +641,7 @@ void dw_spi_dma_setup_mfld(struct dw_spi *dws)
+> >  {
+> >  	dws->dma_ops = &dw_spi_dma_mfld_ops;
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_mfld);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_mfld, SPI_DW_CORE);
+> >  
+> >  static const struct dw_spi_dma_ops dw_spi_dma_generic_ops = {
+> >  	.dma_init	= dw_spi_dma_init_generic,
+> > @@ -653,4 +656,4 @@ void dw_spi_dma_setup_generic(struct dw_spi *dws)
+> >  {
+> >  	dws->dma_ops = &dw_spi_dma_generic_ops;
+> >  }
+> > -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_generic);
+> > +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_generic, SPI_DW_CORE);
+> > diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> > index 17c06039a74d..711f4d3404c5 100644
+> > --- a/drivers/spi/spi-dw-mmio.c
+> > +++ b/drivers/spi/spi-dw-mmio.c
+> > @@ -377,3 +377,4 @@ module_platform_driver(dw_spi_mmio_driver);
+> >  MODULE_AUTHOR("Jean-Hugues Deschenes <jean-hugues.deschenes@octasic.com>");
+> >  MODULE_DESCRIPTION("Memory-mapped I/O interface driver for DW SPI Core");
+> >  MODULE_LICENSE("GPL v2");
+> > +MODULE_IMPORT_NS(SPI_DW_CORE);
+> > diff --git a/drivers/spi/spi-dw-pci.c b/drivers/spi/spi-dw-pci.c
+> > index 8a91cd58102f..5552240fee55 100644
+> > --- a/drivers/spi/spi-dw-pci.c
+> > +++ b/drivers/spi/spi-dw-pci.c
+> > @@ -213,3 +213,4 @@ module_pci_driver(dw_spi_driver);
+> >  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
+> >  MODULE_DESCRIPTION("PCI interface driver for DW SPI Core");
+> >  MODULE_LICENSE("GPL v2");
+> > +MODULE_IMPORT_NS(SPI_DW_CORE);
+> > -- 
+> > 2.33.0
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
