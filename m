@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685B84503BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC574503C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhKOLqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhKOLqg (ORCPT
+        id S231389AbhKOLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:47:30 -0500
+Received: from sibelius.xs4all.nl ([83.163.83.176]:62663 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhKOLrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:46:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AD4C061766;
-        Mon, 15 Nov 2021 03:43:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oW6LcrDKI8y4NUK+N5FT4E/9It3R00jJ14PrLqrA138=; b=nHm9RL754aI3J7TW7S0W4nUtzr
-        37X1xu6V1voUKR0wClsAPr2JHErwCdA/pDZwAcskp0LAbxHSPknVWJr7pqtC8NMIo1KHq4V+f2OyF
-        leufQudZhJh7d9iaFm2T7AIc3XXvrcYvGb2UE4rp4weGB3sq1DCH2uWCltMogQn2+KpSbQUNgL3N/
-        OVS1NXsj1YiqouLhGeIZyzRsbsbXmm3V5KG03p2AvnyOqfm1rs1+RWrsBk/pNzbwBtFhB5YCkLnkN
-        EqBCwMNMkqH073b/0jkE3j/tkp62zm+agMqitPlc8mcAZl13yIl78m8+9cj7epF+77rDdJlUqXhFK
-        tj0oCaTA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmaOG-005erK-Ut; Mon, 15 Nov 2021 11:43:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BCEE0300129;
-        Mon, 15 Nov 2021 12:43:12 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 706AC20265B5A; Mon, 15 Nov 2021 12:43:12 +0100 (CET)
-Date:   Mon, 15 Nov 2021 12:43:12 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vihas Mak <makvihas@gmail.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: fix cocci warnings
-Message-ID: <YZJH0Hd/ETYWJGTX@hirez.programming.kicks-ass.net>
-References: <20211114164312.GA28736@makvihas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114164312.GA28736@makvihas>
+        Mon, 15 Nov 2021 06:47:05 -0500
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 2516de24;
+        Mon, 15 Nov 2021 12:44:07 +0100 (CET)
+Date:   Mon, 15 Nov 2021 12:44:07 +0100 (CET)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Janne Grunau <j@jannau.net>
+Cc:     marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
+        robh+dt@kernel.org, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211115094332.13540-1-j@jannau.net> (message from Janne Grunau
+        on Mon, 15 Nov 2021 10:43:32 +0100)
+Subject: Re: [PATCH 1/1] arm64: dts: apple: change ethernet0 device type to
+ ethernet
+References: <20211115094332.13540-1-j@jannau.net>
+Message-ID: <d3cad763b256e68e@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 10:13:12PM +0530, Vihas Mak wrote:
-> change 0 to false and 1 to true to fix following cocci warnings:
+> From: Janne Grunau <j@jannau.net>
+> Date: Mon, 15 Nov 2021 10:43:32 +0100
 > 
->         arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
->         arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
+> Fixes make dtbs_check errors for t8103-j274.dts due to missing pci
+> properties.
+> 
+> Signed-off-by: Janne Grunau <j@jannau.net>
 
-That script should be deleted, it's absolute garbage.
+Yes, that is better.
+
+Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
+
+> ---8<---
+> 
+> change based on the same pattern as in
+> arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+> 
+> ---
+>  arch/arm64/boot/dts/apple/t8103-j274.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/apple/t8103-j274.dts b/arch/arm64/boot/dts/apple/t8103-j274.dts
+> index 33a80f9501dc..02c36301e985 100644
+> --- a/arch/arm64/boot/dts/apple/t8103-j274.dts
+> +++ b/arch/arm64/boot/dts/apple/t8103-j274.dts
+> @@ -60,7 +60,7 @@ &port01 {
+>  
+>  &port02 {
+>  	bus-range = <3 3>;
+> -	ethernet0: pci@0,0 {
+> +	ethernet0: ethernet@0,0 {
+>  		reg = <0x30000 0x0 0x0 0x0 0x0>;
+>  		/* To be filled by the loader */
+>  		local-mac-address = [00 10 18 00 00 00];
+> -- 
+> 2.33.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
