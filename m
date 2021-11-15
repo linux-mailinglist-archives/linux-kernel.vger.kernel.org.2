@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF78451E04
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019154518D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347382AbhKPAet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:34:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
+        id S1352228AbhKOXJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:09:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343963AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CA560174;
-        Mon, 15 Nov 2021 18:49:27 +0000 (UTC)
+        id S243101AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E487A63483;
+        Mon, 15 Nov 2021 18:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002167;
-        bh=X03UOnOAj5lzHAtG1htSWTtU5Fn1ySb8Y34IxPWlr4U=;
+        s=korg; t=1636999932;
+        bh=l7rnQKxtdPbR1zuIJmcPnMDKyUXP1g4vSpLc0c9JpuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=th+KmaWQT781NSjqUr0w4LSwX1KZVS/+c1XwrzndZNSAQmqnootcimfD9of4GypDv
-         5abcZt1iYtpHrSwuslqDaOCC07bj+4OZQcJYRIaXnFEno73S68P9i4PAPR/e7MXIzO
-         GN9DATkLHdBkJSShJeB4bHdoystP94iLXLRuizIk=
+        b=wl911uANNrfiQQ8N5TqmbM8qqte5NepfKl+OtU1pfFn/NLxhGJg7X2vEH+mfuPlOj
+         gFuxVOltfH59a5k8vct1jBZAfO1i+hE32psTHIexXBzeUVSFrUzRufBlC//Y6wSxnD
+         45Q7uQeK7jGtyax577INX1e5tgUkOSrs7/FHLC4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 464/917] mt76: mt7921: fix survey-dump reporting
-Date:   Mon, 15 Nov 2021 17:59:19 +0100
-Message-Id: <20211115165444.510966229@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 477/849] mwifiex: Send DELBA requests according to spec
+Date:   Mon, 15 Nov 2021 17:59:20 +0100
+Message-Id: <20211115165436.416294879@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit 64ed76d118c656907ec1155f2cdd24de778470a2 ]
+[ Upstream commit cc8a8bc37466f79b24d972555237f3d591150602 ]
 
-Fix MIB tx-rx MIB counters for survey-dump reporting.
+While looking at on-air packets using Wireshark, I noticed we're never
+setting the initiator bit when sending DELBA requests to the AP: While
+we set the bit on our del_ba_param_set bitmask, we forget to actually
+copy that bitmask over to the command struct, which means we never
+actually set the initiator bit.
 
-Fixes: 163f4d22c118d ("mt76: mt7921: add MAC support")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
+struct.
+
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Acked-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211016153244.24353-5-verdre@v0yd.nl
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/init.c | 4 ++++
- drivers/net/wireless/mediatek/mt76/mt7921/regs.h | 8 ++++++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-index a9ce10b988273..52d40385fab6c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-@@ -106,6 +106,10 @@ mt7921_mac_init_band(struct mt7921_dev *dev, u8 band)
- 	mt76_set(dev, MT_WF_RMAC_MIB_TIME0(band), MT_WF_RMAC_MIB_RXTIME_EN);
- 	mt76_set(dev, MT_WF_RMAC_MIB_AIRTIME0(band), MT_WF_RMAC_MIB_RXTIME_EN);
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
+index 6696bce561786..cf08a4af84d6d 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n.c
+@@ -657,14 +657,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
+ 	uint16_t del_ba_param_set;
  
-+	/* enable MIB tx-rx time reporting */
-+	mt76_set(dev, MT_MIB_SCR1(band), MT_MIB_TXDUR_EN);
-+	mt76_set(dev, MT_MIB_SCR1(band), MT_MIB_RXDUR_EN);
+ 	memset(&delba, 0, sizeof(delba));
+-	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
+ 
+-	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
++	del_ba_param_set = tid << DELBA_TID_POS;
 +
- 	mt76_rmw_field(dev, MT_DMA_DCR0(band), MT_DMA_DCR0_MAX_RX_LEN, 1536);
- 	/* disable rx rate report by default due to hw issues */
- 	mt76_clear(dev, MT_DMA_DCR0(band), MT_DMA_DCR0_RXD_G5_EN);
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-index b6944c867a573..26fb118237626 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-@@ -96,6 +96,10 @@
- #define MT_WF_MIB_BASE(_band)		((_band) ? 0xa4800 : 0x24800)
- #define MT_WF_MIB(_band, ofs)		(MT_WF_MIB_BASE(_band) + (ofs))
+ 	if (initiator)
+ 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+ 	else
+ 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
  
-+#define MT_MIB_SCR1(_band)		MT_WF_MIB(_band, 0x004)
-+#define MT_MIB_TXDUR_EN			BIT(8)
-+#define MT_MIB_RXDUR_EN			BIT(9)
-+
- #define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x698)
- #define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(31, 16)
++	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
+ 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
  
-@@ -108,9 +112,9 @@
- #define MT_MIB_SDR34(_band)		MT_WF_MIB(_band, 0x090)
- #define MT_MIB_MU_BF_TX_CNT		GENMASK(15, 0)
- 
--#define MT_MIB_SDR36(_band)		MT_WF_MIB(_band, 0x098)
-+#define MT_MIB_SDR36(_band)		MT_WF_MIB(_band, 0x054)
- #define MT_MIB_SDR36_TXTIME_MASK	GENMASK(23, 0)
--#define MT_MIB_SDR37(_band)		MT_WF_MIB(_band, 0x09c)
-+#define MT_MIB_SDR37(_band)		MT_WF_MIB(_band, 0x058)
- #define MT_MIB_SDR37_RXTIME_MASK	GENMASK(23, 0)
- 
- #define MT_MIB_DR8(_band)		MT_WF_MIB(_band, 0x0c0)
+ 	/* We don't wait for the response of this command */
 -- 
 2.33.0
 
