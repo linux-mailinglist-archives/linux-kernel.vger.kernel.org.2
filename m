@@ -2,315 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C74451D9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCBB451D93
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349594AbhKPAba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:31:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
+        id S1345775AbhKPAbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbhKOT3C (ORCPT
+        with ESMTP id S1345731AbhKOT3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:29:02 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA79C06BCF2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:59:32 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id v64so49894618ybi.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:59:32 -0800 (PST)
+        Mon, 15 Nov 2021 14:29:11 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A54BC04647E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:00:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id r11so12548566edd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:00:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j9isATshRpNCp9M9I/oxCqB/tiXTLxAbh8WEspOg7HA=;
-        b=qtzEXtgjPMCcvYNyLawsdtSgDfbTOrXWIye07d/cOumHTbZQ/0YQ7IfvtQCEzWNrw7
-         ZgGvgzbIkSJmwNGdUmWAKWQGQiFf0V7yUVlpQyYU3cFffJ2yi4QWmRBlp94nrhCqbXUo
-         pbyNyRmu75Gy2dbSfYbcCeDACqy84MWea44WEoSdGfI8xT4k6Qzx24IjB5HHnT1HBPcN
-         mcuHhd1CXF2ZP/aS61+qnrHhEtnzjUKqVFQyirBIXaY5x5KwBb3B9+zRHCNXHIG81jMr
-         yHXSQL+6Gi6ZOX7+Jg5pQF/prN5kjebVxQ9pZPsMk01hkYAAzL/On8WkK/jhtAZ9ajvZ
-         jNuA==
+         :cc;
+        bh=iwLQHMmFmuP03jMUUSLt12XkSF61jo0RZ+1g/X4/n9M=;
+        b=NBjTki6BTMMgzxBFuWfZdS2zYmMKk0DpcLFBLGVfks4AiXDnAfMLo23STs70WZRP5Y
+         LuDqerTJfSMiYMX04ySgAZ4BMCttk8Vli/mr9cVJ5e/ZnRz6FiR5QfNBQMZuLqTx5WEA
+         iwkb3jppnLBpR2IPue/rqUcJQGtFpEB+WRy0XNTtTGB3/dGOOUxRKMC6/Ki/TxKxlEgt
+         BFQYEbe+ek87rWalVCm0ayMOvU/XJJsqXMzK4jUVixs+q0F/Qi+KdJt2T0d7nlREoErM
+         wi2RUT3JAFhlvdnYtLsfRU0stkvBmeJ/OP0/68Rvc7QgEEmPFTnAlmyhe6w5HrhIHHVw
+         Obxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j9isATshRpNCp9M9I/oxCqB/tiXTLxAbh8WEspOg7HA=;
-        b=FTh8/4aycDS/OprjBKxVlrHE9LGOzOxx/4kXoS/TxGjK3V7MJ6QHz1dw1IRC7KKM0f
-         G7yDkAOTvESQQgydz/ejnzRKYOlSZspCC/nwycdOBuZ47upffmAPhY1PXhgoG2dmGwAt
-         EwiLc0/h0X2s4jD91lZiRZbJdMsAxDfj6g3DPfuArQsfMJ2EkgD0OzljDQhFy96yqslk
-         U6C9yj7+lX5wRmpNzXNjnBI8PawHsdSihZkQeS1UBHf8QnrAY322FHEmcWVrozg+lw0Y
-         aBkJoMqHIQvRM2fv+tgg3bOL8t8HcrnGj340hieqboelVEuiXG+Wj5EV8P0cqJMHJAAQ
-         e9qw==
-X-Gm-Message-State: AOAM532vSho/jD8MzxrxtZGte/pla18k3Huspcjk162AIVJ1luEHwqJi
-        YkKbpcemoma6eY6inzPsedt1XeX5qOYrcELFximsXQ==
-X-Google-Smtp-Source: ABdhPJwORjkE+Oy2pssuHDx7dD8a047R6Yq50CV0Ct2mHGQfqJVDqJfkC62iPCNh9yCdfFkzRQjRxFHI4npCcZKI0EY=
-X-Received: by 2002:a25:6645:: with SMTP id z5mr1370689ybm.127.1637002771688;
- Mon, 15 Nov 2021 10:59:31 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=iwLQHMmFmuP03jMUUSLt12XkSF61jo0RZ+1g/X4/n9M=;
+        b=IljyU6hUV74VPq3RAcociofdTr9SQmCPGfwVn4Jc/wJbgpne+74aEYMo9XGRK1MdFb
+         tzoZhFmUDy2l76WnRKL9wBwdteKiUDkIo/jYOqcXl7ie36ZTTBmMXdnPT372iNrw9ico
+         4CqFBt4/ImeKTCe70n303s/GTyNsxq6apFIZV5VEYlin2reon0Txz0eMPW+i407ia4dn
+         LATZ7BnK9lTjXVu7z07GQoWvPIQPTIZbi8ELTaCkv484NSvmzDklPWwEtkx7goWuuwwV
+         AHeDPE7lQOEE+/K/3QYGNix2PHJ7mHa6NrfALySku1+CEIqYzjPsUIX8QYrFeUQDwrND
+         bG3g==
+X-Gm-Message-State: AOAM5313xPfSUqpIVRZaCYPVJKuLY98jY/ZKIQE++uKpX3f6gtirON7Q
+        ZI/YvFwBALUftrWiGDhrcuvy5Oq/aavUD+ouZlg=
+X-Google-Smtp-Source: ABdhPJwpVxDVTuDP13LzNiAc04YtdxIig0Ri6JJdLgLNowjyvRFTNYpN1R+lp+3cR29YrKZdh5ZJ826u4VyrXCGvvd0=
+X-Received: by 2002:a17:907:1dd5:: with SMTP id og21mr1569907ejc.233.1637002834857;
+ Mon, 15 Nov 2021 11:00:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20211019215511.3771969-1-surenb@google.com> <20211019215511.3771969-2-surenb@google.com>
- <89664270-4B9F-45E0-AC0B-8A185ED1F531@google.com> <CAJuCfpE-fR+M_funJ4Kd+gMK9q0QHyOUD7YK0ES6En4y7E1tjg@mail.gmail.com>
- <CAJuCfpHfnG8b4_RkkGhu+HveF-K_7o9UVGdToVuUCf-qD05Q4Q@mail.gmail.com>
-In-Reply-To: <CAJuCfpHfnG8b4_RkkGhu+HveF-K_7o9UVGdToVuUCf-qD05Q4Q@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 15 Nov 2021 10:59:20 -0800
-Message-ID: <CAJuCfpEJuVyRfjEE-NTsVkdCZyd6P09gHu7c+tbZcipk+73rLA@mail.gmail.com>
-Subject: Re: [PATCH v11 2/3] mm: add a field to store names for private
- anonymous memory
-To:     akpm@linux-foundation.org
-Cc:     Alexey Alexandrov <aalexand@google.com>, ccross@google.com,
-        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
-        keescook@chromium.org, willy@infradead.org,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
-        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
-        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
-        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
-        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
-        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
-        legion@kernel.org, eb@emlix.com, gorcunov@gmail.com, pavel@ucw.cz,
-        songmuchun@bytedance.com, viresh.kumar@linaro.org,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com
+References: <20211114053221.315753-1-shy828301@gmail.com> <YZErCLzSixIwTr6C@casper.infradead.org>
+ <CAHbLzkoMycvjVO_438JKB-Z7vW3UNmDKxaA3Hpj-zYX7MKkc0g@mail.gmail.com>
+In-Reply-To: <CAHbLzkoMycvjVO_438JKB-Z7vW3UNmDKxaA3Hpj-zYX7MKkc0g@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 15 Nov 2021 11:00:22 -0800
+Message-ID: <CAHbLzkqi84Et_LGuLjv3E73zc-sFULw23vBoAUHsY+s5TW0ytg@mail.gmail.com>
+Subject: Re: [UPDATE PATCH] mm: shmem: don't truncate page if memory failure happens
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>,
+        Ajay Garg <ajaygargnsit@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 3:08 PM Suren Baghdasaryan <surenb@google.com> wrot=
-e:
+On Sun, Nov 14, 2021 at 8:54 AM Yang Shi <shy828301@gmail.com> wrote:
 >
-> On Wed, Oct 27, 2021 at 1:01 PM Suren Baghdasaryan <surenb@google.com> wr=
-ote:
+> On Sun, Nov 14, 2021 at 7:28 AM Matthew Wilcox <willy@infradead.org> wrote:
 > >
-> > On Wed, Oct 27, 2021 at 11:35 AM Alexey Alexandrov <aalexand@google.com=
-> wrote:
+> > On Sat, Nov 13, 2021 at 09:32:21PM -0800, Yang Shi wrote:
+> > > @@ -2466,7 +2467,18 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+> > >                       return -EPERM;
+> > >       }
 > > >
-> > > > On Oct 19, 2021, at 2:55 PM, Suren Baghdasaryan <surenb@google.com>=
- wrote:
-> > > >
-> > > > From: Colin Cross <ccross@google.com>
-> > > >
-> > > > In many userspace applications, and especially in VM based applicat=
-ions
-> > > > like Android uses heavily, there are multiple different allocators =
-in use.
-> > > > At a minimum there is libc malloc and the stack, and in many cases =
-there
-> > > > are libc malloc, the stack, direct syscalls to mmap anonymous memor=
-y, and
-> > > > multiple VM heaps (one for small objects, one for big objects, etc.=
-).
-> > > > Each of these layers usually has its own tools to inspect its usage=
-;
-> > > > malloc by compiling a debug version, the VM through heap inspection=
- tools,
-> > > > and for direct syscalls there is usually no way to track them.
-> > > >
-> > > > On Android we heavily use a set of tools that use an extended versi=
-on of
-> > > > the logic covered in Documentation/vm/pagemap.txt to walk all pages=
- mapped
-> > > > in userspace and slice their usage by process, shared (COW) vs.  un=
-ique
-> > > > mappings, backing, etc.  This can account for real physical memory =
-usage
-> > > > even in cases like fork without exec (which Android uses heavily to=
- share
-> > > > as many private COW pages as possible between processes), Kernel Sa=
-mePage
-> > > > Merging, and clean zero pages.  It produces a measurement of the pa=
-ges
-> > > > that only exist in that process (USS, for unique), and a measuremen=
-t of
-> > > > the physical memory usage of that process with the cost of shared p=
-ages
-> > > > being evenly split between processes that share them (PSS).
-> > > >
-> > > > If all anonymous memory is indistinguishable then figuring out the =
-real
-> > > > physical memory usage (PSS) of each heap requires either a pagemap =
-walking
-> > > > tool that can understand the heap debugging of every layer, or for =
-every
-> > > > layer's heap debugging tools to implement the pagemap walking logic=
-, in
-> > > > which case it is hard to get a consistent view of memory across the=
- whole
-> > > > system.
-> > > >
-> > > > Tracking the information in userspace leads to all sorts of problem=
-s.
-> > > > It either needs to be stored inside the process, which means every
-> > > > process has to have an API to export its current heap information u=
-pon
-> > > > request, or it has to be stored externally in a filesystem that
-> > > > somebody needs to clean up on crashes.  It needs to be readable whi=
-le
-> > > > the process is still running, so it has to have some sort of
-> > > > synchronization with every layer of userspace.  Efficiently trackin=
-g
-> > > > the ranges requires reimplementing something like the kernel vma
-> > > > trees, and linking to it from every layer of userspace.  It require=
-s
-> > > > more memory, more syscalls, more runtime cost, and more complexity =
-to
-> > > > separately track regions that the kernel is already tracking.
-> > > >
-> > > > This patch adds a field to /proc/pid/maps and /proc/pid/smaps to sh=
-ow a
-> > > > userspace-provided name for anonymous vmas.  The names of named ano=
-nymous
-> > > > vmas are shown in /proc/pid/maps and /proc/pid/smaps as [anon:<name=
->].
-> > > >
-> > > > Userspace can set the name for a region of memory by calling
-> > > > prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned long)=
-name);
-> > > > Setting the name to NULL clears it. The name length limit is 80 byt=
-es
-> > > > including NUL-terminator and is checked to contain only printable a=
-scii
-> > > > characters (including space), except '[',']','\','$' and '`'. Ascii
-> > > > strings are being used to have a descriptive identifiers for vmas, =
-which
-> > > > can be understood by the users reading /proc/pid/maps or /proc/pid/=
-smaps.
-> > > > Names can be standardized for a given system and they can include s=
-ome
-> > > > variable parts such as the name of the allocator or a library, tid =
-of
-> > > > the thread using it, etc.
-> > > >
-> > > > The name is stored in a pointer in the shared union in vm_area_stru=
-ct
-> > > > that points to a null terminated string. Anonymous vmas with the sa=
-me
-> > > > name (equivalent strings) and are otherwise mergeable will be merge=
-d.
-> > > > The name pointers are not shared between vmas even if they contain =
-the
-> > > > same name. The name pointer is stored in a union with fields that a=
-re
-> > > > only used on file-backed mappings, so it does not increase memory u=
-sage.
-> > > >
-> > > > CONFIG_ANON_VMA_NAME kernel configuration is introduced to enable t=
-his
-> > > > feature. It keeps the feature disabled by default to prevent any
-> > > > additional memory overhead and to avoid confusing procfs parsers on
-> > > > systems which are not ready to support named anonymous vmas.
-> > > >
-> > > > The patch is based on the original patch developed by Colin Cross, =
-more
-> > > > specifically on its latest version [1] posted upstream by Sumit Sem=
-wal.
-> > > > It used a userspace pointer to store vma names. In that design, nam=
-e
-> > > > pointers could be shared between vmas. However during the last upst=
-reaming
-> > > > attempt, Kees Cook raised concerns [2] about this approach and sugg=
-ested
-> > > > to copy the name into kernel memory space, perform validity checks =
-[3]
-> > > > and store as a string referenced from vm_area_struct.
-> > > > One big concern is about fork() performance which would need to str=
-dup
-> > > > anonymous vma names. Dave Hansen suggested experimenting with worst=
--case
-> > > > scenario of forking a process with 64k vmas having longest possible=
- names
-> > > > [4]. I ran this experiment on an ARM64 Android device and recorded =
-a
-> > > > worst-case regression of almost 40% when forking such a process. Th=
-is
-> > > > regression is addressed in the followup patch which replaces the po=
-inter
-> > > > to a name with a refcounted structure that allows sharing the name =
-pointer
-> > > > between vmas of the same name. Instead of duplicating the string du=
-ring
-> > > > fork() or when splitting a vma it increments the refcount.
-> > > >
-> > > > [1] https://lore.kernel.org/linux-mm/20200901161459.11772-4-sumit.s=
-emwal@linaro.org/
-> > > > [2] https://lore.kernel.org/linux-mm/202009031031.D32EF57ED@keescoo=
-k/
-> > > > [3] https://lore.kernel.org/linux-mm/202009031022.3834F692@keescook=
-/
-> > > > [4] https://lore.kernel.org/linux-mm/5d0358ab-8c47-2f5f-8e43-23b89d=
-6a8e95@intel.com/
-> > > >
-> > > > Changes for prctl(2) manual page (in the options section):
-> > > >
-> > > > PR_SET_VMA
-> > > >       Sets an attribute specified in arg2 for virtual memory areas
-> > > >       starting from the address specified in arg3 and spanning the
-> > > >       size specified  in arg4. arg5 specifies the value of the attr=
-ibute
-> > > >       to be set. Note that assigning an attribute to a virtual memo=
-ry
-> > > >       area might prevent it from being merged with adjacent virtual
-> > > >       memory areas due to the difference in that attribute's value.
-> > > >
-> > > >       Currently, arg2 must be one of:
-> > > >
-> > > >       PR_SET_VMA_ANON_NAME
-> > > >               Set a name for anonymous virtual memory areas. arg5 s=
-hould
-> > > >               be a pointer to a null-terminated string containing t=
-he
-> > > >               name. The name length including null byte cannot exce=
-ed
-> > > >               80 bytes. If arg5 is NULL, the name of the appropriat=
-e
-> > > >               anonymous virtual memory areas will be reset. The nam=
-e
-> > > >               can contain only printable ascii characters (includin=
-g
-> > > >                space), except '[',']','\','$' and '`'.
-> > > >
-> > > >                This feature is available only if the kernel is buil=
-t with
-> > > >                the CONFIG_ANON_VMA_NAME option enabled.
-> > >
-> > > For what it=E2=80=99s worth, it=E2=80=99s definitely interesting to s=
-ee this going upstream.
-> > > In particular, we would use it for high-level grouping of the data in
-> > > production profiling when proper symbolization is not available:
-> > >
-> > > * JVM could associate a name with the memory regions it uses for the =
-JIT
-> > >   code so that Linux perf data are associated with a high level name =
-like
-> > >   "Java JIT" even if the proper Java JIT profiling is not enabled.
-> > > * Similar for other JIT engines like v8 - they could annotate the mem=
-ory
-> > >   regions they manage and use as well.
-> > > * Traditional memory allocators like tcmalloc can use this as well so
-> > >   that the associated name is used in data access profiling via Linux=
- perf.
+> > > -     return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > > +     ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > > +
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     if (*pagep && PageHWPoison(*pagep)) {
+> > > +             unlock_page(*pagep);
+> > > +             put_page(*pagep);
+> > > +             ret = -EIO;
 > >
-> > Hi Alexey,
-> > Thanks for providing your feedback! Nice to hear that this can be
-> > useful outside of Android.
+> > You definitely need to add:
+> >
+> >                 *pagep = NULL;
 >
-> Folks, it has been almost two weeks since I posted this v11 patchset.
-> Is there anything else I can do to advance it towards merging?
+> Thanks, will do it.
+>
+> >
+> > I'm not entirely convinced that you need the conditional on '*pagep'.
+> > If we returned 0, there had better be a page at pagep!
+>
+> For SGP_WRITE, yes, it has a page at pagep if ret is 0, but
+> shmem_getpage() could return 0 with NULL page at pagep for SGP_READ.
+>
+> In the other thread that Linus elaborated why this commit was reverted
+> and needed some rework, the discussion about not relying on
+> implementation detail for error handling taught me it may be not a
+> robust implementation to assume it is never NULL.
+>
+> We might refactor shmem_getpage() code in the future to make sure when
+> it returns success there must be a valid pagep so that we just need to
+> care about the return value for error handling.
+>
+> >
+> > I also think this would be clearer if written as:
+> >
+> >         if (PageHWPoison(*pagep)) {
+> >                 unlock_page(*pagep);
+> >                 put_page(*pagep);
+> >                 *pagep = NULL;
+> >                 return -EIO;
+> >         }
+> >
+> >         return 0;
 
-Hi Andrew,
-I haven't seen any feedback on my patchset for some time now. I think
-I addressed all the questions and comments (please correct me if I
-missed anything). Can it be accepted as is or is there something I
-should address further?
-From the feedback, I see that there are several interested parties in
-this patchset (albeit all from different teams at Google) but maybe
-when it's merged more users will start using it. I believe I've done
-everything I could to ensure no/minimal impact on the users who don't
-use this feature. Please advise.
-Thanks,
-Suren.
+By rethinking the code, I do prefer the above. "if (*pagep &&
+PageHWPoison(*pagep))"  does give extra protection from NULL pointer
+dereference for the future, but on the opposite side it seems
+confusing to *not* have error handling for NULL page. I bet it may
+incur more confusion than the protection for future, anyway it can't
+be NULL if ret == 0 and !SGP_READ.
+
+shmem_read_mapping_page_gfp() doesn't check page pointer either. IIUC
+only SGP_READ case has NULL page pointer checked in shmem code, so I'd
+like to follow the convention in this patch. If we think it is not
+good, we could refactor the code (for example, guarantee page have
+valid page as long as ret value is not error) in a perarate patch.
+
+> >
+> > instead of re-using ret.  Sometimes that can make the code flow clearer,
+> > but here, I don't think it does.
+>
+> Sure.
+>
+> >
+> > > @@ -4168,9 +4201,12 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+> > >       error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
+> > >                                 gfp, NULL, NULL, NULL);
+> > >       if (error)
+> > > -             page = ERR_PTR(error);
+> > > -     else
+> > > -             unlock_page(page);
+> > > +             return ERR_PTR(error);
+> > > +
+> > > +     unlock_page(page);
+> > > +     if (PageHWPoison(page))
+> > > +             return ERR_PTR(-EIO);
+> >
+> > Do we need to put_page() the page in this error case?
+>
+> Aha, yes. Sorry for missing this. I was fooled by shmem_pin_map() in
+> i915 driver which does put page, but I realized it just puts the valid
+> pages pinned *before* meeting error page by second look
+> .
+> >
