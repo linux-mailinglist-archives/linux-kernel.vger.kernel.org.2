@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612534520C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7511F451AB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245021AbhKPA41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:56:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S1346107AbhKOXmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343752AbhKOTV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC146339D;
-        Mon, 15 Nov 2021 18:45:36 +0000 (UTC)
+        id S1343864AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00A9563395;
+        Mon, 15 Nov 2021 18:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001936;
-        bh=FJgi0X6NyIL0I6Kq38gj1W8prcVyVQSF2ax9B3/W0Fo=;
+        s=korg; t=1637002049;
+        bh=OdPxKY2c7kAht3iiLXBnSutzuDh+aocw/PFPwt6d29o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TceV6O6p5BSJW6ug8ZG5c1ce+mXe18xwhQ98IgcPrqjOScin2TBhx7x+jjdjQk16b
-         +mXFtFaz54IOoI+4web9rHW7WNHLJGHFuc42+DckMDc9YmSmvB2BALm4KTr53nnE0O
-         2vCrTRcyS8AuhZEdOmHahatvSbxby0lkxEA2OV1k=
+        b=VUt7gOpgqy0g3R8stpB9sQYTKVZXFrBmqKDcV0HEGifIcJMrpA5opByaNdNK6PwCz
+         0EtiT1hx3H/xqZ/ry1i7iYbJhxZ+FLCgn0HOVCer7FyfCPuLaXVKh4tpbLYjrfSy+7
+         0GjI/lLsJhJTijK5WgztI9QQCK0mHmYFsyLgpGLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 376/917] libbpf: Fix skel_internal.h to set errno on loader retval < 0
-Date:   Mon, 15 Nov 2021 17:57:51 +0100
-Message-Id: <20211115165441.507146162@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Subject: [PATCH 5.15 377/917] media: em28xx: add missing em28xx_close_extension
+Date:   Mon, 15 Nov 2021 17:57:52 +0100
+Message-Id: <20211115165441.547470216@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,52 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit e68ac0082787f4e8ee6ae5b19076ec7709ce715b ]
+[ Upstream commit 2c98b8a3458df03abdc6945bbef67ef91d181938 ]
 
-When the loader indicates an internal error (result of a checked bpf
-system call), it returns the result in attr.test.retval. However, tests
-that rely on ASSERT_OK_PTR on NULL (returned from light skeleton) may
-miss that NULL denotes an error if errno is set to 0. This would result
-in skel pointer being NULL, while ASSERT_OK_PTR returning 1, leading to
-a SEGV on dereference of skel, because libbpf_get_error relies on the
-assumption that errno is always set in case of error for ptr == NULL.
+If em28xx dev has ->dev_next pointer, we need to delete ->dev_next list
+node from em28xx_extension_devlist on disconnect to avoid UAF bugs and
+corrupted list bugs, since driver frees this pointer on disconnect.
 
-In particular, this was observed for the ksyms_module test. When
-executed using `./test_progs -t ksyms`, prior tests manipulated errno
-and the test didn't crash when it failed at ksyms_module load, while
-using `./test_progs -t ksyms_module` crashed due to errno being
-untouched.
+Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
 
-Fixes: 67234743736a (libbpf: Generate loader program out of BPF ELF file.)
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210927145941.1383001-11-memxor@gmail.com
+Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/skel_internal.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/usb/em28xx/em28xx-cards.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-index b22b50c1b173e..9cf66702fa8dd 100644
---- a/tools/lib/bpf/skel_internal.h
-+++ b/tools/lib/bpf/skel_internal.h
-@@ -105,10 +105,12 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
- 	err = skel_sys_bpf(BPF_PROG_RUN, &attr, sizeof(attr));
- 	if (err < 0 || (int)attr.test.retval < 0) {
- 		opts->errstr = "failed to execute loader prog";
--		if (err < 0)
-+		if (err < 0) {
- 			err = -errno;
--		else
-+		} else {
- 			err = (int)attr.test.retval;
-+			errno = -err;
-+		}
- 		goto out;
- 	}
- 	err = 0;
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index c1e0dccb74088..948e22e29b42a 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -4139,8 +4139,11 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
+ 
+ 	em28xx_close_extension(dev);
+ 
+-	if (dev->dev_next)
++	if (dev->dev_next) {
++		em28xx_close_extension(dev->dev_next);
+ 		em28xx_release_resources(dev->dev_next);
++	}
++
+ 	em28xx_release_resources(dev);
+ 
+ 	if (dev->dev_next) {
 -- 
 2.33.0
 
