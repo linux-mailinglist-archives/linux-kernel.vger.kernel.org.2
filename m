@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C7F450503
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94D645050F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhKONLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:11:44 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35959 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231539AbhKONLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:11:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="230894609"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="230894609"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 05:08:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="535501157"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 15 Nov 2021 05:08:05 -0800
-Received: from alobakin-mobl.ger.corp.intel.com (aglaza-mobl1.ger.corp.intel.com [10.213.5.121])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AFD82pd021961;
-        Mon, 15 Nov 2021 13:08:02 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH bpf] samples: bpf: fix build error due to -isystem removal
-Date:   Mon, 15 Nov 2021 14:07:41 +0100
-Message-Id: <20211115130741.3584-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
+        id S231633AbhKONNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhKONMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:12:43 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E104C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:09:47 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id d11so35411846ljg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zdNnu6u0t53RxSPdU4MDPOEl5NW5wFhi+3tVJwsouBE=;
+        b=AdlSGIXoBXq0VXgOWXENRxISfNEhM8HAmvts1hlgX2aW8p19gg4TWR8iIt27dsvmv1
+         Er40yU2EVPgsKue7HjKRPzcvCEAOuYUSYPQRd7hA06J3e13A1mkLA77EDajw9vHVT420
+         Lbp3x0tqpEh+8MBGtUYl/2+fVKsJM1+f+AKqTG6X7Kh0veEaJi77Iw0fl7cmv+hbpWsF
+         4j+O7DBKUFLat0Nxi8uwYiTs345Prp9Z/jgqtkOJyAyKfWa7I7unOeTjMa5rmjmc3Xwr
+         9Mt+CjQwmzF7FQsUxJSUVdME7aWf6slT3nqVKg54VhTbXds90COzK7cp9x7YBV5y9jx3
+         XScw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zdNnu6u0t53RxSPdU4MDPOEl5NW5wFhi+3tVJwsouBE=;
+        b=C5NHec+fdePRGswAaRNwyEua4G1X/OLjMwTjlWf0Mj/c9a9mEqOE63URfPlFrWIftK
+         BTTosK8mRZ/y/n+13vDwq1JquFonMz7zVphWyia4kBFzYVkjXuoEabhwkXOhPYwIZPtm
+         cE01tn9ryf/MfEnE/8N8775K9vTd6onbxFbIQWlq/TAw3a/i/RF9c2DYOIyJvMfxQxu4
+         aPc/daA4HUhujCTFoABO2HjD2kiCNjp7W6F/m4XEzCQDjBCFEiM3gO5gI8LatULcpNHu
+         1mBmUoLgVx3x9uVO6t2+u0eiH1nzK2zL4dcDowjjHBbyZqu8oJXRRbNSbju4HQFjcmcM
+         1z7A==
+X-Gm-Message-State: AOAM532v0GIX7nre+wS9wAtf0oz9jRDXJ77WTTlRA2YlomND4PqUG4A4
+        wlukrsbRF6+eo2hvmafe8t5YlHJmdFrQKAWHvpAhxA==
+X-Google-Smtp-Source: ABdhPJxdsC0uW2HE6zj+9SqQN+4ObrVjDxA5TLNECz/k4cRg87wjRG7GU625P/bUeyp/NjunxRKqIwie+Tr+AjkZQG4=
+X-Received: by 2002:a2e:80c3:: with SMTP id r3mr38617043ljg.4.1636981785962;
+ Mon, 15 Nov 2021 05:09:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-4-arnd@kernel.org>
+In-Reply-To: <20211115085403.360194-4-arnd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 15 Nov 2021 14:09:09 +0100
+Message-ID: <CAPDyKFovVgrDxJ5eFgvAzwJNTrYSzjtz7z9UCa3rHMsgkFqsxA@mail.gmail.com>
+Subject: Re: [PATCH 03/11] mmc: bcm2835: stop setting chan_config->slave_id
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since recent Kbuild updates we no longer include files from compiler
-directories. However, samples/bpf/hbm_kern.h hasn't been tuned for
-this (LLVM 13):
+On Mon, 15 Nov 2021 at 09:55, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The field is not interpreted by the DMA engine driver, as all the data
+> is passed from devicetree instead. Remove the assignment so the field
+> can eventually be deleted.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-  CLANG-bpf  samples/bpf/hbm_out_kern.o
-In file included from samples/bpf/hbm_out_kern.c:55:
-samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
-         ^~~~~~~~~~
-1 error generated.
-  CLANG-bpf  samples/bpf/hbm_edt_kern.o
-In file included from samples/bpf/hbm_edt_kern.c:53:
-samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
-         ^~~~~~~~~~
-1 error generated.
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-It is enough to just drop both stdbool.h and stddef.h from includes
-to fix those.
+Kind regards
+Uffe
 
-Fixes: 04e85bbf71c9 ("isystem: delete global -isystem compile option")
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
----
- samples/bpf/hbm_kern.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/samples/bpf/hbm_kern.h b/samples/bpf/hbm_kern.h
-index 722b3fadb467..1752a46a2b05 100644
---- a/samples/bpf/hbm_kern.h
-+++ b/samples/bpf/hbm_kern.h
-@@ -9,8 +9,6 @@
-  * Include file for sample Host Bandwidth Manager (HBM) BPF programs
-  */
- #define KBUILD_MODNAME "foo"
--#include <stddef.h>
--#include <stdbool.h>
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/if_ether.h>
- #include <uapi/linux/if_packet.h>
--- 
-2.33.1
-
+> ---
+>  drivers/mmc/host/bcm2835.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/bcm2835.c b/drivers/mmc/host/bcm2835.c
+> index 8c2361e66277..463b707d9e99 100644
+> --- a/drivers/mmc/host/bcm2835.c
+> +++ b/drivers/mmc/host/bcm2835.c
+> @@ -1293,14 +1293,12 @@ static int bcm2835_add_host(struct bcm2835_host *host)
+>
+>                 host->dma_cfg_tx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>                 host->dma_cfg_tx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -               host->dma_cfg_tx.slave_id = 13;         /* DREQ channel */
+>                 host->dma_cfg_tx.direction = DMA_MEM_TO_DEV;
+>                 host->dma_cfg_tx.src_addr = 0;
+>                 host->dma_cfg_tx.dst_addr = host->phys_addr + SDDATA;
+>
+>                 host->dma_cfg_rx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>                 host->dma_cfg_rx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -               host->dma_cfg_rx.slave_id = 13;         /* DREQ channel */
+>                 host->dma_cfg_rx.direction = DMA_DEV_TO_MEM;
+>                 host->dma_cfg_rx.src_addr = host->phys_addr + SDDATA;
+>                 host->dma_cfg_rx.dst_addr = 0;
+> --
+> 2.30.2
+>
