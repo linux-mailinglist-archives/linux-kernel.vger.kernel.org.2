@@ -2,148 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD71450490
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368E4450496
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhKOMl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 07:41:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37548 "EHLO mail.kernel.org"
+        id S231405AbhKOMoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 07:44:15 -0500
+Received: from smtp4.jd.com ([59.151.64.78]:2050 "EHLO smtp4.jd.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230170AbhKOMlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 07:41:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE1761B4B;
-        Mon, 15 Nov 2021 12:38:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636979905;
-        bh=0vPaiFLUq2SXWicOiHJ0dTL68j+HqvYqhdUUZpm4Lbg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I+1x2XZxjf0LcgW3lMmbiJPZ71Bi+3kqOGuAZRKXN1JfNBFrZaiB21OzI8/74f0h0
-         Qq9j3mNJNww5Ebh37UUU7T73Uy/xgxrT9Cch7mYImOv2H/bbOmofM9xkajEGTkGGUU
-         hGAI73KgAeiXM888w+zysyYQTZ4yYyjDXcXqXXwQJ8IyYB0pf/b0pqA/XCjqw9IpRl
-         yCWpvb6UA7WovNrxde2iEzHRITt42AWtZE7nvXGbJMW3vN4eAR3DyqEs1DZrNZzLk2
-         tuMyHLag1K86+X0psZqBhLcvq1czh8i8zV/S46+iyDlDN0sbFnwCD3e9XH7d1GqYQT
-         IxYpNW3g9oKFg==
-Received: by mail-wm1-f41.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso15686264wmc.2;
-        Mon, 15 Nov 2021 04:38:25 -0800 (PST)
-X-Gm-Message-State: AOAM531TynSq29gOG8Yx2rvTe95pr5hI6jMuD2bTYFDKmBoXEexgKA2Y
-        3MbVHo8r39mS3vN+vOFnFD3yBU9BpiR7cxPhag0=
-X-Google-Smtp-Source: ABdhPJwFTprJJd11s9duELVend6oLQx+lemeU4w9vOaJiXxZUrLq0sghW72KOFAqYJMNV8KCFht4GWVIPZFIhNgyYas=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr58047076wmi.173.1636979903584;
- Mon, 15 Nov 2021 04:38:23 -0800 (PST)
+        id S230306AbhKOMoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 07:44:06 -0500
+Received: from JDCloudMail06.360buyAD.local (172.31.68.39) by
+ JDCloudMail07.360buyAD.local (172.31.68.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 15 Nov 2021 20:41:00 +0800
+Received: from JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913]) by
+ JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913%5]) with mapi id
+ 15.01.2375.007; Mon, 15 Nov 2021 20:41:00 +0800
+From:   =?gb2312?B?u8bA1g==?= <huangle1@jd.com>
+To:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
+ vcpu_load_eoi_exitmap()
+Thread-Topic: Re: [PATCH] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
+ vcpu_load_eoi_exitmap()
+Thread-Index: AQHX2h3F2UztZsEppUOwyzlbNRwZtQ==
+Date:   Mon, 15 Nov 2021 12:41:00 +0000
+Message-ID: <567b276444f841519e42c91f43f5acd7@jd.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.31.14.18]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-9-arnd@kernel.org>
- <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com> <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
- <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
-In-Reply-To: <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 15 Nov 2021 13:38:07 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
-Message-ID: <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
-Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 12:49 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Mon, Nov 15, 2021 at 11:21:30AM +0100, Arnd Bergmann wrote:
-> > On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart wrote:
-> > > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
-> > > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
-> > > >       spin_lock_irqsave(&chan->lock, flags);
-> > > >
-> > > >       /*
-> > > > -      * Abuse the slave_id to indicate that the channel is part of a video
-> > > > -      * group.
-> > > > +      * Abuse the peripheral_config to indicate that the channel is part
-> > >
-> > > Is it still an abuse, or is this now the right way to pass custom data
-> > > to the DMA engine driver ?
-> >
-> > It doesn't make the driver any more portable, but it's now being
-> > more explicit about it. As far as I can tell, this is the best way
-> > to pass data that cannot be expressed through the regular interfaces
-> > in DT and the dmaengine API.
-> >
-> > Ideally there would be a generic way to pass this flag, but I couldn't
-> > figure out what this is actually doing, or whether there is a better
-> > way. Maybe Vinod has an idea.
->
-> I don't think we need a generic API in this case. The DMA engine is
-> specific to the display device, I don't foresee a need to mix-n-match.
-
-
-Right. I wonder if there is even a point in using the dmaengine API
-in that case, I think for other single-purpose drivers we tend to just
-integrate the functionality in the client driver. No point changing this
-now of course, but it does feel odd.
-
-From my earlier reading of the driver, my impression was that this
-is just a memory-to-memory device, so it could be used that way
-as well, but does need a flag when working on the video memory.
-I couldn't quite make sense of that though.
-
-> >         /*
-> >          * Use the peripheral_config to indicate that the channel is part
-> >          * of a video group. This requires matching use of the custom
-> >          * structure in each driver.
-> >          */
-> >         pconfig = config->peripheral_config;
-> >         if (WARN_ON(config->peripheral_size != 0 &&
-> >                     config->peripheral_size != sizeof(*pconfig)))
-> >                 return -EINVAL;
->
-> How about
->
->         if (WARN_ON(config->peripheral_config &&
->                     config->peripheral_size != sizeof(*pconfig)))
->
-> >
-> >         spin_lock_irqsave(&chan->lock, flags);
-> >         if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
-> >             config->peripheral_size == sizeof(*pconfig))
->
-> And here you can test pconfig != NULL.
-
-Good idea. Changed now, using 'if (pconfig)' without the '!= NULL'
-in both expressions.
-
-        Arnd
+PiC7xsDWIDxodWFuZ2xlMUBqZC5jb20+IHdyaXRlczoNCj4gDQo+ID4gSW4gdmNwdV9sb2FkX2Vv
+aV9leGl0bWFwKCksIGN1cnJlbnRseSB0aGUgZW9pX2V4aXRfYml0bWFwWzRdIGFycmF5IGlzDQo+
+ID4gaW5pdGlhbGl6ZWQgb25seSB3aGVuIEh5cGVyLVYgY29udGV4dCBpcyBhdmFpbGFibGUsIGlu
+IG90aGVyIHBhdGggaXQgaXMNCj4gPiBqdXN0IHBhc3NlZCB0byBrdm1feDg2X29wcy5sb2FkX2Vv
+aV9leGl0bWFwKCkgZGlyZWN0bHkgZnJvbSBvbiB0aGUgc3RhY2ssDQo+ID4gd2hpY2ggd291bGQg
+Y2F1c2UgdW5leHBlY3RlZCBpbnRlcnJ1cHQgZGVsaXZlcnkvaGFuZGxpbmcgaXNzdWVzLCBlLmcu
+IGFuDQo+ID4gKm9sZCogbGludXgga2VybmVsIHRoYXQgcmVsaWVzIG9uIFBJVCB0byBkbyBjbG9j
+ayBjYWxpYnJhdGlvbiBvbiBLVk0gbWlnaHQNCj4gPiByYW5kb21seSBmYWlsIHRvIGJvb3QuDQo+
+ID4NCj4gPiBGaXggaXQgYnkgcGFzc2luZyBpb2FwaWNfaGFuZGxlZF92ZWN0b3JzIHRvIGxvYWRf
+ZW9pX2V4aXRtYXAoKSB3aGVuIEh5cGVyLVYNCj4gPiBjb250ZXh0IGlzIG5vdCBhdmFpbGFibGUu
+DQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBIdWFuZyBMZSA8aHVhbmdsZTFAamQuY29tPg0KPiAN
+Cj4gRml4ZXM6IGYyYmMxNGI2OWMzOCAoIktWTTogeDg2OiBoeXBlci12OiBQcmVwYXJlIHRvIG1l
+ZXQgdW5hbGxvY2F0ZWQgSHlwZXItViBjb250ZXh0IikNCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5l
+bC5vcmcNCg0KQ29tbWl0IGYyYmMxNGI2OWMzOCBpcyBub3QgaW4gc3RhYmxlIHRyZWUgSSBndWVz
+cywgaXQgd2FzIG1lcmdlZCBpbiBmcm9tIDUuMTIsDQpkbyB3ZSBzdGlsbCBuZWVkIENjIHRoaXMg
+cGF0Y2ggdG8gc3RhYmxlIG1haW50YWluZXJzPw0KDQo+IA0KPiA+IC0tLQ0KPiA+IGRpZmYgLS1n
+aXQgYS9hcmNoL3g4Ni9rdm0veDg2LmMgYi9hcmNoL3g4Ni9rdm0veDg2LmMNCj4gPiBpbmRleCBk
+YzdlYjVmZGRmZDMuLjA2OTk4MzI1MDRjOSAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL3g4Ni9rdm0v
+eDg2LmMNCj4gPiArKysgYi9hcmNoL3g4Ni9rdm0veDg2LmMNCj4gPiBAQCAtOTU0NywxMSArOTU0
+NywxNCBAQCBzdGF0aWMgdm9pZCB2Y3B1X2xvYWRfZW9pX2V4aXRtYXAoc3RydWN0IGt2bV92Y3B1
+ICp2Y3B1KQ0KPiA+ICAgICAgICBpZiAoIWt2bV9hcGljX2h3X2VuYWJsZWQodmNwdS0+YXJjaC5h
+cGljKSkNCj4gPiAgICAgICAgICAgICAgICByZXR1cm47DQo+ID4gDQo+ID4gLSAgICAgaWYgKHRv
+X2h2X3ZjcHUodmNwdSkpDQo+ID4gLSAgICAgICAgICAgICBiaXRtYXBfb3IoKHVsb25nICopZW9p
+X2V4aXRfYml0bWFwLA0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgIHZjcHUtPmFyY2guaW9h
+cGljX2hhbmRsZWRfdmVjdG9ycywNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICB0b19odl9z
+eW5pYyh2Y3B1KS0+dmVjX2JpdG1hcCwgMjU2KTsNCj4gPiArICAgICBpZiAoIXRvX2h2X3ZjcHUo
+dmNwdSkpIHsNCj4gPiArICAgICAgICAgICAgIHN0YXRpY19jYWxsKGt2bV94ODZfbG9hZF9lb2lf
+ZXhpdG1hcCkoDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgIHZjcHUsICh1NjQgKil2Y3B1LT5h
+cmNoLmlvYXBpY19oYW5kbGVkX3ZlY3RvcnMpOw0KPiA+ICsgICAgICAgICAgICAgcmV0dXJuOw0K
+PiA+ICsgICAgIH0NCj4gPiANCj4gPiArICAgICBiaXRtYXBfb3IoKHVsb25nICopZW9pX2V4aXRf
+Yml0bWFwLCB2Y3B1LT5hcmNoLmlvYXBpY19oYW5kbGVkX3ZlY3RvcnMsDQo+ID4gKyAgICAgICAg
+ICAgICAgIHRvX2h2X3N5bmljKHZjcHUpLT52ZWNfYml0bWFwLCAyNTYpOw0KPiA+ICAgICAgICBz
+dGF0aWNfY2FsbChrdm1feDg2X2xvYWRfZW9pX2V4aXRtYXApKHZjcHUsIGVvaV9leGl0X2JpdG1h
+cCk7DQo+ID4gIH0NCj4gPiANCj4gDQo+IFJldmlld2VkLWJ5OiBWaXRhbHkgS3V6bmV0c292IDx2
+a3V6bmV0c0ByZWRoYXQuY29tPg0KPiANCj4gTXkgcGVyc29uYWwgcHJlZmVyZW5jZSwgaG93ZXZl
+ciwgd291bGQgYmUgdG8ga2VlcCAnaWYNCj4gKHRvX2h2X3ZjcHUodmNwdSkpJyBjaGVjayBhbmQg
+bm90IGludmVydCBpdCwgaS5lLjoNCj4gDQo+ICAgICAgICAgaWYgKHRvX2h2X3ZjcHUodmNwdSkp
+IHsNCj4gICAgICAgICAgICAgICAgIGJpdG1hcF9vcigodWxvbmcgKillb2lfZXhpdF9iaXRtYXAs
+DQo+ICAgICAgICAgICAgICAgICAgdmNwdS0+YXJjaC5pb2FwaWNfaGFuZGxlZF92ZWN0b3JzLA0K
+PiAgICAgICAgICAgICAgICAgIHRvX2h2X3N5bmljKHZjcHUpLT52ZWNfYml0bWFwLCAyNTYpOw0K
+PiAgICAgICAgICAgICAgICAgc3RhdGljX2NhbGwoLi4uKSh2Y3B1LCBlb2lfZXhpdF9iaXRtYXAp
+DQo+ICAgICAgICAgICAgICAgICByZXR1cm47DQo+ICAgICAgICAgfQ0KPiANCj4gICAgICAgICBz
+dGF0aWNfY2FsbCguLi4pKHZjcHUsICh1NjQgKil2Y3B1LT5hcmNoLmlvYXBpY19oYW5kbGVkX3Zl
+Y3RvcnMpOw0KPiANCj4gdG8gc2xpZ2h0bHkgcmVkdWNlIHRoZSBjb2RlIGNodXJuIGJ1dCBpdCBk
+b2Vzbid0IG1hdHRlciBtdWNoLg0KDQpHb3QgaXQuICBXaWxsIHNlbmQgYW4gdXBkYXRlZCBvbmUg
+bGF0ZXIuICBUaGFua3MgZm9yIHN1Z2dlc3Rpb24hDQoNCj4gDQo+IFRoYW5rcyENCj4gDQo+IC0t
+DQo+IFZpdGFseQ0K
