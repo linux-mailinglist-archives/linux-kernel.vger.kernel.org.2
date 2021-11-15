@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077F6451BB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ACB451F84
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351425AbhKPAGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:06:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1355620AbhKPAmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345046AbhKOT0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6716325E;
-        Mon, 15 Nov 2021 19:09:27 +0000 (UTC)
+        id S1345061AbhKOT0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:26:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0289F60EE4;
+        Mon, 15 Nov 2021 19:09:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003367;
-        bh=F+y8T0eTPE35YwxE2gPKn3zUcJvUy+Q85fQsxNfOlGQ=;
+        s=korg; t=1637003370;
+        bh=jEsPN6D0hFl/Ft7hVzroBX7+X1zeddaqnRqUwQ8bxt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0mcY2/3B2OVR0EDjKGpunpICYbkG9YsSLhJMlCVP9iH7B4DVTyVnl8GsE7faFjwlk
-         UTDoEVGFqn0kBHAMPH4dt3JI3afVIXAcQ2QRY97WxQo5/qz4sex0i2CI8znUhZnvwC
-         YUATYRSys654gwSFSksKCPMsxHzVdUaINIrc4k6w=
+        b=bzO63pA926uat/asZyROZrFevyytguWFqqdtbrsTVXCBKTInbIs4KPCPO090nvrvR
+         vm33GRYj7hqRzq3titROkJJhTzry/RD2MSt25sdueyoQwS8Hlb1Hv0C8qlxHuEtbUk
+         oKmQTFSIQBMsCvQ11Bjbdewc85p/aFfyjyAExFSI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, Russell Currey <ruscur@russell.cc>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.15 908/917] powerpc/powernv/prd: Unregister OPAL_MSG_PRD2 notifier during module unload
-Date:   Mon, 15 Nov 2021 18:06:43 +0100
-Message-Id: <20211115165459.821890287@linuxfoundation.org>
+Subject: [PATCH 5.15 909/917] powerpc/security: Use a mutex for interrupt exit code patching
+Date:   Mon, 15 Nov 2021 18:06:44 +0100
+Message-Id: <20211115165459.863700428@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,106 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+From: Russell Currey <ruscur@russell.cc>
 
-commit 52862ab33c5d97490f3fa345d6529829e6d6637b upstream.
+commit 3c12b4df8d5e026345a19886ae375b3ebc33c0b6 upstream.
 
-Commit 587164cd, introduced new opal message type (OPAL_MSG_PRD2) and
-added opal notifier. But I missed to unregister the notifier during
-module unload path. This results in below call trace if you try to
-unload and load opal_prd module.
+The mitigation-patching.sh script in the powerpc selftests toggles
+all mitigations on and off simultaneously, revealing that rfi_flush
+and stf_barrier cannot safely operate at the same time due to races
+in updating the static key.
 
-Also add new notifier_block for OPAL_MSG_PRD2 message.
+On some systems, the static key code throws a warning and the kernel
+remains functional.  On others, the kernel will hang or crash.
 
-Sample calltrace (modprobe -r opal_prd; modprobe opal_prd)
-  BUG: Unable to handle kernel data access on read at 0xc0080000192200e0
-  Faulting instruction address: 0xc00000000018d1cc
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
-  CPU: 66 PID: 7446 Comm: modprobe Kdump: loaded Tainted: G            E     5.14.0prd #759
-  NIP:  c00000000018d1cc LR: c00000000018d2a8 CTR: c0000000000cde10
-  REGS: c0000003c4c0f0a0 TRAP: 0300   Tainted: G            E      (5.14.0prd)
-  MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 24224824  XER: 20040000
-  CFAR: c00000000018d2a4 DAR: c0080000192200e0 DSISR: 40000000 IRQMASK: 1
-  ...
-  NIP notifier_chain_register+0x2c/0xc0
-  LR  atomic_notifier_chain_register+0x48/0x80
-  Call Trace:
-    0xc000000002090610 (unreliable)
-    atomic_notifier_chain_register+0x58/0x80
-    opal_message_notifier_register+0x7c/0x1e0
-    opal_prd_probe+0x84/0x150 [opal_prd]
-    platform_probe+0x78/0x130
-    really_probe+0x110/0x5d0
-    __driver_probe_device+0x17c/0x230
-    driver_probe_device+0x60/0x130
-    __driver_attach+0xfc/0x220
-    bus_for_each_dev+0xa8/0x130
-    driver_attach+0x34/0x50
-    bus_add_driver+0x1b0/0x300
-    driver_register+0x98/0x1a0
-    __platform_driver_register+0x38/0x50
-    opal_prd_driver_init+0x34/0x50 [opal_prd]
-    do_one_initcall+0x60/0x2d0
-    do_init_module+0x7c/0x320
-    load_module+0x3394/0x3650
-    __do_sys_finit_module+0xd4/0x160
-    system_call_exception+0x140/0x290
-    system_call_common+0xf4/0x258
+Fix this by slapping on a mutex.
 
-Fixes: 587164cd593c ("powerpc/powernv: Add new opal message type")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+Fixes: 13799748b957 ("powerpc/64: use interrupt restart table to speed up return from interrupt")
+Cc: stable@vger.kernel.org # v5.14+
+Signed-off-by: Russell Currey <ruscur@russell.cc>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211028165716.41300-1-hegdevasant@linux.vnet.ibm.com
+Link: https://lore.kernel.org/r/20211027072410.40950-1-ruscur@russell.cc
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/platforms/powernv/opal-prd.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/powerpc/lib/feature-fixups.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/arch/powerpc/platforms/powernv/opal-prd.c
-+++ b/arch/powerpc/platforms/powernv/opal-prd.c
-@@ -369,6 +369,12 @@ static struct notifier_block opal_prd_ev
- 	.priority	= 0,
- };
+--- a/arch/powerpc/lib/feature-fixups.c
++++ b/arch/powerpc/lib/feature-fixups.c
+@@ -228,6 +228,7 @@ static void do_stf_exit_barrier_fixups(e
  
-+static struct notifier_block opal_prd_event_nb2 = {
-+	.notifier_call	= opal_prd_msg_notifier,
-+	.next		= NULL,
-+	.priority	= 0,
-+};
+ static bool stf_exit_reentrant = false;
+ static bool rfi_exit_reentrant = false;
++static DEFINE_MUTEX(exit_flush_lock);
+ 
+ static int __do_stf_barrier_fixups(void *data)
+ {
+@@ -253,6 +254,9 @@ void do_stf_barrier_fixups(enum stf_barr
+ 	 * low level interrupt exit code before patching. After the patching,
+ 	 * if allowed, then flip the branch to allow fast exits.
+ 	 */
 +
- static int opal_prd_probe(struct platform_device *pdev)
- {
- 	int rc;
-@@ -390,9 +396,10 @@ static int opal_prd_probe(struct platfor
- 		return rc;
- 	}
++	// Prevent static key update races with do_rfi_flush_fixups()
++	mutex_lock(&exit_flush_lock);
+ 	static_branch_enable(&interrupt_exit_not_reentrant);
  
--	rc = opal_message_notifier_register(OPAL_MSG_PRD2, &opal_prd_event_nb);
-+	rc = opal_message_notifier_register(OPAL_MSG_PRD2, &opal_prd_event_nb2);
- 	if (rc) {
- 		pr_err("Couldn't register PRD2 event notifier\n");
-+		opal_message_notifier_unregister(OPAL_MSG_PRD, &opal_prd_event_nb);
- 		return rc;
- 	}
+ 	stop_machine(__do_stf_barrier_fixups, &types, NULL);
+@@ -264,6 +268,8 @@ void do_stf_barrier_fixups(enum stf_barr
  
-@@ -401,6 +408,8 @@ static int opal_prd_probe(struct platfor
- 		pr_err("failed to register miscdev\n");
- 		opal_message_notifier_unregister(OPAL_MSG_PRD,
- 				&opal_prd_event_nb);
-+		opal_message_notifier_unregister(OPAL_MSG_PRD2,
-+				&opal_prd_event_nb2);
- 		return rc;
- 	}
- 
-@@ -411,6 +420,7 @@ static int opal_prd_remove(struct platfo
- {
- 	misc_deregister(&opal_prd_dev);
- 	opal_message_notifier_unregister(OPAL_MSG_PRD, &opal_prd_event_nb);
-+	opal_message_notifier_unregister(OPAL_MSG_PRD2, &opal_prd_event_nb2);
- 	return 0;
+ 	if (stf_exit_reentrant && rfi_exit_reentrant)
+ 		static_branch_disable(&interrupt_exit_not_reentrant);
++
++	mutex_unlock(&exit_flush_lock);
  }
  
+ void do_uaccess_flush_fixups(enum l1d_flush_type types)
+@@ -486,6 +492,9 @@ void do_rfi_flush_fixups(enum l1d_flush_
+ 	 * without stop_machine, so this could be achieved with a broadcast
+ 	 * IPI instead, but this matches the stf sequence.
+ 	 */
++
++	// Prevent static key update races with do_stf_barrier_fixups()
++	mutex_lock(&exit_flush_lock);
+ 	static_branch_enable(&interrupt_exit_not_reentrant);
+ 
+ 	stop_machine(__do_rfi_flush_fixups, &types, NULL);
+@@ -497,6 +506,8 @@ void do_rfi_flush_fixups(enum l1d_flush_
+ 
+ 	if (stf_exit_reentrant && rfi_exit_reentrant)
+ 		static_branch_disable(&interrupt_exit_not_reentrant);
++
++	mutex_unlock(&exit_flush_lock);
+ }
+ 
+ void do_barrier_nospec_fixups_range(bool enable, void *fixup_start, void *fixup_end)
 
 
