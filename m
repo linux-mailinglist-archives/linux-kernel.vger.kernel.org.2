@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EE2451EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F267451989
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344582AbhKPAiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        id S1345330AbhKOXXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:23:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344670AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C5976336E;
-        Mon, 15 Nov 2021 19:02:09 +0000 (UTC)
+        id S244897AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EB360EE0;
+        Mon, 15 Nov 2021 18:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002929;
-        bh=oj9wsu8WixJDmeKZcHLfqpEOC4hxRkUi0z9XcXzUnXQ=;
+        s=korg; t=1637000707;
+        bh=WLXO+JRbrxT8OzdRxLRdbDEoBDy83w1OjaaSVYZmB18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p6vTgeeJ4FGy/tRwQ2HQVairsv0BEJfKfUIM2Jr+rj4RGEpmOdRmtKdKqvjJooM+s
-         P+xY0sA0EZIVfb+C0SRbhOg4JDYruwHoGMqWlPmGK49eSHy1DXNWU/D340HSf0Qv+7
-         sEGftKK8GCEgjwdPRv/ukPfW/iaUuUUYhSGvlg3M=
+        b=xj2WHfCXuVkYBdvc5jo6Ky2mwY1i8kCZhzmdrs/6yhfH1s/hypB9ZUOji9aKy1s5R
+         L7fpPRPA8/3fjf1qBszNhVR9ON7jOnYToK5LsE7BzIUlT0OB7ZvqMzg3qcLQ1znnxW
+         dnLo1BDSa6NxWeN67kvTRtfa3WtyqEiSxQ2MIzWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 749/917] scsi: qla2xxx: Turn off target reset during issue_lip
-Date:   Mon, 15 Nov 2021 18:04:04 +0100
-Message-Id: <20211115165454.313195638@linuxfoundation.org>
+Subject: [PATCH 5.14 762/849] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
+Date:   Mon, 15 Nov 2021 18:04:05 +0100
+Message-Id: <20211115165446.028623016@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
+[ Upstream commit c7c386fbc20262c1d911c615c65db6a58667d92c ]
 
-When user uses issue_lip to do link bounce, driver sends additional target
-reset to remote device before resetting the link. The target reset would
-affect other paths with active I/Os. This patch will remove the unnecessary
-target reset.
+gcc warns about undefined behavior the vmalloc code when building
+with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
+__phys_to_pte_val() is evaluated twice:
 
-Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
-Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+mm/vmalloc.c: In function 'vmap_pfn_apply':
+mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
+ 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+      |                                                 ~~~~~~~~~^~
+arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
+   25 | #define __pte(x)        ((pte_t) { (x) } )
+      |                                     ^
+arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
+   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+      |               ^~~~~~~~~~~~~~~~~
+mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
+ 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+      |                              ^~~~~~~
+
+I have no idea why this never showed up earlier, but the safest
+workaround appears to be changing those macros into inline functions
+so the arguments get evaluated only once.
+
+Cc: Matthew Wilcox <willy@infradead.org>
+Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211105075414.2553155-1-arnd@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_gbl.h |  2 --
- drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
- drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
- 3 files changed, 2 insertions(+), 50 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 1c3f055d41b8e..0a43ce9317db2 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -171,7 +171,6 @@ extern int ql2xasynctmfenable;
- extern int ql2xgffidenable;
- extern int ql2xenabledif;
- extern int ql2xenablehba_err_chk;
--extern int ql2xtargetreset;
- extern int ql2xdontresethba;
- extern uint64_t ql2xmaxlun;
- extern int ql2xmdcapmask;
-@@ -816,7 +815,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
- extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
- extern void qlafx00_timer_routine(scsi_qla_host_t *);
- extern int qlafx00_rescan_isp(scsi_qla_host_t *);
--extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
- 
- /* qla82xx related functions */
- 
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index 6e920da64863e..350b0c4346fb6 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -738,29 +738,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
- 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
- }
- 
--int
--qlafx00_loop_reset(scsi_qla_host_t *vha)
--{
--	int ret;
--	struct fc_port *fcport;
--	struct qla_hw_data *ha = vha->hw;
--
--	if (ql2xtargetreset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x803d,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--	return QLA_SUCCESS;
--}
--
- int
- qlafx00_iospace_config(struct qla_hw_data *ha)
- {
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index f800d940a720d..b5346d9066dc6 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -202,12 +202,6 @@ MODULE_PARM_DESC(ql2xdbwr,
- 		" 0 -- Regular doorbell.\n"
- 		" 1 -- CAMRAM doorbell (faster).\n");
- 
--int ql2xtargetreset = 1;
--module_param(ql2xtargetreset, int, S_IRUGO);
--MODULE_PARM_DESC(ql2xtargetreset,
--		 "Enable target reset."
--		 "Default is 1 - use hw defaults.");
--
- int ql2xgffidenable;
- module_param(ql2xgffidenable, int, S_IRUGO);
- MODULE_PARM_DESC(ql2xgffidenable,
-@@ -1695,27 +1689,10 @@ int
- qla2x00_loop_reset(scsi_qla_host_t *vha)
- {
- 	int ret;
--	struct fc_port *fcport;
- 	struct qla_hw_data *ha = vha->hw;
- 
--	if (IS_QLAFX00(ha)) {
--		return qlafx00_loop_reset(vha);
--	}
--
--	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x802c,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--
-+	if (IS_QLAFX00(ha))
-+		return QLA_SUCCESS;
- 
- 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
- 		atomic_set(&vha->loop_state, LOOP_DOWN);
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index f09bf5c028919..16e53d2515089 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -67,9 +67,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+  * page table entry, taking care of 52-bit addresses.
+  */
+ #ifdef CONFIG_ARM64_PA_BITS_52
+-#define __pte_to_phys(pte)	\
+-	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
+-#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
++static inline phys_addr_t __pte_to_phys(pte_t pte)
++{
++	return (pte_val(pte) & PTE_ADDR_LOW) |
++		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
++}
++static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
++{
++	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
++}
+ #else
+ #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
+ #define __phys_to_pte_val(phys)	(phys)
 -- 
 2.33.0
 
