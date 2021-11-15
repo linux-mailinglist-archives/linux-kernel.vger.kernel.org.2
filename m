@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFFB450E3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9848450E1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240817AbhKOSNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:13:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        id S240625AbhKOSLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:11:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238002AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BDC563287;
-        Mon, 15 Nov 2021 17:19:21 +0000 (UTC)
+        id S238020AbhKOR2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:28:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3648C6328F;
+        Mon, 15 Nov 2021 17:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996762;
-        bh=uTPUHA58jwXRLjNy5J65Bep7WD2scGMNdm90N367PMc=;
+        s=korg; t=1636996767;
+        bh=92s7hVoVYSpvg4TzQYzi8uBciFgVYJybxaS3mstSrb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xpa/KHXE6fvZV0JPwHePiByOz2qmr58VrCKiJPT05w/NI4kZhkWnUng6KsHujllXq
-         iUa61hXbYnABTRhAROar944/4OVzJ6O6S/1OY0S8/nmVIqs3oarCuOAsy/YzSZGZ1l
-         oLQDj64ojvtGLyAsghVEvMEhkwVJIl9dhP2EDBzw=
+        b=Y/EQ/hctC7iIyVQG6MrHGdLtnj0sUSN+bkD1NLgo4dIlVAql1/JDXnvUe9aGlcXz8
+         uXjh3n7XQIm3RvR3Dw8Z1OW6wA3YeXKqLmzHsAEgN1+Ry7uhQGyHqKz1BFFNzQJ/BJ
+         6kcLN2usk+cn6s8P1hlhjkKluKoitPkmIUAYdlKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 259/355] arm64: dts: rockchip: Fix GPU register width for RK3328
-Date:   Mon, 15 Nov 2021 18:03:03 +0100
-Message-Id: <20211115165322.118083982@linuxfoundation.org>
+Subject: [PATCH 5.4 260/355] ARM: dts: qcom: msm8974: Add xo_board reference clock to DSI0 PHY
+Date:   Mon, 15 Nov 2021 18:03:04 +0100
+Message-Id: <20211115165322.148713682@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,38 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Marijn Suijten <marijn.suijten@somainline.org>
 
-[ Upstream commit 932b4610f55b49f3a158b0db451137bab7ed0e1f ]
+[ Upstream commit 8ccecf6c710b8c048eecc65709640642e5357d6e ]
 
-As can be seen in RK3328's TRM the register range for the GPU is
-0xff300000 to 0xff330000.
-It would (and does in vendor kernel) overlap with the registers of
-the HEVC encoder (node/driver do not exist yet in upstream kernel).
-See already existing h265e_mmu node.
+According to YAML validation, and for a future patchset putting this
+xo_board reference clock to use as VCO reference parent, add the missing
+clock to dsi_phy0.
 
-Fixes: 752fbc0c8da7 ("arm64: dts: rockchip: add rk3328 mali gpu node")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Link: https://lore.kernel.org/r/20210623115926.164861-1-knaerzche@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 5a9fc531f6ec ("ARM: dts: msm8974: add display support")
+Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210830175739.143401-1-marijn.suijten@somainline.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom-msm8974.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 44ad744c4710d..6ddb6b8c1fad5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -555,7 +555,7 @@
+diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
+index 369e58f64145d..9de4f17955e31 100644
+--- a/arch/arm/boot/dts/qcom-msm8974.dtsi
++++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
+@@ -1213,8 +1213,8 @@
+ 				#phy-cells = <0>;
+ 				qcom,dsi-phy-index = <0>;
  
- 	gpu: gpu@ff300000 {
- 		compatible = "rockchip,rk3328-mali", "arm,mali-450";
--		reg = <0x0 0xff300000 0x0 0x40000>;
-+		reg = <0x0 0xff300000 0x0 0x30000>;
- 		interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
+-				clocks = <&mmcc MDSS_AHB_CLK>;
+-				clock-names = "iface";
++				clocks = <&mmcc MDSS_AHB_CLK>, <&xo_board>;
++				clock-names = "iface", "ref";
+ 			};
+ 		};
+ 	};
 -- 
 2.33.0
 
