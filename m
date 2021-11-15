@@ -2,128 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C16450135
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8D3450145
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhKOJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:27:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        id S237577AbhKOJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237601AbhKOJ03 (ORCPT
+        with ESMTP id S230302AbhKOJ1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:26:29 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE33C061208;
-        Mon, 15 Nov 2021 01:23:13 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id g14so5267605edb.8;
-        Mon, 15 Nov 2021 01:23:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gBgwejPY1dviUk6Pvy613Rd4JE1KH9DV1AZPEpByebo=;
-        b=Uet5TuXIzgLsxmK1fLb3++n8QOIDms/8jyEfRNMDwZ4kx3hxE+heyXVP2hxM3GSo8O
-         JX7PWuOawm53fNBXadKtZIqtQ/3vX2MvFIK+/0Wk3NOOs3szQlWeF+dpScPZLIRYDIs/
-         2MVSj30C8wgGxyDve1FC4q/TC5xU6Sj7RrGWCyHTyvc7VXHf4Qwb42eN8w+cRAYs6SDW
-         kw8FCs/sF0xWO3IpbXR3Uqw0T7IU60fp8adv4YOmsth65PFrkyyQrbmjkqhM7ayYYKzw
-         e2iyMR2fVvuN/ukdzgNfqNKJ5ekhuuMX6RkEydm0xEKudJKpLlMGdZQg80Fr0U/+n5Di
-         06Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=gBgwejPY1dviUk6Pvy613Rd4JE1KH9DV1AZPEpByebo=;
-        b=YpoFksOjoROwq2uLsTy4D3ffoTU/XQlIiu13ZIZT1Vx0fBrQb0FaRoT7vTtxHIEUN5
-         jvU+7PzM7iJezMbEswpPJtDWLnybbUo5Dp4294FBuRu45hzR4YLQ7vq9QJ5+7AcwKgCj
-         gnc3qbBUdGBi9Bof4eRJL65UuoW7DxxWLjMU3aDOepMp0pislgtnJtsLxCrHs9K3o3U8
-         GIXHm8PGwQIey45rhvrNSpmUzLFwQSZfPctlbJBW3ta3jRQ/+3P47+JrJLZu1c/Ys0mU
-         MbJBIOnDJI7FYJqO+odqmNnbVxHdXpR52WxqkNkNsBVHR4ea9sogpCRrfvk0grZFU65q
-         /KIQ==
-X-Gm-Message-State: AOAM533eoLfZ+H3etrr00ajO3xVzthqPvP31ut7S/YNXjnrieB0qudaS
-        W5BOgG1/zsMVqD6ueLssra8=
-X-Google-Smtp-Source: ABdhPJxVLgYJEPdc4dPvGR8syXlhzKmQJhhBnDs4nwUFdB87i9JVWf2CTW1QPqiysLtK6Kq01c797g==
-X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr884443edw.346.1636968191417;
-        Mon, 15 Nov 2021 01:23:11 -0800 (PST)
-Received: from chinchilla (178-84-91-79.dynamic.upc.nl. [178.84.91.79])
-        by smtp.gmail.com with ESMTPSA id nc30sm6439077ejc.35.2021.11.15.01.23.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 01:23:10 -0800 (PST)
-Date:   Mon, 15 Nov 2021 10:23:08 +0100
-From:   Matthijs van Duin <matthijsvanduin@gmail.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, airlied@linux.ie,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2] drm: omapdrm: Export correct scatterlist for TILER
- backed BOs
-Message-ID: <YZIm/GiRWv0nPN5b@chinchilla>
-Mail-Followup-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, airlied@linux.ie,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <1636796417-5997-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
- <1636797239-6384-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
- <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
+        Mon, 15 Nov 2021 04:27:18 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378AAC061767;
+        Mon, 15 Nov 2021 01:24:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=mNgU5pUYaHtlF59ucnQsQussw2U6EkDAA888QTxBoI4=;
+        t=1636968256; x=1638177856; b=Z6dCNfBoKkzUfEQ0kqM7scWj1Jw9zMPFSyx5qnGHSnS1KDT
+        rN56fGllAP/pkJ34H5g9aT1+t4r5J64zUHyGWEUJ1MPr25xr2O6V+VVLV9xoRiZojmQuEsZ9kE0NK
+        NkQeZpLLyEuOkHEk5IbTAvKepd+rgcP478cUV/Qe8PCkJaOWi9P1uDpnOqmn30egmUCmdM9w8T2l+
+        mIyYhqKj0hMPmW34T3NipT3d4UgXSksIF6ZqtsA4chaWTx2VEfnOrzMe5VnWXACWHdzPud9go2/U8
+        OrXzShslLNOxxk7z6pD6iVMqJqTd8mj/WiQTj1lyX7O1Oi8XUB7bJBgWPve4NwvQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mmYDb-00FWpe-60;
+        Mon, 15 Nov 2021 10:24:03 +0100
+Message-ID: <ed1c17fad8c824d8e0be6fa55babbbe2c92caaad.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211: delete redundant free code
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     liuguoqiang <liuguoqiang@uniontech.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 15 Nov 2021 10:24:02 +0100
+In-Reply-To: <20211115092139.24407-1-liuguoqiang@uniontech.com>
+References: <20211115092139.24407-1-liuguoqiang@uniontech.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:42:41AM +0200, Tomi Valkeinen wrote:
-> A BO's memory via the TILER memory is
-> contiguous, although with consistent gaps of
-> memory that should not be accessed.
-
-But pretending that these "gaps" are part of the buffer is a security
-vulnerability, since that memory which "should not be accessed" may
-belong to different security contexts, and exporting the entire
-contiguous region covering the buffer allows untrusted contexts (e.g.
-userspace) to access this memory.
-
-> IPs that might use TILER
-> backed BOs only support contiguous memory.
+On Mon, 2021-11-15 at 17:21 +0800, liuguoqiang wrote:
+> When kzalloc failed and rdev->sacn_req or rdev->scan_msg is null, pass a
+> null pointer to kfree is redundant, delete it and return directly.
 > 
-> This means that the drivers for such IPs cannot
-> use the BOs exported like you do in this patch.
-> I believe the drivers could be improved by
-> writing a helper function which studies the
-> sg_table and concludes that it's actually
-> contiguous.
 
-That indeed sounds like the proper solution for such importers, rather
-than making the exporter lie about the buffer bounds to work around
-limitations of these importers.
+Arguably then we should not set creq=NULL at the beginning?
 
-> Did you look at the userspace mmap of TILER
-> buffers? I wonder if that goes correctly or not.
-> Isn't memory to userspace mapped per page, and
-> lengths of the TILER lines are not page aligned?
-
-Mapping to userspace uses an ugly hack whereby small slabs of the
-buffer (4096x64 (8bpp), 2048x32 (16bpp), or 1024x32 (32bpp) pixels) are
-dynamically mapped to dedicated page-aligned regions of the TILER
-virtual space.  For each of the three bitdepths only two such slabs can
-be mapped into userspace at any given time (on the entire system), so
-using this mechanism to render graphics from userspace can easily cause
-hundreds if not thousands of page faults per second.
-
-The alternative (used e.g. in the pyra kernel) is to force all TILER
-buffers to be page-aligned, at the cost of wasting some TILER space.
-This will presumably also be necessary to allow SGX to import these
-buffers since its MMU can obviously also not map data which is not
-page-aligned, same for any other importer which uses an MMU to enforce
-memory security (rather than being trusted to simply refrain from
-accessing data outside the declared bounds).
-
-Ideally such page-alignment should only be applied to buffers which are
-intended to be consumed by importers which require this, though it's not
-clear how that might be accomplished.
-
--- 
-Matthijs van Duin
+johannes
