@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1410A451988
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA06451F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhKOXXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:23:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1355530AbhKPAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244898AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0301D6332F;
-        Mon, 15 Nov 2021 18:25:14 +0000 (UTC)
+        id S1344685AbhKOTZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8331636AF;
+        Mon, 15 Nov 2021 19:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000715;
-        bh=eO3mv0t7vXQMH1FYoYuc/SDf0vAdqnRXTpRj8ZQi5h4=;
+        s=korg; t=1637002938;
+        bh=ej/MA4MPDd4jxpYyt9snCcgmYX6W8mw1mi8o6yViScw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M2f3CjGhc09qgttafwWbw8aFxM9Qd0Y73k8IctthMsCW5VnPG+JQ6eaD4MG6j7d3W
-         B/cqhuAdJyXFgho2Hg1JrdSNK82t02a25tSx+R9VjWlRT2Z7OPzxBUSLYAbEJ+4Yql
-         /+FY0Zic6EJPmjK4tRzI9aJqcKhdX9EZpUWgNyw8=
+        b=2qBQX2sk7o69aj575V64igBzBTWpn6pZ0HpBEdoWH0XcNpZIShYwLzVbOe0D1PmwP
+         /Brn3KT1sKSL6hdrFMFcSKQV9U9ySnceZHZ8fWqvY9zYp4UaOVb8oHQN/xDgU/t+2G
+         qb1xopuaOFNcNWWOdtBh/HfFGWC3RApqy1778PIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jussi Maki <joamaki@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Karunakara Merugu <kmerugu@marvell.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 764/849] bpf, sockmap: Fix race in ingress receive verdict with redirect to self
+Subject: [PATCH 5.15 752/917] scsi: qla2xxx: edif: Flush stale events and msgs on session down
 Date:   Mon, 15 Nov 2021 18:04:07 +0100
-Message-Id: <20211115165446.107347132@linuxfoundation.org>
+Message-Id: <20211115165454.414476973@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,188 +44,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit c5d2177a72a1659554922728fc407f59950aa929 ]
+[ Upstream commit b1af26c245545a289b331c7b71996ecd88321540 ]
 
-A socket in a sockmap may have different combinations of programs attached
-depending on configuration. There can be no programs in which case the socket
-acts as a sink only. There can be a TX program in this case a BPF program is
-attached to sending side, but no RX program is attached. There can be an RX
-program only where sends have no BPF program attached, but receives are hooked
-with BPF. And finally, both TX and RX programs may be attached. Giving us the
-permutations:
+On session down, driver will flush all stale messages and doorbell
+events. This prevents authentication application from having to process
+stale data.
 
- None, Tx, Rx, and TxRx
-
-To date most of our use cases have been TX case being used as a fast datapath
-to directly copy between local application and a userspace proxy. Or Rx cases
-and TxRX applications that are operating an in kernel based proxy. The traffic
-in the first case where we hook applications into a userspace application looks
-like this:
-
-  AppA  redirect   AppB
-   Tx <-----------> Rx
-   |                |
-   +                +
-   TCP <--> lo <--> TCP
-
-In this case all traffic from AppA (after 3whs) is copied into the AppB
-ingress queue and no traffic is ever on the TCP recieive_queue.
-
-In the second case the application never receives, except in some rare error
-cases, traffic on the actual user space socket. Instead the send happens in
-the kernel.
-
-           AppProxy       socket pool
-       sk0 ------------->{sk1,sk2, skn}
-        ^                      |
-        |                      |
-        |                      v
-       ingress              lb egress
-       TCP                  TCP
-
-Here because traffic is never read off the socket with userspace recv() APIs
-there is only ever one reader on the sk receive_queue. Namely the BPF programs.
-
-However, we've started to introduce a third configuration where the BPF program
-on receive should process the data, but then the normal case is to push the
-data into the receive queue of AppB.
-
-       AppB
-       recv()                (userspace)
-     -----------------------
-       tcp_bpf_recvmsg()     (kernel)
-         |             |
-         |             |
-         |             |
-       ingress_msgQ    |
-         |             |
-       RX_BPF          |
-         |             |
-         v             v
-       sk->receive_queue
-
-This is different from the App{A,B} redirect because traffic is first received
-on the sk->receive_queue.
-
-Now for the issue. The tcp_bpf_recvmsg() handler first checks the ingress_msg
-queue for any data handled by the BPF rx program and returned with PASS code
-so that it was enqueued on the ingress msg queue. Then if no data exists on
-that queue it checks the socket receive queue. Unfortunately, this is the same
-receive_queue the BPF program is reading data off of. So we get a race. Its
-possible for the recvmsg() hook to pull data off the receive_queue before the
-BPF hook has a chance to read it. It typically happens when an application is
-banging on recv() and getting EAGAINs. Until they manage to race with the RX
-BPF program.
-
-To fix this we note that before this patch at attach time when the socket is
-loaded into the map we check if it needs a TX program or just the base set of
-proto bpf hooks. Then it uses the above general RX hook regardless of if we
-have a BPF program attached at rx or not. This patch now extends this check to
-handle all cases enumerated above, TX, RX, TXRX, and none. And to fix above
-race when an RX program is attached we use a new hook that is nearly identical
-to the old one except now we do not let the recv() call skip the RX BPF program.
-Now only the BPF program pulls data from sk->receive_queue and recv() only
-pulls data from the ingress msgQ post BPF program handling.
-
-With this resolved our AppB from above has been up and running for many hours
-without detecting any errors. We do this by correlating counters in RX BPF
-events and the AppB to ensure data is never skipping the BPF program. Selftests,
-was not able to detect this because we only run them for a short period of time
-on well ordered send/recvs so we don't get any of the noise we see in real
-application environments.
-
-Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20211103204736.248403-4-john.fastabend@gmail.com
+Link: https://lore.kernel.org/r/20211026115412.27691-7-njavali@marvell.com
+Fixes: 4de067e5df12 ("scsi: qla2xxx: edif: Add N2N support for EDIF")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Co-developed-by: Karunakara Merugu <kmerugu@marvell.com>
+Signed-off-by: Karunakara Merugu <kmerugu@marvell.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/scsi/qla2xxx/qla_edif.c   | 96 ++++++++++++++++++++++++++++++-
+ drivers/scsi/qla2xxx/qla_gbl.h    |  2 +
+ drivers/scsi/qla2xxx/qla_target.c |  1 +
+ 3 files changed, 98 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index cd6c2ebc1185c..04886df62b775 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -185,6 +185,41 @@ static int tcp_msg_wait_data(struct sock *sk, struct sk_psock *psock,
- 	return ret;
+diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
+index cf62f26ce27d9..3931bae3222b3 100644
+--- a/drivers/scsi/qla2xxx/qla_edif.c
++++ b/drivers/scsi/qla2xxx/qla_edif.c
+@@ -1593,6 +1593,40 @@ qla_enode_stop(scsi_qla_host_t *vha)
+ 	spin_unlock_irqrestore(&vha->pur_cinfo.pur_lock, flags);
  }
  
-+static int tcp_bpf_recvmsg_parser(struct sock *sk,
-+				  struct msghdr *msg,
-+				  size_t len,
-+				  int nonblock,
-+				  int flags,
-+				  int *addr_len)
++static void qla_enode_clear(scsi_qla_host_t *vha, port_id_t portid)
 +{
-+	struct sk_psock *psock;
-+	int copied;
++	unsigned    long flags;
++	struct enode    *e, *tmp;
++	struct purexevent   *purex;
++	LIST_HEAD(enode_list);
 +
-+	if (unlikely(flags & MSG_ERRQUEUE))
-+		return inet_recv_error(sk, msg, len, addr_len);
-+
-+	psock = sk_psock_get(sk);
-+	if (unlikely(!psock))
-+		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+
-+	lock_sock(sk);
-+msg_bytes_ready:
-+	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
-+	if (!copied) {
-+		long timeo;
-+		int data;
-+
-+		timeo = sock_rcvtimeo(sk, nonblock);
-+		data = tcp_msg_wait_data(sk, psock, timeo);
-+		if (data && !sk_psock_queue_empty(psock))
-+			goto msg_bytes_ready;
-+		copied = -EAGAIN;
++	if (vha->pur_cinfo.enode_flags != ENODE_ACTIVE) {
++		ql_dbg(ql_dbg_edif, vha, 0x09102,
++		       "%s enode not active\n", __func__);
++		return;
 +	}
-+	release_sock(sk);
-+	sk_psock_put(sk, psock);
-+	return copied;
++	spin_lock_irqsave(&vha->pur_cinfo.pur_lock, flags);
++	list_for_each_entry_safe(e, tmp, &vha->pur_cinfo.head, list) {
++		purex = &e->u.purexinfo;
++		if (purex->pur_info.pur_sid.b24 == portid.b24) {
++			ql_dbg(ql_dbg_edif, vha, 0x911d,
++			    "%s free ELS sid=%06x. xchg %x, nb=%xh\n",
++			    __func__, portid.b24,
++			    purex->pur_info.pur_rx_xchg_address,
++			    purex->pur_info.pur_bytes_rcvd);
++
++			list_del_init(&e->list);
++			list_add_tail(&e->list, &enode_list);
++		}
++	}
++	spin_unlock_irqrestore(&vha->pur_cinfo.pur_lock, flags);
++
++	list_for_each_entry_safe(e, tmp, &enode_list, list) {
++		list_del_init(&e->list);
++		qla_enode_free(vha, e);
++	}
 +}
 +
- static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 		    int nonblock, int flags, int *addr_len)
- {
-@@ -477,6 +512,8 @@ enum {
- enum {
- 	TCP_BPF_BASE,
- 	TCP_BPF_TX,
-+	TCP_BPF_RX,
-+	TCP_BPF_TXRX,
- 	TCP_BPF_NUM_CFGS,
- };
- 
-@@ -495,6 +532,12 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 	prot[TCP_BPF_TX]			= prot[TCP_BPF_BASE];
- 	prot[TCP_BPF_TX].sendmsg		= tcp_bpf_sendmsg;
- 	prot[TCP_BPF_TX].sendpage		= tcp_bpf_sendpage;
-+
-+	prot[TCP_BPF_RX]			= prot[TCP_BPF_BASE];
-+	prot[TCP_BPF_RX].recvmsg		= tcp_bpf_recvmsg_parser;
-+
-+	prot[TCP_BPF_TXRX]			= prot[TCP_BPF_TX];
-+	prot[TCP_BPF_TXRX].recvmsg		= tcp_bpf_recvmsg_parser;
+ /*
+  *  allocate enode struct and populate buffer
+  *  returns: enode pointer with buffers
+@@ -1792,6 +1826,57 @@ qla_edb_node_free(scsi_qla_host_t *vha, struct edb_node *node)
+ 	node->ntype = N_UNDEF;
  }
  
- static void tcp_bpf_check_v6_needs_rebuild(struct proto *ops)
-@@ -532,6 +575,10 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- 	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
- 	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
- 
-+	if (psock->progs.stream_verdict || psock->progs.skb_verdict) {
-+		config = (config == TCP_BPF_TX) ? TCP_BPF_TXRX : TCP_BPF_RX;
++static void qla_edb_clear(scsi_qla_host_t *vha, port_id_t portid)
++{
++	unsigned long flags;
++	struct edb_node *e, *tmp;
++	port_id_t sid;
++	LIST_HEAD(edb_list);
++
++	if (vha->e_dbell.db_flags != EDB_ACTIVE) {
++		/* doorbell list not enabled */
++		ql_dbg(ql_dbg_edif, vha, 0x09102,
++		       "%s doorbell not enabled\n", __func__);
++		return;
 +	}
 +
- 	if (restore) {
- 		if (inet_csk_has_ulp(sk)) {
- 			/* TLS does not have an unhash proto in SW cases,
++	/* grab lock so list doesn't move */
++	spin_lock_irqsave(&vha->e_dbell.db_lock, flags);
++	list_for_each_entry_safe(e, tmp, &vha->e_dbell.head, list) {
++		switch (e->ntype) {
++		case VND_CMD_AUTH_STATE_NEEDED:
++		case VND_CMD_AUTH_STATE_SESSION_SHUTDOWN:
++			sid = e->u.plogi_did;
++			break;
++		case VND_CMD_AUTH_STATE_ELS_RCVD:
++			sid = e->u.els_sid;
++			break;
++		case VND_CMD_AUTH_STATE_SAUPDATE_COMPL:
++			/* app wants to see this  */
++			continue;
++		default:
++			ql_log(ql_log_warn, vha, 0x09102,
++			       "%s unknown node type: %x\n", __func__, e->ntype);
++			sid.b24 = 0;
++			break;
++		}
++		if (sid.b24 == portid.b24) {
++			ql_dbg(ql_dbg_edif, vha, 0x910f,
++			       "%s free doorbell event : node type = %x %p\n",
++			       __func__, e->ntype, e);
++			list_del_init(&e->list);
++			list_add_tail(&e->list, &edb_list);
++		}
++	}
++	spin_unlock_irqrestore(&vha->e_dbell.db_lock, flags);
++
++	list_for_each_entry_safe(e, tmp, &edb_list, list) {
++		qla_edb_node_free(vha, e);
++		list_del_init(&e->list);
++		kfree(e);
++	}
++}
++
+ /* function called when app is stopping */
+ 
+ void
+@@ -2378,7 +2463,7 @@ void qla24xx_auth_els(scsi_qla_host_t *vha, void **pkt, struct rsp_que **rsp)
+ 	ql_dbg(ql_dbg_edif, host, 0x0910c,
+ 	    "%s COMPLETE purex->pur_info.pur_bytes_rcvd =%xh s:%06x -> d:%06x xchg=%xh\n",
+ 	    __func__, purex->pur_info.pur_bytes_rcvd, purex->pur_info.pur_sid.b24,
+-	    purex->pur_info.pur_did.b24, p->rx_xchg_addr);
++	    purex->pur_info.pur_did.b24, purex->pur_info.pur_rx_xchg_address);
+ 
+ 	qla_edb_eventcreate(host, VND_CMD_AUTH_STATE_ELS_RCVD, sid, 0, NULL);
+ }
+@@ -3401,3 +3486,12 @@ void qla_edif_sess_down(struct scsi_qla_host *vha, struct fc_port *sess)
+ 		qla2x00_post_aen_work(vha, FCH_EVT_PORT_OFFLINE, sess->d_id.b24);
+ 	}
+ }
++
++void qla_edif_clear_appdata(struct scsi_qla_host *vha, struct fc_port *fcport)
++{
++	if (!(fcport->flags & FCF_FCSP_DEVICE))
++		return;
++
++	qla_edb_clear(vha, fcport->d_id);
++	qla_enode_clear(vha, fcport->d_id);
++}
+diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
+index 0a43ce9317db2..2c7e91bffb827 100644
+--- a/drivers/scsi/qla2xxx/qla_gbl.h
++++ b/drivers/scsi/qla2xxx/qla_gbl.h
+@@ -142,6 +142,8 @@ void qlt_chk_edif_rx_sa_delete_pending(scsi_qla_host_t *vha, fc_port_t *fcport,
+ void qla2x00_release_all_sadb(struct scsi_qla_host *vha, struct fc_port *fcport);
+ int qla_edif_process_els(scsi_qla_host_t *vha, struct bsg_job *bsgjob);
+ void qla_edif_sess_down(struct scsi_qla_host *vha, struct fc_port *sess);
++void qla_edif_clear_appdata(struct scsi_qla_host *vha,
++			    struct fc_port *fcport);
+ const char *sc_to_str(uint16_t cmd);
+ 
+ /*
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index 7d8242c120fc7..1aaa4238cb722 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -1003,6 +1003,7 @@ void qlt_free_session_done(struct work_struct *work)
+ 					"%s bypassing release_all_sadb\n",
+ 					__func__);
+ 			}
++			qla_edif_clear_appdata(vha, sess);
+ 			qla_edif_sess_down(vha, sess);
+ 		}
+ 		qla2x00_mark_device_lost(vha, sess, 0);
 -- 
 2.33.0
 
