@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB53C452067
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCCB451AD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358453AbhKPAxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:53:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1355671AbhKOXn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:43:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344055AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344060AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:23:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF94D633BA;
-        Mon, 15 Nov 2021 18:50:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FCF6633BB;
+        Mon, 15 Nov 2021 18:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002259;
-        bh=aRX11VJF9BLb4MYs6Cv19lJvEmOI7rU37ghhaJFr7TI=;
+        s=korg; t=1637002261;
+        bh=u7muo/mGyPVEsoiZHOl5X7P4PEuR9PTtZuoVs3d+uE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDBy7RreTzyy+8VGqZiW1v602sTkhf683nD9pFWuoFxT4DUTPVtM0G7tQKkVH4q/m
-         yldWNpsr4gkL39KX2tDTZhUUV0CimXU1ZHIXKrt3PBSyjeAIhZqkm5iX+UrFlR5rpe
-         BisljqP0zdOM+83foRjzrcVOUM8VmznNGYarQURA=
+        b=qKvigft0ia0y7gVVIT89C4chYNA8BMLEsVhOwIMeZSdDtPb4bekHKv3faFr5ZY2V6
+         HZtVT2wlpYBpY/0qWQU6rYN8sMm9i2hFmU5hIgTF1X2HNyS2AraAFZAReggdMPeVGL
+         CyWfAG2ADILlSeOsMN+o53yF1vh1FrqfX9esBPZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 499/917] smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi
-Date:   Mon, 15 Nov 2021 17:59:54 +0100
-Message-Id: <20211115165445.692495065@linuxfoundation.org>
+Subject: [PATCH 5.15 500/917] KVM: selftests: Fix nested SVM tests when built with clang
+Date:   Mon, 15 Nov 2021 17:59:55 +0100
+Message-Id: <20211115165445.723061933@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,39 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Jim Mattson <jmattson@google.com>
 
-[ Upstream commit 0934ad42bb2c5df90a1b9de690f93de735b622fe ]
+[ Upstream commit ed290e1c20da19fa100a3e0f421aa31b65984960 ]
 
-syzbot is reporting UAF at cipso_v4_doi_search() [1], for smk_cipso_doi()
-is calling kfree() without removing from the cipso_v4_doi_list list after
-netlbl_cfg_cipsov4_map_add() returned an error. We need to use
-netlbl_cfg_cipsov4_del() in order to remove from the list and wait for
-RCU grace period before kfree().
+Though gcc conveniently compiles a simple memset to "rep stos," clang
+prefers to call the libc version of memset. If a test is dynamically
+linked, the libc memset isn't available in L1 (nor is the PLT or the
+GOT, for that matter). Even if the test is statically linked, the libc
+memset may choose to use some CPU features, like AVX, which may not be
+enabled in L1. Note that __builtin_memset doesn't solve the problem,
+because (a) the compiler is free to call memset anyway, and (b)
+__builtin_memset may also choose to use features like AVX, which may
+not be available in L1.
 
-Link: https://syzkaller.appspot.com/bug?extid=93dba5b91f0fed312cbd [1]
-Reported-by: syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6c2e8ac0953fccdd ("netlabel: Update kernel configuration API")
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+To avoid a myriad of problems, use an explicit "rep stos" to clear the
+VMCB in generic_svm_setup(), which is called both from L0 and L1.
+
+Reported-by: Ricardo Koller <ricarkol@google.com>
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Fixes: 20ba262f8631a ("selftests: KVM: AMD Nested test infrastructure")
+Message-Id: <20210930003649.4026553-1-jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/kvm/lib/x86_64/svm.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 89989d28ffc55..658eab05599e6 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -712,7 +712,7 @@ static void smk_cipso_doi(void)
- 	if (rc != 0) {
- 		printk(KERN_WARNING "%s:%d map add rc = %d\n",
- 		       __func__, __LINE__, rc);
--		kfree(doip);
-+		netlbl_cfg_cipsov4_del(doip->doi, &nai);
- 		return;
- 	}
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+index 2ac98d70d02bd..161eba7cd1289 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+@@ -54,6 +54,18 @@ static void vmcb_set_seg(struct vmcb_seg *seg, u16 selector,
+ 	seg->base = base;
  }
+ 
++/*
++ * Avoid using memset to clear the vmcb, since libc may not be
++ * available in L1 (and, even if it is, features that libc memset may
++ * want to use, like AVX, may not be enabled).
++ */
++static void clear_vmcb(struct vmcb *vmcb)
++{
++	int n = sizeof(*vmcb) / sizeof(u32);
++
++	asm volatile ("rep stosl" : "+c"(n), "+D"(vmcb) : "a"(0) : "memory");
++}
++
+ void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_rsp)
+ {
+ 	struct vmcb *vmcb = svm->vmcb;
+@@ -70,7 +82,7 @@ void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_r
+ 	wrmsr(MSR_EFER, efer | EFER_SVME);
+ 	wrmsr(MSR_VM_HSAVE_PA, svm->save_area_gpa);
+ 
+-	memset(vmcb, 0, sizeof(*vmcb));
++	clear_vmcb(vmcb);
+ 	asm volatile ("vmsave %0\n\t" : : "a" (vmcb_gpa) : "memory");
+ 	vmcb_set_seg(&save->es, get_es(), 0, -1U, data_seg_attr);
+ 	vmcb_set_seg(&save->cs, get_cs(), 0, -1U, code_seg_attr);
 -- 
 2.33.0
 
