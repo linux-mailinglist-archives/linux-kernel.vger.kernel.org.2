@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B4644FC89
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF14C44FC8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhKOATV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:19:21 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:29164 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhKOATT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:19:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636935385; x=1668471385;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Tr3VK1M14H+VJdrnmFpJIHHEtR8hyVn1KdLZqLtvvhQ=;
-  b=HmgaVSkq1eBQsEzEBO1dAzHc5Fia0Dx/jrapydN2vKz01x4EFxtwIJyz
-   q85H/ug2pLQKFTW/AFMhrlxSN+KSbw++VNiF2ekVF1+93vjZL7spscToe
-   l/6alksjB4pIRsi7NRTh5F7ze7QOApywvq/umarBe1OM0ec9/vtyiQAiM
-   g=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 14 Nov 2021 16:16:24 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 16:16:24 -0800
-Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Sun, 14 Nov 2021 16:16:23 -0800
-Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Sun, 14 Nov
- 2021 16:16:20 -0800
-Message-ID: <b2c7bfcb-754b-8817-667e-b81a6ca5500f@quicinc.com>
-Date:   Mon, 15 Nov 2021 08:16:17 +0800
+        id S234850AbhKOAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229507AbhKOAUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 19:20:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE1860F44;
+        Mon, 15 Nov 2021 00:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636935476;
+        bh=+oQE67zSDKDG/9Y86hCe3ln8eOzRm82kVNTPNRyu5pQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=okPlKD2nsAQNoWuuKOM6ZQcOiMejAiLGDtuRM7TtGJI4O766HmvTSVQKdc05p7T/4
+         i9wPSVHz3jC804hlxMytLb08YArasA6bc3LosWBs4+7edJt00t5cWpoTYLOYF8TumP
+         kHydrz4TrDyQDhYf4mPd/QwGNTUMYbWebGY03xYMmXqqsBUpNPFRXzCxIli05tUJxn
+         4F/C5Cx/2riov8Kb3e/3t1bbkzKHfhQBh4ki6/o2QyUnhK1fqD4ehWDbR5OFiUAkvJ
+         8gSJxH+bwwwUyUPoJY8fED+0Jwjm06C/QCWKwoqctlOLfQuH8rxh2m/XOQ9qd42ppn
+         IJ6+64rdkBK9g==
+Date:   Sun, 14 Nov 2021 17:17:51 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
+Message-ID: <YZGnL3nfA5876hX3@archlinux-ax161>
+References: <20211114005725.GA27075@embeddedor>
+ <YZF9MY6rRLQwdTgM@archlinux-ax161>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [RESEND PATCH v2 11/11] dt-bindings: convert qcom,spmi-pmic-arb
- binding to YAML format
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, <maz@kernel.org>,
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <tglx@linutronix.de>, <collinsd@codeaurora.org>,
-        <subbaram@codeaurora.org>
-References: <1636691059-4305-1-git-send-email-quic_fenglinw@quicinc.com>
- <1636691059-4305-12-git-send-email-quic_fenglinw@quicinc.com>
- <1636724917.088909.2463363.nullmailer@robh.at.kernel.org>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <1636724917.088909.2463363.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZF9MY6rRLQwdTgM@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 14, 2021 at 02:18:41PM -0700, Nathan Chancellor wrote:
+> On Sat, Nov 13, 2021 at 06:57:25PM -0600, Gustavo A. R. Silva wrote:
+> > Add Kconfig support for -Wimplicit-fallthrough for both GCC and Clang.
+> > 
+> > The compiler option is under configuration CC_IMPLICIT_FALLTHROUGH,
+> > which is enabled by default.
+> > 
+> > Special thanks to Nathan Chancellor who fixed the Clang bug[1][2]. This
+> > bugfix only appears in Clang 14.0.0, so older versions still contain
+> > the bug and -Wimplicit-fallthrough won't be enabled for them, for now.
+> > 
+> > This concludes a long journey and now we are finally getting rid
+> > of the unintentional fallthrough bug-class in the kernel, entirely. :)
+> > 
+> > [1] https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+> > [2] https://bugs.llvm.org/show_bug.cgi?id=51094
+> > 
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/236
+> > Co-developed-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> This appears to do the right thing with both clang-13 and clang-14.
 
-On 2021/11/12 21:48, Rob Herring wrote:
-> On Fri, 12 Nov 2021 12:24:19 +0800, Fenglin Wu wrote:
->> Convert the SPMI PMIC arbiter documentation to JSON/yaml.
->>
->> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->> ---
->>   .../bindings/spmi/qcom,spmi-pmic-arb.txt           |  67 -----------
->>   .../bindings/spmi/qcom,spmi-pmic-arb.yaml          | 122 +++++++++++++++++++++
->>   2 files changed, 122 insertions(+), 67 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
->>   create mode 100644 Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
->>
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: properties:interrupt-names: 'const' should not be valid under {'enum': ['const', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'minimum', 'maximum', 'multipleOf', 'pattern']}
-> 	hint: Scalar and array keywords cannot be mixed
-> 	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: properties:reg-names: {'minItems': 3, 'maxItems': 5, 'items': [{'const': 'core'}, {'const': 'intr'}, {'const': 'cnfg'}, {'const': 'chnls'}, {'const': 'obsrvr'}]} should not be valid under {'required': ['maxItems']}
-> 	hint: "maxItems" is not needed with an "items" list
-> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: ignoring, error in schema: properties: interrupt-names
-> warning: no schema found in file: ./Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.example.dt.yaml: spmi@fc4cf000: reg: [[4232900608, 4096], [4232884224, 4096], [4232880128, 4096]] is too long
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml
-> Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.example.dt.yaml:0:0: /example-0/spmi@fc4cf000: failed to match any schema with compatible: ['qcom,spmi-pmic-arb']
->
-> doc reference errors (make refcheckdocs):
-> Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt: Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
->
-> See https://patchwork.ozlabs.org/patch/1554141
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
-I actually ran "make dt-binding-check 
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/qcom,spmi-pmic-arb.txt"
-and confirmed there was no error or warning before pushing the change. 
-Anyway I will follow
-your steps here andcheck it again, if any changes is required, I will 
-have them updated it
-in next patchset.
-Thanks
->
+Now that I gave this a look for the GCC side, I think it is wrong.
+
+-Wimplicit-fallthrough=5 was under cc-option because it was only
+available in GCC 7.x and newer so the build is now broken for GCC 5.x
+and 6.x:
+
+gcc: error: unrecognized command line option '-Wimplicit-fallthrough=5';
+did you mean '-Wno-fallthrough'?
+
+I think this needs to be added (I can send a formal patch tomorrow
+unless someone wants to beat me to it):
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 036b750e8d8a..85882c317235 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -887,7 +887,7 @@ config CC_HAS_INT128
+ 
+ config CC_IMPLICIT_FALLTHROUGH
+ 	string
+-	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
++	default "-Wimplicit-fallthrough=5" if $(cc-option,-Wimplicit-fallthrough=5)
+ 	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
+ 
+ #
+
+Cheers,
+Nathan
+
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> It feels a little odd to have this in Kconfig but if it works and gets
+> the warning enabled, then so be it.
+> 
+> > ---
+> >  Makefile     | 6 +-----
+> >  init/Kconfig | 5 +++++
+> >  2 files changed, 6 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index 30c7c81d0437..f18a50daad00 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -786,7 +786,7 @@ stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      := -fstack-protector-strong
+> >  KBUILD_CFLAGS += $(stackp-flags-y)
+> >  
+> >  KBUILD_CFLAGS-$(CONFIG_WERROR) += -Werror
+> > -KBUILD_CFLAGS += $(KBUILD_CFLAGS-y)
+> > +KBUILD_CFLAGS += $(KBUILD_CFLAGS-y) $(CONFIG_CC_IMPLICIT_FALLTHROUGH)
+> >  
+> >  ifdef CONFIG_CC_IS_CLANG
+> >  KBUILD_CPPFLAGS += -Qunused-arguments
+> > @@ -798,10 +798,6 @@ KBUILD_CFLAGS += -Wno-gnu
+> >  KBUILD_CFLAGS += -mno-global-merge
+> >  else
+> >  
+> > -# Warn about unmarked fall-throughs in switch statement.
+> > -# Disabled for clang while comment to attribute conversion happens and
+> > -# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
+> > -KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
+> >  # gcc inanely warns about local variables called 'main'
+> >  KBUILD_CFLAGS += -Wno-main
+> >  endif
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 11f8a845f259..b0582cd3e096 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -885,6 +885,11 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+> >  config CC_HAS_INT128
+> >  	def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0) && 64BIT
+> >  
+> > +config CC_IMPLICIT_FALLTHROUGH
+> > +	string
+> > +	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
+> > +	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
+> > +
+> >  #
+> >  # For architectures that know their GCC __int128 support is sound
+> >  #
+> > -- 
+> > 2.27.0
+> > 
+> > 
+> 
