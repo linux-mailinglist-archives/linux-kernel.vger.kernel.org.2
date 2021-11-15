@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445434515A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8064515A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352569AbhKOUrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:47:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
+        id S1352442AbhKOUpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:45:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237873AbhKOSHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237879AbhKOSHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94ADD633A0;
-        Mon, 15 Nov 2021 17:45:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74DF4633A5;
+        Mon, 15 Nov 2021 17:45:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998320;
-        bh=Ox9GGarjKrJ43zzWDMJIOhOgpbbTPKCURK2YLUmFtjc=;
+        s=korg; t=1636998323;
+        bh=rLY4Mke7S36U1O4oppZxQHTcYaUOjDpT7lsAxWlWmoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVrfF2Yq05zbQuNYlSQwNghrSOiP63eNw9Q7YnjmUXNH+Eq0I7w4fOgyrOT3YacVW
-         /HQV6NZ9HK7WuIuS5F76a2f91GG0yU+fgAL+Z998ImztEC/mk5rZcSULIAks5Fg+LH
-         xn93gMjiYZaPI4VHuTG0S9NuC4wBw73PwSz7hGao=
+        b=i7tNAxdIY4dfVm/M0BDiQu0AC0d4WoltfD5+Myi0imYB+kI2VOcGG0aqIu/iOR59J
+         KsH3AdxKBem3S0JwKdYPlwzrunG7s4jxaoUiZhCRoFmkTkq+plpnxvAOSOxNiOWywL
+         XVfnsjt7qbcv2zE5TVffaJZgNqu5Fl1Bg+nxtiGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 434/575] pinctrl: renesas: checker: Fix off-by-one bug in drive register check
-Date:   Mon, 15 Nov 2021 18:02:39 +0100
-Message-Id: <20211115165358.784783019@linuxfoundation.org>
+Subject: [PATCH 5.10 435/575] ARM: dts: stm32: Reduce DHCOR SPI NOR frequency to 50 MHz
+Date:   Mon, 15 Nov 2021 18:02:40 +0100
+Message-Id: <20211115165358.816966209@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,37 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 28e7f8ff90583791a034d43b5d2e3fe394142e13 ]
+[ Upstream commit 2012579b31293d0a8cf2024e9dab66810bf1a15e ]
 
-The GENMASK(h, l) macro creates a contiguous bitmask starting at bit
-position @l and ending at position @h, inclusive.
+The SPI NOR is a bit further away from the SoC on DHCOR than on DHCOM,
+which causes additional signal delay. At 108 MHz, this delay triggers
+a sporadic issue where the first bit of RX data is not received by the
+QSPI controller.
 
-This did not trigger any error checks, as the individual register fields
-cover at most 3 of the 4 available bits.
+There are two options of addressing this problem, either by using the
+DLYB block to compensate the extra delay, or by reducing the QSPI bus
+clock frequency. The former requires calibration and that is overly
+complex, so opt for the second option.
 
-Fixes: 08df16e07ad0a1ec ("pinctrl: sh-pfc: checker: Add drive strength register checks")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/8f82d6147fbe3367d4c83962480e97f58d9c96a2.1633615652.git.geert+renesas@glider.be
+Fixes: 76045bc457104 ("ARM: dts: stm32: Add QSPI NOR on AV96")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/renesas/core.c | 2 +-
+ arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/renesas/core.c b/drivers/pinctrl/renesas/core.c
-index c528c124fb0e9..9d168b90cd281 100644
---- a/drivers/pinctrl/renesas/core.c
-+++ b/drivers/pinctrl/renesas/core.c
-@@ -890,7 +890,7 @@ static void __init sh_pfc_check_drive_reg(const struct sh_pfc_soc_info *info,
- 		if (!field->pin && !field->offset && !field->size)
- 			continue;
- 
--		mask = GENMASK(field->offset + field->size, field->offset);
-+		mask = GENMASK(field->offset + field->size - 1, field->offset);
- 		if (mask & seen)
- 			sh_pfc_err("drive_reg 0x%x: field %u overlap\n",
- 				   drive->reg, i);
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+index a9eb82b2f1704..5af32140e128b 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+@@ -198,7 +198,7 @@
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+ 		spi-rx-bus-width = <4>;
+-		spi-max-frequency = <108000000>;
++		spi-max-frequency = <50000000>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 	};
 -- 
 2.33.0
 
