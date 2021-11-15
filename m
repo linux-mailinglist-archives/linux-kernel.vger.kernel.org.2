@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1495E450DB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E4B450E61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhKOSEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:04:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S240252AbhKOSOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:14:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237254AbhKORYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 910486326B;
-        Mon, 15 Nov 2021 17:18:43 +0000 (UTC)
+        id S237977AbhKOR2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:28:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 567B46326C;
+        Mon, 15 Nov 2021 17:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996724;
-        bh=Gl4Xe7uU/xTaf++Ml296d66z5wC/FE2VWrA/FHOlJP0=;
+        s=korg; t=1636996728;
+        bh=hBkzl/fBvpz534zxeQZnVJSm+nBHd2M1rJj7xY6iww8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/85OfFsQ5m0cUzWyiwnnX/acItzzY6LW0+z+9icWFSmpEQtmJNsMIPUGxPNsqJbd
-         dSwtkawmEMrw6h8+MT2ZW4NhdI7OM23kWSCRWZR7Lt2//FcOyaeQ587xY9LvpPlmAq
-         PiV694EQLv5ty37/fQm5bYXn/y0EBrDmidvimMwA=
+        b=RT8wV0Z5unM9RKoqYZzTE/S0H1aIiKrNii6ksuVu0doEjtWYOKtEUG3SeBgOWLDat
+         eTdnQ+jhjCx6RkAF4HklUkuz6NmkHZt2aKS3gkO1/nKcmYT9gp74B7O5lYuRXN1B3d
+         FoX6PaWaseVkB6uu402HBZZgTN0SuCw9TaTvksgg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 212/355] media: dvb-frontends: mn88443x: Handle errors of clk_prepare_enable()
-Date:   Mon, 15 Nov 2021 18:02:16 +0100
-Message-Id: <20211115165320.622767129@linuxfoundation.org>
+Subject: [PATCH 5.4 214/355] crypto: qat - disregard spurious PFVF interrupts
+Date:   Mon, 15 Nov 2021 18:02:18 +0100
+Message-Id: <20211115165320.688473830@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,78 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-[ Upstream commit 69a10678e2fba3d182e78ea041f2d1b1a6058764 ]
+[ Upstream commit 18fcba469ba5359c1de7e3fb16f7b9e8cd1b8e02 ]
 
-mn88443x_cmn_power_on() did not handle possible errors of
-clk_prepare_enable() and always finished successfully so that its caller
-mn88443x_probe() did not care about failed preparing/enabling of clocks
-as well.
+Upon receiving a PFVF message, check if the interrupt bit is set in the
+message. If it is not, that means that the interrupt was probably
+triggered by a collision. In this case, disregard the message and
+re-enable the interrupts.
 
-Add missed error handling in both mn88443x_cmn_power_on() and
-mn88443x_probe(). This required to change the return value of the former
-from "void" to "int".
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: 0f408ce8941f ("media: dvb-frontends: add Socionext MN88443x ISDB-S/T demodulator driver")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/mn88443x.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 6 ++++++
+ drivers/crypto/qat/qat_common/adf_vf_isr.c    | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/media/dvb-frontends/mn88443x.c b/drivers/media/dvb-frontends/mn88443x.c
-index e4528784f8477..fff212c0bf3b5 100644
---- a/drivers/media/dvb-frontends/mn88443x.c
-+++ b/drivers/media/dvb-frontends/mn88443x.c
-@@ -204,11 +204,18 @@ struct mn88443x_priv {
- 	struct regmap *regmap_t;
- };
+diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+index 72fd2bbbe704e..180016e157771 100644
+--- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+@@ -250,6 +250,11 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
  
--static void mn88443x_cmn_power_on(struct mn88443x_priv *chip)
-+static int mn88443x_cmn_power_on(struct mn88443x_priv *chip)
- {
-+	struct device *dev = &chip->client_s->dev;
- 	struct regmap *r_t = chip->regmap_t;
-+	int ret;
- 
--	clk_prepare_enable(chip->mclk);
-+	ret = clk_prepare_enable(chip->mclk);
-+	if (ret) {
-+		dev_err(dev, "Failed to prepare and enable mclk: %d\n",
-+			ret);
-+		return ret;
+ 	/* Read message from the VF */
+ 	msg = ADF_CSR_RD(pmisc_addr, hw_data->get_pf2vf_offset(vf_nr));
++	if (!(msg & ADF_VF2PF_INT)) {
++		dev_info(&GET_DEV(accel_dev),
++			 "Spurious VF2PF interrupt, msg %X. Ignored\n", msg);
++		goto out;
 +	}
  
- 	gpiod_set_value_cansleep(chip->reset_gpio, 1);
- 	usleep_range(100, 1000);
-@@ -222,6 +229,8 @@ static void mn88443x_cmn_power_on(struct mn88443x_priv *chip)
- 	} else {
- 		regmap_write(r_t, HIZSET3, 0x8f);
- 	}
-+
-+	return 0;
- }
+ 	/* To ACK, clear the VF2PFINT bit */
+ 	msg &= ~ADF_VF2PF_INT;
+@@ -333,6 +338,7 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
+ 	if (resp && adf_iov_putmsg(accel_dev, resp, vf_nr))
+ 		dev_err(&GET_DEV(accel_dev), "Failed to send response to VF\n");
  
- static void mn88443x_cmn_power_off(struct mn88443x_priv *chip)
-@@ -738,7 +747,10 @@ static int mn88443x_probe(struct i2c_client *client,
- 	chip->fe.demodulator_priv = chip;
- 	i2c_set_clientdata(client, chip);
++out:
+ 	/* re-enable interrupt on PF from this VF */
+ 	adf_enable_vf2pf_interrupts(accel_dev, (1 << vf_nr));
+ 	return;
+diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
+index ef90902c8200d..86274e3c6781d 100644
+--- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
++++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
+@@ -123,6 +123,11 @@ static void adf_pf2vf_bh_handler(void *data)
  
--	mn88443x_cmn_power_on(chip);
-+	ret = mn88443x_cmn_power_on(chip);
-+	if (ret)
-+		goto err_i2c_t;
-+
- 	mn88443x_s_sleep(chip);
- 	mn88443x_t_sleep(chip);
+ 	/* Read the message from PF */
+ 	msg = ADF_CSR_RD(pmisc_bar_addr, hw_data->get_pf2vf_offset(0));
++	if (!(msg & ADF_PF2VF_INT)) {
++		dev_info(&GET_DEV(accel_dev),
++			 "Spurious PF2VF interrupt, msg %X. Ignored\n", msg);
++		goto out;
++	}
  
+ 	if (!(msg & ADF_PF2VF_MSGORIGIN_SYSTEM))
+ 		/* Ignore legacy non-system (non-kernel) PF2VF messages */
+@@ -171,6 +176,7 @@ static void adf_pf2vf_bh_handler(void *data)
+ 	msg &= ~ADF_PF2VF_INT;
+ 	ADF_CSR_WR(pmisc_bar_addr, hw_data->get_pf2vf_offset(0), msg);
+ 
++out:
+ 	/* Re-enable PF2VF interrupts */
+ 	adf_enable_pf2vf_interrupts(accel_dev);
+ 	return;
 -- 
 2.33.0
 
