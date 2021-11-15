@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE80C45195C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEC8452030
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344658AbhKOXTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:19:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S244453AbhKPAtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhKOTRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5132D632AD;
-        Mon, 15 Nov 2021 18:23:01 +0000 (UTC)
+        id S1344567AbhKOTZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 443A463260;
+        Mon, 15 Nov 2021 19:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000581;
-        bh=fWuWmIPGI5GtDA01JmYFFBJuPO5kD7ENMC6lsgU3Hmk=;
+        s=korg; t=1637002801;
+        bh=ji5dLCwblGr5Eu07zARlCaYRqrv2zsmztEiA+7MAGRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBSM9zvXNjEp6xgI87YbrguGjxXSCDOnBwyI6N20EScYZhS6NFAJ7pm/ztMTVIrEZ
-         d4Z8hFNTfsnf58RivIZxlkpf19lehS5yCwCOimIpyTQE2ERj49FTVxiC7DcRwZF9RH
-         KRyJZ4TelSeXGE7/eyh8sE192LwRHMPOX8qMm4dk=
+        b=VyGnjTW37sh/LahPDxPuW/6zYC1Ui+IbGiE4ab3e3EWmzhmDBwcGH2ym5WLbPJzuU
+         RQDDzLDnFZx2ajQrEn7vBvw5PXuppVNsbPr7nw2/0FEOJM7cUHsR0vIfvu1TkhPfUg
+         D7bJRapxuSVRDqvliZd/+dgy1BG6UeCEBEq9toXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Ser <contact@emersion.fr>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 681/849] drm/plane-helper: fix uninitialized variable reference
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 669/917] phy: Sparx5 Eth SerDes: Fix return value check in sparx5_serdes_probe()
 Date:   Mon, 15 Nov 2021 18:02:44 +0100
-Message-Id: <20211115165443.309460013@linuxfoundation.org>
+Message-Id: <20211115165451.576909425@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 7be28bd73f23e53d6e7f5fe891ba9503fc0c7210 ]
+[ Upstream commit b4dc97ab0a629eda8bda20d96ef47dac08a505d9 ]
 
-drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
-drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
-  113 |         struct drm_plane_state plane_state = {
-      |                                ^~~~~~~~~~~
-drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
-  178 |         bool visible;
-      |              ^~~~~~~
-cc1: all warnings being treated as errors
+In case of error, the function devm_ioremap() returns NULL
+pointer not ERR_PTR(). The IS_ERR() test in the return value
+check should be replaced with NULL test.
 
-visible is an output, not an input. in practice this use might turn out
-OK but it's still UB.
-
-Fixes: df86af9133b4 ("drm/plane-helper: Add drm_plane_helper_check_state()")
-Reviewed-by: Simon Ser <contact@emersion.fr>
-Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
-Signed-off-by: Simon Ser <contact@emersion.fr>
-Link: https://patchwork.freedesktop.org/patch/msgid/20211007063706.305984-1-alex_y_xu@yahoo.ca
+Fixes: 2ff8a1eeb5aa ("phy: Add Sparx5 ethernet serdes PHY driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210909072149.2934047-1-yangyingliang@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_plane_helper.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/phy/microchip/sparx5_serdes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
-index 3aae7ea522f23..c3f2292dc93d5 100644
---- a/drivers/gpu/drm/drm_plane_helper.c
-+++ b/drivers/gpu/drm/drm_plane_helper.c
-@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
- 		.crtc_w = drm_rect_width(dst),
- 		.crtc_h = drm_rect_height(dst),
- 		.rotation = rotation,
--		.visible = *visible,
- 	};
- 	struct drm_crtc_state crtc_state = {
- 		.crtc = crtc,
+diff --git a/drivers/phy/microchip/sparx5_serdes.c b/drivers/phy/microchip/sparx5_serdes.c
+index 4076580fc2cd9..ab1b0986aa671 100644
+--- a/drivers/phy/microchip/sparx5_serdes.c
++++ b/drivers/phy/microchip/sparx5_serdes.c
+@@ -2475,10 +2475,10 @@ static int sparx5_serdes_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	iomem = devm_ioremap(priv->dev, iores->start, resource_size(iores));
+-	if (IS_ERR(iomem)) {
++	if (!iomem) {
+ 		dev_err(priv->dev, "Unable to get serdes registers: %s\n",
+ 			iores->name);
+-		return PTR_ERR(iomem);
++		return -ENOMEM;
+ 	}
+ 	for (idx = 0; idx < ARRAY_SIZE(sparx5_serdes_iomap); idx++) {
+ 		struct sparx5_serdes_io_resource *iomap = &sparx5_serdes_iomap[idx];
 -- 
 2.33.0
 
