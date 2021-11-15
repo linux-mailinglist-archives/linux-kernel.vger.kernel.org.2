@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65974451993
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93F4451EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353747AbhKOXYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:24:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S1355431AbhKPAiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244900AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8467360F6E;
-        Mon, 15 Nov 2021 18:25:09 +0000 (UTC)
+        id S1344652AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1FD2636A8;
+        Mon, 15 Nov 2021 19:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000710;
-        bh=P2r1svbrR0FvdhPuUQFkCzHvBD8t19nlfyexA5OxDa4=;
+        s=korg; t=1637002891;
+        bh=3QZfEHTy8x3dW9yDMXvdUiQZmoEHmzkyzYm70Df/AJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOMzYdIJ3RuGYPKeiu1YJMrG/QlQUUEICyj7vAop9TXAvKj1aVMxW5qmhCL4Ai5Cr
-         NSBUI7jwBQXeTGA3eocG5ADbpki05aO5c9WmizxieuxDZQj4yHooZ1DTwubR8HXG1e
-         Cevmc6um6jFaOKWyn+e/r1qd1u0xWyOSDsSyGdWU=
+        b=djsVtSFuEOhmwldXSt64NsStBuTmnqY7rwgTz4s1awR0Xq6aBWeTWCQ4muDbR1/hA
+         RUcmIf6xokix/TPqTZlzvG6NnmPISWJ+35orLMxocrycXbHmK9xXLLaPkxearpuj0h
+         37NF+7o4Xw21hz4DYvOqRYdGrh8ZZjpQX61LHReo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kai Song <songkai01@inspur.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 745/849] mfd: altera-sysmgr: Fix a mistake caused by resource_size conversion
+Subject: [PATCH 5.15 733/917] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
 Date:   Mon, 15 Nov 2021 18:03:48 +0100
-Message-Id: <20211115165445.451952878@linuxfoundation.org>
+Message-Id: <20211115165453.769842541@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Song <songkai01@inspur.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit fae2570d629cdd72f0611d015fc4ba705ae5422b ]
+[ Upstream commit afcb5a811ff3ab3969f09666535eb6018a160358 ]
 
-The resource_size defines that:
-	res->end - res->start + 1;
-The origin original code is:
-	sysmgr_config.max_register = res->end - res->start - 3;
+While writing an empty string to a device attribute is a no-op, and thus
+does not need explicit safeguards, the user can still write a single
+newline to an attribute file:
 
-So, the correct fix is that:
-	sysmgr_config.max_register = resource_size(res) - 4;
+    echo > .../message
 
-Fixes: d12edf9661a4 ("mfd: altera-sysmgr: Use resource_size function on resource object")
-Signed-off-by: Kai Song <songkai01@inspur.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20211006141926.6120-1-songkai01@inspur.com
+If that happens, img_ascii_lcd_display() trims the newline, yielding an
+empty string, and causing an infinite loop in img_ascii_lcd_scroll().
+
+Fix this by adding a check for empty strings.  Clear the display in case
+one is encountered.
+
+Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/altera-sysmgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
-index 20cb294c75122..5d3715a28b28e 100644
---- a/drivers/mfd/altera-sysmgr.c
-+++ b/drivers/mfd/altera-sysmgr.c
-@@ -153,7 +153,7 @@ static int sysmgr_probe(struct platform_device *pdev)
- 		if (!base)
- 			return -ENOMEM;
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index 1cce409ce5cac..e33ce0151cdfd 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
+ 	if (msg[count - 1] == '\n')
+ 		count--;
  
--		sysmgr_config.max_register = resource_size(res) - 3;
-+		sysmgr_config.max_register = resource_size(res) - 4;
- 		regmap = devm_regmap_init_mmio(dev, base, &sysmgr_config);
- 	}
- 
++	if (!count) {
++		/* clear the LCD */
++		devm_kfree(&ctx->pdev->dev, ctx->message);
++		ctx->message = NULL;
++		ctx->message_len = 0;
++		memset(ctx->curr, ' ', ctx->cfg->num_chars);
++		ctx->cfg->update(ctx);
++		return 0;
++	}
++
+ 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
 -- 
 2.33.0
 
