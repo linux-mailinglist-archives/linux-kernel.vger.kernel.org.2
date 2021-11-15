@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC904512B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6387451284
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346715AbhKOTgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:36:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39650 "EHLO mail.kernel.org"
+        id S1346765AbhKOTgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:36:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239206AbhKORzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239214AbhKORzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:55:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5203263326;
-        Mon, 15 Nov 2021 17:33:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C3E63327;
+        Mon, 15 Nov 2021 17:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997615;
-        bh=Ko8gcaZ2CBjpD/j9fuLpDpSwDbMuTKxiXgJe3TywpkA=;
+        s=korg; t=1636997618;
+        bh=vcW+5ZRdrGx+AtFDutn68szzICfIRXVYM+ST+zGdUeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kkIs+iNClkXwfvrv23zer1Ve4ig0nynZJVv+mxTogfhsdaBbKLsfX3nmAozouPcah
-         Et1OyiWUB7r/HI6UfTpIa3ztjlqydCFXPXIHenhvE2z4Ap7SrRUH5OwRcmh9ZQi/FT
-         y+EZtoVq298tACjTZZgN3CWtALeRimziFLivW8s0=
+        b=tFf4UX7HK1fsLykjkB7u4VudRFh4y0QzYk1CXPEqc9R78rvnKpYCXYKQdl++MXBdU
+         +VTUPAY+kDhWIXKt+eMaYdPcdGq4opTcji11M9CMMsNuqqQ5MISI0xOUCim03JeauG
+         qU9DOpLpt/zaJKoDWFaSHrv03bFqoYTtkC10BPgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Tuo Li <islituo@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 211/575] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
-Date:   Mon, 15 Nov 2021 17:58:56 +0100
-Message-Id: <20211115165351.010588850@linuxfoundation.org>
+Subject: [PATCH 5.10 212/575] mmc: moxart: Fix reference count leaks in moxart_probe
+Date:   Mon, 15 Nov 2021 17:58:57 +0100
+Message-Id: <20211115165351.049813865@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,50 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit 4b6012a7830b813799a7faf40daa02a837e0fd5b ]
+[ Upstream commit 8105c2abbf36296bf38ca44f55ee45d160db476a ]
 
-kzalloc() is used to allocate memory for cd->detectors, and if it fails,
-channel_detector_exit() behind the label fail will be called:
-  channel_detector_exit(dpd, cd);
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement one or both objects'
+reference count increased earlier by dma_request_chan(), causing
+reference count leaks.
 
-In channel_detector_exit(), cd->detectors is dereferenced through:
-  struct pri_detector *de = cd->detectors[i];
+Fix it by balancing the refcounts of both objects in some error
+handling paths. In correspondence with the changes in moxart_probe(),
+IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
 
-To fix this possible null-pointer dereference, check cd->detectors before
-the for loop to dereference cd->detectors.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210805153854.154066-1-islituo@gmail.com
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/20211009041918.28419-1-xiongx18@fudan.edu.cn
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
-index 0813473793df1..87369073098c8 100644
---- a/drivers/net/wireless/ath/dfs_pattern_detector.c
-+++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-@@ -182,10 +182,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
- 	if (cd == NULL)
- 		return;
- 	list_del(&cd->head);
--	for (i = 0; i < dpd->num_radar_types; i++) {
--		struct pri_detector *de = cd->detectors[i];
--		if (de != NULL)
--			de->exit(de);
-+	if (cd->detectors) {
-+		for (i = 0; i < dpd->num_radar_types; i++) {
-+			struct pri_detector *de = cd->detectors[i];
-+			if (de != NULL)
-+				de->exit(de);
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 2e4a7c6971dc9..dcd128ecdf15b 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -624,6 +624,14 @@ static int moxart_probe(struct platform_device *pdev)
+ 			ret = -EPROBE_DEFER;
+ 			goto out;
+ 		}
++		if (!IS_ERR(host->dma_chan_tx)) {
++			dma_release_channel(host->dma_chan_tx);
++			host->dma_chan_tx = NULL;
 +		}
- 	}
- 	kfree(cd->detectors);
- 	kfree(cd);
++		if (!IS_ERR(host->dma_chan_rx)) {
++			dma_release_channel(host->dma_chan_rx);
++			host->dma_chan_rx = NULL;
++		}
+ 		dev_dbg(dev, "PIO mode transfer enabled\n");
+ 		host->have_dma = false;
+ 	} else {
+@@ -678,6 +686,10 @@ static int moxart_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out:
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
++		dma_release_channel(host->dma_chan_tx);
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
++		dma_release_channel(host->dma_chan_rx);
+ 	if (mmc)
+ 		mmc_free_host(mmc);
+ 	return ret;
+@@ -690,9 +702,9 @@ static int moxart_remove(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, NULL);
+ 
+-	if (!IS_ERR(host->dma_chan_tx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+ 		dma_release_channel(host->dma_chan_tx);
+-	if (!IS_ERR(host->dma_chan_rx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+ 		dma_release_channel(host->dma_chan_rx);
+ 	mmc_remove_host(mmc);
+ 	mmc_free_host(mmc);
 -- 
 2.33.0
 
