@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24004452043
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ED945195D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347470AbhKPAtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:49:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S243375AbhKOXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:19:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344552AbhKOTY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3110F63688;
-        Mon, 15 Nov 2021 18:59:44 +0000 (UTC)
+        id S244719AbhKOTRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87234632BF;
+        Mon, 15 Nov 2021 18:23:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002785;
-        bh=SdWdxXl4TzDeiPKkSH9rH2yuR/FJJhiw/pW90KXHfT8=;
+        s=korg; t=1637000587;
+        bh=+eXMQUbTK7EmfoH7qhPKf4mlY/tKwzD5uBt9so9pzys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vhudA/r1msI6+HkHNFL2bI04br0XZFe26inPAJuK2cfDeAKcGBPEaxh4YODIj2UqF
-         q9VBEEbdM1aPZkzqa5CVcRnsV/I9arhYoaTicLpL0YaxSWL3w+p3xhyDd4/jxnWHrM
-         R7G5c22qrLLP4cIx5e4u7l+Vh5LTK/m9/FS9I930=
+        b=wtq6jjIbi3AXJkmnbsIT5hrtft0dxomR5wzCyRHE5I+9nsAul3Cp74cCSByu52m6p
+         mn7RsR8bdNrnHkRGzv9+3CGtqanKEgcyEIe6CRxXnfK3uOenRic530R9U9/nwux6pX
+         Hd3aOFNwCw8S6VOcGehmfe6xNzeP4T2pIWGAdh30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 695/917] mtd: rawnand: intel: Fix potential buffer overflow in probe
-Date:   Mon, 15 Nov 2021 18:03:10 +0100
-Message-Id: <20211115165452.453638860@linuxfoundation.org>
+Subject: [PATCH 5.14 708/849] watchdog: f71808e_wdt: fix inaccurate report in WDIOC_GETTIMEOUT
+Date:   Mon, 15 Nov 2021 18:03:11 +0100
+Message-Id: <20211115165444.208197076@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit 46a0dc10fb32bec3e765e51bf71fbc070dc77ca3 ]
+[ Upstream commit 164483c735190775f29d0dcbac0363adc51a068d ]
 
-ebu_nand_probe() read the value of u32 variable "cs" from the device
-firmware description and used it as the index for array ebu_host->cs
-that can contain MAX_CS (2) elements at most. That could result in
-a buffer overflow and various bad consequences later.
+The fintek watchdog timer can configure timeouts of second granularity
+only up to 255 seconds. Beyond that, the timeout needs to be configured
+with minute granularity. WDIOC_GETTIMEOUT should report the actual
+timeout configured, not just echo back the timeout configured by the
+user. Do so.
 
-Fix the potential buffer overflow by restricting values of "cs" with
-MAX_CS in probe.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210903082653.16441-1-novikov@ispras.ru
+Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Link: https://lore.kernel.org/r/5e17960fe8cc0e3cb2ba53de4730b75d9a0f33d5.1628525954.git-series.a.fatoum@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/intel-nand-controller.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/watchdog/f71808e_wdt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index b9784f3da7a11..7c1c80dae826a 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -609,6 +609,11 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 		dev_err(dev, "failed to get chip select: %d\n", ret);
- 		return ret;
- 	}
-+	if (cs >= MAX_CS) {
-+		dev_err(dev, "got invalid chip select: %d\n", cs);
-+		return -EINVAL;
-+	}
-+
- 	ebu_host->cs_num = cs;
+diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+index f60beec1bbaea..f7d82d2619133 100644
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -228,15 +228,17 @@ static int watchdog_set_timeout(int timeout)
  
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
+ 	mutex_lock(&watchdog.lock);
+ 
+-	watchdog.timeout = timeout;
+ 	if (timeout > 0xff) {
+ 		watchdog.timer_val = DIV_ROUND_UP(timeout, 60);
+ 		watchdog.minutes_mode = true;
++		timeout = watchdog.timer_val * 60;
+ 	} else {
+ 		watchdog.timer_val = timeout;
+ 		watchdog.minutes_mode = false;
+ 	}
+ 
++	watchdog.timeout = timeout;
++
+ 	mutex_unlock(&watchdog.lock);
+ 
+ 	return 0;
 -- 
 2.33.0
 
