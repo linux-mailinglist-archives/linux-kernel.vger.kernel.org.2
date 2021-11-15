@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FC04519D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D26451F3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354150AbhKOX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1345875AbhKPAjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:39:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245091AbhKOTTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53CA563505;
-        Mon, 15 Nov 2021 18:28:04 +0000 (UTC)
+        id S1344836AbhKOTZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCFE763236;
+        Mon, 15 Nov 2021 19:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000884;
-        bh=Yo6T0HmG8a4MTeLKQSYbbIo+YmDuXIyL06Yfb6G+iJE=;
+        s=korg; t=1637003118;
+        bh=fks25m95ylT9sOoOxCGCDkMxg9akX8lyYSWHnRHlSo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=etaAVLU/KRls1K4AKzG8Uu9k8hhO6I/Vn2xvvZ/uv4TGbBCLlDfihFDIH6mYLwoyH
-         OuoID+1MKZHmi/HV52nI979OZGpSfJXS6s+iU0BYnRCSsOIabgpqkSFm19VGm69WK9
-         U+rKjgxPyropEeTYMbm4ShNEIpEglDRKtD8uTOpA=
+        b=cF155DSNkxP7Q4FK9YhsyRHoL6HEBxz/bACCKDvreGHxSXpbr+O9NIl3D1X/hNBZl
+         XIZvGZV7NyLLU6ejJRplxFr9m06ICZY/ZyBJcCRb47xTnsRBmtbHmotwD8bzKXU7Z7
+         Fpfrl5CJAgjNxr9mvT0Y9CXF1ejfBW03uLGTQdHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.14 830/849] mtd: rawnand: gpio: Keep the driver compatible with on-die ECC engines
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 818/917] litex_liteeth: Fix a double free in the remove function
 Date:   Mon, 15 Nov 2021 18:05:13 +0100
-Message-Id: <20211115165448.307617598@linuxfoundation.org>
+Message-Id: <20211115165456.777049477@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,71 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit b5b5b4dc6fcd8194b9dd38c8acdc5ab71adf44f8 upstream.
+[ Upstream commit c45231a7668d6b632534f692b10592ea375b55b0 ]
 
-Following the introduction of the generic ECC engine infrastructure, it
-was necessary to reorganize the code and move the ECC configuration in
-the ->attach_chip() hook. Failing to do that properly lead to a first
-series of fixes supposed to stabilize the situation. Unfortunately, this
-only fixed the use of software ECC engines, preventing any other kind of
-engine to be used, including on-die ones.
+'netdev' is a managed resource allocated in the probe using
+'devm_alloc_etherdev()'.
+It must not be freed explicitly in the remove function.
 
-It is now time to (finally) fix the situation by ensuring that we still
-provide a default (eg. software ECC) but will still support different
-ECC engines such as on-die ECC engines if properly described in the
-device tree.
-
-There are no changes needed on the core side in order to do this, but we
-just need to leverage the logic there which allows:
-1- a subsystem default (set to Host engines in the raw NAND world)
-2- a driver specific default (here set to software ECC engines)
-3- any type of engine requested by the user (ie. described in the DT)
-
-As the raw NAND subsystem has not yet been fully converted to the ECC
-engine infrastructure, in order to provide a default ECC engine for this
-driver we need to set chip->ecc.engine_type *before* calling
-nand_scan(). During the initialization step, the core will consider this
-entry as the default engine for this driver. This value may of course
-be overloaded by the user if the usual DT properties are provided.
-
-Fixes: f6341f6448e0 ("mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-4-miquel.raynal@bootlin.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ee7da21ac4c3 ("net: Add driver for LiteX's LiteETH network interface")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/gpio.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/litex/litex_liteeth.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/mtd/nand/raw/gpio.c
-+++ b/drivers/mtd/nand/raw/gpio.c
-@@ -163,9 +163,8 @@ static int gpio_nand_exec_op(struct nand
+diff --git a/drivers/net/ethernet/litex/litex_liteeth.c b/drivers/net/ethernet/litex/litex_liteeth.c
+index a9bdbf0dcfe1e..5bb1cc8a2ce13 100644
+--- a/drivers/net/ethernet/litex/litex_liteeth.c
++++ b/drivers/net/ethernet/litex/litex_liteeth.c
+@@ -289,7 +289,6 @@ static int liteeth_remove(struct platform_device *pdev)
+ 	struct net_device *netdev = platform_get_drvdata(pdev);
  
- static int gpio_nand_attach_chip(struct nand_chip *chip)
- {
--	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
--
--	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-+	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
-+	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
- 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+ 	unregister_netdev(netdev);
+-	free_netdev(netdev);
  
  	return 0;
-@@ -365,6 +364,13 @@ static int gpio_nand_probe(struct platfo
- 	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
- 		gpiod_direction_output(gpiomtd->nwp, 1);
- 
-+	/*
-+	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-+	 * Set ->engine_type before registering the NAND devices in order to
-+	 * provide a driver specific default value.
-+	 */
-+	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+
- 	ret = nand_scan(chip, 1);
- 	if (ret)
- 		goto err_wp;
+ }
+-- 
+2.33.0
+
 
 
