@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E0A4505F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BFB45060B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhKONxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:53:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26153 "EHLO
+        id S232025AbhKONx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:53:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26435 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231845AbhKONxE (ORCPT
+        by vger.kernel.org with ESMTP id S231941AbhKONxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:53:04 -0500
+        Mon, 15 Nov 2021 08:53:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636984208;
+        s=mimecast20190719; t=1636984214;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wKxkeDUfwxQx13XQZaRduws4du0bmSnfXtJrXN7mSsk=;
-        b=DQwHYX37Z7ra1UUZ/d7zGZ20phDEdo7Exkc8K9iYCveNlARwBfDza+Cr/JSPAsvlGZuyu9
-        MFaeNMMORNDEigcxXDh6f85v9fVtTN3sXawKifEsPHHrkK/Jm7vjKnCs/HXgEsbu5Ftv88
-        vFBz0GRNClHerYbc3Qj/AfsI8DtsHc0=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-4juYTEd4OdWI5cQOI4NbnQ-1; Mon, 15 Nov 2021 08:50:07 -0500
-X-MC-Unique: 4juYTEd4OdWI5cQOI4NbnQ-1
-Received: by mail-pg1-f197.google.com with SMTP id q29-20020a631f5d000000b002dfcc4e0201so7264772pgm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:50:07 -0800 (PST)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zc9KdahAguXkghVeJqdY3150Du1QUqNhK9U4RYp1RCU=;
+        b=Qru4zU55cIDtWPs99U1q3XnTN/AqdmI3Ah3leSxsGBp1dWeyTCetKYA0d4h8EGnUrvrYd1
+        jIaGALIJnywAy0vS517Bnyd2x4q1rHHeMDNN0Z3M/1hJxy+L7GYNjkVtkf4C9JwcXUzFjL
+        AcZoSiBke3BnDkk6WeRq/mqLFxEq+Gc=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-lDgiGwW_O0613tuaCdAPvg-1; Mon, 15 Nov 2021 08:50:13 -0500
+X-MC-Unique: lDgiGwW_O0613tuaCdAPvg-1
+Received: by mail-pg1-f200.google.com with SMTP id q15-20020a65624f000000b002e6a7b9f4b8so1866786pgv.15
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:50:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wKxkeDUfwxQx13XQZaRduws4du0bmSnfXtJrXN7mSsk=;
-        b=H2CxIgMREzP10TuZyNfsoXwG2f1dmxCnRB97HOgG5syvnlb/Och5cHKApw2QGcb1Un
-         S5sTrcvUD8bTrVX5tsSLhJdyQ29DDJs4k++8nIqXADyxr6i4GJ4lfq6uBKzs30IoWUWk
-         Xcaga2XJGqoNjsvT3RkNYWZ4aGqkynQPm4w2esW7bjjcQyKEKDXNUQreXbCHVoIwk7wX
-         O5R2xAocUKSRIIQNpHEs38YhBVFNSq9gHfYXA94uQUcOZ844YP8FWLCXU5/oib2/WB7k
-         1JfW172HQau2462bXXEilcwzagNNhNRHTt0h3v8D2KzvotZDFIneivqTXm69qNsDZN22
-         XGTg==
-X-Gm-Message-State: AOAM530odftumlKLeRof2DwyUbZh1cPlFAKjWaWh6Fru4gcpXIzCo8RI
-        oDCffPBnCsygXbjQPsvgZVuj7iUFWEi6O7Yo0zLnPCWMSe5hXbgS6suZMjAb62C18ol0ObTDyKF
-        KvdM0X2fhs+1d8hdo1iP2IBc//PY2Sy1xg0m7AJrfkdOzdwwSPnsCvn3txXaM7indnx470USKNA
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zc9KdahAguXkghVeJqdY3150Du1QUqNhK9U4RYp1RCU=;
+        b=RQNLLDEIYysHAbSK5myrmVRByM+dU9ccgSqeOz6B2eu0IXIcxwdS1wlRxMcdmbPmM/
+         HKurr+dXTyYylrF4G1BE5+8X6l7Liek/yiz6t0k0jIqN0ErOUfFzD+KhtRksApnPIlCm
+         w2lMuALAof4Vl68jI1sz2D9MIA2eRhX16ZYadzjk9Cl4sfvQuy+Lp6ql39YvjBtgyEJp
+         dM6RrjhkAus/Xxj4VujcgomhmIeMLqpbFjXsddSD9s8pewNJLXqsLlRoPJuIe+pywPK+
+         WFp0cz2fGYtX6fd2wwYcKROxF9ME62i22Y9S3QL6QAnZeL6OZdiXC0tM2cSh9yxVkkXb
+         uzrg==
+X-Gm-Message-State: AOAM5306gAhkks7Q2LSNcF4qvlJ4BuL5uqUnxKGSPOU6aFnKweB4kg6Y
+        rz7MggT/+aTKG/sPRwuZNw/E2M87/8I3f0qsLJxE0+HlCpjhI8oBKeSYzrE8D8K49vG7vLS+3jm
+        nt+KbIuMLenooI7TsPRxd0jIuvSa6y9e//diEBDRIOvxyrjRAoitgPkqvQcJw9dvlRPXf4Y9Aow
         ==
-X-Received: by 2002:a62:924e:0:b0:4a2:82d7:1244 with SMTP id o75-20020a62924e000000b004a282d71244mr20563380pfd.50.1636984205568;
-        Mon, 15 Nov 2021 05:50:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyv8re2/SMpKzf1Sj2CYlrHxo4P3jy1/NtL8XAykTmE1/FiqOAdQnhgBIVZTtdsbZov0yW7MA==
-X-Received: by 2002:a62:924e:0:b0:4a2:82d7:1244 with SMTP id o75-20020a62924e000000b004a282d71244mr20563328pfd.50.1636984205148;
-        Mon, 15 Nov 2021 05:50:05 -0800 (PST)
+X-Received: by 2002:a17:902:c7c4:b0:141:deb4:1b2f with SMTP id r4-20020a170902c7c400b00141deb41b2fmr35276058pla.44.1636984212312;
+        Mon, 15 Nov 2021 05:50:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyVSWk3fByWPePLZoQ7jzLPYtHg8URAdE0VnftMpGgFIdHPUy8j42a0fPsBR8PAdhvEB0sRZw==
+X-Received: by 2002:a17:902:c7c4:b0:141:deb4:1b2f with SMTP id r4-20020a170902c7c400b00141deb41b2fmr35276002pla.44.1636984211931;
+        Mon, 15 Nov 2021 05:50:11 -0800 (PST)
 Received: from localhost.localdomain ([191.101.132.72])
-        by smtp.gmail.com with ESMTPSA id p188sm15499471pfg.102.2021.11.15.05.49.58
+        by smtp.gmail.com with ESMTPSA id p188sm15499471pfg.102.2021.11.15.05.50.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Nov 2021 05:50:04 -0800 (PST)
+        Mon, 15 Nov 2021 05:50:11 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     David Hildenbrand <david@redhat.com>, peterx@redhat.com,
@@ -61,59 +62,74 @@ Cc:     David Hildenbrand <david@redhat.com>, peterx@redhat.com,
         Andrew Morton <akpm@linux-foundation.org>,
         Alistair Popple <apopple@nvidia.com>,
         "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: [PATCH RFC v2 0/2] mm: Rework zap ptes on swap entries
-Date:   Mon, 15 Nov 2021 21:49:49 +0800
-Message-Id: <20211115134951.85286-1-peterx@redhat.com>
+Subject: [PATCH RFC v2 1/2] mm: Don't skip swap entry even if zap_details specified
+Date:   Mon, 15 Nov 2021 21:49:50 +0800
+Message-Id: <20211115134951.85286-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20211115134951.85286-1-peterx@redhat.com>
+References: <20211115134951.85286-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2:
-- Resend to rebase to tag v5.16-rc1 (fa55b7dcdc43)
+This check existed since the 1st git commit of Linux repository, but at that
+time there's no page migration yet so I think it's okay.
 
-The goal of this small series is to replace the previous patch (which is the
-5th patch of the series):
+With page migration enabled, it should logically be possible that we zap some
+shmem pages during migration.  When that happens, IIUC the old code could have
+the RSS counter accounted wrong on MM_SHMEMPAGES because we will zap the ptes
+without decreasing the counters for the migrating entries.  I have no unit test
+to prove it as I don't know an easy way to trigger this condition, though.
 
-https://lore.kernel.org/linux-mm/20210908163628.215052-1-peterx@redhat.com/
+Besides, the optimization itself is already confusing IMHO to me in a few points:
 
-This patch used a more aggresive (but IMHO cleaner and correct..) approach by
-removing that trick to skip swap entries, then we handle swap entries always.
+  - The wording "skip swap entries" is confusing, because we're not skipping all
+    swap entries - we handle device private/exclusive pages before that.
 
-The behavior of "skipping swap entries" existed starting from the initial git
-commit that we'll try to skip swap entries when zapping ptes if zap_detail
-pointer specified.
+  - The skip behavior is enabled as long as zap_details pointer passed over.
+    It's very hard to figure that out for a new zap caller because it's unclear
+    why we should skip swap entries when we have zap_details specified.
 
-I found that it's probably broken because of the introduction of page migration
-mechanism that does not exist yet in the world of 1st git commit, then we could
-errornously skip scanning the swap entries for file-backed memory, like shmem,
-while we should.  I'm afraid we'll have RSS accounting wrong for those shmem
-pages during migration so there could have leftover SHMEM RSS accounts.
+  - With modern systems, especially performance critical use cases, swap
+    entries should be rare, so I doubt the usefulness of this optimization
+    since it should be on a slow path anyway.
 
-Patch 1 did that removal of the trick, details in the commit message.
+  - It is not aligned with what we do with huge pmd swap entries, where in
+    zap_huge_pmd() we'll do the accounting unconditionally.
 
-Patch 2 is a further cleanup for zap pte swap handling that can be done after
-patch 1, in which there's no functional change intended.
+This patch drops that trick, so we handle swap ptes coherently.  Meanwhile we
+should do the same mapping check upon migration entries too.
 
-The change should be on the slow path for zapping swap entries (e.g., we handle
-none/present ptes in early code path always, so they're totally not affected),
-but if anyone worries about specific workload that may be affected by this
-patchset, please let me know and I'll be happy to run some more tests.  I could
-also overlook something that was buried in history, in that case please kindly
-point that out.  Marking the patchset RFC for this.
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/memory.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Smoke tested only.  Please review, thanks.
-
-Peter Xu (2):
-  mm: Don't skip swap entry even if zap_details specified
-  mm: Rework swap handling of zap_pte_range
-
- mm/memory.c | 31 ++++++++++---------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
-
+diff --git a/mm/memory.c b/mm/memory.c
+index 8f1de811a1dc..e454f3c6aeb9 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1382,16 +1382,14 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			continue;
+ 		}
+ 
+-		/* If details->check_mapping, we leave swap entries. */
+-		if (unlikely(details))
+-			continue;
+-
+ 		if (!non_swap_entry(entry))
+ 			rss[MM_SWAPENTS]--;
+ 		else if (is_migration_entry(entry)) {
+ 			struct page *page;
+ 
+ 			page = pfn_swap_entry_to_page(entry);
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			rss[mm_counter(page)]--;
+ 		}
+ 		if (unlikely(!free_swap_and_cache(entry)))
 -- 
 2.32.0
 
