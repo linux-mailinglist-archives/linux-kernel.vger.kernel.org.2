@@ -2,84 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A247450A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2F4450A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhKORBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhKORBG (ORCPT
+        id S231792AbhKORCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:02:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53428 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231441AbhKORB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:01:06 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674C6C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:58:09 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id g28so15097731pgg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:58:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
-        b=n8pkbYe32qDFRCmouaatXkFXq5Jj5fIMBsXTMEUgKnkZ9zPwV+fZ0CeDLh7PliPfDa
-         V1k8L7UrQ/8Uh/259yldY4Eq+PtB/QT63ZRro+7ONSgLdtsSzlEDlMPhrR5ut+oC7yJM
-         PSB2wa6BeGF8gSx0xmIF4IcFDP56clwIEwylxKcsDwmmrXtKCClTuol2ZTLjUNQT21xM
-         KHhbmTp7/r+FgyeLig3R+Li2ORZWvQ9kmk8UqouXfZYC4+lZzFY/Mhtiap4QiW1SXGJZ
-         NEZK6MA8IMcg+PremXvKqWD7OLPFOfAm2QqtWJo6snPWGCkOvgHLuefkEuhId4Qj2fUe
-         OP0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
-        b=1rxomNJoMUM7qHOsvcP6TIKj9KHBcljD2MzoL/jtpCjoVKp01XlAXyu1s/yV5KDp2R
-         AXyqq2A7TlEzt79xq7P4dTCjPhK2ZwRxWzmAh4w+WoR52yH6T6jzJcXgACsVHGXR4bd4
-         v5NO79jFEXk3y7llD31hupq2HsRQkfaKsuzLdRQUO4K9yfWGPpcV7RXUdqa/FMt9QjR9
-         VVqmD3F6GNFVwgyCNRjip3RfnBJFIP60LLIZFm0ImaU2LiQZHwJaPb69FAMmEDUMAeY3
-         jqZ6h1TutyHXJNlDDT3cxdPDv85ATstbGtsrIfRwn65VskFDiss1XVv7/JAPeUiMLfrE
-         GwGQ==
-X-Gm-Message-State: AOAM532sWOIRHPz7//s7TOT4TdixXe+cmbOiDuTSrPPMfZx3HS6E8eH7
-        qjpLESbRhSGB2K4cuEyinW1nEbKlSB/4/ZG50A==
-X-Google-Smtp-Source: ABdhPJyNvJdZS+jvIFNF3ZdnvpwXVcB6F8nMIN/oENyvYvQz8CmJtsUYC+FrgscidPdFYGvwEkX2I4XApoIfNAakjm8=
-X-Received: by 2002:aa7:8204:0:b0:494:68ea:ea89 with SMTP id
- k4-20020aa78204000000b0049468eaea89mr34437955pfi.74.1636995488965; Mon, 15
- Nov 2021 08:58:08 -0800 (PST)
+        Mon, 15 Nov 2021 12:01:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636995541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8g6PLmrTQhXs/TJUZO6x3ej53ilZy6YgFAlHFjFCsWQ=;
+        b=GIXqyjp3Z1SA+5WnoM7XLB9h3W3i9mA/jEcueTa+sFqyMmQcmYso8LGdtgFjDXBPRHFCfc
+        PT6cxpWpJVJhhdIxD75q9t5L3ePm0qy3jOHETNrArehhtlp6tH70E3biV/3p6zV4pGgBVB
+        70uW6H0JTzmnBLuSTjF7qaPuhJ+y0/I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-g7IaaYDCPzWEBDKwXQYhgg-1; Mon, 15 Nov 2021 11:58:58 -0500
+X-MC-Unique: g7IaaYDCPzWEBDKwXQYhgg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08A31101F7A4;
+        Mon, 15 Nov 2021 16:58:57 +0000 (UTC)
+Received: from [10.22.33.148] (unknown [10.22.33.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 732335DF21;
+        Mon, 15 Nov 2021 16:58:54 +0000 (UTC)
+Message-ID: <45caebb9-3c9a-5a62-3b0b-6310af267687@redhat.com>
+Date:   Mon, 15 Nov 2021 11:58:53 -0500
 MIME-Version: 1.0
-Sender: economicminster@gmail.com
-Received: by 2002:a05:6a10:1049:0:0:0:0 with HTTP; Mon, 15 Nov 2021 08:58:08
- -0800 (PST)
-From:   "Mr.Sal kavar" <salkavar2@gmail.com>
-Date:   Mon, 15 Nov 2021 17:58:08 +0100
-X-Google-Sender-Auth: isryrPM9WWhtM4jcZIzpijXqtGM
-Message-ID: <CAP6R5muPMUVzx5HoPo=7Px+65bu7srcTYWzZbYsD9XS5NiixRQ@mail.gmail.com>
-Subject: Yours Faithful,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4] locking/rwsem: Make handoff bit handling more
+ consistent
+Content-Language: en-US
+To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        mazhenhua <mazhenhua@xiaomi.com>, Hillf Danton <hdanton@sina.com>
+References: <20211112040753.389380-1-longman@redhat.com>
+ <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
+ <8413daa9-4801-ccb6-0893-657eca2bdece@quicinc.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <8413daa9-4801-ccb6-0893-657eca2bdece@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I assume you and your family are in good health. I am the foreign
-operations Manager
 
-This being a wide world in which it can be difficult to make new
-acquaintances and because it is virtually impossible to know who is
-trustworthy and who can be believed, i have decided to repose
-confidence in you after much fasting and prayer. It is only because of
-this that I have decided to confide in you and to share with you this
-confidential business.
+On 11/15/21 10:45, Aiqun(Maria) Yu wrote:
+> On 11/12/2021 8:10 PM, Peter Zijlstra wrote:
+>> On Thu, Nov 11, 2021 at 11:07:53PM -0500, Waiman Long wrote:
+>>> @@ -889,6 +892,20 @@ rwsem_spin_on_owner(struct rw_semaphore *sem)
+>>>   }
+>>>   #endif
+>>>   +/*
+>>> + * Common code to handle rwsem flags in out_nolock path with 
+>>> wait_lock held.
+>>> + * If there is more than one waiter in the queue and the HANDOFF 
+>>> bit is set,
+>>> + * the next waiter will inherit it if the first waiter is removed.
+>>> + */
+>>> +static inline void rwsem_out_nolock_clear_flags(struct rw_semaphore 
+>>> *sem,
+>>> +                        struct rwsem_waiter *waiter)
+>>
+>> I'm going to rename that, it doesn't just clear flags, it dequeues the
+>> waiter.
+>>
+>> Argh, rwsem_mark_wake() doesn't clear HANDOFF when list_empty(), and
+>> write_slowpath() is *far* too clever about all of this.
+>>
+>>
+>>> +{
+>>> +    list_del(&waiter->list);
+>>     if (list_empty(&sem->wait_list)) {
+>>> + atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS,
+>>> +                   &sem->count);
+>>     }
+>>> +}
+>>
+>>
+>>
+>>> @@ -1098,7 +1110,7 @@ rwsem_down_write_slowpath(struct rw_semaphore 
+>>> *sem, int state)
+>>>            * In this case, we attempt to acquire the lock again
+>>>            * without sleeping.
+>>>            */
+>>> -        if (wstate == WRITER_HANDOFF) {
+>>> +        if (waiter.handoff_set) {
+>>
+>> I'm thinking this wants to be something like:
+>>
+>>         if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
+>>
+>>>               enum owner_state owner_state;
+>>>                 preempt_disable();
+>>
+>> How's this (on top) then?
+>>
+>> ---
+>> --- a/kernel/locking/rwsem.c
+>> +++ b/kernel/locking/rwsem.c
+>> @@ -104,11 +104,10 @@
+>>    * atomic_long_fetch_add() is used to obtain reader lock, whereas
+>>    * atomic_long_cmpxchg() will be used to obtain writer lock.
+>>    *
+>> - * There are four places where the lock handoff bit may be set or 
+>> cleared.
+>> - * 1) rwsem_mark_wake() for readers            -- set, clear
+>> - * 2) rwsem_try_write_lock() for writers       -- set, clear
+>> - * 3) Error path of rwsem_down_write_slowpath() -- clear
+>> - * 4) Error path of rwsem_down_read_slowpath()  -- clear
+>> + * There are three places where the lock handoff bit may be set or 
+>> cleared.
+>> + * 1) rwsem_mark_wake() for readers        -- set, clear
+>> + * 2) rwsem_try_write_lock() for writers    -- set, clear
+>> + * 3) rwsem_del_waiter()            -- clear
+>>    *
+>>    * For all the above cases, wait_lock will be held. A writer must also
+>>    * be the first one in the wait_list to be eligible for setting the 
+>> handoff
+>> @@ -363,6 +362,31 @@ enum rwsem_wake_type {
+>>    */
+>>   #define MAX_READERS_WAKEUP    0x100
+>>   +static inline void
+>> +rwsem_add_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
+>> +{
+>> +    lockdep_assert_held(&sem->wait_lock);
+>> +    list_add_tail(&waiter->list, &sem->wait_list);
+>> +    /* caller will set RWSEM_FLAG_WAITERS */
+>     /* each time a waiter is just added in to the list,
+>      * handoff_set initialed as false. */
+>     waiter->handoff_set = false;
 
-overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred
-Thousand Dollars Only) when the account holder suddenly passed on, he
-left no beneficiary who would be entitled to the receipt of this fund.
-For this reason, I have found it expedient to transfer this fund to a
-trustworthy individual with capacity to act as foreign business
-partner.
+waiter initialization is done at entry to the slowpath function. This 
+helper function just insert the waiter into the wait list.
 
-Thus i humbly request your assistance to claim this fund. Upon the
-transfer of this fund in your account, you will take 45% as your share
-from the total fund, 10% will be shared to Charity Organizations in
-both country and 45% will be for me.
 
-Yours Faithful,
-Mr.Sal Kavar.
+>> +}
+>> +
+>> +/*
+>> + * Remove a waiter from the wait_list and clear flags.
+>> + *
+>> + * Both rwsem_mark_wake() and rwsem_try_write_lock() contain a full 
+>> 'copy' of
+>> + * this function. Modify with care.
+>> + */
+>> +static inline void
+>> +rwsem_del_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
+>> +{
+>> +    lockdep_assert_held(&sem->wait_lock);
+>> +    list_del(&waiter->list);
+> what about avoid unnecessary inherit of handoff bit for waiters?
+>
+> if (waiter->handoff_set)
+>     atomic_long_andnot(RWSEM_FLAG_HANDOFF, &sem->count);
+
+We have decided that to let the next waiter inherit the handoff bit. So 
+there is no need to clear it unless there is no more waiter in the queue.
+
+
+>> +    if (likely(!list_empty(&sem->wait_list)))
+>> +        return;
+>> +
+>> +    atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS, 
+>> &sem->count);
+>> +}
+>> +
+>>   /*
+>>    * handle the lock release when processes blocked on it that can 
+>> now run
+>>    * - if we come here from up_xxxx(), then the RWSEM_FLAG_WAITERS 
+>> bit must
+>> @@ -374,6 +398,8 @@ enum rwsem_wake_type {
+>>    *   preferably when the wait_lock is released
+>>    * - woken process blocks are discarded from the list after having 
+>> task zeroed
+>>    * - writers are only marked woken if downgrading is false
+>> + *
+>> + * Implies rwsem_del_waiter() for all woken readers.
+>>    */
+>>   static void rwsem_mark_wake(struct rw_semaphore *sem,
+>>                   enum rwsem_wake_type wake_type,
+>> @@ -488,18 +514,25 @@ static void rwsem_mark_wake(struct rw_se
+>>         adjustment = woken * RWSEM_READER_BIAS - adjustment;
+>>       lockevent_cond_inc(rwsem_wake_reader, woken);
+>> +
+>> +    oldcount = atomic_long_read(&sem->count);
+>>       if (list_empty(&sem->wait_list)) {
+>> -        /* hit end of list above */
+>> +        /*
+>> +         * Combined with list_move_tail() above, this implies
+>> +         * rwsem_del_waiter().
+>> +         */
+>>           adjustment -= RWSEM_FLAG_WAITERS;
+>> +        if (oldcount & RWSEM_FLAG_HANDOFF)
+>> +            adjustment -= RWSEM_FLAG_HANDOFF;
+>> +    } else if (woken) {
+>> +        /*
+>> +         * When we've woken a reader, we no longer need to force
+>> +         * writers to give up the lock and we can clear HANDOFF.
+>> +         */
+>> +        if (oldcount & RWSEM_FLAG_HANDOFF)
+>> +            adjustment -= RWSEM_FLAG_HANDOFF;
+>>       }
+>>   -    /*
+>> -     * When we've woken a reader, we no longer need to force writers
+>> -     * to give up the lock and we can clear HANDOFF.
+>> -     */
+>> -    if (woken && (atomic_long_read(&sem->count) & RWSEM_FLAG_HANDOFF))
+>> -        adjustment -= RWSEM_FLAG_HANDOFF;
+>> -
+>>       if (adjustment)
+>>           atomic_long_add(adjustment, &sem->count);
+>>   @@ -529,6 +562,8 @@ static void rwsem_mark_wake(struct rw_se
+>>    * This function must be called with the sem->wait_lock held to 
+>> prevent
+>>    * race conditions between checking the rwsem wait list and setting 
+>> the
+>>    * sem->count accordingly.
+>> + *
+>> + * Implies rwsem_del_waiter() on success.
+>>    */
+>>   static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
+>>                       struct rwsem_waiter *waiter)
+>> @@ -575,6 +610,11 @@ static inline bool rwsem_try_write_lock(
+>>           return false;
+>>       }
+>>   +    /*
+>> +     * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
+>> +     * success.
+>> +     */
+>> +    list_del(&waiter->list);
+>>       rwsem_set_owner(sem);
+>>       return true;
+>>   }
+>> @@ -893,20 +933,6 @@ rwsem_spin_on_owner(struct rw_semaphore
+>>   #endif
+>>     /*
+>> - * Common code to handle rwsem flags in out_nolock path with 
+>> wait_lock held.
+>> - * If there is more than one waiter in the queue and the HANDOFF bit 
+>> is set,
+>> - * the next waiter will inherit it if the first waiter is removed.
+>> - */
+>> -static inline void rwsem_out_nolock_clear_flags(struct rw_semaphore 
+>> *sem,
+>> -                        struct rwsem_waiter *waiter)
+>> -{
+>> -    list_del(&waiter->list);
+>> -    if (list_empty(&sem->wait_list))
+>> -        atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS,
+>> -                   &sem->count);
+>> -}
+>> -
+>> -/*
+>>    * Wait for the read lock to be granted
+>>    */
+>>   static struct rw_semaphore __sched *
+>> @@ -973,7 +999,7 @@ rwsem_down_read_slowpath(struct rw_semap
+>>           }
+>>           adjustment += RWSEM_FLAG_WAITERS;
+>>       }
+>> -    list_add_tail(&waiter.list, &sem->wait_list);
+>> +    rwsem_add_waiter(sem, &waiter);
+>>         /* we're now waiting on the lock, but no longer actively 
+>> locking */
+>>       count = atomic_long_add_return(adjustment, &sem->count);
+>> @@ -1019,7 +1045,7 @@ rwsem_down_read_slowpath(struct rw_semap
+>>       return sem;
+>>     out_nolock:
+>> -    rwsem_out_nolock_clear_flags(sem, &waiter);
+>> +    rwsem_del_waiter(sem, &waiter);
+>>       raw_spin_unlock_irq(&sem->wait_lock);
+>>       __set_current_state(TASK_RUNNING);
+>>       lockevent_inc(rwsem_rlock_fail);
+>> @@ -1034,7 +1060,6 @@ rwsem_down_write_slowpath(struct rw_sema
+>>   {
+>>       long count;
+>>       struct rwsem_waiter waiter;
+>> -    struct rw_semaphore *ret = sem;
+>>       DEFINE_WAKE_Q(wake_q);
+>>         /* do optimistic spinning and steal lock if possible */
+>> @@ -1053,7 +1078,7 @@ rwsem_down_write_slowpath(struct rw_sema
+>>       waiter.handoff_set = false;
+>>         raw_spin_lock_irq(&sem->wait_lock);
+>> -    list_add_tail(&waiter.list, &sem->wait_list);
+>> +    rwsem_add_waiter(sem, &waiter);
+>>         /* we're now waiting on the lock */
+>>       if (rwsem_first_waiter(sem) != &waiter) {
+>> @@ -1110,7 +1135,7 @@ rwsem_down_write_slowpath(struct rw_sema
+>>            * In this case, we attempt to acquire the lock again
+>>            * without sleeping.
+>>            */
+>> -        if (waiter.handoff_set) {
+>> +        if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
+>>               enum owner_state owner_state;
+>>                 preempt_disable();
+>> @@ -1128,16 +1153,14 @@ rwsem_down_write_slowpath(struct rw_sema
+>>           raw_spin_lock_irq(&sem->wait_lock);
+>>       }
+>>       __set_current_state(TASK_RUNNING);
+>> -    list_del(&waiter.list);
+>>       raw_spin_unlock_irq(&sem->wait_lock);
+>>       lockevent_inc(rwsem_wlock);
+>> -
+>> -    return ret;
+>> +    return sem;
+>>     out_nolock:
+>>       __set_current_state(TASK_RUNNING);
+>>       raw_spin_lock_irq(&sem->wait_lock);
+>> -    rwsem_out_nolock_clear_flags(sem, &waiter);
+>> +    rwsem_del_waiter(sem, &waiter);
+>>       if (!list_empty(&sem->wait_list))
+>>           rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
+>>       raw_spin_unlock_irq(&sem->wait_lock);
+>>
+>
+> what about avoid unnecessary inherit of handoff bit for waiters?
+>     1. when set handoff bit also set waiter.handoff_set as  true;
+>     2. when clear handoff bit also set waiter.handoff_set as false.
+>     3. And rwsem_add_waiter initial as false;
+>     4. And rwsem_del_waiter also can clear the handoff bit according 
+> to waiter.handoff_set.
+>
+> Because handoff bit can have better performance if correctly set and 
+> cleared.
+>
+Killing or interrupt a waiter to force it to quit is not considered a 
+fast path operation. It is an exception rather than the rule. So 
+performance consideration is less important here.
+
+Cheers,
+Longman
+
