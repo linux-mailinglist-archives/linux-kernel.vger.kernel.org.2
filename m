@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C1F451443
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D2451543
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348863AbhKOUAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:00:37 -0500
-Received: from mail-pg1-f176.google.com ([209.85.215.176]:33515 "EHLO
-        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239141AbhKOSBT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:01:19 -0500
-Received: by mail-pg1-f176.google.com with SMTP id 136so10597897pgc.0;
-        Mon, 15 Nov 2021 09:58:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f6pGxvlWDiR0ktlk64UQrKY7yANUCgJE84uRs04H3yY=;
-        b=jJkS73wvbVJIa3gSme2JqxSX0jKlzyhaNdDkhYqtvRUKnXsrG+/2GTWCFQXlOYWIKd
-         AemhlFWY6VTpO3cbclVwpKMfz6EDLDUz3xSl66suaeLxdc4E7Ie9VJG+coEAxfEtZ7Dj
-         2tn8uOcu0MrlViZu+i6wDeW17CvDEAYOLhQgbaGumJfC4jyqvHtDFkqN6QXw8L4ZtCRL
-         Wzxjo0dTd0HGuW3zJtVl2Cf4xgcvAacNyJc5cxq+UlP01IAu1+huFEnBGdfuesIhuvH1
-         lv9AzxEeN6o0yTerin4ro8eCuU3LrvUqQUnotrAUYok8NVYAys9phWVFdjehwfdAFH6Q
-         epTQ==
-X-Gm-Message-State: AOAM530cPkjleW8NLKfzELw/75A4Cx1nPhQ3aIk0b2TZWHFtasbQ/Fga
-        pfi2xyNhWRS9XtIOcWUgdoU=
-X-Google-Smtp-Source: ABdhPJxhPbXXAmQ2obiiSEJL6w5Iukm9mTS1wTuvJZntMTAOgkbxXkvj4aX8QvB1I6BZAqeGq/fl8Q==
-X-Received: by 2002:a05:6a00:158a:b0:49f:be86:c78f with SMTP id u10-20020a056a00158a00b0049fbe86c78fmr34818214pfk.56.1636999100921;
-        Mon, 15 Nov 2021 09:58:20 -0800 (PST)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:c779:caf7:7b7f:3ecd])
-        by smtp.gmail.com with ESMTPSA id w1sm3308265pfg.11.2021.11.15.09.58.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 09:58:20 -0800 (PST)
-Subject: Re: [PATCH 5.10 011/575] scsi: core: Remove command size deduction
- from scsi_setup_scsi_cmnd()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org,
-        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com,
-        Tadeusz Struk <tadeusz.struk@linaro.org>
-References: <20211115165343.579890274@linuxfoundation.org>
- <20211115165343.996963128@linuxfoundation.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <7ed36c27-a150-39a6-d8e3-483c76bbedc5@acm.org>
-Date:   Mon, 15 Nov 2021 09:58:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1351190AbhKOUcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:32:22 -0500
+Received: from li1434-30.members.linode.com ([45.33.107.30]:46210 "EHLO
+        node.akkea.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240160AbhKOSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:18 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by node.akkea.ca (Postfix) with ESMTP id 88D335DE02D;
+        Mon, 15 Nov 2021 18:03:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1636999420; bh=9sCbY7imwT613uSLoKvxs8EK+8sqFoPyR7kVkc6Shd0=;
+        h=From:To:Cc:Subject:Date;
+        b=QNqnQ7oJ14120oaF/kzkZdNRJjEnn+QSGTQGh2Lzecxn1II9641CdSv+VFjamg6Xd
+         BXUk0Ae1bUSd2fxDmk9hxGyCbvyfjWwVhAIrMk90Mhfd3viqQoUcyCMYKv0ldgfrk2
+         dzImt7eotAmDDngQ70Rj/WDj1h0zOczla9aTW0kY=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RoW5SQ985ULO; Mon, 15 Nov 2021 18:03:39 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [70.66.86.75])
+        by node.akkea.ca (Postfix) with ESMTPSA id 9BD815DE01D;
+        Mon, 15 Nov 2021 18:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1636999419; bh=9sCbY7imwT613uSLoKvxs8EK+8sqFoPyR7kVkc6Shd0=;
+        h=From:To:Cc:Subject:Date;
+        b=CqdJV6Jd7cc8mKdNxMOjD52smx+PpyUT/N4O/qPa7JOWSFqiVbhJjAjdFxXl5z75e
+         dc2HGuh9L7xhHgALYsUtqgIQoOho/Zz0ZAOEMw6mxluMAEfOAu9OaygdXGsIJJl1Dt
+         z3xpKrzfHqh0vgLc6J+Z8YMSK9LSIxCxOQtY7b58=
+From:   Angus Ainslie <angus@akkea.ca>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>
+Subject: [PATCH] power: bq25890: add POWER_SUPPLY_PROP_TEMP
+Date:   Mon, 15 Nov 2021 10:02:54 -0800
+Message-Id: <20211115180253.124271-1-angus@akkea.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211115165343.996963128@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 8:55 AM, Greg Kroah-Hartman wrote:
-> From: Tadeusz Struk <tadeusz.struk@linaro.org>
-> 
-> commit 703535e6ae1e94c89a9c1396b4c7b6b41160ef0c upstream.
+Add the POWER_SUPPLY_PROP_TEMP and a NTC 10K percent VREGN to degrees LUT.
 
-Hi Greg,
+Sorry I didn't realize this patch was not upstream yet and was just in our 
+tree. It should have been applied before:
 
-Thanks for having queued this patch for the 5.10 stable branch.
+https://lore.kernel.org/linux-pm/20211110002440.71404-1-angus@akkea.ca/
 
-Do you plan to also include commit 20aaef52eb08 ("scsi: scsi_ioctl: 
-Validate command size")? That patch prevents that the bug in the commit 
-mentioned above can be triggered.
+Signed-off-by: Angus Ainslie <angus@akkea.ca>
+---
+ drivers/power/supply/bq25890_charger.c | 36 +++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+index 945c3257ca93..7f52029f0702 100644
+--- a/drivers/power/supply/bq25890_charger.c
++++ b/drivers/power/supply/bq25890_charger.c
+@@ -266,6 +266,7 @@ enum bq25890_table_ids {
+ 	/* lookup tables */
+ 	TBL_TREG,
+ 	TBL_BOOSTI,
++	TBL_TSPCT,
+ };
+ 
+ /* Thermal Regulation Threshold lookup table, in degrees Celsius */
+@@ -280,6 +281,28 @@ static const u32 bq25890_boosti_tbl[] = {
+ 
+ #define BQ25890_BOOSTI_TBL_SIZE		ARRAY_SIZE(bq25890_boosti_tbl)
+ 
++/* NTC 10K temperature lookup table in thenths of a degree */
++static const u32 bq25890_tspct_tbl[] = {
++	850, 840, 830, 820, 810, 800, 790, 780,
++	770, 760, 750, 740, 730, 720, 710, 700,
++	690, 685, 680, 675, 670, 660, 650, 645,
++	640, 630, 620, 615, 610, 600, 590, 585,
++	580, 570, 565, 560, 550, 540, 535, 530,
++	520, 515, 510, 500, 495, 490, 480, 475,
++	470, 460, 455, 450, 440, 435, 430, 425,
++	420, 410, 405, 400, 390, 385, 380, 370,
++	365, 360, 355, 350, 340, 335, 330, 320,
++	310, 305, 300, 290, 285, 280, 275, 270,
++	260, 250, 245, 240, 230, 225, 220, 210,
++	205, 200, 190, 180, 175, 170, 160, 150,
++	145, 140, 130, 120, 115, 110, 100, 90,
++	80, 70, 60, 50, 40, 30, 20, 10,
++	0, -10, -20, -30, -40, -60, -70, -80,
++	-90, -10, -120, -140, -150, -170, -190, -210,
++};
++
++#define BQ25890_TSPCT_TBL_SIZE		ARRAY_SIZE(bq25890_tspct_tbl)
++
+ struct bq25890_range {
+ 	u32 min;
+ 	u32 max;
+@@ -308,7 +331,8 @@ static const union {
+ 
+ 	/* lookup tables */
+ 	[TBL_TREG] =	{ .lt = {bq25890_treg_tbl, BQ25890_TREG_TBL_SIZE} },
+-	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} }
++	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} },
++	[TBL_TSPCT] =	{ .lt = {bq25890_tspct_tbl, BQ25890_TSPCT_TBL_SIZE} }
+ };
+ 
+ static int bq25890_field_read(struct bq25890_device *bq,
+@@ -528,6 +552,15 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
+ 		val->intval = ret * -50000;
+ 		break;
+ 
++	case POWER_SUPPLY_PROP_TEMP:
++		ret = bq25890_field_read(bq, F_TSPCT);
++		if (ret < 0)
++			return ret;
++
++		/* convert TS percentage into rough temperature */
++		val->intval = bq25890_find_val(ret, TBL_TSPCT);
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -713,6 +746,7 @@ static const enum power_supply_property bq25890_power_supply_props[] = {
+ 	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+ 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+ 	POWER_SUPPLY_PROP_CURRENT_NOW,
++	POWER_SUPPLY_PROP_TEMP,
+ };
+ 
+ static char *bq25890_charger_supplied_to[] = {
+-- 
+2.25.1
 
-Bart.
