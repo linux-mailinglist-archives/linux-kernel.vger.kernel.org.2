@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5304511EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7344511E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244878AbhKOTSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:18:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
+        id S232804AbhKOTPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:15:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238597AbhKORpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238594AbhKORpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:45:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 871FE63301;
-        Mon, 15 Nov 2021 17:29:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 579D263302;
+        Mon, 15 Nov 2021 17:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997345;
-        bh=FA/whSKfc6AZFZ5AtqYBKN0cEkCT0RM2sc268UDraj0=;
+        s=korg; t=1636997347;
+        bh=f3PiMp2hGzmpOAflGz+4qcB9s2dGa0+ELHE9HeHKcRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c0julkH/958GGjgV7UDMPCs7xcVpi5/tFCD4jsYgV/8y1YWNxvLC1Q6tXeMYncGGv
-         mweVjx2ElhYjtSJjpg+uGChRKLUrZOppN9jxOvgzB2qbtb7svkfFPpz9yywiUallCg
-         y2OyeNGsaXobrBfQiAOHJ586GLyPokTJ4NJXKLdM=
+        b=U6iIbWwJMLv70AM8YrT4X2bPLzuUV0ZoPTBTI8/jcIi9X6WSOUciEJvPzw7OPIehk
+         G87yeqN5+Iw/TwEIeXbW+OV9AEueb9pgq/vqQZOi71BXfRivHlwCveOYA+jit7YTb7
+         Misi3UVMk9Vmdotlu6mJAGEgNbe4zaaPLTNVJYbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/575] rds: stop using dmapool
-Date:   Mon, 15 Nov 2021 17:56:47 +0100
-Message-Id: <20211115165346.481910735@linuxfoundation.org>
+        stable@vger.kernel.org, Li Zhang <zhanglikernel@gmail.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 083/575] btrfs: clear MISSING device status bit in btrfs_close_one_device
+Date:   Mon, 15 Nov 2021 17:56:48 +0100
+Message-Id: <20211115165346.513705625@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,432 +39,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Li Zhang <zhanglikernel@gmail.com>
 
-[ Upstream commit 42f2611cc1738b201701e717246e11e86bef4e1e ]
+commit 5d03dbebba2594d2e6fbf3b5dd9060c5a835de3b upstream.
 
-RDMA ULPs should only perform DMA through the ib_dma_* API instead of
-using the hidden dma_device directly.  In addition using the dma coherent
-API family that dmapool is a part of can be very ineffcient on plaforms
-that are not DMA coherent.  Switch to use slab allocations and the
-ib_dma_* APIs instead.
+Reported bug: https://github.com/kdave/btrfs-progs/issues/389
 
-Link: https://lore.kernel.org/r/20201106181941.1878556-6-hch@lst.de
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+There's a problem with scrub reporting aborted status but returning
+error code 0, on a filesystem with missing and readded device.
+
+Roughly these steps:
+
+- mkfs -d raid1 dev1 dev2
+- fill with data
+- unmount
+- make dev1 disappear
+- mount -o degraded
+- copy more data
+- make dev1 appear again
+
+Running scrub afterwards reports that the command was aborted, but the
+system log message says the exit code was 0.
+
+It seems that the cause of the error is decrementing
+fs_devices->missing_devices but not clearing device->dev_state.  Every
+time we umount filesystem, it would call close_ctree, And it would
+eventually involve btrfs_close_one_device to close the device, but it
+only decrements fs_devices->missing_devices but does not clear the
+device BTRFS_DEV_STATE_MISSING bit. Worse, this bug will cause Integer
+Overflow, because every time umount, fs_devices->missing_devices will
+decrease. If fs_devices->missing_devices value hit 0, it would overflow.
+
+With added debugging:
+
+   loop1: detected capacity change from 0 to 20971520
+   BTRFS: device fsid 56ad51f1-5523-463b-8547-c19486c51ebb devid 1 transid 21 /dev/loop1 scanned by systemd-udevd (2311)
+   loop2: detected capacity change from 0 to 20971520
+   BTRFS: device fsid 56ad51f1-5523-463b-8547-c19486c51ebb devid 2 transid 17 /dev/loop2 scanned by systemd-udevd (2313)
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): using free space tree
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000f706684d /dev/loop1 0
+   BTRFS warning (device loop1): devid 2 uuid 6635ac31-56dd-4852-873b-c60f5e2d53d2 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 1
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): using free space tree
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000f706684d /dev/loop1 0
+   BTRFS warning (device loop1): devid 2 uuid 6635ac31-56dd-4852-873b-c60f5e2d53d2 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 0
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): using free space tree
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000f706684d /dev/loop1 18446744073709551615
+   BTRFS warning (device loop1): devid 2 uuid 6635ac31-56dd-4852-873b-c60f5e2d53d2 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 18446744073709551615
+
+If fs_devices->missing_devices is 0, next time it would be 18446744073709551615
+
+After apply this patch, the fs_devices->missing_devices seems to be
+right:
+
+  $ truncate -s 10g test1
+  $ truncate -s 10g test2
+  $ losetup /dev/loop1 test1
+  $ losetup /dev/loop2 test2
+  $ mkfs.btrfs -draid1 -mraid1 /dev/loop1 /dev/loop2 -f
+  $ losetup -d /dev/loop2
+  $ mount -o degraded /dev/loop1 /mnt/1
+  $ umount /mnt/1
+  $ mount -o degraded /dev/loop1 /mnt/1
+  $ umount /mnt/1
+  $ mount -o degraded /dev/loop1 /mnt/1
+  $ umount /mnt/1
+  $ dmesg
+
+   loop1: detected capacity change from 0 to 20971520
+   loop2: detected capacity change from 0 to 20971520
+   BTRFS: device fsid 15aa1203-98d3-4a66-bcae-ca82f629c2cd devid 1 transid 5 /dev/loop1 scanned by mkfs.btrfs (1863)
+   BTRFS: device fsid 15aa1203-98d3-4a66-bcae-ca82f629c2cd devid 2 transid 5 /dev/loop2 scanned by mkfs.btrfs (1863)
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): disk space caching is enabled
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000975bd577 /dev/loop1 0
+   BTRFS warning (device loop1): devid 2 uuid 8b333791-0b3f-4f57-b449-1c1ab6b51f38 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 1
+   BTRFS info (device loop1): checking UUID tree
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): disk space caching is enabled
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000975bd577 /dev/loop1 0
+   BTRFS warning (device loop1): devid 2 uuid 8b333791-0b3f-4f57-b449-1c1ab6b51f38 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 1
+   BTRFS info (device loop1): flagging fs with big metadata feature
+   BTRFS info (device loop1): allowing degraded mounts
+   BTRFS info (device loop1): disk space caching is enabled
+   BTRFS info (device loop1): has skinny extents
+   BTRFS info (device loop1):  before clear_missing.00000000975bd577 /dev/loop1 0
+   BTRFS warning (device loop1): devid 2 uuid 8b333791-0b3f-4f57-b449-1c1ab6b51f38 is missing
+   BTRFS info (device loop1):  before clear_missing.0000000000000000 /dev/loop2 1
+
+CC: stable@vger.kernel.org # 4.19+
+Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rds/ib.c      |  10 ----
- net/rds/ib.h      |   6 ---
- net/rds/ib_cm.c   | 128 ++++++++++++++++++++++++++++------------------
- net/rds/ib_recv.c |  18 +++++--
- net/rds/ib_send.c |   8 +++
- 5 files changed, 101 insertions(+), 69 deletions(-)
+ fs/btrfs/volumes.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index deecbdcdae84e..24c9a9005a6fb 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -30,7 +30,6 @@
-  * SOFTWARE.
-  *
-  */
--#include <linux/dmapool.h>
- #include <linux/kernel.h>
- #include <linux/in.h>
- #include <linux/if.h>
-@@ -108,7 +107,6 @@ static void rds_ib_dev_free(struct work_struct *work)
- 		rds_ib_destroy_mr_pool(rds_ibdev->mr_1m_pool);
- 	if (rds_ibdev->pd)
- 		ib_dealloc_pd(rds_ibdev->pd);
--	dma_pool_destroy(rds_ibdev->rid_hdrs_pool);
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1133,8 +1133,10 @@ static void btrfs_close_one_device(struc
+ 	if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+ 		clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
  
- 	list_for_each_entry_safe(i_ipaddr, i_next, &rds_ibdev->ipaddr_list, list) {
- 		list_del(&i_ipaddr->list);
-@@ -191,14 +189,6 @@ static int rds_ib_add_one(struct ib_device *device)
- 		rds_ibdev->pd = NULL;
- 		goto put_dev;
- 	}
--	rds_ibdev->rid_hdrs_pool = dma_pool_create(device->name,
--						   device->dma_device,
--						   sizeof(struct rds_header),
--						   L1_CACHE_BYTES, 0);
--	if (!rds_ibdev->rid_hdrs_pool) {
--		ret = -ENOMEM;
--		goto put_dev;
--	}
- 
- 	rds_ibdev->mr_1m_pool =
- 		rds_ib_create_mr_pool(rds_ibdev, RDS_IB_MR_1M_POOL);
-diff --git a/net/rds/ib.h b/net/rds/ib.h
-index c23a11d9ad362..2ba71102b1f1f 100644
---- a/net/rds/ib.h
-+++ b/net/rds/ib.h
-@@ -246,7 +246,6 @@ struct rds_ib_device {
- 	struct list_head	conn_list;
- 	struct ib_device	*dev;
- 	struct ib_pd		*pd;
--	struct dma_pool		*rid_hdrs_pool; /* RDS headers DMA pool */
- 	u8			odp_capable:1;
- 
- 	unsigned int		max_mrs;
-@@ -380,11 +379,6 @@ int rds_ib_cm_handle_connect(struct rdma_cm_id *cm_id,
- int rds_ib_cm_initiate_connect(struct rdma_cm_id *cm_id, bool isv6);
- void rds_ib_cm_connect_complete(struct rds_connection *conn,
- 				struct rdma_cm_event *event);
--struct rds_header **rds_dma_hdrs_alloc(struct ib_device *ibdev,
--				       struct dma_pool *pool,
--				       dma_addr_t **dma_addrs, u32 num_hdrs);
--void rds_dma_hdrs_free(struct dma_pool *pool, struct rds_header **hdrs,
--		       dma_addr_t *dma_addrs, u32 num_hdrs);
- 
- #define rds_ib_conn_error(conn, fmt...) \
- 	__rds_ib_conn_error(conn, KERN_WARNING "RDS/IB: " fmt)
-diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-index b36b60668b1da..f5cbe963cd8f7 100644
---- a/net/rds/ib_cm.c
-+++ b/net/rds/ib_cm.c
-@@ -30,7 +30,6 @@
-  * SOFTWARE.
-  *
-  */
--#include <linux/dmapool.h>
- #include <linux/kernel.h>
- #include <linux/in.h>
- #include <linux/slab.h>
-@@ -441,42 +440,87 @@ static inline void ibdev_put_vector(struct rds_ib_device *rds_ibdev, int index)
- 	rds_ibdev->vector_load[index]--;
- }
- 
-+static void rds_dma_hdr_free(struct ib_device *dev, struct rds_header *hdr,
-+		dma_addr_t dma_addr, enum dma_data_direction dir)
-+{
-+	ib_dma_unmap_single(dev, dma_addr, sizeof(*hdr), dir);
-+	kfree(hdr);
-+}
-+
-+static struct rds_header *rds_dma_hdr_alloc(struct ib_device *dev,
-+		dma_addr_t *dma_addr, enum dma_data_direction dir)
-+{
-+	struct rds_header *hdr;
-+
-+	hdr = kzalloc_node(sizeof(*hdr), GFP_KERNEL, ibdev_to_node(dev));
-+	if (!hdr)
-+		return NULL;
-+
-+	*dma_addr = ib_dma_map_single(dev, hdr, sizeof(*hdr),
-+				      DMA_BIDIRECTIONAL);
-+	if (ib_dma_mapping_error(dev, *dma_addr)) {
-+		kfree(hdr);
-+		return NULL;
+-	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
++	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
++		clear_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
+ 		fs_devices->missing_devices--;
 +	}
-+
-+	return hdr;
-+}
-+
-+/* Free the DMA memory used to store struct rds_header.
-+ *
-+ * @dev: the RDS IB device
-+ * @hdrs: pointer to the array storing DMA memory pointers
-+ * @dma_addrs: pointer to the array storing DMA addresses
-+ * @num_hdars: number of headers to free.
-+ */
-+static void rds_dma_hdrs_free(struct rds_ib_device *dev,
-+		struct rds_header **hdrs, dma_addr_t *dma_addrs, u32 num_hdrs,
-+		enum dma_data_direction dir)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < num_hdrs; i++)
-+		rds_dma_hdr_free(dev->dev, hdrs[i], dma_addrs[i], dir);
-+	kvfree(hdrs);
-+	kvfree(dma_addrs);
-+}
-+
-+
- /* Allocate DMA coherent memory to be used to store struct rds_header for
-  * sending/receiving packets.  The pointers to the DMA memory and the
-  * associated DMA addresses are stored in two arrays.
-  *
-- * @ibdev: the IB device
-- * @pool: the DMA memory pool
-+ * @dev: the RDS IB device
-  * @dma_addrs: pointer to the array for storing DMA addresses
-  * @num_hdrs: number of headers to allocate
-  *
-  * It returns the pointer to the array storing the DMA memory pointers.  On
-  * error, NULL pointer is returned.
-  */
--struct rds_header **rds_dma_hdrs_alloc(struct ib_device *ibdev,
--				       struct dma_pool *pool,
--				       dma_addr_t **dma_addrs, u32 num_hdrs)
-+static struct rds_header **rds_dma_hdrs_alloc(struct rds_ib_device *dev,
-+		dma_addr_t **dma_addrs, u32 num_hdrs,
-+		enum dma_data_direction dir)
- {
- 	struct rds_header **hdrs;
- 	dma_addr_t *hdr_daddrs;
- 	u32 i;
  
- 	hdrs = kvmalloc_node(sizeof(*hdrs) * num_hdrs, GFP_KERNEL,
--			     ibdev_to_node(ibdev));
-+			     ibdev_to_node(dev->dev));
- 	if (!hdrs)
- 		return NULL;
- 
- 	hdr_daddrs = kvmalloc_node(sizeof(*hdr_daddrs) * num_hdrs, GFP_KERNEL,
--				   ibdev_to_node(ibdev));
-+				   ibdev_to_node(dev->dev));
- 	if (!hdr_daddrs) {
- 		kvfree(hdrs);
- 		return NULL;
- 	}
- 
- 	for (i = 0; i < num_hdrs; i++) {
--		hdrs[i] = dma_pool_zalloc(pool, GFP_KERNEL, &hdr_daddrs[i]);
-+		hdrs[i] = rds_dma_hdr_alloc(dev->dev, &hdr_daddrs[i], dir);
- 		if (!hdrs[i]) {
--			rds_dma_hdrs_free(pool, hdrs, hdr_daddrs, i);
-+			rds_dma_hdrs_free(dev, hdrs, hdr_daddrs, i, dir);
- 			return NULL;
- 		}
- 	}
-@@ -485,24 +529,6 @@ struct rds_header **rds_dma_hdrs_alloc(struct ib_device *ibdev,
- 	return hdrs;
- }
- 
--/* Free the DMA memory used to store struct rds_header.
-- *
-- * @pool: the DMA memory pool
-- * @hdrs: pointer to the array storing DMA memory pointers
-- * @dma_addrs: pointer to the array storing DMA addresses
-- * @num_hdars: number of headers to free.
-- */
--void rds_dma_hdrs_free(struct dma_pool *pool, struct rds_header **hdrs,
--		       dma_addr_t *dma_addrs, u32 num_hdrs)
--{
--	u32 i;
--
--	for (i = 0; i < num_hdrs; i++)
--		dma_pool_free(pool, hdrs[i], dma_addrs[i]);
--	kvfree(hdrs);
--	kvfree(dma_addrs);
--}
--
- /*
-  * This needs to be very careful to not leave IS_ERR pointers around for
-  * cleanup to trip over.
-@@ -516,7 +542,6 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
- 	struct rds_ib_device *rds_ibdev;
- 	unsigned long max_wrs;
- 	int ret, fr_queue_space;
--	struct dma_pool *pool;
- 
- 	/*
- 	 * It's normal to see a null device if an incoming connection races
-@@ -612,25 +637,26 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
- 		goto recv_cq_out;
- 	}
- 
--	pool = rds_ibdev->rid_hdrs_pool;
--	ic->i_send_hdrs = rds_dma_hdrs_alloc(dev, pool, &ic->i_send_hdrs_dma,
--					     ic->i_send_ring.w_nr);
-+	ic->i_send_hdrs = rds_dma_hdrs_alloc(rds_ibdev, &ic->i_send_hdrs_dma,
-+					     ic->i_send_ring.w_nr,
-+					     DMA_TO_DEVICE);
- 	if (!ic->i_send_hdrs) {
- 		ret = -ENOMEM;
- 		rdsdebug("DMA send hdrs alloc failed\n");
- 		goto qp_out;
- 	}
- 
--	ic->i_recv_hdrs = rds_dma_hdrs_alloc(dev, pool, &ic->i_recv_hdrs_dma,
--					     ic->i_recv_ring.w_nr);
-+	ic->i_recv_hdrs = rds_dma_hdrs_alloc(rds_ibdev, &ic->i_recv_hdrs_dma,
-+					     ic->i_recv_ring.w_nr,
-+					     DMA_FROM_DEVICE);
- 	if (!ic->i_recv_hdrs) {
- 		ret = -ENOMEM;
- 		rdsdebug("DMA recv hdrs alloc failed\n");
- 		goto send_hdrs_dma_out;
- 	}
- 
--	ic->i_ack = dma_pool_zalloc(pool, GFP_KERNEL,
--				    &ic->i_ack_dma);
-+	ic->i_ack = rds_dma_hdr_alloc(rds_ibdev->dev, &ic->i_ack_dma,
-+				      DMA_TO_DEVICE);
- 	if (!ic->i_ack) {
- 		ret = -ENOMEM;
- 		rdsdebug("DMA ack header alloc failed\n");
-@@ -666,18 +692,19 @@ sends_out:
- 	vfree(ic->i_sends);
- 
- ack_dma_out:
--	dma_pool_free(pool, ic->i_ack, ic->i_ack_dma);
-+	rds_dma_hdr_free(rds_ibdev->dev, ic->i_ack, ic->i_ack_dma,
-+			 DMA_TO_DEVICE);
- 	ic->i_ack = NULL;
- 
- recv_hdrs_dma_out:
--	rds_dma_hdrs_free(pool, ic->i_recv_hdrs, ic->i_recv_hdrs_dma,
--			  ic->i_recv_ring.w_nr);
-+	rds_dma_hdrs_free(rds_ibdev, ic->i_recv_hdrs, ic->i_recv_hdrs_dma,
-+			  ic->i_recv_ring.w_nr, DMA_FROM_DEVICE);
- 	ic->i_recv_hdrs = NULL;
- 	ic->i_recv_hdrs_dma = NULL;
- 
- send_hdrs_dma_out:
--	rds_dma_hdrs_free(pool, ic->i_send_hdrs, ic->i_send_hdrs_dma,
--			  ic->i_send_ring.w_nr);
-+	rds_dma_hdrs_free(rds_ibdev, ic->i_send_hdrs, ic->i_send_hdrs_dma,
-+			  ic->i_send_ring.w_nr, DMA_TO_DEVICE);
- 	ic->i_send_hdrs = NULL;
- 	ic->i_send_hdrs_dma = NULL;
- 
-@@ -1110,29 +1137,30 @@ void rds_ib_conn_path_shutdown(struct rds_conn_path *cp)
- 		}
- 
- 		if (ic->rds_ibdev) {
--			struct dma_pool *pool;
--
--			pool = ic->rds_ibdev->rid_hdrs_pool;
--
- 			/* then free the resources that ib callbacks use */
- 			if (ic->i_send_hdrs) {
--				rds_dma_hdrs_free(pool, ic->i_send_hdrs,
-+				rds_dma_hdrs_free(ic->rds_ibdev,
-+						  ic->i_send_hdrs,
- 						  ic->i_send_hdrs_dma,
--						  ic->i_send_ring.w_nr);
-+						  ic->i_send_ring.w_nr,
-+						  DMA_TO_DEVICE);
- 				ic->i_send_hdrs = NULL;
- 				ic->i_send_hdrs_dma = NULL;
- 			}
- 
- 			if (ic->i_recv_hdrs) {
--				rds_dma_hdrs_free(pool, ic->i_recv_hdrs,
-+				rds_dma_hdrs_free(ic->rds_ibdev,
-+						  ic->i_recv_hdrs,
- 						  ic->i_recv_hdrs_dma,
--						  ic->i_recv_ring.w_nr);
-+						  ic->i_recv_ring.w_nr,
-+						  DMA_FROM_DEVICE);
- 				ic->i_recv_hdrs = NULL;
- 				ic->i_recv_hdrs_dma = NULL;
- 			}
- 
- 			if (ic->i_ack) {
--				dma_pool_free(pool, ic->i_ack, ic->i_ack_dma);
-+				rds_dma_hdr_free(ic->rds_ibdev->dev, ic->i_ack,
-+						 ic->i_ack_dma, DMA_TO_DEVICE);
- 				ic->i_ack = NULL;
- 			}
- 		} else {
-diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
-index 3cffcec5fb371..6fdedd9dbbc28 100644
---- a/net/rds/ib_recv.c
-+++ b/net/rds/ib_recv.c
-@@ -662,10 +662,16 @@ static void rds_ib_send_ack(struct rds_ib_connection *ic, unsigned int adv_credi
- 	seq = rds_ib_get_ack(ic);
- 
- 	rdsdebug("send_ack: ic %p ack %llu\n", ic, (unsigned long long) seq);
-+
-+	ib_dma_sync_single_for_cpu(ic->rds_ibdev->dev, ic->i_ack_dma,
-+				   sizeof(*hdr), DMA_TO_DEVICE);
- 	rds_message_populate_header(hdr, 0, 0, 0);
- 	hdr->h_ack = cpu_to_be64(seq);
- 	hdr->h_credit = adv_credits;
- 	rds_message_make_checksum(hdr);
-+	ib_dma_sync_single_for_device(ic->rds_ibdev->dev, ic->i_ack_dma,
-+				      sizeof(*hdr), DMA_TO_DEVICE);
-+
- 	ic->i_ack_queued = jiffies;
- 
- 	ret = ib_post_send(ic->i_cm_id->qp, &ic->i_ack_wr, NULL);
-@@ -845,6 +851,7 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 	struct rds_ib_connection *ic = conn->c_transport_data;
- 	struct rds_ib_incoming *ibinc = ic->i_ibinc;
- 	struct rds_header *ihdr, *hdr;
-+	dma_addr_t dma_addr = ic->i_recv_hdrs_dma[recv - ic->i_recvs];
- 
- 	/* XXX shut down the connection if port 0,0 are seen? */
- 
-@@ -863,6 +870,8 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 
- 	ihdr = ic->i_recv_hdrs[recv - ic->i_recvs];
- 
-+	ib_dma_sync_single_for_cpu(ic->rds_ibdev->dev, dma_addr,
-+				   sizeof(*ihdr), DMA_FROM_DEVICE);
- 	/* Validate the checksum. */
- 	if (!rds_message_verify_checksum(ihdr)) {
- 		rds_ib_conn_error(conn, "incoming message "
-@@ -870,7 +879,7 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 		       "forcing a reconnect\n",
- 		       &conn->c_faddr);
- 		rds_stats_inc(s_recv_drop_bad_checksum);
--		return;
-+		goto done;
- 	}
- 
- 	/* Process the ACK sequence which comes with every packet */
-@@ -899,7 +908,7 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 		 */
- 		rds_ib_frag_free(ic, recv->r_frag);
- 		recv->r_frag = NULL;
--		return;
-+		goto done;
- 	}
- 
- 	/*
-@@ -933,7 +942,7 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 		    hdr->h_dport != ihdr->h_dport) {
- 			rds_ib_conn_error(conn,
- 				"fragment header mismatch; forcing reconnect\n");
--			return;
-+			goto done;
- 		}
- 	}
- 
-@@ -965,6 +974,9 @@ static void rds_ib_process_recv(struct rds_connection *conn,
- 
- 		rds_inc_put(&ibinc->ii_inc);
- 	}
-+done:
-+	ib_dma_sync_single_for_device(ic->rds_ibdev->dev, dma_addr,
-+				      sizeof(*ihdr), DMA_FROM_DEVICE);
- }
- 
- void rds_ib_recv_cqe_handler(struct rds_ib_connection *ic,
-diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
-index dfe778220657a..92b4a8689aae7 100644
---- a/net/rds/ib_send.c
-+++ b/net/rds/ib_send.c
-@@ -638,6 +638,10 @@ int rds_ib_xmit(struct rds_connection *conn, struct rds_message *rm,
- 		send->s_sge[0].length = sizeof(struct rds_header);
- 		send->s_sge[0].lkey = ic->i_pd->local_dma_lkey;
- 
-+		ib_dma_sync_single_for_cpu(ic->rds_ibdev->dev,
-+					   ic->i_send_hdrs_dma[pos],
-+					   sizeof(struct rds_header),
-+					   DMA_TO_DEVICE);
- 		memcpy(ic->i_send_hdrs[pos], &rm->m_inc.i_hdr,
- 		       sizeof(struct rds_header));
- 
-@@ -688,6 +692,10 @@ int rds_ib_xmit(struct rds_connection *conn, struct rds_message *rm,
- 			adv_credits = 0;
- 			rds_ib_stats_inc(s_ib_tx_credit_updates);
- 		}
-+		ib_dma_sync_single_for_device(ic->rds_ibdev->dev,
-+					      ic->i_send_hdrs_dma[pos],
-+					      sizeof(struct rds_header),
-+					      DMA_TO_DEVICE);
- 
- 		if (prev)
- 			prev->s_wr.next = &send->s_wr;
--- 
-2.33.0
-
+ 	btrfs_close_bdev(device);
+ 	if (device->bdev) {
 
 
