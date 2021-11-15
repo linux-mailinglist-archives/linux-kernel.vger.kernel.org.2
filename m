@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B3F4515CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357AC4515CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353173AbhKOUzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:55:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50074 "EHLO mail.kernel.org"
+        id S1353246AbhKOUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:55:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240639AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240640AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:11:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA627633BE;
-        Mon, 15 Nov 2021 17:47:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3094633BF;
+        Mon, 15 Nov 2021 17:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998437;
-        bh=CO1s9a5JKXDfQAHjrPKjabOVn04M8aXeLNnH/E7NDok=;
+        s=korg; t=1636998440;
+        bh=0HByP6zMOrxNQ0H5DB0S2Qi6Q9nbEEjG0kBXNbT+GLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ofM7qk95M0A5NIn0vFgvs3A82T/DJnbZ5ywbniXayV1PTO30Mc4uJTAsB0uPDqoqd
-         kX0+Ji3uOg/RZvtrYF25ju7qxrvOjXHR2dFoPirM0LNf8qqTxOK4IAOBh/canHoMWV
-         /iLTBuNGixDJiDBF4W1PG+nXtHji3zKCeBYNqroQ=
+        b=eyOY2xuz8L0xC0qrYV8Vt1Wra86gTVq3Wrs86s2wRTqwPnVIaSZaeMnQVleT9xF26
+         gQH1CPpU88eRgvizQE+afyfpWOIfPhtsyombvdbEHdr52jtPErqJBgwARbN7ztEEyy
+         zH9shHlOBeHs1BbeBQUznFG0AioQ7G5MwMkt4tVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brett Creeley <brett.creeley@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 510/575] ice: Fix not stopping Tx queues for VFs
-Date:   Mon, 15 Nov 2021 18:03:55 +0100
-Message-Id: <20211115165401.325254131@linuxfoundation.org>
+Subject: [PATCH 5.10 511/575] ACPI: PMIC: Fix intel_pmic_regs_handler() read accesses
+Date:   Mon, 15 Nov 2021 18:03:56 +0100
+Message-Id: <20211115165401.360361929@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,116 +40,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brett Creeley <brett.creeley@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b385cca47363316c6d9a74ae9db407bbc281f815 ]
+[ Upstream commit 009a789443fe4c8e6b1ecb7c16b4865c026184cd ]
 
-When a VF is removed and/or reset its Tx queues need to be
-stopped from the PF. This is done by calling the ice_dis_vf_qs()
-function, which calls ice_vsi_stop_lan_tx_rings(). Currently
-ice_dis_vf_qs() is protected by the VF state bit ICE_VF_STATE_QS_ENA.
-Unfortunately, this is causing the Tx queues to not be disabled in some
-cases and when the VF tries to re-enable/reconfigure its Tx queues over
-virtchnl the op is failing. This is because a VF can be reset and/or
-removed before the ICE_VF_STATE_QS_ENA bit is set, but the Tx queues
-were already configured via ice_vsi_cfg_single_txq() in the
-VIRTCHNL_OP_CONFIG_VSI_QUEUES op. However, the ICE_VF_STATE_QS_ENA bit
-is set on a successful VIRTCHNL_OP_ENABLE_QUEUES, which will always
-happen after the VIRTCHNL_OP_CONFIG_VSI_QUEUES op.
+The handling of PMIC register reads through writing 0 to address 4
+of the OpRegion is wrong. Instead of returning the read value
+through the value64, which is a no-op for function == ACPI_WRITE calls,
+store the value and then on a subsequent function == ACPI_READ with
+address == 3 (the address for the value field of the OpRegion)
+return the stored value.
 
-This was causing the following error message when loading the ice
-driver, creating VFs, and modifying VF trust in an endless loop:
+This has been tested on a Xiaomi Mi Pad 2 and makes the ACPI battery dev
+there mostly functional (unfortunately there are still other issues).
 
-[35274.192484] ice 0000:88:00.0: Failed to set LAN Tx queue context, error: ICE_ERR_PARAM
-[35274.193074] ice 0000:88:00.0: VF 0 failed opcode 6, retval: -5
-[35274.193640] iavf 0000:88:01.0: PF returned error -5 (IAVF_ERR_PARAM) to our request 6
+Here are the SET() / GET() functions of the PMIC ACPI device,
+which use this OpRegion, which clearly show the new behavior to
+be correct:
 
-Fix this by always calling ice_dis_vf_qs() and silencing the error
-message in ice_vsi_stop_tx_ring() since the calling code ignores the
-return anyway. Also, all other places that call ice_vsi_stop_tx_ring()
-catch the error, so this doesn't affect those flows since there was no
-change to the values the function returns.
+OperationRegion (REGS, 0x8F, Zero, 0x50)
+Field (REGS, ByteAcc, NoLock, Preserve)
+{
+    CLNT,   8,
+    SA,     8,
+    OFF,    8,
+    VAL,    8,
+    RWM,    8
+}
 
-Other solutions were considered (i.e. tracking which VF queues had been
-"started/configured" in VIRTCHNL_OP_CONFIG_VSI_QUEUES, but it seemed
-more complicated than it was worth. This solution also brings in the
-chance for other unexpected conditions due to invalid state bit checks.
-So, the proposed solution seemed like the best option since there is no
-harm in failing to stop Tx queues that were never started.
+Method (GET, 3, Serialized)
+{
+    If ((AVBE == One))
+    {
+        CLNT = Arg0
+        SA = Arg1
+        OFF = Arg2
+        RWM = Zero
+        If ((AVBG == One))
+        {
+            GPRW = Zero
+        }
+    }
 
-This issue can be seen using the following commands:
+    Return (VAL) /* \_SB_.PCI0.I2C7.PMI5.VAL_ */
+}
 
-for i in {0..50}; do
-        rmmod ice
-        modprobe ice
+Method (SET, 4, Serialized)
+{
+    If ((AVBE == One))
+    {
+        CLNT = Arg0
+        SA = Arg1
+        OFF = Arg2
+        VAL = Arg3
+        RWM = One
+        If ((AVBG == One))
+        {
+            GPRW = One
+        }
+    }
+}
 
-        sleep 1
-
-        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
-
-        ip link set ens785f1 vf 0 trust on
-        ip link set ens785f0 vf 0 trust on
-
-        sleep 2
-
-        echo 0 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 0 > /sys/class/net/ens785f1/device/sriov_numvfs
-        sleep 1
-        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
-
-        ip link set ens785f1 vf 0 trust on
-        ip link set ens785f0 vf 0 trust on
-done
-
-Fixes: 77ca27c41705 ("ice: add support for virtchnl_queue_select.[tx|rx]_queues bitmap")
-Signed-off-by: Brett Creeley <brett.creeley@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 0afa877a5650 ("ACPI / PMIC: intel: add REGS operation region support")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_base.c        | 2 +-
- drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c | 6 ++----
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ drivers/acpi/pmic/intel_pmic.c | 51 +++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
-index fe4320e2d1f2f..1929847b8c404 100644
---- a/drivers/net/ethernet/intel/ice/ice_base.c
-+++ b/drivers/net/ethernet/intel/ice/ice_base.c
-@@ -839,7 +839,7 @@ ice_vsi_stop_tx_ring(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
- 	} else if (status == ICE_ERR_DOES_NOT_EXIST) {
- 		dev_dbg(ice_pf_to_dev(vsi->back), "LAN Tx queues do not exist, nothing to disable\n");
- 	} else if (status) {
--		dev_err(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
-+		dev_dbg(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
- 			ice_stat_str(status));
- 		return -ENODEV;
+diff --git a/drivers/acpi/pmic/intel_pmic.c b/drivers/acpi/pmic/intel_pmic.c
+index a371f273f99dd..9cde299eba880 100644
+--- a/drivers/acpi/pmic/intel_pmic.c
++++ b/drivers/acpi/pmic/intel_pmic.c
+@@ -211,31 +211,36 @@ static acpi_status intel_pmic_regs_handler(u32 function,
+ 		void *handler_context, void *region_context)
+ {
+ 	struct intel_pmic_opregion *opregion = region_context;
+-	int result = 0;
++	int result = -EINVAL;
++
++	if (function == ACPI_WRITE) {
++		switch (address) {
++		case 0:
++			return AE_OK;
++		case 1:
++			opregion->ctx.addr |= (*value64 & 0xff) << 8;
++			return AE_OK;
++		case 2:
++			opregion->ctx.addr |= *value64 & 0xff;
++			return AE_OK;
++		case 3:
++			opregion->ctx.val = *value64 & 0xff;
++			return AE_OK;
++		case 4:
++			if (*value64) {
++				result = regmap_write(opregion->regmap, opregion->ctx.addr,
++						      opregion->ctx.val);
++			} else {
++				result = regmap_read(opregion->regmap, opregion->ctx.addr,
++						     &opregion->ctx.val);
++			}
++			opregion->ctx.addr = 0;
++		}
++	}
+ 
+-	switch (address) {
+-	case 0:
+-		return AE_OK;
+-	case 1:
+-		opregion->ctx.addr |= (*value64 & 0xff) << 8;
+-		return AE_OK;
+-	case 2:
+-		opregion->ctx.addr |= *value64 & 0xff;
++	if (function == ACPI_READ && address == 3) {
++		*value64 = opregion->ctx.val;
+ 		return AE_OK;
+-	case 3:
+-		opregion->ctx.val = *value64 & 0xff;
+-		return AE_OK;
+-	case 4:
+-		if (*value64) {
+-			result = regmap_write(opregion->regmap, opregion->ctx.addr,
+-					      opregion->ctx.val);
+-		} else {
+-			result = regmap_read(opregion->regmap, opregion->ctx.addr,
+-					     &opregion->ctx.val);
+-			if (result == 0)
+-				*value64 = opregion->ctx.val;
+-		}
+-		memset(&opregion->ctx, 0x00, sizeof(opregion->ctx));
  	}
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-index 22e23199c92c1..69ce5d60a8570 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-@@ -362,8 +362,7 @@ void ice_free_vfs(struct ice_pf *pf)
  
- 	/* Avoid wait time by stopping all VFs at the same time */
- 	ice_for_each_vf(pf, i)
--		if (test_bit(ICE_VF_STATE_QS_ENA, pf->vf[i].vf_states))
--			ice_dis_vf_qs(&pf->vf[i]);
-+		ice_dis_vf_qs(&pf->vf[i]);
- 
- 	tmp = pf->num_alloc_vfs;
- 	pf->num_qps_per_vf = 0;
-@@ -1291,8 +1290,7 @@ bool ice_reset_vf(struct ice_vf *vf, bool is_vflr)
- 
- 	vsi = pf->vsi[vf->lan_vsi_idx];
- 
--	if (test_bit(ICE_VF_STATE_QS_ENA, vf->vf_states))
--		ice_dis_vf_qs(vf);
-+	ice_dis_vf_qs(vf);
- 
- 	/* Call Disable LAN Tx queue AQ whether or not queues are
- 	 * enabled. This is needed for successful completion of VFR.
+ 	if (result < 0) {
 -- 
 2.33.0
 
