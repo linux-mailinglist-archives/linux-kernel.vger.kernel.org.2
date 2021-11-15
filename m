@@ -2,150 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BD7451D7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF963451BD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347606AbhKPAa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:30:26 -0500
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:51533 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238741AbhKOTap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:30:45 -0500
-X-Greylist: delayed 133501 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 14:30:45 EST
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 5AAA8100E416C;
-        Mon, 15 Nov 2021 20:27:23 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 3AC132ED5FD; Mon, 15 Nov 2021 20:27:23 +0100 (CET)
-Date:   Mon, 15 Nov 2021 20:27:23 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     "Bao, Joseph" <joseph.bao@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>, kw@linux.com
-Subject: Re: HW power fault defect cause system hang on kernel 5.4.y
-Message-ID: <20211115192723.GA19161@wunner.de>
-References: <DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com>
+        id S1350949AbhKPAIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:08:06 -0500
+Received: from mga12.intel.com ([192.55.52.136]:29777 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347219AbhKOTjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:39:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213547103"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="213547103"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 11:29:13 -0800
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="506056920"
+Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 11:29:12 -0800
+From:   Reinette Chatre <reinette.chatre@intel.com>
+To:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
+        x86@kernel.org
+Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH V3] x86/sgx: Fix free page accounting
+Date:   Mon, 15 Nov 2021 11:29:04 -0800
+Message-Id: <a95a40743bbd3f795b465f30922dde7f1ea9e0eb.1637004094.git.reinette.chatre@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:45:00AM +0000, Bao, Joseph wrote:
-> Recently we encounter system hang (dead spinlock) when move to kernel
-> linux-5.4.y. 
-> 
-> Finally, we use bisect to locate the suspicious commit https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.4.y&id=4667358dab9cc07da044d5bc087065545b1000df.
-> 
-> Our system has some HW defect, which will wrongly set PCI_EXP_SLTSTA_PFD
-> high, and this commit will lead to infinite loop jumping to read_status
-> (no chance to clear status PCI_EXP_SLTSTA_PFD bit since ctrl is not
-> updated), I know this is our HW defect, but this commit makes kernel
-> trapped in this isr function and leads to kernel hang (then the user
-> could not get useful information to show what's wrong), which I think
-> is not expected behavior, so I would like to report to you for discussion.
+The SGX driver maintains a single global free page counter,
+sgx_nr_free_pages, that reflects the number of free pages available
+across all NUMA nodes. Correspondingly, a list of free pages is
+associated with each NUMA node and sgx_nr_free_pages is updated
+every time a page is added or removed from any of the free page
+lists. The main usage of sgx_nr_free_pages is by the reclaimer
+that runs when it (sgx_nr_free_pages) goes below a watermark
+to ensure that there are always some free pages available to, for
+example, support efficient page faults.
 
-Thanks a lot for the report and apologies for the breakage and the delay.
-Below please find a tentative fix.  Could you test whether it fixes the
-issue?
+With sgx_nr_free_pages accessed and modified from a few places
+it is essential to ensure that these accesses are done safely but
+this is not the case. sgx_nr_free_pages is read without any
+protection and updated with inconsistent protection by any one
+of the spin locks associated with the individual NUMA nodes.
+For example:
 
-I don't think this is a hardware defect.  If I'm reading the spec right
-(PCIe r5.0, sec. 6.7.1.8), the PFD bit is meant to remain set and cannot
-be cleared until the kernel disables slot power.
+      CPU_A                                 CPU_B
+      -----                                 -----
+ spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
+ ...                                   ...
+ sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
 
-When a power fault happens, we currently only change the LEDs (Power
-Indicator Off, Attention Indicator On) and emit a log message.
-We otherwise leave the slot as is, even though I'd assume that the
-PCI device in the slot is no longer accessible.
+ spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
 
-I'm wondering whether we should interpret a power fault as surprise
-removal.  Alternatively, we could attempt recovery, i.e. turn slot
-power off and back on.  Similar to what we're doing when an Uncorrectable
-Error occurs.  Do you have an opinion on that?  What would be the
-desired behavior for your users?
+Since sgx_nr_free_pages may be protected by different spin locks
+while being modified from different CPUs, the following scenario
+is possible:
 
-Thanks,
+      CPU_A                                CPU_B
+      -----                                -----
+{sgx_nr_free_pages = 100}
+ spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
+ sgx_nr_free_pages--;                  sgx_nr_free_pages--;
+ /* LOAD sgx_nr_free_pages = 100 */    /* LOAD sgx_nr_free_pages = 100 */
+ /* sgx_nr_free_pages--          */    /* sgx_nr_free_pages--          */
+ /* STORE sgx_nr_free_pages = 99 */    /* STORE sgx_nr_free_pages = 99 */
+ spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
 
-Lukas
+In the above scenario, sgx_nr_free_pages is decremented from two CPUs
+but instead of sgx_nr_free_pages ending with a value that is two less
+than it started with, it was only decremented by one while the number
+of free pages were actually reduced by two. The consequence of
+sgx_nr_free_pages not being protected is that its value may not
+accurately reflect the actual number of free pages on the system,
+impacting the availability of free pages in support of many flows.
 
--- >8 --
+The problematic scenario is when the reclaimer does not run because it
+believes there to be sufficient free pages while any attempt to allocate
+a page fails because there are no free pages available. In the SGX driver
+the reclaimer's watermark is only 32 pages so after encountering the
+above example scenario 32 times a user space hang is possible when there
+are no more free pages because of repeated page faults caused by no
+free pages made available.
 
-Subject: [PATCH] PCI: pciehp: Fix infinite loop in IRQ handler upon power
- fault
+The following flow was encountered:
+asm_exc_page_fault
+ ...
+   sgx_vma_fault()
+     sgx_encl_load_page()
+       sgx_encl_eldu() // Encrypted page needs to be loaded from backing
+                       // storage into newly allocated SGX memory page
+         sgx_alloc_epc_page() // Allocate a page of SGX memory
+           __sgx_alloc_epc_page() // Fails, no free SGX memory
+           ...
+           if (sgx_should_reclaim(SGX_NR_LOW_PAGES)) // Wake reclaimer
+             wake_up(&ksgxd_waitq);
+           return -EBUSY; // Return -EBUSY giving reclaimer time to run
+       return -EBUSY;
+     return -EBUSY;
+   return VM_FAULT_NOPAGE;
 
-The Power Fault Detected bit in the Slot Status register differs from
-all other hotplug events in that it is sticky:  It can only be cleared
-after turning off slot power.  Per PCIe r5.0, sec. 6.7.1.8:
+The reclaimer is triggered in above flow with the following code:
 
-  If a power controller detects a main power fault on the hot-plug slot,
-  it must automatically set its internal main power fault latch [...].
-  The main power fault latch is cleared when software turns off power to
-  the hot-plug slot.
+static bool sgx_should_reclaim(unsigned long watermark)
+{
+        return sgx_nr_free_pages < watermark &&
+               !list_empty(&sgx_active_page_list);
+}
 
-The stickiness used to cause interrupt storms and infinite loops which
-were fixed in 2009 by commits 5651c48cfafe ("PCI pciehp: fix power fault
-interrupt storm problem") and 99f0169c17f3 ("PCI: pciehp: enable
-software notification on empty slots").
+In the problematic scenario there were no free pages available yet the
+value of sgx_nr_free_pages was above the watermark. The allocation of
+SGX memory thus always failed because of a lack of free pages while no
+free pages were made available because the reclaimer is never started
+because of sgx_nr_free_pages' incorrect value. The consequence was that
+user space kept encountering VM_FAULT_NOPAGE that caused the same
+address to be accessed repeatedly with the same result.
 
-Unfortunately in 2020 the infinite loop issue was inadvertently
-reintroduced by commit 8edf5332c393 ("PCI: pciehp: Fix MSI interrupt
-race"):  The hardirq handler pciehp_isr() clears the PFD bit until
-pciehp's power_fault_detected flag is set.  That happens in the IRQ
-thread pciehp_ist(), which never learns of the event because the hardirq
-handler is stuck in an infinite loop.  Fix by setting the
-power_fault_detected flag already in the hardirq handler.
+Change the global free page counter to an atomic type that
+ensures simultaneous updates are done safely. While doing so, move
+the updating of the variable outside of the spin lock critical
+section to which it does not belong.
 
-Fixes: 8edf5332c393 ("PCI: pciehp: Fix MSI interrupt race")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214989
-Link: https://lore.kernel.org/linux-pci/DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com
-Reported-by: Joseph Bao <joseph.bao@intel.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v4.19+
-Cc: Stuart Hayes <stuart.w.hayes@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
 ---
- drivers/pci/hotplug/pciehp_hpc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Changes since V2:
+- V2:
+https://lore.kernel.org/lkml/b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com/
+- Update changelog to provide example of unsafe variable modification (Jarkko).
 
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index 6ac5ea5..fac6b8e 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -640,6 +640,8 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 	 */
- 	if (ctrl->power_fault_detected)
- 		status &= ~PCI_EXP_SLTSTA_PFD;
-+	else if (status & PCI_EXP_SLTSTA_PFD)
-+		ctrl->power_fault_detected = true;
+Changes since V1:
+- V1:
+  https://lore.kernel.org/lkml/373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com/
+- Add static to definition of sgx_nr_free_pages (Tony).
+- Add Tony's signature.
+- Provide detail about error scenario in changelog (Jarkko).
+
+ arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..8471a8b9b48e 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+ static LIST_HEAD(sgx_active_page_list);
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
  
- 	events |= status;
- 	if (!events) {
-@@ -649,7 +651,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+-/* The free page list lock protected variables prepend the lock. */
+-static unsigned long sgx_nr_free_pages;
++static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
+ 
+ /* Nodes with one or more EPC sections. */
+ static nodemask_t sgx_numa_mask;
+@@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
+ 
+ 		spin_lock(&node->lock);
+ 		list_add_tail(&epc_page->list, &node->free_page_list);
+-		sgx_nr_free_pages++;
+ 		spin_unlock(&node->lock);
++		atomic_long_inc(&sgx_nr_free_pages);
  	}
+ }
  
- 	if (status) {
--		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
-+		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, status);
+ static bool sgx_should_reclaim(unsigned long watermark)
+ {
+-	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
++	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
++	       !list_empty(&sgx_active_page_list);
+ }
  
- 		/*
- 		 * In MSI mode, all event bits must be zero before the port
-@@ -723,8 +725,7 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
- 	}
+ static int ksgxd(void *p)
+@@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
  
- 	/* Check Power Fault Detected */
--	if ((events & PCI_EXP_SLTSTA_PFD) && !ctrl->power_fault_detected) {
--		ctrl->power_fault_detected = 1;
-+	if (events & PCI_EXP_SLTSTA_PFD) {
- 		ctrl_err(ctrl, "Slot(%s): Power fault\n", slot_name(ctrl));
- 		pciehp_set_indicators(ctrl, PCI_EXP_SLTCTL_PWR_IND_OFF,
- 				      PCI_EXP_SLTCTL_ATTN_IND_ON);
+ 	page = list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
+ 	list_del_init(&page->list);
+-	sgx_nr_free_pages--;
+ 
+ 	spin_unlock(&node->lock);
++	atomic_long_dec(&sgx_nr_free_pages);
+ 
+ 	return page;
+ }
+@@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+ 	spin_lock(&node->lock);
+ 
+ 	list_add_tail(&page->list, &node->free_page_list);
+-	sgx_nr_free_pages++;
+ 
+ 	spin_unlock(&node->lock);
++	atomic_long_inc(&sgx_nr_free_pages);
+ }
+ 
+ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
 -- 
-2.33.0
+2.25.1
 
