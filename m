@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC163451F81
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEDB451BB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353294AbhKPAlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:41:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S1344893AbhKPAGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:06:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345029AbhKOT0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345027AbhKOT0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:26:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E95426321A;
-        Mon, 15 Nov 2021 19:08:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EFD663220;
+        Mon, 15 Nov 2021 19:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003336;
-        bh=oEkI2Wa5wF/SWR9GZEyjl3lg0Os27ZFKxK9CYW/cfu0=;
+        s=korg; t=1637003338;
+        bh=KwEe3m6BBn1PfB12fUQtGVLrKRCOA5YbUBWy85GBrvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJ8OjuAyX21kbGbl82L0VpEl37kKVe4kxffHnEDyw15g2SkrkbHrykOR0gF9FmnWz
-         ny+AAU72JjkTKmqrcCepiXb2klAxb4LhtzzRyuOkJDATmry3ovSWWFLe20+70aPmS1
-         9v/QT8qSQUzBt5vVHZdoBMK1tO6SWDCKzxMW4J2A=
+        b=PVGxojrOV7Y2S+0/mP15anCKhVHy9FYJ7fjSAAW2hOpA+kAKY9c2brC1lKOa/oPDQ
+         j0857GavN46wdR9+0+D8LVyQ21t8sRQj7tO33V2HyMT2oydGfVgchF62Y4+cpR+vM0
+         UotE9/3AVPhl8+3qIyHljZiWfqaQ6M66v/mzxGb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.15 897/917] mtd: rawnand: ams-delta: Keep the driver compatible with on-die ECC engines
-Date:   Mon, 15 Nov 2021 18:06:32 +0100
-Message-Id: <20211115165459.465717798@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Hoffmann <jan@3e8.eu>,
+        Kestrel seventyfour <kestrelseventyfour@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.15 898/917] mtd: rawnand: xway: Keep the driver compatible with on-die ECC engines
+Date:   Mon, 15 Nov 2021 18:06:33 +0100
+Message-Id: <20211115165459.498635365@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,7 +42,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit d707bb74daae07879e0fc1b4b960f8f2d0a5fe5d upstream.
+commit 6bcd2960af1b7bacb2f1e710ab0c0b802d900501 upstream.
 
 Following the introduction of the generic ECC engine infrastructure, it
 was necessary to reorganize the code and move the ECC configuration in
@@ -67,20 +69,23 @@ nand_scan(). During the initialization step, the core will consider this
 entry as the default engine for this driver. This value may of course
 be overloaded by the user if the usual DT properties are provided.
 
-Fixes: 59d93473323a ("mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()")
+Fixes: d525914b5bd8 ("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()")
 Cc: stable@vger.kernel.org
+Cc: Jan Hoffmann <jan@3e8.eu>
+Cc: Kestrel seventyfour <kestrelseventyfour@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-2-miquel.raynal@bootlin.com
+Tested-by: Jan Hoffmann <jan@3e8.eu>
+Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-10-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/nand/raw/ams-delta.c |   12 +++++++++---
+ drivers/mtd/nand/raw/xway_nand.c |   12 +++++++++---
  1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -217,9 +217,8 @@ static int gpio_nand_setup_interface(str
+--- a/drivers/mtd/nand/raw/xway_nand.c
++++ b/drivers/mtd/nand/raw/xway_nand.c
+@@ -148,9 +148,8 @@ static void xway_write_buf(struct nand_c
  
- static int gpio_nand_attach_chip(struct nand_chip *chip)
+ static int xway_attach_chip(struct nand_chip *chip)
  {
 -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 -
@@ -90,19 +95,19 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
  	return 0;
-@@ -370,6 +369,13 @@ static int gpio_nand_probe(struct platfo
- 	/* Release write protection */
- 	gpiod_set_value(priv->gpiod_nwp, 0);
+@@ -219,6 +218,13 @@ static int xway_nand_probe(struct platfo
+ 		    | NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
+ 		    | cs_flag, EBU_NAND_CON);
  
 +	/*
 +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
 +	 * Set ->engine_type before registering the NAND devices in order to
 +	 * provide a driver specific default value.
 +	 */
-+	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 +
  	/* Scan to find existence of the device */
- 	err = nand_scan(this, 1);
+ 	err = nand_scan(&data->chip, 1);
  	if (err)
 
 
