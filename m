@@ -2,261 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F80451D62
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FC9451BD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347767AbhKPA3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:29:22 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:46814 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346560AbhKOTee (ORCPT
+        id S1348752AbhKPAHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347488AbhKOTj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:34:34 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1243E218D6;
-        Mon, 15 Nov 2021 19:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637004684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4ZiiwEnz5XGSlWeT8O+jkCefoPIbeg8p3rHgDHkvM8=;
-        b=hfo7k3ahAq+4WiayhhOAps8Zu5wAe5DwJIiHDlPpeCzNbkiWPbAOOnNXVL2YcbwxT3z+aT
-        8eO9nE9fZ/TfsPOuBb0fxmigq974glS7V22iBaPiyrHPEh5gmiV+m2TBjRM/BtzH8uwgqZ
-        IkmYD5pRuYyF6FOldCIXVATt7yLJuiM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C18F613A90;
-        Mon, 15 Nov 2021 19:31:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nwj7LYu1kmF3dwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 15 Nov 2021 19:31:23 +0000
-Date:   Mon, 15 Nov 2021 20:31:22 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <20211115193122.GA16798@blackbody.suse.cz>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211018143619.205065-6-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211018143619.205065-6-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 15 Nov 2021 14:39:59 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A05DC06122E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:34:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id d8-20020a253608000000b005c202405f52so28322717yba.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=aGpK0n+S3Cv9bjNDEf/KmKHHm2D/FjmK7hXeVTFlz/Q=;
+        b=YeUVYlPI1o2XyKC0lUT6UO6bcdDPQenFfuZiT/x6Ts/+02Q69ZDJfBjXSIt7LRnMwq
+         33GPPLXmgRE8bD5BvhWpK+Vy0FDWjUq27I2b3V3MFb3XVhy3F8X1H6Y7kzoZfk9yeS1b
+         OWKTVci3FkU1lwXkmjUnk+QI1Rt+4Rj5h8vLFL0xlWgfRLC6F3s1zcTztLcRDFd3/czK
+         h15fasakXJqlIq/VjjFlKCHs9zR3cofwZq0YQRYN8Um3XhA6ASWNNbIiP8ckkptBv3G5
+         3dZ+ES8D3CYTGTKA5O5rGwnrnMBCPqfjMZi7dZYhbajvzWKLIqaUVODrL4Xz6hg98M0D
+         AL5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=aGpK0n+S3Cv9bjNDEf/KmKHHm2D/FjmK7hXeVTFlz/Q=;
+        b=5/ABze52PIBeeij41f6xdJnyxpbkJgl88bvwylKshgq93H4HIQ5NLD/0rxxfpNV4nS
+         gZJC/9DCjcXl3/RiqEQMp1kc3iL+BCDOJ1b8kylHDkKGDVXZq8BYusJIIID6+CRYCL62
+         uL55nVGiAbBUxmBGyARphDZdxhXH3rtJ8phVWcYSADz2srFgMSCCFh43Q+SnZNOoMWSO
+         Q26nkuHVKPWgzDxVFzn9QPYL1w7w45A1mULVmsjZmTEnFDEU1whYvHj8X843cyIcHGCh
+         Tq1TpRR5dWzbQwpuCXlA4JlMNUDgER9QEfusTryBWKLRcgg8+jzLDf3kXOfZgtiYJiUO
+         HYDg==
+X-Gm-Message-State: AOAM5314s+tzjZ4MAs7g4Fhogh8irh/LoutDHcEh6fB2b9Vtb1xx9qp5
+        MAGsfK4p+aEBCGx6GuYZnfLrtNiOZF0=
+X-Google-Smtp-Source: ABdhPJwAk3Pef2Gs4wryc7PpFonYd0ZcZr1JsoV+FWUcjb1NlLsnZu6YPaiymBXfR27xEvQze0FWpLVHzf4=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:9fb:192e:3671:218c])
+ (user=pgonda job=sendgmr) by 2002:a25:a2c1:: with SMTP id c1mr1485206ybn.473.1637004863853;
+ Mon, 15 Nov 2021 11:34:23 -0800 (PST)
+Date:   Mon, 15 Nov 2021 11:34:20 -0800
+Message-Id: <20211115193420.2288308-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH V4.1 5/5] crypto: ccp - Add SEV_INIT_EX support
+From:   Peter Gonda <pgonda@google.com>
+To:     thomas.lendacky@amd.com
+Cc:     David Rientjes <rientjes@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: David Rientjes <rientjes@google.com>
 
-Hello.
+Add new module parameter to allow users to use SEV_INIT_EX instead of
+SEV_INIT. This helps users who lock their SPI bus to use the PSP for SEV
+functionality. The 'init_ex_path' parameter defaults to NULL which means
+the kernel will use SEV_INIT, if a path is specified SEV_INIT_EX will be
+used with the data found at the path. On certain PSP commands this
+file is written to as the PSP updates the NV memory region. Depending on
+file system initialization this file open may fail during module init
+but the CCP driver for SEV already has sufficient retries for platform
+initialization. During normal operation of PSP system and SEV commands
+if the PSP has not been initialized it is at run time. If the file at
+'init_ex_path' does not exist the PSP will not be initialized. The user
+must create the file prior to use with 32Kb of 0xFFs per spec.
 
-On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
-> +	When set to "isolated", the CPUs in that partition root will
-> +	be in an isolated state without any load balancing from the
-> +	scheduler.  Tasks in such a partition must be explicitly bound
-> +	to each individual CPU.
-
-This sounds reasonable but it seems to have some usability issues as was
-raised in another thread [1]. (I could only think of the workaround of
-single-cpu cgroup leaves + CLONE_INTO_CGROUP.)
-
-TL;DR Do whatever you find suitable but (re)consider sticking to the
-delegation principle (making hotplug and ancestor changes equal).
-
-Now to the constraints and partition setups. I think it's useful to have
-a model with which the implementation can be compared with.
-I tried to condense some "simple rules" from the descriptions you posted
-in v8 plus your response to my remarks in v7 [2]. These should only be
-the "validity conditions", not "transition conditions".
-
-## Validity conditions
-
-For simplification, there's a condition called 'degraded' that tells
-whether a cpuset can host tasks (with the given config) that expands to
-two predicates:
-
-	degraded := cpus.internal_effective == ø && has_tasks
-	valid_root := !degraded && cpus_exclusive && parent.valid_root
-	(valid_member := !degraded)
-
-with a helping predicate
-	cpus_exclusive := cpus not shared by a sibling
-
-The effective CPUs basically combine configured+available CPUs
-
-	cpus.internal_effective := (cpus ∩ parent.cpus ∩ online_cpus) - passed
-
-where
-	passed := union of children cpus whose partition is not member
-
-Finally, to handle the degraded cpusets gracefully, we define
-
-	if (!degraded)
-		cpus.effective := cpus.internal_effective 
-	else
-		cpus.effective := parent.cpus.effective
-
-(In cases when there's no parent, we replace its cpus with online_cpus.)
-
+Signed-off-by: David Rientjes <rientjes@google.com>
+Co-developed-by: Peter Gonda <pgonda@google.com>
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
 
-I'll try applying these conditions to your description.
+V4.1
+* Fixed missing loff_t paramter for kernel_read().
 
-> +
-> +	"cpuset.cpus" must always be set up first before enabling
-> +	partition.
+--
+ .../virt/kvm/amd-memory-encryption.rst        |   6 +
+ drivers/crypto/ccp/sev-dev.c                  | 194 ++++++++++++++++--
+ include/linux/psp-sev.h                       |  21 ++
+ 3 files changed, 206 insertions(+), 15 deletions(-)
 
-This is just a transition condition.
-
->       Unlike "member" whose "cpuset.cpus.effective" can
-> +	contain CPUs not in "cpuset.cpus", this can never happen with a
-> +	valid partition root. In other words, "cpuset.cpus.effective"
-> +	is always a subset of "cpuset.cpus" for a valid partition root.
-
-IIUC this refers to the cgroup that is 'degraded'. (The consequences for
-a valid partition root follow from valid_root definition above.)
-
-> +
-> +	When a parent partition root cannot exclusively grant any of
-> +	the CPUs specified in "cpuset.cpus", "cpuset.cpus.effective"
-> +	becomes empty.
-
-This sounds too strict to me, perhaps you meant 'cannot grant _all_ of
-the CPUs'?
-
->       If there are tasks in the partition root, the
-> +	partition root becomes invalid and "cpuset.cpus.effective"
-> +	is reset to that of the nearest non-empty ancestor.
-
-This is captured in the definition of 'degraded'.
-
-> +
-> +        Note that a task cannot be moved to a croup with empty
-> +        "cpuset.cpus.effective".
-
-A transition condition. (Makes sense.)
-
-[With the validity conditions above, it's possible to have 'valid_root'
-with empty cpus (hence also empty cpus.internal_effective) if there are
-no tasks in there. The transition conditions so far prevented this
-corner case.]
-
-> +	There are additional constraints on where a partition root can
-> +	be enabled ("root" or "isolated").  It can only be enabled in
-> +	a cgroup if all the following conditions are met.
-
-I think the enablement (aka rewriting cpuset.cpus.partition) could be
-always possible but it'd result in "root invalid (...)" if the resulting
-config doesn't meet the validity condition.
-
-> +
-> +	1) The "cpuset.cpus" is non-empty and exclusive, i.e. they are
-> +	   not shared by any of its siblings.
-
-The emptiness here is a judgement call (in my formulation of the
-conditions it seemed simpler to allow empty cpus.internal_effective with
-no tasks).
-
-> +	2) The parent cgroup is a valid partition root.
-
-Captured in the valid_root definition.
-
-> +	3) The "cpuset.cpus" is a subset of parent's "cpuset.cpus".
-
-This is unnecessary strictness. Allow such config,
-cpus.internal_effective still can't be more than parent's cpuset.cpus.
-(Or do you have a reason to discard such configs?)
-
-> +	4) There is no child cgroups with cpuset enabled.  This avoids
-> +	   cpu migrations of multiple cgroups simultaneously which can
-> +	   be problematic.
-
-A transition condition (i.e. not relevant to validity conditions).
-
-> +	Once becoming a partition root, changes to "cpuset.cpus"
-> +	is generally allowed as long as the cpu list is exclusive,
-> +	non-empty and is a superset of children's cpu lists.
-
-Any changes should be allowed otherwise it denies the delegation
-principle of v2 (IOW a parent should be able to preempt CPUs given to
-chilren previously and not be denied because of them).
-
-(If the change results in failed validity condition the cgroup of course
-cannot be be a valid_root anymore.)
-
-> +        The constraints of a valid partition root are as follows:
-> +
-> +        1) The parent cgroup is a valid partition root.
-> +        2) "cpuset.cpus.effective" is a subset of "cpuset.cpus"
-> +        3) "cpuset.cpus.effective" is non-empty when there are tasks
-> +           in the partition.
-
-(This seem to miss the sibling exclusivity condition.)
-Here I'd simply paste the "Validity conditions" specified above instead.
-
-> +        Changing a partition root to "member" is always allowed.
-> +        If there are child partition roots underneath it, however,
-> +        they will be forced to be switched back to "member" too and
-> +        lose their partitions. So care must be taken to double check
-> +        for this condition before disabling a partition root.
-
-(Or is this how delegation is intended?) However, AFAICS, parent still
-can't remove cpuset.cpus even when the child is a "member". Otherwise,
-I agree with the back-switch.
-
-
-> +	Setting a cgroup to a valid partition root will take the CPUs
-> +	away from the effective CPUs of the parent partition.
-
-Captured in the definition of cpus.internal_effective.
-
-> +	A valid parent partition may distribute out all its CPUs to
-> +	its child partitions as long as it is not the root cgroup as
-> +	we need some house-keeping CPUs in the root cgroup.
-
-This actually applies to any root partition that's supposed to host
-tasks. (IOW, 'valid_root' cannot be 'degraded'.)
-
-> +	An invalid partition is not a real partition even though some
-> +	internal states may still be kept.
-
-Tautology? (Or new definition of "real".)
-
-> +
-> +	An invalid partition root can be reverted back to a real
-> +	partition root if none of the constraints of a valid partition
-> +        root are violated.
-
-Yes. (Also tautological.)
-
-Anyway, as I said above, I just tried to formulate the model for clearer
-understanding and the implementation may introduce transition
-constraints but it'd be good to always have the simple rules to tell
-what's a valid root in the tree and what's not.
-
-Regards,
-Michal
-
-[1] https://lore.kernel.org/r/AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM/
-[2] https://lore.kernel.org/lkml/5eacfdcc-148b-b599-3111-4f2971e7ddc0@redhat.com/
+diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+index 5c081c8c7164..1c6847fff304 100644
+--- a/Documentation/virt/kvm/amd-memory-encryption.rst
++++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+@@ -85,6 +85,12 @@ guests, such as launching, running, snapshotting, migrating and decommissioning.
+ The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV platform
+ context. In a typical workflow, this command should be the first command issued.
+ 
++The firmware can be initialized either by using its own non-volatile storage or
++the OS can manage the NV storage for the firmware using the module parameter
++``init_ex_path``. The file specified by ``init_ex_path`` must exist. To create
++a new NV storage file allocate the file with 32KB bytes of 0xFF as required by
++the SEV spec.
++
+ Returns: 0 on success, -negative on error
+ 
+ 2. KVM_SEV_LAUNCH_START
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index ee9f194d460e..5e32fd44f804 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -22,6 +22,7 @@
+ #include <linux/firmware.h>
+ #include <linux/gfp.h>
+ #include <linux/cpufeature.h>
++#include <linux/fs.h>
+ 
+ #include <asm/smp.h>
+ 
+@@ -43,6 +44,10 @@ static int psp_probe_timeout = 5;
+ module_param(psp_probe_timeout, int, 0644);
+ MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
+ 
++static char *init_ex_path;
++module_param(init_ex_path, charp, 0444);
++MODULE_PARM_DESC(init_ex_path, " Path for INIT_EX data; if set try INIT_EX");
++
+ static bool psp_init_on_probe = true;
+ module_param(psp_init_on_probe, bool, 0444);
+ MODULE_PARM_DESC(psp_init_on_probe, "  if true, the PSP will be initialized on module init. Else the PSP will be initialized on the first command requiring it");
+@@ -62,6 +67,14 @@ static int psp_timeout;
+ #define SEV_ES_TMR_SIZE		(1024 * 1024)
+ static void *sev_es_tmr;
+ 
++/* INIT_EX NV Storage:
++ *   The NV Storage is a 32Kb area and must be 4Kb page aligned.  Use the page
++ *   allocator to allocate the memory, which will return aligned memory for the
++ *   specified allocation order.
++ */
++#define NV_LENGTH (32 * 1024)
++static void *sev_init_ex_buffer;
++
+ static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
+ {
+ 	struct sev_device *sev = psp_master->sev_data;
+@@ -111,6 +124,7 @@ static int sev_cmd_buffer_len(int cmd)
+ {
+ 	switch (cmd) {
+ 	case SEV_CMD_INIT:			return sizeof(struct sev_data_init);
++	case SEV_CMD_INIT_EX:                   return sizeof(struct sev_data_init_ex);
+ 	case SEV_CMD_PLATFORM_STATUS:		return sizeof(struct sev_user_data_status);
+ 	case SEV_CMD_PEK_CSR:			return sizeof(struct sev_data_pek_csr);
+ 	case SEV_CMD_PEK_CERT_IMPORT:		return sizeof(struct sev_data_pek_cert_import);
+@@ -156,6 +170,102 @@ static void *sev_fw_alloc(unsigned long len)
+ 	return page_address(page);
+ }
+ 
++static int sev_read_init_ex_file(void)
++{
++	struct sev_device *sev = psp_master->sev_data;
++	struct file *fp;
++	ssize_t nread;
++	loff_t pos = 0;
++
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return -EOPNOTSUPP;
++
++	fp = filp_open(init_ex_path, O_RDONLY, 0);
++	if (IS_ERR(fp)) {
++		int ret = PTR_ERR(fp);
++
++		dev_err(sev->dev,
++			"SEV: could not open %s for read, error %d\n",
++			init_ex_path, ret);
++		return ret;
++	}
++
++	nread = kernel_read(fp, sev_init_ex_buffer, NV_LENGTH, &pos);
++	if (nread != NV_LENGTH) {
++		dev_err(sev->dev,
++			"SEV: failed to read %u bytes to non volatile memory area, ret %ld\n",
++			NV_LENGTH, nread);
++		return -EIO;
++	}
++
++	dev_dbg(sev->dev, "SEV: read %ld bytes from NV file\n", nread);
++	filp_close(fp, NULL);
++
++	return 0;
++}
++
++static void sev_write_init_ex_file(void)
++{
++	struct sev_device *sev = psp_master->sev_data;
++	struct file *fp;
++	loff_t offset = 0;
++	ssize_t nwrite;
++
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return;
++
++	fp = filp_open(init_ex_path, O_CREAT | O_WRONLY, 0600);
++	if (IS_ERR(fp)) {
++		dev_err(sev->dev,
++			"SEV: could not open file for write, error %d\n",
++			PTR_ERR(fp));
++		return;
++	}
++
++	nwrite = kernel_write(fp, sev_init_ex_buffer, NV_LENGTH, &offset);
++	vfs_fsync(fp, 0);
++	filp_close(fp, NULL);
++
++	if (nwrite != NV_LENGTH) {
++		dev_err(sev->dev,
++			"SEV: failed to write %u bytes to non volatile memory area, ret %ld\n",
++			NV_LENGTH, nwrite);
++		return;
++	}
++
++	dev_dbg(sev->dev, "SEV: write successful to NV file\n");
++}
++
++static void sev_write_init_ex_file_if_required(int cmd_id)
++{
++	lockdep_assert_held(sev_cmd_mutex);
++
++	if (!sev_init_ex_buffer)
++		return;
++
++        /*
++         * Only a few platform commands modify the SPI/NV area, but none of the
++         * non-platform commands do. Only INIT(_EX), PLATFORM_RESET, PEK_GEN,
++         * PEK_CERT_IMPORT, and PDH_GEN do.
++         */
++	switch (cmd_id) {
++	case SEV_CMD_FACTORY_RESET:
++	case SEV_CMD_INIT_EX:
++	case SEV_CMD_PDH_GEN:
++	case SEV_CMD_PEK_CERT_IMPORT:
++	case SEV_CMD_PEK_GEN:
++		break;
++	default:
++		return;
++	};
++
++	sev_write_init_ex_file();
++}
++
+ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+ {
+ 	struct psp_device *psp = psp_master;
+@@ -225,6 +335,8 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+ 		dev_dbg(sev->dev, "sev command %#x failed (%#010x)\n",
+ 			cmd, reg & PSP_CMDRESP_ERR_MASK);
+ 		ret = -EIO;
++	} else {
++		sev_write_init_ex_file_if_required(cmd);
+ 	}
+ 
+ 	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
+@@ -251,37 +363,71 @@ static int sev_do_cmd(int cmd, void *data, int *psp_ret)
+ 	return rc;
+ }
+ 
+-static int __sev_platform_init_locked(int *error)
++static int __sev_init_locked(int *error)
+ {
+-	struct psp_device *psp = psp_master;
+ 	struct sev_data_init data;
+-	struct sev_device *sev;
+-	int psp_ret, rc = 0;
+ 
+-	if (!psp || !psp->sev_data)
+-		return -ENODEV;
++	memset(&data, 0, sizeof(data));
++	if (sev_es_tmr) {
++		/*
++		 * Do not include the encryption mask on the physical
++		 * address of the TMR (firmware should clear it anyway).
++		 */
++		data.tmr_address = __pa(sev_es_tmr);
+ 
+-	sev = psp->sev_data;
++		data.flags |= SEV_INIT_FLAGS_SEV_ES;
++		data.tmr_len = SEV_ES_TMR_SIZE;
++	}
+ 
+-	if (sev->state == SEV_STATE_INIT)
+-		return 0;
++	return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
++}
++
++static int __sev_init_ex_locked(int *error)
++{
++	struct sev_data_init_ex data;
++	int ret;
+ 
+ 	memset(&data, 0, sizeof(data));
+-	if (sev_es_tmr) {
+-		u64 tmr_pa;
++	data.length = sizeof(data);
++	data.nv_address = __psp_pa(sev_init_ex_buffer);
++	data.nv_len = NV_LENGTH;
+ 
++	ret = sev_read_init_ex_file();
++	if (ret)
++		return ret;
++
++	if (sev_es_tmr) {
+ 		/*
+ 		 * Do not include the encryption mask on the physical
+ 		 * address of the TMR (firmware should clear it anyway).
+ 		 */
+-		tmr_pa = __pa(sev_es_tmr);
++		data.tmr_address = __pa(sev_es_tmr);
+ 
+ 		data.flags |= SEV_INIT_FLAGS_SEV_ES;
+-		data.tmr_address = tmr_pa;
+ 		data.tmr_len = SEV_ES_TMR_SIZE;
+ 	}
+ 
+-	rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, &psp_ret);
++	return __sev_do_cmd_locked(SEV_CMD_INIT_EX, &data, error);
++}
++
++static int __sev_platform_init_locked(int *error)
++{
++	struct psp_device *psp = psp_master;
++	struct sev_device *sev;
++	int rc, psp_ret;
++	int (*init_function)(int *error);
++
++	if (!psp || !psp->sev_data)
++		return -ENODEV;
++
++	sev = psp->sev_data;
++
++	if (sev->state == SEV_STATE_INIT)
++		return 0;
++
++        init_function = sev_init_ex_buffer ? __sev_init_ex_locked :
++			__sev_init_locked;
++	rc = init_function(&psp_ret);
+ 	if (rc && psp_ret == SEV_RET_SECURE_DATA_INVALID) {
+ 		/*
+ 		 * Initialization command returned an integrity check failure
+@@ -291,7 +437,7 @@ static int __sev_platform_init_locked(int *error)
+ 		 * with a reset state.
+ 		 */
+ 		dev_dbg(sev->dev, "SEV: retrying INIT command");
+-		rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, &psp_ret);
++		rc = init_function(&psp_ret);
+ 	}
+ 	if (error)
+ 		*error = psp_ret;
+@@ -1066,6 +1212,12 @@ static void sev_firmware_shutdown(struct sev_device *sev)
+ 			   get_order(SEV_ES_TMR_SIZE));
+ 		sev_es_tmr = NULL;
+ 	}
++
++	if (sev_init_ex_buffer) {
++		free_pages((unsigned long)sev_init_ex_buffer,
++			   get_order(NV_LENGTH));
++		sev_init_ex_buffer = NULL;
++	}
+ }
+ 
+ void sev_dev_destroy(struct psp_device *psp)
+@@ -1111,6 +1263,18 @@ void sev_pci_init(void)
+ 	    sev_update_firmware(sev->dev) == 0)
+ 		sev_get_api_version();
+ 
++	/* If an init_ex_path is provided rely on INIT_EX for PSP initialization
++	 * instead of INIT.
++	 */
++	if (init_ex_path) {
++		sev_init_ex_buffer = sev_fw_alloc(NV_LENGTH);
++		if (!sev_init_ex_buffer) {
++			dev_err(sev->dev,
++				"SEV: INIT_EX NV memory allocation failed\n");
++			goto err;
++		}
++	}
++
+ 	/* Obtain the TMR memory area for SEV-ES use */
+ 	sev_es_tmr = sev_fw_alloc(SEV_ES_TMR_SIZE);
+ 	if (!sev_es_tmr)
+diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+index d48a7192e881..1595088c428b 100644
+--- a/include/linux/psp-sev.h
++++ b/include/linux/psp-sev.h
+@@ -52,6 +52,7 @@ enum sev_cmd {
+ 	SEV_CMD_DF_FLUSH		= 0x00A,
+ 	SEV_CMD_DOWNLOAD_FIRMWARE	= 0x00B,
+ 	SEV_CMD_GET_ID			= 0x00C,
++	SEV_CMD_INIT_EX                 = 0x00D,
+ 
+ 	/* Guest commands */
+ 	SEV_CMD_DECOMMISSION		= 0x020,
+@@ -102,6 +103,26 @@ struct sev_data_init {
+ 	u32 tmr_len;			/* In */
+ } __packed;
+ 
++/**
++ * struct sev_data_init_ex - INIT_EX command parameters
++ *
++ * @length: len of the command buffer read by the PSP
++ * @flags: processing flags
++ * @tmr_address: system physical address used for SEV-ES
++ * @tmr_len: len of tmr_address
++ * @nv_address: system physical address used for PSP NV storage
++ * @nv_len: len of nv_address
++ */
++struct sev_data_init_ex {
++	u32 length;                     /* In */
++	u32 flags;                      /* In */
++	u64 tmr_address;                /* In */
++	u32 tmr_len;                    /* In */
++	u32 reserved;                   /* In */
++	u64 nv_address;                 /* In/Out */
++	u32 nv_len;                     /* In */
++} __packed;
++
+ #define SEV_INIT_FLAGS_SEV_ES	0x01
+ 
+ /**
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
 
