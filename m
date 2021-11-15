@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91108451D4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9678D451BDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242331AbhKPA10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:27:26 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56252 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347430AbhKOT5A (ORCPT
+        id S1354581AbhKPAIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:08:37 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44742 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348797AbhKOUAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:57:00 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id CB6BC1F44AE2
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637006034; bh=tgLtuM2qJtP1xBVBZJBIXwAQ4NYiIoRaMxQXz2OLAus=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=oBgcfqneNsAQyDboKwaqZBmVaWz/WCLIhyUEUtf3oFElFTwUCmn4/8oOFxr2tJBj6
-         7Tkryc+T4vgTnj4a3L1dvcaGih+Y7DrZLPtBxPmzYfzWh9lY/wmcPSsP0mlYUQKCXg
-         19/7QFjU7SH9ntIU+QSwGQYiDX2LqTOhm/E6EEL07a/ietqEkmzSbcsE6hTwGz0+d0
-         6O8M0jNvvar7jsHOrnlPYsCBV8XlTuDX5Rvi2ri1okiqsVsDG0/n0IT4juLU3T/0Bc
-         f+//6NxItLpqFVPY8lXKqkpzBrk0dT54mo5pAiRb1FCNZo8h6u6GOknJButyPnSpzg
-         7QPzMP1H8rQ3Q==
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Emil Velikov <emil.velikov@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        linus.walleij@linaro.org, brgl@bgdev.pl,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH] gpio: Initialize gc->irq.domain before setting gc->to_irq
-In-Reply-To: <YYp8JzxfLK2u0fU4@arch-x1c3> (Emil Velikov's message of "Tue, 9
-        Nov 2021 13:48:23 +0000")
-Organization: Collabora
-References: <20211108214148.9724-1-shreeya.patel@collabora.com>
-        <YYp8JzxfLK2u0fU4@arch-x1c3>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Mon, 15 Nov 2021 14:53:49 -0500
-Message-ID: <87tugdxkj6.fsf@collabora.com>
+        Mon, 15 Nov 2021 15:00:06 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AFJEbVL018128;
+        Mon, 15 Nov 2021 19:56:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tju5j9Q8Scs4QgRKlylofcoylDnSmWDyWRsQlcKS+Is=;
+ b=Re60ILRiJjwvQAODZhLwMUTsoiEsvbEQAHOPSFaOPGSCYpjuM+Whc9DzpHvhUXahYSbf
+ bUNDEfjIZPL0QxW0w60TNVqxOpU09oZDcNT8CzJ2apvXf38MRu0dsFNqSeewSwNq0k/n
+ Fg5FKNEUTnKFG8Wwwo/u6+RbiHRfxJukxnb4Gv7O/fIxumRR3Nxw2JcfUsbMRRL15ZFt
+ /E+RICU6NaLcYE3uFhy5DeJVsn+5sT4CLLxYdQoBgKu0A/kgMO1gmma2Ecacjr2X+b9c
+ S6oxjskjGtpjkMxLQeh1/VynVsKHieJn4Z5FUcFSnBzq5UuzBO7QldkQr59ZbjBILaj7 BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbwhnrrjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 19:56:52 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AFJsVwT020039;
+        Mon, 15 Nov 2021 19:56:51 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbwhnrrhx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 19:56:51 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AFJrUdg005145;
+        Mon, 15 Nov 2021 19:56:49 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjha36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 19:56:49 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AFJulFg5440034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Nov 2021 19:56:47 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 254EE4C040;
+        Mon, 15 Nov 2021 19:56:47 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DB03B4C044;
+        Mon, 15 Nov 2021 19:56:46 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Nov 2021 19:56:46 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 0/2] ftrace/samples: fix ftrace direct multi config option + s390 support
+Date:   Mon, 15 Nov 2021 20:56:12 +0100
+Message-Id: <20211115195614.3173346-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: esXm-Tdh4dGSCNYswlOfHDj4c45qUbXy
+X-Proofpoint-GUID: XwqQP4kB9SxZw3TVZgAAXcDv9MSh5v_9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_15,2021-11-15_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111150098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Emil Velikov <emil.velikov@collabora.com> writes:
+Hi Steven,
 
-> Hi Shreeya, all,
->
-> On 2021/11/09, Shreeya Patel wrote:
->> There is a race in registering of gc->irq.domain when
->> probing the I2C driver.
->> This sometimes leads to a Kernel NULL pointer dereference
->> in gpiochip_to_irq function which uses the domain variable.
->> 
->> To avoid this issue, set gc->to_irq after domain is
->> initialized. This will make sure whenever gpiochip_to_irq
->> is called, it has domain already initialized.
->> 
->
-> What is stopping the next developer to moving the assignment to the
-> incorrect place? Aka should we add an inline comment about this?
+two patches for ftrace direct multi sample:
 
-I agree with Emil.  The patch seems like a workaround that doesn't
-really solve the underlying issue.  I'm not familiar with this code, but
-it seems that gc is missing a lock during this initialization, to prevent
-it from exposing a partially initialized gc->irq.
+- fix ftrace direct multi sample config option handling, required
+  because of an incorrect merge resolution proposed by me.
+
+- add s390 support for ftrace direct multi sample
+
+If you are happy with them, I could carry with the s390 tree and
+target for rc2, or you could pick them up. Whatever you prefer.
+
+Thanks,
+Heiko
+
+Heiko Carstens (2):
+  ftrace/samples: add missing Kconfig option for ftrace direct multi sample
+  ftrace/samples: add s390 support for ftrace direct multi sample
+
+ arch/s390/Kconfig                    |  1 +
+ arch/x86/Kconfig                     |  2 +-
+ samples/Kconfig                      | 11 +++++++++-
+ samples/Makefile                     |  2 +-
+ samples/ftrace/Makefile              |  2 +-
+ samples/ftrace/ftrace-direct-multi.c | 30 ++++++++++++++++++++++++++++
+ 6 files changed, 44 insertions(+), 4 deletions(-)
 
 -- 
-Gabriel Krisman Bertazi
+2.25.1
+
