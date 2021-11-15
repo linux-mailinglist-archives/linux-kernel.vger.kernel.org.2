@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834CF451C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F05451C07
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237537AbhKPAK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
+        id S1348694AbhKPAKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353125AbhKOUzC (ORCPT
+        with ESMTP id S1353057AbhKOUyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:55:02 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E560C03401B;
-        Mon, 15 Nov 2021 12:35:11 -0800 (PST)
+        Mon, 15 Nov 2021 15:54:18 -0500
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16509C03401C;
+        Mon, 15 Nov 2021 12:35:12 -0800 (PST)
 Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C1C7420111;
-        Mon, 15 Nov 2021 21:35:09 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id AF55720125;
+        Mon, 15 Nov 2021 21:35:10 +0100 (CET)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
 To:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -40,9 +40,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH v3 5/9] backlight: qcom-wled: Override default length with qcom,enabled-strings
-Date:   Mon, 15 Nov 2021 21:34:55 +0100
-Message-Id: <20211115203459.1634079-6-marijn.suijten@somainline.org>
+Subject: [PATCH v3 6/9] backlight: qcom-wled: Remove unnecessary 4th default string in WLED3
+Date:   Mon, 15 Nov 2021 21:34:56 +0100
+Message-Id: <20211115203459.1634079-7-marijn.suijten@somainline.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115203459.1634079-1-marijn.suijten@somainline.org>
 References: <20211115203459.1634079-1-marijn.suijten@somainline.org>
@@ -52,54 +52,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The length of qcom,enabled-strings as property array is enough to
-determine the number of strings to be enabled, without needing to set
-qcom,num-strings to override the default number of strings when less
-than the default (which is also the maximum) is provided in DT.
+The previous commit improves num_strings parsing to not go over the
+maximum of 3 strings for WLED3 anymore.  Likewise this default index for
+a hypothetical 4th string is invalid and could access registers that are
+not mapped to the desired purpose.
+Removing this value gets rid of undesired confusion and avoids the
+possibility of accessing registers at this offset even if the 4th array
+element is used by accident.
 
-This also introduces an extra warning when qcom,num-strings is set,
-denoting that it is not necessary to set both anymore.  It is usually
-more concise to set just qcom,num-length when a zero-based, contiguous
-range of strings is needed (the majority of the cases), or to only set
-qcom,enabled-strings when a specific set of indices is desired.
-
-Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 ---
- drivers/video/backlight/qcom-wled.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/video/backlight/qcom-wled.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index ab10910971e9..5306b06044b4 100644
+index 5306b06044b4..5c5df5a3deab 100644
 --- a/drivers/video/backlight/qcom-wled.c
 +++ b/drivers/video/backlight/qcom-wled.c
-@@ -1520,6 +1520,8 @@ static int wled_configure(struct wled *wled)
- 				return -EINVAL;
- 			}
- 		}
-+
-+		cfg->num_strings = string_len;
- 	}
+@@ -948,7 +948,7 @@ static const struct wled_config wled3_config_defaults = {
+ 	.cs_out_en = false,
+ 	.ext_gen = false,
+ 	.cabc = false,
+-	.enabled_strings = {0, 1, 2, 3},
++	.enabled_strings = {0, 1, 2},
+ };
  
- 	rc = of_property_read_u32(dev->of_node, "qcom,num-strings", &val);
-@@ -1530,9 +1532,13 @@ static int wled_configure(struct wled *wled)
- 			return -EINVAL;
- 		}
- 
--		if (string_len > 0 && val > string_len) {
--			dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
--			return -EINVAL;
-+		if (string_len > 0) {
-+			dev_warn(dev, "Only one of qcom,num-strings or qcom,enabled-strings"
-+				      " should be set\n");
-+			if (val > string_len) {
-+				dev_err(dev, "qcom,num-strings exceeds qcom,enabled-strings\n");
-+				return -EINVAL;
-+			}
- 		}
- 
- 		cfg->num_strings = val;
+ static int wled4_setup(struct wled *wled)
 -- 
 2.33.1
 
