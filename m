@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F9D44FF25
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4264344FF2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhKOHTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 02:19:01 -0500
-Received: from mga14.intel.com ([192.55.52.115]:20291 "EHLO mga14.intel.com"
+        id S230159AbhKOHWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 02:22:21 -0500
+Received: from mga02.intel.com ([134.134.136.20]:9471 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhKOHSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 02:18:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233636854"
+        id S229713AbhKOHWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 02:22:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220602224"
 X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
-   d="scan'208";a="233636854"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 23:15:13 -0800
-X-ExtLoop1: 1
+   d="scan'208";a="220602224"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 23:18:58 -0800
 X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
-   d="scan'208";a="644736296"
-Received: from kuha.fi.intel.com ([10.237.72.166])
-  by fmsmga001.fm.intel.com with SMTP; 14 Nov 2021 23:15:06 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 15 Nov 2021 09:15:06 +0200
-Date:   Mon, 15 Nov 2021 09:15:06 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
-        <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: typec: fusb302: Fix masking of comparator and
- bc_lvl interrupts
-Message-ID: <YZII+nKfVuPjn0wy@kuha.fi.intel.com>
-References: <20211108102833.2793803-1-megous@megous.com>
- <YZIILh++KIEK/ZA5@kuha.fi.intel.com>
+   d="scan'208";a="585144635"
+Received: from mkrawczy-mobl1.ger.corp.intel.com (HELO [10.249.254.108]) ([10.249.254.108])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 23:18:56 -0800
+Message-ID: <1ff1389b-bf4c-cd09-8bfd-d4303d100eee@linux.intel.com>
+Date:   Mon, 15 Nov 2021 08:18:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZIILh++KIEK/ZA5@kuha.fi.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [git pull] drm fixes + one missed next for 5.16-rc1
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>
+Cc:     Matthew Auld <matthew.auld@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAPM=9txVydO1fy8sEwVXRZF0zPfWwLYrk-UnGeKhRCEvrW4B7Q@mail.gmail.com>
+ <CAHk-=wiZdONN=1Er5eN1bYurrWqhXF7LxQszpPia8hvYUOiZWQ@mail.gmail.com>
+ <CAPM=9tw=NTZ-1NbGupgg42gOA1aFKZ2C6wt++q5BxaocaUbmFA@mail.gmail.com>
+ <CAHk-=wjpPWyH5ff0LE8Mmt6OEiYbD3LwpvpD==FFZfTMTzL2FQ@mail.gmail.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <CAHk-=wjpPWyH5ff0LE8Mmt6OEiYbD3LwpvpD==FFZfTMTzL2FQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 09:11:48AM +0200, Heikki Krogerus wrote:
-> On Mon, Nov 08, 2021 at 11:28:32AM +0100, Ondrej Jirman wrote:
-> > The code that enables either BC_LVL or COMP_CHNG interrupt in tcpm_set_cc
-> > wrongly assumes that the interrupt is unmasked by writing 1 to the apropriate
-> > bit in the mask register. In fact, interrupts are enabled when the mask
-> > is 0, so the tcpm_set_cc enables interrupt for COMP_CHNG when it expects
-> > BC_LVL interrupt to be enabled.
-> > 
-> > This causes inability of the driver to recognize cable unplug events
-> > in host mode (unplug is recognized only via a COMP_CHNG interrupt).
-> > 
-> > In device mode this bug was masked by simultaneous triggering of the VBUS
-> > change interrupt, because of loss of VBUS when the port peer is providing
-> > power.
-> > 
-> > Fixes: 48242e30532b ("usb: typec: fusb302: Revert "Resolve fixed power role contract setup"")
-> > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > Cc: Hans de Goede <hdegoede@redhat.com>
-> 
-> Should this go to stable?
-> 
-> Acked-by: Heikki Krogerus@linux.intel.com
 
-Sorry, that's wrong...
+On 11/14/21 22:19, Linus Torvalds wrote:
+> On Sun, Nov 14, 2021 at 1:00 PM Dave Airlie <airlied@gmail.com> wrote:
+>> i915 will no longer be x86-64 only in theory, since Intel now produces
+>> PCIe graphics cards using the same hw designs.
+> Well, at least in my tree, it still has the "depends on X86", along
+> with several other x86-only things (like "select INTEL_GTT", which is
+> also x86-only)
+>
+> So by the time that non-x86 theory becomes reality, hopefully the i915
+> people will also have figured out how to do the cache flushing
+> properly.
+>
+> And hopefully that "do it properly" ends up being simply that the
+> particular configuration that ends up being portable simply doesn't
+> need to do it at all and can statically just not build it,
+> sidestepping the issue entirely.
+>
+> Fingers crossed.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+For non-x86 / discrete graphics, plan is only coherent mappings, 
+although the "Just not build it" part hasn't been properly figured out 
+yet I guess. But point taken.
 
+Thanks,
 
-> > ---
-> >  drivers/usb/typec/tcpm/fusb302.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
-> > index 7a2a17866a823..72f9001b07921 100644
-> > --- a/drivers/usb/typec/tcpm/fusb302.c
-> > +++ b/drivers/usb/typec/tcpm/fusb302.c
-> > @@ -669,25 +669,27 @@ static int tcpm_set_cc(struct tcpc_dev *dev, enum typec_cc_status cc)
-> >  		ret = fusb302_i2c_mask_write(chip, FUSB_REG_MASK,
-> >  					     FUSB_REG_MASK_BC_LVL |
-> >  					     FUSB_REG_MASK_COMP_CHNG,
-> > -					     FUSB_REG_MASK_COMP_CHNG);
-> > +					     FUSB_REG_MASK_BC_LVL);
-> >  		if (ret < 0) {
-> >  			fusb302_log(chip, "cannot set SRC interrupt, ret=%d",
-> >  				    ret);
-> >  			goto done;
-> >  		}
-> >  		chip->intr_comp_chng = true;
-> > +		chip->intr_bc_lvl = false;
-> >  		break;
-> >  	case TYPEC_CC_RD:
-> >  		ret = fusb302_i2c_mask_write(chip, FUSB_REG_MASK,
-> >  					     FUSB_REG_MASK_BC_LVL |
-> >  					     FUSB_REG_MASK_COMP_CHNG,
-> > -					     FUSB_REG_MASK_BC_LVL);
-> > +					     FUSB_REG_MASK_COMP_CHNG);
-> >  		if (ret < 0) {
-> >  			fusb302_log(chip, "cannot set SRC interrupt, ret=%d",
-> >  				    ret);
-> >  			goto done;
-> >  		}
-> >  		chip->intr_bc_lvl = true;
-> > +		chip->intr_comp_chng = false;
-> >  		break;
-> >  	default:
-> >  		break;
-> 
-> thanks,
+/Thomas
 
--- 
-heikki
