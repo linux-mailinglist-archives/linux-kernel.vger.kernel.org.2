@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B661451AB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E848045189E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhKOXmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1351309AbhKOXED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343872AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD99863393;
-        Mon, 15 Nov 2021 18:47:52 +0000 (UTC)
+        id S243233AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7726F63479;
+        Mon, 15 Nov 2021 18:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002073;
-        bh=ELe964MnL6byNaeDUTR2gPdUO6JYoB1JQSLrQAenmBY=;
+        s=korg; t=1636999836;
+        bh=Y5dNhMld1C90DQZMQOpYZ9zXUZpC4o2B/ib4MnhGsbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QyMO8Ky6qcNt2zysPfh2NCnExSD0pgJg2tdJ+5qfA1SUi0fSi7/XcyHGn/x0Q694b
-         Y3nJMKfOaXeDKU8MXKqfSJnjdrtaK/ZSEzcK07ssAIxNVvb1d4wTissCB24ssnwQYJ
-         rS1sBp2lMP1R0giI12dluCYqIzdg++Wjf7MMVMB0=
+        b=UucLlEk6Slxsy6A3QJTVWpYxrSA/Ez5rpZXhhdH/15cvkYmCakwJZ1JDB2N7whzU1
+         yHD9yOT4pK8k0lxf9uHvVL2+vRz9Botxy+RFX4oW/skVfjUOoRx1DOQScCDKitMJ1/
+         MfijNFhD9hNrYEL7ZMFsVgKfmMM2DblzHgTgGEi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 429/917] net: fealnx: fix build for UML
-Date:   Mon, 15 Nov 2021 17:58:44 +0100
-Message-Id: <20211115165443.338738029@linuxfoundation.org>
+Subject: [PATCH 5.14 442/849] media: ir_toy: assignment to be16 should be of correct type
+Date:   Mon, 15 Nov 2021 17:58:45 +0100
+Message-Id: <20211115165435.233915317@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit cd2621d07d517473611b170c69beb6524c677740 ]
+[ Upstream commit febfe985fc2ea052a363f6525ff624b8efd5273c ]
 
-On i386, when builtin (not a loadable module), the fealnx driver
-inspects boot_cpu_data to see what CPU family it is running on, and
-then acts on that data. The "family" struct member (x86) does not exist
-when running on UML, so prevent that test and do the default action.
+commit f0c15b360fb6 ("media: ir_toy: prevent device from hanging during
+transmit") removed a cpu_to_be16() cast, which causes a sparse warning.
 
-Prevents this build error on UML + i386:
-
-../drivers/net/ethernet/fealnx.c: In function ‘netdev_open’:
-../drivers/net/ethernet/fealnx.c:861:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
-
-Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-um@lists.infradead.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Link: https://lore.kernel.org/r/20211014050500.5620-1-rdunlap@infradead.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: f0c15b360fb6 ("media: ir_toy: prevent device from hanging during transmit")
+Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/fealnx.c | 2 +-
+ drivers/media/rc/ir_toy.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/fealnx.c b/drivers/net/ethernet/fealnx.c
-index 25c91b3c5fd30..819266d463b07 100644
---- a/drivers/net/ethernet/fealnx.c
-+++ b/drivers/net/ethernet/fealnx.c
-@@ -857,7 +857,7 @@ static int netdev_open(struct net_device *dev)
- 	np->bcrvalue |= 0x04;	/* big-endian */
- #endif
+diff --git a/drivers/media/rc/ir_toy.c b/drivers/media/rc/ir_toy.c
+index 48d52baec1a1c..1aa7989e756cc 100644
+--- a/drivers/media/rc/ir_toy.c
++++ b/drivers/media/rc/ir_toy.c
+@@ -310,7 +310,7 @@ static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uint count)
+ 		buf[i] = cpu_to_be16(v);
+ 	}
  
--#if defined(__i386__) && !defined(MODULE)
-+#if defined(__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
- 	if (boot_cpu_data.x86 <= 4)
- 		np->crvalue = 0xa00;
- 	else
+-	buf[count] = 0xffff;
++	buf[count] = cpu_to_be16(0xffff);
+ 
+ 	irtoy->tx_buf = buf;
+ 	irtoy->tx_len = size;
 -- 
 2.33.0
 
