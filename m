@@ -2,232 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A57451C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC144451C27
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhKPAOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347588AbhKOW4g (ORCPT
+        id S1355727AbhKPANj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:13:39 -0500
+Received: from smtp161.vfemail.net ([146.59.185.161]:34425 "EHLO
+        smtp161.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352655AbhKOWLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:56:36 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F51CC0337CB
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:06:43 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id 8so4307413pfo.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:06:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+75pOgzRSIiee94ABsrf5glhvGlXlViH0+WT5j4L0aw=;
-        b=dS8Un6tSdNnk9Z4kmfDP4XsUZOMSVFQw3q3GTGh5sr8XmLWMkM07MuC1+dT12/ptHP
-         8r4FauaE6OQMmNCZkBtn866ZhTNqnOWvSfGwr5K3/jo8deQAcP6hs392bnEV+AReAEVH
-         V9uj6x0kL07NJEinAldy4HwU/0bSkPFxwZmfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+75pOgzRSIiee94ABsrf5glhvGlXlViH0+WT5j4L0aw=;
-        b=renhy+Tq5oGvziqAKUw6VPgMSsxyMtkG1opj2gx5pxFQhNPh3gxLie2WE9SKWXO+si
-         mM4pVwTTc9qT17WyZ3IyrGbnr8MNHAtYk7uS2ov7GRRXM/HW4qUHsFkEyi3zwfZWcRyf
-         YF0//MJwCLGiBc6K4E70UyTAdG72DLPce5PtD6nYhQa+N7/XJXZVTCxqXqsEX0emOeno
-         fx4gCvt6d7Bs7IbwjyP9RAEPMP9X1A0+TAmy/Z4M/6PEWBhXrw/TYlWALcBQxZL0Mreh
-         ZoYlYtkZKHdFUdRg8Lw4Zg3ux6dLKLazhK1xXR2xtORcKIDbtWbV78d/cRkvUMxV1qwu
-         vTUA==
-X-Gm-Message-State: AOAM533TOPHnBxZ/k6B31E3oGuhSlSHfvXNZEMLHE96t6KVMn/HHHhI4
-        RYEsbzpd8LnuJv03cpuLyGSwOw==
-X-Google-Smtp-Source: ABdhPJxbI3NOtgyO8DBjqkXVe/gYAMuaxOIkr7hH2fyzLDr8HfWh0griJts14SzHJ0idri2HBcFqDg==
-X-Received: by 2002:aa7:8151:0:b0:480:9d40:8e38 with SMTP id d17-20020aa78151000000b004809d408e38mr35382844pfn.72.1637014002929;
-        Mon, 15 Nov 2021 14:06:42 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id rm10sm277789pjb.29.2021.11.15.14.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 14:06:42 -0800 (PST)
-Date:   Mon, 15 Nov 2021 14:06:41 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Message-ID: <202111151116.933184F716@keescook>
-References: <20211027233215.306111-1-alex.popov@linux.com>
- <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
- <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
- <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
- <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
- <20211115110649.4f9cb390@gandalf.local.home>
+        Mon, 15 Nov 2021 17:11:33 -0500
+Received: (qmail 30832 invoked from network); 15 Nov 2021 22:08:30 +0000
+Received: from localhost (HELO nl101-3.vfemail.net) ()
+  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 15 Nov 2021 22:08:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
+        :to:cc:subject:message-id:in-reply-to:references:mime-version
+        :content-type:content-transfer-encoding; s=2018; bh=1U3HQA2cAVR9
+        R4PHxpIc1daf4O0wxl3nAXblz5xStV0=; b=soTu/HOI+vyhszPPtEn+ydYKHrw8
+        2/KZNLU4MgfMf4Pi5JYle98XBoj7eemqDAzTqJOllYEdxVl4mA3UUNVTmestOpHQ
+        yJQer86TUGWq2UwqVE9NHmpr/6CQOhkZoJ1fEGNCM9U2i6bbA+TZj0P6XSKXuJrB
+        Pm+rc8EOFR7UxkM=
+Received: (qmail 22847 invoked from network); 15 Nov 2021 22:08:00 -0000
+Received: by simscan 1.4.0 ppid: 22788, pid: 22793, t: 0.3754s
+         scanners:none
+Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
+  by nl101.vfemail.net with ESMTPA; 15 Nov 2021 22:07:59 -0000
+Date:   Mon, 15 Nov 2021 17:08:25 -0500
+From:   David Niklas <Hgntkwis@vfemail.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+        linux-input@vger.kernel.org
+Subject: Re: I need advice with UPS connection. (ping)
+Message-ID: <20211115170825.24a13cf3@Zen-II-x12.niklas.com>
+In-Reply-To: <20211115160918.GB109771@rowland.harvard.edu>
+References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
+        <20211114144842.72463ccc@Zen-II-x12.niklas.com>
+        <20211114211435.GA87082@rowland.harvard.edu>
+        <20211114220222.31755871@Zen-II-x12.niklas.com>
+        <20211115160918.GB109771@rowland.harvard.edu>
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115110649.4f9cb390@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:06:49AM -0500, Steven Rostedt wrote:
-> On Mon, 15 Nov 2021 14:59:57 +0100
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+On Mon, 15 Nov 2021 11:09:18 -0500
+stern@rowland.harvard.edu wrote:
+> On Sun, Nov 14, 2021 at 10:02:22PM -0500, David Niklas wrote:
+> >
+<snip>
+> Has this device ever worked with any version of Linux?
+
+I am unaware of this device working on any version of Linux. I assumed
+when I bought it that it would a least be able to connect to the USB port
+correctly. I might then have to make a contribution to add support for it
+to nut or apcupsd.
+
+<snip>
+> The kernel sends a Set-Idle request to the device, telling it not to 
+> send any data reports when nothing has changed.  This is done 
+> automatically by the usbhid driver for every USB HID device, including 
+> keyboards and mice as well as your UPS.
 > 
-> > 1. Allow a reasonably configured kernel to boot and run with
-> > panic_on_warn set. Warnings should only be raised when something is
-> > not configured as the developers expect it or the kernel is put into a
-> > state that generally is _unexpected_ and has been exposed little to
-> > the critical thought of the developer, to testing efforts and use in
-> > other systems in the wild. Warnings should not be used for something
-> > informative, which still allows the kernel to continue running in a
-> > proper way in a generally expected environment. Up to my knowledge,
-> > there are some kernels in production that run with panic_on_warn; so,
-> > IMHO, this requirement is generally accepted (we might of course
+> ffff93eaa3edad80 2136086737 S Ci:3:009:0 s 81 06 2200 0000 03e4 996 <
+> ffff93eaa3edad80 2136122734 C Ci:3:009:0 0 996 = 05840904 a1010924
+> a1028501 09fe7901 75089501 150026ff 00b12285 0209ff79
 > 
-> To me, WARN*() is the same as BUG*(). If it gets hit, it's a bug in the
-> kernel and needs to be fixed. I have several WARN*() calls in my code, and
-> it's all because the algorithms used is expected to prevent the condition
-> in the warning from happening. If the warning triggers, it means either that
-> the algorithm is wrong or my assumption about the algorithm is wrong. In
-> either case, the kernel needs to be updated. All my tests fail if a WARN*()
-> gets hit (anywhere in the kernel, not just my own).
+> The kernel reads the device's HID descriptor.  (The usbmon trace shows 
+> only the first 32 bytes of the 996-byte descriptor.)  Again, this is 
+> normal and necessary for using any HID device.
 > 
-> After reading all the replies and thinking about this more, I find the
-> pkill_on_warning actually worse than not doing anything. If you are
-> concerned about exploits from warnings, the only real solution is a
-> panic_on_warning. Yes, it brings down the system, but really, it has to be
-> brought down anyway, because it is in need of a kernel update.
+> ffff93e482efb440 2139520170 C Ii:3:001:1 0:2048 1 = 08
+> ffff93e482efb440 2139520180 S Ii:3:001:1 -115:2048 4 <
+> 
+> At this point the USB controller tells the kernel that there has been a 
+> status change on port 3 of bus 3.
+> 
+> ffff93eaa2ff8240 2139520188 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
+> ffff93eaa2ff8240 2139520197 C Ci:3:001:0 0 4 = 00010100
+> 
+> The kernel reads the port's status and sees that there is a "connection 
+> status change" bit set and the port is no longer connected.  In other 
+> words, the UPS device has disconnected itself electronically from the 
+> USB bus.
+> 
+> ffff93eaa2ff8240 2139520200 S Co:3:001:0 s 23 01 0010 0003 0000 0
+> ffff93eaa2ff8240 2139520203 C Co:3:001:0 0 0
+> 
+> The kernel clears the "connection status change" flag.  Following this 
+> the cycle repeats.
+> 
+> 
+> Out of all this information, the only conclusion I can draw is that the 
+> UPS is not behaving like a normal device.  One possibility is that it 
+> doesn't like the Set-Idle request (although if that is the case, why 
+> did it remain connected long enough to send the HID descriptor?).
 
-Hmm, yes. What it originally boiled down to, which is why Linus first
-objected to BUG(), was that we don't know what other parts of the system
-have been disrupted. The best example is just that of locking: if we
-BUG() or do_exit() in the middle of holding a lock, we'll wreck whatever
-subsystem that was attached to. Without a deterministic system state
-unwinder, there really isn't a "safe" way to just stop a kernel thread.
+Thanks for the detailed breakdown!
 
-With this pkill_on_warn, we avoid the BUG problem (since the thread of
-execution continues and stops at an 'expected' place: the signal
-handler).
+> You can test the theory by patching the kernel, if you want.  The code 
+> to change is in the source file drivers/hid/usbhid/hid-core.c, and the 
+> function in question is hid_set_idle() located around line 659 in the 
+> file.  Just change the statement:
+> 
+> 	return usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
+> 		HID_REQ_SET_IDLE, USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> (idle << 8) | report, ifnum, NULL, 0, USB_CTRL_SET_TIMEOUT);
+> 
+> to:
+> 
+> 	return 0;
+> 
+> to prevent the Set-Idle request from being sent.  If the device still 
+> insists on disconnecting then we'll know that this wasn't the reason.
 
-However, now we have the newer objection from Linus, which is one of
-attribution: the WARN might be hit during an "unrelated" thread of
-execution and "current" gets blamed, etc. And beyond that, if we take
-down a portion of userspace, what in userspace may be destabilized? In
-theory, we get a case where any required daemons would be restarted by
-init, but that's not "known".
+Will do tomorrow. (I'm busy ATM)
 
-The safest version of this I can think of is for processes to opt into
-this mitigation. That would also cover the "special cases" we've seen
-exposed too. i.e. init and kthreads would not opt in.
+> Also, if you have another system (say, one running Windows) which the 
+> UPS does work properly with, you could try collecting the equivalent of 
+> a usbmon trace from that system for purposes of comparison.  (On 
+> Windows, I believe you can use Wireshark to trace USB communications.)
+> 
+> Alan Stern
+> 
 
-However, that's a lot to implement when Marco's tracing suggestion might
-be sufficient and policy could be entirely implemented in userspace. It
-could be as simple as this (totally untested):
+I'll have to look into that.
 
-
-diff --git a/include/trace/events/error_report.h b/include/trace/events/error_report.h
-index 96f64bf218b2..129d22eb8b6e 100644
---- a/include/trace/events/error_report.h
-+++ b/include/trace/events/error_report.h
-@@ -16,6 +16,8 @@
- #define __ERROR_REPORT_DECLARE_TRACE_ENUMS_ONCE_ONLY
- 
- enum error_detector {
-+	ERROR_DETECTOR_WARN,
-+	ERROR_DETECTOR_BUG,
- 	ERROR_DETECTOR_KFENCE,
- 	ERROR_DETECTOR_KASAN
- };
-@@ -23,6 +25,8 @@ enum error_detector {
- #endif /* __ERROR_REPORT_DECLARE_TRACE_ENUMS_ONCE_ONLY */
- 
- #define error_detector_list	\
-+	EM(ERROR_DETECTOR_WARN, "warn")	\
-+	EM(ERROR_DETECTOR_BUG, "bug")	\
- 	EM(ERROR_DETECTOR_KFENCE, "kfence")	\
- 	EMe(ERROR_DETECTOR_KASAN, "kasan")
- /* Always end the list with an EMe. */
-diff --git a/lib/bug.c b/lib/bug.c
-index 45a0584f6541..201b4070bbbc 100644
---- a/lib/bug.c
-+++ b/lib/bug.c
-@@ -48,6 +48,7 @@
- #include <linux/sched.h>
- #include <linux/rculist.h>
- #include <linux/ftrace.h>
-+#include <trace/events/error_report.h>
- 
- extern struct bug_entry __start___bug_table[], __stop___bug_table[];
- 
-@@ -198,6 +199,7 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
- 		/* this is a WARN_ON rather than BUG/BUG_ON */
- 		__warn(file, line, (void *)bugaddr, BUG_GET_TAINT(bug), regs,
- 		       NULL);
-+		trace_error_report_end(ERROR_DETECTOR_WARN, bugaddr);
- 		return BUG_TRAP_TYPE_WARN;
- 	}
- 
-@@ -206,6 +208,7 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
- 	else
- 		pr_crit("Kernel BUG at %pB [verbose debug info unavailable]\n",
- 			(void *)bugaddr);
-+	trace_error_report_end(ERROR_DETECTOR_BUG, bugaddr);
- 
- 	return BUG_TRAP_TYPE_BUG;
- }
-
-
-Marco, is this the full version of monitoring this from the userspace
-side?
-
-	perf record -e error_report:error_report_end
-
--- 
-Kees Cook
+Thanks again!
+David
