@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBD44515AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A79B34515A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236634AbhKOUsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:48:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49942 "EHLO mail.kernel.org"
+        id S1352468AbhKOUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:46:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240258AbhKOSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B5126338F;
-        Mon, 15 Nov 2021 17:44:04 +0000 (UTC)
+        id S240261AbhKOSH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2C0632B1;
+        Mon, 15 Nov 2021 17:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998244;
-        bh=OJ1ILJK+87pTNiLHJ02o09z722IRbWP0CNx30TGm0A4=;
+        s=korg; t=1636998247;
+        bh=iYj7LDWdnHCijr6UPFNlAeNoxf1Zj94NlfgUl4Bx+9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RA8umwCy9a9nhWo/Kq2sTmW4iTj2sF79sWD7vld6r3/hfL5Kkps+UvWB/dB0HO1Vm
-         JanTLxTt9AXqCHxJVyqiwNBvHOKr2U16TmReSnLNKgs+QNB+unUHfEcWERFXFkZpPx
-         JBdcegMzvjQOgDHLLHbPzQiqihOhl0zIVxq8SaL4=
+        b=fiITdJ9xF2qqg4xgR05mxWAIQnkb4B/dOOq5MxY/I//twK2WM07M/TOo1QY6sFix9
+         pZ8I1QYuOIVLbRFOgNISvLTHs7Ht6c2nNpbrjHIzVdEMgDs91leGII01YgoJqcNu1b
+         J0HSctpAYFNS4w15T9YnhKuAOs5My6Ax785HEi/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        linux-usb@vger.kernel.org,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 441/575] soc: qcom: rpmhpd: Make power_on actually enable the domain
-Date:   Mon, 15 Nov 2021 18:02:46 +0100
-Message-Id: <20211115165359.014355722@linuxfoundation.org>
+Subject: [PATCH 5.10 442/575] usb: typec: STUSB160X should select REGMAP_I2C
+Date:   Mon, 15 Nov 2021 18:02:47 +0100
+Message-Id: <20211115165359.047288444@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,100 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e3e56c050ab6e3f1bd811f0787f50709017543e4 ]
+[ Upstream commit 8ef1e58783b9f55daa4a865c7801dc75cbeb8260 ]
 
-The general expectation is that powering on a power-domain should make
-the power domain deliver some power, and if a specific performance state
-is needed further requests has to be made.
+REGMAP_I2C is not a user visible kconfig symbol so driver configs
+should not "depend on" it. They should depend on I2C and then
+select REGMAP_I2C.
 
-But in contrast with other power-domain implementations (e.g. rpmpd) the
-RPMh does not have an interface to enable the power, so the driver has
-to vote for a particular corner (performance level) in rpmh_power_on().
+If this worked, it was only because some other driver had set/enabled
+REGMAP_I2C.
 
-But the corner is never initialized, so a typical request to simply
-enable the power domain would not actually turn on the hardware. Further
-more, when no more clients vote for a performance state (i.e. the
-aggregated vote is 0) the power domain would be turned off.
-
-Fix both of these issues by always voting for a corner with non-zero
-value, when the power domain is enabled.
-
-The tracking of the lowest non-zero corner is performed to handle the
-corner case if there's ever a domain with a non-zero lowest corner, in
-which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-would be allowed to use this lowest corner.
-
-Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20211005033732.2284447-1-bjorn.andersson@linaro.org
+Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Amelie Delaunay <amelie.delaunay@st.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20211015013609.7300-1-rdunlap@infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/usb/typec/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index e7cb40144f9b1..436ec79122ed2 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -30,6 +30,7 @@
-  * @active_only:	True if it represents an Active only peer
-  * @corner:		current corner
-  * @active_corner:	current active corner
-+ * @enable_corner:	lowest non-zero corner
-  * @level:		An array of level (vlvl) to corner (hlvl) mappings
-  *			derived from cmd-db
-  * @level_count:	Number of levels supported by the power domain. max
-@@ -47,6 +48,7 @@ struct rpmhpd {
- 	const bool	active_only;
- 	unsigned int	corner;
- 	unsigned int	active_corner;
-+	unsigned int	enable_corner;
- 	u32		level[RPMH_ARC_MAX_LEVELS];
- 	size_t		level_count;
- 	bool		enabled;
-@@ -295,13 +297,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- static int rpmhpd_power_on(struct generic_pm_domain *domain)
- {
- 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
--	int ret = 0;
-+	unsigned int corner;
-+	int ret;
+diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
+index e7f120874c483..0d953c6805f0f 100644
+--- a/drivers/usb/typec/Kconfig
++++ b/drivers/usb/typec/Kconfig
+@@ -75,9 +75,9 @@ config TYPEC_TPS6598X
  
- 	mutex_lock(&rpmhpd_lock);
- 
--	if (pd->corner)
--		ret = rpmhpd_aggregate_corner(pd, pd->corner);
--
-+	corner = max(pd->corner, pd->enable_corner);
-+	ret = rpmhpd_aggregate_corner(pd, corner);
- 	if (!ret)
- 		pd->enabled = true;
- 
-@@ -346,6 +348,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
- 		i--;
- 
- 	if (pd->enabled) {
-+		/* Ensure that the domain isn't turn off */
-+		if (i < pd->enable_corner)
-+			i = pd->enable_corner;
-+
- 		ret = rpmhpd_aggregate_corner(pd, i);
- 		if (ret)
- 			goto out;
-@@ -382,6 +388,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
- 	for (i = 0; i < rpmhpd->level_count; i++) {
- 		rpmhpd->level[i] = buf[i];
- 
-+		/* Remember the first corner with non-zero level */
-+		if (!rpmhpd->level[rpmhpd->enable_corner] && rpmhpd->level[i])
-+			rpmhpd->enable_corner = i;
-+
- 		/*
- 		 * The AUX data may be zero padded.  These 0 valued entries at
- 		 * the end of the map must be ignored.
+ config TYPEC_STUSB160X
+ 	tristate "STMicroelectronics STUSB160x Type-C controller driver"
+-	depends on I2C
+-	depends on REGMAP_I2C
+ 	depends on USB_ROLE_SWITCH || !USB_ROLE_SWITCH
++	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  Say Y or M here if your system has STMicroelectronics STUSB160x
+ 	  Type-C port controller.
 -- 
 2.33.0
 
