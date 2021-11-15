@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6A244FFAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1A344FFAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhKOIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:06:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56153 "EHLO
+        id S236724AbhKOIHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:07:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33779 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235183AbhKOIFM (ORCPT
+        by vger.kernel.org with ESMTP id S236367AbhKOIF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:05:12 -0500
+        Mon, 15 Nov 2021 03:05:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636963336;
+        s=mimecast20190719; t=1636963350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/Iv5CypmvIVE6oMVapm0QBWFP5IxCJXl/Bg1UzUVmko=;
-        b=Azrr1UycFvJ406I8VXr/O+bI1sY9o6eICwX8VsEY1KUoODm1xR78J+QO8/2O3Nvd8x0CIu
-        zG39oMSKcjEYLWHLgOlLCQzr7tT10PBMaeJ65zugQJ7BBvsUoOOKhaB0zmUSufUi9C2Fvg
-        C/uKQYOU+KLwjFNrvWPnutNgi3ECArk=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-IR2xB2G3M2uhiltCH_eZGQ-1; Mon, 15 Nov 2021 03:02:15 -0500
-X-MC-Unique: IR2xB2G3M2uhiltCH_eZGQ-1
-Received: by mail-pl1-f200.google.com with SMTP id z3-20020a170903018300b0014224dca4a1so5887410plg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:02:15 -0800 (PST)
+        bh=juo8CnrknUVx2CU+cPYbVJwKflQnt9kXKdPVkj+rnzk=;
+        b=i8O5T2F4VU79dV2GwNApT6jVjlKJdsnQqi6/NzmwBkOCOn2RqxI5nInEhsfapPSDeI7VlH
+        JGD+GQlA5iBgmu0Qq9IPURIlr/nqoQ+3NaFJsMeqtpAul/WJc+pbb2rNe4ByeHMlZlrj8v
+        /GZvFZV0dQuDeTeD7nvTu5vxO8ny6YU=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-XoMOd6wUM_6KPQ8LO0Ghwg-1; Mon, 15 Nov 2021 03:02:29 -0500
+X-MC-Unique: XoMOd6wUM_6KPQ8LO0Ghwg-1
+Received: by mail-pj1-f70.google.com with SMTP id r23-20020a17090a941700b001a74be6cf80so4880531pjo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:02:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Iv5CypmvIVE6oMVapm0QBWFP5IxCJXl/Bg1UzUVmko=;
-        b=IuQrqUW//tyAN0iODEIt/eFZLx3G9lqIBYVcXruW0s5lg252+fIaqnvqRLo3tvsla3
-         wv+ALqLspQODt6B0Yj879zR8ZSsNx+VyIG2pky2p4VE7mPbiIASLgXf+0D4njLE7u14k
-         V+FzJv8ZwvyKkbAx3ezl4r4s37JburyQc8VNmYD44fyGx8TCiDfn2O1zgwkpn2AgzSmS
-         ++f7mIlFTgI2LJClZx51CalOOWGznkRQXAiV1EZdyyQYye9bnDOGjL/f1oQlJyY3fWFo
-         remX2OJwirTg8EgWsnPFBR+x3UsAKT3GLPCYu9GZT776dTcx0EZji+yz/fdrY8+NF/C5
-         N51w==
-X-Gm-Message-State: AOAM53194cnf3aINrgF6e34nScReb5VBflKG2D6DLYeLyq3ltyhr+NoR
-        sxCNwmhuZ42JWHRe6aKsQIcY3u/cdZZsZ7r8wrnySHelIf/1+xPmoGbZqUpDH0x4RIzfjWpz7x9
-        LayXeJd1hrr/rQJ4Pa/qppWIK
-X-Received: by 2002:a17:90b:38c5:: with SMTP id nn5mr61485311pjb.220.1636963334076;
-        Mon, 15 Nov 2021 00:02:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyNSkZ/vww+jPhvco2wNnlsy70sP9i0ZGZit2163wehM7xneRAKVX66NU/eBtol2Mp8mRmPcQ==
-X-Received: by 2002:a17:90b:38c5:: with SMTP id nn5mr61485283pjb.220.1636963333787;
-        Mon, 15 Nov 2021 00:02:13 -0800 (PST)
+        bh=juo8CnrknUVx2CU+cPYbVJwKflQnt9kXKdPVkj+rnzk=;
+        b=r+op1PbMxHyVfTY8gkovU0Je4z6clpx6rpBI8QUSU22oSEBwbs1as6n64UDWBaBbEY
+         blMSbyIrJq3NENgG/K5TzMDqOKPgzH2AwVSGWte9ZgHSgjJGvi4aVT5tmGQiHHAjLQcG
+         rSA7HRZrggIMDhpH7bBWdU5RO2AqcDw9tojOSvzgSOByl1TISIluh3sfvpterc7BzP9f
+         XnZ7jvjpLrjKqLqhI0VX63keVHsFkMB8fojGcAExpMY3guN2YnS9xOJT4LoJdjTStOCZ
+         Uo9Z1Y1cjeLu2ekpXe9mWVhGBO1UNheqXX0juJQicgj9TDmLOIQa6fOha/6ONlyEWqxv
+         cPYQ==
+X-Gm-Message-State: AOAM531jzxPfWQCnHY2M0f0NcxILUZU29cXNJ3bYBH0elYZrY42tGOuL
+        IgQ4PWjLtHP6YF6xV6U8zEIiTZuXT3eyOwVzTSEI/Bz90358/tUWjIaZZ8qSJT5v3n1KBPR91x/
+        AQL1XDVKhVP3yizp2MSnKOYZC
+X-Received: by 2002:a17:902:e804:b0:142:1c0b:c2a6 with SMTP id u4-20020a170902e80400b001421c0bc2a6mr32648871plg.23.1636963347860;
+        Mon, 15 Nov 2021 00:02:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwDNuRUr56R2HgkYgfQqjH6+BcRz0mtYQUWUhFx5NvN9CbgJnvkwVUYkq/DiyMnk9FcFK3PfQ==
+X-Received: by 2002:a17:902:e804:b0:142:1c0b:c2a6 with SMTP id u4-20020a170902e80400b001421c0bc2a6mr32648832plg.23.1636963347598;
+        Mon, 15 Nov 2021 00:02:27 -0800 (PST)
 Received: from localhost.localdomain ([94.177.118.89])
-        by smtp.gmail.com with ESMTPSA id h25sm10459878pgm.33.2021.11.15.00.02.06
+        by smtp.gmail.com with ESMTPSA id b4sm14912250pfl.60.2021.11.15.00.02.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Nov 2021 00:02:13 -0800 (PST)
+        Mon, 15 Nov 2021 00:02:27 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Nadav Amit <nadav.amit@gmail.com>, peterx@redhat.com,
@@ -65,9 +65,9 @@ Cc:     Nadav Amit <nadav.amit@gmail.com>, peterx@redhat.com,
         David Hildenbrand <david@redhat.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Hugh Dickins <hughd@google.com>
-Subject: [PATCH v6 14/23] mm/hugetlb: Handle UFFDIO_WRITEPROTECT
-Date:   Mon, 15 Nov 2021 16:02:00 +0800
-Message-Id: <20211115080200.74866-1-peterx@redhat.com>
+Subject: [PATCH v6 15/23] mm/hugetlb: Handle pte markers in page faults
+Date:   Mon, 15 Nov 2021 16:02:14 +0800
+Message-Id: <20211115080214.74926-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211115075522.73795-1-peterx@redhat.com>
 References: <20211115075522.73795-1-peterx@redhat.com>
@@ -77,130 +77,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This starts from passing cp_flags into hugetlb_change_protection() so hugetlb
-will be able to handle MM_CP_UFFD_WP[_RESOLVE] requests.
+Allow hugetlb code to handle pte markers just like none ptes.  It's mostly
+there, we just need to make sure we don't assume hugetlb_no_page() only handles
+none pte, so when detecting pte change we should use pte_same() rather than
+pte_none().  We need to pass in the old_pte to do the comparison.
 
-huge_pte_clear_uffd_wp() is introduced to handle the case where the
-UFFDIO_WRITEPROTECT is requested upon migrating huge page entries.
+Check the original pte to see whether it's a pte marker, if it is, we should
+recover uffd-wp bit on the new pte to be installed, so that the next write will
+be trapped by uffd.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/hugetlb.h |  6 ++++--
- mm/hugetlb.c            | 13 ++++++++++++-
- mm/mprotect.c           |  3 ++-
- mm/userfaultfd.c        |  8 ++++++++
- 4 files changed, 26 insertions(+), 4 deletions(-)
+ mm/hugetlb.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 4da0c4b4159a..a46011510e49 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -210,7 +210,8 @@ struct page *follow_huge_pgd(struct mm_struct *mm, unsigned long address,
- int pmd_huge(pmd_t pmd);
- int pud_huge(pud_t pud);
- unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
--		unsigned long address, unsigned long end, pgprot_t newprot);
-+		unsigned long address, unsigned long end, pgprot_t newprot,
-+		unsigned long cp_flags);
- 
- bool is_hugetlb_entry_migration(pte_t pte);
- void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
-@@ -391,7 +392,8 @@ static inline void move_hugetlb_state(struct page *oldpage,
- 
- static inline unsigned long hugetlb_change_protection(
- 			struct vm_area_struct *vma, unsigned long address,
--			unsigned long end, pgprot_t newprot)
-+			unsigned long end, pgprot_t newprot,
-+			unsigned long cp_flags)
- {
- 	return 0;
- }
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 8146240eefc6..7fc213c0ebf8 100644
+index 7fc213c0ebf8..e8d01277af0f 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -6127,7 +6127,8 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- }
- 
- unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
--		unsigned long address, unsigned long end, pgprot_t newprot)
-+		unsigned long address, unsigned long end,
-+		pgprot_t newprot, unsigned long cp_flags)
+@@ -5361,7 +5361,8 @@ static inline vm_fault_t hugetlb_handle_userfault(struct vm_area_struct *vma,
+ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 			struct vm_area_struct *vma,
+ 			struct address_space *mapping, pgoff_t idx,
+-			unsigned long address, pte_t *ptep, unsigned int flags)
++			unsigned long address, pte_t *ptep,
++			pte_t old_pte, unsigned int flags)
  {
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long start = address;
-@@ -6137,6 +6138,8 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
- 	unsigned long pages = 0;
- 	bool shared_pmd = false;
- 	struct mmu_notifier_range range;
-+	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
-+	bool uffd_wp_resolve = cp_flags & MM_CP_UFFD_WP_RESOLVE;
+ 	struct hstate *h = hstate_vma(vma);
+ 	vm_fault_t ret = VM_FAULT_SIGBUS;
+@@ -5487,7 +5488,8 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
  
- 	/*
- 	 * In the case of shared PMDs, the area to flush could be beyond
-@@ -6178,6 +6181,10 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
- 				entry = make_readable_migration_entry(
- 							swp_offset(entry));
- 				newpte = swp_entry_to_pte(entry);
-+				if (uffd_wp)
-+					newpte = pte_swp_mkuffd_wp(newpte);
-+				else if (uffd_wp_resolve)
-+					newpte = pte_swp_clear_uffd_wp(newpte);
- 				set_huge_swap_pte_at(mm, address, ptep,
- 						     newpte, huge_page_size(h));
- 				pages++;
-@@ -6192,6 +6199,10 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
- 			old_pte = huge_ptep_modify_prot_start(vma, address, ptep);
- 			pte = pte_mkhuge(huge_pte_modify(old_pte, newprot));
- 			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
-+			if (uffd_wp)
-+				pte = huge_pte_mkuffd_wp(huge_pte_wrprotect(pte));
-+			else if (uffd_wp_resolve)
-+				pte = huge_pte_clear_uffd_wp(pte);
- 			huge_ptep_modify_prot_commit(vma, address, ptep, old_pte, pte);
- 			pages++;
- 		}
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 0d4bf755cee8..1cc4a6d1886b 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -441,7 +441,8 @@ unsigned long change_protection(struct vm_area_struct *vma, unsigned long start,
- 	BUG_ON((cp_flags & MM_CP_UFFD_WP_ALL) == MM_CP_UFFD_WP_ALL);
+ 	ptl = huge_pte_lock(h, mm, ptep);
+ 	ret = 0;
+-	if (!huge_pte_none(huge_ptep_get(ptep)))
++	/* If pte changed from under us, retry */
++	if (!pte_same(huge_ptep_get(ptep), old_pte))
+ 		goto backout;
  
- 	if (is_vm_hugetlb_page(vma))
--		pages = hugetlb_change_protection(vma, start, end, newprot);
-+		pages = hugetlb_change_protection(vma, start, end, newprot,
-+						  cp_flags);
- 	else
- 		pages = change_protection_range(vma, start, end, newprot,
- 						cp_flags);
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 6174a212c72f..037f82719e64 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -690,6 +690,7 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
- 			atomic_t *mmap_changing)
- {
- 	struct vm_area_struct *dst_vma;
-+	unsigned long page_mask;
- 	pgprot_t newprot;
- 	int err;
+ 	if (anon_rmap) {
+@@ -5497,6 +5499,12 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 		page_dup_rmap(page, true);
+ 	new_pte = make_huge_pte(vma, page, ((vma->vm_flags & VM_WRITE)
+ 				&& (vma->vm_flags & VM_SHARED)));
++	/*
++	 * If this pte was previously wr-protected, keep it wr-protected even
++	 * if populated.
++	 */
++	if (unlikely(is_pte_marker_uffd_wp(old_pte)))
++		new_pte = huge_pte_wrprotect(huge_pte_mkuffd_wp(new_pte));
+ 	set_huge_pte_at(mm, haddr, ptep, new_pte);
  
-@@ -726,6 +727,13 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
- 	if (!vma_is_anonymous(dst_vma))
- 		goto out_unlock;
+ 	hugetlb_count_add(pages_per_huge_page(h), mm);
+@@ -5614,8 +5622,10 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
-+	if (is_vm_hugetlb_page(dst_vma)) {
-+		err = -EINVAL;
-+		page_mask = vma_kernel_pagesize(dst_vma) - 1;
-+		if ((start & page_mask) || (len & page_mask))
-+			goto out_unlock;
-+	}
-+
- 	if (enable_wp)
- 		newprot = vm_get_page_prot(dst_vma->vm_flags & ~(VM_WRITE));
- 	else
+ 	entry = huge_ptep_get(ptep);
+-	if (huge_pte_none(entry)) {
+-		ret = hugetlb_no_page(mm, vma, mapping, idx, address, ptep, flags);
++	/* PTE markers should be handled the same way as none pte */
++	if (huge_pte_none_mostly(entry)) {
++		ret = hugetlb_no_page(mm, vma, mapping, idx, address, ptep,
++				      entry, flags);
+ 		goto out_mutex;
+ 	}
+ 
 -- 
 2.32.0
 
