@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7E045236B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E008345266D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343615AbhKPB0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:26:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
+        id S1345868AbhKPCF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:05:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243462AbhKOTCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:02:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDD563356;
-        Mon, 15 Nov 2021 18:14:49 +0000 (UTC)
+        id S239417AbhKOSCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:02:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4037632D8;
+        Mon, 15 Nov 2021 17:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000089;
-        bh=UkKDnI/2sD2BhxshoTIRAMHl11HvhuvGnrps7NsJGCA=;
+        s=korg; t=1636997832;
+        bh=65hRnzlX/Y8JOmnalgbhy0ynhCLSyomqMXib1kVpd/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6wSsHJqzh4ImkfXhiWT0PrkfVI6OcYQkNIROd4zwNmFvj4LylzMWVvdofgPEppRE
-         haZH1VzIKAcg/u/RPmsYvBxCCy+80FxsESL8IvboDlLMGhsajWpIllaF7JgxW+dWYT
-         nyNDK45ZhM+Np3qNy0V6C9EUFbpdn98eaQF5UIKA=
+        b=QMdO1tyl9JcKIP4YUAoEmdQYvHUE0+VeEmtkOv+TDhf7rIsVitt+VG88GneWsHTDO
+         ET2EYer9DteHTmSw0KAa5vqAdGasBDz5SAG3EKH2CIiFvj7HoSpheNZjsF0kMArRSY
+         NxeD73PVgbKReRukcJbcvVzGu1lj0tNxJz9WlXlI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 501/849] s390/uv: fully validate the VMA before calling follow_page()
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 259/575] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
 Date:   Mon, 15 Nov 2021 17:59:44 +0100
-Message-Id: <20211115165437.228216417@linuxfoundation.org>
+Message-Id: <20211115165352.733751811@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 46c22ffd2772201662350bc7b94b9ea9d3ee5ac2 ]
+[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
 
-We should not walk/touch page tables outside of VMA boundaries when
-holding only the mmap sem in read mode. Evil user space can modify the
-VMA layout just before this function runs and e.g., trigger races with
-page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
-with read mmap_sem in munmap").
+With idle polling, IPIs are not sent when a CPU idle, but queued
+and run later from do_idle(). The default kgdb_call_nmi_hook()
+implementation gets the pointer to struct pt_regs from get_irq_reqs(),
+which doesn't work in that case because it was not called from the
+IPI interrupt handler. Fix it by defining our own kgdb_roundup()
+function which sents an IPI_ENTER_KGDB. When that IPI is received
+on the target CPU kgdb_nmicallback() is called.
 
-find_vma() does not check if the address is >= the VMA start address;
-use vma_lookup() instead.
-
-Fixes: 214d9bbcd3a6 ("s390/mm: provide memory management functions for protected KVM guests")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Link: https://lore.kernel.org/r/20210909162248.14969-6-david@redhat.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/uv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-index aeb0a15bcbb71..193205fb27774 100644
---- a/arch/s390/kernel/uv.c
-+++ b/arch/s390/kernel/uv.c
-@@ -227,7 +227,7 @@ again:
- 	uaddr = __gmap_translate(gmap, gaddr);
- 	if (IS_ERR_VALUE(uaddr))
- 		goto out;
--	vma = find_vma(gmap->mm, uaddr);
-+	vma = vma_lookup(gmap->mm, uaddr);
- 	if (!vma)
- 		goto out;
- 	/*
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 1405b603b91b6..cf92ece20b757 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -29,6 +29,7 @@
+ #include <linux/bitops.h>
+ #include <linux/ftrace.h>
+ #include <linux/cpu.h>
++#include <linux/kgdb.h>
+ 
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+@@ -69,7 +70,10 @@ enum ipi_message_type {
+ 	IPI_CALL_FUNC,
+ 	IPI_CPU_START,
+ 	IPI_CPU_STOP,
+-	IPI_CPU_TEST
++	IPI_CPU_TEST,
++#ifdef CONFIG_KGDB
++	IPI_ENTER_KGDB,
++#endif
+ };
+ 
+ 
+@@ -167,7 +171,12 @@ ipi_interrupt(int irq, void *dev_id)
+ 			case IPI_CPU_TEST:
+ 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
+ 				break;
+-
++#ifdef CONFIG_KGDB
++			case IPI_ENTER_KGDB:
++				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
++				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
++				break;
++#endif
+ 			default:
+ 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
+ 					this_cpu, which);
+@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
+ 	}
+ }
+ 
++#ifdef CONFIG_KGDB
++void kgdb_roundup_cpus(void)
++{
++	send_IPI_allbutself(IPI_ENTER_KGDB);
++}
++#endif
+ 
+ inline void 
+ smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
 -- 
 2.33.0
 
