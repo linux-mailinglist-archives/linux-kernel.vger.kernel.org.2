@@ -2,110 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F32544FC93
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA16A44FC95
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhKOAak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:30:40 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37813 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhKOAaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:30:14 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 584C42B0124F;
-        Sun, 14 Nov 2021 19:27:19 -0500 (EST)
-Received: from imap43 ([10.202.2.93])
-  by compute4.internal (MEProxy); Sun, 14 Nov 2021 19:27:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=mkjJ4Y/pteRNeSPhoh6wdSUlB0Vt8cF
-        uTD9VcATUOEs=; b=naSStiP/3c2eGHVTWTXAvdPaFC55Ueu//Ntac+HOsU5xGn7
-        El9G3ESUPI777by+gnfb8fecgcmUTOOchltcJElbL1din5HFGDl+RVVMuBby13FJ
-        dtkx6ARt2bGaGNsIa/YQl+nxxiRTC9sA5QCdYOBjdb4xon8YektHed7ujFrEqk6B
-        kwlgSvAX5U6yvjVw+UYEI5ylsuKVKqSleWP1CyZFPVFBLKANGMvDm6UJzW9pEWYp
-        iGvv2iM8YlgUIoLu51kuYyiiLv3ZvakyrvOs/BxWctSHL+YxZsCU6zVuPctdDlmt
-        rNMRI7/khFwInWIL4JbCv/DTJvHJQ7jlveIGoFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=mkjJ4Y
-        /pteRNeSPhoh6wdSUlB0Vt8cFuTD9VcATUOEs=; b=EvxFmVa4SJYIdwcnZlg9dw
-        RP0/MfGG0yRCJvFZ0TKe8F+9oIwpnLyJBA0+ruSooXxCM9UY7KOaBR0SRF2A+gtX
-        aHuhcAvb5kCe5eSI5aoCHopOs5r3E5fSxnJD/P4qK09+d6en86fsir/yNWhoQ1mg
-        /f+AdBQlBmUb3L6vJtqVGSJubNwMUr3KBvHOEyZlcKiFN/cc0hd0einMaalxqDPO
-        Xnmswu06Wg1xjOOaQLnE0tzqNwy6VO7lA3REQXIB6heOrkzL2z4DQwnLLUjBwG9C
-        OP7SiUE3f2XUGfVLVQJevs1APm/Xe7tSPWGkRbDPeswiHBXLfEcgY+rTPRwo+tUA
-        ==
-X-ME-Sender: <xms:ZqmRYWDOSjvoQzZvep4vHsK9UG7Cqb52_ZTugtnlYmxA0mCdzsL3Kw>
-    <xme:ZqmRYQg7ujw72pPXe0-BYE_PFJiH4Uu1DcIzMA56a677xgYJag-S0tfmwojLk7NZf
-    L4t_YnLaPNS8jxjhw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdekgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:ZqmRYZmqFH9wEhnHlYt34MAhNsKiB4MtOqnZa_LShsYg6tKcouOh_Q>
-    <xmx:ZqmRYUyFAeVrB2K48z1O19MVjnlrubpZ2mZFEqUo-IYAWgRd4YPkOw>
-    <xmx:ZqmRYbTNu-VSVVor1wfjPuSAtVqh6eWpjA7Bf1pUmq0K7VpYz-mEuQ>
-    <xmx:ZqmRYQI1QRL2kqX8CjJdDTJzAw5BLHiBzMrfAEN_Ryaeg5wJnjntSS-Ufng>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 00E63AC0DD1; Sun, 14 Nov 2021 19:27:17 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <65620ec1-94fb-48f7-a8f8-8e9f409b0fc8@www.fastmail.com>
-In-Reply-To: <20211113002948.GE14774@packtop>
-References: <20211112202931.2379145-1-anoo@linux.ibm.com>
- <20211113002948.GE14774@packtop>
-Date:   Mon, 15 Nov 2021 10:56:33 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zweiss@equinix.com>,
-        "Adriana Kobylak" <anoo@linux.ibm.com>
-Cc:     "Russell King" <linux@armlinux.org.uk>,
-        "Joel Stanley" <joel@jms.id.au>, "Olof Johansson" <olof@lixom.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Bruce Mitchell" <bruce.mitchell@linux.vnet.ibm.com>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Adriana Kobylak" <anoo@us.ibm.com>,
-        "Eddie James" <eajames@linux.ibm.com>,
-        "George Liu" <liuxiwei1013@gmail.com>
-Subject: Re: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
-Content-Type: text/plain
+        id S232441AbhKOAdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:33:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230079AbhKOAcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 19:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA8A61183;
+        Mon, 15 Nov 2021 00:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636936199;
+        bh=Pd6pokHmhzIndABeIWSLkjqChNxZ/7m1n2tWPduBZ8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S9fEOufHanu7q3OgWaoTB197sifi+JR1CvKGk2zCOzbm7rB46Qm9lNZv31Z7T75NE
+         VAHq0nJhZ4s+Tk9sAloe4+s880G8UOnC9CZWHp/+8R09QlKkQHjw1uv2inSAz3yznh
+         2bODRbkZ1NKrt7JGTQtrczlCEbO42GZTYHegLo85wwmNbDMHBDovR5vxOQ6jJx6yY/
+         jxwbP7yMkxBKaiwURua8C7dXGmiMXmROzXRVeAvN3m7X+DTM9qOhNQ7Pgkfl3lhbBC
+         ZbS+/NIV3UwBSoDrmNWZNjj+f3Yvsd/pJhLofg5PbWiNhPPdH1raFO74suBhmw5yrw
+         lS54Xeb927o8Q==
+Date:   Sun, 14 Nov 2021 18:35:01 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
+Message-ID: <20211115003501.GA43686@embeddedor>
+References: <20211114005725.GA27075@embeddedor>
+ <YZF9MY6rRLQwdTgM@archlinux-ax161>
+ <YZGnL3nfA5876hX3@archlinux-ax161>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZGnL3nfA5876hX3@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 14, 2021 at 05:17:51PM -0700, Nathan Chancellor wrote:
+> On Sun, Nov 14, 2021 at 02:18:41PM -0700, Nathan Chancellor wrote:
+> > On Sat, Nov 13, 2021 at 06:57:25PM -0600, Gustavo A. R. Silva wrote:
+> > > Add Kconfig support for -Wimplicit-fallthrough for both GCC and Clang.
+> > > 
+> > > The compiler option is under configuration CC_IMPLICIT_FALLTHROUGH,
+> > > which is enabled by default.
+> > > 
+> > > Special thanks to Nathan Chancellor who fixed the Clang bug[1][2]. This
+> > > bugfix only appears in Clang 14.0.0, so older versions still contain
+> > > the bug and -Wimplicit-fallthrough won't be enabled for them, for now.
+> > > 
+> > > This concludes a long journey and now we are finally getting rid
+> > > of the unintentional fallthrough bug-class in the kernel, entirely. :)
+> > > 
+> > > [1] https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+> > > [2] https://bugs.llvm.org/show_bug.cgi?id=51094
+> > > 
+> > > Link: https://github.com/KSPP/linux/issues/115
+> > > Link: https://github.com/ClangBuiltLinux/linux/issues/236
+> > > Co-developed-by: Kees Cook <keescook@chromium.org>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > 
+> > This appears to do the right thing with both clang-13 and clang-14.
+> 
+> Now that I gave this a look for the GCC side, I think it is wrong.
+> 
+> -Wimplicit-fallthrough=5 was under cc-option because it was only
+> available in GCC 7.x and newer so the build is now broken for GCC 5.x
+> and 6.x:
+> 
+> gcc: error: unrecognized command line option '-Wimplicit-fallthrough=5';
+> did you mean '-Wno-fallthrough'?
 
+I'll send a patch for this right away. Thanks for the report, Nathan! :)
 
-On Sat, 13 Nov 2021, at 10:59, Zev Weiss wrote:
-> On Fri, Nov 12, 2021 at 12:29:31PM PST, Adriana Kobylak wrote:
->>From: Adriana Kobylak <anoo@us.ibm.com>
->>
->>Add support to detect USB flash drives and create the /dev/sd* devices.
->>Also add support for vfat to support USB drives formatted as FAT32.
->>This support will be used to enable firmware updates via USB flash
->>drives where the firmware image is stored in the USB drive and it's
->>plugged into the BMC USB port.
->>
->
-> Hmm, how common is it for BMCs to have a USB port?  Perhaps it's more so
-> than I realize, but at least in my (admittedly somewhat limited)
-> experience I've yet to encounter one that does, so I'm wondering how
-> appropriate these options are for the aspeed-g5 defconfig if they might
-> just end up as a bunch of code that's never executed on most BMCs.
+--
+Gustavo
 
-The intent with the Aspeed defconfigs was to enable options that 
-provide a broad coverage of features used by e.g. upstream OpenBMC 
-systems. This aids kernel maintenance for OpenBMC. The platform 
-configuration in OpenBMC should provide a kernel config that only 
-enables options relevant to that specific platform. With this in mind I 
-think it's fine that USB support is enabled in the defconfigs.
-
-Andrew
+> 
+> I think this needs to be added (I can send a formal patch tomorrow
+> unless someone wants to beat me to it):
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 036b750e8d8a..85882c317235 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -887,7 +887,7 @@ config CC_HAS_INT128
+>  
+>  config CC_IMPLICIT_FALLTHROUGH
+>  	string
+> -	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
+> +	default "-Wimplicit-fallthrough=5" if $(cc-option,-Wimplicit-fallthrough=5)
+>  	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
+>  
+>  #
+> 
+> Cheers,
+> Nathan
+> 
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > 
+> > It feels a little odd to have this in Kconfig but if it works and gets
+> > the warning enabled, then so be it.
+> > 
+> > > ---
+> > >  Makefile     | 6 +-----
+> > >  init/Kconfig | 5 +++++
+> > >  2 files changed, 6 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/Makefile b/Makefile
+> > > index 30c7c81d0437..f18a50daad00 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -786,7 +786,7 @@ stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      := -fstack-protector-strong
+> > >  KBUILD_CFLAGS += $(stackp-flags-y)
+> > >  
+> > >  KBUILD_CFLAGS-$(CONFIG_WERROR) += -Werror
+> > > -KBUILD_CFLAGS += $(KBUILD_CFLAGS-y)
+> > > +KBUILD_CFLAGS += $(KBUILD_CFLAGS-y) $(CONFIG_CC_IMPLICIT_FALLTHROUGH)
+> > >  
+> > >  ifdef CONFIG_CC_IS_CLANG
+> > >  KBUILD_CPPFLAGS += -Qunused-arguments
+> > > @@ -798,10 +798,6 @@ KBUILD_CFLAGS += -Wno-gnu
+> > >  KBUILD_CFLAGS += -mno-global-merge
+> > >  else
+> > >  
+> > > -# Warn about unmarked fall-throughs in switch statement.
+> > > -# Disabled for clang while comment to attribute conversion happens and
+> > > -# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
+> > > -KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
+> > >  # gcc inanely warns about local variables called 'main'
+> > >  KBUILD_CFLAGS += -Wno-main
+> > >  endif
+> > > diff --git a/init/Kconfig b/init/Kconfig
+> > > index 11f8a845f259..b0582cd3e096 100644
+> > > --- a/init/Kconfig
+> > > +++ b/init/Kconfig
+> > > @@ -885,6 +885,11 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+> > >  config CC_HAS_INT128
+> > >  	def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0) && 64BIT
+> > >  
+> > > +config CC_IMPLICIT_FALLTHROUGH
+> > > +	string
+> > > +	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
+> > > +	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
+> > > +
+> > >  #
+> > >  # For architectures that know their GCC __int128 support is sound
+> > >  #
+> > > -- 
+> > > 2.27.0
+> > > 
+> > > 
+> > 
