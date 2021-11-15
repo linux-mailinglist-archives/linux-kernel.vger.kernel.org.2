@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38478451614
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23AD451610
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhKOVKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
+        id S1349490AbhKOVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:10:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240709AbhKOSNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240714AbhKOSNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:13:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B57B63318;
-        Mon, 15 Nov 2021 17:48:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3CD06331E;
+        Mon, 15 Nov 2021 17:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998484;
-        bh=tbeSfVYlFf2HxaXqbUQJ/zFMIP2AIyjRpUVEK50cMvI=;
+        s=korg; t=1636998487;
+        bh=7cIs7PBYuEUqLMjsqmboH6zqBo/el/bZN8FQeNHFyxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dy+H2KKjjJ9N/SXdU3V0XYwzn0skff+rn0uNfjHj/F7mrl1AfkW9E2NZ7TLzsIUdj
-         mhGcMNTL8cfBLHGUykWkEC1Fxzm5XVp8uU4zEIaBU0OHAk/Sfxt4mKrBJUsNIsOC1J
-         cfhucUgyNhDkr4TuTiaE3n9A+cwG2iy16oHfkMK0=
+        b=MpuNH4JNi0loT6VAJq3Lj5LrQEhKiQog4UoHbq41inOAjsP80t3fPqOgp6t6A6rCV
+         sZS8SQmJ1DGvLDtTrNyIAei3PsNNr88ysbmhpnjhSRseilUgaIfGGiMrr8cggnKW5Z
+         WFTtLXI4u5ZsmmXGOGbCAO1a0JxdF88eLhDth0iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jussi Maki <joamaki@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 526/575] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
-Date:   Mon, 15 Nov 2021 18:04:11 +0100
-Message-Id: <20211115165401.857548697@linuxfoundation.org>
+Subject: [PATCH 5.10 527/575] bpf, sockmap: Remove unhash handler for BPF sockmap usage
+Date:   Mon, 15 Nov 2021 18:04:12 +0100
+Message-Id: <20211115165401.896958945@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,65 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit c7c386fbc20262c1d911c615c65db6a58667d92c ]
+[ Upstream commit b8b8315e39ffaca82e79d86dde26e9144addf66b ]
 
-gcc warns about undefined behavior the vmalloc code when building
-with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
-__phys_to_pte_val() is evaluated twice:
+We do not need to handle unhash from BPF side we can simply wait for the
+close to happen. The original concern was a socket could transition from
+ESTABLISHED state to a new state while the BPF hook was still attached.
+But, we convinced ourself this is no longer possible and we also improved
+BPF sockmap to handle listen sockets so this is no longer a problem.
 
-mm/vmalloc.c: In function 'vmap_pfn_apply':
-mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                                                 ~~~~~~~~~^~
-arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
-   25 | #define __pte(x)        ((pte_t) { (x) } )
-      |                                     ^
-arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
-   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-      |               ^~~~~~~~~~~~~~~~~
-mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                              ^~~~~~~
+More importantly though there are cases where unhash is called when data is
+in the receive queue. The BPF unhash logic will flush this data which is
+wrong. To be correct it should keep the data in the receive queue and allow
+a receiving application to continue reading the data. This may happen when
+tcp_abort() is received for example. Instead of complicating the logic in
+unhash simply moving all this to tcp_close() hook solves this.
 
-I have no idea why this never showed up earlier, but the safest
-workaround appears to be changing those macros into inline functions
-so the arguments get evaluated only once.
-
-Cc: Matthew Wilcox <willy@infradead.org>
-Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211105075414.2553155-1-arnd@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Jussi Maki <joamaki@gmail.com>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20211103204736.248403-3-john.fastabend@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/pgtable.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ net/ipv4/tcp_bpf.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 10ffbc96ac31f..f3a70dc7c5942 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -69,9 +69,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-  * page table entry, taking care of 52-bit addresses.
-  */
- #ifdef CONFIG_ARM64_PA_BITS_52
--#define __pte_to_phys(pte)	\
--	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
--#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-+static inline phys_addr_t __pte_to_phys(pte_t pte)
-+{
-+	return (pte_val(pte) & PTE_ADDR_LOW) |
-+		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
-+}
-+static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-+{
-+	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
-+}
- #else
- #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
- #define __phys_to_pte_val(phys)	(phys)
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 9194070c67250..6b745ce4108c8 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -573,7 +573,6 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
+ 				   struct proto *base)
+ {
+ 	prot[TCP_BPF_BASE]			= *base;
+-	prot[TCP_BPF_BASE].unhash		= sock_map_unhash;
+ 	prot[TCP_BPF_BASE].close		= sock_map_close;
+ 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
+ 	prot[TCP_BPF_BASE].stream_memory_read	= tcp_bpf_stream_read;
 -- 
 2.33.0
 
