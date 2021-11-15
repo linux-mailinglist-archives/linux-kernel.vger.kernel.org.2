@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A61450B46
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BECB450B4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhKORVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:21:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50326 "EHLO mail.kernel.org"
+        id S232447AbhKORVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:21:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236728AbhKORND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:13:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4702961C15;
-        Mon, 15 Nov 2021 17:10:07 +0000 (UTC)
+        id S232425AbhKORNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:13:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FFF76320D;
+        Mon, 15 Nov 2021 17:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996207;
-        bh=bjZkxvjvyGh6iemq/lJDpSd7qA9FMvOg4aq8y7HDrHs=;
+        s=korg; t=1636996210;
+        bh=MRU56tOId8Mxj+TZyUhEIfrnQSLnb0L6uby7nVDXcGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ot5LaBU1iEz2GWAr7+j7fPEoZrsXIo0tK6ElDDBR9vEL5Oau3Y04QlVrScoZRtKJd
-         BZlVDlvCXfhXeFWuPKzIXSuaNN2sHjm4ub9+EPTfJ1+unt9W43/LitwAPpE0r9e76n
-         W2l6P57AZ8Z2g95Du5oWMzl6aSlPztQAhNOBkzUk=
+        b=JNxuusq/Itdf4DZyiJMNWBTEOz7dWWydxY2KU8IXjd42S+Bs6V9wFWt8ItKW6aUie
+         qBCrBjVSRY0bX0RE8HAzHuQGcU1kxR9+TQK7eJ88Q7qikvq8sHQMLsi7GvhmyKTGbL
+         GjTlCyEehg+//Ec34JzpaTy21YlOc52zra8bsQ2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Engel <amit.engel@dell.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/355] nvmet-tcp: fix header digest verification
-Date:   Mon, 15 Nov 2021 17:59:39 +0100
-Message-Id: <20211115165315.323417909@linuxfoundation.org>
+        stable@vger.kernel.org, Janghyub Seo <jhyub06@gmail.com>,
+        Rushab Shah <rushabshah32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 056/355] r8169: Add device 10ec:8162 to driver r8169
+Date:   Mon, 15 Nov 2021 17:59:40 +0100
+Message-Id: <20211115165315.627928304@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,35 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Engel <amit.engel@dell.com>
+From: Janghyub Seo <jhyub06@gmail.com>
 
-[ Upstream commit 86aeda32b887cdaeb0f4b7bfc9971e36377181c7 ]
+[ Upstream commit 72f898ca0ab85fde6facf78b14d9f67a4a7b32d1 ]
 
-Pass the correct length to nvmet_tcp_verify_hdgst, which is the pdu
-header length.  This fixes a wrong behaviour where header digest
-verification passes although the digest is wrong.
+This patch makes the driver r8169 pick up device Realtek Semiconductor Co.
+, Ltd. Device [10ec:8162].
 
-Signed-off-by: Amit Engel <amit.engel@dell.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Janghyub Seo <jhyub06@gmail.com>
+Suggested-by: Rushab Shah <rushabshah32@gmail.com>
+Link: https://lore.kernel.org/r/1635231849296.1489250046.441294000@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 1328ee373e596..6b3d1ba7db7ee 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1020,7 +1020,7 @@ recv:
- 	}
- 
- 	if (queue->hdr_digest &&
--	    nvmet_tcp_verify_hdgst(queue, &queue->pdu, queue->offset)) {
-+	    nvmet_tcp_verify_hdgst(queue, &queue->pdu, hdr->hlen)) {
- 		nvmet_tcp_fatal_error(queue); /* fatal */
- 		return -EPROTO;
- 	}
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 623d86e5e970f..8d2b184ff5758 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -212,6 +212,7 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
+ 	{ PCI_VDEVICE(REALTEK,	0x8129) },
+ 	{ PCI_VDEVICE(REALTEK,	0x8136), RTL_CFG_NO_GBIT },
+ 	{ PCI_VDEVICE(REALTEK,	0x8161) },
++	{ PCI_VDEVICE(REALTEK,	0x8162) },
+ 	{ PCI_VDEVICE(REALTEK,	0x8167) },
+ 	{ PCI_VDEVICE(REALTEK,	0x8168) },
+ 	{ PCI_VDEVICE(NCUBE,	0x8168) },
 -- 
 2.33.0
 
