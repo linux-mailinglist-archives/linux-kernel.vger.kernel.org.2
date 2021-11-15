@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F42451DF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D126D4518A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347397AbhKPAee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1351612AbhKOXEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343894AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B4F7635FA;
-        Mon, 15 Nov 2021 18:48:17 +0000 (UTC)
+        id S243100AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BBC63317;
+        Mon, 15 Nov 2021 18:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002098;
-        bh=2CmOslhHWbfIYafn8fx8ai24Gq2du5lBCEi7K6y08ss=;
+        s=korg; t=1636999862;
+        bh=qwivl6QBXeWUvuLBRy8LfcdNXw5gHAOodpc44a9sNMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QXk5gvmdy2x0yxCl3emH1y7vUmcr28BsB//S4KJumkTQ0KSPl01opQpcn7tWhk1zo
-         FqYFT3qg/4w1PJtqzbVf5nY83YCUTaMurgws+4BPXzI2Al5zpuJkgWB4n61rr06qp2
-         U87Ho4sn+5U8ZjPGjgFVVVF5ECblRWC+LwtZ8qZs=
+        b=lifVRRer4cJkqrEDdvzlVz4GeYOoD+8HBql9MeuvA60hUsbZ/xMlq36ZEzlM2XLfE
+         CU9lVSp5mMPaR/E8jojxd3yKADEVw5E7Zls6GvB7IghUOm1xw/E3GWCK7AoXJv31Y2
+         NjI8qQXhbY/+fe0sPfpYWrowZInUXi+aLX1TyYzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 437/917] drm/msm: Fix potential Oops in a6xx_gmu_rpmh_init()
-Date:   Mon, 15 Nov 2021 17:58:52 +0100
-Message-Id: <20211115165443.605928758@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 450/849] mt76: mt7915: fix endianness warning in mt7915_mac_add_txs_skb
+Date:   Mon, 15 Nov 2021 17:58:53 +0100
+Message-Id: <20211115165435.509478716@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 3d91e50ff58364f6572ad268b508175d27800e51 ]
+[ Upstream commit 08b3c8da87aed4200dab00906f149d675ca90f23 ]
 
-There are two problems here:
-1) The "seqptr" is used uninitalized when we free it at the end.
-2) The a6xx_gmu_get_mmio() function returns error pointers.  It never
-   returns true.
+Fix the following sparse warning in mt7915_mac_add_txs_skb routine:
 
-Fixes: 64245fc55172 ("drm/msm/a6xx: use AOP-initialized PDC for a650")
-Fixes: f8fc924e088e ("drm/msm/a6xx: Fix PDC register overlap")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20211004134530.GB11689@kili
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:29:
+	warning: cast to restricted __le32
+drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:23:
+	warning: restricted __le32 degrades to integer
+
+Fixes: 3de4cb1756565 ("mt76: mt7915: add support for tx status reporting")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 8b73f70766a47..4347a104755a9 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -516,11 +516,11 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
- 	struct platform_device *pdev = to_platform_device(gmu->dev);
- 	void __iomem *pdcptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc");
--	void __iomem *seqptr;
-+	void __iomem *seqptr = NULL;
- 	uint32_t pdc_address_offset;
- 	bool pdc_in_aop = false;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
+index 2462704094b0a..bbc996f86b5c3 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
+@@ -1232,7 +1232,7 @@ mt7915_mac_add_txs_skb(struct mt7915_dev *dev, struct mt76_wcid *wcid, int pid,
+ 		goto out;
  
--	if (!pdcptr)
-+	if (IS_ERR(pdcptr))
- 		goto err;
+ 	info = IEEE80211_SKB_CB(skb);
+-	if (!(txs_data[0] & le32_to_cpu(MT_TXS0_ACK_ERROR_MASK)))
++	if (!(txs_data[0] & cpu_to_le32(MT_TXS0_ACK_ERROR_MASK)))
+ 		info->flags |= IEEE80211_TX_STAT_ACK;
  
- 	if (adreno_is_a650(adreno_gpu) || adreno_is_a660_family(adreno_gpu))
-@@ -532,7 +532,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
- 
- 	if (!pdc_in_aop) {
- 		seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
--		if (!seqptr)
-+		if (IS_ERR(seqptr))
- 			goto err;
- 	}
- 
+ 	info->status.ampdu_len = 1;
 -- 
 2.33.0
 
