@@ -2,146 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB21451C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAD4451C10
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352507AbhKPAL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S1350404AbhKPALa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:11:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347333AbhKOVHy (ORCPT
+        with ESMTP id S1348809AbhKOVJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:07:54 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02A3C0432DC
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:56:26 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso593382wmh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:56:26 -0800 (PST)
+        Mon, 15 Nov 2021 16:09:10 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581F4C0432DF
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:57:24 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id g1so10618583qvd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:57:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UrTT5OjFF/ppB+7IkG4hoMbeGHcKoOd9F+xHAZ+mnyo=;
-        b=f7wjwIB/WhAldwlcCPBWND3Iq9q35SWJbzttX4G4tLxXYUVT7O+6uICXS4XN2fTJwt
-         t0P76Pua0+3okKElXWZkrUKwUEluSn0JLOHBpcRxUNAdhr9x6B+qaLXBHvcNUNXwRBeq
-         IMPA9YhnPqyh23tr+6MYSb1xrGxvBcWnMrpSU=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BPT9XAU/7JpIm6Qep/HBtxJcXg28nk1b69xhCAPgyow=;
+        b=Zdm/AfV8kEFGTw/aIHwCkvhXjDEGegV0JkdM5cSpODOMM3belmA7Ovd3CYd4jdBez8
+         Gbl3UTa/utmJlMlP69itLjU2qp38ek5YYc5i7KR8LG4sRQcaher2u5Xt2wfnyqG8VJNT
+         6TRiLwDAisTck8FnbrKkI4+UCXoRJa7neLKzUe68+7gKXzR6koKht7fKbmKBGdEzoGW5
+         BOazMuedWQ/eEvLMgEaa4+1LgbBIZtNXVqzVYUjzUSV+pGtNCtNp74qSBezXyv7qEJNH
+         Dw/CV8WkYcpNgjhn6PBH2L6aEsiXjzq1yY0v6/nCrOruYvg+NxojjKtpNt/2tBfLjGZU
+         s5qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UrTT5OjFF/ppB+7IkG4hoMbeGHcKoOd9F+xHAZ+mnyo=;
-        b=Ryw0hDFrZbFl4ql09cl5grj94XAw5jl+dZrzzsHX0Af1+UDUQfeHrFXjzs3tmZMPzI
-         vZnH3GpcRMU4QVRiaBeDUiKGNJTwZCpjWVbXbrIU3wFmOfwLG/tD6U/GLtI3cgM8dEBi
-         GAtUekaXhFKDhnYC2D6OcoM0fpdPJHSc2JkGuNoZGFKODzS7gIIs4zpHZiUIvt1qQSgF
-         bIw/WVh5GD8hsV9rm8HRoNO0orR+XXtR8CRpPy9ybt98yZC/KNY+9H+ufAwnXimBUXhi
-         xuhy2DN3uKfc6aolBov9Q0rngnrIONRyP95M2IrjcPjq9GytdXU2GlkZhdVVQD1NA+qX
-         zy8A==
-X-Gm-Message-State: AOAM530te0RtTDJbng4suUpQqdq+5SDzzwt2W85RaqGe4GAFQbbqAjyd
-        boiJWQrc4rG4tbVEpSFPWWFk/rSnvozrGX2bmG0Eag==
-X-Google-Smtp-Source: ABdhPJwp3kxwH8yb+NVAAcawjhpi2GUBtHN3D9ybC50c+3BOLdWRk3C4iKCxv4dBtBMWf6wMDV52tSgm6dFPjFOrfKw=
-X-Received: by 2002:a05:600c:1d01:: with SMTP id l1mr64557876wms.44.1637009785359;
- Mon, 15 Nov 2021 12:56:25 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BPT9XAU/7JpIm6Qep/HBtxJcXg28nk1b69xhCAPgyow=;
+        b=Dd6Uo8WYCpUkA34P2eKcDaQ3r+YiF6Q9G+utPWpBaAHpTwY9HKqXhOtyJ2bTF91vho
+         IFlZbCWJ6DEzmpPaNSerbxOjiF6l5Y+dobhWnGu3NfLbJ/X3Ulsy4mecYc6lec4oaqx1
+         fDxq3UhAdtha4k6hCqMfxZP6kgQjquTRjYWmQ2/VYJCptzPwBHutkJufW1EaTdDIIN4B
+         balG5sYT4v0JRmCj27hmbkOZ99Q489WQC1wQYM69tIPSWH3y3EcSIQU0bmiP6baqW4LD
+         OAMK9jXpYAhkwt9zAObNHzi6GgPene4tvqLjHjTFIbsRZu0ZF9SG0FJoW9rL4Li+wB94
+         l42g==
+X-Gm-Message-State: AOAM532YgQw+vpVC8b57Vb0RDwoGSnpdue3K2X0h0/U3F0koTND6pFsj
+        ZJjGQWojNX3Rk89EyHsQZJGeRw==
+X-Google-Smtp-Source: ABdhPJwO58ELEc1T0JPvckGTGCiJeBdgLLOXwJ+Jnu7Y5B2iMNp3qAvobyqkr2sjk4jHtmbo2g/6Bw==
+X-Received: by 2002:ad4:5f4c:: with SMTP id p12mr40675290qvg.33.1637009843477;
+        Mon, 15 Nov 2021 12:57:23 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id j21sm6870072qkk.27.2021.11.15.12.57.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 12:57:22 -0800 (PST)
+Subject: Re: [PATCH v4 4/5] cpufreq: qcom-cpufreq-hw: Use new thermal pressure
+ update function
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, steev@kali.org,
+        sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        linux@armlinux.org.uk, gregkh@linuxfoundation.org,
+        rafael@kernel.org, viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211109195714.7750-1-lukasz.luba@arm.com>
+ <20211109195714.7750-5-lukasz.luba@arm.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <02a848c8-a672-f3df-7144-979a9df71fcb@linaro.org>
+Date:   Mon, 15 Nov 2021 15:57:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211110221456.11977-2-jim2101024@gmail.com> <20211111215718.GA1353371@bhelgaas>
-In-Reply-To: <20211111215718.GA1353371@bhelgaas>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Mon, 15 Nov 2021 15:56:14 -0500
-Message-ID: <CA+-6iNy86LG761MYvr-mB0de1TZ_EbJxzw0vFYfgXaa+96k=GA@mail.gmail.com>
-Subject: Re: [PATCH v8 1/8] PCI: brcmstb: Change brcm_phy_stop() to return void
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211109195714.7750-5-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 4:57 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, Nov 10, 2021 at 05:14:41PM -0500, Jim Quinlan wrote:
-> > We do not use the result of this function so make it void.
->
-> I don't get it.  Can you expand on this?
->
-> brcm_phy_cntl() can return -EIO, which means brcm_phy_stop() can
-> return -EIO, which means brcm_pcie_suspend can return -EIO.
-> brcm_pcie_suspend() is the dev_pm_ops.suspend() method.
->
-> So are you saying we never use the result of dev_pm_ops.suspend()?
-Hi Bjorn,
-
-In this situation we are going into suspend.  In doing so, any
-problems with the brcm phy may be erased/forgiven upon resume, since
-clocks are turned off and most power removed/reduced.  An error from
-brcm_phy_stop() that becomes the return value of  brcm_pcie_suspend()
-will bring a halt to the entire suspend IIRC.   In fact, I forced a
--EIO in this code and it panic'd on suspend.  This is not really the
-behavior I want for what is most likely a recoverable error.
-
-Perhaps a dev_err(...) will suffice while still returning 0?
-
-I noticed that reset_control_rearm() also returns a value, and if that
-is in error it will not be erease/forgiven  by suspend sleep.  I will
-fix this.
-
-Regards,
-Jim Quinlan
-Broadcom STB
 
 
->
-> > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> > ---
-> >  drivers/pci/controller/pcie-brcmstb.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> > index cc30215f5a43..ff7d0d291531 100644
-> > --- a/drivers/pci/controller/pcie-brcmstb.c
-> > +++ b/drivers/pci/controller/pcie-brcmstb.c
-> > @@ -1111,9 +1111,10 @@ static inline int brcm_phy_start(struct brcm_pcie *pcie)
-> >       return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
-> >  }
-> >
-> > -static inline int brcm_phy_stop(struct brcm_pcie *pcie)
-> > +static inline void brcm_phy_stop(struct brcm_pcie *pcie)
-> >  {
-> > -     return pcie->rescal ? brcm_phy_cntl(pcie, 0) : 0;
-> > +     if (pcie->rescal)
-> > +             brcm_phy_cntl(pcie, 0);
-> >  }
-> >
-> >  static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
-> > @@ -1143,14 +1144,13 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
-> >  static int brcm_pcie_suspend(struct device *dev)
-> >  {
-> >       struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> > -     int ret;
-> >
-> >       brcm_pcie_turn_off(pcie);
-> > -     ret = brcm_phy_stop(pcie);
-> > +     brcm_phy_stop(pcie);
-> >       reset_control_rearm(pcie->rescal);
-> >       clk_disable_unprepare(pcie->clk);
-> >
-> > -     return ret;
-> > +     return 0;
-> >  }
-> >
-> >  static int brcm_pcie_resume(struct device *dev)
-> > --
-> > 2.17.1
-> >
+On 11/9/21 2:57 PM, Lukasz Luba wrote:
+> Thermal pressure provides a new API, which allows to use CPU frequency
+> as an argument. That removes the need of local conversion to capacity.
+> Use this new API and remove old local conversion code.
+> 
+> The new arch_update_thermal_pressure() also accepts boost frequencies,
+> which solves issue in the driver code with wrong reduced capacity
+> calculation. The reduced capacity was calculated wrongly due to
+> 'policy->cpuinfo.max_freq' used as a divider. The value present there was
+> actually the boost frequency. Thus, even a normal maximum frequency value
+> which corresponds to max CPU capacity (arch_scale_cpu_capacity(cpu_id))
+> is not able to remove the capping.
+
+Yes, although cpuinfo.max_freq does not reflect the boost frequency 
+unless boost is enabled atleast once. I have sent a patch to fix this. 
+But I agree that using cpuinfo.max_freq has issues you have mentioned in 
+this patch if boost is enabled once.
+
+So, for this patch
+
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+
+Warm Regards
+Thara (She/Her/Hers)
+> 
+> The second side effect which is solved is that the reduced frequency wasn't
+> properly translated into the right reduced capacity,
+> e.g.
+> boost frequency = 3000MHz (stored in policy->cpuinfo.max_freq)
+> max normal frequency = 2500MHz (which is 1024 capacity)
+> 2nd highest frequency = 2000MHz (which translates to 819 capacity)
+> 
+> Then in a scenario when the 'throttled_freq' max allowed frequency was
+> 2000MHz the driver translated it into 682 capacity:
+> capacity = 1024 * 2000 / 3000 = 682
+> Then set the pressure value bigger than actually applied by the HW:
+> max_capacity - capacity => 1024 - 682 = 342 (<- thermal pressure)
+> Which was causing higher throttling and misleading task scheduler
+> about available CPU capacity.
+> A proper calculation in such case should be:
+> capacity = 1024 * 2000 / 2500 = 819
+> 1024 - 819 = 205 (<- thermal pressure)
+> 
+> This patch relies on the new arch_update_thermal_pressure() handling
+> correctly such use case (with boost frequencies).
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>   drivers/cpufreq/qcom-cpufreq-hw.c | 15 +++------------
+>   1 file changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index 0138b2ec406d..248135e5087e 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -275,10 +275,10 @@ static unsigned int qcom_lmh_get_throttle_freq(struct qcom_cpufreq_data *data)
+>   
+>   static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+>   {
+> -	unsigned long max_capacity, capacity, freq_hz, throttled_freq;
+>   	struct cpufreq_policy *policy = data->policy;
+>   	int cpu = cpumask_first(policy->cpus);
+>   	struct device *dev = get_cpu_device(cpu);
+> +	unsigned long freq_hz, throttled_freq;
+>   	struct dev_pm_opp *opp;
+>   	unsigned int freq;
+>   
+> @@ -295,17 +295,8 @@ static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+>   
+>   	throttled_freq = freq_hz / HZ_PER_KHZ;
+>   
+> -	/* Update thermal pressure */
+> -
+> -	max_capacity = arch_scale_cpu_capacity(cpu);
+> -	capacity = mult_frac(max_capacity, throttled_freq, policy->cpuinfo.max_freq);
+> -
+> -	/* Don't pass boost capacity to scheduler */
+> -	if (capacity > max_capacity)
+> -		capacity = max_capacity;
+> -
+> -	arch_set_thermal_pressure(policy->related_cpus,
+> -				  max_capacity - capacity);
+> +	/* Update thermal pressure (the boost frequencies are accepted) */
+> +	arch_update_thermal_pressure(policy->related_cpus, throttled_freq);
+>   
+>   	/*
+>   	 * In the unlikely case policy is unregistered do not enable
+> 
+
+-- 
+
