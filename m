@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D601451F25
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48774519BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355649AbhKPAih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1347182AbhKOX04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:26:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344776AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50185632BB;
-        Mon, 15 Nov 2021 19:04:02 +0000 (UTC)
+        id S245010AbhKOTSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C7E63438;
+        Mon, 15 Nov 2021 18:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003042;
-        bh=Za4I7HrQYTzxsOoAXjDn67if9utOMtF6yh1X6233+2o=;
+        s=korg; t=1637000817;
+        bh=LTGJYa28MS1I9l3cpM5GMtheOIB178jPguO/fGWMZdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=araUINmaU/q/Fjnog7CQygooIrr8d0/CqgM/CDyWS93cnSAtsaDkVp0CMaUbnj0+U
-         QdCxR/tA4heVl4jE+DU/oXPb6s5c+1tqseKXYov0XIdkBzJD7mCWpYGF3u9Q4sAThd
-         KgjsdS1wp4/qiAREy96QTx8iZxPznJh1AqDDDUa8=
+        b=YCfmq0FDluUNji3D/tJCi9fcGkyScAdapf2/TNFoaNzH1uSuL7aWFxF4dEt925Dx7
+         hBEx4gn5Gk3GLiFevTOP5qSJZJiLIImCmU69wp3Fw5gUD/6oxvpU9PfThf+KkIbJ6S
+         p8pCQhDIyJEJDLN98IuysgkcbshNJt52lLNht49o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gospodarek <gospo@broadcom.com>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 790/917] PCI: Do not enable AtomicOps on VFs
-Date:   Mon, 15 Nov 2021 18:04:45 +0100
-Message-Id: <20211115165455.748687431@linuxfoundation.org>
+Subject: [PATCH 5.14 803/849] net, neigh: Enable state migration between NUD_PERMANENT and NTF_USE
+Date:   Mon, 15 Nov 2021 18:04:46 +0100
+Message-Id: <20211115165447.398027401@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvin Xavier <selvin.xavier@broadcom.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 5ec0a6fcb60ea430f8ee7e0bec22db9b22f856d3 ]
+[ Upstream commit 3dc20f4762c62d3b3f0940644881ed818aa7b2f5 ]
 
-Host crashes when pci_enable_atomic_ops_to_root() is called for VFs with
-virtual buses. The virtual buses added to SR-IOV have bus->self set to NULL
-and host crashes due to this.
+Currently, it is not possible to migrate a neighbor entry between NUD_PERMANENT
+state and NTF_USE flag with a dynamic NUD state from a user space control plane.
+Similarly, it is not possible to add/remove NTF_EXT_LEARNED flag from an existing
+neighbor entry in combination with NTF_USE flag.
 
-  PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
-  ...
-   #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
-   #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
-   #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
-   #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
-      [exception RIP: pcie_capability_read_dword+28]
-      RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
-      RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
-      RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
-      RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
-      R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
-      R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
-      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-   #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
-   #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
-   #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
+This is due to the latter directly calling into neigh_event_send() without any
+meta data updates as happening in __neigh_update(). Thus, to enable this use
+case, extend the latter with a NEIGH_UPDATE_F_USE flag where we break the
+NUD_PERMANENT state in particular so that a latter neigh_event_send() is able
+to re-resolve a neighbor entry.
 
-Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit in Device
-Control 2 is reserved for VFs.  The PF value applies to all associated VFs.
+Before fix, NUD_PERMANENT -> NUD_* & NTF_USE:
 
-Return -EINVAL if pci_enable_atomic_ops_to_root() is called for a VF.
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
 
-Link: https://lore.kernel.org/r/1631354585-16597-1-git-send-email-selvin.xavier@broadcom.com
-Fixes: 35f5ace5dea4 ("RDMA/bnxt_re: Enable global atomic ops if platform supports")
-Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+As can be seen, despite the admin-triggered replace, the entry remains in the
+NUD_PERMANENT state.
+
+After fix, NUD_PERMANENT -> NUD_* & NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
+  [...]
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn STALE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+
+After the fix, the admin-triggered replace switches to a dynamic state from
+the NTF_USE flag which triggered a new neighbor resolution. Likewise, we can
+transition back from there, if needed, into NUD_PERMANENT.
+
+Similar before/after behavior can be observed for below transitions:
+
+Before fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+
+After fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [..]
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Roopa Prabhu <roopa@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/net/neighbour.h |  1 +
+ net/core/neighbour.c    | 22 +++++++++++++---------
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index ce2ab62b64cfa..a101faf3e88a9 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3719,6 +3719,14 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
- 	struct pci_dev *bridge;
- 	u32 cap, ctl2;
+diff --git a/include/net/neighbour.h b/include/net/neighbour.h
+index 990f9b1d17092..d5767e25509cc 100644
+--- a/include/net/neighbour.h
++++ b/include/net/neighbour.h
+@@ -253,6 +253,7 @@ static inline void *neighbour_priv(const struct neighbour *n)
+ #define NEIGH_UPDATE_F_OVERRIDE			0x00000001
+ #define NEIGH_UPDATE_F_WEAK_OVERRIDE		0x00000002
+ #define NEIGH_UPDATE_F_OVERRIDE_ISROUTER	0x00000004
++#define NEIGH_UPDATE_F_USE			0x10000000
+ #define NEIGH_UPDATE_F_EXT_LEARNED		0x20000000
+ #define NEIGH_UPDATE_F_ISROUTER			0x40000000
+ #define NEIGH_UPDATE_F_ADMIN			0x80000000
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 077883f9f570b..704832723ab87 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1221,7 +1221,7 @@ static void neigh_update_hhs(struct neighbour *neigh)
+ 				lladdr instead of overriding it
+ 				if it is different.
+ 	NEIGH_UPDATE_F_ADMIN	means that the change is administrative.
+-
++	NEIGH_UPDATE_F_USE	means that the entry is user triggered.
+ 	NEIGH_UPDATE_F_OVERRIDE_ISROUTER allows to override existing
+ 				NTF_ROUTER flag.
+ 	NEIGH_UPDATE_F_ISROUTER	indicates if the neighbour is known as
+@@ -1259,6 +1259,12 @@ static int __neigh_update(struct neighbour *neigh, const u8 *lladdr,
+ 		goto out;
  
-+	/*
-+	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
-+	 * in Device Control 2 is reserved in VFs and the PF value applies
-+	 * to all associated VFs.
-+	 */
-+	if (dev->is_virtfn)
-+		return -EINVAL;
-+
- 	if (!pci_is_pcie(dev))
- 		return -EINVAL;
+ 	ext_learn_change = neigh_update_ext_learned(neigh, flags, &notify);
++	if (flags & NEIGH_UPDATE_F_USE) {
++		new = old & ~NUD_PERMANENT;
++		neigh->nud_state = new;
++		err = 0;
++		goto out;
++	}
  
+ 	if (!(new & NUD_VALID)) {
+ 		neigh_del_timer(neigh);
+@@ -1968,22 +1974,20 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 
+ 	if (protocol)
+ 		neigh->protocol = protocol;
+-
+ 	if (ndm->ndm_flags & NTF_EXT_LEARNED)
+ 		flags |= NEIGH_UPDATE_F_EXT_LEARNED;
+-
+ 	if (ndm->ndm_flags & NTF_ROUTER)
+ 		flags |= NEIGH_UPDATE_F_ISROUTER;
++	if (ndm->ndm_flags & NTF_USE)
++		flags |= NEIGH_UPDATE_F_USE;
+ 
+-	if (ndm->ndm_flags & NTF_USE) {
++	err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
++			     NETLINK_CB(skb).portid, extack);
++	if (!err && ndm->ndm_flags & NTF_USE) {
+ 		neigh_event_send(neigh, NULL);
+ 		err = 0;
+-	} else
+-		err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
+-				     NETLINK_CB(skb).portid, extack);
+-
++	}
+ 	neigh_release(neigh);
+-
+ out:
+ 	return err;
+ }
 -- 
 2.33.0
 
