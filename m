@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2442451369
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F084512CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348231AbhKOTvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:51:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43780 "EHLO mail.kernel.org"
+        id S1347406AbhKOTju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:39:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239436AbhKOR67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:58:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FBAD632CE;
-        Mon, 15 Nov 2021 17:35:31 +0000 (UTC)
+        id S239296AbhKOR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:56:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 557766332B;
+        Mon, 15 Nov 2021 17:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997731;
-        bh=dW05Ae/dhxwZmzKx5nxikZVDl3XpkAM0WUTFlzuY+Ps=;
+        s=korg; t=1636997647;
+        bh=yTWAraj79EHTt+qaQSyQJHr/JDXkNyPXxNkoglfPhcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sDC0aLtlO9Ahq+7RhaIIhremSMHVjcKJ/UX+qhf/axH3mlrwvpn2GrfbWzoosYQQn
-         hbzyXmwcqeH6MSpwcI9p4NLdw2r+DqZPTpEJkPwGwNNVuRhOfHkR8FnMJlf9fTRv0G
-         aPCI61AscZvAKvMeKLAjKHYrIQZVkhwvLpC+fZWs=
+        b=QKZJ5BTmLMNqYUL9tzTUtYTZ9VbxbOse3zyHXBLC0S+SamMTZimHHYtcX1o9xM9Pt
+         vEfmwHuY9rzuU2h+vVXMbuoEMONMFu+bOWdSa8SOalteOxBBG/0l7GSmGwY3FPubxl
+         +gcmycSlApSs9w0wLRMRP3FDeI4LrmXucqK5z3mo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lasse Collin <lasse.collin@tukaani.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        stable@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        kernel test robot <lkp@intel.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 222/575] lib/xz: Avoid overlapping memcpy() with invalid input with in-place decompression
-Date:   Mon, 15 Nov 2021 17:59:07 +0100
-Message-Id: <20211115165351.381635497@linuxfoundation.org>
+Subject: [PATCH 5.10 225/575] tracing/cfi: Fix cmp_entries_* functions signature mismatch
+Date:   Mon, 15 Nov 2021 17:59:10 +0100
+Message-Id: <20211115165351.493637431@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,88 +41,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lasse Collin <lasse.collin@tukaani.org>
+From: Kalesh Singh <kaleshsingh@google.com>
 
-[ Upstream commit 83d3c4f22a36d005b55f44628f46cc0d319a75e8 ]
+[ Upstream commit 7ce1bb83a14019f8c396d57ec704d19478747716 ]
 
-With valid files, the safety margin described in lib/decompress_unxz.c
-ensures that these buffers cannot overlap. But if the uncompressed size
-of the input is larger than the caller thought, which is possible when
-the input file is invalid/corrupt, the buffers can overlap. Obviously
-the result will then be garbage (and usually the decoder will return
-an error too) but no other harm will happen when such an over-run occurs.
+If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
+the kernel to panic due to failed CFI check.
 
-This change only affects uncompressed LZMA2 chunks and so this
-should have no effect on performance.
+    1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+    2. cat events/sched/sched_switch/hist
+    3. kernel panics on attempting to read hist
 
-Link: https://lore.kernel.org/r/20211010213145.17462-2-xiang@kernel.org
-Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+This happens because the sort() function expects a generic
+int (*)(const void *, const void *) pointer for the compare function.
+To prevent this CFI failure, change tracing map cmp_entries_* function
+signatures to match this.
+
+Also, fix the build error reported by the kernel test robot [1].
+
+[1] https://lore.kernel.org/r/202110141140.zzi4dRh4-lkp@intel.com/
+
+Link: https://lkml.kernel.org/r/20211014045217.3265162-1-kaleshsingh@google.com
+
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/decompress_unxz.c |  2 +-
- lib/xz/xz_dec_lzma2.c | 21 +++++++++++++++++++--
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
-index 25d59a95bd668..abea25310ac73 100644
---- a/lib/decompress_unxz.c
-+++ b/lib/decompress_unxz.c
-@@ -167,7 +167,7 @@
-  * memeq and memzero are not used much and any remotely sane implementation
-  * is fast enough. memcpy/memmove speed matters in multi-call mode, but
-  * the kernel image is decompressed in single-call mode, in which only
-- * memcpy speed can matter and only if there is a lot of uncompressible data
-+ * memmove speed can matter and only if there is a lot of uncompressible data
-  * (LZMA2 stores uncompressible chunks in uncompressed form). Thus, the
-  * functions below should just be kept small; it's probably not worth
-  * optimizing for speed.
-diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
-index 65a1aad8c223b..a18b52759fd91 100644
---- a/lib/xz/xz_dec_lzma2.c
-+++ b/lib/xz/xz_dec_lzma2.c
-@@ -387,7 +387,14 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
+diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+index 4b50fc0cb12c7..d63e51dde0d24 100644
+--- a/kernel/trace/tracing_map.c
++++ b/kernel/trace/tracing_map.c
+@@ -834,29 +834,35 @@ int tracing_map_init(struct tracing_map *map)
+ 	return err;
+ }
  
- 		*left -= copy_size;
+-static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
+-			   const struct tracing_map_sort_entry **b)
++static int cmp_entries_dup(const void *A, const void *B)
+ {
++	const struct tracing_map_sort_entry *a, *b;
+ 	int ret = 0;
  
--		memcpy(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
-+		/*
-+		 * If doing in-place decompression in single-call mode and the
-+		 * uncompressed size of the file is larger than the caller
-+		 * thought (i.e. it is invalid input!), the buffers below may
-+		 * overlap and cause undefined behavior with memcpy().
-+		 * With valid inputs memcpy() would be fine here.
-+		 */
-+		memmove(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
- 		dict->pos += copy_size;
+-	if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
++	a = *(const struct tracing_map_sort_entry **)A;
++	b = *(const struct tracing_map_sort_entry **)B;
++
++	if (memcmp(a->key, b->key, a->elt->map->key_size))
+ 		ret = 1;
  
- 		if (dict->full < dict->pos)
-@@ -397,7 +404,11 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
- 			if (dict->pos == dict->end)
- 				dict->pos = 0;
+ 	return ret;
+ }
  
--			memcpy(b->out + b->out_pos, b->in + b->in_pos,
-+			/*
-+			 * Like above but for multi-call mode: use memmove()
-+			 * to avoid undefined behavior with invalid input.
-+			 */
-+			memmove(b->out + b->out_pos, b->in + b->in_pos,
- 					copy_size);
- 		}
+-static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+-			   const struct tracing_map_sort_entry **b)
++static int cmp_entries_sum(const void *A, const void *B)
+ {
+ 	const struct tracing_map_elt *elt_a, *elt_b;
++	const struct tracing_map_sort_entry *a, *b;
+ 	struct tracing_map_sort_key *sort_key;
+ 	struct tracing_map_field *field;
+ 	tracing_map_cmp_fn_t cmp_fn;
+ 	void *val_a, *val_b;
+ 	int ret = 0;
  
-@@ -421,6 +432,12 @@ static uint32_t dict_flush(struct dictionary *dict, struct xz_buf *b)
- 		if (dict->pos == dict->end)
- 			dict->pos = 0;
+-	elt_a = (*a)->elt;
+-	elt_b = (*b)->elt;
++	a = *(const struct tracing_map_sort_entry **)A;
++	b = *(const struct tracing_map_sort_entry **)B;
++
++	elt_a = a->elt;
++	elt_b = b->elt;
  
-+		/*
-+		 * These buffers cannot overlap even if doing in-place
-+		 * decompression because in multi-call mode dict->buf
-+		 * has been allocated by us in this file; it's not
-+		 * provided by the caller like in single-call mode.
-+		 */
- 		memcpy(b->out + b->out_pos, dict->buf + dict->start,
- 				copy_size);
- 	}
+ 	sort_key = &elt_a->map->sort_key;
+ 
+@@ -873,18 +879,21 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+ 	return ret;
+ }
+ 
+-static int cmp_entries_key(const struct tracing_map_sort_entry **a,
+-			   const struct tracing_map_sort_entry **b)
++static int cmp_entries_key(const void *A, const void *B)
+ {
+ 	const struct tracing_map_elt *elt_a, *elt_b;
++	const struct tracing_map_sort_entry *a, *b;
+ 	struct tracing_map_sort_key *sort_key;
+ 	struct tracing_map_field *field;
+ 	tracing_map_cmp_fn_t cmp_fn;
+ 	void *val_a, *val_b;
+ 	int ret = 0;
+ 
+-	elt_a = (*a)->elt;
+-	elt_b = (*b)->elt;
++	a = *(const struct tracing_map_sort_entry **)A;
++	b = *(const struct tracing_map_sort_entry **)B;
++
++	elt_a = a->elt;
++	elt_b = b->elt;
+ 
+ 	sort_key = &elt_a->map->sort_key;
+ 
+@@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
+ 			   struct tracing_map_sort_key *primary_key,
+ 			   struct tracing_map_sort_key *secondary_key)
+ {
+-	int (*primary_fn)(const struct tracing_map_sort_entry **,
+-			  const struct tracing_map_sort_entry **);
+-	int (*secondary_fn)(const struct tracing_map_sort_entry **,
+-			    const struct tracing_map_sort_entry **);
++	int (*primary_fn)(const void *, const void *);
++	int (*secondary_fn)(const void *, const void *);
+ 	unsigned i, start = 0, n_sub = 1;
+ 
+ 	if (is_key(map, primary_key->field_idx))
+@@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
+ 			     unsigned int n_sort_keys,
+ 			     struct tracing_map_sort_entry ***sort_entries)
+ {
+-	int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
+-			      const struct tracing_map_sort_entry **);
++	int (*cmp_entries_fn)(const void *, const void *);
+ 	struct tracing_map_sort_entry *sort_entry, **entries;
+ 	int i, n_entries, ret;
+ 
 -- 
 2.33.0
 
