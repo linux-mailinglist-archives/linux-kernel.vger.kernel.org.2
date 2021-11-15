@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FE14524ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F56452205
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354470AbhKPBqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:46:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42082 "EHLO mail.kernel.org"
+        id S1377065AbhKPBIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:08:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239097AbhKOSb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:31:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65FE561041;
-        Mon, 15 Nov 2021 17:58:50 +0000 (UTC)
+        id S245540AbhKOTUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:20:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40075632DC;
+        Mon, 15 Nov 2021 18:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999130;
-        bh=C9uQHME2H372VngYuYoy6qwHXHWamBb+ovEHyIbUGv4=;
+        s=korg; t=1637001399;
+        bh=SEzyjq6agc0osw1GnbYwXxUbrYZZGzLnvMTNPjg3T8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FlOigN0b8Jt4Rv3Q2sc79pYbRK/pDc7IgwqnooZ9oX9K9Ys+7DiZp7R0QzjanUklp
-         KZGYOzpHq+FX6bKidk4rlD8xjYRlFEhbAovzM6quMcV9+vXyoywKFoWUWjI4ccZALT
-         rmh4ltHc6dwyHNmEKrcM67R5lC/guIB0aaJEcnLU=
+        b=KlSQzV+XolT6Z3cP0ctGVqi64LEVExI5+4UHrI29YpL7tKSwz1+l9W9V3LvPHDpPN
+         W7+TLreyo21NmClGhaf/Q3t0cGUuiwB5oCKCILaWWciOC79GmC/vdxYydD5mS7WJi4
+         /t0jLF7kTHdnfSCVhrmspdDjaswJB9zmqhGqp5NA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [PATCH 5.14 188/849] coresight: trbe: Fix incorrect access of the sink specific data
-Date:   Mon, 15 Nov 2021 17:54:31 +0100
-Message-Id: <20211115165426.535169131@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.15 177/917] most: fix control-message timeouts
+Date:   Mon, 15 Nov 2021 17:54:32 +0100
+Message-Id: <20211115165434.780643627@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +38,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit bb5293e334af51b19b62d8bef1852ea13e935e9b upstream.
+commit 63b3e810eff65fb8587fcb26fa0b56802be12dcf upstream.
 
-The TRBE driver wrongly treats the aux private data as the TRBE driver
-specific buffer for a given perf handle, while it is the ETM PMU's
-event specific data. Fix this by correcting the instance to use
-appropriate helper.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Cc: stable <stable@vger.kernel.org>
-Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Link: https://lore.kernel.org/r/20210921134121.2423546-2-suzuki.poulose@arm.com
-[Fixed 13 character SHA down to 12]
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Use the common control-message timeout defines for the five-second
+timeouts.
+
+Fixes: 97a6f772f36b ("drivers: most: add USB adapter driver")
+Cc: stable@vger.kernel.org      # 5.9
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025115811.5410-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/most/most_usb.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -366,7 +366,7 @@ static unsigned long __trbe_normal_offse
+--- a/drivers/most/most_usb.c
++++ b/drivers/most/most_usb.c
+@@ -149,7 +149,8 @@ static inline int drci_rd_reg(struct usb
+ 	retval = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+ 				 DRCI_READ_REQ, req_type,
+ 				 0x0000,
+-				 reg, dma_buf, sizeof(*dma_buf), 5 * HZ);
++				 reg, dma_buf, sizeof(*dma_buf),
++				 USB_CTRL_GET_TIMEOUT);
+ 	*buf = le16_to_cpu(*dma_buf);
+ 	kfree(dma_buf);
  
- static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
- {
--	struct trbe_buf *buf = perf_get_aux(handle);
-+	struct trbe_buf *buf = etm_perf_sink_config(handle);
- 	u64 limit = __trbe_normal_offset(handle);
- 	u64 head = PERF_IDX2OFF(handle->head, buf);
+@@ -176,7 +177,7 @@ static inline int drci_wr_reg(struct usb
+ 			       reg,
+ 			       NULL,
+ 			       0,
+-			       5 * HZ);
++			       USB_CTRL_SET_TIMEOUT);
+ }
  
+ static inline int start_sync_ep(struct usb_device *usb_dev, u16 ep)
 
 
