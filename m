@@ -2,63 +2,581 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA17D45064F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C2C450653
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhKOOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:11:52 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41386 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhKOOLq (ORCPT
+        id S232246AbhKOOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhKOOL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:11:46 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EAF691C0B7F; Mon, 15 Nov 2021 15:08:49 +0100 (CET)
-Date:   Mon, 15 Nov 2021 15:08:48 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Yihao Han <hanyihao@vivo.com>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
-Subject: Re: [PATCH] leds: tca6507: use swap() to make code cleaner
-Message-ID: <20211115140848.GA14175@duo.ucw.cz>
-References: <20211115032428.4379-1-hanyihao@vivo.com>
+        Mon, 15 Nov 2021 09:11:56 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78851C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:09:00 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b15so72171899edd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:09:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=+pP/dxsekzmINfovN7vRCztGh+Cla4StMZ/5eelaaNo=;
+        b=lJvUg1BfUFuhvEU4mbgNdP67hW9hVbaqoM0doLn/QeFHuXXxeWupE4tDKhIbKYIHGL
+         5/XRLVBkSx2PRFwjVl/ZW7ghqUSgYdY6wCY0bLDEaVd6MwnfYZUg5SSxmCkMXd/xTqeh
+         jkpIhXtpGPVnTK27ot34BbNWwIVsxpE9DEiJ7xPAcnexeDjJWAEBEH/3VOL07+AiYbzW
+         qTRvi+Gaq8d7apG9jlcl1owKw7Y2XaO7b6PC3Bw7MBBU958laSO2xNMLf1Jh60u+8ug7
+         A+tmxjg63kRNoPQn6GipUlkL/4Ln1UjTXi4iysfLMwmp4HSbgxWt+vbY5zKEVUo9Q3nu
+         Oaew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=+pP/dxsekzmINfovN7vRCztGh+Cla4StMZ/5eelaaNo=;
+        b=FGNv+wNrvKMdXh3SC/lfb+a+FErFL+q0tN7Nkmsyr6raC8q8jUUx4RiZkD7xzbvLf5
+         nzMsOaE7Q3Ndz6K5VxnNFDzDXph1CRtPDcRI4O5Odu5Vocla4MmU982I5DOAdxwP6ZVA
+         RfzPU2Afr+70tqL3pQnhyZGLkzrHrP8AzIC8nUoo9TMA6mFH+R1ZW/PIWUqsFxrbnZqK
+         B0Ah0NlCRUc2vTOkcP+TQsG7Z6HaTVinshibJlI3XavYOp1DtphrAZACA4rgJkIIprJV
+         5kZ4j3UxHh2TRlJhrKUaoOfqw3QSqFHViWvKoolQoPIaiy3LIt/zQmiGO0A5L8i/IvCr
+         zg0A==
+X-Gm-Message-State: AOAM5314VLUx96MVkoi7QpIF47Adbr2Gb3QgxKtiUUzqULSyuxbuYFWt
+        +vZP/aM0ZrA2E9lhtf2EL2I=
+X-Google-Smtp-Source: ABdhPJwh0SFk119Ep5YdE0gcX8siLPHihjthrNah+9VIT7i7+LDyS7/cx7TCKGT8nXhZt8fWv2GnXg==
+X-Received: by 2002:a05:6402:1911:: with SMTP id e17mr16824918edz.326.1636985339029;
+        Mon, 15 Nov 2021 06:08:59 -0800 (PST)
+Received: from alb3rt0-VirtualBox ([151.22.100.250])
+        by smtp.gmail.com with ESMTPSA id qf9sm6621048ejc.18.2021.11.15.06.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 06:08:58 -0800 (PST)
+Date:   Mon, 15 Nov 2021 15:08:56 +0100
+From:   Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+To:     alb3rt0.m3rciai@gmail.com
+Cc:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] staging: vt6655: fix camelcase in wCurrentRate
+Message-ID: <20211115140856.GA4220@alb3rt0-VirtualBox>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211115032428.4379-1-hanyihao@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace camelcase word variable "wCurrentRate" into linux kernel coding
+style equivalent "current_rate".
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+---
 
-On Sun 2021-11-14 19:24:28, Yihao Han wrote:
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
->=20
-> Signed-off-by: Yihao Han <hanyihao@vivo.com>
+v3:
+- Remove useless links inside message body
 
-Thanks, applied.
-								Pavel
-							=09
+v2:
+- Add version changelog as suggested by Greg KH 
 
---=20
-http://www.livejournal.com/~pavelmachek
+v1:
+- Add mail message body as suggested by Greg KH
 
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
+drivers/staging/vt6655/device.h      |   2 +-
+ drivers/staging/vt6655/device_main.c |  12 +--
+ drivers/staging/vt6655/rxtx.c        | 134 +++++++++++++--------------
+ 3 files changed, 74 insertions(+), 74 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 29f354ced563..f5dee7ad99cd 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -208,7 +208,7 @@ struct vnt_private {
+ 	unsigned char byPreambleType;
+ 	unsigned char byShortPreamble;
+ 
+-	unsigned short wCurrentRate;
++	unsigned short current_rate;
+ 	unsigned char byShortRetryLimit;
+ 	unsigned char byLongRetryLimit;
+ 	enum nl80211_iftype op_mode;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index 41cbec4134b0..2c5398b128df 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -213,7 +213,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 
+ 	priv->bNonERPPresent = false;
+ 	priv->bBarkerPreambleMd = false;
+-	priv->wCurrentRate = RATE_1M;
++	priv->current_rate = RATE_1M;
+ 	priv->byTopOFDMBasicRate = RATE_24M;
+ 	priv->byTopCCKBasicRate = RATE_1M;
+ 
+@@ -369,7 +369,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 
+ 	/* Set BB and packet type at the same time. */
+ 	/* Set Short Slot Time, xIFS, and RSPINF. */
+-	priv->wCurrentRate = RATE_54M;
++	priv->current_rate = RATE_54M;
+ 
+ 	priv->bRadioOff = false;
+ 
+@@ -1382,11 +1382,11 @@ static int vnt_config(struct ieee80211_hw *hw, u32 changed)
+ 
+ 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
+ 		if (priv->byBBType == BB_TYPE_11B)
+-			priv->wCurrentRate = RATE_1M;
++			priv->current_rate = RATE_1M;
+ 		else
+-			priv->wCurrentRate = RATE_54M;
++			priv->current_rate = RATE_54M;
+ 
+-		RFbSetPower(priv, priv->wCurrentRate,
++		RFbSetPower(priv, priv->current_rate,
+ 			    conf->chandef.chan->hw_value);
+ 	}
+ 
+@@ -1448,7 +1448,7 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_TXPOWER)
+-		RFbSetPower(priv, priv->wCurrentRate,
++		RFbSetPower(priv, priv->current_rate,
+ 			    conf->chandef.chan->hw_value);
+ 
+ 	if (changed & BSS_CHANGED_BEACON_ENABLED) {
+diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
+index cfab64d2b312..17795ebcdfbc 100644
+--- a/drivers/staging/vt6655/rxtx.c
++++ b/drivers/staging/vt6655/rxtx.c
+@@ -97,7 +97,7 @@ s_vFillRTSHead(
+ 	bool bNeedAck,
+ 	bool bDisCRC,
+ 	struct ieee80211_hdr *hdr,
+-	unsigned short wCurrentRate,
++	unsigned short current_rate,
+ 	unsigned char byFBOption
+ );
+ 
+@@ -114,7 +114,7 @@ s_vGenerateTxParameter(
+ 	bool bNeedACK,
+ 	unsigned int	uDMAIdx,
+ 	void *psEthHeader,
+-	unsigned short wCurrentRate
++	unsigned short current_rate
+ );
+ 
+ static unsigned int
+@@ -136,7 +136,7 @@ s_uFillDataHead(
+ 	unsigned int cbLastFragmentSize,
+ 	unsigned int uMACfragNum,
+ 	unsigned char byFBOption,
+-	unsigned short wCurrentRate,
++	unsigned short current_rate,
+ 	bool is_pspoll
+ );
+ 
+@@ -197,7 +197,7 @@ s_uGetRTSCTSRsvTime(
+ 	unsigned char byRTSRsvType,
+ 	unsigned char byPktType,
+ 	unsigned int cbFrameLength,
+-	unsigned short wCurrentRate
++	unsigned short current_rate
+ )
+ {
+ 	unsigned int uRrvTime = 0;
+@@ -206,7 +206,7 @@ s_uGetRTSCTSRsvTime(
+ 	unsigned int uAckTime = 0;
+ 	unsigned int uDataTime = 0;
+ 
+-	uDataTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, cbFrameLength, wCurrentRate);
++	uDataTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, cbFrameLength, current_rate);
+ 	if (byRTSRsvType == 0) { /* RTSTxRrvTime_bb */
+ 		uRTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 20, pDevice->byTopCCKBasicRate);
+ 		uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
+@@ -440,7 +440,7 @@ s_uFillDataHead(
+ 	unsigned int cbLastFragmentSize,
+ 	unsigned int uMACfragNum,
+ 	unsigned char byFBOption,
+-	unsigned short wCurrentRate,
++	unsigned short current_rate,
+ 	bool is_pspoll
+ )
+ {
+@@ -451,7 +451,7 @@ s_uFillDataHead(
+ 		if (byFBOption == AUTO_FB_NONE) {
+ 			struct vnt_tx_datahead_g *buf = pTxDataHead;
+ 			/* Get SignalField, ServiceField & Length */
+-			vnt_get_phy_field(pDevice, cbFrameLength, wCurrentRate,
++			vnt_get_phy_field(pDevice, cbFrameLength, current_rate,
+ 					  byPktType, &buf->a);
+ 
+ 			vnt_get_phy_field(pDevice, cbFrameLength,
+@@ -467,7 +467,7 @@ s_uFillDataHead(
+ 				/* Get Duration and TimeStamp */
+ 				buf->duration_a =
+ 					cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength,
+-									    byPktType, wCurrentRate, bNeedAck, uFragIdx,
++									    byPktType, current_rate, bNeedAck, uFragIdx,
+ 									    cbLastFragmentSize, uMACfragNum,
+ 									    byFBOption));
+ 				buf->duration_b =
+@@ -477,7 +477,7 @@ s_uFillDataHead(
+ 									    uMACfragNum, byFBOption));
+ 			}
+ 
+-			buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
++			buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, current_rate);
+ 			buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
+ 
+ 			return buf->duration_a;
+@@ -485,7 +485,7 @@ s_uFillDataHead(
+ 			/* Auto Fallback */
+ 			struct vnt_tx_datahead_g_fb *buf = pTxDataHead;
+ 			/* Get SignalField, ServiceField & Length */
+-			vnt_get_phy_field(pDevice, cbFrameLength, wCurrentRate,
++			vnt_get_phy_field(pDevice, cbFrameLength, current_rate,
+ 					  byPktType, &buf->a);
+ 
+ 			vnt_get_phy_field(pDevice, cbFrameLength,
+@@ -493,15 +493,15 @@ s_uFillDataHead(
+ 					  PK_TYPE_11B, &buf->b);
+ 			/* Get Duration and TimeStamp */
+ 			buf->duration_a = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
+-									      wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++									      current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 			buf->duration_b = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, PK_TYPE_11B,
+ 									       pDevice->byTopCCKBasicRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 			buf->duration_a_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
+-										  wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++										  current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 			buf->duration_a_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
+-										 wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++										 current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 
+-			buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, wCurrentRate);
++			buf->time_stamp_off_a = vnt_time_stamp_off(pDevice, current_rate);
+ 			buf->time_stamp_off_b = vnt_time_stamp_off(pDevice, pDevice->byTopCCKBasicRate);
+ 
+ 			return buf->duration_a;
+@@ -511,22 +511,22 @@ s_uFillDataHead(
+ 			/* Auto Fallback */
+ 			struct vnt_tx_datahead_a_fb *buf = pTxDataHead;
+ 			/* Get SignalField, ServiceField & Length */
+-			vnt_get_phy_field(pDevice, cbFrameLength, wCurrentRate,
++			vnt_get_phy_field(pDevice, cbFrameLength, current_rate,
+ 					  byPktType, &buf->a);
+ 
+ 			/* Get Duration and TimeStampOff */
+ 			buf->duration = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
+-									    wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++									    current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 			buf->duration_f0 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F0, cbFrameLength, byPktType,
+-									       wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++									       current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+ 			buf->duration_f1 = cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A_F1, cbFrameLength, byPktType,
+-										wCurrentRate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
+-			buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
++										current_rate, bNeedAck, uFragIdx, cbLastFragmentSize, uMACfragNum, byFBOption));
++			buf->time_stamp_off = vnt_time_stamp_off(pDevice, current_rate);
+ 			return buf->duration;
+ 		} else {
+ 			struct vnt_tx_datahead_ab *buf = pTxDataHead;
+ 			/* Get SignalField, ServiceField & Length */
+-			vnt_get_phy_field(pDevice, cbFrameLength, wCurrentRate,
++			vnt_get_phy_field(pDevice, cbFrameLength, current_rate,
+ 					  byPktType, &buf->ab);
+ 
+ 			if (is_pspoll) {
+@@ -537,18 +537,18 @@ s_uFillDataHead(
+ 				/* Get Duration and TimeStampOff */
+ 				buf->duration =
+ 					cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_A, cbFrameLength, byPktType,
+-									    wCurrentRate, bNeedAck, uFragIdx,
++									    current_rate, bNeedAck, uFragIdx,
+ 									    cbLastFragmentSize, uMACfragNum,
+ 									    byFBOption));
+ 			}
+ 
+-			buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
++			buf->time_stamp_off = vnt_time_stamp_off(pDevice, current_rate);
+ 			return buf->duration;
+ 		}
+ 	} else {
+ 		struct vnt_tx_datahead_ab *buf = pTxDataHead;
+ 		/* Get SignalField, ServiceField & Length */
+-		vnt_get_phy_field(pDevice, cbFrameLength, wCurrentRate,
++		vnt_get_phy_field(pDevice, cbFrameLength, current_rate,
+ 				  byPktType, &buf->ab);
+ 
+ 		if (is_pspoll) {
+@@ -559,12 +559,12 @@ s_uFillDataHead(
+ 			/* Get Duration and TimeStampOff */
+ 			buf->duration =
+ 				cpu_to_le16((u16)s_uGetDataDuration(pDevice, DATADUR_B, cbFrameLength, byPktType,
+-								    wCurrentRate, bNeedAck, uFragIdx,
++								    current_rate, bNeedAck, uFragIdx,
+ 								    cbLastFragmentSize, uMACfragNum,
+ 								    byFBOption));
+ 		}
+ 
+-		buf->time_stamp_off = vnt_time_stamp_off(pDevice, wCurrentRate);
++		buf->time_stamp_off = vnt_time_stamp_off(pDevice, current_rate);
+ 		return buf->duration;
+ 	}
+ 	return 0;
+@@ -580,7 +580,7 @@ s_vFillRTSHead(
+ 	bool bNeedAck,
+ 	bool bDisCRC,
+ 	struct ieee80211_hdr *hdr,
+-	unsigned short wCurrentRate,
++	unsigned short current_rate,
+ 	unsigned char byFBOption
+ )
+ {
+@@ -620,12 +620,12 @@ s_vFillRTSHead(
+ 			buf->duration_aa =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->duration_ba =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_BA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 
+ 			buf->data.duration = buf->duration_aa;
+@@ -655,32 +655,32 @@ s_vFillRTSHead(
+ 			buf->duration_aa =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->duration_ba =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_BA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_ba_f0 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_BA_F0,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_aa_f0 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA_F0,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_ba_f1 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_BA_F1,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_aa_f1 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA_F1,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->data.duration = buf->duration_aa;
+ 			/* Get RTS Frame body */
+@@ -702,7 +702,7 @@ s_vFillRTSHead(
+ 			buf->duration =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->data.duration = buf->duration;
+ 			/* Get RTS Frame body */
+@@ -722,17 +722,17 @@ s_vFillRTSHead(
+ 			buf->duration =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_f0 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA_F0,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->rts_duration_f1 =
+ 				s_uGetRTSCTSDuration(pDevice, RTSDUR_AA_F1,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 			buf->data.duration = buf->duration;
+ 			/* Get RTS Frame body */
+@@ -752,7 +752,7 @@ s_vFillRTSHead(
+ 		/* Get Duration */
+ 		buf->duration =
+ 			s_uGetRTSCTSDuration(pDevice, RTSDUR_BB, cbFrameLength,
+-					     byPktType, wCurrentRate, bNeedAck,
++					     byPktType, current_rate, bNeedAck,
+ 					     byFBOption);
+ 
+ 		buf->data.duration = buf->duration;
+@@ -775,7 +775,7 @@ s_vFillCTSHead(
+ 	unsigned int cbFrameLength,
+ 	bool bNeedAck,
+ 	bool bDisCRC,
+-	unsigned short wCurrentRate,
++	unsigned short current_rate,
+ 	unsigned char byFBOption
+ )
+ {
+@@ -803,21 +803,21 @@ s_vFillCTSHead(
+ 			buf->duration_ba =
+ 				s_uGetRTSCTSDuration(pDevice, CTSDUR_BA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 
+ 			/* Get CTSDuration_ba_f0 */
+ 			buf->cts_duration_ba_f0 =
+ 				s_uGetRTSCTSDuration(pDevice, CTSDUR_BA_F0,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 
+ 			/* Get CTSDuration_ba_f1 */
+ 			buf->cts_duration_ba_f1 =
+ 				s_uGetRTSCTSDuration(pDevice, CTSDUR_BA_F1,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 
+ 			/* Get CTS Frame body */
+@@ -842,7 +842,7 @@ s_vFillCTSHead(
+ 			buf->duration_ba =
+ 				s_uGetRTSCTSDuration(pDevice, CTSDUR_BA,
+ 						     cbFrameLength, byPktType,
+-						     wCurrentRate, bNeedAck,
++						     current_rate, bNeedAck,
+ 						     byFBOption);
+ 
+ 			/* Get CTS Frame body */
+@@ -896,14 +896,14 @@ s_vGenerateTxParameter(
+ 	bool bNeedACK,
+ 	unsigned int uDMAIdx,
+ 	void *psEthHeader,
+-	unsigned short wCurrentRate
++	unsigned short current_rate
+ )
+ {
+ 	u16 fifo_ctl = le16_to_cpu(tx_buffer_head->fifo_ctl);
+ 	bool bDisCRC = false;
+ 	unsigned char byFBOption = AUTO_FB_NONE;
+ 
+-	tx_buffer_head->current_rate = cpu_to_le16(wCurrentRate);
++	tx_buffer_head->current_rate = cpu_to_le16(current_rate);
+ 
+ 	if (fifo_ctl & FIFOCTL_CRCDIS)
+ 		bDisCRC = true;
+@@ -921,50 +921,50 @@ s_vGenerateTxParameter(
+ 			/* Fill RsvTime */
+ 			struct vnt_rrv_time_rts *buf = pvRrvTime;
+ 
+-			buf->rts_rrv_time_aa = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+-			buf->rts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 1, byPktType, cbFrameSize, wCurrentRate);
+-			buf->rts_rrv_time_bb = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+-			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rts_rrv_time_aa = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, current_rate);
++			buf->rts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 1, byPktType, cbFrameSize, current_rate);
++			buf->rts_rrv_time_bb = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, current_rate);
++			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, current_rate, bNeedACK);
+ 			buf->rrv_time_b = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, pDevice->byTopCCKBasicRate, bNeedACK);
+ 
+-			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, wCurrentRate, byFBOption);
++			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, current_rate, byFBOption);
+ 		} else {/* RTS_needless, PCF mode */
+ 			struct vnt_rrv_time_cts *buf = pvRrvTime;
+ 
+-			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, current_rate, bNeedACK);
+ 			buf->rrv_time_b = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, pDevice->byTopCCKBasicRate, bNeedACK);
+-			buf->cts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 3, byPktType, cbFrameSize, wCurrentRate);
++			buf->cts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 3, byPktType, cbFrameSize, current_rate);
+ 
+ 			/* Fill CTS */
+-			s_vFillCTSHead(pDevice, uDMAIdx, byPktType, pvCTS, cbFrameSize, bNeedACK, bDisCRC, wCurrentRate, byFBOption);
++			s_vFillCTSHead(pDevice, uDMAIdx, byPktType, pvCTS, cbFrameSize, bNeedACK, bDisCRC, current_rate, byFBOption);
+ 		}
+ 	} else if (byPktType == PK_TYPE_11A) {
+ 		if (pvRTS) {/* RTS_need, non PCF mode */
+ 			struct vnt_rrv_time_ab *buf = pvRrvTime;
+ 
+-			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+-			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, current_rate);
++			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, current_rate, bNeedACK);
+ 
+ 			/* Fill RTS */
+-			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, wCurrentRate, byFBOption);
++			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, current_rate, byFBOption);
+ 		} else if (!pvRTS) {/* RTS_needless, non PCF mode */
+ 			struct vnt_rrv_time_ab *buf = pvRrvTime;
+ 
+-			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11A, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11A, cbFrameSize, current_rate, bNeedACK);
+ 		}
+ 	} else if (byPktType == PK_TYPE_11B) {
+ 		if (pvRTS) {/* RTS_need, non PCF mode */
+ 			struct vnt_rrv_time_ab *buf = pvRrvTime;
+ 
+-			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+-			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, current_rate);
++			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, current_rate, bNeedACK);
+ 
+ 			/* Fill RTS */
+-			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, wCurrentRate, byFBOption);
++			s_vFillRTSHead(pDevice, byPktType, pvRTS, cbFrameSize, bNeedACK, bDisCRC, psEthHeader, current_rate, byFBOption);
+ 		} else { /* RTS_needless, non PCF mode */
+ 			struct vnt_rrv_time_ab *buf = pvRrvTime;
+ 
+-			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, wCurrentRate, bNeedACK);
++			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, current_rate, bNeedACK);
+ 		}
+ 	}
+ }
+@@ -1126,10 +1126,10 @@ s_cbFillTxBufHead(struct vnt_private *pDevice, unsigned char byPktType,
+ 
+ 	/* Fill FIFO,RrvTime,RTS,and CTS */
+ 	s_vGenerateTxParameter(pDevice, byPktType, tx_buffer_head, pvRrvTime, pvRTS, pvCTS,
+-			       cbFrameSize, bNeedACK, uDMAIdx, hdr, pDevice->wCurrentRate);
++			       cbFrameSize, bNeedACK, uDMAIdx, hdr, pDevice->current_rate);
+ 	/* Fill DataHead */
+ 	uDuration = s_uFillDataHead(pDevice, byPktType, pvTxDataHd, cbFrameSize, uDMAIdx, bNeedACK,
+-				    0, 0, uMACfragNum, byFBOption, pDevice->wCurrentRate, is_pspoll);
++				    0, 0, uMACfragNum, byFBOption, pDevice->current_rate, is_pspoll);
+ 
+ 	hdr->duration_id = uDuration;
+ 
+@@ -1240,11 +1240,11 @@ int vnt_generate_fifo_header(struct vnt_private *priv, u32 dma_idx,
+ 	rate = ieee80211_get_tx_rate(priv->hw, info);
+ 
+ 	current_rate = rate->hw_value;
+-	if (priv->wCurrentRate != current_rate &&
++	if (priv->current_rate != current_rate &&
+ 	    !(priv->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)) {
+-		priv->wCurrentRate = current_rate;
++		priv->current_rate = current_rate;
+ 
+-		RFbSetPower(priv, priv->wCurrentRate,
++		RFbSetPower(priv, priv->current_rate,
+ 			    priv->hw->conf.chandef.chan->hw_value);
+ 	}
+ 
+-- 
+2.25.1
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYZJp8AAKCRAw5/Bqldv6
-8pIyAJ9G+aR7VzBCkArxlokpPXYjm3vFVgCeJzh1Pjd+0ZFC/hbfO7dYja0uqTo=
-=bnRK
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
