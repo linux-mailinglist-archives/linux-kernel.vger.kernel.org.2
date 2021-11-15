@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8625545100C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D680C450F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242491AbhKOSlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238299AbhKORgp (ORCPT
+        id S239893AbhKOSc4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 13:32:56 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:44385 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238129AbhKORdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:36:45 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AE8C0432E5;
-        Mon, 15 Nov 2021 09:21:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ihOFeztaQKLnVze0Cxjjm7Ij5JMiLFtb/81+coQOzSI=; b=S20kIx3WUQSw4hFttpnvzbftN0
-        q4v4X/vqZbVndvHkXwhnw3oRBox8f6tfLFNGERyCSM1EgDKE/lSev/y8hxlHHYkpOsTw/oVCXrHKu
-        24MHhKWPk3Wnh4qK6k71dHskrBlNjsB4g8uq9F4q0dt+hiYcOE4kuMxS6UUisBOVaS3aHieE0eO9N
-        MMpe1Ph6p/AjldkWDMGpvNe/+AFNMjRNSscXUXB16tsvpI9X3GvAzosyAseL1dZBBIb+T8RJFtBes
-        lRtK0JNjlI37vu6dUWpd19QxczHw+iH20wbJa8ZsvWFC1DXzZfSN+sBBrot/J+3a+1QIY5ZbR86KI
-        WMEujB2Q==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1mmffo-00010C-G8; Mon, 15 Nov 2021 19:21:40 +0200
-Subject: Re: [PATCH] reset: tegra-bpmp: Revert Handle errors in BPMP response
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211112112712.21587-1-jonathanh@nvidia.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <417a93fd-7581-1d33-1522-31f05ca253b9@kapsi.fi>
-Date:   Mon, 15 Nov 2021 19:21:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20211112112712.21587-1-jonathanh@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+        Mon, 15 Nov 2021 12:33:24 -0500
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id DED95CED38;
+        Mon, 15 Nov 2021 18:30:27 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v3] Bluetooth: btusb: re-definition for board_id in struct
+ qca_version
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <96d03a2b0bd50da90a20990c42a814d9@codeaurora.org>
+Date:   Mon, 15 Nov 2021 18:30:27 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <1593EED1-5745-49D1-B17A-F4C553F28644@holtmann.org>
+References: <305e41a55a4c117da86f786c374a57dc@codeaurora.org>
+ <8E687716-E810-4A46-B010-A08BB261D2FF@holtmann.org>
+ <96d03a2b0bd50da90a20990c42a814d9@codeaurora.org>
+To:     tjiang@codeaurora.org
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 1:27 PM, Jon Hunter wrote:
-> Commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP
-> response") fixed an issue in the Tegra BPMP error handling but has
-> exposed an issue in the Tegra194 HDA driver and now resetting the
-> Tegra194 HDA controller is failing. For now revert the commit
-> c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response")
-> while a fix for the Tegra HDA driver is created.
-> 
-> Fixes: c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response")
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->   drivers/reset/tegra/reset-bpmp.c | 9 +--------
->   1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/drivers/reset/tegra/reset-bpmp.c b/drivers/reset/tegra/reset-bpmp.c
-> index 4c5bba52b105..24d3395964cc 100644
-> --- a/drivers/reset/tegra/reset-bpmp.c
-> +++ b/drivers/reset/tegra/reset-bpmp.c
-> @@ -20,7 +20,6 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
->   	struct tegra_bpmp *bpmp = to_tegra_bpmp(rstc);
->   	struct mrq_reset_request request;
->   	struct tegra_bpmp_message msg;
-> -	int err;
->   
->   	memset(&request, 0, sizeof(request));
->   	request.cmd = command;
-> @@ -31,13 +30,7 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
->   	msg.tx.data = &request;
->   	msg.tx.size = sizeof(request);
->   
-> -	err = tegra_bpmp_transfer(bpmp, &msg);
-> -	if (err)
-> -		return err;
-> -	if (msg.rx.ret)
-> -		return -EINVAL;
-> -
-> -	return 0;
-> +	return tegra_bpmp_transfer(bpmp, &msg);
->   }
->   
->   static int tegra_bpmp_reset_module(struct reset_controller_dev *rstc,
-> 
+Hi Tim,
 
-Is there some reason the subject and commit message does not follow 
-normal revert convention (as done by 'git revert')?
+>  the following is the explanation from qc btsoc team:
+> 
+> The board ID should be split into two bytes.
+> The 1st byte is chip ID, and the 2nd byte is platform ID.
+> For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID.
+> Currently we have several platforms, and platform IDs are continuously added.
+> We would not distinguish different chips if we get these mixed up.
+> Platform ID:
+> •             0x00 is for Mobile
+> •             0x01 is for X86( ID # from 257)
+> •             0x02 is for Automotive(ID# from 513 )
+> •             0x03 is for Consumer electronic( ID# from 769)
+> …
 
-Mikko
+then use u8 chip_id and u8 platform_id in the data structure and add description like above when you combine chip_id and platform_id into board_id.
+
+Regards
+
+Marcel
+
