@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337AF451F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE584519CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356194AbhKPAi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1353740AbhKOX2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:28:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344795AbhKOTZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E28B636CD;
-        Mon, 15 Nov 2021 19:04:40 +0000 (UTC)
+        id S245062AbhKOTTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:19:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3BE4634FE;
+        Mon, 15 Nov 2021 18:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003080;
-        bh=C5KlOM06aDrXkjQMDAH/Vv4QLT/zPeDYzbgxtDwTwMo=;
+        s=korg; t=1637000866;
+        bh=EWZZMqDChEVRE6v3Fj1Wm/O2D7CsSJLOusrws6Z3K/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrU13mj6DRdZfc9iqjbMKNrlQoHDuUowCwhoYeveE8SbWwmTPxDBVaQJoRzropUU9
-         hwMMa2d8yxdu9nzGSBznULo9cslCZpRmXYVc/y5rJt//OmPHOp6mGpQQwkIgWJHV4Y
-         f87g1AJN5+UQs8AlwS2JJSQ4Jbn9Dx2vETtJ77OM=
+        b=CoVaKO61snu36aDb1VisQzec+stZVhxsjQaa0kTcCKHpLVKX9nCnAzPVhLrxm1vwm
+         zb8J6R1EYX1WTXoFCwOTnQPL/hslDgBBupqflHs2cJoX2SmKgQFBAboZLMTXXvGaSF
+         ZKHjz705Zb7AvJikWS0jKOvbgleD5EZqaqNnaGlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 802/917] ACPI: PM: Fix device wakeup power reference counting error
-Date:   Mon, 15 Nov 2021 18:04:57 +0100
-Message-Id: <20211115165456.170065434@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.14 815/849] video: backlight: Drop maximum brightness override for brightness zero
+Date:   Mon, 15 Nov 2021 18:04:58 +0100
+Message-Id: <20211115165447.811723643@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 452a3e723f75880757acf87b053935c43aa89f89 ]
+commit 33a5471f8da976bf271a1ebbd6b9d163cb0cb6aa upstream.
 
-Fix a device wakeup power reference counting error introduced by
-commit a2d7b2e004af ("ACPI: PM: Fix sharing of wakeup power
-resources") because of a coding mistake.
+The note in c2adda27d202f ("video: backlight: Add of_find_backlight helper
+in backlight.c") says that gpio-backlight uses brightness as power state.
+This has been fixed since in ec665b756e6f7 ("backlight: gpio-backlight:
+Correct initial power state handling") and other backlight drivers do not
+require this workaround. Drop the workaround.
 
-Fixes: a2d7b2e004af ("ACPI: PM: Fix sharing of wakeup power resources")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This fixes the case where e.g. pwm-backlight can perfectly well be set to
+brightness 0 on boot in DT, which without this patch leads to the display
+brightness to be max instead of off.
+
+Fixes: c2adda27d202f ("video: backlight: Add of_find_backlight helper in backlight.c")
+Cc: <stable@vger.kernel.org> # 5.4+
+Cc: <stable@vger.kernel.org> # 4.19.x: ec665b756e6f7: backlight: gpio-backlight: Correct initial power state handling
+Signed-off-by: Marek Vasut <marex@denx.de>
+Acked-by: Noralf Trønnes <noralf@tronnes.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/power.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/video/backlight/backlight.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-index 4b42debeed455..c95eedd58f5bf 100644
---- a/drivers/acpi/power.c
-+++ b/drivers/acpi/power.c
-@@ -755,13 +755,11 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
+--- a/drivers/video/backlight/backlight.c
++++ b/drivers/video/backlight/backlight.c
+@@ -688,12 +688,6 @@ static struct backlight_device *of_find_
+ 			of_node_put(np);
+ 			if (!bd)
+ 				return ERR_PTR(-EPROBE_DEFER);
+-			/*
+-			 * Note: gpio_backlight uses brightness as
+-			 * power state during probe
+-			 */
+-			if (!bd->props.brightness)
+-				bd->props.brightness = bd->props.max_brightness;
+ 		}
+ 	}
  
- 	mutex_lock(&acpi_device_lock);
- 
--	if (dev->wakeup.prepare_count > 1) {
--		dev->wakeup.prepare_count--;
-+	/* Do nothing if wakeup power has not been enabled for this device. */
-+	if (dev->wakeup.prepare_count <= 0)
- 		goto out;
--	}
- 
--	/* Do nothing if wakeup power has not been enabled for this device. */
--	if (!dev->wakeup.prepare_count)
-+	if (--dev->wakeup.prepare_count > 0)
- 		goto out;
- 
- 	err = acpi_device_sleep_wake(dev, 0, 0, 0);
--- 
-2.33.0
-
 
 
