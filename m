@@ -2,213 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBFB4506E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C588A4506ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236426AbhKOOcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:32:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:11453 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236588AbhKOOaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:30:18 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="294268014"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="294268014"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:27:21 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="454039990"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:27:19 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mmcww-0077Hh-Cf;
-        Mon, 15 Nov 2021 16:27:10 +0200
-Date:   Mon, 15 Nov 2021 16:27:10 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] spi: dw: Add a symbols namespace for the core
- module
-Message-ID: <YZJuPrnhupbnPxGt@smile.fi.intel.com>
-References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
- <20211114223026.13359-2-Sergey.Semin@baikalelectronics.ru>
+        id S235190AbhKOOc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:32:27 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:53344 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232099AbhKOObp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:31:45 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52]:58080)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mmcyT-004MGR-Fd; Mon, 15 Nov 2021 07:28:45 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34974 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mmcyR-00HQ6w-NQ; Mon, 15 Nov 2021 07:28:45 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Vladimir Divjak <vladimir.divjak@bmw.de>
+Cc:     <viro@zeniv.linux.org.uk>, <mcgrof@kernel.org>,
+        <peterz@infradead.org>, <akpm@linux-foundation.org>,
+        <will@kernel.org>, <yuzhao@google.com>, <hannes@cmpxchg.org>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <jgg@ziepe.ca>,
+        <hughd@google.com>, <axboe@kernel.dk>, <pcc@google.com>,
+        <tglx@linutronix.de>, <elver@google.com>, <jannh@google.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, <linux-api@vger.kernel.org>
+References: <20211115091540.3806073-1-vladimir.divjak@bmw.de>
+Date:   Mon, 15 Nov 2021 08:28:09 -0600
+In-Reply-To: <20211115091540.3806073-1-vladimir.divjak@bmw.de> (Vladimir
+        Divjak's message of "Mon, 15 Nov 2021 10:15:40 +0100")
+Message-ID: <87wnl9fq86.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114223026.13359-2-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-XM-SPF: eid=1mmcyR-00HQ6w-NQ;;;mid=<87wnl9fq86.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18G+DoGfFfG9gfrkAu/MHcNxFo+W0XCKM0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.6 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
+        T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Vladimir Divjak <vladimir.divjak@bmw.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1154 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 13 (1.2%), b_tie_ro: 11 (1.0%), parse: 1.72
+        (0.1%), extract_message_metadata: 18 (1.6%), get_uri_detail_list: 6
+        (0.5%), tests_pri_-1000: 6 (0.5%), tests_pri_-950: 1.31 (0.1%),
+        tests_pri_-900: 1.11 (0.1%), tests_pri_-90: 183 (15.8%), check_bayes:
+        181 (15.7%), b_tokenize: 23 (2.0%), b_tok_get_all: 16 (1.4%),
+        b_comp_prob: 4.1 (0.4%), b_tok_touch_all: 133 (11.5%), b_finish: 0.93
+        (0.1%), tests_pri_0: 821 (71.2%), check_dkim_signature: 0.75 (0.1%),
+        check_dkim_adsp: 2.5 (0.2%), poll_dns_idle: 87 (7.5%), tests_pri_10:
+        2.5 (0.2%), tests_pri_500: 102 (8.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] coredump-ptrace: Delayed delivery of SIGSTOP
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 01:30:21AM +0300, Serge Semin wrote:
-> The exported from the DW SPI driver core symbols are only used by the
-> spi-dw-{dma,mmio,pci,bt1}.o objects. Add these symbols to a separate
-> namespace then and make sure the depended modules have it imported.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Thanks!
+Added Oleg and linux-api.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Vladimir Divjak <vladimir.divjak@bmw.de> writes:
 
-See also below.
+> Allow SIGSTOP to be delivered to the dying process,
+> if it is coming from coredump user mode helper (umh)
+> process, but delay it until coredump is finished,
+> at which point it will be re-triggered in coredump_finish().
+>
+> When processing this signal, set the tasks of the dying process
+> directly to TASK_TRACED state during complete_signal(),
+> instead of attempting signal_wake_up().
+>
+> Do so to allow the umh process to ptrace(PTRACE_ATTACH,...)
+> to the dying process, whose coredump it's handling.
+>
+> * Problem description:
+> In automotive and/or embedded environments,
+> the storage capacity to store, and/or
+> network capabilities to upload
+> a complete core file can easily be a limiting factor,
+> making offline crash analysis difficult.
+>
+> * Solution:
+> Allow the user mode coredump helper process
+> to perform ptrace on the dying process in order to obtain
+> useful information such as user mode stacktrace,
+> thereby improving the offline debugging possibilities
+> for such environments.
 
+I don't think PTRACE_ATTACH is fundamentally wrong during a coredump.
+
+Allowing SIGSTOP is fundamentally wrong.  Processing any signal after
+receiving a fatal signal that will result in coredump is wrong.  There
+is a small exception for SIGKILL which will terminate the coredump.
+
+
+I think what you are actually looking for is PTRACE_SEIZE and stopping
+at PTRACE_EVENT_EXIT both of which already exist.
+
+There may be something preventing them from working and if some please
+let me know.  I took a quick skim through the code and it looks like
+PTRACE_SEIZE and PTRACE_EVENT_EXIT should just work with no changes
+to the current code.
+
+
+I think this is also possible by filtering the coredump that is piped to
+a userspace coredump process.  So I am not certain what is gained.  But
+if PTRACE_SEIZE and PTRACE_EVENT_EXIT already work there is no point
+in not allowing what you are looking for either.
+
+
+I really really don't like the patch below.  It gives me the heebie
+jeebies.  It is doing so many weird and questionable things on so many
+layers.
+
+There is already a mechanism to get the pid of the user mode helper.
+All you need to do is capture the pid in the init/setup routine
+passed to call_usermodehelper_setup.
+
+Supporting SIGSTOP when the process is dying is horrible, and
+with PTRACE_SEIZE completely unnecessary.
+
+There is no reason to believe next_signal will necessary be SIGSTOP
+if a process is being coredumps.  There may be all manner of pending
+signals.
+
+I don't think you can safely change the task state of another process.
+You certainly can't do it without using the task state change helpers.
+There also need to be a verification that the task is in some kind of
+stop state before it might be safe.
+
+In general I have having trouble finding even a line of the code
+change below that is not wrong for some reason.  So please please don't
+start with this code change if PTRACE_SEIZE + PTRACE_EVENT_EXIT needs
+some work.
+
+Eric
+
+
+> Signed-off-by: Vladimir Divjak <vladimir.divjak@bmw.de>
 > ---
-> 
-> Changelog v2:
-> - This is a new patch created as of Andy' suggestion.
-> ---
->  drivers/spi/spi-dw-bt1.c  |  1 +
->  drivers/spi/spi-dw-core.c | 14 +++++++-------
->  drivers/spi/spi-dw-dma.c  |  7 +++++--
->  drivers/spi/spi-dw-mmio.c |  1 +
->  drivers/spi/spi-dw-pci.c  |  1 +
->  5 files changed, 15 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-> index 5be6b7b80c21..ac7e4f30d1da 100644
-> --- a/drivers/spi/spi-dw-bt1.c
-> +++ b/drivers/spi/spi-dw-bt1.c
-> @@ -339,3 +339,4 @@ module_platform_driver(dw_spi_bt1_driver);
->  MODULE_AUTHOR("Serge Semin <Sergey.Semin@baikalelectronics.ru>");
->  MODULE_DESCRIPTION("Baikal-T1 System Boot SPI Controller driver");
->  MODULE_LICENSE("GPL v2");
-> +MODULE_IMPORT_NS(SPI_DW_CORE);
-> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-> index a305074c482e..a14940403ab4 100644
-> --- a/drivers/spi/spi-dw-core.c
-> +++ b/drivers/spi/spi-dw-core.c
-> @@ -106,7 +106,7 @@ void dw_spi_set_cs(struct spi_device *spi, bool enable)
->  	else
->  		dw_writel(dws, DW_SPI_SER, 0);
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_set_cs);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_set_cs, SPI_DW_CORE);
->  
->  /* Return the max entries we can fill into tx fifo */
->  static inline u32 tx_max(struct dw_spi *dws)
-> @@ -210,7 +210,7 @@ int dw_spi_check_status(struct dw_spi *dws, bool raw)
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_check_status);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_check_status, SPI_DW_CORE);
->  
->  static irqreturn_t dw_spi_transfer_handler(struct dw_spi *dws)
+>  fs/coredump.c            | 18 +++++++++--
+>  include/linux/mm_types.h |  2 ++
+>  include/linux/umh.h      |  1 +
+>  kernel/signal.c          | 64 +++++++++++++++++++++++++++++++++++++---
+>  kernel/umh.c             |  7 +++--
+>  5 files changed, 84 insertions(+), 8 deletions(-)
+>
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 2868e3e171ae..9a51a1a2168d 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -487,6 +487,20 @@ static void coredump_finish(struct mm_struct *mm, bool core_dumped)
 >  {
-> @@ -345,7 +345,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
->  		dws->cur_rx_sample_dly = chip->rx_sample_dly;
+>  	struct core_thread *curr, *next;
+>  	struct task_struct *task;
+> +	int signr;
+> +	struct ksignal ksig;
+> +
+> +	current->mm->core_state->core_dumped = true;
+                                 ^^^^^^^^^^^  See the core_dumped argument
+
+It is completely possible for coredump_finish to be called because
+the coredump was interrupted with SIGKILL.  In which case reporting that
+the was dumped is incorrect.
+
+> +
+> +	/*
+> +	 * Check if there is a SIGSTOP pending, and if so, re-trigger its delivery
+> +	 * allowing the coredump umh process to do a ptrace on this one.
+> +	 */
+> +	spin_lock_irq(&current->sighand->siglock);
+> +	signr = next_signal(&current->pending, &current->blocked);
+> +	spin_unlock_irq(&current->sighand->siglock);
+> +	if (signr == SIGSTOP)
+> +		get_signal(&ksig);
+>  
+>  	spin_lock_irq(&current->sighand->siglock);
+>  	if (core_dumped && !__fatal_signal_pending(current))
+> @@ -601,7 +615,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>  		 */
+>  		.mm_flags = mm->flags,
+>  	};
+> -
+> +	core_state.core_dumped = false;
+>  	audit_core_dumps(siginfo->si_signo);
+>  
+>  	binfmt = mm->binfmt;
+> @@ -695,7 +709,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>  		if (sub_info)
+>  			retval = call_usermodehelper_exec(sub_info,
+>  							  UMH_WAIT_EXEC);
+> -
+> +		core_state.umh_pid = sub_info->pid;
+>  		kfree(helper_argv);
+>  		if (retval) {
+>  			printk(KERN_INFO "Core dump to |%s pipe failed\n",
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 6613b26a8894..475b3d8cd399 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -381,6 +381,8 @@ struct core_state {
+>  	atomic_t nr_threads;
+>  	struct core_thread dumper;
+>  	struct completion startup;
+> +	bool core_dumped;
+> +	pid_t umh_pid;
+>  };
+>  
+>  struct kioctx_table;
+> diff --git a/include/linux/umh.h b/include/linux/umh.h
+> index 244aff638220..b2bbcafe7c98 100644
+> --- a/include/linux/umh.h
+> +++ b/include/linux/umh.h
+> @@ -24,6 +24,7 @@ struct subprocess_info {
+>  	char **envp;
+>  	int wait;
+>  	int retval;
+> +	pid_t pid;
+>  	int (*init)(struct subprocess_info *info, struct cred *new);
+>  	void (*cleanup)(struct subprocess_info *info);
+>  	void *data;
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 66e88649cf74..5e7812644c8a 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -943,8 +943,22 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
+>  	sigset_t flush;
+>  
+>  	if (signal->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP)) {
+> -		if (!(signal->flags & SIGNAL_GROUP_EXIT))
+> -			return sig == SIGKILL;
+> +		if (!(signal->flags & SIGNAL_GROUP_EXIT)) {
+> +			/*
+> +			 * If the signal is for the process being core-dumped
+> +			 * and the signal is SIGSTOP sent by the coredump umh process
+> +			 * let it through (in addition to SIGKILL)
+> +			 * allowing the coredump umh process to ptrace the dying process.
+> +			 */
+> +			bool sig_from_umh = false;
+> +
+> +			if (unlikely(p->mm && p->mm->core_state &&
+> +				p->mm->core_state->umh_pid == current->tgid)) {
+> +				sig_from_umh = true;
+> +			}
+> +			return sig == SIGKILL || (sig == SIGSTOP && sig_from_umh);
+> +		}
+> +
+>  		/*
+>  		 * The process is in the middle of dying, nothing to do.
+>  		 */
+> @@ -1014,8 +1028,18 @@ static inline bool wants_signal(int sig, struct task_struct *p)
+>  	if (sigismember(&p->blocked, sig))
+>  		return false;
+>  
+> -	if (p->flags & PF_EXITING)
+> +	if (p->flags & PF_EXITING) {
+> +		/*
+> +		 * Ignore the fact the process is exiting,
+> +		 * if it's being core-dumped, and the signal is SIGSTOP
+> +		 * allowing the coredump umh process to ptrace the dying process.
+> +		 * See prepare_signal().
+> +		 */
+> +		if (unlikely(p->mm && p->mm->core_state && sig == SIGSTOP))
+> +			return true;
+> +
+>  		return false;
+> +	}
+>  
+>  	if (sig == SIGKILL)
+>  		return true;
+> @@ -1094,6 +1118,22 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+>  		}
 >  	}
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_update_config);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_update_config, SPI_DW_CORE);
 >  
->  static void dw_spi_irq_setup(struct dw_spi *dws)
->  {
-> @@ -945,7 +945,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
->  	spi_controller_put(master);
->  	return ret;
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_add_host);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_add_host, SPI_DW_CORE);
+> +	/*
+> +	 * If the signal is completed for a process being core-dumped,
+> +	 * and the signal is SIGSTOP, there is no point in waking up its tasks,
+> +	 * as they are either dumping the core, or in uninterruptible state,
+> +	 * so skip the wake up if core-dump is not yet completed.
+> +	 * Instead, if the core-dump has been completed, see coredump_finish()
+> +	 * set the task state directly to TASK_TRACED,
+> +	 * allowing the coredump umh process to ptrace the dying process.
+> +	 */
+> +	if (unlikely(t->mm && t->mm->core_state) && sig == SIGSTOP) {
+> +		if (t->mm->core_state->core_dumped)
+> +			t->state = TASK_TRACED;
+> +
+> +		return;
+> +	}
+> +
+>  	/*
+>  	 * The signal is already in the shared-pending queue.
+>  	 * Tell the chosen thread to wake up and dequeue it.
+> @@ -2586,6 +2626,7 @@ bool get_signal(struct ksignal *ksig)
+>  	struct sighand_struct *sighand = current->sighand;
+>  	struct signal_struct *signal = current->signal;
+>  	int signr;
+> +	bool sigstop_pending = false;
 >  
->  void dw_spi_remove_host(struct dw_spi *dws)
->  {
-> @@ -960,7 +960,7 @@ void dw_spi_remove_host(struct dw_spi *dws)
+>  	if (unlikely(current->task_works))
+>  		task_work_run();
+> @@ -2651,8 +2692,23 @@ bool get_signal(struct ksignal *ksig)
+>  		goto relock;
+>  	}
 >  
->  	free_irq(dws->irq, dws->master);
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_remove_host);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_remove_host, SPI_DW_CORE);
+> +
+> +	/*
+> +	 * If this task is being core-dumped,
+> +	 * and the next signal is SIGSTOP, allow its delivery
+> +	 * to enable the coredump umh process to ptrace the dying one.
+> +	 */
+> +	if (unlikely(current->mm && current->mm->core_state)) {
+> +		int nextsig = 0;
+> +
+> +		nextsig = next_signal(&current->pending, &current->blocked);
+> +		if (nextsig == SIGSTOP) {
+> +			sigstop_pending = true;
+> +		}
+> +	}
+> +
+>  	/* Has this task already been marked for death? */
+> -	if (signal_group_exit(signal)) {
+> +	if (signal_group_exit(signal) && !sigstop_pending) {
+>  		ksig->info.si_signo = signr = SIGKILL;
+>  		sigdelset(&current->pending.signal, SIGKILL);
+>  		trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+> diff --git a/kernel/umh.c b/kernel/umh.c
+> index 36c123360ab8..8ac027c75d70 100644
+> --- a/kernel/umh.c
+> +++ b/kernel/umh.c
+> @@ -107,6 +107,7 @@ static int call_usermodehelper_exec_async(void *data)
+>  	}
 >  
->  int dw_spi_suspend_host(struct dw_spi *dws)
->  {
-> @@ -973,14 +973,14 @@ int dw_spi_suspend_host(struct dw_spi *dws)
->  	spi_shutdown_chip(dws);
->  	return 0;
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_suspend_host);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_suspend_host, SPI_DW_CORE);
+>  	commit_creds(new);
+> +	sub_info->pid = task_pid_nr(current);
 >  
->  int dw_spi_resume_host(struct dw_spi *dws)
->  {
->  	spi_hw_init(&dws->master->dev, dws);
->  	return spi_controller_resume(dws->master);
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_resume_host);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_resume_host, SPI_DW_CORE);
+>  	wait_for_initramfs();
+>  	retval = kernel_execve(sub_info->path,
+> @@ -133,10 +134,12 @@ static void call_usermodehelper_exec_sync(struct subprocess_info *sub_info)
+>  	/* If SIGCLD is ignored do_wait won't populate the status. */
+>  	kernel_sigaction(SIGCHLD, SIG_DFL);
+>  	pid = kernel_thread(call_usermodehelper_exec_async, sub_info, SIGCHLD);
+> -	if (pid < 0)
+> +	if (pid < 0) {
+>  		sub_info->retval = pid;
+> -	else
+> +	} else {
+> +		sub_info->pid = pid;
+>  		kernel_wait(pid, &sub_info->retval);
+> +	}
 >  
->  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
->  MODULE_DESCRIPTION("Driver for DesignWare SPI controller core");
-> diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
-> index a09831c62192..5687ec05d627 100644
-> --- a/drivers/spi/spi-dw-dma.c
-> +++ b/drivers/spi/spi-dw-dma.c
-> @@ -10,6 +10,7 @@
->  #include <linux/dmaengine.h>
->  #include <linux/irqreturn.h>
->  #include <linux/jiffies.h>
-> +#include <linux/module.h>
->  #include <linux/pci.h>
->  #include <linux/platform_data/dma-dw.h>
->  #include <linux/spi/spi.h>
-> @@ -17,6 +18,8 @@
->  
->  #include "spi-dw.h"
-
-> +MODULE_IMPORT_NS(SPI_DW_CORE);
-
-I would rather see this at the end of file, but it should work either way.
-
->  #define RX_BUSY		0
->  #define RX_BURST_LEVEL	16
->  #define TX_BUSY		1
-> @@ -638,7 +641,7 @@ void dw_spi_dma_setup_mfld(struct dw_spi *dws)
->  {
->  	dws->dma_ops = &dw_spi_dma_mfld_ops;
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_mfld);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_mfld, SPI_DW_CORE);
->  
->  static const struct dw_spi_dma_ops dw_spi_dma_generic_ops = {
->  	.dma_init	= dw_spi_dma_init_generic,
-> @@ -653,4 +656,4 @@ void dw_spi_dma_setup_generic(struct dw_spi *dws)
->  {
->  	dws->dma_ops = &dw_spi_dma_generic_ops;
->  }
-> -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_generic);
-> +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_generic, SPI_DW_CORE);
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 17c06039a74d..711f4d3404c5 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -377,3 +377,4 @@ module_platform_driver(dw_spi_mmio_driver);
->  MODULE_AUTHOR("Jean-Hugues Deschenes <jean-hugues.deschenes@octasic.com>");
->  MODULE_DESCRIPTION("Memory-mapped I/O interface driver for DW SPI Core");
->  MODULE_LICENSE("GPL v2");
-> +MODULE_IMPORT_NS(SPI_DW_CORE);
-> diff --git a/drivers/spi/spi-dw-pci.c b/drivers/spi/spi-dw-pci.c
-> index 8a91cd58102f..5552240fee55 100644
-> --- a/drivers/spi/spi-dw-pci.c
-> +++ b/drivers/spi/spi-dw-pci.c
-> @@ -213,3 +213,4 @@ module_pci_driver(dw_spi_driver);
->  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
->  MODULE_DESCRIPTION("PCI interface driver for DW SPI Core");
->  MODULE_LICENSE("GPL v2");
-> +MODULE_IMPORT_NS(SPI_DW_CORE);
-> -- 
-> 2.33.0
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  	/* Restore default kernel sig handler */
+>  	kernel_sigaction(SIGCHLD, SIG_IGN);
