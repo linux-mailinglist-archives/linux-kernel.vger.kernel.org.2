@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC23545072B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5AC45072C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhKOOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236449AbhKOOiU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:38:20 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22296C061200;
-        Mon, 15 Nov 2021 06:34:50 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id d11so35997278ljg.8;
-        Mon, 15 Nov 2021 06:34:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZpPEZqJd2To6lUjg28UQdB87eU7/8VpSq5XWX7MIjkY=;
-        b=BD3EH+/6iAoMU0as28T1uFfMyoto9HdkPjPVtXTSSOCtUL+d4iY+gPJsCICkkkMJZ3
-         Fj6nU18j0yMLl2YB25uSEETy5BxlRZfRyQ6eV7+hNQOp/c4bgrPQzoIPzrN8OYywH76N
-         o+Ai8larHnuIv1b9VPGnTqfBa/ODrJmdaxv3pXrRf6t8mqCS12sAQQiI04KYT00fTAqX
-         EHWGksaiLDzQsPf6brKsQj8w08sh3fSUflP33LTYPvx8hvGb5lFaSokQP39cnQdbQY6x
-         0zyL0yWt0ZpR6XQwGhcoCxfACD9Vj0Y93oOlf8JU7GtBFzvgDWQjsmvOpbAXnfE2jbTa
-         wxKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZpPEZqJd2To6lUjg28UQdB87eU7/8VpSq5XWX7MIjkY=;
-        b=MxfGCr15HUFb2eu5BZkBmOTSnCOjai2zzNR9Cup1LVhJHl4NGxgMcUld7Rc++JmUZa
-         MzUCWDcl4k+Kbe+IMaSLqOKr/vA/WAVd+T4TX3a7YK5F0RoIjZeMCvd1mQWMNZ/tn5dr
-         6y0E05TWS2PwduiWzelf+UqUHmPh8FjW2ZCDSkhN9uI6ntIa4e7PRZ2ubATaq6YL+RK1
-         S5H2R3B43v6uFlRtvvRZS2HQHAC6ilQ0mQwC43I3pj88wW5Po6TBALwH1e0vPYlSQqJz
-         j7Ep8lmP0/l4FAHIkYOWB6gMShg0gfqALlhkbtAJLrzr+2BOqEN+NyoFP9TACQ1cXPA2
-         jEpg==
-X-Gm-Message-State: AOAM533pOIYSAqkTf5GfwjarIJxLqxMx1px7caPdLrzDz8JY0mg1uHKv
-        ViGeVlOJxjyzLNVuctVi8HgyNdXrdvI=
-X-Google-Smtp-Source: ABdhPJwEKuBXdYXq5DhlVGPueFviqpJQ5pSvxJjMJzOh/ZO6vd5sjZJeTbmqyxx5SlyE0ArDXI+1ew==
-X-Received: by 2002:a05:651c:98e:: with SMTP id b14mr10702207ljq.180.1636986888356;
-        Mon, 15 Nov 2021 06:34:48 -0800 (PST)
-Received: from [192.168.2.145] (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
-        by smtp.googlemail.com with ESMTPSA id r13sm453347ljn.99.2021.11.15.06.34.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 06:34:47 -0800 (PST)
-Subject: Re: [PATCH v1 1/3] media: staging: tegra-vde: Support reference
- picture marking
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anton Bambura <jenneron@protonmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-clk@vger.kernel.org,
+        id S235534AbhKOOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:39:44 -0500
+Received: from mga01.intel.com ([192.55.52.88]:21564 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236278AbhKOOjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:39:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="257198994"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="257198994"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:36:09 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="453833971"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:36:07 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mmd5S-0077Pv-Hd;
+        Mon, 15 Nov 2021 16:35:58 +0200
+Date:   Mon, 15 Nov 2021 16:35:58 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211114222353.22435-1-digetx@gmail.com>
- <20211114222353.22435-2-digetx@gmail.com>
- <42b24cd0-ac37-3cfe-1fb2-d6292015318a@gmail.com>
- <20211115124402.GE26989@kadam>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e4b9d596-d206-71d1-6ec5-1a41af579836@gmail.com>
-Date:   Mon, 15 Nov 2021 17:34:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+Subject: Re: [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core
+ version checker
+Message-ID: <YZJwTgAPZYVvzGpi@smile.fi.intel.com>
+References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
+ <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20211115124402.GE26989@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.11.2021 15:44, Dan Carpenter пишет:
-> On Mon, Nov 15, 2021 at 01:34:18AM +0300, Dmitry Osipenko wrote:
->> 15.11.2021 01:23, Dmitry Osipenko пишет:
->>> +	vde->secure_bo = tegra_vde_alloc_bo(vde, DMA_FROM_DEVICE, 4096);
->>> +	if (!vde->secure_bo) {
->>> +		dev_err(dev, "Failed to allocate secure BO\n");
->>> +		goto err_pm_runtime;
->>> +	}
->>
->> My eye just caught that by accident err variable isn't assigned to
->> -ENOMEM here. I'll make v2 shortly.
-> 
-> Smatch has a check for this so we would have caught it.  :)
+On Mon, Nov 15, 2021 at 01:30:26AM +0300, Serge Semin wrote:
+> Since there is a common IP-core and component versions interface available
+> we can use it to differentiate the DW HSSI device features in the code.
+> Let's remove the corresponding DWC_HSSI capability flag then and use the
+> dw_spi_ip_is() macro instead.
 
-Whish smatch was built-in into kernel and I could simply run "make
-smatch". On the other hand, I know that you're periodically checking
-upstream with smatch and patching the found bugs, so maybe it's fine
-as-is. Thank you for yours work on smatch, it's a very valuable tool.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+But see below.
+
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> ---
+> 
+> Changelog v2:
+> - This is a new patch created as a logical result of a new DW SSI IP-core
+>   versions internal interface introduced in the previous patch.
+> ---
+>  drivers/spi/spi-dw-core.c | 8 ++++----
+>  drivers/spi/spi-dw-mmio.c | 5 +++--
+>  drivers/spi/spi-dw.h      | 3 +--
+>  3 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> index 42536b448ddd..934cc7a922e8 100644
+> --- a/drivers/spi/spi-dw-core.c
+> +++ b/drivers/spi/spi-dw-core.c
+> @@ -272,7 +272,7 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
+>  {
+>  	u32 cr0 = 0;
+>  
+> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
+> +	if (dw_spi_ip_is(dws, PSSI)) {
+>  		/* CTRLR0[ 5: 4] Frame Format */
+>  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
+>  
+> @@ -325,7 +325,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
+>  	/* CTRLR0[ 4/3: 0] or CTRLR0[ 20: 16] Data Frame Size */
+>  	cr0 |= (cfg->dfs - 1) << dws->dfs_offset;
+>  
+> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI))
+> +	if (dw_spi_ip_is(dws, PSSI))
+>  		/* CTRLR0[ 9:8] Transfer Mode */
+>  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_TMOD_MASK, cfg->tmode);
+>  	else
+> @@ -832,7 +832,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
+>  		dws->ver = dw_readl(dws, DW_SPI_VERSION);
+>  
+>  		dev_dbg(dev, "Synopsys DWC%sSSI v%c.%c%c\n",
+> -			(dws->caps & DW_SPI_CAP_DWC_HSSI) ? " " : " APB ",
+> +			dw_spi_ip_is(dws, PSSI) ? " APB " : " ",
+>  			DW_SPI_GET_BYTE(dws->ver, 3), DW_SPI_GET_BYTE(dws->ver, 2),
+>  			DW_SPI_GET_BYTE(dws->ver, 1));
+>  	}
+> @@ -860,7 +860,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
+>  	 * writability. Note DWC SSI controller also has the extended DFS, but
+>  	 * with zero offset.
+>  	 */
+> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
+> +	if (dw_spi_ip_is(dws, PSSI)) {
+>  		u32 cr0, tmp = dw_readl(dws, DW_SPI_CTRLR0);
+>  
+>  		dw_spi_enable_chip(dws, 0);
+> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> index 0b37bd32b041..c0e5bb6add0a 100644
+> --- a/drivers/spi/spi-dw-mmio.c
+> +++ b/drivers/spi/spi-dw-mmio.c
+> @@ -207,7 +207,7 @@ static int dw_spi_pssi_init(struct platform_device *pdev,
+>  static int dw_spi_hssi_init(struct platform_device *pdev,
+>  			    struct dw_spi_mmio *dwsmmio)
+>  {
+> -	dwsmmio->dws.caps = DW_SPI_CAP_DWC_HSSI;
+> +	dwsmmio->dws.ip = DW_HSSI_ID;
+>  
+>  	dw_spi_dma_setup_generic(&dwsmmio->dws);
+>  
+> @@ -217,7 +217,8 @@ static int dw_spi_hssi_init(struct platform_device *pdev,
+>  static int dw_spi_keembay_init(struct platform_device *pdev,
+>  			       struct dw_spi_mmio *dwsmmio)
+>  {
+> -	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_HSSI;
+> +	dwsmmio->dws.ip = DW_HSSI_ID;
+> +	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST;
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+> index 2f7d77024b48..d5ee5130601e 100644
+> --- a/drivers/spi/spi-dw.h
+> +++ b/drivers/spi/spi-dw.h
+> @@ -32,8 +32,7 @@
+>  /* DW SPI controller capabilities */
+>  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
+>  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
+> -#define DW_SPI_CAP_DWC_HSSI		BIT(2)
+> -#define DW_SPI_CAP_DFS32		BIT(3)
+> +#define DW_SPI_CAP_DFS32		BIT(2)
+
+In one patch you move this in the file upper.
+Here you reshuffling it due to dropping one bit.
+
+Now I'm wondering if you may split these two into a separate patch, which
+brings us to simple
+
+-#define DW_SPI_CAP_DWC_HSSI		BIT(3)
+
+here.
+
+>  
+>  /* Register offsets (Generic for both DWC APB SSI and DWC SSI IP-cores) */
+>  #define DW_SPI_CTRLR0			0x00
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
