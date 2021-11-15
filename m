@@ -2,214 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D90B451C93
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9560D451C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhKPAVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:21:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:32992 "EHLO foss.arm.com"
+        id S1349997AbhKPAMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:12:03 -0500
+Received: from markus.defensec.nl ([80.100.19.56]:35942 "EHLO defensec.nl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348335AbhKOVB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:01:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A3896D;
-        Mon, 15 Nov 2021 12:58:31 -0800 (PST)
-Received: from [10.57.82.45] (unknown [10.57.82.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81A5F3F70D;
-        Mon, 15 Nov 2021 12:58:28 -0800 (PST)
-Message-ID: <ab3ae3d1-c4d7-251a-fecc-d21f6b9d87a5@arm.com>
-Date:   Mon, 15 Nov 2021 20:58:19 +0000
+        id S1348793AbhKOVLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 16:11:42 -0500
+X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 16:11:38 EST
+Received: from brutus (brutus.lan [IPv6:2001:985:d55d::438])
+        by defensec.nl (Postfix) with ESMTPSA id D8B2CFC07DE;
+        Mon, 15 Nov 2021 22:01:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=defensec.nl;
+        s=default; t=1637010084;
+        bh=A6OsKbMGlKs/PRhZow1b3F+L7cUVLjmydEocv5Yo6h0=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=jUBci85URiGebm0MqE9lhbe/yxUaXoqet6YJBFFDBTc8ffOzUV9vCSYNoAdAwEj/3
+         dQz5tMl8ph9HnPpzw/OQzdIxOMLlxEF0wyLNBJ4fADAhhlmPA2X4fH4qLNyOueVryJ
+         4s4M9k1sSulivKzN2o+aMV6K4LJewC4I2ZFKfg3g=
+From:   Dominick Grift <dominick.grift@defensec.nl>
+To:     Alistair Delva <adelva@google.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Stable maillist <stable@vger.kernel.org>
+Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+References: <20211115173850.3598768-1-adelva@google.com>
+        <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+        <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+Date:   Mon, 15 Nov 2021 22:01:23 +0100
+In-Reply-To: <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+        (Alistair Delva's message of "Mon, 15 Nov 2021 11:08:48 -0800")
+Message-ID: <87sfvxp1zw.fsf@defensec.nl>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 03/11] PCI: pci_stub: Suppress kernel DMA ownership
- auto-claiming
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-4-baolu.lu@linux.intel.com>
- <YZJe1jquP+osF+Wn@infradead.org> <20211115133107.GB2379906@nvidia.com>
- <495c65e4-bd97-5f29-d39b-43671acfec78@arm.com>
- <20211115161756.GP2105516@nvidia.com>
- <e9db18d3-dea3-187a-d58a-31a913d95211@arm.com>
- <20211115192212.GQ2105516@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211115192212.GQ2105516@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-15 19:22, Jason Gunthorpe wrote:
-> On Mon, Nov 15, 2021 at 05:54:42PM +0000, Robin Murphy wrote:
->> On 2021-11-15 16:17, Jason Gunthorpe wrote:
->>> On Mon, Nov 15, 2021 at 03:14:49PM +0000, Robin Murphy wrote:
->>>
->>>>> If userspace has control of device A and can cause A to issue DMA to
->>>>> arbitary DMA addresses then there are certain PCI topologies where A
->>>>> can now issue peer to peer DMA and manipulate the MMMIO registers in
->>>>> device B.
->>>>>
->>>>> A kernel driver on device B is thus subjected to concurrent
->>>>> manipulation of the device registers from userspace.
->>>>>
->>>>> So, a 'safe' kernel driver is one that can tolerate this, and an
->>>>> 'unsafe' driver is one where userspace can break kernel integrity.
->>>>
->>>> You mean in the case where the kernel driver is trying to use device B in a
->>>> purely PIO mode, such that userspace might potentially be able to interfere
->>>> with data being transferred in and out of the kernel?
->>>
->>> s/PIO/MMIO, but yes basically. And not just data trasnfer but
->>> userspace can interfere with the device state as well.
+Alistair Delva <adelva@google.com> writes:
+
+> On Mon, Nov 15, 2021 at 11:04 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
 >>
->> Sure, but unexpected changes in device state could happen for any number of
->> reasons - uncorrected ECC error, surprise removal, etc. - so if that can
->> affect "kernel integrity" I'm considering it an independent problem.
-> 
-> There is a big difference in my mind between a device/HW attacking the
-> kernel and userspace can attack the kernel. They are both valid cases,
-> and I know people are also working on the device/HW attacks the kernel
-> problem.
-> 
-> This series is only about user attacks kernel.
-
-Indeed, I was just commenting that if there's any actual attack surface 
-for "user makes device go wrong" then that's really a whole other issue. 
-I took "device state" to mean any state *other than* what could be used 
-to observe and/or subvert the kernel's normal operation of the device. 
-Say it's some kind of storage device with some global state bit that 
-could be flipped to disable encryption on blocks being written such that 
-the medium could be attacked offline later, that's still firmly in my 
-"interfering with data transfer" category.
-
->>>> Perhaps it's not so clear to put that under a notion of "DMA
->>>> ownership", since device B's DMA is irrelevant and it's really much
->>>> more equivalent to /dev/mem access or mmaping BARs to userspace
->>>> while a driver is bound.
->>>
->>> It is DMA ownership because device A's DMA is what is relevant
->>> here. device A's DMA compromises device B. So device A asserts it has
->>> USER ownership for DMA.
->>>
->>> Any device in a group with USER ownership is incompatible with a
->>> kernel driver.
+>> On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
+>> > Booting to Android userspace on 5.14 or newer triggers the following
+>> > SELinux denial:
+>> >
+>> > avc: denied { sys_nice } for comm="init" capability=23
+>> >      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+>> >      permissive=0
+>> >
+>> > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+>> > better compatibility with older SEPolicy, check ADMIN before NICE.
 >>
->> I can see the argument from that angle, but you can equally look at it
->> another way and say that a device with kernel ownership is incompatible with
->> a kernel driver, if userspace can call write() on "/sys/devices/B/resource0"
->> such that device A's kernel driver DMAs all over it. Maybe that particular
->> example lands firmly under "just don't do that", but I'd like to figure out
->> where exactly we should draw the line between "DMA" and "ability to mess
->> with a device".
-> 
-> The above scenarios are already blocked by the kernel with
-> LOCKDOWN_DEV_MEM - yes there are historical ways to violate kernel
-> integrity, and these days they almost all have mitigation. I would
-> consider any kernel integrity violation to be a bug today if
-> LOCKDOWN_INTEGRITY_MAX is enabled.
-> 
-> I don't know why you bring this up?
-
-Because as soon as anyone brings up "security" I'm not going to blindly 
-accept the implicit assumption that VFIO is the only possible way to get 
-one device to mess with another. That was just a silly example in the 
-most basic terms, and obviously I don't expect well-worn generic sysfs 
-interfaces to be a genuine threat, but how confident are you that no 
-other subsystem- or driver-level interfaces past present and future can 
-ever be tricked into p2p DMA?
-
->>> That has a nice symmetry with iommu_attach_device() already requiring
->>> that the group has a single device. For a driver to use these APIs it
->>> must ensure security, one way or another.
+>> But with this patch you in turn punish the new/better policies that
+>> try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
+>> the more granular capabilities wherever possible), which may now get a
+>> bogus sys_admin denial. IMHO the order is better as it is, as it
+>> motivates the "good" policy writing behavior - i.e. spelling out the
+>> capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
 >>
->> iommu_attach_device() is supposed to be deprecated and eventually going
->> away; I wouldn't look at it too much.
-> 
-> What is the preference then? This is the only working API today,
-> right?
+>> IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
+>> grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
+>> the denial correctly flags it as an issue in your policy and
+>> encourages you to add that sys_nice permission to the domain. Then
+>> when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
+>> removed, your policy will be ready for that and things will keep
+>> working.
+>>
+>> Feel free to carry that patch downstream if patching the kernel is
+>> easier for you than fixing the policy, but for the upstream kernel
+>> this is just a step in the wrong direction.
+>
+> I'm personally fine with this position, but I am curious why "never
+> break userspace" doesn't apply to SELinux policies. At the end of the
+> day, booting 5.13 or older, we don't get a denial, and there's nothing
+> for the sysadmin to do. On 5.14 and newer, we get denials. This is a
+> common pattern we see each year: some new capability or permission is
+> required where it wasn't required before, and there's no compatibility
+> mechanism to grandfather in old policies. So, we have to touch
+> userspace. If this is just how things are, I can certainly update our
+> init.te definitions.
 
-I believe the intent was that everyone should move to 
-iommu_group_get()/iommu_attach_group() - precisely *because* 
-iommu_attach_device() can't work sensibly for multi-device groups.
+User space is not broken? If you just ignore this AVC denial then it
+will pass on cap_sys_admin. In other words everything still works, you
+only get a AVC denial for cap_sys_nice now.
 
->> Indeed I wasn't imagining it changing any ownership, just preventing a group
->> from being attached to a non-default domain if it contains devices bound to
->> different incompatible drivers.
-> 
-> So this could solve just the domain/DMA API problem, but it leaves the
-> MMIO peer-to-peer issue unsolved, and it gives no tools to solve it in
-> a layered way.
-> 
-> This seems like half an idea, do you have a solution for the rest?
+>
+>> > Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
+>> > Signed-off-by: Alistair Delva <adelva@google.com>
+>> > Cc: Khazhismel Kumykov <khazhy@google.com>
+>> > Cc: Bart Van Assche <bvanassche@acm.org>
+>> > Cc: Serge Hallyn <serge@hallyn.com>
+>> > Cc: Jens Axboe <axboe@kernel.dk>
+>> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> > Cc: Paul Moore <paul@paul-moore.com>
+>> > Cc: selinux@vger.kernel.org
+>> > Cc: linux-security-module@vger.kernel.org
+>> > Cc: kernel-team@android.com
+>> > Cc: stable@vger.kernel.org # v5.14+
+>> > ---
+>> >  block/ioprio.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/block/ioprio.c b/block/ioprio.c
+>> > index 0e4ff245f2bf..4d59c559e057 100644
+>> > --- a/block/ioprio.c
+>> > +++ b/block/ioprio.c
+>> > @@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
+>> >
+>> >         switch (class) {
+>> >                 case IOPRIO_CLASS_RT:
+>> > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+>> > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+>> >                                 return -EPERM;
+>> >                         fallthrough;
+>> >                         /* rt has prio field too */
+>> > --
+>> > 2.34.0.rc1.387.gb447b232ab-goog
+>> >
+>>
+>> --
+>> Ondrej Mosnacek
+>> Software Engineer, Linux Security - SELinux kernel
+>> Red Hat, Inc.
+>>
 
-Tell me how the p2p DMA issue can manifest if device A is prohibited 
-from attaching to VFIO's unmanaged domain while device B still has a 
-driver bound, and thus would fail to be assigned to userspace in the 
-first place. And conversely if non-VFIO drivers are still prevented from 
-binding to device B while device A remains attached to the VFIO domain.
-
-(Bonus: if so, also tell me how that wouldn't disprove your initial 
-argument anyway)
-
-> The concept of DMA USER is important here, and it is more than just
-> which domain is attached.
-
-Tell me how a device would be assigned to userspace while its group is 
-still attached to a kernel-managed default domain.
-
-As soon as anyone calls iommu_attach_group() - or indeed 
-iommu_attach_device() if more devices may end up hotplugged into the 
-same group later - *that's* when the door opens for potential subversion 
-of any kind, without ever having to leave kernel space.
-
->> Basically just taking the existing check that VFIO tries to enforce
->> and formalising it into the core API. It's not too far off what we
->> already have around changing the default domain type, so there seems
->> to be room for it to all fit together quite nicely.
-> 
-> VFIO also has logic related to the file
-
-Yes, because unsurprisingly VFIO code is tailored for the specific case 
-of VFIO usage rather than anything more general.
-
->> Tying it in to userspace and FDs just muddies the water far more
->> than necessary.
-> 
-> It isn't muddying the water, it is providing common security code that
-> is easy to undertand.
-> 
-> *Which* userspace FD/process owns the iommu_group is important
-> security information because we can't have process A do DMA attacks on
-> some other process B.
-
-Tell me how a single group could be attached to two domains representing 
-two different process address spaces at once.
-
-In case this concept wasn't as clear as I thought, which seems to be so:
-
-                  | dev->iommu_group->domain | dev->driver
-------------------------------------------------------------
-DMA_OWNER_NONE   |          default         |   unbound
-DMA_OWNER_KERNEL |          default         |    bound
-DMA_OWNER_USER   |        non-default       |    bound
-
-It's literally that simple. The information's already there. And in a 
-more robust form to boot, given that, as before, "user" ownership may 
-still exist entirely within kernel space.
-
-Thanks,
-Robin.
+-- 
+gpg --locate-keys dominick.grift@defensec.nl
+Key fingerprint = FCD2 3660 5D6B 9D27 7FC6  E0FF DA7E 521F 10F6 4098
+Dominick Grift
