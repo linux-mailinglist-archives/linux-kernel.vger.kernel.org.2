@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09FC4510B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5794510B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242507AbhKOSw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:52:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
+        id S243214AbhKOSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:53:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237927AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237935AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DBE2632DA;
-        Mon, 15 Nov 2021 17:25:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A2C9632DB;
+        Mon, 15 Nov 2021 17:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997114;
-        bh=MiBkU6WJJa83DEySVBix5yLDPtxIQ/MaGn6qcDzuykU=;
+        s=korg; t=1636997117;
+        bh=mKUVlQstwvJYa6ReIO1QaKsE3WAA3qiK6AbUOeDTWRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJMJTPOsFqxn0xAAyuYtO+Y8RY/vj5pzfh4YgKTqUaOYZEc7htiisEG1RuIbmqMGX
-         UdaT4wagiAENOdub78aUScgmWqrqaRkXSSYHCtwc0588i+3IFZOk6ZmmcNIMRvy21S
-         BHyenHNvu0Z7hc2hjLcxKKaQ4Cxs38rduY7wfML8=
+        b=s1mzjJ3zxVz3NI2zTUX2OK8VS8S69U18KuEVqL65cEYqiGf9SBwIF3Dfoi/U3GwWE
+         iApJktr5SEtDtUS1OH3Swl/f9NP2PyvG5xa21XJOqFRFn5c5cifnc2plyPxhTbhm4o
+         pzc4knLw15W8jErphlilQGoYagsBkD6ZFk+VwcIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Soller <jeremy@system76.com>,
-        Tim Crawford <tcrawford@system76.com>,
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 030/575] ALSA: hda/realtek: Headset fixup for Clevo NH77HJQ
-Date:   Mon, 15 Nov 2021 17:55:55 +0100
-Message-Id: <20211115165344.659128944@linuxfoundation.org>
+Subject: [PATCH 5.10 031/575] ALSA: hda/realtek: Add a quirk for Acer Spin SP513-54N
+Date:   Mon, 15 Nov 2021 17:55:56 +0100
+Message-Id: <20211115165344.693307925@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,68 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Soller <jeremy@system76.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-commit 1278cc5ac2f96bab50dd55c8c05e0a6a77ce323e upstream.
+commit 2a5bb694488bb6593066d46881bfd9d07edd1628 upstream.
 
-On Clevo NH77HJ, NH77HP, and their 15" variants, there is a headset
-microphone input attached to 0x19 that does not have a jack detect. In
-order to get it working, the pin configuration needs to be set
-correctly, and a new ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE fixup is
-applied. This is similar to the existing System76 quirk for ALC293, but
-for ALC256.
+Another model requires ALC255_FIXUP_ACER_MIC_NO_PRESENCE fixup.
 
-Signed-off-by: Jeremy Soller <jeremy@system76.com>
-Signed-off-by: Tim Crawford <tcrawford@system76.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211853
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211102172104.10610-1-tcrawford@system76.com
+Link: https://lore.kernel.org/r/20211104155726.2090997-1-perex@perex.cz
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -6645,6 +6645,7 @@ enum {
- 	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
- 	ALC287_FIXUP_13S_GEN2_SPEAKERS,
- 	ALC256_FIXUP_TONGFANG_RESET_PERSISTENT_SETTINGS,
-+	ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8346,6 +8347,15 @@ static const struct hda_fixup alc269_fix
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc245_fixup_hp_gpio_led,
- 	},
-+	[ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x03a11120 }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8642,11 +8652,15 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0x40a1, "Clevo NL40GU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x40c1, "Clevo NL40[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x40d1, "Clevo NL41DU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x5015, "Clevo NH5[58]H[HJK]Q", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x5017, "Clevo NH7[79]H[HJK]Q", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50a3, "Clevo NJ51GU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50b3, "Clevo NK50S[BEZ]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50b6, "Clevo NK50S5", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50b8, "Clevo NK50SZ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50d5, "Clevo NP50D5", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x50e1, "Clevo NH5[58]HPQ", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x50e2, "Clevo NH7[79]HPQ", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50f0, "Clevo NH50A[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50f2, "Clevo NH50E[PR]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50f3, "Clevo NH58DPQ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+@@ -8392,6 +8392,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x141f, "Acer Spin SP513-54N", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
 
 
