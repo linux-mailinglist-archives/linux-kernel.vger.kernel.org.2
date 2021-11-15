@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ACE450BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8D9450C04
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238015AbhKORcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:32:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
+        id S232227AbhKORdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:33:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236883AbhKORPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:15:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96B0C6322A;
-        Mon, 15 Nov 2021 17:11:54 +0000 (UTC)
+        id S236945AbhKORPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:15:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3228D6320D;
+        Mon, 15 Nov 2021 17:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996315;
-        bh=f+k4pf/lIk9rBI5b9QTxE6NgaYlPDGRU6VXqapoxdQo=;
+        s=korg; t=1636996317;
+        bh=kpx8rkNDinqxrdQn4Qy+YrxlZaWHxuyuVVigrYcb508=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xNFemfoRV7ZKxN5NRz+13Sa1ER2WP9mqRGGYTKNBWa+MHuHBiI/5l6o1WvqdXfCcp
-         zvk320Wp+zW9LrLsFtK1oFgytd+PaGo+l1RpRjt8oi9hjJCeUfWyOiyLAFRtiQ2AqS
-         E5GdmSeL4Z8F8k6CS9jP4le/w2UIcuCfMT2wNU0Q=
+        b=LaeXp2SSBCeNJlVFjavrhlqZjLQe6m9DuiEKmM0ikmuifRyASxkFYqgTLl2kKAV00
+         nRLJe2Vb9PGaCfvYrXqNN9vUjQnysTRcMNy1aySSpjdY6quKRJjXb2hai39q80iMn6
+         FKCnl+vnygxG8Au9TYPVPCFY/c6DoGoK3geh7AFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 093/355] powerpc/85xx: Fix oops when mpc85xx_smp_guts_ids node cannot be found
-Date:   Mon, 15 Nov 2021 18:00:17 +0100
-Message-Id: <20211115165316.810806972@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.4 094/355] serial: core: Fix initializing and restoring termios speed
+Date:   Mon, 15 Nov 2021 18:00:18 +0100
+Message-Id: <20211115165316.841485448@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,37 +39,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoming Ni <nixiaoming@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 3c2172c1c47b4079c29f0e6637d764a99355ebcd upstream.
+commit 027b57170bf8bb6999a28e4a5f3d78bf1db0f90c upstream.
 
-When the field described in mpc85xx_smp_guts_ids[] is not configured in
-dtb, the mpc85xx_setup_pmc() does not assign a value to the "guts"
-variable. As a result, the oops is triggered when
-mpc85xx_freeze_time_base() is executed.
+Since commit edc6afc54968 ("tty: switch to ktermios and new framework")
+termios speed is no longer stored only in c_cflag member but also in new
+additional c_ispeed and c_ospeed members. If BOTHER flag is set in c_cflag
+then termios speed is stored only in these new members.
 
-Fixes: 56f1ba280719 ("powerpc/mpc85xx: refactor the PM operations")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210929033646.39630-2-nixiaoming@huawei.com
+Therefore to correctly restore termios speed it is required to store also
+ispeed and ospeed members, not only cflag member.
+
+In case only cflag member with BOTHER flag is restored then functions
+tty_termios_baud_rate() and tty_termios_input_baud_rate() returns baudrate
+stored in c_ospeed / c_ispeed member, which is zero as it was not restored
+too. If reported baudrate is invalid (e.g. zero) then serial core functions
+report fallback baudrate value 9600. So it means that in this case original
+baudrate is lost and kernel changes it to value 9600.
+
+Simple reproducer of this issue is to boot kernel with following command
+line argument: "console=ttyXXX,86400" (where ttyXXX is the device name).
+For speed 86400 there is no Bnnn constant and therefore kernel has to
+represent this speed via BOTHER c_cflag. Which means that speed is stored
+only in c_ospeed and c_ispeed members, not in c_cflag anymore.
+
+If bootloader correctly configures serial device to speed 86400 then kernel
+prints boot log to early console at speed speed 86400 without any issue.
+But after kernel starts initializing real console device ttyXXX then speed
+is changed to fallback value 9600 because information about speed was lost.
+
+This patch fixes above issue by storing and restoring also ispeed and
+ospeed members, which are required for BOTHER flag.
+
+Fixes: edc6afc54968 ("[PATCH] tty: switch to ktermios and new framework")
+Cc: stable@vger.kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Link: https://lore.kernel.org/r/20211002130900.9518-1-pali@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/tty/serial/serial_core.c |   16 ++++++++++++++--
+ include/linux/console.h          |    2 ++
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
-+++ b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
-@@ -94,9 +94,8 @@ int __init mpc85xx_setup_pmc(void)
- 			pr_err("Could not map guts node address\n");
- 			return -ENOMEM;
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -220,7 +220,11 @@ static int uart_port_startup(struct tty_
+ 	if (retval == 0) {
+ 		if (uart_console(uport) && uport->cons->cflag) {
+ 			tty->termios.c_cflag = uport->cons->cflag;
++			tty->termios.c_ispeed = uport->cons->ispeed;
++			tty->termios.c_ospeed = uport->cons->ospeed;
+ 			uport->cons->cflag = 0;
++			uport->cons->ispeed = 0;
++			uport->cons->ospeed = 0;
  		}
-+		qoriq_pm_ops = &mpc85xx_pm_ops;
- 	}
+ 		/*
+ 		 * Initialise the hardware port settings.
+@@ -288,8 +292,11 @@ static void uart_shutdown(struct tty_str
+ 		/*
+ 		 * Turn off DTR and RTS early.
+ 		 */
+-		if (uport && uart_console(uport) && tty)
++		if (uport && uart_console(uport) && tty) {
+ 			uport->cons->cflag = tty->termios.c_cflag;
++			uport->cons->ispeed = tty->termios.c_ispeed;
++			uport->cons->ospeed = tty->termios.c_ospeed;
++		}
  
--	qoriq_pm_ops = &mpc85xx_pm_ops;
--
+ 		if (!tty || C_HUPCL(tty))
+ 			uart_port_dtr_rts(uport, 0);
+@@ -2110,8 +2117,11 @@ uart_set_options(struct uart_port *port,
+ 	 * Allow the setting of the UART parameters with a NULL console
+ 	 * too:
+ 	 */
+-	if (co)
++	if (co) {
+ 		co->cflag = termios.c_cflag;
++		co->ispeed = termios.c_ispeed;
++		co->ospeed = termios.c_ospeed;
++	}
+ 
  	return 0;
  }
+@@ -2245,6 +2255,8 @@ int uart_resume_port(struct uart_driver
+ 		 */
+ 		memset(&termios, 0, sizeof(struct ktermios));
+ 		termios.c_cflag = uport->cons->cflag;
++		termios.c_ispeed = uport->cons->ispeed;
++		termios.c_ospeed = uport->cons->ospeed;
+ 
+ 		/*
+ 		 * If that's unset, use the tty termios setting.
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -153,6 +153,8 @@ struct console {
+ 	short	flags;
+ 	short	index;
+ 	int	cflag;
++	uint	ispeed;
++	uint	ospeed;
+ 	void	*data;
+ 	struct	 console *next;
+ };
 
 
