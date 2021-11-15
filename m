@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4B94514BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE634514B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349469AbhKOUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:12:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
+        id S1349443AbhKOUMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:12:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239727AbhKOSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239728AbhKOSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:04:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0119860041;
-        Mon, 15 Nov 2021 17:38:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF3386101B;
+        Mon, 15 Nov 2021 17:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997927;
-        bh=qY4g+sqgot4zYGqIvTAUH5BISaLkp78546tl0KseqrY=;
+        s=korg; t=1636997930;
+        bh=TBI3aO7xF0u1trT5ru+rFS23Y1JCnXCPXJA1PDBjIPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GqYEw3Y8n7Gd8VCmYDzycNAjL3xXTZtdqQQ8YJMXaAeiFwW7bO3KNIWl5RYDovya2
-         0SjG6fYPwNlRC5oURs84rb2cUTzwbxWcMGQhmKPKCdz0IVK84tSTOlJS+xaGNz/Pqe
-         l8zGHpoCJzuGtze97D/InnuJTT+xPwN3hCRxWbLw=
+        b=CDBWlpuXiEYhjavKYoi3ih8o2jP9kJPVf7O1J5mTNFmGBATzgn8vo6Il36BVDiK+X
+         W9DyUHLgklesDlJ+cIWu0OWIKZWDIItnRJTgMRT8X4SF9ATVq0/XK+TM0ubEGx1UXr
+         oq5W1WRL8yMCl7W2jqhAmQW7IfRY9iVBbvYFFOUw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Houlong Wei <houlong.wei@mediatek.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 293/575] media: mtk-vpu: Fix a resource leak in the error handling path of mtk_vpu_probe()
-Date:   Mon, 15 Nov 2021 18:00:18 +0100
-Message-Id: <20211115165353.914624062@linuxfoundation.org>
+Subject: [PATCH 5.10 294/575] media: i2c: ths8200 needs V4L2_ASYNC
+Date:   Mon, 15 Nov 2021 18:00:19 +0100
+Message-Id: <20211115165353.946824789@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -43,49 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 2143ad413c05c7be24c3a92760e367b7f6aaac92 ]
+[ Upstream commit e4625044d656f3c33ece0cc9da22577bc10ca5d3 ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+Fix the build errors reported by the kernel test robot by
+selecting V4L2_ASYNC:
 
-Update the error handling path accordingly.
+mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_remove':
+ths8200.c:(.text+0x1ec): undefined reference to `v4l2_async_unregister_subdev'
+mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_probe':
+ths8200.c:(.text+0x404): undefined reference to `v4l2_async_register_subdev'
 
-Fixes: 3003a180ef6b ("[media] VPU: mediatek: support Mediatek VPU")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
+Fixes: ed29f89497006 ("media: i2c: ths8200: support asynchronous probing")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/media/i2c/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 36cb9b6131f7e..c62eb212cca92 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -820,7 +820,8 @@ static int mtk_vpu_probe(struct platform_device *pdev)
- 	vpu->wdt.wq = create_singlethread_workqueue("vpu_wdt");
- 	if (!vpu->wdt.wq) {
- 		dev_err(dev, "initialize wdt workqueue failed\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto clk_unprepare;
- 	}
- 	INIT_WORK(&vpu->wdt.ws, vpu_wdt_reset_func);
- 	mutex_init(&vpu->vpu_mutex);
-@@ -914,6 +915,8 @@ disable_vpu_clk:
- 	vpu_clock_disable(vpu);
- workqueue_destroy:
- 	destroy_workqueue(vpu->wdt.wq);
-+clk_unprepare:
-+	clk_unprepare(vpu->clk);
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 878f66ef2719f..5f5a3915ac778 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -595,6 +595,7 @@ config VIDEO_AK881X
+ config VIDEO_THS8200
+ 	tristate "Texas Instruments THS8200 video encoder"
+ 	depends on VIDEO_V4L2 && I2C
++	select V4L2_ASYNC
+ 	help
+ 	  Support for the Texas Instruments THS8200 video encoder.
  
- 	return ret;
- }
 -- 
 2.33.0
 
