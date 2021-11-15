@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C3645063E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC59450641
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhKOOIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:08:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59200 "EHLO mail.kernel.org"
+        id S231645AbhKOOIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:08:53 -0500
+Received: from 8bytes.org ([81.169.241.247]:52816 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhKOOI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:08:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A269861104;
-        Mon, 15 Nov 2021 14:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636985133;
-        bh=VkEvTyZzw5kgnM3r67IPpEh+ipxBl/9VUZgnIrAFDOU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EZUKbwK+4M5VTNmakW0TwCP4ClSDf+LmkMMKoqIB6u9StDE/2os6LQRXjsfS2c/5b
-         cwKHHeyKnE96gdWCiurpZKITFeZkpGLEQPi8T4eQ81jK6gUSK0EUu9FHkt/k/21gcn
-         2ejr2SqY3ukPge7tnFs4Q6qJBQD8CyIhVML0mt0Q=
-Date:   Mon, 15 Nov 2021 15:05:30 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk, jack@suse.cz, ming.lei@redhat.com,
-        shinichiro.kawasaki@wdc.com, stable-commits@vger.kernel.org
-Subject: Re: Patch "block: Hold invalidate_lock in BLKRESETZONE ioctl" has
- been added to the 5.10-stable tree
-Message-ID: <YZJpKiXdsLw3gPWh@kroah.com>
-References: <163698414911658@kroah.com>
+        id S231876AbhKOOIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:08:45 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id D6E13398; Mon, 15 Nov 2021 15:05:47 +0100 (CET)
+Date:   Mon, 15 Nov 2021 15:05:41 +0100
+From:   =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v7 15/45] x86/compressed: Register GHCB memory when
+ SEV-SNP is active
+Message-ID: <YZJpNZyW8MtNZ44s@8bytes.org>
+References: <20211110220731.2396491-1-brijesh.singh@amd.com>
+ <20211110220731.2396491-16-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <163698414911658@kroah.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211110220731.2396491-16-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:49:10PM +0100, gregkh@linuxfoundation.org wrote:
-> 
-> This is a note to let you know that I've just added the patch titled
-> 
->     block: Hold invalidate_lock in BLKRESETZONE ioctl
-> 
-> to the 5.10-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+On Wed, Nov 10, 2021 at 04:07:01PM -0600, Brijesh Singh wrote:
+> +static void snp_register_ghcb_early(unsigned long paddr)
 
-Oops, no, these are now dropped from the 5.10.y and 5.14.y queues, sorry
-about that.
+This needs __maybe_unused, otherwise it triggers a warning:
 
+arch/x86/kernel/sev-shared.c:78:13: warning: ‘snp_register_ghcb_early’ defined but not used [-Wunused-function]
+   78 | static void snp_register_ghcb_early(unsigned long paddr)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~
 
-greg k-h
