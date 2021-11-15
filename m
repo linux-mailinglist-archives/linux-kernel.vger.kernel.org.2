@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EA245202C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7CD451969
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358001AbhKPAt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:49:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S1346543AbhKOXTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:19:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344599AbhKOTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F7F963698;
-        Mon, 15 Nov 2021 19:00:49 +0000 (UTC)
+        id S244790AbhKOTRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0005160EFE;
+        Mon, 15 Nov 2021 18:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002850;
-        bh=lsK4NtStt7bCYYBoRbBL/bYDlvgbP/fC4WL50yzicpI=;
+        s=korg; t=1637000631;
+        bh=a+2VaIAUuFNi6Rt63CHFe68YFV8drM28h/4vPQdTEKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hb9RKDmH2fkISoN7Ilg9Xh0hAbf6ppsOZPUtc/YX1qbrFgvkLS2N4HrjlFoJM7mOV
-         t8iJKv+5DKOtQUCpNdDDYCx6jP2PAdvDQ4wOXnsUPFj8oWa/dumbHPX+fVA+/Upu9r
-         9vYetmPhH5/NilUO1Ddanc/hWaK9r066AVnWmSa8=
+        b=kk+CjVgmmbgbtIGN/kLPb3i6+24/SXkFE4sfXrm1UZZoqaNSLOeKyui8CmPbo8+z1
+         /oyEA+ay5EJRwsGENC5act9IjvD92X37/EawvB7J7bYA70kGgWfsxAE6Gj9jwYrpw0
+         Krbbb1KsPleIZlRL5DsjGt7FcA0ODRFeOcvrHuJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Keeping <john@metanate.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 719/917] Input: st1232 - increase "wait ready" timeout
-Date:   Mon, 15 Nov 2021 18:03:34 +0100
-Message-Id: <20211115165453.285543915@linuxfoundation.org>
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 732/849] block/ataflop: use the blk_cleanup_disk() helper
+Date:   Mon, 15 Nov 2021 18:03:35 +0100
+Message-Id: <20211115165445.011536138@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Keeping <john@metanate.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-[ Upstream commit 2667f6b7af99e81958fa97c03bb519fcb09d0055 ]
+[ Upstream commit 44a469b6acae6ad05c4acca8429467d1d50a8b8d ]
 
-I have a ST1633 touch controller which fails to probe due to a timeout
-waiting for the controller to become ready.  Increasing the minimum
-delay to 100ms ensures that the probe sequence completes successfully.
+Use the helper to replace two lines with one.
 
-The ST1633 datasheet says nothing about the maximum delay here and the
-ST1232 I2C protocol document says "wait until" with no notion of a
-timeout.
-
-Since this only runs once during probe, being generous with the timout
-seems reasonable and most likely the device will become ready
-eventually.
-
-(It may be worth noting that I saw this issue with a PREEMPT_RT patched
-kernel which probably has tighter wakeups from usleep_range() than other
-preemption models.)
-
-Fixes: f605be6a57b4 ("Input: st1232 - wait until device is ready before reading resolution")
-Signed-off-by: John Keeping <john@metanate.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210929152609.2421483-1-john@metanate.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20210927220302.1073499-12-mcgrof@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/st1232.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/ataflop.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-index 6abae665ca71d..9d1dea6996a22 100644
---- a/drivers/input/touchscreen/st1232.c
-+++ b/drivers/input/touchscreen/st1232.c
-@@ -92,7 +92,7 @@ static int st1232_ts_wait_ready(struct st1232_ts_data *ts)
- 	unsigned int retries;
- 	int error;
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index 4947e41f89b7d..1a908455ff96f 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -2097,8 +2097,7 @@ static int __init atari_floppy_init (void)
  
--	for (retries = 10; retries; retries--) {
-+	for (retries = 100; retries; retries--) {
- 		error = st1232_ts_read_data(ts, REG_STATUS, 1);
- 		if (!error) {
- 			switch (ts->read_buf[0]) {
+ err:
+ 	while (--i >= 0) {
+-		blk_cleanup_queue(unit[i].disk[0]->queue);
+-		put_disk(unit[i].disk[0]);
++		blk_cleanup_disk(unit[i].disk[0]);
+ 		blk_mq_free_tag_set(&unit[i].tag_set);
+ 	}
+ 
+@@ -2156,8 +2155,7 @@ static void __exit atari_floppy_exit(void)
+ 			if (!unit[i].disk[type])
+ 				continue;
+ 			del_gendisk(unit[i].disk[type]);
+-			blk_cleanup_queue(unit[i].disk[type]->queue);
+-			put_disk(unit[i].disk[type]);
++			blk_cleanup_disk(unit[i].disk[type]);
+ 		}
+ 		blk_mq_free_tag_set(&unit[i].tag_set);
+ 	}
 -- 
 2.33.0
 
