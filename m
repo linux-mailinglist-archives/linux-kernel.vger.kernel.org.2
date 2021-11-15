@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9504509D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ED64509DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhKOQnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:43:01 -0500
-Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:55034 "EHLO
-        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230214AbhKOQmx (ORCPT
+        id S231601AbhKOQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230099AbhKOQou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:42:53 -0500
-X-Greylist: delayed 4160 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 11:42:53 EST
-Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 299732E0AF9;
-        Mon, 15 Nov 2021 19:39:39 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 8I2AdDC1uF-dbsqo6gk;
-        Mon, 15 Nov 2021 19:39:39 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1636994379; bh=sJgNHnb3hOQwurINlS2X7YNRsTmHCa/JxTtjIM5qnfg=;
-        h=In-Reply-To:References:Date:From:To:Subject:Message-ID:Cc;
-        b=3JyafGaHD9qpsnhQ+lmPh5DLKs3kKIfHRnHasFGDpCRLUjaMtamqq+j7Dpx6hylln
-         E4brZ/IlP8Aj4+b/OtVJTlqFno0lfwi8foBxXxIsj7hGrqhBHyrjq+SFCop8KTAaG/
-         NqPhOgcmv/OH/N6sEeEKE84jBu0wU/BH+ACBVx6k=
-Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from [IPv6:2a02:6b8:0:107:3e85:844d:5b1d:60a] (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id Phoahep5KZ-daxCbT90;
-        Mon, 15 Nov 2021 19:39:37 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-Subject: Re: [PATCH] cgroup: Fix rootcg cpu.stat guest double counting
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Boris Burkov <boris@bur.io>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20211028221528.2174284-1-schatzberg.dan@gmail.com>
- <20211029172129.smeyk5adocjrwtlb@oracle.com>
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-Message-ID: <161a70b7-ee6f-bbc7-8a2e-1fd42fcba3eb@yandex-team.com>
-Date:   Mon, 15 Nov 2021 19:41:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 15 Nov 2021 11:44:50 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C1FC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:41:54 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id e71so9350999ybh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=YEBWc8bF0GwQALoQhdfL5XY8CRcbHoeCxfqy5ftm1qs=;
+        b=Rr3P3+tbydvHeDVUihIBbvLhzDHTWgp+ypqx+Ybba5DCrNJcZ3QiEETHrrngwAY1/c
+         JBm8/qgkb8Rf8j/+P7T8HgF2Pb2nG8oOs0EcX1TqgddsUpJO27lhGssTOc1zxjbMY1lK
+         96viQXq0qjXrpPJhzN7RpbEO4dXN9qhuPC18cdh2Do+hFf0bAVnDO1JyXHtrdx8YfJDN
+         a428eb+09ClrYfR7w0q5lIgarQVdIGKaZpOdO1ynmPvjpaz6/APU56wyrAqR5SCZKIkl
+         5XZul0xq/KrAe7sXbB/AJVqYYzyXzWX6xCMLUNvj5+bCEfUUaY2wrTauSXyVYASYvsY4
+         W6tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=YEBWc8bF0GwQALoQhdfL5XY8CRcbHoeCxfqy5ftm1qs=;
+        b=AT9YiHLaBu7MsVZgGJfDnqcY71m+S+WwYvFqApMdXVuSHpRQ3U0pin71eU698Bs3cC
+         NHwAnViptWYJMaTcfg5DPAZmnEo0jFHvu75mAl1pUBfzN04rfj2PA/H0/3SZUURdZJST
+         YsnYDWoCR4+JmabMJeE5pQrBs92rShlmdjX+1gaTwcoA0rYTxAQoxiVaoayYG0JSnMFn
+         aKncZJQMdcOtovBtZvUHX2KZfY8+oktP9TjCbl4Cv7aRz4BEFGua+OQ/Uk7ObYZ+QjtX
+         yk/XVo1HcuBSUkYQfE15a5oSaRgVr217GBDdDGTuAEmClS33LZUuhAo8J/dzKxDVFrwF
+         jdbw==
+X-Gm-Message-State: AOAM530gqELKKXjnxmK6rSyqA9DeoMEeI0qY/co2/8kk5ofbkmXAmjnz
+        caO+hUZuc7DrmMSuD809xpH2Sf5ifnygJbTq6hQ=
+X-Google-Smtp-Source: ABdhPJyIIj6H4tUN592lmO7dTSlKrpIrQ6waDJ6yL8stEkP3ucfI1psSv50stqeKiWM6/ZSpVyVQajZq+Lf4Cwe6zdY=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr358645ybj.320.1636994513660;
+ Mon, 15 Nov 2021 08:41:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211029172129.smeyk5adocjrwtlb@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:7010:282:b0:1b1:6376:7c5a with HTTP; Mon, 15 Nov 2021
+ 08:41:53 -0800 (PST)
+Reply-To: mr.mahmoud_abbas@aol.com
+From:   "Mr.Mahmoud Abbas" <anmadosman2000@gmail.com>
+Date:   Mon, 15 Nov 2021 16:41:53 +0000
+Message-ID: <CAL0KREMd8pzOgn9v_xdGAd_KAqOj+aDwBK-JkAeH-h6USie3JQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Friend,
+
+Let me start by introducing myself, I am ........ Manager of
+Bank Of Africa Burkina Faso.
+
+I am writing you this letter based on the latest development at my
+Department which I will like to bring to your personal edification.
+(10.5 million U.S Dollars transfer claims).
+
+This is a legitimate transaction and I agreed to offer you 40% of this
+money as my foreign partner after confirmation of the fund in your
+bank account, if you are interested, get back to me with the following
+details below.
+
+(1)Your age........
+
+(2)Your occupation.....
+
+(3)Your marital status.....
+
+(4)Your full residential address.......
+
+(5)Your private phone and fax number and your complete name.......
+
+As soon as I receive these data's, I will forward to you the
+application form which you will fill and send to the bank, you can get back
+to me
+through this my private email address (mr.mahmoud_abbas@aol.com)
 
 
-On 10/29/21 8:21 PM, Daniel Jordan wrote:
-> On Thu, Oct 28, 2021 at 03:15:27PM -0700, Dan Schatzberg wrote:
->> In account_guest_time in kernel/sched/cputime.c guest time is
->> attributed to both CPUTIME_NICE and CPUTIME_USER in addition to
->> CPUTIME_GUEST_NICE and CPUTIME_GUEST respectively. Therefore, adding
->> both to calculate usage results in double counting any guest time at
->> the rootcg.
-> 
-> Yes, definitely a bug.  The same fix was posted a couple months ago as
-> part of a series but never picked up:
-> 
->   https://x-lore.kernel.org/all/20210820094005.20596-3-arbn@yandex-team.com/
-> 
-> The series also touched cputime, so we might be waiting for scheduler
-> folks?   +Ingo +Peter +Andrey
-> 
-
-Yeah, I'll do rebase and send v3
+Best Regard
+Mr.Mahmoud Abbas.
