@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464E64519C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE55451F56
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhKOX1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:27:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        id S1356028AbhKPAit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245042AbhKOTS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78BB4634F5;
-        Mon, 15 Nov 2021 18:27:15 +0000 (UTC)
+        id S1344784AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B380636C7;
+        Mon, 15 Nov 2021 19:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000836;
-        bh=J525mGhl1YD9mkcieMoRUPPCD1GjzimEAxPVQYBO2oo=;
+        s=korg; t=1637003064;
+        bh=6uyj2ksn8jh958jNOjQMXDZ3WJRB1H63zstpoGPXMNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lRPtYnbYWCI8tvgF5XRAnvpTHGcyWPVNQMSs5f6saRWHfGwEZiWkzVtU4m4qXJI5K
-         cHZMu1NNo/QxolZXg9wiCNiY0O2cv7tPiSsNeoOnFpCq1+LDqflpBT9MKvIIOQ2hCD
-         9nvXbGWxBReqhv4hLYmYlYgrMvTX9oOmRCzJR65k=
+        b=CaDuGjHl3J1FmOV3kPlkJ0H0YDWiAM3Y6/upHRT5kiIhu0dz5cLHV01V8h1aW8xDZ
+         B5awAibZc363Ew8eGbEdjrE1Iw3iqzqEnCtTtOWthk1d3pXbvrQVvPQKhpegCrReJg
+         tDI49oH6PzxOzGOlVNvqChdT+cDtcGEiK9osaZv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 809/849] io-wq: ensure that hash wait lock is IRQ disabling
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 797/917] ALSA: memalloc: Catch call with NULL snd_dma_buffer pointer
 Date:   Mon, 15 Nov 2021 18:04:52 +0100
-Message-Id: <20211115165447.611808255@linuxfoundation.org>
+Message-Id: <20211115165455.998603907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,43 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 08bdbd39b58474d762242e1fadb7f2eb9ffcca71 upstream.
+[ Upstream commit dce9446192439eaac81c21f517325fb473735e53 ]
 
-A previous commit removed the IRQ safety of the worker and wqe locks,
-but that left one spot of the hash wait lock now being done without
-already having IRQs disabled.
+Although we've covered all calls with NULL dma buffer pointer, so far,
+there may be still some else in the wild.  For catching such a case
+more easily, add a WARN_ON_ONCE() in snd_dma_get_ops().
 
-Ensure that we use the right locking variant for the hashed waitqueue
-lock.
-
-Fixes: a9a4aa9fbfc5 ("io-wq: wqe and worker locks no longer need to be IRQ safe")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 37af81c5998f ("ALSA: core: Abstract memory alloc helpers")
+Link: https://lore.kernel.org/r/20211105102103.28148-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/core/memalloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -405,7 +405,7 @@ static void io_wait_on_hash(struct io_wq
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 0b8a1c3eae1b4..2d842982576bb 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -494,6 +494,8 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 
+ static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffer *dmab)
  {
- 	struct io_wq *wq = wqe->wq;
- 
--	spin_lock(&wq->hash->wait.lock);
-+	spin_lock_irq(&wq->hash->wait.lock);
- 	if (list_empty(&wqe->wait.entry)) {
- 		__add_wait_queue(&wq->hash->wait, &wqe->wait);
- 		if (!test_bit(hash, &wq->hash->map)) {
-@@ -413,7 +413,7 @@ static void io_wait_on_hash(struct io_wq
- 			list_del_init(&wqe->wait.entry);
- 		}
- 	}
--	spin_unlock(&wq->hash->wait.lock);
-+	spin_unlock_irq(&wq->hash->wait.lock);
- }
- 
- /*
++	if (WARN_ON_ONCE(!dmab))
++		return NULL;
+ 	if (WARN_ON_ONCE(dmab->dev.type <= SNDRV_DMA_TYPE_UNKNOWN ||
+ 			 dmab->dev.type >= ARRAY_SIZE(dma_ops)))
+ 		return NULL;
+-- 
+2.33.0
+
 
 
