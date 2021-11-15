@@ -2,34 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5CB451A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7B94520FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354919AbhKOXik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:38:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1358754AbhKPA54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:57:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343641AbhKOTVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E679E63371;
-        Mon, 15 Nov 2021 18:43:42 +0000 (UTC)
+        id S232241AbhKOTVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A7DF63378;
+        Mon, 15 Nov 2021 18:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001823;
-        bh=1k0gv9Wcor99mfqtxXAZwav4mIHUEoA90z9MjLacn/k=;
+        s=korg; t=1637001844;
+        bh=HANXrd2/9MTOGH8hczRCGiawaKbg0JM76CqO71X4+oc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eij+Ioq62rn74RZzTchwstf7WZJzAvcuJXF/aIDxsnZEpv4xmMhSfFTSUPyAR/O9q
-         SieNDdcOzI2k1wrlZpTQfikez6AXdwDB2lkNkhzyoG1i3H/VRWMY6HlfrCV5Q4RIXL
-         wlrIrdYcLGB3KdlrLjP4NKuld1ZWNhY9cDgmJs6E=
+        b=rGUtSbFWfX5q75U4wBW/IQIU8vilFzQQhDyMhTscfb4xF32M7311+ygxd1xh0fqcH
+         131/TUec2ssqHedxXya9F8StPKE/3sHMU8j+1dtn2k/IHaUUxeziqsw872ctYTAJ9p
+         BqASwmIEVX4Eld/W7HS7MceNti4G4AQGyaW3PdFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Abaci <abaci@linux.alibaba.com>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 307/917] Revert "wcn36xx: Enable firmware link monitoring"
-Date:   Mon, 15 Nov 2021 17:56:42 +0100
-Message-Id: <20211115165439.168472317@linuxfoundation.org>
+Subject: [PATCH 5.15 308/917] ftrace: do CPU checking after preemption disabled
+Date:   Mon, 15 Nov 2021 17:56:43 +0100
+Message-Id: <20211115165439.198917033@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,51 +62,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+From: 王贇 <yun.wang@linux.alibaba.com>
 
-[ Upstream commit 43ea9bd84f27d06482cc823d9749cc9dd2993bc8 ]
+[ Upstream commit d33cc657372366a8959f099c619a208b4c5dc664 ]
 
-Firmware link offload monitoring can be made to work in 3/4 cases by
-switching on firmware feature bit WLANACTIVE_OFFLOAD
+With CONFIG_DEBUG_PREEMPT we observed reports like:
 
-- Secure power-save on
-- Secure power-save off
-- Open power-save on
+  BUG: using smp_processor_id() in preemptible
+  caller is perf_ftrace_function_call+0x6f/0x2e0
+  CPU: 1 PID: 680 Comm: a.out Not tainted
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x8d/0xcf
+   check_preemption_disabled+0x104/0x110
+   ? optimize_nops.isra.7+0x230/0x230
+   ? text_poke_bp_batch+0x9f/0x310
+   perf_ftrace_function_call+0x6f/0x2e0
+   ...
+   __text_poke+0x5/0x620
+   text_poke_bp_batch+0x9f/0x310
 
-However, with an open AP if we switch off power-saving - thus never
-entering Beacon Mode Power Save - BMPS, firmware never forwards loss
-of beacon upwards.
+This telling us the CPU could be changed after task is preempted, and
+the checking on CPU before preemption will be invalid.
 
-We had hoped that WLANACTIVE_OFFLOAD and some fixes for sequence numbers
-would unblock this but, it hasn't and further investigation is required.
+Since now ftrace_test_recursion_trylock() will help to disable the
+preemption, this patch just do the checking after trylock() to address
+the issue.
 
-Its possible to have a complete set of Secure power-save on/off and Open
-power-save on/off provided we use Linux' link monitoring mechanism.
+Link: https://lkml.kernel.org/r/54880691-5fe2-33e7-d12f-1fa6136f5183@linux.alibaba.com
 
-While we debug the Open AP failure we need to fix upstream.
-
-This reverts commit c973fdad79f6eaf247d48b5fc77733e989eb01e1.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025093037.3966022-2-bryan.odonoghue@linaro.org
+CC: Steven Rostedt <rostedt@goodmis.org>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Joe Lawrence <joe.lawrence@redhat.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/trace/trace_event_perf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-index 39d86e3031bd7..28d6251ad77a6 100644
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -1341,7 +1341,6 @@ static int wcn36xx_init_ieee80211(struct wcn36xx *wcn)
- 	ieee80211_hw_set(wcn->hw, HAS_RATE_CONTROL);
- 	ieee80211_hw_set(wcn->hw, SINGLE_SCAN_ON_ALL_BANDS);
- 	ieee80211_hw_set(wcn->hw, REPORTS_TX_ACK_STATUS);
--	ieee80211_hw_set(wcn->hw, CONNECTION_MONITOR);
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 6aed10e2f7ce0..fba8cb77a73af 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -441,13 +441,13 @@ perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip,
+ 	if (!rcu_is_watching())
+ 		return;
  
- 	wcn->hw->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
- 		BIT(NL80211_IFTYPE_AP) |
+-	if ((unsigned long)ops->private != smp_processor_id())
+-		return;
+-
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
++	if ((unsigned long)ops->private != smp_processor_id())
++		goto out;
++
+ 	event = container_of(ops, struct perf_event, ftrace_ops);
+ 
+ 	/*
 -- 
 2.33.0
 
