@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B5451C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F4451C01
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344185AbhKPAKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353369AbhKOUzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:55:41 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BAEC0432ED;
-        Mon, 15 Nov 2021 12:47:47 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so864251pjb.5;
-        Mon, 15 Nov 2021 12:47:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=37iPORGZWTcbPqrckEZeI9K5Eg70KvF8yptSAflO4Uw=;
-        b=RXgsN+aOmT0tvd3MDXT6gExcbkqyWM5NKd/5m3diH8mIMI9/WsCSqcb0y3AlsaU/fe
-         gJXFPIH8n0E3OZ0SrNXjjfVOu1D+z+VH7lIlKVYihp0qMAgCKB7iXol4vds9hWF2hv5P
-         E0+E1x37UO63H31p+Zhm6imdXbJQ0WN7qA0XfTcqHjAETNkXFTVv5mNZUgqWNwv8UAAe
-         fpvh45SscJE22UUN8Ao0deyYMpASeupP4MsdYDKzswUaVG0FpP5poMgvcmWYTpE7UVQt
-         XIBmXZpqYmlgcVYYLMpWCH1SZjyxteY3aPuEXMlBb8gebjC+CmST318B1cFcJhsONIN6
-         u1iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=37iPORGZWTcbPqrckEZeI9K5Eg70KvF8yptSAflO4Uw=;
-        b=RY84vFThyMs/brBbuhN5QzVC8BAjAXs+407ARSpqjHS0Bzlwy7QIxc7YyAH5sqabPt
-         6QHvllZnAHTNh4MLk2w58MuX5nthDUAcUYy+usnS2m+6T7sm1l5/T+cDFM+GCRArJHng
-         SI+Z33absaHXv3L8G+ACMzZqD/994DoBUHpDcVKal4nrmT5r59vaZpfS/bd9F+Q5C4Bg
-         MQjITz4FejfqH9dif4+Hs0Dmy2q8Z5/dD5QiXNPbsLMUz1N1NuUcs8BHCQT8PD5HnQNY
-         w6MsZAlK+znj+DZonDVmsZHU54/oexfbVi5orSzzCxXtwFGqcIyWEvfDkTygosgzG97m
-         q1KQ==
-X-Gm-Message-State: AOAM533TzfCAwoRbb37dH/WUYd8uPfz4f8qKPmzEBxfvjI7mpXVtGrZR
-        vdjbGILTeMGWvenfIwbhahLDOOKTASts6poWdwI=
-X-Google-Smtp-Source: ABdhPJya3JcZmZ+67ZgolK7IzkiairySucGFBYEMhzBIf74Vmy4XzQQ+HAMpmBUWkge4t5ohjhQ+cA==
-X-Received: by 2002:a17:902:e294:b0:143:86a8:c56d with SMTP id o20-20020a170902e29400b0014386a8c56dmr38666246plc.22.1637009266537;
-        Mon, 15 Nov 2021 12:47:46 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id m12sm12749224pfk.27.2021.11.15.12.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 12:47:45 -0800 (PST)
-Message-ID: <6192c771.1c69fb81.48c9.4359@mx.google.com>
-Date:   Mon, 15 Nov 2021 12:47:45 -0800 (PST)
-X-Google-Original-Date: Mon, 15 Nov 2021 20:47:44 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/575] 5.10.80-rc1 review
-To:     linux-kernel@vger.kernel.org
+        id S1348020AbhKPAKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:10:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352978AbhKOUvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 15:51:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29D5C63240;
+        Mon, 15 Nov 2021 20:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637009303;
+        bh=Ab04UsOLuYDaWgm25keP0dnQCwf2wKgMMT8FZu0wdU4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=p+hZZ1wwOqkazM54o6HvrGw9tCG0HCBtef7yJtD1WKlY1aVo0bn1uDBS3uH2zcTum
+         F1hwf/F/+qWGyMrgMbPGJi3/MaQbqVkcJiSJTP7Sso6dp1MeM62oJ6EbZ0dqqUw8RC
+         XDutK2ZgWNduVzYoxkXW4dPZOz4gnxdL+xd0lKnEVHgxdeeSml/+l35jc0SDOg+tOe
+         XjdyGPwy4QyA/zVawD0Ox/ObYmU2s2nOfF+1SSCB8gE/nxeeyG6SjuroobyovNR3PQ
+         /jaXEC8b1Lzdog7PhMV6IudqpvicpbPfktdvROHIVrrIIgzgZ/vQ+E8qQd9+N/mJoL
+         fEZElHCplMLLw==
+Date:   Mon, 15 Nov 2021 14:48:21 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
+        rafael@kernel.org, Diana Craciun <diana.craciun@oss.nxp.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] PCI: pci_stub: Suppress kernel DMA ownership
+ auto-claiming
+Message-ID: <20211115204821.GA1587269@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115020552.2378167-4-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 17:55:25 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.80 release.
-> There are 575 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Nov 15, 2021 at 10:05:44AM +0800, Lu Baolu wrote:
+> pci_stub allows the admin to block driver binding on a device and make
+> it permanently shared with userspace. Since pci_stub does not do DMA,
+> it is safe. 
 
-5.10.80-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Can you elaborate on what "permanently shared with userspace" means
+here?  I assume it's only permanent as long as pci-stub is bound to
+the device?
 
+Also, a few words about what "it is safe" means here would be helpful.
+
+> However the admin must understand that using pci_stub allows
+> userspace to attack whatever device it was bound to.
+
+The admin isn't going to read this sentence.  Should there be a doc
+update related to this?  What sort of attack does this refer to?
+
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/pci/pci-stub.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pci/pci-stub.c b/drivers/pci/pci-stub.c
+> index e408099fea52..6324c68602b4 100644
+> --- a/drivers/pci/pci-stub.c
+> +++ b/drivers/pci/pci-stub.c
+> @@ -36,6 +36,9 @@ static struct pci_driver stub_driver = {
+>  	.name		= "pci-stub",
+>  	.id_table	= NULL,	/* only dynamic id's */
+>  	.probe		= pci_stub_probe,
+> +	.driver		= {
+> +		.suppress_auto_claim_dma_owner = true,
+> +	},
+>  };
+>  
+>  static int __init pci_stub_init(void)
+> -- 
+> 2.25.1
+> 
