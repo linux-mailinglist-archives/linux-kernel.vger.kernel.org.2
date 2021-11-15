@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975DD45057A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38431450575
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhKONdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbhKONcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:32:22 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F28CC061207
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:28:42 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id m14so72187621edd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8cRmbCo9kjvNgwv7vSSBuH8WEW+eAn1HMf/bmF9PTrM=;
-        b=PpOLKmMO141AHO2LthNVc1GBHjkYGTgnoRIEHSH991PbEODCwwVho43tYn9STIYdCM
-         SzFVpgjKAKyp0QWdWRpumxa/i6dzKGgKMA75DkSw/Ff15lTmzWdndttSr4mPOA4jZfZw
-         T4xBtFBEdq0tWBVTd4Pm8VDXU0e62EOzaNldX5iY6BC/9FHK857mQsLlo2V6Qs5qjVOq
-         tyqU6xpCiyKiGqn8LbV5dZXSvV482KSEskO6rnn0hnu1SquRBIII2SrgRk2F661xdJGY
-         zSW2vrYEei1afzEVdQF/F6LF/Uo5wA7ig7UqZgDxmjlqVqncSPzctuAXPCepXYtgH1D+
-         EZ/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8cRmbCo9kjvNgwv7vSSBuH8WEW+eAn1HMf/bmF9PTrM=;
-        b=zcadzGjNtOld1zRnw6f1UEZ3/rXFRiP1xDJlAMSfqsYultYuPAZj3H5LHlcqvXODtE
-         Rhi9visnU2lrdEvwj8/n9MnBEEqVAtvEyh75DA7tZIxVwoUfN7Bf4NpbAjo5k4AIVrTH
-         1yBAvxFGmmqKYOeLTsX/o5fseT7KWca+9DIurNHsdaFLoyj8/lAhoo13W//y5g6hEri5
-         ipxe3NyEwRSeW1etdEieI8iFLuz/8fw/Y9Op5wYW5Zg+4JmxZvU6vcdUtbMKaSoNDxfU
-         TansjrqeQ9EpuTIJw6DVVuqprykoN4UVdPi5PP8T3tMRtXB69EDScd+8IZBsLUJg5h4Y
-         zlUA==
-X-Gm-Message-State: AOAM530y6dGjPXJBmrlB62SgVoJxoEDk2AKrkphaXH2/T6GVuT3gn/OS
-        ChM06EBgplk8INrviUzI6bldC8ed0q7pJwFTDzckog==
-X-Google-Smtp-Source: ABdhPJz6Udv1Bqde1kFPfmZFvq2RGosFkkXKXqcczQ2H+gQ1/7ffgsAHUCSai1s9AAuvn4ddinbkNxcrnF4nwBOQ3mQ=
-X-Received: by 2002:a17:907:1deb:: with SMTP id og43mr48646216ejc.189.1636982920718;
- Mon, 15 Nov 2021 05:28:40 -0800 (PST)
+        id S231603AbhKONck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:32:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231805AbhKONcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:32:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01B2961C4F;
+        Mon, 15 Nov 2021 13:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636982957;
+        bh=d7tYqUsWDtoH/nl2BZKWt1Fg723w2autMfgUYEMNJag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NxAtFPBbvP/6AMCR/771dj85JLwT9nMjXuRQW/p/vGkRcrzxY2dfXvwIZFnFfefwu
+         kvsKyiub8ajs3EgHPbs6+p59+0bA/wbHJl2rz7tgW3TeuyJq/UzZVAAAGhAdFi+CZW
+         Uw+2qQawe1sg1MzO5qZDCDpwqeQYNaR5EdOhc2COOEUfXCP0x7GGBQFYXF9J63TxGW
+         AwoXnh5gr7ftDkRGa/KmDw/s4JgpvjP7FcwtMuv6k/iKRgLccKlkjLmXo33ME7VFfJ
+         JbTTzrKQ/VAOfK2BvkUlHyAruho4/iLVVQdqlwG9oXsUX0VqxqKDDGf3cxU4kWKLOe
+         vGM3FZPU3/xnQ==
+Date:   Mon, 15 Nov 2021 13:29:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 02/11] spi: pic32: stop setting dma_config->slave_id
+Message-ID: <YZJgoxE15OYKYP2K@sirena.org.uk>
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-3-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20211108012851.7772-1-warthog618@gmail.com>
-In-Reply-To: <20211108012851.7772-1-warthog618@gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 15 Nov 2021 14:28:30 +0100
-Message-ID: <CAMRc=Mco28U7D15BJjvPrOqORQQ2MKUrwPkKWKVFQg9ks0--fw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] selftests: gpio: fix minor build issues
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        lizhijian@cn.fujitsu.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IMTM3OEYqWoLprto"
+Content-Disposition: inline
+In-Reply-To: <20211115085403.360194-3-arnd@kernel.org>
+X-Cookie: Custer committed Siouxicide.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 2:29 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> This is a series of fixes for minor problems in the building of the GPIO
-> selftests introduced by my rework of those tests.
->
-> The first patch is from Li Zhijian and fixes a compiler error when
-> building the selftests in environments with stale system includes.
-> I have reworded the commit comment to make it more to the point in
-> describing the root cause of the problem and the fix, as suggested by
-> Shuah in his initial review of that patch.
->
-> The second patch fixes a warning when the tests are compiled with -Wall,
-> and the final patch restores the CFLAGS that should not have been removed
-> in the rework, including the -Wall.
->
-> Kent Gibson (2):
->   selftests: gpio: fix uninitialised variable warning
->   selftests: gpio: restore CFLAGS options
->
-> Li Zhijian (1):
->   selftests: gpio: fix gpio compiling error
->
->  tools/testing/selftests/gpio/Makefile           | 1 +
->  tools/testing/selftests/gpio/gpio-mockup-cdev.c | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> --
-> 2.33.1
->
 
-Queued for fixes, thanks!
+--IMTM3OEYqWoLprto
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bart
+On Mon, Nov 15, 2021 at 09:53:54AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Setting slave_id makes no sense with DT based probing, and
+> should eventually get removed entirely. Address this driver
+> by no longer setting the field here.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--IMTM3OEYqWoLprto
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGSYKMACgkQJNaLcl1U
+h9BFJgf/fpBvGqcjOVPEzPWsUxd950Aql84mdfpVf7Q34yAtuAJMlorUf+ARZFeV
+RvrFCJ6tyeWZsZCKm+HMgfJFIp4GSOcn2asZ7p06z3lpAzDdX9Yn8aFW1bcIUOee
+EjiSLquSQyBmUy+upf3bbaVPV1YyDaj5IajH5PQCVwj1mfRcilnqGpBPEJgpEo99
+MNhpTEA3rcd6ESQQ0QyMAliW+T4BwAkXCtnWnSt4bVq1NfViOEbTGn/Nh7OaGwrI
+dNe0cE4t3/9Vo3mtQY6IgF2d7gcIiTePrXRq74w940zsn4Rh6RpX5mGPiwM+OYh3
+l7AvLSoqMeL1h9M5Yek/O6k8yVVJuQ==
+=RhAB
+-----END PGP SIGNATURE-----
+
+--IMTM3OEYqWoLprto--
