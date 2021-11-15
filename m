@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C02450F9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05D9450FD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242177AbhKOSev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:34:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46310 "EHLO mail.kernel.org"
+        id S242071AbhKOSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:36:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236531AbhKOReX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:34:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03414632C1;
-        Mon, 15 Nov 2021 17:22:59 +0000 (UTC)
+        id S238305AbhKOReZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:34:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF03632CB;
+        Mon, 15 Nov 2021 17:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996980;
-        bh=3pV8mBb0vsq6nsesCXf5cm9uFXJKGrfcd3ic3In95jo=;
+        s=korg; t=1636996982;
+        bh=58kZ2qfqicAyiU2+TYrKL580Mk+M/xXLLGl8frUbDMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tIFTrRWWb0bGUWNNIweKP7AjlH6Q4Vd2eVDdu5diyUUneYnTPAskhUve+waa1vCZc
-         KsbyH7lUTSfYPP5gcEV08YqZiWBMd+KStfRaHruNvf/OqMDD1Ua9WN1orm5cl7yKT7
-         Ql7VJPckGycIu8mKL5hJXW7xCncq8JvQfFUmhObc=
+        b=vlo3ak3TZ0d7wfjOlEFJ6HFL7pI4EoB73SXVdxaTSoM+EPqQ585M3xvyEXStzQUo7
+         MEvEQXOCNQnCE0tZRMxaOdgudCVpnCe9TrjVbIyKzHGLtgBnAGIoCYHmlWLpiJKK0J
+         GmmfeXDF9A67Ysv3WB7+kIrF1YkQx/CI1J/UVecw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Light Hsieh <light.hsieh@mediatek.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 5.4 338/355] f2fs: should use GFP_NOFS for directory inodes
-Date:   Mon, 15 Nov 2021 18:04:22 +0100
-Message-Id: <20211115165324.675915017@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 339/355] net, neigh: Enable state migration between NUD_PERMANENT and NTF_USE
+Date:   Mon, 15 Nov 2021 18:04:23 +0100
+Message-Id: <20211115165324.708917202@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,104 +41,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 92d602bc7177325e7453189a22e0c8764ed3453e upstream.
+[ Upstream commit 3dc20f4762c62d3b3f0940644881ed818aa7b2f5 ]
 
-We use inline_dentry which requires to allocate dentry page when adding a link.
-If we allow to reclaim memory from filesystem, we do down_read(&sbi->cp_rwsem)
-twice by f2fs_lock_op(). I think this should be okay, but how about stopping
-the lockdep complaint [1]?
+Currently, it is not possible to migrate a neighbor entry between NUD_PERMANENT
+state and NTF_USE flag with a dynamic NUD state from a user space control plane.
+Similarly, it is not possible to add/remove NTF_EXT_LEARNED flag from an existing
+neighbor entry in combination with NTF_USE flag.
 
-f2fs_create()
- - f2fs_lock_op()
- - f2fs_do_add_link()
-  - __f2fs_find_entry
-   - f2fs_get_read_data_page()
-   -> kswapd
-    - shrink_node
-     - f2fs_evict_inode
-      - f2fs_lock_op()
+This is due to the latter directly calling into neigh_event_send() without any
+meta data updates as happening in __neigh_update(). Thus, to enable this use
+case, extend the latter with a NEIGH_UPDATE_F_USE flag where we break the
+NUD_PERMANENT state in particular so that a latter neigh_event_send() is able
+to re-resolve a neighbor entry.
 
-[1]
+Before fix, NUD_PERMANENT -> NUD_* & NTF_USE:
 
-fs_reclaim
-){+.+.}-{0:0}
-:
-kswapd0:        lock_acquire+0x114/0x394
-kswapd0:        __fs_reclaim_acquire+0x40/0x50
-kswapd0:        prepare_alloc_pages+0x94/0x1ec
-kswapd0:        __alloc_pages_nodemask+0x78/0x1b0
-kswapd0:        pagecache_get_page+0x2e0/0x57c
-kswapd0:        f2fs_get_read_data_page+0xc0/0x394
-kswapd0:        f2fs_find_data_page+0xa4/0x23c
-kswapd0:        find_in_level+0x1a8/0x36c
-kswapd0:        __f2fs_find_entry+0x70/0x100
-kswapd0:        f2fs_do_add_link+0x84/0x1ec
-kswapd0:        f2fs_mkdir+0xe4/0x1e4
-kswapd0:        vfs_mkdir+0x110/0x1c0
-kswapd0:        do_mkdirat+0xa4/0x160
-kswapd0:        __arm64_sys_mkdirat+0x24/0x34
-kswapd0:        el0_svc_common.llvm.17258447499513131576+0xc4/0x1e8
-kswapd0:        do_el0_svc+0x28/0xa0
-kswapd0:        el0_svc+0x24/0x38
-kswapd0:        el0_sync_handler+0x88/0xec
-kswapd0:        el0_sync+0x1c0/0x200
-kswapd0:
--> #1
-(
-&sbi->cp_rwsem
-){++++}-{3:3}
-:
-kswapd0:        lock_acquire+0x114/0x394
-kswapd0:        down_read+0x7c/0x98
-kswapd0:        f2fs_do_truncate_blocks+0x78/0x3dc
-kswapd0:        f2fs_truncate+0xc8/0x128
-kswapd0:        f2fs_evict_inode+0x2b8/0x8b8
-kswapd0:        evict+0xd4/0x2f8
-kswapd0:        iput+0x1c0/0x258
-kswapd0:        do_unlinkat+0x170/0x2a0
-kswapd0:        __arm64_sys_unlinkat+0x4c/0x68
-kswapd0:        el0_svc_common.llvm.17258447499513131576+0xc4/0x1e8
-kswapd0:        do_el0_svc+0x28/0xa0
-kswapd0:        el0_svc+0x24/0x38
-kswapd0:        el0_sync_handler+0x88/0xec
-kswapd0:        el0_sync+0x1c0/0x200
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
 
-Cc: stable@vger.kernel.org
-Fixes: bdbc90fa55af ("f2fs: don't put dentry page in pagecache into highmem")
-Reviewed-by: Chao Yu <chao@kernel.org>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Light Hsieh <light.hsieh@mediatek.com>
-Tested-by: Light Hsieh <light.hsieh@mediatek.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As can be seen, despite the admin-triggered replace, the entry remains in the
+NUD_PERMANENT state.
+
+After fix, NUD_PERMANENT -> NUD_* & NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
+  [...]
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn STALE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
+  [...]
+
+After the fix, the admin-triggered replace switches to a dynamic state from
+the NTF_USE flag which triggered a new neighbor resolution. Likewise, we can
+transition back from there, if needed, into NUD_PERMANENT.
+
+Similar before/after behavior can be observed for below transitions:
+
+Before fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+
+After fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
+
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
+  [...]
+  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
+  # ./ip/ip n
+  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
+  [..]
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Roopa Prabhu <roopa@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/inode.c |    2 +-
- fs/f2fs/namei.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/net/neighbour.h |  1 +
+ net/core/neighbour.c    | 22 +++++++++++++---------
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -455,7 +455,7 @@ make_now:
- 		inode->i_op = &f2fs_dir_inode_operations;
- 		inode->i_fop = &f2fs_dir_operations;
- 		inode->i_mapping->a_ops = &f2fs_dblock_aops;
--		inode_nohighmem(inode);
-+		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
- 	} else if (S_ISLNK(inode->i_mode)) {
- 		if (file_is_encrypt(inode))
- 			inode->i_op = &f2fs_encrypted_symlink_inode_operations;
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -679,7 +679,7 @@ static int f2fs_mkdir(struct inode *dir,
- 	inode->i_op = &f2fs_dir_inode_operations;
- 	inode->i_fop = &f2fs_dir_operations;
- 	inode->i_mapping->a_ops = &f2fs_dblock_aops;
--	inode_nohighmem(inode);
-+	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
+diff --git a/include/net/neighbour.h b/include/net/neighbour.h
+index 4232bc8ce3d7d..b6494e87c897c 100644
+--- a/include/net/neighbour.h
++++ b/include/net/neighbour.h
+@@ -253,6 +253,7 @@ static inline void *neighbour_priv(const struct neighbour *n)
+ #define NEIGH_UPDATE_F_OVERRIDE			0x00000001
+ #define NEIGH_UPDATE_F_WEAK_OVERRIDE		0x00000002
+ #define NEIGH_UPDATE_F_OVERRIDE_ISROUTER	0x00000004
++#define NEIGH_UPDATE_F_USE			0x10000000
+ #define NEIGH_UPDATE_F_EXT_LEARNED		0x20000000
+ #define NEIGH_UPDATE_F_ISROUTER			0x40000000
+ #define NEIGH_UPDATE_F_ADMIN			0x80000000
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 3a4cf53e38416..02e55041a8813 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1221,7 +1221,7 @@ static void neigh_update_hhs(struct neighbour *neigh)
+ 				lladdr instead of overriding it
+ 				if it is different.
+ 	NEIGH_UPDATE_F_ADMIN	means that the change is administrative.
+-
++	NEIGH_UPDATE_F_USE	means that the entry is user triggered.
+ 	NEIGH_UPDATE_F_OVERRIDE_ISROUTER allows to override existing
+ 				NTF_ROUTER flag.
+ 	NEIGH_UPDATE_F_ISROUTER	indicates if the neighbour is known as
+@@ -1259,6 +1259,12 @@ static int __neigh_update(struct neighbour *neigh, const u8 *lladdr,
+ 		goto out;
  
- 	set_inode_flag(inode, FI_INC_LINK);
- 	f2fs_lock_op(sbi);
+ 	ext_learn_change = neigh_update_ext_learned(neigh, flags, &notify);
++	if (flags & NEIGH_UPDATE_F_USE) {
++		new = old & ~NUD_PERMANENT;
++		neigh->nud_state = new;
++		err = 0;
++		goto out;
++	}
+ 
+ 	if (!(new & NUD_VALID)) {
+ 		neigh_del_timer(neigh);
+@@ -1966,22 +1972,20 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 
+ 	if (protocol)
+ 		neigh->protocol = protocol;
+-
+ 	if (ndm->ndm_flags & NTF_EXT_LEARNED)
+ 		flags |= NEIGH_UPDATE_F_EXT_LEARNED;
+-
+ 	if (ndm->ndm_flags & NTF_ROUTER)
+ 		flags |= NEIGH_UPDATE_F_ISROUTER;
++	if (ndm->ndm_flags & NTF_USE)
++		flags |= NEIGH_UPDATE_F_USE;
+ 
+-	if (ndm->ndm_flags & NTF_USE) {
++	err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
++			     NETLINK_CB(skb).portid, extack);
++	if (!err && ndm->ndm_flags & NTF_USE) {
+ 		neigh_event_send(neigh, NULL);
+ 		err = 0;
+-	} else
+-		err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
+-				     NETLINK_CB(skb).portid, extack);
+-
++	}
+ 	neigh_release(neigh);
+-
+ out:
+ 	return err;
+ }
+-- 
+2.33.0
+
 
 
