@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05366451B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3987945192A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356955AbhKOX6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:58:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S240903AbhKOXPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:15:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344340AbhKOTYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE5363662;
-        Mon, 15 Nov 2021 18:56:03 +0000 (UTC)
+        id S244152AbhKOTLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:11:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D8261101;
+        Mon, 15 Nov 2021 18:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002564;
-        bh=vygLcSj35JfyuJklnBz3qEqV7FnIr1Mug85ihSC8ewE=;
+        s=korg; t=1637000349;
+        bh=rrH7UNQZuVL/rSxp4XtzUsJ35UNuCKUETxXcj2WXres=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NwKEiyYLX27AsFeF01RqaUvhpq00S5DAsb9LeRHUZ4Kbv7hJKHemNParFEpmclMTq
-         q7RDyRSitITNLl0KdO0diCHCewp7yLuZ3KgdloK5CfhzAFuRdLjCDPsiP5QFLMLtrt
-         JuAKAdCJXTBjNLDbpTd4XAfTidLy6PhXO9NrogXk=
+        b=zHQsqWQjMDN5s39uPbNOFriuTIIXPzqOYWUjOvO/N9315twxz7VpZL4wv/hyVusZc
+         hdEOSKIu9G4R8TES9sYkmmo+cOXrz11/cBI7wr+nbDDk4/iUeAlvVl5rio5sykcg5h
+         ZwTLjGUfJ9zoJmuaT8zKbpBHGdfkF5Yz1kt9nuYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 615/917] iio: st_pressure_spi: Add missing entries SPI to device ID table
-Date:   Mon, 15 Nov 2021 18:01:50 +0100
-Message-Id: <20211115165449.647206532@linuxfoundation.org>
+Subject: [PATCH 5.14 628/849] usb: dwc2: drd: fix dwc2_drd_role_sw_set when clock could be disabled
+Date:   Mon, 15 Nov 2021 18:01:51 +0100
+Message-Id: <20211115165441.506657838@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-[ Upstream commit 03748d4e003c9f2ad3cd00e3e46f054dcad6b96d ]
+[ Upstream commit 8d387f61b0240854e81450c261beb775065bad5d ]
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding SPI IDs for parts that
-only have a compatible listed.
+In case of USB_DR_MODE_PERIPHERAL, the OTG clock is disabled at the end of
+the probe (it is not the case if USB_DR_MODE_HOST or USB_DR_MODE_OTG).
+The clock is then enabled on udc_start.
+If dwc2_drd_role_sw_set is called before udc_start (it is the case if the
+usb cable is plugged at boot), GOTGCTL and GUSBCFG registers cannot be
+read/written, so session cannot be overridden.
+To avoid this case, check the ll_hw_enabled value and enable the clock if
+it is available, and disable it after the override.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210927134153.12739-1-broonie@kernel.org
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 17f934024e84 ("usb: dwc2: override PHY input signals with usb role switch support")
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211005095305.66397-3-amelie.delaunay@foss.st.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/pressure/st_pressure_spi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/dwc2/drd.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
-index 5001aae8f00b8..e220cf0b125f1 100644
---- a/drivers/iio/pressure/st_pressure_spi.c
-+++ b/drivers/iio/pressure/st_pressure_spi.c
-@@ -117,6 +117,10 @@ static const struct spi_device_id st_press_id_table[] = {
- 	{ LPS33HW_PRESS_DEV_NAME },
- 	{ LPS35HW_PRESS_DEV_NAME },
- 	{ LPS22HH_PRESS_DEV_NAME },
-+	{ "lps001wp-press" },
-+	{ "lps25h-press", },
-+	{ "lps331ap-press" },
-+	{ "lps22hb-press" },
- 	{},
- };
- MODULE_DEVICE_TABLE(spi, st_press_id_table);
+diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
+index 80eae88d76dda..99672360f34b0 100644
+--- a/drivers/usb/dwc2/drd.c
++++ b/drivers/usb/dwc2/drd.c
+@@ -7,6 +7,7 @@
+  * Author(s): Amelie Delaunay <amelie.delaunay@st.com>
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/iopoll.h>
+ #include <linux/platform_device.h>
+ #include <linux/usb/role.h>
+@@ -86,6 +87,20 @@ static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+ 	}
+ #endif
+ 
++	/*
++	 * In case of USB_DR_MODE_PERIPHERAL, clock is disabled at the end of
++	 * the probe and enabled on udc_start.
++	 * If role-switch set is called before the udc_start, we need to enable
++	 * the clock to read/write GOTGCTL and GUSBCFG registers to override
++	 * mode and sessions. It is the case if cable is plugged at boot.
++	 */
++	if (!hsotg->ll_hw_enabled && hsotg->clk) {
++		int ret = clk_prepare_enable(hsotg->clk);
++
++		if (ret)
++			return ret;
++	}
++
+ 	spin_lock_irqsave(&hsotg->lock, flags);
+ 
+ 	if (role == USB_ROLE_HOST) {
+@@ -110,6 +125,9 @@ static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+ 		/* This will raise a Connector ID Status Change Interrupt */
+ 		dwc2_force_mode(hsotg, role == USB_ROLE_HOST);
+ 
++	if (!hsotg->ll_hw_enabled && hsotg->clk)
++		clk_disable_unprepare(hsotg->clk);
++
+ 	dev_dbg(hsotg->dev, "%s-session valid\n",
+ 		role == USB_ROLE_NONE ? "No" :
+ 		role == USB_ROLE_HOST ? "A" : "B");
 -- 
 2.33.0
 
