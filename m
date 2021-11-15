@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4637452133
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CA0451A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244592AbhKPBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:01:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
+        id S234077AbhKOXhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:37:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343509AbhKOTVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C9F6359D;
-        Mon, 15 Nov 2021 18:41:05 +0000 (UTC)
+        id S245705AbhKOTVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00FCC6358E;
+        Mon, 15 Nov 2021 18:39:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001666;
-        bh=1WA+cCAp+hehJOLKhVUxKY83t9K1U3jwFGmAQl/F4oA=;
+        s=korg; t=1637001574;
+        bh=rHUsHtngfJ01PWkzk+xW18SXgQk96K+dt0s8V893RUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hoTV6xn22ZpVKmNkM4o5wJB0jUh77Fr3JomUsEgHiKDtWaipK3atswx7X/+Hov1VX
-         wTPz6g19pqJ0tnEghMHxkdun/MAlT6c8UTM1GfFVrfwrjq+qkOcVijgujwhpPvlVly
-         CGrsfptrM+on3/19ixMoU+imICiogvT2KwZRTXR4=
+        b=cFdxMnIXkpWoLc7b4Asc7dliT+frj0U0zTtjbWpzL+HncaTF4xM5X5+btmyAaltyY
+         b0FG8LxCnD97NXHVpilAMlWTPBQo4yRlVCcOFPOn8dk70asLRaTbkWBzYLwdoWTm3q
+         gX6LhF3uWZbaEEpksgwzt8dF8zhaB6SpCqq9WabQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 242/917] media: imx-jpeg: Fix possible null pointer dereference
-Date:   Mon, 15 Nov 2021 17:55:37 +0100
-Message-Id: <20211115165437.000000206@linuxfoundation.org>
+Subject: [PATCH 5.15 243/917] media: ipu3-imgu: imgu_fmt: Handle properly try
+Date:   Mon, 15 Nov 2021 17:55:38 +0100
+Message-Id: <20211115165437.033061939@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,36 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirela Rabulea <mirela.rabulea@nxp.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit 83f5f0633b156c636f5249d3c10f2a9423dd4c96 ]
+[ Upstream commit 553481e38045f349bb9aa596d03bebd020020c9c ]
 
-Found by Coverity scan.
+For a try_fmt call, the node noes not need to be enabled.
 
-Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-Reviewed-by: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes v4l2-compliance
+
+fail: v4l2-test-formats.cpp(717): Video Output Multiplanar is valid, but
+				  no TRY_FMT was implemented
+test VIDIOC_TRY_FMT: FAIL
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/imx-jpeg/mxc-jpeg.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-index 755138063ee61..33e7604271cdf 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-@@ -575,6 +575,10 @@ static irqreturn_t mxc_jpeg_dec_irq(int irq, void *priv)
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 38a2407645096..ea746e8054eb7 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -696,7 +696,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
  
- 	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
- 	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-+	if (!dst_buf || !src_buf) {
-+		dev_err(dev, "No source or destination buffer.\n");
-+		goto job_unlock;
-+	}
- 	jpeg_src_buf = vb2_to_mxc_buf(&src_buf->vb2_buf);
- 
- 	if (dec_ret & SLOT_STATUS_ENC_CONFIG_ERR) {
+ 		/* CSS expects some format on OUT queue */
+ 		if (i != IPU3_CSS_QUEUE_OUT &&
+-		    !imgu_pipe->nodes[inode].enabled) {
++		    !imgu_pipe->nodes[inode].enabled && !try) {
+ 			fmts[i] = NULL;
+ 			continue;
+ 		}
 -- 
 2.33.0
 
