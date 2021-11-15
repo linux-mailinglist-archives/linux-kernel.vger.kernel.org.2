@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DF0451615
+	by mail.lfdr.de (Postfix) with ESMTP id 38478451614
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348724AbhKOVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:11:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
+        id S231924AbhKOVKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240702AbhKOSMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:12:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F2C76331D;
-        Mon, 15 Nov 2021 17:48:01 +0000 (UTC)
+        id S240709AbhKOSNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:13:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B57B63318;
+        Mon, 15 Nov 2021 17:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998482;
-        bh=WvbNVvULPowsxRnyHhFTKwXDa+FE8n8IL4QR++bK+54=;
+        s=korg; t=1636998484;
+        bh=tbeSfVYlFf2HxaXqbUQJ/zFMIP2AIyjRpUVEK50cMvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o472W/ZK3FUyxKMlyFn1EXJHK00yvvi6cWxQxtgAdhO2vv3MPBvdkjEmFOOJVmfJn
-         cxTH43g9yAm6W35w3sdhp+dAC4lr9ZcTVWmJ1/oj9AjBy2ZSNLGLJngVh+XuWmqlGu
-         D7TQp9btJpm2eIXl5ZDMJ3rOg/KzN/96ufcPs39U=
+        b=dy+H2KKjjJ9N/SXdU3V0XYwzn0skff+rn0uNfjHj/F7mrl1AfkW9E2NZ7TLzsIUdj
+         mhGcMNTL8cfBLHGUykWkEC1Fxzm5XVp8uU4zEIaBU0OHAk/Sfxt4mKrBJUsNIsOC1J
+         cfhucUgyNhDkr4TuTiaE3n9A+cwG2iy16oHfkMK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 525/575] nfc: pn533: Fix double free when pn533_fill_fragment_skbs() fails
-Date:   Mon, 15 Nov 2021 18:04:10 +0100
-Message-Id: <20211115165401.825344432@linuxfoundation.org>
+Subject: [PATCH 5.10 526/575] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
+Date:   Mon, 15 Nov 2021 18:04:11 +0100
+Message-Id: <20211115165401.857548697@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,57 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9fec40f850658e00a14a7dd9e06f7fbc7e59cc4a ]
+[ Upstream commit c7c386fbc20262c1d911c615c65db6a58667d92c ]
 
-skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs,
-but follow error handler branch when pn533_fill_fragment_skbs()
-fails, skb is freed again, results in double free issue. Fix this
-by not free skb in error path of pn533_fill_fragment_skbs.
+gcc warns about undefined behavior the vmalloc code when building
+with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
+__phys_to_pte_val() is evaluated twice:
 
-Fixes: 963a82e07d4e ("NFC: pn533: Split large Tx frames in chunks")
-Fixes: 93ad42020c2d ("NFC: pn533: Target mode Tx fragmentation support")
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+mm/vmalloc.c: In function 'vmap_pfn_apply':
+mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
+ 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+      |                                                 ~~~~~~~~~^~
+arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
+   25 | #define __pte(x)        ((pte_t) { (x) } )
+      |                                     ^
+arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
+   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+      |               ^~~~~~~~~~~~~~~~~
+mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
+ 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+      |                              ^~~~~~~
+
+I have no idea why this never showed up earlier, but the safest
+workaround appears to be changing those macros into inline functions
+so the arguments get evaluated only once.
+
+Cc: Matthew Wilcox <willy@infradead.org>
+Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211105075414.2553155-1-arnd@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/pn533/pn533.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index 18e3435ab8f33..d2c0116157759 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -2258,7 +2258,7 @@ static int pn533_fill_fragment_skbs(struct pn533 *dev, struct sk_buff *skb)
- 		frag = pn533_alloc_skb(dev, frag_size);
- 		if (!frag) {
- 			skb_queue_purge(&dev->fragment_skb);
--			break;
-+			return -ENOMEM;
- 		}
- 
- 		if (!dev->tgt_mode) {
-@@ -2329,7 +2329,7 @@ static int pn533_transceive(struct nfc_dev *nfc_dev,
- 		/* jumbo frame ? */
- 		if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 			rc = pn533_fill_fragment_skbs(dev, skb);
--			if (rc <= 0)
-+			if (rc < 0)
- 				goto error;
- 
- 			skb = skb_dequeue(&dev->fragment_skb);
-@@ -2401,7 +2401,7 @@ static int pn533_tm_send(struct nfc_dev *nfc_dev, struct sk_buff *skb)
- 	/* let's split in multiple chunks if size's too big */
- 	if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 		rc = pn533_fill_fragment_skbs(dev, skb);
--		if (rc <= 0)
-+		if (rc < 0)
- 			goto error;
- 
- 		/* get the first skb */
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 10ffbc96ac31f..f3a70dc7c5942 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -69,9 +69,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+  * page table entry, taking care of 52-bit addresses.
+  */
+ #ifdef CONFIG_ARM64_PA_BITS_52
+-#define __pte_to_phys(pte)	\
+-	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
+-#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
++static inline phys_addr_t __pte_to_phys(pte_t pte)
++{
++	return (pte_val(pte) & PTE_ADDR_LOW) |
++		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
++}
++static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
++{
++	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
++}
+ #else
+ #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
+ #define __phys_to_pte_val(phys)	(phys)
 -- 
 2.33.0
 
