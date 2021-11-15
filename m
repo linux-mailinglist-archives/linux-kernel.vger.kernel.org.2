@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6F0451FB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7946451AB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhKPAod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:44:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1349311AbhKOXmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343861AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC7E463390;
-        Mon, 15 Nov 2021 18:47:31 +0000 (UTC)
+        id S1343893AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 483C8633A2;
+        Mon, 15 Nov 2021 18:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002052;
-        bh=ylbflD2fKg5966bVteRSVa7S9BlHuWn1IrJxPGSbsk4=;
+        s=korg; t=1637002081;
+        bh=OvQjb5L/MnyxUI5jdUwSaRCSWLG+glPe0AryTFQtWes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=onpZ2cSpqtGhoNWK2TvYQlQHK7iOmejWXR115rcf+cOcWzmKsbJmoq1VeBDPw1sY5
-         VW4SgMNRNm1unkr9NVF236NTLu22oqAnM6vCUsfoeZr1lwJUZI3gP4pB8jBgPBzEQQ
-         PNqMKUeMplW5EG9TSf87t4gOyLVGuxu0LlPmhfZM=
+        b=qOoDdGtZFbwAR3Sx7qS6Zhj9TmVV4w7bb9+wHBeq27Q+BLrBgL50fV99aOTLi3OhR
+         6BAUKYqS7b81qkjmWYbDpZB7mv271SU2iqDLuNbOyApWvxWd0LtFQ0+JohwA8WABDH
+         BUztDNxLj4MxEQYe0j7RJIfS2bPo7iPbzbRsoInw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 413/917] crypto: qat - disregard spurious PFVF interrupts
-Date:   Mon, 15 Nov 2021 17:58:28 +0100
-Message-Id: <20211115165442.794306055@linuxfoundation.org>
+Subject: [PATCH 5.15 414/917] hwrng: mtk - Force runtime pm ops for sleep ops
+Date:   Mon, 15 Nov 2021 17:58:29 +0100
+Message-Id: <20211115165442.826221312@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,73 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-[ Upstream commit 18fcba469ba5359c1de7e3fb16f7b9e8cd1b8e02 ]
+[ Upstream commit b6f5f0c8f72d348b2d07b20d7b680ef13a7ffe98 ]
 
-Upon receiving a PFVF message, check if the interrupt bit is set in the
-message. If it is not, that means that the interrupt was probably
-triggered by a collision. In this case, disregard the message and
-re-enable the interrupts.
+Currently mtk_rng_runtime_suspend/resume is called for both runtime pm
+and system sleep operations.
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+This is wrong as these should only be runtime ops as the name already
+suggests. Currently freezing the system will lead to a call to
+mtk_rng_runtime_suspend even if the device currently isn't active. This
+leads to a clock warning because it is disabled/unprepared although it
+isn't enabled/prepared currently.
+
+This patch fixes this by only setting the runtime pm ops and forces to
+call the runtime pm ops from the system sleep ops as well if active but
+not otherwise.
+
+Fixes: 81d2b34508c6 ("hwrng: mtk - add runtime PM support")
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 6 ++++++
- drivers/crypto/qat/qat_common/adf_vf_isr.c    | 6 ++++++
- 2 files changed, 12 insertions(+)
+ drivers/char/hw_random/mtk-rng.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-index 789a4135e28c0..5a41beb8f20f6 100644
---- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-@@ -211,6 +211,11 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
+diff --git a/drivers/char/hw_random/mtk-rng.c b/drivers/char/hw_random/mtk-rng.c
+index 8ad7b515a51b8..6c00ea0085553 100644
+--- a/drivers/char/hw_random/mtk-rng.c
++++ b/drivers/char/hw_random/mtk-rng.c
+@@ -166,8 +166,13 @@ static int mtk_rng_runtime_resume(struct device *dev)
+ 	return mtk_rng_init(&priv->rng);
+ }
  
- 	/* Read message from the VF */
- 	msg = ADF_CSR_RD(pmisc_addr, hw_data->get_pf2vf_offset(vf_nr));
-+	if (!(msg & ADF_VF2PF_INT)) {
-+		dev_info(&GET_DEV(accel_dev),
-+			 "Spurious VF2PF interrupt, msg %X. Ignored\n", msg);
-+		goto out;
-+	}
- 
- 	/* To ACK, clear the VF2PFINT bit */
- 	msg &= ~ADF_VF2PF_INT;
-@@ -294,6 +299,7 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
- 	if (resp && adf_iov_putmsg(accel_dev, resp, vf_nr))
- 		dev_err(&GET_DEV(accel_dev), "Failed to send response to VF\n");
- 
-+out:
- 	/* re-enable interrupt on PF from this VF */
- 	adf_enable_vf2pf_interrupts(accel_dev, (1 << vf_nr));
- 
-diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-index 7828a6573f3e2..2e300c255ab94 100644
---- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-@@ -101,6 +101,11 @@ static void adf_pf2vf_bh_handler(void *data)
- 
- 	/* Read the message from PF */
- 	msg = ADF_CSR_RD(pmisc_bar_addr, hw_data->get_pf2vf_offset(0));
-+	if (!(msg & ADF_PF2VF_INT)) {
-+		dev_info(&GET_DEV(accel_dev),
-+			 "Spurious PF2VF interrupt, msg %X. Ignored\n", msg);
-+		goto out;
-+	}
- 
- 	if (!(msg & ADF_PF2VF_MSGORIGIN_SYSTEM))
- 		/* Ignore legacy non-system (non-kernel) PF2VF messages */
-@@ -149,6 +154,7 @@ static void adf_pf2vf_bh_handler(void *data)
- 	msg &= ~ADF_PF2VF_INT;
- 	ADF_CSR_WR(pmisc_bar_addr, hw_data->get_pf2vf_offset(0), msg);
- 
-+out:
- 	/* Re-enable PF2VF interrupts */
- 	adf_enable_pf2vf_interrupts(accel_dev);
- 	return;
+-static UNIVERSAL_DEV_PM_OPS(mtk_rng_pm_ops, mtk_rng_runtime_suspend,
+-			    mtk_rng_runtime_resume, NULL);
++static const struct dev_pm_ops mtk_rng_pm_ops = {
++	SET_RUNTIME_PM_OPS(mtk_rng_runtime_suspend,
++			   mtk_rng_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++};
++
+ #define MTK_RNG_PM_OPS (&mtk_rng_pm_ops)
+ #else	/* CONFIG_PM */
+ #define MTK_RNG_PM_OPS NULL
 -- 
 2.33.0
 
