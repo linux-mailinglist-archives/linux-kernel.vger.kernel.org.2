@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E28A45205B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA810451906
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242508AbhKPAwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
+        id S1349646AbhKOXNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344232AbhKOTYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F12163636;
-        Mon, 15 Nov 2021 18:54:07 +0000 (UTC)
+        id S243916AbhKOTGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:06:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A04633EE;
+        Mon, 15 Nov 2021 18:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002448;
-        bh=QPAv+pnlnR8/JQUrSyaxyj0CGOv8mdSEsO2XRhRn57E=;
+        s=korg; t=1637000226;
+        bh=AlDYZYESXTj9g84izod3EgH2s/APmTwHtMQWSyBmrBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LECvO47sZJ7Y8jiP9FFBBUYdBUjL32CbV9dOkIgOq56Njfl7MU0sYMNAVGy3g3jQ5
-         tnQVKpLnkN3gtGUyDX1bn+D/Kdu5JG/x+c0nUxO2AWchjq2k2a4gwGuGGJ7N+J1eBB
-         T4IRRhB+71N2zwyDgkWuoXa730DZCtrbH9/dXCrk=
+        b=gpekkhPYjNiW61nGbsVgsnwr7Jli3srQWfYuANKKf9VUgNnjbACfGGeL8b/wJh+fu
+         sJg6t1+wJ5Twu+GVAMhzeTjS9cAwekwA200Fv3Vw59NJysY/2Ma7UsVmg9d5aazwPD
+         4TICax4TK416STBvvFKrbeWDgNzZ8s+OhD0eZak0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 571/917] arm64: dts: broadcom: bcm4908: Fix UART clock name
-Date:   Mon, 15 Nov 2021 18:01:06 +0100
-Message-Id: <20211115165448.141476667@linuxfoundation.org>
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 584/849] soundwire: debugfs: use controller id and link_id for debugfs
+Date:   Mon, 15 Nov 2021 18:01:07 +0100
+Message-Id: <20211115165440.008308478@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 6c38c39ab2141f53786d73e706675e8819a3f2cb ]
+[ Upstream commit 75eac387a2539aa6c6bbee3affa23435f2096396 ]
 
-According to the binding the correct clock name is "refclk".
+link_id can be zero and if we have multiple controller instances
+in a system like Qualcomm debugfs will end-up with duplicate namespace
+resulting in incorrect debugfs entries.
 
-Fixes: 2961f69f151c ("arm64: dts: broadcom: add BCM4908 and Asus GT-AC5300 early DTS files")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Using bus-id and link-id combination should give a unique debugfs directory
+entry and should fix below warning too.
+"debugfs: Directory 'master-0' with parent 'soundwire' already present!"
+
+Fixes: bf03473d5bcc ("soundwire: add debugfs support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210907105332.1257-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi | 2 +-
+ drivers/soundwire/debugfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-index a5a64d17d9ea6..f6b93bbb49228 100644
---- a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-@@ -292,7 +292,7 @@
- 			reg = <0x640 0x18>;
- 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&periph_clk>;
--			clock-names = "periph";
-+			clock-names = "refclk";
- 			status = "okay";
- 		};
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+index b6cad0d59b7b9..49900cd207bc7 100644
+--- a/drivers/soundwire/debugfs.c
++++ b/drivers/soundwire/debugfs.c
+@@ -19,7 +19,7 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
+ 		return;
+ 
+ 	/* create the debugfs master-N */
+-	snprintf(name, sizeof(name), "master-%d", bus->link_id);
++	snprintf(name, sizeof(name), "master-%d-%d", bus->id, bus->link_id);
+ 	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
+ }
  
 -- 
 2.33.0
