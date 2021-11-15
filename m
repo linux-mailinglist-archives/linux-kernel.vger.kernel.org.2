@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5410A451222
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE1945121C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238797AbhKOTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:30:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
+        id S232836AbhKOTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:30:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238909AbhKORwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238901AbhKORwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:52:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118B263271;
-        Mon, 15 Nov 2021 17:32:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B55463282;
+        Mon, 15 Nov 2021 17:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997540;
-        bh=M7KYK+ahIYqjZZQ2s8fXRzsF0bFxQUrv/kfEICO4qMA=;
+        s=korg; t=1636997543;
+        bh=q/oacaZYzNMACT7bW784z0AZu89lv5Bt7+rOVyb+E+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uz1fXVPaNW5mXflpV8+W6JC73BZTocmDQFT40/evEGcRFs4oDTEpdzjW/4TdOlMkL
-         WdiUtFn5AF/K38ap9MTP7cqCoge1dKKgpQhrsk+JzQu+bZ2X4DhGUlfZ2+PIn6IvSd
-         2nc0XuDITZ0mWYAfvnTkUFcplufh8IKhXFsjI0GM=
+        b=1K+mf9pdTq/j5d8XAoQP0fNjEx4Fpt7pAzIP6UvxV+HPEwpWprC6R/9G9F8YIl32r
+         vyp4SBqsGVLUOMIw8K9ad2QDl47ex3F4xCF6ez521yYYX1n2FKdq5P1eVOBR81t7ME
+         oi/WCLv0ZBHLrlASlkjDGWzb1gq1GKnE3d5vEUbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.10 153/575] pinctrl: core: fix possible memory leak in pinctrl_enable()
-Date:   Mon, 15 Nov 2021 17:57:58 +0100
-Message-Id: <20211115165348.991021662@linuxfoundation.org>
+        stable@vger.kernel.org, Tao Zhang <quic_taozha@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 5.10 154/575] coresight: cti: Correct the parameter for pm_runtime_put
+Date:   Mon, 15 Nov 2021 17:57:59 +0100
+Message-Id: <20211115165349.023029006@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,49 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
 
-commit c7892ae13e461ed20154321eb792e07ebe38f5b3 upstream.
+commit 692c9a499b286ea478f41b23a91fe3873b9e1326 upstream.
 
-I got memory leak as follows when doing fault injection test:
+The input parameter of the function pm_runtime_put should be the
+same in the function cti_enable_hw and cti_disable_hw. The correct
+parameter to use here should be dev->parent.
 
-unreferenced object 0xffff888020a7a680 (size 64):
-  comm "i2c-mcp23018-41", pid 23090, jiffies 4295160544 (age 8.680s)
-  hex dump (first 32 bytes):
-    00 48 d3 1e 80 88 ff ff 00 1a 56 c1 ff ff ff ff  .H........V.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000083c79b35>] kmem_cache_alloc_trace+0x16d/0x360
-    [<0000000051803c95>] pinctrl_init_controller+0x6ed/0xb70
-    [<0000000064346707>] pinctrl_register+0x27/0x80
-    [<0000000029b0e186>] devm_pinctrl_register+0x5b/0xe0
-    [<00000000391f5a3e>] mcp23s08_probe_one+0x968/0x118a [pinctrl_mcp23s08]
-    [<000000006112c039>] mcp230xx_probe+0x266/0x560 [pinctrl_mcp23s08_i2c]
-
-If pinctrl_claim_hogs() fails, the 'pindesc' allocated in pinctrl_register_one_pin()
-need be freed.
-
-Cc: stable@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 950b0d91dc10 ("pinctrl: core: Fix regression caused by delayed work for hogs")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211022014323.1156924-1-yangyingliang@huawei.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Fixes: 835d722ba10a ("coresight: cti: Initial CoreSight CTI Driver")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1629365377-5937-1-git-send-email-quic_taozha@quicinc.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hwtracing/coresight/coresight-cti-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -2077,6 +2077,8 @@ int pinctrl_enable(struct pinctrl_dev *p
- 	if (error) {
- 		dev_err(pctldev->dev, "could not claim hogs: %i\n",
- 			error);
-+		pinctrl_free_pindescs(pctldev, pctldev->desc->pins,
-+				      pctldev->desc->npins);
- 		mutex_destroy(&pctldev->mutex);
- 		kfree(pctldev);
+--- a/drivers/hwtracing/coresight/coresight-cti-core.c
++++ b/drivers/hwtracing/coresight/coresight-cti-core.c
+@@ -174,7 +174,7 @@ static int cti_disable_hw(struct cti_drv
+ 	coresight_disclaim_device_unlocked(drvdata->base);
+ 	CS_LOCK(drvdata->base);
+ 	spin_unlock(&drvdata->spinlock);
+-	pm_runtime_put(dev);
++	pm_runtime_put(dev->parent);
+ 	return 0;
  
+ 	/* not disabled this call */
 
 
