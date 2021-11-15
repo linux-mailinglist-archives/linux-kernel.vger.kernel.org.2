@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7161345215B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7815452445
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349090AbhKPBDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:03:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
+        id S1353585AbhKPBg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:36:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245736AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0466328C;
-        Mon, 15 Nov 2021 18:40:24 +0000 (UTC)
+        id S242426AbhKOSgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:36:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 461536326A;
+        Mon, 15 Nov 2021 18:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001624;
-        bh=qoemVxa7ZJJA84I2qEwqFTIIScJkbLpfTVZa4Wcglc8=;
+        s=korg; t=1636999372;
+        bh=U6fQnsNKbPTE11NFNlm0+xZgCeG7JwAaZO672gNR+qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cqlkUIfYwsK6DEgTOjlpAuIRybVNBeJY+vfDSQW/r7lGPLQM7NAL1SbB25Lf5haEV
-         2DJQjmnwZFNr24/9Uswb1h+skpyo6MpwU/S+44yZliIy18kwhKEFfMzwmn8i8ily6q
-         BHNUnTduYidtQryidkbTTRpnJcXRUHevzv6eCMKk=
+        b=sNilQAcCWwjP1CW3OsTkP1t8gQc+/OzdRCzcDw64LGU80JypeZQlWOM3Yq4F2sEZN
+         O5TEfQhnMMcayaJYJhcvVb16Q33feMzUmx6kQgbtv7ldrhw0g42iC4YHm3WpO06zis
+         1XuzEY07F4QdnhUTrCAI96gpgb0Fv8N0ldE4TFAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuanzheng Song <songyuanzheng@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 260/917] thermal/core: Fix null pointer dereference in thermal_release()
-Date:   Mon, 15 Nov 2021 17:55:55 +0100
-Message-Id: <20211115165437.605126352@linuxfoundation.org>
+Subject: [PATCH 5.14 273/849] ACPI: battery: Accept charges over the design capacity as full
+Date:   Mon, 15 Nov 2021 17:55:56 +0100
+Message-Id: <20211115165429.481770411@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuanzheng Song <songyuanzheng@huawei.com>
+From: André Almeida <andrealmeid@collabora.com>
 
-[ Upstream commit 1dd7128b839f631b31a9e9dce3aaf639bef74e9d ]
+[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
 
-If both dev_set_name() and device_register() failed, then null pointer
-dereference occurs in thermal_release() which will use strncmp() to
-compare the name.
+Some buggy firmware and/or brand new batteries can support a charge that's
+slightly over the reported design capacity. In such cases, the kernel will
+report to userspace that the charging state of the battery is "Unknown",
+when in reality the battery charge is "Full", at least from the design
+capacity point of view. Make the fallback condition accepts capacities
+over the designed capacity so userspace knows that is full.
 
-So fix it by adding dev_set_name() return value check.
-
-Signed-off-by: Yuanzheng Song <songyuanzheng@huawei.com>
-Link: https://lore.kernel.org/r/20211015083230.67658-1-songyuanzheng@huawei.com
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: André Almeida <andrealmeid@collabora.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/thermal_core.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/acpi/battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 51374f4e1ccaf..d094ebbde0ed7 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -902,6 +902,10 @@ __thermal_cooling_device_register(struct device_node *np,
- 		goto out_kfree_cdev;
- 	cdev->id = ret;
+diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+index dae91f906cea9..8afa85d6eb6a7 100644
+--- a/drivers/acpi/battery.c
++++ b/drivers/acpi/battery.c
+@@ -169,7 +169,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
+ 		return 1;
  
-+	ret = dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
-+	if (ret)
-+		goto out_ida_remove;
-+
- 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
- 	if (!cdev->type) {
- 		ret = -ENOMEM;
-@@ -916,7 +920,6 @@ __thermal_cooling_device_register(struct device_node *np,
- 	cdev->device.class = &thermal_class;
- 	cdev->devdata = devdata;
- 	thermal_cooling_device_setup_sysfs(cdev);
--	dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
- 	ret = device_register(&cdev->device);
- 	if (ret)
- 		goto out_kfree_type;
-@@ -1227,6 +1230,10 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- 	tz->id = id;
- 	strlcpy(tz->type, type, sizeof(tz->type));
+ 	/* fallback to using design values for broken batteries */
+-	if (battery->design_capacity == battery->capacity_now)
++	if (battery->design_capacity <= battery->capacity_now)
+ 		return 1;
  
-+	result = dev_set_name(&tz->device, "thermal_zone%d", tz->id);
-+	if (result)
-+		goto remove_id;
-+
- 	if (!ops->critical)
- 		ops->critical = thermal_zone_device_critical;
- 
-@@ -1248,7 +1255,6 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- 	/* A new thermal zone needs to be updated anyway. */
- 	atomic_set(&tz->need_update, 1);
- 
--	dev_set_name(&tz->device, "thermal_zone%d", tz->id);
- 	result = device_register(&tz->device);
- 	if (result)
- 		goto release_device;
+ 	/* we don't do any sort of metric based on percentages */
 -- 
 2.33.0
 
