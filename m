@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1754518DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E906D452077
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348450AbhKOXJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:09:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35146 "EHLO mail.kernel.org"
+        id S1358472AbhKPAx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:53:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243301AbhKOTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:00:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E094061A56;
-        Mon, 15 Nov 2021 18:13:58 +0000 (UTC)
+        id S1344053AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3653633BD;
+        Mon, 15 Nov 2021 18:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000039;
-        bh=bBkGjMWZxNSNRLaYykUkU8bSGKS7TUKAE7HXC0Eo9ak=;
+        s=korg; t=1637002272;
+        bh=n1CJL2aqkgCPbO6GD5Dze7UTSEKi0xcM60f56OOSx/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mSm2RcwOCN4EVl7bfQzPosudvnA08llb/Ff8kvixxtsshEhq8TDNrLsrSbYSQgkVE
-         //YXN2z4I9GXno6oLC6dbCp+VW1mtH2Ikkzzk87HHp84vZPX5v7d6VJP93XGLnB8QJ
-         KgwxMKlzwqxtR9tCJe5HBpIiGSke7mo2eZwauUQU=
+        b=LKvdCl7aJrNY0EHNf3qj8LQ28EVygyrARDnKKe8fIoHUhS49hKIQVAs4yL33sI9FZ
+         /deamdN6v+bIkKZDM+RpygjKyNHjnQ4vy7ZNcW7P2TESgRMgafazN753UAWSfd48sT
+         0tJaEFwqJGRVD/sR5SpJCKngaxc70ThEhs1QaeMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Evgeny Vereshchagin <evvers@ya.ru>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 515/849] spi: spi-rpc-if: Check return value of rpcif_sw_init()
+Subject: [PATCH 5.15 503/917] libbpf: Fix overflow in BTF sanity checks
 Date:   Mon, 15 Nov 2021 17:59:58 +0100
-Message-Id: <20211115165437.706476289@linuxfoundation.org>
+Message-Id: <20211115165445.821188228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 0b0a281ed7001d4c4f4c47bdc84680c4997761ca ]
+[ Upstream commit 5245dafe3d49efba4d3285cf27ee1cc1eeafafc6 ]
 
-rpcif_sw_init() can fail so make sure we check the return value
-of it and on error exit rpcif_spi_probe() callback with error code.
+btf_header's str_off+str_len or type_off+type_len can overflow as they
+are u32s. This will lead to bypassing the sanity checks during BTF
+parsing, resulting in crashes afterwards. Fix by using 64-bit signed
+integers for comparison.
 
-Fixes: eb8d6d464a27 ("spi: add Renesas RPC-IF driver")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20211025205631.21151-4-prabhakar.mahadev-lad.rj@bp.renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: d8123624506c ("libbpf: Fix BTF data layout checks and allow empty BTF")
+Reported-by: Evgeny Vereshchagin <evvers@ya.ru>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20211023003157.726961-1-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-rpc-if.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
-index c53138ce00309..83796a4ead34a 100644
---- a/drivers/spi/spi-rpc-if.c
-+++ b/drivers/spi/spi-rpc-if.c
-@@ -139,7 +139,9 @@ static int rpcif_spi_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index bf8c8676d68e5..cfd701debcf61 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -236,12 +236,12 @@ static int btf_parse_hdr(struct btf *btf)
+ 	}
  
- 	rpc = spi_controller_get_devdata(ctlr);
--	rpcif_sw_init(rpc, parent);
-+	error = rpcif_sw_init(rpc, parent);
-+	if (error)
-+		return error;
+ 	meta_left = btf->raw_size - sizeof(*hdr);
+-	if (meta_left < hdr->str_off + hdr->str_len) {
++	if (meta_left < (long long)hdr->str_off + hdr->str_len) {
+ 		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+ 		return -EINVAL;
+ 	}
  
- 	platform_set_drvdata(pdev, ctlr);
- 
+-	if (hdr->type_off + hdr->type_len > hdr->str_off) {
++	if ((long long)hdr->type_off + hdr->type_len > hdr->str_off) {
+ 		pr_debug("Invalid BTF data sections layout: type data at %u + %u, strings data at %u + %u\n",
+ 			 hdr->type_off, hdr->type_len, hdr->str_off, hdr->str_len);
+ 		return -EINVAL;
 -- 
 2.33.0
 
