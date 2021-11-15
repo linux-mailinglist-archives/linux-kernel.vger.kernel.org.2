@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C94451095
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF35E451070
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241321AbhKOSum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:50:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46310 "EHLO mail.kernel.org"
+        id S242973AbhKOSs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:48:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238274AbhKORfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:35:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F298060E8D;
-        Mon, 15 Nov 2021 17:23:54 +0000 (UTC)
+        id S231823AbhKORfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:35:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8792960EE2;
+        Mon, 15 Nov 2021 17:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997035;
-        bh=5dY26stGzssEDVsXBZRXTULPoknLwBQkpiVg/rsA0y4=;
+        s=korg; t=1636997038;
+        bh=NDMH4gM+fIQJYitdbYABCV9UrpDXlyrfAf6Au5wSHFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ucd3zXUea1svEjuxE7oivpTSck+9ouih5q1mKlCeNrGiJpY9fgJzzKtQQoja2tChW
-         CEJ9tvhrf0gofTERyHF71m0NausgoW/pDAppZFvCUi0J/QqIKXtKImOlIjZ9/uW0yE
-         s4iFccc0aqdO7IuTgd2dySFclq7CMog6sQLGMzuo=
+        b=bM473KDo2IRF6HBI+HALTJVvCqKibZM78sADAJSnOAY5V7YWqPzBkiQCQqAsf8jLf
+         3XUXbuFv8z+BvaMLUdX+aElUq4B/I2rOthGsAS0cAgW0Pe2lEginyqlFNIkkn7CKRh
+         uF7XpylCBkH9SicM431yfzfIgXaSNmGzLnX4dXBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        bfu@redhat.com, Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
         Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.4 351/355] s390/tape: fix timer initialization in tape_std_assign()
-Date:   Mon, 15 Nov 2021 18:04:35 +0100
-Message-Id: <20211115165325.101977227@linuxfoundation.org>
+Subject: [PATCH 5.4 352/355] s390/cio: make ccw_device_dma_* more robust
+Date:   Mon, 15 Nov 2021 18:04:36 +0100
+Message-Id: <20211115165325.134311761@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,44 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-commit 213fca9e23b59581c573d558aa477556f00b8198 upstream.
+commit ad9a14517263a16af040598c7920c09ca9670a31 upstream.
 
-commit 9c6c273aa424 ("timer: Remove init_timer_on_stack() in favor
-of timer_setup_on_stack()") changed the timer setup from
-init_timer_on_stack(() to timer_setup(), but missed to change the
-mod_timer() call. And while at it, use msecs_to_jiffies() instead
-of the open coded timeout calculation.
+Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+classic notifiers") we were supposed to make sure that
+virtio_ccw_release_dev() completes before the ccw device and the
+attached dma pool are torn down, but unfortunately we did not.  Before
+that commit it used to be OK to delay cleaning up the memory allocated
+by virtio-ccw indefinitely (which isn't really intuitive for guys used
+to destruction happens in reverse construction order), but now we
+trigger a BUG_ON if the genpool is destroyed before all memory allocated
+from it is deallocated. Which brings down the guest. We can observe this
+problem, when unregister_virtio_device() does not give up the last
+reference to the virtio_device (e.g. because a virtio-scsi attached scsi
+disk got removed without previously unmounting its previously mounted
+partition).
 
-Cc: stable@vger.kernel.org
-Fixes: 9c6c273aa424 ("timer: Remove init_timer_on_stack() in favor of timer_setup_on_stack()")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
+To make sure that the genpool is only destroyed after all the necessary
+freeing is done let us take a reference on the ccw device on each
+ccw_device_dma_zalloc() and give it up on each ccw_device_dma_free().
+
+Actually there are multiple approaches to fixing the problem at hand
+that can work. The upside of this one is that it is the safest one while
+remaining simple. We don't crash the guest even if the driver does not
+pair allocations and frees. The downside is the reference counting
+overhead, that the reference counting for ccw devices becomes more
+complex, in a sense that we need to pair the calls to the aforementioned
+functions for it to be correct, and that if we happen to leak, we leak
+more than necessary (the whole ccw device instead of just the genpool).
+
+Some alternatives to this approach are taking a reference in
+virtio_ccw_online() and giving it up in virtio_ccw_release_dev() or
+making sure virtio_ccw_release_dev() completes its work before
+virtio_ccw_remove() returns. The downside of these approaches is that
+these are less safe against programming errors.
+
+Cc: <stable@vger.kernel.org> # v5.3
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and classic notifiers")
+Reported-by: bfu@redhat.com
+Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/char/tape_std.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/s390/cio/device_ops.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/s390/char/tape_std.c
-+++ b/drivers/s390/char/tape_std.c
-@@ -53,7 +53,6 @@ int
- tape_std_assign(struct tape_device *device)
+--- a/drivers/s390/cio/device_ops.c
++++ b/drivers/s390/cio/device_ops.c
+@@ -717,13 +717,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_schid);
+  */
+ void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
  {
- 	int                  rc;
--	struct timer_list    timeout;
- 	struct tape_request *request;
+-	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	void *addr;
++
++	if (!get_device(&cdev->dev))
++		return NULL;
++	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	if (IS_ERR_OR_NULL(addr))
++		put_device(&cdev->dev);
++	return addr;
+ }
+ EXPORT_SYMBOL(ccw_device_dma_zalloc);
  
- 	request = tape_alloc_request(2, 11);
-@@ -70,7 +69,7 @@ tape_std_assign(struct tape_device *devi
- 	 * So we set up a timeout for this call.
- 	 */
- 	timer_setup(&request->timer, tape_std_assign_timeout, 0);
--	mod_timer(&timeout, jiffies + 2 * HZ);
-+	mod_timer(&request->timer, jiffies + msecs_to_jiffies(2000));
- 
- 	rc = tape_do_io_interruptible(device, request);
+ void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
+ {
++	if (!cpu_addr)
++		return;
+ 	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
++	put_device(&cdev->dev);
+ }
+ EXPORT_SYMBOL(ccw_device_dma_free);
  
 
 
