@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F63D451F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6583F451990
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355558AbhKPAic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1353653AbhKOXX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:23:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344695AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09E9D636B2;
-        Mon, 15 Nov 2021 19:02:28 +0000 (UTC)
+        id S244904AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 873AB63332;
+        Mon, 15 Nov 2021 18:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002949;
-        bh=i/7S39qQbHs2nCtUI34TzsTsOa/g1/ukLxEnfut4UTw=;
+        s=korg; t=1637000726;
+        bh=BJf7ns3jS3OpHlbuN5pgJMLQt/TESfxeRUwcq55vpL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/aXtaR0giV/WscKuLX1L73uE06P6Zu78pKyEY99VjxYhPuTHnIkDdqttADPjYbXR
-         yKHfYapOegehsaD56z2bieNxp136unJYkkMxZszto1B391hSOv+ozvdh8qdFwu8yrn
-         bf8LYlRxEwvIryY1BJJrIDL09iPKFGku4/QnFfGg=
+        b=i7gRMfKuqVqCJzaPHetYP92EfNLqqzDI7gE4pkdc0BKyo/Bnvp8zng2iNasp/QfwY
+         BsOvEEvjlDjXsNIE+TB0wfJ1qO1GLKnpahMbBSZWNXvY5bA6jUzDxblXInUQAWYbNU
+         FtigKXbT3xVcDpfmc7ANR24HZdr/OVyiymD6RKK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 755/917] NFSv4: Fix a regression in nfs_set_open_stateid_locked()
-Date:   Mon, 15 Nov 2021 18:04:10 +0100
-Message-Id: <20211115165454.510719103@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 768/849] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
+Date:   Mon, 15 Nov 2021 18:04:11 +0100
+Message-Id: <20211115165446.238867094@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 01d29f87fcfef38d51ce2b473981a5c1e861ac0a ]
+[ Upstream commit 2498363310e9b5e5de0e104709adc35c9f3ff7d9 ]
 
-If we already hold open state on the client, yet the server gives us a
-completely different stateid to the one we already hold, then we
-currently treat it as if it were an out-of-sequence update, and wait for
-5 seconds for other updates to come in.
-This commit fixes the behaviour so that we immediately start processing
-of the new stateid, and then leave it to the call to
-nfs4_test_and_free_stateid() to decide what to do with the old stateid.
+Using the % operator on a 64-bit variable is expensive and can
+cause a link failure:
 
-Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
+stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
+stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
+
+As we know that we just want to check the alignment in
+stm32_dma_get_max_width(), there is no need for a full division, and
+using a simple mask is a faster replacement.
+
+Same in stm32_dma_set_xfer_param(), change this to only allow burst
+transfers if the address is a multiple of the length.
+stm32_dma_get_best_burst just after will take buf_len into account to fix
+burst in case of misalignment.
+
+Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211103153312.41483-1-amelie.delaunay@foss.st.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/dma/stm32-dma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index e1214bb6b7ee5..1f38f8cd8c3ce 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -1609,15 +1609,16 @@ static bool nfs_stateid_is_sequential(struct nfs4_state *state,
- {
- 	if (test_bit(NFS_OPEN_STATE, &state->flags)) {
- 		/* The common case - we're updating to a new sequence number */
--		if (nfs4_stateid_match_other(stateid, &state->open_stateid) &&
--			nfs4_stateid_is_next(&state->open_stateid, stateid)) {
--			return true;
-+		if (nfs4_stateid_match_other(stateid, &state->open_stateid)) {
-+			if (nfs4_stateid_is_next(&state->open_stateid, stateid))
-+				return true;
-+			return false;
- 		}
--	} else {
--		/* This is the first OPEN in this generation */
--		if (stateid->seqid == cpu_to_be32(1))
--			return true;
-+		/* The server returned a new stateid */
- 	}
-+	/* This is the first OPEN in this generation */
-+	if (stateid->seqid == cpu_to_be32(1))
-+		return true;
- 	return false;
- }
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 1b2063fb3d1d6..bf3042b655485 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -278,7 +278,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+ 		max_width = max_width >> 1;
  
+-	if (buf_addr % max_width)
++	if (buf_addr & (max_width - 1))
+ 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+ 
+ 	return max_width;
+@@ -754,7 +754,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			src_maxburst = 1;
+ 		else
+ 			src_maxburst = STM32_DMA_MAX_BURST;
+@@ -810,7 +810,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			dst_maxburst = 1;
+ 		else
+ 			dst_maxburst = STM32_DMA_MAX_BURST;
 -- 
 2.33.0
 
