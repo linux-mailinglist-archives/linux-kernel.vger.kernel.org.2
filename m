@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BB745242E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA18645214E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhKPBgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:36:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42462 "EHLO mail.kernel.org"
+        id S1346342AbhKPBDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:03:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242069AbhKOSgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:36:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC3E6324A;
-        Mon, 15 Nov 2021 18:02:31 +0000 (UTC)
+        id S245720AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0237163287;
+        Mon, 15 Nov 2021 18:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999352;
-        bh=D6135yZNhnbtuV52ruDB2qSvcFalQAVynZGw/c955oU=;
+        s=korg; t=1637001608;
+        bh=U6fQnsNKbPTE11NFNlm0+xZgCeG7JwAaZO672gNR+qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R8OMCbavT0/dHojpQjcGBitIAz5Bnl3ChS6YXKbn9ToBYalI6DYBd48jFJKbbk9Vd
-         VLHX2i903WSEbjG/3/6jyAoI8kbyFQzOoZhSPrKdow2vtwE1wful4sjyqW9swgjxt9
-         qgSDNRK6bGYhRlb7l49xip+R19P+KJB4DWxL8wMI=
+        b=VEUiCdYzBz2Ivn9mldFtBKKss5UAwxHj8KIc6q2J5pa+gWEC2DcD+KHs4oaCSoosm
+         vln6Daf/9lYFE5CnfGP76HLCKduPeRXJAWs+uMkW++W0YuFI5n+i4PmGLbzL6KzeeB
+         rSlXEZmNQnaUGAk6aTgzIB01qNFY/ceO8i28/744=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 266/849] net-sysfs: try not to restart the syscall if it will fail eventually
+Subject: [PATCH 5.15 254/917] ACPI: battery: Accept charges over the design capacity as full
 Date:   Mon, 15 Nov 2021 17:55:49 +0100
-Message-Id: <20211115165429.252607313@linuxfoundation.org>
+Message-Id: <20211115165437.397894404@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,159 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: André Almeida <andrealmeid@collabora.com>
 
-[ Upstream commit 146e5e733310379f51924111068f08a3af0db830 ]
+[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
 
-Due to deadlocks in the networking subsystem spotted 12 years ago[1],
-a workaround was put in place[2] to avoid taking the rtnl lock when it
-was not available and restarting the syscall (back to VFS, letting
-userspace spin). The following construction is found a lot in the net
-sysfs and sysctl code:
+Some buggy firmware and/or brand new batteries can support a charge that's
+slightly over the reported design capacity. In such cases, the kernel will
+report to userspace that the charging state of the battery is "Unknown",
+when in reality the battery charge is "Full", at least from the design
+capacity point of view. Make the fallback condition accepts capacities
+over the designed capacity so userspace knows that is full.
 
-  if (!rtnl_trylock())
-          return restart_syscall();
-
-This can be problematic when multiple userspace threads use such
-interfaces in a short period, making them to spin a lot. This happens
-for example when adding and moving virtual interfaces: userspace
-programs listening on events, such as systemd-udevd and NetworkManager,
-do trigger actions reading files in sysfs. It gets worse when a lot of
-virtual interfaces are created concurrently, say when creating
-containers at boot time.
-
-Returning early without hitting the above pattern when the syscall will
-fail eventually does make things better. While it is not a fix for the
-issue, it does ease things.
-
-[1] https://lore.kernel.org/netdev/49A4D5D5.5090602@trash.net/
-    https://lore.kernel.org/netdev/m14oyhis31.fsf@fess.ebiederm.org/
-    and https://lore.kernel.org/netdev/20090226084924.16cb3e08@nehalam/
-[2] Rightfully, those deadlocks are *hard* to solve.
-
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: André Almeida <andrealmeid@collabora.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/net-sysfs.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+ drivers/acpi/battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-index b2e49eb7001d6..dfa5ecff7f738 100644
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -175,6 +175,14 @@ static int change_carrier(struct net_device *dev, unsigned long new_carrier)
- static ssize_t carrier_store(struct device *dev, struct device_attribute *attr,
- 			     const char *buf, size_t len)
- {
-+	struct net_device *netdev = to_net_dev(dev);
-+
-+	/* The check is also done in change_carrier; this helps returning early
-+	 * without hitting the trylock/restart in netdev_store.
-+	 */
-+	if (!netdev->netdev_ops->ndo_change_carrier)
-+		return -EOPNOTSUPP;
-+
- 	return netdev_store(dev, attr, buf, len, change_carrier);
- }
+diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+index dae91f906cea9..8afa85d6eb6a7 100644
+--- a/drivers/acpi/battery.c
++++ b/drivers/acpi/battery.c
+@@ -169,7 +169,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
+ 		return 1;
  
-@@ -196,6 +204,12 @@ static ssize_t speed_show(struct device *dev,
- 	struct net_device *netdev = to_net_dev(dev);
- 	int ret = -EINVAL;
+ 	/* fallback to using design values for broken batteries */
+-	if (battery->design_capacity == battery->capacity_now)
++	if (battery->design_capacity <= battery->capacity_now)
+ 		return 1;
  
-+	/* The check is also done in __ethtool_get_link_ksettings; this helps
-+	 * returning early without hitting the trylock/restart below.
-+	 */
-+	if (!netdev->ethtool_ops->get_link_ksettings)
-+		return ret;
-+
- 	if (!rtnl_trylock())
- 		return restart_syscall();
- 
-@@ -216,6 +230,12 @@ static ssize_t duplex_show(struct device *dev,
- 	struct net_device *netdev = to_net_dev(dev);
- 	int ret = -EINVAL;
- 
-+	/* The check is also done in __ethtool_get_link_ksettings; this helps
-+	 * returning early without hitting the trylock/restart below.
-+	 */
-+	if (!netdev->ethtool_ops->get_link_ksettings)
-+		return ret;
-+
- 	if (!rtnl_trylock())
- 		return restart_syscall();
- 
-@@ -468,6 +488,14 @@ static ssize_t proto_down_store(struct device *dev,
- 				struct device_attribute *attr,
- 				const char *buf, size_t len)
- {
-+	struct net_device *netdev = to_net_dev(dev);
-+
-+	/* The check is also done in change_proto_down; this helps returning
-+	 * early without hitting the trylock/restart in netdev_store.
-+	 */
-+	if (!netdev->netdev_ops->ndo_change_proto_down)
-+		return -EOPNOTSUPP;
-+
- 	return netdev_store(dev, attr, buf, len, change_proto_down);
- }
- NETDEVICE_SHOW_RW(proto_down, fmt_dec);
-@@ -478,6 +506,12 @@ static ssize_t phys_port_id_show(struct device *dev,
- 	struct net_device *netdev = to_net_dev(dev);
- 	ssize_t ret = -EINVAL;
- 
-+	/* The check is also done in dev_get_phys_port_id; this helps returning
-+	 * early without hitting the trylock/restart below.
-+	 */
-+	if (!netdev->netdev_ops->ndo_get_phys_port_id)
-+		return -EOPNOTSUPP;
-+
- 	if (!rtnl_trylock())
- 		return restart_syscall();
- 
-@@ -500,6 +534,13 @@ static ssize_t phys_port_name_show(struct device *dev,
- 	struct net_device *netdev = to_net_dev(dev);
- 	ssize_t ret = -EINVAL;
- 
-+	/* The checks are also done in dev_get_phys_port_name; this helps
-+	 * returning early without hitting the trylock/restart below.
-+	 */
-+	if (!netdev->netdev_ops->ndo_get_phys_port_name &&
-+	    !netdev->netdev_ops->ndo_get_devlink_port)
-+		return -EOPNOTSUPP;
-+
- 	if (!rtnl_trylock())
- 		return restart_syscall();
- 
-@@ -522,6 +563,14 @@ static ssize_t phys_switch_id_show(struct device *dev,
- 	struct net_device *netdev = to_net_dev(dev);
- 	ssize_t ret = -EINVAL;
- 
-+	/* The checks are also done in dev_get_phys_port_name; this helps
-+	 * returning early without hitting the trylock/restart below. This works
-+	 * because recurse is false when calling dev_get_port_parent_id.
-+	 */
-+	if (!netdev->netdev_ops->ndo_get_port_parent_id &&
-+	    !netdev->netdev_ops->ndo_get_devlink_port)
-+		return -EOPNOTSUPP;
-+
- 	if (!rtnl_trylock())
- 		return restart_syscall();
- 
-@@ -1226,6 +1275,12 @@ static ssize_t tx_maxrate_store(struct netdev_queue *queue,
- 	if (!capable(CAP_NET_ADMIN))
- 		return -EPERM;
- 
-+	/* The check is also done later; this helps returning early without
-+	 * hitting the trylock/restart below.
-+	 */
-+	if (!dev->netdev_ops->ndo_set_tx_maxrate)
-+		return -EOPNOTSUPP;
-+
- 	err = kstrtou32(buf, 10, &rate);
- 	if (err < 0)
- 		return err;
+ 	/* we don't do any sort of metric based on percentages */
 -- 
 2.33.0
 
