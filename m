@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A7D4506B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896104506A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhKOO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:27:02 -0500
-Received: from mga06.intel.com ([134.134.136.31]:10935 "EHLO mga06.intel.com"
+        id S235000AbhKOOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:24:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236330AbhKOO0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:26:48 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="294267137"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="294267137"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:20:20 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="453830422"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:20:18 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mmcq8-0077BB-DE;
-        Mon, 15 Nov 2021 16:20:08 +0200
-Date:   Mon, 15 Nov 2021 16:20:08 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
-Message-ID: <YZJsmDWih2240nyr@smile.fi.intel.com>
-References: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
- <YY6vV2zUTdH5SNt5@fedora>
- <YZIs1FvxA0hKylNd@alley>
- <YZI4i5hsgD4pDjoQ@smile.fi.intel.com>
- <YZJnRyqtDzfmI0Cf@alley>
+        id S236402AbhKOOXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:23:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8FC5863241;
+        Mon, 15 Nov 2021 14:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636986011;
+        bh=BEckmEs8ebSXSPj7rCFkGY7oQDcOQbeQK8wbEtkvWzc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=K2QdhECxDEKTyxsJD1jP4x/rQ641wZI3hOk6pVxzrcuZrazdAghsDDoz5AIbdd0jc
+         wkR0EllOaAo5wajhBGk57xjPd4Ei8GhlTsj8dKNQeDIfLP1wlklgTX6U1BRoEFMuHF
+         wOFOClIfploloCWx7Ux+oJc3bZ+F7bH8aui0aRB50pgGEI5+K1ir2Qq91e88fgJlxN
+         PqqT64ze42GcNEBSCZD7LAMljAywwd3liVgFYtWCTv4wgpdCh1zYqoW5ilftTwg4cY
+         7A28CvtfeALxHDXo9OOTr5rzT5kXQX7UH2h1uZqwHDs7zH+EuHkI75Pvbb7x1KO2HN
+         nTOayoooFv/eg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 817DB60A3B;
+        Mon, 15 Nov 2021 14:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZJnRyqtDzfmI0Cf@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] hinic: use ARRAY_SIZE instead of ARRAY_LEN
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163698601152.19991.13935763255754161880.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Nov 2021 14:20:11 +0000
+References: <20211115050026.5622-1-guozhengkui@vivo.com>
+In-Reply-To: <20211115050026.5622-1-guozhengkui@vivo.com>
+To:     Guo Zhengkui <guozhengkui@vivo.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, moyufeng@huawei.com,
+        huangguangbin2@huawei.com, sean.anderson@seco.com,
+        huangdaode@huawei.com, arnd@arndb.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@vivo.com,
+        colomar.6.4.3@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:57:27PM +0100, Petr Mladek wrote:
-> On Mon 2021-11-15 12:38:03, Andy Shevchenko wrote:
-> > On Mon, Nov 15, 2021 at 10:48:04AM +0100, Petr Mladek wrote:
+Hello:
 
-...
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-> > I assumed you take it, that's why I haven't Cc'ed Andrew in the first place,
-> > but it seems you have a consensus with Dennis that Andrew is the best
-> > maintainer to take this. So, I'll send v2 with tags and Cc to him.
+On Mon, 15 Nov 2021 13:00:10 +0800 you wrote:
+> ARRAY_SIZE defined in <linux/kernel.h> is safer than self-defined
+> macros to get size of an array such as ARRAY_LEN used here. Because
+> ARRAY_SIZE uses __must_be_array(arr) to ensure arr is really an array.
 > 
-> No problem, I am going to take it, in a hour or so. I did not want to
-> make chaos when Denis asked Andrew. But it is not worth resending the patch.
+> Reported-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+> 
+> [...]
 
-Thanks!
+Here is the summary with links:
+  - hinic: use ARRAY_SIZE instead of ARRAY_LEN
+    https://git.kernel.org/netdev/net-next/c/9ed941178ce9
 
-If needed something from me, just ping.
-
+You are awesome, thank you!
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
