@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCC8451884
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A5B45188B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349728AbhKOXBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:01:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54764 "EHLO mail.kernel.org"
+        id S1347280AbhKOXBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:01:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242938AbhKOSwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:52:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 783A963474;
-        Mon, 15 Nov 2021 18:10:05 +0000 (UTC)
+        id S243149AbhKOSw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:52:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3917B633BA;
+        Mon, 15 Nov 2021 18:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999806;
-        bh=0Mgl7Jp8YwnSMWIq36oBQkU1Uuzk5veNuyHc7pxbnD4=;
+        s=korg; t=1636999773;
+        bh=dQiUjyVYhqppDt0Inm25W2OeF8CpFYuGtBwEO0Vfj6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jAmdS8jugCH4qv5pnKvDY3QK6lQX/33g8D+BK+vGuSxMfUI3aqlF2qnbYAiamVVYR
-         iNbAiUJlUd3O4o5r3CD4/m7Uuo5LaDPbaiw/Kb62qwVtNEmYWdwwZeRjQ7TDrbNnC2
-         38jq8Nfk/el9zXI8PWSLMqwQO6nxYBky62gowZjU=
+        b=QMpQnIyScMPv8aQq4/wz7n/0nRUs6yNw4Ex2jpmvyZm//cx4RC8cT/+MBgN8fyj1T
+         k0u/JDkBXQqd72zAQHxmHBzYOfeUqpBl5d6MWRjlS1XjsEN+BFO+qafNigDXO7i6us
+         EXWTPjiRGswnS98S3szOs1p2yW+81YPRS1/IJO/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kees Cook <keescook@chromium.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 388/849] media: imx-jpeg: Fix the error handling path of mxc_jpeg_probe()
-Date:   Mon, 15 Nov 2021 17:57:51 +0100
-Message-Id: <20211115165433.384113005@linuxfoundation.org>
+Subject: [PATCH 5.14 391/849] media: radio-wl1273: Avoid card name truncation
+Date:   Mon, 15 Nov 2021 17:57:54 +0100
+Message-Id: <20211115165433.477791012@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,38 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 5c47dc6657543b3c4dffcbe741fb693b9b96796d ]
+[ Upstream commit dfadec236aa99f6086141949c9dc3ec50f3ff20d ]
 
-A successful 'mxc_jpeg_attach_pm_domains()' call should be balanced by a
-corresponding 'mxc_jpeg_detach_pm_domains()' call in the error handling
-path of the probe, as already done in the remove function.
+The "card" string only holds 31 characters (and the terminating NUL).
+In order to avoid truncation, use a shorter card description instead of
+the current result, "Texas Instruments Wl1273 FM Rad".
 
-Update the error handling path accordingly.
-
-Fixes: 2db16c6ed72c ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 87d1a50ce451 ("[media] V4L2: WL1273 FM Radio: TI WL1273 FM radio driver")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/imx-jpeg/mxc-jpeg.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/radio/radio-wl1273.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-index 33e7604271cdf..fc905ea78b175 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-@@ -2092,6 +2092,8 @@ err_m2m:
- 	v4l2_device_unregister(&jpeg->v4l2_dev);
+diff --git a/drivers/media/radio/radio-wl1273.c b/drivers/media/radio/radio-wl1273.c
+index 1123768731676..484046471c03f 100644
+--- a/drivers/media/radio/radio-wl1273.c
++++ b/drivers/media/radio/radio-wl1273.c
+@@ -1279,7 +1279,7 @@ static int wl1273_fm_vidioc_querycap(struct file *file, void *priv,
  
- err_register:
-+	mxc_jpeg_detach_pm_domains(jpeg);
-+
- err_irq:
- 	return ret;
- }
+ 	strscpy(capability->driver, WL1273_FM_DRIVER_NAME,
+ 		sizeof(capability->driver));
+-	strscpy(capability->card, "Texas Instruments Wl1273 FM Radio",
++	strscpy(capability->card, "TI Wl1273 FM Radio",
+ 		sizeof(capability->card));
+ 	strscpy(capability->bus_info, radio->bus_type,
+ 		sizeof(capability->bus_info));
 -- 
 2.33.0
 
