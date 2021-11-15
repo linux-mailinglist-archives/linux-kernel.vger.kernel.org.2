@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B36F450D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EE5450F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbhKOSAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:00:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53206 "EHLO mail.kernel.org"
+        id S232123AbhKOS3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237799AbhKORYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C19A63231;
-        Mon, 15 Nov 2021 17:18:32 +0000 (UTC)
+        id S237919AbhKORav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:30:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BEE1632A7;
+        Mon, 15 Nov 2021 17:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996713;
-        bh=hAzT1RQpXOs1kB5oVWahLhGh0Gajuiu3xJpu7oFj/9k=;
+        s=korg; t=1636996831;
+        bh=eDZxpCt1WOpDYq0bZPxu9Xpki+yZvGVuHpbJc+APXJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cn7AwF4KvavF5/NP/nG5X2wTXXSFt3dUhiS0oyQVoc5Oqup6zZ7cbouHZ92/etRai
-         zT7vL3ZPeegI44FkLbyW4Sz52RJ+mBZLb8MBgTtUQxgR9LBi7uMjogYeZm96c2yTYU
-         zfyaEh5bbRahgsrMsizcVOtxs7wzbC2/utlqlWEQ=
+        b=1Boq6gpz8RaXydlR/ksjimLM+f84Jmx3AbIhS8NQ2K9D82vlPlZxItDLMfP0p0+Yc
+         02PzrnFgNZ9v4r5TlKbxnKuEw29Mu6n4ZlDoteZKPAfS/33KHEUYggEYCsIYuTSEUP
+         cd2CgitQ+qNhOzwis2pnFlLRmGRSa7ZI+l7i4T+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 239/355] libbpf: Fix BTF data layout checks and allow empty BTF
-Date:   Mon, 15 Nov 2021 18:02:43 +0100
-Message-Id: <20211115165321.478819074@linuxfoundation.org>
+Subject: [PATCH 5.4 240/355] s390/gmap: dont unconditionally call pte_unmap_unlock() in __gmap_zap()
+Date:   Mon, 15 Nov 2021 18:02:44 +0100
+Message-Id: <20211115165321.509115561@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,62 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit d8123624506cd62730c9cd9c7672c698e462703d ]
+[ Upstream commit b159f94c86b43cf7e73e654bc527255b1f4eafc4 ]
 
-Make data section layout checks stricter, disallowing overlap of types and
-strings data.
+... otherwise we will try unlocking a spinlock that was never locked via a
+garbage pointer.
 
-Additionally, allow BTFs with no type data. There is nothing inherently wrong
-with having BTF with no types (put potentially with some strings). This could
-be a situation with kernel module BTFs, if module doesn't introduce any new
-type information.
+At the time we reach this code path, we usually successfully looked up
+a PGSTE already; however, evil user space could have manipulated the VMA
+layout in the meantime and triggered removal of the page table.
 
-Also fix invalid offset alignment check for btf->hdr->type_off.
-
-Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20201105043402.2530976-8-andrii@kernel.org
+Fixes: 1e133ab296f3 ("s390/mm: split arch/s390/mm/pgtable.c")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210909162248.14969-3-david@redhat.com
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ arch/s390/mm/gmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index d606a358480da..3380aadb74655 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -100,22 +100,18 @@ static int btf_parse_hdr(struct btf *btf)
- 		return -EINVAL;
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 4fa7a562c6fc1..5e5a4e1f0e6cf 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -684,9 +684,10 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+ 		vmaddr |= gaddr & ~PMD_MASK;
+ 		/* Get pointer to the page table entry */
+ 		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
+-		if (likely(ptep))
++		if (likely(ptep)) {
+ 			ptep_zap_unused(gmap->mm, vmaddr, ptep, 0);
+-		pte_unmap_unlock(ptep, ptl);
++			pte_unmap_unlock(ptep, ptl);
++		}
  	}
- 
--	if (meta_left < hdr->type_off) {
--		pr_debug("Invalid BTF type section offset:%u\n", hdr->type_off);
-+	if (meta_left < hdr->str_off + hdr->str_len) {
-+		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
- 		return -EINVAL;
- 	}
- 
--	if (meta_left < hdr->str_off) {
--		pr_debug("Invalid BTF string section offset:%u\n", hdr->str_off);
-+	if (hdr->type_off + hdr->type_len > hdr->str_off) {
-+		pr_debug("Invalid BTF data sections layout: type data at %u + %u, strings data at %u + %u\n",
-+			 hdr->type_off, hdr->type_len, hdr->str_off, hdr->str_len);
- 		return -EINVAL;
- 	}
- 
--	if (hdr->type_off >= hdr->str_off) {
--		pr_debug("BTF type section offset >= string section offset. No type?\n");
--		return -EINVAL;
--	}
--
--	if (hdr->type_off & 0x02) {
-+	if (hdr->type_off % 4) {
- 		pr_debug("BTF type section is not aligned to 4 bytes\n");
- 		return -EINVAL;
- 	}
+ }
+ EXPORT_SYMBOL_GPL(__gmap_zap);
 -- 
 2.33.0
 
