@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBDC45189F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE4A451F94
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351362AbhKOXEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:04:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
+        id S240814AbhKPAnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243231AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4E28632A5;
-        Mon, 15 Nov 2021 18:10:52 +0000 (UTC)
+        id S1343902AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9423635F6;
+        Mon, 15 Nov 2021 18:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999853;
-        bh=ZhVxJQaCIDAb/vIDczFoYwveB4qAWLQcwjfawo4QLec=;
+        s=korg; t=1637002092;
+        bh=0qWVlmnLrMZ+EWmiMSXxICve5sLZ/91HU590eReGbM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WVgJszzzRCcAQxRq8gEnKJmXidJoLYVIIH65C5DaHg5VkawkHxmL8jWSGzvU07qoL
-         qRc79a8CLJxvk4msNd/CHWueOZprdjBzI2RdMZJzzKdU4HzZaBBC39Ymtb6alx8haU
-         bYL/0paw8DWpyUH3giJzCwJb+u2pfI2Y8SQSjCGg=
+        b=APQdSzdLVq4QZNw9Eiv1roEKWg6J5N8xobuei5bNUj81EPAQ3hYAnN1fK++BzPsUE
+         Yjc63OddjVqsevU81DMlV5mgBPlgtMf8jHJIVVFaZdyQ7bQKYtBUcsQfDh35hWzny/
+         fEeygQaqRFimkyF6O6mhyNdsSjQFJ6qk6JjTmRpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 447/849] ACPI: PM: Fix sharing of wakeup power resources
+Subject: [PATCH 5.15 435/917] thermal/core: fix a UAF bug in __thermal_cooling_device_register()
 Date:   Mon, 15 Nov 2021 17:58:50 +0100
-Message-Id: <20211115165435.410472676@linuxfoundation.org>
+Message-Id: <20211115165443.539978665@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,166 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-[ Upstream commit a2d7b2e004af6b09f21ac3d10f8f4456c16a8ddf ]
+[ Upstream commit 0a5c26712f963f0500161a23e0ffff8d29f742ab ]
 
-If an ACPI wakeup power resource is shared between multiple devices,
-it may not be managed correctly.
+When device_register() return failed, program will goto out_kfree_type
+to release 'cdev->device' by put_device(). That will call thermal_release()
+to free 'cdev'. But the follow-up processes access 'cdev' continually.
+That trggers the UAF bug.
 
-Suppose, for example, that two devices, A and B, share a wakeup power
-resource P whose wakeup_enabled flag is 0 initially.  Next, suppose
-that wakeup power is enabled for A and B, in this order, and disabled
-for B.  When wakeup power is enabled for A, P will be turned on and
-its wakeup_enabled flag will be set.  Next, when wakeup power is
-enabled for B, P will not be touched, because its wakeup_enabled flag
-is set.  Now, when wakeup power is disabled for B, P will be turned
-off which is incorrect, because A will still need P in order to signal
-wakeup.
+====================================================================
+BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0xe2/0x152
+ print_address_description.constprop.0+0x21/0x140
+ ? __thermal_cooling_device_register+0x75b/0xa90
+ kasan_report.cold+0x7f/0x11b
+ ? __thermal_cooling_device_register+0x75b/0xa90
+ __thermal_cooling_device_register+0x75b/0xa90
+ ? memset+0x20/0x40
+ ? __sanitizer_cov_trace_pc+0x1d/0x50
+ ? __devres_alloc_node+0x130/0x180
+ devm_thermal_of_cooling_device_register+0x67/0xf0
+ max6650_probe.cold+0x557/0x6aa
+......
 
-Moreover, if wakeup power is enabled for A and then disabled for B,
-the latter will cause P to be turned off incorrectly (it will be still
-needed by A), because acpi_disable_wakeup_device_power() is allowed
-to manipulate power resources when the wakeup.prepare_count counter
-of the given device is 0.
+Freed by task 258:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x30
+ __kasan_slab_free+0x109/0x140
+ kfree+0x117/0x4c0
+ thermal_release+0xa0/0x110
+ device_release+0xa7/0x240
+ kobject_put+0x1ce/0x540
+ put_device+0x20/0x30
+ __thermal_cooling_device_register+0x731/0xa90
+ devm_thermal_of_cooling_device_register+0x67/0xf0
+ max6650_probe.cold+0x557/0x6aa [max6650]
 
-While the first issue could be addressed by changing the
-wakeup_enabled power resource flag into a counter, addressing the
-second one requires modifying acpi_disable_wakeup_device_power() to
-do nothing when the target device's wakeup.prepare_count reference
-counter is zero and that would cause the new counter to be redundant.
-Namely, if acpi_disable_wakeup_device_power() is modified as per the
-above, every change of the new counter following a wakeup.prepare_count
-change would be reflected by the analogous change of the main reference
-counter of the given power resource.
+Do not use 'cdev' again after put_device() to fix the problem like doing
+in thermal_zone_device_register().
 
-Accordingly, modify acpi_disable_wakeup_device_power() to do nothing
-when the target device's wakeup.prepare_count reference counter is
-zero and drop the power resource wakeup_enabled flag altogether.
+[dlezcano]: as requested by Rafael, change the affectation into two statements.
 
-While at it, ensure that all of the power resources that can be
-turned off will be turned off when disabling device wakeup due to
-a power resource manipulation error, to prevent energy from being
-wasted.
-
-Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/r/20211015024504.947520-1-william.xuanziyang@huawei.com
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/power.c | 69 +++++++++++++++-----------------------------
- 1 file changed, 24 insertions(+), 45 deletions(-)
+ drivers/thermal/thermal_core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-index dfe760bd7157f..e1f9a45587857 100644
---- a/drivers/acpi/power.c
-+++ b/drivers/acpi/power.c
-@@ -53,7 +53,6 @@ struct acpi_power_resource {
- 	u32 order;
- 	unsigned int ref_count;
- 	u8 state;
--	bool wakeup_enabled;
- 	struct mutex resource_lock;
- 	struct list_head dependents;
- };
-@@ -701,7 +700,6 @@ int acpi_device_sleep_wake(struct acpi_device *dev,
-  */
- int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index d094ebbde0ed7..30134f49b037a 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -887,7 +887,7 @@ __thermal_cooling_device_register(struct device_node *np,
  {
--	struct acpi_power_resource_entry *entry;
- 	int err = 0;
+ 	struct thermal_cooling_device *cdev;
+ 	struct thermal_zone_device *pos = NULL;
+-	int ret;
++	int id, ret;
  
- 	if (!dev || !dev->wakeup.flags.valid)
-@@ -712,26 +710,13 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
- 	if (dev->wakeup.prepare_count++)
- 		goto out;
+ 	if (!ops || !ops->get_max_state || !ops->get_cur_state ||
+ 	    !ops->set_cur_state)
+@@ -901,6 +901,7 @@ __thermal_cooling_device_register(struct device_node *np,
+ 	if (ret < 0)
+ 		goto out_kfree_cdev;
+ 	cdev->id = ret;
++	id = ret;
  
--	list_for_each_entry(entry, &dev->wakeup.resources, node) {
--		struct acpi_power_resource *resource = entry->resource;
--
--		mutex_lock(&resource->resource_lock);
--
--		if (!resource->wakeup_enabled) {
--			err = acpi_power_on_unlocked(resource);
--			if (!err)
--				resource->wakeup_enabled = true;
--		}
--
--		mutex_unlock(&resource->resource_lock);
--
--		if (err) {
--			dev_err(&dev->dev,
--				"Cannot turn wakeup power resources on\n");
--			dev->wakeup.flags.valid = 0;
--			goto out;
--		}
-+	err = acpi_power_on_list(&dev->wakeup.resources);
-+	if (err) {
-+		dev_err(&dev->dev, "Cannot turn on wakeup power resources\n");
-+		dev->wakeup.flags.valid = 0;
-+		goto out;
- 	}
-+
- 	/*
- 	 * Passing 3 as the third argument below means the device may be
- 	 * put into arbitrary power state afterward.
-@@ -761,39 +746,33 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
- 
- 	mutex_lock(&acpi_device_lock);
- 
--	if (--dev->wakeup.prepare_count > 0)
-+	if (dev->wakeup.prepare_count > 1) {
-+		dev->wakeup.prepare_count--;
- 		goto out;
-+	}
- 
--	/*
--	 * Executing the code below even if prepare_count is already zero when
--	 * the function is called may be useful, for example for initialisation.
--	 */
--	if (dev->wakeup.prepare_count < 0)
--		dev->wakeup.prepare_count = 0;
-+	/* Do nothing if wakeup power has not been enabled for this device. */
-+	if (!dev->wakeup.prepare_count)
-+		goto out;
- 
- 	err = acpi_device_sleep_wake(dev, 0, 0, 0);
- 	if (err)
- 		goto out;
- 
-+	/*
-+	 * All of the power resources in the list need to be turned off even if
-+	 * there are errors.
-+	 */
- 	list_for_each_entry(entry, &dev->wakeup.resources, node) {
--		struct acpi_power_resource *resource = entry->resource;
--
--		mutex_lock(&resource->resource_lock);
--
--		if (resource->wakeup_enabled) {
--			err = acpi_power_off_unlocked(resource);
--			if (!err)
--				resource->wakeup_enabled = false;
--		}
--
--		mutex_unlock(&resource->resource_lock);
-+		int ret;
- 
--		if (err) {
--			dev_err(&dev->dev,
--				"Cannot turn wakeup power resources off\n");
--			dev->wakeup.flags.valid = 0;
--			break;
--		}
-+		ret = acpi_power_off(entry->resource);
-+		if (ret && !err)
-+			err = ret;
-+	}
-+	if (err) {
-+		dev_err(&dev->dev, "Cannot turn off wakeup power resources\n");
-+		dev->wakeup.flags.valid = 0;
- 	}
- 
-  out:
+ 	ret = dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
+ 	if (ret)
+@@ -944,8 +945,9 @@ __thermal_cooling_device_register(struct device_node *np,
+ out_kfree_type:
+ 	kfree(cdev->type);
+ 	put_device(&cdev->device);
++	cdev = NULL;
+ out_ida_remove:
+-	ida_simple_remove(&thermal_cdev_ida, cdev->id);
++	ida_simple_remove(&thermal_cdev_ida, id);
+ out_kfree_cdev:
+ 	kfree(cdev);
+ 	return ERR_PTR(ret);
 -- 
 2.33.0
 
