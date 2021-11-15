@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82971452246
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D62245223B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345374AbhKPBKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:10:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
+        id S1376358AbhKPBK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:10:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245426AbhKOTUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E8A6346B;
-        Mon, 15 Nov 2021 18:34:35 +0000 (UTC)
+        id S245443AbhKOTUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:20:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 248C56353B;
+        Mon, 15 Nov 2021 18:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001276;
-        bh=a0sG9Dye3TkYPeQ6W3PtCNFjLTt9hYCZ3pfbdMXBkBw=;
+        s=korg; t=1637001281;
+        bh=kYp81w3g/KtyltFfpbFBBt9D268HH73qAO/kwUuEHBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4f/4n5H6BMLzW6uGr0imkbAH0CP99no57rmCVfLWFqR1MyXCmnUE2yrmHPIAdQ2I
-         gHsbH8h47GQVrvqOiiCBEReUQKiqXqGO3RUNh9/eJN5CZiNe6NCs6v/bd3e1kWFFTL
-         gze7Aaq9P7D7RK9tlX2yv1uDRBeWmfBvP7AY517w=
+        b=vkVDPCAosjU2MH5/LeUAsgJyXSma8B+SKS8vINkFAl+hPsZ3t06ca4HbwjbOcbA0y
+         s9/EZk1VegB4nMMq4NsPOuei78Bu3qWkmA9NmNq3ZEdD+RgnjpkL/e0wSmS7ZlWDpk
+         U3x00K1Lb4p7DSHat2xPMvWH4FWJjzVhFB6SQ7YA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>
-Subject: [PATCH 5.15 096/917] dma-buf: fix and rework dma_buf_poll v7
-Date:   Mon, 15 Nov 2021 17:53:11 +0100
-Message-Id: <20211115165431.999054823@linuxfoundation.org>
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.15 098/917] rsi: fix occasional initialisation failure with BT coex
+Date:   Mon, 15 Nov 2021 17:53:13 +0100
+Message-Id: <20211115165432.063618953@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,269 +40,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-commit 6b51b02a3a0ac49dfe302818d0746a799545e4e9 upstream.
+commit 9b14ed6e11b72dd4806535449ca6c6962cb2369d upstream.
 
-Daniel pointed me towards this function and there are multiple obvious problems
-in the implementation.
+When BT coexistence is enabled (eg oper mode 13, which is the default)
+the initialisation on startup sometimes silently fails.
 
-First of all the retry loop is not working as intended. In general the retry
-makes only sense if you grab the reference first and then check the sequence
-values.
+In a normal initialisation we see
+	usb 1-1.3: Product: Wireless USB Network Module
+	usb 1-1.3: Manufacturer: Redpine Signals, Inc.
+	usb 1-1.3: SerialNumber: 000000000001
+	rsi_91x: rsi_probe: Initialized os intf ops
+	rsi_91x: rsi_load_9116_firmware: Loading chunk 0
+	rsi_91x: rsi_load_9116_firmware: Loading chunk 1
+	rsi_91x: rsi_load_9116_firmware: Loading chunk 2
+	rsi_91x: Max Stations Allowed = 1
 
-Then we should always also wait for the exclusive fence.
+But sometimes the last log is missing and the wlan net device is
+not created.
 
-It's also good practice to keep the reference around when installing callbacks
-to fences you don't own.
+Running a userspace loop that resets the hardware via a GPIO shows the
+problem occurring ~5/100 resets.
 
-And last the whole implementation was unnecessary complex and rather hard to
-understand which could lead to probably unexpected behavior of the IOCTL.
+The problem does not occur in oper mode 1 (wifi only).
 
-Fix all this by reworking the implementation from scratch. Dropping the
-whole RCU approach and taking the lock instead.
+Adding logs shows that the initialisation state machine requests a MAC
+reset via rsi_send_reset_mac() but the firmware does not reply, leading
+to the initialisation sequence being incomplete.
 
-Only mildly tested and needs a thoughtful review of the code.
+Fix this by delaying attaching the BT adapter until the wifi
+initialisation has completed.
 
-Pushing through drm-misc-next to avoid merge conflicts and give the code
-another round of testing.
+With this applied I have done > 300 reset loops with no errors.
 
-v2: fix the reference counting as well
-v3: keep the excl fence handling as is for stable
-v4: back to testing all fences, drop RCU
-v5: handle in and out separately
-v6: add missing clear of events
-v7: change coding style as suggested by Michel, drop unused variables
-
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Tested-by: Michel Dänzer <mdaenzer@redhat.com>
+Fixes: 716b840c7641 ("rsi: handle BT traffic in driver")
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
 CC: stable@vger.kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210720131110.88512-1-christian.koenig@amd.com
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1630337206-12410-2-git-send-email-martin.fuzzey@flowbird.group
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma-buf/dma-buf.c |  152 +++++++++++++++++++++-------------------------
- include/linux/dma-buf.h   |    2 
- 2 files changed, 71 insertions(+), 83 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_main.c |   16 +++++++++++++---
+ drivers/net/wireless/rsi/rsi_91x_mgmt.c |    3 +++
+ drivers/net/wireless/rsi/rsi_main.h     |    2 ++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -74,7 +74,7 @@ static void dma_buf_release(struct dentr
- 	 * If you hit this BUG() it means someone dropped their ref to the
- 	 * dma-buf while still having pending operation to the buffer.
- 	 */
--	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
-+	BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+--- a/drivers/net/wireless/rsi/rsi_91x_main.c
++++ b/drivers/net/wireless/rsi/rsi_91x_main.c
+@@ -211,9 +211,10 @@ int rsi_read_pkt(struct rsi_common *comm
+ 			bt_pkt_type = frame_desc[offset + BT_RX_PKT_TYPE_OFST];
+ 			if (bt_pkt_type == BT_CARD_READY_IND) {
+ 				rsi_dbg(INFO_ZONE, "BT Card ready recvd\n");
+-				if (rsi_bt_ops.attach(common, &g_proto_ops))
+-					rsi_dbg(ERR_ZONE,
+-						"Failed to attach BT module\n");
++				if (common->fsm_state == FSM_MAC_INIT_DONE)
++					rsi_attach_bt(common);
++				else
++					common->bt_defer_attach = true;
+ 			} else {
+ 				if (common->bt_adapter)
+ 					rsi_bt_ops.recv_pkt(common->bt_adapter,
+@@ -278,6 +279,15 @@ void rsi_set_bt_context(void *priv, void
+ }
+ #endif
  
- 	dma_buf_stats_teardown(dmabuf);
- 	dmabuf->ops->release(dmabuf);
-@@ -205,16 +205,55 @@ static void dma_buf_poll_cb(struct dma_f
- 	wake_up_locked_poll(dcb->poll, dcb->active);
- 	dcb->active = 0;
- 	spin_unlock_irqrestore(&dcb->poll->lock, flags);
-+	dma_fence_put(fence);
++void rsi_attach_bt(struct rsi_common *common)
++{
++#ifdef CONFIG_RSI_COEX
++	if (rsi_bt_ops.attach(common, &g_proto_ops))
++		rsi_dbg(ERR_ZONE,
++			"Failed to attach BT module\n");
++#endif
 +}
 +
-+static bool dma_buf_poll_shared(struct dma_resv *resv,
-+				struct dma_buf_poll_cb_t *dcb)
-+{
-+	struct dma_resv_list *fobj = dma_resv_shared_list(resv);
-+	struct dma_fence *fence;
-+	int i, r;
+ /**
+  * rsi_91x_init() - This function initializes os interface operations.
+  * @oper_mode: One of DEV_OPMODE_*.
+--- a/drivers/net/wireless/rsi/rsi_91x_mgmt.c
++++ b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
+@@ -2071,6 +2071,9 @@ static int rsi_handle_ta_confirm_type(st
+ 				if (common->reinit_hw) {
+ 					complete(&common->wlan_init_completion);
+ 				} else {
++					if (common->bt_defer_attach)
++						rsi_attach_bt(common);
 +
-+	if (!fobj)
-+		return false;
-+
-+	for (i = 0; i < fobj->shared_count; ++i) {
-+		fence = rcu_dereference_protected(fobj->shared[i],
-+						  dma_resv_held(resv));
-+		dma_fence_get(fence);
-+		r = dma_fence_add_callback(fence, &dcb->cb, dma_buf_poll_cb);
-+		if (!r)
-+			return true;
-+		dma_fence_put(fence);
-+	}
-+
-+	return false;
-+}
-+
-+static bool dma_buf_poll_excl(struct dma_resv *resv,
-+			      struct dma_buf_poll_cb_t *dcb)
-+{
-+	struct dma_fence *fence = dma_resv_excl_fence(resv);
-+	int r;
-+
-+	if (!fence)
-+		return false;
-+
-+	dma_fence_get(fence);
-+	r = dma_fence_add_callback(fence, &dcb->cb, dma_buf_poll_cb);
-+	if (!r)
-+		return true;
-+	dma_fence_put(fence);
-+
-+	return false;
- }
+ 					return rsi_mac80211_attach(common);
+ 				}
+ 			}
+--- a/drivers/net/wireless/rsi/rsi_main.h
++++ b/drivers/net/wireless/rsi/rsi_main.h
+@@ -320,6 +320,7 @@ struct rsi_common {
+ 	struct ieee80211_vif *roc_vif;
  
- static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
- {
- 	struct dma_buf *dmabuf;
- 	struct dma_resv *resv;
--	struct dma_resv_list *fobj;
--	struct dma_fence *fence_excl;
- 	__poll_t events;
--	unsigned shared_count, seq;
+ 	bool eapol4_confirm;
++	bool bt_defer_attach;
+ 	void *bt_adapter;
  
- 	dmabuf = file->private_data;
- 	if (!dmabuf || !dmabuf->resv)
-@@ -228,101 +267,50 @@ static __poll_t dma_buf_poll(struct file
- 	if (!events)
- 		return 0;
+ 	struct cfg80211_scan_request *hwscan;
+@@ -401,5 +402,6 @@ struct rsi_host_intf_ops {
  
--retry:
--	seq = read_seqcount_begin(&resv->seq);
--	rcu_read_lock();
--
--	fobj = rcu_dereference(resv->fence);
--	if (fobj)
--		shared_count = fobj->shared_count;
--	else
--		shared_count = 0;
--	fence_excl = dma_resv_excl_fence(resv);
--	if (read_seqcount_retry(&resv->seq, seq)) {
--		rcu_read_unlock();
--		goto retry;
--	}
--
--	if (fence_excl && (!(events & EPOLLOUT) || shared_count == 0)) {
--		struct dma_buf_poll_cb_t *dcb = &dmabuf->cb_excl;
--		__poll_t pevents = EPOLLIN;
-+	dma_resv_lock(resv, NULL);
+ enum rsi_host_intf rsi_get_host_intf(void *priv);
+ void rsi_set_bt_context(void *priv, void *bt_context);
++void rsi_attach_bt(struct rsi_common *common);
  
--		if (shared_count == 0)
--			pevents |= EPOLLOUT;
-+	if (events & EPOLLOUT) {
-+		struct dma_buf_poll_cb_t *dcb = &dmabuf->cb_out;
- 
-+		/* Check that callback isn't busy */
- 		spin_lock_irq(&dmabuf->poll.lock);
--		if (dcb->active) {
--			dcb->active |= pevents;
--			events &= ~pevents;
--		} else
--			dcb->active = pevents;
-+		if (dcb->active)
-+			events &= ~EPOLLOUT;
-+		else
-+			dcb->active = EPOLLOUT;
- 		spin_unlock_irq(&dmabuf->poll.lock);
- 
--		if (events & pevents) {
--			if (!dma_fence_get_rcu(fence_excl)) {
--				/* force a recheck */
--				events &= ~pevents;
-+		if (events & EPOLLOUT) {
-+			if (!dma_buf_poll_shared(resv, dcb) &&
-+			    !dma_buf_poll_excl(resv, dcb))
-+				/* No callback queued, wake up any other waiters */
- 				dma_buf_poll_cb(NULL, &dcb->cb);
--			} else if (!dma_fence_add_callback(fence_excl, &dcb->cb,
--							   dma_buf_poll_cb)) {
--				events &= ~pevents;
--				dma_fence_put(fence_excl);
--			} else {
--				/*
--				 * No callback queued, wake up any additional
--				 * waiters.
--				 */
--				dma_fence_put(fence_excl);
--				dma_buf_poll_cb(NULL, &dcb->cb);
--			}
-+			else
-+				events &= ~EPOLLOUT;
- 		}
- 	}
- 
--	if ((events & EPOLLOUT) && shared_count > 0) {
--		struct dma_buf_poll_cb_t *dcb = &dmabuf->cb_shared;
--		int i;
-+	if (events & EPOLLIN) {
-+		struct dma_buf_poll_cb_t *dcb = &dmabuf->cb_in;
- 
--		/* Only queue a new callback if no event has fired yet */
-+		/* Check that callback isn't busy */
- 		spin_lock_irq(&dmabuf->poll.lock);
- 		if (dcb->active)
--			events &= ~EPOLLOUT;
-+			events &= ~EPOLLIN;
- 		else
--			dcb->active = EPOLLOUT;
-+			dcb->active = EPOLLIN;
- 		spin_unlock_irq(&dmabuf->poll.lock);
- 
--		if (!(events & EPOLLOUT))
--			goto out;
--
--		for (i = 0; i < shared_count; ++i) {
--			struct dma_fence *fence = rcu_dereference(fobj->shared[i]);
--
--			if (!dma_fence_get_rcu(fence)) {
--				/*
--				 * fence refcount dropped to zero, this means
--				 * that fobj has been freed
--				 *
--				 * call dma_buf_poll_cb and force a recheck!
--				 */
--				events &= ~EPOLLOUT;
-+		if (events & EPOLLIN) {
-+			if (!dma_buf_poll_excl(resv, dcb))
-+				/* No callback queued, wake up any other waiters */
- 				dma_buf_poll_cb(NULL, &dcb->cb);
--				break;
--			}
--			if (!dma_fence_add_callback(fence, &dcb->cb,
--						    dma_buf_poll_cb)) {
--				dma_fence_put(fence);
--				events &= ~EPOLLOUT;
--				break;
--			}
--			dma_fence_put(fence);
-+			else
-+				events &= ~EPOLLIN;
- 		}
--
--		/* No callback queued, wake up any additional waiters. */
--		if (i == shared_count)
--			dma_buf_poll_cb(NULL, &dcb->cb);
- 	}
- 
--out:
--	rcu_read_unlock();
-+	dma_resv_unlock(resv);
- 	return events;
- }
- 
-@@ -565,8 +553,8 @@ struct dma_buf *dma_buf_export(const str
- 	dmabuf->owner = exp_info->owner;
- 	spin_lock_init(&dmabuf->name_lock);
- 	init_waitqueue_head(&dmabuf->poll);
--	dmabuf->cb_excl.poll = dmabuf->cb_shared.poll = &dmabuf->poll;
--	dmabuf->cb_excl.active = dmabuf->cb_shared.active = 0;
-+	dmabuf->cb_in.poll = dmabuf->cb_out.poll = &dmabuf->poll;
-+	dmabuf->cb_in.active = dmabuf->cb_out.active = 0;
- 
- 	if (!resv) {
- 		resv = (struct dma_resv *)&dmabuf[1];
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -433,7 +433,7 @@ struct dma_buf {
- 		wait_queue_head_t *poll;
- 
- 		__poll_t active;
--	} cb_excl, cb_shared;
-+	} cb_in, cb_out;
- #ifdef CONFIG_DMABUF_SYSFS_STATS
- 	/**
- 	 * @sysfs_entry:
+ #endif
 
 
