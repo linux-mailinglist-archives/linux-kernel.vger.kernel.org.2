@@ -2,229 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791F04509CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9504509D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhKOQll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:41:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhKOQlf (ORCPT
+        id S231799AbhKOQnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:43:01 -0500
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:55034 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230214AbhKOQmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:41:35 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39B8C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:38:39 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id b11so14872135pld.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=bsLeGFpbN8CpN9RU3ZNnNmz55GEbtlwvn/02SxJ3yO0=;
-        b=Xw/4izBdFkl2ShsOYjlglP1hnKh94ohUtgg8bF97/cI+6H2PhbW9Bc6moSppzqcYOM
-         reTt0VVwL6Kaws24pQ5whqflI23gH66oHW5ic2n1A2nQJUepO47HhLL3ckTL+6VS1L1r
-         zBVl+skRL4UJbf7kld4UJgMTm66Ag4umvhjMGy8CAK560H2nDbr86UtTeD0rFpvJn7z4
-         9J0eTNl6l5rmHznMIo28f95zHS6XZPHOlYRaU7hQL4dMt/77bk+ziJQ7Cc6RCHwZfikM
-         p7kULy+mbvESuHcKSdCY1LMSpupdfPlUAUOsWUFLw5pWq4i/EETv7NwoipwqGtVGIOJ9
-         ZKYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=bsLeGFpbN8CpN9RU3ZNnNmz55GEbtlwvn/02SxJ3yO0=;
-        b=wvb1rqD3EzONW1cvGFYbq+FikHByZ+8fqdSM9i7R7P38RcNDF3XYtDqy2QPWwp1wKf
-         arOSxbS2Q3R7qK0+TPaNpC+GSPed+ODiDkh0kQ+iFYj8JuxAr+rd5aDremo/tjXQkqZG
-         VirIAXL/+dA+wTPgRPyyUdDEAcE/PFL6TxkwxLWpV2f22nUeUIizCwXofQ2q7jiBKqH+
-         ozFc6B/Ha0zuvua04JIjNe+D2+oNVN9SSj6OGG0LN/gJ7tp0Z76EY2L8QdoozH2fuKQb
-         2KamFYTIff0XJdu5tljHJ6STuOsCHxhkRopZvxGOwsgy/GoL4tQcwj15DA2wv8rH5s0d
-         jcFw==
-X-Gm-Message-State: AOAM530AxZEvHkrnKNErfcFyYrA1taw7mIYldh++BmXfleSy45THyrWO
-        3zGXMOlEzkQ8ilbl14ibDFlvGZ5TIZQxiKfJ
-X-Google-Smtp-Source: ABdhPJzBf7wcoCKV+XZ+8nE3LFOuitGqXpr5rZikvxP2qM33QNCA8eVQDO2cJXJ08GONxk+3/q9Chg==
-X-Received: by 2002:a17:90b:3a89:: with SMTP id om9mr48220230pjb.99.1636994319323;
-        Mon, 15 Nov 2021 08:38:39 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id b9sm5985006pfm.127.2021.11.15.08.38.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 08:38:38 -0800 (PST)
-Message-ID: <dd53f11a-ae6f-79af-2ea2-8091d1c4f15e@linaro.org>
-Date:   Mon, 15 Nov 2021 08:38:38 -0800
+        Mon, 15 Nov 2021 11:42:53 -0500
+X-Greylist: delayed 4160 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 11:42:53 EST
+Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 299732E0AF9;
+        Mon, 15 Nov 2021 19:39:39 +0300 (MSK)
+Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
+        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 8I2AdDC1uF-dbsqo6gk;
+        Mon, 15 Nov 2021 19:39:39 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1636994379; bh=sJgNHnb3hOQwurINlS2X7YNRsTmHCa/JxTtjIM5qnfg=;
+        h=In-Reply-To:References:Date:From:To:Subject:Message-ID:Cc;
+        b=3JyafGaHD9qpsnhQ+lmPh5DLKs3kKIfHRnHasFGDpCRLUjaMtamqq+j7Dpx6hylln
+         E4brZ/IlP8Aj4+b/OtVJTlqFno0lfwi8foBxXxIsj7hGrqhBHyrjq+SFCop8KTAaG/
+         NqPhOgcmv/OH/N6sEeEKE84jBu0wU/BH+ACBVx6k=
+Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from [IPv6:2a02:6b8:0:107:3e85:844d:5b1d:60a] (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
+        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id Phoahep5KZ-daxCbT90;
+        Mon, 15 Nov 2021 19:39:37 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+Subject: Re: [PATCH] cgroup: Fix rootcg cpu.stat guest double counting
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Boris Burkov <boris@bur.io>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20211028221528.2174284-1-schatzberg.dan@gmail.com>
+ <20211029172129.smeyk5adocjrwtlb@oracle.com>
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+Message-ID: <161a70b7-ee6f-bbc7-8a2e-1fd42fcba3eb@yandex-team.com>
+Date:   Mon, 15 Nov 2021 19:41:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] io_uring: prevent io_put_identity() from freeing a static
- identity
+In-Reply-To: <20211029172129.smeyk5adocjrwtlb@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+6055980d041c8ac23307@syzkaller.appspotmail.com
-References: <20211104012120.729261-1-tadeusz.struk@linaro.org>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20211104012120.729261-1-tadeusz.struk@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 18:21, Tadeusz Struk wrote:
-> Note: this applies to 5.10 stable only. It doesn't trigger on anything
-> above 5.10 as the code there has been substantially reworked. This also
-> doesn't apply to any stable kernel below 5.10 afaict.
+
+
+On 10/29/21 8:21 PM, Daniel Jordan wrote:
+> On Thu, Oct 28, 2021 at 03:15:27PM -0700, Dan Schatzberg wrote:
+>> In account_guest_time in kernel/sched/cputime.c guest time is
+>> attributed to both CPUTIME_NICE and CPUTIME_USER in addition to
+>> CPUTIME_GUEST_NICE and CPUTIME_GUEST respectively. Therefore, adding
+>> both to calculate usage results in double counting any guest time at
+>> the rootcg.
 > 
-> Syzbot found a bug: KASAN: invalid-free in io_dismantle_req
-> https://syzkaller.appspot.com/bug?id=123d9a852fc88ba573ffcb2dbcf4f9576c3b0559
+> Yes, definitely a bug.  The same fix was posted a couple months ago as
+> part of a series but never picked up:
 > 
-> The test submits bunch of io_uring writes and exits, which then triggers
-> uring_task_cancel() and io_put_identity(), which in some corner cases,
-> tries to free a static identity. This causes a panic as shown in the
-> trace below:
+>   https://x-lore.kernel.org/all/20210820094005.20596-3-arbn@yandex-team.com/
 > 
->   BUG: KASAN: double-free or invalid-free in kfree+0xd5/0x310
->   CPU: 0 PID: 4618 Comm: repro Not tainted 5.10.76-05281-g4944ec82ebb9-dirty #17
->   Call Trace:
->    dump_stack_lvl+0x1b2/0x21b
->    print_address_description+0x8d/0x3b0
->    kasan_report_invalid_free+0x58/0x130
->    ____kasan_slab_free+0x14b/0x170
->    __kasan_slab_free+0x11/0x20
->    slab_free_freelist_hook+0xcc/0x1a0
->    kfree+0xd5/0x310
->    io_dismantle_req+0x9b0/0xd90
->    io_do_iopoll+0x13a4/0x23e0
->    io_iopoll_try_reap_events+0x116/0x290
->    io_uring_cancel_task_requests+0x197d/0x1ee0
->    io_uring_flush+0x170/0x6d0
->    filp_close+0xb0/0x150
->    put_files_struct+0x1d4/0x350
->    exit_files+0x80/0xa0
->    do_exit+0x6d9/0x2390
->    do_group_exit+0x16a/0x2d0
->    get_signal+0x133e/0x1f80
->    arch_do_signal+0x7b/0x610
->    exit_to_user_mode_prepare+0xaa/0xe0
->    syscall_exit_to_user_mode+0x24/0x40
->    do_syscall_64+0x3d/0x70
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
->   Allocated by task 4611:
->    ____kasan_kmalloc+0xcd/0x100
->    __kasan_kmalloc+0x9/0x10
->    kmem_cache_alloc_trace+0x208/0x390
->    io_uring_alloc_task_context+0x57/0x550
->    io_uring_add_task_file+0x1f7/0x290
->    io_uring_create+0x2195/0x3490
->    __x64_sys_io_uring_setup+0x1bf/0x280
->    do_syscall_64+0x31/0x70
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
->   The buggy address belongs to the object at ffff88810732b500
->    which belongs to the cache kmalloc-192 of size 192
->   The buggy address is located 88 bytes inside of
->    192-byte region [ffff88810732b500, ffff88810732b5c0)
->   Kernel panic - not syncing: panic_on_warn set ...
-> 
-> This issue bisected to this commit:
-> commit 186725a80c4e ("io_uring: fix skipping disabling sqo on exec")
-> 
-> Simple reverting the offending commit doesn't work as it hits some
-> other, related issues like:
-> 
-> /* sqo_dead check is for when this happens after cancellation */
-> WARN_ON_ONCE(ctx->sqo_task == current && !ctx->sqo_dead &&
-> 	     !xa_load(&tctx->xa, (unsigned long)file));
-> 
->   ------------[ cut here ]------------
->   WARNING: CPU: 1 PID: 5622 at fs/io_uring.c:8960 io_uring_flush+0x5bc/0x6d0
->   Modules linked in:
->   CPU: 1 PID: 5622 Comm: repro Not tainted 5.10.76-05281-g4944ec82ebb9-dirty #16
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-6.fc35 04/01/2014
->   RIP: 0010:io_uring_flush+0x5bc/0x6d0
->   Call Trace:
->   filp_close+0xb0/0x150
->   put_files_struct+0x1d4/0x350
->   reset_files_struct+0x88/0xa0
->   bprm_execve+0x7f2/0x9f0
->   do_execveat_common+0x46f/0x5d0
->   __x64_sys_execve+0x92/0xb0
->   do_syscall_64+0x31/0x70
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Changing __io_uring_task_cancel() to call io_disable_sqo_submit() directly,
-> as the comment suggests, only if __io_uring_files_cancel() is not executed
-> seems to fix the issue.
-> 
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: <io-uring@vger.kernel.org>
-> Cc: <linux-fsdevel@vger.kernel.org>
-> Cc: <linux-kernel@vger.kernel.org>
-> Cc: <stable@vger.kernel.org>
-> Reported-by: syzbot+6055980d041c8ac23307@syzkaller.appspotmail.com
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> ---
->   fs/io_uring.c | 21 +++++++++++++++++----
->   1 file changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 0736487165da..fcf9ffe9b209 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -8882,20 +8882,18 @@ void __io_uring_task_cancel(void)
->   	struct io_uring_task *tctx = current->io_uring;
->   	DEFINE_WAIT(wait);
->   	s64 inflight;
-> +	int canceled = 0;
->   
->   	/* make sure overflow events are dropped */
->   	atomic_inc(&tctx->in_idle);
->   
-> -	/* trigger io_disable_sqo_submit() */
-> -	if (tctx->sqpoll)
-> -		__io_uring_files_cancel(NULL);
-> -
->   	do {
->   		/* read completions before cancelations */
->   		inflight = tctx_inflight(tctx);
->   		if (!inflight)
->   			break;
->   		__io_uring_files_cancel(NULL);
-> +		canceled = 1;
->   
->   		prepare_to_wait(&tctx->wait, &wait, TASK_UNINTERRUPTIBLE);
->   
-> @@ -8909,6 +8907,21 @@ void __io_uring_task_cancel(void)
->   		finish_wait(&tctx->wait, &wait);
->   	} while (1);
->   
-> +	/*
-> +	 * trigger io_disable_sqo_submit()
-> +	 * if not already done by __io_uring_files_cancel()
-> +	 */
-> +	if (tctx->sqpoll && !canceled) {
-> +		struct file *file;
-> +		unsigned long index;
-> +
-> +		xa_for_each(&tctx->xa, index, file) {
-> +			struct io_ring_ctx *ctx = file->private_data;
-> +
-> +			io_disable_sqo_submit(ctx);
-> +		}
-> +	}
-> +
->   	atomic_dec(&tctx->in_idle);
->   
->   	io_uring_remove_task_files(tctx);
+> The series also touched cputime, so we might be waiting for scheduler
+> folks?   +Ingo +Peter +Andrey
 > 
 
-Hi,
-Any comments on this one? It needs to be ACK'ed by the maintainer before
-it is applied to 5.10 stable.
-
--- 
-Thanks,
-Tadeusz
+Yeah, I'll do rebase and send v3
