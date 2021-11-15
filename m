@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC064518CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF1A45206A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241887AbhKOXIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33082 "EHLO mail.kernel.org"
+        id S1358571AbhKPAxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:53:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234216AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3EB6348F;
-        Mon, 15 Nov 2021 18:12:51 +0000 (UTC)
+        id S1344018AbhKOTXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B42A613AD;
+        Mon, 15 Nov 2021 18:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999972;
-        bh=lb+/OSX+NchLbrkQfvWwD5TsE5ET1oYUuc7l5nJPC68=;
+        s=korg; t=1637002206;
+        bh=Bwxs8RremgeeOxsIZo15403pKjyeqw5l+Chq6TMssdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMQbSlzAT+z9n4fuaYOxOrxiHquJy0x1/Jhfal27xC4Ix/N8lFwEhY6aqKLCeQSac
-         iRV9/zZov9DemfPO/5eDKKz0Bl42j+P04blwbgMdG0mQZPFoW363fhmNVtH3Bw5d/X
-         NgCVxMbiX7pB0p8p5S0MiWpf11vP4Ke2thpMBNMo=
+        b=HPCzp2BjL32r8f3DBmJciLsMG/pdS8RfxHxjX1Lsjn/ND6DgWKiDmk/irJK4NlX5M
+         FgPV+j+SFiAbDmTKJACtltnHbEf/jkt6HLGA/8QArdEb/aO+fImcRTHfnHSTxC9fhe
+         Bw+zo0EwqtoIl5UfzJoI/f7Na0tL+Lt3FRXrGSOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 489/849] crypto: tcrypt - fix skcipher multi-buffer tests for 1420B blocks
+        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 477/917] mt76: mt7615: fix hwmon temp sensor mem use-after-free
 Date:   Mon, 15 Nov 2021 17:59:32 +0100
-Message-Id: <20211115165436.825627110@linuxfoundation.org>
+Message-Id: <20211115165444.945853976@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
 
-[ Upstream commit 3ae88f676aa63366ffa9eebb8ae787c7e19f0c57 ]
+[ Upstream commit 0bb4e9187ea4a59dc6658a62978deda0c0dc4b28 ]
 
-Commit ad6d66bcac77e ("crypto: tcrypt - include 1420 byte blocks in aead and skcipher benchmarks")
-mentions:
-> power-of-2 block size. So let's add 1420 bytes explicitly, and round
-> it up to the next blocksize multiple of the algo in question if it
-> does not support 1420 byte blocks.
-but misses updating skcipher multi-buffer tests.
+Without this change, garbage is seen in the hwmon name and sensors output
+for mt7615 is garbled.
 
-Fix this by using the proper (rounded) input size.
-
-Fixes: ad6d66bcac77e ("crypto: tcrypt - include 1420 byte blocks in aead and skcipher benchmarks")
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 109e505ad944 ("mt76: mt7615: add thermal sensor device support")
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/tcrypt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/init.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 6863e57b088d5..54cf01020b435 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1333,7 +1333,7 @@ static void test_mb_skcipher_speed(const char *algo, int enc, int secs,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/init.c b/drivers/net/wireless/mediatek/mt76/mt7615/init.c
+index 2f1ac644e018e..47f23ac905a3c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/init.c
+@@ -49,12 +49,14 @@ int mt7615_thermal_init(struct mt7615_dev *dev)
+ {
+ 	struct wiphy *wiphy = mt76_hw(dev)->wiphy;
+ 	struct device *hwmon;
++	const char *name;
  
- 			if (bs > XBUFSIZE * PAGE_SIZE) {
- 				pr_err("template (%u) too big for buffer (%lu)\n",
--				       *b_size, XBUFSIZE * PAGE_SIZE);
-+				       bs, XBUFSIZE * PAGE_SIZE);
- 				goto out;
- 			}
+ 	if (!IS_REACHABLE(CONFIG_HWMON))
+ 		return 0;
  
-@@ -1386,8 +1386,7 @@ static void test_mb_skcipher_speed(const char *algo, int enc, int secs,
- 				memset(cur->xbuf[p], 0xff, k);
- 
- 				skcipher_request_set_crypt(cur->req, cur->sg,
--							   cur->sg, *b_size,
--							   iv);
-+							   cur->sg, bs, iv);
- 			}
- 
- 			if (secs) {
+-	hwmon = devm_hwmon_device_register_with_groups(&wiphy->dev,
+-						       wiphy_name(wiphy), dev,
++	name = devm_kasprintf(&wiphy->dev, GFP_KERNEL, "mt7615_%s",
++			      wiphy_name(wiphy));
++	hwmon = devm_hwmon_device_register_with_groups(&wiphy->dev, name, dev,
+ 						       mt7615_hwmon_groups);
+ 	if (IS_ERR(hwmon))
+ 		return PTR_ERR(hwmon);
 -- 
 2.33.0
 
