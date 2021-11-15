@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A979B45243C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B659452158
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353359AbhKPBgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:36:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
+        id S1348039AbhKPBD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:03:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242200AbhKOSgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:36:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC2A63256;
-        Mon, 15 Nov 2021 18:02:28 +0000 (UTC)
+        id S245719AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4D961AAA;
+        Mon, 15 Nov 2021 18:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999349;
-        bh=rc8XOJMOmpEbpYsG8zZOl51LRqyLmsNhcatKgb2d/og=;
+        s=korg; t=1637001605;
+        bh=r9Sq2+fDaeiZhcm01+EI3sv9zGPlCwDY8guDarLBoK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z3SQS8bfKa1rEPrVjeUbDGx2DTfjLAMr4X0ZYGZCQt20tCJJiQ951OA4+O/Nr8SLT
-         zc7jZNvEKRuTnA1HQ4JBR/voDs/HA/o1uGOqCCs+wQhc5qycMNl42ExgbfPUw/0JxK
-         gXsFTVtUroPIdbONYESCKGU2VblYCNFsY61VQlN4=
+        b=f2d2D/m/f90XwH90kOpQ4s2MyGU9xTN0pV9K+tJchVPVWb6HebkTSScc39c8Zxel1
+         zqSfBVjUoi06Xs+IpDRLj0lRbR7LyOs4ia2BnDsOqXfSyuGAYDIxDD9BdqPW12tFWL
+         lr0vH00buogUZwyMphSzkfFnh+4cOtRrBoeh8jkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 265/849] media: usb: dvd-usb: fix uninit-value bug in dibusb_read_eeprom_byte()
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 253/917] iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
 Date:   Mon, 15 Nov 2021 17:55:48 +0100
-Message-Id: <20211115165429.213033482@linuxfoundation.org>
+Message-Id: <20211115165437.366144546@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 899a61a3305d49e8a712e9ab20d0db94bde5929f ]
+[ Upstream commit 814a66741b9ffb5e1ba119e368b178edb0b7322d ]
 
-In dibusb_read_eeprom_byte(), if dibusb_i2c_msg() fails, val gets
-assigned an value that's not properly initialized.
-Using kzalloc() in place of kmalloc() for the buffer fixes this issue,
-as the val can now be set to 0 in the event dibusb_i2c_msg() fails.
+Both iov_iter_get_pages and iov_iter_get_pages_alloc return the number
+of bytes of the iovec they could get the pages for.  When they cannot
+get any pages, they're supposed to return 0, but when the start of the
+iovec isn't page aligned, the calculation goes wrong and they return a
+negative value.  Fix both functions.
 
-Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
-Tested-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+In addition, change iov_iter_get_pages_alloc to return NULL in that case
+to prevent resource leaks.
+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dibusb-common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/iov_iter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dibusb-common.c b/drivers/media/usb/dvb-usb/dibusb-common.c
-index 02b51d1a1b67c..aff60c10cb0b2 100644
---- a/drivers/media/usb/dvb-usb/dibusb-common.c
-+++ b/drivers/media/usb/dvb-usb/dibusb-common.c
-@@ -223,7 +223,7 @@ int dibusb_read_eeprom_byte(struct dvb_usb_device *d, u8 offs, u8 *val)
- 	u8 *buf;
- 	int rc;
- 
--	buf = kmalloc(2, GFP_KERNEL);
-+	buf = kzalloc(2, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 755c10c5138cd..60b5e6edfbaa7 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1488,7 +1488,7 @@ ssize_t iov_iter_get_pages(struct iov_iter *i,
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0,
+ 				pages);
+-		if (unlikely(res < 0))
++		if (unlikely(res <= 0))
+ 			return res;
+ 		return (res == n ? len : res * PAGE_SIZE) - *start;
+ 	}
+@@ -1612,8 +1612,9 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
+ 			return -ENOMEM;
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0, p);
+-		if (unlikely(res < 0)) {
++		if (unlikely(res <= 0)) {
+ 			kvfree(p);
++			*pages = NULL;
+ 			return res;
+ 		}
+ 		*pages = p;
 -- 
 2.33.0
 
