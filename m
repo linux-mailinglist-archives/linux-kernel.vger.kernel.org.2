@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD09B45272D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69BE45270D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244520AbhKPCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        id S245580AbhKPCO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238518AbhKORro (ORCPT
+        with ESMTP id S238914AbhKORwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:47:44 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3970EC079795
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:25:49 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id r132so13009418pgr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:25:49 -0800 (PST)
+        Mon, 15 Nov 2021 12:52:44 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5B9C0A3BDF
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:27:06 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id bu18so45686793lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:27:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zTcl/CA5Ev6UODKtmHkLeIkZrDlcXRolMIEi+XRmo/4=;
-        b=Ecl0cR1xR7V7WnPSUzOs7tEPw8P6cyZ335nnh7QMRz62gsdjjFoubmdkPQZg9HWsC6
-         V/p1WnKw07yMKVmnJmySSdDW4RE2A8/YHpHDZkgGWtFrFcjQxO8t5+Aqi/pjzl1GgOkC
-         hrDk+k2oXpUzuuJwg1XiLvM/suOqVOj/YAIJU+NLl0gyY5fArOTbfTJhWw1CjosHBRdR
-         FpLALiKVdw8LRNvx5HjfNzYxjm9es2xaaoMx8A7aRY5FWbzRyNhpQ2IH7aBoPzPLBnoY
-         CfbfwKnxMlD3rKWI+D0BUnzoJghtxM0gtp8RpaEsc8Hno8aJzxPRsck0OCTmhfDuEdJV
-         gMJw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AO0NlSmR9mYSq3oMlnIAASaFgPIFheiRI7IL5/kqzF8=;
+        b=qXa3KLevB5uCBsT0Mm5p0HktCkRkxKQ/ENCpexU4hG++JphgeKtZeuxIas0FmMuqUQ
+         pzpOAPGyKhBpWBvu2C80NnYrI8XeoEI5NJOyWph1tl/7NKchV7n4LxslMYVj0sLnfAPg
+         WhCjRA3DUuc9MK3sD3YhHK5qXoqfDQwaJVjNli31Ps0soT/fj0w8DJdtegy8r6/uQ9Th
+         u9iuAlyjmKNodyLh2JKI5xnYdbrl1OJe1PrdX4VG3CAHlkehCORN8RtUbtFUHiHDCIPn
+         miCCm009EaB9cB7HICqqW5Id4Bc10marZBEUds9F2XR6cfS5nYGEWoJ4oKAMWucGTeYV
+         nWjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zTcl/CA5Ev6UODKtmHkLeIkZrDlcXRolMIEi+XRmo/4=;
-        b=xt+Mcvl/BgUFRuleMAfwxyZOLQumgOIanpGQxuH+UDLpO2+dkW7TKrBVa2VQmTie9u
-         tIBGkDjkoRBYAntV/YCEMJ22aMOseuhoa2918ON2RTI02gkolOZJ977h8C6qIHHJBzn5
-         FO9BKX3H9fO6gT3tDa1onAGECgTXdrPfj52YjoVuHxXLnKsJ/lo8EOMR/rfBh0Ci++g+
-         o5lCHd7Ju9q2PWY/ptnlTXkAFfdq0TUaV4iS/dr5dhkJmkLqlf5I/auwXoXX2Y9fLSH6
-         qXSmQs7q5J138guFzbLxrbpawyYal5T2Ocz3Pwh5ZA2cP446PiOYCNbUM+OgZJwJIeyE
-         Xd2A==
-X-Gm-Message-State: AOAM533pYV/BiJ7Ak/u3PfTJymKq9Z903EMZro2N2v8EMnyDEZPB745p
-        m75CjfBEzdCP4OtXtXnBpPVp1A==
-X-Google-Smtp-Source: ABdhPJxWeWGi2U9i9fC6X4OCa+G3zMGesVsvaMbNPJ+jfguhVVFtD+RJxF8y7Z6fLKMDMarAgB7c6Q==
-X-Received: by 2002:aa7:888d:0:b0:47c:128b:ee57 with SMTP id z13-20020aa7888d000000b0047c128bee57mr34630009pfe.81.1636997148447;
-        Mon, 15 Nov 2021 09:25:48 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j6sm12238880pgf.60.2021.11.15.09.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 09:25:47 -0800 (PST)
-Date:   Mon, 15 Nov 2021 17:25:43 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <Michael.Roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZKYF5DSjUmWJDEI@google.com>
-References: <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
- <YY7I6sgqIPubTrtA@zn.tnic>
- <YY7Qp8c/gTD1rT86@google.com>
- <YY7USItsMPNbuSSG@zn.tnic>
- <CAMkAt6o909yYq3NfRboF3U3V8k-2XGb9p_WcQuvSjOKokmMzMA@mail.gmail.com>
- <YY8AJnMo9nh3tyPB@google.com>
- <CAA03e5G=fY7_qESCuoHW3_VdVbDWekqQxmvLPzWNepBqJjyCXg@mail.gmail.com>
- <YZAFTBXtC/yS7xtq@google.com>
- <YZKMmciB+wJyrmFI@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AO0NlSmR9mYSq3oMlnIAASaFgPIFheiRI7IL5/kqzF8=;
+        b=IGGxRlOeJFvVkjejsxJh/rbA6mxxS1Kot/om9F4puevI1eb7F0AZQ70ZmB9Tph2lo8
+         ZnOjxISCnEZcSH7KU2KtYOocFFud6qMSdNjhg76m6sxbKODlcyWX14WkvOq3RnFYyrXJ
+         NtnQinY9H/PDAJ3oCCvZNgvts7GfOqu0due1XQpz0Snj+DJpxTZEAw1y6ZD8oAKj87mq
+         Vv1CNlpMEZ8FEUaXPxu5fkhdWokpy1LQdpmxLb/yUt6MJJ08qTZ51F3eWMvDTClYVORY
+         9Vzlrbhz3h/YPx/3Y+pFxOxRd1AM4FuML6YUlxdN9cF5f/I7SK+WDQuxqniLilsECZo8
+         Q8JA==
+X-Gm-Message-State: AOAM530s8t576nN1Hg2Snsd9g53ulxGswXUNA2B+GD1rt2QwwF9PEoyv
+        h13r9Sc5G2UVp5C+g9Eu9wl0MbjYucBuSeVHagkzMg==
+X-Google-Smtp-Source: ABdhPJyarUCJGrjo9ggl2A5teymD6Qc043RuPNXNnJ0zjFUIdWzvyopOLXQZTcdMvfx/3QZddl59x13RofDojPGp/mQ=
+X-Received: by 2002:a05:6512:3901:: with SMTP id a1mr362673lfu.36.1636997224744;
+ Mon, 15 Nov 2021 09:27:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZKMmciB+wJyrmFI@suse.de>
+References: <20211114074704.3508622-1-chenhuacai@loongson.cn>
+In-Reply-To: <20211114074704.3508622-1-chenhuacai@loongson.cn>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 15 Nov 2021 09:26:54 -0800
+Message-ID: <CALAqxLVpTtjFrtKAkcrjDKN9R6FuSdY6LKQw8Mye-3Atqv7kQw@mail.gmail.com>
+Subject: Re: [PATCH] time/sched_clock: Allow architecture to override cyc_to_ns()
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021, Joerg Roedel wrote:
-> On Sat, Nov 13, 2021 at 06:34:52PM +0000, Sean Christopherson wrote:
-> > I'm not treating it nonchalantly, merely acknowledging that (a) some flavors of kernel
-> > bugs (or hardware issues!) are inherently fatal to the system, and (b) crashing the
-> > host may be preferable to continuing on in certain cases, e.g. if continuing on has a
-> > high probablity of corrupting guest data.
-> 
-> The problem here is that for SNP host-side RMP faults it will often not
-> be clear at fault-time if it was caused by wrong guest or host behavior. 
-> 
-> I agree with Marc that crashing the host is not the right thing to do in
-> this situation. Instead debug data should be collected to do further
-> post-mortem analysis.
+On Sat, Nov 13, 2021 at 11:47 PM Huacai Chen <chenhuacai@loongson.cn> wrote:
+>
+> The current cyc_to_ns() implementation is like this:
+>
+> static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+> {
+>         return (cyc * mult) >> shift;
+> }
+>
+> But u64*u32 maybe overflow, so introduce ARCH_HAS_CYC_TO_NS to allow
+> architecture to override it.
+>
 
-Again, I am not saying that any RMP #PF violation is an immediate, "crash the
-host".  It should be handled exactly like any other #PF due to permission violation.
-The only wrinkle added by the RMP is that the #PF can be due to permissions on the
-GPA itself, but even that is not unique, e.g. see the proposed KVM XO support that
-will hopefully still land someday.
+If that's the case, it would seem too large a mult/shift pair had been selected.
 
-If the guest violates the current permissions, it (indirectly) gets a #VC.  If host
-userspace violates permissions, it gets SIGSEGV.  If the host kernel violates
-permissions, then it reacts to the #PF in whatever way it can.  What I am saying is
-that in some cases, there is _zero_ chance of recovery in the host and so crashing
-the entire system is inevitable.   E.g. if the host kernel hits an RMP #PF when
-vectoring a #GP because the IDT lookup somehow triggers an RMP violation, then the
-host is going into triple fault shutdown.
+What sort of cycle range are you considering to be valid here? Can you
+provide more rationale as to why this needs the ability to be
+overridden?
 
-[*] https://lore.kernel.org/linux-mm/20191003212400.31130-1-rick.p.edgecombe@intel.com/
+And what sort of arch-specific logic do you envision, rather than
+having a common implementation to avoid the overflow?
+
+thanks
+-john
