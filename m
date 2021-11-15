@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E076D4518A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A63F451F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346796AbhKOXEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:04:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        id S1352753AbhKPAms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243095AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F39C63478;
-        Mon, 15 Nov 2021 18:10:41 +0000 (UTC)
+        id S1343903AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42E35633A0;
+        Mon, 15 Nov 2021 18:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999841;
-        bh=+NudP2+8FtaGBahBMCZBFRurVUM7Gw0nAJc6OLcToYo=;
+        s=korg; t=1637002078;
+        bh=zhliUqB7AwUx2eOT56VImLysHnF9S+tfmfsRkohC4q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UAOkx5zyPijXF/JLEIQXv7Ap+LHfThNLyCh9BCZsF7LxUMBPYfqoqeoUdsqvInzkh
-         9DvDWz0d+gWY2lUahYJ1p4BOohnH2nZlZtB9GLdPxUNj17hzGfdTiLLLhtxRE40R+H
-         EzHJhD7mtfyWtj/qBowfXMUIZBWnFti/XUWElkqA=
+        b=bN2uHJtZ0KxsqwPrSQysyR5yhDR5TFHjjKq1yyRj/MwO7u9cCmZMuca6MG6lJNxhL
+         82oPE3M9NFv0D3wXDSVTaiIRhVBAlMw7/VtAf41IIy9TaXSszuo32GBHk3kYmOuPzC
+         rQBBS3r+H6TxiiTV6VZ92c46nqm6HXL8FmMczBwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 443/849] mmc: mxs-mmc: disable regulator on error and in the remove function
+Subject: [PATCH 5.15 431/917] net: tulip: winbond-840: fix build for UML
 Date:   Mon, 15 Nov 2021 17:58:46 +0100
-Message-Id: <20211115165435.267605354@linuxfoundation.org>
+Message-Id: <20211115165443.402790629@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit ce5f6c2c9b0fcb4094f8e162cfd37fb4294204f7 ]
+[ Upstream commit a3d708925fcca1a2f7219bc9ce93e6341f85c1e0 ]
 
-The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
-Neither in the error handling path of the probe nor in the remove
-function.
+On i386, when builtin (not a loadable module), the winbond-840 driver
+inspects boot_cpu_data to see what CPU family it is running on, and
+then acts on that data. The "family" struct member (x86) does not exist
+when running on UML, so prevent that test and do the default action.
 
-Register a devm_action to disable it when needed.
+Prevents this build error on UML + i386:
 
-Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+../drivers/net/ethernet/dec/tulip/winbond-840.c: In function ‘init_registers’:
+../drivers/net/ethernet/dec/tulip/winbond-840.c:882:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
+  if (boot_cpu_data.x86 <= 4) {
+
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-um@lists.infradead.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Link: https://lore.kernel.org/r/20211014050606.7288-1-rdunlap@infradead.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/dec/tulip/winbond-840.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index 947581de78601..8c3655d3be961 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -552,6 +552,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
+diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+index 85b99099c6b94..5babcf05bc2f1 100644
+--- a/drivers/net/ethernet/dec/tulip/winbond-840.c
++++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+@@ -877,7 +877,7 @@ static void init_registers(struct net_device *dev)
+ 		8000	16 longwords		0200 2 longwords	2000 32 longwords
+ 		C000	32  longwords		0400 4 longwords */
  
-+static void mxs_mmc_regulator_disable(void *regulator)
-+{
-+	regulator_disable(regulator);
-+}
-+
- static int mxs_mmc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -591,6 +596,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
- 				"Failed to enable vmmc regulator: %d\n", ret);
- 			goto out_mmc_free;
- 		}
-+
-+		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
-+					       reg_vmmc);
-+		if (ret)
-+			goto out_mmc_free;
- 	}
- 
- 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
+-#if defined (__i386__) && !defined(MODULE)
++#if defined (__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
+ 	/* When not a module we can work around broken '486 PCI boards. */
+ 	if (boot_cpu_data.x86 <= 4) {
+ 		i |= 0x4800;
 -- 
 2.33.0
 
