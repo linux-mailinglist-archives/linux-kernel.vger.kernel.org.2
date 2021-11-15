@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D680C450F96
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64A445118B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239893AbhKOSc4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 13:32:56 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:44385 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238129AbhKORdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:33:24 -0500
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id DED95CED38;
-        Mon, 15 Nov 2021 18:30:27 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v3] Bluetooth: btusb: re-definition for board_id in struct
- qca_version
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <96d03a2b0bd50da90a20990c42a814d9@codeaurora.org>
-Date:   Mon, 15 Nov 2021 18:30:27 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1593EED1-5745-49D1-B17A-F4C553F28644@holtmann.org>
-References: <305e41a55a4c117da86f786c374a57dc@codeaurora.org>
- <8E687716-E810-4A46-B010-A08BB261D2FF@holtmann.org>
- <96d03a2b0bd50da90a20990c42a814d9@codeaurora.org>
-To:     tjiang@codeaurora.org
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        id S244043AbhKOTJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:09:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236881AbhKORly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:41:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E45632F4;
+        Mon, 15 Nov 2021 17:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636997255;
+        bh=kIdQFU/9pUAtED/7qGstZ536P5/Xac8fklidjgrnPfY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MM7yzhoWIz23JTJKVtQ7JvvMv/bgM9L3TjmFDOCleiKk6R8dOCXYfrWG4c1n5KAw8
+         YeYJ65TtR9PCOn7PHVRBQR6k2Tui9eYa7mfEzW5ZCBBOcaAVEupO6mYBFxGFaRLArg
+         B3lVKFprnaQlInxCy7fMPhoKtqkhoneZB6zoKISw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 038/575] ALSA: usb-audio: Add registration quirk for JBL Quantum 400
+Date:   Mon, 15 Nov 2021 17:56:03 +0100
+Message-Id: <20211115165344.946704343@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
+From: Alexander Tsoy <alexander@tsoy.me>
 
->  the following is the explanation from qc btsoc team:
-> 
-> The board ID should be split into two bytes.
-> The 1st byte is chip ID, and the 2nd byte is platform ID.
-> For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID.
-> Currently we have several platforms, and platform IDs are continuously added.
-> We would not distinguish different chips if we get these mixed up.
-> Platform ID:
-> •             0x00 is for Mobile
-> •             0x01 is for X86( ID # from 257)
-> •             0x02 is for Automotive(ID# from 513 )
-> •             0x03 is for Consumer electronic( ID# from 769)
-> …
+commit 763d92ed5dece7d439fc28a88b2d2728d525ffd9 upstream.
 
-then use u8 chip_id and u8 platform_id in the data structure and add description like above when you combine chip_id and platform_id into board_id.
+Add another device ID for JBL Quantum 400. It requires the same quirk as
+other JBL Quantum devices.
 
-Regards
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211030174308.1011825-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Marcel
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1897,6 +1897,7 @@ static const struct registration_quirk r
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x1f47, 2),	/* JBL Quantum 800 */
++	REG_QUIRK_ENTRY(0x0ecb, 0x1f4c, 2),	/* JBL Quantum 400 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
+
 
