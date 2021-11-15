@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0A9451E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F914518E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352424AbhKPAfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1348368AbhKOXJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:09:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344076AbhKOTXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BE2663473;
-        Mon, 15 Nov 2021 18:51:22 +0000 (UTC)
+        id S243317AbhKOTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:00:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A17E7632FB;
+        Mon, 15 Nov 2021 18:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002282;
-        bh=JKQPYMonYzsh+qa/FDrPSLIJMgOJAcrsvmFdZbXspQg=;
+        s=korg; t=1637000054;
+        bh=qlsSibtdxy76CyrAY87rZQTzGiGXmywXzN678qSRYnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cDP87DqegSb8qnenzyJYMi46CYHgeVbptXDfnuIo87/Ov62d57J0/CycwGuLjku39
-         as1w8P6VbPq/kFgGnXbP2FqQFyP2Pg/kiqgXRPhIByGZy7SOnhqBmIg7nVirEf3fqP
-         8Z6ll20jSS29CARCzYzijKioZ+eyeJN03RRMbYbY=
+        b=Y45F1gu9sFYKRCz0/Mk07Cvrlhm7aCLJ6uR3c/mV7udTnJQuxAfh82sAxk80cDcH0
+         fFzXtmTT8aZcOnqJUIjkSgFELISPXWxgdRlwgiKar0JjBNQ+tJwmXIeP2J2TOcVKUE
+         dpLi6UuI8Kbv1M5hLd8VlVcECEwo/WsvQVvaKal8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 507/917] s390/gmap: dont unconditionally call pte_unmap_unlock() in __gmap_zap()
-Date:   Mon, 15 Nov 2021 18:00:02 +0100
-Message-Id: <20211115165445.958647135@linuxfoundation.org>
+Subject: [PATCH 5.14 520/849] libertas_tf: Fix possible memory leak in probe and disconnect
+Date:   Mon, 15 Nov 2021 18:00:03 +0100
+Message-Id: <20211115165437.866233110@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit b159f94c86b43cf7e73e654bc527255b1f4eafc4 ]
+[ Upstream commit d549107305b4634c81223a853701c06bcf657bc3 ]
 
-... otherwise we will try unlocking a spinlock that was never locked via a
-garbage pointer.
+I got memory leak as follows when doing fault injection test:
 
-At the time we reach this code path, we usually successfully looked up
-a PGSTE already; however, evil user space could have manipulated the VMA
-layout in the meantime and triggered removal of the page table.
+unreferenced object 0xffff88810a2ddc00 (size 512):
+  comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
+  hex dump (first 32 bytes):
+    00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+    [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
+    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+    [<ffffffff82b59630>] really_probe+0x190/0x480
+    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
+    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
+    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
+    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
+    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
+    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
+    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
+    [<ffffffff82b52e49>] device_add+0x829/0x1300
+    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
+    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
+    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
 
-Fixes: 1e133ab296f3 ("s390/mm: split arch/s390/mm/pgtable.c")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210909162248.14969-3-david@redhat.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+cardp is missing being freed in the error handling path of the probe
+and the path of the disconnect, which will cause memory leak.
+
+This patch adds the missing kfree().
+
+Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020120345.2016045-2-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/mm/gmap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/wireless/marvell/libertas_tf/if_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index e0735c3437759..d63c0ccc5ccda 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -689,9 +689,10 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+index fe0a69e804d8c..75b5319d033f3 100644
+--- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+@@ -230,6 +230,7 @@ static int if_usb_probe(struct usb_interface *intf,
  
- 		/* Get pointer to the page table entry */
- 		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
--		if (likely(ptep))
-+		if (likely(ptep)) {
- 			ptep_zap_unused(gmap->mm, vmaddr, ptep, 0);
--		pte_unmap_unlock(ptep, ptl);
-+			pte_unmap_unlock(ptep, ptl);
-+		}
- 	}
- }
- EXPORT_SYMBOL_GPL(__gmap_zap);
+ dealloc:
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ error:
+ lbtf_deb_leave(LBTF_DEB_MAIN);
+ 	return -ENOMEM;
+@@ -254,6 +255,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
+ 
+ 	/* Unlink and free urb */
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ 
+ 	usb_set_intfdata(intf, NULL);
+ 	usb_put_dev(interface_to_usbdev(intf));
 -- 
 2.33.0
 
