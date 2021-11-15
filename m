@@ -2,78 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E04450357
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E245034E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhKOLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:25:31 -0500
-Received: from mga14.intel.com ([192.55.52.115]:37308 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231545AbhKOLXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:23:15 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233667709"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="233667709"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:20:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="503787458"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Nov 2021 03:20:01 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 019B122B; Mon, 15 Nov 2021 13:20:03 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for internal use only
-Date:   Mon, 15 Nov 2021 13:20:00 +0200
-Message-Id: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S231265AbhKOLX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231700AbhKOLXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:23:21 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38801C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:20:24 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso12174149wmf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dM9DRPgSpJ0jYURWvDVlbmzfJrqC6EeymCjwHEDZ6Es=;
+        b=xOD0AkPy2gwLWVAKrrvHs32rV78rbaPL2H73G5vr1U7KZToCSz6p8Rq5/Fb7N4JG08
+         TV5RsRwS5HOWrf2coQN+Eh4dXDHf30y4l4JJacFNzB/hyRZPZruRawHAhBzcUeBvcDK3
+         8iGBdem8Yy+s7rnZp1BlM2/pZRn20b0jI3HW9je2YyhS/jGw1xojFDA8U0IdktOwJOiL
+         zKK2gx/fp8DmK8gRttrY9e33y5O+6CPfv+WLUUkhvJ5oH0CYelVoz4m45WUEi/4NW4kj
+         Kce8QNtsMKuUCnVj4g6NM5hEh7vFlySUJ1NevVg2LCHRFkgWWZo+s8qA2ZvhjN9dv9QS
+         3c4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dM9DRPgSpJ0jYURWvDVlbmzfJrqC6EeymCjwHEDZ6Es=;
+        b=Yu/ofrFvYXSXnCeS5/IfQoM8IZddVddiUBU3Y88IOr7TYJv4xWc7qFNCwEAR40aF3D
+         CtPyxK+RZv0XlI/2uCPGT60FrGIjwyw2XrwMMS6wgc3S7/30WEvA646cMXEO/wWE8YYR
+         Pid5guCG2lS9Qjg96r8Fe3qffF8Rp8Cjq8i67+m1ePBG1l9WhtqLUrhdQ0TJMLXcg4eW
+         6YpaxenLJ15vB0aa1RSAwRJuTlpn5W/4vryCiKlBeo7DVccuVcQ1VBg21KYSC6pwpVye
+         dH0Wq3/ndwIJMxim8yLQrdSabiEgF/7GTgOLVMxtqowLGVY18aswRgfanpVhUsU1Uo5p
+         6jfQ==
+X-Gm-Message-State: AOAM53387Y6tn5Wc0TxACxNdr8M01CToVR6PbYDy9zHpxDJNAXWek4vW
+        VyaJlWWL2NMrh7ODUkktZmGh/g==
+X-Google-Smtp-Source: ABdhPJzYi8iIhkZycZ6PrR6eG5g7mUUosggXB1jNrJ6nd0jrj7CHwHF6FPbvwqNTXObdzBkNXznpHQ==
+X-Received: by 2002:a1c:9842:: with SMTP id a63mr58984430wme.102.1636975223009;
+        Mon, 15 Nov 2021 03:20:23 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id z7sm19191262wmi.33.2021.11.15.03.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 03:20:22 -0800 (PST)
+Date:   Mon, 15 Nov 2021 12:20:21 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YZJCdSy+wzqlwrE2@nanopsycho>
+References: <20211108153126.1f3a8fe8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109144358.GA1824154@nvidia.com>
+ <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109153335.GH1740502@nvidia.com>
+ <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109182427.GJ1740502@nvidia.com>
+ <YY0G90fJpu/OtF8L@nanopsycho>
+ <YY0J8IOLQBBhok2M@unreal>
+ <YY4aEFkVuqR+vauw@nanopsycho>
+ <YZCqVig9GQi/o1iz@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZCqVig9GQi/o1iz@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use BIT() as __GENMASK() is for internal use only. The rationale
-of switching to BIT() is to provide better generated code. The
-GENMASK() against non-constant numbers may produce an ugly assembler
-code. On contrary the BIT() is simply converted to corresponding shift
-operation.
+Sun, Nov 14, 2021 at 07:19:02AM CET, leon@kernel.org wrote:
+>On Fri, Nov 12, 2021 at 08:38:56AM +0100, Jiri Pirko wrote:
+>> Thu, Nov 11, 2021 at 01:17:52PM CET, leon@kernel.org wrote:
+>> >On Thu, Nov 11, 2021 at 01:05:11PM +0100, Jiri Pirko wrote:
+>> >> Tue, Nov 09, 2021 at 07:24:27PM CET, jgg@nvidia.com wrote:
+>> >> >On Tue, Nov 09, 2021 at 08:20:42AM -0800, Jakub Kicinski wrote:
+>> >> >> On Tue, 9 Nov 2021 11:33:35 -0400 Jason Gunthorpe wrote:
+>> >> >> > > > I once sketched out fixing this by removing the need to hold the
+>> >> >> > > > per_net_rwsem just for list iteration, which in turn avoids holding it
+>> >> >> > > > over the devlink reload paths. It seemed like a reasonable step toward
+>> >> >> > > > finer grained locking.  
+>> >> >> > > 
+>> >> >> > > Seems to me the locking is just a symptom.  
+>> >> >> > 
+>> >> >> > My fear is this reload during net ns destruction is devlink uAPI now
+>> >> >> > and, yes it may be only a symptom, but the root cause may be unfixable
+>> >> >> > uAPI constraints.
+>> >> >> 
+>> >> >> If I'm reading this right it locks up 100% of the time, what is a uAPI
+>> >> >> for? DoS? ;)
+>> >> >> 
+>> >> >> Hence my questions about the actual use cases.
+>> >> >
+>> >> >Removing namespace support from devlink would solve the crasher. I
+>> >> >certainly didn't feel bold enough to suggest such a thing :)
+>> >> >
+>> >> >If no other devlink driver cares about this it is probably the best
+>> >> >idea.
+>> >> 
+>> >> Devlink namespace support is not generic, not related to any driver.
+>> >
+>> >What do you mean?
+>> >
+>> >devlink_pernet_pre_exit() calls to devlink reload, which means that only
+>> >drivers that support reload care about it. The reload is driver thing.
+>> 
+>> However, Jason was talking about "namespace support removal from
+>> devlink"..
+>
+>The code that sparkles deadlocks is in devlink_pernet_pre_exit() and
+>this will be nice to remove. I just don't know if it is possible to do
+>without ripping whole namespace support from devlink.
 
-Note, it's the only user of __GENMASK() in the kernel outside of its own realm.
+As discussed offline, the non-standard mlx5/IB usage of network
+namespaces requires non standard mlx5/IB workaround. Does not make any
+sense to remove the devlink net namespace support removal.
 
-Fixes: 3baec684a531 ("PCI: brcmstb: Accommodate MSI for older chips")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: switched to BIT() and elaborated why, hence not included tag
- drivers/pci/controller/pcie-brcmstb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 1fc7bd49a7ad..0c49fc65792c 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -619,7 +619,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
- 
- static void brcm_msi_set_regs(struct brcm_msi *msi)
- {
--	u32 val = __GENMASK(31, msi->legacy_shift);
-+	u32 val = ~(BIT(msi->legacy_shift) - 1);
- 
- 	writel(val, msi->intr_base + MSI_INT_MASK_CLR);
- 	writel(val, msi->intr_base + MSI_INT_CLR);
--- 
-2.33.0
-
+>
+>Thanks
+>
+>> 
+>> 
+>> >
+>> >Thanks
+>> >
+>> >> 
+>> >> >
+>> >> >Jason
