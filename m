@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA08450923
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D09450925
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhKOQF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        id S236682AbhKOQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbhKOQFJ (ORCPT
+        with ESMTP id S236264AbhKOQFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:05:09 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC17C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:02:13 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id n85so15417951pfd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:02:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tivrXntTWIbCkVzZC4y1HIyO4FqKtX6bYEAzYxt9B4c=;
-        b=oWCc1n4tm5zCJxae3xkGIvL4qNO5jJQK2PhsxaekoUCUdhsyS7fg9L2yaSfdbujV6o
-         Nxst2ng8GqpnJQDUI63bIJ9xF+qaMBDWS8GZZ6aPcOTldEZM5rehKQwQnphbJz2UsHyt
-         VEiEBBs85fhJgJd4r6lseabO8YMZjqRaKncMOBiOVwBIu1Mujam77+cBPU1X303T/eNA
-         f4jYM1hLklyJnwCD4BJBnhFX1rkPuAGRZkO/m4okbBL/i6/JnjpAP82/ZWWkSfaFR+xY
-         r1NWO0EsdOZt6G/ek3HGZRAaKGon42iM9vQaiXnB8LBn52A3DXSZYYIzW1UCu3zHOHp0
-         GLBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tivrXntTWIbCkVzZC4y1HIyO4FqKtX6bYEAzYxt9B4c=;
-        b=oqVUD6GaQBp3JlGlspvjiMKhE0uMj/xE+YT/XKARuTrRh5mpg1H+BpjZpk3TIHQFS+
-         VTTakbIOA/PQLkrSsgJi/0J3R7GshsH5QgkncznlMZvZgwkL9nTrVxjUZzEuUt30Bnmb
-         ttJFbx2K8ff37R1FoBQ9VnFfwsjyqu748FHqfyY5svy8H3CS0POFS09VFjB7Y/ehu4HD
-         2L8OSIOixMOxu3pVxAZgVOQ5BxSgW5NuNlls26LGYr2cYOzUtEm1KzTKnQ25Wj93blFi
-         BSgvHuZxjT+uMewYPgz9RFaQdNqejqNh6ZHPBMCZhL8XiSZ5rgKd9F3DLeykJ5PIDFG6
-         IYDw==
-X-Gm-Message-State: AOAM532wFYHwNNqqupTretKb/HxpyEuFhR9LWvLxE1k9zYcrs0dkyyjv
-        Y+WI8pYyag/m/Hl208CoT+b5Gg==
-X-Google-Smtp-Source: ABdhPJzwcqJ6KzoH1s6JCM7i7hqtm/wv2VNT0LxCOTZuK4dKTRSpry+DXx0j2CMmYHa146COp1uoBw==
-X-Received: by 2002:a63:bf45:: with SMTP id i5mr25148151pgo.161.1636992133191;
-        Mon, 15 Nov 2021 08:02:13 -0800 (PST)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id o2sm16331383pfu.206.2021.11.15.08.02.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 08:02:12 -0800 (PST)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     davem@davemloft.net
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: [PATCH v2] tipc: check for null after calling kmemdup
-Date:   Mon, 15 Nov 2021 08:01:43 -0800
-Message-Id: <20211115160143.5099-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.33.1
+        Mon, 15 Nov 2021 11:05:15 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62771C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:02:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=mdQOvy69vSFrndarw+JF0lfecfLI+mBimpp1r6sJ1a8=; b=fCwyWTbSuVJEfqWe+n8d6TGHhE
+        jLfBvoYg3pV/jwZG7DlJnLG27QXwUnyLi/jAby84zsLb5ko+Gsq5guaYfAuBeP0ICgLAWuPow+Qiw
+        asPX1HMXHcBeNhRLosrG8VtRy1xP0PoMatvmmeJSmZKBm98SP2NIHsNjzaJ4l6TjBgOi+iJkeWejx
+        5PV8DyHnZmkaRDtI4U9A/fHAaweMkB/ULK8REyhZNiri9USnwoKd+oUmeOn28gaGOF90XxS1V3aGA
+        m2hHSgRxRQzJqWNmnt45pOC6/zFWZzOjB6ALUQHA1yaLY5QkhE7m71NG+h9NXmYozzUY9DRvRsevb
+        P1D/qAPw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmeQf-00GAPH-Ne; Mon, 15 Nov 2021 16:01:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 37914300347;
+        Mon, 15 Nov 2021 17:01:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1ECDE20117B1D; Mon, 15 Nov 2021 17:01:55 +0100 (CET)
+Date:   Mon, 15 Nov 2021 17:01:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        mazhenhua <mazhenhua@xiaomi.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Maria Yu <quic_aiquny@quicinc.com>
+Subject: Re: [PATCH v4] locking/rwsem: Make handoff bit handling more
+ consistent
+Message-ID: <YZKEc+SgijOcB+0W@hirez.programming.kicks-ass.net>
+References: <20211112040753.389380-1-longman@redhat.com>
+ <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
+ <a141b93d-1945-a44d-467f-54b648cbf4d0@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a141b93d-1945-a44d-467f-54b648cbf4d0@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemdup can return a null pointer so need to check for it, otherwise
-the null key will be dereferenced later in tipc_crypto_key_xmit as
-can be seen in the trace [1].
+On Sun, Nov 14, 2021 at 10:38:57PM -0500, Waiman Long wrote:
+> On 11/12/21 07:10, Peter Zijlstra wrote:
 
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: tipc-discussion@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # 5.15, 5.14, 5.10
+> > Argh, rwsem_mark_wake() doesn't clear HANDOFF when list_empty(), and
+> > write_slowpath() is *far* too clever about all of this.
+> rwsem_mark_wake() does clear the HANDOFF flag if it was set.
 
-[1] https://syzkaller.appspot.com/bug?id=bca180abb29567b189efdbdb34cbf7ba851c2a58
+Argh, yeah, I got confused by the whole !woken case, but that case won't
+ever hit list_empty() either. Perhaps that stuff could use a bit of a
+reflow too.
 
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
-Changed in v2:
-- use tipc_aead_free() to free all crytpo tfm instances
-  that might have been allocated before the fail.
----
- net/tipc/crypto.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index dc60c32bb70d..d293614d5fc6 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -597,6 +597,10 @@ static int tipc_aead_init(struct tipc_aead **aead, struct tipc_aead_key *ukey,
- 	tmp->cloned = NULL;
- 	tmp->authsize = TIPC_AES_GCM_TAG_SIZE;
- 	tmp->key = kmemdup(ukey, tipc_aead_key_size(ukey), GFP_KERNEL);
-+	if (!tmp->key) {
-+		tipc_aead_free(&tmp->rcu);
-+		return -ENOMEM;
-+	}
- 	memcpy(&tmp->salt, ukey->key + keylen, TIPC_AES_GCM_SALT_SIZE);
- 	atomic_set(&tmp->users, 0);
- 	atomic64_set(&tmp->seqno, 0);
--- 
-2.33.1
+> > > @@ -1098,7 +1110,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
+> > >   		 * In this case, we attempt to acquire the lock again
+> > >   		 * without sleeping.
+> > >   		 */
+> > > -		if (wstate == WRITER_HANDOFF) {
+> > > +		if (waiter.handoff_set) {
+> > I'm thinking this wants to be something like:
+> > 
+> > 		if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
+> handoff_set flag is only set when the waiter becomes the first.
 
+Yes, but a random waiter can wake up and see it be set and also start
+spinning.
+
+> > 
+> > >   			enum owner_state owner_state;
+> > >   			preempt_disable();
+
+> > @@ -575,6 +610,11 @@ static inline bool rwsem_try_write_lock(
+> >   		return false;
+> >   	}
+> > +	/*
+> > +	 * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
+> > +	 * success.
+> > +	 */
+> > +	list_del(&waiter->list);
+> >   	rwsem_set_owner(sem);
+> >   	return true;
+> >   }
+
+> > @@ -1128,16 +1153,14 @@ rwsem_down_write_slowpath(struct rw_sema
+> >   		raw_spin_lock_irq(&sem->wait_lock);
+> >   	}
+> >   	__set_current_state(TASK_RUNNING);
+> > -	list_del(&waiter.list);
+> +    rwsem_del_waiter(sem, &waiters); ?
+
+I tried that, but then we get an extra atomic in this path. As is I made
+try_write_lock() do the full del_waiter, see the hunk above.
+
+> >   	raw_spin_unlock_irq(&sem->wait_lock);
+> >   	lockevent_inc(rwsem_wlock);
+> > -
+> > -	return ret;
+> > +	return sem;
+> >   out_nolock:
+> >   	__set_current_state(TASK_RUNNING);
+> >   	raw_spin_lock_irq(&sem->wait_lock);
+> > -	rwsem_out_nolock_clear_flags(sem, &waiter);
+> > +	rwsem_del_waiter(sem, &waiter);
+> >   	if (!list_empty(&sem->wait_list))
+> >   		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
+> >   	raw_spin_unlock_irq(&sem->wait_lock);
+> > 
+> Sorry for the late reply as I was busy on other works.
+> 
+> I like the idea. I will incorporate in a new patch tomorrow.
+
+Thanks!
