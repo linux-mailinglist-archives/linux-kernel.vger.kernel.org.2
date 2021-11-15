@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7534519BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D601451F25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243921AbhKOX0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:26:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1355649AbhKPAih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245009AbhKOTSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 938896343A;
-        Mon, 15 Nov 2021 18:26:54 +0000 (UTC)
+        id S1344776AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50185632BB;
+        Mon, 15 Nov 2021 19:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000815;
-        bh=f5sBHD256VAoyIEQDueybkX0f1CgCHoWj5BiHd5mBBY=;
+        s=korg; t=1637003042;
+        bh=Za4I7HrQYTzxsOoAXjDn67if9utOMtF6yh1X6233+2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ii/01UpOoKtrHWK4NCzqv2Aoj1BHS4jklMhM2hSTOLlS7p9ESz8o9USQnNqao1Vno
-         kZULpV8Q4aSi506wGwH73dLQP8BO2MLKPBILMXDBEM9j0rAilBr79Xjxii8pZYFo0r
-         Mn5OZJfrBPEpHHaMh7Khrzq/qwbNIU06XeOsrJWE=
+        b=araUINmaU/q/Fjnog7CQygooIrr8d0/CqgM/CDyWS93cnSAtsaDkVp0CMaUbnj0+U
+         QdCxR/tA4heVl4jE+DU/oXPb6s5c+1tqseKXYov0XIdkBzJD7mCWpYGF3u9Q4sAThd
+         KgjsdS1wp4/qiAREy96QTx8iZxPznJh1AqDDDUa8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.14 802/849] dmaengine: bestcomm: fix system boot lockups
+        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gospodarek <gospo@broadcom.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 790/917] PCI: Do not enable AtomicOps on VFs
 Date:   Mon, 15 Nov 2021 18:04:45 +0100
-Message-Id: <20211115165447.366730941@linuxfoundation.org>
+Message-Id: <20211115165455.748687431@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,130 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anatolij Gustschin <agust@denx.de>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-commit adec566b05288f2787a1f88dbaf77ed8b0c644fa upstream.
+[ Upstream commit 5ec0a6fcb60ea430f8ee7e0bec22db9b22f856d3 ]
 
-memset() and memcpy() on an MMIO region like here results in a
-lockup at startup on mpc5200 platform (since this first happens
-during probing of the ATA and Ethernet drivers). Use memset_io()
-and memcpy_toio() instead.
+Host crashes when pci_enable_atomic_ops_to_root() is called for VFs with
+virtual buses. The virtual buses added to SR-IOV have bus->self set to NULL
+and host crashes due to this.
 
-Fixes: 2f9ea1bde0d1 ("bestcomm: core bestcomm support for Freescale MPC5200")
-Cc: stable@vger.kernel.org # v5.14+
-Signed-off-by: Anatolij Gustschin <agust@denx.de>
-Link: https://lore.kernel.org/r/20211014094012.21286-1-agust@denx.de
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
+  ...
+   #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
+   #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
+   #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
+   #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
+      [exception RIP: pcie_capability_read_dword+28]
+      RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
+      RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
+      RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
+      RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
+      R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
+      R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
+      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+   #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
+   #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
+   #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
+
+Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit in Device
+Control 2 is reserved for VFs.  The PF value applies to all associated VFs.
+
+Return -EINVAL if pci_enable_atomic_ops_to_root() is called for a VF.
+
+Link: https://lore.kernel.org/r/1631354585-16597-1-git-send-email-selvin.xavier@broadcom.com
+Fixes: 35f5ace5dea4 ("RDMA/bnxt_re: Enable global atomic ops if platform supports")
+Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/bestcomm/ata.c      |    2 +-
- drivers/dma/bestcomm/bestcomm.c |   22 +++++++++++-----------
- drivers/dma/bestcomm/fec.c      |    4 ++--
- drivers/dma/bestcomm/gen_bd.c   |    4 ++--
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/pci/pci.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/dma/bestcomm/ata.c
-+++ b/drivers/dma/bestcomm/ata.c
-@@ -133,7 +133,7 @@ void bcom_ata_reset_bd(struct bcom_task
- 	struct bcom_ata_var *var;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index ce2ab62b64cfa..a101faf3e88a9 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3719,6 +3719,14 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
+ 	struct pci_dev *bridge;
+ 	u32 cap, ctl2;
  
- 	/* Reset all BD */
--	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
-+	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	/*
++	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
++	 * in Device Control 2 is reserved in VFs and the PF value applies
++	 * to all associated VFs.
++	 */
++	if (dev->is_virtfn)
++		return -EINVAL;
++
+ 	if (!pci_is_pcie(dev))
+ 		return -EINVAL;
  
- 	tsk->index = 0;
- 	tsk->outdex = 0;
---- a/drivers/dma/bestcomm/bestcomm.c
-+++ b/drivers/dma/bestcomm/bestcomm.c
-@@ -95,7 +95,7 @@ bcom_task_alloc(int bd_count, int bd_siz
- 		tsk->bd = bcom_sram_alloc(bd_count * bd_size, 4, &tsk->bd_pa);
- 		if (!tsk->bd)
- 			goto error;
--		memset(tsk->bd, 0x00, bd_count * bd_size);
-+		memset_io(tsk->bd, 0x00, bd_count * bd_size);
- 
- 		tsk->num_bd = bd_count;
- 		tsk->bd_size = bd_size;
-@@ -186,16 +186,16 @@ bcom_load_image(int task, u32 *task_imag
- 	inc = bcom_task_inc(task);
- 
- 	/* Clear & copy */
--	memset(var, 0x00, BCOM_VAR_SIZE);
--	memset(inc, 0x00, BCOM_INC_SIZE);
-+	memset_io(var, 0x00, BCOM_VAR_SIZE);
-+	memset_io(inc, 0x00, BCOM_INC_SIZE);
- 
- 	desc_src = (u32 *)(hdr + 1);
- 	var_src = desc_src + hdr->desc_size;
- 	inc_src = var_src + hdr->var_size;
- 
--	memcpy(desc, desc_src, hdr->desc_size * sizeof(u32));
--	memcpy(var + hdr->first_var, var_src, hdr->var_size * sizeof(u32));
--	memcpy(inc, inc_src, hdr->inc_size * sizeof(u32));
-+	memcpy_toio(desc, desc_src, hdr->desc_size * sizeof(u32));
-+	memcpy_toio(var + hdr->first_var, var_src, hdr->var_size * sizeof(u32));
-+	memcpy_toio(inc, inc_src, hdr->inc_size * sizeof(u32));
- 
- 	return 0;
- }
-@@ -302,13 +302,13 @@ static int bcom_engine_init(void)
- 		return -ENOMEM;
- 	}
- 
--	memset(bcom_eng->tdt, 0x00, tdt_size);
--	memset(bcom_eng->ctx, 0x00, ctx_size);
--	memset(bcom_eng->var, 0x00, var_size);
--	memset(bcom_eng->fdt, 0x00, fdt_size);
-+	memset_io(bcom_eng->tdt, 0x00, tdt_size);
-+	memset_io(bcom_eng->ctx, 0x00, ctx_size);
-+	memset_io(bcom_eng->var, 0x00, var_size);
-+	memset_io(bcom_eng->fdt, 0x00, fdt_size);
- 
- 	/* Copy the FDT for the EU#3 */
--	memcpy(&bcom_eng->fdt[48], fdt_ops, sizeof(fdt_ops));
-+	memcpy_toio(&bcom_eng->fdt[48], fdt_ops, sizeof(fdt_ops));
- 
- 	/* Initialize Task base structure */
- 	for (task=0; task<BCOM_MAX_TASKS; task++)
---- a/drivers/dma/bestcomm/fec.c
-+++ b/drivers/dma/bestcomm/fec.c
-@@ -140,7 +140,7 @@ bcom_fec_rx_reset(struct bcom_task *tsk)
- 	tsk->index = 0;
- 	tsk->outdex = 0;
- 
--	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
-+	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
- 
- 	/* Configure some stuff */
- 	bcom_set_task_pragma(tsk->tasknum, BCOM_FEC_RX_BD_PRAGMA);
-@@ -241,7 +241,7 @@ bcom_fec_tx_reset(struct bcom_task *tsk)
- 	tsk->index = 0;
- 	tsk->outdex = 0;
- 
--	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
-+	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
- 
- 	/* Configure some stuff */
- 	bcom_set_task_pragma(tsk->tasknum, BCOM_FEC_TX_BD_PRAGMA);
---- a/drivers/dma/bestcomm/gen_bd.c
-+++ b/drivers/dma/bestcomm/gen_bd.c
-@@ -142,7 +142,7 @@ bcom_gen_bd_rx_reset(struct bcom_task *t
- 	tsk->index = 0;
- 	tsk->outdex = 0;
- 
--	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
-+	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
- 
- 	/* Configure some stuff */
- 	bcom_set_task_pragma(tsk->tasknum, BCOM_GEN_RX_BD_PRAGMA);
-@@ -226,7 +226,7 @@ bcom_gen_bd_tx_reset(struct bcom_task *t
- 	tsk->index = 0;
- 	tsk->outdex = 0;
- 
--	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
-+	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
- 
- 	/* Configure some stuff */
- 	bcom_set_task_pragma(tsk->tasknum, BCOM_GEN_TX_BD_PRAGMA);
+-- 
+2.33.0
+
 
 
