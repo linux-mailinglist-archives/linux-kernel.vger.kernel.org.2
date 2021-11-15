@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4B345072A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC23545072B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236427AbhKOOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:39:33 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:55934 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhKOOhE (ORCPT
+        id S236276AbhKOOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236449AbhKOOiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:37:04 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2F6E321709;
-        Mon, 15 Nov 2021 14:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636986846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wyaeJuZiM/tXx7GlGx3YKQgNoTfHJZZRTuvL5Q2cyHQ=;
-        b=qdTkbTYHwKXvcIUKvhXThInRP0ugFSkn/aJ6OkcCgKEUTfM3jdFR3DO8z5bJ9UfSBSKTVc
-        bmZ3vF5BHz/zzJf4y4ahISQpP7MDSET3PWO9hTHq1eDhr+QgNz7Ddk574FxJP8Q1Vu/Ye/
-        GgR0d7jlLGqx2xsBxbS8dcDffaqaO/g=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EF84DA3B85;
-        Mon, 15 Nov 2021 14:34:05 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 15:34:04 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
-Message-ID: <YZJv3CeClGa+jsmQ@alley>
-References: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
- <YY6vV2zUTdH5SNt5@fedora>
- <YZIs1FvxA0hKylNd@alley>
- <YZI4i5hsgD4pDjoQ@smile.fi.intel.com>
- <YZJnRyqtDzfmI0Cf@alley>
+        Mon, 15 Nov 2021 09:38:20 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22296C061200;
+        Mon, 15 Nov 2021 06:34:50 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id d11so35997278ljg.8;
+        Mon, 15 Nov 2021 06:34:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZpPEZqJd2To6lUjg28UQdB87eU7/8VpSq5XWX7MIjkY=;
+        b=BD3EH+/6iAoMU0as28T1uFfMyoto9HdkPjPVtXTSSOCtUL+d4iY+gPJsCICkkkMJZ3
+         Fj6nU18j0yMLl2YB25uSEETy5BxlRZfRyQ6eV7+hNQOp/c4bgrPQzoIPzrN8OYywH76N
+         o+Ai8larHnuIv1b9VPGnTqfBa/ODrJmdaxv3pXrRf6t8mqCS12sAQQiI04KYT00fTAqX
+         EHWGksaiLDzQsPf6brKsQj8w08sh3fSUflP33LTYPvx8hvGb5lFaSokQP39cnQdbQY6x
+         0zyL0yWt0ZpR6XQwGhcoCxfACD9Vj0Y93oOlf8JU7GtBFzvgDWQjsmvOpbAXnfE2jbTa
+         wxKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZpPEZqJd2To6lUjg28UQdB87eU7/8VpSq5XWX7MIjkY=;
+        b=MxfGCr15HUFb2eu5BZkBmOTSnCOjai2zzNR9Cup1LVhJHl4NGxgMcUld7Rc++JmUZa
+         MzUCWDcl4k+Kbe+IMaSLqOKr/vA/WAVd+T4TX3a7YK5F0RoIjZeMCvd1mQWMNZ/tn5dr
+         6y0E05TWS2PwduiWzelf+UqUHmPh8FjW2ZCDSkhN9uI6ntIa4e7PRZ2ubATaq6YL+RK1
+         S5H2R3B43v6uFlRtvvRZS2HQHAC6ilQ0mQwC43I3pj88wW5Po6TBALwH1e0vPYlSQqJz
+         j7Ep8lmP0/l4FAHIkYOWB6gMShg0gfqALlhkbtAJLrzr+2BOqEN+NyoFP9TACQ1cXPA2
+         jEpg==
+X-Gm-Message-State: AOAM533pOIYSAqkTf5GfwjarIJxLqxMx1px7caPdLrzDz8JY0mg1uHKv
+        ViGeVlOJxjyzLNVuctVi8HgyNdXrdvI=
+X-Google-Smtp-Source: ABdhPJwEKuBXdYXq5DhlVGPueFviqpJQ5pSvxJjMJzOh/ZO6vd5sjZJeTbmqyxx5SlyE0ArDXI+1ew==
+X-Received: by 2002:a05:651c:98e:: with SMTP id b14mr10702207ljq.180.1636986888356;
+        Mon, 15 Nov 2021 06:34:48 -0800 (PST)
+Received: from [192.168.2.145] (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
+        by smtp.googlemail.com with ESMTPSA id r13sm453347ljn.99.2021.11.15.06.34.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 06:34:47 -0800 (PST)
+Subject: Re: [PATCH v1 1/3] media: staging: tegra-vde: Support reference
+ picture marking
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211114222353.22435-1-digetx@gmail.com>
+ <20211114222353.22435-2-digetx@gmail.com>
+ <42b24cd0-ac37-3cfe-1fb2-d6292015318a@gmail.com>
+ <20211115124402.GE26989@kadam>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e4b9d596-d206-71d1-6ec5-1a41af579836@gmail.com>
+Date:   Mon, 15 Nov 2021 17:34:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZJnRyqtDzfmI0Cf@alley>
+In-Reply-To: <20211115124402.GE26989@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-11-15 14:57:30, Petr Mladek wrote:
-> On Mon 2021-11-15 12:38:03, Andy Shevchenko wrote:
-> > On Mon, Nov 15, 2021 at 10:48:04AM +0100, Petr Mladek wrote:
-> > > On Fri 2021-11-12 13:15:51, Dennis Zhou wrote:
-> > > > On Fri, Nov 12, 2021 at 04:07:49PM +0200, Andy Shevchenko wrote:
-> > > > > After the commit 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
-> > > > > in NMI") the printk.h is not needed anymore in percpu.h.
-> > > > > 
-> > > > > Moreover `make headerdep` complains (an excerpt)
-> > > > > 
-> > > > > In file included from linux/printk.h,
-> > > > >                  from linux/dynamic_debug.h:188
-> > > > >                  from linux/printk.h:559 <-- here
-> > > > >                  from linux/percpu.h:9
-> > > > >                  from linux/idr.h:17
-> > > > > include/net/9p/client.h:13: warning: recursive header inclusion
-> > > > > 
-> > > > > Yeah, it's not a root cause of this, but removing will help to reduce
-> > > > > the noise.
-> > > > > 
-> > > > > Fixes: 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
-> > > > > in NMI")
-> > > 
-> > > Yup, the include was there because of printk_func_t definition that
-> > > was removed by the above commit.
-> > > 
-> > > Reviewed-by: Petr Mladek <pmladek@suse.com>
-> > > 
-> > > > Hey Andrew, it doesn't seem like I have anything big coming through
-> > > > percpu, do you mind taking this. I might have some stuff due to sh, but
-> > > > I'm still working on that with them.
-> > > 
-> > > I assume that either Andrew or Dennis will take this patch.
-> > 
-> > I assumed you take it, that's why I haven't Cc'ed Andrew in the first place,
-> > but it seems you have a consensus with Dennis that Andrew is the best
-> > maintainer to take this. So, I'll send v2 with tags and Cc to him.
+15.11.2021 15:44, Dan Carpenter пишет:
+> On Mon, Nov 15, 2021 at 01:34:18AM +0300, Dmitry Osipenko wrote:
+>> 15.11.2021 01:23, Dmitry Osipenko пишет:
+>>> +	vde->secure_bo = tegra_vde_alloc_bo(vde, DMA_FROM_DEVICE, 4096);
+>>> +	if (!vde->secure_bo) {
+>>> +		dev_err(dev, "Failed to allocate secure BO\n");
+>>> +		goto err_pm_runtime;
+>>> +	}
+>>
+>> My eye just caught that by accident err variable isn't assigned to
+>> -ENOMEM here. I'll make v2 shortly.
 > 
-> No problem, I am going to take it, in a hour or so. I did not want to
-> make chaos when Denis asked Andrew. But it is not worth resending the patch.
+> Smatch has a check for this so we would have caught it.  :)
 
-The patch is comitted in printk/linux.git, branch for-5.16-fixup.
-
-I am going to add it into pull request for 5.16-rc2 with another fix.
-
-Best Regards,
-Petr
+Whish smatch was built-in into kernel and I could simply run "make
+smatch". On the other hand, I know that you're periodically checking
+upstream with smatch and patching the found bugs, so maybe it's fine
+as-is. Thank you for yours work on smatch, it's a very valuable tool.
