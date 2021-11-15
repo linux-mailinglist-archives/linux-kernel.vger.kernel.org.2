@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F448451C51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62071451C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345007AbhKPAPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:15:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350129AbhKOVam (ORCPT
+        id S1354664AbhKPAMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:12:39 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:18894 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348475AbhKOVTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:30:42 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906DCC02C322;
-        Mon, 15 Nov 2021 13:15:31 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id y7so15655399plp.0;
-        Mon, 15 Nov 2021 13:15:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xHNx600LacDDvdaPgToGQdsVvGhdyIzYhehFyyrMX6Q=;
-        b=qZ34WRjn7XiYl6fhNEnFTnE+rB+hkm08jxb86pMdjIFxbsu5t+J8SE0qtnOiM5hztX
-         bKfFOe+J3NPxf7qpMUl1HGIDmMPb4UrdYPWXxugC/JvPwABoKr8ggYHnA4Xl3YUn5QXC
-         /m7vbQbiNizX0SLjzX+qui1HOl+NO7d/OleLVmGK5A3SVVUPJmEhDVihYQfE1U7oG0dA
-         YasMrdhTEEHNgYncm4QIRwWE0lW8O6G+2a7caNwNL8ZxZG//qgm5P7Eq11kh8dy5kI2h
-         zLBO90xK5GjEZjc/hAC9hAgD70Y1DcJ2EdWRDmh0eW4xx2L4SpO4md4sl376VPr/mBc2
-         t5dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xHNx600LacDDvdaPgToGQdsVvGhdyIzYhehFyyrMX6Q=;
-        b=DmKY1gGrhrRaLsqJxnGCzDgZWlH5mmMqBWeCUsCyc46rrqnxo/ZNPVD/aVMEnwfJn0
-         vnZwh6K2ZdqwOEKgDWET3TnMmm2nDc1DFNi4efDZZaGT7W6jMUHdBPmXsjhnmspyIXyO
-         S3s16kuBRypkkrwX2jqCU9d9CDwGuEayDRMtkoT1KjpRUsOGlOFIbdBHYR7JyHU+H70E
-         0A0n/2tHI/fq1zkCMFZhFBLccjPt+Hip3/ZahR5Kij9UKTnCnogYRAQqiJzeOndfivYK
-         4+NCv1nxZMfSyGrMYe7SipGuyRaF5ztKjpepq9Oxmat/tZ5EvojKW5VbfAqokXB5dYZc
-         gpxw==
-X-Gm-Message-State: AOAM531gkfW9gO+TW9adp5kqBURP/AqF/zVuUBlWDTYKOiP/Tyi5cwIt
-        jK582oxkuKPeEentW4pPj1qHMyzraeU=
-X-Google-Smtp-Source: ABdhPJzdQPNsx4eUXdWuRNDkDU3Xv2eXnXr7Dl74EDFbePrbJjVElqMtHHVIbmkHwGHe+falNL1ddQ==
-X-Received: by 2002:a17:902:c412:b0:141:f710:2a94 with SMTP id k18-20020a170902c41200b00141f7102a94mr39004528plk.1.1637010931030;
-        Mon, 15 Nov 2021 13:15:31 -0800 (PST)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id b21sm16229592pff.179.2021.11.15.13.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:15:30 -0800 (PST)
-Date:   Tue, 16 Nov 2021 06:15:28 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ilia Sergachev <silia@ethz.ch>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Filip Kokosinski <fkokosinski@antmicro.com>
-Subject: Re: [PATCH 1/3] serial: liteuart: fix compile testing
-Message-ID: <YZLN8LXHl9FURgsU@antec>
-References: <20211115133745.11445-1-johan@kernel.org>
- <20211115133745.11445-2-johan@kernel.org>
+        Mon, 15 Nov 2021 16:19:06 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFJuA88014488;
+        Mon, 15 Nov 2021 13:15:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=0u9v8UoHudJT4C+u2s5L/90f8DkKf49tATsvUyIaKbY=;
+ b=OwNWA8MTOI+ZHjvpdkSW8THWR6Ak/Rd8c4FsBA3R8te6S0OS7roDH/HqFVQg35FfKCvu
+ 6eBJrx/Kipzft0D4LA8BA4qsQ8bT3AwKtFZ7QCxKW8BJ/zYh7EoCe5mvzbnNtzqscvCK
+ kawkOuStjAd5D9es7tST4QCE38sWscfsDcbnh7R91RLQGImdqqyjF/wcPXGyl5zGcu3r
+ 9DCbxa9MOvYczBj1paDR3L6liwLmNrYg28BjKjV5uJXtui0mxol+PLvn9zUnbn7muw/w
+ kgPU8mbwLjweP6INvE0kiz79eT8JB/a+5G1KblIn77/rOE6OsqnP5kXiErkOpsokqiJH xw== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3cbea8m6cj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 13:15:55 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 15 Nov
+ 2021 13:15:53 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 15 Nov 2021 13:15:53 -0800
+Received: from localhost.localdomain (unknown [10.110.150.170])
+        by maili.marvell.com (Postfix) with ESMTP id 74A333F7066;
+        Mon, 15 Nov 2021 13:15:53 -0800 (PST)
+From:   Wojciech Bartczak <wbartczak@marvell.com>
+To:     <linux-mmc@vger.kernel.org>
+CC:     <rric@kernel.org>, <ulf.hansson@linaro.org>, <beanhuo@micron.com>,
+        <tanxiaofei@huawei.com>, <wbartczak@marvell.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mmc: cavium: Improve request handling by proper use of API
+Date:   Mon, 15 Nov 2021 13:15:33 -0800
+Message-ID: <20211115211533.6971-1-wbartczak@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115133745.11445-2-johan@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: -b3q8VeK3NLyoKBr-buD9F8UofQMalgO
+X-Proofpoint-ORIG-GUID: -b3q8VeK3NLyoKBr-buD9F8UofQMalgO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_15,2021-11-15_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:37:43PM +0100, Johan Hovold wrote:
-> Allow the liteuart driver to be compile tested by fixing the broken
-> Kconfig dependencies.
-> 
-> Fixes: 1da81e5562fa ("drivers/tty/serial: add LiteUART driver")
-> Cc: stable@vger.kernel.org	# 5.11
-> Cc: Filip Kokosinski <fkokosinski@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+The driver for cavium/marvell platforms uses directly mrq->done() callback
+to signalize the request completion. This method to finalize request
+processing is not correct.
 
-Reviewed-by: Stafford Horne <shorne@gmail.com>
+Following fix introduces proper use of mmc_request_done() API for
+all paths involved into handling MMC core requests.
 
-> ---
->  drivers/tty/serial/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 6ff94cfcd9db..67de892e0947 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1531,9 +1531,9 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
->  
->  config SERIAL_LITEUART
->  	tristate "LiteUART serial port support"
-> +	depends on LITEX || COMPILE_TEST
->  	depends on HAS_IOMEM
-> -	depends on OF || COMPILE_TEST
-> -	depends on LITEX
-> +	depends on OF
->  	select SERIAL_CORE
->  	help
->  	  This driver is for the FPGA-based LiteUART serial controller from LiteX
-> -- 
-> 2.32.0
-> 
+Signed-off-by: Wojciech Bartczak <wbartczak@marvell.com>
+---
+ drivers/mmc/host/cavium.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
+index 95a41983c6c0..7f82b5fde1f4 100644
+--- a/drivers/mmc/host/cavium.c
++++ b/drivers/mmc/host/cavium.c
+@@ -493,8 +493,8 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+ 	    (rsp_sts & MIO_EMM_RSP_STS_DMA_PEND))
+ 		cleanup_dma(host, rsp_sts);
+ 
++	mmc_request_done(slot->mmc, req);
+ 	host->current_req = NULL;
+-	req->done(req);
+ 
+ no_req_done:
+ 	if (host->dmar_fixup_done)
+@@ -699,8 +699,7 @@ static void cvm_mmc_dma_request(struct mmc_host *mmc,
+ 
+ error:
+ 	mrq->cmd->error = -EINVAL;
+-	if (mrq->done)
+-		mrq->done(mrq);
++	mmc_request_done(mmc, mrq);
+ 	host->release_bus(host);
+ }
+ 
+-- 
+2.17.1
+
