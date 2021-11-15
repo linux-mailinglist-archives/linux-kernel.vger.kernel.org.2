@@ -2,177 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56B6451786
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA6745173F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349699AbhKOWbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:31:34 -0500
-Received: from mga18.intel.com ([134.134.136.126]:16856 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242358AbhKOSh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:37:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="220392321"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="220392321"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 10:31:57 -0800
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="735076418"
-Received: from tkolecki-mobl.ger.corp.intel.com (HELO localhost) ([10.249.154.97])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 10:31:49 -0800
-From:   Iwona Winiarska <iwona.winiarska@intel.com>
-To:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zev Weiss <zweiss@equinix.com>,
-        David Muller <d.mueller@elsoft.ch>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v3 13/13] docs: Add PECI documentation
-Date:   Mon, 15 Nov 2021 19:25:52 +0100
-Message-Id: <20211115182552.3830849-14-iwona.winiarska@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211115182552.3830849-1-iwona.winiarska@intel.com>
-References: <20211115182552.3830849-1-iwona.winiarska@intel.com>
+        id S1349143AbhKOWPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:15:08 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:6479 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242065AbhKOSdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:33:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637001021; x=1668537021;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=t160YDf3YjpVgjuG0vIfd2fP75YW1FmHXm5ZVQ2Lu7o=;
+  b=Ixt6ycwUi59RaGK4kPevGFeG/+Qw+q1Ki8y/Ew4DKlz6v2fGUaKWfkHj
+   kDH+S7lsSrro3QQ3x9JQrRp3c4+F32wMOTgNMldkwuNYQ7KwvJwbxSakX
+   gljUYiuVHsEP6ynAkbQB7s9XXgJF8veGpcb+5SDedjlGPRHLIXPx7YuG6
+   Y=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Nov 2021 10:30:14 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 10:30:14 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 15 Nov 2021 10:30:13 -0800
+Received: from [10.110.100.33] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 15 Nov
+ 2021 10:30:12 -0800
+Message-ID: <cffb64f6-12f0-f2d8-ba8e-938acbd0e28f@quicinc.com>
+Date:   Mon, 15 Nov 2021 10:30:11 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2] drm/msm/dp: employ bridge mechanism for display enable
+ and disable
+Content-Language: en-US
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     <robdclark@gmail.com>, <sean@poorly.run>, <swboyd@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@linux.ie>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <quic_abhinavk@quicinc.com>, <aravindh@codeaurora.org>,
+        <freedreno@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1636147332-11797-1-git-send-email-quic_khsieh@quicinc.com>
+ <YYashV3N/lJmn+uW@yoga>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <YYashV3N/lJmn+uW@yoga>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief overview of PECI and PECI wire interface.
-The documentation also contains kernel-doc for PECI subsystem internals
-and PECI CPU Driver API.
 
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- Documentation/index.rst      |  1 +
- Documentation/peci/index.rst | 16 +++++++++++
- Documentation/peci/peci.rst  | 51 ++++++++++++++++++++++++++++++++++++
- MAINTAINERS                  |  1 +
- 4 files changed, 69 insertions(+)
- create mode 100644 Documentation/peci/index.rst
- create mode 100644 Documentation/peci/peci.rst
+On 11/6/2021 9:25 AM, Bjorn Andersson wrote:
+> On Fri 05 Nov 16:22 CDT 2021, Kuogee Hsieh wrote:
+>
+>> Currently the msm_dp_*** functions implement the same sequence which would
+>> happen when drm_bridge is used. hence get rid of this intermediate layer
+>> and align with the drm_bridge usage to avoid customized implementation.
+>>
+>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>
+>> Changes in v2:
+>> -- revise commit text
+>> -- rename dp_bridge to msm_dp_bridge
+>> -- delete empty functions
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 21 -------
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     |  7 +++
+>>   drivers/gpu/drm/msm/dp/dp_display.c         | 18 +++---
+>>   drivers/gpu/drm/msm/dp/dp_display.h         |  1 +
+>>   drivers/gpu/drm/msm/dp/dp_drm.c             | 91 +++++++++++++++++++++++++++++
+>>   drivers/gpu/drm/msm/msm_drv.h               | 16 +++--
+>>   6 files changed, 120 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> index 31050aa..c4e08c4 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> @@ -1003,9 +1003,6 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
+>>   
+>>   	trace_dpu_enc_mode_set(DRMID(drm_enc));
+>>   
+>> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
+>> -		msm_dp_display_mode_set(dpu_enc->dp, drm_enc, mode, adj_mode);
+>> -
+>>   	list_for_each_entry(conn_iter, connector_list, head)
+>>   		if (conn_iter->encoder == drm_enc)
+>>   			conn = conn_iter;
+>> @@ -1181,14 +1178,6 @@ static void dpu_encoder_virt_enable(struct drm_encoder *drm_enc)
+>>   
+>>   	_dpu_encoder_virt_enable_helper(drm_enc);
+>>   
+>> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+>> -		ret = msm_dp_display_enable(dpu_enc->dp, drm_enc);
+>> -		if (ret) {
+>> -			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
+>> -				ret);
+>> -			goto out;
+>> -		}
+>> -	}
+>>   	dpu_enc->enabled = true;
+>>   
+>>   out:
+>> @@ -1214,11 +1203,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>>   	/* wait for idle */
+>>   	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
+>>   
+>> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+>> -		if (msm_dp_display_pre_disable(dpu_enc->dp, drm_enc))
+>> -			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
+>> -	}
+>> -
+>>   	dpu_encoder_resource_control(drm_enc, DPU_ENC_RC_EVENT_PRE_STOP);
+>>   
+>>   	for (i = 0; i < dpu_enc->num_phys_encs; i++) {
+>> @@ -1243,11 +1227,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>>   
+>>   	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+>>   
+>> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+>> -		if (msm_dp_display_disable(dpu_enc->dp, drm_enc))
+>> -			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
+>> -	}
+>> -
+>>   	mutex_unlock(&dpu_enc->enc_lock);
+>>   }
+>>   
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> index 27d98b5..d16337f 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> @@ -557,6 +557,13 @@ static int _dpu_kms_initialize_displayport(struct drm_device *dev,
+>>   				  encoder->base.id, rc);
+>>   			return rc;
+>>   		}
+>> +
+>> +		rc = msm_dp_bridge_init(priv->dp[i], dev, encoder);
+>> +		if (rc) {
+>> +			DPU_ERROR("failed to setup DPU bridge %d: rc:%d\n",
+>> +				encoder->base.id, rc);
+>> +			return rc;
+>> +		}
+>>   	}
+>>   
+>>   	return rc;
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index e41dd40..e9ea6ed 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -569,8 +569,8 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+>>   	return 0;
+>>   };
+>>   
+>> -static int dp_display_enable(struct dp_display_private *dp, u32 data);
+>> -static int dp_display_disable(struct dp_display_private *dp, u32 data);
+>> +static int __dp_display_enable(struct dp_display_private *dp, u32 data);
+>> +static int __dp_display_disable(struct dp_display_private *dp, u32 data);
+> Can you please help me understand why you're changing the name of these
+> functions?
+>
+>>   
+>>   static int dp_connect_pending_timeout(struct dp_display_private *dp, u32 data)
+>>   {
+>> @@ -855,7 +855,7 @@ static int dp_display_prepare(struct msm_dp *dp_display)
+>>   	return 0;
+>>   }
+>>   
+>> -static int dp_display_enable(struct dp_display_private *dp, u32 data)
+>> +static int __dp_display_enable(struct dp_display_private *dp, u32 data)
+>>   {
+>>   	int rc = 0;
+>>   
+>> @@ -898,7 +898,7 @@ static int dp_display_post_enable(struct msm_dp *dp_display)
+>>   	return 0;
+>>   }
+>>   
+>> -static int dp_display_disable(struct dp_display_private *dp, u32 data)
+>> +static int __dp_display_disable(struct dp_display_private *dp, u32 data)
+>>   {
+>>   	struct msm_dp *dp_display = &dp->dp_display;
+>>   
+>> @@ -1569,12 +1569,12 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+>>   	if (state == ST_DISPLAY_OFF)
+>>   		dp_display_host_init(dp_display, true);
+>>   
+>> -	dp_display_enable(dp_display, 0);
+>> +	__dp_display_enable(dp_display, 0);
+>>   
+>>   	rc = dp_display_post_enable(dp);
+>>   	if (rc) {
+>>   		DRM_ERROR("DP display post enable failed, rc=%d\n", rc);
+>> -		dp_display_disable(dp_display, 0);
+>> +		__dp_display_disable(dp_display, 0);
+>>   		dp_display_unprepare(dp);
+>>   	}
+>>   
+>> @@ -1614,7 +1614,7 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+>>   	/* stop sentinel checking */
+>>   	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+>>   
+>> -	dp_display_disable(dp_display, 0);
+>> +	__dp_display_disable(dp_display, 0);
+>>   
+>>   	rc = dp_display_unprepare(dp);
+>>   	if (rc)
+>> @@ -1633,8 +1633,8 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+>>   }
+>>   
+>>   void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+>> -				struct drm_display_mode *mode,
+>> -				struct drm_display_mode *adjusted_mode)
+>> +				const struct drm_display_mode *mode,
+>> +				const struct drm_display_mode *adjusted_mode)
+>>   {
+>>   	struct dp_display_private *dp_display;
+>>   
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+>> index 76f45f9..2237e80 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+>> @@ -13,6 +13,7 @@
+>>   struct msm_dp {
+>>   	struct drm_device *drm_dev;
+>>   	struct device *codec_dev;
+>> +	struct drm_bridge *bridge;
+>>   	struct drm_connector *connector;
+>>   	struct drm_encoder *encoder;
+>>   	struct drm_panel *drm_panel;
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c b/drivers/gpu/drm/msm/dp/dp_drm.c
+>> index f33e315..e7bea97 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_drm.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_drm.c
+>> @@ -5,12 +5,21 @@
+>>   
+>>   #include <drm/drm_atomic_helper.h>
+>>   #include <drm/drm_atomic.h>
+>> +#include <drm/drm_bridge.h>
+>>   #include <drm/drm_crtc.h>
+>>   
+>>   #include "msm_drv.h"
+>>   #include "msm_kms.h"
+>>   #include "dp_drm.h"
+>>   
+>> +
+>> +struct msm_dp_bridge {
+>> +	struct drm_bridge bridge;
+>> +	struct msm_dp *dp_display;
+>> +};
+> We do you create yet another one of these object?
+>
+> Can't we just set up the new bridge in msm_dp_modeset_init(), like is
+> done in msm_dsi_modeset_init()?
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 54ce34fd6fbd..7671f2cd474f 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -137,6 +137,7 @@ needed).
-    misc-devices/index
-    scheduler/index
-    mhi/index
-+   peci/index
- 
- Architecture-agnostic documentation
- -----------------------------------
-diff --git a/Documentation/peci/index.rst b/Documentation/peci/index.rst
-new file mode 100644
-index 000000000000..989de10416e7
---- /dev/null
-+++ b/Documentation/peci/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+====================
-+Linux PECI Subsystem
-+====================
-+
-+.. toctree::
-+
-+   peci
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/peci/peci.rst b/Documentation/peci/peci.rst
-new file mode 100644
-index 000000000000..331b1ec00e22
---- /dev/null
-+++ b/Documentation/peci/peci.rst
-@@ -0,0 +1,51 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+========
-+Overview
-+========
-+
-+The Platform Environment Control Interface (PECI) is a communication
-+interface between Intel processor and management controllers
-+(e.g. Baseboard Management Controller, BMC).
-+PECI provides services that allow the management controller to
-+configure, monitor and debug platform by accessing various registers.
-+It defines a dedicated command protocol, where the management
-+controller is acting as a PECI originator and the processor - as
-+a PECI responder.
-+PECI can be used in both single processor and multiple-processor based
-+systems.
-+
-+NOTE:
-+Intel PECI specification is not released as a dedicated document,
-+instead it is a part of External Design Specification (EDS) for given
-+Intel CPU. External Design Specifications are usually not publicly
-+available.
-+
-+PECI Wire
-+---------
-+
-+PECI Wire interface uses a single wire for self-clocking and data
-+transfer. It does not require any additional control lines - the
-+physical layer is a self-clocked one-wire bus signal that begins each
-+bit with a driven, rising edge from an idle near zero volts. The
-+duration of the signal driven high allows to determine whether the bit
-+value is logic '0' or logic '1'. PECI Wire also includes variable data
-+rate established with every message.
-+
-+For PECI Wire, each processor package will utilize unique, fixed
-+addresses within a defined range and that address should
-+have a fixed relationship with the processor socket ID - if one of the
-+processors is removed, it does not affect addresses of remaining
-+processors.
-+
-+PECI subsystem internals
-+------------------------
-+
-+.. kernel-doc:: include/linux/peci.h
-+.. kernel-doc:: drivers/peci/internal.h
-+.. kernel-doc:: drivers/peci/core.c
-+.. kernel-doc:: drivers/peci/request.c
-+
-+PECI CPU Driver API
-+-------------------
-+.. kernel-doc:: drivers/peci/cpu.c
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0f7216644bd5..4db4979db60a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14935,6 +14935,7 @@ R:	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/peci/
-+F:	Documentation/peci/
- F:	drivers/peci/
- F:	include/linux/peci-cpu.h
- F:	include/linux/peci.h
--- 
-2.31.1
+is this same as msm_dsi_modeset_init() does?
 
+more info please.
+
+>> +
+>> +#define to_dp_display(x)     container_of((x), struct msm_dp_bridge, bridge)
+>> +
+>>   struct dp_connector {
+>>   	struct drm_connector base;
+>>   	struct msm_dp *dp_display;
+>> @@ -162,3 +171,85 @@ struct drm_connector *dp_drm_connector_init(struct msm_dp *dp_display)
+>>   
+>>   	return connector;
+>>   }
+>> +
+>> +static int dp_bridge_attach(struct drm_bridge *drm_bridge,
+>> +				enum drm_bridge_attach_flags flags)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static void dp_bridge_mode_set(struct drm_bridge *drm_bridge,
+>> +				const struct drm_display_mode *mode,
+>> +				const struct drm_display_mode *adjusted_mode)
+>> +{
+>> +	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
+>> +	struct msm_dp *dp_display = dp_bridge->dp_display;
+>> +
+>> +	msm_dp_display_mode_set(dp_display, drm_bridge->encoder, mode, adjusted_mode);
+>> +}
+>> +
+>> +static void dp_bridge_enable(struct drm_bridge *drm_bridge)
+>> +{
+>> +	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
+>> +	struct msm_dp *dp_display = dp_bridge->dp_display;
+>> +
+>> +	msm_dp_display_enable(dp_display, drm_bridge->encoder);
+>> +}
+>> +
+>> +static void dp_bridge_disable(struct drm_bridge *drm_bridge)
+>> +{
+>> +	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
+>> +	struct msm_dp *dp_display = dp_bridge->dp_display;
+>> +
+>> +	msm_dp_display_pre_disable(dp_display, drm_bridge->encoder);
+>> +}
+>> +
+>> +static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
+>> +{
+>> +	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
+>> +	struct msm_dp *dp_display = dp_bridge->dp_display;
+>> +
+>> +	msm_dp_display_disable(dp_display, drm_bridge->encoder);
+>> +}
+>> +
+>> +static const struct drm_bridge_funcs dp_bridge_ops = {
+>> +	.attach       = dp_bridge_attach,
+>> +	.mode_fixup   = NULL,
+>> +	.pre_enable   = NULL,
+>> +	.enable       = dp_bridge_enable,
+>> +	.disable      = dp_bridge_disable,
+>> +	.post_disable = dp_bridge_post_disable,
+>> +	.mode_set     = dp_bridge_mode_set,
+>> +};
+>> +
+>> +int msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
+>> +			struct drm_encoder *encoder)
+>> +{
+>> +	int rc;
+>> +	struct msm_drm_private *priv;
+>> +	struct msm_dp_bridge *dp_bridge;
+>> +	struct drm_bridge *bridge;
+>> +
+>> +	dp_bridge = kzalloc(sizeof(*dp_bridge), GFP_KERNEL);
+> You're not freeing this pointer, except for the error case below. That
+> said, you call this from dpu_kms_hw_init() which is full of other things
+> relying on devres.
+>
+> So I think the appropriate way here is to use devm_kzalloc().
+>
+>> +	if (!dp_bridge)
+>> +		return -ENOMEM;
+>> +
+>> +	dp_bridge->dp_display = dp_display;
+>> +
+>> +	bridge = &dp_bridge->bridge;
+>> +	bridge->funcs = &dp_bridge_ops;
+>> +	bridge->encoder = encoder;
+>> +
+>> +	rc = drm_bridge_attach(encoder, bridge, NULL, DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> Sorry, my understanding of the drm_bridge is limited, but how does this
+> interact with the panel_bridge that we attach in
+> dp_drm_connector_init()?
+>
+> If we represent the DP instance itself as a drm_bridge, shouldn't that
+> be "previous" of the panel_bridge?
+>
+>> +	if (rc) {
+>> +		DRM_ERROR("failed to attach bridge, rc=%d\n", rc);
+>> +		kfree(dp_bridge);
+>> +		return rc;
+>> +	}
+>> +
+>> +	priv = dev->dev_private;
+>> +	priv->bridges[priv->num_bridges++] = bridge;
+>> +	dp_display->bridge = bridge;
+>> +
+>> +	return 0;
+>> +}
+>> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+>> index 4bb797e..9a2092f 100644
+>> --- a/drivers/gpu/drm/msm/msm_drv.h
+>> +++ b/drivers/gpu/drm/msm/msm_drv.h
+>> @@ -388,8 +388,10 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
+>>   int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+>>   int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+>>   void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+>> -				struct drm_display_mode *mode,
+>> -				struct drm_display_mode *adjusted_mode);
+>> +				const struct drm_display_mode *mode,
+>> +				const struct drm_display_mode *adjusted_mode);
+>> +int msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
+>> +			struct drm_encoder *encoder);
+>>   void msm_dp_irq_postinstall(struct msm_dp *dp_display);
+>>   void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp_display);
+>>   
+>> @@ -426,10 +428,16 @@ static inline int msm_dp_display_pre_disable(struct msm_dp *dp,
+>>   }
+>>   static inline void msm_dp_display_mode_set(struct msm_dp *dp,
+>>   				struct drm_encoder *encoder,
+>> -				struct drm_display_mode *mode,
+>> -				struct drm_display_mode *adjusted_mode)
+>> +				const struct drm_display_mode *mode,
+>> +				const struct drm_display_mode *adjusted_mode)
+>>   {
+>>   }
+>> +static inline int msm_dp_bridge_init(struct msm_dp *dp_display,
+>> +				struct drm_device *dev,
+>> +				struct drm_encoder *encoder)
+>> +{
+>> +	return -EINVAL;
+> Returning an error here means that building without CONFIG_DRM_MSM_DP
+> we will propagate an error up and fail the entire DPU initialization.
+>
+> Perhaps this problem already exists today?
+Please elaborate more for thsi.
+>
+> Regards,
+> Bjorn
+>
+>> +}
+>>   
+>>   static inline void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+>>   {
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
