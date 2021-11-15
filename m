@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B70F451652
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472A045166D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349464AbhKOVUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:20:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240671AbhKOSQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:16:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EF861BE5;
-        Mon, 15 Nov 2021 17:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998601;
-        bh=71pgTqI+A7GstGzsxH0evcePAL6Mu5i0lpB/HodmAuE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BkjxUVd+FtbYHgQokoqZIr9+jUdwj2SCnZzScFs3jihvcK8RRiJNyc1KigK7iW/nG
-         orilpS63NEKrUOitUQOVSWvueVkj5Nj5SHv9zNFmiQvPg9Uq/61iPRi0+QUHoEPr1t
-         7Fw0BNiRoQrA39UqIAwPW3ZZULjl2S6kEgb7y7hM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.10 567/575] mtd: rawnand: orion: Keep the driver compatible with on-die ECC engines
-Date:   Mon, 15 Nov 2021 18:04:52 +0100
-Message-Id: <20211115165403.306197147@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S233209AbhKOVYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241202AbhKOSSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:18:46 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14537C03D782
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:41:06 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id 134-20020a62198c000000b0047bf0981003so10346434pfz.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:41:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Eg6f2WJu5krQnu/y0o//GpBJ3T4ZfGNyV5od0jKQbGY=;
+        b=X8N5SMfdAZTxXEeXWUHlFBXvvNmxy+tr/4oO/d8XIBKoypX8VrHqI9I7lBpZhPooCY
+         X1yKjF1gENzLdSKgmRraBh0KneT8A5C3WhiKQ2oNXDaN0ux9UFNPuXYpqtEiKsY2cMvb
+         ZorSjNq/UD6BbT5UrdlUMUJ5Eq12rIxJJ//Nq7/BluMjGIvwxIB5bRbZoWTJsIGBb9Vi
+         93AVdF7MT2Cvr9rhi1Hy32k+vdE/8fImgZcUqN3GFM6RnF5n+9EvodtG7SGrlQAE7azX
+         Yvm+eyGxlF3bFHOQbYZSDH+tNDqZZaDj9TtnJlkCd0/Vzh5lLZjqNL4nRtzZavEUx2Hb
+         omIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Eg6f2WJu5krQnu/y0o//GpBJ3T4ZfGNyV5od0jKQbGY=;
+        b=GhNSe+Y1J/LyUBPN2YS32ruoQUhJUfaW/YDhKDy12Fov0c+m2zPQQN0lZMeBPI+q2P
+         pQiu6ogyfsG2yIeqXE8Hvv/MdckEWnQwksk3FoV3eUrjiabu1eLklGURzk+oqD377Hff
+         43tkmIbPfGoH1FWCMWgyaBPIdU/oMY8eg37Hqt5tYV72h8+Euay1BrE8vURFRJ53o9Lz
+         ICg/v6BJ5+KnMTfXLmdKvLARuhoirZjSDrbzDoln6CDCnb7KHz7tWre6RhU8Fn+roOBx
+         25JiNvTuoTUnLOY1iXTsTzDCvlBLlm1pvTorIk8Q5Ox3lg2w2bp2SovPmosHER0qzXph
+         7BOA==
+X-Gm-Message-State: AOAM531QgfFmlnckIx/G+0tKlWsg3v1w7IPXdmmCaMOKBL4qqzOwq+IF
+        lFcerGDLLQcbpMW3YW5fqDCYQjieOFU=
+X-Google-Smtp-Source: ABdhPJz01E3rKYXQjaNe7gZpXqIOO3AD/+sHmr0XbWwZUjglzjAtmWpn6m82EpyoTVOfxAnk/2mjc2FpRqk=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:9fb:192e:3671:218c])
+ (user=pgonda job=sendgmr) by 2002:aa7:9903:0:b0:49f:e368:4fc3 with SMTP id
+ z3-20020aa79903000000b0049fe3684fc3mr35029520pff.1.1636998065416; Mon, 15 Nov
+ 2021 09:41:05 -0800 (PST)
+Date:   Mon, 15 Nov 2021 09:40:57 -0800
+Message-Id: <20211115174102.2211126-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH V4 0/5] Add SEV_INIT_EX support
+From:   Peter Gonda <pgonda@google.com>
+To:     thomas.lendacky@amd.com
+Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+SEV_INIT requires users to unlock their SPI bus for the PSP's non
+volatile (NV) storage. Users may wish to lock their SPI bus for numerous
+reasons, to support this the PSP firmware supports SEV_INIT_EX. INIT_EX
+allows the firmware to use a region of memory for its NV storage leaving
+the kernel responsible for actually storing the data in a persistent
+way. This series adds a new module parameter to ccp allowing users to
+specify a path to a file for use as the PSP's NV storage. The ccp driver
+then reads the file into memory for the PSP to use and is responsible
+for writing the file whenever the PSP modifies the memory region.
 
-commit 194ac63de6ff56d30c48e3ac19c8a412f9c1408e upstream.
+V3
+* Add another module parameter 'psp_init_on_probe' to allow for skipping
+  PSP init on module init.
+* Fixes review comments from Sean.
+* Fixes missing error checking with file reading.
+* Removed setting 'error' to a set value in patch 1.
 
-Following the introduction of the generic ECC engine infrastructure, it
-was necessary to reorganize the code and move the ECC configuration in
-the ->attach_chip() hook. Failing to do that properly lead to a first
-series of fixes supposed to stabilize the situation. Unfortunately, this
-only fixed the use of software ECC engines, preventing any other kind of
-engine to be used, including on-die ones.
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-It is now time to (finally) fix the situation by ensuring that we still
-provide a default (eg. software ECC) but will still support different
-ECC engines such as on-die ECC engines if properly described in the
-device tree.
+David Rientjes (1):
+  crypto: ccp - Add SEV_INIT_EX support
 
-There are no changes needed on the core side in order to do this, but we
-just need to leverage the logic there which allows:
-1- a subsystem default (set to Host engines in the raw NAND world)
-2- a driver specific default (here set to software ECC engines)
-3- any type of engine requested by the user (ie. described in the DT)
+Peter Gonda (4):
+  crypto: ccp - Add SEV_INIT rc error logging on init
+  crypto: ccp - Move SEV_INIT retry for corrupted data
+  crypto: ccp - Refactor out sev_fw_alloc()
+  crypto: ccp - Add psp_init_on_probe module parameter
 
-As the raw NAND subsystem has not yet been fully converted to the ECC
-engine infrastructure, in order to provide a default ECC engine for this
-driver we need to set chip->ecc.engine_type *before* calling
-nand_scan(). During the initialization step, the core will consider this
-entry as the default engine for this driver. This value may of course
-be overloaded by the user if the usual DT properties are provided.
+ .../virt/kvm/amd-memory-encryption.rst        |   6 +
+ drivers/crypto/ccp/sev-dev.c                  | 258 +++++++++++++++---
+ include/linux/psp-sev.h                       |  21 ++
+ 3 files changed, 245 insertions(+), 40 deletions(-)
 
-Fixes: 553508cec2e8 ("mtd: rawnand: orion: Move the ECC initialization to ->attach_chip()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-6-miquel.raynal@bootlin.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/mtd/nand/raw/orion_nand.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
---- a/drivers/mtd/nand/raw/orion_nand.c
-+++ b/drivers/mtd/nand/raw/orion_nand.c
-@@ -85,9 +85,8 @@ static void orion_nand_read_buf(struct n
- 
- static int orion_nand_attach_chip(struct nand_chip *chip)
- {
--	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
--
--	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-+	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
-+	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
- 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
- 	return 0;
-@@ -190,6 +189,13 @@ static int __init orion_nand_probe(struc
- 		return ret;
- 	}
- 
-+	/*
-+	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-+	 * Set ->engine_type before registering the NAND devices in order to
-+	 * provide a driver specific default value.
-+	 */
-+	nc->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+
- 	ret = nand_scan(nc, 1);
- 	if (ret)
- 		goto no_dev;
-
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
 
