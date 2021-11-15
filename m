@@ -2,90 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF7F451D67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F80451D62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhKPA3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:29:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346558AbhKOTed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:34:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F299260184;
-        Mon, 15 Nov 2021 19:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637004678;
-        bh=/5EFFGdANEQuECDTL8tXYsI+5VlfFp0wPsn+etL4mt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GTfUJFO+Km6M3nMLM0Q6pu4UUwMDf90PsdZfHB7eEX8//eSp38IcshkynffZOQ/dY
-         yrnm1q62f6FbGqnE/i3hQvsoiFkU/pEmw1Ae1Q+VB2LwMiNEL3CZxgyxxhcabkKbt5
-         rJO+G8EVxMkBrxdq99EYk6XmVNu9zxYM8gm1OsQs=
-Date:   Mon, 15 Nov 2021 20:31:15 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Alistair Delva <adelva@google.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
-        Paul Moore <paul@paul-moore.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Stable maillist <stable@vger.kernel.org>
-Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-Message-ID: <YZK1gy9ARwoSxVrO@kroah.com>
-References: <20211115173850.3598768-1-adelva@google.com>
- <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+        id S1347767AbhKPA3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:29:22 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:46814 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346560AbhKOTee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:34:34 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1243E218D6;
+        Mon, 15 Nov 2021 19:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637004684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b4ZiiwEnz5XGSlWeT8O+jkCefoPIbeg8p3rHgDHkvM8=;
+        b=hfo7k3ahAq+4WiayhhOAps8Zu5wAe5DwJIiHDlPpeCzNbkiWPbAOOnNXVL2YcbwxT3z+aT
+        8eO9nE9fZ/TfsPOuBb0fxmigq974glS7V22iBaPiyrHPEh5gmiV+m2TBjRM/BtzH8uwgqZ
+        IkmYD5pRuYyF6FOldCIXVATt7yLJuiM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C18F613A90;
+        Mon, 15 Nov 2021 19:31:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nwj7LYu1kmF3dwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 15 Nov 2021 19:31:23 +0000
+Date:   Mon, 15 Nov 2021 20:31:22 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20211115193122.GA16798@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211018143619.205065-6-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211018143619.205065-6-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:04:05PM +0100, Ondrej Mosnacek wrote:
-> On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
-> > Booting to Android userspace on 5.14 or newer triggers the following
-> > SELinux denial:
-> >
-> > avc: denied { sys_nice } for comm="init" capability=23
-> >      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
-> >      permissive=0
-> >
-> > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
-> > better compatibility with older SEPolicy, check ADMIN before NICE.
-> 
-> But with this patch you in turn punish the new/better policies that
-> try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
-> the more granular capabilities wherever possible), which may now get a
-> bogus sys_admin denial. IMHO the order is better as it is, as it
-> motivates the "good" policy writing behavior - i.e. spelling out the
-> capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
-> 
-> IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
-> grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
-> the denial correctly flags it as an issue in your policy and
-> encourages you to add that sys_nice permission to the domain. Then
-> when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
-> removed, your policy will be ready for that and things will keep
-> working.
-> 
-> Feel free to carry that patch downstream if patching the kernel is
-> easier for you than fixing the policy, but for the upstream kernel
-> this is just a step in the wrong direction.
 
-So you want to "punish" existing systems by throwing up a warning where
-there used to not be one?  That is not nice, you need to handle
-upgrading kernels without breaking or causing problems like this.
+Hello.
 
-Yes, SELinux has done this in the past, with many different things, but
-that does not mean that it _should_ do this.  Please realize that you do
-not want to punish people from upgrading their kernel to a newer
-version.  If you do so, they will never upgrade.
+On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
+> +	When set to "isolated", the CPUs in that partition root will
+> +	be in an isolated state without any load balancing from the
+> +	scheduler.  Tasks in such a partition must be explicitly bound
+> +	to each individual CPU.
 
-thanks,
+This sounds reasonable but it seems to have some usability issues as was
+raised in another thread [1]. (I could only think of the workaround of
+single-cpu cgroup leaves + CLONE_INTO_CGROUP.)
 
-greg k-h
+TL;DR Do whatever you find suitable but (re)consider sticking to the
+delegation principle (making hotplug and ancestor changes equal).
+
+Now to the constraints and partition setups. I think it's useful to have
+a model with which the implementation can be compared with.
+I tried to condense some "simple rules" from the descriptions you posted
+in v8 plus your response to my remarks in v7 [2]. These should only be
+the "validity conditions", not "transition conditions".
+
+## Validity conditions
+
+For simplification, there's a condition called 'degraded' that tells
+whether a cpuset can host tasks (with the given config) that expands to
+two predicates:
+
+	degraded := cpus.internal_effective == ø && has_tasks
+	valid_root := !degraded && cpus_exclusive && parent.valid_root
+	(valid_member := !degraded)
+
+with a helping predicate
+	cpus_exclusive := cpus not shared by a sibling
+
+The effective CPUs basically combine configured+available CPUs
+
+	cpus.internal_effective := (cpus ∩ parent.cpus ∩ online_cpus) - passed
+
+where
+	passed := union of children cpus whose partition is not member
+
+Finally, to handle the degraded cpusets gracefully, we define
+
+	if (!degraded)
+		cpus.effective := cpus.internal_effective 
+	else
+		cpus.effective := parent.cpus.effective
+
+(In cases when there's no parent, we replace its cpus with online_cpus.)
+
+---
+
+I'll try applying these conditions to your description.
+
+> +
+> +	"cpuset.cpus" must always be set up first before enabling
+> +	partition.
+
+This is just a transition condition.
+
+>       Unlike "member" whose "cpuset.cpus.effective" can
+> +	contain CPUs not in "cpuset.cpus", this can never happen with a
+> +	valid partition root. In other words, "cpuset.cpus.effective"
+> +	is always a subset of "cpuset.cpus" for a valid partition root.
+
+IIUC this refers to the cgroup that is 'degraded'. (The consequences for
+a valid partition root follow from valid_root definition above.)
+
+> +
+> +	When a parent partition root cannot exclusively grant any of
+> +	the CPUs specified in "cpuset.cpus", "cpuset.cpus.effective"
+> +	becomes empty.
+
+This sounds too strict to me, perhaps you meant 'cannot grant _all_ of
+the CPUs'?
+
+>       If there are tasks in the partition root, the
+> +	partition root becomes invalid and "cpuset.cpus.effective"
+> +	is reset to that of the nearest non-empty ancestor.
+
+This is captured in the definition of 'degraded'.
+
+> +
+> +        Note that a task cannot be moved to a croup with empty
+> +        "cpuset.cpus.effective".
+
+A transition condition. (Makes sense.)
+
+[With the validity conditions above, it's possible to have 'valid_root'
+with empty cpus (hence also empty cpus.internal_effective) if there are
+no tasks in there. The transition conditions so far prevented this
+corner case.]
+
+> +	There are additional constraints on where a partition root can
+> +	be enabled ("root" or "isolated").  It can only be enabled in
+> +	a cgroup if all the following conditions are met.
+
+I think the enablement (aka rewriting cpuset.cpus.partition) could be
+always possible but it'd result in "root invalid (...)" if the resulting
+config doesn't meet the validity condition.
+
+> +
+> +	1) The "cpuset.cpus" is non-empty and exclusive, i.e. they are
+> +	   not shared by any of its siblings.
+
+The emptiness here is a judgement call (in my formulation of the
+conditions it seemed simpler to allow empty cpus.internal_effective with
+no tasks).
+
+> +	2) The parent cgroup is a valid partition root.
+
+Captured in the valid_root definition.
+
+> +	3) The "cpuset.cpus" is a subset of parent's "cpuset.cpus".
+
+This is unnecessary strictness. Allow such config,
+cpus.internal_effective still can't be more than parent's cpuset.cpus.
+(Or do you have a reason to discard such configs?)
+
+> +	4) There is no child cgroups with cpuset enabled.  This avoids
+> +	   cpu migrations of multiple cgroups simultaneously which can
+> +	   be problematic.
+
+A transition condition (i.e. not relevant to validity conditions).
+
+> +	Once becoming a partition root, changes to "cpuset.cpus"
+> +	is generally allowed as long as the cpu list is exclusive,
+> +	non-empty and is a superset of children's cpu lists.
+
+Any changes should be allowed otherwise it denies the delegation
+principle of v2 (IOW a parent should be able to preempt CPUs given to
+chilren previously and not be denied because of them).
+
+(If the change results in failed validity condition the cgroup of course
+cannot be be a valid_root anymore.)
+
+> +        The constraints of a valid partition root are as follows:
+> +
+> +        1) The parent cgroup is a valid partition root.
+> +        2) "cpuset.cpus.effective" is a subset of "cpuset.cpus"
+> +        3) "cpuset.cpus.effective" is non-empty when there are tasks
+> +           in the partition.
+
+(This seem to miss the sibling exclusivity condition.)
+Here I'd simply paste the "Validity conditions" specified above instead.
+
+> +        Changing a partition root to "member" is always allowed.
+> +        If there are child partition roots underneath it, however,
+> +        they will be forced to be switched back to "member" too and
+> +        lose their partitions. So care must be taken to double check
+> +        for this condition before disabling a partition root.
+
+(Or is this how delegation is intended?) However, AFAICS, parent still
+can't remove cpuset.cpus even when the child is a "member". Otherwise,
+I agree with the back-switch.
+
+
+> +	Setting a cgroup to a valid partition root will take the CPUs
+> +	away from the effective CPUs of the parent partition.
+
+Captured in the definition of cpus.internal_effective.
+
+> +	A valid parent partition may distribute out all its CPUs to
+> +	its child partitions as long as it is not the root cgroup as
+> +	we need some house-keeping CPUs in the root cgroup.
+
+This actually applies to any root partition that's supposed to host
+tasks. (IOW, 'valid_root' cannot be 'degraded'.)
+
+> +	An invalid partition is not a real partition even though some
+> +	internal states may still be kept.
+
+Tautology? (Or new definition of "real".)
+
+> +
+> +	An invalid partition root can be reverted back to a real
+> +	partition root if none of the constraints of a valid partition
+> +        root are violated.
+
+Yes. (Also tautological.)
+
+Anyway, as I said above, I just tried to formulate the model for clearer
+understanding and the implementation may introduce transition
+constraints but it'd be good to always have the simple rules to tell
+what's a valid root in the tree and what's not.
+
+Regards,
+Michal
+
+[1] https://lore.kernel.org/r/AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM/
+[2] https://lore.kernel.org/lkml/5eacfdcc-148b-b599-3111-4f2971e7ddc0@redhat.com/
+
