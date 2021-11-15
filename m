@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F338450F35
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6C8450EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239399AbhKOS1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:27:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46728 "EHLO mail.kernel.org"
+        id S241325AbhKOST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:19:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238185AbhKORdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:33:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6FD361BFE;
-        Mon, 15 Nov 2021 17:22:03 +0000 (UTC)
+        id S237708AbhKORcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:32:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BB43632A4;
+        Mon, 15 Nov 2021 17:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996924;
-        bh=YkW54Ki9Rm7PI7jJAHMIiMXvoahIDOnYIWMdyhs4yPA=;
+        s=korg; t=1636996836;
+        bh=nV0pbrdkHPY5eKY+aHXvF0B3I4WxIca4P2TKnrr5/HY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w/q4xq7LXWtiwAI+vVPiGE+C6aMv4JTd4zM94k84mSrZhxk2LOlP3Au1ss4j9vPje
-         XnPF/0s72+bHoL8CQxu7FSoF41PXXUbR8gHD8GaG/RdF7RJPNHRCjUM18uC1vcppTg
-         rPmvePqXfWcfp2tpFo6XwC7a1skA1RHM6izYYNek=
+        b=j2OIqq0GgIE+bLSBmazi9ISTXlWdywrj2Jf9ylKfLFPhWPdIhG9lclLgP4pJ+xe+j
+         SRewUM58LMNAcbP5llKxH2/ADL+iKAcmHqh+NX7VWLGAP9Hk/OOxHlQdLfs8cZA9nm
+         hNrDIWEqxFOucSPPbzccRRa6ocZVhI3/GGBdFEQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrej Shadura <andrew.shadura@collabora.co.uk>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 285/355] HID: u2fzero: properly handle timeouts in usb_submit_urb
-Date:   Mon, 15 Nov 2021 18:03:29 +0100
-Message-Id: <20211115165322.947265420@linuxfoundation.org>
+        stable@vger.kernel.org, Bixuan Cui <cuibixuan@linux.alibaba.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 286/355] powerpc/44x/fsp2: add missing of_node_put
+Date:   Mon, 15 Nov 2021 18:03:30 +0100
+Message-Id: <20211115165322.978451015@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,36 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrej Shadura <andrew.shadura@collabora.co.uk>
+From: Bixuan Cui <cuibixuan@linux.alibaba.com>
 
-[ Upstream commit 43775e62c4b784f44a159e13ba80e6146a42d502 ]
+[ Upstream commit 290fe8aa69ef5c51c778c0bb33f8ef0181c769f5 ]
 
-The wait_for_completion_timeout function returns 0 if timed out or a
-positive value if completed. Hence, "less than zero" comparison always
-misses timeouts and doesn't kill the URB as it should, leading to
-re-sending it while it is active.
+Early exits from for_each_compatible_node() should decrement the
+node reference counter.  Reported by Coccinelle:
 
-Fixes: 42337b9d4d95 ("HID: add driver for U2F Zero built-in LED and RNG")
-Signed-off-by: Andrej Shadura <andrew.shadura@collabora.co.uk>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+./arch/powerpc/platforms/44x/fsp2.c:206:1-25: WARNING: Function
+"for_each_compatible_node" should have of_node_put() before return
+around line 218.
+
+Fixes: 7813043e1bbc ("powerpc/44x/fsp2: Add irq error handlers")
+Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1635406102-88719-1-git-send-email-cuibixuan@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-u2fzero.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/44x/fsp2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hid/hid-u2fzero.c b/drivers/hid/hid-u2fzero.c
-index 94f78ffb76d04..67ae2b18e33ac 100644
---- a/drivers/hid/hid-u2fzero.c
-+++ b/drivers/hid/hid-u2fzero.c
-@@ -132,7 +132,7 @@ static int u2fzero_recv(struct u2fzero_device *dev,
+diff --git a/arch/powerpc/platforms/44x/fsp2.c b/arch/powerpc/platforms/44x/fsp2.c
+index b299e43f5ef94..823397c802def 100644
+--- a/arch/powerpc/platforms/44x/fsp2.c
++++ b/arch/powerpc/platforms/44x/fsp2.c
+@@ -208,6 +208,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
+ 		if (irq == NO_IRQ) {
+ 			pr_err("device tree node %pOFn is missing a interrupt",
+ 			      np);
++			of_node_put(np);
+ 			return;
+ 		}
  
- 	ret = (wait_for_completion_timeout(
- 		&ctx.done, msecs_to_jiffies(USB_CTRL_SET_TIMEOUT)));
--	if (ret < 0) {
-+	if (ret == 0) {
- 		usb_kill_urb(dev->urb);
- 		hid_err(hdev, "urb submission timed out");
- 	} else {
+@@ -215,6 +216,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
+ 		if (rc) {
+ 			pr_err("fsp_of_probe: request_irq failed: np=%pOF rc=%d",
+ 			      np, rc);
++			of_node_put(np);
+ 			return;
+ 		}
+ 	}
 -- 
 2.33.0
 
