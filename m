@@ -2,108 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28394450CEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA881450D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236642AbhKORq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S238789AbhKOR5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236924AbhKORTv (ORCPT
+        with ESMTP id S237745AbhKORYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:19:51 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0D7C06122C
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:13:24 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id f9so22269176ioo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:13:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L2es5dbHXRJPkreWY9KX+HP22ehmWI1e8VyeSPUZii4=;
-        b=oKeuZLodUAoDdRWVbHJJiXxXQNm2vFpXlYlgJwfX0fxFKVAkaq6H93Jm8MewHWtysM
-         sdcA1kOK108oSD8naCwAfMuczfWMhTXGpka/jzUMOcCCxRp3o64hvduPw0YdNozz0H2/
-         EeJlikZFNAg35BabEWnEAjtW5AC2cbAHWXZE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L2es5dbHXRJPkreWY9KX+HP22ehmWI1e8VyeSPUZii4=;
-        b=Ycu6qMyIwdECIBbOGd/MzZZ6GQwO77iWRfKxn4F2k+T0uw6B+xTclWzqhipM6zxWIf
-         maQqutd6LbgvHDg7XdbgPHqUF/kA0qPtmGosfZsOe9UMaQ7wHIbb+8qFN/o1xQl00MZN
-         EhJvzBKZrmxrV52BrDb3tN8R21u6UUJOR0KahOsV8FEdcQ1RWqN3I+BgBDb/zKotOysU
-         qhzCcdGoVk89C4jtctVsNG0lj02QEpRpxnfpLX2V6PPuKequCauZkfzakmpvXmuQYu9p
-         OkN/uHLL98cUFyjBCr5YyS9IJWdBUKZ0e4orVSuwjHa30vPOfuHNRfL4EGj287eI+G+L
-         POJw==
-X-Gm-Message-State: AOAM533nDPDkUrfUqeRwr6oe//D7kagfNu58KOobIEEsCCjG+1fYp4Wk
-        P8eUs6CwjPp/aQyPnlt1emqG9T8dzbdwEA==
-X-Google-Smtp-Source: ABdhPJxNb4t0wbkjojujH26fhlSPfzqsPS5Ddf3OkRALGRz7XvsUZ1r/0553Yh+uiVWBWNEvMIqO+w==
-X-Received: by 2002:a6b:8ed4:: with SMTP id q203mr293553iod.200.1636996404268;
-        Mon, 15 Nov 2021 09:13:24 -0800 (PST)
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com. [209.85.166.179])
-        by smtp.gmail.com with ESMTPSA id l4sm10637487ilv.46.2021.11.15.09.13.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 09:13:24 -0800 (PST)
-Received: by mail-il1-f179.google.com with SMTP id m11so17502960ilh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:13:23 -0800 (PST)
-X-Received: by 2002:a92:6910:: with SMTP id e16mr313484ilc.190.1636996403030;
- Mon, 15 Nov 2021 09:13:23 -0800 (PST)
+        Mon, 15 Nov 2021 12:24:00 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA3EC0611A6;
+        Mon, 15 Nov 2021 09:14:36 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 23BF11F44F0E
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636996474; bh=ulw6YHNArT0ryZdmBCijk+hdpoeriAt7j2eQXvsQEUc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=eCKd//zZVXoGNInwvaAlVkY+I5qLhYuhGaRwPysxRqgwndeHagSERYH92faPEmubG
+         KfsflkC6oi2mStD4SG1Cdge9F5uMbI4ZFiSM6CiJf5T9Qtba4PQ6oq8eISuHXQLigw
+         73Q/PjmE5L1YMDD4x3pnAR6fx4zMnyDMcEmLeRWXu294k017Fk25uxqIubbebhiasV
+         ajfg5kzh06FNjRlOy6b/4jFXmFo1quOttgPH9tEunx2WRgLWVwlc+mGUMLug7vMxKE
+         QiQooCH6rKIWAaXy19yQfqgyWRmdfyYS4ULu5FhPP1rnd/enb2BLsbROfd+dVlDejI
+         S0Li+AdkuH/vg==
+Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
+Date:   Mon, 15 Nov 2021 18:14:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211029122359.1.I1e23f382fbd8beb19fe1c06d70798b292012c57a@changeid>
-In-Reply-To: <20211029122359.1.I1e23f382fbd8beb19fe1c06d70798b292012c57a@changeid>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Mon, 15 Nov 2021 09:12:47 -0800
-X-Gmail-Original-Message-ID: <CAE=gft4MRvq-VCBW4EX4dGfPi4s7Lco8h6Z_ejRH5A1e-K2-yA@mail.gmail.com>
-Message-ID: <CAE=gft4MRvq-VCBW4EX4dGfPi4s7Lco8h6Z_ejRH5A1e-K2-yA@mail.gmail.com>
-Subject: Re: [PATCH] PM / hibernate: Fix snapshot partial write lengths
-To:     Pavel Machek <pavel@ucw.cz>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <len.brown@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle bump.
+Hi Hans,
+
+W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
+> Andrzej,
+> 
+> Can you rebase this series on top of the master branch of
+> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
+> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
+> manner.
+
+This is a branch for you:
+
+https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
+
+Regards,
+
+Andrzej
 
 
-On Fri, Oct 29, 2021 at 12:24 PM Evan Green <evgreen@chromium.org> wrote:
->
-> snapshot_write() is inappropriately limiting the amount of data that can
-> be written in cases where a partial page has already been written. For
-> example, one would expect to be able to write 1 byte, then 4095 bytes to
-> the snapshot device, and have both of those complete fully (since now
-> we're aligned to a page again). But what ends up happening is we write 1
-> byte, then 4094/4095 bytes complete successfully.
->
-> The reason is that simple_write_to_buffer()'s second argument is the
-> total size of the buffer, not the size of the buffer minus the offset.
-> Since simple_write_to_buffer() accounts for the offset in its
-> implementation, snapshot_write() can just pass the full page size
-> directly down.
->
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> ---
->
->  kernel/power/user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/user.c b/kernel/power/user.c
-> index 740723bb388524..ad241b4ff64c58 100644
-> --- a/kernel/power/user.c
-> +++ b/kernel/power/user.c
-> @@ -177,7 +177,7 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
->                 if (res <= 0)
->                         goto unlock;
->         } else {
-> -               res = PAGE_SIZE - pg_offp;
-> +               res = PAGE_SIZE;
->         }
->
->         if (!data_of(data->handle)) {
-> --
-> 2.31.0
->
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
+>> Dear all,
+>>
+>> This patch series adds VP9 codec V4L2 control interface and two drivers
+>> using the new controls. It is a follow-up of previous v6 series [1].
+>>
+>> In this iteration, we've implemented VP9 hardware decoding on two devices:
+>> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+>> The i.MX8M driver needs proper power domains support, though, which is a
+>> subject of a different effort, but in all 3 cases we were able to run the
+>> drivers.
+>>
+>> GStreamer support is also available, the needed changes have been submitted
+>> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+>> VP9 V4L2 controls to be merged and released.
+>>
+>> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+>> using Fluster[3]. There are still a few tests that are not passing, due to
+>> dynamic frame resize (not yet supported by V4L2) and small size videos
+>> (due to IP block limitations).
+>>
+>> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+>> merged without passing through staging, as agreed[4]. The ABI has been checked
+>> for padding and verified to contain no holes.
+>>
+>> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
+>> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+>> [3] https://github.com/fluendo/fluster
+>> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+>>
+>> The series depends on the YUV tiled format support prepared by Ezequiel:
+>> https://www.spinics.net/lists/linux-media/msg197047.html
+>>
+>> Rebased onto latest media_tree.
+>>
+>> Changes related to v6:
+>> - moved setting tile filter and tile bsd auxiliary buffer addresses so
+>> that they are always set, even if no tiles are used (thanks, Jernej)
+>> - added a comment near the place where the 32-bit DMA mask is applied
+>>    (thanks, Nicolas)
+>> - improved consistency in register names (thanks, Nicolas)
+>>
+>> Changes related to v5:
+>> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
+>> - improved pdf output of documentation
+>> - added Benjamin's Reviewed-by (thanks, Benjamin)
+>>
+>> Changes related to v4:
+>> - removed unused enum v4l2_vp9_intra_prediction_mode
+>> - converted remaining enums to defines to follow the convention
+>> - improved the documentation, in particular better documented how to use segmentation
+>> features
+>>
+>> Changes related to v3:
+>>
+>> Apply suggestions from Jernej's review (thanks, Jernej):
+>> - renamed a control and two structs:
+>> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
+>> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
+>> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
+>> 		v4l2_ctrl_vp9_compressed_hdr
+>> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
+>> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
+>> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
+>> - explicitly assigned values to all other vp9 enums
+>>
+>> Apply suggestion from Nicolas's review (thanks, Nicolas):
+>> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
+>> and implemented only by drivers which need it
+>>
+>> Changes related to the RFC v2:
+>>
+>> - added another driver including a postprocessor to de-tile
+>>          codec-specific tiling
+>> - reworked uAPI structs layout to follow VP8 style
+>> - changed validation of loop filter params
+>> - changed validation of segmentation params
+>> - changed validation of VP9 frame params
+>> - removed level lookup array from loop filter struct
+>>          (can be computed by drivers)
+>> - renamed some enum values to match the spec more closely
+>> - V4L2 VP9 library changed the 'eob' member of
+>>          'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+>>          of pointers instead of an array of pointers to arrays
+>>          (IPs such as g2 creatively pass parts of the 'eob' counts in
+>>          the 'coeff' counts)
+>> - factored out several repeated portions of code
+>> - minor nitpicks and cleanups
+>>
+>> Andrzej Pietrasiewicz (6):
+>>    media: uapi: Add VP9 stateless decoder controls
+>>    media: Add VP9 v4l2 library
+>>    media: hantro: Rename registers
+>>    media: hantro: Prepare for other G2 codecs
+>>    media: hantro: Support VP9 on the G2 core
+>>    media: hantro: Support NV12 on the G2 core
+>>
+>> Boris Brezillon (1):
+>>    media: rkvdec: Add the VP9 backend
+>>
+>> Ezequiel Garcia (4):
+>>    hantro: postproc: Fix motion vector space size
+>>    hantro: postproc: Introduce struct hantro_postproc_ops
+>>    hantro: Simplify postprocessor
+>>    hantro: Add quirk for NV12/NV12_4L4 capture format
+>>
+>>   .../userspace-api/media/v4l/biblio.rst        |   10 +
+>>   .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
+>>   .../media/v4l/pixfmt-compressed.rst           |   15 +
+>>   .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+>>   .../media/v4l/vidioc-queryctrl.rst            |   12 +
+>>   .../media/videodev2.h.rst.exceptions          |    2 +
+>>   drivers/media/v4l2-core/Kconfig               |    4 +
+>>   drivers/media/v4l2-core/Makefile              |    1 +
+>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
+>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+>>   drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>>   drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+>>   drivers/staging/media/hantro/Kconfig          |    1 +
+>>   drivers/staging/media/hantro/Makefile         |    7 +-
+>>   drivers/staging/media/hantro/hantro.h         |   40 +-
+>>   drivers/staging/media/hantro/hantro_drv.c     |   23 +-
+>>   drivers/staging/media/hantro/hantro_g2.c      |   27 +
+>>   .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
+>>   drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
+>>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
+>>   drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+>>   .../staging/media/hantro/hantro_postproc.c    |   79 +-
+>>   drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+>>   drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+>>   drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+>>   .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+>>   .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+>>   drivers/staging/media/rkvdec/Kconfig          |    1 +
+>>   drivers/staging/media/rkvdec/Makefile         |    2 +-
+>>   drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+>>   drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+>>   drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+>>   include/media/v4l2-ctrls.h                    |    4 +
+>>   include/media/v4l2-vp9.h                      |  182 ++
+>>   include/uapi/linux/v4l2-controls.h            |  284 +++
+>>   include/uapi/linux/videodev2.h                |    6 +
+>>   37 files changed, 6033 insertions(+), 104 deletions(-)
+>>   create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+>>   create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+>>   create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+>>   create mode 100644 include/media/v4l2-vp9.h
+>>
+>>
+>> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+>>
+> 
+
