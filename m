@@ -2,184 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2744501DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F9D4501E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237349AbhKOJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237514AbhKOJ7O (ORCPT
+        id S235130AbhKOKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:02:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230476AbhKOKCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:59:14 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27AC061204;
-        Mon, 15 Nov 2021 01:56:09 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id l24so29295184uak.2;
-        Mon, 15 Nov 2021 01:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gsBk71NedBBsVpsWIk4ACHvjoj+bC3+VIVEUbcpO8IA=;
-        b=ehc21nRzLc8i1U+EqW4HnjY+RWjGWh14ZBLj7yNPUxl816A1Dbell6St7S/yW4X/vv
-         tt7qOOmMMY85WSc7GghoYpJGJ9xgEBBUokeqlapvAJX5EFUnaN1rvUlEUeE8epbheu5B
-         bWVKVRopMxxBfMWO9giRCidfYfZ56vuyGO7o4CSsyVdRcdOlFmosB/G0CBJUF76Dwi9T
-         Bi5dKD3S2Ixk/FkU0QqBfwiiGLH1DDHTmYGg0Ci2mql4cvEo0wmrzkz2B7tgBgY5liPS
-         E361qlo75lRj9Ddb/VA9aIMjLtX6LX3ck8/h22UNs9feaHP2NMM+vvRDoJtlPCwrDlmi
-         9GJQ==
+        Mon, 15 Nov 2021 05:02:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636970388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B/SvcVH7YGPEpdGy0kldgGpabVd0LqF8PKRRi3YrNP0=;
+        b=OV0fmFC1X1F4fhZlZXh+EtFcYHf/ZIip1Q4FE6QGf6xMbXgXnu1X1xfKvby+r9wqVnUU1S
+        Dp3ra/pzcxZ6OxK1ScNAK/hyKatbkBAEe38I+daUWFJUddOiWlvydoUotWUUd5c4klyjmg
+        DJn45V8/0Zn5gHLtA1wJMrETCdvmGdE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-mSROFpGfOhCDlvxYu88B0g-1; Mon, 15 Nov 2021 04:59:47 -0500
+X-MC-Unique: mSROFpGfOhCDlvxYu88B0g-1
+Received: by mail-wr1-f70.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso3338455wrj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:59:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gsBk71NedBBsVpsWIk4ACHvjoj+bC3+VIVEUbcpO8IA=;
-        b=g9QRdlJYHhz/vngbCGzB5W2OuGxvOHghG2/0qcXbWTtnsLc39XX43Pf0ynqoCdDpj+
-         aINeAnK8NsK1TYTUG1rrXsLvVonXj0brbuIwjuQB7BupBnEV2F/YBHTMx4Yk0W1QG53u
-         szkng+m6XBdBycV8wxJBWzGcbyz1mrltM6vMf9L9f1HSVSOAgqEyi2C5d0c3xJ5trQ8j
-         5bD+6pZXYYhTKzeNqcs0uYAuAo8U4fcV61AHxJ9EhBnZowOCsQeSygjVW4JhCaquM9ms
-         OHt8uEEXZowB84W8QUd6OxQ8vnliqHpvWPnuO2PGLxXYHoeNMG6f3E2y1jubYN+xggh2
-         bZrg==
-X-Gm-Message-State: AOAM530uLdzZbHLDycS40695dYt8VMKUjQHA9AHo6d8uvlubUZrsCyJQ
-        SMWar6g7j9tEzW+w6uda6ISpWDJgAuhnQeTvemA=
-X-Google-Smtp-Source: ABdhPJz6ESqhwfmkhVT1QvVuW/9wYB2eiEui3t3htInxrDx0SkRrPjrQEm+aetErjkG15iM6y1caYpqVdHJBHexZMiA=
-X-Received: by 2002:ab0:6883:: with SMTP id t3mr56751869uar.66.1636970168537;
- Mon, 15 Nov 2021 01:56:08 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=B/SvcVH7YGPEpdGy0kldgGpabVd0LqF8PKRRi3YrNP0=;
+        b=ghz3xEkan8IfTMhoseILjMyNXmMwkyOpTZYfRa9WqDwaoymyISt63AS4RTeHUm4asA
+         ZC1HFjns7LpzjMyLl0aMTnForxfPay6rT+j2Z5eqHFCS5YOSg7mb2ilrK4J1EXdhMNEO
+         kste8HpnVw7mBlzLtwRgzL5FbWZQWYkUoScC8NYLSaAuk+YGz9vRGiYUCAoYTgad8WPI
+         rOx+zEB3pO4xqv+WJmQbR/HBAXUYK3FGgr/RuEMWNlvYJ1Os/L2Ml1WYYIixqW9sRppr
+         lqM+IJWr/Q5aNfawTUg7Hn6j+JxsQLPd0sSeDnipwGpY4G06J7Z/vODyZPtKYKF9kK0M
+         URLw==
+X-Gm-Message-State: AOAM530PwZu8rB62t1wfoxi6kg2Ue3DSsjg1RKtBYIUSApjcZK0mJ4NS
+        x7wPT9/syaSCbtuXI1RL9zaWiojdxsHIGEefR5G6YP9oZSQmU5cjbjAsNkqb/1808GlZ/6DV/5/
+        qxkG82sBi47oxhI06yPQsp3b411N8bvaNUYdLbNvNG2iLNlVa6Xa9SKFyvGTlDEe4YZslIg+3Vv
+        cR
+X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr45338976wrw.104.1636970385834;
+        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxET7RTckB554LQIAx6+HrM6N8Dg2rkSK6DQZ3M5guhyRvwKp4nwnmtbibpn9DS93s70y3/RQ==
+X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr45338930wrw.104.1636970385596;
+        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
+Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m20sm21093886wmq.11.2021.11.15.01.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vihas Mak <makvihas@gmail.com>, pbonzini@redhat.com
+Cc:     seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: fix cocci warnings
+In-Reply-To: <20211114164312.GA28736@makvihas>
+References: <20211114164312.GA28736@makvihas>
+Date:   Mon, 15 Nov 2021 10:59:43 +0100
+Message-ID: <87o86leo34.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-11-arnd@kernel.org>
-In-Reply-To: <20211115085403.360194-11-arnd@kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Mon, 15 Nov 2021 10:55:56 +0100
-Message-ID: <CAMhs-H98kPNqH491+X0Mp81Ng++v1aQ=97XSHEhs+vx3g8W_4A@mail.gmail.com>
-Subject: Re: [PATCH 10/11] staging: ralink-gdma: stop using slave_id config
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Vihas Mak <makvihas@gmail.com> writes:
 
-On Mon, Nov 15, 2021 at 9:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> change 0 to false and 1 to true to fix following cocci warnings:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+>         arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
+>         arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
 >
-> Picking the connection between a DMA controller and its attached device
-> is done through devicetree using the "dmas" property, which is implemented
-> by the gdma driver, but it also allows overriding the "req" configuration
-> with the slave_id field, as it was done in some linux-2.6 era drivers.
->
-> There is no driver in the tree that sets these values, so stop
-> interpreting them before anything accidentally starts relying on it.
-> Rename the field in the channel from "slave_id" to "req" to better match
-> the purpose and the naming in the hardware.
->
-> If any driver actually starts using this DMA engine, it may be necessary
-> to implement a .xlate callback that sets this field at probe time.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Vihas Mak <makvihas@gmail.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
 > ---
->  drivers/staging/ralink-gdma/ralink-gdma.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-
-This driver has been already deleted from the staging tree. See [0].
-
-Best regards,
-    Sergio Paracuellos
-
-[0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=5bfc10690c6c590a972be014ed8595e77e1e2dea
-
+>  arch/x86/kvm/mmu/mmu.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
-> index b5229bc6eae5..f00240e62e1b 100644
-> --- a/drivers/staging/ralink-gdma/ralink-gdma.c
-> +++ b/drivers/staging/ralink-gdma/ralink-gdma.c
-> @@ -106,7 +106,7 @@ struct gdma_dma_desc {
->  struct gdma_dmaengine_chan {
->         struct virt_dma_chan vchan;
->         unsigned int id;
-> -       unsigned int slave_id;
-> +       unsigned int req;
->
->         dma_addr_t fifo_addr;
->         enum gdma_dma_transfer_size burst_size;
-> @@ -194,7 +194,6 @@ static int gdma_dma_config(struct dma_chan *c,
->                         dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
->                         return -EINVAL;
->                 }
-> -               chan->slave_id = config->slave_id;
->                 chan->fifo_addr = config->dst_addr;
->                 chan->burst_size = gdma_dma_maxburst(config->dst_maxburst);
->                 break;
-> @@ -203,7 +202,6 @@ static int gdma_dma_config(struct dma_chan *c,
->                         dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
->                         return -EINVAL;
->                 }
-> -               chan->slave_id = config->slave_id;
->                 chan->fifo_addr = config->src_addr;
->                 chan->burst_size = gdma_dma_maxburst(config->src_maxburst);
->                 break;
-> @@ -288,12 +286,12 @@ static int rt305x_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
->                 dst_addr = chan->fifo_addr;
->                 ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED |
->                         (8 << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
-> -                       (chan->slave_id << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
-> +                       (chan->req << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
->         } else if (chan->desc->direction == DMA_DEV_TO_MEM) {
->                 src_addr = chan->fifo_addr;
->                 dst_addr = sg->dst_addr;
->                 ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED |
-> -                       (chan->slave_id << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
-> +                       (chan->req << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
->                         (8 << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
->         } else if (chan->desc->direction == DMA_MEM_TO_MEM) {
->                 /*
-> @@ -365,12 +363,12 @@ static int rt3883_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
->                 dst_addr = chan->fifo_addr;
->                 ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED;
->                 ctrl1 = (32 << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
-> -                       (chan->slave_id << GDMA_REG_CTRL1_DST_REQ_SHIFT);
-> +                       (chan->req << GDMA_REG_CTRL1_DST_REQ_SHIFT);
->         } else if (chan->desc->direction == DMA_DEV_TO_MEM) {
->                 src_addr = chan->fifo_addr;
->                 dst_addr = sg->dst_addr;
->                 ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED;
-> -               ctrl1 = (chan->slave_id << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
-> +               ctrl1 = (chan->req << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
->                         (32 << GDMA_REG_CTRL1_DST_REQ_SHIFT) |
->                         GDMA_REG_CTRL1_COHERENT;
->         } else if (chan->desc->direction == DMA_MEM_TO_MEM) {
-> --
-> 2.30.2
->
->
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 337943799..2fcea4a78 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1454,7 +1454,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  {
+>  	u64 *sptep;
+>  	struct rmap_iterator iter;
+> -	int need_flush = 0;
+> +	bool need_flush = false;
+>  	u64 new_spte;
+>  	kvm_pfn_t new_pfn;
+>  
+> @@ -1466,7 +1466,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  		rmap_printk("spte %p %llx gfn %llx (%d)\n",
+>  			    sptep, *sptep, gfn, level);
+>  
+> -		need_flush = 1;
+> +		need_flush = true;
+>  
+>  		if (pte_write(pte)) {
+>  			pte_list_remove(kvm, rmap_head, sptep);
+> @@ -1482,7 +1482,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  
+>  	if (need_flush && kvm_available_flush_tlb_with_range()) {
+>  		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
+> -		return 0;
+> +		return false;
+>  	}
+>  
+>  	return need_flush;
+> @@ -1623,8 +1623,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  
+>  	for_each_rmap_spte(rmap_head, &iter, sptep)
+>  		if (is_accessed_spte(*sptep))
+> -			return 1;
+> -	return 0;
+> +			return true;
+> +	return false;
+>  }
+>  
+>  #define RMAP_RECYCLE_THRESHOLD 1000
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
+'kvm_handle_gfn_range()' which does
+
+        bool ret = false;
+
+        for_each_slot_rmap_range(...)
+                ret |= handler(...);
+
+and I find '|=' to not be very natural with booleans. I'm not sure it's
+worth changing though.
+
+-- 
+Vitaly
+
