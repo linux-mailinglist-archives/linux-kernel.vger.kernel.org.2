@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0344451B20
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84861451905
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350299AbhKOXvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1347096AbhKOXMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:12:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344295AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43FC0633C8;
-        Mon, 15 Nov 2021 18:55:12 +0000 (UTC)
+        id S243920AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:06:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC344633E3;
+        Mon, 15 Nov 2021 18:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002512;
-        bh=BWRiKMcHMaxjt883Xsxh/3Lxa54SCFJR/j1OFlVN0jU=;
+        s=korg; t=1637000202;
+        bh=B4mUOJkyn+FT1GJIRP6ekd7FphQyGfxTCK0xolSxVIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LQ7cYCxY5NNwZm3XRz7RQGc1AjEYEIQ3AhOaD6VtRGX8luFvPQjjBDU1cHRYD8tkZ
-         sU3kUsblFlUcJYwCFt8MEjUN8NwYrC4tMdQ7k3gnfFp4wO4GhgGdunJort2AA7ECvg
-         Ejw6KX/okD1f79S0ZwMMx5GpnxpYWzYdr0y6WPHA=
+        b=wFed2ba7G8/AL3LxXoAVnK3nMqpLjeDaQGHc0nQiHBpu8b+BH5dVNSMKbrQnydLPY
+         v0hggO+4aRKtc66yqCjAb4QyXUN4VeS5OEi0QESHMyswLfI3S0NOBOQQJ4c81m7P75
+         7QDTw3R5lgP4Ad4Fpnu9kGSnAgY8lHXH2eLKvvqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 563/917] bpf: Fix propagation of signed bounds from 64-bit min/max into 32-bit.
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 575/849] JFS: fix memleak in jfs_mount
 Date:   Mon, 15 Nov 2021 18:00:58 +0100
-Message-Id: <20211115165447.885313920@linuxfoundation.org>
+Message-Id: <20211115165439.696746632@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 388e2c0b978339dee9b0a81a2e546f8979e021e2 ]
+[ Upstream commit c48a14dca2cb57527dde6b960adbe69953935f10 ]
 
-Similar to unsigned bounds propagation fix signed bounds.
-The 'Fixes' tag is a hint. There is no security bug here.
-The verifier was too conservative.
+In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
+the following code does not free ipaimap2 allocated by diReadSpecial.
 
-Fixes: 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20211101222153.78759-2-alexei.starovoitov@gmail.com
+Fix this by refactoring the error handling code of jfs_mount. To be
+specific, modify the lable name and free ipaimap2 when the above error
+ocurrs.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
+ 1 file changed, 22 insertions(+), 29 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 055012faca94e..ddba80554fef3 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1406,7 +1406,7 @@ static void __reg_combine_32_into_64(struct bpf_reg_state *reg)
+diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
+index 5d7d7170c03c0..aa4ff7bcaff23 100644
+--- a/fs/jfs/jfs_mount.c
++++ b/fs/jfs/jfs_mount.c
+@@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
+ 	 * (initialize mount inode from the superblock)
+ 	 */
+ 	if ((rc = chkSuper(sb))) {
+-		goto errout20;
++		goto out;
+ 	}
  
- static bool __reg64_bound_s32(s64 a)
- {
--	return a > S32_MIN && a < S32_MAX;
-+	return a >= S32_MIN && a <= S32_MAX;
- }
+ 	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
+ 	if (ipaimap == NULL) {
+ 		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 		rc = -EIO;
+-		goto errout20;
++		goto out;
+ 	}
+ 	sbi->ipaimap = ipaimap;
  
- static bool __reg64_bound_u32(u64 a)
+@@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = diMount(ipaimap))) {
+ 		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
+-		goto errout21;
++		goto err_ipaimap;
+ 	}
+ 
+ 	/*
+@@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
+ 	ipbmap = diReadSpecial(sb, BMAP_I, 0);
+ 	if (ipbmap == NULL) {
+ 		rc = -EIO;
+-		goto errout22;
++		goto err_umount_ipaimap;
+ 	}
+ 
+ 	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
+@@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = dbMount(ipbmap))) {
+ 		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
+-		goto errout22;
++		goto err_ipbmap;
+ 	}
+ 
+ 	/*
+@@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
+ 		if (!ipaimap2) {
+ 			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 			rc = -EIO;
+-			goto errout35;
++			goto err_umount_ipbmap;
+ 		}
+ 		sbi->ipaimap2 = ipaimap2;
+ 
+@@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
+ 		if ((rc = diMount(ipaimap2))) {
+ 			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
+ 				rc);
+-			goto errout35;
++			goto err_ipaimap2;
+ 		}
+ 	} else
+ 		/* Secondary aggregate inode table is not valid */
+@@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
+ 		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
+ 		/* open fileset secondary inode allocation map */
+ 		rc = -EIO;
+-		goto errout40;
++		goto err_umount_ipaimap2;
+ 	}
+ 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
+ 
+@@ -178,41 +178,34 @@ int jfs_mount(struct super_block *sb)
+ 	/* initialize fileset inode allocation map */
+ 	if ((rc = diMount(ipimap))) {
+ 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
+-		goto errout41;
++		goto err_ipimap;
+ 	}
+ 
+-	goto out;
++	return rc;
+ 
+ 	/*
+ 	 *	unwind on error
+ 	 */
+-      errout41:		/* close fileset inode allocation map inode */
++err_ipimap:
++	/* close fileset inode allocation map inode */
+ 	diFreeSpecial(ipimap);
+-
+-      errout40:		/* fileset closed */
+-
++err_umount_ipaimap2:
+ 	/* close secondary aggregate inode allocation map */
+-	if (ipaimap2) {
++	if (ipaimap2)
+ 		diUnmount(ipaimap2, 1);
++err_ipaimap2:
++	/* close aggregate inodes */
++	if (ipaimap2)
+ 		diFreeSpecial(ipaimap2);
+-	}
+-
+-      errout35:
+-
+-	/* close aggregate block allocation map */
++err_umount_ipbmap:	/* close aggregate block allocation map */
+ 	dbUnmount(ipbmap, 1);
++err_ipbmap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipbmap);
+-
+-      errout22:		/* close aggregate inode allocation map */
+-
++err_umount_ipaimap:	/* close aggregate inode allocation map */
+ 	diUnmount(ipaimap, 1);
+-
+-      errout21:		/* close aggregate inodes */
++err_ipaimap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipaimap);
+-      errout20:		/* aggregate closed */
+-
+-      out:
+-
++out:
+ 	if (rc)
+ 		jfs_err("Mount JFS Failure: %d", rc);
+ 
 -- 
 2.33.0
 
