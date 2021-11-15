@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2F8452596
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E5445226B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382708AbhKPByH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36786 "EHLO mail.kernel.org"
+        id S1345579AbhKPBL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:11:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238067AbhKOSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:25:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A3F6342E;
-        Mon, 15 Nov 2021 17:56:06 +0000 (UTC)
+        id S245408AbhKOTUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:20:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6490761C15;
+        Mon, 15 Nov 2021 18:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998967;
-        bh=b6fcItTklQsN/ZPpPnRAkBWjlRbNKWlzd0HA6lNmv18=;
+        s=korg; t=1637001241;
+        bh=hYra+e4a47V+ydyfs1YRzlOCGrI83ATxYV4qKD6WZr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UnKL2xuWIYWfgfTt5WQDrDctJjiiVFWBeMRXeNdOEQtmyiGRI/ZfKnLJqtfAARPPj
-         Qy+uNoFRUZ1dOO8rRs7orfQNBLYC98G+LsaXVTg3Bn3oR8Jln8Qn7OHJS//fMGpM+d
-         GILUgGeFWtWH2hPJfg50OH4l5nYzXK9QnOUdd6rA=
+        b=1L6959VlSt2a/jCW67HOCc2+V9TpP6nvb7tj9mQ1WKLE+AA+Ihz5Y7lQMLKQizz2B
+         TPkKo/LzgeLjCVq9kPcYmi44zp40h+JrV5Gt/7Dijkr3jP3bJD+vrG1yPNUttotrZe
+         43Uuxso5vRTifa0J+7QTGahPbbbuSdL0QPvYhi/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.14 127/849] wcn36xx: Fix (QoS) null data frame bitrate/modulation
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.15 115/917] mtd: rawnand: socrates: Keep the driver compatible with on-die ECC engines
 Date:   Mon, 15 Nov 2021 17:53:30 +0100
-Message-Id: <20211115165424.393823315@linuxfoundation.org>
+Message-Id: <20211115165432.640113135@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +38,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit d3fd2c95c1c13ec217d43ebef3c61cfa00a6cd37 upstream.
+commit b4ebddd6540d78a7f977b3fea0261bd575c6ffe2 upstream.
 
-We observe unexpected connection drops with some APs due to
-non-acked mac80211 generated null data frames (keep-alive).
-After debugging and capture, we noticed that null frames are
-submitted at standard data bitrate and that the given APs are
-in trouble with that.
+Following the introduction of the generic ECC engine infrastructure, it
+was necessary to reorganize the code and move the ECC configuration in
+the ->attach_chip() hook. Failing to do that properly lead to a first
+series of fixes supposed to stabilize the situation. Unfortunately, this
+only fixed the use of software ECC engines, preventing any other kind of
+engine to be used, including on-die ones.
 
-After setting the null frame bitrate to control bitrate, all
-null frames are acked as expected and connection is maintained.
+It is now time to (finally) fix the situation by ensuring that we still
+provide a default (eg. software ECC) but will still support different
+ECC engines such as on-die ECC engines if properly described in the
+device tree.
 
-Not sure if it's a requirement of the specification, but it seems
-the right thing to do anyway, null frames are mostly used for control
-purpose (power-saving, keep-alive...), and submitting them with
-a slower/simpler bitrate/modulation is more robust.
+There are no changes needed on the core side in order to do this, but we
+just need to leverage the logic there which allows:
+1- a subsystem default (set to Host engines in the raw NAND world)
+2- a driver specific default (here set to software ECC engines)
+3- any type of engine requested by the user (ie. described in the DT)
 
+As the raw NAND subsystem has not yet been fully converted to the ECC
+engine infrastructure, in order to provide a default ECC engine for this
+driver we need to set chip->ecc.engine_type *before* calling
+nand_scan(). During the initialization step, the core will consider this
+entry as the default engine for this driver. This value may of course
+be overloaded by the user if the usual DT properties are provided.
+
+Fixes: b36bf0a0fe5d ("mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()")
 Cc: stable@vger.kernel.org
-Fixes: 512b191d9652 ("wcn36xx: Fix TX data path")
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634560399-15290-1-git-send-email-loic.poulain@linaro.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-9-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/wcn36xx/txrx.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/socrates_nand.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-@@ -429,6 +429,7 @@ static void wcn36xx_set_tx_data(struct w
- 	if (ieee80211_is_any_nullfunc(hdr->frame_control)) {
- 		/* Don't use a regular queue for null packet (no ampdu) */
- 		bd->queue_id = WCN36XX_TX_U_WQ_ID;
-+		bd->bd_rate = WCN36XX_BD_RATE_CTRL;
- 	}
+--- a/drivers/mtd/nand/raw/socrates_nand.c
++++ b/drivers/mtd/nand/raw/socrates_nand.c
+@@ -119,9 +119,8 @@ static int socrates_nand_device_ready(st
  
- 	if (bcast) {
+ static int socrates_attach_chip(struct nand_chip *chip)
+ {
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-
+-	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+ 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+ 
+ 	return 0;
+@@ -175,6 +174,13 @@ static int socrates_nand_probe(struct pl
+ 	/* TODO: I have no idea what real delay is. */
+ 	nand_chip->legacy.chip_delay = 20;	/* 20us command delay time */
+ 
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	nand_chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
+ 	dev_set_drvdata(&ofdev->dev, host);
+ 
+ 	res = nand_scan(nand_chip, 1);
 
 
