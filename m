@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F8A450695
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27E145069C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhKOOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:23:16 -0500
-Received: from mga02.intel.com ([134.134.136.20]:36029 "EHLO mga02.intel.com"
+        id S234910AbhKOOXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:23:42 -0500
+Received: from aposti.net ([89.234.176.197]:50666 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232130AbhKOOWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:22:04 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220657292"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="220657292"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:19:07 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="494034756"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:19:05 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mmcoy-00779T-QA;
-        Mon, 15 Nov 2021 16:18:56 +0200
-Date:   Mon, 15 Nov 2021 16:18:56 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] i2c: designware: Fix the kernel doc description
- for struct dw_i2c_dev
-Message-ID: <YZJsUHVhGFsImNvt@smile.fi.intel.com>
-References: <20211112123459.73538-1-andriy.shevchenko@linux.intel.com>
- <e62bf878-03df-1b93-2177-7b8a3be293c4@infradead.org>
- <CAHp75Vd71WPosA8Sy999Mb5ZiGEGg-y3vxYsYz3st5Ng2PJ98A@mail.gmail.com>
- <07932f56-ec2d-46a5-7c8e-3f4aab7afd35@infradead.org>
+        id S232227AbhKOOWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:22:31 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 00/15] iio: buffer-dma: write() and new DMABUF based API
+Date:   Mon, 15 Nov 2021 14:19:10 +0000
+Message-Id: <20211115141925.60164-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <07932f56-ec2d-46a5-7c8e-3f4aab7afd35@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 08:43:16AM -0800, Randy Dunlap wrote:
-> On 11/12/21 8:26 AM, Andy Shevchenko wrote:
-> > On Fri, Nov 12, 2021 at 6:01 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> > > On 11/12/21 4:34 AM, Andy Shevchenko wrote:
+Hi Jonathan,
 
-...
+This patchset introduces a new userspace interface based on DMABUF
+objects, to complement the existing fileio based API.
 
-> > > > + * @rinfo: I²C GPIO recovery information
-> > > 
-> > > Preferably:   "I2C"
-> > 
-> > Why?
-> 
-> See below vvvvvvvvvvvvvvvvv:
-> > > like it is in thousands of places in the kernel source tree.
+The advantage of this DMABUF based interface vs. the fileio
+interface, is that it avoids an extra copy of the data between the
+kernel and userspace. This is particularly userful for high-speed
+devices which produce several megabytes or even gigabytes of data per
+second.
 
-When is it good point to start following the spec?
+The first few patches [01/15] to [03/15] are not really related, but
+allow to reduce the size of the patches that introduce the new API.
 
-> > UTF-8 has been established for more than a decade. I prefer to use the
-> > proper form of the abbreviation (*).
-> > 
-> > *) Check UM10204.pdf.
-> 
-> Yes, I am aware of what is in the spec.
+Patch [04/15] to [06/15] enables write() support to the buffer-dma
+implementation of the buffer API, to continue the work done by
+Mihail Chindris.
 
-Wolfram, what do you prefer?
+Patches [07/15] to [12/15] introduce the new DMABUF based API.
+
+Patches [13/15] and [14/15] add support for cyclic buffers, only through
+the new API. A cyclic buffer will be repeated on the output until the
+buffer is disabled.
+
+Patch [15/15] adds documentation about the new API.
+
+For now, the API allows you to alloc DMABUF objects and mmap() them to
+read or write the samples. It does not yet allow to import DMABUFs
+parented to other subsystems, but that should eventually be possible
+once it's wired.
+
+This patchset is inspired by the "mmap interface" that was previously
+submitted by Alexandru Ardelean and Lars-Peter Clausen, so it would be
+great if I could get a review from you guys. Alexandru's commit was
+signed with his @analog.com address but he doesn't work at ADI anymore,
+so I believe I'll need him to sign with a new email.
+
+Cheers,
+-Paul
+
+Alexandru Ardelean (1):
+  iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+
+Paul Cercueil (14):
+  iio: buffer-dma: Get rid of incoming/outgoing queues
+  iio: buffer-dma: Remove unused iio_buffer_block struct
+  iio: buffer-dma: Use round_down() instead of rounddown()
+  iio: buffer-dma: Enable buffer write support
+  iio: buffer-dmaengine: Support specifying buffer direction
+  iio: buffer-dmaengine: Enable write support
+  iio: core: Add new DMABUF interface infrastructure
+  iio: buffer-dma: Use DMABUFs instead of custom solution
+  iio: buffer-dma: Implement new DMABUF based userspace API
+  iio: buffer-dma: Boost performance using write-combine cache setting
+  iio: buffer-dmaengine: Support new DMABUF based userspace API
+  iio: core: Add support for cyclic buffers
+  iio: buffer-dmaengine: Add support for cyclic buffers
+  Documentation: iio: Document high-speed DMABUF based API
+
+ Documentation/driver-api/dma-buf.rst          |   2 +
+ Documentation/iio/dmabuf_api.rst              |  94 +++
+ Documentation/iio/index.rst                   |   2 +
+ drivers/iio/adc/adi-axi-adc.c                 |   3 +-
+ drivers/iio/buffer/industrialio-buffer-dma.c  | 670 ++++++++++++++----
+ .../buffer/industrialio-buffer-dmaengine.c    |  42 +-
+ drivers/iio/industrialio-buffer.c             |  49 ++
+ include/linux/iio/buffer-dma.h                |  43 +-
+ include/linux/iio/buffer-dmaengine.h          |   5 +-
+ include/linux/iio/buffer_impl.h               |   8 +
+ include/uapi/linux/iio/buffer.h               |  30 +
+ 11 files changed, 783 insertions(+), 165 deletions(-)
+ create mode 100644 Documentation/iio/dmabuf_api.rst
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
