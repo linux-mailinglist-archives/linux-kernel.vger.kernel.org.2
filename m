@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CD0451BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF7F451D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354021AbhKPAHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:07:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347398AbhKOTjt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:39:49 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEACC061220
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:30:09 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id k2so30299252lji.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JlBg5LtyqKvrpUdGEugnNnbVsAfgz6T1HCSvSGsjlZk=;
-        b=GM4JCZ3y0BLNP/TxHX2RKDzwzQXrmBW3C2YVhDU0aTewQCnpDjP3k3KVYqcP9gtkkf
-         a0vY7CrJ3Ao7m/3NH2aReiYRb0ktb4y8NsVCnG8VB9RLC1M/an8/s1yLEu+HLbf8rcFN
-         iLQ+vuqBDlgbWLjd+SpjFNoacndfywNLpTnxuoMP9sz4B7oDAlkOkYvWzWi2XbmuE1z0
-         l9Nd620wI7fij/Jfc1YZFf2aNuGYvBnJIAcQwBZk+ig/TCXePlNpJuUe7hheKF8RB9Ia
-         X/Iwogst9O0aHNxoC716dOFOdcH49ifqcHR6Zx3s0khksOrtpHwaG7fHh1TqjX9/ZjYw
-         Z5wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JlBg5LtyqKvrpUdGEugnNnbVsAfgz6T1HCSvSGsjlZk=;
-        b=4Nqozkg6KwO97R7HPWqncadxNQMid55W2BkrbQyVoLXCA28D/m32SC7UplpP1JYRBs
-         CrRxgw+rxbhNzVU7ROhVP8XkstAPWwvKRTTzZTTBWXJawWVoIRffeUghpT13NVF5bARY
-         rQG2Dj0YBXj745kiH7P7RJTY/AoAhtO+WJB3zxoCO7W8YgOcHFNVOHzshx9vOtfJAbZR
-         FhL2f28SdSVkVAbKvWoIu/GOKP6mO27m+g/3oYhQitQ81TCLnnx1PlgCmP6KnzWXjvGH
-         OwxySTmn/gAte8DjwZUoK3FGx45DuwtatYFfID1BuJP14xKqeZvbwmFwfjuXue6EPwHl
-         MVSA==
-X-Gm-Message-State: AOAM532LA0x/YWbS88gKwFqKf7L+YJJv9vuJrqg/oZkXCo9KgQovghaR
-        JBvaezxnWIJbx8mscch65NiT3qPcV1ADrcFKC3paPw==
-X-Google-Smtp-Source: ABdhPJzE8zq/IQ4W4/8Y/EEjilAn9vCsEXb84iRBWktB/ycTLjv28nMT0r/8iAKgJiA4OXYHBe6L2zu42b2iPQv+NNU=
-X-Received: by 2002:a2e:8895:: with SMTP id k21mr1005211lji.331.1637004607113;
- Mon, 15 Nov 2021 11:30:07 -0800 (PST)
+        id S231841AbhKPA3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:29:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346558AbhKOTed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:34:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F299260184;
+        Mon, 15 Nov 2021 19:31:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637004678;
+        bh=/5EFFGdANEQuECDTL8tXYsI+5VlfFp0wPsn+etL4mt8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GTfUJFO+Km6M3nMLM0Q6pu4UUwMDf90PsdZfHB7eEX8//eSp38IcshkynffZOQ/dY
+         yrnm1q62f6FbGqnE/i3hQvsoiFkU/pEmw1Ae1Q+VB2LwMiNEL3CZxgyxxhcabkKbt5
+         rJO+G8EVxMkBrxdq99EYk6XmVNu9zxYM8gm1OsQs=
+Date:   Mon, 15 Nov 2021 20:31:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Alistair Delva <adelva@google.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Stable maillist <stable@vger.kernel.org>
+Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Message-ID: <YZK1gy9ARwoSxVrO@kroah.com>
+References: <20211115173850.3598768-1-adelva@google.com>
+ <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211111221448.2683827-1-seanjc@google.com> <CALzav=dpzzKgaNRLrSBy71WBvybWmRJ39eDv4hPXsbU_DSS-fA@mail.gmail.com>
- <YZKzr4mn1jJ3vdqK@google.com>
-In-Reply-To: <YZKzr4mn1jJ3vdqK@google.com>
-From:   David Matlack <dmatlack@google.com>
-Date:   Mon, 15 Nov 2021 11:29:40 -0800
-Message-ID: <CALzav=fKycSowAyaymt9a9hpffbWnFeXvACC5pE5-rMpx+4H4g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Update number of zapped pages even if page
- list is stable
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:23 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Nov 15, 2021, David Matlack wrote:
-> > On Thu, Nov 11, 2021 at 2:14 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > When zapping obsolete pages, update the running count of zapped pages
-> > > regardless of whether or not the list has become unstable due to zapping
-> > > a shadow page with its own child shadow pages.  If the VM is backed by
-> > > mostly 4kb pages, KVM can zap an absurd number of SPTEs without bumping
-> > > the batch count and thus without yielding.  In the worst case scenario,
-> > > this can cause an RCU stall.
-> > >
-> > >   rcu: INFO: rcu_sched self-detected stall on CPU
-> > >   rcu:     52-....: (20999 ticks this GP) idle=7be/1/0x4000000000000000
-> > >                                           softirq=15759/15759 fqs=5058
-> > >    (t=21016 jiffies g=66453 q=238577)
-> > >   NMI backtrace for cpu 52
-> > >   Call Trace:
-> > >    ...
-> > >    mark_page_accessed+0x266/0x2f0
-> > >    kvm_set_pfn_accessed+0x31/0x40
-> > >    handle_removed_tdp_mmu_page+0x259/0x2e0
-> > >    __handle_changed_spte+0x223/0x2c0
-> > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> > >    __handle_changed_spte+0x223/0x2c0
-> > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> > >    __handle_changed_spte+0x223/0x2c0
-> > >    zap_gfn_range+0x141/0x3b0
-> > >    kvm_tdp_mmu_zap_invalidated_roots+0xc8/0x130
+On Mon, Nov 15, 2021 at 08:04:05PM +0100, Ondrej Mosnacek wrote:
+> On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
+> > Booting to Android userspace on 5.14 or newer triggers the following
+> > SELinux denial:
 > >
-> > This is a useful patch but I don't see the connection with this stall.
-> > The stall is detected in kvm_tdp_mmu_zap_invalidated_roots, which runs
-> > after kvm_zap_obsolete_pages. How would rescheduling during
-> > kvm_zap_obsolete_pages help?
->
-> Ah shoot, I copy+pasted the wrong splat.  The correct, revelant backtrace is:
+> > avc: denied { sys_nice } for comm="init" capability=23
+> >      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+> >      permissive=0
+> >
+> > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+> > better compatibility with older SEPolicy, check ADMIN before NICE.
+> 
+> But with this patch you in turn punish the new/better policies that
+> try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
+> the more granular capabilities wherever possible), which may now get a
+> bogus sys_admin denial. IMHO the order is better as it is, as it
+> motivates the "good" policy writing behavior - i.e. spelling out the
+> capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
+> 
+> IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
+> grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
+> the denial correctly flags it as an issue in your policy and
+> encourages you to add that sys_nice permission to the domain. Then
+> when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
+> removed, your policy will be ready for that and things will keep
+> working.
+> 
+> Feel free to carry that patch downstream if patching the kernel is
+> easier for you than fixing the policy, but for the upstream kernel
+> this is just a step in the wrong direction.
 
-Ok that makes more sense :). Also that was a soft lockup rather than
-an RCU stall.
->
->    mark_page_accessed+0x266/0x2e0
->    kvm_set_pfn_accessed+0x31/0x40
->    mmu_spte_clear_track_bits+0x136/0x1c0
->    drop_spte+0x1a/0xc0
->    mmu_page_zap_pte+0xef/0x120
->    __kvm_mmu_prepare_zap_page+0x205/0x5e0
->    kvm_mmu_zap_all_fast+0xd7/0x190
->    kvm_mmu_invalidate_zap_pages_in_memslot+0xe/0x10
->    kvm_page_track_flush_slot+0x5c/0x80
->    kvm_arch_flush_shadow_memslot+0xe/0x10
->    kvm_set_memslot+0x1a8/0x5d0
->    __kvm_set_memory_region+0x337/0x590
->    kvm_vm_ioctl+0xb08/0x1040
+So you want to "punish" existing systems by throwing up a warning where
+there used to not be one?  That is not nice, you need to handle
+upgrading kernels without breaking or causing problems like this.
+
+Yes, SELinux has done this in the past, with many different things, but
+that does not mean that it _should_ do this.  Please realize that you do
+not want to punish people from upgrading their kernel to a newer
+version.  If you do so, they will never upgrade.
+
+thanks,
+
+greg k-h
