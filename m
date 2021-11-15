@@ -2,160 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18920451BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60124451D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354547AbhKPAIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40276 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1348799AbhKOUAG (ORCPT
+        id S1350253AbhKPAZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349938AbhKOUUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:00:06 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AFHHnvK025868;
-        Mon, 15 Nov 2021 19:56:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=sO1Oi5VKUJ0bxyafdJWHQkTX+khJK29yvVkG9bhm6bI=;
- b=mqNS5De7hI0AkrsPuLpdTf+pjytSK5NosYslR+8gcQecCLsYHfEqsX8S9tsN8YPBJPhA
- g+aWV0KxYbP0lIvP4t3ck+8v1NPKRW2bYVWtVxLrhJedQjTwLftNf7RINgerxfJARi0Q
- /ia4HDaTzpYyDlqLRdYxnZecpgwgeN5KHUr83pQMm6N1x6yuoWIyyTbA5Bmg8uwk733e
- F18FkGehBd457+lBbNi7RCOp1YaHHPVplzoRdNmC2icbaFsmtvUP8QEiEzwDqqFcV8mi
- reFugYBktfpBJ2rW6xssJLGa+Ro8ot1iWUF1dykP9xtlKJLMRSkJVPJtZCSMLBUU/Bv1 tA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cbutwk2n7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 19:56:54 +0000
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AFJefHO011349;
-        Mon, 15 Nov 2021 19:56:54 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cbutwk2mr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 19:56:54 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AFJrltZ008010;
-        Mon, 15 Nov 2021 19:56:52 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca509s6n4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 19:56:52 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AFJuop312452294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Nov 2021 19:56:50 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5FB3B4C046;
-        Mon, 15 Nov 2021 19:56:50 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BB0E4C040;
-        Mon, 15 Nov 2021 19:56:50 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Nov 2021 19:56:50 +0000 (GMT)
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 2/2] ftrace/samples: add s390 support for ftrace direct multi sample
-Date:   Mon, 15 Nov 2021 20:56:14 +0100
-Message-Id: <20211115195614.3173346-3-hca@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211115195614.3173346-1-hca@linux.ibm.com>
-References: <20211115195614.3173346-1-hca@linux.ibm.com>
+        Mon, 15 Nov 2021 15:20:35 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C235C043194
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:59:18 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id z34so46534839lfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bvO6+jUD2mJW1UC7y5qeYQeTnfpZN547VLV7YgyXAGk=;
+        b=qqov+BzX7laf/ZvbnmqQgqWQZGU9HYEeiHbsQhDAVGGlv66PY74t+XuKDjedOLrHRi
+         LpsXRyr9z0S0IesXCOUBZKjBYMmztagwoaBgalfbRrxhoTKwdlfIZLO3/d/w5x/fKANO
+         JCoq7L6l7rBdWlBB1ngUSwUYJU5eRmbhB3DIpOsvNT/IDQJu7xwHUSGJGxcb1QIlW0pS
+         qDGPKd3UXL7hHxF6IAzZi6kXmhsYDYDW9m1uY9E42FkqwCObJ/IgOcE2PhsRAhH2B0AA
+         nwRcea6Y+rAoKmCWgMfnJDIi3QAprLUQTEjMrKM6OTkGVeBLszE7HOhVlfQaDaeIxOFt
+         7eKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bvO6+jUD2mJW1UC7y5qeYQeTnfpZN547VLV7YgyXAGk=;
+        b=4wypCer9IvwijXNKZhvrBKLsZaS+0Sc3jv9rqkbNsMLnBWY0xm/ImNYAyMXlGZvrsZ
+         fC963pumax0nsP3zhIRiqfjyZ0KAUFJm9hKkty5vArjst2Iu+aBLaBzrgDZ/NsHnAsGn
+         uJLWRVC+DnRV1lngGT/OqY7R4RR0BgdxPZZAsqx+uv1K0xmeBTXSK8VkjX0XuTCmZUY0
+         EkU13JFNDjdHn/MJb9ERIEB5C2bB5YUFojhZEI6bq/pYtFRosCQTAPLVvl6VGyT3mwWx
+         toSxFhZJII4b3NZu8lzQ/UiMP9KW2SnpLQ4V79Pw/AqNAdkWCiFS0HMJkDxdPjmJlRfj
+         36LA==
+X-Gm-Message-State: AOAM533nLnpfN+n05DRd57ZznnHEHGqLqP/ASWYdibqSASsOucS4gU+A
+        T43JAm54f2yn05h5Ow/QakLRiv0qDDatQLppMmCiag==
+X-Google-Smtp-Source: ABdhPJwPT2yBfWQWiQx2895cp83Iu148A7FQbjPlqJjVMESBp8jP2FgR3QkSFB3K+S80lU80ZBXwECWAoSZumjikBvQ=
+X-Received: by 2002:a05:6512:1113:: with SMTP id l19mr1243783lfg.184.1637006356326;
+ Mon, 15 Nov 2021 11:59:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: LBpWFVaP42Ljkxkd8plmu-R-6RnG9x-u
-X-Proofpoint-ORIG-GUID: ofOwwGrS6wKckpb2etCK26eyxYZvAMEp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_15,2021-11-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 mlxscore=0 suspectscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111150098
+References: <20211111015037.4092956-1-almasrymina@google.com>
+ <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
+ <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com> <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
+ <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com>
+ <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
+ <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
+ <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com> <CAHS8izP3aOZ6MOOH-eMQ2HzJy2Y8B6NYY-FfJiyoKLGu7_OoJA@mail.gmail.com>
+In-Reply-To: <CAHS8izP3aOZ6MOOH-eMQ2HzJy2Y8B6NYY-FfJiyoKLGu7_OoJA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 15 Nov 2021 11:59:03 -0800
+Message-ID: <CALvZod7UEo100GLg+HW-CG6rp7gPJhdjYtcPfzaPMS7Yxa=ZPA@mail.gmail.com>
+Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
+To:     Mina Almasry <almasrymina@google.com>,
+        Marco Elver <elver@google.com>, paulmck@kernel.org
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
+        Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- arch/s390/Kconfig                    |  1 +
- samples/ftrace/ftrace-direct-multi.c | 30 ++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 8857ec3b97eb..1462b8182425 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -194,6 +194,7 @@ config S390
- 	select HAVE_RELIABLE_STACKTRACE
- 	select HAVE_RSEQ
- 	select HAVE_SAMPLE_FTRACE_DIRECT
-+	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index b6d7806b400e..2fafc9afcbf0 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -4,6 +4,7 @@
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
- #include <linux/sched/stat.h>
-+#include <asm/asm-offsets.h>
- 
- extern void my_direct_func(unsigned long ip);
- 
-@@ -14,6 +15,8 @@ void my_direct_func(unsigned long ip)
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_X86_64
-+
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp, @function\n"
-@@ -31,6 +34,33 @@ asm (
- "	.popsection\n"
- );
- 
-+#endif /* CONFIG_X86_64 */
-+
-+#ifdef CONFIG_S390
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	lgr		%r1,%r15\n"
-+"	stmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	stg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	aghi		%r15,"__stringify(-STACK_FRAME_OVERHEAD)"\n"
-+"	stg		%r1,"__stringify(__SF_BACKCHAIN)"(%r15)\n"
-+"	lgr		%r2,%r0\n"
-+"	brasl		%r14,my_direct_func\n"
-+"	aghi		%r15,"__stringify(STACK_FRAME_OVERHEAD)"\n"
-+"	lmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	lg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	lgr		%r1,%r0\n"
-+"	br		%r1\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_S390 */
-+
- static struct ftrace_ops direct;
- 
- static int __init ftrace_direct_multi_init(void)
--- 
-2.25.1
+On Mon, Nov 15, 2021 at 10:55 AM Mina Almasry <almasrymina@google.com> wrot=
+e:
+>
+> On Mon, Nov 15, 2021 at 10:22 AM Mike Kravetz <mike.kravetz@oracle.com> w=
+rote:
+> >
+> > Subject:   Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
+> >
+> > To:        Muchun Song <songmuchun@bytedance.com>, Shakeel Butt <shakee=
+lb@google.com>, Mina Almasry <almasrymina@google.com>
+> >
+> > Cc:        Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah=
+@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Oscar Salvador <osalvador@=
+suse.de>, Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.c=
+om>, Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>, Joanna Li <jo=
+annali@google.com>, Cannon Matthews <cannonmatthews@google.com>, Linux Memo=
+ry Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org=
+>
+> >
+> > Bcc:
+> >
+> > -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D# Don't remove this line #=3D-=3D-=
+=3D-=3D-=3D-=3D-=3D-=3D-=3D-
+> >
+> > On 11/14/21 5:43 AM, Muchun Song wrote:
+> >
+> > > On Sun, Nov 14, 2021 at 3:15 AM Shakeel Butt <shakeelb@google.com> wr=
+ote:
+> >
+> > >> On Sat, Nov 13, 2021 at 6:48 AM Mina Almasry <almasrymina@google.com=
+> wrote:
+> >
+> > >>> On Fri, Nov 12, 2021 at 6:45 PM Muchun Song <songmuchun@bytedance.c=
+om> wrote:
+> >
+> > >>>> On Sat, Nov 13, 2021 at 7:36 AM Mike Kravetz <mike.kravetz@oracle.=
+com> wrote:
+> >
+> > >> We have following options:
+> >
+> > >>
+> >
+> > >> 1) Use atomic type for usage.
+> >
+> > >> 2) Use "unsigned long" for usage along with WRITE_ONCE/READ_ONCE.
+> >
+> > >> 3) Use hugetlb_lock for hugetlb_cgroup_read_numa_stat as well.
+> >
+> > >>
+> >
+> > >> All options are valid but we would like to avoid (3).
+> >
+> > >>
+> >
+> > >> What if we use "unsigned long" type but without READ_ONCE/WRITE_ONCE=
+.
+> >
+> > >> The potential issues with that are KCSAN will report this as race an=
+d
+> >
+> > >> possible garbage value on archs which do not support atomic writes t=
+o
+> >
+> > >> unsigned long.
+> >
+> > >
+> >
+> > > At least I totally agree with you. Thanks for your detailed explanati=
+on.
+> >
+> > >
+> >
+> >
+> >
+> > Thanks everyone.  This makes sense.
+> >
+> >
+> >
+> > However, I should note that this same situation (updates to unsigned
+> >
+> > long variables under lock and reads of the the same variable without
+> >
+> > lock or READ/WRITE_ONCE) exists in hugetlb sysfs files today.  Not
+> >
+> > suggesting that this makes it OK to ignore the potential issue.  Just
+> >
+> > wanted to point this out.
+> >
+>
+> Sorry I'm still a bit confused. READ_ONCE/WRITE_ONCE isn't documented
+> to provide atomicity to the write or read, just prevents the compiler
+> from re-ordering them. Is there something I'm missing, or is the
+> suggestion to add READ_ONCE/WRITE_ONCE simply to supress the KCSAN
+> warnings?
+>
 
++Paul & Marco
+
+Let's ask the experts.
+
+We have a "unsigned long usage" variable that is updated within a lock
+(hugetlb_lock) but is read without the lock.
+
+Q1) I think KCSAN will complain about it and READ_ONCE() in the
+unlocked read path should be good enough to silent KCSAN. So, the
+question is should we still use WRITE_ONCE() as well for usage within
+hugetlb_lock?
+
+Q2) Second question is more about 64 bit archs breaking a 64 bit write
+into two 32 bit writes. Is this a real issue? If yes, then the
+combination of READ_ONCE()/WRITE_ONCE() are good enough for the given
+use-case?
+
+thanks,
+Shakeel
