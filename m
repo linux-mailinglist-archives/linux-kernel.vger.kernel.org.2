@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72852451972
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D0B452039
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352042AbhKOXUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:20:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1344728AbhKPAtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244758AbhKOTR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA64A6332A;
-        Mon, 15 Nov 2021 18:23:34 +0000 (UTC)
+        id S1344554AbhKOTY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 766D363694;
+        Mon, 15 Nov 2021 18:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000615;
-        bh=ryhugm6YOSgDg7V3f8kVg1/oyRfP583n+gJijgEa7Ws=;
+        s=korg; t=1637002790;
+        bh=xIWacHPJYumNIerpRw8+Wy0rKa7p0QqJbQKbI/rlDNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gb8je9zMsX3tcQJ35lai0Zq40/5eUTzmp7/UjD3Zf3shfyA2j+1EHfsNG8u/zq9/n
-         xfM/NphOkoNS5X4hdPiR25czqcfXSHfj2Aqe8Bp+YBHONkgINsBaGiZLzxyG1QQSk1
-         UgR8KkFJ4yQuM5XAv4Ta2QHKZqo6coh3O97+61cY=
+        b=qVc3mZl4Itrbl/nuxQfYgWb6kmThJhjm+IZOVqQbDmPN+kSff0A9I6gvm+1ezhPpG
+         9yHsBFCnKoaMNzI0EwZT/lLR9lz4SUd0nxAwiTjbtG0DtHWkiak1IrSZlLlXhSzdGP
+         4vtv8j55UinntJuA1dut7e63Erlh7aTh8rRnh4b4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 709/849] ar7: fix kernel builds for compiler test
+Subject: [PATCH 5.15 697/917] rtc: ds1302: Add SPI ID table
 Date:   Mon, 15 Nov 2021 18:03:12 +0100
-Message-Id: <20211115165444.239361430@linuxfoundation.org>
+Message-Id: <20211115165452.516519916@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 28b7ee33a2122569ac065cad578bf23f50cc65c3 ]
+[ Upstream commit 8719a17613e0233d707eb22e1645d217594631ef ]
 
-TI AR7 Watchdog Timer is only build for 32bit.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding an id_table listing the
+SPI IDs for everything.
 
-Avoid error like:
-In file included from drivers/watchdog/ar7_wdt.c:29:
-./arch/mips/include/asm/mach-ar7/ar7.h: In function ‘ar7_is_titan’:
-./arch/mips/include/asm/mach-ar7/ar7.h:111:24: error: implicit declaration of function ‘KSEG1ADDR’; did you mean ‘CKSEG1ADDR’? [-Werror=implicit-function-declaration]
-  111 |  return (readl((void *)KSEG1ADDR(AR7_REGS_GPIO + 0x24)) & 0xffff) ==
-      |                        ^~~~~~~~~
-      |                        CKSEG1ADDR
-
-Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210907024904.4127611-1-liu.yun@linux.dev
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210923194922.53386-2-broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/rtc-ds1302.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 71cf3f503f16b..c7be7dd56cde8 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1690,7 +1690,7 @@ config SIBYTE_WDOG
+diff --git a/drivers/rtc/rtc-ds1302.c b/drivers/rtc/rtc-ds1302.c
+index b3de6d2e680a4..2f83adef966eb 100644
+--- a/drivers/rtc/rtc-ds1302.c
++++ b/drivers/rtc/rtc-ds1302.c
+@@ -199,11 +199,18 @@ static const struct of_device_id ds1302_dt_ids[] = {
+ MODULE_DEVICE_TABLE(of, ds1302_dt_ids);
+ #endif
  
- config AR7_WDT
- 	tristate "TI AR7 Watchdog Timer"
--	depends on AR7 || (MIPS && COMPILE_TEST)
-+	depends on AR7 || (MIPS && 32BIT && COMPILE_TEST)
- 	help
- 	  Hardware driver for the TI AR7 Watchdog Timer.
++static const struct spi_device_id ds1302_spi_ids[] = {
++	{ .name = "ds1302", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(spi, ds1302_spi_ids);
++
+ static struct spi_driver ds1302_driver = {
+ 	.driver.name	= "rtc-ds1302",
+ 	.driver.of_match_table = of_match_ptr(ds1302_dt_ids),
+ 	.probe		= ds1302_probe,
+ 	.remove		= ds1302_remove,
++	.id_table	= ds1302_spi_ids,
+ };
  
+ module_spi_driver(ds1302_driver);
 -- 
 2.33.0
 
