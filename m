@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F360945028B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B6F45028D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237465AbhKOKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:31:38 -0500
-Received: from mga12.intel.com ([192.55.52.136]:5595 "EHLO mga12.intel.com"
+        id S237536AbhKOKcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:32:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:53530 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231135AbhKOKb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:31:29 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="213450191"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="213450191"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:28:33 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="471863092"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:28:31 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mmZDq-0071ir-Qu;
-        Mon, 15 Nov 2021 12:28:22 +0200
-Date:   Mon, 15 Nov 2021 12:28:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Lawrence,Wang" <lawrence.wang@nokia-sbell.com>
-Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wang@wrlinb193.emea.nsn-net.net
-Subject: Re: [PATCH] i2c: designware: Get HCNT/LCNT values from dts
-Message-ID: <YZI2RnFgO0Y75KlF@smile.fi.intel.com>
-References: <20211115093556.7154-1-lawrence.wang@nokia-sbell.com>
- <YZI0LuDK63+Wb7wi@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZI0LuDK63+Wb7wi@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231135AbhKOKcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:32:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 975B41FB;
+        Mon, 15 Nov 2021 02:29:20 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E192D3F70D;
+        Mon, 15 Nov 2021 02:29:18 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org
+Cc:     sudeep.holla@arm.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH] firmware: arm_scmi: Make virtio Version_1 compliance optional
+Date:   Mon, 15 Nov 2021 10:29:10 +0000
+Message-Id: <20211115102910.7639-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 12:19:26PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 15, 2021 at 10:35:55AM +0100, Lawrence,Wang wrote:
-> > From: "Wang, Lawrence" <lawrence.wang@nokia-sbell.com>
-> > 
-> > Current code support config the HCNT/LCNT only via ACPI method. for those
-> > platform that not support ACPI, will get the HCNT/LCNT value based on input
-> > clock. But it is not always accuracy. for example in some platform will get
-> > lower speed(320khz) in fast mode, and get faster speed(105khz/even more) in
-> > standard mode.
-> > 
-> > This patch makes it possible for the non-ACPI platform to pass more optimal
-> > HCNT/LCNT values to the core driver via dts if they are known beforehand.
-> > If these are not set we use the calculated values.
-> 
-> Besides the fact it misses DT schema update, why this is needed at all?
-> What's wrong with the existing DT timings?
+Introduce a compilation option to disable strict enforcement of compliance
+against VirtIO Version_1 backends, so as to allow to support also Legacy
+VirtIO devices implementations.
 
-Just for your convenience an excerpt from
-Documentation/devicetree/bindings/i2c/i2c.txt
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/Kconfig  | 14 ++++++++++++++
+ drivers/firmware/arm_scmi/virtio.c |  3 ++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-- i2c-scl-falling-time-ns
-Number of nanoseconds the SCL signal takes to fall; t(f) in the I2C
-specification.
-
-- i2c-scl-internal-delay-ns
-Number of nanoseconds the IP core additionally needs to setup SCL.
-
-- i2c-scl-rising-time-ns
-Number of nanoseconds the SCL signal takes to rise; t(r) in the I2C
-specification.
-
-- i2c-sda-falling-time-ns
-Number of nanoseconds the SDA signal takes to fall; t(f) in the I2C
-specification.
-
+diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+index 3d7081e84853..1e6c4659b640 100644
+--- a/drivers/firmware/arm_scmi/Kconfig
++++ b/drivers/firmware/arm_scmi/Kconfig
+@@ -77,6 +77,20 @@ config ARM_SCMI_TRANSPORT_VIRTIO
+ 	  If you want the ARM SCMI PROTOCOL stack to include support for a
+ 	  transport based on VirtIO, answer Y.
+ 
++config ARM_SCMI_TRANSPORT_VIRTIO_VERSION1_COMPLIANCE
++	bool "SCMI VirtIO transport Version 1 compliance"
++	depends on ARM_SCMI_TRANSPORT_VIRTIO
++	default y
++	help
++	  This enforces strict compliance with VirtIO Version 1 specification.
++
++	  If you want the ARM SCMI VirtIO transport layer to refuse to work
++	  with Legacy VirtIO backends and instead support only VirtIO Version 1
++	  devices (or above), answer Y.
++	  If you want instead to support also old Legacy VirtIO backends (like
++	  the ones implemented by kvmtool) and let the core Kernel VirtIO layer
++	  take care of the needed conversions, say N.
++
+ endif #ARM_SCMI_PROTOCOL
+ 
+ config ARM_SCMI_POWER_DOMAIN
+diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
+index c8cab5652daf..bcfc4474535b 100644
+--- a/drivers/firmware/arm_scmi/virtio.c
++++ b/drivers/firmware/arm_scmi/virtio.c
+@@ -459,12 +459,13 @@ static void scmi_vio_remove(struct virtio_device *vdev)
+ 
+ static int scmi_vio_validate(struct virtio_device *vdev)
+ {
++#ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO_VERSION1_COMPLIANCE
+ 	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
+ 		dev_err(&vdev->dev,
+ 			"device does not comply with spec version 1.x\n");
+ 		return -EINVAL;
+ 	}
+-
++#endif
+ 	return 0;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
