@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2C5451F1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC3E4519C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355603AbhKPAig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S232484AbhKOX1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344783AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D899E636C8;
-        Mon, 15 Nov 2021 19:04:26 +0000 (UTC)
+        id S245041AbhKOTS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8252E6343E;
+        Mon, 15 Nov 2021 18:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003067;
-        bh=reufAu6yogWRdslKweeyV7v5Tl/MKvbnnDnoqxorVr4=;
+        s=korg; t=1637000841;
+        bh=FhDj2qmlp4sEQeKTiBY4rMRGioPgNjfxpCu/e0qgShU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IecYc2mSERvxGYkScvprs2rratPPPGN6yToIJohA9C/kWnoCu+3bdZn4mIIgcQ5k1
-         qdP5T7CF7aa/pNgGWjpAuMsDAqzfAoB98I2iwTgHfIJVbOo5O++8GbMoWCbuU0UyA1
-         n3FmxONGbJgPn+rWnwb1OIwd5PVp8qhrRCjwbM7I=
+        b=r/eodQJ7ghyZiqMm4v/rHA4DgtQ0JiR1Ed6zezkj59iZEPwBvHWPutNz0etAo4tVd
+         3VaCo2rJyRSGe8g9cQsIP+zVw67y0BJMNMOmBNRMbiUWQI1SSCxBV3oSXCXDNceXcz
+         u+RUvTi3VtH/7BEt1FkSaj6yh5juwl+I1V5WCpaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 798/917] mfd: core: Add missing of_node_put for loop iteration
-Date:   Mon, 15 Nov 2021 18:04:53 +0100
-Message-Id: <20211115165456.028853188@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Black <daniel@mariadb.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 811/849] io-wq: serialize hash clear with wakeup
+Date:   Mon, 15 Nov 2021 18:04:54 +0100
+Message-Id: <20211115165447.679794362@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 002be81140075e17a1ebd5c3c55e356fbab0ddad ]
+commit d3e3c102d107bb84251455a298cf475f24bab995 upstream.
 
-Early exits from for_each_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+We need to ensure that we serialize the stalled and hash bits with the
+wait_queue wait handler, or we could be racing with someone modifying
+the hashed state after we find it busy, but before we then give up and
+wait for it to be cleared. This can cause random delays or stalls when
+handling buffered writes for many files, where some of these files cause
+hash collisions between the worker threads.
 
-  drivers/mfd/mfd-core.c:197:2-24: WARNING:
-    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
-
-Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20210528115126.18370-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Daniel Black <daniel@mariadb.org>
+Fixes: e941894eae31 ("io-wq: make buffered file write hashed work map per-ctx")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/mfd-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/io-wq.c |   19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index 79f5c6a18815a..684a011a63968 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
- 			if (of_device_is_compatible(np, cell->of_compatible)) {
- 				/* Ignore 'disabled' devices error free */
- 				if (!of_device_is_available(np)) {
-+					of_node_put(np);
- 					ret = 0;
- 					goto fail_alias;
- 				}
-@@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
- 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
- 				if (ret == -EAGAIN)
- 					continue;
-+				of_node_put(np);
- 				if (ret)
- 					goto fail_alias;
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -401,9 +401,10 @@ static inline unsigned int io_get_work_h
+ 	return work->flags >> IO_WQ_HASH_SHIFT;
+ }
  
--- 
-2.33.0
-
+-static void io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
++static bool io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
+ {
+ 	struct io_wq *wq = wqe->wq;
++	bool ret = false;
+ 
+ 	spin_lock_irq(&wq->hash->wait.lock);
+ 	if (list_empty(&wqe->wait.entry)) {
+@@ -411,9 +412,11 @@ static void io_wait_on_hash(struct io_wq
+ 		if (!test_bit(hash, &wq->hash->map)) {
+ 			__set_current_state(TASK_RUNNING);
+ 			list_del_init(&wqe->wait.entry);
++			ret = true;
+ 		}
+ 	}
+ 	spin_unlock_irq(&wq->hash->wait.lock);
++	return ret;
+ }
+ 
+ /*
+@@ -474,14 +477,21 @@ static struct io_wq_work *io_get_next_wo
+ 	}
+ 
+ 	if (stall_hash != -1U) {
++		bool unstalled;
++
+ 		/*
+ 		 * Set this before dropping the lock to avoid racing with new
+ 		 * work being added and clearing the stalled bit.
+ 		 */
+ 		wqe->flags |= IO_WQE_FLAG_STALLED;
+ 		raw_spin_unlock(&wqe->lock);
+-		io_wait_on_hash(wqe, stall_hash);
++		unstalled = io_wait_on_hash(wqe, stall_hash);
+ 		raw_spin_lock(&wqe->lock);
++		if (unstalled) {
++			wqe->flags &= ~IO_WQE_FLAG_STALLED;
++			if (wq_has_sleeper(&wqe->wq->hash->wait))
++				wake_up(&wqe->wq->hash->wait);
++		}
+ 	}
+ 
+ 	return NULL;
+@@ -562,11 +572,14 @@ get_next:
+ 				io_wqe_enqueue(wqe, linked);
+ 
+ 			if (hash != -1U && !next_hashed) {
++				/* serialize hash clear with wake_up() */
++				spin_lock_irq(&wq->hash->wait.lock);
+ 				clear_bit(hash, &wq->hash->map);
++				wqe->flags &= ~IO_WQE_FLAG_STALLED;
++				spin_unlock_irq(&wq->hash->wait.lock);
+ 				if (wq_has_sleeper(&wq->hash->wait))
+ 					wake_up(&wq->hash->wait);
+ 				raw_spin_lock_irq(&wqe->lock);
+-				wqe->flags &= ~IO_WQE_FLAG_STALLED;
+ 				/* skip unnecessary unlock-lock wqe->lock */
+ 				if (!work)
+ 					goto get_next;
 
 
