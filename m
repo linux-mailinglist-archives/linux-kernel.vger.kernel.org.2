@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CEF44FC9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CEB44FC9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhKOApU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:45:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhKOApS (ORCPT
+        id S234823AbhKOAsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:48:46 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:38665 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhKOAse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:45:18 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE76C061746;
-        Sun, 14 Nov 2021 16:42:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=1rrDoX9rx2nIbDYY5ODkSZGdf+EFjop/YR8A27i56WY=; b=qpFCqfnl2+L09fF8a1XD9ip9xz
-        DQqbtOAdIdBIjjtndEGe3842507v2WqJGNosHC2qtUlh7r/QZ2GQDiaj/76yaB56w8Xs9NJ+mNSgw
-        FW61V1ILDTFOGrUUtDdL1uQ3nGepqv6mRFbtkyFyoEh/TZNE8o4i3/zJjwhw/sDMIhT1NgvLicfEv
-        JKe7R4mX1te0apMP1AGntgHTw3EcyM1ek9afxgblr/WDttluduRTt0QZZh0ifi8w+54LmpV+qsGAN
-        P9Dg9rvVS4quAuRGS3JUyfMZyvV03F0f6t1Hbd4Wl6Lbshb3Zry4ffRwMgj/H1Lwvi0mlQn4QXQyj
-        GImTvy8Q==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmQ4h-00EC9L-F6; Mon, 15 Nov 2021 00:42:19 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v4] mips: bcm63xx: add support for clk_get_parent()
-Date:   Sun, 14 Nov 2021 16:42:18 -0800
-Message-Id: <20211115004218.13034-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 14 Nov 2021 19:48:34 -0500
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 1AF0jIl1011943;
+        Mon, 15 Nov 2021 09:45:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 1AF0jIl1011943
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636937119;
+        bh=BDNnbaPpJe9BFpTF3r+8GF3xHfpNb7Yh5VjSBgkHV7U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0ZGrm5Lg7gKubut7sXV5iBfmPyxcROMnjS7+iIs/wt9Bfr5RGs/MNHsa5wqzKsGya
+         J2q7Bsyor2xchNq0VmFXXge1srTRSevsOzlBib7Z7leRF3Vh+K9e9b4i73aoYYEdk3
+         k3HnloWDCW32tlame2Si8rlqo/yMLXu4Cc5fIrGWrm8fJFPmXqkJIJO3CVcnvB7MwP
+         h34zGnaF9akRmiBegTmZlkfeXz3mNTGVo16YzWtg/K4Se+kgZ9jb/bTNkjiAeZdL+l
+         /tpSwvb+Xe0nRVShaGWxt8ToHLzidLz0S9nqcvL4JJGXrW+tymPgkNocIHeqJzWSas
+         V3b6eVjFoWuzw==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so11811842pja.1;
+        Sun, 14 Nov 2021 16:45:19 -0800 (PST)
+X-Gm-Message-State: AOAM531nUyR02Qn7Sb/XAqi1v3qZCs58nV+/OKv1W2uzbcPprj2Zo6jk
+        gOVQuKX75jYBfZsx7jqaDNIjRYapSV0wNKjtANQ=
+X-Google-Smtp-Source: ABdhPJzWlxO7tKAeGWWpBEW4aiEsR5LQzVCSj/YBcTFH7giCKfYIodz+oMBYesYnkGQiojEt0qH4HiwLi0pWQY671vs=
+X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr40937817pju.77.1636937118368;
+ Sun, 14 Nov 2021 16:45:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211114005725.GA27075@embeddedor> <YZF9MY6rRLQwdTgM@archlinux-ax161>
+ <YZGnL3nfA5876hX3@archlinux-ax161> <20211115003501.GA43686@embeddedor>
+In-Reply-To: <20211115003501.GA43686@embeddedor>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 15 Nov 2021 09:44:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQY4Y-wnY8wQOuHh5eyVdUBGGP58Uu2aZSe+zdxt7km-A@mail.gmail.com>
+Message-ID: <CAK7LNAQY4Y-wnY8wQOuHh5eyVdUBGGP58Uu2aZSe+zdxt7km-A@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-clk_get_parent(), so add a simple implementation of that
-function so that callers of it will build without errors.
+On Mon, Nov 15, 2021 at 9:30 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> On Sun, Nov 14, 2021 at 05:17:51PM -0700, Nathan Chancellor wrote:
+> > On Sun, Nov 14, 2021 at 02:18:41PM -0700, Nathan Chancellor wrote:
+> > > On Sat, Nov 13, 2021 at 06:57:25PM -0600, Gustavo A. R. Silva wrote:
+> > > > Add Kconfig support for -Wimplicit-fallthrough for both GCC and Clang.
+> > > >
+> > > > The compiler option is under configuration CC_IMPLICIT_FALLTHROUGH,
+> > > > which is enabled by default.
+> > > >
+> > > > Special thanks to Nathan Chancellor who fixed the Clang bug[1][2]. This
+> > > > bugfix only appears in Clang 14.0.0, so older versions still contain
+> > > > the bug and -Wimplicit-fallthrough won't be enabled for them, for now.
+> > > >
+> > > > This concludes a long journey and now we are finally getting rid
+> > > > of the unintentional fallthrough bug-class in the kernel, entirely. :)
+> > > >
+> > > > [1] https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+> > > > [2] https://bugs.llvm.org/show_bug.cgi?id=51094
+> > > >
+> > > > Link: https://github.com/KSPP/linux/issues/115
+> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/236
+> > > > Co-developed-by: Kees Cook <keescook@chromium.org>
+> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > >
+> > > This appears to do the right thing with both clang-13 and clang-14.
+> >
+> > Now that I gave this a look for the GCC side, I think it is wrong.
+> >
+> > -Wimplicit-fallthrough=5 was under cc-option because it was only
+> > available in GCC 7.x and newer so the build is now broken for GCC 5.x
+> > and 6.x:
+> >
+> > gcc: error: unrecognized command line option '-Wimplicit-fallthrough=5';
+> > did you mean '-Wno-fallthrough'?
+>
+> I'll send a patch for this right away. Thanks for the report, Nathan! :)
 
-Fixes these build errors:
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+Please use a subject prefix different than "kconfig:"
 
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Jonas Gorski <jonas.gorski@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
-v1 and v2 were:
-[PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-  (limiting this driver to MACH_INGENIC in Kconfig)
-v3: add clk_get_parent() to arch/mips/bcm63xx/clk.c
-v4:
-  add Fixes:, Suggested-by:, Reviewed-by: Acked-by:
-  drop blank line between function and EXPORT_SYMBOL(); (Andy)
+I want to see "kconfig:' only for changes in scripts/kconfig/.
 
- arch/mips/bcm63xx/clk.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
-+++ linux-next-20211112/arch/mips/bcm63xx/clk.c
-@@ -381,6 +381,12 @@ void clk_disable(struct clk *clk)
- 
- EXPORT_SYMBOL(clk_disable);
- 
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- unsigned long clk_get_rate(struct clk *clk)
- {
- 	if (!clk)
+
+--
+Best Regards
+Masahiro Yamada
