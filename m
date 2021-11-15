@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F59445232E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5683145277C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347785AbhKPBVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:21:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42216 "EHLO mail.kernel.org"
+        id S1344975AbhKPCZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:25:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243594AbhKOTMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:12:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6930634AD;
-        Mon, 15 Nov 2021 18:20:02 +0000 (UTC)
+        id S236868AbhKORYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 744AD63243;
+        Mon, 15 Nov 2021 17:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000403;
-        bh=YkW54Ki9Rm7PI7jJAHMIiMXvoahIDOnYIWMdyhs4yPA=;
+        s=korg; t=1636996699;
+        bh=WO2y0uvcQ1d6dDu+zn/6OUKWEAokJ2mdcLkMGr1QBZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TkBpE1WaizqhtkwQazAfUXvj6bOZgY70OnTwoZQT9vvIldJoCfMPg9xUGB0m4n+Zk
-         z8wE6Gib1hhNFY/z0iBFI7Y0WckB5nvdHnurQqpMpUn14wmHGS1cuB5de1XgPQtpnX
-         HJPBIZOqyKj8hdcfj2rLxm+UUeTeSzlj8O/5rXus=
+        b=d9DUre/0llw+eGCEYxZ6YtUVck/clXzs1kDjsbVtxT/txPLi3DZC+8eIAevl9WdxU
+         MGwHXQXz8uLnNCbOAv6fEUEQdWzhcOSda6tDjL3UNI+qJRYquol7ziDicD6Czlyxz6
+         S04TeXLOnrNm+YZy8wNgd/swf5X+KZx6s7tS05oQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrej Shadura <andrew.shadura@collabora.co.uk>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 648/849] HID: u2fzero: properly handle timeouts in usb_submit_urb
-Date:   Mon, 15 Nov 2021 18:02:11 +0100
-Message-Id: <20211115165442.187945864@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 208/355] media: em28xx: Dont use ops->suspend if it is NULL
+Date:   Mon, 15 Nov 2021 18:02:12 +0100
+Message-Id: <20211115165320.497893862@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
+References: <20211115165313.549179499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrej Shadura <andrew.shadura@collabora.co.uk>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 43775e62c4b784f44a159e13ba80e6146a42d502 ]
+[ Upstream commit 51fa3b70d27342baf1ea8aaab3e96e5f4f26d5b2 ]
 
-The wait_for_completion_timeout function returns 0 if timed out or a
-positive value if completed. Hence, "less than zero" comparison always
-misses timeouts and doesn't kill the URB as it should, leading to
-re-sending it while it is active.
+The call to ops->suspend for the dev->dev_next case can currently
+trigger a call on a null function pointer if ops->suspend is null.
+Skip over the use of function ops->suspend if it is null.
 
-Fixes: 42337b9d4d95 ("HID: add driver for U2F Zero built-in LED and RNG")
-Signed-off-by: Andrej Shadura <andrew.shadura@collabora.co.uk>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Addresses-Coverity: ("Dereference after null check")
+
+Fixes: be7fd3c3a8c5 ("media: em28xx: Hauppauge DualHD second tuner functionality")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-u2fzero.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/em28xx/em28xx-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-u2fzero.c b/drivers/hid/hid-u2fzero.c
-index 94f78ffb76d04..67ae2b18e33ac 100644
---- a/drivers/hid/hid-u2fzero.c
-+++ b/drivers/hid/hid-u2fzero.c
-@@ -132,7 +132,7 @@ static int u2fzero_recv(struct u2fzero_device *dev,
- 
- 	ret = (wait_for_completion_timeout(
- 		&ctx.done, msecs_to_jiffies(USB_CTRL_SET_TIMEOUT)));
--	if (ret < 0) {
-+	if (ret == 0) {
- 		usb_kill_urb(dev->urb);
- 		hid_err(hdev, "urb submission timed out");
- 	} else {
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index 3daa64bb1e1d9..af9216278024f 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -1152,8 +1152,9 @@ int em28xx_suspend_extension(struct em28xx *dev)
+ 	dev_info(&dev->intf->dev, "Suspending extensions\n");
+ 	mutex_lock(&em28xx_devlist_mutex);
+ 	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
+-		if (ops->suspend)
+-			ops->suspend(dev);
++		if (!ops->suspend)
++			continue;
++		ops->suspend(dev);
+ 		if (dev->dev_next)
+ 			ops->suspend(dev->dev_next);
+ 	}
 -- 
 2.33.0
 
