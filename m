@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976F0450DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B36F450D9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235593AbhKOSCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:02:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S231487AbhKOSAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:00:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237867AbhKORYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2078D63267;
-        Mon, 15 Nov 2021 17:18:29 +0000 (UTC)
+        id S237799AbhKORYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C19A63231;
+        Mon, 15 Nov 2021 17:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996710;
-        bh=5UGdJzaCVYICZ7P33TNMYAZX4Tn4ZORtqPz7J8Zq/eA=;
+        s=korg; t=1636996713;
+        bh=hAzT1RQpXOs1kB5oVWahLhGh0Gajuiu3xJpu7oFj/9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z7ZnbVwbtjakc5VvMnpS85MBCHkkP22eCN6M/P2ylV7OcUSl1muK4euCJEZxouo3m
-         /7ty9JkwvNzO2eSaRz6kUEgWCSQw2FLh64T1YF0cnY9NF/FvTnBQjJrK/nPIR1ZX1L
-         2aKLAPoCHdo3IW4pi2iylMg0U3vk58n8TgDd/DuQ=
+        b=cn7AwF4KvavF5/NP/nG5X2wTXXSFt3dUhiS0oyQVoc5Oqup6zZ7cbouHZ92/etRai
+         zT7vL3ZPeegI44FkLbyW4Sz52RJ+mBZLb8MBgTtUQxgR9LBi7uMjogYeZm96c2yTYU
+         zfyaEh5bbRahgsrMsizcVOtxs7wzbC2/utlqlWEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 238/355] smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi
-Date:   Mon, 15 Nov 2021 18:02:42 +0100
-Message-Id: <20211115165321.447839089@linuxfoundation.org>
+Subject: [PATCH 5.4 239/355] libbpf: Fix BTF data layout checks and allow empty BTF
+Date:   Mon, 15 Nov 2021 18:02:43 +0100
+Message-Id: <20211115165321.478819074@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,39 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 0934ad42bb2c5df90a1b9de690f93de735b622fe ]
+[ Upstream commit d8123624506cd62730c9cd9c7672c698e462703d ]
 
-syzbot is reporting UAF at cipso_v4_doi_search() [1], for smk_cipso_doi()
-is calling kfree() without removing from the cipso_v4_doi_list list after
-netlbl_cfg_cipsov4_map_add() returned an error. We need to use
-netlbl_cfg_cipsov4_del() in order to remove from the list and wait for
-RCU grace period before kfree().
+Make data section layout checks stricter, disallowing overlap of types and
+strings data.
 
-Link: https://syzkaller.appspot.com/bug?extid=93dba5b91f0fed312cbd [1]
-Reported-by: syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6c2e8ac0953fccdd ("netlabel: Update kernel configuration API")
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Additionally, allow BTFs with no type data. There is nothing inherently wrong
+with having BTF with no types (put potentially with some strings). This could
+be a situation with kernel module BTFs, if module doesn't introduce any new
+type information.
+
+Also fix invalid offset alignment check for btf->hdr->type_off.
+
+Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20201105043402.2530976-8-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/btf.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index fdf5f336f834a..6b6fec04c412b 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -712,7 +712,7 @@ static void smk_cipso_doi(void)
- 	if (rc != 0) {
- 		printk(KERN_WARNING "%s:%d map add rc = %d\n",
- 		       __func__, __LINE__, rc);
--		kfree(doip);
-+		netlbl_cfg_cipsov4_del(doip->doi, &nai);
- 		return;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index d606a358480da..3380aadb74655 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -100,22 +100,18 @@ static int btf_parse_hdr(struct btf *btf)
+ 		return -EINVAL;
  	}
- }
+ 
+-	if (meta_left < hdr->type_off) {
+-		pr_debug("Invalid BTF type section offset:%u\n", hdr->type_off);
++	if (meta_left < hdr->str_off + hdr->str_len) {
++		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (meta_left < hdr->str_off) {
+-		pr_debug("Invalid BTF string section offset:%u\n", hdr->str_off);
++	if (hdr->type_off + hdr->type_len > hdr->str_off) {
++		pr_debug("Invalid BTF data sections layout: type data at %u + %u, strings data at %u + %u\n",
++			 hdr->type_off, hdr->type_len, hdr->str_off, hdr->str_len);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (hdr->type_off >= hdr->str_off) {
+-		pr_debug("BTF type section offset >= string section offset. No type?\n");
+-		return -EINVAL;
+-	}
+-
+-	if (hdr->type_off & 0x02) {
++	if (hdr->type_off % 4) {
+ 		pr_debug("BTF type section is not aligned to 4 bytes\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.33.0
 
