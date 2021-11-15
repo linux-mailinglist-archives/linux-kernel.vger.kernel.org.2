@@ -2,96 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5418E4507E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025EC4507E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhKOPMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:12:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        id S236401AbhKOPMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhKOPM2 (ORCPT
+        with ESMTP id S232236AbhKOPL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:12:28 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DDCC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:09:30 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id d11so36242802ljg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:09:30 -0800 (PST)
+        Mon, 15 Nov 2021 10:11:58 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55F2C061570;
+        Mon, 15 Nov 2021 07:08:59 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id e11so36151067ljo.13;
+        Mon, 15 Nov 2021 07:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yM+by/2RKCJrf+7EIbv4qG2uO0Xd+W93EE50X4+lOwE=;
-        b=wUjcJ/HlNPDDxf8FCdTSai0PtCQQcgM2d5gvkNYvgBY+ZGliLW11ubCXI4Tmq1U3Bs
-         21CIiF/oMS6yqybkQhoRUkFTfRajLPkC/za+o8DUWLSdc6vif0qzvEPKWnGTAP7/PQ/N
-         Puj8uBqfz72AcV/gza+RDSg7b3kEVyJmifOZpUzDXRmXOJqv3Wsq1sTV4zx+tvgV36YE
-         ZmFXePqNjhkUGJghWwkit+Sqtc56EBUthLtiCr7NmtbAI0wjk4SgsgojLsf3pte1aEjK
-         mQr63y1mKD/G1oNgoPg9jgVKlShsDfmvr04Tux1Cgdfg3K814jKIff5lz9PdT5ILXpTv
-         WLcA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NPK4K9Ju2yywKI0BG0IcBEX8s7KRKDyaFbcL4r2WaYU=;
+        b=TJ0ECKiv5uOop34/+AEO3WraYEEShcWm9WLrlWmTnbAjBYHH6CSeY98zDIdGJyiRWO
+         dxu0y3cMAyZLr/gPumxXQ7JRhw2l5qU5rsu3c2RrUlfxGtf13p8HGGYZy2BVsVWV2vSZ
+         +DGdgKA58Mamb9qnS7yQ9BGxHgR81JttEzhecVBpQ+aSZCXZGmxIUoOXibku8cqzowXk
+         MZi2F7ks9zd/YwWT+bbKzLwPuQ7A91Hls1KDHpJokIffW3yvU+2abj/lK7DzJXOybY7A
+         vrtYOfNhfV7Mszr7I1wvbddMo17m/P2h04YEXlZz4iNHtalIAaUBSf8sCj4HbuJ41/M9
+         AGJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yM+by/2RKCJrf+7EIbv4qG2uO0Xd+W93EE50X4+lOwE=;
-        b=1ubfbomhW3bhRlgfFo1zyUAEBxnbWLc/guzUPxQ0xLCQqcUQvup5n7wzIFM8ZAYGSo
-         t8fGhw4bzjWFWvy8ZrK5nkNWuJ7gU7rjSilwBAxILt9Ayd1gMHVEeY9vcN4TP2lw3WvB
-         dR176/mHI6Cwp31zF9Vv1mrjgzSlvCTGcGsZ6wy3FsY7rnys8/rOQdBfk+G3SyBhCPND
-         azf2+e8Art+zOFEX4q8iWhsk65a5ezxdA8mRQyQyV+zAZwJ537UnS6Amsiwk1Pfq4S1l
-         MsTmlqOOuHRXLHxiZ2qtBb0s5iRZVd9YG26s/eADWGPSnxEfnHY+vV1qiKc/QoG380Nh
-         dh8A==
-X-Gm-Message-State: AOAM532ku/r0QXN/sxcn4ey3oM3Mck8CYIve4dT7E/Z8J4D73cJYV4WA
-        /aLW9bzomltuACK1vynr3JE4Oa+7ey98df6PkYKevg==
-X-Google-Smtp-Source: ABdhPJy5AMZdh0sfm8uOWw/tJKGnTfSf9Xz07dErmf/MoQu7B4Mad9f6IS1CiuXV/oqHuhMo9vS+qRB15ZvPbgTOWEE=
-X-Received: by 2002:a05:651c:10b1:: with SMTP id k17mr39203860ljn.463.1636988968915;
- Mon, 15 Nov 2021 07:09:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NPK4K9Ju2yywKI0BG0IcBEX8s7KRKDyaFbcL4r2WaYU=;
+        b=e3GcTC5QWGlDC6yOo0UChreAZM0u1k0Qiw8ewqQgw78vfCWQ5T0kvW0NE1pp3RT09e
+         BPg72I+9Q/agfoxlfLCSeEbZapXqXkaA6kPAupSDYGW/PxHIzC0KOAYIO0s2lcXFCx76
+         bDk3XJJSIihyCEUfXWgUWc6TBoTjsQJ75ZISJDfcqVflYbJfUYWHbHO6YGlZli73sPpP
+         T3uphMiPmb0nnS5N7YjW8y0pJ5fGOJwWREd2AT6eW8FxlsVTSEhBPIUwlL+reLqZIMgg
+         319dSXz+B/7+g5EtJIl9iFJEM3m322D9kga8jIsHUfvS+XSNmq8+8CKVVMi2K2wYxv7E
+         tG5g==
+X-Gm-Message-State: AOAM533J9eDaZupGL/AN+kS8FbioisGp3h6+CLwYRkpzw4Fzd5QCfpqK
+        MHSEbFoOrDPg654YEmi+ILSr63vIj8E=
+X-Google-Smtp-Source: ABdhPJzPhCg3naIp6+0mRBoh48FksrIVDlsD8k/2eUO3WNaZ1+p5LK/GfQZwFSQPbaZgjLM89f1aWw==
+X-Received: by 2002:a2e:bf06:: with SMTP id c6mr39261412ljr.405.1636988938284;
+        Mon, 15 Nov 2021 07:08:58 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id x3sm1357807lfq.238.2021.11.15.07.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 07:08:57 -0800 (PST)
+Date:   Mon, 15 Nov 2021 18:08:56 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mark Brown <broonie@kernel.org>,
+        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core
+ version checker
+Message-ID: <20211115150856.ma2wjg2ev5wylspg@mobilestation>
+References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
+ <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
+ <YZJwTgAPZYVvzGpi@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20211114204331.39555-1-huobean@gmail.com> <20211114204331.39555-3-huobean@gmail.com>
-In-Reply-To: <20211114204331.39555-3-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 15 Nov 2021 16:08:52 +0100
-Message-ID: <CAPDyKFo6sbFkbeDSDzukd64O+HFSj2Dzzd8_AJa3v9ZLh3TqjQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc-utils: Add note for CMDQ_MODE_EN runtime value
-To:     Bean Huo <huobean@gmail.com>
-Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, beanhuo@micron.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZJwTgAPZYVvzGpi@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Nov 2021 at 21:43, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> Since the Linux kernel commit 70b52f090805 ("mmc: block: Disable CMDQ on
-> the ioctl path"), CMDQ in CMDQ_MODE_EN[15] is disabled before reading EXT_CSD.
-> Therefore, it is more accurate to use sysfs node to check CMDQ_MODE_EN value.
-> Add a note print to highlight.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+On Mon, Nov 15, 2021 at 04:35:58PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 01:30:26AM +0300, Serge Semin wrote:
+> > Since there is a common IP-core and component versions interface available
+> > we can use it to differentiate the DW HSSI device features in the code.
+> > Let's remove the corresponding DWC_HSSI capability flag then and use the
+> > dw_spi_ip_is() macro instead.
+> 
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> But see below.
+> 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > 
+> > ---
+> > 
+> > Changelog v2:
+> > - This is a new patch created as a logical result of a new DW SSI IP-core
+> >   versions internal interface introduced in the previous patch.
+> > ---
+> >  drivers/spi/spi-dw-core.c | 8 ++++----
+> >  drivers/spi/spi-dw-mmio.c | 5 +++--
+> >  drivers/spi/spi-dw.h      | 3 +--
+> >  3 files changed, 8 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> > index 42536b448ddd..934cc7a922e8 100644
+> > --- a/drivers/spi/spi-dw-core.c
+> > +++ b/drivers/spi/spi-dw-core.c
+> > @@ -272,7 +272,7 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
+> >  {
+> >  	u32 cr0 = 0;
+> >  
+> > -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
+> > +	if (dw_spi_ip_is(dws, PSSI)) {
+> >  		/* CTRLR0[ 5: 4] Frame Format */
+> >  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
+> >  
+> > @@ -325,7 +325,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
+> >  	/* CTRLR0[ 4/3: 0] or CTRLR0[ 20: 16] Data Frame Size */
+> >  	cr0 |= (cfg->dfs - 1) << dws->dfs_offset;
+> >  
+> > -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI))
+> > +	if (dw_spi_ip_is(dws, PSSI))
+> >  		/* CTRLR0[ 9:8] Transfer Mode */
+> >  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_TMOD_MASK, cfg->tmode);
+> >  	else
+> > @@ -832,7 +832,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
+> >  		dws->ver = dw_readl(dws, DW_SPI_VERSION);
+> >  
+> >  		dev_dbg(dev, "Synopsys DWC%sSSI v%c.%c%c\n",
+> > -			(dws->caps & DW_SPI_CAP_DWC_HSSI) ? " " : " APB ",
+> > +			dw_spi_ip_is(dws, PSSI) ? " APB " : " ",
+> >  			DW_SPI_GET_BYTE(dws->ver, 3), DW_SPI_GET_BYTE(dws->ver, 2),
+> >  			DW_SPI_GET_BYTE(dws->ver, 1));
+> >  	}
+> > @@ -860,7 +860,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
+> >  	 * writability. Note DWC SSI controller also has the extended DFS, but
+> >  	 * with zero offset.
+> >  	 */
+> > -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
+> > +	if (dw_spi_ip_is(dws, PSSI)) {
+> >  		u32 cr0, tmp = dw_readl(dws, DW_SPI_CTRLR0);
+> >  
+> >  		dw_spi_enable_chip(dws, 0);
+> > diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> > index 0b37bd32b041..c0e5bb6add0a 100644
+> > --- a/drivers/spi/spi-dw-mmio.c
+> > +++ b/drivers/spi/spi-dw-mmio.c
+> > @@ -207,7 +207,7 @@ static int dw_spi_pssi_init(struct platform_device *pdev,
+> >  static int dw_spi_hssi_init(struct platform_device *pdev,
+> >  			    struct dw_spi_mmio *dwsmmio)
+> >  {
+> > -	dwsmmio->dws.caps = DW_SPI_CAP_DWC_HSSI;
+> > +	dwsmmio->dws.ip = DW_HSSI_ID;
+> >  
+> >  	dw_spi_dma_setup_generic(&dwsmmio->dws);
+> >  
+> > @@ -217,7 +217,8 @@ static int dw_spi_hssi_init(struct platform_device *pdev,
+> >  static int dw_spi_keembay_init(struct platform_device *pdev,
+> >  			       struct dw_spi_mmio *dwsmmio)
+> >  {
+> > -	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_HSSI;
+> > +	dwsmmio->dws.ip = DW_HSSI_ID;
+> > +	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST;
+> >  
+> >  	return 0;
+> >  }
+> > diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+> > index 2f7d77024b48..d5ee5130601e 100644
+> > --- a/drivers/spi/spi-dw.h
+> > +++ b/drivers/spi/spi-dw.h
+> > @@ -32,8 +32,7 @@
+> >  /* DW SPI controller capabilities */
+> >  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
+> >  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
+> > -#define DW_SPI_CAP_DWC_HSSI		BIT(2)
+> > -#define DW_SPI_CAP_DFS32		BIT(3)
+> > +#define DW_SPI_CAP_DFS32		BIT(2)
+> 
 
-Applied for master at git.kernel.org/pub/scm/utils/mmc/mmc-utils.git, thanks!
+> In one patch you move this in the file upper.
+> Here you reshuffling it due to dropping one bit.
+> 
+> Now I'm wondering if you may split these two into a separate patch, which
+> brings us to simple
+> 
+> -#define DW_SPI_CAP_DWC_HSSI		BIT(3)
+> 
+> here.
 
-Kind regards
-Uffe
+I can change the bit-numbers assignment in the previous patch, which
+moves this block of macros up to the top of the file. Thus we'll
+have just a single 
+-#define DW_SPI_CAP_DWC_HSSI		BIT(3)
+here. What do you think? Is that what you meant?
 
-> ---
->  mmc_cmds.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/mmc_cmds.c b/mmc_cmds.c
-> index ecbde3937c81..46c5f5faae02 100644
-> --- a/mmc_cmds.c
-> +++ b/mmc_cmds.c
-> @@ -1885,6 +1885,8 @@ int do_read_extcsd(int nargs, char **argv)
->                        (ext_csd[EXT_CSD_CMDQ_DEPTH] & 0x1f) + 1);
->                 printf("Command Enabled [CMDQ_MODE_EN]: 0x%02x\n",
->                        ext_csd[EXT_CSD_CMDQ_MODE_EN]);
-> +               printf("Note: CMDQ_MODE_EN may not indicate the runtime CMDQ ON or OFF.\n"
-> +                      "Please check sysfs node '/sys/devices/.../mmc_host/mmcX/mmcX:XXXX/cmdq_en'\n");
->         }
->  out_free:
->         return ret;
-> --
-> 2.25.1
->
+-Sergey
+
+> 
+> >  
+> >  /* Register offsets (Generic for both DWC APB SSI and DWC SSI IP-cores) */
+> >  #define DW_SPI_CTRLR0			0x00
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
