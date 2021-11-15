@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD704515AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25754515AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352750AbhKOUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:48:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
+        id S1352647AbhKOUr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:47:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240230AbhKOSH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240228AbhKOSH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD8FF63395;
-        Mon, 15 Nov 2021 17:43:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B9163399;
+        Mon, 15 Nov 2021 17:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998220;
-        bh=qoNE+hBPLqpzXpTP8y5G1K88Rtigbn+X1ssvycPlcpE=;
+        s=korg; t=1636998222;
+        bh=ktiQlAr03wTODgE0WDOZ329NnHLJV/l+gP1tWQzDaZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xto+v7M4vQ7V567VRL9xOSGnAJ0AlJ6ANvOu/gKrSPTzv9/rNnXkF9KIoVRmQNKN5
-         dLUjzuVS4sb5NNFdM0AjUhruisZ32koVM17lr9cmeYijruz+B8/bOsY2UVLlDQlNUU
-         y1S4QJExVXYV2+Vg9b7iuloq/Hx7CN5eDffiMSis=
+        b=FGi5q4v6jBifKK5EExNKElUssL35QXSgRceY9cVEXgfMLUwMFEO5D0E7SeSOqzWvN
+         nbbKiX3bfoqmRdbRYgSnv6J/kFA9ezQzBsscCKTcvwRNd2DpGPQFw7L0GX0bRTMLR6
+         Lq1+ycYlq1mu6Hs2S86Xvx+OlWNv6ZPn6BC0z6C4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 399/575] bus: ti-sysc: Fix timekeeping_suspended warning on resume
-Date:   Mon, 15 Nov 2021 18:02:04 +0100
-Message-Id: <20211115165357.569947261@linuxfoundation.org>
+Subject: [PATCH 5.10 400/575] ARM: dts: at91: tse850: the emac<->phy interface is rmii
+Date:   Mon, 15 Nov 2021 18:02:05 +0100
+Message-Id: <20211115165357.603380421@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,129 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Peter Rosin <peda@axentia.se>
 
-[ Upstream commit b3e9431854e8f305385d5de225441c0477b936cb ]
+[ Upstream commit dcdbc335a91a26e022a803e1a6b837266989c032 ]
 
-On resume we can get a warning at kernel/time/timekeeping.c:824 for
-timekeeping_suspended.
+This went unnoticed until commit 7897b071ac3b ("net: macb: convert
+to phylink") which tickled the problem. The sama5d3 emac has never
+been capable of rgmii, and it all just happened to work before that
+commit.
 
-Let's fix this by adding separate functions for sysc_poll_reset_sysstatus()
-and sysc_poll_reset_sysconfig() and have the new functions handle also
-timekeeping_suspended.
-
-If iopoll at some point supports timekeeping_suspended, we can just drop
-the custom handling from these functions.
-
-Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 21dd0ece34c2 ("ARM: dts: at91: add devicetree for the Axentia TSE-850")
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/ea781f5e-422f-6cbf-3cf4-d5a7bac9392d@axentia.se
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c | 65 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 53 insertions(+), 12 deletions(-)
+ arch/arm/boot/dts/at91-tse850-3.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 02341fd66e8d2..2ff437e5c7051 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -17,6 +17,7 @@
- #include <linux/of_platform.h>
- #include <linux/slab.h>
- #include <linux/sys_soc.h>
-+#include <linux/timekeeping.h>
- #include <linux/iopoll.h>
+diff --git a/arch/arm/boot/dts/at91-tse850-3.dts b/arch/arm/boot/dts/at91-tse850-3.dts
+index 3ca97b47c69ce..7e5c598e7e68f 100644
+--- a/arch/arm/boot/dts/at91-tse850-3.dts
++++ b/arch/arm/boot/dts/at91-tse850-3.dts
+@@ -262,7 +262,7 @@
+ &macb1 {
+ 	status = "okay";
  
- #include <linux/platform_data/ti-sysc.h>
-@@ -223,37 +224,77 @@ static u32 sysc_read_sysstatus(struct sysc *ddata)
- 	return sysc_read(ddata, offset);
- }
+-	phy-mode = "rgmii";
++	phy-mode = "rmii";
  
--/* Poll on reset status */
--static int sysc_wait_softreset(struct sysc *ddata)
-+static int sysc_poll_reset_sysstatus(struct sysc *ddata)
- {
--	u32 sysc_mask, syss_done, rstval;
--	int syss_offset, error = 0;
--
--	if (ddata->cap->regbits->srst_shift < 0)
--		return 0;
--
--	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
--	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
-+	int error, retries;
-+	u32 syss_done, rstval;
- 
- 	if (ddata->cfg.quirks & SYSS_QUIRK_RESETDONE_INVERTED)
- 		syss_done = 0;
- 	else
- 		syss_done = ddata->cfg.syss_mask;
- 
--	if (syss_offset >= 0) {
-+	if (likely(!timekeeping_suspended)) {
- 		error = readx_poll_timeout_atomic(sysc_read_sysstatus, ddata,
- 				rstval, (rstval & ddata->cfg.syss_mask) ==
- 				syss_done, 100, MAX_MODULE_SOFTRESET_WAIT);
-+	} else {
-+		retries = MAX_MODULE_SOFTRESET_WAIT;
-+		while (retries--) {
-+			rstval = sysc_read_sysstatus(ddata);
-+			if ((rstval & ddata->cfg.syss_mask) == syss_done)
-+				return 0;
-+			udelay(2); /* Account for udelay flakeyness */
-+		}
-+		error = -ETIMEDOUT;
-+	}
- 
--	} else if (ddata->cfg.quirks & SYSC_QUIRK_RESET_STATUS) {
-+	return error;
-+}
-+
-+static int sysc_poll_reset_sysconfig(struct sysc *ddata)
-+{
-+	int error, retries;
-+	u32 sysc_mask, rstval;
-+
-+	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
-+
-+	if (likely(!timekeeping_suspended)) {
- 		error = readx_poll_timeout_atomic(sysc_read_sysconfig, ddata,
- 				rstval, !(rstval & sysc_mask),
- 				100, MAX_MODULE_SOFTRESET_WAIT);
-+	} else {
-+		retries = MAX_MODULE_SOFTRESET_WAIT;
-+		while (retries--) {
-+			rstval = sysc_read_sysconfig(ddata);
-+			if (!(rstval & sysc_mask))
-+				return 0;
-+			udelay(2); /* Account for udelay flakeyness */
-+		}
-+		error = -ETIMEDOUT;
- 	}
- 
- 	return error;
- }
- 
-+/* Poll on reset status */
-+static int sysc_wait_softreset(struct sysc *ddata)
-+{
-+	int syss_offset, error = 0;
-+
-+	if (ddata->cap->regbits->srst_shift < 0)
-+		return 0;
-+
-+	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
-+
-+	if (syss_offset >= 0)
-+		error = sysc_poll_reset_sysstatus(ddata);
-+	else if (ddata->cfg.quirks & SYSC_QUIRK_RESET_STATUS)
-+		error = sysc_poll_reset_sysconfig(ddata);
-+
-+	return error;
-+}
-+
- static int sysc_add_named_clock_from_child(struct sysc *ddata,
- 					   const char *name,
- 					   const char *optfck_name)
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
 -- 
 2.33.0
 
