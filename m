@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0801245190A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A0245205D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351244AbhKOXN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:13:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39112 "EHLO mail.kernel.org"
+        id S1349381AbhKPAwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:52:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243921AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:06:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEE62633E6;
-        Mon, 15 Nov 2021 18:17:00 +0000 (UTC)
+        id S1344216AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C496363D;
+        Mon, 15 Nov 2021 18:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000221;
-        bh=lWoRohjNmzeJ6OxicxYEJlbExZF8/1y62rlBOOkox7E=;
+        s=korg; t=1637002445;
+        bh=jLx/TiqCWkq6M2IK5tjtNuEWhV933eY9CLLnZYAahz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NlnLkM+vZVgqDHkLCccTRkA5vLtn1pjnB1RlB0+gqlmPW88MLMR88rDSVzmkHaMOE
-         xAv5dttRW+f1lzFuVUmeRNQqVHcRrmJ4jFK9Kp3eN0iIbB+wUc4BvHwcrAc+KL66Jv
-         qmK+C2JmIPa7Aok8ZFV+JYfxSY19ovmUYBBitsCg=
+        b=cuXKTPo6ZQiSzMxBA9whlwMtVTqhXzXEhVmbP/ezlxHapU1VEVQfRi9m+eElk+BRF
+         E3aeTVq0RjQGqrUHSVXwUDp6wNrIftRP3D0MsOCQD9h954mHVgxyGM3Bb2SRymq/2U
+         EP3kSIH3XExU8QUW1ozQVmegV/H9qGWykIVTTAFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 582/849] ALSA: hda: Reduce udelay() at SKL+ position reporting
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 570/917] ARM: dts: BCM5301X: Fix memory nodes names
 Date:   Mon, 15 Nov 2021 18:01:05 +0100
-Message-Id: <20211115165439.938480532@linuxfoundation.org>
+Message-Id: <20211115165448.110819296@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,114 +41,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 46243b85b0ec5d2cee7545e5ce18c015ce91957e ]
+[ Upstream commit c5e1df3276d7a500678da9453be31a66ad115150 ]
 
-The position reporting on Intel Skylake and later chips via
-azx_get_pos_skl() contains a udelay(20) call for the capture streams.
-A call for this alone doesn't sound too harmful.  However, as the
-pointer PCM ops is one of the hottest path in the PCM operations --
-especially for the timer-scheduled operations like PulseAudio -- such
-a delay hogs CPU usage significantly in the total performance.
+Thix fixes:
+arch/arm/boot/dts/bcm4708-netgear-r6250.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
+arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
+arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
+arch/arm/boot/dts/bcm4709-linksys-ea9200.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
+arch/arm/boot/dts/bcm4709-netgear-r7000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
+arch/arm/boot/dts/bcm4709-netgear-r8000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
+arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
+arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
+arch/arm/boot/dts/bcm53016-meraki-mr32.dt.yaml: /: memory: False schema does not allow {'reg': [[0, 134217728]], 'device_type': ['memory']}
+arch/arm/boot/dts/bcm94708.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
+arch/arm/boot/dts/bcm94709.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
 
-The code there was taken from the original code in ASoC SST Skylake
-driver blindly.  The udelay() is a workaround for the case where the
-reported position is behind the period boundary at the timing
-triggered from interrupts; applications often expect that the full
-data is available for the whole period when returned (and also that's
-the definition of the ALSA PCM period).
-
-OTOH, HD-audio (legacy) driver has already some workarounds for the
-delayed position reporting due to its relatively large FIFO, such as
-the BDL position adjustment and the delayed period-elapsed call in the
-work.  That said, the udelay() is almost superfluous for HD-audio
-driver unlike SST, and we can drop the udelay().
-
-Though, the current code doesn't guarantee the full period readiness
-as mentioned in the above, but rather it checks the wallclock and
-detects the unexpected jump.  That's one missing piece, and the drop
-of udelay() needs a bit more sanity checks for the delayed handling.
-
-This patch implements those: the drop of udelay() call in
-azx_get_pos_skl() and the more proper check of hwptr in
-azx_position_ok().  The latter change is applied only for the case
-where the stream is running in the normal mode without
-no_period_wakeup flag.  When no_period_wakeup is set, it essentially
-ignores the period handling and rather concentrates only on the
-current position; which implies that we don't need to care about the
-period boundary at all.
-
-Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
-Reported-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210929072934.6809-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/bcm4708-netgear-r6250.dts       | 2 +-
+ arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts       | 2 +-
+ arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts | 2 +-
+ arch/arm/boot/dts/bcm4709-linksys-ea9200.dts      | 2 +-
+ arch/arm/boot/dts/bcm4709-netgear-r7000.dts       | 2 +-
+ arch/arm/boot/dts/bcm4709-netgear-r8000.dts       | 2 +-
+ arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts | 2 +-
+ arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts     | 2 +-
+ arch/arm/boot/dts/bcm53016-meraki-mr32.dts        | 2 +-
+ arch/arm/boot/dts/bcm94708.dts                    | 2 +-
+ arch/arm/boot/dts/bcm94709.dts                    | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ef575b2b749b9..e224feb792a08 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -638,13 +638,17 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
-  * the update-IRQ timing.  The IRQ is issued before actually the
-  * data is processed.  So, we need to process it afterwords in a
-  * workqueue.
-+ *
-+ * Returns 1 if OK to proceed, 0 for delay handling, -1 for skipping update
-  */
- static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
- {
- 	struct snd_pcm_substream *substream = azx_dev->core.substream;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int stream = substream->stream;
- 	u32 wallclk;
- 	unsigned int pos;
-+	snd_pcm_uframes_t hwptr, target;
+diff --git a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
+index 61c7b137607e5..7900aac4f35a9 100644
+--- a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
++++ b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
+@@ -20,7 +20,7 @@
+ 		bootargs = "console=ttyS0,115200 earlycon";
+ 	};
  
- 	wallclk = azx_readl(chip, WALLCLK) - azx_dev->core.start_wallclk;
- 	if (wallclk < (azx_dev->core.period_wallclk * 2) / 3)
-@@ -681,6 +685,24 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
- 		/* NG - it's below the first next period boundary */
- 		return chip->bdl_pos_adj ? 0 : -1;
- 	azx_dev->core.start_wallclk += wallclk;
-+
-+	if (azx_dev->core.no_period_wakeup)
-+		return 1; /* OK, no need to check period boundary */
-+
-+	if (runtime->hw_ptr_base != runtime->hw_ptr_interrupt)
-+		return 1; /* OK, already in hwptr updating process */
-+
-+	/* check whether the period gets really elapsed */
-+	pos = bytes_to_frames(runtime, pos);
-+	hwptr = runtime->hw_ptr_base + pos;
-+	if (hwptr < runtime->status->hw_ptr)
-+		hwptr += runtime->buffer_size;
-+	target = runtime->hw_ptr_interrupt + runtime->period_size;
-+	if (hwptr < target) {
-+		/* too early wakeup, process it later */
-+		return chip->bdl_pos_adj ? 0 : -1;
-+	}
-+
- 	return 1; /* OK, it's fine */
- }
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x08000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
+index 6c6bb7b17d27a..7546c8d07bcd7 100644
+--- a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
++++ b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
+@@ -19,7 +19,7 @@
+ 		bootargs = "console=ttyS0,115200";
+ 	};
  
-@@ -875,11 +897,7 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		return azx_skl_get_dpib_pos(chip, azx_dev);
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x08000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
+index d29e7f80ea6aa..beae9eab9cb8c 100644
+--- a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
++++ b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
+@@ -19,7 +19,7 @@
+ 		bootargs = "console=ttyS0,115200";
+ 	};
  
--	/* For capture, we need to read posbuf, but it requires a delay
--	 * for the possible boundary overlap; the read of DPIB fetches the
--	 * actual posbuf
--	 */
--	udelay(20);
-+	/* read of DPIB fetches the actual posbuf */
- 	azx_skl_get_dpib_pos(chip, azx_dev);
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x18000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
+index 9b6887d477d86..7879f7d7d9c33 100644
+--- a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
++++ b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
+@@ -16,7 +16,7 @@
+ 		bootargs = "console=ttyS0,115200";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x08000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
+index 7989a53597d4f..56d309dbc6b0d 100644
+--- a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
++++ b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
+@@ -19,7 +19,7 @@
+ 		bootargs = "console=ttyS0,115200";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x08000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
+index 87b655be674c5..184e3039aa864 100644
+--- a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
++++ b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
+@@ -30,7 +30,7 @@
+ 		bootargs = "console=ttyS0,115200";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x08000000>;
+diff --git a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
+index f806be5da7237..c2a266a439d05 100644
+--- a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
++++ b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
+@@ -15,7 +15,7 @@
+ 		bootargs = "console=ttyS0,115200 earlycon";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>;
+ 	};
+diff --git a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
+index 452b8d0ab180e..b0d8a688141d3 100644
+--- a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
++++ b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
+@@ -16,7 +16,7 @@
+ 		bootargs = "earlycon";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>,
+ 		      <0x88000000 0x18000000>;
+diff --git a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+index 3b978dc8997a4..612d61852bfb9 100644
+--- a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
++++ b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+@@ -20,7 +20,7 @@
+ 		bootargs = " console=ttyS0,115200n8 earlycon";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;
+ 		device_type = "memory";
+ 	};
+diff --git a/arch/arm/boot/dts/bcm94708.dts b/arch/arm/boot/dts/bcm94708.dts
+index 3d13e46c69494..d9eb2040b9631 100644
+--- a/arch/arm/boot/dts/bcm94708.dts
++++ b/arch/arm/boot/dts/bcm94708.dts
+@@ -38,7 +38,7 @@
+ 	model = "NorthStar SVK (BCM94708)";
+ 	compatible = "brcm,bcm94708", "brcm,bcm4708";
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>;
+ 	};
+diff --git a/arch/arm/boot/dts/bcm94709.dts b/arch/arm/boot/dts/bcm94709.dts
+index 5017b7b259cbe..618c812eef73e 100644
+--- a/arch/arm/boot/dts/bcm94709.dts
++++ b/arch/arm/boot/dts/bcm94709.dts
+@@ -38,7 +38,7 @@
+ 	model = "NorthStar SVK (BCM94709)";
+ 	compatible = "brcm,bcm94709", "brcm,bcm4709", "brcm,bcm4708";
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>;
+ 	};
 -- 
 2.33.0
 
