@@ -2,214 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7DE45099D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510FB4509AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhKOQag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:30:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231639AbhKOQad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:30:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E5960235;
-        Mon, 15 Nov 2021 16:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636993656;
-        bh=4JbhaJa+WKgNpMtMZdbDTrTF43/5Tpkk286u8m+D2q8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DiziJVtUjHRR5a2WuY01BjtVns2jwsr+GsL2MyTH00JvwAMa2/A/181Jxnj/ccGC9
-         3h71mVzPIfFbKi9dFWK1mF4nEbD67jENiphimWiwftNmwTGTQBwc68KhQRDl3tcHdT
-         hJ9ceH21hBj6XbgPcxcvKXqqhkz0THLwsCf4UiTRrv4vHj2sP1s2HAP+V34um2DSjC
-         nMeO0s0qOOsSrf7GsLCCvfe0HKyy99+Lw8jqP1N6vL7QJ2vwvhrJvwar3FUkbMGbbO
-         XHm2yWdmxjmxpnBlsSWqmSejYZ7lYffxoRlfu2a4bS5hpslqhehXw82nMSkhDfNy9N
-         zQP0VQWA3MBLg==
-Date:   Mon, 15 Nov 2021 10:27:34 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
-        lenb@kernel.org, rjw@rjwysocki.net, bhelgaas@google.com,
-        zhangliguang@linux.alibaba.com, zhuo.song@linux.alibaba.com
-Subject: Re: [RFC PATCH v3] ACPI: Move sdei_init and ghes_init ahead
-Message-ID: <20211115162734.GA1566887@bhelgaas>
+        id S232119AbhKOQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:34:31 -0500
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:43947 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhKOQdv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:33:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1636993853;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=znT3eu+X4j1qiwRmwQ6Ik3mx+G/++de1zkJpHLdYsmo=;
+  b=U02GA7YywG6sRQi5gcApYkV8p/mLTyJhIjTiTOK/M+9wUIDPxEJwcpo2
+   qgZ4J27qpSU+A+8FcqaV8RFkAtQ5olksZwXqVMy3KbETXRHz3rsrU7buZ
+   xVle1lf32g73dlRQbRCDk8uJNHiu9YxZeqCF81mRP2qXTf5OXMoLW3PxO
+   Y=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: MFaf394VHxfZu779/EjTc28kzJk3alao24nRo5lpLCtDOADYVbvg17R95H34v2UkaCdWYqPWXU
+ BUN1yBfFbSkaJ6Ym0Tr4o1+o2CJcAjVLXqGBszTh/8g+jb8OySJuZvVNsg3bRzxF7Pmfwo5vQf
+ oFgBNBgDR/WYE+GkwiUlIRbxaefc0QqEBA9wn8/O4xgcyoQ0BasXSXHpc/qUeEKtkHejWq+tbR
+ VnaNM6jM8IdI8EFqB0STm7N9V7/Mc8XtuFr9nJEnHTgFSLHM4QauUmq+sJSDFMj7n5yLa+egBz
+ rfz4PGbzsHfXKkEOvc2Gir02
+X-SBRS: 5.1
+X-MesageID: 59825623
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+IronPort-Data: A9a23:giDmnqN5gT7qVgbvrR1kkMFynXyQoLVcMsEvi/4bfWQNrUp00T1Vz
+ mtLCm6GPKqPMDShctx0YIu09x9VuJXRyYQxTQto+SlhQUwRpJueD7x1DKtR0wB+jCHnZBg6h
+ ynLQoCYdKjYdpJYz/uUGuCJQUNUjMlkfZKhTr6bUsxNbVU8En540Es+w7dRbrNA2rBVPSvc4
+ bsenOWHULOV82Yc3rU8sv/rRLtH5ZweiRtA1rAMTakjUGz2zhH5OKk3N6CpR0YUd6EPdgKMq
+ 0Qv+5nilo/R109F5tpICd8XeGVSKlLZFVDmZna7x8FOK/WNz8A/+v9TCRYSVatYozOYm+1D+
+ s5Ij5qLGBg4Iqnxnrw2dQYNRkmSPYUekFPGCX22sMjVxEzaaXr8hf5pCSnaP6VBpLwxWzsXs
+ 6VFdnZdNXhvhMrvqF6/YstlgMllCcDvNYcWvHxIxjDFF/c2B5vERs0m4PcFjWdq254URp4yY
+ eIAZSpxfAqHcSFUGU0dDosQp8G5t0DWJmgwRFW9+vNsvjm7IBZK+KPxOdDRd/SUSshP2EWVv
+ GTL+yL+GB5yHNiezyeVt3GhnOnCmQvlV48IUr617PhnhBuU3GN7IBcOfUCmuvT/hkPWZj5EA
+ xVKoGx09/F0rRH1CImmN/GlnJKalhgNX+diIfY/0ge2m7XF/wKkADAvaCEUPbTKq/QKbTAt0
+ 1aImfbgCjpurKCZRBqhy1uEkd+hEXNLdDFfPEfoWSNAuoC++99r0nojW/46SPbt5uAZDw0c1
+ NxjQMIWo7wIxfAG2Kyglbwsq2L9/8OZJuLZC+i+Y45E0u+bTNP9D2BLwQKChRqlEGp+ZgPe1
+ EXoY+DEsIgz4WilzURhutklErCz/OqiOzbBm1NpFJRJ323zoCDyJNwOvW0geBsB3iM4ldnBO
+ hW7VeR5vsA7AZdXRfUvP9LZ5zoCkMAM6ugJptiLN4ETM/CdhSeM/T10ZF744oweuBNErE3LA
+ r/CKZzEJS9DUcxPlWPqL89Age5D7n1vngv7GMGkpylLJJLDPRZ5v59eawDQBg34hYvZyDjoH
+ yF3a5HXlk4BCbKmOUE6M+c7dDg3EJTyPriuw+Q/SwJJClUO9LgJB6CDzLU/VZZimqgJxO7E8
+ mvkAh1TyUblhG2BIgKPMygxZLTqVJd5jHQ6IS1zYgr4hyl9Od6ivPUFap86Xbg77+g/n/R6e
+ OYIJpebCfNVRzWZpzlENcvhrJZvfQiAjB6VO3b3eyA2epNtHlSb+tLtcgb12jMJCy676Zk3r
+ 7G6j1uJSpsfXQVySs3Rbav3nV+2uHEcnsN0XlfJfYYPKBm9rtAyJnWo3PEtIswKJRHS/Reg1
+ l6bUUUCuO3Ag44p692V16qKmJikTrllFU1AEmiFsbvvbXvG/nCuyJNrWfqTeWyPT3v9/aiva
+ LkHz/z4N/Fbzl9Gv5AlTuRuxKM6odDuu6Vb3kJvG3CSNwanDbZpI3+n28hTt/ISmu8F6FXuA
+ k/fqMNHPbipOd/+FA9DLQUoWe2PyPUIl2SA9v8yOkj7uHd68bfvvZ++5PVQZPix9IdIDb4=
+IronPort-HdrOrdr: A9a23:0HKhMq5d1i5eBwOYlwPXwMDXdLJyesId70hD6qhwISY1TiX4rb
+ HJoB11726WtN98Yh4dcLO7Sc69qBHnhPxICOAqVN/INmSLhILBFvAH0WKI+V3d8kPFmNK1rZ
+ 0QFpRDNA==
+X-IronPort-AV: E=Sophos;i="5.87,236,1631592000"; 
+   d="scan'208";a="59825623"
+From:   Jane Malalane <jane.malalane@citrix.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     <jane.malalane@citrix.com>, Borislav Petkov <bp@suse.de>,
+        <stable@vger.kernel.org>
+Subject: [PATCH for 4.19] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Date:   Mon, 15 Nov 2021 16:30:20 +0000
+Message-ID: <20211115163020.16672-1-jane.malalane@citrix.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115064415.29933-1-xueshuai@linux.alibaba.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject says *what* the patch does, but doesn't give any clue
-about *why* we want this.
+commit 415de44076640483648d6c0f6d645a9ee61328ad upstream.
 
-On Mon, Nov 15, 2021 at 02:44:15PM +0800, Shuai Xue wrote:
-> On an ACPI system, ACPI is initialised very early from a
-> subsys_initcall(), while SDEI is not ready until a subsys_initcall().
+Currently, Linux probes for X86_BUG_NULL_SEL unconditionally which
+makes it unsafe to migrate in a virtualised environment as the
+properties across the migration pool might differ.
 
-This sentence sounds like it's setting up a contrast between ACPI init
-and SDEI init, but apparently both are subsys_initcall(), so this
-doesn't actually say what the difference is.
+To be specific, the case which goes wrong is:
 
-> More seriously, the kernel is able to handle and report errors until the
-> GHES is initialised by device_initcall().
+1. Zen1 (or earlier) and Zen2 (or later) in a migration pool
+2. Linux boots on Zen2, probes and finds the absence of X86_BUG_NULL_SEL
+3. Linux is then migrated to Zen1
 
-Did you mean "unable"?  Or do you really mean the kernel can handle
-errors until GHES is initialized, but can't handle errors *after* GHES
-is initialized?
+Linux is now running on a X86_BUG_NULL_SEL-impacted CPU while believing
+that the bug is fixed.
 
-> Consequently, when an error occurs during the kernel booting, the
-> phyiscal sdei dispatcher in firmware fails to dispatch error events. All
-> errors that occurred before GHES initialization are missed and there is
-> no chance to report and find them again.
+The only way to address the problem is to fully trust the "no longer
+affected" CPUID bit when virtualised, because in the above case it would
+be clear deliberately to indicate the fact "you might migrate to
+somewhere which has this behaviour".
 
-s/phyiscal/physical/
-s/sdei/SDEI/
+Zen3 adds the NullSelectorClearsBase CPUID bit to indicate that loading
+a NULL segment selector zeroes the base and limit fields, as well as
+just attributes. Zen2 also has this behaviour but doesn't have the NSCB
+bit.
 
-This doesn't explain how something in the kernel can prevent the
-dispatcher in firmware from doing something.  Maybe the firmware emits
-an event and the kernel isn't listening?
+ [ bp: Minor touchups. ]
 
-What is SDEI?  Please provide a citation to whatever spec is relevant.
+Signed-off-by: Jane Malalane <jane.malalane@citrix.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+CC: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20211021104744.24126-1-jane.malalane@citrix.com
+---
+Backport to 4.19.  Drop Hygon modifications.
+---
+ arch/x86/kernel/cpu/amd.c    |  2 ++
+ arch/x86/kernel/cpu/common.c | 44 +++++++++++++++++++++++++++++++++++++-------
+ arch/x86/kernel/cpu/cpu.h    |  1 +
+ 3 files changed, 40 insertions(+), 7 deletions(-)
 
-> In this patch, move sdei_init and ghes_init as far ahead as possible,
-> right after acpi_hest_init().
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index de69090ca142..98c23126f751 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -993,6 +993,8 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 	if (cpu_has(c, X86_FEATURE_IRPERF) &&
+ 	    !cpu_has_amd_erratum(c, amd_erratum_1054))
+ 		msr_set_bit(MSR_K7_HWCR, MSR_K7_HWCR_IRPERF_EN_BIT);
++
++	check_null_seg_clears_base(c);
+ }
+ 
+ #ifdef CONFIG_X86_32
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 2058e8c0e61d..7e7400af7797 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1254,9 +1254,8 @@ void __init early_cpu_init(void)
+ 	early_identify_cpu(&boot_cpu_data);
+ }
+ 
+-static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
++static bool detect_null_seg_behavior(void)
+ {
+-#ifdef CONFIG_X86_64
+ 	/*
+ 	 * Empirically, writing zero to a segment selector on AMD does
+ 	 * not clear the base, whereas writing zero to a segment
+@@ -1277,10 +1276,43 @@ static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
+ 	wrmsrl(MSR_FS_BASE, 1);
+ 	loadsegment(fs, 0);
+ 	rdmsrl(MSR_FS_BASE, tmp);
+-	if (tmp != 0)
+-		set_cpu_bug(c, X86_BUG_NULL_SEG);
+ 	wrmsrl(MSR_FS_BASE, old_base);
+-#endif
++	return tmp == 0;
++}
++
++void check_null_seg_clears_base(struct cpuinfo_x86 *c)
++{
++	/* BUG_NULL_SEG is only relevant with 64bit userspace */
++	if (!IS_ENABLED(CONFIG_X86_64))
++		return;
++
++	/* Zen3 CPUs advertise Null Selector Clears Base in CPUID. */
++	if (c->extended_cpuid_level >= 0x80000021 &&
++	    cpuid_eax(0x80000021) & BIT(6))
++		return;
++
++	/*
++	 * CPUID bit above wasn't set. If this kernel is still running
++	 * as a HV guest, then the HV has decided not to advertize
++	 * that CPUID bit for whatever reason.	For example, one
++	 * member of the migration pool might be vulnerable.  Which
++	 * means, the bug is present: set the BUG flag and return.
++	 */
++	if (cpu_has(c, X86_FEATURE_HYPERVISOR)) {
++		set_cpu_bug(c, X86_BUG_NULL_SEG);
++		return;
++	}
++
++	/*
++	 * Zen2 CPUs also have this behaviour, but no CPUID bit.
++	 * 0x18 is the respective family for Hygon.
++	 */
++	if ((c->x86 == 0x17 || c->x86 == 0x18) &&
++	    detect_null_seg_behavior())
++		return;
++
++	/* All the remaining ones are affected */
++	set_cpu_bug(c, X86_BUG_NULL_SEG);
+ }
+ 
+ static void generic_identify(struct cpuinfo_x86 *c)
+@@ -1316,8 +1348,6 @@ static void generic_identify(struct cpuinfo_x86 *c)
+ 
+ 	get_model_name(c); /* Default name */
+ 
+-	detect_null_seg_behavior(c);
+-
+ 	/*
+ 	 * ESPFIX is a strange bug.  All real CPUs have it.  Paravirt
+ 	 * systems that run Linux at CPL > 0 may or may not have the
+diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
+index e89602d2aff5..4eb9bf68b122 100644
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -76,6 +76,7 @@ extern int detect_extended_topology_early(struct cpuinfo_x86 *c);
+ extern int detect_extended_topology(struct cpuinfo_x86 *c);
+ extern int detect_ht_early(struct cpuinfo_x86 *c);
+ extern void detect_ht(struct cpuinfo_x86 *c);
++extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
+ 
+ unsigned int aperfmperf_get_khz(int cpu);
+ 
+-- 
+2.11.0
 
-Please be explicit about what the dependencies are here.  Is there
-something in sdei_init() that depends on acpi_hest_init()?  If so,
-what is it specifically?
-
-Similarly, does ghes_init() depend on something in sdei_init()?
-
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> ---
-> Changelog v2 -> v3:
-> Fix compile error in X86
-> Reported-by: kernel test robot<lkp@intel.com>
-> ---
->  drivers/acpi/apei/ghes.c    | 3 +--
->  drivers/acpi/pci_root.c     | 8 +++++++-
->  drivers/firmware/arm_sdei.c | 9 +--------
->  include/acpi/apei.h         | 2 ++
->  include/linux/arm_sdei.h    | 2 ++
->  5 files changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 0c8330ed1ffd..4200369503b8 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -1457,7 +1457,7 @@ static struct platform_driver ghes_platform_driver = {
->  	.remove		= ghes_remove,
->  };
->  
-> -static int __init ghes_init(void)
-> +int __init ghes_init(void)
->  {
->  	int rc;
->  
-> @@ -1499,4 +1499,3 @@ static int __init ghes_init(void)
->  err:
->  	return rc;
->  }
-> -device_initcall(ghes_init);
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index ab2f7dfb0c44..7658ae509377 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -23,7 +23,7 @@
->  #include <linux/dmi.h>
->  #include <linux/platform_data/x86/apple.h>
->  #include <acpi/apei.h>	/* for acpi_hest_init() */
-> -
-> +#include <linux/arm_sdei.h> /* for sdei_init() */
->  #include "internal.h"
->  
->  #define ACPI_PCI_ROOT_CLASS		"pci_bridge"
-> @@ -946,6 +946,12 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->  void __init acpi_pci_root_init(void)
->  {
->  	acpi_hest_init();
-> +	#ifdef CONFIG_ARM_SDE_INTERFACE
-> +	sdei_init();
-> +	#endif 
-> +	#ifdef CONFIG_ACPI_APEI_GHES
-> +	ghes_init();
-> +	#endif 
-
-I love to replace initcalls with explicit calls.  You provided stubs
-below, so why the #ifdefs here?
-
->  	if (acpi_pci_disabled)
->  		return;
->  
-> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-> index a7e762c352f9..606520be326e 100644
-> --- a/drivers/firmware/arm_sdei.c
-> +++ b/drivers/firmware/arm_sdei.c
-> @@ -1059,7 +1059,7 @@ static bool __init sdei_present_acpi(void)
->  	return true;
->  }
->  
-> -static int __init sdei_init(void)
-> +int __init sdei_init(void)
->  {
->  	struct platform_device *pdev;
->  	int ret;
-> @@ -1080,13 +1080,6 @@ static int __init sdei_init(void)
->  	return ret;
->  }
->  
-> -/*
-> - * On an ACPI system SDEI needs to be ready before HEST:GHES tries to register
-> - * its events. ACPI is initialised from a subsys_initcall(), GHES is initialised
-> - * by device_initcall(). We want to be called in the middle.
-> - */
-> -subsys_initcall_sync(sdei_init);
-
-Ugh.  It's really good to get rid of this sort of implicit ordering.
-
->  int sdei_event_handler(struct pt_regs *regs,
->  		       struct sdei_registered_event *arg)
->  {
-> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-> index ece0a8af2bae..155a0fe417c6 100644
-> --- a/include/acpi/apei.h
-> +++ b/include/acpi/apei.h
-> @@ -27,8 +27,10 @@ extern int hest_disable;
->  extern int erst_disable;
->  #ifdef CONFIG_ACPI_APEI_GHES
->  extern bool ghes_disable;
-> +int __init ghes_init(void);
->  #else
->  #define ghes_disable 1
-> +static inline int ghes_init(void) { return 0; }
-
-I think the only reason ghes_init() returns int is because that's what
-initcall_t requires.  If ghes_init() is no longer an initcall and
-nobody looks at its return value, it should return void instead.
-
-Same with sdei_init().
-
->  #endif
->  
->  #ifdef CONFIG_ACPI_APEI
-> diff --git a/include/linux/arm_sdei.h b/include/linux/arm_sdei.h
-> index 0a241c5c911d..983b7404bff9 100644
-> --- a/include/linux/arm_sdei.h
-> +++ b/include/linux/arm_sdei.h
-> @@ -46,9 +46,11 @@ int sdei_unregister_ghes(struct ghes *ghes);
->  /* For use by arch code when CPU hotplug notifiers are not appropriate. */
->  int sdei_mask_local_cpu(void);
->  int sdei_unmask_local_cpu(void);
-> +int __init sdei_init(void);
->  #else
->  static inline int sdei_mask_local_cpu(void) { return 0; }
->  static inline int sdei_unmask_local_cpu(void) { return 0; }
-> +static inline int sdei_init(void) { return 0; }
->  #endif /* CONFIG_ARM_SDE_INTERFACE */
->  
->  
-> -- 
-> 2.20.1.12.g72788fdb
-> 
