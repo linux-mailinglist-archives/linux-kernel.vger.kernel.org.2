@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102AB450F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7D5450FC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241848AbhKOS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:29:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        id S241231AbhKOSgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:36:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237813AbhKOReR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237805AbhKOReR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:34:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B235263275;
-        Mon, 15 Nov 2021 17:22:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9012E632B3;
+        Mon, 15 Nov 2021 17:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996947;
-        bh=t0gqTs8M758R77+mkJi6FJvTd8ONEL68KeBSCzTltEg=;
+        s=korg; t=1636996950;
+        bh=Q188tE+CFIfiwEELCFPdM1wmlgjeC6KOrGZlMsUFjpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gH5wqiLKyps6XnxxF2nSSOdNY1+zS7i7qdQHEJn1wySs+G3euHqqbWfs/NsaNesq4
-         ye8fPcXZhl+IHwVomhLPvkieztz3plM2V1AP58XHIjvoXxdJEozmvLe5CJ1phpkCOX
-         P8KAjGSS0dKnCV8DuK0+t6yiCQLUsxTnpfMJTL7E=
+        b=t2XzknEqpQKVI56Fur3CWsdWoWOvV0fwEt7/AT2rKGz34JnTTZapWEwulXDIqn7KN
+         uUVeAyTEP3moxSvyybjEctH6+ZkHHCt6UXxJb139FIETFdYEUKfdaNFes1sqQCneS4
+         nJCQpdLfxNFh6w6robHde4pVgknQWI5iiILrZjIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 327/355] net/sched: sch_taprio: fix undefined behavior in ktime_mono_to_any
-Date:   Mon, 15 Nov 2021 18:04:11 +0100
-Message-Id: <20211115165324.314630990@linuxfoundation.org>
+Subject: [PATCH 5.4 328/355] net: hns3: allow configure ETS bandwidth of all TCs
+Date:   Mon, 15 Nov 2021 18:04:12 +0100
+Message-Id: <20211115165324.347100472@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,136 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-[ Upstream commit 6dc25401cba4d428328eade8ceae717633fdd702 ]
+[ Upstream commit 688db0c7a4a69ddc8b8143a1cac01eb20082a3aa ]
 
-1) if q->tk_offset == TK_OFFS_MAX, then get_tcp_tstamp() calls
-   ktime_mono_to_any() with out-of-bound value.
+Currently, driver only allow configuring ETS bandwidth of TCs according
+to the max TC number queried from firmware. However, the hardware actually
+supports 8 TCs and users may need to configure ETS bandwidth of all TCs,
+so remove the restriction.
 
-2) if q->tk_offset is changed in taprio_parse_clockid(),
-   taprio_get_time() might also call ktime_mono_to_any()
-   with out-of-bound value as sysbot found:
-
-UBSAN: array-index-out-of-bounds in kernel/time/timekeeping.c:908:27
-index 3 is out of range for type 'ktime_t *[3]'
-CPU: 1 PID: 25668 Comm: kworker/u4:0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- ktime_mono_to_any+0x1d4/0x1e0 kernel/time/timekeeping.c:908
- get_tcp_tstamp net/sched/sch_taprio.c:322 [inline]
- get_packet_txtime net/sched/sch_taprio.c:353 [inline]
- taprio_enqueue_one+0x5b0/0x1460 net/sched/sch_taprio.c:420
- taprio_enqueue+0x3b1/0x730 net/sched/sch_taprio.c:485
- dev_qdisc_enqueue+0x40/0x300 net/core/dev.c:3785
- __dev_xmit_skb net/core/dev.c:3869 [inline]
- __dev_queue_xmit+0x1f6e/0x3630 net/core/dev.c:4194
- batadv_send_skb_packet+0x4a9/0x5f0 net/batman-adv/send.c:108
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:421 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x6d7/0x8e0 net/batman-adv/bat_iv_ogm.c:1701
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Fixes: 7ede7b03484b ("taprio: make clock reference conversions easier")
-Fixes: 54002066100b ("taprio: Adjust timestamps for TCP packets")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Vedang Patel <vedang.patel@intel.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Reviewed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Link: https://lore.kernel.org/r/20211108180815.1822479-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 330baff5423b ("net: hns3: add ETS TC weight setting in SSU module")
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_taprio.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 2 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  | 9 +--------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index e14a66ce4884d..b268e61304515 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -94,18 +94,22 @@ static ktime_t sched_base_time(const struct sched_gate_list *sched)
- 	return ns_to_ktime(sched->base_time);
- }
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
+index 9076605403a74..bb22d91f6e53e 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
+@@ -124,7 +124,7 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
+ 	if (ret)
+ 		return ret;
  
--static ktime_t taprio_get_time(struct taprio_sched *q)
-+static ktime_t taprio_mono_to_any(const struct taprio_sched *q, ktime_t mono)
+-	for (i = 0; i < hdev->tc_max; i++) {
++	for (i = 0; i < HNAE3_MAX_TC; i++) {
+ 		switch (ets->tc_tsa[i]) {
+ 		case IEEE_8021QAZ_TSA_STRICT:
+ 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
+index d98f0e2ec7aa3..8448607742a6b 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
+@@ -974,7 +974,6 @@ static int hclge_tm_pri_tc_base_dwrr_cfg(struct hclge_dev *hdev)
+ 
+ static int hclge_tm_ets_tc_dwrr_cfg(struct hclge_dev *hdev)
  {
--	ktime_t mono = ktime_get();
-+	/* This pairs with WRITE_ONCE() in taprio_parse_clockid() */
-+	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
+-#define DEFAULT_TC_WEIGHT	1
+ #define DEFAULT_TC_OFFSET	14
  
--	switch (q->tk_offset) {
-+	switch (tk_offset) {
- 	case TK_OFFS_MAX:
- 		return mono;
- 	default:
--		return ktime_mono_to_any(mono, q->tk_offset);
-+		return ktime_mono_to_any(mono, tk_offset);
- 	}
-+}
+ 	struct hclge_ets_tc_weight_cmd *ets_weight;
+@@ -987,13 +986,7 @@ static int hclge_tm_ets_tc_dwrr_cfg(struct hclge_dev *hdev)
+ 	for (i = 0; i < HNAE3_MAX_TC; i++) {
+ 		struct hclge_pg_info *pg_info;
  
--	return KTIME_MAX;
-+static ktime_t taprio_get_time(const struct taprio_sched *q)
-+{
-+	return taprio_mono_to_any(q, ktime_get());
- }
- 
- static void taprio_free_sched_cb(struct rcu_head *head)
-@@ -321,7 +325,7 @@ static ktime_t get_tcp_tstamp(struct taprio_sched *q, struct sk_buff *skb)
- 		return 0;
+-		ets_weight->tc_weight[i] = DEFAULT_TC_WEIGHT;
+-
+-		if (!(hdev->hw_tc_map & BIT(i)))
+-			continue;
+-
+-		pg_info =
+-			&hdev->tm_info.pg_info[hdev->tm_info.tc_info[i].pgid];
++		pg_info = &hdev->tm_info.pg_info[hdev->tm_info.tc_info[i].pgid];
+ 		ets_weight->tc_weight[i] = pg_info->tc_dwrr[i];
  	}
  
--	return ktime_mono_to_any(skb->skb_mstamp_ns, q->tk_offset);
-+	return taprio_mono_to_any(q, skb->skb_mstamp_ns);
- }
- 
- /* There are a few scenarios where we will have to modify the txtime from
-@@ -1342,6 +1346,7 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
- 		}
- 	} else if (tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]) {
- 		int clockid = nla_get_s32(tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]);
-+		enum tk_offsets tk_offset;
- 
- 		/* We only support static clockids and we don't allow
- 		 * for it to be modified after the first init.
-@@ -1356,22 +1361,24 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
- 
- 		switch (clockid) {
- 		case CLOCK_REALTIME:
--			q->tk_offset = TK_OFFS_REAL;
-+			tk_offset = TK_OFFS_REAL;
- 			break;
- 		case CLOCK_MONOTONIC:
--			q->tk_offset = TK_OFFS_MAX;
-+			tk_offset = TK_OFFS_MAX;
- 			break;
- 		case CLOCK_BOOTTIME:
--			q->tk_offset = TK_OFFS_BOOT;
-+			tk_offset = TK_OFFS_BOOT;
- 			break;
- 		case CLOCK_TAI:
--			q->tk_offset = TK_OFFS_TAI;
-+			tk_offset = TK_OFFS_TAI;
- 			break;
- 		default:
- 			NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
- 			err = -EINVAL;
- 			goto out;
- 		}
-+		/* This pairs with READ_ONCE() in taprio_mono_to_any */
-+		WRITE_ONCE(q->tk_offset, tk_offset);
- 
- 		q->clockid = clockid;
- 	} else {
 -- 
 2.33.0
 
