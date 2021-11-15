@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9774518AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9915E451DCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347542AbhKOXFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:05:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57534 "EHLO mail.kernel.org"
+        id S1344946AbhKPAeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242440AbhKOSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:54:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BCB6633C4;
-        Mon, 15 Nov 2021 18:11:12 +0000 (UTC)
+        id S1343909AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06311633A3;
+        Mon, 15 Nov 2021 18:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999873;
-        bh=1JJY+d1hilmZPQB4fO71zQCsWNuLLbJf8RR3944VvFM=;
+        s=korg; t=1637002108;
+        bh=Jqqs2JsX1RDMyz1K0QdyYUP2KhcTbRPxPU15WVe6Vn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zNECPgEQI7KyGV1AdDpmn47TucVZmA9KTurIDmKWeonP+9JSKJ499vQoRiKLf+877
-         CSLcK080duo9izQYnBzt8IN8D9CbC6srboFcEmRrGnCssIBglNb5Ha9x3c8d0P+bX4
-         W50YYxDfY4C6kxcRMz4P+Ap4anGEuZDLzs4imiS4=
+        b=eW87uUDHJD0n8EVqLaDonKBgzFuX95TZCRuluQM0PFIaY7QcTye/ZA2YtRKGA4sps
+         WMyeMJXCalWTrVhBqgMf3wses57F1rqGPUz/1WbKnMP+pnDrgK7/BJ9A2X/c/X/5dW
+         MtJY7hqNyYGEghIN/ikDftrf0auZD1x0ci9h7KMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 453/849] mt76: mt7915: fix info leak in mt7915_mcu_set_pre_cal()
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 441/917] drm/msm: uninitialized variable in msm_gem_import()
 Date:   Mon, 15 Nov 2021 17:58:56 +0100
-Message-Id: <20211115165435.615049454@linuxfoundation.org>
+Message-Id: <20211115165443.735252462@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +42,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 3924715ffe5e064a85f56490f77b7b2084230800 ]
+[ Upstream commit 2203bd0e5c12ffc53ffdd4fbd7b12d6ba27e0424 ]
 
-Zero out all the unused members of "req" so that we don't disclose
-stack information.
+The msm_gem_new_impl() function cleans up after itself so there is no
+need to call drm_gem_object_put().  Conceptually, it does not make sense
+to call a kref_put() function until after the reference counting has
+been initialized which happens immediately after this call in the
+drm_gem_(private_)object_init() functions.
 
-Fixes: 495184ac91bb ("mt76: mt7915: add support for applying pre-calibration data")
+In the msm_gem_import() function the "obj" pointer is uninitialized, so
+it will lead to a crash.
+
+Fixes: 05b849111c07 ("drm/msm: prime support")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20211013081315.GG6010@kili
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_gem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 2f30047bd80f2..caf2033c5c17e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -3481,7 +3481,7 @@ static int mt7915_mcu_set_pre_cal(struct mt7915_dev *dev, u8 idx,
- 		u8 idx;
- 		u8 rsv[4];
- 		__le32 len;
--	} req;
-+	} req = {};
- 	struct sk_buff *skb;
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index fd398a4eaf46e..bd6ec04f345e1 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -1167,7 +1167,7 @@ struct drm_gem_object *msm_gem_new(struct drm_device *dev, uint32_t size, uint32
  
- 	skb = mt76_mcu_msg_alloc(&dev->mt76, NULL, sizeof(req) + len);
+ 	ret = msm_gem_new_impl(dev, size, flags, &obj);
+ 	if (ret)
+-		goto fail;
++		return ERR_PTR(ret);
+ 
+ 	msm_obj = to_msm_bo(obj);
+ 
+@@ -1251,7 +1251,7 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
+ 
+ 	ret = msm_gem_new_impl(dev, size, MSM_BO_WC, &obj);
+ 	if (ret)
+-		goto fail;
++		return ERR_PTR(ret);
+ 
+ 	drm_gem_private_object_init(dev, obj, size);
+ 
 -- 
 2.33.0
 
