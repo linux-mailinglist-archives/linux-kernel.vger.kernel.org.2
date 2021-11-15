@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABBA451B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F037E452002
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347112AbhKPAEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:04:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1353810AbhKPArK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:47:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344888AbhKOTZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344889AbhKOTZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E882E633F1;
-        Mon, 15 Nov 2021 19:06:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1711633F4;
+        Mon, 15 Nov 2021 19:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003180;
-        bh=RVPesjfFaUpLuAjJj4MexMZO7Ju4/g9b/3mA5ZBD1+k=;
+        s=korg; t=1637003183;
+        bh=u0icdYJ45LQjWgQk2LjTFuEl35kUkLLRO8J9kdJUUjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hXoH766g8GzQ/LWkaGXd5kcgm1teeoNoxOjp1a8YDf/Wir49As29eo1z4l9m3vkF0
-         JHh5MSTwQcPkQanmaoF4fkb7DeskxWlIRDjCCWdgQodsxII7XTl4k8m0J5fadlre7F
-         Ul/eMXLlpQwCf4TZo9Xmi8+tiPYnXcdTyLb+WRKM=
+        b=VEy6qOQWm/GNW69do3IsjIwi3PpiM5iydOjYrIfiiysVD90kni1owAiqSHT/RfDKf
+         BK36xmyPDzu3DIhkVcN5C/0kYkZIgN/y/6j6+fGC9nFbChIJ4MIIFeQCpT98F7kWLr
+         M4z1UwsivfUYostiTz6S/+nfrChQWDgMeEzf+jM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 839/917] net: ethernet: ti: cpsw_ale: Fix access to un-initialized memory
-Date:   Mon, 15 Nov 2021 18:05:34 +0100
-Message-Id: <20211115165457.492438074@linuxfoundation.org>
+Subject: [PATCH 5.15 840/917] net: marvell: mvpp2: Fix wrong SerDes reconfiguration order
+Date:   Mon, 15 Nov 2021 18:05:35 +0100
+Message-Id: <20211115165457.523194633@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,41 +42,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 7a166854b4e24c57d56b3eba9fe1594985ee0a2c ]
+[ Upstream commit bb7bbb6e36474933540c24ae1f1ad651b843981f ]
 
-It is spurious to allocate a bitmap without initializing it.
-So, better safe than sorry, initialize it to 0 at least to have some known
-values.
+Commit bfe301ebbc94 ("net: mvpp2: convert to use
+mac_prepare()/mac_finish()") introduced a bug wherein it leaves the MAC
+RESET register asserted after mac_finish(), due to wrong order of
+function calls.
 
-While at it, switch to the devm_bitmap_ API which is less verbose.
+Before it was:
+  .mac_config()
+    mvpp22_mode_reconfigure()
+      assert reset
+    mvpp2_xlg_config()
+      deassert reset
 
-Fixes: 4b41d3436796 ("net: ethernet: ti: cpsw: allow untagged traffic on host port")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Now it is:
+  .mac_prepare()
+  .mac_config()
+    mvpp2_xlg_config()
+      deassert reset
+  .mac_finish()
+    mvpp2_xlg_config()
+      assert reset
+
+Obviously this is wrong.
+
+This bug is triggered when phylink tries to change the PHY interface
+mode from a GMAC mode (sgmii, 1000base-x, 2500base-x) to XLG mode
+(10gbase-r, xaui). The XLG mode does not work since reset is left
+asserted. Only after
+  ifconfig down && ifconfig up
+is called will the XLG mode work.
+
+Move the call to mvpp22_mode_reconfigure() to .mac_prepare()
+implementation. Since some of the subsequent functions need to know
+whether the interface is being changed, we unfortunately also need to
+pass around the new interface mode before setting port->phy_interface.
+
+Fixes: bfe301ebbc94 ("net: mvpp2: convert to use mac_prepare()/mac_finish()")
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/cpsw_ale.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 38 ++++++++++---------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index 0c75e0576ee1f..1ef0aaef5c61c 100644
---- a/drivers/net/ethernet/ti/cpsw_ale.c
-+++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -1299,10 +1299,8 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
- 	if (!ale)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d5c92e43f89e6..d74d4966b13fc 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -1605,7 +1605,7 @@ static void mvpp22_gop_fca_set_periodic_timer(struct mvpp2_port *port)
+ 	mvpp22_gop_fca_enable_periodic(port, true);
+ }
  
--	ale->p0_untag_vid_mask =
--		devm_kmalloc_array(params->dev, BITS_TO_LONGS(VLAN_N_VID),
--				   sizeof(unsigned long),
--				   GFP_KERNEL);
-+	ale->p0_untag_vid_mask = devm_bitmap_zalloc(params->dev, VLAN_N_VID,
-+						    GFP_KERNEL);
- 	if (!ale->p0_untag_vid_mask)
- 		return ERR_PTR(-ENOMEM);
+-static int mvpp22_gop_init(struct mvpp2_port *port)
++static int mvpp22_gop_init(struct mvpp2_port *port, phy_interface_t interface)
+ {
+ 	struct mvpp2 *priv = port->priv;
+ 	u32 val;
+@@ -1613,7 +1613,7 @@ static int mvpp22_gop_init(struct mvpp2_port *port)
+ 	if (!priv->sysctrl_base)
+ 		return 0;
  
+-	switch (port->phy_interface) {
++	switch (interface) {
+ 	case PHY_INTERFACE_MODE_RGMII:
+ 	case PHY_INTERFACE_MODE_RGMII_ID:
+ 	case PHY_INTERFACE_MODE_RGMII_RXID:
+@@ -1743,15 +1743,15 @@ static void mvpp22_gop_setup_irq(struct mvpp2_port *port)
+  * lanes by the physical layer. This is why configurations like
+  * "PPv2 (2500BaseX) - COMPHY (2500SGMII)" are valid.
+  */
+-static int mvpp22_comphy_init(struct mvpp2_port *port)
++static int mvpp22_comphy_init(struct mvpp2_port *port,
++			      phy_interface_t interface)
+ {
+ 	int ret;
+ 
+ 	if (!port->comphy)
+ 		return 0;
+ 
+-	ret = phy_set_mode_ext(port->comphy, PHY_MODE_ETHERNET,
+-			       port->phy_interface);
++	ret = phy_set_mode_ext(port->comphy, PHY_MODE_ETHERNET, interface);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2172,7 +2172,8 @@ static void mvpp22_pcs_reset_assert(struct mvpp2_port *port)
+ 	writel(val & ~MVPP22_XPCS_CFG0_RESET_DIS, xpcs + MVPP22_XPCS_CFG0);
+ }
+ 
+-static void mvpp22_pcs_reset_deassert(struct mvpp2_port *port)
++static void mvpp22_pcs_reset_deassert(struct mvpp2_port *port,
++				      phy_interface_t interface)
+ {
+ 	struct mvpp2 *priv = port->priv;
+ 	void __iomem *mpcs, *xpcs;
+@@ -2184,7 +2185,7 @@ static void mvpp22_pcs_reset_deassert(struct mvpp2_port *port)
+ 	mpcs = priv->iface_base + MVPP22_MPCS_BASE(port->gop_id);
+ 	xpcs = priv->iface_base + MVPP22_XPCS_BASE(port->gop_id);
+ 
+-	switch (port->phy_interface) {
++	switch (interface) {
+ 	case PHY_INTERFACE_MODE_10GBASER:
+ 		val = readl(mpcs + MVPP22_MPCS_CLK_RESET);
+ 		val |= MAC_CLK_RESET_MAC | MAC_CLK_RESET_SD_RX |
+@@ -4529,7 +4530,8 @@ static int mvpp2_poll(struct napi_struct *napi, int budget)
+ 	return rx_done;
+ }
+ 
+-static void mvpp22_mode_reconfigure(struct mvpp2_port *port)
++static void mvpp22_mode_reconfigure(struct mvpp2_port *port,
++				    phy_interface_t interface)
+ {
+ 	u32 ctrl3;
+ 
+@@ -4540,18 +4542,18 @@ static void mvpp22_mode_reconfigure(struct mvpp2_port *port)
+ 	mvpp22_pcs_reset_assert(port);
+ 
+ 	/* comphy reconfiguration */
+-	mvpp22_comphy_init(port);
++	mvpp22_comphy_init(port, interface);
+ 
+ 	/* gop reconfiguration */
+-	mvpp22_gop_init(port);
++	mvpp22_gop_init(port, interface);
+ 
+-	mvpp22_pcs_reset_deassert(port);
++	mvpp22_pcs_reset_deassert(port, interface);
+ 
+ 	if (mvpp2_port_supports_xlg(port)) {
+ 		ctrl3 = readl(port->base + MVPP22_XLG_CTRL3_REG);
+ 		ctrl3 &= ~MVPP22_XLG_CTRL3_MACMODESELECT_MASK;
+ 
+-		if (mvpp2_is_xlg(port->phy_interface))
++		if (mvpp2_is_xlg(interface))
+ 			ctrl3 |= MVPP22_XLG_CTRL3_MACMODESELECT_10G;
+ 		else
+ 			ctrl3 |= MVPP22_XLG_CTRL3_MACMODESELECT_GMAC;
+@@ -4559,7 +4561,7 @@ static void mvpp22_mode_reconfigure(struct mvpp2_port *port)
+ 		writel(ctrl3, port->base + MVPP22_XLG_CTRL3_REG);
+ 	}
+ 
+-	if (mvpp2_port_supports_xlg(port) && mvpp2_is_xlg(port->phy_interface))
++	if (mvpp2_port_supports_xlg(port) && mvpp2_is_xlg(interface))
+ 		mvpp2_xlg_max_rx_size_set(port);
+ 	else
+ 		mvpp2_gmac_max_rx_size_set(port);
+@@ -4579,7 +4581,7 @@ static void mvpp2_start_dev(struct mvpp2_port *port)
+ 	mvpp2_interrupts_enable(port);
+ 
+ 	if (port->priv->hw_version >= MVPP22)
+-		mvpp22_mode_reconfigure(port);
++		mvpp22_mode_reconfigure(port, port->phy_interface);
+ 
+ 	if (port->phylink) {
+ 		phylink_start(port->phylink);
+@@ -6477,6 +6479,9 @@ static int mvpp2__mac_prepare(struct phylink_config *config, unsigned int mode,
+ 			mvpp22_gop_mask_irq(port);
+ 
+ 			phy_power_off(port->comphy);
++
++			/* Reconfigure the serdes lanes */
++			mvpp22_mode_reconfigure(port, interface);
+ 		}
+ 	}
+ 
+@@ -6531,9 +6536,6 @@ static int mvpp2_mac_finish(struct phylink_config *config, unsigned int mode,
+ 	    port->phy_interface != interface) {
+ 		port->phy_interface = interface;
+ 
+-		/* Reconfigure the serdes lanes */
+-		mvpp22_mode_reconfigure(port);
+-
+ 		/* Unmask interrupts */
+ 		mvpp22_gop_unmask_irq(port);
+ 	}
+@@ -6960,7 +6962,7 @@ static int mvpp2_port_probe(struct platform_device *pdev,
+ 	 * driver does this, we can remove this code.
+ 	 */
+ 	if (port->comphy) {
+-		err = mvpp22_comphy_init(port);
++		err = mvpp22_comphy_init(port, port->phy_interface);
+ 		if (err == 0)
+ 			phy_power_off(port->comphy);
+ 	}
 -- 
 2.33.0
 
