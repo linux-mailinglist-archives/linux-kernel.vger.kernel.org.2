@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E98545161B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AE0451627
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345393AbhKOVMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:12:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
+        id S1348945AbhKOVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:16:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240965AbhKOSO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240966AbhKOSO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:14:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03701611F0;
-        Mon, 15 Nov 2021 17:48:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A631461501;
+        Mon, 15 Nov 2021 17:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998540;
-        bh=/a7Z00H5PbfE8AV+PwW5T2qKvETJtxk1BR1xvqD4DAU=;
+        s=korg; t=1636998549;
+        bh=FL9pab4T3PfKofTr1tbG5xZ6bRu+fuEfbeU4cqSrH0s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r+aX1OF3yfUbZFJQSEpd/YGJmCntGA4FML2W+WylzVstoDJpjCozqkiGrILY4eLUW
-         nsvWjF1NwzfXLxI531a36E1ucEYQd7qoAQkeDv3z5c6aAqph4Cw2Mx5Mvp4gHbRCn8
-         rDgEU8F/TXKn4/71g8VY2zG+S1R/dCuDq/0gWxQY=
+        b=ph66zfU2VmaG6+kZsanRx6sBpUozXrrbA4YPx91Z8Kew9g8w3AF1PQbrAsbfbcpFL
+         LuV/+I2VU9ZW3bDgqqMQ7CbkulE5xEVFqcFJzuwtiM9heYhiaRRYEQDJf/3jLjsFxH
+         xN9AGOG3ssSn0hGW+pjoydoZFGfzNkJikNlt9hjM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 547/575] net, neigh: Enable state migration between NUD_PERMANENT and NTF_USE
-Date:   Mon, 15 Nov 2021 18:04:32 +0100
-Message-Id: <20211115165402.599011827@linuxfoundation.org>
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 550/575] powerpc/lib: Add helper to check if offset is within conditional branch range
+Date:   Mon, 15 Nov 2021 18:04:35 +0100
+Message-Id: <20211115165402.700919144@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,163 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
 
-[ Upstream commit 3dc20f4762c62d3b3f0940644881ed818aa7b2f5 ]
+upstream commit 4549c3ea3160fa8b3f37dfe2f957657bb265eda9
 
-Currently, it is not possible to migrate a neighbor entry between NUD_PERMANENT
-state and NTF_USE flag with a dynamic NUD state from a user space control plane.
-Similarly, it is not possible to add/remove NTF_EXT_LEARNED flag from an existing
-neighbor entry in combination with NTF_USE flag.
+Add a helper to check if a given offset is within the branch range for a
+powerpc conditional branch instruction, and update some sites to use the
+new helper.
 
-This is due to the latter directly calling into neigh_event_send() without any
-meta data updates as happening in __neigh_update(). Thus, to enable this use
-case, extend the latter with a NEIGH_UPDATE_F_USE flag where we break the
-NUD_PERMANENT state in particular so that a latter neigh_event_send() is able
-to re-resolve a neighbor entry.
-
-Before fix, NUD_PERMANENT -> NUD_* & NTF_USE:
-
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
-  [...]
-
-As can be seen, despite the admin-triggered replace, the entry remains in the
-NUD_PERMANENT state.
-
-After fix, NUD_PERMANENT -> NUD_* & NTF_USE:
-
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
-  [...]
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn STALE
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a PERMANENT
-  [...]
-
-After the fix, the admin-triggered replace switches to a dynamic state from
-the NTF_USE flag which triggered a new neighbor resolution. Likewise, we can
-transition back from there, if needed, into NUD_PERMANENT.
-
-Similar before/after behavior can be observed for below transitions:
-
-Before fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
-
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
-  [...]
-
-After fix, NTF_USE -> NTF_USE | NTF_EXT_LEARNED -> NTF_USE:
-
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use extern_learn
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a extern_learn REACHABLE
-  [...]
-  # ./ip/ip n replace 192.168.178.30 dev enp5s0 use
-  # ./ip/ip n
-  192.168.178.30 dev enp5s0 lladdr f4:8c:50:5e:71:9a REACHABLE
-  [..]
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Roopa Prabhu <roopa@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/442b69a34ced32ca346a0d9a855f3f6cfdbbbd41.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/neighbour.h |  1 +
- net/core/neighbour.c    | 22 +++++++++++++---------
- 2 files changed, 14 insertions(+), 9 deletions(-)
+ arch/powerpc/include/asm/code-patching.h |    1 +
+ arch/powerpc/lib/code-patching.c         |    7 ++++++-
+ arch/powerpc/net/bpf_jit.h               |    7 +------
+ 3 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/include/net/neighbour.h b/include/net/neighbour.h
-index 990f9b1d17092..d5767e25509cc 100644
---- a/include/net/neighbour.h
-+++ b/include/net/neighbour.h
-@@ -253,6 +253,7 @@ static inline void *neighbour_priv(const struct neighbour *n)
- #define NEIGH_UPDATE_F_OVERRIDE			0x00000001
- #define NEIGH_UPDATE_F_WEAK_OVERRIDE		0x00000002
- #define NEIGH_UPDATE_F_OVERRIDE_ISROUTER	0x00000004
-+#define NEIGH_UPDATE_F_USE			0x10000000
- #define NEIGH_UPDATE_F_EXT_LEARNED		0x20000000
- #define NEIGH_UPDATE_F_ISROUTER			0x40000000
- #define NEIGH_UPDATE_F_ADMIN			0x80000000
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 01e243a578e9c..8eec7667aa761 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -1222,7 +1222,7 @@ static void neigh_update_hhs(struct neighbour *neigh)
- 				lladdr instead of overriding it
- 				if it is different.
- 	NEIGH_UPDATE_F_ADMIN	means that the change is administrative.
--
-+	NEIGH_UPDATE_F_USE	means that the entry is user triggered.
- 	NEIGH_UPDATE_F_OVERRIDE_ISROUTER allows to override existing
- 				NTF_ROUTER flag.
- 	NEIGH_UPDATE_F_ISROUTER	indicates if the neighbour is known as
-@@ -1260,6 +1260,12 @@ static int __neigh_update(struct neighbour *neigh, const u8 *lladdr,
- 		goto out;
+--- a/arch/powerpc/include/asm/code-patching.h
++++ b/arch/powerpc/include/asm/code-patching.h
+@@ -23,6 +23,7 @@
+ #define BRANCH_ABSOLUTE	0x2
  
- 	ext_learn_change = neigh_update_ext_learned(neigh, flags, &notify);
-+	if (flags & NEIGH_UPDATE_F_USE) {
-+		new = old & ~NUD_PERMANENT;
-+		neigh->nud_state = new;
-+		err = 0;
-+		goto out;
-+	}
- 
- 	if (!(new & NUD_VALID)) {
- 		neigh_del_timer(neigh);
-@@ -1971,22 +1977,20 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
- 
- 	if (protocol)
- 		neigh->protocol = protocol;
--
- 	if (ndm->ndm_flags & NTF_EXT_LEARNED)
- 		flags |= NEIGH_UPDATE_F_EXT_LEARNED;
--
- 	if (ndm->ndm_flags & NTF_ROUTER)
- 		flags |= NEIGH_UPDATE_F_ISROUTER;
-+	if (ndm->ndm_flags & NTF_USE)
-+		flags |= NEIGH_UPDATE_F_USE;
- 
--	if (ndm->ndm_flags & NTF_USE) {
-+	err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
-+			     NETLINK_CB(skb).portid, extack);
-+	if (!err && ndm->ndm_flags & NTF_USE) {
- 		neigh_event_send(neigh, NULL);
- 		err = 0;
--	} else
--		err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
--				     NETLINK_CB(skb).portid, extack);
--
-+	}
- 	neigh_release(neigh);
--
- out:
- 	return err;
+ bool is_offset_in_branch_range(long offset);
++bool is_offset_in_cond_branch_range(long offset);
+ int create_branch(struct ppc_inst *instr, const struct ppc_inst *addr,
+ 		  unsigned long target, int flags);
+ int create_cond_branch(struct ppc_inst *instr, const struct ppc_inst *addr,
+--- a/arch/powerpc/lib/code-patching.c
++++ b/arch/powerpc/lib/code-patching.c
+@@ -230,6 +230,11 @@ bool is_offset_in_branch_range(long offs
+ 	return (offset >= -0x2000000 && offset <= 0x1fffffc && !(offset & 0x3));
  }
--- 
-2.33.0
-
+ 
++bool is_offset_in_cond_branch_range(long offset)
++{
++	return offset >= -0x8000 && offset <= 0x7fff && !(offset & 0x3);
++}
++
+ /*
+  * Helper to check if a given instruction is a conditional branch
+  * Derived from the conditional checks in analyse_instr()
+@@ -283,7 +288,7 @@ int create_cond_branch(struct ppc_inst *
+ 		offset = offset - (unsigned long)addr;
+ 
+ 	/* Check we can represent the target in the instruction format */
+-	if (offset < -0x8000 || offset > 0x7FFF || offset & 0x3)
++	if (!is_offset_in_cond_branch_range(offset))
+ 		return 1;
+ 
+ 	/* Mask out the flags and target, so they don't step on each other. */
+--- a/arch/powerpc/net/bpf_jit.h
++++ b/arch/powerpc/net/bpf_jit.h
+@@ -71,11 +71,6 @@
+ #define PPC_FUNC_ADDR(d,i) do { PPC_LI32(d, i); } while(0)
+ #endif
+ 
+-static inline bool is_nearbranch(int offset)
+-{
+-	return (offset < 32768) && (offset >= -32768);
+-}
+-
+ /*
+  * The fly in the ointment of code size changing from pass to pass is
+  * avoided by padding the short branch case with a NOP.	 If code size differs
+@@ -84,7 +79,7 @@ static inline bool is_nearbranch(int off
+  * state.
+  */
+ #define PPC_BCC(cond, dest)	do {					      \
+-		if (is_nearbranch((dest) - (ctx->idx * 4))) {		      \
++		if (is_offset_in_cond_branch_range((long)(dest) - (ctx->idx * 4))) {	\
+ 			PPC_BCC_SHORT(cond, dest);			      \
+ 			EMIT(PPC_RAW_NOP());				      \
+ 		} else {						      \
 
 
