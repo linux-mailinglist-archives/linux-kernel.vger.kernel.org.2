@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B984517A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EB64517A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhKOWgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:36:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        id S1353502AbhKOWgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:36:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242584AbhKOSit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242583AbhKOSit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:38:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E5CA632E6;
-        Mon, 15 Nov 2021 18:03:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F4143632E7;
+        Mon, 15 Nov 2021 18:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999423;
-        bh=XlPWwDSBSAjUuVU7E2K8k4ivOtXtQoxJIestpEVm9rQ=;
+        s=korg; t=1636999426;
+        bh=1+oPHhv9ooizTkRRpdlMowCw+diLf8tTRIiP9pcc6aU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cr/ZZ51W25orjSZlSuFI8aVFO4r5BC4AVdKARDbQt+5RCOVeKnHR8UBpabgY+R44p
-         0rlMqK9Ui2NBj5DGsNtaHgy8JkizpscQrK8Bbiz1OvoZGWhErsTYGL+wsBgaWPahZY
-         dLwuRHxBGdoa6l9gtTSIzDGDw5QR+QYc915Wvcic=
+        b=ZNvEk/Ii/JOJRc/IGv+Z2conXhaJylczx0RWHC6fVyl2r7+n5owS9+6O8PfjHWe9t
+         kfOhguZ4Lf8NsGnpQjGvMbw6+NfxBcPg8YFT8uEqfh7BT0/9kZVDPz+TUIyhA6DpmW
+         NA4MXBzAmyMCqyS2ALfw0KOU4QztK2BjEE6vTc1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        stable@vger.kernel.org, Yaara Baruch <yaara.baruch@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 292/849] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
-Date:   Mon, 15 Nov 2021 17:56:15 +0100
-Message-Id: <20211115165430.144901649@linuxfoundation.org>
+Subject: [PATCH 5.14 293/849] iwlwifi: change all JnP to NO-160 configuration
+Date:   Mon, 15 Nov 2021 17:56:16 +0100
+Message-Id: <20211115165430.178084082@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,59 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Yaara Baruch <yaara.baruch@intel.com>
 
-[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
+[ Upstream commit 70382b0897eeecfcd35ba5f6161dbceeb556ea1e ]
 
-When the driver fails to request the firmware, it calls its error
-handler. In the error handler, the driver detaches device from driver
-first before releasing the firmware, which can cause a use-after-free bug.
+JnP should not have the 160 MHz.
 
-Fix this by releasing firmware first.
-
-The following log reveals it:
-
-[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
-[    9.010143 ] Workqueue: events request_firmware_work_func
-[    9.010830 ] Call Trace:
-[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
-[    9.010830 ]  print_address_description+0x87/0x3b0
-[    9.010830 ]  kasan_report+0x172/0x1c0
-[    9.010830 ]  ? mutex_unlock+0xd/0x10
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
-[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
-[    9.010830 ]  request_firmware_work_func+0x172/0x250
-[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
-[    9.010830 ]  ? process_one_work+0x7a1/0x1100
-[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
-[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
-[    9.010830 ]  process_one_work+0x9bb/0x1100
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Yaara Baruch <yaara.baruch@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
+Link: https://lore.kernel.org/r/iwlwifi.20211016114029.ee163f4a7513.I7f87bd969a0b038c7f3a1a962d9695ffd18c5da1@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwl8k.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index 3bf6571f41490..529e325498cdb 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -5800,8 +5800,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
- fail:
- 	priv->fw_state = FW_STATE_ERROR;
- 	complete(&priv->firmware_loading_complete);
--	device_release_driver(&priv->pdev->dev);
- 	mwl8k_release_firmware(priv);
-+	device_release_driver(&priv->pdev->dev);
- }
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index be3ad42813532..1ffd7685deefa 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -931,9 +931,9 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
+ 		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
+ 		      iwl_qu_b0_hr1_b0, iwl_ax101_name),
+ 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
+-		      IWL_CFG_MAC_TYPE_QU, SILICON_C_STEP,
++		      IWL_CFG_MAC_TYPE_QU, SILICON_B_STEP,
+ 		      IWL_CFG_RF_TYPE_HR2, IWL_CFG_ANY,
+-		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
++		      IWL_CFG_NO_160, IWL_CFG_ANY, IWL_CFG_NO_CDB,
+ 		      iwl_qu_b0_hr_b0, iwl_ax203_name),
  
- #define MAX_RESTART_ATTEMPTS 1
+ 	/* Qu C step */
+@@ -945,7 +945,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
+ 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
+ 		      IWL_CFG_MAC_TYPE_QU, SILICON_C_STEP,
+ 		      IWL_CFG_RF_TYPE_HR2, IWL_CFG_ANY,
+-		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
++		      IWL_CFG_NO_160, IWL_CFG_ANY, IWL_CFG_NO_CDB,
+ 		      iwl_qu_c0_hr_b0, iwl_ax203_name),
+ 
+ 	/* QuZ */
 -- 
 2.33.0
 
