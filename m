@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE20845109C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4AE451096
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241839AbhKOSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:51:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46730 "EHLO mail.kernel.org"
+        id S242963AbhKOSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:50:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238215AbhKORfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:35:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EFD663257;
-        Mon, 15 Nov 2021 17:23:32 +0000 (UTC)
+        id S238226AbhKORfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F0F063267;
+        Mon, 15 Nov 2021 17:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997014;
-        bh=/5efRwVIq2ZZJbRfkD7SDJHRTDVpzuydME1MiU3NSxw=;
+        s=korg; t=1636997016;
+        bh=x8c3oIyx7mvFo0HRAFo9anyAyJ6HpuZ++qT4atRC9dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OgodZ8byOxJohf0nP/4mDC5S6oLXeoIgVDPvxAGOsuGQPyEztJTuboVtpp9Cy+LcE
-         1Mh136B67fR/Xg0imb27yNT01M1RrAZ/1ZUL6JjqPdumfBvAsmLkzd542RatoEzfu3
-         yeoUWz3/ppA5yfDShu5EW54e1GNNZTgaj2Al2Bts=
+        b=lOhhAoPAKos3c66xw4ekyBWd4Vo7INBDYWK+fYuLKNDpIJe3NEjrajixnJjyV8+bg
+         T5SabcqLERPyK95cPCjm9/UICnLSPHfEQtiUTZzkPsdWciH2e7ThG2ZiKZfOL35HRe
+         l18sJB8Geft8EuhnxEvZhZHTMyuS0lSrIlpCeHBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Huang Guobin <huangguobin4@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 318/355] ACPI: PMIC: Fix intel_pmic_regs_handler() read accesses
-Date:   Mon, 15 Nov 2021 18:04:02 +0100
-Message-Id: <20211115165324.009074356@linuxfoundation.org>
+Subject: [PATCH 5.4 319/355] bonding: Fix a use-after-free problem when bond_sysfs_slave_add() failed
+Date:   Mon, 15 Nov 2021 18:04:03 +0100
+Message-Id: <20211115165324.041778687@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,139 +41,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Huang Guobin <huangguobin4@huawei.com>
 
-[ Upstream commit 009a789443fe4c8e6b1ecb7c16b4865c026184cd ]
+[ Upstream commit b93c6a911a3fe926b00add28f3b932007827c4ca ]
 
-The handling of PMIC register reads through writing 0 to address 4
-of the OpRegion is wrong. Instead of returning the read value
-through the value64, which is a no-op for function == ACPI_WRITE calls,
-store the value and then on a subsequent function == ACPI_READ with
-address == 3 (the address for the value field of the OpRegion)
-return the stored value.
+When I do fuzz test for bonding device interface, I got the following
+use-after-free Calltrace:
 
-This has been tested on a Xiaomi Mi Pad 2 and makes the ACPI battery dev
-there mostly functional (unfortunately there are still other issues).
+==================================================================
+BUG: KASAN: use-after-free in bond_enslave+0x1521/0x24f0
+Read of size 8 at addr ffff88825bc11c00 by task ifenslave/7365
 
-Here are the SET() / GET() functions of the PMIC ACPI device,
-which use this OpRegion, which clearly show the new behavior to
-be correct:
+CPU: 5 PID: 7365 Comm: ifenslave Tainted: G            E     5.15.0-rc1+ #13
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0x6c/0x8b
+ print_address_description.constprop.0+0x48/0x70
+ kasan_report.cold+0x82/0xdb
+ __asan_load8+0x69/0x90
+ bond_enslave+0x1521/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f19159cf577
+Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 78
+RSP: 002b:00007ffeb3083c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffeb3084bca RCX: 00007f19159cf577
+RDX: 00007ffeb3083ce0 RSI: 0000000000008990 RDI: 0000000000000003
+RBP: 00007ffeb3084bc4 R08: 0000000000000040 R09: 0000000000000000
+R10: 00007ffeb3084bc0 R11: 0000000000000246 R12: 00007ffeb3083ce0
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeb3083cb0
 
-OperationRegion (REGS, 0x8F, Zero, 0x50)
-Field (REGS, ByteAcc, NoLock, Preserve)
-{
-    CLNT,   8,
-    SA,     8,
-    OFF,    8,
-    VAL,    8,
-    RWM,    8
-}
+Allocated by task 7365:
+ kasan_save_stack+0x23/0x50
+ __kasan_kmalloc+0x83/0xa0
+ kmem_cache_alloc_trace+0x22e/0x470
+ bond_enslave+0x2e1/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Method (GET, 3, Serialized)
-{
-    If ((AVBE == One))
-    {
-        CLNT = Arg0
-        SA = Arg1
-        OFF = Arg2
-        RWM = Zero
-        If ((AVBG == One))
-        {
-            GPRW = Zero
-        }
-    }
+Freed by task 7365:
+ kasan_save_stack+0x23/0x50
+ kasan_set_track+0x20/0x30
+ kasan_set_free_info+0x24/0x40
+ __kasan_slab_free+0xf2/0x130
+ kfree+0xd1/0x5c0
+ slave_kobj_release+0x61/0x90
+ kobject_put+0x102/0x180
+ bond_sysfs_slave_add+0x7a/0xa0
+ bond_enslave+0x11b6/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-    Return (VAL) /* \_SB_.PCI0.I2C7.PMI5.VAL_ */
-}
+Last potentially related work creation:
+ kasan_save_stack+0x23/0x50
+ kasan_record_aux_stack+0xb7/0xd0
+ insert_work+0x43/0x190
+ __queue_work+0x2e3/0x970
+ delayed_work_timer_fn+0x3e/0x50
+ call_timer_fn+0x148/0x470
+ run_timer_softirq+0x8a8/0xc50
+ __do_softirq+0x107/0x55f
 
-Method (SET, 4, Serialized)
-{
-    If ((AVBE == One))
-    {
-        CLNT = Arg0
-        SA = Arg1
-        OFF = Arg2
-        VAL = Arg3
-        RWM = One
-        If ((AVBG == One))
-        {
-            GPRW = One
-        }
-    }
-}
+Second to last potentially related work creation:
+ kasan_save_stack+0x23/0x50
+ kasan_record_aux_stack+0xb7/0xd0
+ insert_work+0x43/0x190
+ __queue_work+0x2e3/0x970
+ __queue_delayed_work+0x130/0x180
+ queue_delayed_work_on+0xa7/0xb0
+ bond_enslave+0xe25/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: 0afa877a5650 ("ACPI / PMIC: intel: add REGS operation region support")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The buggy address belongs to the object at ffff88825bc11c00
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 0 bytes inside of
+ 1024-byte region [ffff88825bc11c00, ffff88825bc12000)
+The buggy address belongs to the page:
+page:ffffea00096f0400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25bc10
+head:ffffea00096f0400 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
+raw: 057ff00000010200 ffffea0009a71c08 ffff888240001968 ffff88810004dbc0
+raw: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88825bc11b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88825bc11b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88825bc11c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88825bc11c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88825bc11d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+Put new_slave in bond_sysfs_slave_add() will cause use-after-free problems
+when new_slave is accessed in the subsequent error handling process. Since
+new_slave will be put in the subsequent error handling process, remove the
+unnecessary put to fix it.
+In addition, when sysfs_create_file() fails, if some files have been crea-
+ted successfully, we need to call sysfs_remove_file() to remove them.
+Since there are sysfs_create_files() & sysfs_remove_files() can be used,
+use these two functions instead.
+
+Fixes: 7afcaec49696 (bonding: use kobject_put instead of _del after kobject_add)
+Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/pmic/intel_pmic.c | 51 +++++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 23 deletions(-)
+ drivers/net/bonding/bond_sysfs_slave.c | 36 ++++++++------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/acpi/pmic/intel_pmic.c b/drivers/acpi/pmic/intel_pmic.c
-index 452041398b347..36d5a5d50b2ff 100644
---- a/drivers/acpi/pmic/intel_pmic.c
-+++ b/drivers/acpi/pmic/intel_pmic.c
-@@ -211,31 +211,36 @@ static acpi_status intel_pmic_regs_handler(u32 function,
- 		void *handler_context, void *region_context)
+diff --git a/drivers/net/bonding/bond_sysfs_slave.c b/drivers/net/bonding/bond_sysfs_slave.c
+index fd07561da0348..6a6cdd0bb2585 100644
+--- a/drivers/net/bonding/bond_sysfs_slave.c
++++ b/drivers/net/bonding/bond_sysfs_slave.c
+@@ -108,15 +108,15 @@ static ssize_t ad_partner_oper_port_state_show(struct slave *slave, char *buf)
+ }
+ static SLAVE_ATTR_RO(ad_partner_oper_port_state);
+ 
+-static const struct slave_attribute *slave_attrs[] = {
+-	&slave_attr_state,
+-	&slave_attr_mii_status,
+-	&slave_attr_link_failure_count,
+-	&slave_attr_perm_hwaddr,
+-	&slave_attr_queue_id,
+-	&slave_attr_ad_aggregator_id,
+-	&slave_attr_ad_actor_oper_port_state,
+-	&slave_attr_ad_partner_oper_port_state,
++static const struct attribute *slave_attrs[] = {
++	&slave_attr_state.attr,
++	&slave_attr_mii_status.attr,
++	&slave_attr_link_failure_count.attr,
++	&slave_attr_perm_hwaddr.attr,
++	&slave_attr_queue_id.attr,
++	&slave_attr_ad_aggregator_id.attr,
++	&slave_attr_ad_actor_oper_port_state.attr,
++	&slave_attr_ad_partner_oper_port_state.attr,
+ 	NULL
+ };
+ 
+@@ -137,24 +137,10 @@ const struct sysfs_ops slave_sysfs_ops = {
+ 
+ int bond_sysfs_slave_add(struct slave *slave)
  {
- 	struct intel_pmic_opregion *opregion = region_context;
--	int result = 0;
-+	int result = -EINVAL;
-+
-+	if (function == ACPI_WRITE) {
-+		switch (address) {
-+		case 0:
-+			return AE_OK;
-+		case 1:
-+			opregion->ctx.addr |= (*value64 & 0xff) << 8;
-+			return AE_OK;
-+		case 2:
-+			opregion->ctx.addr |= *value64 & 0xff;
-+			return AE_OK;
-+		case 3:
-+			opregion->ctx.val = *value64 & 0xff;
-+			return AE_OK;
-+		case 4:
-+			if (*value64) {
-+				result = regmap_write(opregion->regmap, opregion->ctx.addr,
-+						      opregion->ctx.val);
-+			} else {
-+				result = regmap_read(opregion->regmap, opregion->ctx.addr,
-+						     &opregion->ctx.val);
-+			}
-+			opregion->ctx.addr = 0;
-+		}
-+	}
- 
--	switch (address) {
--	case 0:
--		return AE_OK;
--	case 1:
--		opregion->ctx.addr |= (*value64 & 0xff) << 8;
--		return AE_OK;
--	case 2:
--		opregion->ctx.addr |= *value64 & 0xff;
-+	if (function == ACPI_READ && address == 3) {
-+		*value64 = opregion->ctx.val;
- 		return AE_OK;
--	case 3:
--		opregion->ctx.val = *value64 & 0xff;
--		return AE_OK;
--	case 4:
--		if (*value64) {
--			result = regmap_write(opregion->regmap, opregion->ctx.addr,
--					      opregion->ctx.val);
--		} else {
--			result = regmap_read(opregion->regmap, opregion->ctx.addr,
--					     &opregion->ctx.val);
--			if (result == 0)
--				*value64 = opregion->ctx.val;
+-	const struct slave_attribute **a;
+-	int err;
+-
+-	for (a = slave_attrs; *a; ++a) {
+-		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
+-		if (err) {
+-			kobject_put(&slave->kobj);
+-			return err;
 -		}
--		memset(&opregion->ctx, 0x00, sizeof(opregion->ctx));
- 	}
+-	}
+-
+-	return 0;
++	return sysfs_create_files(&slave->kobj, slave_attrs);
+ }
  
- 	if (result < 0) {
+ void bond_sysfs_slave_del(struct slave *slave)
+ {
+-	const struct slave_attribute **a;
+-
+-	for (a = slave_attrs; *a; ++a)
+-		sysfs_remove_file(&slave->kobj, &((*a)->attr));
++	sysfs_remove_files(&slave->kobj, slave_attrs);
+ }
 -- 
 2.33.0
 
