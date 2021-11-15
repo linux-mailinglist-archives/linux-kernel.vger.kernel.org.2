@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504CE4511FF
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8D2451200
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344079AbhKOTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:23:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34892 "EHLO mail.kernel.org"
+        id S1344155AbhKOTXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:23:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238794AbhKORuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238797AbhKORuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:50:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BBC863284;
-        Mon, 15 Nov 2021 17:30:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A65363251;
+        Mon, 15 Nov 2021 17:30:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997455;
-        bh=X8vso3hW+mADoosQ2fCBZ32ykJZCSSZI2hJm/JV7pC8=;
+        s=korg; t=1636997458;
+        bh=EB+iKJh/yyi/sv+iR3UpJvKhL6oH2KY/99lvOZII0TQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OtYdW2LYH8yibe7NCkfpLgupm+80kuvzZGnwh8oDC5z6kRfzfvsQQwejN7kdRpI9x
-         fQjK3jWQhPwafzSJAS4lNJtf8qXooSdX6yUIdkwt/z9yDcs/clPExiRuXDYqu1Gmm3
-         UqB1AhRaoi8NMhq45YNiDPkY9oU7oBRF7pYwFmcs=
+        b=UvyIaMSzBLyshnpUcQwpY7a+66G8J/zkBJcRvSVb7VeuY5hj0nmjqRWmd58/N7lYl
+         MOxmovquVvkKcDnNdWnRAZmUqKlqBE/EYa/KusSRpIdH07je2KjrdWXV/E8UYNe2qY
+         oJEVZ2y9ZC/GQMv2nr36xjF1OjjGz5rRrC8q/FEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pekka Korpinen <pekka.korpinen@iki.fi>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 155/575] iio: dac: ad5446: Fix ad5622_write() return value
-Date:   Mon, 15 Nov 2021 17:58:00 +0100
-Message-Id: <20211115165349.053506248@linuxfoundation.org>
+Subject: [PATCH 5.10 156/575] iio: ad5770r: make devicetree property reading consistent
+Date:   Mon, 15 Nov 2021 17:58:01 +0100
+Message-Id: <20211115165349.090047155@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,47 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pekka Korpinen <pekka.korpinen@iki.fi>
+From: Nuno Sá <nuno.sa@analog.com>
 
-commit 558df982d4ead9cac628153d0d7b60feae05ddc8 upstream.
+commit 26df977a909f818b7d346b3990735513e7e0bf93 upstream.
 
-On success i2c_master_send() returns the number of bytes written. The
-call from iio_write_channel_info(), however, expects the return value to
-be zero on success.
+The bindings file for this driver is defining the property as 'reg' but
+the driver was reading it with the 'num' name. The bindings actually had
+the 'num' property when added in
+commit ea52c21268e6 ("dt-bindings: iio: dac: Add docs for AD5770R DAC")
+and then changed it to 'reg' in
+commit 2cf3818f18b2 ("dt-bindings: iio: dac: AD5570R fix bindings errors").
+However, both these commits landed in v5.7 so the assumption is
+that either 'num' is not being used or if it is, the validations were not
+done.
 
-This bug causes incorrect consumption of the sysfs buffer in
-iio_write_channel_info(). When writing more than two characters to
-out_voltage0_raw, the ad5446 write handler is called multiple times
-causing unexpected behavior.
+Anyways, if someone comes back yelling about this, we might just support
+both of the properties in the future. Not ideal, but that's life...
 
-Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
-Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
-Link: https://lore.kernel.org/r/20210929185755.2384-1-pekka.korpinen@iki.fi
-Cc: <Stable@vger.kernel.org>
+Fixes: 2cf3818f18b2 ("dt-bindings: iio: dac: AD5570R fix bindings errors")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210818080525.62790-1-nuno.sa@analog.com
+Cc: Stable@vger.kernel.org
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/dac/ad5446.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/iio/dac/ad5770r.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/dac/ad5446.c
-+++ b/drivers/iio/dac/ad5446.c
-@@ -531,8 +531,15 @@ static int ad5622_write(struct ad5446_st
- {
- 	struct i2c_client *client = to_i2c_client(st->dev);
- 	__be16 data = cpu_to_be16(val);
-+	int ret;
+--- a/drivers/iio/dac/ad5770r.c
++++ b/drivers/iio/dac/ad5770r.c
+@@ -522,7 +522,7 @@ static int ad5770r_channel_config(struct
+ 		return -EINVAL;
  
--	return i2c_master_send(client, (char *)&data, sizeof(data));
-+	ret = i2c_master_send(client, (char *)&data, sizeof(data));
-+	if (ret < 0)
-+		return ret;
-+	if (ret != sizeof(data))
-+		return -EIO;
-+
-+	return 0;
- }
- 
- /*
+ 	device_for_each_child_node(&st->spi->dev, child) {
+-		ret = fwnode_property_read_u32(child, "num", &num);
++		ret = fwnode_property_read_u32(child, "reg", &num);
+ 		if (ret)
+ 			goto err_child_out;
+ 		if (num >= AD5770R_MAX_CHANNELS) {
 
 
