@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04910452771
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2E1452348
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353163AbhKPCZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:25:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
+        id S231706AbhKPBXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237556AbhKORYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AAD76324D;
-        Mon, 15 Nov 2021 17:16:51 +0000 (UTC)
+        id S244472AbhKOTPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:15:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA91634C7;
+        Mon, 15 Nov 2021 18:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996612;
-        bh=7MOlIOUgqGMGlR+46hStSUoDqVHRgYJM4297GzW23dc=;
+        s=korg; t=1637000486;
+        bh=MZuJlqZUU5xrqwl9xr1UE6DVNvsWpWlgxOeMvD07Enw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U8ADWgtI6YzcMp3zhKvL7w2xlNGZpZYX1vQqR7yyJvr8qc9ZSPmVDQamIo/LlBKk1
-         I1oUYqtkVp4iUAefxI9wEUlbRVi+i7iq3Pb/wxzyT5khfFDDQt+to4rwV0aPsO5FDS
-         tG/7Y3Ik3VRz6RRthliYaUZnNtKkJPlI6gbZEE98=
+        b=NKYuBzRONb2Ag45tmtdnG7QB5Np3/zoeCDAXy8rW8PzCHPiw6TfE0umDVpKdiZr4E
+         YQYWSogFQ6ovfhbwuYaiTB0EO3ROedNmKqOvh/rYBJW5nHtzTrVvNjRHOh72Ax/oXu
+         kpNw/CmjUSY/jeOnkF22QWsr887VTVsMIbpcFUKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 202/355] media: si470x: Avoid card name truncation
-Date:   Mon, 15 Nov 2021 18:02:06 +0100
-Message-Id: <20211115165320.297036007@linuxfoundation.org>
+Subject: [PATCH 5.14 644/849] clk: at91: sam9x60-pll: use DIV_ROUND_CLOSEST_ULL
+Date:   Mon, 15 Nov 2021 18:02:07 +0100
+Message-Id: <20211115165442.061586090@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
-References: <20211115165313.549179499@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 2908249f3878a591f7918368fdf0b7b0a6c3158c ]
+[ Upstream commit f12d028b743bb6136da60b17228a1b6162886444 ]
 
-The "card" string only holds 31 characters (and the terminating NUL).
-In order to avoid truncation, use a shorter card description instead of
-the current result, "Silicon Labs Si470x FM Radio Re".
+Use DIV_ROUND_CLOSEST_ULL() to avoid any inconsistency b/w the rate
+computed in sam9x60_frac_pll_recalc_rate() and the one computed in
+sam9x60_frac_pll_compute_mul_frac().
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 78656acdcf48 ("V4L/DVB (7038): USB radio driver for Silicon Labs Si470x FM Radio Receivers")
-Fixes: cc35bbddfe10 ("V4L/DVB (12416): radio-si470x: add i2c driver for si470x")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 43b1bb4a9b3e1 ("clk: at91: clk-sam9x60-pll: re-factor to support plls with multiple outputs")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lore.kernel.org/r/20211011112719.3951784-8-claudiu.beznea@microchip.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
- drivers/media/radio/si470x/radio-si470x-usb.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/at91/clk-sam9x60-pll.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-index f491420d7b538..a972c0705ac79 100644
---- a/drivers/media/radio/si470x/radio-si470x-i2c.c
-+++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
-@@ -11,7 +11,7 @@
+diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk-sam9x60-pll.c
+index 34e3ab13741ac..1f52409475e9c 100644
+--- a/drivers/clk/at91/clk-sam9x60-pll.c
++++ b/drivers/clk/at91/clk-sam9x60-pll.c
+@@ -71,8 +71,8 @@ static unsigned long sam9x60_frac_pll_recalc_rate(struct clk_hw *hw,
+ 	struct sam9x60_pll_core *core = to_sam9x60_pll_core(hw);
+ 	struct sam9x60_frac *frac = to_sam9x60_frac(core);
  
- /* driver definitions */
- #define DRIVER_AUTHOR "Joonyoung Shim <jy0922.shim@samsung.com>";
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "I2C radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.2"
+-	return (parent_rate * (frac->mul + 1) +
+-		((u64)parent_rate * frac->frac >> 22));
++	return parent_rate * (frac->mul + 1) +
++		DIV_ROUND_CLOSEST_ULL((u64)parent_rate * frac->frac, (1 << 22));
+ }
  
-diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
-index fedff68d8c496..3f8634a465730 100644
---- a/drivers/media/radio/si470x/radio-si470x-usb.c
-+++ b/drivers/media/radio/si470x/radio-si470x-usb.c
-@@ -16,7 +16,7 @@
- 
- /* driver definitions */
- #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.10"
- 
+ static int sam9x60_frac_pll_prepare(struct clk_hw *hw)
 -- 
 2.33.0
 
