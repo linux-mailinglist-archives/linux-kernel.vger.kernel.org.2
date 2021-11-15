@@ -2,148 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF9B4508C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3524508C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhKOPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:43:47 -0500
-Received: from mga06.intel.com ([134.134.136.31]:17960 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230101AbhKOPmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:42:39 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="294281954"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="294281954"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 07:39:32 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="505960929"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.29.112]) ([10.255.29.112])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 07:39:23 -0800
-Message-ID: <3fecedbb-7867-ba32-1326-7252d47dbf43@intel.com>
-Date:   Mon, 15 Nov 2021 23:39:21 +0800
+        id S236588AbhKOPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236575AbhKOPnA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:43:00 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB9EC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:40:03 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id k23so8331628lje.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=NKqaqkC9Gcxs3qH/ck2+jKDk+8HUmicpfwBFAbz3qyE=;
+        b=i/Wp/x2sbQXXacK9z175rOY8lMS0x2oTrz4QlQUpLCF1tdPRfIh7fsca0l7fReuO04
+         T9PGatOOPPLLXFk0jv2mlMznR0B30tNOqVvRNXIfmfq1q+vaPfVL/KYqutOHg9fyGPhl
+         bNBQdGtpOBAD+kwuIsWhF/5cBNBMzHy3JncF1KWuBH88pVsO6CNheTgH3rZgSKYoD4gl
+         Ma+STcpzB++R9uyr+IaNsjd2VZbqLorkhHpnxKhrQkw+ZetXrA328hAATcgfEx/E5oJe
+         tbQIUs1JiNpNcd+I1xKjzflXLvXTQcQ+tRz4+JqpVzIPvhUSkdr1zcbRJoG64u3GE1yF
+         AJ/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=NKqaqkC9Gcxs3qH/ck2+jKDk+8HUmicpfwBFAbz3qyE=;
+        b=BHdTin6HNbE1KjVDUFnCXJwG1l8Zp7fvoJA2bIkAQUrGBtcoKpnPyyVtvsjJwu6yCg
+         a4kLAvx3xszKR5MDBgfJ98FG5JwQtrDCGL/MnuLIZrlGqXNKOVCWNsffF3xXkh9wHmIh
+         /MO/s4VxRi2WrvVtqnNHFpfB/Qu3XmuqPp6ZnRXskXNdNjRs/420jFn8fhaEOhcJ7Y9y
+         BkHHHmBw3n2tR+PHngbMadFW5CNGc6BtoMPuUMB7FrVb6ZcdC9DGKKfcWN3J6tcKUgPz
+         e7362vjOvp4ZMiZSAEz0lcoYF8x1dPP0/4W4JXaBv9fkitJG2BAnI42sNoksW1RYgdQv
+         rUYg==
+X-Gm-Message-State: AOAM532oGANyihu2rKu7S7k8oyQJzS/dFNrw82nHB/DtYR+JmRc5j1Nf
+        FCm76/edekKCLnspZ+A8j9yxXLVNS9w6V9k7mI5O9LNGGIY=
+X-Google-Smtp-Source: ABdhPJxmvjFpSKOpFSQezqTMp3cUTmm0yG+2K01pToOxrWHv32bZTIqDaFlBtBelFglMsolo+Lpv/3xNt6A0+A03QXk=
+X-Received: by 2002:a2e:9e06:: with SMTP id e6mr38939304ljk.190.1636990801814;
+ Mon, 15 Nov 2021 07:40:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: [PATCH 04/11] KVM: x86: Disable MCE related stuff for TDX
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, Kai Huang <kai.huang@intel.com>
-References: <20211112153733.2767561-1-xiaoyao.li@intel.com>
- <20211112153733.2767561-5-xiaoyao.li@intel.com> <YY6d57pWU8iJg/i+@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <YY6d57pWU8iJg/i+@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From:   Manish Raturi <raturi.manish@gmail.com>
+Date:   Mon, 15 Nov 2021 21:09:50 +0530
+Message-ID: <CAHn-FMw4F1Pr9zZcQZ_qyhpBohFegGgGWqRM9XLJGLpe4Qx0QQ@mail.gmail.com>
+Subject: AER strings
+To:     bhelgaas@google.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/2021 1:01 AM, Sean Christopherson wrote:
-> On Fri, Nov 12, 2021, Xiaoyao Li wrote:
->> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>
->> MCE is not supported for TDX VM and KVM cannot inject #MC to TDX VM.
->>
->> Introduce kvm_guest_mce_disallowed() which actually reports the MCE
->> availability based on vm_type. And use it to guard all the MCE related
->> CAPs and IOCTLs.
->>
->> Note: KVM_X86_GET_MCE_CAP_SUPPORTED is KVM scope so that what it reports
->> may not match the behavior of specific VM (e.g., here for TDX VM). The
->> same for KVM_CAP_MCE when queried from /dev/kvm. To qeuery the precise
->> KVM_CAP_MCE of the VM, it should use VM's fd.
->>
->> [ Xiaoyao: Guard MCE related CAPs ]
->>
->> Co-developed-by: Kai Huang <kai.huang@linux.intel.com>
->> Signed-off-by: Kai Huang <kai.huang@linux.intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->> ---
->>   arch/x86/kvm/x86.c | 10 ++++++++++
->>   arch/x86/kvm/x86.h |  5 +++++
->>   2 files changed, 15 insertions(+)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index b02088343d80..2b21c5169f32 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -4150,6 +4150,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>   		break;
->>   	case KVM_CAP_MCE:
->>   		r = KVM_MAX_MCE_BANKS;
->> +		if (kvm)
->> +			r = kvm_guest_mce_disallowed(kvm) ? 0 : r;
-> 
-> 		r = KVM_MAX_MCE_BANKS;
-> 		if (kvm && kvm_guest_mce_disallowed(kvm))
-> 			r = 0;
-> 
-> or
-> 
-> 		r = (kvm && kvm_guest_mce_disallowed(kvm)) ? 0 : KVM_MAX_MCE_BANKS;
+Hi,
 
-I will use this one in next submission.
+Could someone please explain the meaning of these strings:
 
->>   		break;
->>   	case KVM_CAP_XCRS:
->>   		r = boot_cpu_has(X86_FEATURE_XSAVE);
->> @@ -5155,6 +5157,10 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->>   	case KVM_X86_SETUP_MCE: {
->>   		u64 mcg_cap;
->>   
->> +		r = EINVAL;
->> +		if (kvm_guest_mce_disallowed(vcpu->kvm))
->> +			goto out;
->> +
->>   		r = -EFAULT;
->>   		if (copy_from_user(&mcg_cap, argp, sizeof(mcg_cap)))
->>   			goto out;
->> @@ -5164,6 +5170,10 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->>   	case KVM_X86_SET_MCE: {
->>   		struct kvm_x86_mce mce;
->>   
->> +		r = EINVAL;
->> +		if (kvm_guest_mce_disallowed(vcpu->kvm))
->> +			goto out;
->> +
->>   		r = -EFAULT;
->>   		if (copy_from_user(&mce, argp, sizeof(mce)))
->>   			goto out;
->> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
->> index a2813892740d..69c60297bef2 100644
->> --- a/arch/x86/kvm/x86.h
->> +++ b/arch/x86/kvm/x86.h
->> @@ -441,6 +441,11 @@ static __always_inline bool kvm_irq_injection_disallowed(struct kvm_vcpu *vcpu)
->>   	return vcpu->kvm->arch.vm_type == KVM_X86_TDX_VM;
->>   }
->>   
->> +static __always_inline bool kvm_guest_mce_disallowed(struct kvm *kvm)
-> 
-> The "guest" part is potentially confusing and incosistent with e.g.
-> kvm_irq_injection_disallowed.  And given the current ridiculous spec, CR4.MCE=1
-> is _required_, so saying "mce disallowed" is arguably wrong from that perspective.
-> 
-> kvm_mce_injection_disallowed() would be more appropriate.
+static const char *aer_agent_string[] = {
+"Receiver ID",
+"Requester ID",
+"Completer ID",
+"Transmitter ID"
+};
 
-Good advice, I'll rename to it.
+Like if we are receiving the below error:
 
->> +{
->> +	return kvm->arch.vm_type == KVM_X86_TDX_VM;
->> +}
->> +
->>   void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu);
->>   void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu);
->>   int kvm_spec_ctrl_test_value(u64 value);
->> -- 
->> 2.27.0
->>
+[  957.912490] pci 0000:30:00.0: AER: PCIe Bus Error:
+severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester
+ID)
 
+
+Then does it mean the error is received by port 30:00.0 or it is
+generated by this port.
+
+Thanks for the help.
+
+Thanks & Regards
+Manish Raturi
