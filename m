@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F204523FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD94745216B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243325AbhKPBfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:35:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        id S1376524AbhKPBEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242343AbhKOSfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:35:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C3FD6346B;
-        Mon, 15 Nov 2021 18:01:36 +0000 (UTC)
+        id S245669AbhKOTVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CFEA61A4E;
+        Mon, 15 Nov 2021 18:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999297;
-        bh=j7UZxed489Gx9XufyhFLEhJgw0gm0+qE3ZlPd1RA0ZI=;
+        s=korg; t=1637001534;
+        bh=qT2SY6fv46Gn9/Bc1mnjMQbsZb5EuuRuEpMBD50gTC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JHZQiNxB0D2HCkH6wSmK8v6EaVnfzCekd7To9y8sZYjDT3IB4IF1+mIbosZS2cNQ3
-         ywFq4zaXm+8oAYvD9BbPovtjVLwsMwJ2vbgpPbatvklBKHhdouu02mBmvCFtuoc+s3
-         /JSekPsuNVI1e4yPGjIcmOKfnouVk/eknleKCDiQ=
+        b=nJ3dIz8qOpqIHz7CVFLCCpITQzeXVJB0YGMEGBAZOt6YbbJ02aWj9Mt9FRBvrNW3+
+         9QfC9SFj9PqiRTqrGhxuCnbPeZOagjZALmveWuEhEVVwjO+SBkGQMsKBl2mxEpR6Tf
+         c+BKhjJXXwF0ngY3NET7+L0nkwsqtQELU7XZkUEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Wood <swood@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Ritesh Singh <ritesi@codeaurora.org>,
+        Seevalamuthu Mariappan <seevalam@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 212/849] rcutorture: Avoid problematic critical section nesting on PREEMPT_RT
+Subject: [PATCH 5.15 200/917] ath11k: Align bss_chan_info structure with firmware
 Date:   Mon, 15 Nov 2021 17:54:55 +0100
-Message-Id: <20211115165427.382498779@linuxfoundation.org>
+Message-Id: <20211115165435.579273880@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,126 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Wood <swood@redhat.com>
+From: Seevalamuthu Mariappan <seevalam@codeaurora.org>
 
-[ Upstream commit 71921a9606ddbcc1d98c00eca7ae82c373d1fecd ]
+[ Upstream commit feab5bb8f1d4621025dceae7eef62d5f92de34ac ]
 
-rcutorture is generating some nesting scenarios that are not compatible on PREEMPT_RT.
-For example:
-	preempt_disable();
-	rcu_read_lock_bh();
-	preempt_enable();
-	rcu_read_unlock_bh();
+pdev_id in structure 'wmi_pdev_bss_chan_info_event' is wrongly placed
+at the beginning. This causes invalid values in survey dump. Hence, align
+the structure with the firmware.
 
-The problem here is that on PREEMPT_RT the bottom halves have to be
-disabled and enabled in preemptible context.
+Note: The firmware releases follow this order since the feature was
+implemented. Also, it is not changing across the branches including
+QCA6390.
 
-Reorder locking: start with BH locking and continue with then with
-disabling preemption or interrupts. In the unlocking do it reverse by
-first enabling interrupts and preemption and BH at the very end.
-Ensure that on PREEMPT_RT BH locking remains unchanged if in
-non-preemptible context.
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.1.0.1-01228-QCAHKSWPL_SILICONZ-1
 
-Link: https://lkml.kernel.org/r/20190911165729.11178-6-swood@redhat.com
-Link: https://lkml.kernel.org/r/20210819182035.GF4126399@paulmck-ThinkPad-P17-Gen-1
-Signed-off-by: Scott Wood <swood@redhat.com>
-[bigeasy: Drop ATOM_BH, make it only about changing BH in atomic
-context. Allow enabling RCU in IRQ-off section. Reword commit message.]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Ritesh Singh <ritesi@codeaurora.org>
+Signed-off-by: Seevalamuthu Mariappan <seevalam@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210720214922.118078-3-jouni@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 48 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 1 +
+ drivers/net/wireless/ath/ath11k/wmi.h | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 40ef5417d9545..d2ef535530b10 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1432,28 +1432,34 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	/* First, put new protection in place to avoid critical-section gap. */
- 	if (statesnew & RCUTORTURE_RDR_BH)
- 		local_bh_disable();
-+	if (statesnew & RCUTORTURE_RDR_RBH)
-+		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_IRQ)
- 		local_irq_disable();
- 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
- 		preempt_disable();
--	if (statesnew & RCUTORTURE_RDR_RBH)
--		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
- 	if (statesnew & RCUTORTURE_RDR_RCU)
- 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 6c253eae9d069..27c060dd3fb47 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -1339,6 +1339,7 @@ int ath11k_wmi_pdev_bss_chan_info_request(struct ath11k *ar,
+ 				     WMI_TAG_PDEV_BSS_CHAN_INFO_REQUEST) |
+ 			  FIELD_PREP(WMI_TLV_LEN, sizeof(*cmd) - TLV_HDR_SIZE);
+ 	cmd->req_type = type;
++	cmd->pdev_id = ar->pdev->pdev_id;
  
--	/* Next, remove old protection, irq first due to bh conflict. */
-+	/*
-+	 * Next, remove old protection, in decreasing order of strength
-+	 * to avoid unlock paths that aren't safe in the stronger
-+	 * context. Namely: BH can not be enabled with disabled interrupts.
-+	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
-+	 * context.
-+	 */
- 	if (statesold & RCUTORTURE_RDR_IRQ)
- 		local_irq_enable();
--	if (statesold & RCUTORTURE_RDR_BH)
--		local_bh_enable();
- 	if (statesold & RCUTORTURE_RDR_PREEMPT)
- 		preempt_enable();
--	if (statesold & RCUTORTURE_RDR_RBH)
--		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_SCHED)
- 		rcu_read_unlock_sched();
-+	if (statesold & RCUTORTURE_RDR_BH)
-+		local_bh_enable();
-+	if (statesold & RCUTORTURE_RDR_RBH)
-+		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_RCU) {
- 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
+ 	ath11k_dbg(ar->ab, ATH11K_DBG_WMI,
+ 		   "WMI bss chan info req type %d\n", type);
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/ath/ath11k/wmi.h
+index d35c47e0b19d4..0b7d337b36930 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.h
++++ b/drivers/net/wireless/ath/ath11k/wmi.h
+@@ -2960,6 +2960,7 @@ struct wmi_pdev_bss_chan_info_req_cmd {
+ 	u32 tlv_header;
+ 	/* ref wmi_bss_chan_info_req_type */
+ 	u32 req_type;
++	u32 pdev_id;
+ } __packed;
  
-@@ -1496,6 +1502,9 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	int mask = rcutorture_extend_mask_max();
- 	unsigned long randmask1 = torture_random(trsp) >> 8;
- 	unsigned long randmask2 = randmask1 >> 3;
-+	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
-+	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
-+	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+ struct wmi_ap_ps_peer_cmd {
+@@ -4056,7 +4057,6 @@ struct wmi_vdev_stopped_event {
+ } __packed;
  
- 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
-@@ -1503,11 +1512,26 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 		mask = mask & randmask2;
- 	else
- 		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
--	/* Can't enable bh w/irq disabled. */
--	if ((mask & RCUTORTURE_RDR_IRQ) &&
--	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
--	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
--		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
-+
-+	/*
-+	 * Can't enable bh w/irq disabled.
-+	 */
-+	if (mask & RCUTORTURE_RDR_IRQ)
-+		mask |= oldmask & bhs;
-+
-+	/*
-+	 * Ideally these sequences would be detected in debug builds
-+	 * (regardless of RT), but until then don't stop testing
-+	 * them on non-RT.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		/* Can't modify BH in atomic context */
-+		if (oldmask & preempts_irq)
-+			mask &= ~bhs;
-+		if ((oldmask | mask) & preempts_irq)
-+			mask |= oldmask & bhs;
-+	}
-+
- 	return mask ?: RCUTORTURE_RDR_RCU;
- }
+ struct wmi_pdev_bss_chan_info_event {
+-	u32 pdev_id;
+ 	u32 freq;	/* Units in MHz */
+ 	u32 noise_floor;	/* units are dBm */
+ 	/* rx clear - how often the channel was unused */
+@@ -4074,6 +4074,7 @@ struct wmi_pdev_bss_chan_info_event {
+ 	/*rx_cycle cnt for my bss in 64bits format */
+ 	u32 rx_bss_cycle_count_low;
+ 	u32 rx_bss_cycle_count_high;
++	u32 pdev_id;
+ } __packed;
  
+ #define WMI_VDEV_INSTALL_KEY_COMPL_STATUS_SUCCESS 0
 -- 
 2.33.0
 
