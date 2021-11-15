@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E497C451C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61162451C65
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355812AbhKPARS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:17:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
+        id S1356192AbhKPARQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:17:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355090AbhKOXjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355092AbhKOXjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 18:39:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A5E26324A;
-        Mon, 15 Nov 2021 23:34:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D914C63256;
+        Mon, 15 Nov 2021 23:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637019294;
-        bh=Pdcmps+Wn75c6JYbY9VoGfURQ8Z1Y05nyXoNRHD+OTQ=;
+        s=k20201202; t=1637019298;
+        bh=1OzdwxSFvxwVS6C/YLdAtuX4T43pG75TF2Jjh5ogIq0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=h9m4ZIUrYZJK46lFpAoZLfySpdLpVZ0GK2DIqZpF4Kd0mSTzKJDj1FQ/zbaXv1DKC
-         I4ww6c5oL8jCQN9zyRfWz4qeFdHA9E477Ud1xYqSQDJT3YpP0TJtRYpZZb2xnN25LO
-         SL5TlCs6J8u6IgIkKayqz51CIECSrK2/LeYuQWJ07RRWTC8gdaJIVAGkKHSuK4lR/D
-         3lssK6vcRJDHyoDQB7BNFPz59inGpI3WBdA05DzkArcjxptyVeoYJRzxm4eyUP2Uuv
-         8ptP4okq7Fyp/mAa69PaljWPI87N5APdtfYYOeJ+S35ncK2+sf/uuKEAxEaXS0HY4V
-         iYDsatuTKTQZA==
+        b=TfQIsHWD+nxwDZ9mF0DKolJzWPO3OkxEILSAyAUun6rmVx2yRLp07vE/NrKuGpF36
+         FkMlqg5Ww1PdjFbDkYkequ4PYf8F6e0tKUz/h/9FNYS3LdIhhbPb4zECluItFtkurC
+         MvcyskrbyZ7RRPlcKPxQxhKAcB9TOhGA3UenNin2eWGuKvDNPetCz3KSrJuLfBy/pl
+         GPbg2RCWWxU2QQEnqvlfSc27GpMNil1jAuzS00Xlt5KBaSVloTt6JP5z8vzQ1VvsiF
+         IPJHaUUB+d4QkhuTNwHg3iThGllFX53EyQ6opvzMVs2V2H1hgovmNDuO2CCSimlPcI
+         rc/IH8tHP3vZw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Simon Trimmer <simont@opensource.cirrus.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>
-In-Reply-To: <20211115120154.56782-1-simont@opensource.cirrus.com>
-References: <20211115120154.56782-1-simont@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: wm_adsp_control_add() error: uninitialized symbol 'ret'
-Message-Id: <163701929291.675332.10025590314980830752.b4-ty@kernel.org>
-Date:   Mon, 15 Nov 2021 23:34:52 +0000
+        patches@opensource.cirrus.com
+In-Reply-To: <20211101101006.13092-1-rf@opensource.cirrus.com>
+References: <20211101101006.13092-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASoC: cs42l42: Add control for audio slow-start switch
+Message-Id: <163701929762.675370.12528564443192014904.b4-ty@kernel.org>
+Date:   Mon, 15 Nov 2021 23:34:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,21 +39,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 12:01:54 +0000, Simon Trimmer wrote:
-> This patch fixes the static analysis warning as it is correctly
-> indicating a possible code path, it cannot know that for the affected
-> firmware versions subname would always be NULL.
+On Mon, 1 Nov 2021 10:10:06 +0000, Richard Fitzgerald wrote:
+> This adds an ALSA control so that the slow-start audio ramp feature
+> can be disabled. This is useful for high-definition audio applications.
+> 
+> The register field is unusual in that it is a 3-bit field with only
+> two valid values, 000=off and 111=on.
 > 
 > 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: wm_adsp_control_add() error: uninitialized symbol 'ret'
-      commit: a6e849d0007b374fc7fbb18d55941c77aa7c3923
+[1/1] ASoC: cs42l42: Add control for audio slow-start switch
+      commit: 7ec4a058c16f3da9c2c0c66506f45c083198ed30
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
