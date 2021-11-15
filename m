@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E0945207C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546954518CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358830AbhKPAyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:54:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1348099AbhKOXIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:08:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343958AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DC0613A7;
-        Mon, 15 Nov 2021 18:49:32 +0000 (UTC)
+        id S243370AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94CAE6349C;
+        Mon, 15 Nov 2021 18:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002173;
-        bh=U+Cz+1MOXx3jqtBh8kCLfofdzsmkjEKbIY+PGsRFGV8=;
+        s=korg; t=1636999941;
+        bh=eeE7YKGLFIIpBIPGahhySBmfxdToAcGGozneXINEMkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JGJAYQiTNok7Ge3XvvfDUH81sLo1bYllwH+ojc/tezF3xNaPZeU0rFgoGhnhgin62
-         8PMEx0yJuA4ulyIl/6olRW/3MDpGfz8PQ9kdkEDaxD+1maAwnYrymVUXzadbD2M4hi
-         vYXRNtNuQvTpQtKEn9IcjQSHZdfSI3HJ9BshsoIw=
+        b=FudX+qsxVaNkY4kMXeTKvbSZ7u1VdUpWhrIfVNX6A1DOgQ/3GzyOFtKzZuYnrbQcE
+         pMKmmM541MTf97pFAwf7hCLQ5Kq6pEJGqx183BSRoWPVTRlOFnOeRUjSILI6//qz+E
+         C5LsR9HlXBMytl2+E+AQgIE35BVcyZzdzIt/lSCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jimmy Hu <Jimmy.Hu@mediatek.com>,
-        Deren Wu <deren.wu@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 466/917] mt76: mt7921: Fix out of order process by invalid event pkt
-Date:   Mon, 15 Nov 2021 17:59:21 +0100
-Message-Id: <20211115165444.575954915@linuxfoundation.org>
+Subject: [PATCH 5.14 479/849] iwlwifi: pnvm: dont kmemdup() more than we have
+Date:   Mon, 15 Nov 2021 17:59:22 +0100
+Message-Id: <20211115165436.488341324@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deren Wu <deren.wu@mediatek.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit cd3f387371e941e6806b455b4ba5b9f4ca4b77c6 ]
+[ Upstream commit 0f892441d8c353144e3669b7991fa5fe0bd353e9 ]
 
-The acceptable event report should inlcude original CMD-ID. Otherwise,
-drop unexpected result from fw.
+We shouldn't kmemdup() more data than we have, that might
+cause the code to crash. Fix that by updating the length
+before the kmemdup.
 
-Fixes: 1c099ab44727c ("mt76: mt7921: add MCU support")
-Signed-off-by: Jimmy Hu <Jimmy.Hu@mediatek.com>
-Signed-off-by: Deren Wu <deren.wu@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20211016114029.ab0e64c3fba9.Ic6a3295fc384750b51b4270bf0b7d94984a139f2@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/fw/pnvm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index 8329b705c2ca2..8ced55501d373 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -157,6 +157,7 @@ mt7921_mcu_parse_response(struct mt76_dev *mdev, int cmd,
- 			  struct sk_buff *skb, int seq)
- {
- 	struct mt7921_mcu_rxd *rxd;
-+	int mcu_cmd = cmd & MCU_CMD_MASK;
- 	int ret = 0;
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+index 513f9e5387290..512c512eefc71 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+@@ -284,16 +284,15 @@ int iwl_pnvm_load(struct iwl_trans *trans,
+ 	/* First attempt to get the PNVM from BIOS */
+ 	package = iwl_uefi_get_pnvm(trans, &len);
+ 	if (!IS_ERR_OR_NULL(package)) {
++		/* we need only the data */
++		len -= sizeof(*package);
+ 		data = kmemdup(package->data, len, GFP_KERNEL);
  
- 	if (!skb) {
-@@ -194,6 +195,9 @@ mt7921_mcu_parse_response(struct mt76_dev *mdev, int cmd,
- 		skb_pull(skb, sizeof(*rxd));
- 		event = (struct mt7921_mcu_uni_event *)skb->data;
- 		ret = le32_to_cpu(event->status);
-+		/* skip invalid event */
-+		if (mcu_cmd != event->cid)
-+			ret = -EAGAIN;
- 		break;
+ 		/* free package regardless of whether kmemdup succeeded */
+ 		kfree(package);
+ 
+-		if (data) {
+-			/* we need only the data size */
+-			len -= sizeof(*package);
++		if (data)
+ 			goto parse;
+-		}
  	}
- 	case MCU_CMD_REG_READ: {
+ 
+ 	/* If it's not available, try from the filesystem */
 -- 
 2.33.0
 
