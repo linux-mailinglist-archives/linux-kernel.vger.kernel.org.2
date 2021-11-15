@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D13451960
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFD5451B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352762AbhKOXSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
+        id S1348902AbhKPACZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:02:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244618AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CF4F61872;
-        Mon, 15 Nov 2021 18:22:04 +0000 (UTC)
+        id S1344511AbhKOTYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D467663284;
+        Mon, 15 Nov 2021 18:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000525;
-        bh=sIHIbKWXWQKAMWd6v6wxFncRTQ2BVNWst8wwIJ1FvIE=;
+        s=korg; t=1637002742;
+        bh=/n8wCvhgkkLbX4iynyRqxx6C7QkFXUin7z+21XOAiXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLFgvS2tlHaSTEyKkNUR4QZymLN6MHuL+EYAWZIcVPb1h+1JbNdwCgPN17d6n1YkF
-         B0cZHR26UHXYnav3pmEP8JHySSxRHg0XZK28hk0chTa4aqJ6hw6xjdsASbAQqMynGf
-         cOBmcazNXuyZXe3O2OYRZ0mOocShNZbh+lxuQjF4=
+        b=1eZ86mJUvkLWIwC3+nRFPe2xpJamJAWay7ub2eL4ebe2XG5eimtCikbhu9xiyI9pw
+         8vfXPYcXKmB2TdLDW6ZFnnULLxFjF2Qz1ELG/ejvQ55Grf1LOSWQrn6LUYyFUd6qwQ
+         DBio/1nD/RdOzdqvDKVq4ln+oXjsWMF8S1J6sIG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 692/849] remoteproc: Fix a memory leak in an error handling path in rproc_handle_vdev()
-Date:   Mon, 15 Nov 2021 18:02:55 +0100
-Message-Id: <20211115165443.665232094@linuxfoundation.org>
+        stable@vger.kernel.org, Marshall Midden <marshallmidden@gmail.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 681/917] iommu/dma: Fix incorrect error return on iommu deferred attach
+Date:   Mon, 15 Nov 2021 18:02:56 +0100
+Message-Id: <20211115165451.988641206@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-[ Upstream commit 0374a4ea7269645c46c3eb288526ea072fa19e79 ]
+[ Upstream commit ac315f96b3bd6f6b8f18f387816c7c2cc6b32e02 ]
 
-If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
-Move the 'copy_dma_range_map()' call after the device registration so
-that 'rproc_rvdev_release()' can be called to free some resources.
+scsi_dma_map() was reporting a failure during boot on an AMD machine
+with the IOMMU enabled.
 
-Also, branch to the error handling path if 'copy_dma_range_map()' instead
-of a direct return to avoid some other leaks.
+  scsi_dma_map failed: request for 36 bytes!
 
-Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Jim Quinlan <james.quinlan@broadcom.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr
+The issue was tracked down to a mistake in logic: should not return
+an error if iommu_deferred_attach() returns zero.
+
+Reported-by: Marshall Midden <marshallmidden@gmail.com>
+Fixes: dabb16f67215 ("iommu/dma: return error code from iommu_dma_map_sg()")
+Link: https://lore.kernel.org/all/CAD2CkAWjS8=kKwEEN4cgVNjyFORUibzEiCUA-X+SMtbo0JoMmA@mail.gmail.com
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20211027174757.119755-1-logang@deltatee.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/iommu/dma-iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 7de5905d276ac..f77b0ff55385e 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -556,9 +556,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
- 	/* Initialise vdev subdevice */
- 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
- 	rvdev->dev.parent = &rproc->dev;
--	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
--	if (ret)
--		return ret;
- 	rvdev->dev.release = rproc_rvdev_release;
- 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
- 	dev_set_drvdata(&rvdev->dev, rvdev);
-@@ -568,6 +565,11 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
- 		put_device(&rvdev->dev);
- 		return ret;
- 	}
-+
-+	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
-+	if (ret)
-+		goto free_rvdev;
-+
- 	/* Make device dma capable by inheriting from parent's capabilities */
- 	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 19bebacbf1780..2d60216440009 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1007,7 +1007,8 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
  
+ 	if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
+ 		ret = iommu_deferred_attach(dev, domain);
+-		goto out;
++		if (ret)
++			goto out;
+ 	}
+ 
+ 	if (dev_is_untrusted(dev))
 -- 
 2.33.0
 
