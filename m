@@ -2,71 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F8C45017A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFD8450175
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbhKOJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:35:15 -0500
-Received: from mx.socionext.com ([202.248.49.38]:15863 "EHLO mx.socionext.com"
+        id S237568AbhKOJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:35:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236730AbhKOJeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:34:17 -0500
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 15 Nov 2021 18:30:57 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id A1662205C83D;
-        Mon, 15 Nov 2021 18:30:57 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Mon, 15 Nov 2021 18:30:57 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id 8DF1D3DD5F;
-        Mon, 15 Nov 2021 18:30:57 +0900 (JST)
-Received: from scorpio.e01.socionext.com (aries.syh.socionext.com [10.213.112.88])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 7315FB6291;
-        Mon, 15 Nov 2021 18:30:57 +0900 (JST)
-From:   Sugaya Taichi <sugaya.taichi@socionext.com>
-To:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     soc@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, orito.takao@socionext.com,
-        sugaya.taichi@socionext.com,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-Subject: [PATCH v2 4/4] MAINTAINERS: Add entry to MAINTAINERS for Milbeaut
-Date:   Mon, 15 Nov 2021 18:30:56 +0900
-Message-Id: <1636968656-14033-5-git-send-email-sugaya.taichi@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636968656-14033-1-git-send-email-sugaya.taichi@socionext.com>
-References: <1636968656-14033-1-git-send-email-sugaya.taichi@socionext.com>
+        id S235058AbhKOJeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 04:34:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6736363217;
+        Mon, 15 Nov 2021 09:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636968674;
+        bh=G0fTib9/0b1mnYKVkiUm8km36ge1tFdJyIdv966rJCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O09OIJQiE0uZvSjBlH0bNRrmX2K6ZCEK3q+11SGdz5eN73cOMvhmpKj4uQIj37UOt
+         OdQHlhgHuFhUxlJLVcJhHq5+zGuyyic/lFkPWwzPBp9UuI5k9nLiG97Wr6CQ2osG+C
+         KpVrsuz3TvYhnZryaCsGM1Vkw5vvkK6fQujQNnCc=
+Date:   Mon, 15 Nov 2021 10:31:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+Cc:     devel@driverdev.osuosl.org, forest@alittletooquiet.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: vt6655: fix camelcase in wCurrentRate
+Message-ID: <YZIo4HLyJ0TLT1I7@kroah.com>
+References: <20211114090935.GA120704@t470p>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114090935.GA120704@t470p>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry to MAINTAINERS for Milbeaut that supported minimal drivers.
+On Sun, Nov 14, 2021 at 10:09:35AM +0100, Alberto Merciai wrote:
+> Replace camelcase word variable "wCurrentRate" into linux kernel coding
+> style equivalent "current_rate".
+> 
+> References:
+> https://www.kernel.org/doc/html/latest/process/coding-style.html
 
-Signed-off-by: Sugaya Taichi <sugaya.taichi@socionext.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+We all know the kernel coding style, no need to have a link to it in the
+changelog text, right?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7a2345c..a9387cc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2263,6 +2263,15 @@ L:	linux-iio@vger.kernel.org
- S:	Maintained
- F:	drivers/counter/microchip-tcb-capture.c
- 
-+ARM/MILBEAUT ARCHITECTURE
-+M:	Taichi Sugaya <sugaya.taichi@socionext.com>
-+M:	Takao Orito <orito.takao@socionext.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm/boot/dts/milbeaut*
-+F:	arch/arm/mach-milbeaut/
-+N:	milbeaut
-+
- ARM/MIOA701 MACHINE SUPPORT
- M:	Robert Jarzmik <robert.jarzmik@free.fr>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--- 
-2.7.4
+> https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
 
+Why is this here?  That's a random college course web site.
+
+And random links in changelog text do not age well, include the full
+text of what matters in the changelog text itself, it should be
+self-contained where ever possible as these live much longer than random
+web site links will.
+
+thanks,
+
+greg k-h
