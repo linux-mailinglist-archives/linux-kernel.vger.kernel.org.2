@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84528450B05
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC935450B17
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhKORRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:17:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42942 "EHLO mail.kernel.org"
+        id S237294AbhKORTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:19:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236565AbhKORMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D345A6322A;
-        Mon, 15 Nov 2021 17:09:34 +0000 (UTC)
+        id S236758AbhKORMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:12:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9561961B73;
+        Mon, 15 Nov 2021 17:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996175;
-        bh=RwPELUlSRrH8ihBiH8+BhS7PfY7lGPMdxADq8nR8pK0=;
+        s=korg; t=1636996178;
+        bh=1LNNbp0bQpyy90ymqT4QRLi+zEFF/d1ZjvZ8jE+GpmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qtTxebzqiSVwEzELAHxFYT6DK3zPXxCwXSaoUAVY9odAE0kg6Sev7iJDfM56OtzDi
-         PF6X9tZUJRhfnLoJwYH8StHtcD85eL7YO2+rxjAXFKtqxPb6sWHRew3QEzVB+W4Wis
-         4IPvb6Op0ZKpqXJCWJVegBgiIvRAqET5O2pzfFMw=
+        b=S3XYa4NPcNL55OaILwPZ7rwT9bd7rPMQsX6NKDvN0XC3XIFoIqWMuh1nHS/d6wmGe
+         HfQj2CZ9W6gyqjhk1PANrpG22H5Z/w1FhD3BJtexyiDM/z26Oc60jtQ3iMoo7cm6gC
+         HDf7Gv6jQo81IXGDR3ZLteI/qSObBsgR13txRMuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Pierre Ossman <pierre@ossman.eu>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/355] reset: socfpga: add empty driver allowing consumers to probe
-Date:   Mon, 15 Nov 2021 17:59:28 +0100
-Message-Id: <20211115165314.975035619@linuxfoundation.org>
+Subject: [PATCH 5.4 045/355] mmc: winbond: dont build on M68K
+Date:   Mon, 15 Nov 2021 17:59:29 +0100
+Message-Id: <20211115165315.006074946@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,56 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paweł Anikiel <pan@semihalf.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 3ad60b4b3570937f3278509fe6797a5093ce53f8 ]
+[ Upstream commit 162079f2dccd02cb4b6654defd32ca387dd6d4d4 ]
 
-The early reset driver doesn't ever probe, which causes consuming
-devices to be unable to probe. Add an empty driver to set this device
-as available, allowing consumers to probe.
+The Winbond MMC driver fails to build on ARCH=m68k so prevent
+that build config. Silences these build errors:
 
-Signed-off-by: Paweł Anikiel <pan@semihalf.com>
-Link: https://lore.kernel.org/r/20210920124141.1166544-4-pan@semihalf.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
+../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
+  212 |                 dmaflags = claim_dma_lock();
+../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
+  215 |                 release_dma_lock(dmaflags);
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Pierre Ossman <pierre@ossman.eu>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211017175949.23838-1-rdunlap@infradead.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-socfpga.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/mmc/host/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpga.c
-index 96953992c2bb5..1c5236a69dc49 100644
---- a/drivers/reset/reset-socfpga.c
-+++ b/drivers/reset/reset-socfpga.c
-@@ -86,3 +86,29 @@ void __init socfpga_reset_init(void)
- 	for_each_matching_node(np, socfpga_early_reset_dt_ids)
- 		a10_reset_init(np);
- }
-+
-+/*
-+ * The early driver is problematic, because it doesn't register
-+ * itself as a driver. This causes certain device links to prevent
-+ * consumer devices from probing. The hacky solution is to register
-+ * an empty driver, whose only job is to attach itself to the reset
-+ * manager and call probe.
-+ */
-+static const struct of_device_id socfpga_reset_dt_ids[] = {
-+	{ .compatible = "altr,rst-mgr", },
-+	{ /* sentinel */ },
-+};
-+
-+static int reset_simple_probe(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver reset_socfpga_driver = {
-+	.probe	= reset_simple_probe,
-+	.driver = {
-+		.name		= "socfpga-reset",
-+		.of_match_table	= socfpga_reset_dt_ids,
-+	},
-+};
-+builtin_platform_driver(reset_socfpga_driver);
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 49ea02c467bf1..1b4a40d910cfb 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -449,7 +449,7 @@ config MMC_OMAP_HS
+ 
+ config MMC_WBSD
+ 	tristate "Winbond W83L51xD SD/MMC Card Interface support"
+-	depends on ISA_DMA_API
++	depends on ISA_DMA_API && !M68K
+ 	help
+ 	  This selects the Winbond(R) W83L51xD Secure digital and
+ 	  Multimedia card Interface.
 -- 
 2.33.0
 
