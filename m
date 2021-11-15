@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DE645194B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CAD45204A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350204AbhKOXRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:17:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
+        id S1354354AbhKPAvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:51:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244423AbhKOTOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02031634B7;
-        Mon, 15 Nov 2021 18:21:01 +0000 (UTC)
+        id S1344447AbhKOTYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 149AC6349C;
+        Mon, 15 Nov 2021 18:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000462;
-        bh=MmKejlUk1h1XpRkaHo0b7s+0uOcH78Ok4wRnpFwKOvs=;
+        s=korg; t=1637002673;
+        bh=5gZoJW6fAe3iLPqtbq8ca458ZHCj5o0fRRvw4XD+L58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qP/idTKpZyYgUkW/tb1P9WqDdtw5TOXD1aXtBH7EcNUQ/v7/FRpj5FzJ9Cz+qdigf
-         vJKqDjqGlEWt8mSzZWFaHmuuiD3aghObXC8FCaCbAWtpgyA+JfQAlHPOJzUVywH6SR
-         fr4YZ6RWT7z+vqkK78W9eyaB2K/CW1Et6lgnr1KQ=
+        b=Yt1gDMH2OR8/644FVgJPo4q/Fsqz6VVTk/l7KZroFhqW1gTr9MohJmNk9XejbScyb
+         FWIyurhls2iNWqGFo65FOC92nhyJe1UorIAxpkAloqEOIw8NNnbQDil8rfHjo5Jc0C
+         TwjNx9uT6WGGmoiJUZ0Hz05FyYZczVSV+mMBVpvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 667/849] nfsd: dont alloc under spinlock in rpc_parse_scope_id
+Subject: [PATCH 5.15 655/917] powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE
 Date:   Mon, 15 Nov 2021 18:02:30 +0100
-Message-Id: <20211115165442.828923162@linuxfoundation.org>
+Message-Id: <20211115165451.081434779@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 9b6e27d01adcec58e046c624874f8a124e8b07ec ]
+[ Upstream commit 68b44f94d6370e2c6c790fedd28e637fa9964a93 ]
 
-Dan Carpenter says:
+fsl_booke and 44x are not able to map kernel linear memory with
+pages, so they can't support DEBUG_PAGEALLOC and KFENCE, and
+STRICT_KERNEL_RWX is also a problem for now.
 
-  The patch d20c11d86d8f: "nfsd: Protect session creation and client
-  confirm using client_lock" from Jul 30, 2014, leads to the following
-  Smatch static checker warning:
+Enable those only on book3s (both 32 and 64 except KFENCE), 8xx and 40x.
 
-        net/sunrpc/addr.c:178 rpc_parse_scope_id()
-        warn: sleeping in atomic context
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: d20c11d86d8f ("nfsd: Protect session creation and client...")
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: 88df6e90fa97 ("[POWERPC] DEBUG_PAGEALLOC for 32-bit")
+Fixes: 95902e6c8864 ("powerpc/mm: Implement STRICT_KERNEL_RWX on PPC32")
+Fixes: 90cbac0e995d ("powerpc: Enable KFENCE for PPC32")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/d1ad9fdd9b27da3fdfa16510bb542ed51fa6e134.1634292136.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/addr.c | 40 ++++++++++++++++++----------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+ arch/powerpc/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
-index 6e4dbd577a39f..d435bffc61999 100644
---- a/net/sunrpc/addr.c
-+++ b/net/sunrpc/addr.c
-@@ -162,8 +162,10 @@ static int rpc_parse_scope_id(struct net *net, const char *buf,
- 			      const size_t buflen, const char *delim,
- 			      struct sockaddr_in6 *sin6)
- {
--	char *p;
-+	char p[IPV6_SCOPE_ID_LEN + 1];
- 	size_t len;
-+	u32 scope_id = 0;
-+	struct net_device *dev;
- 
- 	if ((buf + buflen) == delim)
- 		return 1;
-@@ -175,29 +177,23 @@ static int rpc_parse_scope_id(struct net *net, const char *buf,
- 		return 0;
- 
- 	len = (buf + buflen) - delim - 1;
--	p = kmemdup_nul(delim + 1, len, GFP_KERNEL);
--	if (p) {
--		u32 scope_id = 0;
--		struct net_device *dev;
--
--		dev = dev_get_by_name(net, p);
--		if (dev != NULL) {
--			scope_id = dev->ifindex;
--			dev_put(dev);
--		} else {
--			if (kstrtou32(p, 10, &scope_id) != 0) {
--				kfree(p);
--				return 0;
--			}
--		}
--
--		kfree(p);
--
--		sin6->sin6_scope_id = scope_id;
--		return 1;
-+	if (len > IPV6_SCOPE_ID_LEN)
-+		return 0;
-+
-+	memcpy(p, delim + 1, len);
-+	p[len] = 0;
-+
-+	dev = dev_get_by_name(net, p);
-+	if (dev != NULL) {
-+		scope_id = dev->ifindex;
-+		dev_put(dev);
-+	} else {
-+		if (kstrtou32(p, 10, &scope_id) != 0)
-+			return 0;
- 	}
- 
--	return 0;
-+	sin6->sin6_scope_id = scope_id;
-+	return 1;
- }
- 
- static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index ba5b661893588..6b9f523882c58 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -138,7 +138,7 @@ config PPC
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
+ 	select ARCH_HAS_SET_MEMORY
+-	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
++	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
+ 	select ARCH_HAS_STRICT_MODULE_RWX	if ARCH_HAS_STRICT_KERNEL_RWX && !PPC_BOOK3S_32
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE
+@@ -150,7 +150,7 @@ config PPC
+ 	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_STACKWALK
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+-	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
++	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC_BOOK3S || PPC_8xx || 40x
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
+ 	select ARCH_USE_MEMTEST
+@@ -190,7 +190,7 @@ config PPC
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+ 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+-	select HAVE_ARCH_KFENCE			if PPC32
++	select HAVE_ARCH_KFENCE			if PPC_BOOK3S_32 || PPC_8xx || 40x
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
 -- 
 2.33.0
 
