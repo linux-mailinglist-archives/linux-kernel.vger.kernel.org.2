@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEF7450E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A664450E9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240307AbhKOSQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:16:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46732 "EHLO mail.kernel.org"
+        id S240719AbhKOSQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:16:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237845AbhKORai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237863AbhKORai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:30:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC42632A2;
-        Mon, 15 Nov 2021 17:20:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D15632A3;
+        Mon, 15 Nov 2021 17:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996817;
-        bh=dpxewmT5pk4FwYZe9fyRipV9kjdTl3EByzhX9SovOLo=;
+        s=korg; t=1636996820;
+        bh=Ft5spIUE9njj7hiEe3Zznwr1C/bl1i6GG9RYr9kwZhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBlek0QSFTMXM/XrH8aq6OE5mZJcbDYJJJ5AcN5bY40A8KEndHO1dKMbZCd29qQ9J
-         upYVw6cPMbn/Wd2y/+Gx1Jv7JTsKirNV4L512G8H/v3jWHabpGXa2KN+ag7FBRBudd
-         wUBSOuGQnLVnop5l7cDHOyyKFWF04c1XC62hUXuQ=
+        b=kQ6oojrnH5MkmSSI3NvSM2N+LiWjp+clN3MI6EejHmTnp2D7i9OqT/8SDnS4uLMvj
+         z3/40tRAyt+t74XRt2vVbMF+/1l4twkgNUgrRTsjBSN/w3ZMsNlmk5FUl/34RGN1M9
+         bpHlDKgrSiMQwzrFIp4dlHC35MEazSwLi0ECxgoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wang Hai <wanghai38@huawei.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 245/355] libertas_tf: Fix possible memory leak in probe and disconnect
-Date:   Mon, 15 Nov 2021 18:02:49 +0100
-Message-Id: <20211115165321.668124783@linuxfoundation.org>
+Subject: [PATCH 5.4 246/355] libertas: Fix possible memory leak in probe and disconnect
+Date:   Mon, 15 Nov 2021 18:02:50 +0100
+Message-Id: <20211115165321.699030741@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,19 +43,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit d549107305b4634c81223a853701c06bcf657bc3 ]
+[ Upstream commit 9692151e2fe7a326bafe99836fd1f20a2cc3a049 ]
 
 I got memory leak as follows when doing fault injection test:
 
-unreferenced object 0xffff88810a2ddc00 (size 512):
-  comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
+unreferenced object 0xffff88812c7d7400 (size 512):
+  comm "kworker/6:1", pid 176, jiffies 4295003332 (age 822.830s)
   hex dump (first 32 bytes):
-    00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
+    00 68 1e 04 81 88 ff ff 01 00 00 00 00 00 00 00  .h..............
     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
   backtrace:
     [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
     [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
-    [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
+    [<ffffffffa02c9873>] if_usb_probe+0x63/0x446 [usb8xxx]
     [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
     [<ffffffff82b59630>] really_probe+0x190/0x480
     [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
@@ -75,29 +75,29 @@ and the path of the disconnect, which will cause memory leak.
 
 This patch adds the missing kfree().
 
-Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
+Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Wang Hai <wanghai38@huawei.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211020120345.2016045-2-wanghai38@huawei.com
+Link: https://lore.kernel.org/r/20211020120345.2016045-3-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas_tf/if_usb.c | 2 ++
+ drivers/net/wireless/marvell/libertas/if_usb.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-index bedc092150884..b30bcb28503ae 100644
---- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-+++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-@@ -230,6 +230,7 @@ static int if_usb_probe(struct usb_interface *intf,
- 
+diff --git a/drivers/net/wireless/marvell/libertas/if_usb.c b/drivers/net/wireless/marvell/libertas/if_usb.c
+index 20436a289d5cd..5d6dc1dd050d4 100644
+--- a/drivers/net/wireless/marvell/libertas/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas/if_usb.c
+@@ -292,6 +292,7 @@ err_add_card:
+ 	if_usb_reset_device(cardp);
  dealloc:
  	if_usb_free(cardp);
 +	kfree(cardp);
+ 
  error:
- lbtf_deb_leave(LBTF_DEB_MAIN);
- 	return -ENOMEM;
-@@ -254,6 +255,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
+ 	return r;
+@@ -316,6 +317,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
  
  	/* Unlink and free urb */
  	if_usb_free(cardp);
