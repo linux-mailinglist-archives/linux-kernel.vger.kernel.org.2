@@ -2,112 +2,1499 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505FD450419
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F89A45041B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhKOMKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 07:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhKOMKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 07:10:13 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD44C061746;
-        Mon, 15 Nov 2021 04:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JvoktfdODrK+E6Hn17SM3KNIUHT3t1bSzP+0XvL3miU=; b=Qxt6K4DGfAfHP4nOIfR8UYymv9
-        nO61k3APNFN2HOJDkAIn8DspLzn8w0L8hempXmMnWSixhCHz9/NZniqFEa/xXCNpS4HmHEfuKCw42
-        Dj423D6Kbmkn1mFvqZvdZosBjP5mMJ8ejXOu8qni3+yoHTV/2V01kCrvbuamOcRSlbI61iCIAVF1f
-        RlFFQ4sQc+pV9JBsuu0c62uIjIK0FKZ70fEJtx/yaupP3Y/c1FgNnvsucDcGJW9NjU9GjDoEr0R+r
-        vArT4+YEm6E/TUsSX8/aj578bvFEPZSJ8l3ZeVQL7owb63sAhA0H137fq9L1w5rFv3SWi6/kgLMzw
-        /wopZJZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmalK-00G8u0-Os; Mon, 15 Nov 2021 12:07:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6FE030001B;
-        Mon, 15 Nov 2021 13:07:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 967412CCBCBAD; Mon, 15 Nov 2021 13:07:01 +0100 (CET)
-Date:   Mon, 15 Nov 2021 13:07:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     kim.phillips@amd.com, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, santosh.shukla@amd.com,
-        sandipan.das@amd.com
-Subject: Re: [RFC] perf/amd/ibs: Move ibs pmus under perf_sw_context
-Message-ID: <YZJNZRuXjND9zqjL@hirez.programming.kicks-ass.net>
-References: <20211115094838.3359-1-ravi.bangoria@amd.com>
- <YZJB5FVHpzhwFMtZ@hirez.programming.kicks-ass.net>
- <7ee6951e-eda1-7872-4158-e3bbb9eb31b7@amd.com>
+        id S231267AbhKOML7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 07:11:59 -0500
+Received: from srv6.fidu.org ([159.69.62.71]:33768 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhKOML4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 07:11:56 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 10DFDC800AB;
+        Mon, 15 Nov 2021 13:08:51 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id 1lthgp6yzjvt; Mon, 15 Nov 2021 13:08:50 +0100 (CET)
+Received: from wsembach-tuxedo.fritz.box (host-212-18-30-247.customer.m-online.net [212.18.30.247])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 4C916C800A2;
+        Mon, 15 Nov 2021 13:08:50 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] input/i8042: Add TUXEDO devices to i8042 quirk tables
+Date:   Mon, 15 Nov 2021 13:08:50 +0100
+Message-Id: <20211115120850.69768-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ee6951e-eda1-7872-4158-e3bbb9eb31b7@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:31:21PM +0530, Ravi Bangoria wrote:
-> 
-> 
-> On 15-Nov-21 4:47 PM, Peter Zijlstra wrote:
-> > On Mon, Nov 15, 2021 at 03:18:38PM +0530, Ravi Bangoria wrote:
-> >> Ideally, a pmu which is present in each hw thread belongs to
-> >> perf_hw_context, but perf_hw_context has limitation of allowing only
-> >> one pmu (a core pmu) and thus other hw pmus need to use either sw or
-> >> invalid context which limits pmu functionalities.
-> >>
-> >> This is not a new problem. It has been raised in the past, for example,
-> >> Arm big.LITTLE (same for Intel ADL) and s390 had this issue:
-> >>
-> >>   Arm:  https://lore.kernel.org/lkml/20160425175837.GB3141@leverpostej
-> >>   s390: https://lore.kernel.org/lkml/20160606082124.GA30154@twins.programming.kicks-ass.net
-> >>
-> >> Arm big.LITTLE (followed by Intel ADL) solved this by allowing multiple
-> >> (heterogeneous) pmus inside perf_hw_context. It makes sense as they are
-> >> still registering single pmu for each hw thread.
-> >>
-> >> s390 solved it by moving 2nd hw pmu to perf_sw_context, though that 2nd
-> >> hw pmu is count mode only, i.e. no sampling.
-> >>
-> >> AMD IBS also has similar problem. IBS pmu is present in each hw thread.
-> >> But because of perf_hw_context restriction, currently it belongs to
-> >> perf_invalid_context and thus important functionalities like per-task
-> >> profiling is not possible with IBS pmu. Moving it to perf_sw_context
-> >> will:
-> >>  - allow per-task monitoring
-> >>  - allow cgroup wise profiling
-> >>  - allow grouping of IBS with other pmu events
-> >>  - disallow multiplexing
-> >>
-> >> Please let me know if I missed any major benefit or drawback of
-> >> perf_sw_context. I'm also not sure how easy it would be to lift
-> >> perf_hw_context restriction and start allowing more pmus in it.
-> >>
-> >> Suggestions?
-> > 
-> > Same as I do every time this comes up... this patch is still lingering
-> > and wanting TLC:
-> > 
-> >   https://lore.kernel.org/lkml/20181010104559.GO5728@hirez.programming.kicks-ass.net/
-> 
-> Thanks for the pointer Peter. I have looked at the patch and it is quite complex,
-> altering the very way perf event scheduling works.
-> 
-> I don't dispute that is the right 'fix' for the issue, but do you think adding a
-> new perf context can help alleviate some of the issues in the interim?
+A lot of modern Clevo barebones have touchpad and/or keyboard issues after
+suspend fixable with reset + nomux + nopnp + noloop. Luckily, none of them
+have an external PS/2 port so this can safely be set for all of them.
 
-And take away the motivation for people to do the right thing? How does
-that work out in my favour?
+I'm not entirely sure if every device listed really needs all four quirks,
+but after testing and production use. No negative effects could be
+observed when setting all four.
+
+The list is quite massive as neither the TUXEDO nor the Clevo dmi strings
+have been very consistent historically. I tried to keep the list as short
+as possible without risking on missing an affected device.
+
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+---
+ drivers/input/serio/i8042-x86ia64io.h | 1406 ++++++++++++++++++++++++-
+ 1 file changed, 1387 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index a5a003553646..e42f8b64260c 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -226,6 +226,348 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
+ 		},
+ 	},
++	/*
++	 * A lot of modern Clevo barebones have touchpad and/or keyboard issues
++	 * after suspend fixable with reset + nomux + nopnp + noloop. Luckily,
++	 * none of them have an external PS/2 port so this can savely be set for
++	 * all of them.
++	 */
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
+ 	{ }
+ };
+ 
+@@ -562,25 +904,367 @@ static const struct dmi_system_id __initconst i8042_dmi_nomux_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "EL07R4"),
+ 		},
+ 	},
+-	{ }
+-};
+-
+-static const struct dmi_system_id i8042_dmi_forcemux_table[] __initconst = {
++	/*
++	 * A lot of modern Clevo barebones have touchpad and/or keyboard issues
++	 * after suspend fixable with reset + nomux + nopnp + noloop. Luckily,
++	 * none of them have an external PS/2 port so this can savely be set for
++	 * all of them.
++	 */
+ 	{
+-		/*
+-		 * Sony Vaio VGN-CS series require MUX or the touch sensor
+-		 * buttons will disturb touchpad operation
+-		 */
+ 		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "VGN-CS"),
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
+ 		},
+ 	},
+-	{ }
+-};
+-
+-/*
+- * On some Asus laptops, just running self tests cause problems.
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{ }
++};
++
++static const struct dmi_system_id i8042_dmi_forcemux_table[] __initconst = {
++	{
++		/*
++		 * Sony Vaio VGN-CS series require MUX or the touch sensor
++		 * buttons will disturb touchpad operation
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "VGN-CS"),
++		},
++	},
++	{ }
++};
++
++/*
++ * On some Asus laptops, just running self tests cause problems.
+  */
+ static const struct dmi_system_id i8042_dmi_noselftest_table[] = {
+ 	{
+@@ -745,10 +1429,352 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "EL07R4"),
+ 		},
+ 	},
+-	{ }
+-};
+-
+-#ifdef CONFIG_PNP
++	/*
++	 * A lot of modern Clevo barebones have touchpad and/or keyboard issues
++	 * after suspend fixable with reset + nomux + nopnp + noloop. Luckily,
++	 * none of them have an external PS/2 port so this can savely be set for
++	 * all of them.
++	 */
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{ }
++};
++
++#ifdef CONFIG_PNP
+ static const struct dmi_system_id __initconst i8042_dmi_nopnp_table[] = {
+ 	{
+ 		/* Intel MBO Desktop D845PESV */
+@@ -781,6 +1807,348 @@ static const struct dmi_system_id __initconst i8042_dmi_nopnp_table[] = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "PK"),
+ 		},
+ 	},
++	/*
++	 * A lot of modern Clevo barebones have touchpad and/or keyboard issues
++	 * after suspend fixable with reset + nomux + nopnp + noloop. Luckily,
++	 * none of them have an external PS/2 port so this can savely be set for
++	 * all of them.
++	 */
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71A"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPQC71B"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N140CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N141CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NH5xAx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NL5xRU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "AURA1501"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "EDUBOOK1502"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NS50_70MU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "NJ50_70CU"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "PB50_70DFx,DDx"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170SM"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Notebook"),
++			DMI_MATCH(DMI_BOARD_NAME, "X170KM-G"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+2.25.1
+
