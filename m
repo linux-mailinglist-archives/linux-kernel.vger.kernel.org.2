@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3CF450B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A58450B52
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237344AbhKORUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:20:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
+        id S236544AbhKORVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:21:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232473AbhKORM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:12:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8A7D63238;
-        Mon, 15 Nov 2021 17:10:01 +0000 (UTC)
+        id S232435AbhKORNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:13:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B5A561C14;
+        Mon, 15 Nov 2021 17:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996202;
-        bh=hVirGNAM+IwRFxwFSJqDgKWbJuDQREgWjMEvmcDtHFY=;
+        s=korg; t=1636996205;
+        bh=777d4et2zH62T8YPExYiwamsUuPq5njEPm0SdYLRbv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vqGbjAuu9JgFxFs/rNK6akfO09v47jxzkw7iWBBvyigENgIxnWV5QrctqNderCIfO
-         dzr5eIEKdRH0mJiqBb9kso/cfvPoJN5yc8PQ45uwB0DMtFwmoEJTPS1YeKHQqAJdfy
-         vJm5GCLaYU6qOLUw1WQS94GgLhwQYbUf30/8vYh4=
+        b=vbezI7bON7h2SFsxQdXKzRg1Xw4mKbeMkdoFR99j7TmHDIbpvep+h4GHgISU6/cuo
+         iDpIQLciWARcTFd0pfTYqJWsaqomvYOkoTlGMeFAVT1ZlbuzBBmjduLb+oHJ9XdEQ0
+         1UXHWIG18lHKgKeXoTWXPy/BVd7UuIgmHXBIHv0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Walter Stoll <walter.stoll@duagon.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Mario Risoldi <awxkrnl@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/355] watchdog: Fix OMAP watchdog early handling
-Date:   Mon, 15 Nov 2021 17:59:37 +0100
-Message-Id: <20211115165315.261440416@linuxfoundation.org>
+Subject: [PATCH 5.4 054/355] drm: panel-orientation-quirks: Add quirk for GPD Win3
+Date:   Mon, 15 Nov 2021 17:59:38 +0100
+Message-Id: <20211115165315.291222261@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,42 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Walter Stoll <walter.stoll@duagon.com>
+From: Mario <awxkrnl@gmail.com>
 
-[ Upstream commit cd004d8299f1dc6cfa6a4eea8f94cb45eaedf070 ]
+[ Upstream commit 61b1d445f3bfe4c3ba4335ceeb7e8ba688fd31e2 ]
 
-TI's implementation does not service the watchdog even if the kernel
-command line parameter omap_wdt.early_enable is set to 1. This patch
-fixes the issue.
+Fixes screen orientation for GPD Win 3 handheld gaming console.
 
-Signed-off-by: Walter Stoll <walter.stoll@duagon.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/88a8fe5229cd68fa0f1fd22f5d66666c1b7057a0.camel@duagon.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Mario Risoldi <awxkrnl@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211026112737.9181-1-awxkrnl@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/omap_wdt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/watchdog/omap_wdt.c b/drivers/watchdog/omap_wdt.c
-index 9b91882fe3c41..6d7ccbc0b666c 100644
---- a/drivers/watchdog/omap_wdt.c
-+++ b/drivers/watchdog/omap_wdt.c
-@@ -268,8 +268,12 @@ static int omap_wdt_probe(struct platform_device *pdev)
- 			wdev->wdog.bootstatus = WDIOF_CARDRESET;
- 	}
- 
--	if (!early_enable)
-+	if (early_enable) {
-+		omap_wdt_start(&wdev->wdog);
-+		set_bit(WDOG_HW_RUNNING, &wdev->wdog.status);
-+	} else {
- 		omap_wdt_disable(wdev);
-+	}
- 
- 	ret = watchdog_register_device(&wdev->wdog);
- 	if (ret) {
+diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+index 30c17a76f49ae..e1b2ce4921ae7 100644
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -191,6 +191,12 @@ static const struct dmi_system_id orientation_data[] = {
+ 		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Default string"),
+ 		},
+ 		.driver_data = (void *)&gpd_win2,
++	}, {	/* GPD Win 3 */
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
++		},
++		.driver_data = (void *)&lcd720x1280_rightside_up,
+ 	}, {	/* I.T.Works TW891 */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
 -- 
 2.33.0
 
