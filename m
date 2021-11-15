@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C018A450E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD896450E57
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238001AbhKOSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:14:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50938 "EHLO mail.kernel.org"
+        id S239519AbhKOSOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:14:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237990AbhKOR2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237989AbhKOR2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:28:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D0663270;
-        Mon, 15 Nov 2021 17:19:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFBA36328A;
+        Mon, 15 Nov 2021 17:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996742;
-        bh=e0zxz2/nr0ZKa19/gQoo+dTMwtaKWmDDkosZBUyLXEw=;
+        s=korg; t=1636996745;
+        bh=X4A6SHqew7FXLYw05v9NsGSNgp76ZC23EUqzkZWpo8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKfHCqWptOfmUAp5Bzv5qb2DpaXUw/Beq3kgzboQ1KLJAFmWgGFwypq1ZzBKjUtCa
-         ZJXwgqCvkEMg+SG8EYL/4W2eUcKQzzRAAIuqFc0M3uvjzSxGCaztzdbz/HauWUPMCp
-         6WXGU36CK2uELV51EqN9b9H5sHWPQc99gi3E8R1w=
+        b=kOLjWWyBXtl0ds5i5JR7iRQlsJ6G/06IuAQUn34OI064iTqRpIFnlFiKyRCaIxJyM
+         lyajjapxFsC9WHkAz/pSOnFVa3ZedSXWGMTuTzifYvHD+Offiw7G0nBDpD7TL5y4kp
+         DoEaAvgVB7x7vUz5f2q38IcYDjLrmKG/DF1WQu3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrea Righi <andrea.righi@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 252/355] selftests/bpf: Fix fclose/pclose mismatch in test_progs
-Date:   Mon, 15 Nov 2021 18:02:56 +0100
-Message-Id: <20211115165321.889745278@linuxfoundation.org>
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, Xintong Hu <huxintong@fb.com>
+Subject: [PATCH 5.4 253/355] udp6: allow SO_MARK ctrl msg to affect routing
+Date:   Mon, 15 Nov 2021 18:02:57 +0100
+Message-Id: <20211115165321.928988019@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,45 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Righi <andrea.righi@canonical.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit f48ad69097fe79d1de13c4d8fef556d4c11c5e68 ]
+[ Upstream commit 42dcfd850e514b229d616a53dec06d0f2533217c ]
 
-Make sure to use pclose() to properly close the pipe opened by popen().
+Commit c6af0c227a22 ("ip: support SO_MARK cmsg")
+added propagation of SO_MARK from cmsg to skb->mark.
+For IPv4 and raw sockets the mark also affects route
+lookup, but in case of IPv6 the flow info is
+initialized before cmsg is parsed.
 
-Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/20211026143409.42666-1-andrea.righi@canonical.com
+Fixes: c6af0c227a22 ("ip: support SO_MARK cmsg")
+Reported-and-tested-by: Xintong Hu <huxintong@fb.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv6/udp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 48bbe8e0ce48d..4369bc46bf9c2 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -289,7 +289,7 @@ int extract_build_id(char *build_id, size_t size)
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 0f57c682afdd8..818fc99756256 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1363,7 +1363,6 @@ do_udp_sendmsg:
+ 	if (!fl6.flowi6_oif)
+ 		fl6.flowi6_oif = np->sticky_pktinfo.ipi6_ifindex;
  
- 	if (getline(&line, &len, fp) == -1)
- 		goto err;
--	fclose(fp);
-+	pclose(fp);
+-	fl6.flowi6_mark = ipc6.sockc.mark;
+ 	fl6.flowi6_uid = sk->sk_uid;
  
- 	if (len > size)
- 		len = size;
-@@ -298,7 +298,7 @@ int extract_build_id(char *build_id, size_t size)
- 	free(line);
- 	return 0;
- err:
--	fclose(fp);
-+	pclose(fp);
- 	return -1;
- }
+ 	if (msg->msg_controllen) {
+@@ -1399,6 +1398,7 @@ do_udp_sendmsg:
+ 	ipc6.opt = opt;
  
+ 	fl6.flowi6_proto = sk->sk_protocol;
++	fl6.flowi6_mark = ipc6.sockc.mark;
+ 	fl6.daddr = *daddr;
+ 	if (ipv6_addr_any(&fl6.saddr) && !ipv6_addr_any(&np->saddr))
+ 		fl6.saddr = np->saddr;
 -- 
 2.33.0
 
