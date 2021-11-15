@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A58450B52
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A61450B46
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhKORVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:21:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
+        id S231819AbhKORVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:21:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232435AbhKORNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:13:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B5A561C14;
-        Mon, 15 Nov 2021 17:10:04 +0000 (UTC)
+        id S236728AbhKORND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:13:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4702961C15;
+        Mon, 15 Nov 2021 17:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996205;
-        bh=777d4et2zH62T8YPExYiwamsUuPq5njEPm0SdYLRbv0=;
+        s=korg; t=1636996207;
+        bh=bjZkxvjvyGh6iemq/lJDpSd7qA9FMvOg4aq8y7HDrHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vbezI7bON7h2SFsxQdXKzRg1Xw4mKbeMkdoFR99j7TmHDIbpvep+h4GHgISU6/cuo
-         iDpIQLciWARcTFd0pfTYqJWsaqomvYOkoTlGMeFAVT1ZlbuzBBmjduLb+oHJ9XdEQ0
-         1UXHWIG18lHKgKeXoTWXPy/BVd7UuIgmHXBIHv0w=
+        b=ot5LaBU1iEz2GWAr7+j7fPEoZrsXIo0tK6ElDDBR9vEL5Oau3Y04QlVrScoZRtKJd
+         BZlVDlvCXfhXeFWuPKzIXSuaNN2sHjm4ub9+EPTfJ1+unt9W43/LitwAPpE0r9e76n
+         W2l6P57AZ8Z2g95Du5oWMzl6aSlPztQAhNOBkzUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mario Risoldi <awxkrnl@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 054/355] drm: panel-orientation-quirks: Add quirk for GPD Win3
-Date:   Mon, 15 Nov 2021 17:59:38 +0100
-Message-Id: <20211115165315.291222261@linuxfoundation.org>
+        stable@vger.kernel.org, Amit Engel <amit.engel@dell.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 055/355] nvmet-tcp: fix header digest verification
+Date:   Mon, 15 Nov 2021 17:59:39 +0100
+Message-Id: <20211115165315.323417909@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,37 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario <awxkrnl@gmail.com>
+From: Amit Engel <amit.engel@dell.com>
 
-[ Upstream commit 61b1d445f3bfe4c3ba4335ceeb7e8ba688fd31e2 ]
+[ Upstream commit 86aeda32b887cdaeb0f4b7bfc9971e36377181c7 ]
 
-Fixes screen orientation for GPD Win 3 handheld gaming console.
+Pass the correct length to nvmet_tcp_verify_hdgst, which is the pdu
+header length.  This fixes a wrong behaviour where header digest
+verification passes although the digest is wrong.
 
-Signed-off-by: Mario Risoldi <awxkrnl@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20211026112737.9181-1-awxkrnl@gmail.com
+Signed-off-by: Amit Engel <amit.engel@dell.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/nvme/target/tcp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 30c17a76f49ae..e1b2ce4921ae7 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -191,6 +191,12 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Default string"),
- 		},
- 		.driver_data = (void *)&gpd_win2,
-+	}, {	/* GPD Win 3 */
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
-+		},
-+		.driver_data = (void *)&lcd720x1280_rightside_up,
- 	}, {	/* I.T.Works TW891 */
- 		.matches = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 1328ee373e596..6b3d1ba7db7ee 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1020,7 +1020,7 @@ recv:
+ 	}
+ 
+ 	if (queue->hdr_digest &&
+-	    nvmet_tcp_verify_hdgst(queue, &queue->pdu, queue->offset)) {
++	    nvmet_tcp_verify_hdgst(queue, &queue->pdu, hdr->hlen)) {
+ 		nvmet_tcp_fatal_error(queue); /* fatal */
+ 		return -EPROTO;
+ 	}
 -- 
 2.33.0
 
