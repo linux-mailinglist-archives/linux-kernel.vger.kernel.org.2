@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019154518D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF6145206F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352228AbhKOXJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:09:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S1358807AbhKPAyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:54:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243101AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E487A63483;
-        Mon, 15 Nov 2021 18:12:11 +0000 (UTC)
+        id S1343962AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0971603E9;
+        Mon, 15 Nov 2021 18:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999932;
-        bh=l7rnQKxtdPbR1zuIJmcPnMDKyUXP1g4vSpLc0c9JpuQ=;
+        s=korg; t=1637002170;
+        bh=QJ3YIvLm44vUF+yDxsnXbTWLjAcT/ko1TfRrGAis7Uk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wl911uANNrfiQQ8N5TqmbM8qqte5NepfKl+OtU1pfFn/NLxhGJg7X2vEH+mfuPlOj
-         gFuxVOltfH59a5k8vct1jBZAfO1i+hE32psTHIexXBzeUVSFrUzRufBlC//Y6wSxnD
-         45Q7uQeK7jGtyax577INX1e5tgUkOSrs7/FHLC4c=
+        b=kW6RkAdf13/9wdhnqUY2rah0fmXbdOCbeJ77cUXrx34YDfYZKEkBoYNX/q3vW4TH4
+         i2dXzB/XDXhZ/Mp/Vst+4gmqikbgzFBvs5zZW5qoOulMx5SiFb8160MWpA7iLAVNiH
+         LuCwGZKn5EftbSWFIY44WPF9s5fC9Jt7n+MPVUFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 477/849] mwifiex: Send DELBA requests according to spec
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 465/917] mt76: mt76x02: fix endianness warnings in mt76x02_mac.c
 Date:   Mon, 15 Nov 2021 17:59:20 +0100
-Message-Id: <20211115165436.416294879@linuxfoundation.org>
+Message-Id: <20211115165444.542359070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit cc8a8bc37466f79b24d972555237f3d591150602 ]
+[ Upstream commit c33edef520213feccebc22c9474c685b9fb60611 ]
 
-While looking at on-air packets using Wireshark, I noticed we're never
-setting the initiator bit when sending DELBA requests to the AP: While
-we set the bit on our del_ba_param_set bitmask, we forget to actually
-copy that bitmask over to the command struct, which means we never
-actually set the initiator bit.
+Fix the following sparse warning in mt76x02_mac_write_txwi and
+mt76x02_mac_tx_rate_val routines:
+drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:237:19:
+	warning: restricted __le16 degrades to intege
+	warning: cast from restricted __le16
+drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:383:28:
+	warning: incorrect type in assignment (different base types)
+	expected restricted __le16 [usertype] rate
+	got unsigned long
 
-Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
-struct.
-
-Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Acked-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211016153244.24353-5-verdre@v0yd.nl
+Fixes: db9f11d3433f7 ("mt76: store wcid tx rate info in one u32 reduce locking")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt76x02_mac.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
-index 6696bce561786..cf08a4af84d6d 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n.c
-@@ -657,14 +657,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
- 	uint16_t del_ba_param_set;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
+index c32e6dc687739..07b21b2085823 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
+@@ -176,7 +176,7 @@ void mt76x02_mac_wcid_set_drop(struct mt76x02_dev *dev, u8 idx, bool drop)
+ 		mt76_wr(dev, MT_WCID_DROP(idx), (val & ~bit) | (bit * drop));
+ }
  
- 	memset(&delba, 0, sizeof(delba));
--	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
+-static __le16
++static u16
+ mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
+ 			const struct ieee80211_tx_rate *rate, u8 *nss_val)
+ {
+@@ -222,14 +222,14 @@ mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
+ 		rateval |= MT_RXWI_RATE_SGI;
  
--	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
-+	del_ba_param_set = tid << DELBA_TID_POS;
-+
- 	if (initiator)
- 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 	else
- 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+ 	*nss_val = nss;
+-	return cpu_to_le16(rateval);
++	return rateval;
+ }
  
-+	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
- 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
+ void mt76x02_mac_wcid_set_rate(struct mt76x02_dev *dev, struct mt76_wcid *wcid,
+ 			       const struct ieee80211_tx_rate *rate)
+ {
+ 	s8 max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
+-	__le16 rateval;
++	u16 rateval;
+ 	u32 tx_info;
+ 	s8 nss;
  
- 	/* We don't wait for the response of this command */
+@@ -342,7 +342,7 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	u32 wcid_tx_info;
+ 	u16 rate_ht_mask = FIELD_PREP(MT_RXWI_RATE_PHY, BIT(1) | BIT(2));
+-	u16 txwi_flags = 0;
++	u16 txwi_flags = 0, rateval;
+ 	u8 nss;
+ 	s8 txpwr_adj, max_txpwr_adj;
+ 	u8 ccmp_pn[8], nstreams = dev->mphy.chainmask & 0xf;
+@@ -380,14 +380,15 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
+ 
+ 	if (wcid && (rate->idx < 0 || !rate->count)) {
+ 		wcid_tx_info = wcid->tx_info;
+-		txwi->rate = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
++		rateval = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
+ 		max_txpwr_adj = FIELD_GET(MT_WCID_TX_INFO_TXPWR_ADJ,
+ 					  wcid_tx_info);
+ 		nss = FIELD_GET(MT_WCID_TX_INFO_NSS, wcid_tx_info);
+ 	} else {
+-		txwi->rate = mt76x02_mac_tx_rate_val(dev, rate, &nss);
++		rateval = mt76x02_mac_tx_rate_val(dev, rate, &nss);
+ 		max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
+ 	}
++	txwi->rate = cpu_to_le16(rateval);
+ 
+ 	txpwr_adj = mt76x02_tx_get_txpwr_adj(dev, dev->txpower_conf,
+ 					     max_txpwr_adj);
 -- 
 2.33.0
 
