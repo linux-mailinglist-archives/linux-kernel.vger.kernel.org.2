@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F46451FF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B02A451BB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344781AbhKPAqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:46:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1347540AbhKPAGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:06:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345001AbhKOTZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3139363704;
-        Mon, 15 Nov 2021 19:08:34 +0000 (UTC)
+        id S1345015AbhKOTZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BFEF63705;
+        Mon, 15 Nov 2021 19:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003314;
-        bh=LYTfZ56JvZA9gMNvBtrLF+11I2B17jQl9P9Siweu6Y0=;
+        s=korg; t=1637003317;
+        bh=KqPV+5idkf2+NjD6Q1uow3wjLkwmEutaUPHgxT3W8Fw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tqyj8xAn0cNyH+FtwLT3Mdv7U6o/qoSAcyC5fMsMIEyfpivYeuyMLngEF2m9aVxLP
-         OvXZsu1Xg3SFGSFZ3/n+IqU/gAzBYZNeu4VO+Ei7PdQlWTx1K6gt77fRucpRLva/WV
-         NbBzOUis5LnyqwSKYI/U3JyGj2kGeE9O6DUoc8Qg=
+        b=CTT+41KSI0fqc5wqwazDxsJbpz7BFc7d+dSjtsylHNK/YIvts2okgJE6mzj4/R7n6
+         N5/o6UqUU9zcNH54kMYtIIc3eVgU97zpjExqEO1vYQnTZ1REughGuSS6rqJO8cVxuH
+         L+8jtChbzEWUqHgw9VmAkWNVf+dUcM3pIrK3c5GI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harald Freudenberger <freude@linux.ibm.com>,
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        bfu@redhat.com, Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
         Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.15 890/917] s390/ap: Fix hanging ioctl caused by orphaned replies
-Date:   Mon, 15 Nov 2021 18:06:25 +0100
-Message-Id: <20211115165459.230533262@linuxfoundation.org>
+Subject: [PATCH 5.15 891/917] s390/cio: make ccw_device_dma_* more robust
+Date:   Mon, 15 Nov 2021 18:06:26 +0100
+Message-Id: <20211115165459.263479992@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,47 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-commit 3826350e6dd435e244eb6e47abad5a47c169ebc2 upstream.
+commit ad9a14517263a16af040598c7920c09ca9670a31 upstream.
 
-When a queue is switched to soft offline during heavy load and later
-switched to soft online again and now used, it may be that the caller
-is blocked forever in the ioctl call.
+Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+classic notifiers") we were supposed to make sure that
+virtio_ccw_release_dev() completes before the ccw device and the
+attached dma pool are torn down, but unfortunately we did not.  Before
+that commit it used to be OK to delay cleaning up the memory allocated
+by virtio-ccw indefinitely (which isn't really intuitive for guys used
+to destruction happens in reverse construction order), but now we
+trigger a BUG_ON if the genpool is destroyed before all memory allocated
+from it is deallocated. Which brings down the guest. We can observe this
+problem, when unregister_virtio_device() does not give up the last
+reference to the virtio_device (e.g. because a virtio-scsi attached scsi
+disk got removed without previously unmounting its previously mounted
+partition).
 
-The failure occurs because there is a pending reply after the queue(s)
-have been switched to offline. This orphaned reply is received when
-the queue is switched to online and is accidentally counted for the
-outstanding replies. So when there was a valid outstanding reply and
-this orphaned reply is received it counts as the outstanding one thus
-dropping the outstanding counter to 0. Voila, with this counter the
-receive function is not called any more and the real outstanding reply
-is never received (until another request comes in...) and the ioctl
-blocks.
+To make sure that the genpool is only destroyed after all the necessary
+freeing is done let us take a reference on the ccw device on each
+ccw_device_dma_zalloc() and give it up on each ccw_device_dma_free().
 
-The fix is simple. However, instead of readjusting the counter when an
-orphaned reply is detected, I check the queue status for not empty and
-compare this to the outstanding counter. So if the queue is not empty
-then the counter must not drop to 0 but at least have a value of 1.
+Actually there are multiple approaches to fixing the problem at hand
+that can work. The upside of this one is that it is the safest one while
+remaining simple. We don't crash the guest even if the driver does not
+pair allocations and frees. The downside is the reference counting
+overhead, that the reference counting for ccw devices becomes more
+complex, in a sense that we need to pair the calls to the aforementioned
+functions for it to be correct, and that if we happen to leak, we leak
+more than necessary (the whole ccw device instead of just the genpool).
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Cc: stable@vger.kernel.org
+Some alternatives to this approach are taking a reference in
+virtio_ccw_online() and giving it up in virtio_ccw_release_dev() or
+making sure virtio_ccw_release_dev() completes its work before
+virtio_ccw_remove() returns. The downside of these approaches is that
+these are less safe against programming errors.
+
+Cc: <stable@vger.kernel.org> # v5.3
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and classic notifiers")
+Reported-by: bfu@redhat.com
+Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/crypto/ap_queue.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/s390/cio/device_ops.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/s390/crypto/ap_queue.c
-+++ b/drivers/s390/crypto/ap_queue.c
-@@ -157,6 +157,8 @@ static struct ap_queue_status ap_sm_recv
- 	switch (status.response_code) {
- 	case AP_RESPONSE_NORMAL:
- 		aq->queue_count = max_t(int, 0, aq->queue_count - 1);
-+		if (!status.queue_empty && !aq->queue_count)
-+			aq->queue_count++;
- 		if (aq->queue_count > 0)
- 			mod_timer(&aq->timeout,
- 				  jiffies + aq->request_timeout);
+--- a/drivers/s390/cio/device_ops.c
++++ b/drivers/s390/cio/device_ops.c
+@@ -825,13 +825,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_chid);
+  */
+ void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
+ {
+-	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	void *addr;
++
++	if (!get_device(&cdev->dev))
++		return NULL;
++	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	if (IS_ERR_OR_NULL(addr))
++		put_device(&cdev->dev);
++	return addr;
+ }
+ EXPORT_SYMBOL(ccw_device_dma_zalloc);
+ 
+ void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
+ {
++	if (!cpu_addr)
++		return;
+ 	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
++	put_device(&cdev->dev);
+ }
+ EXPORT_SYMBOL(ccw_device_dma_free);
+ 
 
 
