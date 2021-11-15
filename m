@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3964C450C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D5D450C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237969AbhKORjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:39:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44996 "EHLO mail.kernel.org"
+        id S232164AbhKORkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:40:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237341AbhKORTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:19:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B09E63259;
-        Mon, 15 Nov 2021 17:14:22 +0000 (UTC)
+        id S237347AbhKORT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:19:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2163B61B73;
+        Mon, 15 Nov 2021 17:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996462;
-        bh=9nz0x7iTpe50Pw2n8ju7MYMoLXnaSly4sFR4aWZPcHY=;
+        s=korg; t=1636996465;
+        bh=3GUyLQniyyY/3EU+SLwM5Cn352SGKDY2HlTErkVu40k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rcZheccdn73T5FCWOfz03orQECAzHaOmrv4SF2JF/xPsF+k6DO5EZbHCbLxije0Vj
-         tzUa1XKkJi5Hv4h3wDEcdl0Qu36+04OEisIg0dcRDcmmbql93J6C3K9hZQUcOwjcUf
-         sfEnPgjP0r1z3dw96JmqVEIiLJnBwyDznAkNi9PU=
+        b=S5UY/hRVDsTXhV9FvGQzeg+reLv/JxVCho22QjPzeRnXDhrnwtJFJODzN9M/uMRs2
+         kP3m3VGhqq/sDHIhIBIont5xNiGuSrMdzT/8FW4Bu/Ik9T7VId6ib4N/OzazrTipav
+         gIsHnyA6z3ojc8uSO7SqZ7bMXdR3CA67KIXr4JBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Tuo Li <islituo@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 149/355] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
-Date:   Mon, 15 Nov 2021 18:01:13 +0100
-Message-Id: <20211115165318.615608825@linuxfoundation.org>
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 150/355] iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+Date:   Mon, 15 Nov 2021 18:01:14 +0100
+Message-Id: <20211115165318.646954295@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,50 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 4b6012a7830b813799a7faf40daa02a837e0fd5b ]
+[ Upstream commit 814a66741b9ffb5e1ba119e368b178edb0b7322d ]
 
-kzalloc() is used to allocate memory for cd->detectors, and if it fails,
-channel_detector_exit() behind the label fail will be called:
-  channel_detector_exit(dpd, cd);
+Both iov_iter_get_pages and iov_iter_get_pages_alloc return the number
+of bytes of the iovec they could get the pages for.  When they cannot
+get any pages, they're supposed to return 0, but when the start of the
+iovec isn't page aligned, the calculation goes wrong and they return a
+negative value.  Fix both functions.
 
-In channel_detector_exit(), cd->detectors is dereferenced through:
-  struct pri_detector *de = cd->detectors[i];
+In addition, change iov_iter_get_pages_alloc to return NULL in that case
+to prevent resource leaks.
 
-To fix this possible null-pointer dereference, check cd->detectors before
-the for loop to dereference cd->detectors.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210805153854.154066-1-islituo@gmail.com
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ lib/iov_iter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
-index a274eb0d19688..a0ad6e48a35b4 100644
---- a/drivers/net/wireless/ath/dfs_pattern_detector.c
-+++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-@@ -182,10 +182,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
- 	if (cd == NULL)
- 		return;
- 	list_del(&cd->head);
--	for (i = 0; i < dpd->num_radar_types; i++) {
--		struct pri_detector *de = cd->detectors[i];
--		if (de != NULL)
--			de->exit(de);
-+	if (cd->detectors) {
-+		for (i = 0; i < dpd->num_radar_types; i++) {
-+			struct pri_detector *de = cd->detectors[i];
-+			if (de != NULL)
-+				de->exit(de);
-+		}
- 	}
- 	kfree(cd->detectors);
- 	kfree(cd);
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 41b06af195368..957e3e58df652 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1302,7 +1302,7 @@ ssize_t iov_iter_get_pages(struct iov_iter *i,
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0,
+ 				pages);
+-		if (unlikely(res < 0))
++		if (unlikely(res <= 0))
+ 			return res;
+ 		return (res == n ? len : res * PAGE_SIZE) - *start;
+ 	0;}),({
+@@ -1384,8 +1384,9 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
+ 			return -ENOMEM;
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0, p);
+-		if (unlikely(res < 0)) {
++		if (unlikely(res <= 0)) {
+ 			kvfree(p);
++			*pages = NULL;
+ 			return res;
+ 		}
+ 		*pages = p;
 -- 
 2.33.0
 
