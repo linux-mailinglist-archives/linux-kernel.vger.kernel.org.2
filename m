@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA2A450644
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EF5450664
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhKOOJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:09:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231947AbhKOOIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:08:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 174FB61B04;
-        Mon, 15 Nov 2021 14:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636985159;
-        bh=rH6w2Tv5TE/ay90akvXBUGtU2n38z3jN0OwAIzjofGM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cbCDl9IgS7fVetVCq71DGnmi1vl01Tj9h0qZphVzdwi0ednsO1v93KClGcqZNpXis
-         BH8J+SD/b536q27ZkMYncvOpH+1OyZo/Jb1v/FNkHfvQINkHi3Bzt0XHQ9MrI29mpH
-         jScRHr2EIiCKSCj2enHXbp2XGsyBoMkugi/QbotxhXaMnzBZuLgRiiOVk9VZYOBrVK
-         KQd8Ycv5NABF/hEUQC9aiGOhKLHU/7UXE8t2z/a3BQZddBJZdibUD4EuZkVD5zst10
-         cRBkgJVfnMdzjtBuzxqbbwqyo0cOZpdQFr1FeT1omR6JBGM92L8iAWjhA4pEcDpHDZ
-         z22+4uE7qIqgQ==
-Received: by mail-ed1-f47.google.com with SMTP id w1so72597683edd.10;
-        Mon, 15 Nov 2021 06:05:58 -0800 (PST)
-X-Gm-Message-State: AOAM5300c80lctaDWca6pJYRrXlVrfBX1Xt3IcTJQ3kyqr+m7kzw9Ak8
-        pGjWh6G3NvY9cnKYUyx6CM4V4WzP2U2koe+lbw==
-X-Google-Smtp-Source: ABdhPJyhazkQsfxsx3oh3spbeLIoRA78MZ2Hqpr6bPz+xydK9rUb8/6ASL5dx892ag0WEDGSvU/3gpvHK4K/2rs6jRU=
-X-Received: by 2002:a17:907:7f25:: with SMTP id qf37mr50212262ejc.147.1636985157491;
- Mon, 15 Nov 2021 06:05:57 -0800 (PST)
+        id S236287AbhKOOOW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 09:14:22 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:56605 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232200AbhKOONK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:13:10 -0500
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 4A2FAE001A;
+        Mon, 15 Nov 2021 14:10:08 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 15:06:20 +0100
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 3/6] net: ocelot: pre-compute injection frame header
+ content
+Message-ID: <20211115150620.057674ae@fixe.home>
+In-Reply-To: <20211115060800.44493c2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+        <20211103091943.3878621-4-clement.leger@bootlin.com>
+        <20211103123811.im5ua7kirogoltm7@skbuf>
+        <20211103145351.793538c3@fixe.home>
+        <20211115111344.03376026@fixe.home>
+        <20211115060800.44493c2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211115073240.3476043-1-calvinzhang.cool@gmail.com>
-In-Reply-To: <20211115073240.3476043-1-calvinzhang.cool@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 15 Nov 2021 08:05:45 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLtG4m6hqKc0TJs+e8ZBRZSGgOAoumnvg7u_D46i5D_AA@mail.gmail.com>
-Message-ID: <CAL_JsqLtG4m6hqKc0TJs+e8ZBRZSGgOAoumnvg7u_D46i5D_AA@mail.gmail.com>
-Subject: Re: [PATCH v2] of: make MAX_RESERVED_REGIONS configurable
-To:     Calvin Zhang <calvinzhang.cool@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 1:33 AM Calvin Zhang <calvinzhang.cool@gmail.com> wrote:
->
-> MAX_RESERVED_REGIONS has changed several times. Max reserved regions
-> count grows bigger as more SOC subsystems require reserved regions.
->
-> Add a Kconfig for it so that when properly configured, the static
-> reserved_mem array consumes less memory on systems with few reserved
-> regions.
+Le Mon, 15 Nov 2021 06:08:00 -0800,
+Jakub Kicinski <kuba@kernel.org> a écrit :
 
-Please read prior discussions:
+> On Mon, 15 Nov 2021 11:13:44 +0100 Clément Léger wrote:
+> > Test on standard packets with UDP (iperf3 -t 100 -l 1460 -u -b 0 -c *)
+> > - With pre-computed header: UDP TX: 	33Mbit/s
+> > - Without UDP TX: 			31Mbit/s  
+> > -> 6.5% improvement    
+> > 
+> > Test on small packets with UDP (iperf3 -t 100 -l 700 -u -b 0 -c *)
+> > - With pre-computed header: UDP TX: 	15.8Mbit/s
+> > - Without UDP TX: 			16.4Mbit/s  
+> > -> 4.3% improvement    
+> 
+> Something's wrong with these numbers or I'm missing context.
+> You say improvement in both cases yet in the latter case the 
+> new number is lower?
 
-https://lore.kernel.org/all/?q=of+MAX_RESERVED_REGIONS
+You are right Jakub, I swapped the last two results, 
 
-And these 2 in particular:
+Test on small packets with UDP (iperf3 -t 100 -l 700 -u -b 0 -c *)
+ - With pre-computed header: UDP TX: 	16.4Mbit/s 
+ - Without UDP TX: 			15.8Mbit/s
+ -> 4.3% improvement
 
-https://lore.kernel.org/all/CAL_JsqJQcWsguwfehAoaRf4o-2VqXxSzKzTqg7s4+N1bp=6V5Q@mail.gmail.com/
-https://lore.kernel.org/all/CAL_JsqLGvUYQmCGXLgSO+6kFj2i87dpaTbMGbyu5oMt=eeu35A@mail.gmail.com/
+-- 
+Clément Léger,
+Embedded Linux and Kernel engineer at Bootlin
+https://bootlin.com
