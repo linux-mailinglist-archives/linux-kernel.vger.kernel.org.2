@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959BE450386
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C031A450388
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhKOLgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:36:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:54250 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230126AbhKOLgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:36:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB04B6D;
-        Mon, 15 Nov 2021 03:33:21 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 963D63F70D;
-        Mon, 15 Nov 2021 03:33:20 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, dvyukov@google.com, mark.rutland@arm.com,
-        peterz@infradead.org, quic_qiancai@quicinc.com,
-        valentin.schneider@arm.com, will@kernel.org, woodylin@google.com
-Subject: [PATCH] Reset task stack state in bringup_cpu()
-Date:   Mon, 15 Nov 2021 11:33:10 +0000
-Message-Id: <20211115113310.35693-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S230349AbhKOLgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:36:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhKOLg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:36:26 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84E6C061746;
+        Mon, 15 Nov 2021 03:33:30 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id s139so34070504oie.13;
+        Mon, 15 Nov 2021 03:33:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TosILRA7RKaPNlvAEEPHYc2XtXbrS4wfssZDLHQY1kU=;
+        b=TqRbFVwlKmOFpU+H9GDPhv1LKFQZDdPlnI+QYpcSwc8pcjEVCXrsNBSKE/7FeVzvcK
+         rBS5Tklh8qvP5Kq4aQytUM/2dnahwo4vILCODJUC5Yn49zu5eNjpMEeWaKQ/foEpBe4b
+         5d0p+9xMqVDTpG/kdqOIGm5f2rj7b6ILCKyWITxjmCEajD6RjPmfriuJC2azJ65rRgZU
+         Hxtx/FHToELfe8c83NS7pxre1zwaGmXoGYUCU0wiXU4SUxiNPLUZXPkHq4l+F1+W3f80
+         CHqAzXD0fR7o4bRpQ68XVcR8IIGiQKrpuKG7mPCEhsVMD3+mud2/qN1gMar84SkO+dSj
+         Rf8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TosILRA7RKaPNlvAEEPHYc2XtXbrS4wfssZDLHQY1kU=;
+        b=OlvIfHJGSIJrlbdn4rHyqT2d72JPYpfnLgL6btalSGq1aym2KoUe6kLV3gMKAQ+BVn
+         E9QREHXa2MWUTG9NhXP/gp1GerxC9mXXYFkDBLmRd5aA5vu9/rdrJ2mFItQ7lP8wP2sU
+         x9uoL9e1nxjip2qCPmz55+z3Zqbb16PANa/hy0t4IU9lDNOc8HB7K2MYoFcj0g+ykPST
+         uKPYzW6tJx2A9thE90uaW8iqsRdPfBzjSA3lvDnXHMh4z10cCk7kqSaQevPzJpV1WXAV
+         zk7epoFZNQ3O5Th0016q8V+JIBE0TI3jPAoUQz4bLM0BOLV9oatIJQ32VgBtKPEgwD+w
+         2bUw==
+X-Gm-Message-State: AOAM5302+L3LNLWcAvFHR4H1nonXcAx33gbGr5vethO8YfgXcfn0ve5o
+        /9U6JLLtyCuMVLhU3vOkq7z+2q4Y1wJ6yUbNhlk=
+X-Google-Smtp-Source: ABdhPJxyVQy/sHJZgZ4KvZEkvizBX0kZDKhCmgE7dJHGPhJHuh2wOeYIp+hUtH63bEwm2aiq4onVCaX5EsLeNGrkOVg=
+X-Received: by 2002:a54:4486:: with SMTP id v6mr31506038oiv.90.1636976010344;
+ Mon, 15 Nov 2021 03:33:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20211114164312.GA28736@makvihas> <87o86leo34.fsf@redhat.com>
+In-Reply-To: <87o86leo34.fsf@redhat.com>
+From:   Vihas Mak <makvihas@gmail.com>
+Date:   Mon, 15 Nov 2021 17:03:18 +0530
+Message-ID: <CAH1kMwSvLj8oK46V8m+FUM=t8h5Zch_Pi+zui+AYq6efDR0Sgw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: fix cocci warnings
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To hot unplug a CPU, the idle task on that CPU calls a few layers of C
-code before finally leaving the kernel. When KASAN is in use, poisoned
-shadow is left around for each of the active stack frames, and when
-shadow call stacks are in use. When shadow call stacks are in use the
-task's SCS SP is left pointing at an arbitrary point within the task's
-shadow call stack.
+> and I find '|=' to not be very natural with booleans. I'm not sure it's
+> worth changing though.
 
-When an offlines CPU is hotlpugged back into the kernel, this stale
-state can adversely affect the newly onlined CPU. Stale KASAN shadow can
-alias new stackframes and result in bogus KASAN warnings. A stale SCS SP
-is effectively a memory leak, and prevents a portion of the shadow call
-stack being used. Across a number of hotplug cycles the task's entire
-shadow call stack can become unusable.
+I see. But there are many functions in which '|=' is used on booleans.
+get_mmio_spte(), __rmap_write_protect(), kvm_handle_gfn_range and many more.
+That's why I thought it would be better if the code follows the same convention.
 
-We previously fixed the KASAN issue in commit:
+Thanks,
+Vihas
 
-  e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
 
-In commit:
-
-  f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-
-... we broke both KASAN and SCS, with SCS being fixed up in commit:
-
-  63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
-
-... but as this runs in the context of the idle task being offlines it's
-potentially fragile.
-
-Fix both of these consistently and more robustly by resetting the SCS SP
-and KASAN shadow immediately before we online a CPU. This ensures the
-idle task always has a consistent state, and removes the need to do so
-when initializing an idle task or when unplugging an idle task.
-
-I've tested this with both GCC and clang, with reelvant options enabled,
-offlining and online CPUs with:
-
-| while true; do
-|   for C in /sys/devices/system/cpu/cpu*/online; do
-|     echo 0 > $C;
-|     echo 1 > $C;
-|   done
-| done
-
-Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
-Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
-Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Woody Lin <woodylin@google.com>
----
- kernel/cpu.c        | 7 +++++++
- kernel/sched/core.c | 4 ----
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 192e43a87407..407a2568f35e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -31,6 +31,7 @@
- #include <linux/smpboot.h>
- #include <linux/relay.h>
- #include <linux/slab.h>
-+#include <linux/scs.h>
- #include <linux/percpu-rwsem.h>
- #include <linux/cpuset.h>
- 
-@@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
- 	int ret;
- 
- 	/*
-+	 * Reset stale stack state from the last time this CPU was online.
-+	 */
-+	scs_task_reset(idle);
-+	kasan_unpoison_task_stack(idle);
-+
-+	/*
- 	 * Some architectures have to walk the irq descriptors to
- 	 * setup the vector space for the cpu which comes online.
- 	 * Prevent irq alloc/free across the bringup.
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3c9b0fda64ac..76f9deeaa942 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
- 	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
- 	kthread_set_per_cpu(idle, cpu);
- 
--	scs_task_reset(idle);
--	kasan_unpoison_task_stack(idle);
--
- #ifdef CONFIG_SMP
- 	/*
- 	 * It's possible that init_idle() gets called multiple times on a task,
-@@ -8777,7 +8774,6 @@ void idle_task_exit(void)
- 		finish_arch_post_lock_switch();
- 	}
- 
--	scs_task_reset(current);
- 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
- }
- 
--- 
-2.11.0
-
+On Mon, Nov 15, 2021 at 3:29 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> Vihas Mak <makvihas@gmail.com> writes:
+>
+> > change 0 to false and 1 to true to fix following cocci warnings:
+> >
+> >         arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
+> >         arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
+> >
+> > Signed-off-by: Vihas Mak <makvihas@gmail.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > Cc: Wanpeng Li <wanpengli@tencent.com>
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: Joerg Roedel <joro@8bytes.org>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 337943799..2fcea4a78 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1454,7 +1454,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> >  {
+> >       u64 *sptep;
+> >       struct rmap_iterator iter;
+> > -     int need_flush = 0;
+> > +     bool need_flush = false;
+> >       u64 new_spte;
+> >       kvm_pfn_t new_pfn;
+> >
+> > @@ -1466,7 +1466,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> >               rmap_printk("spte %p %llx gfn %llx (%d)\n",
+> >                           sptep, *sptep, gfn, level);
+> >
+> > -             need_flush = 1;
+> > +             need_flush = true;
+> >
+> >               if (pte_write(pte)) {
+> >                       pte_list_remove(kvm, rmap_head, sptep);
+> > @@ -1482,7 +1482,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> >
+> >       if (need_flush && kvm_available_flush_tlb_with_range()) {
+> >               kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
+> > -             return 0;
+> > +             return false;
+> >       }
+> >
+> >       return need_flush;
+> > @@ -1623,8 +1623,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> >
+> >       for_each_rmap_spte(rmap_head, &iter, sptep)
+> >               if (is_accessed_spte(*sptep))
+> > -                     return 1;
+> > -     return 0;
+> > +                     return true;
+> > +     return false;
+> >  }
+> >
+> >  #define RMAP_RECYCLE_THRESHOLD 1000
+>
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>
+> One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
+> 'kvm_handle_gfn_range()' which does
+>
+>         bool ret = false;
+>
+>         for_each_slot_rmap_range(...)
+>                 ret |= handler(...);
+>
+> and I find '|=' to not be very natural with booleans. I'm not sure it's
+> worth changing though.
+>
+> --
+> Vitaly
+>
