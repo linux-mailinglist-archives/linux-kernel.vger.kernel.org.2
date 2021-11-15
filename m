@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01116451340
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DACF45133A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347962AbhKOTtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:49:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
+        id S1347951AbhKOTtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:49:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239195AbhKOR5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239198AbhKOR5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:57:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA8B63333;
-        Mon, 15 Nov 2021 17:34:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C50C260F38;
+        Mon, 15 Nov 2021 17:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997694;
-        bh=DoRprvbnDyIA6J56UPBpUzJjowORUXnaEgFu3zG+Pqw=;
+        s=korg; t=1636997697;
+        bh=MMazxAV7PO/kMsDmIWerrt5q+fB4BzEy63MLdftmtB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VGfeTuZ+s6tLSQE/iLY7bEPnHojnDEBw0UEqEhyF0L5RzviWEDeOVUsYQVyl/413Z
-         hRZ4IXDxZxgjuuj5ivLrHC5plSVT+gaZj1/0sxAeVqrwCg1ztXzWY50fMcOhw6jXe0
-         etDl5raH/pWMTFP+SrPhnuWTwoc3bjIIfoxgLFCk=
+        b=vRB/gpYxKP+e6smcZZVdcbri/v1Zk2sQWlkZwBaoAeBL/3PSqmlP4kCzUfzXr8xXU
+         GF1H/CbESrWfYiFbwFqhDH9FSh11XepYyDuxbCEbWoKP64PiBuQQkaf+zskA6L+BOj
+         cQXAolCH+fCZbkkmzuTDz4806JuY6yrLMGatC0oY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 241/575] net: dsa: lantiq_gswip: serialize access to the PCE table
-Date:   Mon, 15 Nov 2021 17:59:26 +0100
-Message-Id: <20211115165352.073816222@linuxfoundation.org>
+Subject: [PATCH 5.10 242/575] gfs2: Cancel remote delete work asynchronously
+Date:   Mon, 15 Nov 2021 17:59:27 +0100
+Message-Id: <20211115165352.109274537@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,119 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 49753a75b9a32de4c0393bb8d1e51ea223fda8e4 ]
+[ Upstream commit 486408d690e130c3adacf816754b97558d715f46 ]
 
-Looking at the code, the GSWIP switch appears to hold bridging service
-structures (VLANs, FDBs, forwarding rules) in PCE table entries.
-Hardware access to the PCE table is non-atomic, and is comprised of
-several register reads and writes.
+In gfs2_inode_lookup and gfs2_create_inode, we're calling
+gfs2_cancel_delete_work which currently cancels any remote delete work
+(delete_work_func) synchronously.  This means that if the work is
+currently running, it will wait for it to finish.  We're doing this to
+pevent a previous instance of an inode from having any influence on the
+next instance.
 
-These accesses are currently serialized by the rtnl_lock, but DSA is
-changing its driver API and that lock will no longer be held when
-calling ->port_fdb_add() and ->port_fdb_del().
+However, delete_work_func uses gfs2_inode_lookup internally, and we can
+end up in a deadlock when delete_work_func gets interrupted at the wrong
+time.  For example,
 
-So this driver needs to serialize the access to the PCE table using its
-own locking scheme. This patch adds that.
+  (1) An inode's iopen glock has delete work queued, but the inode
+      itself has been evicted from the inode cache.
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  (2) The delete work is preempted before reaching gfs2_inode_lookup.
+
+  (3) Another process recreates the inode (gfs2_create_inode).  It tries
+      to cancel any outstanding delete work, which blocks waiting for
+      the ongoing delete work to finish.
+
+  (4) The delete work calls gfs2_inode_lookup, which blocks waiting for
+      gfs2_create_inode to instantiate and unlock the new inode =>
+      deadlock.
+
+It turns out that when the delete work notices that its inode has been
+re-instantiated, it will do nothing.  This means that it's safe to
+cancel the delete work asynchronously.  This prevents the kind of
+deadlock described above.
+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/lantiq_gswip.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ fs/gfs2/glock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index 4d23a7aba7961..f54e7f48b0dd7 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -274,6 +274,7 @@ struct gswip_priv {
- 	int num_gphy_fw;
- 	struct gswip_gphy_fw *gphy_fw;
- 	u32 port_vlan_filter;
-+	struct mutex pce_table_lock;
- };
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 03c3407c8e26f..533adcd480310 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -1911,7 +1911,7 @@ bool gfs2_queue_delete_work(struct gfs2_glock *gl, unsigned long delay)
  
- struct gswip_pce_table_entry {
-@@ -521,10 +522,14 @@ static int gswip_pce_table_entry_read(struct gswip_priv *priv,
- 	u16 addr_mode = tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSRD :
- 					GSWIP_PCE_TBL_CTRL_OPMOD_ADRD;
- 
-+	mutex_lock(&priv->pce_table_lock);
-+
- 	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
- 				     GSWIP_PCE_TBL_CTRL_BAS);
--	if (err)
-+	if (err) {
-+		mutex_unlock(&priv->pce_table_lock);
- 		return err;
-+	}
- 
- 	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
- 	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
-@@ -534,8 +539,10 @@ static int gswip_pce_table_entry_read(struct gswip_priv *priv,
- 
- 	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
- 				     GSWIP_PCE_TBL_CTRL_BAS);
--	if (err)
-+	if (err) {
-+		mutex_unlock(&priv->pce_table_lock);
- 		return err;
-+	}
- 
- 	for (i = 0; i < ARRAY_SIZE(tbl->key); i++)
- 		tbl->key[i] = gswip_switch_r(priv, GSWIP_PCE_TBL_KEY(i));
-@@ -551,6 +558,8 @@ static int gswip_pce_table_entry_read(struct gswip_priv *priv,
- 	tbl->valid = !!(crtl & GSWIP_PCE_TBL_CTRL_VLD);
- 	tbl->gmap = (crtl & GSWIP_PCE_TBL_CTRL_GMAP_MASK) >> 7;
- 
-+	mutex_unlock(&priv->pce_table_lock);
-+
- 	return 0;
- }
- 
-@@ -563,10 +572,14 @@ static int gswip_pce_table_entry_write(struct gswip_priv *priv,
- 	u16 addr_mode = tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSWR :
- 					GSWIP_PCE_TBL_CTRL_OPMOD_ADWR;
- 
-+	mutex_lock(&priv->pce_table_lock);
-+
- 	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
- 				     GSWIP_PCE_TBL_CTRL_BAS);
--	if (err)
-+	if (err) {
-+		mutex_unlock(&priv->pce_table_lock);
- 		return err;
-+	}
- 
- 	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
- 	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
-@@ -598,8 +611,12 @@ static int gswip_pce_table_entry_write(struct gswip_priv *priv,
- 	crtl |= GSWIP_PCE_TBL_CTRL_BAS;
- 	gswip_switch_w(priv, crtl, GSWIP_PCE_TBL_CTRL);
- 
--	return gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
--				      GSWIP_PCE_TBL_CTRL_BAS);
-+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
-+				     GSWIP_PCE_TBL_CTRL_BAS);
-+
-+	mutex_unlock(&priv->pce_table_lock);
-+
-+	return err;
- }
- 
- /* Add the LAN port into a bridge with the CPU port by
-@@ -2040,6 +2057,7 @@ static int gswip_probe(struct platform_device *pdev)
- 	priv->ds->priv = priv;
- 	priv->ds->ops = &gswip_switch_ops;
- 	priv->dev = dev;
-+	mutex_init(&priv->pce_table_lock);
- 	version = gswip_switch_r(priv, GSWIP_VERSION);
- 
- 	/* bring up the mdio bus */
+ void gfs2_cancel_delete_work(struct gfs2_glock *gl)
+ {
+-	if (cancel_delayed_work_sync(&gl->gl_delete)) {
++	if (cancel_delayed_work(&gl->gl_delete)) {
+ 		clear_bit(GLF_PENDING_DELETE, &gl->gl_flags);
+ 		gfs2_glock_put(gl);
+ 	}
 -- 
 2.33.0
 
