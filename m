@@ -2,170 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809E644FFD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AC444FFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhKOIQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbhKOIP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:15:29 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B04C061746;
-        Mon, 15 Nov 2021 00:12:31 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 136so9257281pgc.0;
-        Mon, 15 Nov 2021 00:12:31 -0800 (PST)
+        id S229727AbhKOIRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:17:03 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:26958 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236727AbhKOIQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:16:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=pjGJNnGfp7N4YPL+3tEog9B076yjtwRjSVPNfS56OSM=;
-        b=BZeXQQNf4sUHMfeWyEIc/pL9d7eDdipdr3UY8NhmZmrw8aEqL+veJz5rohewQomD/9
-         gvjGv+OH7MUauciTQWQYnOXuwsH4I0H4pV59b0eyWWSlTqdhfy8xyOmoREE2DI6snXLz
-         UeUnn60CjTcS6eCkct14/Ckb+aRNdG7wFkJgBQxwQdI39R7GK/dKhSi+sJaEuxzuW281
-         9trAJgcjSL+DDUqAWjBiEtl/ZO7ZATHqMvwQtVzovbIlK2W7HjxoWc8FGRGIOUnqFPiZ
-         PPa9wm7xDaZ2vYDkqexwCjZaxaOsmVbYK8dMC8BEKzaHCIBVkh3YWiqN+bybl/4qX446
-         DTEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=pjGJNnGfp7N4YPL+3tEog9B076yjtwRjSVPNfS56OSM=;
-        b=2mVDA/rCh9EU+hfSduWDyY2CCer/r74PtllvGe6tVw/pkKJuZnZmoRc92pvsFul7If
-         SKcplayLk3poXpTJhNpTRi26Z4viA2tTeVMEmNbh1NQTCGAGop2a4lviDdKEbiZb+zBW
-         FhKyTpAQzMkLRa6e08zqdIwXP+jbZLVG8cvWZwpu/8FOZ+DwSGZAYxD8f4GfSPwxTofX
-         FaNmN9Tekoq5Lyg+cxCnCqhQ4jz1thylhcAvxARKg3+pBGPkLo+o/f2F9OblDH/TllRm
-         SPxoZFf/x8qu2F6NaONaqqD7zlYyKgSCHzj+s9xMUYCITVzn25goEOf1PHDuuPhxqztm
-         xINg==
-X-Gm-Message-State: AOAM533ILwcZshvA87T36Fh9YtQcmqQNkmeMwboov2mS5OZUWTqQe2bE
-        y6pybnD8cWzllyifSp0tSWM=
-X-Google-Smtp-Source: ABdhPJzGituTcml7q8z/bFSirZjHN/EzKmPMByct6A039FIlbn7nWDRowe12KRH+XfpvJo86S+l4JA==
-X-Received: by 2002:a63:8042:: with SMTP id j63mr23244031pgd.225.1636963951054;
-        Mon, 15 Nov 2021 00:12:31 -0800 (PST)
-Received: from k7550 ([103.214.62.4])
-        by smtp.gmail.com with ESMTPSA id bt2sm17687876pjb.33.2021.11.15.00.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 00:12:30 -0800 (PST)
-Message-ID: <d4bf6e277e1fc5dbd9026a8fdd705599de87ba6b.camel@gmail.com>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-From:   Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-To:     Alexander Popov <alex.popov@linux.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     notify@kernel.org
-Date:   Mon, 15 Nov 2021 13:42:12 +0530
-In-Reply-To: <20211027233215.306111-1-alex.popov@linux.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636964028; x=1668500028;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=d9w1hHGeqrAi9vzCE5kTs/S+OT21nKM0nTVCiPQ2ofg=;
+  b=BoT4wgDx04x2929zqDb4xY01rQ8eAEebGpyFO874crEgZ72s0j5wT1WT
+   z9qha9XjZR5r/RpqGbT2wXS7KaQ6LnBhu9rNOjJNiLdy9KVjAm3uQttXL
+   k+JPm5zWRfMGts3WJdvZipQdrCbRkFEDWxUBs3uYAjVUPgqMFgORqS4Dh
+   LgLDSES78FCPYkiFreRH7aTX8vzWORRd4k9aIYDmiIRGT8g/jEohh/PN0
+   VPNjnlMJlCmBu5bJU5FKAAZthRFmMGeE6W/smLs6BPupfNCjiFNiRgRIs
+   F0aliOr9jEhJFv2aQ9cqUHeepaiMZhQtXs7Jif/jmXd6Qp63cXfavYIUh
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,235,1631570400"; 
+   d="scan'208";a="20457720"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 15 Nov 2021 09:13:44 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 15 Nov 2021 09:13:44 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 15 Nov 2021 09:13:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636964024; x=1668500024;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=d9w1hHGeqrAi9vzCE5kTs/S+OT21nKM0nTVCiPQ2ofg=;
+  b=bmSRn6UTTIMaT5PbL2lK8FjPjq1RnLoO+kgEl0TC8lrPg+r6r8P7xMEt
+   vK8BVJhnx44eJoaLPXx2MPW89tdRdaZVZXQESaisBem8UJ64cWeQctPKB
+   /2Ztv4of6eqGb1l03W+BFLQJUH8QXvjdIAf1BFD5GYSOAyU/uKfdTZb5Q
+   DuwHVI0ZUi0tBbYmCN711yhiXqSAy6oTb7nAns/cPvpYqSfrIxLd8fH1B
+   pINzo3ycA9KyKeHARVsRvevuqpzs9qpWafROfkVuuVHw77LySGVtc0qq+
+   Wk1l6sgeQcPZ1FgYfgVqsY5QORn9XH+SFyqL2as2/dXEnXM2XT/Y+7DKT
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,235,1631570400"; 
+   d="scan'208";a="20457719"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 15 Nov 2021 09:13:44 +0100
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 4F1C8280065;
+        Mon, 15 Nov 2021 09:13:44 +0100 (CET)
+Message-ID: <19130461cbdd39e92b06ec425db5db2984b41a41.camel@ew.tq-group.com>
+Subject: Re: [PATCH] of: base: Skip CPU nodes with non-"okay"/"disabled"
+ status
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 15 Nov 2021 09:13:42 +0100
+In-Reply-To: <7b4afaa7-13df-513a-5986-e1a9f5f5d7ed@gmail.com>
+References: <20211108084804.13474-1-matthias.schiffer@ew.tq-group.com>
+         <7b4afaa7-13df-513a-5986-e1a9f5f5d7ed@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 02:32 +0300, Alexander Popov wrote:
-> [...]
+On Sun, 2021-11-14 at 14:41 -0500, Frank Rowand wrote:
+> On 11/8/21 3:48 AM, Matthias Schiffer wrote:
+> > Allow fully disabling CPU nodes using status = "fail". Having no status
+> > property at all is still interpreted as "okay" as usual.
+> > 
+> > This allows a bootloader to change the number of available CPUs (for
+> > example when a common DTS is used for SoC variants with different numbers
+> > of cores) without deleting the nodes altogether, which could require
+> > additional fixups to avoid dangling phandle references.
+> > 
+> > References:
+> > - https://www.lkml.org/lkml/2020/8/26/1237
+> > - https://www.spinics.net/lists/devicetree-spec/msg01007.html
+> > - https://github.com/devicetree-org/dt-schema/pull/61
+> > 
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >  drivers/of/base.c | 29 +++++++++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> > 
+> > diff --git a/drivers/of/base.c b/drivers/of/base.c
+> > index 61de453b885c..4e9973627c8d 100644
+> > --- a/drivers/of/base.c
+> > +++ b/drivers/of/base.c
+> > @@ -650,6 +650,32 @@ bool of_device_is_available(const struct device_node *device)
+> >  }
+> >  EXPORT_SYMBOL(of_device_is_available);
+> >  
+> > +/**
+> > + *  __of_device_is_disabled - check if a device has status "disabled"
+> > + *
+> > + *  @device: Node to check status for, with locks already held
+> > + *
+> > + *  Return: True if the status property is set to "disabled",
+> > + *  false otherwise
+> > + *
+> > + *  Most callers should use __of_device_is_available() instead, this function
+> > + *  only exists due to the special interpretation of the "disabled" status for
+> > + *  CPU nodes.
+> > + */
+> > +static bool __of_device_is_disabled(const struct device_node *device)
+> > +{
+> > +	const char *status;
+> > +
+> > +	if (!device)
+> > +		return false;
+> > +
+> > +	status = __of_get_property(device, "status", NULL);
+> > +	if (status == NULL)
+> > +		return false;
+> > +
+> > +	return !strcmp(status, "disabled");
+> > +}
+> > +
+> >  /**
+> >   *  of_device_is_big_endian - check if a device has BE registers
+> >   *
+> > @@ -817,6 +843,9 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+> >  		of_node_put(node);
+> >  	}
+> >  	for (; next; next = next->sibling) {
+> > +		if (!__of_device_is_available(next) &&
+> > +		    !__of_device_is_disabled(next))
 > 
-> From a security point of view, kernel warning messages provide a lot of
-> useful information for attackers. Many GNU/Linux distributions allow
-> unprivileged users to read the kernel log, so attackers use kernel
-> warning infoleak in vulnerability exploits. 
-At the risk of being too simplistic, if the intention is to cut down infoleaks,
-why not simply have a config (and/or sysctl) to toggle it - both at kernel build
-as well as at runtime via a sysctl.
+> Shouldn't that just be a check to continue if the device is disabled?
+> 
+> If adding a check for available, then all of the callers of for_each_of_cpu_node()
+> need to be checked.  There is at least one that is suspicious - arch/arm/mach-imx/platsmp.c
+> has a comment:
+> 
+>  * Initialise the CPU possible map early - this describes the CPUs
+>  * which may be present or become present in the system.
 
-A minimal starting attempt at this, definitely incomplete (i've not actually written
-the config anywhere, sorry, I'd just like to propose this as an idea for now) could
-be something like this? (Am calling the kconfig CONFIG_TERSE_DIAGS_ONWARN):
+Previously, there were two option for the (effective) value of the
+status of a device_node:
 
----
- kernel/panic.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+- "okay", "ok" or unset
+- anything else (which includes "disabled" and "fail")
 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index cefd7d82366f..bbf00b0a8110 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -587,10 +587,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
-    if (args)
-        vprintk(args->fmt, args->args);
- 
--   print_modules();
--
--   if (regs)
--       show_regs(regs);
-+   if (IS_ENABLED(CONFIG_TERSE_DIAGS_ONWARN))
-+       return;
- 
-    if (panic_on_warn) {
-        /*
-@@ -603,6 +601,11 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
-        panic("panic_on_warn set ...\n");
-    }   
- 
-+   print_modules();
-+
-+   if (regs)
-+       show_regs(regs);
-+
-    if (!regs)
-        dump_stack();
- 
--- 
-2.25.1
+__of_device_is_available() checks which of these two is the case.
+
+With the new code, we have 3 cases for the status of CPU nodes:
+
+- "okay", "ok" or unset
+- "disabled"
+- anything else ("fail", ...)
+
+My patch will only change the behaviour in one case: When a CPU node
+has a status that is not "okay", "ok", "disabled" or unset - which is
+exactly the point of my patch.
+
+See also the change [1], which removed the !available check a while
+ago, and the discussion in [2], which led us to the conclusion that 
+of_get_next_cpu_node() must not distinguish "okay" and "disabled" CPU
+nodes and we instead need a third status to disable a CPU for real.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/of/base.c?id=c961cb3be9064d1097ccc019390f8b5739daafc6
+[2] https://www.lkml.org/lkml/2020/8/26/1237
 
 
-Further, am unsure precisely which portions of diagnostic output would be useful
-to retain when the config's on. Of course, this "patch" is very premature. Of course,
-am open to suggestions on all of this,
-Regards
+> 
+> -Frank
+> 
+> > +			continue;
+> >  		if (!(of_node_name_eq(next, "cpu") ||
+> >  		      __of_node_is_type(next, "cpu")))
+> >  			continue;
+> > 
+> 
+> 
 
