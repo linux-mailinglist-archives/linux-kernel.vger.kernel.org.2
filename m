@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20621450148
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4284450151
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237411AbhKOJ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:28:43 -0500
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:37423 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhKOJ1g (ORCPT
+        id S236821AbhKOJ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237627AbhKOJ1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:27:36 -0500
-Received: by mail-yb1-f171.google.com with SMTP id e136so45071744ybc.4;
-        Mon, 15 Nov 2021 01:24:33 -0800 (PST)
+        Mon, 15 Nov 2021 04:27:42 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D095FC061200
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:24:45 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id w29so29209926wra.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7YV6XXg8h8hJhDgn/7ARhXJWKWuxziOFXex2XBPVdnA=;
+        b=D/CAVXjzTScTjviy18Ml468lD008OZsgJwfASTRCSEfDh/y8GWN5v9BMFSNzBwuaF9
+         EooA9ydGblJ8rK30zdQ/b3Mo+MTGZ3B62X1j4CTIpqBjWFWuhTo+6DgoFJ1+7IjSc2VP
+         o6qGFlHEtTo85Wilj/JXwMUj1sLRonSzkQ0fhteR9fBd9Bu9W1aXJzpwC9BDGi61HbYn
+         BE+0ZCQMlVkeINO54sPy7tkWnRlvPZIR/z0h0pJ77KgK0kqmIbzZy8l/uRQEcsLDK02Y
+         0/K8GnWcAT6zSxv1+3BLlpbQllPqaLtSK0WzhnYn2/XVKFrTs0f5ekwNP6eYOjz+tc1h
+         ILXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuFbvIjm50IuAszvEEIIi3rMMyoH/wSECdwpOBDhsFs=;
-        b=b+NXBwNb1j5zBhjx8Zf7nOT0tCCnjRhytwHquZmpEZ4y8408nZJy0MdCTXwcEb26B8
-         hFivEacjHLvn5iB0ncugxxxkhsuNPSJ2sJurVIa6Fp1AsSgihVRFhsJVCaaIjIJsMb1E
-         kdIqxLPA86dspj4DCmvIdTF7kjSCvQ7ZsdR08GGGXFAdyRj62n1cr7Gahn8HL91tXN/A
-         ALc/Z/n4IjfAEmi/Dd++l8LnuCea5dAYW/6weCaQDRWoQHDLmA88ITQdp+haLRdLcRtk
-         zBl4H4mJr4R+XsrjTs2i9Zkl4WvfsWZJu8Zt72A/URlJpZvxeMDye4NYjA7fI45Cf+GC
-         0xqQ==
-X-Gm-Message-State: AOAM531XDcgEHXYTyZ9taf96xsuqD1QqxIRCF4CY29uUBFewwMJCXI6D
-        6dk6riO/zgdzkZHCmlW1Jm5Xc1mdG/ytNwynO/k=
-X-Google-Smtp-Source: ABdhPJxVqMz5cYhmIv7Icq3FORFX2T6IyCmv03iiLyKk9lNM2VFpzkKIu4dzHOdIq5jXugNBBFlGrdm/moKUQjK1Pb0=
-X-Received: by 2002:a25:c792:: with SMTP id w140mr37372926ybe.131.1636968273133;
- Mon, 15 Nov 2021 01:24:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7YV6XXg8h8hJhDgn/7ARhXJWKWuxziOFXex2XBPVdnA=;
+        b=1qs/oLSx2Vet96l+3wcjWaEwycTmf3U1RHLAdMH0fGaIDUsvlxTOVdRVwR1bNNbzC2
+         93Lh8aWgGLD507j4Z6SPA+xF4YWZcxGMu1QXUsAVp3za/JNC78CTepeuZnToekAyfnfv
+         Vt95oOQWsy8h9oUsswHIOs37ocFk/nxw8ohfbsfLJvA6z3mXBhsl2QuJl010I/LXAVl4
+         MtyFrAm8YRe6afmLJ1RpsNHj8nnH8g3oyTMqUYseGmxFGHuXeZLh7o8mae3U4KLz2AsL
+         T0LPkobis78Yvxgy3esmOL1LrjKq6ZEdTgaaBMZ6co8gy3a2QnHCON+MsHMXZGloDDH5
+         OiAA==
+X-Gm-Message-State: AOAM5323GRPrkFltsuYbeECSMKqPJJAAKQx/tUoMAKYmBP3aCPtGj6ZU
+        V4lDyZSV598UlLcyeQ47PtAGNr436aMEKq2s
+X-Google-Smtp-Source: ABdhPJx3QrHD/y228kMTNLG7embXZAa6H6Op9TithBAqUOw10x78H3OU9ZhjpbcZy9j8usfkkpSmWQ==
+X-Received: by 2002:a5d:4b45:: with SMTP id w5mr43771146wrs.272.1636968284000;
+        Mon, 15 Nov 2021 01:24:44 -0800 (PST)
+Received: from ?IPv6:2001:861:44c0:66c0:f56f:2409:301:93ad? ([2001:861:44c0:66c0:f56f:2409:301:93ad])
+        by smtp.gmail.com with ESMTPSA id p12sm13871922wro.33.2021.11.15.01.24.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 01:24:43 -0800 (PST)
+Subject: Re: [PATCH 1/3] arm64: dts: meson-gxbb-wetek: fix HDMI in early boot
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211012052522.30873-1-christianshewitt@gmail.com>
+ <20211012052522.30873-2-christianshewitt@gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <d9f6ec32-63eb-b19c-867f-1cd9b54bb0e3@baylibre.com>
+Date:   Mon, 15 Nov 2021 10:24:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
- <20211115075124.17713-1-paskripkin@gmail.com> <YZIWT9ATzN611n43@hovoldconsulting.com>
- <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com> <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
- <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
-In-Reply-To: <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Mon, 15 Nov 2021 18:24:22 +0900
-Message-ID: <CAMZ6Rq+3uPE31q=HN-BdkXsMYZf53=VfNSn0OD6HcweLO0u-_Q@mail.gmail.com>
-Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211012052522.30873-2-christianshewitt@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon. 15 Nov 2021 at 17:30, Pavel Skripkin <paskripkin@gmail.com> wrote:
-> On 11/15/21 11:16, Johan Hovold wrote:
-> > On Mon, Nov 15, 2021 at 11:15:07AM +0300, Pavel Skripkin wrote:
-> >> On 11/15/21 11:11, Johan Hovold wrote:
-> >> > Just a drive-by comment:
-> >> >
-> >> > Are you sure about this move of the netdev[channel_idx] initialisation?
-> >> > What happens if the registered can device is opened before you
-> >> > initialise the pointer? NULL-deref in es58x_send_msg()?
-> >> >
-> >> > You generally want the driver data fully initialised before you register
-> >> > the device so this looks broken.
-> >> >
-> >> > And either way it is arguably an unrelated change that should go in a
-> >> > separate patch explaining why it is needed and safe.
-> >> >
-> >>
-> >>
-> >> It was suggested by Vincent who is the maintainer of this driver [1].
-> >
-> > Yeah, I saw that, but that doesn't necessarily mean it is correct.
-> >
-> > You're still responsible for the changes you make and need to be able to
-> > argue why they are correct.
-> >
->
-> Sure! I should have check it before sending v2 :( My bad, sorry. I see
-> now, that there is possible calltrace which can hit NULL defer.
+On 12/10/2021 07:25, Christian Hewitt wrote:
+> Mark the VDDIO_AO18 regulator always-on and set hdmi-supply for the hdmi_tx
+> node to ensure HDMI is powered in the early stages of boot.
+> 
+> Fixes: fb72c03e0e32 ("ARM64: dts: meson-gxbb-wetek: add a wetek specific dtsi to cleanup hub and play2")
+> 
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
+> index a350fee1264d..8e2af986ceba 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
+> @@ -64,6 +64,7 @@
+>  		regulator-name = "VDDIO_AO18";
+>  		regulator-min-microvolt = <1800000>;
+>  		regulator-max-microvolt = <1800000>;
+> +		regulator-always-on;
+>  	};
+>  
+>  	vcc_3v3: regulator-vcc_3v3 {
+> @@ -161,6 +162,7 @@
+>  	status = "okay";
+>  	pinctrl-0 = <&hdmi_hpd_pins>, <&hdmi_i2c_pins>;
+>  	pinctrl-names = "default";
+> +	hdmi-supply = <&vddio_ao18>;
+>  };
+>  
+>  &hdmi_tx_tmds_port {
+> 
 
-I should be the one apologizing here. Sorry for the confusion.
-
-> One thing I am wondering about is why in some code parts there are
-> validation checks for es58x_dev->netdev[i] and in others they are missing.
-
-There is a validation when it is accessed in a for loop.
-It is not guarded in es58x_send_msg() because this function
-expects the channel_idx to be a valid index.
-
-Does this answer your wonders?
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
