@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D41451E10
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A60B4518B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345250AbhKPAfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S241688AbhKOXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:05:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343955AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FCDA6360F;
-        Mon, 15 Nov 2021 18:49:19 +0000 (UTC)
+        id S243325AbhKOS4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:56:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D21633CF;
+        Mon, 15 Nov 2021 18:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002159;
-        bh=1JJY+d1hilmZPQB4fO71zQCsWNuLLbJf8RR3944VvFM=;
+        s=korg; t=1636999924;
+        bh=p+JnmMFi7WIdppKC+S1L3Kmen7abJPfHWXn7TwXkfh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiXQ23raZo03qp2g8qepLKKO2zPARxM6YncP7woX/ahUauUcEmlZyGoywAObtXs2R
-         b0lP2OssgqGT7LsQBByqOpIUowYU2a9D3vY3aYIRas5WlNVgSQDsbfWJiQ0bFyke5v
-         bhCc4CMl3qMM9xG4MhsaqlBCQl10VDygNLfoSdcI=
+        b=Nzca5Ra9kAmb+S79ikorO28MPurKmxw3SEK701V6voULeX7kRwo2F70Lfeg9tlpDj
+         WEEGllZyZbj6523Lk3ES3+eCdfFiCuMmvGy5LsmDtTFIkPV0ZRXJHVHuRtgvdMHC+T
+         mVGDpCY3EQNS0NsnlWqY6/JE5sHh72OHlybAqsSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Shayne Chen <shayne.chen@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 461/917] mt76: mt7915: fix info leak in mt7915_mcu_set_pre_cal()
-Date:   Mon, 15 Nov 2021 17:59:16 +0100
-Message-Id: <20211115165444.407565141@linuxfoundation.org>
+Subject: [PATCH 5.14 474/849] mt76: mt7915: fix sta_rec_wtbl tag len
+Date:   Mon, 15 Nov 2021 17:59:17 +0100
+Message-Id: <20211115165436.315226288@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,16 +39,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Shayne Chen <shayne.chen@mediatek.com>
 
-[ Upstream commit 3924715ffe5e064a85f56490f77b7b2084230800 ]
+[ Upstream commit afa0370f3a3a64af6d368da0bedd72ab2a026cd0 ]
 
-Zero out all the unused members of "req" so that we don't disclose
-stack information.
+Fix tag len error for sta_rec_wtbl, which causes fw parsing error for
+the tags placed behind it.
 
-Fixes: 495184ac91bb ("mt76: mt7915: add support for applying pre-calibration data")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Felix Fietkau <nbd@nbd.name>
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -56,18 +55,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 2f30047bd80f2..caf2033c5c17e 100644
+index 85c9c08ee2a82..6dfe3716a63a5 100644
 --- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
 +++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -3481,7 +3481,7 @@ static int mt7915_mcu_set_pre_cal(struct mt7915_dev *dev, u8 idx,
- 		u8 idx;
- 		u8 rsv[4];
- 		__le32 len;
--	} req;
-+	} req = {};
- 	struct sk_buff *skb;
+@@ -757,7 +757,7 @@ mt7915_mcu_alloc_wtbl_req(struct mt7915_dev *dev, struct mt7915_sta *msta,
+ 	}
  
- 	skb = mt76_mcu_msg_alloc(&dev->mt76, NULL, sizeof(req) + len);
+ 	if (sta_hdr)
+-		sta_hdr->len = cpu_to_le16(sizeof(hdr));
++		le16_add_cpu(&sta_hdr->len, sizeof(hdr));
+ 
+ 	return skb_put_data(nskb, &hdr, sizeof(hdr));
+ }
 -- 
 2.33.0
 
