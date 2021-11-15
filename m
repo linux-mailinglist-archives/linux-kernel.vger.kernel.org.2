@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EE64514F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4898C4514F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346516AbhKOUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:18:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46102 "EHLO mail.kernel.org"
+        id S1349743AbhKOUSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:18:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239959AbhKOSFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE0B3632FB;
-        Mon, 15 Nov 2021 17:40:41 +0000 (UTC)
+        id S239965AbhKOSFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:05:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4037632F9;
+        Mon, 15 Nov 2021 17:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998042;
-        bh=/jWpU+v8R8qSIf1moZIq2VW/GwaiC8r8t8GfNE1KrcE=;
+        s=korg; t=1636998050;
+        bh=gYFZ0b5aZN9Ni542rnRuOLNtYn27+QfJj0MpK/5OOlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZddffLsKy0Z0cNqFGPhBF52dDNd6kyBUo15C+o44pHYkYxa0ftk5BFDQvTMI0IOCb
-         3Vyz9wr9xH0le6g2sUJERbwt1nZj5l1kdxXnEFnPTyNrhr84GWVcjewqM9+YBNxD2R
-         xkVl1EYJC0NvpvQRPC/wAi7eONsNh32+Z0Qh1KtM=
+        b=snc6g+WC+BQnsWl/3QKdHWr97kb2e7F5JD+ps4wxGt7jjTmqcU+wkDhJx8MAjkAs5
+         6ofW5s5HfoXPehR2wSkXh95HBcy2XOlJDFRPBTqp47knKYblQrJyXjlcaLp7/vUWLk
+         f06+ku6VHi7yfd92pRBudK7mJD2ain9lG7Y5Q8BQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        stable@vger.kernel.org, Benjamin Li <benl@squareup.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 367/575] KVM: s390: Fix handle_sske page fault handling
-Date:   Mon, 15 Nov 2021 18:01:32 +0100
-Message-Id: <20211115165356.492060239@linuxfoundation.org>
+Subject: [PATCH 5.10 370/575] wcn36xx: add proper DMA memory barriers in rx path
+Date:   Mon, 15 Nov 2021 18:01:35 +0100
+Message-Id: <20211115165356.588272972@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,44 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+From: Benjamin Li <benl@squareup.com>
 
-[ Upstream commit 85f517b29418158d3e6e90c3f0fc01b306d2f1a1 ]
+[ Upstream commit 9bfe38e064af5decba2ffce66a2958ab8b10eaa4 ]
 
-If handle_sske cannot set the storage key, because there is no
-page table entry or no present large page entry, it calls
-fixup_user_fault.
-However, currently, if the call succeeds, handle_sske returns
--EAGAIN, without having set the storage key.
-Instead, retry by continue'ing the loop without incrementing the
-address.
-The same issue in handle_pfmf was fixed by
-a11bdb1a6b78 ("KVM: s390: Fix pfmf and conditional skey emulation").
+This is essentially exactly following the dma_wmb()/dma_rmb() usage
+instructions in Documentation/memory-barriers.txt.
 
-Fixes: bd096f644319 ("KVM: s390: Add skey emulation fault handling")
-Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Link: https://lore.kernel.org/r/20211022152648.26536-1-scgl@linux.ibm.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+The theoretical races here are:
+
+1. DXE (the DMA Transfer Engine in the Wi-Fi subsystem) seeing the
+dxe->ctrl & WCN36xx_DXE_CTRL_VLD write before the dxe->dst_addr_l
+write, thus performing DMA into the wrong address.
+
+2. CPU reading dxe->dst_addr_l before DXE unsets dxe->ctrl &
+WCN36xx_DXE_CTRL_VLD. This should generally be harmless since DXE
+doesn't write dxe->dst_addr_l (no risk of freeing the wrong skb).
+
+Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
+Signed-off-by: Benjamin Li <benl@squareup.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211023001528.3077822-1-benl@squareup.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/priv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/wcn36xx/dxe.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-index cd74989ce0b02..3b1a498e58d25 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -397,6 +397,8 @@ static int handle_sske(struct kvm_vcpu *vcpu)
- 		mmap_read_unlock(current->mm);
- 		if (rc == -EFAULT)
- 			return kvm_s390_inject_program_int(vcpu, PGM_ADDRESSING);
-+		if (rc == -EAGAIN)
-+			continue;
- 		if (rc < 0)
- 			return rc;
- 		start += PAGE_SIZE;
+diff --git a/drivers/net/wireless/ath/wcn36xx/dxe.c b/drivers/net/wireless/ath/wcn36xx/dxe.c
+index 70c46c327512f..cf4eb0fb28151 100644
+--- a/drivers/net/wireless/ath/wcn36xx/dxe.c
++++ b/drivers/net/wireless/ath/wcn36xx/dxe.c
+@@ -606,6 +606,10 @@ static int wcn36xx_rx_handle_packets(struct wcn36xx *wcn,
+ 	dxe = ctl->desc;
+ 
+ 	while (!(READ_ONCE(dxe->ctrl) & WCN36xx_DXE_CTRL_VLD)) {
++		/* do not read until we own DMA descriptor */
++		dma_rmb();
++
++		/* read/modify DMA descriptor */
+ 		skb = ctl->skb;
+ 		dma_addr = dxe->dst_addr_l;
+ 		ret = wcn36xx_dxe_fill_skb(wcn->dev, ctl, GFP_ATOMIC);
+@@ -616,9 +620,15 @@ static int wcn36xx_rx_handle_packets(struct wcn36xx *wcn,
+ 			dma_unmap_single(wcn->dev, dma_addr, WCN36XX_PKT_SIZE,
+ 					DMA_FROM_DEVICE);
+ 			wcn36xx_rx_skb(wcn, skb);
+-		} /* else keep old skb not submitted and use it for rx DMA */
++		}
++		/* else keep old skb not submitted and reuse it for rx DMA
++		 * (dropping the packet that it contained)
++		 */
+ 
++		/* flush descriptor changes before re-marking as valid */
++		dma_wmb();
+ 		dxe->ctrl = ctrl;
++
+ 		ctl = ctl->next;
+ 		dxe = ctl->desc;
+ 	}
 -- 
 2.33.0
 
