@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF73644FFA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B4744FFAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhKOIEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:04:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60561 "EHLO
+        id S236513AbhKOIHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:07:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26778 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236597AbhKOIEB (ORCPT
+        by vger.kernel.org with ESMTP id S236817AbhKOIEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:04:01 -0500
+        Mon, 15 Nov 2021 03:04:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636963266;
+        s=mimecast20190719; t=1636963279;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CT33CO1P4m9z3srlG1n5DsePRxe7FxchG1iBDIBzjEc=;
-        b=C54FE1t8/2oxCNnbYNW6aX8lbrmXuY0H7pVAL1C21oP5NaquAkN0g32hv7PB1L9LWIoZd+
-        lSlimUI/xDl0ALapM/vBo5E+6OkrPXBckLMzoVqk6CmMNdP5NZABf78rf/kKUoUB1LQv7l
-        sJPrwjANHrtxMumWnPi2J+Ma95992nM=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-mTHVQRXxONWDQIEBYFHjww-1; Mon, 15 Nov 2021 03:01:03 -0500
-X-MC-Unique: mTHVQRXxONWDQIEBYFHjww-1
-Received: by mail-pf1-f198.google.com with SMTP id c21-20020a62e815000000b004a29ebf0aa7so2627506pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:01:03 -0800 (PST)
+        bh=2a8iiYw9cHHedU0g0ICbwjIFnh904x/uUid5qyax/0o=;
+        b=AHk0Tm4xF4ne0omtOz0Iab+4UbU7D7+ieFqKOwAmt1149m+fzmjj3R6MOtCvDn25L3LdqL
+        IhNXRF1hXH1oo6IgvBAiXs4TPIvievcev3o3CL9SLaJGjI3bSRAl3lZCN7wALESEEchlal
+        9ciGEv5VguBK2p/n5Ne6jeuBvlmbxYQ=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324--a7bkPVVNaKDM5iGF3gNDQ-1; Mon, 15 Nov 2021 03:01:18 -0500
+X-MC-Unique: -a7bkPVVNaKDM5iGF3gNDQ-1
+Received: by mail-pj1-f72.google.com with SMTP id u11-20020a17090a4bcb00b001a6e77f7312so8617225pjl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:01:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CT33CO1P4m9z3srlG1n5DsePRxe7FxchG1iBDIBzjEc=;
-        b=aK1fDP4i7qDV4q0DAx0jel5EMpzVjdf6fWEr8tC9jF7LJd74hYGtdd07h13ViswVRv
-         1/uia7vLUftmzdXezK01tKAlJSsc2RsdR21laHe5AsrCEubNFDG+CTCm6SSt7cbpaL/w
-         PAFEFLtBrqF7s/ZuYDgBPaTEokyyPbyGOhNEECpXaeGyX/nNksqH5P+IP0aj95v7sqPM
-         17g7OG8hwTBePFw38QVLUXxTpoSlDNz+P/H6wI63XUzN2y7pf4XOoUsLMxWvQZq2xZqK
-         826n6aWP3CslVA0OH79aAT4Kdp5tN/noLTQ4Q81jwgiQBpFCyWPZ5WN0B3tVEK//7Pxs
-         2QVg==
-X-Gm-Message-State: AOAM531AnkMOpdgk8YXlo2CtBqXAFbYUtYOOng3hI0+lU+ghCis+Z4uh
-        0juf3Tfss82dAEktkCZ8hD7HX9ygP9qVc62ZunISq1s9jm/+aImbHklil3yyp8voSwuKrU//YoA
-        68mkuP7MbetEvzK1Dw5zbFlQw
-X-Received: by 2002:a17:90a:e60a:: with SMTP id j10mr63679958pjy.169.1636963262738;
-        Mon, 15 Nov 2021 00:01:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw5fbAzVfzXaTeCmw8VY664lWE42EUqztZ2N89jbHIauCly+ZiaTzVAzB2oLqZABMH3u9HTaw==
-X-Received: by 2002:a17:90a:e60a:: with SMTP id j10mr63679926pjy.169.1636963262451;
-        Mon, 15 Nov 2021 00:01:02 -0800 (PST)
+        bh=2a8iiYw9cHHedU0g0ICbwjIFnh904x/uUid5qyax/0o=;
+        b=fShXBlSyF6zCwYZFi3NF0mz5limBMtC+bSHGqbpvVohGdXeMFkBiGl4wUWnCeUzB9u
+         x8ETf4HZs/B9p8xguujfnl205oVUC9fvFikJWd/eYihZ7WQ/X3n0+k1CMi/iSFSiWvOJ
+         lf6gDWwh/qN8ERjwI/+yVSM+YrnjY7AZjpBtWiPJXRyI0+UrKj/IjZPOGwu4cXuHVAiK
+         eKysIb+MPVwYPAFd44LfVlt2nN2Y1eFcEeeYWwwTsQnwmGT2pOkHZsYGKQpNwBNU5NlU
+         5pzCJY/xidtkpcXUCg0pDq14+a3W/INWuRzME8oTW3DrnlaP+Bc6u3xCjiotJt7xIgdX
+         RvnQ==
+X-Gm-Message-State: AOAM53103Ftbx9h/m+xMKbUPmFF6q5CVUp/k0WQ6yi4T3EYU9EZC+bNl
+        TT9v+8GcYNblVfdUg8b6PtqQqERNEsXpu/S8RP6abpfvzxv6xUG6YzhShull86IUzIx/BOpkDHg
+        7fbb7fbranR669ehHIGCTaKjC
+X-Received: by 2002:a17:90a:e7c4:: with SMTP id kb4mr62908411pjb.237.1636963277375;
+        Mon, 15 Nov 2021 00:01:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxMaGzKjVGqxW+/p2kNrUGh0+wmkSEQkrNVusG8+B8od3HYJT9hN/7CV3ovfOezj2dLkfDFdA==
+X-Received: by 2002:a17:90a:e7c4:: with SMTP id kb4mr62908368pjb.237.1636963277100;
+        Mon, 15 Nov 2021 00:01:17 -0800 (PST)
 Received: from localhost.localdomain ([94.177.118.89])
-        by smtp.gmail.com with ESMTPSA id rj8sm2841393pjb.0.2021.11.15.00.00.54
+        by smtp.gmail.com with ESMTPSA id ng9sm19694926pjb.4.2021.11.15.00.01.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Nov 2021 00:01:01 -0800 (PST)
+        Mon, 15 Nov 2021 00:01:16 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Nadav Amit <nadav.amit@gmail.com>, peterx@redhat.com,
@@ -65,9 +65,9 @@ Cc:     Nadav Amit <nadav.amit@gmail.com>, peterx@redhat.com,
         David Hildenbrand <david@redhat.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Hugh Dickins <hughd@google.com>
-Subject: [PATCH v6 09/23] mm/shmem: Allows file-back mem to be uffd wr-protected on thps
-Date:   Mon, 15 Nov 2021 16:00:48 +0800
-Message-Id: <20211115080048.74584-1-peterx@redhat.com>
+Subject: [PATCH v6 10/23] mm/shmem: Handle uffd-wp during fork()
+Date:   Mon, 15 Nov 2021 16:01:03 +0800
+Message-Id: <20211115080103.74640-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211115075522.73795-1-peterx@redhat.com>
 References: <20211115075522.73795-1-peterx@redhat.com>
@@ -77,50 +77,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't have "huge" version of pte markers, instead when necessary we split
-the thp.
+Normally we skip copy page when fork() for VM_SHARED shmem, but we can't skip
+it anymore if uffd-wp is enabled on dst vma.  This should only happen when the
+src uffd has UFFD_FEATURE_EVENT_FORK enabled on uffd-wp shmem vma, so that
+VM_UFFD_WP will be propagated onto dst vma too, then we should copy the
+pgtables with uffd-wp bit and pte markers, because these information will be
+lost otherwise.
 
-However split the thp is not enough, because file-backed thp is handled totally
-differently comparing to anonymous thps: rather than doing a real split, the
-thp pmd will simply got cleared in __split_huge_pmd_locked().
-
-That is not enough if e.g. when there is a thp covers range [0, 2M) but we want
-to wr-protect small page resides in [4K, 8K) range, because after
-__split_huge_pmd() returns, there will be a none pmd, and change_pmd_range()
-will just skip it right after the split.
-
-Here we leverage the previously introduced change_pmd_prepare() macro so that
-we'll populate the pmd with a pgtable page after the pmd split (in which
-process the pmd will be cleared for cases like shmem).  Then change_pte_range()
-will do all the rest for us by installing the uffd-wp pte marker at any none
-pte that we'd like to wr-protect.
+Since the condition checks will become even more complicated for deciding
+"whether a vma needs to copy the pgtable during fork()", introduce a helper
+vma_needs_copy() for it, so everything will be clearer.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/mprotect.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ mm/memory.c | 49 +++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index be837c4dbc64..0d4bf755cee8 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -319,8 +319,15 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 		}
+diff --git a/mm/memory.c b/mm/memory.c
+index fef6a91c5dfb..cc625c616645 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -859,6 +859,14 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		if (try_restore_exclusive_pte(src_pte, src_vma, addr))
+ 			return -EBUSY;
+ 		return -ENOENT;
++	} else if (is_pte_marker_entry(entry)) {
++		/*
++		 * We're copying the pgtable should only because dst_vma has
++		 * uffd-wp enabled, do sanity check.
++		 */
++		WARN_ON_ONCE(!userfaultfd_wp(dst_vma));
++		set_pte_at(dst_mm, addr, dst_pte, pte);
++		return 0;
+ 	}
+ 	if (!userfaultfd_wp(dst_vma))
+ 		pte = pte_swp_clear_uffd_wp(pte);
+@@ -1227,6 +1235,38 @@ copy_p4d_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 	return 0;
+ }
  
- 		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
--			if (next - addr != HPAGE_PMD_SIZE) {
-+			if ((next - addr != HPAGE_PMD_SIZE) ||
-+			    uffd_wp_protect_file(vma, cp_flags)) {
- 				__split_huge_pmd(vma, pmd, addr, false, NULL);
-+				/*
-+				 * For file-backed, the pmd could have been
-+				 * cleared; make sure pmd populated if
-+				 * necessary, then fall-through to pte level.
-+				 */
-+				change_pmd_prepare(vma, pmd, cp_flags);
- 			} else {
- 				int nr_ptes = change_huge_pmd(vma, pmd, addr,
- 							      newprot, cp_flags);
++/*
++ * Return true if the vma needs to copy the pgtable during this fork().  Return
++ * false when we can speed up fork() by allowing lazy page faults later until
++ * when the child accesses the memory range.
++ */
++bool
++vma_needs_copy(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
++{
++	/*
++	 * Always copy pgtables when dst_vma has uffd-wp enabled even if it's
++	 * file-backed (e.g. shmem). Because when uffd-wp is enabled, pgtable
++	 * contains uffd-wp protection information, that's something we can't
++	 * retrieve from page cache, and skip copying will lose those info.
++	 */
++	if (userfaultfd_wp(dst_vma))
++		return true;
++
++	if (src_vma->vm_flags & (VM_HUGETLB | VM_PFNMAP | VM_MIXEDMAP))
++		return true;
++
++	if (src_vma->anon_vma)
++		return true;
++
++	/*
++	 * Don't copy ptes where a page fault will fill them correctly.  Fork
++	 * becomes much lighter when there are big shared or private readonly
++	 * mappings. The tradeoff is that copy_page_range is more efficient
++	 * than faulting.
++	 */
++	return false;
++}
++
+ int
+ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ {
+@@ -1240,14 +1280,7 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ 	bool is_cow;
+ 	int ret;
+ 
+-	/*
+-	 * Don't copy ptes where a page fault will fill them correctly.
+-	 * Fork becomes much lighter when there are big shared or private
+-	 * readonly mappings. The tradeoff is that copy_page_range is more
+-	 * efficient than faulting.
+-	 */
+-	if (!(src_vma->vm_flags & (VM_HUGETLB | VM_PFNMAP | VM_MIXEDMAP)) &&
+-	    !src_vma->anon_vma)
++	if (!vma_needs_copy(dst_vma, src_vma))
+ 		return 0;
+ 
+ 	if (is_vm_hugetlb_page(src_vma))
 -- 
 2.32.0
 
