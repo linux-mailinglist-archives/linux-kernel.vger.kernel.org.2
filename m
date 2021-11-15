@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D0245279E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5156C4526D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240768AbhKPC3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:29:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53034 "EHLO mail.kernel.org"
+        id S1351649AbhKPCKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236555AbhKORP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:15:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC6B6120F;
-        Mon, 15 Nov 2021 17:12:12 +0000 (UTC)
+        id S239163AbhKOR7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:59:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C7B563339;
+        Mon, 15 Nov 2021 17:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996333;
-        bh=CLgcuZ1J6nr6wGWkCaTe1NScLDXUWv54Dd/V71XVwUU=;
+        s=korg; t=1636997767;
+        bh=cSQEfKgv4nS1/Qapj+YTuh2FvONOfMDmZUpmcF+Kn7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fv56P/SoDnHhz/AoZK/Qc6MZeiAUsDjChzDrlbnV7Gzf/0fDamzRqo0zu9T1YMPFt
-         D15axX1cFKKBngBX4xn1HDFPt4UceIiIRbMKwL91efI8EY95RszmUaRpfmmRu+Hxyh
-         Fh3wTM99lFRpXt+YxOj8CBG+SwRf++XeEWWJQdcc=
+        b=S79VwYEG5lBlDkSZuUbKGsENpd/V7DWXMiyfVpzYPhxekUkESerFfkDirqg9ZVQnr
+         RebFp9aLKubjsnufpAdhOEz/HMu2P4FkT4cviKoG9Oz7pmB7EVe1XU+JUpz5dblW0g
+         2T9knHhMIs66HtDzCg+Av3/aTqg6Gw17+FBy0/YQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Meeta Saggi <msaggi@purestorage.com>,
-        Eric Badger <ebadger@purestorage.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.4 068/355] EDAC/sb_edac: Fix top-of-high-memory value for Broadwell/Haswell
-Date:   Mon, 15 Nov 2021 17:59:52 +0100
-Message-Id: <20211115165316.006547160@linuxfoundation.org>
+        stable@vger.kernel.org, Iago Toral Quiroga <itoral@igalia.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 268/575] drm/v3d: fix wait for TMU write combiner flush
+Date:   Mon, 15 Nov 2021 17:59:53 +0100
+Message-Id: <20211115165353.042894474@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
-References: <20211115165313.549179499@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Badger <ebadger@purestorage.com>
+From: Iago Toral Quiroga <itoral@igalia.com>
 
-commit 537bddd069c743759addf422d0b8f028ff0f8dbc upstream.
+[ Upstream commit e4f868191138975f2fdf2f37c11318b47db4acc9 ]
 
-The computation of TOHM is off by one bit. This missed bit results in
-too low a value for TOHM, which can cause errors in regular memory to
-incorrectly report:
+The hardware sets the TMUWCF bit back to 0 when the TMU write
+combiner flush completes so we should be checking for that instead
+of the L2TFLS bit.
 
-  EDAC MC0: 1 CE Error at MMIOH area, on addr 0x000000207fffa680 on any memory
+v2 (Melissa Wen):
+  - Add Signed-off-by and Fixes tags.
+  - Change the error message for the timeout to be more clear.
 
-Fixes: 50d1bb93672f ("sb_edac: add support for Haswell based systems")
-Cc: stable@vger.kernel.org
-Reported-by: Meeta Saggi <msaggi@purestorage.com>
-Signed-off-by: Eric Badger <ebadger@purestorage.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/20211010170127.848113-1-ebadger@purestorage.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes spurious Vulkan CTS failures in:
+dEQP-VK.binding_model.descriptorset_random.*
+
+Fixes: d223f98f02099 ("drm/v3d: Add support for compute shader dispatch.")
+Signed-off-by: Iago Toral Quiroga <itoral@igalia.com>
+Reviewed-by: Melissa Wen <mwen@igalia.com>
+Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210915100507.3945-1-itoral@igalia.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/sb_edac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/v3d/v3d_gem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/edac/sb_edac.c
-+++ b/drivers/edac/sb_edac.c
-@@ -1055,7 +1055,7 @@ static u64 haswell_get_tohm(struct sbrid
- 	pci_read_config_dword(pvt->info.pci_vtd, HASWELL_TOHM_1, &reg);
- 	rc = ((reg << 6) | rc) << 26;
+diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
+index 182c586525eb8..64fe63c1938f5 100644
+--- a/drivers/gpu/drm/v3d/v3d_gem.c
++++ b/drivers/gpu/drm/v3d/v3d_gem.c
+@@ -195,8 +195,8 @@ v3d_clean_caches(struct v3d_dev *v3d)
  
--	return rc | 0x1ffffff;
-+	return rc | 0x3ffffff;
- }
+ 	V3D_CORE_WRITE(core, V3D_CTL_L2TCACTL, V3D_L2TCACTL_TMUWCF);
+ 	if (wait_for(!(V3D_CORE_READ(core, V3D_CTL_L2TCACTL) &
+-		       V3D_L2TCACTL_L2TFLS), 100)) {
+-		DRM_ERROR("Timeout waiting for L1T write combiner flush\n");
++		       V3D_L2TCACTL_TMUWCF), 100)) {
++		DRM_ERROR("Timeout waiting for TMU write combiner flush\n");
+ 	}
  
- static u64 knl_get_tolm(struct sbridge_pvt *pvt)
+ 	mutex_lock(&v3d->cache_clean_lock);
+-- 
+2.33.0
+
 
 
