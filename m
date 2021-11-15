@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902F944FDDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 05:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A2C44FDE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 05:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237454AbhKOEVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 23:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhKOEVW (ORCPT
+        id S237559AbhKOEXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 23:23:39 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53824 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230271AbhKOEXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 23:21:22 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52310C061746;
-        Sun, 14 Nov 2021 20:18:22 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id y8so7892245plg.1;
-        Sun, 14 Nov 2021 20:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zv3FZFDa9f+2j3PeejvbeVmRdaCyODNvuYwLOlYEPkM=;
-        b=VXb5K929vEMzj97pDzs0PXiXFoZ8Km6hWj5/BkCXmV+HpHBXDsS9luWik3RIl33fv+
-         XMjh/bxKik+zjF+z/gGmJqrDiVeI3/Y+3BYZU38gojmlNL9g8gDosNnlip9ysesmyy9/
-         G3qkk3A0i1SSlLVV6VVb+EwD/jIa3wVkA5rba4Qxexax1SAiWiB4/g4FWkQCs7RHSIkf
-         tzg15ZOQtpfldLPV0u5T+js8Y/EbXxU0xNHXrfECXZ4Z0kjfg3YT7kl6q97JnnUZZJ5T
-         08HBGfv1Cy5PhV6ArmunI7YmTXbQkjDkwFCzUF/cR7vS4uKF+i3Ll64+I8AOwfHqC7Ox
-         cnjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zv3FZFDa9f+2j3PeejvbeVmRdaCyODNvuYwLOlYEPkM=;
-        b=F8q1gLq/50N56bsRNi16cH03yRjQ2TdexSMCCM02ve9v8Pwz1/pc+T5KIfYaOhAifE
-         QVQXVMEHCS/d1Lmx36jeBZD8hsnbXrtRsXelGIy4VvypHAPFXFy96y/mruGwO2ic6Zro
-         kp78CiWbSKhE8Dj6iu7MCG8QTnCa2ek+QKdC/l3y3OTfyklP+FHCov2Ar2OyR6+7ZlWd
-         YwfAzu3fjSisr5Cqe9MkieVD0nBR59hvE5WLz4MKgsdzT1WJDxPzJb8h0yeURO5w1Sm+
-         RYX4DVlvfuUnZ35i1k6ziWAHBuCTJ4vmvQ8Z3mI+4jeWNN7SpTZZX9vD6HT4ak5D8jYt
-         U36g==
-X-Gm-Message-State: AOAM533LBUmn5mjqDvvV2RaPBttfdRiF6Bek04nHRK0krkQ3EFgSqTeg
-        paYnd0nL2M6ND6P3E9XID1M=
-X-Google-Smtp-Source: ABdhPJyto7ZuVYw/P5Z2853eYUZdPudgQAGiqtwBJhcvb+A6ObKAhxXUpKmYl/AmKMBe4XVQNdgmpA==
-X-Received: by 2002:a17:902:d2cf:b0:141:b347:df9d with SMTP id n15-20020a170902d2cf00b00141b347df9dmr32090970plc.37.1636949901748;
-        Sun, 14 Nov 2021 20:18:21 -0800 (PST)
-Received: from ?IPV6:2600:8802:600:10b:e5cf:8396:baa0:58f1? ([2600:8802:600:10b:e5cf:8396:baa0:58f1])
-        by smtp.gmail.com with ESMTPSA id q6sm10304260pgn.42.2021.11.14.20.18.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 20:18:20 -0800 (PST)
-Message-ID: <b6f5515e-ca60-d0cc-7970-b7ae853c820c@gmail.com>
-Date:   Sun, 14 Nov 2021 20:18:20 -0800
+        Sun, 14 Nov 2021 23:23:31 -0500
+X-UUID: 648367b5f05140dfa22d772cb7e95526-20211115
+X-UUID: 648367b5f05140dfa22d772cb7e95526-20211115
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <james.lo@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1667977834; Mon, 15 Nov 2021 12:20:34 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Mon, 15 Nov 2021 12:20:32 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Nov 2021 12:20:32 +0800
+From:   James Lo <james.lo@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        James Lo <james.lo@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v15 0/4] Add SPMI support for Mediatek SoC IC
+Date:   Mon, 15 Nov 2021 12:20:26 +0800
+Message-ID: <20211115042030.30293-1-james.lo@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v4] mips: bcm63xx: add support for clk_get_parent()
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20211115004218.13034-1-rdunlap@infradead.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211115004218.13034-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for new SoC MT6873/MT8192/MT8195 to the spmi driver.
+This series is based on Chun-Jie's patches[1].
 
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=521655
 
-On 11/14/2021 4:42 PM, Randy Dunlap wrote:
-> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-> clk_get_parent(), so add a simple implementation of that
-> function so that callers of it will build without errors.
-> 
-> Fixes these build errors:
-> 
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-> 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Cc: Artur Rojek <contact@artur-rojek.eu>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: Jonas Gorski <jonas.gorski@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+changes since v14:
+- rebase to v5.15-rc1.
+- remove reg property
+- no combining patch
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+James Lo (4):
+  dt-bindings: spmi: remove the constraint of reg property
+  dt-bindings: spmi: document binding for the Mediatek SPMI controller
+  spmi: mediatek: Add support for MT6873/8192
+  spmi: mediatek: Add support for MT8195
+
+Henry Chen (1):
+  spmi: mediatek: Add support for MT8195
+
+Hsin-Hsiung Wang (3):
+  dt-bindings: spmi: modify the constraint of reg property
+  dt-bindings: spmi: document binding for the Mediatek SPMI controller
+  spmi: mediatek: Add support for MT6873/8192
+
+ .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      |  76 +++
+ .../devicetree/bindings/spmi/spmi.yaml        |   3 -
+ drivers/spmi/Kconfig                          |  11 +
+ drivers/spmi/Makefile                         |   1 +
+ drivers/spmi/spmi-mtk-pmif.c                  | 542 ++++++++++++++++++
+ 5 files changed, 630 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+ create mode 100644 drivers/spmi/spmi-mtk-pmif.c
+
+--
+2.18.0
+
