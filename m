@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCCB451AD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B634518C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355671AbhKOXn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:43:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
+        id S231941AbhKOXHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:07:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344060AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FCF6633BB;
-        Mon, 15 Nov 2021 18:51:01 +0000 (UTC)
+        id S243479AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:59:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E533661AA8;
+        Mon, 15 Nov 2021 18:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002261;
-        bh=u7muo/mGyPVEsoiZHOl5X7P4PEuR9PTtZuoVs3d+uE8=;
+        s=korg; t=1637000028;
+        bh=qQjTWBBKkkXc5wVQqANwUpgKMvtUSX+JFcNiZiipAMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKvigft0ia0y7gVVIT89C4chYNA8BMLEsVhOwIMeZSdDtPb4bekHKv3faFr5ZY2V6
-         HZtVT2wlpYBpY/0qWQU6rYN8sMm9i2hFmU5hIgTF1X2HNyS2AraAFZAReggdMPeVGL
-         CyWfAG2ADILlSeOsMN+o53yF1vh1FrqfX9esBPZI=
+        b=sLwggHG3sKvw1Tk81E8doaSJqEgF9PJ8y7F4wL2cDBKFBKdFZ3uRyewg3HiWJzxRH
+         G5K6M3QMdiUq1GXEqPW3Re321WY0EYLpuYYjLeqvGx+l9lJmJjxPLK5Rl0BRvQtyr+
+         hfL8oBagsGKoFUEMEa8snXxNifn2JAGbvScrgjMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 500/917] KVM: selftests: Fix nested SVM tests when built with clang
+Subject: [PATCH 5.14 512/849] libbpf: Fix endianness detection in BPF_CORE_READ_BITFIELD_PROBED()
 Date:   Mon, 15 Nov 2021 17:59:55 +0100
-Message-Id: <20211115165445.723061933@linuxfoundation.org>
+Message-Id: <20211115165437.606251411@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Mattson <jmattson@google.com>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-[ Upstream commit ed290e1c20da19fa100a3e0f421aa31b65984960 ]
+[ Upstream commit 45f2bebc8079788f62f22d9e8b2819afb1789d7b ]
 
-Though gcc conveniently compiles a simple memset to "rep stos," clang
-prefers to call the libc version of memset. If a test is dynamically
-linked, the libc memset isn't available in L1 (nor is the PLT or the
-GOT, for that matter). Even if the test is statically linked, the libc
-memset may choose to use some CPU features, like AVX, which may not be
-enabled in L1. Note that __builtin_memset doesn't solve the problem,
-because (a) the compiler is free to call memset anyway, and (b)
-__builtin_memset may also choose to use features like AVX, which may
-not be available in L1.
+__BYTE_ORDER is supposed to be defined by a libc, and __BYTE_ORDER__ -
+by a compiler. bpf_core_read.h checks __BYTE_ORDER == __LITTLE_ENDIAN,
+which is true if neither are defined, leading to incorrect behavior on
+big-endian hosts if libc headers are not included, which is often the
+case.
 
-To avoid a myriad of problems, use an explicit "rep stos" to clear the
-VMCB in generic_svm_setup(), which is called both from L0 and L1.
-
-Reported-by: Ricardo Koller <ricarkol@google.com>
-Signed-off-by: Jim Mattson <jmattson@google.com>
-Fixes: 20ba262f8631a ("selftests: KVM: AMD Nested test infrastructure")
-Message-Id: <20210930003649.4026553-1-jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: ee26dade0e3b ("libbpf: Add support for relocatable bitfields")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20211026010831.748682-2-iii@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/lib/x86_64/svm.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ tools/lib/bpf/bpf_core_read.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
-index 2ac98d70d02bd..161eba7cd1289 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
-@@ -54,6 +54,18 @@ static void vmcb_set_seg(struct vmcb_seg *seg, u16 selector,
- 	seg->base = base;
- }
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index 09ebe3db5f2f8..e4aa9996a5501 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -40,7 +40,7 @@ enum bpf_enum_value_kind {
+ #define __CORE_RELO(src, field, info)					      \
+ 	__builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
  
-+/*
-+ * Avoid using memset to clear the vmcb, since libc may not be
-+ * available in L1 (and, even if it is, features that libc memset may
-+ * want to use, like AVX, may not be enabled).
-+ */
-+static void clear_vmcb(struct vmcb *vmcb)
-+{
-+	int n = sizeof(*vmcb) / sizeof(u32);
-+
-+	asm volatile ("rep stosl" : "+c"(n), "+D"(vmcb) : "a"(0) : "memory");
-+}
-+
- void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_rsp)
- {
- 	struct vmcb *vmcb = svm->vmcb;
-@@ -70,7 +82,7 @@ void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_r
- 	wrmsr(MSR_EFER, efer | EFER_SVME);
- 	wrmsr(MSR_VM_HSAVE_PA, svm->save_area_gpa);
- 
--	memset(vmcb, 0, sizeof(*vmcb));
-+	clear_vmcb(vmcb);
- 	asm volatile ("vmsave %0\n\t" : : "a" (vmcb_gpa) : "memory");
- 	vmcb_set_seg(&save->es, get_es(), 0, -1U, data_seg_attr);
- 	vmcb_set_seg(&save->cs, get_cs(), 0, -1U, code_seg_attr);
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ #define __CORE_BITFIELD_PROBE_READ(dst, src, fld)			      \
+ 	bpf_probe_read_kernel(						      \
+ 			(void *)dst,				      \
 -- 
 2.33.0
 
