@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42E0450484
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AC3450487
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhKOMjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 07:39:53 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:52184 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhKOMjX (ORCPT
+        id S231575AbhKOMkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 07:40:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231450AbhKOMkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 07:39:23 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A66811FD43;
-        Mon, 15 Nov 2021 12:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636979781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0a3HM55iSUahbtbOkMShQHEby0rQ6WJrVZvXete502Q=;
-        b=aOMVnsbjjUbZgyyMHdgG6GOgNd0KzBJbo186hUAYYhv62+tqkacTm4+eq1YExTodNdsvX/
-        gSpg6U0mRu+YYFDh3S0tuDXOz9ZDpkYX7TWI3E2lcRWNdoAiWA1D/J5d9DfEaoHDjdE71s
-        JSk+AXpcABNJH8xF2otjZx54cNXJKzw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636979781;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0a3HM55iSUahbtbOkMShQHEby0rQ6WJrVZvXete502Q=;
-        b=OUPr8NCsXCrdkSKNjNwkeyni6rHSuvzinD+d4aXgJx1Bx8zLagBq2RshRkYklonJNOK58D
-        9ydl85kMmMVyGNDA==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 673D5A3B81;
-        Mon, 15 Nov 2021 12:36:21 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 13:36:21 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-In-Reply-To: <20211113053500.jcnx5airbn7g763a@treble>
-Message-ID: <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
-References: <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net> <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com> <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net> <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <20211109210736.GV174703@worktop.programming.kicks-ass.net> <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com> <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net> <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com> <20211112015003.pefl656m3zmir6ov@treble>
- <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net> <20211113053500.jcnx5airbn7g763a@treble>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Mon, 15 Nov 2021 07:40:00 -0500
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320AFC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 04:37:03 -0800 (PST)
+Received: from vla1-a78d115f8d22.qloud-c.yandex.net (vla1-a78d115f8d22.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:2906:0:640:a78d:115f])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id C67542E0A49;
+        Mon, 15 Nov 2021 15:36:59 +0300 (MSK)
+Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
+        by vla1-a78d115f8d22.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id R6fiPkel6m-axsiSKon;
+        Mon, 15 Nov 2021 15:36:59 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1636979819; bh=WeD0Jx6jb58Og4dG/gGc7oe0t+qBbAbV4+yW7cMyObk=;
+        h=Cc:Date:Subject:To:From:Message-Id;
+        b=rv4G54xDJtEY7Nq9va6hxkB+bveGXxOsi34siI07EKLrDrtVlgDe8rv2y+JVtaZuQ
+         CmTw8IoQ0N6aFwve7jKveihRq8lhZOa3KIFusR1jUzWf64AWx2bpI9SR3hUOsNwaDh
+         trC8EJFU8DWSTsps4maBD9zHMC1Vc9n1+xcu5ILA=
+Authentication-Results: vla1-a78d115f8d22.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from oleglatin-nix.yandex.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:c367:9f24:3433:3e57])
+        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id N1AtIpsZFc-axwK3sCK;
+        Mon, 15 Nov 2021 15:36:59 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Oleg Latin <oleglatin@yandex-team.ru>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dmtrmonakhov@yandex-team.ru
+Subject: [PATCH] perf: add event name to json output
+Date:   Mon, 15 Nov 2021 15:36:29 +0300
+Message-Id: <20211115123632.150711-1-oleglatin@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021, Josh Poimboeuf wrote:
+After converting perf.data to json it missing event name entry.
 
-> On Fri, Nov 12, 2021 at 10:33:36AM +0100, Peter Zijlstra wrote:
-> > On Thu, Nov 11, 2021 at 05:50:03PM -0800, Josh Poimboeuf wrote:
-> > 
-> > > Hm, I think there is actually a livepatch problem here.
-> > 
-> > I suspected as much, because I couldn't find any code dealing with it
-> > when I looked in a hurry.. :/
-> > 
-> > > Some ideas to fix:
-> > 
-> > > c) Update the reliable stacktrace code to mark the stack unreliable if
-> > >    it has a function with ".cold" in the name?
-> > 
-> > Why not simply match func.cold as func in the transition thing? Then
-> > func won't get patched as long as it (or it's .cold part) is in use.
-> > This seems like the natural thing to do.
-> 
-> Well yes, you're basically hinting at my first two options a and b:
-> 
-> a) Add a field to 'klp_func' which allows the patch module to specify a
->    function's .cold counterpart?
-> 
-> b) Detect such cold counterparts in klp_enable_patch()?  Presumably it
->    would require searching kallsyms for "<func>.cold", which is somewhat
->    problematic as there might be duplicates.
-> 
-> It's basically a two-step process:  1) match func to .cold if it exists;
-> 2) check for both in klp_check_stack_func().  The above two options are
-> proposals for the 1st step.  The 2nd step was implied.
+In perf script output it is clear that events have different types:
 
-This reminded me... one of the things I have on my todo list for a long 
-time is to add an option for a live patch creator to specify functions 
-which are not contained in the live patch but their presence on stacks 
-should be checked for. It could save some space in the final live patch 
-when one would add functions (callers) just because the consistency 
-requires it.
+    $ perf script -F -ip
+    ...
+    dd 130321 [001] 10282.698083:     117995       cycles:
+    dd 130321 [001] 10282.698091:     225856 instructions:
+    ...
 
-I took as a convenience feature with a low priority and forgot about it. 
-The problem above changes it. So should we take the opportunity and 
-implement both in one step? I wanted to include a list of functions in 
-on a patch level (klp_patch structure) and klp_check_stack() would just 
-have more to check.
+But json output lack of this information and it hard to distinguish
+different event types:
 
-Miroslav
+    ...
+    {
+        "timestamp": 10282698083472,
+        "pid": 130321,
+        "tid": 130321,
+        "comm": "dd",
+        "callchain": [
+            {
+                "ip": "0xffffffff901f4cd5",
+                "symbol": "syscall_exit_to_user_mode",
+                "dso": "[kernel.kallsyms]"
+            }
+        ]
+    },
+    {
+        "timestamp": 10282698091328,
+        "pid": 130321,
+        "tid": 130321,
+        "comm": "dd",
+        "callchain": [
+            {
+                "ip": "0x7fb7f0c271e7",
+                "symbol": "__GI___libc_write",
+                "dso": "libc-2.31.so"
+            }
+        ]
+    },
+    ...
+
+This patch adds event name entry to resulting json.
+
+Signed-off-by: Oleg Latin <oleglatin@yandex-team.ru>
+---
+ tools/perf/util/data-convert-json.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
+index b0e3d69c6835..72aaf6babc22 100644
+--- a/tools/perf/util/data-convert-json.c
++++ b/tools/perf/util/data-convert-json.c
+@@ -168,6 +168,9 @@ static int process_sample_event(struct perf_tool *tool,
+ 	output_json_key_format(out, true, 3, "pid", "%i", al.thread->pid_);
+ 	output_json_key_format(out, true, 3, "tid", "%i", al.thread->tid);
+ 
++	if (evsel->name)
++		output_json_key_string(out, true, 3, "event", evsel->name);
++
+ 	if (al.cpu >= 0)
+ 		output_json_key_format(out, true, 3, "cpu", "%i", al.cpu);
+ 
+-- 
+2.25.1
+
