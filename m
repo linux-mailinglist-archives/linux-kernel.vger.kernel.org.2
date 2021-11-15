@@ -2,290 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9217344FD70
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EDF44FD74
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbhKODWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 22:22:33 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:61495 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236500AbhKODWZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 22:22:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636946371; x=1668482371;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=GThrTAJ5BiF2EzWunrB2GrDeQT7ScWkCki7lALDOGGc=;
-  b=m7T3kTkgxcIWqexj/7z1prjThWSGCbrsvPzEGDDYKxP/sAM32JaQHCYX
-   YEpCGAuktKLAikLEX87pTJ4O6M/DwR5p56Mh/Pi5jwQ219VNg8AFyn7ky
-   JD//n65MPJI5KRUMsuBeXsU29XLRClpl9gD0p7S/c+gKrcej5Im+v9n+D
-   Q=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 14 Nov 2021 19:19:29 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 19:19:27 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Sun, 14 Nov 2021 19:19:27 -0800
-Received: from hyiwei-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Sun, 14 Nov 2021 19:19:24 -0800
-From:   Huang Yiwei <quic_hyiwei@quicinc.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <mani@kernel.org>, <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_psodagud@quicinc.com>,
-        <quic_tsoni@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <quic_eberman@quicinc.com>, Huang Yiwei <quic_hyiwei@quicinc.com>
-Subject: [PATCH] mailbox: qcom-ipcc: Update the QCOM_IPCC driver
-Date:   Mon, 15 Nov 2021 11:18:30 +0800
-Message-ID: <20211115031830.6795-1-quic_hyiwei@quicinc.com>
+        id S236574AbhKOD1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:27:50 -0500
+Received: from mail-eopbgr1300111.outbound.protection.outlook.com ([40.107.130.111]:47017
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236556AbhKOD1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 22:27:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eMuyPiJ7K6Ir8xMJphgkGjG2hqNHcLt5d6Y0Wwz+1t+zEf9ISFXgyu0q+Ei2Hx3Mhojqchf6bRnskDWHFMQlcfNsaupMh/Xpdg9OfrH+PZxJBGmuEDGKOpcyVeg4A11Qczx/+H0eK4oJMeyW4ESL9kh9tGrO2D1/sXYV13pN2cI1BZo1VPwEZayEJaLp/yvg73Tw+4C+YoCI7nZuZvYvjTWeAru2XDL4QfuvJbEb1pXxhsCJzc05BLTj+cOCW6Nx9dp4mvaP8nhvbkWmuK4oGcdrqkBn+B2r3gtWi26cfnkpV4bfmLJLiIkpxv0WUEyBw+LR+HYGU1nAimWBBfgjTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TY9FAXAEq9PFcRD3sRCvxdJhL/A6IxDjKVTo8iy+Ojk=;
+ b=Mm3lWqTsdaiXk3Go3uliKG+jRkv3AkM6TPDnMg/Eh8MO9CU3+KC93ZLFFGLFPJB8gmawawmUo873TRtUEGHTjfzauHK+nObB5PcI6yEv4PyJzeg9P+esDlGH8n0xlj2tyTGeMbG+na8lTyY8J9dX+uFtdpvtpMQPdXnze5Ckq+1vDpXgr1eJfi+kzXVce44MA00lAv/pYIbkdVO5gXTqaTMvDTOPtQ9pxwjm2KHXOk88T/ChTdGpdSafloxyQp+krefktnqntGQRrmsjLhKiIBG/A5Xn2YC5JT3S1Jge9jZzySkrjJx0sDSD70TZhKJ1h6TrzknBpfouicJZxeWdrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TY9FAXAEq9PFcRD3sRCvxdJhL/A6IxDjKVTo8iy+Ojk=;
+ b=joyXy7u3HEUeG5K1tUDY+agQrOvtNMG4yxpfDx9Qo4LG7zFaCjUrHEiVFCCyTayR6LsRjEfX2ptnzJb2x8SEm4adfyBPuF11DrnXEVMB6cuu5ITkBaIe8Ya69jUCpF7jDgRwGklEJBpKy0gx/IBTT+mtVkGKESxeNn0ikzPgdYg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
+ by TYZPR06MB3902.apcprd06.prod.outlook.com (2603:1096:400:21::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19; Mon, 15 Nov
+ 2021 03:24:45 +0000
+Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
+ ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Mon, 15 Nov 2021
+ 03:24:45 +0000
+From:   Yihao Han <hanyihao@vivo.com>
+To:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Yihao Han <hanyihao@vivo.com>
+Subject: [PATCH] leds: tca6507: use swap() to make code cleaner
+Date:   Sun, 14 Nov 2021 19:24:28 -0800
+Message-Id: <20211115032428.4379-1-hanyihao@vivo.com>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+X-ClientProxiedBy: HK2PR02CA0181.apcprd02.prod.outlook.com
+ (2603:1096:201:21::17) To TYZPR06MB4173.apcprd06.prod.outlook.com
+ (2603:1096:400:26::14)
+MIME-Version: 1.0
+Received: from ubuntu.localdomain (103.220.76.181) by HK2PR02CA0181.apcprd02.prod.outlook.com (2603:1096:201:21::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Mon, 15 Nov 2021 03:24:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c84856f3-6320-49a4-d4d7-08d9a7e7788a
+X-MS-TrafficTypeDiagnostic: TYZPR06MB3902:
+X-Microsoft-Antispam-PRVS: <TYZPR06MB3902BAD05B254B102A82CBD3A2989@TYZPR06MB3902.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nMCSjeflFKRsv1B645zb/BeNq8Ti/n108LrWMjVTqV/Y4Ak8QuvbAjYE+qLuYkhLPF6ef6zRUIckm9ngiqL6o9lZ1SMgx7EjB6wMc/hhk6YkQxsSOxXD4hgDtz0XZLaO41PAG21MdaVi72rWvCSAAzem6HqMW5cOkuQrxVyNlCifCmZ0I2w2iemfI/e8fI5fgL6SafX/cpNBFh5KgTaw3TRE1nB7JWtd8UvmOHdkBeeUhGLhyUM8rmpVVqXlcA5fyVU1z0bIwrN0REi6zEck82dDmziICV2s+bXILMy/iMFCXm39wCNUt7t97CwKJ6j3Ua6r01ewkUoqZeehEEnwt9/1tazFujaXlSEHtvK1qBZNx8CFtL9avDqse6eU6yxaU7rF8Sj7JtIx18yxTeb5fKYhjTVe4D/OjwFSKsbv0FREe+0qWGf3PX+lWoMvuvZPiQB60CRcRp8ey4A81b+ZtHPBYCxHHAbwQ1M4HGkciGUrdQwoLfCKblGkhYNmfE1PKPKADDZlcEyjg7YU1w5HcgK+cmzll72aFOxvLRcxqWd0WJJHmIkyWVUoXebP2tFCvnWlQ3bXUe/c9RmafJK7VuSuqCMijzCSnux5QPyEGHpHk2vnkt8VTOp6ZpC8YYN8cBgYLmssjtOBmsobnUpi9dcJTLBQKlVci6GnXVOMBAYIyH3ipkOOx432goc/vEM3dMFEF3DtBJ98M8V3uNwsoQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(66946007)(186003)(36756003)(508600001)(38350700002)(8676002)(66476007)(6512007)(38100700002)(6486002)(5660300002)(52116002)(2616005)(956004)(107886003)(8936002)(4744005)(26005)(66556008)(86362001)(6666004)(1076003)(4326008)(316002)(83380400001)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?scZGJu6Q6MSNHDdP17KCA4DnYwulRgB4EAglpQI1yK3GEEUfHfogLcFjuhAs?=
+ =?us-ascii?Q?YT8e7uBoQ07f8R748KKfHmVvCBtQd55UQ9cUP6LRf2d/3LP9QqDXNIO4cCPH?=
+ =?us-ascii?Q?/RUn5lk3+8AuVKuS4wxoz/Hd6ITDpYeuSNrlD56B/EvXktnEUajStE3NFN1k?=
+ =?us-ascii?Q?iPh2LaX9jEOB+USnKa8kCjJa/38IZXvajrQCqVXDzo6i/SWD9OIQnfd1/jtM?=
+ =?us-ascii?Q?bonOzK+s5/Tne9DJeS8zVr/SKpJ/e1DS333ovcIQpPkcTqBdOcPB2AIDjOJU?=
+ =?us-ascii?Q?ii2+Un6uwVtRQxK9rgV1wOuRysQuME/ySAsY8IzteQptgisiVa7C5bHkcYFF?=
+ =?us-ascii?Q?YgepJ7xsdOy6ijsEwr3sufYpP4yT2V49Fj+e1OZ/yvn7N3gkwlojOhdcFaSd?=
+ =?us-ascii?Q?IT/NgJKeKYmmdSf0A9ny3UH+gqeSDCA598RV4kzENicawa3vgz3fz0pFwYx9?=
+ =?us-ascii?Q?yV0kqLC+gK6blFHc7TCdWYKHbS30zcUfy5r0x0wcHLCOjJEUBOZKSD06Pwyq?=
+ =?us-ascii?Q?NMjIpYk0eDASJMqjfXM/EhnJeehsbBonZzdtbhJJC2i0whFHlRKBYFOcrmLk?=
+ =?us-ascii?Q?x7oPht76DOG7qJY+j+Qp2jYjzt5to5GMn7MV/A+xtxGevHhnWPd/DNGGELC/?=
+ =?us-ascii?Q?kDN711tSjchL4H2vodJyw5iZZ/fhJ8pGYgbLznGmdYgiW5xO2meOZG1ggeis?=
+ =?us-ascii?Q?+lSJALUmdu+90Y5UOWXY2UWZit6LIvl9+VahnsstxYM9hLKmC1Lxglv0AbxF?=
+ =?us-ascii?Q?M2y/mOjmi/UxWpFeQ2/bFHw10WBRYJH4YTWe3ok95zy+aA1xj5FieIBK1BFH?=
+ =?us-ascii?Q?8VuVVgskQS0Qyg5GtiA/ndJ/GB/4SPgudzYzz4fr48HeckHj/AAQLzqoVFLs?=
+ =?us-ascii?Q?dpom1X0WrPZZmXmHa0LqN7xCFdl/0Mkr/3UD6KxdYyF06M2BvDjGyb/Nmhtj?=
+ =?us-ascii?Q?w++CPYtczP1ti2Zq9vjZRpy3VY9dZHIf9ZfxwCzGP5em6m4c2Bfdykv1XLIw?=
+ =?us-ascii?Q?jEeXXFI8Gd8K3UsP4pDNRGEgSUtM7kz8UvAkNreQsJfSqQWX3pT6LvgbWJj2?=
+ =?us-ascii?Q?hcQibrSKJ6q2uvKxnMIU+dZ49hkfsKc/q3bbi1K+kUpSvzN9FBwE5RlbKlYY?=
+ =?us-ascii?Q?RDZlkvtS4Q2u8a0ieWq6OM5xzFKfojlze5pS3MdfDVzJhqS4X3Mmt/NYh9pj?=
+ =?us-ascii?Q?9g52LU0Gy/XhCsCcjBYP+boD2/fKBSHD7PsOYJV0L2o0H8WnOyL1uKANC4l/?=
+ =?us-ascii?Q?t/S+BbqRFpHCuQDHhxDhWxWlOrVjFCHHIvo94ML8oFIGb3+MwkP/dAC9lKGN?=
+ =?us-ascii?Q?gpRCjZIHlC2odEKxOrAZBhH6eu23rnsJovENyqaTJdTPHCuTKS74TiYJmWxb?=
+ =?us-ascii?Q?t3pRfjGsHvhUmcOKIuqOflCuV20BDVuLK+MyGbNMAY8G8+HOuEtfgD2o2Wn4?=
+ =?us-ascii?Q?PhLRvIxf9luQOMH+ygk0lrcm+WDZ/y2CcPSGYbrFrIEgQegJcrRFM+pLAAhM?=
+ =?us-ascii?Q?aL04XshkmNuCiz2cfLzolNSxfMdL7fo+EPveTV1rzcUqmM/BIVtfsQy/pC87?=
+ =?us-ascii?Q?QwYohxleNj4ZkbUJFvbTe5gOwAe1xr+Z7KPD1vpwkaEA94enA3znOSpSywMm?=
+ =?us-ascii?Q?8ezwcH9Ok/Ft6KlUH9VAjbY=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c84856f3-6320-49a4-d4d7-08d9a7e7788a
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 03:24:45.2668
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d5PO8x7a+ZgsR+HrP02Atcaw7axjrqSsu3j0+X81VYZ7TWd4dm9KYltpeyQwuuZUz8cxeYpvxZo8g/OF0XFqkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB3902
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the QCOM_IPCC driver with below main features:
-Dynamic alloc for channel arrangement instead of static alloced
-array.
-Multiple instance can be supported.
-IPCC interrupt wake up support from suspend.
-More protocol and client ID support added.
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
 
-Signed-off-by: Huang Yiwei <quic_hyiwei@quicinc.com>
+Signed-off-by: Yihao Han <hanyihao@vivo.com>
 ---
- drivers/mailbox/qcom-ipcc.c             | 101 ++++++++++++++++++------
- include/dt-bindings/mailbox/qcom-ipcc.h |   9 ++-
- 2 files changed, 85 insertions(+), 25 deletions(-)
+ drivers/leds/leds-tca6507.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
-index f1d4f4679b17..80bac21ccbc3 100644
---- a/drivers/mailbox/qcom-ipcc.c
-+++ b/drivers/mailbox/qcom-ipcc.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
-  */
- 
- #include <linux/bitfield.h>
-@@ -13,8 +13,6 @@
- 
- #include <dt-bindings/mailbox/qcom-ipcc.h>
- 
--#define IPCC_MBOX_MAX_CHAN		48
--
- /* IPCC Register offsets */
- #define IPCC_REG_SEND_ID		0x0c
- #define IPCC_REG_RECV_ID		0x10
-@@ -52,9 +50,10 @@ struct qcom_ipcc {
- 	struct device *dev;
- 	void __iomem *base;
- 	struct irq_domain *irq_domain;
--	struct mbox_chan chan[IPCC_MBOX_MAX_CHAN];
--	struct qcom_ipcc_chan_info mchan[IPCC_MBOX_MAX_CHAN];
-+	struct mbox_chan *chans;
-+	struct qcom_ipcc_chan_info *mchan;
- 	struct mbox_controller mbox;
-+	int num_chans;
- 	int irq;
- };
- 
-@@ -166,25 +165,37 @@ static struct mbox_chan *qcom_ipcc_mbox_xlate(struct mbox_controller *mbox,
- 	struct qcom_ipcc *ipcc = to_qcom_ipcc(mbox);
- 	struct qcom_ipcc_chan_info *mchan;
- 	struct mbox_chan *chan;
--	unsigned int i;
-+	struct device *dev;
-+	int chan_id;
-+
-+	dev = ipcc->dev;
- 
- 	if (ph->args_count != 2)
- 		return ERR_PTR(-EINVAL);
- 
--	for (i = 0; i < IPCC_MBOX_MAX_CHAN; i++) {
--		chan = &ipcc->chan[i];
--		if (!chan->con_priv) {
--			mchan = &ipcc->mchan[i];
--			mchan->client_id = ph->args[0];
--			mchan->signal_id = ph->args[1];
--			chan->con_priv = mchan;
--			break;
--		}
-+	for (chan_id = 0; chan_id < mbox->num_chans; chan_id++) {
-+		chan = &ipcc->chans[chan_id];
-+		mchan = chan->con_priv;
- 
--		chan = NULL;
-+		if (!mchan)
-+			break;
-+		else if (mchan->client_id == ph->args[0] &&
-+				mchan->signal_id == ph->args[1])
-+			return ERR_PTR(-EBUSY);
- 	}
- 
--	return chan ?: ERR_PTR(-EBUSY);
-+	if (chan_id >= mbox->num_chans)
-+		return ERR_PTR(-EBUSY);
-+
-+	mchan = devm_kzalloc(dev, sizeof(*mchan), GFP_KERNEL);
-+	if (!mchan)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mchan->client_id = ph->args[0];
-+	mchan->signal_id = ph->args[1];
-+	chan->con_priv = mchan;
-+
-+	return chan;
- }
- 
- static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
-@@ -192,15 +203,49 @@ static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
- 	.shutdown = qcom_ipcc_mbox_shutdown,
- };
- 
--static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
-+static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc,
-+				struct device_node *controller_dn)
- {
-+	struct of_phandle_args curr_ph;
-+	struct device_node *client_dn;
- 	struct mbox_controller *mbox;
- 	struct device *dev = ipcc->dev;
-+	int i, j, ret;
-+
-+	/*
-+	 * Find out the number of clients interested in this mailbox
-+	 * and create channels accordingly.
-+	 */
-+	ipcc->num_chans = 0;
-+	for_each_node_with_property(client_dn, "mboxes") {
-+		if (!of_device_is_available(client_dn))
-+			continue;
-+		i = of_count_phandle_with_args(client_dn,
-+						"mboxes", "#mbox-cells");
-+		for (j = 0; j < i; j++) {
-+			ret = of_parse_phandle_with_args(client_dn, "mboxes",
-+						"#mbox-cells", j, &curr_ph);
-+			of_node_put(curr_ph.np);
-+			if (!ret && curr_ph.np == controller_dn) {
-+				ipcc->num_chans++;
-+				break;
-+			}
-+		}
-+	}
-+
-+	/* If no clients are found, skip registering as a mbox controller */
-+	if (!ipcc->num_chans)
-+		return 0;
-+
-+	ipcc->chans = devm_kcalloc(dev, ipcc->num_chans,
-+					sizeof(struct mbox_chan), GFP_KERNEL);
-+	if (!ipcc->chans)
-+		return -ENOMEM;
- 
- 	mbox = &ipcc->mbox;
- 	mbox->dev = dev;
--	mbox->num_chans = IPCC_MBOX_MAX_CHAN;
--	mbox->chans = ipcc->chan;
-+	mbox->num_chans = ipcc->num_chans;
-+	mbox->chans = ipcc->chans;
- 	mbox->ops = &ipcc_mbox_chan_ops;
- 	mbox->of_xlate = qcom_ipcc_mbox_xlate;
- 	mbox->txdone_irq = false;
-@@ -212,6 +257,8 @@ static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
- static int qcom_ipcc_probe(struct platform_device *pdev)
- {
- 	struct qcom_ipcc *ipcc;
-+	static int id;
-+	char *name;
- 	int ret;
- 
- 	ipcc = devm_kzalloc(&pdev->dev, sizeof(*ipcc), GFP_KERNEL);
-@@ -228,27 +275,33 @@ static int qcom_ipcc_probe(struct platform_device *pdev)
- 	if (ipcc->irq < 0)
- 		return ipcc->irq;
- 
-+	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "ipcc_%d", id++);
-+	if (!name)
-+		return -ENOMEM;
-+
- 	ipcc->irq_domain = irq_domain_add_tree(pdev->dev.of_node,
- 					       &qcom_ipcc_irq_ops, ipcc);
- 	if (!ipcc->irq_domain)
- 		return -ENOMEM;
- 
--	ret = qcom_ipcc_setup_mbox(ipcc);
-+	ret = qcom_ipcc_setup_mbox(ipcc, pdev->dev.of_node);
- 	if (ret)
- 		goto err_mbox;
- 
- 	ret = devm_request_irq(&pdev->dev, ipcc->irq, qcom_ipcc_irq_fn,
--			       IRQF_TRIGGER_HIGH, "ipcc", ipcc);
-+			IRQF_TRIGGER_HIGH | IRQF_NO_SUSPEND, name, ipcc);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register the irq: %d\n", ret);
--		goto err_mbox;
-+		goto err_req_irq;
- 	}
- 
--	enable_irq_wake(ipcc->irq);
- 	platform_set_drvdata(pdev, ipcc);
- 
- 	return 0;
- 
-+err_req_irq:
-+	if (ipcc->num_chans)
-+		mbox_controller_unregister(&ipcc->mbox);
- err_mbox:
- 	irq_domain_remove(ipcc->irq_domain);
- 
-diff --git a/include/dt-bindings/mailbox/qcom-ipcc.h b/include/dt-bindings/mailbox/qcom-ipcc.h
-index eb91a6c05b71..fb405e211028 100644
---- a/include/dt-bindings/mailbox/qcom-ipcc.h
-+++ b/include/dt-bindings/mailbox/qcom-ipcc.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
-  */
- 
- #ifndef __DT_BINDINGS_MAILBOX_IPCC_H
-@@ -8,8 +8,13 @@
- 
- /* Signal IDs for MPROC protocol */
- #define IPCC_MPROC_SIGNAL_GLINK_QMP	0
-+#define IPCC_MPROC_SIGNAL_TZ		1
- #define IPCC_MPROC_SIGNAL_SMP2P		2
- #define IPCC_MPROC_SIGNAL_PING		3
-+#define IPCC_MPROC_SIGNAL_MAX		4 /* Used by driver only */
-+
-+#define IPCC_COMPUTE_L0_SIGNAL_MAX	32 /* Used by driver only */
-+#define IPCC_COMPUTE_L1_SIGNAL_MAX	32 /* Used by driver only */
- 
- /* Client IDs */
- #define IPCC_CLIENT_AOP			0
-@@ -29,6 +34,8 @@
- #define IPCC_CLIENT_PCIE1		14
- #define IPCC_CLIENT_PCIE2		15
- #define IPCC_CLIENT_SPSS		16
-+#define IPCC_CLIENT_TME			23
- #define IPCC_CLIENT_WPSS		24
-+#define IPCC_CLIENT_MAX			25 /* Used by driver only */
- 
- #endif
+diff --git a/drivers/leds/leds-tca6507.c b/drivers/leds/leds-tca6507.c
+index 225b765830bd..de8eed9b667d 100644
+--- a/drivers/leds/leds-tca6507.c
++++ b/drivers/leds/leds-tca6507.c
+@@ -242,9 +242,7 @@ static int choose_times(int msec, int *c1p, int *c2p)
+ 	if (diff < 65536) {
+ 		int actual;
+ 		if (msec & 1) {
+-			c1 = *c2p;
+-			*c2p = *c1p;
+-			*c1p = c1;
++			swap(*c2p, *c1p);
+ 		}
+ 		actual = time_codes[*c1p] + time_codes[*c2p];
+ 		if (*c1p < *c2p)
 -- 
 2.17.1
 
