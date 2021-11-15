@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C61E450ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95E1450BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236717AbhKOROv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:14:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
+        id S237327AbhKOR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:26:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhKORLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:11:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 009D961BF6;
-        Mon, 15 Nov 2021 17:08:42 +0000 (UTC)
+        id S236264AbhKORLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1987610CA;
+        Mon, 15 Nov 2021 17:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996123;
-        bh=q0jGak/NRehD1qVDWhAZK0D2pBU5If3tGL/5vGOSwfk=;
+        s=korg; t=1636996127;
+        bh=BfVzLQkqCwR/4NhX7T4+boHwbywNIMuU4cR+EW/pDGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bHoYAZjNEJaYsoPVDcMAKYnh8A4RG/5peZLXFEEYPj64T0vmDMkqVLDJNv06AgTpO
-         hl3o83ILOlJqVuYn1txCd6JNyFxOe3Nn5ggrV1rgdk9f2IgxNRXAgFi4vIg90s3XUC
-         Ns8mg2JZ+AHQLlcRzXOX/NjgQmRXALPLRQytSPfg=
+        b=DrYxCm5TC/viR/AsH4fIRP71x5XySGxhgh+zsXzycxgi0QclSZnL4pmL/4/6cyBwo
+         MvOGpOw4hmSqd9x4WI02oFF0Kn2o4JGM0r/7Bo+LFzwI5T9cva8KKEDFgE3yIpoSP/
+         b9iT/pQLYwQmDi2hlBt6OXq7LGo6O3oBd4xIGfJA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 024/355] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute LED
-Date:   Mon, 15 Nov 2021 17:59:08 +0100
-Message-Id: <20211115165314.328578031@linuxfoundation.org>
+Subject: [PATCH 5.4 025/355] ALSA: ua101: fix division by zero at probe
+Date:   Mon, 15 Nov 2021 17:59:09 +0100
+Message-Id: <20211115165314.360437526@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,31 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c058493df7edcef8f48c1494d9a84218519f966b upstream.
+commit 55f261b73a7e1cb254577c3536cef8f415de220a upstream.
 
-The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
-quirk for other HP laptops can let LEDs work, so apply it.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in alloc_stream_buffers() in case a malicious device
+has broken descriptors (or when doing descriptor fuzz testing).
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211110144033.118451-1-kai.heng.feng@canonical.com
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
+
+Fixes: 63978ab3e3e9 ("sound: add Edirol UA-101 support")
+Cc: stable@vger.kernel.org      # 2.6.34
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026095401.26522-1-johan@kernel.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/misc/ua101.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8104,6 +8104,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1020,7 +1020,7 @@ static int detect_usb_format(struct ua10
+ 		fmt_playback->bSubframeSize * ua->playback.channels;
+ 
+ 	epd = &ua->intf[INTF_CAPTURE]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_in(epd)) {
++	if (!usb_endpoint_is_isoc_in(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid capture endpoint\n");
+ 		return -ENXIO;
+ 	}
+@@ -1028,7 +1028,7 @@ static int detect_usb_format(struct ua10
+ 	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
+ 
+ 	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_out(epd)) {
++	if (!usb_endpoint_is_isoc_out(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid playback endpoint\n");
+ 		return -ENXIO;
+ 	}
 
 
