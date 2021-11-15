@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0594A451BBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F77451F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345810AbhKPAGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:06:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        id S233407AbhKPAmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345048AbhKOT0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8105C60E75;
-        Mon, 15 Nov 2021 19:09:22 +0000 (UTC)
+        id S234533AbhKOT0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:26:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E38663282;
+        Mon, 15 Nov 2021 19:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003363;
-        bh=jEqHrvJj4EkUp1+FpWu4AgdMv5dt5vED+zo7+9IGW8U=;
+        s=korg; t=1637003380;
+        bh=4RTu6K//YrPuATqy+CdyUQVYLbV26ykOG5K722lQON0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DZKdcuLnlHzAhejLwoM4c/psIuXOK+CVJcDoyRTdX98VYokFsdG0u2/XyHLlW9RYJ
-         CFGebGC+B5K+Dy7FCUvD562RWJ98D88s65U8Za/Fzr/bo7XAfrV49Yp5TfHoKjueB0
-         2hcPAjhKJbDVK/SXiLxEefuwZyMUZD4fji9jhN0U=
+        b=yl2rLeyPNcEGQnDqcY9yVDAw2CXb+4XH55eqhFHHMGpGX3Ccw9sPyrByVcZ2Pxqlt
+         igHcIuqtspvN0V704ihXcSZvyacJW95klt06UpfccwuSSKCf9LES0VNHx0xQPwwpSE
+         IvVxdMtnyXR20WuRBYUHbXjjRJvuUVYc6HVNZ2nA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Yu <xuyu@linux.alibaba.com>,
+        stable@vger.kernel.org,
         Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        Xu Yu <xuyu@linux.alibaba.com>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Song Liu <song@kernel.org>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
         William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
         Yang Shi <shy828301@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.15 880/917] mm, thp: lock filemap when truncating page cache
-Date:   Mon, 15 Nov 2021 18:06:15 +0100
-Message-Id: <20211115165458.899696411@linuxfoundation.org>
+Subject: [PATCH 5.15 881/917] mm, thp: fix incorrect unmap behavior for private pages
+Date:   Mon, 15 Nov 2021 18:06:16 +0100
+Message-Id: <20211115165458.931413602@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -50,93 +51,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 
-commit 55fc0d91746759c71bc165bba62a2db64ac98e35 upstream.
+commit 8468e937df1f31411d1e127fa38db064af051fe5 upstream.
 
-Patch series "fix two bugs for file THP".
+When truncating pagecache on file THP, the private pages of a process
+should not be unmapped mapping.  This incorrect behavior on a dynamic
+shared libraries which will cause related processes to happen core dump.
 
-This patch (of 2):
+A simple test for a DSO (Prerequisite is the DSO mapped in file THP):
 
-Transparent huge page has supported read-only non-shmem files.  The
-file- backed THP is collapsed by khugepaged and truncated when written
-(for shared libraries).
+    int main(int argc, char *argv[])
+    {
+	int fd;
 
-However, there is a race when multiple writers truncate the same page
-cache concurrently.
+	fd = open(argv[1], O_WRONLY);
+	if (fd < 0) {
+		perror("open");
+	}
 
-In that case, subpage(s) of file THP can be revealed by find_get_entry
-in truncate_inode_pages_range, which will trigger PageTail BUG_ON in
-truncate_inode_page, as follows:
+	close(fd);
+	return 0;
+    }
 
-    page:000000009e420ff2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ff pfn:0x50c3ff
-    head:0000000075ff816d order:9 compound_mapcount:0 compound_pincount:0
-    flags: 0x37fffe0000010815(locked|uptodate|lru|arch_1|head)
-    raw: 37fffe0000000000 fffffe0013108001 dead000000000122 dead000000000400
-    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-    head: 37fffe0000010815 fffffe001066bd48 ffff000404183c20 0000000000000000
-    head: 0000000000000600 0000000000000000 00000001ffffffff ffff000c0345a000
-    page dumped because: VM_BUG_ON_PAGE(PageTail(page))
-    ------------[ cut here ]------------
-    kernel BUG at mm/truncate.c:213!
-    Internal error: Oops - BUG: 0 [#1] SMP
-    Modules linked in: xfs(E) libcrc32c(E) rfkill(E) ...
-    CPU: 14 PID: 11394 Comm: check_madvise_d Kdump: ...
-    Hardware name: ECS, BIOS 0.0.0 02/06/2015
-    pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-    Call trace:
-     truncate_inode_page+0x64/0x70
-     truncate_inode_pages_range+0x550/0x7e4
-     truncate_pagecache+0x58/0x80
-     do_dentry_open+0x1e4/0x3c0
-     vfs_open+0x38/0x44
-     do_open+0x1f0/0x310
-     path_openat+0x114/0x1dc
-     do_filp_open+0x84/0x134
-     do_sys_openat2+0xbc/0x164
-     __arm64_sys_openat+0x74/0xc0
-     el0_svc_common.constprop.0+0x88/0x220
-     do_el0_svc+0x30/0xa0
-     el0_svc+0x20/0x30
-     el0_sync_handler+0x1a4/0x1b0
-     el0_sync+0x180/0x1c0
-    Code: aa0103e0 900061e1 910ec021 9400d300 (d4210000)
+The test only to open a target DSO, and do nothing.  But this operation
+will lead one or more process to happen core dump.  This patch mainly to
+fix this bug.
 
-This patch mainly to lock filemap when one enter truncate_pagecache(),
-avoiding truncating the same page cache concurrently.
-
-Link: https://lkml.kernel.org/r/20211025092134.18562-1-rongwei.wang@linux.alibaba.com
-Link: https://lkml.kernel.org/r/20211025092134.18562-2-rongwei.wang@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20211025092134.18562-3-rongwei.wang@linux.alibaba.com
 Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
 Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Tested-by: Song Liu <song@kernel.org>
-Cc: Collin Fijalkovich <cfijalkovich@google.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Tested-by: Xu Yu <xuyu@linux.alibaba.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Song Liu <song@kernel.org>
 Cc: William Kucharski <william.kucharski@oracle.com>
+Cc: Hugh Dickins <hughd@google.com>
 Cc: Yang Shi <shy828301@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Collin Fijalkovich <cfijalkovich@google.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/open.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/open.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 --- a/fs/open.c
 +++ b/fs/open.c
-@@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f
- 		 * of THPs into the page cache will fail.
+@@ -857,8 +857,17 @@ static int do_dentry_open(struct file *f
  		 */
  		smp_mb();
--		if (filemap_nr_thps(inode->i_mapping))
-+		if (filemap_nr_thps(inode->i_mapping)) {
-+			filemap_invalidate_lock(inode->i_mapping);
- 			truncate_pagecache(inode, 0);
-+			filemap_invalidate_unlock(inode->i_mapping);
-+		}
+ 		if (filemap_nr_thps(inode->i_mapping)) {
++			struct address_space *mapping = inode->i_mapping;
++
+ 			filemap_invalidate_lock(inode->i_mapping);
+-			truncate_pagecache(inode, 0);
++			/*
++			 * unmap_mapping_range just need to be called once
++			 * here, because the private pages is not need to be
++			 * unmapped mapping (e.g. data segment of dynamic
++			 * shared libraries here).
++			 */
++			unmap_mapping_range(mapping, 0, 0, 0);
++			truncate_inode_pages(mapping, 0);
+ 			filemap_invalidate_unlock(inode->i_mapping);
+ 		}
  	}
- 
- 	return 0;
 
 
