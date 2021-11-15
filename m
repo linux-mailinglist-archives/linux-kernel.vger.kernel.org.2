@@ -2,196 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DEE45030D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1358450310
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237685AbhKOLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:07:32 -0500
-Received: from mail-dm3nam07on2073.outbound.protection.outlook.com ([40.107.95.73]:58849
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237566AbhKOLHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:07:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lNAVtEIaihB2R/1pn621/Kz7N/huXW2X/VJxnY2NEhkOJX2SkuC5+aqm707jirKYUAeU16+yQuJABLxknXDgFMEZRHIgA+hBrjv23xGs5thlfiJcEDB9Bb9SVexMUxrubFZxO/z6aN2zOe/PaMMXN46DZwh5LBt6AMQkb1r8PVAsJvzcGigFCyoecRsk6y5Nx7eWWX1OqGt5odIFJ7FIDKMvTvYaoHhHEojYR0YuXf8lREpLRNj8TYkM6UFe9DQeH85ln166qoHLyYcqM+Dwr01djYNgrW2BKDHtsvjBFIBueCAfnuWYkotO7Lwli/kepU9pNEKRxoSiIj7crlXp/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6CYe7hI9EuyLWWHfXGxjXmQnW0anutBsLBl4zHG9MBs=;
- b=VkgkEzFP7aKa6xRFUR6rVeglaQI+kChTcR7oG+/RFVPF3IBu2flHTvPOZsBn7by0GODpBTzxa0WhbZQ8XebCNIcL/GMa68qVDRUK64C0OZoNGSj+75CDJiHsSt4ImvrErQs8CX4uLAAIwyrUQVWT/YUp7iBwimTiC1dxsxcUmRNx2fOZBhgQ/7Ia58POxq0TkRyAYOhEkRusbZStXF77wGsW4Z+IIQFIJeCU4nRQ5fNTLGQqZYUAqyHG2W6EhEJJ4PIT0PKdCig8pVfmZFpUueQL4Pc76NE7KNZARPEXfTIi8XwtbR/ivBo2aud2552fHG0+FjC4/kuLOjXEzRphGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6CYe7hI9EuyLWWHfXGxjXmQnW0anutBsLBl4zHG9MBs=;
- b=f3MZSyJhhwIEsmLPb3BewnQPb70XP9KYLzIFOejg9HEZHb+ETSya3Ov+GvidYKQxUSB6fWfmhDDLWTQV9v6XKlrrwyRm6LV96N8q7H1U9A/maXSfRJnQu9G9znXig4jOfnHCTgV6Ai4Ber4ctDuvzZROAbnSCKJXpz00rWPOuGM=
-Received: from MWHPR05MB3648.namprd05.prod.outlook.com (2603:10b6:301:45::23)
- by CO1PR05MB8441.namprd05.prod.outlook.com (2603:10b6:303:e4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.5; Mon, 15 Nov
- 2021 11:04:17 +0000
-Received: from MWHPR05MB3648.namprd05.prod.outlook.com
- ([fe80::d871:f5de:8800:46dc]) by MWHPR05MB3648.namprd05.prod.outlook.com
- ([fe80::d871:f5de:8800:46dc%4]) with mapi id 15.20.4713.019; Mon, 15 Nov 2021
- 11:04:17 +0000
-From:   Alexey Makhalov <amakhalov@vmware.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cl@linux.com" <cl@linux.com>,
-        "mm-commits@vger.kernel.org" <mm-commits@vger.kernel.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>
-Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
-Thread-Topic: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
-Thread-Index: AQHX1OJIWPaykZv/p0er2gRbWiPNoav64CoAgAABpgCAACaDAIAFMc8AgAQ2uwCAAAZtAA==
-Date:   Mon, 15 Nov 2021 11:04:16 +0000
-Message-ID: <B8B7E3FA-6EAB-46B7-95EB-5A31395C8ADE@vmware.com>
-References: <20211108205031.UxDPHBZWa%akpm@linux-foundation.org>
- <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
- <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
- <YYpTy9eXZucxuRO/@dhcp22.suse.cz> <YY6wZMcx/BeddUnH@fedora>
- <YZI5TEW2BkBjOtC1@dhcp22.suse.cz>
-In-Reply-To: <YZI5TEW2BkBjOtC1@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 524ad6c4-bbbb-46d9-19de-08d9a827aab1
-x-ms-traffictypediagnostic: CO1PR05MB8441:
-x-microsoft-antispam-prvs: <CO1PR05MB84416EA1C0D8317BA42C9CEED5989@CO1PR05MB8441.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RQjSRQodxRN2/AgtMC0+CyuKDlSvUDU9lBeyCviDFNqb4DYJzv+eoVmle9BZtCJKCTw9LKTNXFZ2Szp+CJFz1HOA0ZvcjfJEjNYhvIjDUWK9C95v3P+ILO9OIw91C9IttgGPdsFj7jyW9iTxrI+QLHB8c/HvFELq3ECZxP7qRiIrbrzBw9Eesv9rMDIOJQhH6+v0ruuIPD/yy+iFBoKsnSBQq3EUlZxkCR7Gj76r2IHb7huj+mnGB1S9F9wRmR83/svmWkYwUvUaEGCRXViKu4oGoZjAD33qcIl7j4VILu1Rs6e0t7b6o9j1kXUfqs6eLviKWopHLQTCArA76odb+ao4MKBXfiIQzLwgXU/nQV87TNQq6Uj+k6yAlaZLYjfW4Hyw49cx/yDEI2o79aw8lws55jQs7+P4FotVbE+r3ulIZQW34pkXZ7hDLzHzyzG7dToOeBy3psNu4KzJvYmNRBMsn5MvF5kkO3SwCYS2pVxJqk2NSNRvDHMwjSTbe/FAv5TYy0r8SLDKvWRWiCKTqCrXzgP9Fag1anOXH4cCzqDjAAiO8TeDMrztmQOa2isHul5nmIBCUwTx0yNAPnuMSEkju2HbFC5dBgqzOE3qKwgOF+ed/dqNUpiVRZ2DdGL407a60OQtyjIpLYWS40WffHmDGyXIGxi18J2jcD4aLO5A3WbFjWG6CYBm/ImeI1wJGc+odsb3CbHG9bEp4q1ckAQkUoPO1fm2TGXSOFaBgBcz3mnhBokELpyPvMmjtmBO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR05MB3648.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(316002)(54906003)(2906002)(76116006)(91956017)(86362001)(83380400001)(38070700005)(99936003)(8936002)(66476007)(66556008)(64756008)(66446008)(4744005)(186003)(66946007)(6512007)(8676002)(122000001)(38100700002)(36756003)(508600001)(2616005)(5660300002)(33656002)(71200400001)(6506007)(6916009)(6486002)(26005)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?enIyOGFhTkFZMUJsTnJsNzNybFNpY0lWYTZsNHk1Q3k5RkluVkNsenpvSmF5?=
- =?utf-8?B?TXRaUWtxMlV3VDgxOGlxdFpsb3RmRm9Mck5RS3J1VGp0b04vclVTVUpORUl2?=
- =?utf-8?B?VGJGQmsyb2l0WWR1OHV3cnk4V3NWZURvcUdhaFdsTHZIWE5HTlU3ZDM3QldK?=
- =?utf-8?B?RUNZZlQ4TFAwWFBXclBDSFlCUWwreWkxWUxUVUFIMGxnT0pzTDBPNU12Z0Ns?=
- =?utf-8?B?UXV1aGRoK25jZTVJOHlsNVJpR0ZCL01IMEZSb1I5TFg1RWs1M2hOMXZuWEtt?=
- =?utf-8?B?RDE5cE1Qclc3UGU1TzhTWWNaYzZ3YWpaeHRvQTgxSU1vMWE0UHB0emZpQytS?=
- =?utf-8?B?VVNkcVg0ZGh2Q1pZRnJMbjVmMUYzNzJwVXAzNEVCUEVwRTd2Q3F3c3A2NHNS?=
- =?utf-8?B?OXNIb3luTlhEaEVrZlNrb1h3bXhDdmVPVk1wVEx5VTJsUzh4WUpvRHhVYWth?=
- =?utf-8?B?WVhETTNoTnFOZUxMYTZWWkF6b2tqeHhnVTRYRjkrWVRNMHJDenllZytWUDFs?=
- =?utf-8?B?TVF3OTRpOTJ6ZWdSTWdqTmU2cGxNR1pWbmMzOUd6WE5lRG1lME1NRkYrWlVT?=
- =?utf-8?B?QUhYNGk1a1RHeHFVOGdVQWpXcEFCR25qN2xyYlJ6MjEvblYzeU9UbnBkclUx?=
- =?utf-8?B?dXIwS0NIOUxlSTVTVm5YRXdIK0ExYWw0NnlRNnlNazV5RlluK2RzeUdUN1d2?=
- =?utf-8?B?anQrSU5WaW5KU1FjQVMvSWhMRis5R1JiOC9MdXA4Y25USTZIMHRDdGFueDJJ?=
- =?utf-8?B?cW56bDVleURVVUx0blJkblhqWVJzdVcvd2hnTXBIQkt6R3ZrbWx2NXhRR2dp?=
- =?utf-8?B?NnpIVTZ1R0grYW1iVGE5ZWYyS0Y4UWhZSGkzT0w3MWQ0OGY0RWd5S241N1Ey?=
- =?utf-8?B?RDZyTFhIYzRLaUQ1S3VOQk13R2wxbHVOaFIvVHRFWTkxUGczS0p2WExqOEVI?=
- =?utf-8?B?NXBhajJuTEU5QU5KaVBYcVI5SG1JZ25LZ2VFSG9rVzE2MU8xUmhTNmY3M2E5?=
- =?utf-8?B?Y2lHVEVuU09GSnl4dDh0dXZGblI5TVhjaCtZREo0VGdoQkhURERaWHRLWVIv?=
- =?utf-8?B?RHhZMmt2dUxSOGFNZGc0Wm9iZmh1SXdMUkVGRVkxTlRGWktZQlJTZWhpNVE1?=
- =?utf-8?B?OUtUbXFjcFYzYndaS05kQVFtakQyTjFhOG55TEF3WEtjdjFMQlBPQTBVQkVp?=
- =?utf-8?B?Q0F5ekpsamJBMjUxL3MyZ3lkNUZuYXdncXlOc2ZaQlE5cmhPNVFySVoyTjNa?=
- =?utf-8?B?eGZRemVJdVVEVlBNbUlxN0ZIczZkTlN0WWZBcWFDeUtncThPQ2NpTmdISzgx?=
- =?utf-8?B?eDkyTEx3eWxBK0MrZnRzTnY1N211cFgvakNmUzdCQWEvOGs1bmppMHJwcmM4?=
- =?utf-8?B?TktnZmp3YWM2d0gzNjgxOXNBTmNpWVNlMUhLV2x1czV1ZkdQUW5lLzIyWDZz?=
- =?utf-8?B?OEF1d0FsVllkbzZNbnZqWlU0Q3RQMmM5VUZpcXRMdVdiVW5rRVJmWFp1Zk1M?=
- =?utf-8?B?aEV2MFpuL1VGcVZETmtRTCtiSFhGVkFTNnRJOHowLy95YlBSUy95amRSbEU0?=
- =?utf-8?B?VTdzS0pyVk5PSzFEbmNjNEdyTFBiL0thZTJ2MUh4WkQ0ejlrSit5OXYwY1N5?=
- =?utf-8?B?K3ZHdjRLTWJmVGpSaGhiUFMxS2JxZWJpNGJpOTRiVCtDdi82U2lMQUNSQ2dQ?=
- =?utf-8?B?d0diUWU2REtqdURFSDk1eUQ5QXpCUFZrSWdkN3lzV1dBbUZuVHJIN3ZYUzZq?=
- =?utf-8?B?WXJOclBxekxkWGxObDFhNGJzdHJIbm1SZHZXSmdSTm1sV0FoNy9BZkN3ckdY?=
- =?utf-8?B?UzZwQXVjdkRoSDRVUmFORU9EbEVabmU1NGpqNU11Wm94cXpoKzJGWWdhSUMx?=
- =?utf-8?B?TU9LQU95dWE5RWYxbzg4Qm1XekFZVkxvMVJYNGNxOVJYQmI3eWY4bUJMZXpa?=
- =?utf-8?B?TU53YUVxMWt4Mm9jVHhVTTJTQzNoOWpjVGxEbXlzcEQ4ZWRPM05wTFNYdHVP?=
- =?utf-8?B?N0thNHJ1Zlh6c2VKYVQvdEVVd1drY1FYVTcrOENYdG45OUF1UW5NTlpRMkhR?=
- =?utf-8?B?QWMwTkQxbkVyNlE4REhYMCtLWjlSd1NVdkZ4eFg5bSsvemtGM0Rxak13R2lh?=
- =?utf-8?B?UnN2NkI3L3ZOSUVBUlIwdGhuUWRRemlWZjdyVzZSYXpwYTRQVEtDdGtxTVcy?=
- =?utf-8?Q?jdWUkYgl1vGHYNHCUczJMhE=3D?=
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_C3B3FA11-46E7-467E-B524-98301AFF122D";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
+        id S231245AbhKOLIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:08:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231205AbhKOLIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:08:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CCC363211;
+        Mon, 15 Nov 2021 11:05:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636974326;
+        bh=DSniWn7I3EhRLyyJrvFFain22q0udhMxf7A29yfUb0Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ed9JRDMvxKwHPUY3NmcsJJcOh/t0/jKRTewexA00EmQPHkfvNmTPtzsagZLwCM+6/
+         SbOrNAqQ2NJNLKSArXnsmHjhAy4lDzN5flL01r4YZsgxO3vJxUqXD6tU4GiHKprUbD
+         ULhrbF7o3SH22j/hZvxRh1kernZ6v0bgYcrFZ6HTic7N5YBm0xXKCEDNoeCofv/fMP
+         K2XxFzLb6OEWaiF4Uhw1tqJPAQwK4YSGXbeb+uvztY/MqvuX2cDqH6h909EosLhp41
+         YZTDAWyqupimBF8KwNsBe6F/blDY14R9b/SHOOFbd2WJcqnK5sJDK+gLQoNmgcd6Z0
+         xScK1VYMw0xUQ==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/7] habanalabs: debugfs support for larger I2C transactions
+Date:   Mon, 15 Nov 2021 13:05:15 +0200
+Message-Id: <20211115110521.783103-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR05MB3648.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 524ad6c4-bbbb-46d9-19de-08d9a827aab1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 11:04:16.9990
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zjlKzxw/7jYe6SZDV8L8bQ7gCBmmQjFbXOCTcfDP0VT9o1E8HxYb/ThLVTk4Zcrqnzxt5/XAGKyDBscZIfONiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR05MB8441
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Apple-Mail=_C3B3FA11-46E7-467E-B524-98301AFF122D
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+From: Ofir Bitton <obitton@habana.ai>
 
-Hi Michal,
+I2C debugfs support is limited to 1 byte. We extend functionality
+to more than 1 byte by using one of the pad fields as a length.
+No backward compatibility issues as new F/W versions will treat 0
+length as a 1 byte length transaction.
 
->=20
-> I have asked several times for details about the specific setup that =
-has
-> led to the reported crash. Without much success so far. Reproduction
-> steps would be the first step. That would allow somebody to work on =
-this
-> at least if Alexey doesn't have time to dive into this deeper.
->=20
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../ABI/testing/debugfs-driver-habanalabs     |  7 +++
+ drivers/misc/habanalabs/common/debugfs.c      | 50 ++++++++++++-------
+ drivers/misc/habanalabs/common/habanalabs.h   |  2 +
+ .../misc/habanalabs/include/common/cpucp_if.h |  9 +++-
+ 4 files changed, 50 insertions(+), 18 deletions(-)
 
-I didn=E2=80=99t know that repro steps are still not clear.
+diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
+index 63c46d9d538f..6085ee506135 100644
+--- a/Documentation/ABI/testing/debugfs-driver-habanalabs
++++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
+@@ -155,6 +155,13 @@ Description:    Triggers an I2C transaction that is generated by the device's
+                 CPU. Writing to this file generates a write transaction while
+                 reading from the file generates a read transaction
+ 
++What:           /sys/kernel/debug/habanalabs/hl<n>/i2c_len
++Date:           Dec 2021
++KernelVersion:  5.17
++Contact:        obitton@habana.ai
++Description:    Sets I2C length in bytes for I2C transaction that is generated by
++                the device's CPU
++
+ What:           /sys/kernel/debug/habanalabs/hl<n>/i2c_reg
+ Date:           Jan 2019
+ KernelVersion:  5.1
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index a239c5679f95..9727d82b121f 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -15,19 +15,25 @@
+ #define MMU_ADDR_BUF_SIZE	40
+ #define MMU_ASID_BUF_SIZE	10
+ #define MMU_KBUF_SIZE		(MMU_ADDR_BUF_SIZE + MMU_ASID_BUF_SIZE)
++#define I2C_MAX_TRANSACTION_LEN	8
+ 
+ static struct dentry *hl_debug_root;
+ 
+ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+-				u8 i2c_reg, long *val)
++				u8 i2c_reg, u8 i2c_len, u64 *val)
+ {
+ 	struct cpucp_packet pkt;
+-	u64 result;
+ 	int rc;
+ 
+ 	if (!hl_device_operational(hdev, NULL))
+ 		return -EBUSY;
+ 
++	if (i2c_len > I2C_MAX_TRANSACTION_LEN) {
++		dev_err(hdev->dev, "I2C transaction length %u, exceeds maximum of %u\n",
++				i2c_len, I2C_MAX_TRANSACTION_LEN);
++		return -EINVAL;
++	}
++
+ 	memset(&pkt, 0, sizeof(pkt));
+ 
+ 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_I2C_RD <<
+@@ -35,12 +41,10 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 	pkt.i2c_bus = i2c_bus;
+ 	pkt.i2c_addr = i2c_addr;
+ 	pkt.i2c_reg = i2c_reg;
++	pkt.i2c_len = i2c_len;
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, &result);
+-
+-	*val = (long) result;
+-
++						0, val);
+ 	if (rc)
+ 		dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
+ 
+@@ -48,7 +52,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ }
+ 
+ static int hl_debugfs_i2c_write(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+-				u8 i2c_reg, u32 val)
++				u8 i2c_reg, u8 i2c_len, u64 val)
+ {
+ 	struct cpucp_packet pkt;
+ 	int rc;
+@@ -56,6 +60,12 @@ static int hl_debugfs_i2c_write(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 	if (!hl_device_operational(hdev, NULL))
+ 		return -EBUSY;
+ 
++	if (i2c_len > I2C_MAX_TRANSACTION_LEN) {
++		dev_err(hdev->dev, "I2C transaction length %u, exceeds maximum of %u\n",
++				i2c_len, I2C_MAX_TRANSACTION_LEN);
++		return -EINVAL;
++	}
++
+ 	memset(&pkt, 0, sizeof(pkt));
+ 
+ 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_I2C_WR <<
+@@ -63,6 +73,7 @@ static int hl_debugfs_i2c_write(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 	pkt.i2c_bus = i2c_bus;
+ 	pkt.i2c_addr = i2c_addr;
+ 	pkt.i2c_reg = i2c_reg;
++	pkt.i2c_len = i2c_len;
+ 	pkt.value = cpu_to_le64(val);
+ 
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+@@ -899,22 +910,22 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
+ 	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
+ 	struct hl_device *hdev = entry->hdev;
+ 	char tmp_buf[32];
+-	long val;
++	u64 val;
+ 	ssize_t rc;
+ 
+ 	if (*ppos)
+ 		return 0;
+ 
+ 	rc = hl_debugfs_i2c_read(hdev, entry->i2c_bus, entry->i2c_addr,
+-			entry->i2c_reg, &val);
++			entry->i2c_reg, entry->i2c_len, &val);
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+-			"Failed to read from I2C bus %d, addr %d, reg %d\n",
+-			entry->i2c_bus, entry->i2c_addr, entry->i2c_reg);
++			"Failed to read from I2C bus %d, addr %d, reg %d, len %d\n",
++			entry->i2c_bus, entry->i2c_addr, entry->i2c_reg, entry->i2c_len);
+ 		return rc;
+ 	}
+ 
+-	sprintf(tmp_buf, "0x%02lx\n", val);
++	sprintf(tmp_buf, "%#02llx\n", val);
+ 	rc = simple_read_from_buffer(buf, count, ppos, tmp_buf,
+ 			strlen(tmp_buf));
+ 
+@@ -926,19 +937,19 @@ static ssize_t hl_i2c_data_write(struct file *f, const char __user *buf,
+ {
+ 	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
+ 	struct hl_device *hdev = entry->hdev;
+-	u32 value;
++	u64 value;
+ 	ssize_t rc;
+ 
+-	rc = kstrtouint_from_user(buf, count, 16, &value);
++	rc = kstrtou64_from_user(buf, count, 16, &value);
+ 	if (rc)
+ 		return rc;
+ 
+ 	rc = hl_debugfs_i2c_write(hdev, entry->i2c_bus, entry->i2c_addr,
+-			entry->i2c_reg, value);
++			entry->i2c_reg, entry->i2c_len, value);
+ 	if (rc) {
+ 		dev_err(hdev->dev,
+-			"Failed to write 0x%02x to I2C bus %d, addr %d, reg %d\n",
+-			value, entry->i2c_bus, entry->i2c_addr, entry->i2c_reg);
++			"Failed to write %#02llx to I2C bus %d, addr %d, reg %d, len %d\n",
++			value, entry->i2c_bus, entry->i2c_addr, entry->i2c_reg, entry->i2c_len);
+ 		return rc;
+ 	}
+ 
+@@ -1421,6 +1432,11 @@ void hl_debugfs_add_device(struct hl_device *hdev)
+ 				dev_entry->root,
+ 				&dev_entry->i2c_reg);
+ 
++	debugfs_create_u8("i2c_len",
++				0644,
++				dev_entry->root,
++				&dev_entry->i2c_len);
++
+ 	debugfs_create_file("i2c_data",
+ 				0644,
+ 				dev_entry->root,
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 6b33fbd72fd8..9aa144d2fe40 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -1889,6 +1889,7 @@ struct hl_debugfs_entry {
+  * @i2c_bus: generic u8 debugfs file for bus value to use in i2c_data_read.
+  * @i2c_addr: generic u8 debugfs file for address value to use in i2c_data_read.
+  * @i2c_reg: generic u8 debugfs file for register value to use in i2c_data_read.
++ * @i2c_len: generic u8 debugfs file for length value to use in i2c_data_read.
+  */
+ struct hl_dbg_device_entry {
+ 	struct dentry			*root;
+@@ -1917,6 +1918,7 @@ struct hl_dbg_device_entry {
+ 	u8				i2c_bus;
+ 	u8				i2c_addr;
+ 	u8				i2c_reg;
++	u8				i2c_len;
+ };
+ 
+ /**
+diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
+index 5e19c763f3f0..078fb4bd0316 100644
+--- a/drivers/misc/habanalabs/include/common/cpucp_if.h
++++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
+@@ -493,7 +493,14 @@ struct cpucp_packet {
+ 			__u8 i2c_bus;
+ 			__u8 i2c_addr;
+ 			__u8 i2c_reg;
+-			__u8 pad; /* unused */
++			/*
++			 * In legacy implemetations, i2c_len was not present,
++			 * was unused and just added as pad.
++			 * So if i2c_len is 0, it is treated as legacy
++			 * and r/w 1 Byte, else if i2c_len is specified,
++			 * its treated as new multibyte r/w support.
++			 */
++			__u8 i2c_len;
+ 		};
+ 
+ 		struct {/* For PLL info fetch */
+-- 
+2.25.1
 
-To reproduce the panic you need to have a system, where you can hot add
-the CPU that belongs to memoryless NUMA node which is not present and =
-onlined
-yet. In other words, by hot adding CPU, you will add both CPU and NUMA =
-node
-at the same time.
-I=E2=80=99m using VMware hypervisor and linux VM there configured in a =
-way
-that every (possible) CPU has its own NUMA node.
-Before doing CPU hot add, udev rule for CPU onlining should be disabled.
-After CPU hot add event, panic will be triggered shortly right on the =
-next
-percpu allocation.
-
-Let me know if this is enough or you need some extra information.
-
-Thanks,
-=E2=80=94Alexey
-
---Apple-Mail=_C3B3FA11-46E7-467E-B524-98301AFF122D
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEQe6bu7hIFElmsM7CGW4w8WwwaSUFAmGSPrAACgkQGW4w8Www
-aSXapBAAhr1SijiRAVZNuj5A2YdTY9+PYSBxMX3ukFCDj6ri9LZ3QZb9fTfxyR2e
-fMMuqhl1MChUg2k1XBtF6buFITBBT8rOnAHaySTIhuVzAODeH7SVk7zWlUBvYsKm
-uMaIihJ5nygh11XjtkSd5OdIE1jh6DoHeo/10T16kL783pHy9O2aV+vCCtMXcKrG
-cNfDitnTfElf+vNBx5rLSwqxgQwB2Ubg+n6JZcQFEYl/xSitdY/mpN1sE/PlVxp6
-+FL64I1c8rojiPfEgMI7D1yH2hJCRm/3K2CdtNsoZgsB9NxYxfEaPGzjwK8ygsWj
-tka7sgjmAfs1Fl9cCaNExRdN/CIvFlPd6/NBYu3fHxVi/lhLm3UgnDqoe0kmP2gm
-47NMMadCNq2xZy4Pa2p5eXkInsQaa90oAjbRK0D45tTuRsY69Gv6R/hB5xhVl73Q
-+hUlaB3q99MphBfxXMhSOv29rtLklFQrEQT9XurnNJIH5dBlMKG0+UjVf1bfH1YO
-xhdCIiXiDPaPwSUx2qE+GEobpdVwCGJslAm5qCWG8J6nBG7qQ9GiqFifGBw9RjBr
-Uf0/0NMf6c1PbhH8DDOypQ7txJiaMJ7wawWWKIH/sZbVUBfJCGs+y8RttHH/o+Nh
-TWeRyltAoUYMk6mkl3P/lG5N+UvtUjkxmRI0/pJRJ+cQbWvC3B8=
-=alns
------END PGP SIGNATURE-----
-
---Apple-Mail=_C3B3FA11-46E7-467E-B524-98301AFF122D--
