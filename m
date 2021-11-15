@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569F045207B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4224518A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358790AbhKPAyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:54:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S241884AbhKOXEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343850AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1763F633A1;
-        Mon, 15 Nov 2021 18:48:03 +0000 (UTC)
+        id S243098AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD536347B;
+        Mon, 15 Nov 2021 18:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002084;
-        bh=tTmXqmdG6aVwUcyq2RC2+4ytls6JqpiwL+hCByUlcWs=;
+        s=korg; t=1636999847;
+        bh=Uju4LvldQFnsqgDjeq0LvcXc1x+dsSiROmENSpYHVuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X1vgjoa8aY2Z8MzOdtr6VQdT6ETfCuibG0Xs67T9EFqw8vk/SW5s+7jZv+KKY4DAd
-         ZVnkuUzI3EClvDvW3TPsUFpAy1Q32moh20qi9vNZzTkQzcXke75Pn9AH3vyn8y6QZB
-         pcOqYp7Auqft2f8qPnmDu7YkB5856vKuKJsKwp24=
+        b=kA14Qm6zUanz1OQ1z9HKgqoCpyqddesTBzHkakZcyo+878CePSJuWD6LaDzuc6JGR
+         CK2VM+h59sr0aSSINugTXMztS65Yt8fb9T957j8qhjV3n7fXMhTTzy7AmcuXjjUqfv
+         V20afcHHJYRBTv5blMS3DHPae1GcbD+kJI8yj4PM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 432/917] x86: Fix get_wchan() to support the ORC unwinder
-Date:   Mon, 15 Nov 2021 17:58:47 +0100
-Message-Id: <20211115165443.434208065@linuxfoundation.org>
+Subject: [PATCH 5.14 445/849] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+Date:   Mon, 15 Nov 2021 17:58:48 +0100
+Message-Id: <20211115165435.328713708@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,94 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit bc9bbb81730ea667c31c5b284f95ee312bab466f ]
+[ Upstream commit fd96e35ea7b95f1e216277805be89d66e4ae962d ]
 
-Currently, the kernel CONFIG_UNWINDER_ORC option is enabled by default
-on x86, but the implementation of get_wchan() is still based on the frame
-pointer unwinder, so the /proc/<pid>/wchan usually returned 0 regardless
-of whether the task <pid> is running.
+A new warning in clang points out a use of bitwise OR with boolean
+expressions in this driver:
 
-Reimplement get_wchan() by calling stack_trace_save_tsk(), which is
-adapted to the ORC and frame pointer unwinders.
+drivers/platform/x86/thinkpad_acpi.c:9061:11: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        else if ((strlencmp(cmd, "level disengaged") == 0) |
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                           ||
+drivers/platform/x86/thinkpad_acpi.c:9061:11: note: cast one or both operands to int to silence this warning
+1 error generated.
 
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008111626.271115116@infradead.org
+This should clearly be a logical OR so change it to fix the warning.
+
+Fixes: fe98a52ce754 ("ACPI: thinkpad-acpi: add sysfs support to fan subdriver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1476
+Reported-by: Tor Vic <torvic9@mailbox.org>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20211018182537.2316800-1-nathan@kernel.org
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/process.c | 51 +++------------------------------------
- 1 file changed, 3 insertions(+), 48 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index f2f733bcb2b95..cd426c3283ee1 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -945,58 +945,13 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
-  */
- unsigned long get_wchan(struct task_struct *p)
- {
--	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
--	int count = 0;
-+	unsigned long entry = 0;
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 50ff04c84650c..27595aba214d9 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9145,7 +9145,7 @@ static int fan_write_cmd_level(const char *cmd, int *rc)
  
- 	if (p == current || task_is_running(p))
- 		return 0;
- 
--	if (!try_get_task_stack(p))
--		return 0;
--
--	start = (unsigned long)task_stack_page(p);
--	if (!start)
--		goto out;
--
--	/*
--	 * Layout of the stack page:
--	 *
--	 * ----------- topmax = start + THREAD_SIZE - sizeof(unsigned long)
--	 * PADDING
--	 * ----------- top = topmax - TOP_OF_KERNEL_STACK_PADDING
--	 * stack
--	 * ----------- bottom = start
--	 *
--	 * The tasks stack pointer points at the location where the
--	 * framepointer is stored. The data on the stack is:
--	 * ... IP FP ... IP FP
--	 *
--	 * We need to read FP and IP, so we need to adjust the upper
--	 * bound by another unsigned long.
--	 */
--	top = start + THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING;
--	top -= 2 * sizeof(unsigned long);
--	bottom = start;
--
--	sp = READ_ONCE(p->thread.sp);
--	if (sp < bottom || sp > top)
--		goto out;
--
--	fp = READ_ONCE_NOCHECK(((struct inactive_task_frame *)sp)->bp);
--	do {
--		if (fp < bottom || fp > top)
--			goto out;
--		ip = READ_ONCE_NOCHECK(*(unsigned long *)(fp + sizeof(unsigned long)));
--		if (!in_sched_functions(ip)) {
--			ret = ip;
--			goto out;
--		}
--		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
--	} while (count++ < 16 && !task_is_running(p));
--
--out:
--	put_task_stack(p);
--	return ret;
-+	stack_trace_save_tsk(p, &entry, 1, 0);
-+	return entry;
- }
- 
- long do_arch_prctl_common(struct task_struct *task, int option,
+ 	if (strlencmp(cmd, "level auto") == 0)
+ 		level = TP_EC_FAN_AUTO;
+-	else if ((strlencmp(cmd, "level disengaged") == 0) |
++	else if ((strlencmp(cmd, "level disengaged") == 0) ||
+ 			(strlencmp(cmd, "level full-speed") == 0))
+ 		level = TP_EC_FAN_FULLSPEED;
+ 	else if (sscanf(cmd, "level %d", &level) != 1)
 -- 
 2.33.0
 
