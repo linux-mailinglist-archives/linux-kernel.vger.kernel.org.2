@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03880451E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DEB451910
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346506AbhKPAgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:36:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S1352493AbhKOXNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344236AbhKOTYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 050D163645;
-        Mon, 15 Nov 2021 18:54:12 +0000 (UTC)
+        id S243400AbhKOTHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:07:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD80E633F4;
+        Mon, 15 Nov 2021 18:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002453;
-        bh=pj/EPA4p4QARvQXsM/wTSZzcIH5BEW0FtvfHfw1X9TQ=;
+        s=korg; t=1637000235;
+        bh=CdI08ViV6BvG1YXh6LB3amNdngiUBTB8LPRQeIAyfvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a1CPg+8hH2uvNO0ubo1pGT1qQkk4HHoYl9WpC22aEIWclQBNlQ4MiQz9OmaecbJJX
-         gXZI00CH2AC41IDt9OjDIvzjCKvNHsYUmYRuogSvtT7KBAt2AGPR7oPXbhr1+xXg96
-         V2RJiDdpbVI6CeIZN6H5o95xIEafLMHFG4gIJl5E=
+        b=nxVBiAeiGzpE6m5U9loZEcZNYW9oW1D7RahxMl3tCqPoiynxivVQ++FQ9wh/Di5AO
+         sCVyBSaz5YLHrRlwul2BL5l9dLBj9LpF1yOkOGhBuQRCe1895mN0tDlOLJAj89Jbhl
+         uruppo2StClKMqWT6hcXhLj5ki6nB+1PBDF31O/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@ionos.com>,
-        Ajish Koshy <Ajish.Koshy@microchip.com>,
-        Viswas G <Viswas.G@microchip.com>,
+        stable@vger.kernel.org, Sumit Saxena <sumit.saxena@broadcom.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 573/917] scsi: pm80xx: Fix lockup in outbound queue management
-Date:   Mon, 15 Nov 2021 18:01:08 +0100
-Message-Id: <20211115165448.213440659@linuxfoundation.org>
+Subject: [PATCH 5.14 586/849] scsi: megaraid_sas: Fix concurrent access to ISR between IRQ polling and real interrupt
+Date:   Mon, 15 Nov 2021 18:01:09 +0100
+Message-Id: <20211115165440.075540650@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,231 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajish Koshy <Ajish.Koshy@microchip.com>
+From: Sumit Saxena <sumit.saxena@broadcom.com>
 
-[ Upstream commit b27a40534ef76a22628a5c12f98ea489823a8ba5 ]
+[ Upstream commit e7dcc514a49e74051b869697d5ab0370f6301d57 ]
 
-Commit 1f02beff224e ("scsi: pm80xx: Remove global lock from outbound queue
-processing") introduced a lock per outbound queue. Prior to that change the
-driver was using a global lock for all outbound queues.
+IRQ polling thread calls ISR after enable_irq() to handle any missed I/O
+completion. The atomic flag "in_used" was added to have the synchronization
+between the IRQ polling thread and the interrupt context. There is a bug
+around it leading to a race condition.
 
-While processing the I/O responses and events the driver takes the outbound
-queue spinlock and is supposed to release it in pm8001_ccb_task_free_done()
-before calling command done(). Since the older code was using a global
-lock, pm8001_ccb_task_free_done() was releasing the global spin lock. The
-change that split the lock per outbound queue did not consider this and
-pm8001_ccb_task_free_done() was still releasing the global lock.
+Below is the sequence:
 
-Link: https://lore.kernel.org/r/20210906170404.5682-3-Ajish.Koshy@microchip.com
-Fixes: 1f02beff224e ("scsi: pm80xx: Remove global lock from outbound queue processing")
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Ajish Koshy <Ajish.Koshy@microchip.com>
-Signed-off-by: Viswas G <Viswas.G@microchip.com>
+ - IRQ polling thread accesses ISR, fetches the reply descriptor.
+
+ - Real interrupt arrives and pre-empts polling thread (enable_irq() is
+   already called).
+
+ - Interrupt context picks the same reply descriptor as fetched by polling
+   thread, processes it, and exits.
+
+ - Polling thread resumes and processes the descriptor which is already
+   processed by interrupt thread leads to kernel crash.
+
+Setting the "in_used" flag before fetching the reply descriptor ensures
+synchronized access to ISR.
+
+Link: https://www.spinics.net/lists/linux-scsi/msg159440.html
+Link: https://lore.kernel.org/r/20210929124022.24605-2-sumit.saxena@broadcom.com
+Fixes: 9bedd36e9146 ("scsi: megaraid_sas: Handle missing interrupts while re-enabling IRQs")
+Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_sas.h |  3 +-
- drivers/scsi/pm8001/pm80xx_hwi.c | 53 ++++++++++++++++++++++++++------
- 2 files changed, 45 insertions(+), 11 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_fusion.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
-index 62d08b535a4b6..e18f2b60371db 100644
---- a/drivers/scsi/pm8001/pm8001_sas.h
-+++ b/drivers/scsi/pm8001/pm8001_sas.h
-@@ -457,6 +457,7 @@ struct outbound_queue_table {
- 	__le32			producer_index;
- 	u32			consumer_idx;
- 	spinlock_t		oq_lock;
-+	unsigned long		lock_flags;
- };
- struct pm8001_hba_memspace {
- 	void __iomem  		*memvirtaddr;
-@@ -738,9 +739,7 @@ pm8001_ccb_task_free_done(struct pm8001_hba_info *pm8001_ha,
- {
- 	pm8001_ccb_task_free(pm8001_ha, task, ccb, ccb_idx);
- 	smp_mb(); /*in order to force CPU ordering*/
--	spin_unlock(&pm8001_ha->lock);
- 	task->task_done(task);
--	spin_lock(&pm8001_ha->lock);
- }
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 06399c026a8d5..1ff2198583a71 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -3530,6 +3530,9 @@ complete_cmd_fusion(struct megasas_instance *instance, u32 MSIxIndex,
+ 	if (atomic_read(&instance->adprecovery) == MEGASAS_HW_CRITICAL_ERROR)
+ 		return IRQ_HANDLED;
  
- #endif
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index 6ffe17b849ae8..ed02e1aaf868c 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -2379,7 +2379,8 @@ static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
++	if (irq_context && !atomic_add_unless(&irq_context->in_used, 1, 1))
++		return 0;
++
+ 	desc = fusion->reply_frames_desc[MSIxIndex] +
+ 				fusion->last_reply_idx[MSIxIndex];
  
- /*See the comments for mpi_ssp_completion */
- static void
--mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
-+mpi_sata_completion(struct pm8001_hba_info *pm8001_ha,
-+		struct outbound_queue_table *circularQ, void *piomb)
- {
- 	struct sas_task *t;
- 	struct pm8001_ccb_info *ccb;
-@@ -2616,7 +2617,11 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 				IO_OPEN_CNX_ERROR_IT_NEXUS_LOSS);
- 			ts->resp = SAS_TASK_UNDELIVERED;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -2632,7 +2637,11 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 				IO_OPEN_CNX_ERROR_IT_NEXUS_LOSS);
- 			ts->resp = SAS_TASK_UNDELIVERED;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -2656,7 +2665,11 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 				IO_OPEN_CNX_ERROR_STP_RESOURCES_BUSY);
- 			ts->resp = SAS_TASK_UNDELIVERED;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -2727,7 +2740,11 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 					IO_DS_NON_OPERATIONAL);
- 			ts->resp = SAS_TASK_UNDELIVERED;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -2747,7 +2764,11 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 					IO_DS_IN_ERROR);
- 			ts->resp = SAS_TASK_UNDELIVERED;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -2785,12 +2806,17 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
- 	} else {
- 		spin_unlock_irqrestore(&t->task_state_lock, flags);
-+		spin_unlock_irqrestore(&circularQ->oq_lock,
-+				circularQ->lock_flags);
- 		pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+		spin_lock_irqsave(&circularQ->oq_lock,
-+				circularQ->lock_flags);
- 	}
- }
+@@ -3540,11 +3543,11 @@ complete_cmd_fusion(struct megasas_instance *instance, u32 MSIxIndex,
+ 	reply_descript_type = reply_desc->ReplyFlags &
+ 		MPI2_RPY_DESCRIPT_FLAGS_TYPE_MASK;
  
- /*See the comments for mpi_ssp_completion */
--static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
-+static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha,
-+		struct outbound_queue_table *circularQ, void *piomb)
- {
- 	struct sas_task *t;
- 	struct task_status_struct *ts;
-@@ -2890,7 +2916,11 @@ static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 				IO_OPEN_CNX_ERROR_IT_NEXUS_LOSS);
- 			ts->resp = SAS_TASK_COMPLETE;
- 			ts->stat = SAS_QUEUE_FULL;
-+			spin_unlock_irqrestore(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+			spin_lock_irqsave(&circularQ->oq_lock,
-+					circularQ->lock_flags);
- 			return;
- 		}
- 		break;
-@@ -3002,7 +3032,11 @@ static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 		pm8001_ccb_task_free(pm8001_ha, t, ccb, tag);
- 	} else {
- 		spin_unlock_irqrestore(&t->task_state_lock, flags);
-+		spin_unlock_irqrestore(&circularQ->oq_lock,
-+				circularQ->lock_flags);
- 		pm8001_ccb_task_free_done(pm8001_ha, t, ccb, tag);
-+		spin_lock_irqsave(&circularQ->oq_lock,
-+				circularQ->lock_flags);
- 	}
- }
+-	if (reply_descript_type == MPI2_RPY_DESCRIPT_FLAGS_UNUSED)
++	if (reply_descript_type == MPI2_RPY_DESCRIPT_FLAGS_UNUSED) {
++		if (irq_context)
++			atomic_dec(&irq_context->in_used);
+ 		return IRQ_NONE;
+-
+-	if (irq_context && !atomic_add_unless(&irq_context->in_used, 1, 1))
+-		return 0;
++	}
  
-@@ -3902,7 +3936,8 @@ static int ssp_coalesced_comp_resp(struct pm8001_hba_info *pm8001_ha,
-  * @pm8001_ha: our hba card information
-  * @piomb: IO message buffer
-  */
--static void process_one_iomb(struct pm8001_hba_info *pm8001_ha, void *piomb)
-+static void process_one_iomb(struct pm8001_hba_info *pm8001_ha,
-+		struct outbound_queue_table *circularQ, void *piomb)
- {
- 	__le32 pHeader = *(__le32 *)piomb;
- 	u32 opc = (u32)((le32_to_cpu(pHeader)) & 0xFFF);
-@@ -3944,11 +3979,11 @@ static void process_one_iomb(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 		break;
- 	case OPC_OUB_SATA_COMP:
- 		pm8001_dbg(pm8001_ha, MSG, "OPC_OUB_SATA_COMP\n");
--		mpi_sata_completion(pm8001_ha, piomb);
-+		mpi_sata_completion(pm8001_ha, circularQ, piomb);
- 		break;
- 	case OPC_OUB_SATA_EVENT:
- 		pm8001_dbg(pm8001_ha, MSG, "OPC_OUB_SATA_EVENT\n");
--		mpi_sata_event(pm8001_ha, piomb);
-+		mpi_sata_event(pm8001_ha, circularQ, piomb);
- 		break;
- 	case OPC_OUB_SSP_EVENT:
- 		pm8001_dbg(pm8001_ha, MSG, "OPC_OUB_SSP_EVENT\n");
-@@ -4117,7 +4152,6 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha, u8 vec)
- 	void *pMsg1 = NULL;
- 	u8 bc;
- 	u32 ret = MPI_IO_STATUS_FAIL;
--	unsigned long flags;
- 	u32 regval;
- 
- 	if (vec == (pm8001_ha->max_q_num - 1)) {
-@@ -4134,7 +4168,7 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha, u8 vec)
- 		}
- 	}
- 	circularQ = &pm8001_ha->outbnd_q_tbl[vec];
--	spin_lock_irqsave(&circularQ->oq_lock, flags);
-+	spin_lock_irqsave(&circularQ->oq_lock, circularQ->lock_flags);
- 	do {
- 		/* spurious interrupt during setup if kexec-ing and
- 		 * driver doing a doorbell access w/ the pre-kexec oq
-@@ -4145,7 +4179,8 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha, u8 vec)
- 		ret = pm8001_mpi_msg_consume(pm8001_ha, circularQ, &pMsg1, &bc);
- 		if (MPI_IO_STATUS_SUCCESS == ret) {
- 			/* process the outbound message */
--			process_one_iomb(pm8001_ha, (void *)(pMsg1 - 4));
-+			process_one_iomb(pm8001_ha, circularQ,
-+						(void *)(pMsg1 - 4));
- 			/* free the message from the outbound circular buffer */
- 			pm8001_mpi_msg_free_set(pm8001_ha, pMsg1,
- 							circularQ, bc);
-@@ -4160,7 +4195,7 @@ static int process_oq(struct pm8001_hba_info *pm8001_ha, u8 vec)
- 				break;
- 		}
- 	} while (1);
--	spin_unlock_irqrestore(&circularQ->oq_lock, flags);
-+	spin_unlock_irqrestore(&circularQ->oq_lock, circularQ->lock_flags);
- 	return ret;
- }
+ 	num_completed = 0;
  
 -- 
 2.33.0
