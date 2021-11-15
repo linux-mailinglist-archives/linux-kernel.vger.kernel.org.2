@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E30451F36
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404874519BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355776AbhKPAik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1350450AbhKOX0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:26:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344770AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7336861A53;
-        Mon, 15 Nov 2021 19:03:51 +0000 (UTC)
+        id S245005AbhKOTSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6615C63330;
+        Mon, 15 Nov 2021 18:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003032;
-        bh=a+2VaIAUuFNi6Rt63CHFe68YFV8drM28h/4vPQdTEKI=;
+        s=korg; t=1637000807;
+        bh=s2btmeoulTkQ7X08HdiVya+y5tDUJ5bQHiwoRVk91aY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2WrS81fSkGPYR/efWr0i239yiT5C9D1d/t4xc/bxOI4BT0H15u0DAW49iGIybgpME
-         SpSMyGJKnRUqa6N/dy5g8kRywlFYj33XWLXK1pYerDkP80f9oMqLZkFU8yBRZJMPze
-         T23rhq+iq3o8fDdI4ah6DanDjDVHXjxUOAj7Yk24=
+        b=BvKMC9EfMenp68QBUG9PtU9skZCrd+NZcTywhIM8425c9zvORl3m0WcyWysq82iV4
+         ClOB7dF7Dp32R60dRPoj6ctSq3g6HjF1ANMsfv04skc9bCZgDvCewxruS5XgspxPRX
+         WG8Y5hGlFmSwhFNgQ9hM3QDpnPD2gpjLAPyfGW8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 786/917] block/ataflop: use the blk_cleanup_disk() helper
-Date:   Mon, 15 Nov 2021 18:04:41 +0100
-Message-Id: <20211115165455.608716618@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5.14 799/849] erofs: fix unsafe pagevec reuse of hooked pclusters
+Date:   Mon, 15 Nov 2021 18:04:42 +0100
+Message-Id: <20211115165447.268251260@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 44a469b6acae6ad05c4acca8429467d1d50a8b8d ]
+commit 86432a6dca9bed79111990851df5756d3eb5f57c upstream.
 
-Use the helper to replace two lines with one.
+There are pclusters in runtime marked with Z_EROFS_PCLUSTER_TAIL
+before actual I/O submission. Thus, the decompression chain can be
+extended if the following pcluster chain hooks such tail pcluster.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/20210927220302.1073499-12-mcgrof@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+As the related comment mentioned, if some page is made of a hooked
+pcluster and another followed pcluster, it can be reused for in-place
+I/O (since I/O should be submitted anyway):
+ _______________________________________________________________
+|  tail (partial) page |          head (partial) page           |
+|_____PRIMARY_HOOKED___|____________PRIMARY_FOLLOWED____________|
+
+However, it's by no means safe to reuse as pagevec since if such
+PRIMARY_HOOKED pclusters finally move into bypass chain without I/O
+submission. It's somewhat hard to reproduce with LZ4 and I just found
+it (general protection fault) by ro_fsstressing a LZMA image for long
+time.
+
+I'm going to actively clean up related code together with multi-page
+folio adaption in the next few months. Let's address it directly for
+easier backporting for now.
+
+Call trace for reference:
+  z_erofs_decompress_pcluster+0x10a/0x8a0 [erofs]
+  z_erofs_decompress_queue.isra.36+0x3c/0x60 [erofs]
+  z_erofs_runqueue+0x5f3/0x840 [erofs]
+  z_erofs_readahead+0x1e8/0x320 [erofs]
+  read_pages+0x91/0x270
+  page_cache_ra_unbounded+0x18b/0x240
+  filemap_get_pages+0x10a/0x5f0
+  filemap_read+0xa9/0x330
+  new_sync_read+0x11b/0x1a0
+  vfs_read+0xf1/0x190
+
+Link: https://lore.kernel.org/r/20211103182006.4040-1-xiang@kernel.org
+Fixes: 3883a79abd02 ("staging: erofs: introduce VLE decompression support")
+Cc: <stable@vger.kernel.org> # 4.19+
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/ataflop.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/erofs/zdata.c |   13 +++++++------
+ fs/erofs/zpvec.h |   13 ++++++++++---
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 4947e41f89b7d..1a908455ff96f 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2097,8 +2097,7 @@ static int __init atari_floppy_init (void)
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -375,8 +375,8 @@ static bool z_erofs_try_inplace_io(struc
  
- err:
- 	while (--i >= 0) {
--		blk_cleanup_queue(unit[i].disk[0]->queue);
--		put_disk(unit[i].disk[0]);
-+		blk_cleanup_disk(unit[i].disk[0]);
- 		blk_mq_free_tag_set(&unit[i].tag_set);
- 	}
+ /* callers must be with collection lock held */
+ static int z_erofs_attach_page(struct z_erofs_collector *clt,
+-			       struct page *page,
+-			       enum z_erofs_page_type type)
++			       struct page *page, enum z_erofs_page_type type,
++			       bool pvec_safereuse)
+ {
+ 	int ret;
  
-@@ -2156,8 +2155,7 @@ static void __exit atari_floppy_exit(void)
- 			if (!unit[i].disk[type])
- 				continue;
- 			del_gendisk(unit[i].disk[type]);
--			blk_cleanup_queue(unit[i].disk[type]->queue);
--			put_disk(unit[i].disk[type]);
-+			blk_cleanup_disk(unit[i].disk[type]);
- 		}
- 		blk_mq_free_tag_set(&unit[i].tag_set);
+@@ -386,9 +386,9 @@ static int z_erofs_attach_page(struct z_
+ 	    z_erofs_try_inplace_io(clt, page))
+ 		return 0;
+ 
+-	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type);
++	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type,
++				      pvec_safereuse);
+ 	clt->cl->vcnt += (unsigned int)ret;
+-
+ 	return ret ? 0 : -EAGAIN;
+ }
+ 
+@@ -731,7 +731,8 @@ hitted:
+ 		tight &= (clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 
+ retry:
+-	err = z_erofs_attach_page(clt, page, page_type);
++	err = z_erofs_attach_page(clt, page, page_type,
++				  clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 	/* should allocate an additional short-lived page for pagevec */
+ 	if (err == -EAGAIN) {
+ 		struct page *const newpage =
+@@ -739,7 +740,7 @@ retry:
+ 
+ 		set_page_private(newpage, Z_EROFS_SHORTLIVED_PAGE);
+ 		err = z_erofs_attach_page(clt, newpage,
+-					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
++					  Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
+ 		if (!err)
+ 			goto retry;
  	}
--- 
-2.33.0
-
+--- a/fs/erofs/zpvec.h
++++ b/fs/erofs/zpvec.h
+@@ -106,11 +106,18 @@ static inline void z_erofs_pagevec_ctor_
+ 
+ static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
+ 					   struct page *page,
+-					   enum z_erofs_page_type type)
++					   enum z_erofs_page_type type,
++					   bool pvec_safereuse)
+ {
+-	if (!ctor->next && type)
+-		if (ctor->index + 1 == ctor->nr)
++	if (!ctor->next) {
++		/* some pages cannot be reused as pvec safely without I/O */
++		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
++			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
++
++		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
++		    ctor->index + 1 == ctor->nr)
+ 			return false;
++	}
+ 
+ 	if (ctor->index >= ctor->nr)
+ 		z_erofs_pagevec_ctor_pagedown(ctor, false);
 
 
