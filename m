@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3680D45204D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D04451941
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349197AbhKPAvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:51:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S240694AbhKOXRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344437AbhKOTYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CA363492;
-        Mon, 15 Nov 2021 18:57:39 +0000 (UTC)
+        id S244399AbhKOTOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:14:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0E66340E;
+        Mon, 15 Nov 2021 18:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002660;
-        bh=UU1P0n2MZuxrGUHrRfKy5j7rup4560+xJAJEEg7ZDPw=;
+        s=korg; t=1637000448;
+        bh=uaQ/xX6ZISWHFl6wXK0NvrL6eTNeJB9hrVLM22MBsbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yjlTFvbC42Ha9vocZTmcVZ3UbLMr1RjFWzEmUUYrEwgbtOsc6IhCM3+cSSmgNcifz
-         hQLeIrmmxG1ZMg3j3OPLSXgf0MouBrOvVsidxvPATGzuY62vSBkMvr6YLAUvuCb53c
-         phhljLsKpCf7mo5gN2eIB9El5z8hHFCO45KxWI+E=
+        b=t9o8pYo4me1xlmZq47cqFSZhZrIIHs4RQO2+oJ11GZVE6/veXRd5zKNDb2CG4ix4W
+         G5SVcpV6F+yXs7cmRQZRFz9GtUivdsb1/7Ke4ojrBSJD5HVIDDrS7FX6oF077gS37R
+         +EEGq/xWP6zqEKYAUtXvAEv44RNeFDRcfiTS4Yz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Aharon Landau <aharonl@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 650/917] scsi: lpfc: Wait for successful restart of SLI3 adapter during host sg_reset
-Date:   Mon, 15 Nov 2021 18:02:25 +0100
-Message-Id: <20211115165450.906426342@linuxfoundation.org>
+Subject: [PATCH 5.14 663/849] RDMA/core: Require the driver to set the IOVA correctly during rereg_mr
+Date:   Mon, 15 Nov 2021 18:02:26 +0100
+Message-Id: <20211115165442.693128694@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Aharon Landau <aharonl@nvidia.com>
 
-[ Upstream commit d305c253af693e69a36cedec880aca6d0c6d789d ]
+[ Upstream commit f1a090f09f42be5a5542009f0be310fdb3e768fc ]
 
-A prior patch introduced HBA_NEEDS_CFG_PORT flag logic, but in
-lpfc_sli_brdrestart_s3() code path, right after HBA_NEEDS_CFG_PORT is set,
-the phba->hba_flag is cleared in lpfc_sli_brdreset().
+If the driver returns a new MR during rereg it has to fill it with the
+IOVA from the proper source. If IB_MR_REREG_TRANS is set then the IOVA is
+cmd.hca_va, otherwise the IOVA comes from the old MR. mlx5 for example has
+two calls inside rereg_mr:
 
-Fix by calling lpfc_sli_chipset_init() to wait for successful restart of
-the HBA in lpfc_host_reset_handler() after lpfc_sli_brdrestart().
+		return create_real_mr(new_pd, umem, mr->ibmr.iova,
+				      new_access_flags);
+and
+		return create_real_mr(new_pd, new_umem, iova, new_access_flags);
 
-lpfc_sli_chipset_init() sets the HBA_NEEDS_CFG_PORT flag so that the
-lpfc_sli_hba_setup() routine from lpfc_online() will execute
-lpfc_sli_config_port() initialization step when the brdrestart is
-successful.
+Unconditionally overwriting the iova in the newly allocated MR will
+corrupt the iova if the first path is used.
 
-Link: https://lore.kernel.org/r/20211020211417.88754-3-jsmart2021@gmail.com
-Fixes: d2f2547efd39 ("scsi: lpfc: Fix auto sli_mode and its effect on CONFIG_PORT for SLI3")
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Remove the redundant initializations from ib_uverbs_rereg_mr().
+
+Fixes: 6e0954b11c05 ("RDMA/uverbs: Allow drivers to create a new HW object during rereg_mr")
+Link: https://lore.kernel.org/r/4b0a31bbc372842613286a10d7a8cbb0ee6069c7.1635400472.git.leonro@nvidia.com
+Signed-off-by: Aharon Landau <aharonl@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_scsi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/infiniband/core/uverbs_cmd.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index befdf864c43bd..364c8a9b99095 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -6628,6 +6628,13 @@ lpfc_host_reset_handler(struct scsi_cmnd *cmnd)
- 	if (rc)
- 		goto error;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 8c8ca7bce3caf..24dd550ceb119 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -837,11 +837,8 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 		new_mr->device = new_pd->device;
+ 		new_mr->pd = new_pd;
+ 		new_mr->type = IB_MR_TYPE_USER;
+-		new_mr->dm = NULL;
+-		new_mr->sig_attrs = NULL;
+ 		new_mr->uobject = uobj;
+ 		atomic_inc(&new_pd->usecnt);
+-		new_mr->iova = cmd.hca_va;
+ 		new_uobj->object = new_mr;
  
-+	/* Wait for successful restart of adapter */
-+	if (phba->sli_rev < LPFC_SLI_REV4) {
-+		rc = lpfc_sli_chipset_init(phba);
-+		if (rc)
-+			goto error;
-+	}
-+
- 	rc = lpfc_online(phba);
- 	if (rc)
- 		goto error;
+ 		rdma_restrack_new(&new_mr->res, RDMA_RESTRACK_MR);
 -- 
 2.33.0
 
