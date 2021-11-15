@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669E9451F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FC04519D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352816AbhKPAjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:39:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S1354150AbhKOX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:28:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344841AbhKOTZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A24E636D9;
-        Mon, 15 Nov 2021 19:05:15 +0000 (UTC)
+        id S245091AbhKOTTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:19:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53CA563505;
+        Mon, 15 Nov 2021 18:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003115;
-        bh=Xmt+Dme+9g4D1GFI83+ACAoLCYARLsGn5N4wxO+7imo=;
+        s=korg; t=1637000884;
+        bh=Yo6T0HmG8a4MTeLKQSYbbIo+YmDuXIyL06Yfb6G+iJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KbXnXTq7CnPP2ZmpguNNNTOcCqOU48ZRr++oGz1Xd8/K+r/StcYu8c/W6nT3oBhZ3
-         65Hm3Q9d9apUMY6CO6d/De+sO7ssi/bh4i25OGsLrhnyC05qz0dAhuhxFY6YEkkGW2
-         xg6kE1CtrHht6YSYO5lqCECU7dWYdv36QbroG+BQ=
+        b=etaAVLU/KRls1K4AKzG8Uu9k8hhO6I/Vn2xvvZ/uv4TGbBCLlDfihFDIH6mYLwoyH
+         OuoID+1MKZHmi/HV52nI979OZGpSfJXS6s+iU0BYnRCSsOIabgpqkSFm19VGm69WK9
+         U+rKjgxPyropEeTYMbm4ShNEIpEglDRKtD8uTOpA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 817/917] nfc: pn533: Fix double free when pn533_fill_fragment_skbs() fails
-Date:   Mon, 15 Nov 2021 18:05:12 +0100
-Message-Id: <20211115165456.735767023@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.14 830/849] mtd: rawnand: gpio: Keep the driver compatible with on-die ECC engines
+Date:   Mon, 15 Nov 2021 18:05:13 +0100
+Message-Id: <20211115165448.307617598@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +38,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 9fec40f850658e00a14a7dd9e06f7fbc7e59cc4a ]
+commit b5b5b4dc6fcd8194b9dd38c8acdc5ab71adf44f8 upstream.
 
-skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs,
-but follow error handler branch when pn533_fill_fragment_skbs()
-fails, skb is freed again, results in double free issue. Fix this
-by not free skb in error path of pn533_fill_fragment_skbs.
+Following the introduction of the generic ECC engine infrastructure, it
+was necessary to reorganize the code and move the ECC configuration in
+the ->attach_chip() hook. Failing to do that properly lead to a first
+series of fixes supposed to stabilize the situation. Unfortunately, this
+only fixed the use of software ECC engines, preventing any other kind of
+engine to be used, including on-die ones.
 
-Fixes: 963a82e07d4e ("NFC: pn533: Split large Tx frames in chunks")
-Fixes: 93ad42020c2d ("NFC: pn533: Target mode Tx fragmentation support")
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It is now time to (finally) fix the situation by ensuring that we still
+provide a default (eg. software ECC) but will still support different
+ECC engines such as on-die ECC engines if properly described in the
+device tree.
+
+There are no changes needed on the core side in order to do this, but we
+just need to leverage the logic there which allows:
+1- a subsystem default (set to Host engines in the raw NAND world)
+2- a driver specific default (here set to software ECC engines)
+3- any type of engine requested by the user (ie. described in the DT)
+
+As the raw NAND subsystem has not yet been fully converted to the ECC
+engine infrastructure, in order to provide a default ECC engine for this
+driver we need to set chip->ecc.engine_type *before* calling
+nand_scan(). During the initialization step, the core will consider this
+entry as the default engine for this driver. This value may of course
+be overloaded by the user if the usual DT properties are provided.
+
+Fixes: f6341f6448e0 ("mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-4-miquel.raynal@bootlin.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nfc/pn533/pn533.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/gpio.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index 2f3f3fe9a0baa..d32aec0c334fe 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -2218,7 +2218,7 @@ static int pn533_fill_fragment_skbs(struct pn533 *dev, struct sk_buff *skb)
- 		frag = pn533_alloc_skb(dev, frag_size);
- 		if (!frag) {
- 			skb_queue_purge(&dev->fragment_skb);
--			break;
-+			return -ENOMEM;
- 		}
+--- a/drivers/mtd/nand/raw/gpio.c
++++ b/drivers/mtd/nand/raw/gpio.c
+@@ -163,9 +163,8 @@ static int gpio_nand_exec_op(struct nand
  
- 		if (!dev->tgt_mode) {
-@@ -2287,7 +2287,7 @@ static int pn533_transceive(struct nfc_dev *nfc_dev,
- 		/* jumbo frame ? */
- 		if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 			rc = pn533_fill_fragment_skbs(dev, skb);
--			if (rc <= 0)
-+			if (rc < 0)
- 				goto error;
+ static int gpio_nand_attach_chip(struct nand_chip *chip)
+ {
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-
+-	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+ 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
- 			skb = skb_dequeue(&dev->fragment_skb);
-@@ -2355,7 +2355,7 @@ static int pn533_tm_send(struct nfc_dev *nfc_dev, struct sk_buff *skb)
- 	/* let's split in multiple chunks if size's too big */
- 	if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 		rc = pn533_fill_fragment_skbs(dev, skb);
--		if (rc <= 0)
-+		if (rc < 0)
- 			goto error;
+ 	return 0;
+@@ -365,6 +364,13 @@ static int gpio_nand_probe(struct platfo
+ 	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
+ 		gpiod_direction_output(gpiomtd->nwp, 1);
  
- 		/* get the first skb */
--- 
-2.33.0
-
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
+ 	ret = nand_scan(chip, 1);
+ 	if (ret)
+ 		goto err_wp;
 
 
