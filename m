@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1365645112D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592BF451134
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243446AbhKOTBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:01:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
+        id S243706AbhKOTCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:02:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237897AbhKORjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAAFB632E1;
-        Mon, 15 Nov 2021 17:26:32 +0000 (UTC)
+        id S237952AbhKORjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:39:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E0B4632E9;
+        Mon, 15 Nov 2021 17:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997193;
-        bh=emr99NKx5lPm3jGqzsy8kCohVWUpGe16F4WIj11MsF0=;
+        s=korg; t=1636997201;
+        bh=fgW7IZ0V+TaDrxPJYsD4H4Awxt+nUIrh1fRJjTlfW18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=knmL4qYxjNYs1XJiqVDT7BI4FSJzadu4aKgJbhUhkqRKRhMdCoIUd4IO1FLREnROq
-         Sy6xCA25aznZIclGxzwbT/60pWIOc7tQ1r8IPWdP5TrfNF7KS2ebYHHR1SyxPka1Se
-         KZ90zUUfCVRYIMWan+K03rRMRXBiVUt6Ck5fBwZA=
+        b=zdthC8bmz3dYtw7m2BlOfczrXxryco751/9yGmMDiVO28feL0YraXek/vxEjI/ha2
+         nZbPD5OXmuQT2m2aRe9je9UYT5Iml24ReGRpgKM7at7I5hN6+gCTMvesWNSnwRmNu3
+         HxMvV+Nqc69t5IpNGPwcMo+0lkA0WHYsT/SRffkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erik Ekman <erik@kryo.se>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/575] sfc: Dont use netif_info before net_device setup
-Date:   Mon, 15 Nov 2021 17:56:23 +0100
-Message-Id: <20211115165345.646973464@linuxfoundation.org>
+Subject: [PATCH 5.10 061/575] reset: tegra-bpmp: Handle errors in BPMP response
+Date:   Mon, 15 Nov 2021 17:56:26 +0100
+Message-Id: <20211115165345.753087760@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,64 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erik Ekman <erik@kryo.se>
+From: Mikko Perttunen <mperttunen@nvidia.com>
 
-[ Upstream commit bf6abf345dfa77786aca554bc58c64bd428ecb1d ]
+[ Upstream commit c045ceb5a145d2a9a4bf33cbc55185ddf99f60ab ]
 
-Use pci_info instead to avoid unnamed/uninitialized noise:
+The return value from tegra_bpmp_transfer indicates the success or
+failure of the IPC transaction with BPMP. If the transaction
+succeeded, we also need to check the actual command's result code.
+Add code to do this.
 
-[197088.688729] sfc 0000:01:00.0: Solarflare NIC detected
-[197088.690333] sfc 0000:01:00.0: Part Number : SFN5122F
-[197088.729061] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no SR-IOV VFs probed
-[197088.729071] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no PTP support
-
-Inspired by fa44821a4ddd ("sfc: don't use netif_info et al before
-net_device is registered") from Heiner Kallweit.
-
-Signed-off-by: Erik Ekman <erik@kryo.se>
-Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+Link: https://lore.kernel.org/r/20210915085517.1669675-2-mperttunen@nvidia.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sfc/ptp.c         | 4 ++--
- drivers/net/ethernet/sfc/siena_sriov.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/reset/tegra/reset-bpmp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
-index a39c5143b3864..797e51802ccbb 100644
---- a/drivers/net/ethernet/sfc/ptp.c
-+++ b/drivers/net/ethernet/sfc/ptp.c
-@@ -648,7 +648,7 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
- 	} else if (rc == -EINVAL) {
- 		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
- 	} else if (rc == -EPERM) {
--		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-+		pci_info(efx->pci_dev, "no PTP support\n");
- 		return rc;
- 	} else {
- 		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
-@@ -824,7 +824,7 @@ static int efx_ptp_disable(struct efx_nic *efx)
- 	 * should only have been called during probe.
- 	 */
- 	if (rc == -ENOSYS || rc == -EPERM)
--		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
-+		pci_info(efx->pci_dev, "no PTP support\n");
- 	else if (rc)
- 		efx_mcdi_display_error(efx, MC_CMD_PTP,
- 				       MC_CMD_PTP_IN_DISABLE_LEN,
-diff --git a/drivers/net/ethernet/sfc/siena_sriov.c b/drivers/net/ethernet/sfc/siena_sriov.c
-index 83dcfcae3d4b5..441e7f3e53751 100644
---- a/drivers/net/ethernet/sfc/siena_sriov.c
-+++ b/drivers/net/ethernet/sfc/siena_sriov.c
-@@ -1057,7 +1057,7 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
- 		return;
+diff --git a/drivers/reset/tegra/reset-bpmp.c b/drivers/reset/tegra/reset-bpmp.c
+index 24d3395964cc4..4c5bba52b1059 100644
+--- a/drivers/reset/tegra/reset-bpmp.c
++++ b/drivers/reset/tegra/reset-bpmp.c
+@@ -20,6 +20,7 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
+ 	struct tegra_bpmp *bpmp = to_tegra_bpmp(rstc);
+ 	struct mrq_reset_request request;
+ 	struct tegra_bpmp_message msg;
++	int err;
  
- 	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
--		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
-+		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
- 		return;
- 	}
- 	if (count > 0 && count > max_vfs)
+ 	memset(&request, 0, sizeof(request));
+ 	request.cmd = command;
+@@ -30,7 +31,13 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
+ 	msg.tx.data = &request;
+ 	msg.tx.size = sizeof(request);
+ 
+-	return tegra_bpmp_transfer(bpmp, &msg);
++	err = tegra_bpmp_transfer(bpmp, &msg);
++	if (err)
++		return err;
++	if (msg.rx.ret)
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ static int tegra_bpmp_reset_module(struct reset_controller_dev *rstc,
 -- 
 2.33.0
 
