@@ -2,133 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC144451C27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0870451C4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355727AbhKPANj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:13:39 -0500
-Received: from smtp161.vfemail.net ([146.59.185.161]:34425 "EHLO
-        smtp161.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352655AbhKOWLd (ORCPT
+        id S1354136AbhKPAPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:15:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240256AbhKOXOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:11:33 -0500
-Received: (qmail 30832 invoked from network); 15 Nov 2021 22:08:30 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 15 Nov 2021 22:08:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
-        :to:cc:subject:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=2018; bh=1U3HQA2cAVR9
-        R4PHxpIc1daf4O0wxl3nAXblz5xStV0=; b=soTu/HOI+vyhszPPtEn+ydYKHrw8
-        2/KZNLU4MgfMf4Pi5JYle98XBoj7eemqDAzTqJOllYEdxVl4mA3UUNVTmestOpHQ
-        yJQer86TUGWq2UwqVE9NHmpr/6CQOhkZoJ1fEGNCM9U2i6bbA+TZj0P6XSKXuJrB
-        Pm+rc8EOFR7UxkM=
-Received: (qmail 22847 invoked from network); 15 Nov 2021 22:08:00 -0000
-Received: by simscan 1.4.0 ppid: 22788, pid: 22793, t: 0.3754s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 15 Nov 2021 22:07:59 -0000
-Date:   Mon, 15 Nov 2021 17:08:25 -0500
-From:   David Niklas <Hgntkwis@vfemail.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <20211115170825.24a13cf3@Zen-II-x12.niklas.com>
-In-Reply-To: <20211115160918.GB109771@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
-        <20211114144842.72463ccc@Zen-II-x12.niklas.com>
-        <20211114211435.GA87082@rowland.harvard.edu>
-        <20211114220222.31755871@Zen-II-x12.niklas.com>
-        <20211115160918.GB109771@rowland.harvard.edu>
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        Mon, 15 Nov 2021 18:14:33 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F163AC04EFB9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 136so11140533pgc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
+        b=GfFI7XvVt8YFksskvqmrQ3qPuEuVeXEYjSmuZkGA5xMMXxFy564PrMeBNc7Y8WH5PL
+         yt5GdFT0FW445phxmH69+fTSi0opmzSp0MKM1Su7LpWaODpHqJOvO/AjHDC3wXOmrXDe
+         2wLMSbl2QDTBiMGmIPaGGEJJB0n0X5+1Qk2gI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
+        b=zFnjaAOL3j6b7BxAcnvpnfV54gQuzm4ON5Q72evY7qW4zlR81HwAqCta2+H6CJjA0M
+         RRqLF0u2NlPilZsK1yqN7+S1Y+m88AGrD2Vw7HHDgwvfG8S6Vbb6VLnl8swhKmjaZrV7
+         1PhAK/VJtvtSlAMlDUVTBMVkz41XNpPzy6WUXGUYKGTAjz5OSIwrnelEe9API/27TDlZ
+         CQdxVeOTsEM8Uxzq/T1QH/v1nj1/QxJRiEYxQf4f7bzmlWUOM8tq7rSpf7DDgPMiw7hV
+         M6ryAK7wlPG20da0pQnGcx3VQzeIxmAZLCs3MVEpW2ktoZreQCmuPx4vmjDBLRjdzLVk
+         yIJg==
+X-Gm-Message-State: AOAM5309W5OBARyn66ebk7NV/Dgp2iA2C9HyKhJpJlr2FMwQram9WwBX
+        2Ld9z9s1omMZrLiSgDixgM9ZQg==
+X-Google-Smtp-Source: ABdhPJz3d1Fm6DVmJXDnQcSZ6XVqy1YGkg+bK+EhRM29LMp3+iWkEpRfouWPgP5TqiLJ0sYBVy/rdA==
+X-Received: by 2002:a63:1d13:: with SMTP id d19mr1556417pgd.383.1637014576434;
+        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id oc10sm293770pjb.26.2021.11.15.14.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Avoid field-overflowing memcpy()
+Date:   Mon, 15 Nov 2021 14:16:13 -0800
+Message-Id: <20211115221613.2791637-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5948; h=from:subject; bh=0WIZ0LaG1CrIgiauMUryZqkW+d9Y9QkDjTEtreWu41w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhktwsH+KBpNKg9y8K0YobbeqSLF6d2fuY7VTbl+5Z Uh4uM5yJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZLcLAAKCRCJcvTf3G3AJmobD/ 4yvXZ4YCp0KjHJMvrX51CQUEcJK+sRXEh/r1W+abkDL4ueQ+6QV3vWeVSrhqJESh+XpSxMLwszT+IF xrIH7gRb+kRPp3AXQaL8Eh4rC3NpFmtrhyo5tKR1FTkRViKY1ziXYvytN3tnVhL+btoLMt69UWKA4M rH0wA3BuMNWUIK1yxE7SHdVTs9H0FZ1M9qPaWt9a+uq6DLPTP3iJUKRM12850xYCvVzdFbbf7mIg+m pXUDLunfMEj2Vc3jg5LwpL/ow9rH2Q+9RU9Nx0hiUlNfQA+4m75yhlsDP81nmQv9aLkoHTuSvowmGT dGJOEUZep0TZp09tQJTgrb+6rJNPIQM5KD2uj/+6ks2FeGu1ADL6WQIlRJpKGRhZZFwJW9lDx4BuIk kK9RfAVMz9bw0QJSeX8iq7Wmx5cro599decAtm8SwF0Pku/UhCALalcV5AlXHgINCFYldUYDNTJ+KY RdLLm3HGfN22x6hoP7AqbCJvIYEsmf2qlBuzHH6vSD8PjHelqMKzw3F2d470UfxUDtlzI5lMNMsAj3 GYLomDbvaxl11/Z2MJeb0SnUHTnFzbHFeYkCZQylS9lAiycVZ9AkxDIch7PQTVW/TSO8uAtuTeXnDS 4oiEm5xtKVE2kUINM+5T3E6lXmFCmBmSV7z5qTKv6zt2wbuQPEOHPukS7IIQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 11:09:18 -0500
-stern@rowland.harvard.edu wrote:
-> On Sun, Nov 14, 2021 at 10:02:22PM -0500, David Niklas wrote:
-> >
-<snip>
-> Has this device ever worked with any version of Linux?
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-I am unaware of this device working on any version of Linux. I assumed
-when I bought it that it would a least be able to connect to the USB port
-correctly. I might then have to make a contribution to add support for it
-to nut or apcupsd.
+Use flexible arrays instead of zero-element arrays (which look like they
+are always overflowing) and split the cross-field memcpy() into two halves
+that can be appropriately bounds-checked by the compiler.
 
-<snip>
-> The kernel sends a Set-Idle request to the device, telling it not to 
-> send any data reports when nothing has changed.  This is done 
-> automatically by the usbhid driver for every USB HID device, including 
-> keyboards and mice as well as your UPS.
-> 
-> ffff93eaa3edad80 2136086737 S Ci:3:009:0 s 81 06 2200 0000 03e4 996 <
-> ffff93eaa3edad80 2136122734 C Ci:3:009:0 0 996 = 05840904 a1010924
-> a1028501 09fe7901 75089501 150026ff 00b12285 0209ff79
-> 
-> The kernel reads the device's HID descriptor.  (The usbmon trace shows 
-> only the first 32 bytes of the 996-byte descriptor.)  Again, this is 
-> normal and necessary for using any HID device.
-> 
-> ffff93e482efb440 2139520170 C Ii:3:001:1 0:2048 1 = 08
-> ffff93e482efb440 2139520180 S Ii:3:001:1 -115:2048 4 <
-> 
-> At this point the USB controller tells the kernel that there has been a 
-> status change on port 3 of bus 3.
-> 
-> ffff93eaa2ff8240 2139520188 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
-> ffff93eaa2ff8240 2139520197 C Ci:3:001:0 0 4 = 00010100
-> 
-> The kernel reads the port's status and sees that there is a "connection 
-> status change" bit set and the port is no longer connected.  In other 
-> words, the UPS device has disconnected itself electronically from the 
-> USB bus.
-> 
-> ffff93eaa2ff8240 2139520200 S Co:3:001:0 s 23 01 0010 0003 0000 0
-> ffff93eaa2ff8240 2139520203 C Co:3:001:0 0 0
-> 
-> The kernel clears the "connection status change" flag.  Following this 
-> the cycle repeats.
-> 
-> 
-> Out of all this information, the only conclusion I can draw is that the 
-> UPS is not behaving like a normal device.  One possibility is that it 
-> doesn't like the Set-Idle request (although if that is the case, why 
-> did it remain connected long enough to send the HID descriptor?).
+We were doing:
 
-Thanks for the detailed breakdown!
+	#define ETH_HLEN  14
+	#define VLAN_HLEN  4
+	...
+	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
+	...
+        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
+	...
+        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
+        struct mlx5_wqe_data_seg *dseg = wqe->data;
+	...
+	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
 
-> You can test the theory by patching the kernel, if you want.  The code 
-> to change is in the source file drivers/hid/usbhid/hid-core.c, and the 
-> function in question is hid_set_idle() located around line 659 in the 
-> file.  Just change the statement:
-> 
-> 	return usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
-> 		HID_REQ_SET_IDLE, USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> (idle << 8) | report, ifnum, NULL, 0, USB_CTRL_SET_TIMEOUT);
-> 
-> to:
-> 
-> 	return 0;
-> 
-> to prevent the Set-Idle request from being sent.  If the device still 
-> insists on disconnecting then we'll know that this wasn't the reason.
+target is wqe->eth.inline_hdr.start (which the compiler sees as being
+2 bytes in size), but copying 18, intending to write across start
+(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
+wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
+(8 bytes).
 
-Will do tomorrow. (I'm busy ATM)
+struct mlx5e_tx_wqe {
+        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
+        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
+        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
 
-> Also, if you have another system (say, one running Windows) which the 
-> UPS does work properly with, you could try collecting the equivalent of 
-> a usbmon trace from that system for purposes of comparison.  (On 
-> Windows, I believe you can use Wireshark to trace USB communications.)
-> 
-> Alan Stern
-> 
+        /* size: 32, cachelines: 1, members: 3 */
+        /* last cacheline: 32 bytes */
+};
 
-I'll have to look into that.
+struct mlx5_wqe_eth_seg {
+        u8                         swp_outer_l4_offset;  /*     0     1 */
+        u8                         swp_outer_l3_offset;  /*     1     1 */
+        u8                         swp_inner_l4_offset;  /*     2     1 */
+        u8                         swp_inner_l3_offset;  /*     3     1 */
+        u8                         cs_flags;             /*     4     1 */
+        u8                         swp_flags;            /*     5     1 */
+        __be16                     mss;                  /*     6     2 */
+        __be32                     flow_table_metadata;  /*     8     4 */
+        union {
+                struct {
+                        __be16     sz;                   /*    12     2 */
+                        u8         start[2];             /*    14     2 */
+                } inline_hdr;                            /*    12     4 */
+                struct {
+                        __be16     type;                 /*    12     2 */
+                        __be16     vlan_tci;             /*    14     2 */
+                } insert;                                /*    12     4 */
+                __be32             trailer;              /*    12     4 */
+        };                                               /*    12     4 */
 
-Thanks again!
-David
+        /* size: 16, cachelines: 1, members: 9 */
+        /* last cacheline: 16 bytes */
+};
+
+struct mlx5_wqe_data_seg {
+        __be32                     byte_count;           /*     0     4 */
+        __be32                     lkey;                 /*     4     4 */
+        __be64                     addr;                 /*     8     8 */
+
+        /* size: 16, cachelines: 1, members: 3 */
+        /* last cacheline: 16 bytes */
+};
+
+So, split the memcpy() so the compiler can reason about the buffer
+sizes.
+
+"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
+nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
+code changes (i.e. only source line number induced differences and
+optimizations).
+
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h     | 6 +++---
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index f0ac6b0d9653..0925092211ce 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -225,7 +225,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
+ struct mlx5e_tx_wqe {
+ 	struct mlx5_wqe_ctrl_seg ctrl;
+ 	struct mlx5_wqe_eth_seg  eth;
+-	struct mlx5_wqe_data_seg data[0];
++	struct mlx5_wqe_data_seg data[];
+ };
+ 
+ struct mlx5e_rx_wqe_ll {
+@@ -242,8 +242,8 @@ struct mlx5e_umr_wqe {
+ 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
+ 	struct mlx5_mkey_seg           mkc;
+ 	union {
+-		struct mlx5_mtt inline_mtts[0];
+-		struct mlx5_klm inline_klms[0];
++		DECLARE_FLEX_ARRAY(struct mlx5_mtt, inline_mtts);
++		DECLARE_FLEX_ARRAY(struct mlx5_klm, inline_klms);
+ 	};
+ };
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 2f0df5cc1a2d..efae2444c26f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+ 
+ 	/* copy the inline part if required */
+ 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
+-		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
++		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
+ 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
++		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
++		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
+ 		dma_len  -= MLX5E_XDP_MIN_INLINE;
+ 		dma_addr += MLX5E_XDP_MIN_INLINE;
+ 		dseg++;
+-- 
+2.30.2
+
