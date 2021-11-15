@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5E945123E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCBF451210
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346483AbhKOTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:33:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35664 "EHLO mail.kernel.org"
+        id S1345093AbhKOT0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:26:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238925AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238927AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:50:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA96632A8;
-        Mon, 15 Nov 2021 17:31:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E95C1632AA;
+        Mon, 15 Nov 2021 17:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997474;
-        bh=zkva6D9XNbKclvxoEiGKlwUdHSvbFINQDj1W7so7dVg=;
+        s=korg; t=1636997477;
+        bh=xbBnIUX/zyaJx7lBhF4iyaKWUIKp0gzgpFILNaZqnwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A8X8nAkYUf11M7khK54jFVwhtOIY0sqg0eiUsg87+VQ6xXGjZAm07xHg8TzXNFAvz
-         3AaR2xGgZRBWXosSfrsFHI6z93WtzqA2x9heGTmvvcECjRlZCNott2AlkFCICAEnsx
-         GpWqfCLHy82dBT0rPAxDixRyhXiOCeal/GOu83uY=
+        b=hvh/U99CQAnwX0ZPjyPk8idzXx83jL6oN7MD9VQgP79amLIPoletqWVqmV4d5Lj4p
+         xr8z9Kk1ScsufHFatsaVKUOXrKrMTbB88lwepboxtJejnebXLSIAILTIfkne0PCkdy
+         F+ekJZYLqUAWz27CH/MgXPSOne7lItLnrHMPMWi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.10 162/575] power: supply: max17042_battery: Clear status bits in interrupt handler
-Date:   Mon, 15 Nov 2021 17:58:07 +0100
-Message-Id: <20211115165349.315595564@linuxfoundation.org>
+        Charan Teja Reddy <charante@codeaurora.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 163/575] dma-buf: WARN on dmabuf release with pending attachments
+Date:   Mon, 15 Nov 2021 17:58:08 +0100
+Message-Id: <20211115165349.353529710@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,38 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+From: Charan Teja Reddy <charante@codeaurora.org>
 
-commit 0cf48167b87e388fa1268c9fe6d2443ae7f43d8a upstream.
+[ Upstream commit f492283b157053e9555787262f058ae33096f568 ]
 
-The gauge requires us to clear the status bits manually for some alerts
-to be properly dismissed. Previously the IRQ was configured to react only
-on falling edge, which wasn't technically correct (the ALRT line is active
-low), but it had a happy side-effect of preventing interrupt storms
-on uncleared alerts from happening.
+It is expected from the clients to follow the below steps on an imported
+dmabuf fd:
+a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
+b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
+   o Here the kernel does some slab allocations, say for
+dma_buf_attachment and may be some other slab allocation in the
+dmabuf->ops->attach().
+c) Client may need to do dma_buf_map_attachment().
+d) Accordingly dma_buf_unmap_attachment() should be called.
+e) dma_buf_detach () // Clients detach to the dmabuf.
+   o Here the slab allocations made in b) are freed.
+f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
+reference.
 
-Fixes: 7fbf6b731bca ("power: supply: max17042: Do not enforce (incorrect) interrupt trigger type")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Now say an erroneous client failed at step c) above thus it directly
+called dma_buf_put(), step f) above. Considering that it may be the last
+reference to the dmabuf, buffer will be freed with pending attachments
+left to the dmabuf which can show up as the 'memory leak'. This should
+at least be reported as the WARN().
+
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627043468-16381-1-git-send-email-charante@codeaurora.org
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/dma-buf/dma-buf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -875,6 +875,10 @@ static irqreturn_t max17042_thread_handl
- 		max17042_set_soc_threshold(chip, 1);
- 	}
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 922416b3aaceb..93e9bf7382595 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -79,6 +79,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
  
-+	/* we implicitly handle all alerts via power_supply_changed */
-+	regmap_clear_bits(chip->regmap, MAX17042_STATUS,
-+			  0xFFFF & ~(STATUS_POR_BIT | STATUS_BST_BIT));
-+
- 	power_supply_changed(chip->battery);
- 	return IRQ_HANDLED;
- }
++	WARN_ON(!list_empty(&dmabuf->attachments));
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+-- 
+2.33.0
+
 
 
