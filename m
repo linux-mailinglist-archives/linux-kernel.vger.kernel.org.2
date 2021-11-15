@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5356E45075D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE6B450762
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhKOOp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:45:59 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:58152 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhKOOpo (ORCPT
+        id S235195AbhKOOrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231890AbhKOOqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:45:44 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E53D3212BE;
-        Mon, 15 Nov 2021 14:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636987367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CurHMBKJtGDElStoPcZcZiFRey4p43QkUhyCC85DQy8=;
-        b=pxkXvCMQv5Aw/Dwj11Q1Yc61t5roI2OFQiwgMiOI56i7+CFiexIBAJMvBvB1/+c5/vhE/Y
-        s58fOGRNhnOL9UQXVl4FmLw4iXuSY4HwqmtGcxuz5wr/kSfudc/1zFe6x5vr/TCVFhwS+O
-        Pd+yrrNxBVpVig+F0x26RzQJeuoky8E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636987367;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CurHMBKJtGDElStoPcZcZiFRey4p43QkUhyCC85DQy8=;
-        b=CX/tmvhzVt1su/AdrYGXZ7EY04Z2tin5GBffGXKCePBskL8D1T22oMvRd4mX1yEX2nzdJs
-        b6ak9mMTuAoFh5Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87AC713A66;
-        Mon, 15 Nov 2021 14:42:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vTH+HuZxkmGXMQAAMHmgww
-        (envelope-from <jroedel@suse.de>); Mon, 15 Nov 2021 14:42:46 +0000
-Date:   Mon, 15 Nov 2021 15:42:44 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZJx5PcBZ/izVg8L@suse.de>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
- <YZJTA1NyLCmVtGtY@work-vm>
+        Mon, 15 Nov 2021 09:46:01 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB2EC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:01 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id b15so72667056edd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CzJK4JDX6paenq4KcCz6jy46RXs4ivoWCXDNifpXO7o=;
+        b=saHYB+jmp8hyRGGN65aWHLlKWn7anwGLToUEK3BOGPGcu6a5PPmg+9HWsGf93RFbuk
+         wzIzXI5sz75bfohzWYFahzSiOHV38X/dUt/UinkOXyjZZB2LBP4QzHPQmkYGkdoaX1NI
+         jiRy2h9dUmdaC4YnQs8Ei6z+wKJB3Gdtu79HDc5YL5QYeJnKxNZEKiqixDHFDGGZgl/h
+         LumvZzG2f6A1KXD44AcJZT0/qdSeW+PTas7tKmcay4ucwWmb+h4GJEW9x2TcgrlN1gTW
+         1ii3Ay3Ddo1XnwGTybmJRr4VAeNSFcIReeU5/K9GWV9eCzzbGSVt4HfM8M/NFH2KTIEH
+         WjQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CzJK4JDX6paenq4KcCz6jy46RXs4ivoWCXDNifpXO7o=;
+        b=lVnalXvANp1TVNXN9RlAYYQlej9f7JZHfrlkbdPx/dyXxc+70h1hDOr9kqXIzX/niX
+         5L2FEViUsBAxS/rbuimbVFuOo4anVVWpPpMuk8fmCXQa8l/jT3Z+dwm5o90ffE4KsUTo
+         YhEH0vM0EHfEuSx9+941ZXDgKP8gRqPbP9or1o5mVR5XbpeDAw/BBVHjh8dHG2tkW42V
+         JdlmnPdV68D4LRZnCqAon19UAiKqR0dAvOBIYG9H2fuQqNh4hwvbM3Q9QeZtOwOaxzor
+         CqOvKwVrMLzBuW7vY4j23H/cvbB8UqkHpEH3mPXyAQ5xbGfXaDWv16CYrQd4X7dAHkH1
+         FlAw==
+X-Gm-Message-State: AOAM532EBGIzRgVTMzX+hIAxeJPG2fOR77OXzB21ncpNUDq4k/W85ICo
+        kwuiDYJ1UphmsKK5QNrbMf3W9g==
+X-Google-Smtp-Source: ABdhPJxmZIfHRDtPhNYfKcXFT56AD2cOKKPguslKGLKBF9rhwU+J5uDGnBOPJeNbHUgF5k93n+vz/g==
+X-Received: by 2002:a17:907:7f1a:: with SMTP id qf26mr49386530ejc.543.1636987380612;
+        Mon, 15 Nov 2021 06:43:00 -0800 (PST)
+Received: from localhost (mail.chocen-mesto.cz. [85.163.43.2])
+        by smtp.gmail.com with ESMTPSA id k9sm7515183edo.87.2021.11.15.06.42.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 06:42:59 -0800 (PST)
+Date:   Mon, 15 Nov 2021 15:42:58 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YZJx8raQt+FkKaeY@nanopsycho>
+References: <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109153335.GH1740502@nvidia.com>
+ <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211109182427.GJ1740502@nvidia.com>
+ <YY0G90fJpu/OtF8L@nanopsycho>
+ <YY0J8IOLQBBhok2M@unreal>
+ <YY4aEFkVuqR+vauw@nanopsycho>
+ <YZCqVig9GQi/o1iz@unreal>
+ <YZJCdSy+wzqlwrE2@nanopsycho>
+ <20211115125359.GM2105516@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZJTA1NyLCmVtGtY@work-vm>
+In-Reply-To: <20211115125359.GM2105516@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 12:30:59PM +0000, Dr. David Alan Gilbert wrote:
-> Still; I wonder if it's best to kill the guest - maybe it's best for
-> the host to kill the guest and leave behind diagnostics of what
-> happened; for someone debugging the crash, it's going to be less useful
-> to know that page X was wrongly accessed (which is what the guest would
-> see), and more useful to know that it was the kernel's vhost-... driver
-> that accessed it.
+Mon, Nov 15, 2021 at 01:53:59PM CET, jgg@nvidia.com wrote:
+>On Mon, Nov 15, 2021 at 12:20:21PM +0100, Jiri Pirko wrote:
+>> Sun, Nov 14, 2021 at 07:19:02AM CET, leon@kernel.org wrote:
+>> >On Fri, Nov 12, 2021 at 08:38:56AM +0100, Jiri Pirko wrote:
+>> >> Thu, Nov 11, 2021 at 01:17:52PM CET, leon@kernel.org wrote:
+>> >> >On Thu, Nov 11, 2021 at 01:05:11PM +0100, Jiri Pirko wrote:
+>> >> >> Tue, Nov 09, 2021 at 07:24:27PM CET, jgg@nvidia.com wrote:
+>> >> >> >On Tue, Nov 09, 2021 at 08:20:42AM -0800, Jakub Kicinski wrote:
+>> >> >> >> On Tue, 9 Nov 2021 11:33:35 -0400 Jason Gunthorpe wrote:
+>> >> >> >> > > > I once sketched out fixing this by removing the need to hold the
+>> >> >> >> > > > per_net_rwsem just for list iteration, which in turn avoids holding it
+>> >> >> >> > > > over the devlink reload paths. It seemed like a reasonable step toward
+>> >> >> >> > > > finer grained locking.  
+>> >> >> >> > > 
+>> >> >> >> > > Seems to me the locking is just a symptom.  
+>> >> >> >> > 
+>> >> >> >> > My fear is this reload during net ns destruction is devlink uAPI now
+>> >> >> >> > and, yes it may be only a symptom, but the root cause may be unfixable
+>> >> >> >> > uAPI constraints.
+>> >> >> >> 
+>> >> >> >> If I'm reading this right it locks up 100% of the time, what is a uAPI
+>> >> >> >> for? DoS? ;)
+>> >> >> >> 
+>> >> >> >> Hence my questions about the actual use cases.
+>> >> >> >
+>> >> >> >Removing namespace support from devlink would solve the crasher. I
+>> >> >> >certainly didn't feel bold enough to suggest such a thing :)
+>> >> >> >
+>> >> >> >If no other devlink driver cares about this it is probably the best
+>> >> >> >idea.
+>> >> >> 
+>> >> >> Devlink namespace support is not generic, not related to any driver.
+>> >> >
+>> >> >What do you mean?
+>> >> >
+>> >> >devlink_pernet_pre_exit() calls to devlink reload, which means that only
+>> >> >drivers that support reload care about it. The reload is driver thing.
+>> >> 
+>> >> However, Jason was talking about "namespace support removal from
+>> >> devlink"..
+>> >
+>> >The code that sparkles deadlocks is in devlink_pernet_pre_exit() and
+>> >this will be nice to remove. I just don't know if it is possible to do
+>> >without ripping whole namespace support from devlink.
+>> 
+>> As discussed offline, the non-standard mlx5/IB usage of network
+>> namespaces requires non standard mlx5/IB workaround. Does not make any
+>> sense to remove the devlink net namespace support removal.
+>
+>Sorry, I don't agree that registering a net notifier in an aux device
+>probe function is non-standard or wrong.
 
-I is best to let the guest #VC on the page when this happens. If it
-happened because of a guest bug all necessary debugging data is in the
-guest and only the guest owner can obtain it.
 
-Then the guest owner can do a kdump on this unexpected #VC and collect
-the data to debug the issue. With just killing the guest from the host
-side this data would be lost.
+Listening to events which happen in different namespaces and react to
+them is the non-standard behaviour which I refered to. If you would not
+need to do it, you could just use netns notofier which would solve your
+issue. You know it.
 
-Regards,
 
-	Joerg
+>
+>This model must be supported sanely somehow in the netdev area and
+>cannot be worked around in leaf drivers.
+>
+>Intel ice will have the same problem, as would broadcom if they ever
+>get their driver modernized.
+>
+>Jason
