@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DE744FE5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F4144FE61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhKOFbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 00:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhKOFaz (ORCPT
+        id S230350AbhKOFbd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 00:31:33 -0500
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:35686 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhKOFa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 00:30:55 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA61C061766
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:27:59 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so17508062otj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0KUIHUy0806Q9hFGnixEypWdxlkA7g/t33VhtSh3NxY=;
-        b=T5BF7cluYfzR+FFJGYkCES/IViLHVwEcH12gc/Za84BlP91pqYX4Uyg/ataE1B88WP
-         GwhdmkP7kyU4tAYs2S66rPjjyDhxDh/cpnOPFGXbZw/4CyAYRVmiNIryNGO1LFSAo/7V
-         8WKf+rVNX0E1MrJg7Hr7P5pqa8xpO1lV35O5IaGFEEYgIQO1hTgKPUpQJcciT7WdYVnZ
-         v2k9e4gZOGHcPwHqduVGTL9oHESirlSsVSx+kOvkFuqyKdz37tzZ3wLKDdiVJK3m5yOQ
-         DZ/cnJfI4fP/PDmSojwUMRjnkaBQApl/LjWPNpLs9dwDPe+cF2RMi3eV0Es2VdtLpZPe
-         Ewxg==
+        Mon, 15 Nov 2021 00:30:57 -0500
+Received: by mail-yb1-f173.google.com with SMTP id y3so43554735ybf.2;
+        Sun, 14 Nov 2021 21:28:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0KUIHUy0806Q9hFGnixEypWdxlkA7g/t33VhtSh3NxY=;
-        b=3SXBNm3NwKR8iH6VChWoNJU/mWSnTAmLSnDIiDsO3i+SM+5XabkN5Sv98OPXXTCnOE
-         4ku1RzuY2ZWlp5k8QxTaldI3dhMF6cD9t1u3M3LdUA8ZS0tPxZtk5nK2U00VEW7iFgmc
-         4m+Sv2Ljk4lLeMOyhh+j0wvCaZxx7yAH0pRw0q/6aKjTye5UCDsFZsjagjdTF4Kv3zLB
-         4QQPDkrWBzENuOa21DBaw56o7GY/LaBwlAgSpCe/55JLQobo2sNLva3groExcoaEnUML
-         eRAJp2GkR2VhW12K0i/fQ3yl8Vtw4YyvQ9VF3l4eW/HbGTTfmaPeMrkXW/x6awjWf8+R
-         BGaA==
-X-Gm-Message-State: AOAM532EHiZatGlUIC5o4t+BQIW2Qtyhu7S5x8Ryt5k1ih9tA4SNXXQw
-        NL3LxRtr4f0JsfRI8a+Aex3bTksjqcaD15p++E5Hww==
-X-Google-Smtp-Source: ABdhPJz+8GraqEO2LELBEFZ6CWfkCmRPhByZYhHbjvLczVCjTtq+ZNfhCFgUS7jPO9KW3Qk64kAKMKVqV5+XfgFbSDY=
-X-Received: by 2002:a05:6830:34a0:: with SMTP id c32mr30343456otu.379.1636954078482;
- Sun, 14 Nov 2021 21:27:58 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v5fTG6MNp2HS7i48+J/mKwrj0s8rCtB8xm+WnwI515g=;
+        b=xwP3GmKk1+v27vSdf80VphPll9nkCBHQrnR/Rt9/e6G6P/94c8EEo/Qv5bsHOwK9ZE
+         6kMuS6iTtSFI3P0Dk3MvcvJuU9jfLcJosXqZFPOOJQDBi4dvMwFGp3cPStWOvyww0LaW
+         BQ/SgLSc2V1W+yMEhuQxeBYjCIZdboCiA/2ro5NnAc71UAVa8cIOMwZksqpWedNlyH+m
+         Si9CNIU0ooeUgepzUTnQ2t/OQhD7gljR+oPqGlIkjmIuBjWRJHVGze46Lo9xz5fadf45
+         z4uX5f10FWVB4qr/KLUpDhnqh26HsJtx8FLsOkEpRtLbnaQobjNdiWKfJ5jlmvMWGlqH
+         lMhQ==
+X-Gm-Message-State: AOAM532yTzmTkbIGj3sX9p66oKsQgANaoMo6LaM+6d71dp2/YL5L0LkD
+        Ecdm28SoP/I+c6DE0Yh4eyXafLNJMx/e3OYyoqU=
+X-Google-Smtp-Source: ABdhPJwuscqIaNTF4YFMzPY/Wwze3+G5xvnTV88ZJ9sIH1Ef/hVWXgl/v6PaAQhXN9mU99RnPV1cZs/mKG8GUBncE/s=
+X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr38956699ybt.152.1636954082480;
+ Sun, 14 Nov 2021 21:28:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-14-bhupesh.sharma@linaro.org> <5fe9bb9f-ded6-1aa4-347f-ef5cd0b21358@linaro.org>
-In-Reply-To: <5fe9bb9f-ded6-1aa4-347f-ef5cd0b21358@linaro.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 15 Nov 2021 10:57:47 +0530
-Message-ID: <CAH=2Ntzd9SvepuFU6LGsrnZJ=Ef1WDMsgASESqRcCsAkaCmGjw@mail.gmail.com>
-Subject: Re: [PATCH v5 13/22] dma: qcom: bam_dma: Add support to initialize
- interconnect path
-To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211114205839.15316-1-paskripkin@gmail.com>
+In-Reply-To: <20211114205839.15316-1-paskripkin@gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 15 Nov 2021 14:27:51 +0900
+Message-ID: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
+Subject: Re: [PATCH] can: etas_es58x: fix error handling
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Hi Pavel,
 
-On Fri, 12 Nov 2021 at 16:02, Vladimir Zapolskiy
-<vladimir.zapolskiy@linaro.org> wrote:
->
-> Hi Bhupesh,
->
-> On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
-> > From: Thara Gopinath <thara.gopinath@linaro.org>
-> >
-> > BAM dma engine associated with certain hardware blocks could require
-> > relevant interconnect pieces be initialized prior to the dma engine
-> > initialization. For e.g. crypto bam dma engine on sm8250. Such requirement
-> > is passed on to the bam dma driver from dt via the "interconnects"
-> > property.  Add support in bam_dma driver to check whether the interconnect
-> > path is accessible/enabled prior to attempting driver intializations.
-> >
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > [Make header file inclusion alphabetical and use 'devm_of_icc_get()']
-> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->
-> please let me ask you to swap your and Thara's sob tags above, there is
-> a rule applicable to all cases dealing with someone's else changes:
->
->  From Documentation/process/submitting-patches.rst:
->
->    Any further SoBs (Signed-off-by:'s) following the author's SoB are from
->    people handling and transporting the patch, but were not involved in its
->    development. SoB chains should reflect the **real** route a patch took
->    as it was propagated to the maintainers and ultimately to Linus, with
->    the first SoB entry signalling primary authorship of a single author.
+Thanks for the patch!
 
-Sure, I will fix it in v6.
+On Mon. 15 Nov 2021 at 05:58, Pavel Skripkin <paskripkin@gmail.com> wrote:
+> When register_candev() fails there are 2 possible device states:
+> NETREG_UNINITIALIZED and NETREG_UNREGISTERED. None of them are suitable
+> for calling unregister_candev(), because of following checks in
+> unregister_netdevice_many():
+>
+>         if (dev->reg_state == NETREG_UNINITIALIZED)
+>                 WARN_ON(1);
+> ...
+>         BUG_ON(dev->reg_state != NETREG_REGISTERED);
+>
+> To avoid possible BUG_ON or WARN_ON let's free current netdev before
+> returning from es58x_init_netdev() and leave others (registered)
+> net devices for es58x_free_netdevs().
+>
+> Fixes: 004653f0abf2 ("can: etas_es58x: add es58x_free_netdevs() to factorize code")
 
-Regards,
-Bhupesh
+Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X
+CAN USB interfaces")
+
+The bug existed from the initial commit.  Prior to the
+introduction of es58x_free_netdevs(), unregister_candev() was
+called in the error handling of es58x_probe():
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/can/usb/etas_es58x/es58x_core.c?id=8537257874e949a59c834cecfd5a063e11b64b0b#n2234
+
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  drivers/net/can/usb/etas_es58x/es58x_core.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+> index 96a13c770e4a..41c721f2fbbe 100644
+> --- a/drivers/net/can/usb/etas_es58x/es58x_core.c
+> +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+> @@ -2098,8 +2098,11 @@ static int es58x_init_netdev(struct es58x_device *es58x_dev, int channel_idx)
+>         netdev->flags |= IFF_ECHO;      /* We support local echo */
+>
+>         ret = register_candev(netdev);
+> -       if (ret)
+> +       if (ret) {
+> +               free_candev(netdev);
+> +               es58x_dev->netdev[channel_idx] = NULL;
+
+A nitpick, but if you don’t mind, I would prefer to set
+es58x_dev->netdev[channel_idx] after register_candev() succeeds
+so that we do not have to reset it to NULL in the error handling.
+
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c
+b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index ce2b9e1ce3af..fb0daad9b9c8 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -2091,18 +2091,20 @@ static int es58x_init_netdev(struct
+es58x_device *es58x_dev, int channel_idx)
+                return -ENOMEM;
+        }
+        SET_NETDEV_DEV(netdev, dev);
+-       es58x_dev->netdev[channel_idx] = netdev;
+        es58x_init_priv(es58x_dev, es58x_priv(netdev), channel_idx);
+
+        netdev->netdev_ops = &es58x_netdev_ops;
+        netdev->flags |= IFF_ECHO;      /* We support local echo */
+
+        ret = register_candev(netdev);
+-       if (ret)
++       if (ret) {
++               free_candev(netdev);
+                return ret;
++       }
+
+        netdev_queue_set_dql_min_limit(netdev_get_tx_queue(netdev, 0),
+                                       es58x_dev->param->dql_min_limit);
++       es58x_dev->netdev[channel_idx] = netdev;
+
+        return ret;
+ }
+
+>                 return ret;
+> +       }
+>
+>         netdev_queue_set_dql_min_limit(netdev_get_tx_queue(netdev, 0),
+>                                        es58x_dev->param->dql_min_limit);
