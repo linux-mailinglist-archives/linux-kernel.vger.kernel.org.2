@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AE94523CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AB4523BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349377AbhKPBbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:31:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57278 "EHLO mail.kernel.org"
+        id S243284AbhKPB3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242978AbhKOSzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:55:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C5763319;
-        Mon, 15 Nov 2021 18:11:52 +0000 (UTC)
+        id S243357AbhKOS5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2293F633C9;
+        Mon, 15 Nov 2021 18:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999913;
-        bh=5suGFwwadIkdHdYgMByz58YOtxMn0raXcjXDY6TXIZA=;
+        s=korg; t=1636999926;
+        bh=30zaXgkWn6LMf8F82UXUSME9HHe90ZQ+tE5KmINAcbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oloP5Ax386shqCnnKKy2nEMkcAwSv8kfTtYmghiksd2naIBxKOotrXE1zrbnBR6Id
-         uL9cZUJfO+GApK+9qVpxYXBhw1u2UMcKFB29/chIRRfVIiGnZ3GVN7XuAHSh5yrRsO
-         xYaNmLEuf0OPcq3Qm5IZ+Kc9ymwHh2VDOWUoh3Qg=
+        b=xWSh/vh48fe6ai1dQw8FDYc62Bu4Zn0D00NX6wvjhAuK1VK1VntJMAIuNB9Q3wlD1
+         eBXGNkFX6cKOZ0Fadq9V5Ak/APY5i9RGgm4fOe0mIjqeG2xS3GNW1nLbSzxQ8Rq0KA
+         wonTXGdGXsO7ZTo2ekB3vSIoPBZalkaeU4AoyQvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        stable@vger.kernel.org, Shayne Chen <shayne.chen@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 470/849] mt76: mt7915: fix possible infinite loop release semaphore
-Date:   Mon, 15 Nov 2021 17:59:13 +0100
-Message-Id: <20211115165436.190038106@linuxfoundation.org>
+Subject: [PATCH 5.14 475/849] mt76: mt7915: fix muar_idx in mt7915_mcu_alloc_sta_req()
+Date:   Mon, 15 Nov 2021 17:59:18 +0100
+Message-Id: <20211115165436.346295001@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -39,15 +39,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Shayne Chen <shayne.chen@mediatek.com>
 
-[ Upstream commit e500c9470e26be66eb2bc6de773ae9091149118a ]
+[ Upstream commit 161cc13912d3c3e8857001988dfba39be842454a ]
 
-Fix possible infinite loop in mt7915_load_patch if
-mt7915_mcu_patch_sem_ctrl always returns an error.
+For broadcast/multicast wcid, the muar_idx should be 0xe.
 
-Fixes: e57b7901469fc ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -55,18 +54,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index e7e396f58c92c..85c9c08ee2a82 100644
+index 6dfe3716a63a5..ba36d3caec8e1 100644
 --- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
 +++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -2790,7 +2790,7 @@ out:
- 	default:
- 		ret = -EAGAIN;
- 		dev_err(dev->mt76.dev, "Failed to release patch semaphore\n");
--		goto out;
-+		break;
- 	}
- 	release_firmware(fw);
- 
+@@ -721,7 +721,7 @@ mt7915_mcu_alloc_sta_req(struct mt7915_dev *dev, struct mt7915_vif *mvif,
+ 		.bss_idx = mvif->idx,
+ 		.wlan_idx_lo = msta ? to_wcid_lo(msta->wcid.idx) : 0,
+ 		.wlan_idx_hi = msta ? to_wcid_hi(msta->wcid.idx) : 0,
+-		.muar_idx = msta ? mvif->omac_idx : 0,
++		.muar_idx = msta && msta->wcid.sta ? mvif->omac_idx : 0xe,
+ 		.is_tlv_append = 1,
+ 	};
+ 	struct sk_buff *skb;
 -- 
 2.33.0
 
