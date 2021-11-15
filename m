@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0C045231F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB11E4525FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344418AbhKPBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:19:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
+        id S1348011AbhKPCAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:00:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244805AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E78B63421;
-        Mon, 15 Nov 2021 18:24:01 +0000 (UTC)
+        id S240433AbhKOSJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:09:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D13B633AE;
+        Mon, 15 Nov 2021 17:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000642;
-        bh=9gjOBNv0Ncuny4uU9Xw/pTuX/OSEYyHxcP3HP3USgYQ=;
+        s=korg; t=1636998401;
+        bh=KR3+Fl7Pstcu+h0z3QgDS9jHtpp2Nbp43keS4jBEWE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3BYuR86M6JhrJGzLsbewPYLOivt93rwt9eRKOT4fcfGBOfot6pSVrSaJ87TiU1jr
-         GhxrU0+JGWr5AeoWELfAU6qJEGVGGVXaLJ1z47+OaTfcam26JPGGwGtEa/OEE47ww/
-         jgEdJYf/ZuqlvnUMYWORrIxT2d1P6jMvDoPBHors=
+        b=L7NGiqlfg7KpdP6GLLw+0HRihgWgdVNd6QGB50d0XTywm4/s/49M6vvVpXLR2XEG1
+         63yGycOZRWdBrg1pSsXEBWudgnd+0IXCb0ZTJda4HeLmSyqnuX17aGhJtLqOEQAoTR
+         fsOhh6A/IA/gSMn+pVlcf+VN9LhjMODB9H31ESOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gospodarek <gospo@broadcom.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 736/849] PCI: Do not enable AtomicOps on VFs
-Date:   Mon, 15 Nov 2021 18:03:39 +0100
-Message-Id: <20211115165445.144505430@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 495/575] m68k: set a default value for MEMORY_RESERVE
+Date:   Mon, 15 Nov 2021 18:03:40 +0100
+Message-Id: <20211115165400.804139580@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvin Xavier <selvin.xavier@broadcom.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 5ec0a6fcb60ea430f8ee7e0bec22db9b22f856d3 ]
+[ Upstream commit 1aaa557b2db95c9506ed0981bc34505c32d6b62b ]
 
-Host crashes when pci_enable_atomic_ops_to_root() is called for VFs with
-virtual buses. The virtual buses added to SR-IOV have bus->self set to NULL
-and host crashes due to this.
+'make randconfig' can produce a .config file with
+"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
+When a subsequent 'make all' is done, kconfig restarts the config
+and prompts for a value for MEMORY_RESERVE. This breaks
+scripting/automation where there is no interactive user input.
 
-  PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
-  ...
-   #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
-   #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
-   #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
-   #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
-      [exception RIP: pcie_capability_read_dword+28]
-      RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
-      RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
-      RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
-      RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
-      R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
-      R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
-      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-   #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
-   #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
-   #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
+Add a default value for MEMORY_RESERVE. (Any integer value will
+work here for kconfig.)
 
-Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit in Device
-Control 2 is reserved for VFs.  The PF value applies to all associated VFs.
+Fixes a kconfig warning:
 
-Return -EINVAL if pci_enable_atomic_ops_to_root() is called for a VF.
+.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
+* Restart config...
+Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
 
-Link: https://lore.kernel.org/r/1631354585-16597-1-git-send-email-selvin.xavier@broadcom.com
-Fixes: 35f5ace5dea4 ("RDMA/bnxt_re: Enable global atomic ops if platform supports")
-Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/m68k/Kconfig.machine | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index a4eb0c042ca3e..e1de19fad9875 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3709,6 +3709,14 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
- 	struct pci_dev *bridge;
- 	u32 cap, ctl2;
- 
-+	/*
-+	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
-+	 * in Device Control 2 is reserved in VFs and the PF value applies
-+	 * to all associated VFs.
-+	 */
-+	if (dev->is_virtfn)
-+		return -EINVAL;
-+
- 	if (!pci_is_pcie(dev))
- 		return -EINVAL;
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index e161a4e1493b4..51a878803fb6d 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -191,6 +191,7 @@ config INIT_LCD
+ config MEMORY_RESERVE
+ 	int "Memory reservation (MiB)"
+ 	depends on (UCSIMM || UCDIMM)
++	default 0
+ 	help
+ 	  Reserve certain memory regions on 68x328 based boards.
  
 -- 
 2.33.0
