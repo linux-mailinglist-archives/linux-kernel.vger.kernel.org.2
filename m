@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55864518D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0445451E21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348764AbhKOXIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58126 "EHLO mail.kernel.org"
+        id S1344560AbhKPAfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243141AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AC4E63485;
-        Mon, 15 Nov 2021 18:12:43 +0000 (UTC)
+        id S1344006AbhKOTXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7151633A9;
+        Mon, 15 Nov 2021 18:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999963;
-        bh=6lDQGEUp4YIbiu2Abt1xtCSLAoQZM2zv/pW9n5Wa4k0=;
+        s=korg; t=1637002199;
+        bh=PMCUqF9vurBqj+h+7PPkSXjzQ2/2zTs6z01L2iua1wQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zfHLBarT7QXPi8y3w/YvS5U6ek8XysGlziNwcJtS3NVa/KkHWmoISpbRAt0xBRf49
-         CI3lMQAI+x+NWYbY2lCUj6dPrjtMAI5NLv0dMT9eng7Dblx/djW2DKqomf0x+jiX+v
-         WeY9u/RtFJ5gkAsFOtTkGU0FQWuykL6Q1YU0a68I=
+        b=YDGeOucivKrgDhUcWpY/RFZHK0XI/kwkF4c7wPDJchxqQ1BHuwg87e7V4wY74VSBc
+         ZdI6dDTLVa5ujIp/5uhEjRWQeEcqiRjpnZmNz1UQx7j36LaOvgUzaIkaXdDvfZt8Go
+         Twm1oG0MSBic+NA7YW+ZzcKUAdNxORs6z0WEn0CQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 487/849] x86/sev: Fix stack type check in vc_switch_off_ist()
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 475/917] mt76: mt7921: always wake device if necessary in debugfs
 Date:   Mon, 15 Nov 2021 17:59:30 +0100
-Message-Id: <20211115165436.760755917@linuxfoundation.org>
+Message-Id: <20211115165444.882834918@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 5681981fb788281b09a4ea14d310d30b2bd89132 ]
+[ Upstream commit 569008744178b672ea3ad9047fa3098f1b73ca55 ]
 
-The value of STACK_TYPE_EXCEPTION_LAST points to the last _valid_
-exception stack. Reflect that in the check done in the
-vc_switch_off_ist() function.
+Add missing device wakeup in debugfs code if we are accessing chip
+registers.
 
-Fixes: a13644f3a53de ("x86/entry/64: Add entry code for #VC handler")
-Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211021080833.30875-2-joro@8bytes.org
+Fixes: 1d8efc741df8 ("mt76: mt7921: introduce Runtime PM support")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/debugfs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index cc6de3a01293c..5b1984d468227 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -743,7 +743,7 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
- 	stack = (unsigned long *)sp;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/debugfs.c b/drivers/net/wireless/mediatek/mt76/mt7921/debugfs.c
+index 4c89c4ac8031a..30f3b3085c786 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/debugfs.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/debugfs.c
+@@ -95,6 +95,8 @@ mt7921_tx_stats_show(struct seq_file *file, void *data)
+ 	struct mt7921_dev *dev = file->private;
+ 	int stat[8], i, n;
  
- 	if (!get_stack_info_noinstr(stack, current, &info) || info.type == STACK_TYPE_ENTRY ||
--	    info.type >= STACK_TYPE_EXCEPTION_LAST)
-+	    info.type > STACK_TYPE_EXCEPTION_LAST)
- 		sp = __this_cpu_ist_top_va(VC2);
++	mt7921_mutex_acquire(dev);
++
+ 	mt7921_ampdu_stat_read_phy(&dev->phy, file);
  
- sync:
+ 	/* Tx amsdu info */
+@@ -104,6 +106,8 @@ mt7921_tx_stats_show(struct seq_file *file, void *data)
+ 		n += stat[i];
+ 	}
+ 
++	mt7921_mutex_release(dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(stat); i++) {
+ 		seq_printf(file, "AMSDU pack count of %d MSDU in TXD: 0x%x ",
+ 			   i + 1, stat[i]);
+@@ -124,6 +128,8 @@ mt7921_queues_acq(struct seq_file *s, void *data)
+ 	struct mt7921_dev *dev = dev_get_drvdata(s->private);
+ 	int i;
+ 
++	mt7921_mutex_acquire(dev);
++
+ 	for (i = 0; i < 16; i++) {
+ 		int j, acs = i / 4, index = i % 4;
+ 		u32 ctrl, val, qlen = 0;
+@@ -143,6 +149,8 @@ mt7921_queues_acq(struct seq_file *s, void *data)
+ 		seq_printf(s, "AC%d%d: queued=%d\n", acs, index, qlen);
+ 	}
+ 
++	mt7921_mutex_release(dev);
++
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
