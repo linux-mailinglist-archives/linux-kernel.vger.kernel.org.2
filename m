@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEF74501BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E797F4501C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhKOJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:54:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhKOJyd (ORCPT
+        id S230488AbhKOJzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:55:48 -0500
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:50687 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230460AbhKOJzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:54:33 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD842C061746;
-        Mon, 15 Nov 2021 01:51:37 -0800 (PST)
-Received: from localhost (unknown [151.82.209.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BC20C845;
-        Mon, 15 Nov 2021 09:51:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BC20C845
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1636969897; bh=Sh459AP8VB6RqU7cxvM/rkvxi9zbrKxgx4z0+VYxHjw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=s+iUKMWhaE8/sBMxZ6tkwX3K2N/CZzrplqOHVT6wz+MOrSVOr8On+wmQLfXefSebL
-         M4HpLYB8Z89Fuf3dTGR6DwzyToPjHlLaFSHO3EzM/jsGNBeLbdfIOU75dlCkf8UULp
-         OIZMZGCVDfDjjIol1ilV+ixlIpIQNlrFTbP3XJgakzyi8Pr7krKWUl9UQPzkDM5uuM
-         oOjszcBbjPwgZaEdqSuJDD5z+4t9mwqX/NsZleNcQJuU5odW9iDEmcCFsQ9TSPJ0gb
-         RQy0zaqFCa2A0NjVhuu8wysvJXV3JcFjILRzIXAfYQSGUFtTOwhH1NC3i+sj578MAx
-         vFfzGITuuqvFA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Zhaoyu Liu <zackary.liu.pro@gmail.com>
-Cc:     mingo@redhat.com, linux-doc@vger.kernel.org,
+        Mon, 15 Nov 2021 04:55:40 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id DD33D2B012F6;
+        Mon, 15 Nov 2021 04:52:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 15 Nov 2021 04:52:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
+        3ThKSd0gqW4Pa/bRoS/H8v/D8qsxDWz8kI73Cf3+wQs=; b=ns/17SbdCR1hg2Wj
+        8SfAJHvSkWrH1BYLrbiQYvgZJjSXti9ZIGUMi1dJn4Gui0qZ0UgVEP/YmxlnP0R6
+        4Q/jhMZDBfi+lpq6mQpYbOCLNtbuUA8n1gMm5/RqG+6PHPInq5Fel4mS4z0TF+dV
+        DtYq6Xlki9xOMrff7ksH6ciB6lJM6TCXrxpM9vAir7p3sce1Lt57m7IV2vBDOyaB
+        ZPjnNHm433eJHDuJFoRnhCcN4cb94jKNrtUFQwAx5T8ymLZV5+qxoXkhbX5lNBFm
+        1jNSnYTKhbLe8zUP3ORj53Un8St9+05Fvkw88Mtp98WESxd/IsRUWN/MrPhvxTB+
+        HVMX4g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=3ThKSd0gqW4Pa/bRoS/H8v/D8qsxDWz8kI73Cf3+w
+        Qs=; b=eb0b+Mv0wTMs/NN/dk5C1NCZtYCFF1F3H+UA2MSODvxgja2iCLKaINRBL
+        bjFPLchl+1nMNRAPxQJXP3w6aQdJoKTKtRlu+NamI3wkJATPWpkm9FXZlZKsvuRF
+        2VMkcYl02raE7RjFnQzs3mjAI6JbMypaWVv69fryiKuthjLCSAQtpXELzZr5uLm9
+        qF9HZ5pjNOQPiU82/pGg3ReTR+YV1jaAumPuMUa710lU6Qu8/RxKqmmyKysneMEW
+        F2BMQ5gsYgkwLEMFJXHX+UEkk7jYkHm3YW4BASDmB+yB5t1Ee/Y0BdLUFa9JCUGH
+        nO4FXWE+EynfVYnppQrEwzz/2WBMw==
+X-ME-Sender: <xms:6i2SYSA3AyiuYBFbdfrhSZV9g7P2Uo4tIdtwZWk1G4Pg1Y7wSBUuJg>
+    <xme:6i2SYchUW8bVZjPiNqPOdMJOCR-Ket4OvfBmzClt4Rc4s1GSNW_tHLwjiC17twfVl
+    Oq2HoODIILpwSdvKT8>
+X-ME-Received: <xmr:6i2SYVkhzxL9Y7RORtEFpAyTKhHBnPdumAS82-ez00tXz6QqAANcYlArAYHhiycWh6Jwr9N2ae1Fdsggr-4kd4oCsGqiB8azMuUXNhuP>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdelgddtjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
+    keeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:6i2SYQyVFkszi2viszbUMrA6Dqft_42XsaOUnWdGqU16ZQ-vdpliqQ>
+    <xmx:6i2SYXQC2k3WRXxFUXXAj_rmdtUDsCdF6UY9ss0YzkjMqr1w97KfRw>
+    <xmx:6i2SYbbf3V8YfWHX6jSP2CSGvjRnpMMStqSrSLnE4R91qJ-A1X3OIA>
+    <xmx:6y2SYcIZVqXKUBjeV8waSCct9fSrcIczfEZsREW-ChOWi853u0Ax0qb-7u8>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Nov 2021 04:52:41 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     jernej.skrabec@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        Julian Braha <julianbraha@gmail.com>, wens@csie.org,
+        mripard@kernel.org
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        dri-devel@lists.freedesktop.org, fazilyildiran@gmail.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: ftrace: fix the wrong path of tracefs
-In-Reply-To: <20211113091145.05ba14b5@rorschach.local.home>
-References: <20211113133722.GA11656@pc>
- <20211113091145.05ba14b5@rorschach.local.home>
-Date:   Mon, 15 Nov 2021 02:51:33 -0700
-Message-ID: <87wnl9lpay.fsf@meer.lwn.net>
+Subject: Re: (subset) [PATCH] [PATCH v2] drm/sun4i: fix unmet dependency on RESET_CONTROLLER for PHY_SUN6I_MIPI_DPHY
+Date:   Mon, 15 Nov 2021 10:52:38 +0100
+Message-Id: <163696994488.38690.15132529754055054115.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211109032351.43322-1-julianbraha@gmail.com>
+References: <20211109032351.43322-1-julianbraha@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On Mon, 8 Nov 2021 22:23:51 -0500, Julian Braha wrote:
+> When PHY_SUN6I_MIPI_DPHY is selected, and RESET_CONTROLLER
+> is not selected, Kbuild gives the following warning:
+> 
+> WARNING: unmet direct dependencies detected for PHY_SUN6I_MIPI_DPHY
+>   Depends on [n]: (ARCH_SUNXI [=n] || COMPILE_TEST [=y]) && HAS_IOMEM [=y] && COMMON_CLK [=y] && RESET_CONTROLLER [=n]
+>   Selected by [y]:
+>   - DRM_SUN6I_DSI [=y] && HAS_IOMEM [=y] && DRM_SUN4I [=y]
+> 
+> [...]
 
-> On Sat, 13 Nov 2021 21:37:34 +0800
-> Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
->
->> Delete "tracing" due to it has been included in /proc/mounts.
->> Delete "echo nop > $tracefs/tracing/current_tracer", maybe
->> this command is redundant.
->> 
->> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
->
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-> Jon,
->
-> Can you take this through your tree?
+Applied to drm/drm-misc (drm-misc-fixes).
 
-Applied, thanks.
-
-jon
+Thanks!
+Maxime
