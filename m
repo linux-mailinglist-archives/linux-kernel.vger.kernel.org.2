@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9601451FB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2E5451F8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350507AbhKPApC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:45:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S1346008AbhKPAmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345115AbhKOT0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345113AbhKOT0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:26:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58B2D60174;
-        Mon, 15 Nov 2021 19:21:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 060A1604D1;
+        Mon, 15 Nov 2021 19:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637004068;
-        bh=gm8WyhiuPVpzggL/7VQuMhi+RUWWclkq8Gwz3rUzJVg=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=qIu9qnQGmWCg1BdymwlPybT6BHe5QC301qotNHHwB57gkWF2/Z50PlXM65xSQjxPL
-         qAEkiJaQ+tfXlnoVz7Epsr5wcYvRdJoujPbkplSi45MuJNoLZUces7WR/wW6iAHz5l
-         cgwNQW+8eOgo//+FZ9vJ261vHT86wqyadjIcOeOx7fSRuom4HGu6VU5gV0DYB3bQSu
-         0oTIpSZAj+euqkq6XldM27wsLf93wJTpVJKSkUwHI3GCvOmXfUtiGf7YJUcG/XWAFg
-         /e2aTm07jnOIpFrktkqvtzPK7wKSdOzxUgecCOz+4kf5CQbHtxzW7Gd7SJoZ+aDrKb
-         4SlVVhPqoh/Mg==
+        s=k20201202; t=1637004071;
+        bh=+MNd2K34GfmPk64cwTdXCuxqzUoEccPFFBMKwNKvMlY=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=rYDbvjRnpUBy99XFwq8T0C8FdyrqdFFRTvl0+bPODoPb72QoZdZT1rGPnahDbG4b7
+         Vpb/EI78RhMYhh0CJCeyBvE2G++Y7efSzM3s8kp2/pe7vqB4Mn1Rl75IZJ0jQH/TaY
+         zVLLqzH6KbVOWyjAFnVojh2CbQCskQVVbn8hNNIfN4rA+NS+Zy82khnWVI01S/o858
+         wAAU4T+MiPwOVLtZj+dYG6SXuXSHY1gBDdtdH7LYLqtEwXFdZwFcTPpfFtn72+lquw
+         h69Nvqtf4CLThu7dx0dkj+JenXb/CvYD7wBZc/WPqLPrQU3XPJNADSKz+0Gaz0avHg
+         BINpWGs4EUVGg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
-References: <20211102220203.940290-1-corbet@lwn.net>
-Subject: Re: (subset) [PATCH 0/9] Remove some unused header files
-Message-Id: <163700406707.683472.13536842768773786666.b4-ty@kernel.org>
-Date:   Mon, 15 Nov 2021 19:21:07 +0000
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211109161325.2203564-1-robh@kernel.org>
+References: <20211109161325.2203564-1-robh@kernel.org>
+Subject: Re: [PATCH] spi: xlp: Remove Netlogic XLP variants
+Message-Id: <163700406969.683472.16319570545022971002.b4-ty@kernel.org>
+Date:   Mon, 15 Nov 2021 19:21:09 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -37,24 +40,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 16:01:54 -0600, Jonathan Corbet wrote:
-> While working on something totally different, it occurred to me to wonder
-> which header files in the kernel are not used anywhere.  Writing a little
-> program to figure that out in Rust was the perfect distriction from the
-> work I really needed to be doing...  It turns out there aren't many under
-> include/linux; this gets rid of the ones I found.
+On Tue, 9 Nov 2021 10:13:25 -0600, Rob Herring wrote:
+> Netlogic XLP was removed in commit 95b8a5e0111a ("MIPS: Remove NETLOGIC
+> support"). With those gone, the single platform left to support is
+> Cavium ThunderX2. Remove the Netlogic variant and DT support.
 > 
-> Jonathan Corbet (9):
->   Remove unused headers <linux/jz4740-adc.h> and
->     <linux/power/jz4740-battery.h>
->   nfs: remove unused header <linux/pnfs_osd_xdr.h>
->   Remove unused header <linux/cnt32_to_63.h>
->   Remove unused header <linux/sdb.h>
->   Input: remove unused header <linux/input/cy8ctmg110_pdata.h>
->   mtd: remove unused header file <linux/mtd/latch-addr-flash.h>
->   ARM: ixp4xx: remove unused header file pata_ixp4xx_cf.h
->   spi: remove unused header file <linux/platform_data/spi-clps711x.h>
->   net: remove unused header file <linux/ks8851_mll.h>
+> For simplicity, the existing kconfig name is retained.
+> 
 > 
 > [...]
 
@@ -64,8 +56,8 @@ Applied to
 
 Thanks!
 
-[8/9] spi: remove unused header file <linux/platform_data/spi-clps711x.h>
-      commit: 45971bdd8ca8b5a99a49f4db86737401c45e246f
+[1/1] spi: xlp: Remove Netlogic XLP variants
+      commit: f7d344f2188c9f16e434cadf2a954b5d40365c14
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
