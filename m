@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9701244FCAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 02:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDD444FCB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 02:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234866AbhKOBLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 20:11:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhKOBLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 20:11:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1893261077;
-        Mon, 15 Nov 2021 01:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636938490;
-        bh=SGPyHKvcUXM3KqJN65/6F5Fnr0nYxnSm265J17My0h4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WaM2gn8fLJIAC5QoFSn2e/3WjK44EB1qpG9ezoXY7S1KMQFWByj6L0Wq1WAWsB3fQ
-         ADxVQsO/Rt3s06lM3si0XFYOStbvcP7nJfByP8PB868WxlYdz4jfTsOSiI8+UwASbH
-         jkDu6aBa1bLDfc9npYHMYDRD6bEamyMPxf+un+WbEKip4bToiC63BMcx+UYRZp8TI2
-         QjkMKH1G8yCGpMHpvohcgyCEEqqlLnEjGZ+CKctNGvB0fr53HyCfYnIfmv4WNOnz+M
-         sN3XVNGthY9/ePgxeNXFDdpK91QpduTzQnR0jE4AfsWGXuuUO9qbwpcKRb9fjYTgIu
-         VDc0N8G0j2pzA==
-Date:   Sun, 14 Nov 2021 19:13:13 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] kbuild: Fix -Wimplicit-fallthrough=5 error for GCC 5.x and
- 6.x
-Message-ID: <20211115011313.GA43897@embeddedor>
+        id S236036AbhKOBX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 20:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234982AbhKOBXw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 20:23:52 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96917C061746;
+        Sun, 14 Nov 2021 17:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=xm2WaH1Ez4XZ9JuC8AhOwXIWdLRqdsdWoim4LFk92IY=; b=CBzkm4D3LOv1D4Xa4/t05C3Epc
+        WB+wiGwxycYMzEJnNjlMOC15q0pfbZOLvPl06KOF2W9uQn8eI93FRTxERu0rHWllidrdQmaNc4KUV
+        VTyJS8UJJ4WpDMShxvu2pNn4Y3ET7A1pAYvBUR7QDQ/8n6iVTFMxzHQzrGkwNJDnVa2Xfh2p+XwAu
+        nsg+PHoIhbUUU9skqfoUxV1xyGjl/gnrsNFQNkwsLT/BKq7ie1JOFmpfMLKBFVN/5qNc53Mp8UTRm
+        k5B9tS8hx6U3UoKwQtxHaikZcGjuv6WEJReehWSXEqN8WkPl4aLkuAQmuQtTHFKWIlgL5GH+acC37
+        WZB8Bzpw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmQg0-00ECsh-Ks; Mon, 15 Nov 2021 01:20:52 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] mips: lantiq: add support for clk_get_parent()
+Date:   Sun, 14 Nov 2021 17:20:51 -0800
+Message-Id: <20211115012051.16302-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Wimplicit-fallthrough=5 was under cc-option because it was only
-available in GCC 7.x and newer so the build is now broken for GCC 5.x
-and 6.x:
+Provide a simple implementation of clk_get_parent() in the
+lantiq subarch so that callers of it will build without errors.
 
-gcc: error: unrecognized command line option '-Wimplicit-fallthrough=5';
-did you mean '-Wno-fallthrough'?
+Fixes this build error:
+ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
 
-Fix this by moving -Wimplicit-fallthrough=5 under cc-option.
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Co-developed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: linux-mips@vger.kernel.org
+Cc: John Crispin <john@phrozen.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- init/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/lantiq/clk.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 036b750e8d8a..85882c317235 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -887,7 +887,7 @@ config CC_HAS_INT128
+--- linux-next-20211112.orig/arch/mips/lantiq/clk.c
++++ linux-next-20211112/arch/mips/lantiq/clk.c
+@@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
+ }
+ EXPORT_SYMBOL(clk_deactivate);
  
- config CC_IMPLICIT_FALLTHROUGH
- 	string
--	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
-+	default "-Wimplicit-fallthrough=5" if $(cc-option,-Wimplicit-fallthrough=5)
- 	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
- 
- #
--- 
-2.27.0
-
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ static inline u32 get_counter_resolution(void)
+ {
+ 	u32 res;
