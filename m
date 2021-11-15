@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DFF451536
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5E745153A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350950AbhKOU3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:29:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46102 "EHLO mail.kernel.org"
+        id S1349898AbhKOUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:30:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240105AbhKOSFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 185B563290;
-        Mon, 15 Nov 2021 17:42:36 +0000 (UTC)
+        id S240132AbhKOSFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:05:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A5E632FC;
+        Mon, 15 Nov 2021 17:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998157;
-        bh=3KSsaF+4z/k7Pn25UsyVPFGavT2oKeP0mgdB6MzLY+U=;
+        s=korg; t=1636998162;
+        bh=AlDYZYESXTj9g84izod3EgH2s/APmTwHtMQWSyBmrBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ZISKgmka1vMtf8Z9IH4B7+Vyyhoo5zo3Rs011sbshw802GF+vP78F80kbIiQmtUy
-         I5fKUshxJXjRbwfz6EogSDUGL1+uXtwKG/JZKobDCCi7Ju44OlI6mZMKVZfdjLnmes
-         4sXH2V0zZ2raJgStM10uR85scoWgs1K4O9/ou7Mw=
+        b=RgVLqctRP9XTvG90h1/Sf8hjYkrNsxWC8jWTwyySNwJDLM9QV/hLu5f/SY3D1yDlf
+         VD5pzhDHEeVeAO5hmalZtkMfSBuP1GgUtrQWP23CfYHWi+KTPfdL3BSrE0CD00wYMX
+         rrW0w8VwfO6OH4l94gYt+iN0cuGK5lsGRJkXYOms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, youling257@gmail.com,
-        Imre Deak <imre.deak@intel.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 409/575] ALSA: hda: Fix hang during shutdown due to link reset
-Date:   Mon, 15 Nov 2021 18:02:14 +0100
-Message-Id: <20211115165357.911808671@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 411/575] soundwire: debugfs: use controller id and link_id for debugfs
+Date:   Mon, 15 Nov 2021 18:02:16 +0100
+Message-Id: <20211115165357.975343856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,67 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Imre Deak <imre.deak@intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 0165c4e19f6ec76b535de090e4bd145c73810c51 ]
+[ Upstream commit 75eac387a2539aa6c6bbee3affa23435f2096396 ]
 
-During system shutdown codecs may be still active, and resetting the
-controller->codec HW link in this state - based on the bug reporter's
-tests - leads to the shutdown sequence to get stuck. This happens at
-least on the reporter's KBL system with an ALC662 codec.
+link_id can be zero and if we have multiple controller instances
+in a system like Qualcomm debugfs will end-up with duplicate namespace
+resulting in incorrect debugfs entries.
 
-For now fix the issue by skipping the link reset step.
+Using bus-id and link-id combination should give a unique debugfs directory
+entry and should fix below warning too.
+"debugfs: Directory 'master-0' with parent 'soundwire' already present!"
 
-Fixes: 472e18f63c42 ("ALSA: hda: Release controller display power during shutdown/reboot")
-Reported-and-tested-by: youling257@gmail.com
-Cc: youling257@gmail.com
-Signed-off-by: Imre Deak <imre.deak@intel.com>
-Link: https://lore.kernel.org/r/20210816174259.2759103-1-imre.deak@intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: bf03473d5bcc ("soundwire: add debugfs support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210907105332.1257-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/soundwire/debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index e31eafe73661f..a0955e17adee9 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -936,10 +936,11 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
- 
--static void azx_shutdown_chip(struct azx *chip)
-+static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
- {
- 	azx_stop_chip(chip);
--	azx_enter_link_reset(chip);
-+	if (!skip_link_reset)
-+		azx_enter_link_reset(chip);
- 	azx_clear_irq_pending(chip);
- 	display_power(chip, false);
- }
-@@ -948,6 +949,11 @@ static void azx_shutdown_chip(struct azx *chip)
- static DEFINE_MUTEX(card_list_lock);
- static LIST_HEAD(card_list);
- 
-+static void azx_shutdown_chip(struct azx *chip)
-+{
-+	__azx_shutdown_chip(chip, false);
-+}
-+
- static void azx_add_card_list(struct azx *chip)
- {
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-@@ -2461,7 +2467,7 @@ static void azx_shutdown(struct pci_dev *pci)
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+index b6cad0d59b7b9..49900cd207bc7 100644
+--- a/drivers/soundwire/debugfs.c
++++ b/drivers/soundwire/debugfs.c
+@@ -19,7 +19,7 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
  		return;
- 	chip = card->private_data;
- 	if (chip && chip->running)
--		azx_shutdown_chip(chip);
-+		__azx_shutdown_chip(chip, true);
+ 
+ 	/* create the debugfs master-N */
+-	snprintf(name, sizeof(name), "master-%d", bus->link_id);
++	snprintf(name, sizeof(name), "master-%d-%d", bus->id, bus->link_id);
+ 	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
  }
  
- /* PCI IDs */
 -- 
 2.33.0
 
