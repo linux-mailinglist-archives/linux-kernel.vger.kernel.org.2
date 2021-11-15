@@ -2,61 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B804504EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35EB4504F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhKONIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S231486AbhKONKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:10:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhKONIR (ORCPT
+        with ESMTP id S231449AbhKONJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:08:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B29C061570;
-        Mon, 15 Nov 2021 05:05:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uf02tZGLeZ80LvD7kU2WBviAw8LJxNZ/KvC0wOH0sfs=; b=Hb+BGzS0+V3mc4dHDKcAOgs2BQ
-        M6QgtnIKDLsEtd8j/H6DLzgEaZpYH1ip5sTPcOhyrO2yIfe5k8Thl8HIrj13DGiccSYoPKvj9lRz0
-        EWZH0sLTB6BYkcp+qQRAYlfZsah8NqhlLGpSOONN5+vsayPmqkwX4ekeRjCMF9rPh9U6Ifyy3/1IM
-        ZGM2xzFr2MAHWWM3GnLNCY30EOa/X9yovneksFI1bixKgnO6fCrUMRHrAtrtuc/KZACcVZV65gj/x
-        wVjZpcjjM7qe53ZLSZrVPJKre+33M40sfEo7Li8t1TNrh3CW7MVmg8Sx9uln20iTFZQ+JsfsoGx3z
-        zuYg14EQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmbfY-005hm0-Ce; Mon, 15 Nov 2021 13:05:08 +0000
-Date:   Mon, 15 Nov 2021 13:05:08 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] pipe: fix potential use-after-free in pipe_read()
-Message-ID: <YZJbBNs/63pnXngK@casper.infradead.org>
-References: <20211115035721.1909-1-thunder.leizhen@huawei.com>
- <20211115035721.1909-2-thunder.leizhen@huawei.com>
- <YZHhQ5uUJ06BOnJh@casper.infradead.org>
- <d604e5f8-128a-d25c-848d-7380a5bde609@huawei.com>
+        Mon, 15 Nov 2021 08:09:13 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8889BC061714;
+        Mon, 15 Nov 2021 05:06:15 -0800 (PST)
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1142FD3E;
+        Mon, 15 Nov 2021 14:06:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1636981573;
+        bh=S400eBbi5TVNWpj2Sq2il82O7vrNbB0L6EDIkwL9CvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LuJFczqyURd3bNnnE6zXNftSaB5jKtcwJnjQTyM3WJG89V2u+Roo+NiwAr/RUngIA
+         E2c1ezIwcRsLVNxRRAuadHct1K/oTpdoEKIdJ5k7m96EiJ+UGAbd4M/hv76UAtnoqx
+         GP2lyD8TkFiLO/jC+DLqQVsUesrxNYWsEhNFrXjc=
+Date:   Mon, 15 Nov 2021 15:05:50 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dmaengine@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
+Message-ID: <YZJbLol1llm+puDT@pendragon.ideasonboard.com>
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-9-arnd@kernel.org>
+ <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+ <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+ <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
+ <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d604e5f8-128a-d25c-848d-7380a5bde609@huawei.com>
+In-Reply-To: <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:13:44PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/11/15 12:25, Matthew Wilcox wrote:
-> > On Mon, Nov 15, 2021 at 11:57:20AM +0800, Zhen Lei wrote:
-> >>  			if (!buf->len) {
-> >> +				unsigned int __maybe_unused flags = buf->flags;
-> > 
-> > Why __maybe_unused?
-> 
-> It's used only if "#ifdef CONFIG_WATCH_QUEUE". Otherwise, a warning will be reported.
+Hi Arnd,
 
-Better to turn the #ifdef into if (IS_ENABLED())
+On Mon, Nov 15, 2021 at 01:38:07PM +0100, Arnd Bergmann wrote:
+> On Mon, Nov 15, 2021 at 12:49 PM Laurent Pinchart wrote:
+> > On Mon, Nov 15, 2021 at 11:21:30AM +0100, Arnd Bergmann wrote:
+> > > On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart wrote:
+> > > > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
+> > > > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
+> > > > >       spin_lock_irqsave(&chan->lock, flags);
+> > > > >
+> > > > >       /*
+> > > > > -      * Abuse the slave_id to indicate that the channel is part of a video
+> > > > > -      * group.
+> > > > > +      * Abuse the peripheral_config to indicate that the channel is part
+> > > >
+> > > > Is it still an abuse, or is this now the right way to pass custom data
+> > > > to the DMA engine driver ?
+> > >
+> > > It doesn't make the driver any more portable, but it's now being
+> > > more explicit about it. As far as I can tell, this is the best way
+> > > to pass data that cannot be expressed through the regular interfaces
+> > > in DT and the dmaengine API.
+> > >
+> > > Ideally there would be a generic way to pass this flag, but I couldn't
+> > > figure out what this is actually doing, or whether there is a better
+> > > way. Maybe Vinod has an idea.
+> >
+> > I don't think we need a generic API in this case. The DMA engine is
+> > specific to the display device, I don't foresee a need to mix-n-match.
+> 
+> Right. I wonder if there is even a point in using the dmaengine API
+> in that case, I think for other single-purpose drivers we tend to just
+> integrate the functionality in the client driver. No point changing this
+> now of course, but it does feel odd.
+
+I agree, and that's what I would have done as well, if it wasn't for the
+fact that the DMA engine also supports a second client for audio. This
+isn't supported in upstream yet. We could still have created an ad-hoc
+solution, possibly based on the components framework, but the DMA engine
+subsystem wasn't a bad fit.
+
+> From my earlier reading of the driver, my impression was that this
+> is just a memory-to-memory device, so it could be used that way
+> as well, but does need a flag when working on the video memory.
+> I couldn't quite make sense of that though.
+
+It's only memory-to-device (video and audio). See figures 33-1 and 33-16
+in https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
+
+> > >         /*
+> > >          * Use the peripheral_config to indicate that the channel is part
+> > >          * of a video group. This requires matching use of the custom
+> > >          * structure in each driver.
+> > >          */
+> > >         pconfig = config->peripheral_config;
+> > >         if (WARN_ON(config->peripheral_size != 0 &&
+> > >                     config->peripheral_size != sizeof(*pconfig)))
+> > >                 return -EINVAL;
+> >
+> > How about
+> >
+> >         if (WARN_ON(config->peripheral_config &&
+> >                     config->peripheral_size != sizeof(*pconfig)))
+> >
+> > >
+> > >         spin_lock_irqsave(&chan->lock, flags);
+> > >         if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+> > >             config->peripheral_size == sizeof(*pconfig))
+> >
+> > And here you can test pconfig != NULL.
+> 
+> Good idea. Changed now, using 'if (pconfig)' without the '!= NULL'
+> in both expressions.
+
+Sounds good to me.
+
+-- 
+Regards,
+
+Laurent Pinchart
