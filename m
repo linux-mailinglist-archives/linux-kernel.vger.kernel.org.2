@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375CD45189C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B13451613
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351168AbhKOXDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:03:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S240702AbhKOVLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:11:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243241AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3239C633C5;
-        Mon, 15 Nov 2021 18:11:07 +0000 (UTC)
+        id S240933AbhKOSOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:14:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF53860C49;
+        Mon, 15 Nov 2021 17:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999867;
-        bh=CZR8n49eweZd+DJCKiQsgB+iVDajs6LrgcId3WBiims=;
+        s=korg; t=1636998529;
+        bh=185p1ldq+OkuE8RBlatshII5urYevrQw80cRK80Esvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bTSWKfg0ewbN9qjh4XW8N6uaRUc4ay2Hzu18TM2Dxh8n07/k5ECcY4S/L1b+FMTZs
-         JnmHOqQv1yanD/4fuTXkxE+LnQ4CmthdzCzH5ekageZVc/PJfxY6asR+2qwBaXQJ1j
-         lfq/+Xp4T59lF6gnEPc5EsxmJJCb695gDDuGTTLY=
+        b=NXLAMcSfmGwgBe+Eh+feWkBMRLw0Cwn31hldCwrbcQ+ymE9pG0Pd1YZ0/6a9OUqFy
+         UGavVOWJ6XKFiHGyrdbbJexUQZcf/pKIxPrG3/2HnJNjju7x/2tbXIn4tvMYc7TTHP
+         iesJ1BARdhkXsTqR9mlMakHXVzBBfZJTjvNnPSrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 452/849] mt76: mt7615: fix endianness warning in mt7615_mac_write_txwi
-Date:   Mon, 15 Nov 2021 17:58:55 +0100
-Message-Id: <20211115165435.581682272@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 499/575] scsi: qla2xxx: Relogin during fabric disturbance
+Date:   Mon, 15 Nov 2021 18:03:44 +0100
+Message-Id: <20211115165400.954083795@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +43,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit d81bfb41e30c42531536c5d2baa4d275a8309715 ]
+[ Upstream commit bb2ca6b3f09ac20e8357d257d0557ab5ddf6adcd ]
 
-Fix the following sparse warning in mt7615_mac_write_txwi routine:
-drivers/net/wireless/mediatek/mt76/mt7615/mac.c:758:17:
-	warning: incorrect type in assignment
-	expected restricted __le32 [usertype]
-	got unsigned long
+For RSCN of type "Area, Domain, or Fabric", which indicate a portion or
+entire fabric was disturbed, current driver does not set the scan_need flag
+to indicate a session was affected by the disturbance. This in turn can
+lead to I/O timeout and delay of relogin. Hence initiate relogin in the
+event of fabric disturbance.
 
-Fixes: 04b8e65922f63 ("mt76: add mac80211 driver for MT7615 PCIe-based chipsets")
-Fixes: d4bf77bd74930 ("mt76: mt7615: introduce mt7663u support to mt7615_write_txwi")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20211026115412.27691-2-njavali@marvell.com
+Fixes: 1560bafdff9e ("scsi: qla2xxx: Use complete switch scan for RSCN events")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/mac.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/scsi/qla2xxx/qla_init.c | 56 +++++++++++++++++++++++++++------
+ 1 file changed, 46 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-index a83e48c07a71e..5455231f51881 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-@@ -755,12 +755,15 @@ int mt7615_mac_write_txwi(struct mt7615_dev *dev, __le32 *txwi,
- 	if (info->flags & IEEE80211_TX_CTL_NO_ACK)
- 		txwi[3] |= cpu_to_le32(MT_TXD3_NO_ACK);
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index e893b42e51a35..5bbdaefb44efc 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -1708,16 +1708,52 @@ void qla2x00_handle_rscn(scsi_qla_host_t *vha, struct event_arg *ea)
+ 	fc_port_t *fcport;
+ 	unsigned long flags;
  
--	txwi[7] = FIELD_PREP(MT_TXD7_TYPE, fc_type) |
--		  FIELD_PREP(MT_TXD7_SUB_TYPE, fc_stype) |
--		  FIELD_PREP(MT_TXD7_SPE_IDX, 0x18);
--	if (!is_mmio)
--		txwi[8] = FIELD_PREP(MT_TXD8_L_TYPE, fc_type) |
--			  FIELD_PREP(MT_TXD8_L_SUB_TYPE, fc_stype);
-+	val = FIELD_PREP(MT_TXD7_TYPE, fc_type) |
-+	      FIELD_PREP(MT_TXD7_SUB_TYPE, fc_stype) |
-+	      FIELD_PREP(MT_TXD7_SPE_IDX, 0x18);
-+	txwi[7] = cpu_to_le32(val);
-+	if (!is_mmio) {
-+		val = FIELD_PREP(MT_TXD8_L_TYPE, fc_type) |
-+		      FIELD_PREP(MT_TXD8_L_SUB_TYPE, fc_stype);
-+		txwi[8] = cpu_to_le32(val);
-+	}
+-	fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
+-	if (fcport) {
+-		if (fcport->flags & FCF_FCP2_DEVICE) {
+-			ql_dbg(ql_dbg_disc, vha, 0x2115,
+-			       "Delaying session delete for FCP2 portid=%06x %8phC ",
+-			       fcport->d_id.b24, fcport->port_name);
+-			return;
+-		}
+-		fcport->scan_needed = 1;
+-		fcport->rscn_gen++;
++	switch (ea->id.b.rsvd_1) {
++	case RSCN_PORT_ADDR:
++		fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
++		if (fcport) {
++			if (fcport->flags & FCF_FCP2_DEVICE) {
++				ql_dbg(ql_dbg_disc, vha, 0x2115,
++				       "Delaying session delete for FCP2 portid=%06x %8phC ",
++					fcport->d_id.b24, fcport->port_name);
++				return;
++			}
++			fcport->scan_needed = 1;
++			fcport->rscn_gen++;
++		}
++		break;
++	case RSCN_AREA_ADDR:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			if ((ea->id.b24 & 0xffff00) == (fcport->d_id.b24 & 0xffff00)) {
++				fcport->scan_needed = 1;
++				fcport->rscn_gen++;
++			}
++		}
++		break;
++	case RSCN_DOM_ADDR:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			if ((ea->id.b24 & 0xff0000) == (fcport->d_id.b24 & 0xff0000)) {
++				fcport->scan_needed = 1;
++				fcport->rscn_gen++;
++			}
++		}
++		break;
++	case RSCN_FAB_ADDR:
++	default:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			fcport->scan_needed = 1;
++			fcport->rscn_gen++;
++		}
++		break;
+ 	}
  
- 	return 0;
- }
+ 	spin_lock_irqsave(&vha->work_lock, flags);
 -- 
 2.33.0
 
