@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83D4451B13
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCE0451B12
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356427AbhKOXuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:50:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1356396AbhKOXty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:49:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233918AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344213AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:24:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD23F632FF;
-        Mon, 15 Nov 2021 18:53:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BDF0633A6;
+        Mon, 15 Nov 2021 18:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002437;
-        bh=XseYjj8GcNq3FnFCW9RZegwjKiWMEAE/U6zAPsKNHPs=;
+        s=korg; t=1637002439;
+        bh=Pun2I+wOETOE5U02UVJALEiRc2VEEVcsmE1ckW3AD/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pco2rRA0Jm9HpqkWwGHhzH/mwX0gMZtWDD1Y4Sao0O+M0dWS/FaDI9yyYm/84xMJ4
-         +ZMLz7y7dLkaupoLqGX59gJ6rJ4zaPzqwybSbz1xsKqwMLicHos6SOisTe3JDe/jVf
-         sgg5QXG722YwDg/GuWRvg+CNe0H5o7CzWqt3M0EA=
+        b=1nMYpchHVs6Vlm+N+y30UvwN25PLhuW35c7H1DKbLj/YftTt8qJETUMOSpVwk4oRv
+         XAqujfALYXdIXRsUDzdrneiokgQ2h1KPU4EECIiui+d1FBaCegVZCBEGp7dPDY3UCd
+         Xp40/Hdv29n4twgXpe3kXj9Ejn4iCLEUJJ0Os1oQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
+        stable@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Denis CIOCCA <denis.ciocca@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 567/917] arm64: dts: meson: sm1: add Ethernet PHY reset line for ODROID-C4/HC4
-Date:   Mon, 15 Nov 2021 18:01:02 +0100
-Message-Id: <20211115165448.012110892@linuxfoundation.org>
+Subject: [PATCH 5.15 568/917] iio: st_sensors: disable regulators after device unregistration
+Date:   Mon, 15 Nov 2021 18:01:03 +0100
+Message-Id: <20211115165448.047098725@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,48 +44,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongjin Kim <tobetter@gmail.com>
+From: Alexandru Ardelean <aardelean@deviqon.com>
 
-[ Upstream commit 9d02214f8332d5dbbcce3d6c5c915e54d43a0c46 ]
+[ Upstream commit 9f0b3e0cc0c88618aa9e5cecef747b1337ae0a5d ]
 
-This patch is to fix an issue that the ethernet link doesn't come up
-when using ip link set down/up:
-   [   11.428114] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
-   [   14.428595] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
-   [   14.428610] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
-   [   14.428974] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
-   [   14.711185] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
+Up until commit ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal
+to core") only the ST pressure driver seems to have had any regulator
+disable. After that commit, the regulator handling was moved into the
+common st_sensors logic.
 
-This fix refers to two commits applied for ODROID-N2 (G12B).
-    commit 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
-    commit 1c7412530d5d0 ("arm64: dts: meson: g12b: odroid-n2: fix PHY deassert timing requirements")
+In all instances of this regulator handling, the regulators were disabled
+before unregistering the IIO device.
+This can cause issues where the device would be powered down and still be
+available to userspace, allowing it to send invalid/garbage data.
 
-Fixes: 88d537bc92ca ("arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi")
-Signed-off-by: Dongjin Kim <tobetter@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-[narmstrong: added fixes tag and typo in commit log]
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/YScKYFWlYymgGw3l@anyang-linuxfactory-or-kr
+This change moves the st_sensors_power_disable() after the common probe
+functions. These common probe functions also handle unregistering the IIO
+device.
+
+Fixes: 774487611c949 ("iio: pressure-core: st: Provide support for the Vdd power supply")
+Fixes: ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal to core")
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Denis CIOCCA <denis.ciocca@st.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Link: https://lore.kernel.org/r/20210823112204.243255-2-aardelean@deviqon.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/iio/accel/st_accel_i2c.c       | 4 ++--
+ drivers/iio/accel/st_accel_spi.c       | 4 ++--
+ drivers/iio/gyro/st_gyro_i2c.c         | 4 ++--
+ drivers/iio/gyro/st_gyro_spi.c         | 4 ++--
+ drivers/iio/magnetometer/st_magn_i2c.c | 4 ++--
+ drivers/iio/magnetometer/st_magn_spi.c | 4 ++--
+ drivers/iio/pressure/st_pressure_i2c.c | 4 ++--
+ drivers/iio/pressure/st_pressure_spi.c | 4 ++--
+ 8 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-index fd0ad85c165ba..45e7fcb062f96 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-@@ -263,6 +263,10 @@
- 		reg = <0>;
- 		max-speed = <1000>;
+diff --git a/drivers/iio/accel/st_accel_i2c.c b/drivers/iio/accel/st_accel_i2c.c
+index f711756e41e3d..cba57459e90ab 100644
+--- a/drivers/iio/accel/st_accel_i2c.c
++++ b/drivers/iio/accel/st_accel_i2c.c
+@@ -193,10 +193,10 @@ static int st_accel_i2c_remove(struct i2c_client *client)
+ {
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
  
-+		reset-assert-us = <10000>;
-+		reset-deassert-us = <80000>;
-+		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_accel_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
 +
- 		interrupt-parent = <&gpio_intc>;
- 		/* MAC_INTR on GPIOZ_14 */
- 		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/accel/st_accel_spi.c b/drivers/iio/accel/st_accel_spi.c
+index bb45d9ff95b85..5167fae1ee8ec 100644
+--- a/drivers/iio/accel/st_accel_spi.c
++++ b/drivers/iio/accel/st_accel_spi.c
+@@ -143,10 +143,10 @@ static int st_accel_spi_remove(struct spi_device *spi)
+ {
+ 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_accel_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/gyro/st_gyro_i2c.c b/drivers/iio/gyro/st_gyro_i2c.c
+index 3ef86e16ee656..a8164fe48b857 100644
+--- a/drivers/iio/gyro/st_gyro_i2c.c
++++ b/drivers/iio/gyro/st_gyro_i2c.c
+@@ -106,10 +106,10 @@ static int st_gyro_i2c_remove(struct i2c_client *client)
+ {
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_gyro_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/gyro/st_gyro_spi.c b/drivers/iio/gyro/st_gyro_spi.c
+index 41d835493347c..9d8916871b4bf 100644
+--- a/drivers/iio/gyro/st_gyro_spi.c
++++ b/drivers/iio/gyro/st_gyro_spi.c
+@@ -110,10 +110,10 @@ static int st_gyro_spi_remove(struct spi_device *spi)
+ {
+ 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_gyro_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
+index 2dfe4ee99591b..fa78f0a3b53ea 100644
+--- a/drivers/iio/magnetometer/st_magn_i2c.c
++++ b/drivers/iio/magnetometer/st_magn_i2c.c
+@@ -102,10 +102,10 @@ static int st_magn_i2c_remove(struct i2c_client *client)
+ {
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_magn_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
+index fba9787963952..ff43cbf61b056 100644
+--- a/drivers/iio/magnetometer/st_magn_spi.c
++++ b/drivers/iio/magnetometer/st_magn_spi.c
+@@ -96,10 +96,10 @@ static int st_magn_spi_remove(struct spi_device *spi)
+ {
+ 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_magn_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/pressure/st_pressure_i2c.c b/drivers/iio/pressure/st_pressure_i2c.c
+index 52fa98f24478d..6215de677017e 100644
+--- a/drivers/iio/pressure/st_pressure_i2c.c
++++ b/drivers/iio/pressure/st_pressure_i2c.c
+@@ -119,10 +119,10 @@ static int st_press_i2c_remove(struct i2c_client *client)
+ {
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_press_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
+index ee393df54cee8..5001aae8f00b8 100644
+--- a/drivers/iio/pressure/st_pressure_spi.c
++++ b/drivers/iio/pressure/st_pressure_spi.c
+@@ -102,10 +102,10 @@ static int st_press_spi_remove(struct spi_device *spi)
+ {
+ 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+ 
+-	st_sensors_power_disable(indio_dev);
+-
+ 	st_press_common_remove(indio_dev);
+ 
++	st_sensors_power_disable(indio_dev);
++
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
