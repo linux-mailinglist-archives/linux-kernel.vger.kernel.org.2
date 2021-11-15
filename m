@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DF4519AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE05451B90
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349073AbhKOXZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:25:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
+        id S1345242AbhKPAED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:04:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244953AbhKOTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CE43634E9;
-        Mon, 15 Nov 2021 18:26:16 +0000 (UTC)
+        id S1344822AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 525DD636D0;
+        Mon, 15 Nov 2021 19:04:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000776;
-        bh=wPAEVYKNn6CWEc71PQMoSyzC81MqcZcdF0MqNnBsPfo=;
+        s=korg; t=1637003096;
+        bh=uaHD+LvuPo7bRxbxm2rQJYilBcs8/qgDugmjycUS0/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOeiyytd8kdWMQiOBnpY/0S/rfbV/wHWdE8sSmMN7Sf9XSdDmASB6PNQonUn+96zo
-         YxDl3NfpIOSm/W3oNFmlJJm4+aaS5VEdftmUFLcUu6KwF/gvbMOa4s4fPdSSIBSEBE
-         oWn+eFwTfwzl07XcI5kx4sVSSNGvk0fyKQurNmME=
+        b=KOicbccZn7RatK85ahQXXoMgmkpuOK/4mlEuS+31uCAI5XtikrRi5HxBbdBZ4cOPv
+         MR7B0RBEeQolH/Lefp+zZsI8MUr+GMMWzQPIXcjzYFgw6HB3NpP0kQ8ZH365GBMzN7
+         iDpinkoElOa86GiyMNMbRBNGC2/7IPXZAzD0CNyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        stable@kernel.org
-Subject: [PATCH 5.14 788/849] parisc: Fix backtrace to always include init funtion names
-Date:   Mon, 15 Nov 2021 18:04:31 +0100
-Message-Id: <20211115165446.896298951@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 777/917] PCI: j721e: Fix j721e_pcie_probe() error path
+Date:   Mon, 15 Nov 2021 18:04:32 +0100
+Message-Id: <20211115165455.290446907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 279917e27edc293eb645a25428c6ab3f3bca3f86 upstream.
+[ Upstream commit 496bb18483cc0474913e81e18a6b313aaea4c120 ]
 
-I noticed that sometimes at kernel startup the backtraces did not
-included the function names of init functions. Their address were not
-resolved to function names and instead only the address was printed.
+If an error occurs after a successful cdns_pcie_init_phy() call, it must be
+undone by a cdns_pcie_disable_phy() call, as already done above and below.
 
-Debugging shows that the culprit is is_ksym_addr() which is called
-by the backtrace functions to check if an address belongs to a function in
-the kernel. The problem occurs only for CONFIG_KALLSYMS_ALL=y.
+Update the goto to branch at the correct place of the error handling path.
 
-When looking at is_ksym_addr() one can see that for CONFIG_KALLSYMS_ALL=y
-the function only tries to resolve the address via is_kernel() function,
-which checks like this:
-	if (addr >= _stext && addr <= _end)
-                return 1;
-On parisc the init functions are located before _stext, so this check fails.
-Other platforms seem to have all functions (including init functions)
-behind _stext.
-
-The following patch moves the _stext symbol at the beginning of the
-kernel and thus includes the init section. This fixes the check and does
-not seem to have any negative side effects on where the kernel mapping
-happens in the map_pages() function in arch/parisc/mm/init.c.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@kernel.org # 5.4+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/db477b0cb444891a17c4bb424467667dc30d0bab.1624794264.git.christophe.jaillet@wanadoo.fr
+Fixes: 49e0efdce791 ("PCI: j721e: Add support to provide refclk to PCIe connector")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/vmlinux.lds.S |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/controller/cadence/pci-j721e.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -57,6 +57,8 @@ SECTIONS
- {
- 	. = KERNEL_BINARY_TEXT_START;
+diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+index ffb176d288cd9..918e11082e6a7 100644
+--- a/drivers/pci/controller/cadence/pci-j721e.c
++++ b/drivers/pci/controller/cadence/pci-j721e.c
+@@ -474,7 +474,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+ 		ret = clk_prepare_enable(clk);
+ 		if (ret) {
+ 			dev_err(dev, "failed to enable pcie_refclk\n");
+-			goto err_get_sync;
++			goto err_pcie_setup;
+ 		}
+ 		pcie->refclk = clk;
  
-+	_stext = .;	/* start of kernel text, includes init code & data */
-+
- 	__init_begin = .;
- 	HEAD_TEXT_SECTION
- 	MLONGCALL_DISCARD(INIT_TEXT_SECTION(8))
-@@ -80,7 +82,6 @@ SECTIONS
- 	/* freed after init ends here */
- 
- 	_text = .;		/* Text and read-only data */
--	_stext = .;
- 	MLONGCALL_KEEP(INIT_TEXT_SECTION(8))
- 	.text ALIGN(PAGE_SIZE) : {
- 		TEXT_TEXT
+-- 
+2.33.0
+
 
 
