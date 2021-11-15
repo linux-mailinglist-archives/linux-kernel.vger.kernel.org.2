@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516EC451D89
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD7451D7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345817AbhKPAbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:31:01 -0500
-Received: from mail.hallyn.com ([178.63.66.53]:39556 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345824AbhKOT33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:29:29 -0500
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 92EC38DA; Mon, 15 Nov 2021 13:26:26 -0600 (CST)
-Date:   Mon, 15 Nov 2021 13:26:26 -0600
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Alistair Delva <adelva@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel-team@android.com,
-        stable@vger.kernel.org, john.johansen@canonical.com
-Subject: Re: [PATCH v2] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-Message-ID: <20211115192626.GA25294@mail.hallyn.com>
-References: <20211115181655.3608659-1-adelva@google.com>
+        id S1347606AbhKPAa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:30:26 -0500
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:51533 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238741AbhKOTap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:30:45 -0500
+X-Greylist: delayed 133501 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 14:30:45 EST
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 5AAA8100E416C;
+        Mon, 15 Nov 2021 20:27:23 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 3AC132ED5FD; Mon, 15 Nov 2021 20:27:23 +0100 (CET)
+Date:   Mon, 15 Nov 2021 20:27:23 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "Bao, Joseph" <joseph.bao@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>, kw@linux.com
+Subject: Re: HW power fault defect cause system hang on kernel 5.4.y
+Message-ID: <20211115192723.GA19161@wunner.de>
+References: <DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211115181655.3608659-1-adelva@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 06:16:55PM +0000, Alistair Delva wrote:
-> Booting to Android userspace on 5.14 or newer triggers the following
-> SELinux denial:
+On Tue, Nov 02, 2021 at 03:45:00AM +0000, Bao, Joseph wrote:
+> Recently we encounter system hang (dead spinlock) when move to kernel
+> linux-5.4.y. 
 > 
-> avc: denied { sys_nice } for comm="init" capability=23
->      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
->      permissive=0
+> Finally, we use bisect to locate the suspicious commit https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.4.y&id=4667358dab9cc07da044d5bc087065545b1000df.
 > 
-> Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
-> better compatibility with older SEPolicy, check ADMIN before NICE.
-> 
-> Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
-> Signed-off-by: Alistair Delva <adelva@google.com>
-> Cc: Khazhismel Kumykov <khazhy@google.com>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Serge Hallyn <serge@hallyn.com>
+> Our system has some HW defect, which will wrongly set PCI_EXP_SLTSTA_PFD
+> high, and this commit will lead to infinite loop jumping to read_status
+> (no chance to clear status PCI_EXP_SLTSTA_PFD bit since ctrl is not
+> updated), I know this is our HW defect, but this commit makes kernel
+> trapped in this isr function and leads to kernel hang (then the user
+> could not get useful information to show what's wrong), which I think
+> is not expected behavior, so I would like to report to you for discussion.
 
-This won't harm anything, so
+Thanks a lot for the report and apologies for the breakage and the delay.
+Below please find a tentative fix.  Could you test whether it fixes the
+issue?
 
-Acked-by: Serge Hallyn <serge@hallyn.com>
+I don't think this is a hardware defect.  If I'm reading the spec right
+(PCIe r5.0, sec. 6.7.1.8), the PFD bit is meant to remain set and cannot
+be cleared until the kernel disables slot power.
 
-but questions below.
+When a power fault happens, we currently only change the LEDs (Power
+Indicator Off, Attention Indicator On) and emit a log message.
+We otherwise leave the slot as is, even though I'd assume that the
+PCI device in the slot is no longer accessible.
 
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: selinux@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: kernel-team@android.com
-> Cc: stable@vger.kernel.org # v5.14+
-> ---
-> v2: added comment requested by Jens
->  block/ioprio.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/ioprio.c b/block/ioprio.c
-> index 0e4ff245f2bf..313c14a70bbd 100644
-> --- a/block/ioprio.c
-> +++ b/block/ioprio.c
-> @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
->  
->  	switch (class) {
->  		case IOPRIO_CLASS_RT:
-> -			if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
-> +			/*
-> +			 * Originally this only checked for CAP_SYS_ADMIN,
-> +			 * which was implicitly allowed for pid 0 by security
+I'm wondering whether we should interpret a power fault as surprise
+removal.  Alternatively, we could attempt recovery, i.e. turn slot
+power off and back on.  Similar to what we're doing when an Uncorrectable
+Error occurs.  Do you have an opinion on that?  What would be the
+desired behavior for your users?
 
-What do you mean, implicitly allowed for pid 0?  Can you point to where
-that happens?
+Thanks,
 
-> +			 * modules such as SELinux. Make sure we check
-> +			 * CAP_SYS_ADMIN first to avoid a denial/avc for
-> +			 * possibly missing CAP_SYS_NICE permission.
-> +			 */
-> +			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
->  				return -EPERM;
+Lukas
 
-But whichever one comes first can cause an avc denial message.  It seems
-like we need a new capable() primitive which supports multiple bits,
-when more than one can authorize an action, and which emits an audit
-message only if all bits are missing.
+-- >8 --
 
->  			fallthrough;
->  			/* rt has prio field too */
-> -- 
-> 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH] PCI: pciehp: Fix infinite loop in IRQ handler upon power
+ fault
+
+The Power Fault Detected bit in the Slot Status register differs from
+all other hotplug events in that it is sticky:  It can only be cleared
+after turning off slot power.  Per PCIe r5.0, sec. 6.7.1.8:
+
+  If a power controller detects a main power fault on the hot-plug slot,
+  it must automatically set its internal main power fault latch [...].
+  The main power fault latch is cleared when software turns off power to
+  the hot-plug slot.
+
+The stickiness used to cause interrupt storms and infinite loops which
+were fixed in 2009 by commits 5651c48cfafe ("PCI pciehp: fix power fault
+interrupt storm problem") and 99f0169c17f3 ("PCI: pciehp: enable
+software notification on empty slots").
+
+Unfortunately in 2020 the infinite loop issue was inadvertently
+reintroduced by commit 8edf5332c393 ("PCI: pciehp: Fix MSI interrupt
+race"):  The hardirq handler pciehp_isr() clears the PFD bit until
+pciehp's power_fault_detected flag is set.  That happens in the IRQ
+thread pciehp_ist(), which never learns of the event because the hardirq
+handler is stuck in an infinite loop.  Fix by setting the
+power_fault_detected flag already in the hardirq handler.
+
+Fixes: 8edf5332c393 ("PCI: pciehp: Fix MSI interrupt race")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214989
+Link: https://lore.kernel.org/linux-pci/DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com
+Reported-by: Joseph Bao <joseph.bao@intel.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v4.19+
+Cc: Stuart Hayes <stuart.w.hayes@gmail.com>
+---
+ drivers/pci/hotplug/pciehp_hpc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+index 6ac5ea5..fac6b8e 100644
+--- a/drivers/pci/hotplug/pciehp_hpc.c
++++ b/drivers/pci/hotplug/pciehp_hpc.c
+@@ -640,6 +640,8 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+ 	 */
+ 	if (ctrl->power_fault_detected)
+ 		status &= ~PCI_EXP_SLTSTA_PFD;
++	else if (status & PCI_EXP_SLTSTA_PFD)
++		ctrl->power_fault_detected = true;
+ 
+ 	events |= status;
+ 	if (!events) {
+@@ -649,7 +651,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+ 	}
+ 
+ 	if (status) {
+-		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
++		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, status);
+ 
+ 		/*
+ 		 * In MSI mode, all event bits must be zero before the port
+@@ -723,8 +725,7 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
+ 	}
+ 
+ 	/* Check Power Fault Detected */
+-	if ((events & PCI_EXP_SLTSTA_PFD) && !ctrl->power_fault_detected) {
+-		ctrl->power_fault_detected = 1;
++	if (events & PCI_EXP_SLTSTA_PFD) {
+ 		ctrl_err(ctrl, "Slot(%s): Power fault\n", slot_name(ctrl));
+ 		pciehp_set_indicators(ctrl, PCI_EXP_SLTCTL_PWR_IND_OFF,
+ 				      PCI_EXP_SLTCTL_ATTN_IND_ON);
+-- 
+2.33.0
+
