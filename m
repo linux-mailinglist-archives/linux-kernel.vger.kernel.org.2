@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F7F451218
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5410A451222
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345979AbhKOT3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:29:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34794 "EHLO mail.kernel.org"
+        id S238797AbhKOTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:30:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239016AbhKORwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:52:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 605496325A;
-        Mon, 15 Nov 2021 17:31:52 +0000 (UTC)
+        id S238909AbhKORwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:52:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118B263271;
+        Mon, 15 Nov 2021 17:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997513;
-        bh=ivERZluPG4683IGei38/S2cmxwj+794NDxDNI6OomYU=;
+        s=korg; t=1636997540;
+        bh=M7KYK+ahIYqjZZQ2s8fXRzsF0bFxQUrv/kfEICO4qMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ScrlZeujqxysUKZ2fTID3tieyEnWhkKNjXofKMdHkn/c91uyg7FieJ5ZnB2pROl1E
-         OWVWLrdUWG69mfQJsjjSeSv/MMgenQx7EwRanrwZFakxYGx+bEIkHTH6Df08QFj6XS
-         UfvKw0GtrWgMpb+Wi3vf9gblb6Kcw88e0RIbB44Y=
+        b=Uz1fXVPaNW5mXflpV8+W6JC73BZTocmDQFT40/evEGcRFs4oDTEpdzjW/4TdOlMkL
+         WdiUtFn5AF/K38ap9MTP7cqCoge1dKKgpQhrsk+JzQu+bZ2X4DhGUlfZ2+PIn6IvSd
+         2nc0XuDITZ0mWYAfvnTkUFcplufh8IKhXFsjI0GM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.10 148/575] PCI: aardvark: Fix support for PCI_BRIDGE_CTL_BUS_RESET on emulated bridge
-Date:   Mon, 15 Nov 2021 17:57:53 +0100
-Message-Id: <20211115165348.821576438@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.10 153/575] pinctrl: core: fix possible memory leak in pinctrl_enable()
+Date:   Mon, 15 Nov 2021 17:57:58 +0100
+Message-Id: <20211115165348.991021662@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,74 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit bc4fac42e5f8460af09c0a7f2f1915be09e20c71 upstream.
+commit c7892ae13e461ed20154321eb792e07ebe38f5b3 upstream.
 
-Aardvark supports PCIe Hot Reset via PCIE_CORE_CTRL1_REG.
+I got memory leak as follows when doing fault injection test:
 
-Use it for implementing PCI_BRIDGE_CTL_BUS_RESET bit of PCI_BRIDGE_CONTROL
-register on emulated bridge.
+unreferenced object 0xffff888020a7a680 (size 64):
+  comm "i2c-mcp23018-41", pid 23090, jiffies 4295160544 (age 8.680s)
+  hex dump (first 32 bytes):
+    00 48 d3 1e 80 88 ff ff 00 1a 56 c1 ff ff ff ff  .H........V.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000083c79b35>] kmem_cache_alloc_trace+0x16d/0x360
+    [<0000000051803c95>] pinctrl_init_controller+0x6ed/0xb70
+    [<0000000064346707>] pinctrl_register+0x27/0x80
+    [<0000000029b0e186>] devm_pinctrl_register+0x5b/0xe0
+    [<00000000391f5a3e>] mcp23s08_probe_one+0x968/0x118a [pinctrl_mcp23s08]
+    [<000000006112c039>] mcp230xx_probe+0x266/0x560 [pinctrl_mcp23s08_i2c]
 
-With this, the function pci_reset_secondary_bus() starts working and can
-reset connected PCIe card. Custom userspace script [1] which uses setpci
-can trigger PCIe Hot Reset and reset the card manually.
+If pinctrl_claim_hogs() fails, the 'pindesc' allocated in pinctrl_register_one_pin()
+need be freed.
 
-[1] https://alexforencich.com/wiki/en/pcie/hot-reset-linux
-
-Link: https://lore.kernel.org/r/20211028185659.20329-7-kabel@kernel.org
-Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Cc: stable@vger.kernel.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 950b0d91dc10 ("pinctrl: core: Fix regression caused by delayed work for hogs")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211022014323.1156924-1-yangyingliang@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/pinctrl/core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -793,6 +793,22 @@ advk_pci_bridge_emul_base_conf_read(stru
- 		*value = advk_readl(pcie, PCIE_CORE_CMD_STATUS_REG);
- 		return PCI_BRIDGE_EMUL_HANDLED;
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -2077,6 +2077,8 @@ int pinctrl_enable(struct pinctrl_dev *p
+ 	if (error) {
+ 		dev_err(pctldev->dev, "could not claim hogs: %i\n",
+ 			error);
++		pinctrl_free_pindescs(pctldev, pctldev->desc->pins,
++				      pctldev->desc->npins);
+ 		mutex_destroy(&pctldev->mutex);
+ 		kfree(pctldev);
  
-+	case PCI_INTERRUPT_LINE: {
-+		/*
-+		 * From the whole 32bit register we support reading from HW only
-+		 * one bit: PCI_BRIDGE_CTL_BUS_RESET.
-+		 * Other bits are retrieved only from emulated config buffer.
-+		 */
-+		__le32 *cfgspace = (__le32 *)&bridge->conf;
-+		u32 val = le32_to_cpu(cfgspace[PCI_INTERRUPT_LINE / 4]);
-+		if (advk_readl(pcie, PCIE_CORE_CTRL1_REG) & HOT_RESET_GEN)
-+			val |= PCI_BRIDGE_CTL_BUS_RESET << 16;
-+		else
-+			val &= ~(PCI_BRIDGE_CTL_BUS_RESET << 16);
-+		*value = val;
-+		return PCI_BRIDGE_EMUL_HANDLED;
-+	}
-+
- 	default:
- 		return PCI_BRIDGE_EMUL_NOT_HANDLED;
- 	}
-@@ -809,6 +825,17 @@ advk_pci_bridge_emul_base_conf_write(str
- 		advk_writel(pcie, new, PCIE_CORE_CMD_STATUS_REG);
- 		break;
- 
-+	case PCI_INTERRUPT_LINE:
-+		if (mask & (PCI_BRIDGE_CTL_BUS_RESET << 16)) {
-+			u32 val = advk_readl(pcie, PCIE_CORE_CTRL1_REG);
-+			if (new & (PCI_BRIDGE_CTL_BUS_RESET << 16))
-+				val |= HOT_RESET_GEN;
-+			else
-+				val &= ~HOT_RESET_GEN;
-+			advk_writel(pcie, val, PCIE_CORE_CTRL1_REG);
-+		}
-+		break;
-+
- 	default:
- 		break;
- 	}
 
 
