@@ -2,165 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5181F45063C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B3B450657
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhKOOH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:07:57 -0500
-Received: from mx0a-0039f301.pphosted.com ([148.163.133.242]:61582 "EHLO
-        mx0a-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230501AbhKOOHw (ORCPT
+        id S232117AbhKOOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhKOOMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:07:52 -0500
-Received: from pps.filterd (m0174677.ppops.net [127.0.0.1])
-        by mx0a-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFDhmGn017233;
-        Mon, 15 Nov 2021 14:04:49 GMT
-Received: from eur04-he1-obe.outbound.protection.outlook.com (mail-he1eur04lp2057.outbound.protection.outlook.com [104.47.13.57])
-        by mx0a-0039f301.pphosted.com (PPS) with ESMTPS id 3cbrpj83w5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 14:04:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UvdlkRrvbuGwe5qU0dU0G3oZ0mpTJdur+WZl6RgcDGlBPZGDdFIi6G8NKtDvSi29z2eXVt/WcuPSbuvLE53Zwy3KvjFjkFqXtkhdjeMiWzFaVC0HHkEQAZKjPZoTAi2lmdO3rKLflhY3JDeLhm38CPxkR/0pmmW6dx1IBluVDGpS3RrvrWxSGjno4h44Ch9rjIbGXqdRes2WXq7B6qoGuOzmuUNDgpI1chQ2qANrnM8H8oBhxDg53PXbZAvuxPzvqPMP5RgP1JaJqj7Qv6Jv0tLb7w65cd1/bQgoIOStDOEM6vBk8VF8DotMjXeomPh5J7vnui68XffKFiJDOKEgBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YdvDzg0gK7ltXilC9ZV43mCJsJxkkgJAV7gwTIy6P5I=;
- b=jJbO1bTVcD4ZO67UPj5z9pcFhpo0SJm3mT7KQZ6vbmsJeY2QOBn/KxSE63C9Nn1MMy6orZFzmpbdWrVKRM619eDSIpviWhu1UUTQhbGDEg/3aik2zmVIa4WWec56nrkrzwzFowbRlSykGCpS5WOxnnQfLsKrbASKePtwe5QGdmvbSbgN8yrLSP8pt8cwWzPPt/dPviX/ah+GfuRVMaB5iJahcRo6NsJk3ohXIDwbLFm/QMlGg71rllrTjYWOfRvT4pN9mf9a0AAx43IkW5pC4Jntb4CMFB9ktxmIo2/vS7jIu1mBHBzrdyuDrXbp9LpQXyjMgvDE//FbfNPc+ajmEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YdvDzg0gK7ltXilC9ZV43mCJsJxkkgJAV7gwTIy6P5I=;
- b=ST6LHcOA6J+vsn31D5g27/ME+PIpk3f5qB1qSV9NgTyuy/vkik/O4NRwcrRydn13JnxaSD/f7WWaaedXgvXQk/vxdFvZEhXkWs+5EvV9gdpGpt/ye6KgQjJoYoF6y5Nfo16UhNgiBj//Vcg03rWbVROZqFrEcRI/nXCSlpIR1TPXTFGX8ResPTjzCe06EexJd6vd7e3QsoATLEuPtPTzrApn07IPeDZ0epGn1pdfCcBglYBZ0PoeKk+2fHRer9GCXqzka56AyrONmY+MxvBGo/rwSPq3YuV5rrhygOY23vpGaAwMLYUMHzLcOdeTnBCr18rS7ecJMmn3fdqTcs+UUg==
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
- by VI1PR0302MB3376.eurprd03.prod.outlook.com (2603:10a6:803:1d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Mon, 15 Nov
- 2021 14:04:44 +0000
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::c038:e032:595a:651]) by AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::c038:e032:595a:651%8]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 14:04:44 +0000
-From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-To:     Bernard Zhao <bernard@vivo.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/xen: fix potential memleak in error branch
-Thread-Topic: [PATCH] drm/xen: fix potential memleak in error branch
-Thread-Index: AQHX2dM/C7peAofhs0mLDS2TsBGiLKwEn9OA
-Date:   Mon, 15 Nov 2021 14:04:44 +0000
-Message-ID: <ea5cd96c-304b-c623-924d-cf8443455216@epam.com>
-References: <20211115034504.4993-1-bernard@vivo.com>
-In-Reply-To: <20211115034504.4993-1-bernard@vivo.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bfbc2cf7-0852-4745-d5b0-08d9a840e076
-x-ms-traffictypediagnostic: VI1PR0302MB3376:
-x-microsoft-antispam-prvs: <VI1PR0302MB3376F2E1B2D446827AF3F0B6E7989@VI1PR0302MB3376.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TDZoGIa6X86gZLV1gN/v44d/5S9iHhpzOK8f/Fvc7X39L7Qs+wQ8h/HD3EQEW0fSMC/yQFlZiRjaD+dOdHHBSQaNaPFd47oRQJ7EM+94ftmeZaD4MV6935ArzVrdbMzPWpgJdl5sTpfisYouk2ba9oK673mcvl8ph6+AAJjwHk5TTvYJAKjY1Gg8yuRGnxV6BXHMviSLUQHA4k66U+yLkU7/ZHo2z+KmQj9KcX8ubQ6Veqr2KYggGEr9TRAAP5+Qlt8kLOgs1B18K20dlb1SgBhZ4eYFLA6ER5O+Dcv/hMgcYH0UJiMvficjGfpUm6byVGnw4gZVMbCb6l+z3gg1qy96A+wfqmiBPbRG9mqKRTunWWSA7Yb7k6wgguI1NqYp8/oCZnPDps6903tFLDBiOxvYoXZjT4blmEFBwSXoVUQorEiu5bReVYPV00O5hjuBixOrxmPjgrDHo8MRzvn4kYCH9YCx7Mw2vbf2oN7LbpI8zFFl5HRze6he1OVueZFX3aNNzJ42cFnvg+WHtXDLCYc6WrFcIwsFbbukj5s30qrQCQmmfMGLrFggnEHX0Mi3YPqMp23H+eNn2npFGHGPacnMowIiv9UOFpehxojsG2Pi9bzi2T4INw5cRxjOxEyOFAZOVViIaj1nYD4fQYwBPQOGsVM2Tl5XmmHeB0Wgr61KZnoweDCSIq1uJQrC1dvLrXEgrbvdJSVL1Num4kab5pKLSzgKrmo6NfMQgl8wzKqTdey9FFOX/03Tpfx7cxlZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(8676002)(122000001)(86362001)(5660300002)(66556008)(38100700002)(66446008)(64756008)(76116006)(91956017)(66476007)(66946007)(186003)(38070700005)(31696002)(6512007)(2906002)(31686004)(508600001)(53546011)(6506007)(6486002)(8936002)(36756003)(83380400001)(2616005)(316002)(110136005)(71200400001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UHNSZU5VSEVZY0JzS2VTQmRuWWJ5WnVzSjk1OE0xQjBZS0dxTnhEWHV3QlRG?=
- =?utf-8?B?N1BFZWdhTEFUU3piSjdqMWdIZTV3YW1OdXFNSkJPTTdkdnVCa0pMY0pCMXJ5?=
- =?utf-8?B?WXlaa2xzdCtNMTZiVjB4d2RaM0dhejA4cGtLd0VlVG5aMnYrQVZZamxSQ2Fs?=
- =?utf-8?B?Um9ORllFUzc5QlVYUFV3K292cE52ZXByMG9DREpTNjZNd2NESXBMbmNMOHJs?=
- =?utf-8?B?bGlJc2JtZjFmREJheFRacHBaVWMwZEJsL1dSbDEwRThOY251NGxrZXdwZjRp?=
- =?utf-8?B?OXFKQlZUMXYvQjNMSkJqdWp1V2pJMXQ0ZEZjRThFTXMyaWhvQVpXZ2grUlVu?=
- =?utf-8?B?dHg3bjZQSWxCSVhJQ2lQc3ZMOS9mRnNtR0JzcXQyRHNXaEQ4dWEyYStQMVk0?=
- =?utf-8?B?ZTBqOTc2aVhzc3JlWDJ2UlVvSFJjbFBnZ1c0c2MraXRaLy8wVzBITlppY3Q1?=
- =?utf-8?B?TWtUM2I5Rm1hRDBTYklweDAwcjBXblZoKzVWQkF0NERuTjhKQnpCQ0F6VE1p?=
- =?utf-8?B?UlREd3JXVktHOE5ickZKR0RuYjBERVV2eUNBcXZyMHIxL0JwSm0xdWlmSUJQ?=
- =?utf-8?B?RlZkWXNlbjYzdUw2SVRUcnZ4Zk1BNVNFQTUyaHY5SUpSNDlpR2Jpc3UrY3cx?=
- =?utf-8?B?MWNGcGhiRkZRa00rK2FWNjhwdnNkeFZqK3J2eEdJRXV6WDFnbGl6TG04aWhy?=
- =?utf-8?B?aTg5dmNwZ3FnR3lTdHdyODJSRDJIb3F6YjlnN2ZvSGk3YkpjaldwMnhtbktP?=
- =?utf-8?B?VGNRZWdsaklGZG9uZExzcFFUd0ZtS3dqclJHUlRld1VibEp4OS9NaFdiaUdH?=
- =?utf-8?B?bndvZldHS1lKUitEMTNuWTYrMDdvOTROZ0lVeElvSDAwSStXSldVK0VHVkRj?=
- =?utf-8?B?NDBTSEFldzdWT2RCM0pzd3NFT3duNTRwa0xEZ0NyV2kzSW9TcnVMV0k1a25k?=
- =?utf-8?B?bDV5c09FeVZwNWx1Z1JKQ0FJUGNjSmZ3M1J2VVFiQVRMUXdzVFc0QnNmbldN?=
- =?utf-8?B?dkw4Tm1vTnBSTjJiVGpvbFNyaitYK2FTbEFoSDJjc0RTL3JiVFpkQnVkM093?=
- =?utf-8?B?YmFBM0hXc3BIdHpKVjNMMVl4SG5sUmhxUXpRYzZYcFcyd3VMNDEvemtPb0tR?=
- =?utf-8?B?UVVtQkpvK203OUk2UHlkalZaMW9CcVFKT0ZRREg2ZnZhRFI4K1JHOFA4T3gr?=
- =?utf-8?B?dlRtWTJiR0tmZlE1T01McmtSTmRMK3NEY1Y5cXVMMENGbXVTa1c2UnBrUEJk?=
- =?utf-8?B?eUExSytqNzh6aXhOaWZQeFVITGxlSktvalY1eE9DZjJ2Zjd0cVpxWkxhTFRR?=
- =?utf-8?B?bkFVREtlL3JyekFCY2laRUoyUi9VQUw1UVdwZWMwazJaNVp6UlJMV2E1S1Nx?=
- =?utf-8?B?eHlmcFBhcGNTYzQxeWJPNkRQZjBIUkZDeTdTN3Y5aDdTMzU4Vjk2a1NYT3B3?=
- =?utf-8?B?S1BHSk9ya1pHVFcyamFYbmtmVkxUdG1CSmxDZzdwYWpkTWo5Um1ZWitvM2FV?=
- =?utf-8?B?VCt6N3UrWWEweEVENjNKSDBIZjQ5cmg1U0RZWXZkckFRbDZmUm9hTDgxZFoy?=
- =?utf-8?B?K0oxcUw0T2VDRy9Kc0tCNU1zRXFLWlE0ZnVKSk5TcG12ZW5NNGdNdVExUTZu?=
- =?utf-8?B?Tm9ZYTNEWFpJcCtPNTgvdHhFSHR0My8zWklxbjVoanoyNTVFdXdKRnZCcFVG?=
- =?utf-8?B?Zm1WdFJ2UmY4dFhIZHMrVGFLSEdiZ3hEZHpGQWlWRGQ1djVKZHlzWjl3ZVNH?=
- =?utf-8?B?NEZnc1M2YzZDeS84OUpMeGRmZ0E4RkJpN1lPMjhVUFF3MDFwQ0xxV2N2SXZz?=
- =?utf-8?B?cXVQMGRZSEJZb1U4Z0lrVkt1a1dGVlY0RC9jbUQ4a3Y0SnJwdkVscXZISnVU?=
- =?utf-8?B?ZWR3aFIyWGl0M0hvVEJFOWpjL295UlppT2dqZTY0YmN3akE0VitJbm9aeHNj?=
- =?utf-8?B?VzJud0t0VjRzK1JYaVphdDhvaTJEVFZQZlVybFVHaVJxYm42SXBMdWFnaXZk?=
- =?utf-8?B?Z3R3aTZGVWQ3NGlpZjNtKzlNZERrUDVrKzdraHJMREx3ZVMydzFWMEZ1R29m?=
- =?utf-8?B?UElWZ3RvRE9tVGdkSEQ4NTFnLzNITFhTOXpQMjN2eVVuRlh4Z21QTFZuNVZD?=
- =?utf-8?B?Ny9XWFo3dkJwQlZ1Wm9wQUQ1QXJCUzUxY0FOMzByZGxCZERTcGJKb2kxekR5?=
- =?utf-8?B?YWxGdDJsWkVHcnlQeVVTUjV3WE5La3JhWXR4S3YwTUVVQXZXendsSWJydnJF?=
- =?utf-8?B?Tjc5T09nbnl2cncybGZGbEtKOSs0YXdNYTdlQ1ZSS3djZ2xqelRGN0lBditC?=
- =?utf-8?B?REg1QVgzQUFxcmZRTFA4UWFWS2psMnZsREZGWStrajNnYnRqcXdCUT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BE2404875A343F4AA74F8EB8F7B45349@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 15 Nov 2021 09:12:09 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5948BC061767;
+        Mon, 15 Nov 2021 06:09:13 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id w1so72647935edd.10;
+        Mon, 15 Nov 2021 06:09:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zld90iZn+a7xROzRHHOcYE11YsX/KuO+rgQqYB755kU=;
+        b=hTflx2fg7HljW5nG23FGCW9b1HRaFygjpvSgAOZJ++nWUSYFvrHJ3xVWLkFFW4FH04
+         9Ep8zH4wiHkuxMNKrwaQ4rUgQpsjn6RQNEiDHb0yemE742im/iTPOUQYsYT4VveVW/0E
+         mREjQzJ2AgNxGCGX5Kr8NqRJwNwZdEfRzQ3c9RxeKjooBQWVUcXadcd5e1FnbPBWDna3
+         gy06NQumwMMatltqyTjHXRsPtN5iCGiWlrQFDCEIyatIwXDGH9v9D1Y5MPQ2DYGFxECn
+         +bnyg+0Td7Y1Y7g2HArbB6/4kTUZE5KyeENPDRrpjzBSzaNkuEF4KADP5GsPW7yIXHad
+         URDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zld90iZn+a7xROzRHHOcYE11YsX/KuO+rgQqYB755kU=;
+        b=NQRoK74P2QZhgBC0aUeYyuBMwFZPZJ83EkEgQT4yZO3DEtjtItA1z8ABp975PqazsW
+         ii/hB14f92vTX3INtK0BPVMfVURkhVgiQ6Sncni7jCO6W3XqZ+1uZFszm8YYxIItaq2K
+         BZvoDdLZTX2aViG/8AmCnK2rXNw0EbXDiwKi0Lukl7lesKwxTobkY7Y09v2Jl+Qcx+cq
+         WiqOmdXUNZ4CEc9jIVsnhHyzxp/sCh9l2LaasvSiaLIZ5/gzN3+mgFxUv+4XVcFx+Ew1
+         J86QAQ6fGmZeN3w9OalIP0jjByD2i1yV9HdcL3BZmhn97S7H00HtpUd3fH3J3psvYAhe
+         6exg==
+X-Gm-Message-State: AOAM530v0xMZ9fdVuzxAthP1aa5kqJIt8UvYHLPEBVOKaP04gx+3pUGX
+        NgpIcrM9K9V/Gkf1OCogt/UqqGqB1EE=
+X-Google-Smtp-Source: ABdhPJy1s50qatzUYOhUFalRX6C6/Tl6pBOxZhD32R4ug9+iwawi3GRD/IN3H1VlZpK0X4fNC/TNEw==
+X-Received: by 2002:a17:907:3f96:: with SMTP id hr22mr49732682ejc.492.1636985351647;
+        Mon, 15 Nov 2021 06:09:11 -0800 (PST)
+Received: from [192.168.1.10] ([46.249.74.23])
+        by smtp.googlemail.com with ESMTPSA id sa17sm6771705ejc.123.2021.11.15.06.09.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Nov 2021 06:09:11 -0800 (PST)
+Subject: Re: [PATCH v2] drm: omapdrm: Export correct scatterlist for TILER
+ backed BOs
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Matthijs van Duin <matthijsvanduin@gmail.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Carl Philipp Klemm <philipp@uvos.xyz>
+References: <1636796417-5997-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+ <1636797239-6384-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+ <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
+ <YZIm/GiRWv0nPN5b@chinchilla>
+ <e39cc7c8-6504-f5ae-5693-7eb5b5d00cd1@ideasonboard.com>
+From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Message-ID: <b63aa9a4-4687-3473-bef5-363c132c2247@gmail.com>
+Date:   Mon, 15 Nov 2021 16:05:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 Thunderbird/60.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfbc2cf7-0852-4745-d5b0-08d9a840e076
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 14:04:44.5320
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2oORsUDdmffVqZT00DTwgLdpKeXy0Ft5FOPG3EkmL7tZ+q10xCsyfRBI/oQ16B1ZD2GDHxrjA/CDosEcCiCTfRwUEa9Tjg+HF17UMXmos/ywCMDjlGySo0h0Na4Gzfqn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0302MB3376
-X-Proofpoint-ORIG-GUID: ATgmAinecZTS0cwAs60zwV-HfSzFi8Pc
-X-Proofpoint-GUID: ATgmAinecZTS0cwAs60zwV-HfSzFi8Pc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_10,2021-11-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 phishscore=0 adultscore=0
- suspectscore=0 malwarescore=0 spamscore=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111150076
+In-Reply-To: <e39cc7c8-6504-f5ae-5693-7eb5b5d00cd1@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEJlcm5hcmQhDQoNCk9uIDE1LjExLjIxIDA1OjQ1LCBCZXJuYXJkIFpoYW8gd3JvdGU6DQo+
-IEluIGZ1bmN0aW9uIHhlbl9kcm1fZnJvbnRfZ2VtX2ltcG9ydF9zZ190YWJsZSwgaWYgaW4gZXJy
-b3IgYnJhbmNoLA0KPiB0aGVyZSBtYXliZSBwb3RlbnRpYWwgbWVtbGVhayBpZiBub3QgY2FsbCBn
-ZW1fZnJlZV9wYWdlc19hcnJheS4NCj4NCj4gU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxi
-ZXJuYXJkQHZpdm8uY29tPg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0veGVuL3hlbl9kcm1f
-ZnJvbnRfZ2VtLmMgfCA4ICsrKysrKy0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9u
-cygrKSwgMiBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS94
-ZW4veGVuX2RybV9mcm9udF9nZW0uYyBiL2RyaXZlcnMvZ3B1L2RybS94ZW4veGVuX2RybV9mcm9u
-dF9nZW0uYw0KPiBpbmRleCBiMjkzYzY3MjMwZWYuLjczMmMzZWVjMDY2NiAxMDA2NDQNCj4gLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL3hlbi94ZW5fZHJtX2Zyb250X2dlbS5jDQo+ICsrKyBiL2RyaXZl
-cnMvZ3B1L2RybS94ZW4veGVuX2RybV9mcm9udF9nZW0uYw0KPiBAQCAtMjIyLDE1ICsyMjIsMTkg
-QEAgeGVuX2RybV9mcm9udF9nZW1faW1wb3J0X3NnX3RhYmxlKHN0cnVjdCBkcm1fZGV2aWNlICpk
-ZXYsDQo+ICAgDQo+ICAgCXJldCA9IGRybV9wcmltZV9zZ190b19wYWdlX2FycmF5KHNndCwgeGVu
-X29iai0+cGFnZXMsDQo+ICAgCQkJCQkgeGVuX29iai0+bnVtX3BhZ2VzKTsNCj4gLQlpZiAocmV0
-IDwgMCkNCj4gKwlpZiAocmV0IDwgMCkgew0KPiArCQlnZW1fZnJlZV9wYWdlc19hcnJheSh4ZW5f
-b2JqKTsNCj4gICAJCXJldHVybiBFUlJfUFRSKHJldCk7DQo+ICsJfQ0KVGhpcyB3aWxsIGJlIGRl
-bGV0ZWQgb24gdGhlIGZhaWwgcGF0aCBvZiB0aGUgaW1wb3J0IGJ5IHJlbW92aW5nIHRoZSBHRU0N
-Cm9iamVjdCwgc28geGVuX2RybV9mcm9udF9nZW1fZnJlZV9vYmplY3RfdW5sb2NrZWQgd2lsbCB0
-YWtlIGNhcmUgb2YgdGhpcw0KPiAgIA0KPiAgIAlyZXQgPSB4ZW5fZHJtX2Zyb250X2RidWZfY3Jl
-YXRlKGRybV9pbmZvLT5mcm9udF9pbmZvLA0KPiAgIAkJCQkJeGVuX2RybV9mcm9udF9kYnVmX3Rv
-X2Nvb2tpZSgmeGVuX29iai0+YmFzZSksDQo+ICAgCQkJCQkwLCAwLCAwLCBzaXplLCBzZ3QtPnNn
-bC0+b2Zmc2V0LA0KPiAgIAkJCQkJeGVuX29iai0+cGFnZXMpOw0KPiAtCWlmIChyZXQgPCAwKQ0K
-PiArCWlmIChyZXQgPCAwKSB7DQo+ICsJCWdlbV9mcmVlX3BhZ2VzX2FycmF5KHhlbl9vYmopOw0K
-PiAgIAkJcmV0dXJuIEVSUl9QVFIocmV0KTsNCj4gKwl9DQo+ICAgDQo+ICAgCURSTV9ERUJVRygi
-SW1wb3J0ZWQgYnVmZmVyIG9mIHNpemUgJXp1IHdpdGggbmVudHMgJXVcbiIsDQo+ICAgCQkgIHNp
-emUsIHNndC0+b3JpZ19uZW50cyk7DQpUaGFuayB5b3UsDQpPbGVrc2FuZHI=
+
+Hi,
+
+On 15.11.21 г. 12:37 ч., Tomi Valkeinen wrote:
+> On 15/11/2021 11:23, Matthijs van Duin wrote:
+>> On Mon, Nov 15, 2021 at 10:42:41AM +0200, Tomi Valkeinen wrote:
+>>> A BO's memory via the TILER memory is
+>>> contiguous, although with consistent gaps of
+>>> memory that should not be accessed.
+>>
+>> But pretending that these "gaps" are part of the buffer is a security
+>> vulnerability, since that memory which "should not be accessed" may
+>> belong to different security contexts, and exporting the entire
+>> contiguous region covering the buffer allows untrusted contexts (e.g.
+>> userspace) to access this memory.
+> 
+> Yes, I fully agree. I wasn't criticizing the patch, just wanted to 
+> highlight the unmentioned aspects.
+> 
+>>> IPs that might use TILER
+>>> backed BOs only support contiguous memory.
+>>>
+>>> This means that the drivers for such IPs cannot
+>>> use the BOs exported like you do in this patch.
+>>> I believe the drivers could be improved by
+>>> writing a helper function which studies the
+>>> sg_table and concludes that it's actually
+>>> contiguous.
+>>
+>> That indeed sounds like the proper solution for such importers, rather
+>> than making the exporter lie about the buffer bounds to work around
+>> limitations of these importers.
+> 
+> The annoying thing with this solution is that we need to add extra code 
+> to all the drivers that want to import TILER buffers, even if the 
+> drivers shouldn't know anything about TILER.
+> 
+> Then again, the code is not really TILER or OMAP specific, and any IP on 
+> any platform that only supports contiguous buffers, but supports stride, 
+> could import such buffers. Which hints that maybe the code should be 
+> somewhere in the framework, not in the driver. In practice it may be 
+> better to just swallow the annoyance, add the code to the drivers and be 
+> done with it =).
+> 
+>>> Did you look at the userspace mmap of TILER
+>>> buffers? I wonder if that goes correctly or not.
+>>> Isn't memory to userspace mapped per page, and
+>>> lengths of the TILER lines are not page aligned?
+>>
+>> Mapping to userspace uses an ugly hack whereby small slabs of the
+>> buffer (4096x64 (8bpp), 2048x32 (16bpp), or 1024x32 (32bpp) pixels) are
+>> dynamically mapped to dedicated page-aligned regions of the TILER
+>> virtual space.  For each of the three bitdepths only two such slabs can
+>> be mapped into userspace at any given time (on the entire system), so
+>> using this mechanism to render graphics from userspace can easily cause
+>> hundreds if not thousands of page faults per second.
+> 
+> Ah, right, yes, now I remember. The userspace mmap of TILER buffers 
+> isn't very usable.
+> 
+>> The alternative (used e.g. in the pyra kernel) is to force all TILER
+>> buffers to be page-aligned, at the cost of wasting some TILER space.
+>> This will presumably also be necessary to allow SGX to import these
+>> buffers since its MMU can obviously also not map data which is not
+>> page-aligned, same for any other importer which uses an MMU to enforce
+>> memory security (rather than being trusted to simply refrain from
+>> accessing data outside the declared bounds).
+>>
+>> Ideally such page-alignment should only be applied to buffers which are
+>> intended to be consumed by importers which require this, though it's not
+>> clear how that might be accomplished.
+> 
+> Do you mean that each TILER _line_ should be page aligned and the length 
+> should be page divisible? Doesn't that cause quite a lot of wasted 
+> space? Although that, of course, depends on the use. If the primary use 
+> case is allocating a few full screen display buffers, perhaps the waste 
+> is negligible.
+> 
+
+Yes, I think this is the idea, otherwise no MMU can be set correctly.
+
+> In any case, I'm fine with that change, too, as it helps making TILER 
+> usable.
+> 
+
+That's great, will send a patch ASAP.
+
+> And while speaking about usable, if I recall right, the 
+> omap_bo_new_tiled() is pretty annoying to use. You need to give the 
+> width and OMAP_BO_TILED_x flag as a parameter, and if I recall right, 
+> it's all but obvious how those need to be set for, e.g. NV12. But it 
+> works so perhaps better to keep it as it is...
+> 
+
+To me the whole omap_bo_xxx stuff should go away and be replaced by 
+gbm_bo_xxx stuff. The only issue there is with TILER BOs, but I think 
+we'll be able to get away with that with a little abuse of GBM_BO_XXX 
+flags (see the other mail)
+
+> There was also some particular YUV format with some rotations that I 
+> never got working, even after discussing with TI DSS HW guys.
+> 
+>   Tomi
+
+Thanks,
+Ivo
