@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88661451AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EA94518BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355721AbhKOXoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:44:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1351987AbhKOXGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:06:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344051AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6446361E;
-        Mon, 15 Nov 2021 18:50:45 +0000 (UTC)
+        id S243480AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:59:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A973361AA5;
+        Mon, 15 Nov 2021 18:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002245;
-        bh=MimB1u1ERmogR0XAsftBWay+11tQEunFPI51Vz5l+hc=;
+        s=korg; t=1637000013;
+        bh=M9W8ECSQIv7+V0E32wvWvnQRRQ6el4KhvAoCq1OnRns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0BExGf2dCMXN3+2jc8IvVWCe1Fvl+SecdSe3w9lX60grCn9JRmYXbuXLqJX9lmJn+
-         LeDUE2O3ZwZ3o3p/wp2goGmrCr7TeseVUMv+6CLw+6wY86RmE+qSibiSmzAQQMOHND
-         XpuqGjIIwM/iJbNJq5bkzfpvCVkDA/d6yMp4nrAU=
+        b=jrKSULMfqA12UuZhtHxHKmTgS0lbKmkOxYSH5iZlcLkwZolta2IeOYV3+MlS4rJAP
+         vIisxHk3JccqAinafYH8w7R5qqWtYrrywsQB30EuDFQimn55HnSzlTf+0ZkWyWBAMd
+         WXGJZifPmF6BuXZ8Gs2DciR8DN5xDnMi/WUiGobw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 494/917] clocksource/drivers/timer-ti-dm: Select TIMER_OF
+Subject: [PATCH 5.14 506/849] ARM: 9142/1: kasan: work around LPAE build warning
 Date:   Mon, 15 Nov 2021 17:59:49 +0100
-Message-Id: <20211115165445.522992427@linuxfoundation.org>
+Message-Id: <20211115165437.403036110@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit eda9a4f7af6ee47e9e131f20e4f8a41a97379293 ]
+[ Upstream commit c2e6df3eaaf120cde5e7c3a70590dd82e427458a ]
 
-When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
-due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
-CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
+pgd_page_vaddr() returns an 'unsigned long' address, causing a warning
+with the memcpy() call in kasan_init():
 
-arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
+arch/arm/mm/kasan_init.c: In function 'kasan_init':
+include/asm-generic/pgtable-nop4d.h:44:50: error: passing argument 2 of '__memcpy' makes pointer from integer without a cast [-Werror=int-conversion]
+   44 | #define pgd_page_vaddr(pgd)                     ((unsigned long)(p4d_pgtable((p4d_t){ pgd })))
+      |                                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                  |
+      |                                                  long unsigned int
+arch/arm/include/asm/string.h:58:45: note: in definition of macro 'memcpy'
+   58 | #define memcpy(dst, src, len) __memcpy(dst, src, len)
+      |                                             ^~~
+arch/arm/mm/kasan_init.c:229:16: note: in expansion of macro 'pgd_page_vaddr'
+  229 |                pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
+      |                ^~~~~~~~~~~~~~
+arch/arm/include/asm/string.h:21:47: note: expected 'const void *' but argument is of type 'long unsigned int'
+   21 | extern void *__memcpy(void *dest, const void *src, __kernel_size_t n);
+      |                                   ~~~~~~~~~~~~^~~
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: linux-omap@vger.kernel.org
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210828175747.3777891-1-keescook@chromium.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Avoid this by adding an explicit typecast.
+
+Link: https://lore.kernel.org/all/CACRpkdb3DMvof3-xdtss0Pc6KM36pJA-iy=WhvtNVnsDpeJ24Q@mail.gmail.com/
+
+Fixes: 5615f69bc209 ("ARM: 9016/2: Initialize the mapping of KASan shadow memory")
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mm/kasan_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 0f5e3983951a8..08f8cb944a2ac 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -24,6 +24,7 @@ config I8253_LOCK
- 
- config OMAP_DM_TIMER
- 	bool
-+	select TIMER_OF
- 
- config CLKBLD_I8253
- 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
+diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
+index 9c348042a7244..4b1619584b23c 100644
+--- a/arch/arm/mm/kasan_init.c
++++ b/arch/arm/mm/kasan_init.c
+@@ -226,7 +226,7 @@ void __init kasan_init(void)
+ 	BUILD_BUG_ON(pgd_index(KASAN_SHADOW_START) !=
+ 		     pgd_index(KASAN_SHADOW_END));
+ 	memcpy(tmp_pmd_table,
+-	       pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
++	       (void*)pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
+ 	       sizeof(tmp_pmd_table));
+ 	set_pgd(&tmp_pgd_table[pgd_index(KASAN_SHADOW_START)],
+ 		__pgd(__pa(tmp_pmd_table) | PMD_TYPE_TABLE | L_PGD_SWAPPER));
 -- 
 2.33.0
 
