@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5380451A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE24520B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243376AbhKOXj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:39:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S1359250AbhKPA4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:56:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343656AbhKOTVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A71B663316;
-        Mon, 15 Nov 2021 18:44:01 +0000 (UTC)
+        id S1343781AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BE0635EE;
+        Mon, 15 Nov 2021 18:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001842;
-        bh=eF3/QmgcPn7aRdWZs01+PigrocKT3mCZencTM3OuFsc=;
+        s=korg; t=1637001956;
+        bh=NI7zBScXgUn1dJYUmrMvAMBwb7QS3r40QQ1IwAkOqc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YuHvcPhBQ9VpLr/tN2PtwMRDLf55017yrPt1/1AdBSWNJlLuKU2JQ8fnr08L56hv5
-         RWEazwoqEJSnmCD4IkIlwHTRmPhEj+v3bFv9cdP7CMQ4KEQTlm8nprSHiecma78LkV
-         xvf66u6FOOa7d7/0qAoCvW9nu76DHgKW4AewqUYE=
+        b=LDFuKsIlYnu3mPmHUSlPFrBC203B2+rYUR86IUi045JvuquRj4pbuALcbNw+YImyQ
+         MR6gWxpLyi95l46RzLWeHbRZgcrKzk1nwaYHWxBoUbJbZvqeoOwznoTJAtO0GAurCU
+         YlFFLVZG80IZg/whSOSGt15rL/TAXLtp5ecp97VM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 340/917] lockdep: Let lock_is_held_type() detect recursive read as read
-Date:   Mon, 15 Nov 2021 17:57:15 +0100
-Message-Id: <20211115165440.277101836@linuxfoundation.org>
+Subject: [PATCH 5.15 341/917] net: net_namespace: Fix undefined member in key_remove_domain()
+Date:   Mon, 15 Nov 2021 17:57:16 +0100
+Message-Id: <20211115165440.313689142@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,42 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 2507003a1d10917c9158077bf6030719d02c941e ]
+[ Upstream commit aed0826b0cf2e488900ab92193893e803d65c070 ]
 
-lock_is_held_type(, 1) detects acquired read locks. It only recognized
-locks acquired with lock_acquire_shared(). Read locks acquired with
-lock_acquire_shared_recursive() are not recognized because a `2' is
-stored as the read value.
+The key_domain member in struct net only exists if we define CONFIG_KEYS.
+So we should add the define when we used key_domain.
 
-Rework the check to additionally recognise lock's read value one and two
-as a read held lock.
-
-Fixes: e918188611f07 ("locking: More accurate annotations for read_lock()")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lkml.kernel.org/r/20210903084001.lblecrvz4esl4mrr@linutronix.de
+Fixes: 9b242610514f ("keys: Network namespace domain tag")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/net_namespace.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 8a509672a4cc9..d624231eab2bb 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_map *lock, int read)
- 		struct held_lock *hlock = curr->held_locks + i;
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index a448a9b5bb2d6..202fa5eacd0f9 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -473,7 +473,9 @@ struct net *copy_net_ns(unsigned long flags,
  
- 		if (match_held_lock(hlock, lock)) {
--			if (read == -1 || hlock->read == read)
-+			if (read == -1 || !!hlock->read == read)
- 				return LOCK_STATE_HELD;
- 
- 			return LOCK_STATE_NOT_HELD;
+ 	if (rv < 0) {
+ put_userns:
++#ifdef CONFIG_KEYS
+ 		key_remove_domain(net->key_domain);
++#endif
+ 		put_user_ns(user_ns);
+ 		net_free(net);
+ dec_ucounts:
+@@ -605,7 +607,9 @@ static void cleanup_net(struct work_struct *work)
+ 	list_for_each_entry_safe(net, tmp, &net_exit_list, exit_list) {
+ 		list_del_init(&net->exit_list);
+ 		dec_net_namespaces(net->ucounts);
++#ifdef CONFIG_KEYS
+ 		key_remove_domain(net->key_domain);
++#endif
+ 		put_user_ns(net->user_ns);
+ 		net_free(net);
+ 	}
 -- 
 2.33.0
 
