@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8400451EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 183C4451962
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348055AbhKPAgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:36:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1353064AbhKOXSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344532AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F41E56368A;
-        Mon, 15 Nov 2021 18:59:23 +0000 (UTC)
+        id S244630AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E63561B51;
+        Mon, 15 Nov 2021 18:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002764;
-        bh=bvl7/2cFgDMnUQLxmYAhY/q5K98jcp/7S1Giu9g6djs=;
+        s=korg; t=1637000549;
+        bh=1dHm21T4UeTtSEIeJiM96XflCawUHcWq5TUazqyfz2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eehXv1Eg1USmpmlsVWg+Oiq+fmTEcwBi7GqPdzypEDYuJVofEik6ep4s0yXFIbPVz
-         W4bxlJz6Wg7XEwIEFh+8NZMHcQYKt5+XNtwF0lOeuG7sjlzsGo2r59CirELqTH1iVE
-         GRcHPTuWbZTAywg6kk31p4HLDIGbzVuQ0sT4V0xw=
+        b=xKWkVr24WTxuQUgWVyj+vT0FVMC3/DMzDNGT1tinOLGmSXqW1kLsxBCie5zlXhfIJ
+         e5n/rdDJvncQcekD/oKDNhRJceCmgSp0C7BZNdnZEOm6zF7uMk86xCgF8qrAcL6ce9
+         uGt/Hq4J0ZVwpg2Hc3NFAY2YZetBoIz+xFnnK3Pg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 688/917] virtio_ring: check desc == NULL when using indirect with packed
-Date:   Mon, 15 Nov 2021 18:03:03 +0100
-Message-Id: <20211115165452.224518951@linuxfoundation.org>
+Subject: [PATCH 5.14 701/849] auxdisplay: ht16k33: Connect backlight to fbdev
+Date:   Mon, 15 Nov 2021 18:03:04 +0100
+Message-Id: <20211115165443.968038285@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit fc6d70f40b3d0b3219e2026d05be0409695f620d ]
+[ Upstream commit 80f9eb70fd9276938f0a131f76d438021bfd8b34 ]
 
-When using indirect with packed, we don't check for allocation failures.
-This patch checks that and fall back on direct.
+Currently /sys/class/graphics/fb0/bl_curve is not accessible (-ENODEV),
+as the driver does not connect the backlight to the frame buffer device.
+Fix this moving backlight initialization up, and filling in
+fb_info.bl_dev.
 
-Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Link: https://lore.kernel.org/r/20211020112323.67466-3-xuanzhuo@linux.alibaba.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Robin van der Gracht <robin@protonic.nl>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 56 ++++++++++++++++++------------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 3035bb6f54585..d1f47327f6cfe 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1065,6 +1065,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 1e69cc6d21a0d..2b630e194570f 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -413,6 +413,33 @@ static int ht16k33_probe(struct i2c_client *client,
+ 	if (err)
+ 		return err;
  
- 	head = vq->packed.next_avail_idx;
- 	desc = alloc_indirect_packed(total_sg, gfp);
-+	if (!desc)
-+		return -ENOMEM;
- 
- 	if (unlikely(vq->vq.num_free < 1)) {
- 		pr_debug("Can't add buf len 1 - avail = 0\n");
-@@ -1176,6 +1178,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 	unsigned int i, n, c, descs_used, err_idx;
- 	__le16 head_flags, flags;
- 	u16 head, id, prev, curr, avail_used_flags;
-+	int err;
- 
- 	START_USE(vq);
- 
-@@ -1191,9 +1194,14 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 
- 	BUG_ON(total_sg == 0);
- 
--	if (virtqueue_use_indirect(_vq, total_sg))
--		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
--				out_sgs, in_sgs, data, gfp);
-+	if (virtqueue_use_indirect(_vq, total_sg)) {
-+		err = virtqueue_add_indirect_packed(vq, sgs, total_sg, out_sgs,
-+						    in_sgs, data, gfp);
-+		if (err != -ENOMEM)
-+			return err;
++	/* Backlight */
++	memset(&bl_props, 0, sizeof(struct backlight_properties));
++	bl_props.type = BACKLIGHT_RAW;
++	bl_props.max_brightness = MAX_BRIGHTNESS;
 +
-+		/* fall back on direct */
++	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
++					    &client->dev, priv,
++					    &ht16k33_bl_ops, &bl_props);
++	if (IS_ERR(bl)) {
++		dev_err(&client->dev, "failed to register backlight\n");
++		return PTR_ERR(bl);
 +	}
++
++	err = of_property_read_u32(node, "default-brightness-level",
++				   &dft_brightness);
++	if (err) {
++		dft_brightness = MAX_BRIGHTNESS;
++	} else if (dft_brightness > MAX_BRIGHTNESS) {
++		dev_warn(&client->dev,
++			 "invalid default brightness level: %u, using %u\n",
++			 dft_brightness, MAX_BRIGHTNESS);
++		dft_brightness = MAX_BRIGHTNESS;
++	}
++
++	bl->props.brightness = dft_brightness;
++	ht16k33_bl_update_status(bl);
++
+ 	/* Framebuffer (2 bytes per column) */
+ 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
+ 	fbdev->buffer = (unsigned char *) get_zeroed_page(GFP_KERNEL);
+@@ -445,6 +472,7 @@ static int ht16k33_probe(struct i2c_client *client,
+ 	fbdev->info->screen_size = HT16K33_FB_SIZE;
+ 	fbdev->info->fix = ht16k33_fb_fix;
+ 	fbdev->info->var = ht16k33_fb_var;
++	fbdev->info->bl_dev = bl;
+ 	fbdev->info->pseudo_palette = NULL;
+ 	fbdev->info->flags = FBINFO_FLAG_DEFAULT;
+ 	fbdev->info->par = priv;
+@@ -460,34 +488,6 @@ static int ht16k33_probe(struct i2c_client *client,
+ 			goto err_fbdev_unregister;
+ 	}
  
- 	head = vq->packed.next_avail_idx;
- 	avail_used_flags = vq->packed.avail_used_flags;
+-	/* Backlight */
+-	memset(&bl_props, 0, sizeof(struct backlight_properties));
+-	bl_props.type = BACKLIGHT_RAW;
+-	bl_props.max_brightness = MAX_BRIGHTNESS;
+-
+-	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
+-					    &client->dev, priv,
+-					    &ht16k33_bl_ops, &bl_props);
+-	if (IS_ERR(bl)) {
+-		dev_err(&client->dev, "failed to register backlight\n");
+-		err = PTR_ERR(bl);
+-		goto err_fbdev_unregister;
+-	}
+-
+-	err = of_property_read_u32(node, "default-brightness-level",
+-				   &dft_brightness);
+-	if (err) {
+-		dft_brightness = MAX_BRIGHTNESS;
+-	} else if (dft_brightness > MAX_BRIGHTNESS) {
+-		dev_warn(&client->dev,
+-			 "invalid default brightness level: %u, using %u\n",
+-			 dft_brightness, MAX_BRIGHTNESS);
+-		dft_brightness = MAX_BRIGHTNESS;
+-	}
+-
+-	bl->props.brightness = dft_brightness;
+-	ht16k33_bl_update_status(bl);
+-
+ 	ht16k33_fb_queue(priv);
+ 	return 0;
+ 
 -- 
 2.33.0
 
