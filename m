@@ -2,38 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4DD4517D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B50A745179F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347456AbhKOWrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:47:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47398 "EHLO mail.kernel.org"
+        id S1353462AbhKOWfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:35:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237940AbhKOSmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:42:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62B84632F9;
-        Mon, 15 Nov 2021 18:05:09 +0000 (UTC)
+        id S242632AbhKOSjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:39:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34772632ED;
+        Mon, 15 Nov 2021 18:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999510;
-        bh=XdHzq69UVsgqR64Yin1bH2sBYmYAy/ceHyhnLzd7Ng8=;
+        s=korg; t=1636999446;
+        bh=YyT7r9fXaurAhv+M7sUwBSm6FhPaYMV2NyYut70xZaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WrFa0mcdydFuuH7wqabZrHoJ7NH8W5/pFemcUT/4mT9Qrk589asBlur/Gmw+j4zfz
-         kfV9SrBiR7k0VzlTi3HO8nJCsnlNC8iQpEIUxeIVvFiaLeMy3bGJwodKf3y4X/oaVR
-         ZYSvkPP1JKzQjG7UHQop1hmym6Ptq81EwItkStG8=
+        b=wus0mIl6HjmZ2vPqPNfganrX/r9tW5/ftUJTjRYhV9hkWw/jEf6Cti8ZdpEDBNRZY
+         HwByFpvgYWxYEnT+iWl5vI5tNxGD7UwOBRqd7MLm0VSfvxPpc9hw6hWkHRjF1FlYwK
+         88INyL7JN3WgK6Lz7WiINWzxQeEhC2+mvECxpK08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Tim Gardner <tim.gardner@canonical.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 280/849] drm/msm: prevent NULL dereference in msm_gpu_crashstate_capture()
-Date:   Mon, 15 Nov 2021 17:56:03 +0100
-Message-Id: <20211115165429.743976506@linuxfoundation.org>
+Subject: [PATCH 5.14 282/849] block: bump max plugged deferred size from 16 to 32
+Date:   Mon, 15 Nov 2021 17:56:05 +0100
+Message-Id: <20211115165429.817023857@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -45,52 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Gardner <tim.gardner@canonical.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit b220c154832c5cd0df34cbcbcc19d7135c16e823 ]
+[ Upstream commit ba0ffdd8ce48ad7f7e85191cd29f9674caca3745 ]
 
-Coverity complains of a possible NULL dereference:
+Particularly for NVMe with efficient deferred submission for many
+requests, there are nice benefits to be seen by bumping the default max
+plug count from 16 to 32. This is especially true for virtualized setups,
+where the submit part is more expensive. But can be noticed even on
+native hardware.
 
-CID 120718 (#1 of 1): Dereference null return value (NULL_RETURNS)
-23. dereference: Dereferencing a pointer that might be NULL state->bos when
-    calling msm_gpu_crashstate_get_bo. [show details]
-301                        msm_gpu_crashstate_get_bo(state, submit->bos[i].obj,
-302                                submit->bos[i].iova, submit->bos[i].flags);
+Reduce the multiple queue factor from 4 to 2, since we're changing the
+default size.
 
-Fix this by employing the same state->bos NULL check as is used in the next
-for loop.
+While changing it, move the defines into the block layer private header.
+These aren't values that anyone outside of the block layer uses, or
+should use.
 
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: freedreno@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210929162554.14295-1-tim.gardner@canonical.com
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-mq.c         | 4 ++--
+ block/blk.h            | 6 ++++++
+ include/linux/blkdev.h | 2 --
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index 0ebf7bc6ad097..8236989828ba3 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -404,7 +404,7 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
- 		state->bos = kcalloc(nr,
- 			sizeof(struct msm_gpu_state_bo), GFP_KERNEL);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index dc49483334c72..9c658883020fb 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2141,14 +2141,14 @@ static void blk_add_rq_to_plug(struct blk_plug *plug, struct request *rq)
+ }
  
--		for (i = 0; i < submit->nr_bos; i++) {
-+		for (i = 0; state->bos && i < submit->nr_bos; i++) {
- 			if (should_dump(submit, i)) {
- 				msm_gpu_crashstate_get_bo(state, submit->bos[i].obj,
- 					submit->bos[i].iova, submit->bos[i].flags);
+ /*
+- * Allow 4x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
++ * Allow 2x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
+  * queues. This is important for md arrays to benefit from merging
+  * requests.
+  */
+ static inline unsigned short blk_plug_max_rq_count(struct blk_plug *plug)
+ {
+ 	if (plug->multiple_queues)
+-		return BLK_MAX_REQUEST_COUNT * 4;
++		return BLK_MAX_REQUEST_COUNT * 2;
+ 	return BLK_MAX_REQUEST_COUNT;
+ }
+ 
+diff --git a/block/blk.h b/block/blk.h
+index f10cc9b2c27f7..1af7c13ccc708 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -181,6 +181,12 @@ bool blk_bio_list_merge(struct request_queue *q, struct list_head *list,
+ void blk_account_io_start(struct request *req);
+ void blk_account_io_done(struct request *req, u64 now);
+ 
++/*
++ * Plug flush limits
++ */
++#define BLK_MAX_REQUEST_COUNT	32
++#define BLK_PLUG_FLUSH_SIZE	(128 * 1024)
++
+ /*
+  * Internal elevator interface
+  */
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 4b0f8bb0671d1..e7979fe7e4fad 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1223,8 +1223,6 @@ struct blk_plug {
+ 	bool multiple_queues;
+ 	bool nowait;
+ };
+-#define BLK_MAX_REQUEST_COUNT 16
+-#define BLK_PLUG_FLUSH_SIZE (128 * 1024)
+ 
+ struct blk_plug_cb;
+ typedef void (*blk_plug_cb_fn)(struct blk_plug_cb *, bool);
 -- 
 2.33.0
 
