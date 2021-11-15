@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7295245220B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FE14524ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377208AbhKPBIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:08:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
+        id S1354470AbhKPBqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:46:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245541AbhKOTUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7183863285;
-        Mon, 15 Nov 2021 18:36:34 +0000 (UTC)
+        id S239097AbhKOSb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:31:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65FE561041;
+        Mon, 15 Nov 2021 17:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001394;
-        bh=Nmz4VyTXKSFV24VeiDop/P5upM2q6TSxs0qacMal3Gw=;
+        s=korg; t=1636999130;
+        bh=C9uQHME2H372VngYuYoy6qwHXHWamBb+ovEHyIbUGv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ffizQ45i+KHjFuOz55nT6kM5ofiuY2kt62x3eNEN1ndcxsYBU7qSAvMqAeBDIhT7E
-         o7YGQT5jbKAB3YlXV0AcNXmjqLMB3OtD1dowL0vF9rylTbnYRGvdVzu0j5rBPz0KZZ
-         oB5xDuB53ihG6bGfjUvPbSb0pkuabXi9CEcb1hTM=
+        b=FlOigN0b8Jt4Rv3Q2sc79pYbRK/pDc7IgwqnooZ9oX9K9Ys+7DiZp7R0QzjanUklp
+         KZGYOzpHq+FX6bKidk4rlD8xjYRlFEhbAovzM6quMcV9+vXyoywKFoWUWjI4ccZALT
+         rmh4ltHc6dwyHNmEKrcM67R5lC/guIB0aaJEcnLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.15 175/917] serial: 8250: Fix reporting real baudrate value in c_ospeed field
-Date:   Mon, 15 Nov 2021 17:54:30 +0100
-Message-Id: <20211115165434.707185250@linuxfoundation.org>
+        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 5.14 188/849] coresight: trbe: Fix incorrect access of the sink specific data
+Date:   Mon, 15 Nov 2021 17:54:31 +0100
+Message-Id: <20211115165426.535169131@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,75 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-commit 32262e2e429cdb31f9e957e997d53458762931b7 upstream.
+commit bb5293e334af51b19b62d8bef1852ea13e935e9b upstream.
 
-In most cases it is not possible to set exact baudrate value to hardware.
+The TRBE driver wrongly treats the aux private data as the TRBE driver
+specific buffer for a given perf handle, while it is the ETM PMU's
+event specific data. Fix this by correcting the instance to use
+appropriate helper.
 
-So fix reporting real baudrate value which was set to hardware via c_ospeed
-termios field. It can be retrieved by ioctl(TCGETS2) from userspace.
-
-Real baudrate value is calculated from chosen hardware divisor and base
-clock. It is implemented in a new function serial8250_compute_baud_rate()
-which is inverse of serial8250_get_divisor() function.
-
-With this change is fixed also UART timeout value (it is updated via
-uart_update_timeout() function), which is calculated from the now fixed
-baudrate value too.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20210927093704.19768-1-pali@kernel.org
+Cc: stable <stable@vger.kernel.org>
+Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Link: https://lore.kernel.org/r/20210921134121.2423546-2-suzuki.poulose@arm.com
+[Fixed 13 character SHA down to 12]
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/8250/8250_port.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/hwtracing/coresight/coresight-trbe.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2584,6 +2584,19 @@ static unsigned int serial8250_get_divis
- 	return serial8250_do_get_divisor(port, baud, frac);
- }
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -366,7 +366,7 @@ static unsigned long __trbe_normal_offse
  
-+static unsigned int serial8250_compute_baud_rate(struct uart_port *port,
-+						 unsigned int quot)
-+{
-+	if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8001)
-+		return port->uartclk / 4;
-+	else if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8002)
-+		return port->uartclk / 8;
-+	else if (port->type == PORT_NPCM)
-+		return DIV_ROUND_CLOSEST(port->uartclk - 2 * (quot + 2), 16 * (quot + 2));
-+	else
-+		return DIV_ROUND_CLOSEST(port->uartclk, 16 * quot);
-+}
-+
- static unsigned char serial8250_compute_lcr(struct uart_8250_port *up,
- 					    tcflag_t c_cflag)
+ static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
  {
-@@ -2725,11 +2738,14 @@ void serial8250_update_uartclk(struct ua
+-	struct trbe_buf *buf = perf_get_aux(handle);
++	struct trbe_buf *buf = etm_perf_sink_config(handle);
+ 	u64 limit = __trbe_normal_offset(handle);
+ 	u64 head = PERF_IDX2OFF(handle->head, buf);
  
- 	baud = serial8250_get_baud_rate(port, termios, NULL);
- 	quot = serial8250_get_divisor(port, baud, &frac);
-+	baud = serial8250_compute_baud_rate(port, quot);
- 
- 	serial8250_rpm_get(up);
- 	spin_lock_irqsave(&port->lock, flags);
- 
- 	uart_update_timeout(port, termios->c_cflag, baud);
-+	if (tty_termios_baud_rate(termios))
-+		tty_termios_encode_baud_rate(termios, baud, baud);
- 
- 	serial8250_set_divisor(port, baud, quot, frac);
- 	serial_port_out(port, UART_LCR, up->lcr);
-@@ -2763,6 +2779,7 @@ serial8250_do_set_termios(struct uart_po
- 
- 	baud = serial8250_get_baud_rate(port, termios, old);
- 	quot = serial8250_get_divisor(port, baud, &frac);
-+	baud = serial8250_compute_baud_rate(port, quot);
- 
- 	/*
- 	 * Ok, we're now changing the port state.  Do it with
 
 
