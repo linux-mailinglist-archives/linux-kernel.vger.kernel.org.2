@@ -2,86 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2C74501E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78094501EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbhKOKDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:03:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46514 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236907AbhKOKCu (ORCPT
+        id S230512AbhKOKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:05:48 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:59515 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230472AbhKOKFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:02:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636970394;
+        Mon, 15 Nov 2021 05:05:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1636970550;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lt8vnfwUf+2wRUuIIg/z1Tzh6iD0Hl2ryprO+vMM6Rc=;
-        b=NHrTs38kq080Cs8h7xFjxeSjDuF1XLfM4yUiJdew+EcqUHjxbgmaG7VWVmoa34RBTd6MGO
-        RQQ/MIgkSbvsbtKazNIlU4PBOflfRsjH32T4Vj0g2vKjHB6qr/81MSRq92lNoRWYS+Nczx
-        B91U7waK5XW05aPNfX41MVM7TUtGd6c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-RFb2WsybPVS5Xj97UJAfMw-1; Mon, 15 Nov 2021 04:59:51 -0500
-X-MC-Unique: RFb2WsybPVS5Xj97UJAfMw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0D1F1015DA0;
-        Mon, 15 Nov 2021 09:59:49 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2D2D60BE5;
-        Mon, 15 Nov 2021 09:59:48 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id B3EE318000A9; Mon, 15 Nov 2021 10:59:46 +0100 (CET)
-Date:   Mon, 15 Nov 2021 10:59:46 +0100
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
-Message-ID: <20211115095946.54tp5glmgfged3rz@sirius.home.kraxel.org>
-References: <20211111090225.946381-1-kraxel@redhat.com>
- <20211114163958.GA7211@wunner.de>
- <20211114122249-mutt-send-email-mst@kernel.org>
- <20211114180604.GA23907@wunner.de>
+        bh=HGcxa83tT4mumahfVhectZc6dBEwl/miGykJ1YKa5a0=;
+        b=XTRCaJzqyN9ZgJ7td2l5qn5Ck7IxFIntmyVd/VUfkjkRSLNDJWFawbu7ob2mvtfaFr+YOz
+        1INLP0nfhK0j3vGBUweuFXB0DByVCoo8zWBtdIpM5Mjq6JZIAx5+RQGGr5UPgqxqBOR/B0
+        Mti6xUthy7Q5pXPx1OSz3txUGvWT1to=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2170.outbound.protection.outlook.com [104.47.17.170])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-12-EDXyA7S4MLSO9QWr-Qlw8g-2; Mon, 15 Nov 2021 11:02:28 +0100
+X-MC-Unique: EDXyA7S4MLSO9QWr-Qlw8g-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oi0FHzNNSBC657F5/ykBCE4Nw4w1Yt6twI4NyNPEGi2Hv250NKvnunMtAPEYvRmqvp1w9LKMcu6Job+gqA0YAOqT8O5uTRxORQxmhi55lB0V19iaIlUmMrtrgh9XI7B0sIhCWVac+qDgh/DhZbB2kciaUbTvBSZRqzyUd9n3WB0jBNtRgcLkGMNZAOv0M6vgmxGLsgtHe4ShkitwXW3nk1RH/+GOjS8EAIr7pTRjr+O4a86//EGeepMRxm7mBd7/kquKBL+jxg7moWWeBLlKmaCPPywDN8xYsIQoRhlN8Kqv+qVhA04SEgOmaLkL0FlAA9YrOA5dZ/Lg4tQ+JUoZAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F6ySVC0z7Wa6lKLSA8VQI7xR/nUyhDCUalGc5dvJlXE=;
+ b=dAerKosClWFQg7EguG7rrP69Un3hL0iequyWpZacD82Aq+i0UPFGliWL2MaoTH7LRtOP+1W7Zt91shs4ERr3UABjDOF3CcffF5VWk7vnMz1zlZi3m07roP41JY9Df+1XKvGYG8YuCKaWETSNEM+KIMa7+tboGB2/O73qUnmM+BCY9+dFG2QZzfChoy7nTSo1aerBXNmIE5zaLynuqfXVbTevFtuIwLY7+PslRneo5sAWYcoxb9rz1ux9yUXHVcYE6nH7zHi20wCvWDaHtV3UqshgPowZSvan060FUGeua4xzWJ12QI4BbnKz4RLrSKz8lPe6wvTdeD5TSks47n/uIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB5587.eurprd04.prod.outlook.com (2603:10a6:208:125::12)
+ by AM9PR04MB8145.eurprd04.prod.outlook.com (2603:10a6:20b:3e1::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Mon, 15 Nov
+ 2021 10:02:26 +0000
+Received: from AM0PR04MB5587.eurprd04.prod.outlook.com
+ ([fe80::387b:e76e:f981:f670]) by AM0PR04MB5587.eurprd04.prod.outlook.com
+ ([fe80::387b:e76e:f981:f670%7]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 10:02:26 +0000
+Message-ID: <889cfabe-6262-d105-c806-105ee9377fef@suse.com>
+Date:   Mon, 15 Nov 2021 11:02:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] xen/privcmd: make option visible in Kconfig
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+CC:     linux-kernel@vger.kernel.org
+References: <20211113083821.71060-1-linux@weissschuh.net>
+From:   Jan Beulich <jbeulich@suse.com>
+In-Reply-To: <20211113083821.71060-1-linux@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: AM5PR0602CA0012.eurprd06.prod.outlook.com
+ (2603:10a6:203:a3::22) To AM0PR04MB5587.eurprd04.prod.outlook.com
+ (2603:10a6:208:125::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114180604.GA23907@wunner.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: from [10.156.60.236] (37.24.206.209) by AM5PR0602CA0012.eurprd06.prod.outlook.com (2603:10a6:203:a3::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend Transport; Mon, 15 Nov 2021 10:02:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9987c9ab-134a-47d7-d885-08d9a81f06ac
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8145:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-Microsoft-Antispam-PRVS: <AM9PR04MB8145A5390B09FE4CF9FBEA3AB3989@AM9PR04MB8145.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dVQcwTVJICXid5txS34/pPiaQGmoDaCaystaQ8oFO1cA6winpEqLpImU+H6qPdgg9IQVKjoTckiZPJT6N8evT/7qN8d8yRqhyAsY866ZlW/niHJqfg91FysyroM4ietJJMaQ8tij3c5+6VLHE7a4HcYln/FaldghtLpBkKaFpsNTBqMbNDbqDsnMZJT8DnWW3gvTYBwqLj6UbT4PJM1WF3rFZ/Jo70wn2EZbWjXE7Ukk+yY3DtYIVTRoRsKDK1C6479WA00L4rF2+fjVlnk8blAXCWdS1DxKy/zOs6OvZwPcRn26ceuJMvpjvOBWd/qHx3BrLLIe0mN/5UpyJ3tAU9E3oc043Esl1/kn4ZiZGqBnekuIgGperFf+SqGrec/8oeHpSPdchu8UanKf8fd05b0mMT3ofHkda64+FmNaEIDge/YOhHI7iM2WTYadKqn3eiswCbKgH9eXLwYeOL4wH/uxQgmAlElB2jGyyZ9obP+tS00xcf9oYfY0tWn4KaYrKBR3JLCkOri19L0QzfF4/Y/qu96ahijM1e+798EOybbRoLRztjsNa/PUshETKQ73PJGSDRRcaAKGplVXv6I/nWMOg8b84+zFB4RJmcJ+ygMePY/tNVKK6nHkEaDUy5MpGoOI39Sl4Eb3oYkXWRsPP8QO+OggpU3/ejaBukQSe93PLhsiphLCITgQ71vSaqV8P3A3G8PQ7lLpxUK11cgrRn1OD/F64vkxowBlMV2Wo5/VjKy817iDdSJk/F4Xj1eH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5587.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(110136005)(38100700002)(8676002)(956004)(2616005)(16576012)(36756003)(26005)(8936002)(66556008)(316002)(186003)(31686004)(66476007)(53546011)(66946007)(5660300002)(2906002)(508600001)(4326008)(83380400001)(66574015)(86362001)(6486002)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1Ooi29bZiNy7F1YUMPxhDxz4pBi/AmjfcrNqofY/Cjt5lTFiDu7C2dyzHo4n?=
+ =?us-ascii?Q?gvhzn2tILWwbt93Vx7YNpEItpGfBul+NAs1TSuNYzsuNi63ZLV3Juz+VVEQr?=
+ =?us-ascii?Q?8/QuBqLIGoQhNMFiwNlSeOAKwPYY4Ug+jMFKp+4o1sHH0nAZKBQLAgoNSC6+?=
+ =?us-ascii?Q?8DGXVjK/hF3p9BTdBsuqxKWwX4cLtUM3crkGJnHJpTmO+K5yhnZ+4kb6k1yT?=
+ =?us-ascii?Q?Q4VIsN9FLdGQRCYLX2Zh8CfA9NXqm15FyObjq6/QVsJ/9+z5GD313+1K4+5M?=
+ =?us-ascii?Q?lEtF0WGrHJQ38OToD39AVZOF489zlyZLycyTDPiys0sPvtz3driWdKGLGbq9?=
+ =?us-ascii?Q?qMIHziqdUeTSs6ER7KTqdefi97G5HZxs7m2BiCcN8axb02Zxx10Gh931pw72?=
+ =?us-ascii?Q?dwNol1t6AJeS4Q5sFcVz6uHCAt67mZT6E8UT7lIK7sw6jayVcSp8nn+WyWeI?=
+ =?us-ascii?Q?AM/zJgBrObkchSdOITv30O235NecPCUkG802fQ1fe0RpiN3FhWzRjb0Hk2lm?=
+ =?us-ascii?Q?TZ1klp9lZgr7wLrFxwgFM2ICPshzqK78YyA7jftwAXzhg3Vf+tZBdlthEF0M?=
+ =?us-ascii?Q?fBT+JKVmX/jHapbhENC0SYHAEQCAOQ0xqxfTFtJweRlyoFF8diFLs2Lc5cWw?=
+ =?us-ascii?Q?LpAI/TZvYDyvXCe4+5LBngitK1bHtU0zAcsgh/XP7PFmY5N/0AidcnRJpfJg?=
+ =?us-ascii?Q?QyWoaMONv52eCUJimuCD/gZYhs0YlCeziNcDhogMP6gTbGyjhG3cKqwmIaSq?=
+ =?us-ascii?Q?tJs/zubRl/fga63HiSaijV+fB+6FMdbi/7IlmPueQg5KjZR3KTxkE6sL8RKE?=
+ =?us-ascii?Q?pGIqvbrxWwqR4Jb5a8bHTTC4AZ86PMC1DQbI0ihG/NtNJOD1oaGTr46c0hUx?=
+ =?us-ascii?Q?bG/pE+zu2j+CmOGPQl3Z76mVVyqboHVe2PPZ8v3lw0jjj53NlhSIBh4o1kaq?=
+ =?us-ascii?Q?5Vsy9a0bTVR1zZ0G/MtodPSt0+MdPpGIb2jrMkBRD+S8BkZWeGC3MtpOurhj?=
+ =?us-ascii?Q?/uSvRPXpfxODTzSxIMlNPycDHqboB7UzNLjqgRRij4Vis6ZLOsNdTDaQ1K18?=
+ =?us-ascii?Q?FccCVMK9tpJOrrsnCCNPlajUU6iJiCqXtxbL+LeH0T264pNgGahsc+dD2clL?=
+ =?us-ascii?Q?aJBOJLdqYEjzucVHJ6jnc1GgonItokOQm7GH139gAPK1qn0ld7++wopxI+Rg?=
+ =?us-ascii?Q?vqaPC8FioelpzzCc5lusNu/BsDDWUDma4tsLHmQMnMsrn2zji/ytTBR2BHmM?=
+ =?us-ascii?Q?WUUV5Y/EzyZAE6/eiyTLDaOcPQJIedQLhQSP1gKUSvVX9fa1l3HqDyiuaTLW?=
+ =?us-ascii?Q?O1WB+RPsd9y565j5/DfRADlvqQeZ3krFWNwx0gufSUbV+hfnQmeA12bi0j6Q?=
+ =?us-ascii?Q?EGtG/V3eEEo1pwKcwz1aq2t40GKr47+/lkYa3+ykuFyu6+3bns5VgEUAeHjY?=
+ =?us-ascii?Q?oUyuN28spNwH+kZn9GYTHkVaDkTK8lEb2C5vU3i9ilZqGqZmIjSKUTBf4zKq?=
+ =?us-ascii?Q?zXumFP9zC3f8juCHnUcL77zgqpgRmWgYx95+/uTgjegmoJO5fv5NcvYMqf2t?=
+ =?us-ascii?Q?tWTBF/j0E10luLspcH8fQ8a81L8Lu1eXtwiy3g1bfgoYxNELFtoCaSjgdxzF?=
+ =?us-ascii?Q?WUGcKSttBZhzEfPvDyR5h8E=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9987c9ab-134a-47d7-d885-08d9a81f06ac
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5587.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 10:02:26.6145
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t04rNK6WTvWAj77xgaE022y8m5TuqbDGU9PHs5hKtWppwZHPD8kM4fbboZcsncXzo9a9NSk3B8LlZv+kUgUYZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi,
+On 13.11.2021 09:38, Thomas Wei=C3=9Fschuh wrote:
+> This configuration option provides a misc device as an API to userspace.
+> Make this API usable without having to select the module as a transitive
+> dependency.
+>=20
+> This also fixes an issue where localyesconfig would select
+> CONFIG_XEN_PRIVCMD=3Dm because it was not visible and defaulted to
+> building as module.
+>=20
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+>=20
+> ---
+>=20
+> Note: If CONFIG_XEN_PRIVCMD really is only meant to be selected by
+> XENFS, then the issue can be fixed by removing its "default m"
+> definition.
+> ---
+>  drivers/xen/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index a1b11c62da9e..c14d8631b8f6 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -259,7 +259,7 @@ config XEN_SCSI_BACKEND
+>  	  if guests need generic access to SCSI devices.
+> =20
+>  config XEN_PRIVCMD
+> -	tristate
+> +	tristate "Xen privileged domain-0 commands"
+>  	depends on XEN
+>  	default m
 
-> > This requires guest specific code though. Emulating the attention button
-> > works in a guest independent way.
-> 
-> It sounds like you're using the Attention Button because it does
-> almost, but not quite what you want for your specific use case.
+While I agree with adding a prompt here, I'm not sure why you've added
+"domain-0" to its wording. Aiui this interface is equally available in
+DomU-s, just that they would be able to only (successfully) use a more
+restricted set of hypercalls. Otherwise the XEN dependency would need
+to be changed to XEN_DOM0 at the same time as adding a prompt, or the
+prompt's visibility be restricted to XEN_DOM0.
 
-Well, we want send a request to the guest to shutdown and poweroff the
-device.
-
-> Why don't you just trigger surprise-removal from outside the guest?
-
-To give the guest a chance to shutdown the device gracefully?
-Umount filesystems, flush data to disk.
-
-Also guest stability.  Traditionally linux isn't very good at dealing
-with surprise removal, although the situation is improving.
-
-Emulating surprise-removal has been discussed too.  More as fallback
-in case the guest doesn't respond to the attention button.  Right now
-we don't have it but should be doable.  For some kinds of devices it
-shouldn't be a problem to go straight to surprise-removal.
-
-I'll go experiment with that.
-
-take care,
-  Gerd
+Jan
 
