@@ -2,172 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C70451BE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7117451D28
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348749AbhKPAJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350460AbhKOUXy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:23:54 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295EBC061746
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:18:24 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id s186so50481521yba.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ti2qS38N54C0keJ4viYpkfZvuilsGcLNEF7JfCXeTTQ=;
-        b=dh/Oa9Ne/UX3lXjDB4COE5fcmk8sukuVS9CcQeo4HvaaL9inYkLrRgESiTiiJjH8Ha
-         VD+voEPVlu4lT/PFKwINwdG4d11smF+KO/ppWh9QkjAYWf9nI2V51AWJZTZVp4mOvqr/
-         OqeBQGqGBLjLgEja7DyQ3k/np69fx0UsIFBY0muAvUQRNUVa5/KFzlzavNtVE2HhmDsK
-         bmh6KbqsAKlU3IKOQjpgPqjw0dOCkZxcS8P+7EtoLtYNqQhqa9IbpkxB9gRHMNpqSxBi
-         l/xRTx3ssiex9d5VCAExW9LSc6GJtcglSAdxi43WZcr1AEmZAEonPwY3qqbOY1Qs3OD3
-         dPHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ti2qS38N54C0keJ4viYpkfZvuilsGcLNEF7JfCXeTTQ=;
-        b=6vlcEDKshIgGpQgFXG5SkQiXT4ZEe86E95+FGWI3+N70lFUjXgQHezTKGwAjTE85ra
-         B0qaPsU4/ieutWwwfVqU/6pBCpBXwEyHMJvrWwk9ar85w7xWfGCvtqcqieJViZZiAVin
-         DeTDUzjSX5ULdBHlJB278P5jjUblV8P6PpVU6vpEWcfBoX7FRMLilNApS+B2RSF9qXpW
-         3RM0y83Ijgr1wbOXOhGT1D59cqCDw50QdIfSFCZV9w2qW0cU4EayVU5/C2pciU34wuyM
-         8GkepU2MCtOedwGWDYvLhhq2PKnMh+zRDKw+bLpcnBseHC0aFq78l4LuzM1WdEiD3dG9
-         uPiA==
-X-Gm-Message-State: AOAM5330UrEHzhwnFj3JaS2D96CJAhrMW7jWrJmGIRB0hsevT9Mu4sft
-        zvFsl8RWoJG7nni/SNujVvI9MXIhLgG7L59ITqkINg==
-X-Google-Smtp-Source: ABdhPJxKkmPEnUXj0aVbJDTQXnWiiYrBJDqwAo+CYLHhYd6MMCN9FGeHm5tb4KkW7mZ9cUyGQQ0uXz7x+4W8OBjmlCo=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr1822562ybq.328.1637007502971;
- Mon, 15 Nov 2021 12:18:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-2-saravanak@google.com>
- <YYu4EglV7SBZU2Iy@ryzen> <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
-In-Reply-To: <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Nov 2021 12:17:46 -0800
-Message-ID: <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-To:     Abel Vesa <abelvesa@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1350004AbhKPAZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:25:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350061AbhKOUVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 15:21:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E289A61C14;
+        Mon, 15 Nov 2021 20:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637007508;
+        bh=I8BGZUusWEBmOAxcEwHD0ryYVq+3vyEIyOWTQgFH6y4=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=V++HF/QLe6b18n/MSwnA7jIelI9KNmLi/zg7yB9YR0zNh9z+QbFkZabPg42uhjMyX
+         7NC8p1rRTwMltkRm0/SgNdF9shoSlWBc1MEVHkrTHzEcOTLvZvrqgq/D4G0FjvBEr0
+         Mv/cwmy/FBflRTQkK6UVvGsaBX35ZlOIY1+gcNHzVfB9oU4WCbQq7OUOphJ6CuBxdH
+         7A2qymMySZE0TabJe2DMnH2XysAv4aKZVZb8z7a2FvFiPwKObcuYtnj/k4IHqyG+MO
+         glomcnwN/7zhlaQn6mBDfHo0yWRv+eIrUqyx85uZLRrbgUcZrjfrkFniiKZVIBhZdn
+         qknYcPQmw6mQg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 00CD027C0054;
+        Mon, 15 Nov 2021 15:18:26 -0500 (EST)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Mon, 15 Nov 2021 15:18:27 -0500
+X-ME-Sender: <xms:ksCSYfKZ__pY_3JCV8Lpr5l6sz-SghmiPHLq1EWP7LelNPWQcC-y6A>
+    <xme:ksCSYTIUMpJwmRG7agrn4z9WSbCazr2l0-ZueSbFUTKFlfO0oz4Se9_S9FsbM0TLR
+    LYYmd8Q6Nnt3hdYHw4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedtgddutdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
+    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:ksCSYXvd7y6diLlNt0quqBIgu-6xJwpRCvvyl2ZP-WjsDZuv0lhApw>
+    <xmx:ksCSYYY7ZZlT5g9iPFsBuDkXPcF21NZmTarhaYyFqmENfswmWi5Nrg>
+    <xmx:ksCSYWaAYJM3yPECU6cTNyTt_JCr2uTb1jqZ7sedq17VL3w9RbrndA>
+    <xmx:ksCSYcMaDX6zSc2yyn-0lxvsg9JR6nw5ks3X1HPtbMpCjXFWLS5Rv8pzyZI>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6040621E006E; Mon, 15 Nov 2021 15:18:26 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <c659c2cc-fd87-4506-b0a8-4d22530c59c3@www.fastmail.com>
+In-Reply-To: <8425e818-f6cc-ae52-ac6b-9cc80515c238@linux.intel.com>
+References: <0f03a9e2-4611-4b5c-962f-93a7e1d2bde8@www.fastmail.com>
+ <8425e818-f6cc-ae52-ac6b-9cc80515c238@linux.intel.com>
+Date:   Mon, 15 Nov 2021 12:18:06 -0800
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Arjan van de Ven" <arjan@linux.intel.com>,
+        "Asit K Mallick" <asit.k.mallick@intel.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     "Andrew Cooper" <andrew.cooper3@citrix.com>
+Subject: Re: Revisiting XFD-based AMX and heterogenous systems
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 12:24 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Wed, Nov 10, 2021 at 4:16 AM Abel Vesa <abelvesa@kernel.org> wrote:
-> >
-> > On 21-09-28 17:07:33, Saravana Kannan wrote:
-> > > fw_devlink could end up creating device links for bus only devices.
-> > > However, bus only devices don't get probed and can block probe() or
-> > > sync_state() [1] call backs of other devices. To avoid this, probe these
-> > > devices using the simple-pm-bus driver.
-> > >
-> > > However, there are instances of devices that are not simple buses (they get
-> > > probed by their specific drivers) that also list the "simple-bus" (or other
-> > > bus only compatible strings) in their compatible property to automatically
-> > > populate their child devices. We still want these devices to get probed by
-> > > their specific drivers. So, we make sure this driver only probes devices
-> > > that are only buses.
-> > >
-> > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > Fixes: c442a0d18744 ("driver core: Set fw_devlink to "permissive" behavior by default")
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > Tested-by: Saravana Kannan <saravanak@google.com>
-> > > Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > ---
-> > >  drivers/bus/simple-pm-bus.c | 42 ++++++++++++++++++++++++++++++++++---
-> > >  1 file changed, 39 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
-> > > index 01a3d0cd08ed..6b8d6257ed8a 100644
-> > > --- a/drivers/bus/simple-pm-bus.c
-> > > +++ b/drivers/bus/simple-pm-bus.c
-> > > @@ -13,11 +13,36 @@
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/pm_runtime.h>
-> > >
-> > > -
-> > >  static int simple_pm_bus_probe(struct platform_device *pdev)
-> > >  {
-> > > -     const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
-> > > -     struct device_node *np = pdev->dev.of_node;
-> > > +     const struct device *dev = &pdev->dev;
-> > > +     const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
-> > > +     struct device_node *np = dev->of_node;
-> > > +     const struct of_device_id *match;
-> > > +
-> > > +     /*
-> > > +      * Allow user to use driver_override to bind this driver to a
-> > > +      * transparent bus device which has a different compatible string
-> > > +      * that's not listed in simple_pm_bus_of_match. We don't want to do any
-> > > +      * of the simple-pm-bus tasks for these devices, so return early.
-> > > +      */
-> > > +     if (pdev->driver_override)
-> > > +             return 0;
-> > > +
-> > > +     match = of_match_device(dev->driver->of_match_table, dev);
-> > > +     /*
-> > > +      * These are transparent bus devices (not simple-pm-bus matches) that
-> > > +      * have their child nodes populated automatically.  So, don't need to
-> > > +      * do anything more. We only match with the device if this driver is
-> > > +      * the most specific match because we don't want to incorrectly bind to
-> > > +      * a device that has a more specific driver.
-> > > +      */
-> > > +     if (match && match->data) {
-> > > +             if (of_property_match_string(np, "compatible", match->compatible) == 0)
-> > > +                     return 0;
-> > > +             else
-> > > +                     return -ENODEV;
-> > > +     }
-> >
-> > This change is breaking the expected behavior for the already existent
-> > simple-bus nodes. All the simple-bus compatibles should be replaced now
-> > to simple-pm-bus. In my case, on some i.MX8 platforms, without the
-> > devlink, the devices suspend sequence changes (and even breaks).
-> >
-> > To avoid breaking the already existent simple-bus nodes, maybe the logic
-> > should've been reversed: keep the simple-bus as is and add another
-> > compatible, IDK, something like simple-trasnparent-bus, or something.
->
-> The intent of this change IS to affect existing simple-bus nodes (but
-> not in the way it's affecting you). But if it's breaking stuff, we
-> obviously need to fix it.
->
-> I have a hunch on what's going on in your case, but can you point me
-> to the specific simple-bus node that's getting affected? I'm expecting
-> it to be a simple-bus node that gets added AFTER this driver is
-> registered at device_initcall (module_init gets converted to
-> device_initcall).
->
-> Also, can you try this hack patch to see if it helps your case?
-> https://lore.kernel.org/lkml/CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com/
->
-> I have some thoughts on how I could fix this, but I need to think
-> about a few cases.
 
-Hi Abel,
 
-Friendly reminder.
+On Mon, Nov 15, 2021, at 12:11 PM, Arjan van de Ven wrote:
+> On 11/15/2021 11:59 AM, Andy Lutomirski wrote:
+>> [resend -- first try was HTML.  oops.]
+>> 
+>> Hi all-
+>> 
+>> I just learned that current Alder Lake review samples are actually heterogenous, at least physically.  The performance cores have AVX-512 and the efficiency cores don't have AVX-512.  Since no OS supports actual runtime ISA heterogeneity, this feature seems to be hidden in that one must choose, per boot, whether one wants AVX-512 or efficiency cores, but the CPU is physically heterogenous.
+>> 
+>> All the earlier discussions about Linux AMX architecture happened under the assumption that xfeature-heterogenous systems would never happen, and my grudging acceptance of the XFD model was predicated on that.  But now we have obviously heterogenous hardware that is apparently actually shipping at least to reviewers, and I think we should revisit this before we merge AMX support.
+>> 
+>
+> Alderlake is not heterogenous.
+> This is not just an "OS can deal with it" thing... it's throughout 
+> everything from low lower power delivery through bios through ...
 
--Saravana
+Sure, but I bet the demand will be there.  The desktop gamer types will flip off E cores and flip on AVX512 and call it a day.  But the ones who want battery life will be annoyed, and I bet someone at Intel is contemplating how to switch it at runtime.
