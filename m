@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6C8450EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8C4450ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241325AbhKOST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S241371AbhKOSTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:19:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237708AbhKORcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:32:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BB43632A4;
-        Mon, 15 Nov 2021 17:20:36 +0000 (UTC)
+        id S237833AbhKORcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:32:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17EA632A9;
+        Mon, 15 Nov 2021 17:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996836;
-        bh=nV0pbrdkHPY5eKY+aHXvF0B3I4WxIca4P2TKnrr5/HY=;
+        s=korg; t=1636996839;
+        bh=zbDx5/OyUL5DilpDRrRfNjXV+6u5bxWXE8W5nxyKIGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2OIqq0GgIE+bLSBmazi9ISTXlWdywrj2Jf9ylKfLFPhWPdIhG9lclLgP4pJ+xe+j
-         SRewUM58LMNAcbP5llKxH2/ADL+iKAcmHqh+NX7VWLGAP9Hk/OOxHlQdLfs8cZA9nm
-         hNrDIWEqxFOucSPPbzccRRa6ocZVhI3/GGBdFEQA=
+        b=ETfHXqWc5IpdY+1Xx+E6BWRWDDT/pXAqWwlxmzp85yoSly3zAV14bjtTQDdq1EK+s
+         V1SK8Q5zzeNWlUGfvaMe4jPym9NWSOaT+oHl9V/+Mrtyng+BmC33vpSSxjeoFWZZjI
+         5YERgIot4bcd+VQFgM2hpc8cdZDTc2FgWmDBk3pU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bixuan Cui <cuibixuan@linux.alibaba.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 286/355] powerpc/44x/fsp2: add missing of_node_put
-Date:   Mon, 15 Nov 2021 18:03:30 +0100
-Message-Id: <20211115165322.978451015@linuxfoundation.org>
+Subject: [PATCH 5.4 287/355] mips: cm: Convert to bitfield API to fix out-of-bounds access
+Date:   Mon, 15 Nov 2021 18:03:31 +0100
+Message-Id: <20211115165323.011025044@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,46 +42,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@linux.alibaba.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 290fe8aa69ef5c51c778c0bb33f8ef0181c769f5 ]
+[ Upstream commit 18b8f5b6fc53d097cadb94a93d8d6566ba88e389 ]
 
-Early exits from for_each_compatible_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+mips_cm_error_report() extracts the cause and other cause from the error
+register using shifts.  This works fine for the former, as it is stored
+in the top bits, and the shift will thus remove all non-related bits.
+However, the latter is stored in the bottom bits, hence thus needs masking
+to get rid of non-related bits.  Without such masking, using it as an
+index into the cm2_causes[] array will lead to an out-of-bounds access,
+probably causing a crash.
 
-./arch/powerpc/platforms/44x/fsp2.c:206:1-25: WARNING: Function
-"for_each_compatible_node" should have of_node_put() before return
-around line 218.
+Fix this by using FIELD_GET() instead.  Bite the bullet and convert all
+MIPS CM handling to the bitfield API, to improve readability and safety.
 
-Fixes: 7813043e1bbc ("powerpc/44x/fsp2: Add irq error handlers")
-Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1635406102-88719-1-git-send-email-cuibixuan@linux.alibaba.com
+Fixes: 3885c2b463f6a236 ("MIPS: CM: Add support for reporting CM cache errors")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/44x/fsp2.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/include/asm/mips-cm.h | 12 ++++++------
+ arch/mips/kernel/mips-cm.c      | 21 ++++++++++-----------
+ 2 files changed, 16 insertions(+), 17 deletions(-)
 
-diff --git a/arch/powerpc/platforms/44x/fsp2.c b/arch/powerpc/platforms/44x/fsp2.c
-index b299e43f5ef94..823397c802def 100644
---- a/arch/powerpc/platforms/44x/fsp2.c
-+++ b/arch/powerpc/platforms/44x/fsp2.c
-@@ -208,6 +208,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
- 		if (irq == NO_IRQ) {
- 			pr_err("device tree node %pOFn is missing a interrupt",
- 			      np);
-+			of_node_put(np);
- 			return;
- 		}
+diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
+index aeae2effa123d..23c67c0871b17 100644
+--- a/arch/mips/include/asm/mips-cm.h
++++ b/arch/mips/include/asm/mips-cm.h
+@@ -11,6 +11,7 @@
+ #ifndef __MIPS_ASM_MIPS_CM_H__
+ #define __MIPS_ASM_MIPS_CM_H__
  
-@@ -215,6 +216,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
- 		if (rc) {
- 			pr_err("fsp_of_probe: request_irq failed: np=%pOF rc=%d",
- 			      np, rc);
-+			of_node_put(np);
- 			return;
- 		}
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/errno.h>
+ 
+@@ -153,8 +154,8 @@ GCR_ACCESSOR_RO(32, 0x030, rev)
+ #define CM_GCR_REV_MINOR			GENMASK(7, 0)
+ 
+ #define CM_ENCODE_REV(major, minor) \
+-		(((major) << __ffs(CM_GCR_REV_MAJOR)) | \
+-		 ((minor) << __ffs(CM_GCR_REV_MINOR)))
++		(FIELD_PREP(CM_GCR_REV_MAJOR, major) | \
++		 FIELD_PREP(CM_GCR_REV_MINOR, minor))
+ 
+ #define CM_REV_CM2				CM_ENCODE_REV(6, 0)
+ #define CM_REV_CM2_5				CM_ENCODE_REV(7, 0)
+@@ -362,10 +363,10 @@ static inline int mips_cm_revision(void)
+ static inline unsigned int mips_cm_max_vp_width(void)
+ {
+ 	extern int smp_num_siblings;
+-	uint32_t cfg;
+ 
+ 	if (mips_cm_revision() >= CM_REV_CM3)
+-		return read_gcr_sys_config2() & CM_GCR_SYS_CONFIG2_MAXVPW;
++		return FIELD_GET(CM_GCR_SYS_CONFIG2_MAXVPW,
++				 read_gcr_sys_config2());
+ 
+ 	if (mips_cm_present()) {
+ 		/*
+@@ -373,8 +374,7 @@ static inline unsigned int mips_cm_max_vp_width(void)
+ 		 * number of VP(E)s, and if that ever changes then this will
+ 		 * need revisiting.
+ 		 */
+-		cfg = read_gcr_cl_config() & CM_GCR_Cx_CONFIG_PVPE;
+-		return (cfg >> __ffs(CM_GCR_Cx_CONFIG_PVPE)) + 1;
++		return FIELD_GET(CM_GCR_Cx_CONFIG_PVPE, read_gcr_cl_config()) + 1;
  	}
+ 
+ 	if (IS_ENABLED(CONFIG_SMP))
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index a9eab83d9148d..611ef512c0b81 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -179,8 +179,7 @@ static void mips_cm_probe_l2sync(void)
+ 	phys_addr_t addr;
+ 
+ 	/* L2-only sync was introduced with CM major revision 6 */
+-	major_rev = (read_gcr_rev() & CM_GCR_REV_MAJOR) >>
+-		__ffs(CM_GCR_REV_MAJOR);
++	major_rev = FIELD_GET(CM_GCR_REV_MAJOR, read_gcr_rev());
+ 	if (major_rev < 6)
+ 		return;
+ 
+@@ -263,13 +262,13 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
+ 	preempt_disable();
+ 
+ 	if (cm_rev >= CM_REV_CM3) {
+-		val = core << __ffs(CM3_GCR_Cx_OTHER_CORE);
+-		val |= vp << __ffs(CM3_GCR_Cx_OTHER_VP);
++		val = FIELD_PREP(CM3_GCR_Cx_OTHER_CORE, core) |
++		      FIELD_PREP(CM3_GCR_Cx_OTHER_VP, vp);
+ 
+ 		if (cm_rev >= CM_REV_CM3_5) {
+ 			val |= CM_GCR_Cx_OTHER_CLUSTER_EN;
+-			val |= cluster << __ffs(CM_GCR_Cx_OTHER_CLUSTER);
+-			val |= block << __ffs(CM_GCR_Cx_OTHER_BLOCK);
++			val |= FIELD_PREP(CM_GCR_Cx_OTHER_CLUSTER, cluster);
++			val |= FIELD_PREP(CM_GCR_Cx_OTHER_BLOCK, block);
+ 		} else {
+ 			WARN_ON(cluster != 0);
+ 			WARN_ON(block != CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+@@ -299,7 +298,7 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
+ 		spin_lock_irqsave(&per_cpu(cm_core_lock, curr_core),
+ 				  per_cpu(cm_core_lock_flags, curr_core));
+ 
+-		val = core << __ffs(CM_GCR_Cx_OTHER_CORENUM);
++		val = FIELD_PREP(CM_GCR_Cx_OTHER_CORENUM, core);
+ 	}
+ 
+ 	write_gcr_cl_other(val);
+@@ -343,8 +342,8 @@ void mips_cm_error_report(void)
+ 	cm_other = read_gcr_error_mult();
+ 
+ 	if (revision < CM_REV_CM3) { /* CM2 */
+-		cause = cm_error >> __ffs(CM_GCR_ERROR_CAUSE_ERRTYPE);
+-		ocause = cm_other >> __ffs(CM_GCR_ERROR_MULT_ERR2ND);
++		cause = FIELD_GET(CM_GCR_ERROR_CAUSE_ERRTYPE, cm_error);
++		ocause = FIELD_GET(CM_GCR_ERROR_MULT_ERR2ND, cm_other);
+ 
+ 		if (!cause)
+ 			return;
+@@ -386,8 +385,8 @@ void mips_cm_error_report(void)
+ 		ulong core_id_bits, vp_id_bits, cmd_bits, cmd_group_bits;
+ 		ulong cm3_cca_bits, mcp_bits, cm3_tr_bits, sched_bit;
+ 
+-		cause = cm_error >> __ffs64(CM3_GCR_ERROR_CAUSE_ERRTYPE);
+-		ocause = cm_other >> __ffs(CM_GCR_ERROR_MULT_ERR2ND);
++		cause = FIELD_GET(CM3_GCR_ERROR_CAUSE_ERRTYPE, cm_error);
++		ocause = FIELD_GET(CM_GCR_ERROR_MULT_ERR2ND, cm_other);
+ 
+ 		if (!cause)
+ 			return;
 -- 
 2.33.0
 
