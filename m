@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A614514FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D395B45154B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239844AbhKOUV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:21:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46086 "EHLO mail.kernel.org"
+        id S1351420AbhKOUeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:34:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240092AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD37B63270;
-        Mon, 15 Nov 2021 17:42:14 +0000 (UTC)
+        id S240192AbhKOSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8C26338A;
+        Mon, 15 Nov 2021 17:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998135;
-        bh=YEdCr4BWs1H8+S8m6uSc9S4oeeeXPBopHdyHlRX6QWo=;
+        s=korg; t=1636998195;
+        bh=OhvQmHveZ43YpaxzUOtqQm8CB8J2Ymfcz7ncHTzOUQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n4NkgcQN8J7G7Iq4ZSrl5hkCScSOyyewcOhlHIpcaqBKEs6w33TdGqQU7PW+3Grmy
-         j0GWVwaWsQnanZo6V5YuGaUIgS2urcVMRXA5Ln6oZSDToB47xLjqVBQfFzV19rJiyg
-         kisuj/3kZJ6GlAQW8z5J58+4tcZNPhBpkOUpYL4c=
+        b=hoPRL+aBmBaxFj+fZo64MkD4G6dfYSqZ3m6J6X+208OIbkwhXZ57fHhtvEjElYg4n
+         KUhEiW+8O9Pk6gJtN6yvL7/N/tEbHUPrGiMt88bA4+iWb+wGsOWtYDLFTwLpEnWREY
+         Vlpy7R0ggeK0DgqtcvnvsLuwwabsPBGXX1OprZrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 393/575] ARM: dts: qcom: msm8974: Add xo_board reference clock to DSI0 PHY
-Date:   Mon, 15 Nov 2021 18:01:58 +0100
-Message-Id: <20211115165357.358752257@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 395/575] arm64: dts: ti: k3-j721e-main: Fix "max-virtual-functions" in PCIe EP nodes
+Date:   Mon, 15 Nov 2021 18:02:00 +0100
+Message-Id: <20211115165357.428469958@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,38 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marijn Suijten <marijn.suijten@somainline.org>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 8ccecf6c710b8c048eecc65709640642e5357d6e ]
+[ Upstream commit 9af3ef954975c383eeb667aee207d9ce6fbef8c4 ]
 
-According to YAML validation, and for a future patchset putting this
-xo_board reference clock to use as VCO reference parent, add the missing
-clock to dsi_phy0.
+commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device
+tree nodes") added "max-virtual-functions" to have 16 bit values.
+Fix "max-virtual-functions" in PCIe endpoint (EP) nodes to have 8 bit
+values instead of 16.
 
-Fixes: 5a9fc531f6ec ("ARM: dts: msm8974: add display support")
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210830175739.143401-1-marijn.suijten@somainline.org
+Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210915055358.19997-2-kishon@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-msm8974.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
-index 51f5f904f9eb9..5f7426fb4e419 100644
---- a/arch/arm/boot/dts/qcom-msm8974.dtsi
-+++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
-@@ -1528,8 +1528,8 @@
- 				#phy-cells = <0>;
- 				qcom,dsi-phy-index = <0>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index 6ffdebd601223..4e010253b028a 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -656,7 +656,7 @@
+ 		clock-names = "fck";
+ 		cdns,max-outbound-regions = <16>;
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
  
--				clocks = <&mmcc MDSS_AHB_CLK>;
--				clock-names = "iface";
-+				clocks = <&mmcc MDSS_AHB_CLK>, <&xo_board>;
-+				clock-names = "iface", "ref";
- 			};
- 		};
+@@ -705,7 +705,7 @@
+ 		clock-names = "fck";
+ 		cdns,max-outbound-regions = <16>;
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
  
+@@ -754,7 +754,7 @@
+ 		clock-names = "fck";
+ 		cdns,max-outbound-regions = <16>;
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
+ 
+@@ -803,7 +803,7 @@
+ 		clock-names = "fck";
+ 		cdns,max-outbound-regions = <16>;
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
 -- 
 2.33.0
 
