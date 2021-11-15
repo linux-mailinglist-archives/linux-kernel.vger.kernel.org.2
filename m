@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221324514F8
+	by mail.lfdr.de (Postfix) with ESMTP id B4FF24514FA
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349821AbhKOUTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:19:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        id S1349795AbhKOUUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:20:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240007AbhKOSF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240021AbhKOSF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:05:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D50C563370;
-        Mon, 15 Nov 2021 17:41:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4114A63378;
+        Mon, 15 Nov 2021 17:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998072;
-        bh=zsq7psJ6ZX4x+Di67qG5RxX79HBFRTNYuxpHp2EnpUc=;
+        s=korg; t=1636998094;
+        bh=QNFuzzIGZvHT10f41ue52fnyrfdFD2+x6iyDw/yT3mg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b75Ln3+1Hq6aoNozrPEsEiS5Kmc/eMaLFyOAzIuD5qEhDocSm1tORiIXB92xD3z+1
-         uzJyAwpfjzMoM9Xnud6XamCIggWcEBX4t6qRLnjrdY/StP/zQRZDHkohQ1CJtsTYnU
-         MVseXcwH8aG73KwPsWHpCtPcwJk1IaDL83FRgFkQ=
+        b=x1jLm1LoxztC7sjKiClCZyAaiECwwBZe8XunLfxZFusM1jNbh9RhH08qJj6O6+0kv
+         FrUdYhnHWf1dclhHmN7Z0STwSAjkdhEcKCGiCPbCO8DUVbhV40Ns1L+TzIRApzdwLM
+         9RoGfhYBtiVRu9owKHSwypdToJXxrl9ats6mA7os=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 377/575] crypto: pcrypt - Delay write to padata->info
-Date:   Mon, 15 Nov 2021 18:01:42 +0100
-Message-Id: <20211115165356.818086819@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 385/575] of: unittest: fix EXPECT text for gpio hog errors
+Date:   Mon, 15 Nov 2021 18:01:50 +0100
+Message-Id: <20211115165357.094751176@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,83 +39,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Frank Rowand <frank.rowand@sony.com>
 
-[ Upstream commit 68b6dea802cea0dbdd8bd7ccc60716b5a32a5d8a ]
+[ Upstream commit e85860e5bc077865a04f0a88d0b0335d3200484a ]
 
-These three events can race when pcrypt is used multiple times in a
-template ("pcrypt(pcrypt(...))"):
+The console message text for gpio hog errors does not match
+what unittest expects.
 
-  1.  [taskA] The caller makes the crypto request via crypto_aead_encrypt()
-  2.  [kworkerB] padata serializes the inner pcrypt request
-  3.  [kworkerC] padata serializes the outer pcrypt request
-
-3 might finish before the call to crypto_aead_encrypt() returns in 1,
-resulting in two possible issues.
-
-First, a use-after-free of the crypto request's memory when, for
-example, taskA writes to the outer pcrypt request's padata->info in
-pcrypt_aead_enc() after kworkerC completes the request.
-
-Second, the outer pcrypt request overwrites the inner pcrypt request's
-return code with -EINPROGRESS, making a successful request appear to
-fail.  For instance, kworkerB writes the outer pcrypt request's
-padata->info in pcrypt_aead_done() and then taskA overwrites it
-in pcrypt_aead_enc().
-
-Avoid both situations by delaying the write of padata->info until after
-the inner crypto request's return code is checked.  This prevents the
-use-after-free by not touching the crypto request's memory after the
-next-inner crypto request is made, and stops padata->info from being
-overwritten.
-
-Fixes: 5068c7a883d16 ("crypto: pcrypt - Add pcrypt crypto parallelization wrapper")
-Reported-by: syzbot+b187b77c8474f9648fae@syzkaller.appspotmail.com
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: f4056e705b2ef ("of: unittest: add overlay gpio test to catch gpio hog problem")
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Link: https://lore.kernel.org/r/20211029013225.2048695-1-frowand.list@gmail.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/pcrypt.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/of/unittest.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
-index d569c7ed6c800..9d10b846ccf73 100644
---- a/crypto/pcrypt.c
-+++ b/crypto/pcrypt.c
-@@ -78,12 +78,14 @@ static void pcrypt_aead_enc(struct padata_priv *padata)
- {
- 	struct pcrypt_request *preq = pcrypt_padata_request(padata);
- 	struct aead_request *req = pcrypt_request_ctx(preq);
-+	int ret;
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index eb51bc1474401..1d4b0b7d0cc10 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -1682,19 +1682,19 @@ static void __init of_unittest_overlay_gpio(void)
+ 	 */
  
--	padata->info = crypto_aead_encrypt(req);
-+	ret = crypto_aead_encrypt(req);
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-B-input) hogged as input\n");
++		     "gpio-<<int>> (line-B-input): hogged as input\n");
  
--	if (padata->info == -EINPROGRESS)
-+	if (ret == -EINPROGRESS)
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-A-input) hogged as input\n");
++		     "gpio-<<int>> (line-A-input): hogged as input\n");
+ 
+ 	ret = platform_driver_register(&unittest_gpio_driver);
+ 	if (unittest(ret == 0, "could not register unittest gpio driver\n"))
  		return;
  
-+	padata->info = ret;
- 	padata_do_serial(padata);
- }
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-A-input) hogged as input\n");
++		   "gpio-<<int>> (line-A-input): hogged as input\n");
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-B-input) hogged as input\n");
++		   "gpio-<<int>> (line-B-input): hogged as input\n");
  
-@@ -123,12 +125,14 @@ static void pcrypt_aead_dec(struct padata_priv *padata)
- {
- 	struct pcrypt_request *preq = pcrypt_padata_request(padata);
- 	struct aead_request *req = pcrypt_request_ctx(preq);
-+	int ret;
+ 	unittest(probe_pass_count + 2 == unittest_gpio_probe_pass_count,
+ 		 "unittest_gpio_probe() failed or not called\n");
+@@ -1721,7 +1721,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 	chip_request_count = unittest_gpio_chip_request_count;
  
--	padata->info = crypto_aead_decrypt(req);
-+	ret = crypto_aead_decrypt(req);
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-D-input) hogged as input\n");
++		     "gpio-<<int>> (line-D-input): hogged as input\n");
  
--	if (padata->info == -EINPROGRESS)
-+	if (ret == -EINPROGRESS)
- 		return;
+ 	/* overlay_gpio_03 contains gpio node and child gpio hog node */
  
-+	padata->info = ret;
- 	padata_do_serial(padata);
- }
+@@ -1729,7 +1729,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 		 "Adding overlay 'overlay_gpio_03' failed\n");
  
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-D-input) hogged as input\n");
++		   "gpio-<<int>> (line-D-input): hogged as input\n");
+ 
+ 	unittest(probe_pass_count + 1 == unittest_gpio_probe_pass_count,
+ 		 "unittest_gpio_probe() failed or not called\n");
+@@ -1768,7 +1768,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 	 */
+ 
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-C-input) hogged as input\n");
++		     "gpio-<<int>> (line-C-input): hogged as input\n");
+ 
+ 	/* overlay_gpio_04b contains child gpio hog node */
+ 
+@@ -1776,7 +1776,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 		 "Adding overlay 'overlay_gpio_04b' failed\n");
+ 
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-C-input) hogged as input\n");
++		   "gpio-<<int>> (line-C-input): hogged as input\n");
+ 
+ 	unittest(chip_request_count + 1 == unittest_gpio_chip_request_count,
+ 		 "unittest_gpio_chip_request() called %d times (expected 1 time)\n",
 -- 
 2.33.0
 
