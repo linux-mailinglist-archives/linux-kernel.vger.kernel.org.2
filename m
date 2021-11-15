@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046C94505D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E220F4505E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236062AbhKONqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:46:33 -0500
-Received: from mga02.intel.com ([134.134.136.20]:32909 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236447AbhKONnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:43:42 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220649226"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="220649226"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 05:40:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="471907598"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga002.jf.intel.com with ESMTP; 15 Nov 2021 05:40:18 -0800
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rafael@kernel.org, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: [UPDATE][PATCH] cpufreq: intel_pstate: Fix EPP restore after offline/online
-Date:   Mon, 15 Nov 2021 05:40:17 -0800
-Message-Id: <20211115134017.1257932-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S236546AbhKONtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:49:03 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60722
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236496AbhKONo1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:44:27 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1EE383F1A4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636983691;
+        bh=n5Hadb6xbkGaApkV40DUT8mQVW3mxdVMSv3mHiuuCFI=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=sJX5/MKUeQQeoxtuykbeBi3oVeXrAdV3P5dn3zCyi8yCQhb92hrFzmAHSOIMF/I7J
+         7x2IzMbve0Jb+qdQUofnQAjOTHGscxFl4a3BZomt/J+JPB3cg+mr8mvjn9iOg5xzNi
+         X7Jh6W1WcXwMmN3P3bYQcvalwKv9rGWF/N7wi2TwJKFg6oV70CO39mX8JMWvf1mjjV
+         cRwkDn2Q0hDdTZkqR59deZTY/6qoO37p1w6DLCnylj6S9KHaHfTALh490F75TiCqSF
+         inWLpkEy6+5dnlhXVOtT7Mpj2whJ/ulEXBBE6HuvlhsYOHHnxHyL+TUBCO6PB7jQww
+         KS0vRwfZvuGyA==
+Received: by mail-lj1-f197.google.com with SMTP id 2-20020a2e0902000000b00218c22336abso5111439ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:41:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=n5Hadb6xbkGaApkV40DUT8mQVW3mxdVMSv3mHiuuCFI=;
+        b=SdWPcuKlsgvyqoXA1mLuAbLj8XfICXMp7Rl9lkypjwzi7h9+f/oaDUgZj4Iqev/bnx
+         wDUr2NdzxQ5XgDu8riJ5bvcjfOsonxbAMUlrVpnOPO/qah6a3NPXXX8c5qfCrXyCyU2n
+         Fsbsb7Zzh/g6yxi5AtprNuGbBV2tvOsf9m0J6c2I0hrZzY6PwoLEgE01Dv0fV8z7ynL0
+         n9KRYcpzKi7XXPwCCn19spWIiPXj87cX2kQ9f5lt3JhQa4rdEovxfGaVth5EJSlTa6qY
+         frGSG/3APH2xjLXn7GbGsASUmyreexArsl0/0fFybRDYGvLhEN7+cU24BBXx47MkGeRC
+         WNNw==
+X-Gm-Message-State: AOAM533J6HyUf95YuR8OXko4MYGbEtX0p1raHrIFN3AKKUYGlNtu3WH3
+        ptMabb3pytockpubTjIRsQGNkdTfDtcVP9IVRGDXKB1bxzzSn31KAOJV6PCvgpTEzrogoRaFj0D
+        Sa1sz2oMIH/eolIubgTfKP4UHRuJoR9xP6VAFVs522g==
+X-Received: by 2002:a05:6512:c19:: with SMTP id z25mr34685703lfu.60.1636983690561;
+        Mon, 15 Nov 2021 05:41:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxkpYeMAsCvuBUvs4Vf7PmAZoAzIjj2DCCMvm1MjqXaC8vi/q3I1PtjMWlG7VswioAqYx8hvg==
+X-Received: by 2002:a05:6512:c19:: with SMTP id z25mr34685689lfu.60.1636983690417;
+        Mon, 15 Nov 2021 05:41:30 -0800 (PST)
+Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id i3sm1421786lfu.156.2021.11.15.05.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 05:41:29 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     David Virag <virag.david003@gmail.com>
+Subject: Re: [PATCH] soc: samsung: exynos-chipid: describe which SoCs go with compatibles
+Date:   Mon, 15 Nov 2021 14:41:25 +0100
+Message-Id: <163698368315.132512.16798807565852524443.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211031205212.59505-1-krzysztof.kozlowski@canonical.com>
+References: <20211031205212.59505-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using performance policy, EPP value is restored to non "performance"
-mode EPP after offline and online.
+On Sun, 31 Oct 2021 21:52:12 +0100, Krzysztof Kozlowski wrote:
+> The Exynos ChipID driver, like most of the Exynos drivers, uses one
+> compatible for entire family of compatible devices using one devicetree
+> "compatible".  The compatibility is here described by programming
+> interface (register layout), not by actual values, so the product ID
+> register on one family of devices has different values for different
+> SoCs.
+> 
+> [...]
 
-For example:
-cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
-performance
-echo 0 > /sys/devices/system/cpu/cpu1/online
-echo 1 > /sys/devices/system/cpu/cpu1/online
-cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
-balance_performance
+Applied, thanks!
 
-The commit 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
-optimized save restore path of the HWP request MSR, when there is no
-change in the policy. Also added special processing for performance mode
-EPP. If EPP has been set to "performance" by the active mode "performance"
-scaling algorithm, replace that value with the cached EPP. This ends up
-replacing with cached EPP during offline, which is restored during online
-again.
+[1/1] soc: samsung: exynos-chipid: describe which SoCs go with compatibles
+      commit: 569e45a1135497d8dddc647bc615e26c49b070a8
 
-So add a change which will set cpu_data->epp_policy to zero, when in
-performance policy and has non zero epp. In this way EPP is set to zero
-again.
-
-Fixes: 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: stable@vger.kernel.org # v5.9+
----
-Update: Minor optimization to skip non performance policy code path
-
- drivers/cpufreq/intel_pstate.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 815df3daae9d..6d7d73a0c66b 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -936,11 +936,17 @@ static void intel_pstate_hwp_set(unsigned int cpu)
- 	max = cpu_data->max_perf_ratio;
- 	min = cpu_data->min_perf_ratio;
- 
--	if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE)
--		min = max;
--
- 	rdmsrl_on_cpu(cpu, MSR_HWP_REQUEST, &value);
- 
-+	if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE) {
-+		min = max;
-+		epp = 0;
-+		if (boot_cpu_has(X86_FEATURE_HWP_EPP))
-+			epp = (value >> 24) & 0xff;
-+		if (epp)
-+			cpu_data->epp_policy = 0;
-+	}
-+
- 	value &= ~HWP_MIN_PERF(~0L);
- 	value |= HWP_MIN_PERF(min);
- 
+Best regards,
 -- 
-2.17.1
-
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
