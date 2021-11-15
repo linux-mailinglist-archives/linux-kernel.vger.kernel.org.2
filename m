@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96321451842
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A8B4517D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348135AbhKOW4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:56:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50176 "EHLO mail.kernel.org"
+        id S1349364AbhKOWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:45:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242823AbhKOSq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:46:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2393763294;
-        Mon, 15 Nov 2021 18:06:47 +0000 (UTC)
+        id S242265AbhKOSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCBB163291;
+        Mon, 15 Nov 2021 18:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999608;
-        bh=YtvZQXR6blEQrRhqV8Hoc5MCz0xWdczojaCz4kx+HGQ=;
+        s=korg; t=1636999512;
+        bh=5Rlg9MeyloG2Lf6JHHtnmUerQqRX+FEwu5Ch3TjbGsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hC/luAlJvqmBuJy05XDQ4t+Hp49u55bqEN044788Pd6H0Te7jUVbYpPYneJQ5iODL
-         e3daIIZlgRljMvh6D43/TmctJpSWkgEspCmsW+jmHLGCrMITuXROynknK//ngqx6rG
-         h9maGUcxW7yUm0LlrmctKlpENyoP33pO+Y31JErE=
+        b=bgO/OYzJ6QYTEJrB4gusCtdCVtNORRzXk8jQNODIjiPEPzctAZC468XV93oWDxA2X
+         xJRE6LygWegdVhqTny/vU6iGZz6OQYr264H71KRoxueqfEa3pCY4dOVm5jMqKsOEFQ
+         nn/wS0jZYOOAlyZ1Zeq+mQzSJjhXSb6liZpKjxAk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Stefan Schaeckeler <schaecsn@gmx.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 316/849] net: annotate data-race in neigh_output()
-Date:   Mon, 15 Nov 2021 17:56:39 +0100
-Message-Id: <20211115165430.936471977@linuxfoundation.org>
+Subject: [PATCH 5.14 317/849] ACPI: AC: Quirk GK45 to skip reading _PSR
+Date:   Mon, 15 Nov 2021 17:56:40 +0100
+Message-Id: <20211115165430.968829273@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,146 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Stefan Schaeckeler <schaecsn@gmx.net>
 
-[ Upstream commit d18785e213866935b4c3dc0c33c3e18801ce0ce8 ]
+[ Upstream commit 3d730ee686800d71ecc5c3cb8460dcdcdeaf38a3 ]
 
-neigh_output() reads n->nud_state and hh->hh_len locklessly.
+Let GK45 not go into BIOS for determining the AC power state.
 
-This is fine, but we need to add annotations and document this.
+The BIOS wrongly returns 0, so hardcode the power state to 1.
 
-We evaluate skip_cache first to avoid reading these fields
-if the cache has to by bypassed.
+The mini PC GK45 by Besstar Tech Lld. (aka Kodlix) just runs
+off AC. It does not include any batteries. Nevertheless BIOS
+reports AC off:
 
-syzbot report:
+root@kodlix:/usr/src/linux# cat /sys/class/power_supply/ADP1/online
+0
 
-BUG: KCSAN: data-race in __neigh_event_send / ip_finish_output2
+root@kodlix:/usr/src/linux# modprobe acpi_dbg
+root@kodlix:/usr/src/linux# tools/power/acpi/acpidbg
 
-write to 0xffff88810798a885 of 1 bytes by interrupt on cpu 1:
- __neigh_event_send+0x40d/0xac0 net/core/neighbour.c:1128
- neigh_event_send include/net/neighbour.h:444 [inline]
- neigh_resolve_output+0x104/0x410 net/core/neighbour.c:1476
- neigh_output include/net/neighbour.h:510 [inline]
- ip_finish_output2+0x80a/0xaa0 net/ipv4/ip_output.c:221
- ip_finish_output+0x3b5/0x510 net/ipv4/ip_output.c:309
- NF_HOOK_COND include/linux/netfilter.h:296 [inline]
- ip_output+0xf3/0x1a0 net/ipv4/ip_output.c:423
- dst_output include/net/dst.h:450 [inline]
- ip_local_out+0x164/0x220 net/ipv4/ip_output.c:126
- __ip_queue_xmit+0x9d3/0xa20 net/ipv4/ip_output.c:525
- ip_queue_xmit+0x34/0x40 net/ipv4/ip_output.c:539
- __tcp_transmit_skb+0x142a/0x1a00 net/ipv4/tcp_output.c:1405
- tcp_transmit_skb net/ipv4/tcp_output.c:1423 [inline]
- tcp_xmit_probe_skb net/ipv4/tcp_output.c:4011 [inline]
- tcp_write_wakeup+0x4a9/0x810 net/ipv4/tcp_output.c:4064
- tcp_send_probe0+0x2c/0x2b0 net/ipv4/tcp_output.c:4079
- tcp_probe_timer net/ipv4/tcp_timer.c:398 [inline]
- tcp_write_timer_handler+0x394/0x520 net/ipv4/tcp_timer.c:626
- tcp_write_timer+0xb9/0x180 net/ipv4/tcp_timer.c:642
- call_timer_fn+0x2e/0x1d0 kernel/time/timer.c:1421
- expire_timers+0x135/0x240 kernel/time/timer.c:1466
- __run_timers+0x368/0x430 kernel/time/timer.c:1734
- run_timer_softirq+0x19/0x30 kernel/time/timer.c:1747
- __do_softirq+0x12c/0x26e kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu kernel/softirq.c:636 [inline]
- irq_exit_rcu+0x4e/0xa0 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x69/0x80 arch/x86/kernel/apic/apic.c:1097
- asm_sysvec_apic_timer_interrupt+0x12/0x20
- native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
- acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
- acpi_idle_do_entry drivers/acpi/processor_idle.c:553 [inline]
- acpi_idle_enter+0x258/0x2e0 drivers/acpi/processor_idle.c:688
- cpuidle_enter_state+0x2b4/0x760 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x3c/0x60 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x1a3/0x250 kernel/sched/idle.c:306
- cpu_startup_entry+0x15/0x20 kernel/sched/idle.c:403
- secondary_startup_64_no_verify+0xb1/0xbb
+- find _PSR
+   \_SB.PCI0.SBRG.H_EC.ADP1._PSR Method       000000009283cee8 001 Args 0 Len 001C Aml 00000000f54e5f67
 
-read to 0xffff88810798a885 of 1 bytes by interrupt on cpu 0:
- neigh_output include/net/neighbour.h:507 [inline]
- ip_finish_output2+0x79a/0xaa0 net/ipv4/ip_output.c:221
- ip_finish_output+0x3b5/0x510 net/ipv4/ip_output.c:309
- NF_HOOK_COND include/linux/netfilter.h:296 [inline]
- ip_output+0xf3/0x1a0 net/ipv4/ip_output.c:423
- dst_output include/net/dst.h:450 [inline]
- ip_local_out+0x164/0x220 net/ipv4/ip_output.c:126
- __ip_queue_xmit+0x9d3/0xa20 net/ipv4/ip_output.c:525
- ip_queue_xmit+0x34/0x40 net/ipv4/ip_output.c:539
- __tcp_transmit_skb+0x142a/0x1a00 net/ipv4/tcp_output.c:1405
- tcp_transmit_skb net/ipv4/tcp_output.c:1423 [inline]
- tcp_xmit_probe_skb net/ipv4/tcp_output.c:4011 [inline]
- tcp_write_wakeup+0x4a9/0x810 net/ipv4/tcp_output.c:4064
- tcp_send_probe0+0x2c/0x2b0 net/ipv4/tcp_output.c:4079
- tcp_probe_timer net/ipv4/tcp_timer.c:398 [inline]
- tcp_write_timer_handler+0x394/0x520 net/ipv4/tcp_timer.c:626
- tcp_write_timer+0xb9/0x180 net/ipv4/tcp_timer.c:642
- call_timer_fn+0x2e/0x1d0 kernel/time/timer.c:1421
- expire_timers+0x135/0x240 kernel/time/timer.c:1466
- __run_timers+0x368/0x430 kernel/time/timer.c:1734
- run_timer_softirq+0x19/0x30 kernel/time/timer.c:1747
- __do_softirq+0x12c/0x26e kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu kernel/softirq.c:636 [inline]
- irq_exit_rcu+0x4e/0xa0 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x69/0x80 arch/x86/kernel/apic/apic.c:1097
- asm_sysvec_apic_timer_interrupt+0x12/0x20
- native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
- acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
- acpi_idle_do_entry drivers/acpi/processor_idle.c:553 [inline]
- acpi_idle_enter+0x258/0x2e0 drivers/acpi/processor_idle.c:688
- cpuidle_enter_state+0x2b4/0x760 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x3c/0x60 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x1a3/0x250 kernel/sched/idle.c:306
- cpu_startup_entry+0x15/0x20 kernel/sched/idle.c:403
- rest_init+0xee/0x100 init/main.c:734
- arch_call_rest_init+0xa/0xb
- start_kernel+0x5e4/0x669 init/main.c:1142
- secondary_startup_64_no_verify+0xb1/0xbb
+- execute \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+Evaluating \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+Evaluation of \_SB.PCI0.SBRG.H_EC.ADP1._PSR returned object 00000000dc08c187, external buffer length 18
+ [Integer] = 0000000000000000
 
-value changed: 0x20 -> 0x01
+that should be
 
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+ [Integer] = 0000000000000001
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Stefan Schaeckeler <schaecsn@gmx.net>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/neighbour.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/acpi/ac.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/net/neighbour.h b/include/net/neighbour.h
-index 22ced1381ede5..990f9b1d17092 100644
---- a/include/net/neighbour.h
-+++ b/include/net/neighbour.h
-@@ -504,10 +504,15 @@ static inline int neigh_output(struct neighbour *n, struct sk_buff *skb,
- {
- 	const struct hh_cache *hh = &n->hh;
+diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+index b0cb662233f1a..81aff651a0d49 100644
+--- a/drivers/acpi/ac.c
++++ b/drivers/acpi/ac.c
+@@ -61,6 +61,7 @@ static SIMPLE_DEV_PM_OPS(acpi_ac_pm, NULL, acpi_ac_resume);
  
--	if ((n->nud_state & NUD_CONNECTED) && hh->hh_len && !skip_cache)
-+	/* n->nud_state and hh->hh_len could be changed under us.
-+	 * neigh_hh_output() is taking care of the race later.
-+	 */
-+	if (!skip_cache &&
-+	    (READ_ONCE(n->nud_state) & NUD_CONNECTED) &&
-+	    READ_ONCE(hh->hh_len))
- 		return neigh_hh_output(hh, skb);
--	else
--		return n->output(n, skb);
+ static int ac_sleep_before_get_state_ms;
+ static int ac_check_pmic = 1;
++static int ac_only;
+ 
+ static struct acpi_driver acpi_ac_driver = {
+ 	.name = "ac",
+@@ -93,6 +94,11 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
+ 	if (!ac)
+ 		return -EINVAL;
+ 
++	if (ac_only) {
++		ac->state = 1;
++		return 0;
++	}
 +
-+	return n->output(n, skb);
+ 	status = acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
+ 				       &ac->state);
+ 	if (ACPI_FAILURE(status)) {
+@@ -200,6 +206,12 @@ static int __init ac_do_not_check_pmic_quirk(const struct dmi_system_id *d)
+ 	return 0;
  }
  
- static inline struct neighbour *
++static int __init ac_only_quirk(const struct dmi_system_id *d)
++{
++	ac_only = 1;
++	return 0;
++}
++
+ /* Please keep this list alphabetically sorted */
+ static const struct dmi_system_id ac_dmi_table[]  __initconst = {
+ 	{
+@@ -209,6 +221,13 @@ static const struct dmi_system_id ac_dmi_table[]  __initconst = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
+ 		},
+ 	},
++	{
++		/* Kodlix GK45 returning incorrect state */
++		.callback = ac_only_quirk,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "GK45"),
++		},
++	},
+ 	{
+ 		/* Lenovo Ideapad Miix 320, AXP288 PMIC, separate fuel-gauge */
+ 		.callback = ac_do_not_check_pmic_quirk,
 -- 
 2.33.0
 
