@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA8945058F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BB5450597
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbhKONg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:36:56 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48262
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231852AbhKONel (ORCPT
+        id S235080AbhKONig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:38:36 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41866 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231995AbhKONgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:34:41 -0500
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 488753F19F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:31:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636983105;
-        bh=ojqXvdJwzGTTkyeWkIs8mxvrFI+WspsP1IO2MdAm86c=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=hfC9fRwGFv9emmeFqqm3yxIEZ7IXO9j8oEJ20y7cgRBQFa8hu6+HkZ6eN9N1WDYfL
-         afI5PuGPy8pzAXX0jKU7fC+hmIZcmiMu/on5Bk6iG8mWg/RYm38bmWb/mPS6a0kIvh
-         0gt4XPpY83ukS9MOCZSU560SHXtyYkMhvnKN/93d/pILJkIMDODQTkWf5XIja0Fl1S
-         eJZcIMjIkcIyipw/+So6IRb/1XLa4tkNTmmXmiHbsX5XX+KInsUYJA1KeWQd571VT/
-         gzNLSskMlcKg1Etv6WUd6gYzyxv/u1P2eODpIC/43JVRvpEz9ScprAzohEW9UuJUeB
-         xU5LxhqkptUHg==
-Received: by mail-lj1-f197.google.com with SMTP id 83-20020a2e0556000000b00218db3260bdso5088018ljf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:31:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ojqXvdJwzGTTkyeWkIs8mxvrFI+WspsP1IO2MdAm86c=;
-        b=NdlajmkU//16YSOOaHL4YTqtaP1uSNsQc0PkissK6byOxik+NfBZTQOhSokNzHad4O
-         xpqRYYM/mgTSRLFgimDJNOe+RaMjI4VNCI7K+Llxj1h99W1Yc58lUerc6URwXzTrLXjb
-         EKKjUwl35ZoOg4iWAdwoPhqqS8LHcJPXh7wSDjV2uDXI+FClO4cFj7MSVQDHMYRTh1B4
-         lfCvRITCO4pbJ5vGfqAzbmjQmat3qfaGuFGaHj59NHsB4fJjHLv2HVhPAV97hfrm9Iyn
-         +KjrcuNqRNOrQhsTNnBobzi6v9SJNh1n4C6K80ErJokMzhj0dOlS+ZA50d4bUZbWwPPL
-         j8Lg==
-X-Gm-Message-State: AOAM532rs+QXTTpXQswOtu2EjmjcHc9o3AL3JUUeJnUTXrjBlmfHukbW
-        UbsntN9/If/0vBRpaJYsVm+VPVgm4Ydgzi78MEqnnewwZBFDk93wg3bO6aJkjUbNvu8U8kjAeqD
-        B+IIOLJ3TG5cwNROPw7UjNxiwK1qvihU58tycNtCb8w==
-X-Received: by 2002:a05:6512:12d3:: with SMTP id p19mr25334050lfg.53.1636983104676;
-        Mon, 15 Nov 2021 05:31:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxqp5859FRwLs3vmdFsfbBUc9BqBiGXS88gVU5mPrJzcrErPFY4HeUhmswDPzB6Oz2RO38LAA==
-X-Received: by 2002:a05:6512:12d3:: with SMTP id p19mr25334026lfg.53.1636983104533;
-        Mon, 15 Nov 2021 05:31:44 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id z12sm1421048lfs.101.2021.11.15.05.31.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 05:31:44 -0800 (PST)
-Message-ID: <d1786910-6bf7-9aa5-296d-a467e41fe861@canonical.com>
-Date:   Mon, 15 Nov 2021 14:31:43 +0100
+        Mon, 15 Nov 2021 08:36:12 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AFC0Veg000441;
+        Mon, 15 Nov 2021 13:33:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Gz0c/FL/c6RRh3IZXFdLAN601aKHbe5dHn0gMf/X5xk=;
+ b=YeAH5Tv8ixswkGuxc4i3ZMe/49PsXniMYnTGtetvHlsFISnKxUNaLm6pz3fI6AF7ItEl
+ Q6mJklKYRgrt6Y9Ow9t/4pjkrivos+00zCnEETsp4BF8enb5RMU0mhhzrYpYBCCA83bh
+ JFyA9eZN29h9Bf3LNQqF9efMJIEN6gzvcRLvUb0ZcNTIWmHkmCvJeLDYUlCmJDdRoVh6
+ fUreztjtJefp6jmxJGj/Hz8v3waT9diIg5N7g5rVKb+O07eyliJnNTFTqOiRCezcMU1t
+ FFn+fmlyf6YQcKcQ04Dq6OGtrR+84DKaPqrK1TWfCwPHUWya8Z/L7Jkxjv10H+ynkIZb eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbq671ry7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 13:33:15 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AFD0vim005966;
+        Mon, 15 Nov 2021 13:33:15 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbq671rxe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 13:33:15 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AFDDgfd017670;
+        Mon, 15 Nov 2021 13:33:13 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3ca50bw7r2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 13:33:13 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AFDX91Z131804
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Nov 2021 13:33:09 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7945B52069;
+        Mon, 15 Nov 2021 13:33:09 +0000 (GMT)
+Received: from [9.145.1.201] (unknown [9.145.1.201])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 2463D52065;
+        Mon, 15 Nov 2021 13:33:09 +0000 (GMT)
+Message-ID: <58bb8ddf-f5d7-8797-e950-6f5674069953@linux.ibm.com>
+Date:   Mon, 15 Nov 2021 14:33:16 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 1/2] ARM: dts: exynos/i9100: Fix BCM4330 Bluetooth
- reset polarity
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH net] net/smc: Make sure the link_id is unique
 Content-Language: en-US
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211031234137.87070-1-paul@crapouillou.net>
- <163698188786.128367.17376497674811914207.b4-ty@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <163698188786.128367.17376497674811914207.b4-ty@canonical.com>
+To:     Wen Gu <guwen@linux.alibaba.com>
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xuanzhuo@linux.alibaba.com,
+        tonylu@linux.alibaba.com, dust.li@linux.alibaba.com
+References: <1636969507-39355-1-git-send-email-guwen@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <1636969507-39355-1-git-send-email-guwen@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: x5V7E5CluX1FHF5bKFekhgyu2yPCUvdS
+X-Proofpoint-GUID: 2xnWB0VxUROmvav2VjrUV2YmnpeaR8kV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_10,2021-11-15_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1011 impostorscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111150073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/11/2021 14:11, Krzysztof Kozlowski wrote:
-> On Sun, 31 Oct 2021 23:41:36 +0000, Paul Cercueil wrote:
->> The reset GPIO was marked active-high, which is against what's specified
->> in the documentation. Mark the reset GPIO as active-low. With this
->> change, Bluetooth can now be used on the i9100.
->>
->>
+On 15/11/2021 10:45, Wen Gu wrote:
+> The link_id is supposed to be unique, but smcr_next_link_id() doesn't
+> skip the used link_id as expected. So the patch fixes this.
 > 
-> Applied, thanks!
-> 
-> [1/2] ARM: dts: exynos/i9100: Fix BCM4330 Bluetooth reset polarity
->       commit: 9cb6de45a006a9799ec399bce60d64b6d4fcc4af
-> [2/2] ARM: dts: exynos/i9100: Use interrupt for BCM4330 host wakeup
->       commit: 8e14b530f8c90346eab43c7b59b03ff9fec7d171
-> 
+> Fixes: 026c381fb477 ("net/smc: introduce link_idx for link group array")
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+> ---
 
-Applied with fixed title. Please use prefix matching history (git log
---oneline).
+Thank you.
 
-
-Best regards,
-Krzysztof
+Acked-by: Karsten Graul <kgraul@linux.ibm.com>
