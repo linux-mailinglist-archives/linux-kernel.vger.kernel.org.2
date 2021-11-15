@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C031A450388
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D9E45038C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhKOLgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhKOLg0 (ORCPT
+        id S231588AbhKOLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:38:16 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:59558 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230337AbhKOLhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:36:26 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84E6C061746;
-        Mon, 15 Nov 2021 03:33:30 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id s139so34070504oie.13;
-        Mon, 15 Nov 2021 03:33:30 -0800 (PST)
+        Mon, 15 Nov 2021 06:37:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TosILRA7RKaPNlvAEEPHYc2XtXbrS4wfssZDLHQY1kU=;
-        b=TqRbFVwlKmOFpU+H9GDPhv1LKFQZDdPlnI+QYpcSwc8pcjEVCXrsNBSKE/7FeVzvcK
-         rBS5Tklh8qvP5Kq4aQytUM/2dnahwo4vILCODJUC5Yn49zu5eNjpMEeWaKQ/foEpBe4b
-         5d0p+9xMqVDTpG/kdqOIGm5f2rj7b6ILCKyWITxjmCEajD6RjPmfriuJC2azJ65rRgZU
-         Hxtx/FHToELfe8c83NS7pxre1zwaGmXoGYUCU0wiXU4SUxiNPLUZXPkHq4l+F1+W3f80
-         CHqAzXD0fR7o4bRpQ68XVcR8IIGiQKrpuKG7mPCEhsVMD3+mud2/qN1gMar84SkO+dSj
-         Rf8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TosILRA7RKaPNlvAEEPHYc2XtXbrS4wfssZDLHQY1kU=;
-        b=OlvIfHJGSIJrlbdn4rHyqT2d72JPYpfnLgL6btalSGq1aym2KoUe6kLV3gMKAQ+BVn
-         E9QREHXa2MWUTG9NhXP/gp1GerxC9mXXYFkDBLmRd5aA5vu9/rdrJ2mFItQ7lP8wP2sU
-         x9uoL9e1nxjip2qCPmz55+z3Zqbb16PANa/hy0t4IU9lDNOc8HB7K2MYoFcj0g+ykPST
-         uKPYzW6tJx2A9thE90uaW8iqsRdPfBzjSA3lvDnXHMh4z10cCk7kqSaQevPzJpV1WXAV
-         zk7epoFZNQ3O5Th0016q8V+JIBE0TI3jPAoUQz4bLM0BOLV9oatIJQ32VgBtKPEgwD+w
-         2bUw==
-X-Gm-Message-State: AOAM5302+L3LNLWcAvFHR4H1nonXcAx33gbGr5vethO8YfgXcfn0ve5o
-        /9U6JLLtyCuMVLhU3vOkq7z+2q4Y1wJ6yUbNhlk=
-X-Google-Smtp-Source: ABdhPJxyVQy/sHJZgZ4KvZEkvizBX0kZDKhCmgE7dJHGPhJHuh2wOeYIp+hUtH63bEwm2aiq4onVCaX5EsLeNGrkOVg=
-X-Received: by 2002:a54:4486:: with SMTP id v6mr31506038oiv.90.1636976010344;
- Mon, 15 Nov 2021 03:33:30 -0800 (PST)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636976060; x=1668512060;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oBH/PipNEiyyOXObyrCU/HmIYYuKy3YqqOSV6OSlJOY=;
+  b=gnvReuCBueo0J7fDIlVVy+DmIW2oVaD+Zs2Vpj6dElN9WC3/CvmTWCoc
+   1cKruVdZ2srjivuga1X3rFfcbvQN1y2+5QDxpswrMvHVx4cDVvVAiFqM2
+   C++rxtyDJkDB7Vi22bk7NY/wbyS2by2DgehdgedDypQ5M91o49WHCdNLh
+   A=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Nov 2021 03:34:14 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:34:14 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 15 Nov 2021 03:34:13 -0800
+Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 15 Nov 2021 03:34:09 -0800
+From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+To:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>
+CC:     Marc Zyngier <maz@kernel.org>, <gregkh@linuxfoundation.org>,
+        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Subject: [PATCHv4 0/2] tracing/rwmmio/arm64: Add support to trace register reads/writes 
+Date:   Mon, 15 Nov 2021 17:03:28 +0530
+Message-ID: <cover.1636973694.git.quic_saipraka@quicinc.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20211114164312.GA28736@makvihas> <87o86leo34.fsf@redhat.com>
-In-Reply-To: <87o86leo34.fsf@redhat.com>
-From:   Vihas Mak <makvihas@gmail.com>
-Date:   Mon, 15 Nov 2021 17:03:18 +0530
-Message-ID: <CAH1kMwSvLj8oK46V8m+FUM=t8h5Zch_Pi+zui+AYq6efDR0Sgw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: fix cocci warnings
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> and I find '|=' to not be very natural with booleans. I'm not sure it's
-> worth changing though.
+Generic MMIO read/write i.e., __raw_{read,write}{b,l,w,q} accessors
+are typically used to read/write from/to memory mapped registers
+and can cause hangs or some undefined behaviour in following cases,
 
-I see. But there are many functions in which '|=' is used on booleans.
-get_mmio_spte(), __rmap_write_protect(), kvm_handle_gfn_range and many more.
-That's why I thought it would be better if the code follows the same convention.
+* If the access to the register space is unclocked, for example: if
+  there is an access to multimedia(MM) block registers without MM
+  clocks.
 
-Thanks,
-Vihas
+* If the register space is protected and not set to be accessible from
+  non-secure world, for example: only EL3 (EL: Exception level) access
+  is allowed and any EL2/EL1 access is forbidden.
 
+* If xPU(memory/register protection units) is controlling access to
+  certain memory/register space for specific clients.
 
-On Mon, Nov 15, 2021 at 3:29 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Vihas Mak <makvihas@gmail.com> writes:
->
-> > change 0 to false and 1 to true to fix following cocci warnings:
-> >
-> >         arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
-> >         arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
-> >
-> > Signed-off-by: Vihas Mak <makvihas@gmail.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > Cc: Wanpeng Li <wanpengli@tencent.com>
-> > Cc: Jim Mattson <jmattson@google.com>
-> > Cc: Joerg Roedel <joro@8bytes.org>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 337943799..2fcea4a78 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1454,7 +1454,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >  {
-> >       u64 *sptep;
-> >       struct rmap_iterator iter;
-> > -     int need_flush = 0;
-> > +     bool need_flush = false;
-> >       u64 new_spte;
-> >       kvm_pfn_t new_pfn;
-> >
-> > @@ -1466,7 +1466,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >               rmap_printk("spte %p %llx gfn %llx (%d)\n",
-> >                           sptep, *sptep, gfn, level);
-> >
-> > -             need_flush = 1;
-> > +             need_flush = true;
-> >
-> >               if (pte_write(pte)) {
-> >                       pte_list_remove(kvm, rmap_head, sptep);
-> > @@ -1482,7 +1482,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >
-> >       if (need_flush && kvm_available_flush_tlb_with_range()) {
-> >               kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
-> > -             return 0;
-> > +             return false;
-> >       }
-> >
-> >       return need_flush;
-> > @@ -1623,8 +1623,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >
-> >       for_each_rmap_spte(rmap_head, &iter, sptep)
-> >               if (is_accessed_spte(*sptep))
-> > -                     return 1;
-> > -     return 0;
-> > +                     return true;
-> > +     return false;
-> >  }
-> >
-> >  #define RMAP_RECYCLE_THRESHOLD 1000
->
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->
-> One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
-> 'kvm_handle_gfn_range()' which does
->
->         bool ret = false;
->
->         for_each_slot_rmap_range(...)
->                 ret |= handler(...);
->
-> and I find '|=' to not be very natural with booleans. I'm not sure it's
-> worth changing though.
->
-> --
-> Vitaly
->
+and more...
+
+Such cases usually results in instant reboot/SErrors/NOC or interconnect
+hangs and tracing these register accesses can be very helpful to debug
+such issues during initial development stages and also in later stages.
+
+So use ftrace trace events to log such MMIO register accesses which
+provides rich feature set such as early enablement of trace events,
+filtering capability, dumping ftrace logs on console and many more.
+
+Sample output:
+
+rwmmio_read: gic_peek_irq+0xd0/0xd8 readl addr=0xffff800010040104
+rwmmio_write: gic_poke_irq+0xe4/0xf0 writel addr=0xffff800010040184 
+rwmmio_read: gic_do_wait_for_rwp+0x54/0x90 readl addr=0xffff800010040000
+rwmmio_write: gic_set_affinity+0x1bc/0x1e8 writeq addr=0xffff800010046130
+
+This series is a follow-up for the series [1] and a recent series [2] making use
+of both.
+
+[1] https://lore.kernel.org/lkml/cover.1536430404.git.saiprakash.ranjan@codeaurora.org/
+[2] https://lore.kernel.org/lkml/1604631386-178312-1-git-send-email-psodagud@codeaurora.org/
+
+Changes in v4:
+ * Drop dynamic debug based filter support since that will be developed later with
+   the help from Steven (Ftrace maintainer).
+ * Drop value passed to writel as it is causing hangs when tracing is enabled.
+ * Code cleanup for trace event as suggested by Steven for earlier version.
+ * Fixed some build errors reported by 0-day bot.
+
+Changes in v3:
+ * Create a generic mmio header for instrumented version (Earlier suggested in [1]
+   by Will Deacon and recently [2] by Greg to have a generic version first).
+ * Add dynamic debug support to filter out traces which can be very useful for targeted
+   debugging specific to subsystems or drivers.
+ * Few modifications to the rwmmio trace event fields to include the mmio width and print
+   addresses in hex.
+ * Rewrote commit msg to explain some more about usecases.
+
+Prasad Sodagudi (1):
+  tracing: Add register read/write tracing support
+
+Sai Prakash Ranjan (1):
+  arm64/io: Add a header for mmio access instrumentation
+
+ arch/arm64/include/asm/io.h       | 25 ++++-------
+ arch/arm64/kvm/hyp/nvhe/Makefile  |  2 +-
+ include/linux/mmio-instrumented.h | 70 +++++++++++++++++++++++++++++++
+ include/trace/events/rwmmio.h     | 59 ++++++++++++++++++++++++++
+ kernel/trace/Kconfig              |  7 ++++
+ kernel/trace/Makefile             |  1 +
+ kernel/trace/trace_readwrite.c    | 29 +++++++++++++
+ 7 files changed, 176 insertions(+), 17 deletions(-)
+ create mode 100644 include/linux/mmio-instrumented.h
+ create mode 100644 include/trace/events/rwmmio.h
+ create mode 100644 kernel/trace/trace_readwrite.c
+
+-- 
+2.33.1
+
