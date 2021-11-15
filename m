@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCE1451500
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7364514F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350262AbhKOUW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:22:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46100 "EHLO mail.kernel.org"
+        id S1349793AbhKOUTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:19:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240093AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34CC76326D;
-        Mon, 15 Nov 2021 17:42:12 +0000 (UTC)
+        id S240009AbhKOSF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:05:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D96236337B;
+        Mon, 15 Nov 2021 17:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998132;
-        bh=d1W/Mm5qqz722Rug1BmUtJM4GClARRRIRgfA+Tjtgoo=;
+        s=korg; t=1636998097;
+        bh=MwbZVDPdGRfxkLUSKP+bP0+bZv0GRE6qJPEW+sMlwHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OSEhmog2l2s3MiUwewegUN00xk5u6LTDcDvPFzSfOqXM6CRp05z0Ls1/OmUk9jLWs
-         WKJ5Oh8j4pVSr/NxTMPuyqj32qyGBauZAGcmYRpSnx1j40yAFY0tX7CukmRdAur1tl
-         MuCSmGawUFtzFT/o92oyWeHS2VKDJ7YLzAVWH9CM=
+        b=Va2eTlTGljkYE0kOCc8DVA3+SX1zMA/npJq80IPzsl7j5VVnRbQqvYNL8S2EOC4/L
+         9Pca7YGYSc011Ub9baJ3cUyrvi0TaDrDrHA9MbhMXSH29oSbQWEXwT/xUbtbQsw41S
+         yZmA6352u1gCEH6yd/3RfeLOiKTVAmBTcaxoI/vA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 356/575] KVM: s390: pv: avoid stalls for kvm_s390_pv_init_vm
-Date:   Mon, 15 Nov 2021 18:01:21 +0100
-Message-Id: <20211115165356.117773956@linuxfoundation.org>
+Subject: [PATCH 5.10 359/575] ataflop: potential out of bounds in do_format()
+Date:   Mon, 15 Nov 2021 18:01:24 +0100
+Message-Id: <20211115165356.225040124@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,41 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 1e2aa46de526a5adafe580bca4c25856bb06f09e ]
+[ Upstream commit 1ffec389a6431782a8a28805830b6fae9bf00af1 ]
 
-When the system is heavily overcommitted, kvm_s390_pv_init_vm might
-generate stall notifications.
+The function uses "type" as an array index:
 
-Fix this by using uv_call_sched instead of just uv_call. This is ok because
-we are not holding spinlocks.
+	q = unit[drive].disk[type]->queue;
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-Message-Id: <20210920132502.36111-4-imbrenda@linux.ibm.com>
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Unfortunately the bounds check on "type" isn't done until later in the
+function.  Fix this by moving the bounds check to the start.
+
+Fixes: bf9c0538e485 ("ataflop: use a separate gendisk for each media format")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/pv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/ataflop.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index 74265304dd9cd..8228878872228 100644
---- a/arch/s390/kvm/pv.c
-+++ b/arch/s390/kvm/pv.c
-@@ -190,7 +190,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
- 	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
- 	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index e6264db11e415..0a86f9d3a3798 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -726,8 +726,12 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ 	unsigned long	flags;
+ 	int ret;
  
--	cc = uv_call(0, (u64)&uvcb);
-+	cc = uv_call_sched(0, (u64)&uvcb);
- 	*rc = uvcb.header.rc;
- 	*rrc = uvcb.header.rrc;
- 	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
+-	if (type)
++	if (type) {
+ 		type--;
++		if (type >= NUM_DISK_MINORS ||
++		    minor2disktype[type].drive_types > DriveType)
++			return -EINVAL;
++	}
+ 
+ 	q = unit[drive].disk[type]->queue;
+ 	blk_mq_freeze_queue(q);
+@@ -739,11 +743,6 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ 	local_irq_restore(flags);
+ 
+ 	if (type) {
+-		if (type >= NUM_DISK_MINORS ||
+-		    minor2disktype[type].drive_types > DriveType) {
+-			ret = -EINVAL;
+-			goto out;
+-		}
+ 		type = minor2disktype[type].index;
+ 		UDT = &atari_disk_type[type];
+ 	}
 -- 
 2.33.0
 
