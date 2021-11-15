@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3CA4507FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442E9450803
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236458AbhKOPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236707AbhKOPQi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:16:38 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FBDC061204;
-        Mon, 15 Nov 2021 07:13:02 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id t26so3504799lfk.9;
-        Mon, 15 Nov 2021 07:13:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lKwpCQBPYhLtB1zqTXQVzRnVbkrv/Vyz5cRaUgIENsA=;
-        b=SYBJ+usIv+nNyp6M4froRWdGBZO24BYuvV1KNXsVg2gtX6D1NU6SuaVbE4CqWIDvMC
-         Aukowe6n9r82eOeAHjKtqyDSgaVvJ+BB29wHdoyCC50/e68IAazNYc+o+k4GyPtpBHBd
-         N9eBfKC6lGDb8nX28mPNoCfYegf4f8UudMdcHL1DowPP2RSrgpAQ9SPKCfdbYDpIDZnB
-         au88zvmZ5xRYvLfl/3t/qjWnZyibDpK9HyrVgSde0Qtya/Qa+vdQytyX4k03RpnaO9pR
-         1bE30XvoLAqFXkDvvcy+0ykhxYj2UR6+mlCdM2cG+NXAy44KYQvKH+ic09DRfa1IlQEs
-         8Ptg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lKwpCQBPYhLtB1zqTXQVzRnVbkrv/Vyz5cRaUgIENsA=;
-        b=3eYPrFTl3FQ9bQyHoZcP4dz1QC3oJFfezoV/UkWqPFJwmFKi097xz4pCGJOFfyiZp1
-         j+EkxnmXnkH8PKwaZDnCTXahIhB63nnxh1yTqegCbyxYHqwxhsTLRCzA8DFVtvuBwC2J
-         iO5s/BVv/oUl2iZS49k1DVR+FDNgPZ5QqixM9SK2fDxfl4GsMhbjHHLU+EevFbrQu+tc
-         VwPC9S/nS6+GuLHIdoa+wj+myFpGcOq1KaCkUAhiNuPkojPTulUUPnNKD+LVmg+BW0U7
-         8XiR3ySkRMcyKAKjMaoqyuEfcK39OONndSa/DKlHAIz4US/WV6jQkDyzhC5EDbjqhQZY
-         ocWA==
-X-Gm-Message-State: AOAM533+ILyZKNaemb+tkTtblhc6o+wYq/UTGser1uyEAQiCLeqXsKcO
-        UO9EH8VrAAQNbbl46vbxJjnlxa7jcQ4=
-X-Google-Smtp-Source: ABdhPJw91dfbKB7o3kkKR47TTAh3PA4fW2wt5xAYQi4x53gKcFKU6FTUMn8AMXDULBMGKboq9a0Oxg==
-X-Received: by 2002:a05:6512:66:: with SMTP id i6mr36586729lfo.287.1636989180282;
-        Mon, 15 Nov 2021 07:13:00 -0800 (PST)
-Received: from [192.168.2.145] (46-138-46-211.dynamic.spd-mgts.ru. [46.138.46.211])
-        by smtp.googlemail.com with ESMTPSA id h14sm1446936lfu.195.2021.11.15.07.12.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 07:12:59 -0800 (PST)
-Subject: Re: [PATCH v2 0/3] Add NVIDIA Tegra114 support to video decoder
- driver
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anton Bambura <jenneron@protonmail.com>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211114224732.11550-1-digetx@gmail.com>
- <1411d7a3913677fee58e103f7610e122686e87bf.camel@ndufresne.ca>
- <55f445d8-8207-35a3-6c6f-dcb9ea70a90f@xs4all.nl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <274daf12-ae6f-8a95-5cae-bb5b558e25e2@gmail.com>
-Date:   Mon, 15 Nov 2021 18:12:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236532AbhKOPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:17:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:56492 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232398AbhKOPRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:17:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD01E6D;
+        Mon, 15 Nov 2021 07:14:53 -0800 (PST)
+Received: from [10.57.82.45] (unknown [10.57.82.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E86B3F766;
+        Mon, 15 Nov 2021 07:14:51 -0800 (PST)
+Message-ID: <495c65e4-bd97-5f29-d39b-43671acfec78@arm.com>
+Date:   Mon, 15 Nov 2021 15:14:49 +0000
 MIME-Version: 1.0
-In-Reply-To: <55f445d8-8207-35a3-6c6f-dcb9ea70a90f@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 03/11] PCI: pci_stub: Suppress kernel DMA ownership
+ auto-claiming
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Kevin Tian <kevin.tian@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-4-baolu.lu@linux.intel.com>
+ <YZJe1jquP+osF+Wn@infradead.org> <20211115133107.GB2379906@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20211115133107.GB2379906@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.11.2021 17:49, Hans Verkuil пишет:
-> On 15/11/2021 15:43, Nicolas Dufresne wrote:
->> Hi Dmitry,
+On 2021-11-15 13:31, Jason Gunthorpe via iommu wrote:
+> On Mon, Nov 15, 2021 at 05:21:26AM -0800, Christoph Hellwig wrote:
+>> On Mon, Nov 15, 2021 at 10:05:44AM +0800, Lu Baolu wrote:
+>>> pci_stub allows the admin to block driver binding on a device and make
+>>> it permanently shared with userspace. Since pci_stub does not do DMA,
+>>> it is safe.
 >>
->> Le lundi 15 novembre 2021 à 01:47 +0300, Dmitry Osipenko a écrit :
->>> Video decoder of Tegra114/124 SoCs uses additional memory buffer required
->>> for decoding of protected content. We won't support that content, but it
->>> is impossible to disable access to the buffer, hence a stub buffer needs
->>> to be provided. This series enables decoder driver only for Tegra114
->>> because Tegra124 support requires more non-trivial changes on both kernel
->>> and userspace sides.
+>> If an IOMMU is setup and dma-iommu or friends are not used nothing is
+>> unsafe anyway, it just is that IOMMU won't work..
 >>
->> I believe the stateless API is quite in place now, but I only see maintenance on
->> this staging driver. I don't believe it really make sense to keep maintaining a
->> staging driver without any step forward de-staging it. I believe it gives the
->> wrong message on the Kernel staging purpose.
+>>> However the admin must understand that using pci_stub allows
+>>> userspace to attack whatever device it was bound to.
 >>
->> I'm not criticizing your effort, I believe you are doing nice work for you
->> community, but would prefer to see this driver be ported to the official kernel
->> APIs rather then being maintain as staging till the end of time.
+>> I don't understand this sentence at all.
 > 
-> I agree with Nicolas here. This driver only support H264 and the stateless API
-> for that is now in mainline. So there is no reason not to convert to the
-> stateless codec API and move this driver to mainline.
+> If userspace has control of device A and can cause A to issue DMA to
+> arbitary DMA addresses then there are certain PCI topologies where A
+> can now issue peer to peer DMA and manipulate the MMMIO registers in
+> device B.
 > 
-> It would be really nice to see that happen.
+> A kernel driver on device B is thus subjected to concurrent
+> manipulation of the device registers from userspace.
 > 
-> Without any progress on that I am inclined to remove this driver some time
-> next year.
+> So, a 'safe' kernel driver is one that can tolerate this, and an
+> 'unsafe' driver is one where userspace can break kernel integrity.
 
-I'll prioritize the v4l patches of this driver. The reason it wasn't
-done yet is because the current custom UAPI works perfectly fine and I
-was busy with a bit more important patches so far.
+You mean in the case where the kernel driver is trying to use device B 
+in a purely PIO mode, such that userspace might potentially be able to 
+interfere with data being transferred in and out of the kernel? Perhaps 
+it's not so clear to put that under a notion of "DMA ownership", since 
+device B's DMA is irrelevant and it's really much more equivalent to 
+/dev/mem access or mmaping BARs to userspace while a driver is bound.
+
+> The second issue is DMA - because there is only one iommu_domain
+> underlying many devices if we give that iommu_domain to userspace it
+> means the kernel DMA API on other devices no longer works.
+
+Actually, the DMA API itself via iommu-dma will "work" just fine in the 
+sense that it will still successfully perform all its operations in the 
+unattached default domain, it's just that if the driver then programs 
+the device to access the returned DMA address, the device is likely to 
+get a nasty surprise.
+
+> So no kernel driver doing DMA can work at all, under any PCI topology,
+> if userspace owns the IO page table.
+
+This isn't really about userspace at all - it's true of any case where a 
+kernel driver wants to attach a grouped device to its own unmanaged 
+domain. The fact that the VFIO kernel driver uses its unmanaged domains 
+to map user pages upon user requests is merely a VFIO detail, and VFIO 
+happens to be the only common case where unmanaged domains and 
+non-singleton groups intersect. I'd say that, logically, if you want to 
+put policy on mutual driver/usage compatibility anywhere it should be in 
+iommu_attach_group().
+
+Robin.
