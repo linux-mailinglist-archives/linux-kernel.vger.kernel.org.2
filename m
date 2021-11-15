@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125B5451C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7414451C2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355775AbhKPANm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S1355930AbhKPANw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346023AbhKOWRz (ORCPT
+        with ESMTP id S1349548AbhKOWTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:17:55 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB2C03E03F;
-        Mon, 15 Nov 2021 13:37:24 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id x131so16157514pfc.12;
-        Mon, 15 Nov 2021 13:37:24 -0800 (PST)
+        Mon, 15 Nov 2021 17:19:11 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CB6C025544
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:37:37 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id h23so18176480ila.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:37:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sy0cBwSY9OB0AfhJQItSKu5D9CkSMvp3AC0Bk6Ha4VQ=;
-        b=pN6KNRwqQkwkOps2PgEPNWx6ZqE9B6BEhhsEEiyYN7MYDinla+sbz/gXcJ2ygSQhJq
-         7z3VZJaa/DEz0KQ58iKtuRH5SsFuyQ92/N6vUoBv/9dDKUW7K7qPAkRKPuN2kQpuAGZ8
-         8Ei+42gAjmPc8TZL5pV8KQvgGGYy6VZFv6X6zQQ8F8Nk4XJqV+TdlZ8g/beGlO7knjdu
-         iTWmYMHh7t3zasaqNfMIvD99JnxyeSZMC8mEVBacCZbIvI/L8zZQOG6nxXoXnBUyQc2W
-         inCJcZdDwvNBZlTM7IsZkrub7/Q+/9X1vrdlI6g6z5gULncLtvNH/cwVtPaotIizYEZp
-         mEAg==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=AcKSBTvLAW0gj40GbXq2aP/U78AStpOkB0MPl9oMU5U=;
+        b=v9PY7keA/WOnuwebpkySYYfb3fifjLPflW1uRGH1P1DoaUTZBjG0Fj77dKlFcZBz15
+         VFwDd42szs4hKUi1ekn05lhDXx6LUJ4Cg+vLfHz+4p/5cLwocbAXl4HU9j6z9INBDQrV
+         n68Dx/GdigRjoOC9V0P+KqOZEjlHkPKG8bMU5Um3gSto+jwrjx119w9gxGn5F4iuPsZL
+         yeA+ViWknSnYBuV3RVNrlggI1Heb+6QP0wTmBEP7decqGnbkbU3Xm04jvM/RQ3BX+/ga
+         tuAHHUPkulvitg21kNN+HZGty3eZCHgjDUgD1k0sVwIEDgQb+Kv632/Y+nbKO4qu3ZpJ
+         H7sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Sy0cBwSY9OB0AfhJQItSKu5D9CkSMvp3AC0Bk6Ha4VQ=;
-        b=ILTjJp16jW+/3Eb83+PE8tgG24cY5t2gcCUt2a/e7zSh9LDzqmI/J23NTijDE44aaD
-         FWtEPO/LJ4iT3qTpqRUwAtn8RaHAzm3i+ookMGttAIvwMeNEGcCy+prxQAAuFa6NF8gU
-         P1rZFnDLtBfpasLoVdsLEx+PXo9vVsHa2o0hr1BKgAhL3jJAKjTRaTLjK4eJUO5wy4x4
-         G1C7xiys0vn8njphMxwF+hnJ8acq0nV0UnB7nNbmSdtxK+zx4SQBHKm9NKtOudheoRoo
-         7CfLlHVfpyO/4N7p4z1L05GTEAUDY719VaW4erY9Qqj1iFxHjn4SvdbiyTNr8DpJO6jZ
-         XFmQ==
-X-Gm-Message-State: AOAM532SwLwgCbANeNPrmrq7B06vu85lyQHsiw1GJB+Bg46Sm3glvH5a
-        ha+EM3xNI5ArIPQCpvagKD8=
-X-Google-Smtp-Source: ABdhPJzxoEiP+heMxH0Z2jUQxgSXbZsg9q3n2L2yj/seOLNJg38GYvnglBfSC4AtOVzpjRUom5ybYw==
-X-Received: by 2002:a63:4e09:: with SMTP id c9mr1401145pgb.83.1637012243829;
-        Mon, 15 Nov 2021 13:37:23 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id ls14sm243463pjb.49.2021.11.15.13.37.22
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=AcKSBTvLAW0gj40GbXq2aP/U78AStpOkB0MPl9oMU5U=;
+        b=GiwnIHYxIjCCPg3tcsrZHS8U6bRczW3uIE8YPXGirj/q1REGoETRwCYDV3GZ/FREn9
+         QlD8Q/cFV89dq1VeetuUpIETl0UHUdEzUS0XOmZfqOJbM3Z8Qb7eybpY4tBRvtO0TmPv
+         i353K8G2DP4poLwu4xZcxpLDTtcFK0CyB3qBq4CPcbkscHgYoYDgoQtydn5gr16chRoz
+         KvkW1hh5TcXHh0Ptr1FF5oYMSpuhvuk1udlUlngiFTKpnI9T7SRauYmJHxGXgK6z2KRn
+         sSmCpdlNghhWwKNGAHshopVOmGAz8IqXyfcDORiBRarI0VxbhB1HFuiWfmsQVyOHY6v5
+         OFuw==
+X-Gm-Message-State: AOAM531QUSjnDDECnE/xbWtMTeEC5C74777LghYlIf7prrHeKC03aECQ
+        VGRqNrqcgCCIiuoXuQhKdX6jHA==
+X-Google-Smtp-Source: ABdhPJwXrMjYdhOuZhYyB1MaOORmDZWRJav/IZApf9RJkatUYCCTo84c2Ob9wG9NDX4eI7z70eI3VQ==
+X-Received: by 2002:a05:6e02:17cc:: with SMTP id z12mr1240203ilu.267.1637012256820;
+        Mon, 15 Nov 2021 13:37:36 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id b6sm11771900ilv.67.2021.11.15.13.37.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:37:23 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 15 Nov 2021 11:37:21 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from
- blkg_conf_pref()
-Message-ID: <YZLTEZS66QqRxjuX@slm.duckdns.org>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
+        Mon, 15 Nov 2021 13:37:36 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     linux-kernel@vger.kernel.org, Alistair Delva <adelva@google.com>
+Cc:     linux-security-module@vger.kernel.org, stable@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>, kernel-team@android.com,
+        selinux@vger.kernel.org, Khazhismel Kumykov <khazhy@google.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20211115181655.3608659-1-adelva@google.com>
+References: <20211115181655.3608659-1-adelva@google.com>
+Subject: Re: [PATCH v2] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Message-Id: <163701225573.78831.14755675586127114548.b4-ty@kernel.dk>
+Date:   Mon, 15 Nov 2021 14:37:35 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 10:07:05AM +0800, Yu Kuai wrote:
-> If blk_queue_enter() failed due to queue is dying, the
-> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
+On Mon, 15 Nov 2021 18:16:55 +0000, Alistair Delva wrote:
+> Booting to Android userspace on 5.14 or newer triggers the following
+> SELinux denial:
 > 
-> Fixes: 0c9d338c8443 ("blk-cgroup: synchronize blkg creation against policy deactivation")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> avc: denied { sys_nice } for comm="init" capability=23
+>      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+>      permissive=0
+> 
+> [...]
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Applied, thanks!
 
-Thanks.
+[1/1] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+      commit: 94c4b4fd25e6c3763941bdec3ad54f2204afa992
 
+Best regards,
 -- 
-tejun
+Jens Axboe
+
+
