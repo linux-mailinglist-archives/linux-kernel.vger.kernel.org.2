@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A974518FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8B945205E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347984AbhKOXMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:12:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
+        id S242453AbhKPAws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:52:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243888AbhKOTEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:04:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E8ED6338E;
-        Mon, 15 Nov 2021 18:16:00 +0000 (UTC)
+        id S1344208AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0227E61BA9;
+        Mon, 15 Nov 2021 18:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000160;
-        bh=ZthVkNfp1aBMaQGDLnuqGuaUv33dpWzeRJ1vmLT2fes=;
+        s=korg; t=1637002429;
+        bh=C9kJ6GWlo/roEIsnh50MarW2fDWfuLopZfLR7c4rbAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnRPNrAinkMy/fWE75xUqLOBTOvfhWPrwXvfzlhT2LTwQZp4zKeT3rZbXnu/83757
-         4wxLF8CD4GLMOOwzOlb201Y2RG+/A2F3ljPfld8jLWQjYoFZMtj33jJ6iJ6CfwRRrh
-         LIgOKMkb0CfSX3HYXx5WEe0iQgrqCrXUbfvbB1Bo=
+        b=HdSQsggRWGooz2BVbz3PzzQLrNKCD2Xr4vzuKrhuqahG2NGBGIoFkAXJ7WlfoUrnS
+         yaHaj9H4vM751HS+YCwl+cf5iZ2uxcmYc7dTIfpcljvdB5/H97ksauarHObfaiXsAg
+         zMoDc+6bH9X+UFv0sdxCYuhM6lpjtlUYZIIunDhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hao Wu <hao.wu@rubrik.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 532/849] sctp: subtract sctphdr len in sctp_transport_pl_hlen
+Subject: [PATCH 5.15 520/917] tpm: fix Atmel TPM crash caused by too frequent queries
 Date:   Mon, 15 Nov 2021 18:00:15 +0100
-Message-Id: <20211115165438.264210066@linuxfoundation.org>
+Message-Id: <20211115165446.402115781@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +40,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Hao Wu <hao.wu@rubrik.com>
 
-[ Upstream commit cc4665ca646c96181a7c00198aa72c59e0c576e8 ]
+[ Upstream commit 79ca6f74dae067681a779fd573c2eb59649989bc ]
 
-sctp_transport_pl_hlen() is called to calculate the outer header length
-for PL. However, as the Figure in rfc8899#section-4.4:
+The Atmel TPM 1.2 chips crash with error
+`tpm_try_transmit: send(): error -62` since kernel 4.14.
+It is observed from the kernel log after running `tpm_sealdata -z`.
+The error thrown from the command is as follows
+```
+$ tpm_sealdata -z
+Tspi_Key_LoadKey failed: 0x00001087 - layer=tddl,
+code=0087 (135), I/O error
+```
 
-   Any additional
-     headers         .--- MPS -----.
-            |        |             |
-            v        v             v
-     +------------------------------+
-     | IP | ** | PL | protocol data |
-     +------------------------------+
+The issue was reproduced with the following Atmel TPM chip:
+```
+$ tpm_version
+T0  TPM 1.2 Version Info:
+  Chip Version:        1.2.66.1
+  Spec Level:          2
+  Errata Revision:     3
+  TPM Vendor ID:       ATML
+  TPM Version:         01010000
+  Manufacturer Info:   41544d4c
+```
 
-                <----- PLPMTU ----->
-     <---------- PMTU -------------->
+The root cause of the issue is due to the TPM calls to msleep()
+were replaced with usleep_range() [1], which reduces
+the actual timeout. Via experiments, it is observed that
+the original msleep(5) actually sleeps for 15ms.
+Because of a known timeout issue in Atmel TPM 1.2 chip,
+the shorter timeout than 15ms can cause the error described above.
 
-Outer header are IP + Any additional headers, which doesn't include
-Packetization Layer itself header, namely sctphdr, whereas sctphdr
-is counted by __sctp_mtu_payload().
+A few further changes in kernel 4.16 [2] and 4.18 [3, 4] further
+reduced the timeout to less than 1ms. With experiments,
+the problematic timeout in the latest kernel is the one
+for `wait_for_tpm_stat`.
 
-The incorrect calculation caused the link pathmtu to be set larger
-than expected by t->pl.pmtu + sctp_transport_pl_hlen(). This patch
-is to fix it by subtracting sctphdr len in sctp_transport_pl_hlen().
+To fix it, the patch reverts the timeout of `wait_for_tpm_stat`
+to 15ms for all Atmel TPM 1.2 chips, but leave it untouched
+for Ateml TPM 2.0 chip, and chips from other vendors.
+As explained above, the chosen 15ms timeout is
+the actual timeout before this issue introduced,
+thus the old value is used here.
+Particularly, TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 14700us,
+TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 15000us according to
+the existing TPM_TIMEOUT_RANGE_US (300us).
+The fixed has been tested in the system with the affected Atmel chip
+with no issues observed after boot up.
 
-Fixes: d9e2e410ae30 ("sctp: add the constants/variables and states and some APIs for transport")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[1] 9f3fc7bcddcb tpm: replace msleep() with usleep_range() in TPM
+1.2/2.0 generic drivers
+[2] cf151a9a44d5 tpm: reduce tpm polling delay in tpm_tis_core
+[3] 59f5a6b07f64 tpm: reduce poll sleep time in tpm_transmit()
+[4] 424eaf910c32 tpm: reduce polling time to usecs for even finer
+granularity
+
+Fixes: 9f3fc7bcddcb ("tpm: replace msleep() with usleep_range() in TPM 1.2/2.0 generic drivers")
+Link: https://patchwork.kernel.org/project/linux-integrity/patch/20200926223150.109645-1-hao.wu@rubrik.com/
+Signed-off-by: Hao Wu <hao.wu@rubrik.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sctp/sctp.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/char/tpm/tpm_tis_core.c | 26 ++++++++++++++++++--------
+ drivers/char/tpm/tpm_tis_core.h |  4 ++++
+ include/linux/tpm.h             |  1 +
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/include/net/sctp/sctp.h b/include/net/sctp/sctp.h
-index bc00410223b03..189fdb9db1622 100644
---- a/include/net/sctp/sctp.h
-+++ b/include/net/sctp/sctp.h
-@@ -626,7 +626,8 @@ static inline __u32 sctp_min_frag_point(struct sctp_sock *sp, __u16 datasize)
- 
- static inline int sctp_transport_pl_hlen(struct sctp_transport *t)
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 69579efb247b3..b2659a4c40168 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -48,6 +48,7 @@ static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
+ 		unsigned long timeout, wait_queue_head_t *queue,
+ 		bool check_cancel)
  {
--	return __sctp_mtu_payload(sctp_sk(t->asoc->base.sk), t, 0, 0);
-+	return __sctp_mtu_payload(sctp_sk(t->asoc->base.sk), t, 0, 0) -
-+	       sizeof(struct sctphdr);
- }
++	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+ 	unsigned long stop;
+ 	long rc;
+ 	u8 status;
+@@ -80,8 +81,8 @@ again:
+ 		}
+ 	} else {
+ 		do {
+-			usleep_range(TPM_TIMEOUT_USECS_MIN,
+-				     TPM_TIMEOUT_USECS_MAX);
++			usleep_range(priv->timeout_min,
++				     priv->timeout_max);
+ 			status = chip->ops->status(chip);
+ 			if ((status & mask) == mask)
+ 				return 0;
+@@ -945,7 +946,22 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	chip->timeout_b = msecs_to_jiffies(TIS_TIMEOUT_B_MAX);
+ 	chip->timeout_c = msecs_to_jiffies(TIS_TIMEOUT_C_MAX);
+ 	chip->timeout_d = msecs_to_jiffies(TIS_TIMEOUT_D_MAX);
++	priv->timeout_min = TPM_TIMEOUT_USECS_MIN;
++	priv->timeout_max = TPM_TIMEOUT_USECS_MAX;
+ 	priv->phy_ops = phy_ops;
++
++	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
++	if (rc < 0)
++		goto out_err;
++
++	priv->manufacturer_id = vendor;
++
++	if (priv->manufacturer_id == TPM_VID_ATML &&
++		!(chip->flags & TPM_CHIP_FLAG_TPM2)) {
++		priv->timeout_min = TIS_TIMEOUT_MIN_ATML;
++		priv->timeout_max = TIS_TIMEOUT_MAX_ATML;
++	}
++
+ 	dev_set_drvdata(&chip->dev, priv);
  
- static inline void sctp_transport_pl_reset(struct sctp_transport *t)
+ 	if (is_bsw()) {
+@@ -988,12 +1004,6 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	if (rc)
+ 		goto out_err;
+ 
+-	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
+-	if (rc < 0)
+-		goto out_err;
+-
+-	priv->manufacturer_id = vendor;
+-
+ 	rc = tpm_tis_read8(priv, TPM_RID(0), &rid);
+ 	if (rc < 0)
+ 		goto out_err;
+diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+index b2a3c6c72882d..3be24f221e32a 100644
+--- a/drivers/char/tpm/tpm_tis_core.h
++++ b/drivers/char/tpm/tpm_tis_core.h
+@@ -54,6 +54,8 @@ enum tis_defaults {
+ 	TIS_MEM_LEN = 0x5000,
+ 	TIS_SHORT_TIMEOUT = 750,	/* ms */
+ 	TIS_LONG_TIMEOUT = 2000,	/* 2 sec */
++	TIS_TIMEOUT_MIN_ATML = 14700,	/* usecs */
++	TIS_TIMEOUT_MAX_ATML = 15000,	/* usecs */
+ };
+ 
+ /* Some timeout values are needed before it is known whether the chip is
+@@ -98,6 +100,8 @@ struct tpm_tis_data {
+ 	wait_queue_head_t read_queue;
+ 	const struct tpm_tis_phy_ops *phy_ops;
+ 	unsigned short rng_quality;
++	unsigned int timeout_min; /* usecs */
++	unsigned int timeout_max; /* usecs */
+ };
+ 
+ struct tpm_tis_phy_ops {
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index aa11fe323c56b..12d827734686d 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -269,6 +269,7 @@ enum tpm2_cc_attrs {
+ #define TPM_VID_INTEL    0x8086
+ #define TPM_VID_WINBOND  0x1050
+ #define TPM_VID_STM      0x104A
++#define TPM_VID_ATML     0x1114
+ 
+ enum tpm_chip_flags {
+ 	TPM_CHIP_FLAG_TPM2		= BIT(1),
 -- 
 2.33.0
 
