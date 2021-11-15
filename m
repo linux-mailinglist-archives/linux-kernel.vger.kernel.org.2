@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1D4451949
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBA4451B6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348141AbhKOXRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:17:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
+        id S1347243AbhKPABz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:01:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244457AbhKOTOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CD47634C1;
-        Mon, 15 Nov 2021 18:21:06 +0000 (UTC)
+        id S1344465AbhKOTYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F61661027;
+        Mon, 15 Nov 2021 18:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000467;
-        bh=Ot/PbKU1wjgsFOEOP++5SBFvEwNyesLSNiPzGCMTZNk=;
+        s=korg; t=1637002684;
+        bh=dqwY0WO18UAjFQEIrEH5RY9GvmILH899f4KToOaLweA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQWg5GAtnNVfsJt6oWubrqP7ngg1Mv5AMO8v3AeW2mWpOqaN/48nh+r7JD10zPETq
-         syXik1dqSOEGW2CXb/Vb/rqPnY8i0AiPMwKgaAFw59V3GjCf6SZ9tTw55WAOVkaOQm
-         HJPup8t02c7+0rHA282ZAi57wdYkCDO0goAnTycM=
+        b=eRSBdrDzLjOBYyLOQoyMUGHYR9GlgeMdVjKcsKx2a87dMXkLE1zKGz4aob0tCrkYJ
+         c3ksKGtul0AHnoucoJVG0Hhlx/AFjq7dXolQiridNlFoSkbXA3iUu1cTyizDrLFx0W
+         OIkQLgJHG99i1qaD+7VXmXa+Je9ZEoMS4TA8nYHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 669/849] rtc: ds1390: Add SPI ID table
-Date:   Mon, 15 Nov 2021 18:02:32 +0100
-Message-Id: <20211115165442.893874364@linuxfoundation.org>
+Subject: [PATCH 5.15 658/917] soc: qcom: rpmhpd: fix sm8350_mxcs peer domain
+Date:   Mon, 15 Nov 2021 18:02:33 +0100
+Message-Id: <20211115165451.192216814@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit da87639d6312afb8855717c791768bf2d4ca8ac8 ]
+[ Upstream commit 086f52fdc8f7bd273d06a3de2adf65a063eb5392 ]
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding an id_table listing the
-SPI IDs for everything.
+The sm8350_mxc's domain description incorrectly references
+sm8150_mmcx_ao as a peer instead of sm8350_mxc_ao. Correct this typo.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210923194922.53386-3-broonie@kernel.org
+Fixes: 639c85628757 ("soc: qcom: rpmhpd: Add SM8350 power domains")
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20211020012639.1183806-1-dmitry.baryshkov@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-ds1390.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/soc/qcom/rpmhpd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-ds1390.c b/drivers/rtc/rtc-ds1390.c
-index 66fc8617d07ee..93ce72b9ae59e 100644
---- a/drivers/rtc/rtc-ds1390.c
-+++ b/drivers/rtc/rtc-ds1390.c
-@@ -219,12 +219,19 @@ static const struct of_device_id ds1390_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, ds1390_of_match);
- 
-+static const struct spi_device_id ds1390_spi_ids[] = {
-+	{ .name = "ds1390" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(spi, ds1390_spi_ids);
-+
- static struct spi_driver ds1390_driver = {
- 	.driver = {
- 		.name	= "rtc-ds1390",
- 		.of_match_table = of_match_ptr(ds1390_of_match),
- 	},
- 	.probe	= ds1390_probe,
-+	.id_table = ds1390_spi_ids,
+diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+index a46735cec3f0f..d98cc8c2e5d5c 100644
+--- a/drivers/soc/qcom/rpmhpd.c
++++ b/drivers/soc/qcom/rpmhpd.c
+@@ -206,7 +206,7 @@ static const struct rpmhpd_desc sm8250_desc = {
+ static struct rpmhpd sm8350_mxc_ao;
+ static struct rpmhpd sm8350_mxc = {
+ 	.pd = { .name = "mxc", },
+-	.peer = &sm8150_mmcx_ao,
++	.peer = &sm8350_mxc_ao,
+ 	.res_name = "mxc.lvl",
  };
  
- module_spi_driver(ds1390_driver);
 -- 
 2.33.0
 
