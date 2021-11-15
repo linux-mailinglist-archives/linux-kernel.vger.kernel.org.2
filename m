@@ -2,253 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C62452586
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6885452581
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382625AbhKPBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:53:55 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:45122 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241612AbhKOSY3 (ORCPT
+        id S240111AbhKPBwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:52:53 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:24460 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241364AbhKOSZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:24:29 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Authentication-Results: mail.baikalelectronics.ru; dkim=permerror (bad message/signature format)
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/7] spi: dw: Convert to using the Bitfield access macros
-Date:   Mon, 15 Nov 2021 21:19:14 +0300
-Message-ID: <20211115181917.7521-5-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
-References: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
+        Mon, 15 Nov 2021 13:25:50 -0500
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AFHHX0l001110;
+        Mon, 15 Nov 2021 18:22:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=l4zaAwm69yHAPTFaJy02u3QkAszuihzLA+PFPcPme0U=;
+ b=K2JGCsMuVsPkIlAxZS17U4jypH1QgXSjuCCtXISL37ICdZrPKKDGeWDug3b4seQzkbAO
+ ZVy9UKUxZENo18niYbRUzc9tFLycWnBx8aIcRSQQ97urn4UQG4DT9H0haAJZtclhGsFF
+ OERAE5YrCMruZIiQD6LRodLXluVRB4p0t80sU1zSiKwu3+1csNcDlmjEJm5mXOjvsJlh
+ X32QAmoqWEdtjtd7kYmpussV32thMjm7tkbqvW3z4ZCm7Uxng4rtN/N/bov1nIbM2GIq
+ r/12zWIVLMQBvGQK/tgygoeL3gDH/k1GjOvycW8+qCrZLAncpGPYoaDWqDe+P9QU778k 6A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cbhtvkvg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Nov 2021 18:22:34 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AFIHFhD150559;
+        Mon, 15 Nov 2021 18:22:10 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by aserp3020.oracle.com with ESMTP id 3ca5648k2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Nov 2021 18:22:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CyEe7vVpYFX9qLv18C/Ya72XM7Oodk0Gqy7um7bc06U0Qw4AcrJOb/2qozrMK0RsZFLkekx4MQR00lN1LaH+LfqdbmFvxz7JGwWC7bT4SzTQzWWqRQ0MuVNsIZ0eUquaCE5fVod+X3DCph21x9FDhSzxyF90/k1EhIWGQG9G1CtGyVMzzWLBQG1itmSCC7X2qP6tzJNrAtRHRB0XQbOimsCfh7N7yn+MVYaRqTJ8Yj4Lk2ZOtU0TI3XviZdtho9WD2aQECgb8/UOFypVN7Cxk07+6B2uuk9km2hHqFuQWfJEV77FQRJdrTRodAaeUxaO+3MLmfBSrG9zED+oNmpPmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l4zaAwm69yHAPTFaJy02u3QkAszuihzLA+PFPcPme0U=;
+ b=BF9axeUhMVo8fJnRHmYa6tE5uzchLwctn20rFtMDE4JapvyoLlAsR497jU4xnOn4EDY+vLYchnOZZekWkZ6jDJo+35za9xAz0wWqfJ78tedXGCYGcNxDG/KDhh8UftXHv0S4XrAjhHcLDk62FiwZfoQXO15vgvmaGJBGJ3ZXYPuFhtcFJT4TTDP+zGHwP9oCv9b8L8/Yk9vIIsxdu0MJuBynE3RNDKZzDQdRd/nFfs2LdAxzYQJEgHhxFqhcJ3H0TGwuU7+72WjCFgVTM+dXh3XxU+pdmkS54owncAj9rb6zW9rokcbknuQ3Ph363PYFl+OjtJ7MfvPkFGBK8VJ1ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l4zaAwm69yHAPTFaJy02u3QkAszuihzLA+PFPcPme0U=;
+ b=dUpy6jpqlOX05RcGLPwqmRkVCZUbssRnsFHJ+2Ni9dg13qwAlKrdYq5+1r22qVW4Tf3DRuusmRh9PTkMXpr9/fQFhIzkX5sJXgdLuQNezvopJcyTbk5prVyA6Gxf+L9b8CSpl/tLi/MxzGVaZ+Xm+NohHzOEWfgLt3kVGT2IQyU=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by SJ0PR10MB5469.namprd10.prod.outlook.com (2603:10b6:a03:301::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Mon, 15 Nov
+ 2021 18:22:07 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::b5bc:c29f:1c2d:afd7]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::b5bc:c29f:1c2d:afd7%8]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 18:22:07 +0000
+Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
+        Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20211111015037.4092956-1-almasrymina@google.com>
+ <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
+ <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com>
+ <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
+ <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com>
+ <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
+ <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com>
+Date:   Mon, 15 Nov 2021 10:22:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR2001CA0006.namprd20.prod.outlook.com
+ (2603:10b6:301:15::16) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Received: from [192.168.2.123] (50.38.35.18) by MWHPR2001CA0006.namprd20.prod.outlook.com (2603:10b6:301:15::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 18:22:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7cb2720-4569-49ae-1a63-08d9a864d4d7
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5469:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB5469B71B753065A7854ADC93E2989@SJ0PR10MB5469.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q68Kbdje/Hg9RbGedTPbtSGEul0Vlni4QXuriH5K7wnjKvT+7Xh12FbfQ6a9+FCSECmD2qWy/BSFTK0xskIzAA+PaQSZ6fxP3KgRDb04pePenP2udK9I1V0fnFcEv2ARpa0yDedMKpJ2UJLe1oA/827K1ejt5e+SXSjNQ/AO7YSjiz4OCO54H87tHEu4cRRQek0TnVVrKkj81shTFjX4sbYUJsH+zy+qllA6RQEsSqoAQPd27yTLS9JkX7huu9NlyfXlBq9HxAW6MJIxBf5cIrc/LH7k23dirJ9xqdpSIzkb4HE1YulM9YiMvaunhVYzk/NcRak+UZGQyx1SVjFUG1BObcVvU26fV0od15lSti/St8Ez8buWhFq0t/4SSLEiYJRgJxGv4DI1JYrYhjnfAOJq4sIQKuq3K++ttNL4yMPZCwC46+Jq/o3JKJDLxB90bkpukOR0sN0EeHhfZ9sezLdSCJuax+WU8VAQ4w/PsUMYLi4WFaDiCZx/3TbQByJmj8D2gfmhzxWp8XwU8dDlocu+4uEuAWtYh2MXHjAv5lCSyA6OP2STgutpq+iyKrgA95FQDZBOhQTCbzJoXeOQxAWMpQ6H0DKmLX6wsKZumc9imwoKnL3hxEsAi9w6b1nOdwQ+Ff9zqADzmGrqWnIdaHCQAnUb6Ga3yGit4tl/XqRpWy3ZpiCxTLnmpIQSZ3PSAQn7UgKumNc9NFPuaOMNFlIVM4qZEjg+Q9F72uabs/OEwL/2o59tS48TYod3Ng5ESXRw0jQJH/j7dHm0X5sj7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(5660300002)(16576012)(8676002)(7416002)(86362001)(26005)(31696002)(2616005)(110136005)(54906003)(956004)(2906002)(38350700002)(38100700002)(6666004)(44832011)(53546011)(36756003)(52116002)(4326008)(186003)(508600001)(83380400001)(6486002)(66946007)(316002)(31686004)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0c5T3NJRnRFREs4empJMGswbTVFdENBeG54bkRTb0QwWk9jb3crS3B5cnZt?=
+ =?utf-8?B?WEdLK2NNT3Y0U1YvaiszeTBidXZlbnpoWFVpUkl1VVpkQzlUcjIrNm5pL2V0?=
+ =?utf-8?B?L1ZjUnpmSWxJZHlONlplZDVETFA4Wk02T0EvTnFnVlNaRkE0b2llN014Mkpm?=
+ =?utf-8?B?V1BwSk1iOXRZTHc2UitZc2gwYnJmbTJGeHdIQ05JVHNUL2ZvblYzMUdVVE5M?=
+ =?utf-8?B?UXdtZGpGRlR3U3NySUE0WW5wWk8zTjhVS3R1dlk2NjZLNnZHTy9HVGE4YWVD?=
+ =?utf-8?B?djZRdGJSNlY1aGwvNzByLzluNEd1ZloyNmJxd0J3SlRodlFUWmcwL21vZzlh?=
+ =?utf-8?B?c2c3WFdvRjVnc0Q3bXlLQ1J5VURvQzZrRktEc2pVUS9VdTZldWdhRDNSRVp5?=
+ =?utf-8?B?ZmQ0RkF1MnJSekU1bjRYTWdnNThNWHJMdUhQalRUek5jRGtML0duQmhwYWxu?=
+ =?utf-8?B?ZFBCSmN5eWladmVHZC9wSmZRNzN1T01WNjVPREhlcmVIV2xHb2hNalN4dGZp?=
+ =?utf-8?B?cmJpKzloazcwRUJ0SmVDZmNCYk5wc3pOUU9taWNPNWtxL2VScTh0VGRqSU51?=
+ =?utf-8?B?OTdiOE00WmZ1RkhhdUc2VnF1NnMza0UvY1lhVFMwZmpnVnZFM2FVUktLc3h0?=
+ =?utf-8?B?elpobzdtRWJleWZWaTJVbkhYZGgvRVlWOHZhd2RzZ21LbHFDVlV6WnBBbXZQ?=
+ =?utf-8?B?QzZNck10M2p0dUcvUXVFYS9SMlFZOW9iclhudUZQVWw3bTFWYkRJSUtsOFhL?=
+ =?utf-8?B?ZFphblBNcmlwRm9FVFcyUFRMdjBNL3BPNWNjaldxeEd1WE01U2xqYU5oZkVX?=
+ =?utf-8?B?Q2tOMTlBL0dOZndZQmRUOXBhbmdoUGd3YkJCK3BWUCtMWlU4NlJOTCtzLzZO?=
+ =?utf-8?B?SjJ1L011MHh0OWFPYVJHbFpPODg3RjdpN2VDMnBNdzVLTjRQT2plTDgzMGVO?=
+ =?utf-8?B?NTlzZWx1VWNxUW5IUjlicm5YWVBPOXNEcnkreVpzUHZQQWdxdmU1ODVJdlJT?=
+ =?utf-8?B?TUdIVjVyZ3FMZHRjOFJjUk5mdHlnRGtCVmo4ZkxibVJzWm95WXFENFJPUlkv?=
+ =?utf-8?B?VlFITEduSURqTHR3TkNSVUk1eWF3U1RNTUtXelRGNmRkU21IZGFZcTlwU1Uz?=
+ =?utf-8?B?RDNlVUZIbFh0anJyOTJCamVaSGNEMGJsVWdqTm1hUVhOMm1IZ0xOd1kwUGRI?=
+ =?utf-8?B?MU1yZGV1ako5YVA4VkhJMVF4M1RCazRsaWdRaTJub3BDbmNiTUw1ZlpQZVcw?=
+ =?utf-8?B?NklBUjdGUzgzcVNRTnRIUzJ2bExmRFF6dFlwSEpBY3M1SHNaTkNrU2RqUEJa?=
+ =?utf-8?B?WFI1NzFwN2U5ck9qUkZBdHVBSVVQT3NiZnlRV0orcDlqRzdaLzVpMmRlalRM?=
+ =?utf-8?B?UlA3RlNEb1E4aE45b2tzdHQ1V2hNaTRLVlY4WHoxWGU2WjlqaEkrc29PWVg1?=
+ =?utf-8?B?SVFySUwyVldmaUkxQUt0b0E4c00venZ3dkJhc2dhUExKOHlWcjJiYkVzT09R?=
+ =?utf-8?B?UUhBQnU4WVpTVGNCdnBOR1lOMHFTYkJiajY5b1FKTENrYU5WTFlUQTlFSnYv?=
+ =?utf-8?B?M1BwMHJzV2dzZ3Z2aDB1YnF5RE1LdHRsY1Vwd2s1c1daQ2Z1SEZsZlJtblh2?=
+ =?utf-8?B?RDA5WVJTNVRrRlNQS2Zza1M5dm5SQjFMWGdsMVpHT2VLcW5FL0MzcnhZQ0or?=
+ =?utf-8?B?aVpxUTFDV01nbTFHenRpRkRtSGVyd0tCajY0ZzhSVkgvb3FJMlVEdHVIZjFj?=
+ =?utf-8?B?NVQ2NmFJTEVjNVNhNTdjaE9LbUlma2pXcjVGZDFDcDNBTkFjWk43Vkg0MUo5?=
+ =?utf-8?B?TjAySWZHSGYralNwVUIwSFpsaEQ3czVJamFGejNVWGd4U2Z0b2J3NDlpcVpv?=
+ =?utf-8?B?UExyWjJidEQ0Uzl1QlN0UVcwSjJ0WDgyZHZYOStRSkQ2VFN4WFNRTk5YbTdl?=
+ =?utf-8?B?ZlZRZ241cWhCOTdmZlJ0ZmliYmozam8zNHRFODEvcEFTQS9QZlBmQXRMQVZj?=
+ =?utf-8?B?MjNuTUJ5QTVxV3NYRENzU2c0TVZWQ2xYOW1QaGZqSGN4d1N3Wmdra29uRjk2?=
+ =?utf-8?B?ZkNLVXJTdi9jc2ZXeFRSc1V6aTJCOHdGNEs5THZ6TSt4d3RmMHNpUnIzazJ2?=
+ =?utf-8?B?VVk4Q2x0cDR3R3pTdHNzMk1oem8xN1p5OWMwQXBPdElLMkVPLzVTVHVOenFp?=
+ =?utf-8?Q?raXsKya3l4+01fnjJcoYLUU=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7cb2720-4569-49ae-1a63-08d9a864d4d7
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 18:22:07.5776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yMfLerrd2NfWSjFzc0INEjoeVhtYKQrHXCcVvW8suotgJv16oiJ42HZS3XywRZqkN1hOExuYJPAUS/4IMM0H1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5469
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10169 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111150092
+X-Proofpoint-GUID: yQ50I4A16jADQMup3xQLhhqH4kGri6am
+X-Proofpoint-ORIG-GUID: yQ50I4A16jADQMup3xQLhhqH4kGri6am
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has been using the offset/bitwise-shift-based approach for the
-CSR fields R/W operations since it was merged into the kernel. It can be
-simplified by using the macros defined in the linux/bitfield.h and
-linux/bit.h header files like BIT(), GENMASK(), FIELD_PREP(), FIELD_GET(),
-etc where it is required, for instance in the cached cr0 preparation
-method. Thus in order to have the FIELD_*()-macros utilized we just need
-to convert the macros with the CSR-fields offsets to the masks with the
-corresponding registers fields definition. That's where the GENMASK() and
-BIT() macros come in handy. After that the masks can be used in the
-FIELD_*()-macros where it's appropriate.
+Subject:   Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
 
-We also need to convert the macros with the CRS-bit flags using the manual
-bitwise shift operations (x << y) to using the BIT() macro. Thus we'll
-have a more coherent set of the CSR-related macros.
+To:        Muchun Song <songmuchun@bytedance.com>, Shakeel Butt <shakeelb@google.com>, Mina Almasry <almasrymina@google.com>
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/spi/spi-dw-core.c | 31 +++++++++++--------
- drivers/spi/spi-dw.h      | 64 +++++++++++++++++++--------------------
- 2 files changed, 50 insertions(+), 45 deletions(-)
+Cc:        Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com>, Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>, Cannon Matthews <cannonmatthews@google.com>, Linux Memory Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
 
-diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-index 57bbffe6d6f9..b9f809989fda 100644
---- a/drivers/spi/spi-dw-core.c
-+++ b/drivers/spi/spi-dw-core.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2009, Intel Corporation.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-@@ -254,7 +255,7 @@ static irqreturn_t dw_spi_irq(int irq, void *dev_id)
- {
- 	struct spi_controller *master = dev_id;
- 	struct dw_spi *dws = spi_controller_get_devdata(master);
--	u16 irq_status = dw_readl(dws, DW_SPI_ISR) & 0x3f;
-+	u16 irq_status = dw_readl(dws, DW_SPI_ISR) & DW_SPI_INT_MASK;
- 
- 	if (!irq_status)
- 		return IRQ_NONE;
-@@ -273,32 +274,38 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
- 
- 	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
- 		/* CTRLR0[ 5: 4] Frame Format */
--		cr0 |= DW_SPI_CTRLR0_FRF_MOTO_SPI << DW_PSSI_CTRLR0_FRF_OFFSET;
-+		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
- 
- 		/*
- 		 * SPI mode (SCPOL|SCPH)
- 		 * CTRLR0[ 6] Serial Clock Phase
- 		 * CTRLR0[ 7] Serial Clock Polarity
- 		 */
--		cr0 |= ((spi->mode & SPI_CPOL) ? 1 : 0) << DW_PSSI_CTRLR0_SCOL_OFFSET;
--		cr0 |= ((spi->mode & SPI_CPHA) ? 1 : 0) << DW_PSSI_CTRLR0_SCPH_OFFSET;
-+		if (spi->mode & SPI_CPOL)
-+			cr0 |= DW_PSSI_CTRLR0_SCPOL;
-+		if (spi->mode & SPI_CPHA)
-+			cr0 |= DW_PSSI_CTRLR0_SCPHA;
- 
- 		/* CTRLR0[11] Shift Register Loop */
--		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DW_PSSI_CTRLR0_SRL_OFFSET;
-+		if (spi->mode & SPI_LOOP)
-+			cr0 |= DW_PSSI_CTRLR0_SRL;
- 	} else {
- 		/* CTRLR0[ 7: 6] Frame Format */
--		cr0 |= DW_SPI_CTRLR0_FRF_MOTO_SPI << DW_HSSI_CTRLR0_FRF_OFFSET;
-+		cr0 |= FIELD_PREP(DW_HSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
- 
- 		/*
- 		 * SPI mode (SCPOL|SCPH)
- 		 * CTRLR0[ 8] Serial Clock Phase
- 		 * CTRLR0[ 9] Serial Clock Polarity
- 		 */
--		cr0 |= ((spi->mode & SPI_CPOL) ? 1 : 0) << DW_HSSI_CTRLR0_SCPOL_OFFSET;
--		cr0 |= ((spi->mode & SPI_CPHA) ? 1 : 0) << DW_HSSI_CTRLR0_SCPH_OFFSET;
-+		if (spi->mode & SPI_CPOL)
-+			cr0 |= DW_HSSI_CTRLR0_SCPOL;
-+		if (spi->mode & SPI_CPHA)
-+			cr0 |= DW_HSSI_CTRLR0_SCPHA;
- 
- 		/* CTRLR0[13] Shift Register Loop */
--		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DW_HSSI_CTRLR0_SRL_OFFSET;
-+		if (spi->mode & SPI_LOOP)
-+			cr0 |= DW_HSSI_CTRLR0_SRL;
- 
- 		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
- 			cr0 |= DW_HSSI_CTRLR0_KEEMBAY_MST;
-@@ -320,10 +327,10 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
- 
- 	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI))
- 		/* CTRLR0[ 9:8] Transfer Mode */
--		cr0 |= cfg->tmode << DW_PSSI_CTRLR0_TMOD_OFFSET;
-+		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_TMOD_MASK, cfg->tmode);
- 	else
- 		/* CTRLR0[11:10] Transfer Mode */
--		cr0 |= cfg->tmode << DW_HSSI_CTRLR0_TMOD_OFFSET;
-+		cr0 |= FIELD_PREP(DW_HSSI_CTRLR0_TMOD_MASK, cfg->tmode);
- 
- 	dw_writel(dws, DW_SPI_CTRLR0, cr0);
- 
-@@ -850,7 +857,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
- 
- 		if (!(cr0 & DW_PSSI_CTRLR0_DFS_MASK)) {
- 			dws->caps |= DW_SPI_CAP_DFS32;
--			dws->dfs_offset = DW_PSSI_CTRLR0_DFS32_OFFSET;
-+			dws->dfs_offset = __bf_shf(DW_PSSI_CTRLR0_DFS32_MASK);
- 			dev_dbg(dev, "Detected 32-bits max data frame size\n");
- 		}
- 	} else {
-diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index 893b78c43a50..634085eadad1 100644
---- a/drivers/spi/spi-dw.h
-+++ b/drivers/spi/spi-dw.h
-@@ -41,39 +41,36 @@
- #define DW_SPI_CS_OVERRIDE		0xf4
- 
- /* Bit fields in CTRLR0 (DWC APB SSI) */
--#define DW_PSSI_CTRLR0_DFS_OFFSET		0
- #define DW_PSSI_CTRLR0_DFS_MASK			GENMASK(3, 0)
--#define DW_PSSI_CTRLR0_DFS32_OFFSET		16
-+#define DW_PSSI_CTRLR0_DFS32_MASK		GENMASK(20, 16)
- 
--#define DW_PSSI_CTRLR0_FRF_OFFSET		4
-+#define DW_PSSI_CTRLR0_FRF_MASK			GENMASK(5, 4)
- #define DW_SPI_CTRLR0_FRF_MOTO_SPI		0x0
- #define DW_SPI_CTRLR0_FRF_TI_SSP		0x1
- #define DW_SPI_CTRLR0_FRF_NS_MICROWIRE		0x2
- #define DW_SPI_CTRLR0_FRF_RESV			0x3
- 
--#define DW_PSSI_CTRLR0_MODE_OFFSET		6
--#define DW_PSSI_CTRLR0_SCPH_OFFSET		6
--#define DW_PSSI_CTRLR0_SCOL_OFFSET		7
-+#define DW_PSSI_CTRLR0_MODE_MASK		GENMASK(7, 6)
-+#define DW_PSSI_CTRLR0_SCPHA			BIT(6)
-+#define DW_PSSI_CTRLR0_SCPOL			BIT(7)
- 
--#define DW_PSSI_CTRLR0_TMOD_OFFSET		8
--#define DW_PSSI_CTRLR0_TMOD_MASK		(0x3 << DW_PSSI_CTRLR0_TMOD_OFFSET)
-+#define DW_PSSI_CTRLR0_TMOD_MASK		GENMASK(9, 8)
- #define DW_SPI_CTRLR0_TMOD_TR			0x0	/* xmit & recv */
- #define DW_SPI_CTRLR0_TMOD_TO			0x1	/* xmit only */
- #define DW_SPI_CTRLR0_TMOD_RO			0x2	/* recv only */
- #define DW_SPI_CTRLR0_TMOD_EPROMREAD		0x3	/* eeprom read mode */
- 
--#define DW_PSSI_CTRLR0_SLVOE_OFFSET		10
--#define DW_PSSI_CTRLR0_SRL_OFFSET		11
--#define DW_PSSI_CTRLR0_CFS_OFFSET		12
-+#define DW_PSSI_CTRLR0_SLV_OE			BIT(10)
-+#define DW_PSSI_CTRLR0_SRL			BIT(11)
-+#define DW_PSSI_CTRLR0_CFS			BIT(12)
- 
- /* Bit fields in CTRLR0 (DWC SSI with AHB interface) */
--#define DW_HSSI_CTRLR0_SRL_OFFSET		13
--#define DW_HSSI_CTRLR0_TMOD_OFFSET		10
-+#define DW_HSSI_CTRLR0_DFS_MASK			GENMASK(4, 0)
-+#define DW_HSSI_CTRLR0_FRF_MASK			GENMASK(7, 6)
-+#define DW_HSSI_CTRLR0_SCPHA			BIT(8)
-+#define DW_HSSI_CTRLR0_SCPOL			BIT(9)
- #define DW_HSSI_CTRLR0_TMOD_MASK		GENMASK(11, 10)
--#define DW_HSSI_CTRLR0_SCPOL_OFFSET		9
--#define DW_HSSI_CTRLR0_SCPH_OFFSET		8
--#define DW_HSSI_CTRLR0_FRF_OFFSET		6
--#define DW_HSSI_CTRLR0_DFS_OFFSET		0
-+#define DW_HSSI_CTRLR0_SRL			BIT(13)
- 
- /*
-  * For Keem Bay, CTRLR0[31] is used to select controller mode.
-@@ -86,26 +83,27 @@
- #define DW_SPI_NDF_MASK				GENMASK(15, 0)
- 
- /* Bit fields in SR, 7 bits */
--#define DW_SPI_SR_MASK				0x7f	/* cover 7 bits */
--#define DW_SPI_SR_BUSY				(1 << 0)
--#define DW_SPI_SR_TF_NOT_FULL			(1 << 1)
--#define DW_SPI_SR_TF_EMPT			(1 << 2)
--#define DW_SPI_SR_RF_NOT_EMPT			(1 << 3)
--#define DW_SPI_SR_RF_FULL			(1 << 4)
--#define DW_SPI_SR_TX_ERR			(1 << 5)
--#define DW_SPI_SR_DCOL				(1 << 6)
-+#define DW_SPI_SR_MASK				GENMASK(6, 0)
-+#define DW_SPI_SR_BUSY				BIT(0)
-+#define DW_SPI_SR_TF_NOT_FULL			BIT(1)
-+#define DW_SPI_SR_TF_EMPT			BIT(2)
-+#define DW_SPI_SR_RF_NOT_EMPT			BIT(3)
-+#define DW_SPI_SR_RF_FULL			BIT(4)
-+#define DW_SPI_SR_TX_ERR			BIT(5)
-+#define DW_SPI_SR_DCOL				BIT(6)
- 
- /* Bit fields in ISR, IMR, RISR, 7 bits */
--#define DW_SPI_INT_TXEI				(1 << 0)
--#define DW_SPI_INT_TXOI				(1 << 1)
--#define DW_SPI_INT_RXUI				(1 << 2)
--#define DW_SPI_INT_RXOI				(1 << 3)
--#define DW_SPI_INT_RXFI				(1 << 4)
--#define DW_SPI_INT_MSTI				(1 << 5)
-+#define DW_SPI_INT_MASK				GENMASK(5, 0)
-+#define DW_SPI_INT_TXEI				BIT(0)
-+#define DW_SPI_INT_TXOI				BIT(1)
-+#define DW_SPI_INT_RXUI				BIT(2)
-+#define DW_SPI_INT_RXOI				BIT(3)
-+#define DW_SPI_INT_RXFI				BIT(4)
-+#define DW_SPI_INT_MSTI				BIT(5)
- 
- /* Bit fields in DMACR */
--#define DW_SPI_DMACR_RDMAE			(1 << 0)
--#define DW_SPI_DMACR_TDMAE			(1 << 1)
-+#define DW_SPI_DMACR_RDMAE			BIT(0)
-+#define DW_SPI_DMACR_TDMAE			BIT(1)
- 
- /* Mem/DMA operations helpers */
- #define DW_SPI_WAIT_RETRIES			5
+Bcc:       
+
+-=-=-=-=-=-=-=-=-=# Don't remove this line #=-=-=-=-=-=-=-=-=-
+
+On 11/14/21 5:43 AM, Muchun Song wrote:
+
+> On Sun, Nov 14, 2021 at 3:15 AM Shakeel Butt <shakeelb@google.com> wrote:
+
+>> On Sat, Nov 13, 2021 at 6:48 AM Mina Almasry <almasrymina@google.com> wrote:
+
+>>> On Fri, Nov 12, 2021 at 6:45 PM Muchun Song <songmuchun@bytedance.com> wrote:
+
+>>>> On Sat, Nov 13, 2021 at 7:36 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+
+>> We have following options:
+
+>>
+
+>> 1) Use atomic type for usage.
+
+>> 2) Use "unsigned long" for usage along with WRITE_ONCE/READ_ONCE.
+
+>> 3) Use hugetlb_lock for hugetlb_cgroup_read_numa_stat as well.
+
+>>
+
+>> All options are valid but we would like to avoid (3).
+
+>>
+
+>> What if we use "unsigned long" type but without READ_ONCE/WRITE_ONCE.
+
+>> The potential issues with that are KCSAN will report this as race and
+
+>> possible garbage value on archs which do not support atomic writes to
+
+>> unsigned long.
+
+> 
+
+> At least I totally agree with you. Thanks for your detailed explanation.
+
+> 
+
+
+
+Thanks everyone.  This makes sense.
+
+
+
+However, I should note that this same situation (updates to unsigned
+
+long variables under lock and reads of the the same variable without
+
+lock or READ/WRITE_ONCE) exists in hugetlb sysfs files today.  Not
+
+suggesting that this makes it OK to ignore the potential issue.  Just
+
+wanted to point this out.
+
 -- 
-2.33.0
+
+Mike Kravetz
 
