@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A6145082D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F0745082E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236381AbhKOPZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:25:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236405AbhKOPZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:25:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E77EE61AA5;
-        Mon, 15 Nov 2021 15:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636989728;
-        bh=LYHyyDxw+fkw7Qpj63Y+bbXJh3cpxa/7tIYdjpyAAa0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tMGTzAAoFW81I1se350f9ba0pm1HsRmHclMPFvcwAtPKfgyVWshgxbiwSt08wLVGy
-         uDRRDgCCHmYm4UESgBYJSeEnr9oS+lQxDWHgI4VeFn7zjpbwu7PFmxbbcFDPlfexqY
-         IktSo5eA2/4E/neecXyve0V3oyhwD28vz/DfAZZ9WKDiV53yXnyBtlFtDU+pP+2x4i
-         Hl5WwfTkPsHSmKOZAWKJnjZc9jGBLEsR7homItPyX/W+jscTK7Tlfq2KulR1WPBjJ4
-         0UfaPmMPckRNfBoRcCsGltnf6awsf/+SZ4bX6QvWQUGFvbEcVm5mtIoEuGduGlGjee
-         wjwZc9kfNHU5Q==
-Date:   Mon, 15 Nov 2021 07:22:06 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <20211115072206.72435d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211115150931.GA2386342@nvidia.com>
-References: <20211109153335.GH1740502@nvidia.com>
-        <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211109182427.GJ1740502@nvidia.com>
-        <YY0G90fJpu/OtF8L@nanopsycho>
-        <YY0J8IOLQBBhok2M@unreal>
-        <YY4aEFkVuqR+vauw@nanopsycho>
-        <YZCqVig9GQi/o1iz@unreal>
-        <YZJCdSy+wzqlwrE2@nanopsycho>
-        <20211115125359.GM2105516@nvidia.com>
-        <YZJx8raQt+FkKaeY@nanopsycho>
-        <20211115150931.GA2386342@nvidia.com>
+        id S231592AbhKOPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:25:54 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53728 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236359AbhKOPZU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:25:20 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 301CE1F44DD6
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636989744; bh=TA++YSDqnpbxawAR7LITn/nqkwigXPJ4fXQf9ty+PgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P+w5tpL2HBQLpJ6JJvtbFz9AeZfT44oqpbtojAGomoKiSflzyyh1kUxStfw2rvP2O
+         I8JKEhvYDGldVwVCUbhTPSeXBz5aCfEQpx8p2DzFGIPEZatxMHHqmSZG4PFBqv6dlj
+         XNeu3Uq0JpyvjpQr/FSj1B/qXypMZ0hFZ7XUa5+hpzcjoMOLExWzfymiSMsEinRGDA
+         apBp5rRBI6b5dFiqH7JNPHrS2T9JvhgjLuh2QdzoFg2bv0/S/quVPBnOIz9J3F1WYs
+         lT/p/suwkSoP0xLjoHs9cNvx2PkjXeiblBC3Det+zHSDgOAOPH8vf+kN6N3v/kATcA
+         xUJQopK/eSeyQ==
+Received: by earth.universe (Postfix, from userid 1000)
+        id A159C3C0F95; Mon, 15 Nov 2021 16:22:21 +0100 (CET)
+Date:   Mon, 15 Nov 2021 16:22:21 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Angus Ainslie <angus@akkea.ca>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Subject: Re: [PATCH] power: bq25890: temperature is also an adc value
+Message-ID: <20211115152221.izjh36qlmlw5mbf6@earth.universe>
+References: <20211110002440.71404-1-angus@akkea.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4kwm62h3atuhhn7s"
+Content-Disposition: inline
+In-Reply-To: <20211110002440.71404-1-angus@akkea.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 11:09:31 -0400 Jason Gunthorpe wrote:
-> On Mon, Nov 15, 2021 at 03:42:58PM +0100, Jiri Pirko wrote:
-> > >Sorry, I don't agree that registering a net notifier in an aux device
-> > >probe function is non-standard or wrong.  
-> > 
-> > Listening to events which happen in different namespaces and react to
-> > them is the non-standard behaviour which I refered to. If you would not
-> > need to do it, you could just use netns notofier which would solve your
-> > issue. You know it.  
-> 
-> Huh?
-> 
-> It calls the bog standard
-> 
->  register_netdevice_notifier() 
-> 
-> Like hundreds of other drivers do from their probe functions
-> 
-> Which does:
-> 
-> int register_netdevice_notifier(struct notifier_block *nb)
-> {
-> 	struct net *net;
-> 	int err;
-> 
-> 	/* Close race with setup_net() and cleanup_net() */
-> 	down_write(&pernet_ops_rwsem);
-> 
-> And deadlocks because devlink hols the pernet_ops_rwsem when it
-> triggers reload in some paths.
-> 
-> There is nothing wrong with a driver doing this standard pattern.
-> 
-> There is only one place in the entire kernel calling the per-ns
-> register_netdevice_notifier_dev_net() and it is burred inside another
-> part of mlx5 for some reason..
-> 
-> I believe Parav already looked at using that in rdma and it didn't
-> work for some reason I've forgotten. 
-> 
-> It is not that we care about events in different namespaces, it is
-> that rdma, like everything else, doesn't care about namespaces and
-> wants events from the netdev no matter where it is located.
 
-devlink now allows drivers to be net ns-aware, and they should 
-obey if they declare support.  Can we add a flag / capability 
-to devlink and make it an explicit opt-in for drivers who care?
+--4kwm62h3atuhhn7s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Tue, Nov 09, 2021 at 04:24:40PM -0800, Angus Ainslie wrote:
+> Make sure that a conversion is forced when the power supply is offline so
+> the temperature is valid.
+>=20
+> Signed-off-by: Angus Ainslie <angus@akkea.ca>
+> ---
+
+Thanks, queued to power-supply's fixes branch.
+
+-- Sebastian
+
+>  drivers/power/supply/bq25890_charger.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/suppl=
+y/bq25890_charger.c
+> index 945c3257ca93..23a91c5d1f9d 100644
+> --- a/drivers/power/supply/bq25890_charger.c
+> +++ b/drivers/power/supply/bq25890_charger.c
+> @@ -388,6 +388,7 @@ static bool bq25890_is_adc_property(enum power_supply=
+_property psp)
+>  	switch (psp) {
+>  	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+>  	case POWER_SUPPLY_PROP_CURRENT_NOW:
+> +	case POWER_SUPPLY_PROP_TEMP:
+>  		return true;
+> =20
+>  	default:
+> --=20
+> 2.25.1
+>=20
+
+--4kwm62h3atuhhn7s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGSey0ACgkQ2O7X88g7
++pqsqA/+PLhM9nGPd3yVYVcMX+1871ieMMyrEmlvBhXKfZSpr6gPfmyLU4Ushwo8
+g9rwEvkAyZmeWkBBljAVgTf6ummRlJK1aTnhuS2ysSHq9jbw5QkX2yt8BCuzA2co
+Bticfk/nuCRtKP/2Vfg4Ebfb64yn77gcGGdwp/VRSUYQs+Jxu5L7K0pA5bGSkicB
+oy5pYzUbtonV2UyKPSYdXqxuVVc7V4y6EoZib3lQKA1dKezJQDO+yNe5/QVr6zgu
+J38bdYtUiFHV+UlblNLnq7QnqrlRCf6cMCEXjMqSpO1G6V9ROy7fi2zfLYsPIuch
+WlMBM2WSaCJHrop7NIH76Ua0H3qSJbPllpQnQpFIL7iB7An1bhwrMJIcSO/ATldI
+xjDpnITthGVN4QyoALr/1DdOpRReOJcnlXbSpCAHWqaAy5EoE8n5Mj7Kf2OFJfvX
+MIitVfjsSlCG53m92ho48AacCENNnl+MZ9OFZpYQqF3k115v0kEovYUzXnOfHS8D
+LH0WapGRMykCUiT+tMIEWVpboR1Q+tU6MukxistTUWmvuTnERtZiNlFB2QIBuBL7
+/BnVBivtpbTWkN0Ibf6JcT+4HHL/AwPa9dFuDAiqdWopGYhfCL4MIahYCi9ba2Ey
+XR0T1JJUFnUgfM5eC6uhhV5GGX4r8TTMYGnTUEf1JX4SzPDC1SE=
+=r0Ws
+-----END PGP SIGNATURE-----
+
+--4kwm62h3atuhhn7s--
