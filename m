@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC8945204C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CC245195F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358219AbhKPAvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:51:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
+        id S243052AbhKOXSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:18:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344439AbhKOTYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE2163489;
-        Mon, 15 Nov 2021 18:57:42 +0000 (UTC)
+        id S244400AbhKOTOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:14:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 364DA63413;
+        Mon, 15 Nov 2021 18:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002662;
-        bh=+G64ou5zMIBp3gvj6bUysTam3ewkp3gKss0u54tN8zo=;
+        s=korg; t=1637000451;
+        bh=9/rOJiPt913Sfsy/2VjTdxUpKjbjIM51cH7wDXIpAHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2KqR91HScUJKYzy+lQhPb05+zzpmSSK2xF766m3p+PRzvpSFFyz1VVhee2mDVW5Xo
-         EsArLMcbpQn7xM+2IKgHeWCwsxuwleYHp7D2GCZqdI2etlvEwpIPp9mzZ5E4m3KKE2
-         XhDqYRGRaK7Bee1oRHTbeyADjCUdKpORq/l4aCm4=
+        b=F8uLSLl5ZT5wnYFZ+J5rA9WmRaAhNhi6UIk6JWzqXNDAeKu7OJ2z8A9VdXKYY2aPd
+         /NIHDIaMmm3TalBhmiEWhUtvFVqIUUocUJOBLHdFqZWr7mlRMFYuxBcq/NjiH37PF7
+         Tr/WAHOT21W00+sBLiRT/x0jfYYioQc8Em/FE2wA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Stefan Agner <stefan@agner.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Johansen <john.johansen@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 651/917] serial: imx: fix detach/attach of serial console
-Date:   Mon, 15 Nov 2021 18:02:26 +0100
-Message-Id: <20211115165450.938949344@linuxfoundation.org>
+Subject: [PATCH 5.14 664/849] apparmor: fix error check
+Date:   Mon, 15 Nov 2021 18:02:27 +0100
+Message-Id: <20211115165442.727379604@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,121 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 6d0d1b5a1b4870911beb89544ec1a9751c42fec7 ]
+[ Upstream commit d108370c644b153382632b3e5511ade575c91c86 ]
 
-If the device used as a serial console gets detached/attached at runtime,
-register_console() will try to call imx_uart_setup_console(), but this
-is not possible since it is marked as __init.
+clang static analysis reports this representative problem:
 
-For instance
+label.c:1463:16: warning: Assigned value is garbage or undefined
+        label->hname = name;
+                     ^ ~~~~
 
-  # cat /sys/devices/virtual/tty/console/active
-  tty1 ttymxc0
-  # echo -n N > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
-  # echo -n Y > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
+In aa_update_label_name(), this the problem block of code
 
-[   73.166649] 8<--- cut here ---
-[   73.167005] Unable to handle kernel paging request at virtual address c154d928
-[   73.167601] pgd = 55433e84
-[   73.167875] [c154d928] *pgd=8141941e(bad)
-[   73.168304] Internal error: Oops: 8000000d [#1] SMP ARM
-[   73.168429] Modules linked in:
-[   73.168522] CPU: 0 PID: 536 Comm: sh Not tainted 5.15.0-rc6-00056-g3968ddcf05fb #3
-[   73.168675] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
-[   73.168791] PC is at imx_uart_console_setup+0x0/0x238
-[   73.168927] LR is at try_enable_new_console+0x98/0x124
-[   73.169056] pc : [<c154d928>]    lr : [<c0196f44>]    psr: a0000013
-[   73.169178] sp : c2ef5e70  ip : 00000000  fp : 00000000
-[   73.169281] r10: 00000000  r9 : c02cf970  r8 : 00000000
-[   73.169389] r7 : 00000001  r6 : 00000001  r5 : c1760164  r4 : c1e0fb08
-[   73.169512] r3 : c154d928  r2 : 00000000  r1 : efffcbd1  r0 : c1760164
-[   73.169641] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[   73.169782] Control: 10c5387d  Table: 8345406a  DAC: 00000051
-[   73.169895] Register r0 information: non-slab/vmalloc memory
-[   73.170032] Register r1 information: non-slab/vmalloc memory
-[   73.170158] Register r2 information: NULL pointer
-[   73.170273] Register r3 information: non-slab/vmalloc memory
-[   73.170397] Register r4 information: non-slab/vmalloc memory
-[   73.170521] Register r5 information: non-slab/vmalloc memory
-[   73.170647] Register r6 information: non-paged memory
-[   73.170771] Register r7 information: non-paged memory
-[   73.170892] Register r8 information: NULL pointer
-[   73.171009] Register r9 information: non-slab/vmalloc memory
-[   73.171142] Register r10 information: NULL pointer
-[   73.171259] Register r11 information: NULL pointer
-[   73.171375] Register r12 information: NULL pointer
-[   73.171494] Process sh (pid: 536, stack limit = 0xcd1ba82f)
-[   73.171621] Stack: (0xc2ef5e70 to 0xc2ef6000)
-[   73.171731] 5e60:                                     ???????? ???????? ???????? ????????
-[   73.171899] 5e80: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172059] 5ea0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172217] 5ec0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172377] 5ee0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172537] 5f00: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172698] 5f20: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172856] 5f40: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173016] 5f60: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173177] 5f80: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173336] 5fa0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173496] 5fc0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173654] 5fe0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173826] [<c0196f44>] (try_enable_new_console) from [<c01984a8>] (register_console+0x10c/0x2ec)
-[   73.174053] [<c01984a8>] (register_console) from [<c06e2c90>] (console_store+0x14c/0x168)
-[   73.174262] [<c06e2c90>] (console_store) from [<c0383718>] (kernfs_fop_write_iter+0x110/0x1cc)
-[   73.174470] [<c0383718>] (kernfs_fop_write_iter) from [<c02cf5f4>] (vfs_write+0x31c/0x548)
-[   73.174679] [<c02cf5f4>] (vfs_write) from [<c02cf970>] (ksys_write+0x60/0xec)
-[   73.174863] [<c02cf970>] (ksys_write) from [<c0100080>] (ret_fast_syscall+0x0/0x1c)
-[   73.175052] Exception stack(0xc2ef5fa8 to 0xc2ef5ff0)
-[   73.175167] 5fa0:                   ???????? ???????? ???????? ???????? ???????? ????????
-[   73.175327] 5fc0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.175486] 5fe0: ???????? ???????? ???????? ????????
-[   73.175608] Code: 00000000 00000000 00000000 00000000 (00000000)
-[   73.175744] ---[ end trace 9b75121265109bf1 ]---
+	if (aa_label_acntsxprint(&name, ...) == -1)
+		return res;
 
-A similar issue could be triggered by unbinding/binding the serial
-console device [*].
+On failure, aa_label_acntsxprint() has a more complicated return
+that just -1.  So check for a negative return.
 
-Drop __init so that imx_uart_setup_console() can be safely called at
-runtime.
+It was also noted that the aa_label_acntsxprint() main comment refers
+to a nonexistent parameter, so clean up the comment.
 
-[*] https://lore.kernel.org/all/20181114174940.7865-3-stefan@agner.ch/
-
-Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-Link: https://lore.kernel.org/r/20211020192643.476895-2-francesco.dolcini@toradex.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f1bd904175e8 ("apparmor: add the base fns() for domain labels")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/imx.c | 4 ++--
+ security/apparmor/label.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 8b121cd869e94..51a9f9423b1a6 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -2017,7 +2017,7 @@ imx_uart_console_write(struct console *co, const char *s, unsigned int count)
-  * If the port was already initialised (eg, by a boot loader),
-  * try to determine the current setup.
-  */
--static void __init
-+static void
- imx_uart_console_get_options(struct imx_port *sport, int *baud,
- 			     int *parity, int *bits)
- {
-@@ -2076,7 +2076,7 @@ imx_uart_console_get_options(struct imx_port *sport, int *baud,
- 	}
- }
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index e68bcedca976b..6222fdfebe4e5 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -1454,7 +1454,7 @@ bool aa_update_label_name(struct aa_ns *ns, struct aa_label *label, gfp_t gfp)
+ 	if (label->hname || labels_ns(label) != ns)
+ 		return res;
  
--static int __init
-+static int
- imx_uart_console_setup(struct console *co, char *options)
- {
- 	struct imx_port *sport;
+-	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) == -1)
++	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) < 0)
+ 		return res;
+ 
+ 	ls = labels_set(label);
+@@ -1704,7 +1704,7 @@ int aa_label_asxprint(char **strp, struct aa_ns *ns, struct aa_label *label,
+ 
+ /**
+  * aa_label_acntsxprint - allocate a __counted string buffer and print label
+- * @strp: buffer to write to. (MAY BE NULL if @size == 0)
++ * @strp: buffer to write to.
+  * @ns: namespace profile is being viewed from
+  * @label: label to view (NOT NULL)
+  * @flags: flags controlling what label info is printed
 -- 
 2.33.0
 
