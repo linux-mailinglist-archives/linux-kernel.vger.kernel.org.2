@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90704515A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE8B45159E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352296AbhKOUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:44:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
+        id S1352274AbhKOUoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:44:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240315AbhKOSHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AA456339C;
-        Mon, 15 Nov 2021 17:44:42 +0000 (UTC)
+        id S237079AbhKOSHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE686339E;
+        Mon, 15 Nov 2021 17:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998283;
-        bh=jkFTcjtBw+PC9lAlj7hyaiOrMJggtUV8lZ4n6EdMMBQ=;
+        s=korg; t=1636998286;
+        bh=gqq9KKE0mgn3BJBjd3CNbKBSkZd21PDpbod6pCjr/CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UbQDOSFCuzTdb/Wdhx+bvxZncLtXz2cXdwNN1l/wzalHORT/C9CRUkxd7Sb1C91UE
-         RrZUbvFGJjbw2+jr4rG9AWdnOSJuAKgL+yQTAnOt+F/6pX9m+GdPA0sb5TjKltAgxd
-         SdkMyCVuJgxMEnp7iGH39biyoEiJK8cX/xncYOvk=
+        b=qmrbNTRn8eB1DNdW2eVUV3ZwGE8osUw6yk5IjiQIr6G829k/SHePr84z/t87OXRtz
+         T5z56qmGEKsTHwxTGTCwkPHR2kDtAZRoEXUZUTdGQH5Jk+YwrZJ/6mHdPxviJyFxHO
+         wfD9l1H487gL3NcjHqzw7TcSfjxEGKR29hhOY20E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
+        stable@vger.kernel.org,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
         Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 454/575] phy: ti: gmii-sel: check of_get_address() for failure
-Date:   Mon, 15 Nov 2021 18:02:59 +0100
-Message-Id: <20211115165359.452859255@linuxfoundation.org>
+Subject: [PATCH 5.10 455/575] phy: qcom-snps: Correct the FSEL_MASK
+Date:   Mon, 15 Nov 2021 18:03:00 +0100
+Message-Id: <20211115165359.484504759@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,36 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
 
-[ Upstream commit 8d55027f4e2c04146a75fb63371ab96ccc887f2c ]
+[ Upstream commit b475bf0ec40a2b13fb32ef62f5706576d5858460 ]
 
-Smatch complains that if of_get_address() returns NULL, then "size"
-isn't initialized.  Also it would lead to an Oops.
+The FSEL_MASK which selects the refclock is defined incorrectly.
+It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
+in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0 is reset which keeps PHY analog
+blocks ON during suspend.
+Fix this issue by correctly defining the FSEL_MASK.
 
-Fixes: 7f78322cdd67 ("phy: ti: gmii-sel: retrieve ports number and base offset from dt")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Link: https://lore.kernel.org/r/20210914110038.GB11657@kili
+Fixes: 51e8114f80d0 ("phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs")
+Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Link: https://lore.kernel.org/r/1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ti/phy-gmii-sel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/phy/ti/phy-gmii-sel.c b/drivers/phy/ti/phy-gmii-sel.c
-index 5fd2e8a08bfcf..d0ab69750c6b4 100644
---- a/drivers/phy/ti/phy-gmii-sel.c
-+++ b/drivers/phy/ti/phy-gmii-sel.c
-@@ -320,6 +320,8 @@ static int phy_gmii_sel_init_ports(struct phy_gmii_sel_priv *priv)
- 		u64 size;
+diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+index ae4bac024c7b1..7e61202aa234e 100644
+--- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
++++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+@@ -33,7 +33,7 @@
  
- 		offset = of_get_address(dev->of_node, 0, &size, NULL);
-+		if (!offset)
-+			return -EINVAL;
- 		priv->num_ports = size / sizeof(u32);
- 		if (!priv->num_ports)
- 			return -EINVAL;
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
+ #define RETENABLEN				BIT(3)
+-#define FSEL_MASK				GENMASK(7, 5)
++#define FSEL_MASK				GENMASK(6, 4)
+ #define FSEL_DEFAULT				(0x3 << 4)
+ 
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1	(0x58)
 -- 
 2.33.0
 
