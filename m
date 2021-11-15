@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C20345185A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1647D451855
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349225AbhKOW6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:58:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51378 "EHLO mail.kernel.org"
+        id S1349136AbhKOW6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:58:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242981AbhKOSsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242982AbhKOSsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:48:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3FF163398;
-        Mon, 15 Nov 2021 18:07:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 516F063390;
+        Mon, 15 Nov 2021 18:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999679;
-        bh=gErPLzbTr0Y0NQ/81u8uZdxaswuViq9lAs1D/Y59Qt8=;
+        s=korg; t=1636999681;
+        bh=fFfgs6BPiAXfMalW/bs2mDiMhnNmpggZk00gi9GwpGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qO6KM2/neQisZg9yHqTfMw0VEY5lH3kwmULGDXP9Z23rjWuXKbj8dGQZCifREvIl6
-         Y2orGi5sOK3xfuMqazlwOw15ZSov7qFbnKq934lqFnaAyi4nXyXSNqnO0EdeakLW87
-         62MnjhZ75Do0deyNiCSjnUpWN6xP8u6YeH+FGr/Y=
+        b=aVCb7xiZ5yPYT8QOEkrng/tnOIy2aonLAjU37nF2c+l9iZclhiUdACzCLv/vhnpdh
+         7Hem9XMvS+ZFjM9fXGmyoiMitfSVxam9Q+TkC2WsfR9ykl9O9gSPcsU4D4eP92SyNX
+         ETfW/8UDEGr0HHEvKti3A2gWarVC2x6mO0NEMbxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 383/849] media: imx258: Fix getting clock frequency
-Date:   Mon, 15 Nov 2021 17:57:46 +0100
-Message-Id: <20211115165433.204693820@linuxfoundation.org>
+Subject: [PATCH 5.14 384/849] media: v4l2-ioctl: S_CTRL output the right value
+Date:   Mon, 15 Nov 2021 17:57:47 +0100
+Message-Id: <20211115165433.235488148@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,50 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit d170b0ea1760989fe8ac053bef83e61f3bf87992 ]
+[ Upstream commit c87ed93574e3cd8346c05bd934c617596c12541b ]
 
-Obtain the clock frequency by reading the clock-frequency property if
-there's no clock.
+If the driver does not implement s_ctrl, but it does implement
+s_ext_ctrls, we convert the call.
 
-Fixes: 9fda25332c4b ("media: i2c: imx258: get clock from device properties and enable it via runtime PM")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+When that happens we have also to convert back the response from
+s_ext_ctrls.
+
+Fixes v4l2_compliance:
+Control ioctls (Input 0):
+		fail: v4l2-test-controls.cpp(411): returned control value out of range
+		fail: v4l2-test-controls.cpp(507): invalid control 00980900
+	test VIDIOC_G/S_CTRL: FAIL
+
+Fixes: 35ea11ff8471 ("V4L/DVB (8430): videodev: move some functions from v4l2-dev.h to v4l2-common.h or v4l2-ioctl.h")
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx258.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/media/v4l2-core/v4l2-ioctl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 81cdf37216ca7..c249507aa2dbc 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -1260,18 +1260,18 @@ static int imx258_probe(struct i2c_client *client)
- 		return -ENOMEM;
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index da5b4002a466a..f4f67b385d00a 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -2224,6 +2224,7 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
+ 		test_bit(V4L2_FL_USES_V4L2_FH, &vfd->flags) ? fh : NULL;
+ 	struct v4l2_ext_controls ctrls;
+ 	struct v4l2_ext_control ctrl;
++	int ret;
  
- 	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-+	if (IS_ERR(imx258->clk))
-+		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
-+				     "error getting clock\n");
- 	if (!imx258->clk) {
- 		dev_dbg(&client->dev,
- 			"no clock provided, using clock-frequency property\n");
+ 	if (vfh && vfh->ctrl_handler)
+ 		return v4l2_s_ctrl(vfh, vfh->ctrl_handler, p);
+@@ -2239,9 +2240,11 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
+ 	ctrls.controls = &ctrl;
+ 	ctrl.id = p->id;
+ 	ctrl.value = p->value;
+-	if (check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
+-		return ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
+-	return -EINVAL;
++	if (!check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
++		return -EINVAL;
++	ret = ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
++	p->value = ctrl.value;
++	return ret;
+ }
  
- 		device_property_read_u32(&client->dev, "clock-frequency", &val);
--		if (val != IMX258_INPUT_CLOCK_FREQ)
--			return -EINVAL;
--	} else if (IS_ERR(imx258->clk)) {
--		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
--				     "error getting clock\n");
-+	} else {
-+		val = clk_get_rate(imx258->clk);
- 	}
--	if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
-+	if (val != IMX258_INPUT_CLOCK_FREQ) {
- 		dev_err(&client->dev, "input clock frequency not supported\n");
- 		return -EINVAL;
- 	}
+ static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
 -- 
 2.33.0
 
