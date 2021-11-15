@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64534526F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13A84526E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345352AbhKPCOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:14:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39650 "EHLO mail.kernel.org"
+        id S1346236AbhKPCMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:12:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239327AbhKOR4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:56:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28D00611CC;
-        Mon, 15 Nov 2021 17:34:28 +0000 (UTC)
+        id S238950AbhKOR4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:56:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0DD632C9;
+        Mon, 15 Nov 2021 17:34:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997669;
-        bh=5NAPymXcoKo5Xj4P5WU6r/dp61wjKGk6HHJgtZ0jb/I=;
+        s=korg; t=1636997672;
+        bh=LySrOVxPSx3SDNO7VMhsnJW8RXUm9lURBPs/9l6na+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Scku2CI0QYzY6As+Ul+FbZJHVCztJugCAjoUgmKWYmFn1JB2pyJqcTr46A2Dduhha
-         xDfHFe66/aiDdKJIVN7cJK3rT9zG0mTjr2SHVIAe7QnQYvvYFsVDsd2+KUpGJkAgRg
-         Qq22r8maoZSUcnGk5CfuArbpCiDIjvIwRQIOrhhc=
+        b=fBKBr5mcwjGnRAt+XxG1ozJ9ucIA1TNZV+u92Oozh3EM2EAFXnklx/UkpzPeXY3QX
+         5eB7XsRQHO7KNQRkOfl9xY7p7ug3xlgxU+NSAXi+88gVP2jmMdtyCYxzsv9SYwARv9
+         zOsgXXBZGfNRWOD+58tL781APp7sxDUqfjYjskdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 233/575] nvme: drop scan_lock and always kick requeue list when removing namespaces
-Date:   Mon, 15 Nov 2021 17:59:18 +0100
-Message-Id: <20211115165351.790698037@linuxfoundation.org>
+        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 234/575] PM: hibernate: Get block device exclusively in swsusp_check()
+Date:   Mon, 15 Nov 2021 17:59:19 +0100
+Message-Id: <20211115165351.829539152@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,71 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 2b81a5f015199f3d585ce710190a9e87714d3c1e ]
+[ Upstream commit 39fbef4b0f77f9c89c8f014749ca533643a37c9f ]
 
-When reading the partition table on initial scan hits an I/O error the
-I/O will hang with the scan_mutex held:
+The following kernel crash can be triggered:
 
-[<0>] do_read_cache_page+0x49b/0x790
-[<0>] read_part_sector+0x39/0xe0
-[<0>] read_lba+0xf9/0x1d0
-[<0>] efi_partition+0xf1/0x7f0
-[<0>] bdev_disk_changed+0x1ee/0x550
-[<0>] blkdev_get_whole+0x81/0x90
-[<0>] blkdev_get_by_dev+0x128/0x2e0
-[<0>] device_add_disk+0x377/0x3c0
-[<0>] nvme_mpath_set_live+0x130/0x1b0 [nvme_core]
-[<0>] nvme_mpath_add_disk+0x150/0x160 [nvme_core]
-[<0>] nvme_alloc_ns+0x417/0x950 [nvme_core]
-[<0>] nvme_validate_or_alloc_ns+0xe9/0x1e0 [nvme_core]
-[<0>] nvme_scan_work+0x168/0x310 [nvme_core]
-[<0>] process_one_work+0x231/0x420
+[   89.266592] ------------[ cut here ]------------
+[   89.267427] kernel BUG at fs/buffer.c:3020!
+[   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
+[   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
+[   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
+[   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
+[   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
+[   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
+[   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
+[   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
+[   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
+[   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
+[   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
+[   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   89.290368] Call Trace:
+[   89.290842]  write_mmp_block+0x2ca/0x510
+[   89.292218]  kmmpd+0x433/0x9a0
+[   89.294902]  kthread+0x2dd/0x3e0
+[   89.296268]  ret_from_fork+0x22/0x30
+[   89.296906] Modules linked in:
 
-and trying to delete the controller will deadlock as it tries to grab
-the scan mutex:
+by running the following commands:
 
-[<0>] nvme_mpath_clear_ctrl_paths+0x25/0x80 [nvme_core]
-[<0>] nvme_remove_namespaces+0x31/0xf0 [nvme_core]
-[<0>] nvme_do_delete_ctrl+0x4b/0x80 [nvme_core]
+ 1. mkfs.ext4 -O mmp  /dev/sda -b 1024
+ 2. mount /dev/sda /home/test
+ 3. echo "/dev/sda" > /sys/power/resume
 
-As we're now properly ordering the namespace list there is no need to
-hold the scan_mutex in nvme_mpath_clear_ctrl_paths() anymore.
-And we always need to kick the requeue list as the path will be marked
-as unusable and I/O will be requeued _without_ a current path.
+That happens because swsusp_check() calls set_blocksize() on the
+target partition which confuses the file system:
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+       Thread1                       Thread2
+mount /dev/sda /home/test
+get s_mmp_bh  --> has mapped flag
+start kmmpd thread
+				echo "/dev/sda" > /sys/power/resume
+				  resume_store
+				    software_resume
+				      swsusp_check
+				        set_blocksize
+					  truncate_inode_pages_range
+					    truncate_cleanup_page
+					      block_invalidatepage
+					        discard_buffer --> clean mapped flag
+write_mmp_block
+  submit_bh
+    submit_bh_wbc
+      BUG_ON(!buffer_mapped(bh))
+
+To address this issue, modify swsusp_check() to open the target block
+device with exclusive access.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/power/swap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 46a1e24ba6f47..18a756444d5a9 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -135,13 +135,12 @@ void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 72e33054a2e1b..c9126606fa6f4 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -1521,9 +1521,10 @@ end:
+ int swsusp_check(void)
  {
- 	struct nvme_ns *ns;
+ 	int error;
++	void *holder;
  
--	mutex_lock(&ctrl->scan_lock);
- 	down_read(&ctrl->namespaces_rwsem);
--	list_for_each_entry(ns, &ctrl->namespaces, list)
--		if (nvme_mpath_clear_current_path(ns))
--			kblockd_schedule_work(&ns->head->requeue_work);
-+	list_for_each_entry(ns, &ctrl->namespaces, list) {
-+		nvme_mpath_clear_current_path(ns);
-+		kblockd_schedule_work(&ns->head->requeue_work);
-+	}
- 	up_read(&ctrl->namespaces_rwsem);
--	mutex_unlock(&ctrl->scan_lock);
- }
+ 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
+-					    FMODE_READ, NULL);
++					    FMODE_READ | FMODE_EXCL, &holder);
+ 	if (!IS_ERR(hib_resume_bdev)) {
+ 		set_blocksize(hib_resume_bdev, PAGE_SIZE);
+ 		clear_page(swsusp_header);
+@@ -1545,7 +1546,7 @@ int swsusp_check(void)
  
- static bool nvme_path_is_disabled(struct nvme_ns *ns)
+ put:
+ 		if (error)
+-			blkdev_put(hib_resume_bdev, FMODE_READ);
++			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
+ 		else
+ 			pr_debug("Image signature found, resuming\n");
+ 	} else {
 -- 
 2.33.0
 
