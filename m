@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F22451A53
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826C845213D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233811AbhKOXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:37:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
+        id S1343610AbhKPBCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:02:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245722AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3850C61163;
-        Mon, 15 Nov 2021 18:40:13 +0000 (UTC)
+        id S233224AbhKOTVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B586328E;
+        Mon, 15 Nov 2021 18:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001613;
-        bh=KRBRcvBIADkWd5b/8yUGmrKBfzHqsh2rZjSTMHekt2c=;
+        s=korg; t=1637001627;
+        bh=M3SvlGThEGmBAIM1ZNtPR3eLWV4qwpyTYN7lP2Z8onQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r8sCpOn17H743gda10AR86ansTvSzrU5Nv4i3Ch/mH+Oib1ai0HiVxZdSaTL1LZxZ
-         gWFRtbXdEIjeeG4fbRm0MazFoGlmjvRZqLda+zResVJTIjbOjjZJWDoJulCr+NiA1C
-         UJzHEDHgP9zT2uzLzwc8NgC9osTjD0Pzv3xWerVQ=
+        b=u8IyG8WDY/gjQuJIs9oXco/kzyYEyQxV32KPuAGtt/ym41HNOPj7aJRj/50feGNvm
+         tQKAgRfax+EplWTa2dUDmgxzXAEK7qj1QrQ5EfsjGFxsArWfK/hd5ec1uMZZcNeI+o
+         LswrAgiigO1bWiL/z0u70ujP5RJlwf1bf2Sv65Gw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Tim Gardner <tim.gardner@canonical.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 256/917] drm/amd/display: fix null pointer deref when plugging in display
-Date:   Mon, 15 Nov 2021 17:55:51 +0100
-Message-Id: <20211115165437.469000071@linuxfoundation.org>
+Subject: [PATCH 5.15 261/917] drm/msm: prevent NULL dereference in msm_gpu_crashstate_capture()
+Date:   Mon, 15 Nov 2021 17:55:56 +0100
+Message-Id: <20211115165437.636623552@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,37 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurabindo Pillai <aurabindo.pillai@amd.com>
+From: Tim Gardner <tim.gardner@canonical.com>
 
-[ Upstream commit 1f3b22e4eb162e0b1d423106a47484943a22a309 ]
+[ Upstream commit b220c154832c5cd0df34cbcbcc19d7135c16e823 ]
 
-[Why&How]
-When system boots in headless mode, connecting a 4k display creates a
-null pointer dereference due to hubp for a certain plane being null.
-Add a condition to check for null hubp before dereferencing it.
+Coverity complains of a possible NULL dereference:
 
-Signed-off-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+CID 120718 (#1 of 1): Dereference null return value (NULL_RETURNS)
+23. dereference: Dereferencing a pointer that might be NULL state->bos when
+    calling msm_gpu_crashstate_get_bo. [show details]
+301                        msm_gpu_crashstate_get_bo(state, submit->bos[i].obj,
+302                                submit->bos[i].iova, submit->bos[i].flags);
+
+Fix this by employing the same state->bos NULL check as is used in the next
+for loop.
+
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: freedreno@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210929162554.14295-1-tim.gardner@canonical.com
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index fafed1e4a998d..0950784bafa49 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -1002,7 +1002,8 @@ void dcn30_set_disp_pattern_generator(const struct dc *dc,
- 		/* turning off DPG */
- 		pipe_ctx->plane_res.hubp->funcs->set_blank(pipe_ctx->plane_res.hubp, false);
- 		for (mpcc_pipe = pipe_ctx->bottom_pipe; mpcc_pipe; mpcc_pipe = mpcc_pipe->bottom_pipe)
--			mpcc_pipe->plane_res.hubp->funcs->set_blank(mpcc_pipe->plane_res.hubp, false);
-+			if (mpcc_pipe->plane_res.hubp)
-+				mpcc_pipe->plane_res.hubp->funcs->set_blank(mpcc_pipe->plane_res.hubp, false);
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 8a3a592da3a4d..2c46cd968ac4c 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -296,7 +296,7 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
+ 		state->bos = kcalloc(nr,
+ 			sizeof(struct msm_gpu_state_bo), GFP_KERNEL);
  
- 		stream_res->opp->funcs->opp_set_disp_pattern_generator(stream_res->opp, test_pattern, color_space,
- 				color_depth, solid_color, width, height, offset);
+-		for (i = 0; i < submit->nr_bos; i++) {
++		for (i = 0; state->bos && i < submit->nr_bos; i++) {
+ 			if (should_dump(submit, i)) {
+ 				msm_gpu_crashstate_get_bo(state, submit->bos[i].obj,
+ 					submit->bos[i].iova, submit->bos[i].flags);
 -- 
 2.33.0
 
