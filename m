@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD11D450314
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE9E450320
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhKOLJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:09:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39282 "EHLO mail.kernel.org"
+        id S237418AbhKOLJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237636AbhKOLI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:08:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D995263221;
-        Mon, 15 Nov 2021 11:05:30 +0000 (UTC)
+        id S237740AbhKOLId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:08:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3149263211;
+        Mon, 15 Nov 2021 11:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636974331;
-        bh=5fCH/51HhaXkOh8VQtleNXMxWRoiP7B33co1eOdO33s=;
+        s=k20201202; t=1636974333;
+        bh=Vm0BiVCLcXT5Yv+VDKPr/Fj2l1VsoJGwsoRLlXTyZNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mw3x9qw65hz3GvHo5X8bANH1WkRx7u3snILf/4clnQefbD+vPNkf5kk3nqqCQZqvi
-         qs/ODpG0HwRFF+rY/RYzCEp8ty8tLuDWELdETYir6kZQd7nt5Zg2hJlw3uVu0Nxno/
-         4P1CLJ5CuszXqOOKY3NV90elCcocIT1NtiKGVU5xnzIt5Jdxmg1j6iqYPz+H9r1RZm
-         uPaPK5V20iSySsqqyibuN1ECyAStjl//M3pWRVNbur+s5IZVtQKiKtaAD+RVjolNeN
-         71OljrAHrWrFynWo36/pA2QQdXBlnER5q1L/IFHulCyVpOcXfr65OOLFtWoU+0q5nb
-         i81AEPK2du9MA==
+        b=cN2ctFF5YiTQ/uW9YDh+x3Rax6z9InvLJ6WWJKCfh6uNBm/9756Cnhl0LTndAs1Rd
+         GmugymJSihtJoim211o2bvDJ1wTNSQyW6IdMlEkHosxzinf5WcMwNpnIHqOhH+cYg2
+         KGnVYqOoScV9Qhfs0wOiUjlhxt9sgMXsIZi1yHUIcmzRfxo4NIfBDYtixo5vCXbVA4
+         XCGQvH71tcin+cgZNgBcXeVLiVgAarEQZfDTA5jV2FXWCDZBtpqFeGHk1QX5MjKieb
+         u1rvCViIoIAQ/8MlmWf8B3Iw7oJ+nNCPu+nVQjh4bYRNHmOhuKpzOKBj6xhYYf6n6p
+         KCe5UVOVPMxxQ==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 5/7] habanalabs: align debugfs documentation to alphabetical order
-Date:   Mon, 15 Nov 2021 13:05:19 +0200
-Message-Id: <20211115110521.783103-5-ogabbay@kernel.org>
+Cc:     Ohad Sharabi <osharabi@habana.ai>
+Subject: [PATCH 6/7] habanalabs: skip PLL freq fetch
+Date:   Mon, 15 Nov 2021 13:05:20 +0200
+Message-Id: <20211115110521.783103-6-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211115110521.783103-1-ogabbay@kernel.org>
 References: <20211115110521.783103-1-ogabbay@kernel.org>
@@ -38,62 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+From: Ohad Sharabi <osharabi@habana.ai>
 
-Move an entry in the debugfs documentation to align with the
-alphabetical order which is kept this file.
+Getting the used PLL index with which to send the CPUPU packet relies on
+the CPUCP info packet.
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
+In case CPU queues are not enabled getting the PLL index will issue an
+error and in some ASICs will also fail the driver load.
+
+Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- .../ABI/testing/debugfs-driver-habanalabs        | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 5 +++++
+ drivers/misc/habanalabs/goya/goya.c   | 5 +++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
-index 6085ee506135..2667cbf940f3 100644
---- a/Documentation/ABI/testing/debugfs-driver-habanalabs
-+++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
-@@ -21,11 +21,11 @@ Description:    Allow the root user to disable/enable in runtime the clock
-                 a different engine to disable/enable its clock gating feature.
-                 The bitmask is composed of 20 bits:
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index aed55db368d7..465540d064b6 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -881,6 +881,11 @@ static int gaudi_fetch_psoc_frequency(struct hl_device *hdev)
+ 	int rc;
  
--		=======   ============
-+                =======   ============
-                 0  -  7   DMA channels
-                 8  - 11   MME engines
-                 12 - 19   TPC engines
--		=======   ============
-+                =======   ============
- 
-                 The bit's location of a specific engine can be determined
-                 using (1 << GAUDI_ENGINE_ID_*). GAUDI_ENGINE_ID_* values
-@@ -233,12 +233,6 @@ Description:    Gets the state dump occurring on a CS timeout or failure.
-                 Writing an integer X discards X state dumps, so that the
-                 next read would return X+1-st newest state dump.
- 
--What:           /sys/kernel/debug/habanalabs/hl<n>/timeout_locked
--Date:           Sep 2021
--KernelVersion:  5.16
--Contact:        obitton@habana.ai
--Description:    Sets the command submission timeout value in seconds.
--
- What:           /sys/kernel/debug/habanalabs/hl<n>/stop_on_err
- Date:           Mar 2020
- KernelVersion:  5.6
-@@ -246,6 +240,12 @@ Contact:        ogabbay@kernel.org
- Description:    Sets the stop-on_error option for the device engines. Value of
-                 "0" is for disable, otherwise enable.
- 
-+What:           /sys/kernel/debug/habanalabs/hl<n>/timeout_locked
-+Date:           Sep 2021
-+KernelVersion:  5.16
-+Contact:        obitton@habana.ai
-+Description:    Sets the command submission timeout value in seconds.
+ 	if (hdev->asic_prop.fw_security_enabled) {
++		struct gaudi_device *gaudi = hdev->asic_specific;
 +
- What:           /sys/kernel/debug/habanalabs/hl<n>/userptr
- Date:           Jan 2019
- KernelVersion:  5.1
++		if (!(gaudi->hw_cap_initialized & HW_CAP_CPU_Q))
++			return 0;
++
+ 		rc = hl_fw_cpucp_pll_info_get(hdev, HL_GAUDI_CPU_PLL, pll_freq_arr);
+ 
+ 		if (rc)
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 7b3683f2a6dc..2347de2f426a 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -739,6 +739,11 @@ static void goya_fetch_psoc_frequency(struct hl_device *hdev)
+ 	int rc;
+ 
+ 	if (hdev->asic_prop.fw_security_enabled) {
++		struct goya_device *goya = hdev->asic_specific;
++
++		if (!(goya->hw_cap_initialized & HW_CAP_CPU_Q))
++			return;
++
+ 		rc = hl_fw_cpucp_pll_info_get(hdev, HL_GOYA_PCI_PLL,
+ 				pll_freq_arr);
+ 
 -- 
 2.25.1
 
