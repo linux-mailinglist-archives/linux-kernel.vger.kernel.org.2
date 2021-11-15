@@ -2,176 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693694502DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08934502E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhKOK5a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 05:57:30 -0500
-Received: from mga09.intel.com ([134.134.136.24]:9455 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231233AbhKOK5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:57:16 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233257828"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="233257828"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:53:48 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="493973187"
-Received: from csrini4x-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.218.37])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:53:43 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org
-Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        stable@vger.kernel.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        =?utf-8?Q?Jos?= =?utf-8?Q?=C3=A9?= Roberto de Souza 
-        <jose.souza@intel.com>, Uma Shankar <uma.shankar@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/i915/dp: Perform 30ms delay after source OUI write
-In-Reply-To: <20211112215016.270267-1-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211112215016.270267-1-lyude@redhat.com>
-Date:   Mon, 15 Nov 2021 12:53:40 +0200
-Message-ID: <878rxp3d1n.fsf@intel.com>
+        id S237323AbhKOK7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhKOK7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:59:21 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5C5C061202
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:56:19 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso15400796wml.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZnKAulS/vIGrw+3FjdDPJBScIMVfc4pnUettjnr0PVs=;
+        b=ggSYQtrTCDS/DratDv0dlBLFwAj9deVBsJWmMVZx6J92cEBlai4w4a/zYhbFWA2mV7
+         uki7MxwwBNgiaZPFSnfikq5WhBk+c2PKjirTU2uHLU/zCBm+ZQVB+kauVivYQHIUBEDL
+         PTYvpQlN7CBNt5/eJUX9auOTh45dlvEmdMzZ1nt2Mw37zVbv0N/UjrxY3ELQgLgNUYyb
+         N5QMBT7cjmJq3QhJkZ1cgo7m2IqW6ByUVIx0gLa6AZ9cORiCqguX4cOYsYN68VuiYXXB
+         65AriatapML1EuSHgsQoa4D0jLEai2o4Ue+vYibUy+GsC8tbRInfbjP7yMk3yMXT1Iac
+         lx4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZnKAulS/vIGrw+3FjdDPJBScIMVfc4pnUettjnr0PVs=;
+        b=Pkwv+S/MOea3SkiMPh45+xCRX+So4ZFIGciqHNSFPhCz/hM6VHShSf6CbayUL+F6XU
+         y+rqOawlUXaQspcy0ZInEpLam5R7+xc8TrXoklPJUffADsQeUHYIUtgFTda5/mhC0Piv
+         Xdj01hoy24x2ppjHM9PN0rgO6xn+o36ahVb2iesjItWemswBCt1CTIjSEOfY0tal/08N
+         etMcjfy++/IiI21BV4emaSvgIKDIhJbI2WtBI4U5UgbB6d/i86hcxDAe68NqyDv0xKA+
+         jXGe7sgF8Mk7iqKLGdmChUL3MS4Mz5pTzTUs1b7kUWk48EXxssTM19V+Gn0mfsTvrNgn
+         sMqw==
+X-Gm-Message-State: AOAM5319bSrAZE+44Ay6dTrPnVAcOCRJboAjqBzzjjGQ5DzQiY8Z4H5M
+        /Cmx/OCL7r/PBa3JHF/2i94=
+X-Google-Smtp-Source: ABdhPJw1JuoENwuS1D5LEAiKPlSODt9xNMfu0jvXwp4q101mH6KBfQIHJsfpjCOa9V0dQI1yjhuAzA==
+X-Received: by 2002:a05:600c:22cb:: with SMTP id 11mr41309165wmg.181.1636973778280;
+        Mon, 15 Nov 2021 02:56:18 -0800 (PST)
+Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id d1sm13516532wrz.92.2021.11.15.02.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 02:56:17 -0800 (PST)
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: [PATCH v3 0/8] staging: vt6655: Fix line wrapping in `RFvWriteWakeProgSyn`
+Date:   Mon, 15 Nov 2021 10:55:41 +0000
+Message-Id: <cover.1636729147.git.karolinadrobnik@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021, Lyude Paul <lyude@redhat.com> wrote:
-> While working on supporting the Intel HDR backlight interface, I noticed
-> that there's a couple of laptops that will very rarely manage to boot up
-> without detecting Intel HDR backlight support - even though it's supported
-> on the system. One example of such a laptop is the Lenovo P17 1st
-> generation.
->
-> Following some investigation Ville Syrjälä did through the docs they have
-> available to them, they discovered that there's actually supposed to be a
-> 30ms wait after writing the source OUI before we begin setting up the rest
-> of the backlight interface.
->
-> This seems to be correct, as adding this 30ms delay seems to have
-> completely fixed the probing issues I was previously seeing. So - let's
-> start performing a 30ms wait after writing the OUI, which we do in a manner
-> similar to how we keep track of PPS delays (e.g. record the timestamp of
-> the OUI write, and then wait for however many ms are left since that
-> timestamp right before we interact with the backlight) in order to avoid
-> waiting any longer then we need to. As well, this also avoids us performing
-> this delay on systems where we don't end up using the HDR backlight
-> interface.
+This patch set is a series of small refactorings of the function
+`RFvWriteWakeProgSyn`, now renamed to `rf_write_wake_prog_syn`.
+The work here allowed to shorten lines marked by checkpatch.pl as
+being too long by:
+  * introducing two new temporary variables (`idx` and `init_table`)
+  * rewriting a conditional to switch between two modes of
+    AL7320 initialization.
 
-Ugh. Thanks for digging into this.
-
-The only thing that I dislike with the implementation is splitting the
-implementation to two places. See how well we've managed to shove all of
-the PPS waits inside intel_pps.c. Almost all of intel_dp->pps is managed
-within intel_pps.c.
-
-I think I'd actually add a intel_dp_wait_source_oui() or something in
-intel_dp.c, so all of the details about source OUI and
-intel_dp->last_oui_write access would be localized.
+In addition to this, the patch set renames the function to align it with
+the kernel coding style, updates the function description and removes two
+unnecessary conditionals checking if the value of `init_count` is lower than
+a predefined value.
 
 
-BR,
-Jani.
+Changes in v3:
+  * add a patch for removing the type cast as a first change, suggested by
+    Dan Carpenter <dan.carpenter@oracle.com> 
+  * merge two patches (using incrementation in `idx` and cleanup) into one,
+    partially implementing Dan's suggestion
 
+Changes in v2:
+  * drop "staging: vt6655: Introduce `data` temporary variable" patch, suggested
+    by Julia Lawall <julia.lawall@inria.fr> 
+  * amend "staging: vt6655: Rewrite conditional in AL7320 initialization" patch
+    to use indexing and `init_table` temporary variable
+  * add two new patches to remove unnecessary checks for init count, suggested
+    by Mike Rapoport <mike.rapoport@gmail.com>:
+      - "staging: vt6655: Delete bogus check for `init_count` in AL2230"
+      - "staging: vt6655: Delete bogus check for `init_count` in AL7230"
 
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 4a8d79901d5b ("drm/i915/dp: Enable Intel's HDR backlight interface (only SDR for now)")
-> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> Cc: <stable@vger.kernel.org> # v5.12+
-> ---
->  drivers/gpu/drm/i915/display/intel_display_types.h    |  3 +++
->  drivers/gpu/drm/i915/display/intel_dp.c               |  3 +++
->  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 11 +++++++++++
->  3 files changed, 17 insertions(+)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-> index ea1e8a6e10b0..b9c967837872 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
-> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-> @@ -1653,6 +1653,9 @@ struct intel_dp {
->  	struct intel_dp_pcon_frl frl;
->  
->  	struct intel_psr psr;
-> +
-> +	/* When we last wrote the OUI for eDP */
-> +	unsigned long last_oui_write;
->  };
->  
->  enum lspcon_vendor {
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 0a424bf69396..77d9a9390c1e 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -29,6 +29,7 @@
->  #include <linux/i2c.h>
->  #include <linux/notifier.h>
->  #include <linux/slab.h>
-> +#include <linux/timekeeping.h>
->  #include <linux/types.h>
->  
->  #include <asm/byteorder.h>
-> @@ -2010,6 +2011,8 @@ intel_edp_init_source_oui(struct intel_dp *intel_dp, bool careful)
->  
->  	if (drm_dp_dpcd_write(&intel_dp->aux, DP_SOURCE_OUI, oui, sizeof(oui)) < 0)
->  		drm_err(&i915->drm, "Failed to write source OUI\n");
-> +
-> +	intel_dp->last_oui_write = jiffies;
->  }
->  
->  /* If the device supports it, try to set the power state appropriately */
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 569d17b4d00f..2c35b999ec2c 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -96,6 +96,13 @@
->  #define INTEL_EDP_BRIGHTNESS_OPTIMIZATION_1                            0x359
->  
->  /* Intel EDP backlight callbacks */
-> +static void
-> +wait_for_oui(struct drm_i915_private *i915, struct intel_dp *intel_dp)
-> +{
-> +	drm_dbg_kms(&i915->drm, "Performing OUI wait\n");
-> +	wait_remaining_ms_from_jiffies(intel_dp->last_oui_write, 30);
-> +}
-> +
->  static bool
->  intel_dp_aux_supports_hdr_backlight(struct intel_connector *connector)
->  {
-> @@ -106,6 +113,8 @@ intel_dp_aux_supports_hdr_backlight(struct intel_connector *connector)
->  	int ret;
->  	u8 tcon_cap[4];
->  
-> +	wait_for_oui(i915, intel_dp);
-> +
->  	ret = drm_dp_dpcd_read(aux, INTEL_EDP_HDR_TCON_CAP0, tcon_cap, sizeof(tcon_cap));
->  	if (ret != sizeof(tcon_cap))
->  		return false;
-> @@ -204,6 +213,8 @@ intel_dp_aux_hdr_enable_backlight(const struct intel_crtc_state *crtc_state,
->  	int ret;
->  	u8 old_ctrl, ctrl;
->  
-> +	wait_for_oui(i915, intel_dp);
-> +
->  	ret = drm_dp_dpcd_readb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, &old_ctrl);
->  	if (ret != 1) {
->  		drm_err(&i915->drm, "Failed to read current backlight control mode: %d\n", ret);
+Karolina Drobnik (8):
+  staging: vt6655: Remove unnecessary type casts
+  staging: vt6655: Introduce `idx` variable
+  staging: vt6655: Use incrementation in `idx`
+  staging: vt6655: Rewrite conditional in AL7320 initialization
+  staging: vt6655: Rename `RFvWriteWakeProgSyn` function
+  staging: vt6655: Update comment for `rf_write_wake_prog_syn`
+  staging: vt6655: Delete bogus check for `init_count` in AL2230
+  staging: vt6655: Delete bogus check for `init_count` in AL7230
+
+ drivers/staging/vt6655/channel.c |  2 +-
+ drivers/staging/vt6655/rf.c      | 44 +++++++++++++-------------------
+ drivers/staging/vt6655/rf.h      |  2 +-
+ 3 files changed, 20 insertions(+), 28 deletions(-)
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.30.2
+
