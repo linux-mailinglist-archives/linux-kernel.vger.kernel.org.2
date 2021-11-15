@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF72451C46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB72451C30
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356156AbhKPAOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233131AbhKOWaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:30:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E25361B4C;
-        Mon, 15 Nov 2021 22:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637015242;
-        bh=X4nf6zOoRNxUt/0DyKF3TZAqtdB9crSvaHwx2vHHoeg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pd4lBh9Jlq3BumV0u9ymaqhndjHBORLGS5XL4sE8bdkXdYujxQz0W1Cp7IeDY5kW5
-         j5bMrtjcNWiv00YhWPq7TQt2KUTcFj0DdoN/1fyqXxYlXXJAVobITAlE4vRaZvI4YY
-         5YsOA8z1+VgZPrJqFkyS6RIxbtCeV8hrr8mmaz8+xLCudLguch2u23Dyeq5lXDE2rK
-         JMLFNC9OawT+tuj14ujpzjU0czDvKd18Gt6qZT/+wSjZ/9AGj0zx8c7Rl1mA2Vzjji
-         6QBl0Tb515an6Ecu2B9EdVaxgZiCzdoDmrO6q5c2CTXNx2WrEYKFE8Q+pSDQIdn8Tq
-         VzzkvMiNvMAYw==
-From:   Stefano Stabellini <sstabellini@kernel.org>
-To:     jgross@suse.com
-Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, sstabellini@kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Stable@vger.kernel.org, jbeulich@suse.com
-Subject: [PATCH v2] xen: don't continue xenstore initialization in case of errors
-Date:   Mon, 15 Nov 2021 14:27:19 -0800
-Message-Id: <20211115222719.2558207-1-sstabellini@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1356124AbhKPAOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:14:08 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:49041 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237592AbhKOWaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 17:30:22 -0500
+Received: by mail-io1-f72.google.com with SMTP id g23-20020a6be617000000b005e245747fb4so11589194ioh.15
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:27:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=kIpSl7OTDOLHk20ReymEq1RTk5wHjvJPF9rqkcV16TU=;
+        b=8IfQyR2FZZSq8EF25Q7Fd4wK/nidchyo4AZuJkNIDalDSJJw0vRPKI+/NLVz3EGlvK
+         DlYQGYmoCH0CcpAbPyTEvizB/mtGqLeVVagcrQeOLSfg65hnHuxNrHgYT21ZpJm3mqKD
+         xilY3KczhEvEJPSPyfBpQJAeEJlf/C4z8D7qlQXeFWAzduOq10it9PN1Av+C9D5nmVmm
+         RgicoWlLwF64oDUk/xW860QzV1cNqE46USeO/az94K4sRciTXJxaklinp7MP5J97IOnb
+         3QEbhXlm/rQQnX1848bTZMWSQ0ZVw5GJ0SpARrZ5BJxeYUyUQ5iONrneW0zHA51vcfZL
+         TJaQ==
+X-Gm-Message-State: AOAM533irg49rhsIH6O8GKG6qfY1Qt6V4Cpnd1mnzBvMrnVT2s1Q9Jvp
+        xWLS6EXIApJCWry15gViPmCSDhMuUulUTioi8rMVtdoZc+1L
+X-Google-Smtp-Source: ABdhPJy6tnPSbbeVXiUhnfpdq4GWAwFnOefCVem4X3H2LWQuOSWfKmyuyet81M11GbYIOR9vlM6+eyXDYKYkf/fhlWF8tEG/FZ79
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1c47:: with SMTP id d7mr1511320ilg.195.1637015246514;
+ Mon, 15 Nov 2021 14:27:26 -0800 (PST)
+Date:   Mon, 15 Nov 2021 14:27:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000042b02105d0db5037@google.com>
+Subject: [syzbot] WARNING in mntput_no_expire (3)
+From:   syzbot <syzbot+5b1e53987f858500ec00@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Hello,
 
-In case of errors in xenbus_init (e.g. missing xen_store_gfn parameter),
-we goto out_error but we forget to reset xen_store_domain_type to
-XS_UNKNOWN. As a consequence xenbus_probe_initcall and other initcalls
-will still try to initialize xenstore resulting into a crash at boot.
+syzbot found the following issue on:
 
-[    2.479830] Call trace:
-[    2.482314]  xb_init_comms+0x18/0x150
-[    2.486354]  xs_init+0x34/0x138
-[    2.489786]  xenbus_probe+0x4c/0x70
-[    2.498432]  xenbus_probe_initcall+0x2c/0x7c
-[    2.503944]  do_one_initcall+0x54/0x1b8
-[    2.507358]  kernel_init_freeable+0x1ac/0x210
-[    2.511617]  kernel_init+0x28/0x130
-[    2.516112]  ret_from_fork+0x10/0x20
+HEAD commit:    fceb07950a7a Merge https://git.kernel.org/pub/scm/linux/ke..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f9e61ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5d447cdc3ae81d9
+dashboard link: https://syzkaller.appspot.com/bug?extid=5b1e53987f858500ec00
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Cc: <Stable@vger.kernel.org>
-Cc: jbeulich@suse.com
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5b1e53987f858500ec00@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 13724 at fs/namespace.c:1187 mntput_no_expire+0xada/0xcd0 fs/namespace.c:1187
+Modules linked in:
+CPU: 0 PID: 13724 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mntput_no_expire+0xada/0xcd0 fs/namespace.c:1187
+Code: 30 84 c0 0f 84 b9 fe ff ff 3c 03 0f 8f b1 fe ff ff 4c 89 44 24 10 e8 45 3e ec ff 4c 8b 44 24 10 e9 9d fe ff ff e8 d6 d1 a5 ff <0f> 0b e9 19 fd ff ff e8 ca d1 a5 ff e8 b5 e1 65 07 31 ff 89 c5 89
+RSP: 0018:ffffc90003fffc18 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff920007fff89 RCX: 0000000000000000
+RDX: ffff8880746c3a00 RSI: ffffffff81d1a0ba RDI: 0000000000000003
+RBP: ffff88807324ad80 R08: 0000000000000000 R09: ffffffff8fd39a0f
+R10: ffffffff81d19dd1 R11: 0000000000000000 R12: 0000000000000008
+R13: ffffc90003fffc68 R14: 00000000ffffffff R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fee49cd9c18 CR3: 0000000030b77000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ <TASK>
+ mntput fs/namespace.c:1233 [inline]
+ namespace_unlock+0x26b/0x410 fs/namespace.c:1452
+ drop_collected_mounts fs/namespace.c:1935 [inline]
+ put_mnt_ns fs/namespace.c:4344 [inline]
+ put_mnt_ns+0x106/0x140 fs/namespace.c:4340
+ free_nsproxy+0x43/0x4c0 kernel/nsproxy.c:191
+ put_nsproxy include/linux/nsproxy.h:105 [inline]
+ switch_task_namespaces+0xad/0xc0 kernel/nsproxy.c:249
+ do_exit+0xba5/0x2a20 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:923
+ __do_sys_exit_group kernel/exit.c:934 [inline]
+ __se_sys_exit_group kernel/exit.c:932 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:932
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fee49bf8ae9
+Code: Unable to access opcode bytes at RIP 0x7fee49bf8abf.
+RSP: 002b:00007ffe70646608 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000029 RCX: 00007fee49bf8ae9
+RDX: 00007fee49bfa13a RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 0000000000000007 R08: ffffffffffff0000 R09: 0000000000000029
+R10: 00000000000003b8 R11: 0000000000000246 R12: 00007ffe70646c70
+R13: 0000000000000003 R14: 00007ffe70646c0c R15: 00007fee49cd9b60
+ </TASK>
+
+
 ---
-Changes in v2:
-- use return 0 for the success case
-- remove err initializer as it is not useful any longer
----
- drivers/xen/xenbus/xenbus_probe.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
-index bd003ca8acbe..5967aa937255 100644
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -909,7 +909,7 @@ static struct notifier_block xenbus_resume_nb = {
- 
- static int __init xenbus_init(void)
- {
--	int err = 0;
-+	int err;
- 	uint64_t v = 0;
- 	xen_store_domain_type = XS_UNKNOWN;
- 
-@@ -983,8 +983,10 @@ static int __init xenbus_init(void)
- 	 */
- 	proc_create_mount_point("xen");
- #endif
-+	return 0;
- 
- out_error:
-+	xen_store_domain_type = XS_UNKNOWN;
- 	return err;
- }
- 
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
