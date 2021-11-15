@@ -2,160 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368624502CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE044502D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhKOKxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:53:53 -0500
-Received: from mail-dm6nam10on2060.outbound.protection.outlook.com ([40.107.93.60]:58144
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231135AbhKOKxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:53:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cp2Mv+3tcnVkc2Fhy+gR2RMh9HtXr760GI9kl5LUeULTZH6i52m6cTZIsd+iyq8UGiZHalwpLHgS5M/GPruEvOAd9TG7YRJ9v4xccjAbtGlnff6vb4PS4tuZs6Yu5jztWXuRMNOv0BpjhjImx+UBgWxMgzZoK2r4imVGoCkX7nrAK/caNviUOTrEFu39pwJf+Lnb6RKjqSx+W7XDNhg9PRMSPNBcXbjy/c7D5z+D0/IaVRMA6/3iYhmsv8QYF1xKgofCAnoirNaioYiCbufqIwCslriBRgA9C5aE5+DglG4Gd3h4YHwB4IXxaFKF4j8M3KtcoivVcmL+hLHcrD7dzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vX+dbfb8G5ZtBLs34POIZJYtQanfvsf7lbCikmQRvQ4=;
- b=PKslndTLQ4NB896roPqdkI2xqbR1Ko6+9loHbiXWM/oJKhQKi9qCnWDcs7JajnP+TrJ0gDFlZV5QGK/63BJM7NoUmL360W+xvn1+OenpkT3aJVfCiSbPqa0O8AWVTrDz6DFefydf4BdbLZ/Je6scGEVTmRSBxzxfbeDKxM1rQ5Qak4Sq8WGfrVkZWfj8HbtOle1mwvR57M1GQrlvYzLrcsu3Ua6vOzZNfdf+1EKqDWemvJoT4gS66AXRFLhMttxJ/HiIvruJag2xMdEUyshaxJr5HeS0Xmwida3EhiXsccPNRqEWTQomaH4RG57gJQk5zZZBsTVTob3Cqcz+IJGkOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vX+dbfb8G5ZtBLs34POIZJYtQanfvsf7lbCikmQRvQ4=;
- b=SIc+hron2WejTePpY5TDUJ/m+cc7n8O4+JCHeXMz9eJ88X/FiVnjD8FOL8E90111reF50AS3IQWaveBpj+Aaq+wdLqaS0UYL0v8865OEbKALhPo7ANmcsaEP2J+9X7NIdin1WB0K4HMUI6milC50lr6lvu+xS5dpkvb3jmxjve4=
-Received: from BY5PR02MB6916.namprd02.prod.outlook.com (2603:10b6:a03:234::18)
- by SJ0PR02MB7247.namprd02.prod.outlook.com (2603:10b6:a03:29b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Mon, 15 Nov
- 2021 10:50:48 +0000
-Received: from BY5PR02MB6916.namprd02.prod.outlook.com
- ([fe80::c8a:dfb7:e411:9ad]) by BY5PR02MB6916.namprd02.prod.outlook.com
- ([fe80::c8a:dfb7:e411:9ad%9]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 10:50:48 +0000
-From:   Anand Ashok Dumbre <ANANDASH@xilinx.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "lars@metafoo.de" <lars@metafoo.de>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        "jic23@kernel.org" <jic23@kernel.org>, git <git@xilinx.com>
-Subject: RE: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
- documentation
-Thread-Topic: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
- documentation
-Thread-Index: AQHX1ORkbUMqDXG9/UWa7VvDN1Yog6wAB8iAgARrM5A=
-Date:   Mon, 15 Nov 2021 10:50:48 +0000
-Message-ID: <BY5PR02MB691622D0B2E43854875ED31DA9989@BY5PR02MB6916.namprd02.prod.outlook.com>
-References: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
- <20211108210509.29870-4-anand.ashok.dumbre@xilinx.com>
- <YY6GK3K5B/cgdczY@robh.at.kernel.org>
-In-Reply-To: <YY6GK3K5B/cgdczY@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=xilinx.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1d16deba-7b81-4edc-73c3-08d9a825c8be
-x-ms-traffictypediagnostic: SJ0PR02MB7247:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-microsoft-antispam-prvs: <SJ0PR02MB7247A0B3AF8888BDAADAD9C0A9989@SJ0PR02MB7247.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PCOnz0xmCGpnQ8/is7snv4/3Am1Jv5180Y2P9YhMXBLqHkrAfxkf121s3W4z7WxlBcUA4gu4LzE3qYiN4scBhqP1+jUfHbiNeHa/zi+c1TVj3d5i2Uj9qQPvJBSoVJJam4X8b30ptlRPySqI3lTKAERM3hNmsNvn8UeXi+b7whnsRIVwQAKw7tWQxWBwySmQ3RlAQvJQ6cKsbfkD7+T500VGg8PeXeZa8S1ODkGAwKanJiqCHEhsR6ySP7gS7Vvs27AHwnmxaX7Knv4OS/l6mUBhGYmU4oweYlbZc0wRxOK4xt5MXSWCndNOeLP4QoAG9/I6Sj0wUlYGQ3H3kLehpJfSAKcl4xN/9SvvWoI17zGqkU7cU2sFQpHrCQEf4ziAOZ4ZI3wziZCye6ypSSLtnU9uAaJrVUZF4brd/xiYvSXcLWG+zsltYkbZY/2qLMc38+qkPYWiwEunRcoSCGM4UItpcBNLkzBeijiNWhP+PRUfRdUHL7BWVddK19i2VKHHZIhpnJZqA/e92RKP+R+ZuMJ/wAEETE28GpuX2hOl4uMA5uFhEshBC+BLMKwYjs2OwmNgHqydwwdUyoS35DQrdLXnadfzuW5cpjh5WCRFFq6TgvTcTel9ctKhW2oTXu2vdnhTJyY84qimaaUXAK0a7AlwZQmmW8WJZADTHrdjG+DCo+58SlRCCF+Kazb8/qpIAluAsMFlYfsy5y6gqvuDKA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6916.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66446008)(4326008)(8676002)(52536014)(76116006)(8936002)(316002)(64756008)(6506007)(33656002)(26005)(2906002)(38070700005)(5660300002)(9686003)(66556008)(83380400001)(122000001)(71200400001)(66476007)(66946007)(6916009)(508600001)(54906003)(38100700002)(86362001)(7696005)(53546011)(55016002)(186003)(107886003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?hhZy5xhqOzrCT83l4HBoVzBffeQ42mrYUYahBzoDAP2OomuBCeMeacpNn6lv?=
- =?us-ascii?Q?UUuycgmPv9939qp9H0FdZA4CS2APXhCWo7EX3gXU1t6hFR7k62f3qPeuuMMk?=
- =?us-ascii?Q?KydsXdB1ujW87FEJ4ZWTO34q+yYdtjryfvDAWym84DQdNeQgZQsKIRhK9NBn?=
- =?us-ascii?Q?OETSEs7MdUVwo7uUbdMD9bhDBnLO7ASWZ+r5R2gO2IcjSz1QNiVWiTPIIfo/?=
- =?us-ascii?Q?tBber3O5xDlyU5N7a5wDK+4i5CgH3wc1+WEEcXynPF8Uu0JoJzV5Om8N9nYw?=
- =?us-ascii?Q?xZOo/RN52wo/+rFxtnWhE/yLijxT6XZa8xhiPbS4XOikkK11p1+f9aozOgQC?=
- =?us-ascii?Q?rrF/0XhjVYJpv0pHiq8GhkmSImobIjwnQHOkspDlYDnnBC0ArSmi8vWu7gAO?=
- =?us-ascii?Q?6YdbUO0J/i1Ib1dl5Q5Ni10Ns1hmNPcY38NQVfH9V4O3jQkdA3j4kfsLI1Pk?=
- =?us-ascii?Q?SsIBJsmoo8ZAyfzjOOVuWD5v0Ev1WLLI7csuxkRm/dNpar3nZBY/ecv6S0op?=
- =?us-ascii?Q?Z6aMFwHcdzkAU/mDFA6h7cK6DHKKhQAB5uZGuhxV0un147O+z19P1PU8GA4X?=
- =?us-ascii?Q?VWk34HOERJHcqn32OgbtdWw0YtdiEZj4k+NeI6XFBy4+srK5lbTsjl+tBLPj?=
- =?us-ascii?Q?m/sDTC8S5DGfLkxX3tbC5EE3u2jcPG019I7RWfA4RCVuOEcyNw3EuAjBoDr3?=
- =?us-ascii?Q?q198p1QjMPgODBXPvZkzJtDg0RBeSBruQiFwTj81dNO6Rh/3ecAlV0vACX1C?=
- =?us-ascii?Q?gXHBvAtyxF+fTS/Tn5IG8VHoygnvNGhSSSXwrdm9zAHl4NsFcwp+7SaiG0gg?=
- =?us-ascii?Q?Bql4Bb+F9rxNxKlVXRrbamMi3bH/quOS8adikVtaZqb1IdZNiGdvinASEm/X?=
- =?us-ascii?Q?ouElYJEjaReqS9WATU/StKlGWatAWSo9d+sJbnKbSV/kR/PNgZP4XJHOt1+z?=
- =?us-ascii?Q?9me3tAixaobXuDOmFAWlER9WCfT314NAYQCELTVv9Z7WSgmwSVGhxbI8JzJg?=
- =?us-ascii?Q?lL0tJvH3tNj0sUajOOkS1zXD6F4pMsj071oXGMGOGxBD8Gnd+JQtqwFnPjCc?=
- =?us-ascii?Q?wYS6Voz9r6Bm1Iz+2ATWCViTrlvIpOrwfjBz26iVvfpvdPwMRa1W+JROG7P5?=
- =?us-ascii?Q?bV8PkhmGm30kVhaflWMGDp+RmAoME88TH+6+p5dljkoYpkEGAN7HqfVEJlHQ?=
- =?us-ascii?Q?nzX5X3G5mQTu3xCBeEXYxQ8SBau2wAY7o6r4vv1apDlb5Ppjug0pvZnD8nXH?=
- =?us-ascii?Q?qNyVfTcQRL7Mw67umEvpFpH034/+lq+V11FRvr2if5UvtAP+gl+h6erhsMv/?=
- =?us-ascii?Q?QvEg2fhrK8AcgMTLKqahOeJGIRpXL31oR6jCn17a/38aHjezgYEWpTz0IuuU?=
- =?us-ascii?Q?0nbjmjVAx0F7oukmsvA0mabcGLCHcJgHKY+ktohai5uVDPdrxHmG0KqVOFVP?=
- =?us-ascii?Q?3OtjmHYJOlgxmnHJ2ydtBxnHVUuvge9nhOqJoXHQ0rMeDOS7VNHn+XArPAtE?=
- =?us-ascii?Q?9DDuEv4JwlA7EOziU2w6/vg0T9KdPFNd0O5rIvQy7ysfRmMTrvEv3vs7BB86?=
- =?us-ascii?Q?pojwQ2M6EvLuWD/cvu9oa/pJMb5uTbvjol4ZoaaAaYIrMlGqOuI7aS5Xy4t4?=
- =?us-ascii?Q?BmpF0Kt4gkYzpcg6S5/Docg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6916.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d16deba-7b81-4edc-73c3-08d9a825c8be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 10:50:48.3193
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dfr55WZo2MVEcJc20ipm7P1ey0apkz/Vjtj2dw3WRA/zthN/BWUWMRCRiBMfwUVs0GBEXjfHklHdUrw12vRyhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7247
+        id S231237AbhKOKyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:54:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231135AbhKOKye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:54:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40F74630EF;
+        Mon, 15 Nov 2021 10:51:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mmZaK-005Rb6-UE; Mon, 15 Nov 2021 10:51:37 +0000
+Date:   Mon, 15 Nov 2021 10:51:36 +0000
+Message-ID: <87czn18zev.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dougall <dougallj@gmail.com>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 8/8] drivers/perf: Add Apple icestorm/firestorm CPU PMU driver
+In-Reply-To: <CAHT7dO9G6tRfQCC_62OwgkoHQeUbz4AQwseX=t2S3YVYjoHCXA@mail.gmail.com>
+References: <20211113115429.4027571-1-maz@kernel.org>
+        <20211113115429.4027571-9-maz@kernel.org>
+        <YY+32A1gdLzCP0TA@sunset>
+        <CAHT7dO9G6tRfQCC_62OwgkoHQeUbz4AQwseX=t2S3YVYjoHCXA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dougallj@gmail.com, alyssa@rosenzweig.io, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, will@kernel.org, marcan@marcan.st, sven@svenpeter.dev, robh+dt@kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Sun, 14 Nov 2021 02:43:14 +0000,
+Dougall <dougallj@gmail.com> wrote:
+> 
+> Apple distributes names (and descriptions and affinity masks) for 55
+> of the events with macOS in the file /usr/share/kpep/a14.plist
+> (exposed to users in Instruments.app). Many of those 55 events were
+> added in macOS 12, so it's good to check the latest version. I use
+> the command "plutil -convert json -o - /usr/share/kpep/a14.plist" to
+> get these as JSON.
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Friday 12 November 2021 3:20 PM
-> To: Anand Ashok Dumbre <ANANDASH@xilinx.com>
-> Cc: lars@metafoo.de; pmeerw@pmeerw.net; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-iio@vger.kernel.org; Michal Simek
-> <michals@xilinx.com>; jic23@kernel.org; git <git@xilinx.com>
-> Subject: Re: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
-> documentation
->=20
-> On Mon, 08 Nov 2021 21:05:08 +0000, Anand Ashok Dumbre wrote:
-> > Xilinx AMS have several ADC channels that can be used for measurement
-> > of different voltages and temperatures. Document the same in the
-> bindings.
-> >
-> > Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-> > ---
-> >  .../bindings/iio/adc/xlnx,zynqmp-ams.yaml     | 227 ++++++++++++++++++
-> >  1 file changed, 227 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
-> >
->=20
->=20
-> Please add Acked-by/Reviewed-by tags when posting new versions.
-> However, there's no need to repost patches *only* to add the tags. The
-> upstream maintainer will do that for acks received on the version they ap=
-ply.
->=20
-> If a tag was not added on purpose, please state why and what changed.
+As it appears, the perf tool can ingest an event description from a
+json file, and none of it has to be in the kernel itself.
 
-Will keep that in mind.
+So if someone was to provide a tool to convert the macOS file into
+something that perf can understand, it would be great, and wouldn't
+require any distribution of otherwise tainted material (distribute the
+tool, and not the data).
 
-Thanks,
-Anand
+> 
+> There are many more events that I have discovered experimentally,
+> but this work is unusually hard to verify, so I'd be inclined to
+> stick with what's documented.
+>
+> However, I have observed a few oddities that might be of interest.
+> 
+> The counter 0x9B (INST_LDST) works on PMCs 5, 6 and 7, but gives
+> different results for paired AMX instructions on PMC 7 (7 counts
+> instructions, while 5 and 6 count pairs as one). Apple addresses
+> this by restricting the affinity mask to PMC 7. This is also seen
+> on undocumented counter 0x96, which counts integer stores. (For
+> context, microarchitecturally non-load-store AMX operations appear
+> as stores, as they just need to be posted to the AMX coprocessor on
+> commit. Consecutive non-load-store AMX operations can be paired
+> (fused), such that they issue as one uop, which is where this
+> anomaly can be seen.)
 
+Interesting. I guess we're unlikely to see any AMX support anytime
+soon on Linux, unless we can make it fit the architected SME model
+(and even that would be pretty controversial).
+
+> Undocumented counters 0xF1 through 0xFF appear to be operation
+> counters, meaning their result depends on events selected on other
+> counters. There are three threshold registers (PMTRHLD2, PMTRHLD4,
+> PMTRHLD6) which can specify a threshold (in number of cycles) for
+> the operation counter on the PMC with the same number. There is also
+> a mapping register (PMMAP), which contains a 3-bit field for each
+> counter from PMC2 to PMC7, each specifying a PMC index which can be
+> used as an input to the operation. Binary operations only use
+> PMC2/4/6 and use PMC(n+1) as their other input. These operation
+> counters may also behave differently depending on the value
+> currently in the corresponding PMC (specifically counters F9/FA
+> which implement shortest/longest run of non-zero counts).
+
+Weeee... I'm sure there are super interesting uses for this, but I'd
+rather have something simple for a start. Thanks for the heads up
+though, this is extremely interesting!
+
+> This is complicated, and it's not exposed to the user by macOS, so I
+> wouldn't worry about supporting it for now.
+
+We're in strong agreement here.
+
+> Despite all this, the
+> events and features on the P and E cores seem to be the same, so I
+> don't expect a need to distinguish between them in the future.
+
+That'd be the first big-little implementation to have consistent
+events across the board. Amazing! :D
+
+> (I've been meaning to write all this up properly, but haven't got
+> around to it, sorry!)
+
+No worries, and thanks for taking the time to write this email!
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
