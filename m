@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A7D451AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7104518C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352057AbhKOXqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:46:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S237683AbhKOXHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:07:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344117AbhKOTX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D8D63627;
-        Mon, 15 Nov 2021 18:52:12 +0000 (UTC)
+        id S243482AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:59:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0068061501;
+        Mon, 15 Nov 2021 18:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002333;
-        bh=8UZlS5a/lRVH9pSvaVM+MtAJjuT4aSFB4dMrtFesmvE=;
+        s=korg; t=1637000010;
+        bh=XHVhq33OzfZ/PCXHt0bPKXB7E4f6kJvU7cteLaZ8tKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WtzmuoB+G4LgU+kNlNFr85br5sNK1NdU0zQMzqvTMeG6pd9uBLGexk4taoLmy3XJN
-         Syi13nijyMnIEmd0NfeX0FqUsN8s9/TxWOKukccEfEa8DSo2+I+YPED5tCOIqyVF1S
-         RI565R+Fky/JKYNOKLLXbKGMs23r6bBHQEzz5ZoI=
+        b=FmB10ie1XbfPbJMS+DUivfx7Qga2vRpNOSc0cGFOGeOYDV6xg3V/tGioRK1P/dr8y
+         oXqs4iczuZ/YjRzK/aD8HNIB+mgo2HJHTUl/hI5DogacEhfAQV3DCGOG6E5jTxMrSC
+         XX03vqY92p4oA76/Dwg4/a61ITn1FF8SeaVku0kU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 492/917] nvme-rdma: fix error code in nvme_rdma_setup_ctrl
-Date:   Mon, 15 Nov 2021 17:59:47 +0100
-Message-Id: <20211115165445.459120960@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 505/849] net: dsa: avoid refcount warnings when ->port_{fdb,mdb}_del returns error
+Date:   Mon, 15 Nov 2021 17:59:48 +0100
+Message-Id: <20211115165437.369808186@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <mgurtovoy@nvidia.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 09748122009aed7bfaa7acc33c10c083a4758322 ]
+[ Upstream commit 232deb3f9567ce37d99b8616a6c07c1fc0436abf ]
 
-In case that icdoff is not zero or mandatory keyed sgls are not
-supported by the NVMe/RDMA target, we'll go to error flow but we'll
-return 0 to the caller. Fix it by returning an appropriate error code.
+At present, when either of ds->ops->port_fdb_del() or ds->ops->port_mdb_del()
+return a non-zero error code, we attempt to save the day and keep the
+data structure associated with that switchdev object, as the deletion
+procedure did not complete.
 
-Fixes: c66e2998c8ca ("nvme-rdma: centralize controller setup sequence")
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+However, the way in which we do this is suspicious to the checker in
+lib/refcount.c, who thinks it is buggy to increment a refcount that
+became zero, and that this is indicative of a use-after-free.
+
+Fixes: 161ca59d39e9 ("net: dsa: reference count the MDB entries at the cross-chip notifier level")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/dsa/switch.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 042c594bc57e2..0498801542eb6 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1095,11 +1095,13 @@ static int nvme_rdma_setup_ctrl(struct nvme_rdma_ctrl *ctrl, bool new)
- 		return ret;
+diff --git a/net/dsa/switch.c b/net/dsa/switch.c
+index 9ef9125713321..41f62c3ab9671 100644
+--- a/net/dsa/switch.c
++++ b/net/dsa/switch.c
+@@ -243,7 +243,7 @@ static int dsa_switch_do_mdb_del(struct dsa_switch *ds, int port,
  
- 	if (ctrl->ctrl.icdoff) {
-+		ret = -EOPNOTSUPP;
- 		dev_err(ctrl->ctrl.device, "icdoff is not supported!\n");
- 		goto destroy_admin;
+ 	err = ds->ops->port_mdb_del(ds, port, mdb);
+ 	if (err) {
+-		refcount_inc(&a->refcount);
++		refcount_set(&a->refcount, 1);
+ 		return err;
  	}
  
- 	if (!(ctrl->ctrl.sgls & (1 << 2))) {
-+		ret = -EOPNOTSUPP;
- 		dev_err(ctrl->ctrl.device,
- 			"Mandatory keyed sgls are not supported!\n");
- 		goto destroy_admin;
+@@ -308,7 +308,7 @@ static int dsa_switch_do_fdb_del(struct dsa_switch *ds, int port,
+ 
+ 	err = ds->ops->port_fdb_del(ds, port, addr, vid);
+ 	if (err) {
+-		refcount_inc(&a->refcount);
++		refcount_set(&a->refcount, 1);
+ 		return err;
+ 	}
+ 
 -- 
 2.33.0
 
