@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9BC45210D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9D2451A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344018AbhKPA7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:59:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        id S1354895AbhKOXih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:38:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343592AbhKOTVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D316635B2;
-        Mon, 15 Nov 2021 18:42:45 +0000 (UTC)
+        id S1343615AbhKOTV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B917C63359;
+        Mon, 15 Nov 2021 18:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001765;
-        bh=sSpDhzScpt00UuWxntFiasssOzC/nJ3VGTws58mP+jc=;
+        s=korg; t=1637001794;
+        bh=qW0+ciLKICxRFTUUvwKGjn0YuLe3wzG3Ivp3GXnSLoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1KE4tPldlqNcpbBloyu/2cf/rLddLgogEDAUnLIxAXHwGOJiVz9VtwwJM5V4z/zr+
-         dI6VcflwmlgfQd8g3ZjiXn07R5JnXbr5oMxHJqqgQt/jQo7FhlGafdoVEYTQouJxh3
-         ES6YiUqPn97S9ugELyuqe3jEhR2+Pn9G6q3hJZ0A=
+        b=UUG15dTXrQh3SGpAh4ztTBDy0wgs8EcnsfpqnFASHkvy1mZx+aQLzgitiYK09UyxL
+         sTv9C8dpQjTM3Rj61EdK7K9rArt0l0W/xrDchvwjQryFwedasdgpKEKR/uc7kXDENW
+         tbA3fyhJeCjQNUPoDHLoqomonriFDe+fhET236EQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bryan ODonoghue <bryan.odonoghue@linaro.org>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 305/917] wcn36xx: Correct band/freq reporting on RX
-Date:   Mon, 15 Nov 2021 17:56:40 +0100
-Message-Id: <20211115165439.100606150@linuxfoundation.org>
+Subject: [PATCH 5.15 306/917] wcn36xx: Fix packet drop on resume
+Date:   Mon, 15 Nov 2021 17:56:41 +0100
+Message-Id: <20211115165439.136835165@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,87 +43,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Loic Poulain <loic.poulain@linaro.org>
 
-[ Upstream commit 8a27ca39478270e07baf9c09aa0c99709769ba03 ]
+[ Upstream commit df0697801d8aa2eebfe7f0b7388879639f8fe7cc ]
 
-For packets originating from hardware scan, the channel and band is
-included in the buffer descriptor (bd->rf_band & bd->rx_ch).
+If the system is resumed because of an incoming packet, the wcn36xx RX
+interrupts is fired before actual resuming of the wireless/mac80211
+stack, causing any received packets to be simply dropped. E.g. a ping
+request causes a system resume, but is dropped and so never forwarded
+to the IP stack.
 
-For 2Ghz band the channel value is directly reported in the 4-bit
-rx_ch field. For 5Ghz band, the rx_ch field contains a mapping
-index (given the 4-bit limitation).
+This change fixes that, disabling DMA interrupts on suspend to no pass
+packets until mac80211 is resumed and ready to handle them.
 
-The reserved0 value field is also used to extend 4-bit mapping to
-5-bit mapping to support more than 16 5Ghz channels.
-
-This change adds correct reporting of the frequency/band, that is
-used in scan mechanism. And is required for 5Ghz hardware scan
-support.
+Note that it's not incompatible with RX irq wake.
 
 Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634554678-7993-1-git-send-email-loic.poulain@linaro.org
+Link: https://lore.kernel.org/r/1635150496-19290-1-git-send-email-loic.poulain@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wcn36xx/txrx.c | 23 +++++++++++++++++++++++
- drivers/net/wireless/ath/wcn36xx/txrx.h |  3 ++-
- 2 files changed, 25 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/wcn36xx/main.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
-index eaf2410e39647..c0f51fa13dfa1 100644
---- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-@@ -31,6 +31,13 @@ struct wcn36xx_rate {
- 	enum rate_info_bw bw;
- };
- 
-+/* Buffer descriptor rx_ch field is limited to 5-bit (4+1), a mapping is used
-+ * for 11A Channels.
-+ */
-+static const u8 ab_rx_ch_map[] = { 36, 40, 44, 48, 52, 56, 60, 64, 100, 104,
-+				   108, 112, 116, 120, 124, 128, 132, 136, 140,
-+				   149, 153, 157, 161, 165, 144 };
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index bd1c83aeea606..39d86e3031bd7 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -1115,6 +1115,13 @@ static int wcn36xx_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wow)
+ 			goto out;
+ 		ret = wcn36xx_smd_wlan_host_suspend_ind(wcn);
+ 	}
 +
- static const struct wcn36xx_rate wcn36xx_rate_table[] = {
- 	/* 11b rates */
- 	{  10, 0, RX_ENC_LEGACY, 0, RATE_INFO_BW_20 },
-@@ -291,6 +298,22 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 	    ieee80211_is_probe_resp(hdr->frame_control))
- 		status.boottime_ns = ktime_get_boottime_ns();
- 
-+	if (bd->scan_learn) {
-+		/* If packet originates from hardware scanning, extract the
-+		 * band/channel from bd descriptor.
-+		 */
-+		u8 hwch = (bd->reserved0 << 4) + bd->rx_ch;
++	/* Disable IRQ, we don't want to handle any packet before mac80211 is
++	 * resumed and ready to receive packets.
++	 */
++	disable_irq(wcn->tx_irq);
++	disable_irq(wcn->rx_irq);
 +
-+		if (bd->rf_band != 1 && hwch <= sizeof(ab_rx_ch_map) && hwch >= 1) {
-+			status.band = NL80211_BAND_5GHZ;
-+			status.freq = ieee80211_channel_to_frequency(ab_rx_ch_map[hwch - 1],
-+								     status.band);
-+		} else {
-+			status.band = NL80211_BAND_2GHZ;
-+			status.freq = ieee80211_channel_to_frequency(hwch, status.band);
-+		}
-+	}
+ out:
+ 	mutex_unlock(&wcn->conf_mutex);
+ 	return ret;
+@@ -1137,6 +1144,10 @@ static int wcn36xx_resume(struct ieee80211_hw *hw)
+ 		wcn36xx_smd_ipv6_ns_offload(wcn, vif, false);
+ 		wcn36xx_smd_arp_offload(wcn, vif, false);
+ 	}
 +
- 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
++	enable_irq(wcn->tx_irq);
++	enable_irq(wcn->rx_irq);
++
+ 	mutex_unlock(&wcn->conf_mutex);
  
- 	if (ieee80211_is_beacon(hdr->frame_control)) {
-diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.h b/drivers/net/wireless/ath/wcn36xx/txrx.h
-index 032216e82b2be..b54311ffde9c5 100644
---- a/drivers/net/wireless/ath/wcn36xx/txrx.h
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.h
-@@ -110,7 +110,8 @@ struct wcn36xx_rx_bd {
- 	/* 0x44 */
- 	u32	exp_seq_num:12;
- 	u32	cur_seq_num:12;
--	u32	fr_type_subtype:8;
-+	u32	rf_band:2;
-+	u32	fr_type_subtype:6;
- 
- 	/* 0x48 */
- 	u32	msdu_size:16;
+ 	return 0;
 -- 
 2.33.0
 
