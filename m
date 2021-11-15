@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2A2451865
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90800451867
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347782AbhKOW7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:59:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54760 "EHLO mail.kernel.org"
+        id S1347278AbhKOW7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:59:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242624AbhKOSs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242458AbhKOSs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:48:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F52E6329D;
-        Mon, 15 Nov 2021 18:08:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9546329B;
+        Mon, 15 Nov 2021 18:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999705;
-        bh=f/8THE4RcO4/2/29D7zCxbuC67bwsTjjV+F5IOSAYxk=;
+        s=korg; t=1636999708;
+        bh=Y695iH+0jygos0itHvIOP2xaiEJKzjyF02IOCOG6U6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2CPSSRXpkOFeMQJ6TbuGKPT78CJIXLXjhqJek4MAWe0TiliopRX0Ue8h1QuIwRO4N
-         Wyp81ZOmQlIaGu6xfphAUkfRe8RFWZcCOAO+BYvu7ajMWsCsTJT+S5q5orcVcIoNRi
-         CT+tzJAWOrd4M0vReJy7IHWKAwLeW6d4i6pOHycc=
+        b=o0J4t4Uu2Iu7fjwHw4BSfrrKy0gSvgA62P0sAYBq5THeRi1uKOJBshK6wSpXpTyay
+         T2ghd8tI1fnhokUm0gCVoYHruOK3dGu+vhMADvuaVpljP7uu+PFW4WZ1GRV5QIsNvd
+         zt7ZD3nKoYvAXfJVxiic1w72h2DJ4nq65bm2Tryk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 360/849] bnxt_en: Check devlink allocation and registration status
-Date:   Mon, 15 Nov 2021 17:57:23 +0100
-Message-Id: <20211115165432.413908522@linuxfoundation.org>
+Subject: [PATCH 5.14 361/849] qed: Dont ignore devlink allocation failures
+Date:   Mon, 15 Nov 2021 17:57:24 +0100
+Message-Id: <20211115165432.451714988@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -43,7 +42,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit e624c70e1131e145bd0510b8a700b5e2d112e377 ]
+[ Upstream commit e6a54d6f221301347aaf9d83bb1f23129325c1c5 ]
 
 devlink is a software interface that doesn't depend on any hardware
 capabilities. The failure in SW means memory issues, wrong parameters,
@@ -52,123 +51,58 @@ programmer error e.t.c.
 Like any other such interface in the kernel, the returned status of
 devlink APIs should be checked and propagated further and not ignored.
 
-Fixes: 4ab0c6a8ffd7 ("bnxt_en: add support to enable VF-representors")
+Fixes: 755f982bb1ff ("qed/qede: make devlink survive recovery")
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c         |  5 ++++-
- drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 13 ++++++-------
- drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h | 13 -------------
- 3 files changed, 10 insertions(+), 21 deletions(-)
+ drivers/net/ethernet/qlogic/qede/qede_main.c | 12 +++++-------
+ drivers/scsi/qedf/qedf_main.c                |  2 ++
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index f20b57b8cd70e..6bbf99e9273d5 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -13359,7 +13359,9 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+index 1c7f9ed6f1c19..826780e5aa49a 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -1184,19 +1184,17 @@ static int __qede_probe(struct pci_dev *pdev, u32 dp_module, u8 dp_level,
+ 		edev->devlink = qed_ops->common->devlink_register(cdev);
+ 		if (IS_ERR(edev->devlink)) {
+ 			DP_NOTICE(edev, "Cannot register devlink\n");
++			rc = PTR_ERR(edev->devlink);
+ 			edev->devlink = NULL;
+-			/* Go on, we can live without devlink */
++			goto err3;
+ 		}
+ 	} else {
+ 		struct net_device *ndev = pci_get_drvdata(pdev);
++		struct qed_devlink *qdl;
+ 
+ 		edev = netdev_priv(ndev);
+-
+-		if (edev->devlink) {
+-			struct qed_devlink *qdl = devlink_priv(edev->devlink);
+-
+-			qdl->cdev = cdev;
+-		}
++		qdl = devlink_priv(edev->devlink);
++		qdl->cdev = cdev;
+ 		edev->cdev = cdev;
+ 		memset(&edev->stats, 0, sizeof(edev->stats));
+ 		memcpy(&edev->dev_info, &dev_info, sizeof(dev_info));
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 42d0d941dba5c..94ee08fab46a5 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -3416,7 +3416,9 @@ retry_probe:
+ 		qedf->devlink = qed_ops->common->devlink_register(qedf->cdev);
+ 		if (IS_ERR(qedf->devlink)) {
+ 			QEDF_ERR(&qedf->dbg_ctx, "Cannot register devlink\n");
++			rc = PTR_ERR(qedf->devlink);
+ 			qedf->devlink = NULL;
++			goto err2;
+ 		}
  	}
  
- 	bnxt_inv_fw_health_reg(bp);
--	bnxt_dl_register(bp);
-+	rc = bnxt_dl_register(bp);
-+	if (rc)
-+		goto init_err_dl;
- 
- 	rc = register_netdev(dev);
- 	if (rc)
-@@ -13379,6 +13381,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- init_err_cleanup:
- 	bnxt_dl_unregister(bp);
-+init_err_dl:
- 	bnxt_shutdown_tc(bp);
- 	bnxt_clear_int_mode(bp);
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-index bb228619ec641..56ee46fae0ac6 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-@@ -133,7 +133,7 @@ void bnxt_dl_fw_reporters_create(struct bnxt *bp)
- {
- 	struct bnxt_fw_health *health = bp->fw_health;
- 
--	if (!bp->dl || !health)
-+	if (!health)
- 		return;
- 
- 	if (!(bp->fw_cap & BNXT_FW_CAP_HOT_RESET) || health->fw_reset_reporter)
-@@ -187,7 +187,7 @@ void bnxt_dl_fw_reporters_destroy(struct bnxt *bp, bool all)
- {
- 	struct bnxt_fw_health *health = bp->fw_health;
- 
--	if (!bp->dl || !health)
-+	if (!health)
- 		return;
- 
- 	if ((all || !(bp->fw_cap & BNXT_FW_CAP_HOT_RESET)) &&
-@@ -744,6 +744,7 @@ static void bnxt_dl_params_unregister(struct bnxt *bp)
- int bnxt_dl_register(struct bnxt *bp)
- {
- 	struct devlink_port_attrs attrs = {};
-+	struct bnxt_dl *bp_dl;
- 	struct devlink *dl;
- 	int rc;
- 
-@@ -756,7 +757,9 @@ int bnxt_dl_register(struct bnxt *bp)
- 		return -ENOMEM;
- 	}
- 
--	bnxt_link_bp_to_dl(bp, dl);
-+	bp->dl = dl;
-+	bp_dl = devlink_priv(dl);
-+	bp_dl->bp = bp;
- 
- 	/* Add switchdev eswitch mode setting, if SRIOV supported */
- 	if (pci_find_ext_capability(bp->pdev, PCI_EXT_CAP_ID_SRIOV) &&
-@@ -794,7 +797,6 @@ err_dl_port_unreg:
- err_dl_unreg:
- 	devlink_unregister(dl);
- err_dl_free:
--	bnxt_link_bp_to_dl(bp, NULL);
- 	devlink_free(dl);
- 	return rc;
- }
-@@ -803,9 +805,6 @@ void bnxt_dl_unregister(struct bnxt *bp)
- {
- 	struct devlink *dl = bp->dl;
- 
--	if (!dl)
--		return;
--
- 	if (BNXT_PF(bp)) {
- 		bnxt_dl_params_unregister(bp);
- 		devlink_port_unregister(&bp->dl_port);
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-index d22cab5d6856a..365f1e50f5959 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-@@ -20,19 +20,6 @@ static inline struct bnxt *bnxt_get_bp_from_dl(struct devlink *dl)
- 	return ((struct bnxt_dl *)devlink_priv(dl))->bp;
- }
- 
--/* To clear devlink pointer from bp, pass NULL dl */
--static inline void bnxt_link_bp_to_dl(struct bnxt *bp, struct devlink *dl)
--{
--	bp->dl = dl;
--
--	/* add a back pointer in dl to bp */
--	if (dl) {
--		struct bnxt_dl *bp_dl = devlink_priv(dl);
--
--		bp_dl->bp = bp;
--	}
--}
--
- #define NVM_OFF_MSIX_VEC_PER_PF_MAX	108
- #define NVM_OFF_MSIX_VEC_PER_PF_MIN	114
- #define NVM_OFF_IGNORE_ARI		164
 -- 
 2.33.0
 
