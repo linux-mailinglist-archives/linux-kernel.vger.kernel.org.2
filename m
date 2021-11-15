@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBB94519D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF574519D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbhKOX3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:29:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
+        id S244822AbhKOX25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:28:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245114AbhKOTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245123AbhKOTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:19:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FAF060E08;
-        Mon, 15 Nov 2021 18:28:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC9FF61548;
+        Mon, 15 Nov 2021 18:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000932;
-        bh=A/qmWc35KnGqzdJxj9ZV55KuqaqBP+cGJ200zh1mdwk=;
+        s=korg; t=1637000935;
+        bh=wgs3ryOIYyCrgX18rcyiaiIq+LEIF9X17Uww4D7C1Xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sw3JCb3WC/LIHY2EGf5JIBphXnniwVdMkgTcj/KvlzeyzWR+mOBMlSr+vfntbRoCd
-         YwWElf4QifqjDtYHh7wx67MzOqA4Rbb5OiSSdU/YVOlLcDt5mLoxdaufhtuocmsVoY
-         hsuwdS0wkQha4NxEGljQSbLf3MX8RvKZFA3B4PpE=
+        b=swuma+wnZnae2WDOWqetEdSkMzEtziQ2le4g/rDeTVqwoa4ByXS3SMHNI+wm31WaQ
+         REtxtoiNQzm1/GOMONzMUdgq6M0R+0ofgAs2ewBQuKvL2JAJ77n0PqRDVBCbiGj8SU
+         A6bnrJ0e+bs0qLMxssJ3GuI+EBaOK/UeJDyc3FiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.14 846/849] SUNRPC: Partial revert of commit 6f9f17287e78
-Date:   Mon, 15 Nov 2021 18:05:29 +0100
-Message-Id: <20211115165448.874513251@linuxfoundation.org>
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.14 847/849] pinctrl: amd: Add irq field data
+Date:   Mon, 15 Nov 2021 18:05:30 +0100
+Message-Id: <20211115165448.905940856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -39,71 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
 
-commit ea7a1019d8baf8503ecd6e3ec8436dec283569e6 upstream.
+commit 7e6f8d6f4a42ef9b693ff1b49267c546931d4619 upstream.
 
-The premise of commit 6f9f17287e78 ("SUNRPC: Mitigate cond_resched() in
-xprt_transmit()") was that cond_resched() is expensive and unnecessary
-when there has been just a single send.
-The point of cond_resched() is to ensure that tasks that should pre-empt
-this one get a chance to do so when it is safe to do so. The code prior
-to commit 6f9f17287e78 failed to take into account that it was keeping a
-rpc_task pinned for longer than it needed to, and so rather than doing a
-full revert, let's just move the cond_resched.
+pinctrl_amd use gpiochip_get_data() to get their local state containers
+back from the gpiochip passed as amd_gpio chip data.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Hence added irq field data to get directly using amd_gpio chip data.
+
+Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Link: https://lore.kernel.org/r/20210831120613.1514899-2-Basavaraj.Natikar@amd.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sunrpc/xprt.c |   28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ drivers/pinctrl/pinctrl-amd.c |    9 ++++-----
+ drivers/pinctrl/pinctrl-amd.h |    1 +
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -1585,15 +1585,14 @@ xprt_transmit(struct rpc_task *task)
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -932,7 +932,6 @@ static struct pinctrl_desc amd_pinctrl_d
+ static int amd_gpio_probe(struct platform_device *pdev)
  {
- 	struct rpc_rqst *next, *req = task->tk_rqstp;
- 	struct rpc_xprt	*xprt = req->rq_xprt;
--	int counter, status;
-+	int status;
+ 	int ret = 0;
+-	int irq_base;
+ 	struct resource *res;
+ 	struct amd_gpio *gpio_dev;
+ 	struct gpio_irq_chip *girq;
+@@ -955,9 +954,9 @@ static int amd_gpio_probe(struct platfor
+ 	if (!gpio_dev->base)
+ 		return -ENOMEM;
  
- 	spin_lock(&xprt->queue_lock);
--	counter = 0;
--	while (!list_empty(&xprt->xmit_queue)) {
--		if (++counter == 20)
-+	for (;;) {
-+		next = list_first_entry_or_null(&xprt->xmit_queue,
-+						struct rpc_rqst, rq_xmit);
-+		if (!next)
- 			break;
--		next = list_first_entry(&xprt->xmit_queue,
--				struct rpc_rqst, rq_xmit);
- 		xprt_pin_rqst(next);
- 		spin_unlock(&xprt->queue_lock);
- 		status = xprt_request_transmit(next, task);
-@@ -1601,13 +1600,16 @@ xprt_transmit(struct rpc_task *task)
- 			status = 0;
- 		spin_lock(&xprt->queue_lock);
- 		xprt_unpin_rqst(next);
--		if (status == 0) {
--			if (!xprt_request_data_received(task) ||
--			    test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
--				continue;
--		} else if (test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
--			task->tk_status = status;
--		break;
-+		if (status < 0) {
-+			if (test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
-+				task->tk_status = status;
-+			break;
-+		}
-+		/* Was @task transmitted, and has it received a reply? */
-+		if (xprt_request_data_received(task) &&
-+		    !test_bit(RPC_TASK_NEED_XMIT, &task->tk_runstate))
-+			break;
-+		cond_resched_lock(&xprt->queue_lock);
+-	irq_base = platform_get_irq(pdev, 0);
+-	if (irq_base < 0)
+-		return irq_base;
++	gpio_dev->irq = platform_get_irq(pdev, 0);
++	if (gpio_dev->irq < 0)
++		return gpio_dev->irq;
+ 
+ #ifdef CONFIG_PM_SLEEP
+ 	gpio_dev->saved_regs = devm_kcalloc(&pdev->dev, amd_pinctrl_desc.npins,
+@@ -1020,7 +1019,7 @@ static int amd_gpio_probe(struct platfor
+ 		goto out2;
  	}
- 	spin_unlock(&xprt->queue_lock);
- }
+ 
+-	ret = devm_request_irq(&pdev->dev, irq_base, amd_gpio_irq_handler,
++	ret = devm_request_irq(&pdev->dev, gpio_dev->irq, amd_gpio_irq_handler,
+ 			       IRQF_SHARED, KBUILD_MODNAME, gpio_dev);
+ 	if (ret)
+ 		goto out2;
+--- a/drivers/pinctrl/pinctrl-amd.h
++++ b/drivers/pinctrl/pinctrl-amd.h
+@@ -98,6 +98,7 @@ struct amd_gpio {
+ 	struct resource         *res;
+ 	struct platform_device  *pdev;
+ 	u32			*saved_regs;
++	int			irq;
+ };
+ 
+ /*  KERNCZ configuration*/
 
 
