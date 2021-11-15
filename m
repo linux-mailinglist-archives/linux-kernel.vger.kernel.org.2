@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FCB45061F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFD4450621
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhKOOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:00:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229588AbhKOOAC (ORCPT
+        id S230258AbhKOOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:00:53 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51984 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231761AbhKOOA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:00:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636984625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 15 Nov 2021 09:00:26 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8FF7C218EF;
+        Mon, 15 Nov 2021 13:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636984650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Y9DzvPWkK06n+ni/1MC77gLjtMv5YGXUlofXA3Q/O/c=;
-        b=hdyBEUjF75T6HpCHTH5IJkrxHW6povhuNillWUIqJifKLVY2lrD3+xx03k3RW+trcWXqqo
-        tmPqsXTTNdOaRy9aEpiWb26G/JfK7P3K499yPKOeR6RrLAbpIXtoM8M7FyL6qUjJXxe4r5
-        4RxbMtm7IHae7g2DHwIAw37Jo+LdwmU=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-uaJfisEmN_C7ybA__m8QMQ-1; Mon, 15 Nov 2021 08:57:04 -0500
-X-MC-Unique: uaJfisEmN_C7ybA__m8QMQ-1
-Received: by mail-pj1-f72.google.com with SMTP id pg9-20020a17090b1e0900b001a689204b52so8668366pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:57:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Y9DzvPWkK06n+ni/1MC77gLjtMv5YGXUlofXA3Q/O/c=;
-        b=FVFQ6SmmZ/VUVQEhpiCanZYkKTGDbVjT+Ep5J/pdKv2WpGsrRi8JJp8HvJicluQRm+
-         VEav74f2asphIiB6vviTOP/dQpM+1nt2qdzuR+ssfrBR8xHLr4RNvUbL7MVap7lVmNTk
-         kr6cAkybORsSOv2Qn1lmm63JilDvq1y4FXqu/apswAHeouenv3bsbBEAxUB1J6ZrTZt1
-         3E3Kk4/gIu2uSovYSxM1W6DiOx0DrxT2VM4jGBmBHG+NNXfrdswwxNNCg6Sap17D9lks
-         CO9942Ht2Rsxbk5NeaLS0YPDNQUAfC98uJsy8YzuuL2cbNniF5I8q8AOrgu7Q8nU5ZYo
-         kpFg==
-X-Gm-Message-State: AOAM532zpNBXlZWiaRPkI9Hw2Hvrc52OT8hb8hlVvgEZBWA6n3mShZR0
-        VRhdSWn2vxipdHIvUyKIzrSTypK7/aGbtMJCXKj0dwQ8JguUp7cEc9f6P+r1Mt0HLRX/M7kzvsi
-        YZja/iFiPeMSSTKtQungMGf5u
-X-Received: by 2002:a63:6d49:: with SMTP id i70mr25535398pgc.40.1636984623386;
-        Mon, 15 Nov 2021 05:57:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5cednGe778Wy/mBuz6qjfb0PVvKjg/S4inKv/KP14bnfhwMQ3ShFTx3x/j32fsOkLYg3zzA==
-X-Received: by 2002:a63:6d49:: with SMTP id i70mr25535371pgc.40.1636984623145;
-        Mon, 15 Nov 2021 05:57:03 -0800 (PST)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b12sm16405028pfv.118.2021.11.15.05.57.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 05:57:02 -0800 (PST)
-Subject: Re: [RFC PATCH 0/5] Firmware Upload Framework
-To:     Russ Weight <russell.h.weight@intel.com>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, ardb@kernel.org,
-        bjorn.andersson@linaro.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, "Gong, Richard" <richard.gong@intel.com>
-References: <20211111011345.25049-1-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <8b7bbdcd-ef48-9f48-10c0-021c41575522@redhat.com>
-Date:   Mon, 15 Nov 2021 05:57:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=Jih4qI6AggfEUAhKNi9VniONxyHNSqxNO681tuikjVI=;
+        b=tzaNnaBNlER3txLxMbZqCIIVF+iZSNPk8S8WZ2yZeVfxO4JW3IhAbR8c/FbgZmK6FEfqIg
+        i35q13dddB2RQSH8TXiw2GvWuuAoY3XnjQKNnMbpK/WAO4JvmkSRmtP0q1oeK0pufvoS8z
+        6BDgoSJ86XGp1Xt9ojggHEEpz3Nds1k=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 450BEA3B84;
+        Mon, 15 Nov 2021 13:57:30 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 14:57:27 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
+Message-ID: <YZJnRyqtDzfmI0Cf@alley>
+References: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
+ <YY6vV2zUTdH5SNt5@fedora>
+ <YZIs1FvxA0hKylNd@alley>
+ <YZI4i5hsgD4pDjoQ@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211111011345.25049-1-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZI4i5hsgD4pDjoQ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 2021-11-15 12:38:03, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 10:48:04AM +0100, Petr Mladek wrote:
+> > On Fri 2021-11-12 13:15:51, Dennis Zhou wrote:
+> > > On Fri, Nov 12, 2021 at 04:07:49PM +0200, Andy Shevchenko wrote:
+> > > > After the commit 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
+> > > > in NMI") the printk.h is not needed anymore in percpu.h.
+> > > > 
+> > > > Moreover `make headerdep` complains (an excerpt)
+> > > > 
+> > > > In file included from linux/printk.h,
+> > > >                  from linux/dynamic_debug.h:188
+> > > >                  from linux/printk.h:559 <-- here
+> > > >                  from linux/percpu.h:9
+> > > >                  from linux/idr.h:17
+> > > > include/net/9p/client.h:13: warning: recursive header inclusion
+> > > > 
+> > > > Yeah, it's not a root cause of this, but removing will help to reduce
+> > > > the noise.
+> > > > 
+> > > > Fixes: 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
+> > > > in NMI")
+> > 
+> > Yup, the include was there because of printk_func_t definition that
+> > was removed by the above commit.
+> > 
+> > Reviewed-by: Petr Mladek <pmladek@suse.com>
+> > 
+> > > Hey Andrew, it doesn't seem like I have anything big coming through
+> > > percpu, do you mind taking this. I might have some stuff due to sh, but
+> > > I'm still working on that with them.
+> > 
+> > I assume that either Andrew or Dennis will take this patch.
+> 
+> I assumed you take it, that's why I haven't Cc'ed Andrew in the first place,
+> but it seems you have a consensus with Dennis that Andrew is the best
+> maintainer to take this. So, I'll send v2 with tags and Cc to him.
 
-On 11/10/21 5:13 PM, Russ Weight wrote:
-> The Firmware Upload framework provides a common API for uploading firmware
-> files to target devices. An example use case involves FPGA devices that
-> load FPGA, Card BMC, and firmware images from FLASH when the card boots.
-> Users need the ability to update these firmware images while the card is
-> in use.
->
-> Device drivers that instantiate the Firmware Upload class driver will
-> interact with the target device to transfer and authenticate the firmware
-> data. Uploads are performed in the context of a kernel worker thread in
-> order to facilitate progress indicators during lengthy uploads.
->
-> This driver was previously submitted in the context of the FPGA sub-
-> system as the "FPGA Image Load Framework", but the framework is generic
-> enough to support other devices as well. The previous submission of this
-> patch-set can be viewed here:
->
-> https://marc.info/?l=linux-kernel&m=163295640216820&w=2
->
-> The n3000bmc-sec-update driver is the first driver to use the Firmware
-> Upload API. A recent version of these patches can be viewed here:
->
-> https://marc.info/?l=linux-kernel&m=163295697217095&w=2
->
-> I don't think I am duplicating any functionality that is currently covered
-> in the firmware subsystem. I appreciate your feedback on these patches.
+No problem, I am going to take it, in a hour or so. I did not want to
+make chaos when Denis asked Andrew. But it is not worth resending the patch.
 
-This may be a common api for fpga/dfl-, but it is not likely common for 
-general devices.
-
-Could the scope of this patchset be reduced to just fpga/dfl for now ?
-
-Something more like stratix10-rsu.
-
-Tom
-
->
-> - Russ
->
-> Russ Weight (5):
->    firmware: Create firmware upload framework
->    firmware: upload: Enable firmware uploads
->    firmware: upload: Signal eventfd when complete
->    firmware: upload: Add status ioctl
->    firmware: upload: Enable cancel of firmware upload
->
->   .../driver-api/firmware/firmware-upload.rst   |  54 +++
->   Documentation/driver-api/firmware/index.rst   |   1 +
->   MAINTAINERS                                   |   9 +
->   drivers/firmware/Kconfig                      |   8 +
->   drivers/firmware/Makefile                     |   1 +
->   drivers/firmware/firmware-upload.c            | 413 ++++++++++++++++++
->   include/linux/firmware/firmware-upload.h      |  69 +++
->   include/uapi/linux/firmware-upload.h          |  73 ++++
->   8 files changed, 628 insertions(+)
->   create mode 100644 Documentation/driver-api/firmware/firmware-upload.rst
->   create mode 100644 drivers/firmware/firmware-upload.c
->   create mode 100644 include/linux/firmware/firmware-upload.h
->   create mode 100644 include/uapi/linux/firmware-upload.h
->
-
+Best Regards,
+Petr
