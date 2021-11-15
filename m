@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19510451981
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FE5452038
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbhKOXWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:22:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
+        id S1344651AbhKPAtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244806AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F4C363420;
-        Mon, 15 Nov 2021 18:24:04 +0000 (UTC)
+        id S1344556AbhKOTY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 474C16369C;
+        Mon, 15 Nov 2021 18:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000645;
-        bh=mTun3r825H2P8/Dt23+jOVGzjeI0Tn4Sx9dVdqrB2/Y=;
+        s=korg; t=1637002793;
+        bh=Ot/PbKU1wjgsFOEOP++5SBFvEwNyesLSNiPzGCMTZNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lyPa8S85GnMshvfpS/Vu0IdAq+wauZFknNsd5ltkClOqw+wEi4O8I91owoBFe7WZT
-         SWtHlSaT1Md8Ha9vVJFf+W+NMME5UbqDwrrdHeyuLn425qF51cUvb46tD9/lz7ClAi
-         vualMDBjc11tolVfAfkMRQT1worBzJqzN2kB7BfM=
+        b=hTB+AQGQoHHyr2NCtm//IF6Qj1wtbz7sokp7foQvDt9rHGYxiuwUeYI+UNta/eaCv
+         c3pRN0XAyF7Da1lRGh3WdUsF7UkwcglXYSUuDGazYgY4McK/0975CtB6AxESABdCxK
+         tKsMFm94qONH/f9LODo6CIt5tkeRm8aCtRDHbiGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 710/849] scsi: target: core: Remove from tmr_list during LUN unlink
+Subject: [PATCH 5.15 698/917] rtc: ds1390: Add SPI ID table
 Date:   Mon, 15 Nov 2021 18:03:13 +0100
-Message-Id: <20211115165444.271408356@linuxfoundation.org>
+Message-Id: <20211115165452.557067243@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,170 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 12b6fcd0ea7f3cb7c3b34668fc678779924123ae ]
+[ Upstream commit da87639d6312afb8855717c791768bf2d4ca8ac8 ]
 
-Currently TMF commands are removed from de_device.dev_tmf_list at the very
-end of se_cmd lifecycle. However, se_lun unlinks from se_cmd upon a command
-status (response) being queued in transport layer. This means that LUN and
-backend device can be deleted in the meantime and a panic will occur:
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding an id_table listing the
+SPI IDs for everything.
 
-target_tmr_work()
-	cmd->se_tfo->queue_tm_rsp(cmd); // send abort_rsp to a wire
-	transport_lun_remove_cmd(cmd) // unlink se_cmd from se_lun
-- // - // - // -
-<<<--- lun remove
-<<<--- core backend device remove
-- // - // - // -
-qlt_handle_abts_completion()
-  tfo->free_mcmd()
-    transport_generic_free_cmd()
-      target_put_sess_cmd()
-        core_tmr_release_req() {
-          if (dev) { // backend device, can not be null
-            spin_lock_irqsave(&dev->se_tmr_lock, flags); //<<<--- CRASH
-
-Call Trace:
-NIP [c000000000e1683c] _raw_spin_lock_irqsave+0x2c/0xc0
-LR [c00800000e433338] core_tmr_release_req+0x40/0xa0 [target_core_mod]
-Call Trace:
-(unreliable)
-0x0
-target_put_sess_cmd+0x2a0/0x370 [target_core_mod]
-transport_generic_free_cmd+0x6c/0x1b0 [target_core_mod]
-tcm_qla2xxx_complete_mcmd+0x28/0x50 [tcm_qla2xxx]
-process_one_work+0x2c4/0x5c0
-worker_thread+0x88/0x690
-
-For the iSCSI protocol this is easily reproduced:
-
- - Send some SCSI sommand
-
- - Send Abort of that command over iSCSI
-
- - Remove LUN on target
-
- - Send next iSCSI command to acknowledge the Abort_Response
-
- - Target panics
-
-There is no need to keep the command in tmr_list until response completion,
-so move the removal from tmr_list from the response completion to the
-response queueing when the LUN is unlinked.  Move the removal from state
-list too as it is a subject to the same race condition.
-
-Link: https://lore.kernel.org/r/20211018135753.15297-1-d.bogdanov@yadro.com
-Fixes: c66ac9db8d4a ("[SCSI] target: Add LIO target core v4.0.0-rc6")
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210923194922.53386-3-broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_tmr.c       | 17 +--------------
- drivers/target/target_core_transport.c | 30 ++++++++++++++++++++------
- 2 files changed, 24 insertions(+), 23 deletions(-)
+ drivers/rtc/rtc-ds1390.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/target/target_core_tmr.c b/drivers/target/target_core_tmr.c
-index e7fcbc09f9dbc..bac111456fa1d 100644
---- a/drivers/target/target_core_tmr.c
-+++ b/drivers/target/target_core_tmr.c
-@@ -50,15 +50,6 @@ EXPORT_SYMBOL(core_tmr_alloc_req);
+diff --git a/drivers/rtc/rtc-ds1390.c b/drivers/rtc/rtc-ds1390.c
+index 66fc8617d07ee..93ce72b9ae59e 100644
+--- a/drivers/rtc/rtc-ds1390.c
++++ b/drivers/rtc/rtc-ds1390.c
+@@ -219,12 +219,19 @@ static const struct of_device_id ds1390_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ds1390_of_match);
  
- void core_tmr_release_req(struct se_tmr_req *tmr)
- {
--	struct se_device *dev = tmr->tmr_dev;
--	unsigned long flags;
--
--	if (dev) {
--		spin_lock_irqsave(&dev->se_tmr_lock, flags);
--		list_del_init(&tmr->tmr_list);
--		spin_unlock_irqrestore(&dev->se_tmr_lock, flags);
--	}
--
- 	kfree(tmr);
- }
- 
-@@ -156,13 +147,6 @@ void core_tmr_abort_task(
- 			se_cmd->state_active = false;
- 			spin_unlock_irqrestore(&dev->queues[i].lock, flags);
- 
--			/*
--			 * Ensure that this ABORT request is visible to the LU
--			 * RESET code.
--			 */
--			if (!tmr->tmr_dev)
--				WARN_ON_ONCE(transport_lookup_tmr_lun(tmr->task_cmd) < 0);
--
- 			if (dev->transport->tmr_notify)
- 				dev->transport->tmr_notify(dev, TMR_ABORT_TASK,
- 							   &aborted_list);
-@@ -234,6 +218,7 @@ static void core_tmr_drain_tmr_list(
- 		}
- 
- 		list_move_tail(&tmr_p->tmr_list, &drain_tmr_list);
-+		tmr_p->tmr_dev = NULL;
- 	}
- 	spin_unlock_irqrestore(&dev->se_tmr_lock, flags);
- 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 26ceabe34de55..4b41fbc54fa5e 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -676,6 +676,21 @@ static void target_remove_from_state_list(struct se_cmd *cmd)
- 	spin_unlock_irqrestore(&dev->queues[cmd->cpuid].lock, flags);
- }
- 
-+static void target_remove_from_tmr_list(struct se_cmd *cmd)
-+{
-+	struct se_device *dev = NULL;
-+	unsigned long flags;
++static const struct spi_device_id ds1390_spi_ids[] = {
++	{ .name = "ds1390" },
++	{}
++};
++MODULE_DEVICE_TABLE(spi, ds1390_spi_ids);
 +
-+	if (cmd->se_cmd_flags & SCF_SCSI_TMR_CDB)
-+		dev = cmd->se_tmr_req->tmr_dev;
-+
-+	if (dev) {
-+		spin_lock_irqsave(&dev->se_tmr_lock, flags);
-+		if (cmd->se_tmr_req->tmr_dev)
-+			list_del_init(&cmd->se_tmr_req->tmr_list);
-+		spin_unlock_irqrestore(&dev->se_tmr_lock, flags);
-+	}
-+}
- /*
-  * This function is called by the target core after the target core has
-  * finished processing a SCSI command or SCSI TMF. Both the regular command
-@@ -687,13 +702,6 @@ static int transport_cmd_check_stop_to_fabric(struct se_cmd *cmd)
- {
- 	unsigned long flags;
+ static struct spi_driver ds1390_driver = {
+ 	.driver = {
+ 		.name	= "rtc-ds1390",
+ 		.of_match_table = of_match_ptr(ds1390_of_match),
+ 	},
+ 	.probe	= ds1390_probe,
++	.id_table = ds1390_spi_ids,
+ };
  
--	target_remove_from_state_list(cmd);
--
--	/*
--	 * Clear struct se_cmd->se_lun before the handoff to FE.
--	 */
--	cmd->se_lun = NULL;
--
- 	spin_lock_irqsave(&cmd->t_state_lock, flags);
- 	/*
- 	 * Determine if frontend context caller is requesting the stopping of
-@@ -728,8 +736,16 @@ static void transport_lun_remove_cmd(struct se_cmd *cmd)
- 	if (!lun)
- 		return;
- 
-+	target_remove_from_state_list(cmd);
-+	target_remove_from_tmr_list(cmd);
-+
- 	if (cmpxchg(&cmd->lun_ref_active, true, false))
- 		percpu_ref_put(&lun->lun_ref);
-+
-+	/*
-+	 * Clear struct se_cmd->se_lun before the handoff to FE.
-+	 */
-+	cmd->se_lun = NULL;
- }
- 
- static void target_complete_failure_work(struct work_struct *work)
+ module_spi_driver(ds1390_driver);
 -- 
 2.33.0
 
