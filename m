@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A2451F6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26B9451BAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352322AbhKPAkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:40:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1348379AbhKPAFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:05:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344933AbhKOTZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20A41636F0;
-        Mon, 15 Nov 2021 19:06:59 +0000 (UTC)
+        id S233026AbhKOTZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D53636F2;
+        Mon, 15 Nov 2021 19:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003220;
-        bh=FdiH5q11sennce85XOIysZy1InxD/XNoC9HkDhjdYV4=;
+        s=korg; t=1637003223;
+        bh=HcYYH8irgmea996FAzwQCUuREuFh69Rkamg2+JgvnSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTmeCtwBHJF4Qs2+wvvdfR0cP1MOrNF8i0nO79WJ+tWzoDkmCG6uU6yhy8R+h6NGJ
-         QDv1jbphhCT+2GQwtUiWDnVDEMDnMx58PgA/qq4BoiYY4aVVRYevR9iccGAsMTKTDw
-         QNJszx5xVXsCAkmXysNHJQgCp84fXHZj1JmHPYb4=
+        b=g2l7Mlr7eWlQAqzHafPJzA5UUX+h/0QwleO4/B7SPGvFMLpp1vmD28vPORfxpu0qK
+         Jj+tJWLdbSctJbUWT9K2xM5RUmx42HYCn9oe5ZI6crNkWH09BIgSScQGWWy/u4zCjy
+         09T+qJlXx5WnOoGpmZSHpnxbNcB0dzfigZNEAMeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: [PATCH 5.15 856/917] PCI/MSI: Destroy sysfs before freeing entries
-Date:   Mon, 15 Nov 2021 18:05:51 +0100
-Message-Id: <20211115165458.050938053@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.15 857/917] KVM: x86: move guest_pv_has out of user_access section
+Date:   Mon, 15 Nov 2021 18:05:52 +0100
+Message-Id: <20211115165458.090152864@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,52 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 3735459037114d31e5acd9894fad9aed104231a0 upstream.
+commit 3e067fd8503d6205aa0c1c8f48f6b209c592d19c upstream.
 
-free_msi_irqs() frees the MSI entries before destroying the sysfs entries
-which are exposing them. Nothing prevents a concurrent free while a sysfs
-file is read and accesses the possibly freed entry.
+When UBSAN is enabled, the code emitted for the call to guest_pv_has
+includes a call to __ubsan_handle_load_invalid_value.  objtool
+complains that this call happens with UACCESS enabled; to avoid
+the warning, pull the calls to user_access_begin into both arms
+of the "if" statement, after the check for guest_pv_has.
 
-Move the sysfs release ahead of freeing the entries.
-
-Fixes: 1c51b50c2995 ("PCI/MSI: Export MSI mode using attributes, not kobjects")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87sfw5305m.ffs@tglx
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/msi.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -368,6 +368,11 @@ static void free_msi_irqs(struct pci_dev
- 			for (i = 0; i < entry->nvec_used; i++)
- 				BUG_ON(irq_has_action(entry->irq + i));
- 
-+	if (dev->msi_irq_groups) {
-+		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
-+		dev->msi_irq_groups = NULL;
-+	}
-+
- 	pci_msi_teardown_msi_irqs(dev);
- 
- 	list_for_each_entry_safe(entry, tmp, msi_list, list) {
-@@ -379,11 +384,6 @@ static void free_msi_irqs(struct pci_dev
- 		list_del(&entry->list);
- 		free_msi_entry(entry);
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3227,9 +3227,6 @@ static void record_steal_time(struct kvm
  	}
--
--	if (dev->msi_irq_groups) {
--		msi_destroy_sysfs(&dev->dev, dev->msi_irq_groups);
--		dev->msi_irq_groups = NULL;
--	}
- }
  
- static void pci_intx_for_msi(struct pci_dev *dev, int enable)
+ 	st = (struct kvm_steal_time __user *)ghc->hva;
+-	if (!user_access_begin(st, sizeof(*st)))
+-		return;
+-
+ 	/*
+ 	 * Doing a TLB flush here, on the guest's behalf, can avoid
+ 	 * expensive IPIs.
+@@ -3238,6 +3235,9 @@ static void record_steal_time(struct kvm
+ 		u8 st_preempted = 0;
+ 		int err = -EFAULT;
+ 
++		if (!user_access_begin(st, sizeof(*st)))
++			return;
++
+ 		asm volatile("1: xchgb %0, %2\n"
+ 			     "xor %1, %1\n"
+ 			     "2:\n"
+@@ -3260,6 +3260,9 @@ static void record_steal_time(struct kvm
+ 		if (!user_access_begin(st, sizeof(*st)))
+ 			goto dirty;
+ 	} else {
++		if (!user_access_begin(st, sizeof(*st)))
++			return;
++
+ 		unsafe_put_user(0, &st->preempted, out);
+ 		vcpu->arch.st.preempted = 0;
+ 	}
 
 
