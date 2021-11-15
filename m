@@ -2,193 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2FA4508ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314E64508EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhKOPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        id S232452AbhKOPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236566AbhKOPx4 (ORCPT
+        with ESMTP id S236354AbhKOPyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:53:56 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2ACC061200
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:50:58 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id o14so14819151plg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BME1fSm2ROoLW7jWsWBGz1p8OXFk8JxNq5V1TauLp5Q=;
-        b=HLvcHQp96QuOXyuPkCmhG2g+hcaPjiFRwauPLK//j87Y8hIfIJCg2yJtpLe6zKLUtz
-         wmHI9JKK53uxNOBhREJNRGMMO1WAUt1qAiQlZ0GlSWqw5dR8zZ5hMwtHXmHL19rzoJPh
-         X8X7pAkulAeWcuzJu8LGJE4zzTk4eGKX9EnwVyunm12PqycouX4nkBcZXdgKlxXNDUVn
-         xz8+KQhL2Y4xVqqmDcPwRJC66+Aq7Q/LGx0TRytcv9s67zx1DBu3Kt3G2UoYLqzLat5a
-         wmFg58k56pIJsp/BLajEadwgSrqZaSfxzCqwRV3BhY49uKpOFvI47q19MJhBQjzireUw
-         1ZDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BME1fSm2ROoLW7jWsWBGz1p8OXFk8JxNq5V1TauLp5Q=;
-        b=dUSjRbwbZk2KPLmG3mIs9ojZrfb//qhoWmPI6WISIQCc6Sp5245PzUuFV265GCjswJ
-         Delv1AtTvhDDPDrzlFFoT8sHBG9YgVf5QzYgQOg7FM34F0g0Uc4aemGIllNW5F5zRj1o
-         0ylZnaGFpa5skDnTt1cglgRRxFeHcHztRViAH8hOopo1u2O+BVrZ6jpta+lBbsRolsJO
-         /29QAGtI9xqIekvaL3TcV05Rtk3DPSAVEIC1/rDipdCGWhOPqb105Xan1p0p1OZnlCLq
-         q1Ofi9cYikZq934rglxgCpwXEE6XVtrn221BSPXLpuMPygGknv0NzoXKM8A2mrheBcoq
-         TXSQ==
-X-Gm-Message-State: AOAM533xEFYqR0H1R0RQd1JxD3l1/l7fky/QuKoaN3JMYzW9LQE8Wgrl
-        0TyvCr+xciufdQTJxF1I/RNq+qVaYkC+CQ==
-X-Google-Smtp-Source: ABdhPJzkfNPFqJ2eOjVOjj++a8Q9aY0YzRwahIlHWylknHl5m6qCJ7esoFXilZ+0DUMiswsVTzJoWA==
-X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id i11-20020a1709026acb00b0014276c3d35fmr36151012plt.89.1636991457936;
-        Mon, 15 Nov 2021 07:50:57 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v16sm12279434pgo.71.2021.11.15.07.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 07:50:57 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:50:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v2 1/2] KVM: nVMX: don't use vcpu->arch.efer when
- checking host state on nested state load
-Message-ID: <YZKB3Q1ZMsPD6hHl@google.com>
-References: <20211115131837.195527-1-mlevitsk@redhat.com>
- <20211115131837.195527-2-mlevitsk@redhat.com>
+        Mon, 15 Nov 2021 10:54:04 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24D6C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:51:08 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ddb:b7d5:eb58:4276])
+        by baptiste.telenet-ops.be with bizsmtp
+        id Jfr62600B3F42dW01fr6QL; Mon, 15 Nov 2021 16:51:06 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mmeG9-00Cibi-SY
+        for linux-kernel@vger.kernel.org; Mon, 15 Nov 2021 16:51:05 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mmeG9-00FvvC-Fj
+        for linux-kernel@vger.kernel.org; Mon, 15 Nov 2021 16:51:05 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.16-rc1
+Date:   Mon, 15 Nov 2021 16:51:05 +0100
+Message-Id: <20211115155105.3797527-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115131837.195527-2-mlevitsk@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021, Maxim Levitsky wrote:
-> When loading the nested state, due to the way qemu loads
-> the nested state, vcpu->arch.efer contains L2' IA32_EFER which
-> can be completely different from L1's IA32_EFER, thus it is
-> wrong to do consistency check of it vs the vmcs12 exit fields.
+Below is the list of build error/warning regressions/improvements in
+v5.16-rc1[1] compared to v5.15[2].
 
-This is not sufficient justification.  It makes it sound like KVM is hacking
-around a bug in its ABI, which it is not, but that fact is _very_ subtle.  The
-"trust" blurb in bullet (3) in particular is misleading.
+Summarized:
+  - build errors: +20/-13
+  - build warnings: +3/-28
 
-Instead, I would like something like:
+Happy fixing! ;-)
 
-  When loading nested state, don't use check vcpu->arch.efer to get the
-  L1 host's 64-bit vs. 32-bit state and don't check it for consistency
-  with respect to VM_EXIT_HOST_ADDR_SPACE_SIZE, as register state in vCPU
-  may be stale when KVM_SET_NESTED_STATE is called and conceptually does
-  not exist.  When the CPU is in non-root mode, i.e. when restoring L2
-  state in KVM, there is no snapshot of L1 host state, it is (conditionally)
-  loaded on VM-Exit.  E.g. EFER is either preserved on exit, loaded from the
-  VMCS (vmcs12 in this case), or loaded from the MSR load list.
+Thanks to the linux-next team for providing the build service.
 
-  Use vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE to determine the target mode of
-  the L1 host, as it is the source of truth in this case.  Perform the EFER
-  vs. vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE consistency check only on VM-Enter,
-  as conceptually there's no "current" L1 EFER to check.
-
-  Note, KVM still checks vmcs12.HOST_EFER for consistency if
-  if vmcs12.VM_EXIT_LOAD_IA32_EFER is set, i.e. this skips only the check
-  against current vCPU state, which does not exist, when loading nested state.
-
-> To fix this
-> 
-> 1. Split the host state consistency check
-> between current IA32_EFER.LMA and 'host address space' bit in VMCS12 into
-> nested_vmx_check_address_state_size.
-> 
-> 2. Call this check only on a normal VM entry, while skipping this call
-> on loading the nested state.
-> 
-> 3. Trust the 'host address space' bit to contain correct ia32e
-> value on loading the nested state as it is the best value of
-> it at that point.
-> Still do a consistency check of it vs host_ia32_efer in vmcs12.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index b4ee5e9f9e201..7b1d5510a7cdc 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2866,6 +2866,17 @@ static int nested_vmx_check_controls(struct kvm_vcpu *vcpu,
->  	return 0;
->  }
->  
-> +static int nested_vmx_check_address_state_size(struct kvm_vcpu *vcpu,
-> +				       struct vmcs12 *vmcs12)
-
-Bad indentation.
-
-> +{
-> +#ifdef CONFIG_X86_64
-> +	if (CC(!!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) !=
-> +		!!(vcpu->arch.efer & EFER_LMA)))
-
-Bad indentation.  The number of !'s is also unnecessary.  This also needs a comment
-explaining why it's not included in the KVM_SET_NESTED_STATE path.
-
-> +		return -EINVAL;
-> +#endif
-> +	return 0;
-> +}
-> +
->  static int nested_vmx_check_host_state(struct kvm_vcpu *vcpu,
->  				       struct vmcs12 *vmcs12)
->  {
-> @@ -2890,18 +2901,16 @@ static int nested_vmx_check_host_state(struct kvm_vcpu *vcpu,
->  		return -EINVAL;
->  
->  #ifdef CONFIG_X86_64
-> -	ia32e = !!(vcpu->arch.efer & EFER_LMA);
-> +	ia32e = !!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE);
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf/ (all 90 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8bb7eca972ad531c9b149c0a51ab43a417385813/ (all 90 configs)
 
 
->  #else
->  	ia32e = false;
->  #endif
->  
->  	if (ia32e) {
-> -		if (CC(!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE)) ||
-> -		    CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
-> +		if (CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
->  			return -EINVAL;
->  	} else {
-> -		if (CC(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) ||
-> -		    CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
-> +		if (CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
->  		    CC(vmcs12->host_cr4 & X86_CR4_PCIDE) ||
->  		    CC((vmcs12->host_rip) >> 32))
->  			return -EINVAL;
-> @@ -3571,6 +3580,9 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  	if (nested_vmx_check_controls(vcpu, vmcs12))
->  		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_CONTROL_FIELD);
->  
-> +	if (nested_vmx_check_address_state_size(vcpu, vmcs12))
-> +		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
-> +
->  	if (nested_vmx_check_host_state(vcpu, vmcs12))
->  		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
->  
-> -- 
-> 2.26.3
-> 
+*** ERRORS ***
+
+20 error regressions:
+  + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: expected ':' before '__stringify':  => 33:4, 18:4
+  + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: label 'l_yes' defined but not used [-Werror=unused-label]:  => 38:1, 23:1
+  + /kisskb/src/drivers/gpu/drm/msm/msm_drv.h: error: "COND" redefined [-Werror]:  => 531
+  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2240 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2304 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2320 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_366' declared with attribute error: FIELD_PREP: value too large for the field:  => 335:38
+  + /kisskb/src/include/linux/fortify-string.h: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter):  => 263:25, 277:17
+  + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3252 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 47:1
+  + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3360 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 499:1
+  + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5344 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 334:1
+  + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5380 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 354:1
+  + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 1824 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 372:1
+  + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 2224 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 204:1
+  + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 3800 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 476:1
+  + error: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+  + error: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+  + error: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+  + error: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+  + error: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+
+13 error improvements:
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_HIGH' undeclared (first use in this function): 151:20 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_LOW' undeclared (first use in this function): 152:35 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'base_address': 152:19 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'destid_0_7': 153:19 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: control reaches end of non-void function [-Werror=return-type]: 128:1 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: dereferencing pointer to incomplete type 'struct pci_sysdata': 751:4 => 
+  - /kisskb/src/drivers/pci/controller/vmd.c: error: field 'sysdata' has incomplete type: 117:21 => 
+  - /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_getc' defined but not used [-Werror=unused-function]: 1109:12 => 
+  - /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_putc' defined but not used [-Werror=unused-function]: 1095:13 => 
+  - /kisskb/src/drivers/tty/serial/sunzilog.c: error: 'sunzilog_putchar' defined but not used [-Werror=unused-function]: 1128:13 => 
+  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]: 842:13, 970:41, 842:41, 1496:12, 970:13, 1496:33 => 
+  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]: 843:56, 1497:48, 843:28, 971:56, 1497:27, 971:28 => 
+  - /kisskb/src/drivers/video/fbdev/riva/fbdev.c: error: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]: 2062:11, 2095:11 => 
+
+
+*** WARNINGS ***
+
+3 warning regressions:
+  + <stdin>: warning: #warning syscall futex_waitv not implemented [-Wcpp]:  => 1559:2
+  + arch/m68k/configs/multi_defconfig: warning: symbol value 'm' invalid for MCTP:  => 322
+  + arch/m68k/configs/sun3_defconfig: warning: symbol value 'm' invalid for MCTP:  => 295
+
+28 warning improvements:
+  - /kisskb/src/arch/m68k/include/asm/string.h: warning: '__builtin_memcpy' reading 6 bytes from a region of size 0 [-Wstringop-overread]: 72:25 => 
+  - /kisskb/src/samples/seccomp/user-trap.c: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]: 83:2, 50:2 => 
+  - modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version ...: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3570): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3588): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35a0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35b8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35d0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35e8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3600): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3618): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3630): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3648): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3660): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3678): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3690): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36a8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36c0): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36d8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x108): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x120): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x138): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x150): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x168): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x180): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x198): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: lib/find_bit_benchmark.o(.text.unlikely+0x0): Section mismatch in reference from the (unknown reference) (unknown) to the variable .init.data:bitmap2: N/A => 
+  - modpost: WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.rodata:test_print: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
