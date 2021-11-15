@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E30A451ABD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E284518B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351907AbhKOXmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1348744AbhKOXFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:05:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343950AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E9B63365;
-        Mon, 15 Nov 2021 18:49:11 +0000 (UTC)
+        id S243225AbhKOSzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:55:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BD1633CC;
+        Mon, 15 Nov 2021 18:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002151;
-        bh=qwivl6QBXeWUvuLBRy8LfcdNXw5gHAOodpc44a9sNMY=;
+        s=korg; t=1636999916;
+        bh=bpauWXMAIA3RzPmOgIYgToUq83+6MxA1yyJS870oIyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oTHujEe9xqp/8cZg6zrkN+iThFFf1te+3h8i5JZYhyqKc27WNfr/etpO2FrR5+6bv
-         T0Opi059G7asTpgXpsFEwbbp5yY981cuO5v/Vz0vyOvzmbiaHSs6uArUYLEnRRI7AC
-         sfOmLmbQ8htU0gpu6h47oymCo2A5q2EXcBmat1fE=
+        b=Apx28xn6JCzW7wD9I2+uHEVlXtXIGaxrkDNpm4iKW9f4i2ArifFtLr7boa62T02In
+         g5H8uIOxImV4prUM4LwX5OpZc4O5MvQJzCrscKmUDn0OZpaIfq7RHPoSzd4DMHF0Ad
+         Wn6I4kljiW+7qtv75m+F0CnLF1yCslpzaEPBWBDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        stable@vger.kernel.org, YN Chen <YN.Chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 458/917] mt76: mt7915: fix endianness warning in mt7915_mac_add_txs_skb
-Date:   Mon, 15 Nov 2021 17:59:13 +0100
-Message-Id: <20211115165444.306061906@linuxfoundation.org>
+Subject: [PATCH 5.14 471/849] mt76: mt7921: fix retrying release semaphore without end
+Date:   Mon, 15 Nov 2021 17:59:14 +0100
+Message-Id: <20211115165436.222985955@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Sean Wang <sean.wang@mediatek.com>
 
-[ Upstream commit 08b3c8da87aed4200dab00906f149d675ca90f23 ]
+[ Upstream commit 02d1c7d494d8052288bc175e4ff54b56d08a3c5f ]
 
-Fix the following sparse warning in mt7915_mac_add_txs_skb routine:
+We should pass the error code to the caller immediately
+to avoid the possible infinite retry to release the semaphore.
 
-drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:29:
-	warning: cast to restricted __le32
-drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:23:
-	warning: restricted __le32 degrades to integer
-
-Fixes: 3de4cb1756565 ("mt76: mt7915: add support for tx status reporting")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Fixes: 1c099ab44727 ("mt76: mt7921: add MCU support")
+Co-developed-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mac.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-index 2462704094b0a..bbc996f86b5c3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-@@ -1232,7 +1232,7 @@ mt7915_mac_add_txs_skb(struct mt7915_dev *dev, struct mt76_wcid *wcid, int pid,
- 		goto out;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+index 3cb53c642d242..506a1909ce6d5 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+@@ -827,7 +827,7 @@ out:
+ 	default:
+ 		ret = -EAGAIN;
+ 		dev_err(dev->mt76.dev, "Failed to release patch semaphore\n");
+-		goto out;
++		break;
+ 	}
+ 	release_firmware(fw);
  
- 	info = IEEE80211_SKB_CB(skb);
--	if (!(txs_data[0] & le32_to_cpu(MT_TXS0_ACK_ERROR_MASK)))
-+	if (!(txs_data[0] & cpu_to_le32(MT_TXS0_ACK_ERROR_MASK)))
- 		info->flags |= IEEE80211_TX_STAT_ACK;
- 
- 	info->status.ampdu_len = 1;
 -- 
 2.33.0
 
