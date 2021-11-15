@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121BD4517C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B984517A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347910AbhKOWqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:46:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
+        id S233915AbhKOWgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:36:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241816AbhKOSmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:42:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B42B6632FE;
-        Mon, 15 Nov 2021 18:05:06 +0000 (UTC)
+        id S242584AbhKOSit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:38:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E5CA632E6;
+        Mon, 15 Nov 2021 18:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999507;
-        bh=6WjB2gY4tJ6GW3v1v03c1A1FQks9wvcVsAJiyjCtFBU=;
+        s=korg; t=1636999423;
+        bh=XlPWwDSBSAjUuVU7E2K8k4ivOtXtQoxJIestpEVm9rQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gS0mzc8r5xIqAsXL8Btczodu3GojVTu5gAA70ShCS6jtLh9y2vxx1tuZJlf/ki5Ix
-         MG8RhNw8uyrHeaz1nMJj0Kv4xCji3teZKD9zu+MgjhuFrYBpBXckI67Bhg5rtcFKqf
-         JLFYTS9lAdCzB4COnzgc0ojawCs22HlRd7uQ/bcM=
+        b=cr/ZZ51W25orjSZlSuFI8aVFO4r5BC4AVdKARDbQt+5RCOVeKnHR8UBpabgY+R44p
+         0rlMqK9Ui2NBj5DGsNtaHgy8JkizpscQrK8Bbiz1OvoZGWhErsTYGL+wsBgaWPahZY
+         dLwuRHxBGdoa6l9gtTSIzDGDw5QR+QYc915Wvcic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mengen Sun <mengensun@tencent.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 289/849] workqueue: make sysfs of unbound kworker cpumask more clever
-Date:   Mon, 15 Nov 2021 17:56:12 +0100
-Message-Id: <20211115165430.049243897@linuxfoundation.org>
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 292/849] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
+Date:   Mon, 15 Nov 2021 17:56:15 +0100
+Message-Id: <20211115165430.144901649@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,69 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit d25302e46592c97d29f70ccb1be558df31a9a360 ]
+[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
 
-Some unfriendly component, such as dpdk, write the same mask to
-unbound kworker cpumask again and again. Every time it write to
-this interface some work is queue to cpu, even though the mask
-is same with the original mask.
+When the driver fails to request the firmware, it calls its error
+handler. In the error handler, the driver detaches device from driver
+first before releasing the firmware, which can cause a use-after-free bug.
 
-So, fix it by return success and do nothing if the cpumask is
-equal with the old one.
+Fix this by releasing firmware first.
 
-Signed-off-by: Mengen Sun <mengensun@tencent.com>
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+The following log reveals it:
+
+[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
+[    9.010143 ] Workqueue: events request_firmware_work_func
+[    9.010830 ] Call Trace:
+[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
+[    9.010830 ]  print_address_description+0x87/0x3b0
+[    9.010830 ]  kasan_report+0x172/0x1c0
+[    9.010830 ]  ? mutex_unlock+0xd/0x10
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
+[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
+[    9.010830 ]  request_firmware_work_func+0x172/0x250
+[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
+[    9.010830 ]  ? process_one_work+0x7a1/0x1100
+[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
+[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
+[    9.010830 ]  process_one_work+0x9bb/0x1100
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/wireless/marvell/mwl8k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 542c2d03dab65..ccad28bf21e26 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5340,9 +5340,6 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 	int ret = -EINVAL;
- 	cpumask_var_t saved_cpumask;
- 
--	if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL))
--		return -ENOMEM;
--
- 	/*
- 	 * Not excluding isolated cpus on purpose.
- 	 * If the user wishes to include them, we allow that.
-@@ -5350,6 +5347,15 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 	cpumask_and(cpumask, cpumask, cpu_possible_mask);
- 	if (!cpumask_empty(cpumask)) {
- 		apply_wqattrs_lock();
-+		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-+			ret = 0;
-+			goto out_unlock;
-+		}
-+
-+		if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL)) {
-+			ret = -ENOMEM;
-+			goto out_unlock;
-+		}
- 
- 		/* save the old wq_unbound_cpumask. */
- 		cpumask_copy(saved_cpumask, wq_unbound_cpumask);
-@@ -5362,10 +5368,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 		if (ret < 0)
- 			cpumask_copy(wq_unbound_cpumask, saved_cpumask);
- 
-+		free_cpumask_var(saved_cpumask);
-+out_unlock:
- 		apply_wqattrs_unlock();
- 	}
- 
--	free_cpumask_var(saved_cpumask);
- 	return ret;
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index 3bf6571f41490..529e325498cdb 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -5800,8 +5800,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
+ fail:
+ 	priv->fw_state = FW_STATE_ERROR;
+ 	complete(&priv->firmware_loading_complete);
+-	device_release_driver(&priv->pdev->dev);
+ 	mwl8k_release_firmware(priv);
++	device_release_driver(&priv->pdev->dev);
  }
  
+ #define MAX_RESTART_ATTEMPTS 1
 -- 
 2.33.0
 
