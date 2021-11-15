@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A87E451B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EF452047
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhKPABw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1344370AbhKPAum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:50:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344468AbhKOTYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB88E61AA8;
-        Mon, 15 Nov 2021 18:58:17 +0000 (UTC)
+        id S1344478AbhKOTYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE456367E;
+        Mon, 15 Nov 2021 18:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002698;
-        bh=hez5oQVPSFGPapGDxet0O58mPzjLjxoOuyDKA05VivY=;
+        s=korg; t=1637002701;
+        bh=AFsCuftF9z9go0FzPJeD93XQ71yWOe7BMJV5lhIjACU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vVYNjBvWl6HY0Wi2uUD7sMebcovZgI7SUNlR3k7CgGqOLxi2PVzfBwXfCqavvqNSB
-         1AzmYT/ZELLvfmm18j1lzIShYSz6YFnOiZeCKuez0xv0wZRtSjQ+sWHnSRtK+x2DeN
-         PPPkdUScwxO/FcdIFYzCWuDjXLZKC9gf9bCElDA4=
+        b=Yulr2UegdlL6LvhfCeyV2BJyZ/AbEDL+yr4jMSI4C8UCTQSJOnLhmEnwaG9FcXtc5
+         lJxccrbguUF4pcDOuZjCg7YSVcllZkOIPjl2s1csF+pJx6C0Gr5/mCe4AezrKMO6TH
+         Leihp5fQ67hbNn6h3VuKGoha2abM+JOQh1exoj2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 631/917] staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
-Date:   Mon, 15 Nov 2021 18:02:06 +0100
-Message-Id: <20211115165450.206748297@linuxfoundation.org>
+Subject: [PATCH 5.15 632/917] RDMA/core: Set sgtable nents when using ib_dma_virt_map_sg()
+Date:   Mon, 15 Nov 2021 18:02:07 +0100
+Message-Id: <20211115165450.240054013@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,45 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-[ Upstream commit 9ca0e55e52c7b2a99f3c2051fc4bd1c63a061519 ]
+[ Upstream commit ac0fffa0859b8e1e991939663b3ebdd80bf979e6 ]
 
-Fix the following build/link errors:
+ib_dma_map_sgtable_attrs() should be mapping the sgls and setting nents
+but the ib_uses_virt_dma() path falls back to ib_dma_virt_map_sg() which
+will not set the nents in the sgtable.
 
-  ld: drivers/staging/ks7010/ks_hostif.o: in function `michael_mic.constprop.0':
-  ks_hostif.c:(.text+0x95b): undefined reference to `crypto_alloc_shash'
-  ld: ks_hostif.c:(.text+0x97a): undefined reference to `crypto_shash_setkey'
-  ld: ks_hostif.c:(.text+0xa13): undefined reference to `crypto_shash_update'
-  ld: ks_hostif.c:(.text+0xa28): undefined reference to `crypto_shash_update'
-  ld: ks_hostif.c:(.text+0xa48): undefined reference to `crypto_shash_finup'
-  ld: ks_hostif.c:(.text+0xa6d): undefined reference to `crypto_destroy_tfm'
+Check the return value (per the map_sg calling convention) and set
+sgt->nents appropriately on success.
 
-Fixes: 8b523f20417d ("staging: ks7010: removed custom Michael MIC implementation.")
-Fixes: 3e5bc68fa5968 ("staging: ks7010: Fix build error")
-Fixes: a4961427e7494 ("Revert "staging: ks7010: Fix build error"")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Link: https://lore.kernel.org/r/20211011152941.12847-1-vegard.nossum@oracle.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 79fbd3e1241c ("RDMA: Use the sg_table directly and remove the opencoded version from umem")
+Link: https://lore.kernel.org/r/20211013165942.89806-1-logang@deltatee.com
+Reported-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Tested-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ include/rdma/ib_verbs.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ks7010/Kconfig b/drivers/staging/ks7010/Kconfig
-index 0987fdc2f70db..8ea6c09286798 100644
---- a/drivers/staging/ks7010/Kconfig
-+++ b/drivers/staging/ks7010/Kconfig
-@@ -5,6 +5,9 @@ config KS7010
- 	select WIRELESS_EXT
- 	select WEXT_PRIV
- 	select FW_LOADER
-+	select CRYPTO
-+	select CRYPTO_HASH
-+	select CRYPTO_MICHAEL_MIC
- 	help
- 	  This is a driver for KeyStream KS7010 based SDIO WIFI cards. It is
- 	  found on at least later Spectec SDW-821 (FCC-ID "S2Y-WLAN-11G-K" only,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 4b50d9a3018a6..4ba642fc8a19a 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4097,8 +4097,13 @@ static inline int ib_dma_map_sgtable_attrs(struct ib_device *dev,
+ 					   enum dma_data_direction direction,
+ 					   unsigned long dma_attrs)
+ {
++	int nents;
++
+ 	if (ib_uses_virt_dma(dev)) {
+-		ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
++		nents = ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
++		if (!nents)
++			return -EIO;
++		sgt->nents = nents;
+ 		return 0;
+ 	}
+ 	return dma_map_sgtable(dev->dma_device, sgt, direction, dma_attrs);
 -- 
 2.33.0
 
