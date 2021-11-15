@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F1B45193E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4FB451B59
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241755AbhKOXQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:16:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
+        id S1350965AbhKPAAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:00:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244244AbhKOTMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:12:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5601632B3;
-        Mon, 15 Nov 2021 18:19:42 +0000 (UTC)
+        id S1344388AbhKOTYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FD2263674;
+        Mon, 15 Nov 2021 18:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000383;
-        bh=/H18LPwuKYXmCGNFa8h/UaqiCGfSbKhy5oUgPM6OL40=;
+        s=korg; t=1637002604;
+        bh=O7u4g5SOqoogmZiCBJ7XpdKjtfB0L9thbORUUz+Utzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OLiBAc05cQlC8I6ya/NFLKCTopczf1UM4/q8V2xObls/UUdYR5162PDp4mmdlXCpo
-         AbjIwYidYe9pFl9RTp3Dv9MK3fjE9UUhJWcrNTNctc8/WzQWmcNYtJYvrantkj0N0j
-         XbykXBGheTb1Q48U80gRNnwNaO93PM73Eveg8Vcw=
+        b=QJRXupcB7LRYr1wqDph1EWQmJIpye5Y8RTBCIMy3iuET+Ic8199Xp42EsuD13NjTf
+         OdoycCNti2IDXHoww9tXJAFZo8wNyJlsHe5BJYEh/tk2ZicXUoorVDhCk8POcvUA1g
+         K5u+7B+FLycSOQTx800NEsoWhxkqyREtqk1MQ9uo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Cromie <jim.cromie@gmail.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 608/849] dyndbg: make dyndbg a known cli param
-Date:   Mon, 15 Nov 2021 18:01:31 +0100
-Message-Id: <20211115165440.819399065@linuxfoundation.org>
+Subject: [PATCH 5.15 597/917] arm64: dts: qcom: msm8916: Fix Secondary MI2S bit clock
+Date:   Mon, 15 Nov 2021 18:01:32 +0100
+Message-Id: <20211115165449.010276540@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Halaney <ahalaney@redhat.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 5ca173974888368fecfb17ae6fe455df5fd2a9d2 ]
+[ Upstream commit 8199a0b31e76d158ac14841e7119890461f8c595 ]
 
-Right now dyndbg shows up as an unknown parameter if used on boot:
+At the moment, playing audio on Secondary MI2S will just end up getting
+stuck, without actually playing any audio. This happens because the wrong
+bit clock is configured when playing audio on Secondary MI2S.
 
-    Unknown command line parameters: dyndbg=+p
+The PRI_I2S_CLK (better name: SPKR_I2S_CLK) is used by the SPKR audio mux
+block that provides both Primary and Secondary MI2S.
 
-That's because it is unknown, it doesn't sit in the __param
-section, so the processing done to warn users supplying an unknown
-parameter doesn't think it is legitimate.
+The SEC_I2S_CLK (better name: MIC_I2S_CLK) is used by the MIC audio mux
+block that provides Tertiary MI2S. Quaternary MI2S is also part of the
+MIC audio mux but has its own clock (AUX_I2S_CLK).
 
-Install a dummy handler to register it. dynamic debug needs to search
-the whole command line for modules listed that are currently builtin,
-so there's no real work to be done in this callback.
+This means that (quite confusingly) the SEC_I2S_CLK is not actually
+used for Secondary MI2S as the name would suggest. Secondary MI2S
+needs to have the same clock as Primary MI2S configured.
 
-Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-Tested-by: Jim Cromie <jim.cromie@gmail.com>
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-Signed-off-by: Jason Baron <jbaron@akamai.com>
-Link: https://lore.kernel.org/r/1634139622-20667-2-git-send-email-jbaron@akamai.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the clock list for the lpass node in the device tree and add
+a comment to clarify this confusing naming. With these changes,
+audio can be played correctly on Secondary MI2S.
+
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Fixes: 3761a3618f55 ("arm64: dts: qcom: add lpass node")
+Tested-by: Vincent Knecht <vincent.knecht@mailoo.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210816181810.2242-1-stephan@gerhold.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/dynamic_debug.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index cb5abb42c16a2..84c16309cc637 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -761,6 +761,18 @@ static __init int ddebug_setup_query(char *str)
- 
- __setup("ddebug_query=", ddebug_setup_query);
- 
-+/*
-+ * Install a noop handler to make dyndbg look like a normal kernel cli param.
-+ * This avoids warnings about dyndbg being an unknown cli param when supplied
-+ * by a user.
-+ */
-+static __init int dyndbg_setup(char *str)
-+{
-+	return 1;
-+}
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 3f85e34a8ce6f..fbff712639513 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -1384,11 +1384,17 @@
+ 		lpass: audio-controller@7708000 {
+ 			status = "disabled";
+ 			compatible = "qcom,lpass-cpu-apq8016";
 +
-+__setup("dyndbg=", dyndbg_setup);
-+
- /*
-  * File_ops->write method for <debugfs>/dynamic_debug/control.  Gathers the
-  * command text from userspace, parses and executes it.
++			/*
++			 * Note: Unlike the name would suggest, the SEC_I2S_CLK
++			 * is actually only used by Tertiary MI2S while
++			 * Primary/Secondary MI2S both use the PRI_I2S_CLK.
++			 */
+ 			clocks = <&gcc GCC_ULTAUDIO_AHBFABRIC_IXFABRIC_CLK>,
+ 				 <&gcc GCC_ULTAUDIO_PCNOC_MPORT_CLK>,
+ 				 <&gcc GCC_ULTAUDIO_PCNOC_SWAY_CLK>,
+ 				 <&gcc GCC_ULTAUDIO_LPAIF_PRI_I2S_CLK>,
+-				 <&gcc GCC_ULTAUDIO_LPAIF_SEC_I2S_CLK>,
++				 <&gcc GCC_ULTAUDIO_LPAIF_PRI_I2S_CLK>,
+ 				 <&gcc GCC_ULTAUDIO_LPAIF_SEC_I2S_CLK>,
+ 				 <&gcc GCC_ULTAUDIO_LPAIF_AUX_I2S_CLK>;
+ 
 -- 
 2.33.0
 
