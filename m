@@ -2,37 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F92451F5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7994519C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356159AbhKPAix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1347566AbhKOX1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344792AbhKOTZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFAEF63325;
-        Mon, 15 Nov 2021 19:04:31 +0000 (UTC)
+        id S245045AbhKOTS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 973306327F;
+        Mon, 15 Nov 2021 18:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003072;
-        bh=ZCEUYrVNKyHT5pvRUmeBf4GUnRYrr7GSX3UGCtd7HsU=;
+        s=korg; t=1637000846;
+        bh=y3InPMtUyPmHRcapFzmmuoJhtc2+4cQnidVJlPKDHPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ZOg24qzBrDR1kW8QV0gP5WAkGl6A83umMiv1C6Jsh6iTQqxHJRijzyvDuSLd1wlQ
-         NsjSn4jtYhvlt+3J7Od/3CMX0gha/bI7F6d8OSldIbCUTcr9hDNQsn1xyPhRr4CW8R
-         x1OYH9tkf9LJnrUxQ2KtdmgpXlgeM56EejRo5c+I=
+        b=u+tH0rYkBa4uEO3vNBoGQa0CsSHfJqVOiCJpenV8a8Q/e8tz4xXWv2F3UHWJ7+6Xg
+         J3sFSHe9jhNzs+xp2AKJI9pnQVAk7UhaHrdYzkfp759+sHx9xZ3WI0RRkBxWxtVFj2
+         LGcMmg3/vHx4rd5/xqIsz8PL3ZJno064Zo29o0FQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 800/917] mfd: sprd: Add SPI device ID table
-Date:   Mon, 15 Nov 2021 18:04:55 +0100
-Message-Id: <20211115165456.098430005@linuxfoundation.org>
+        stable@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 813/849] mm, oom: do not trigger out_of_memory from the #PF
+Date:   Mon, 15 Nov 2021 18:04:56 +0100
+Message-Id: <20211115165447.745876326@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +49,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Michal Hocko <mhocko@suse.com>
 
-[ Upstream commit c5c7f0677107052060037583b9c8c15d818afb04 ]
+commit 60e2793d440a3ec95abb5d6d4fc034a4b480472d upstream.
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding a SPI device ID table.
+Any allocation failure during the #PF path will return with VM_FAULT_OOM
+which in turn results in pagefault_out_of_memory.  This can happen for 2
+different reasons.  a) Memcg is out of memory and we rely on
+mem_cgroup_oom_synchronize to perform the memcg OOM handling or b)
+normal allocation fails.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20210924143347.14721-4-broonie@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The latter is quite problematic because allocation paths already trigger
+out_of_memory and the page allocator tries really hard to not fail
+allocations.  Anyway, if the OOM killer has been already invoked there
+is no reason to invoke it again from the #PF path.  Especially when the
+OOM condition might be gone by that time and we have no way to find out
+other than allocate.
+
+Moreover if the allocation failed and the OOM killer hasn't been invoked
+then we are unlikely to do the right thing from the #PF context because
+we have already lost the allocation context and restictions and
+therefore might oom kill a task from a different NUMA domain.
+
+This all suggests that there is no legitimate reason to trigger
+out_of_memory from pagefault_out_of_memory so drop it.  Just to be sure
+that no #PF path returns with VM_FAULT_OOM without allocation print a
+warning that this is happening before we restart the #PF.
+
+[VvS: #PF allocation can hit into limit of cgroup v1 kmem controller.
+This is a local problem related to memcg, however, it causes unnecessary
+global OOM kills that are repeated over and over again and escalate into a
+real disaster.  This has been broken since kmem accounting has been
+introduced for cgroup v1 (3.8).  There was no kmem specific reclaim for
+the separate limit so the only way to handle kmem hard limit was to return
+with ENOMEM.  In upstream the problem will be fixed by removing the
+outdated kmem limit, however stable and LTS kernels cannot do it and are
+still affected.  This patch fixes the problem and should be backported
+into stable/LTS.]
+
+Link: https://lkml.kernel.org/r/f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/sprd-sc27xx-spi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ mm/oom_kill.c |   22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-index 6b7956604a0f0..9890882db1ed3 100644
---- a/drivers/mfd/sprd-sc27xx-spi.c
-+++ b/drivers/mfd/sprd-sc27xx-spi.c
-@@ -236,6 +236,12 @@ static const struct of_device_id sprd_pmic_match[] = {
- };
- MODULE_DEVICE_TABLE(of, sprd_pmic_match);
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1119,19 +1119,15 @@ bool out_of_memory(struct oom_control *o
+ }
  
-+static const struct spi_device_id sprd_pmic_spi_ids[] = {
-+	{ .name = "sc2731", .driver_data = (unsigned long)&sc2731_data },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(spi, sprd_pmic_spi_ids);
-+
- static struct spi_driver sprd_pmic_driver = {
- 	.driver = {
- 		.name = "sc27xx-pmic",
-@@ -243,6 +249,7 @@ static struct spi_driver sprd_pmic_driver = {
- 		.pm = &sprd_pmic_pm_ops,
- 	},
- 	.probe = sprd_pmic_probe,
-+	.id_table = sprd_pmic_spi_ids,
- };
+ /*
+- * The pagefault handler calls here because it is out of memory, so kill a
+- * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
+- * killing is already in progress so do nothing.
++ * The pagefault handler calls here because some allocation has failed. We have
++ * to take care of the memcg OOM here because this is the only safe context without
++ * any locks held but let the oom killer triggered from the allocation context care
++ * about the global OOM.
+  */
+ void pagefault_out_of_memory(void)
+ {
+-	struct oom_control oc = {
+-		.zonelist = NULL,
+-		.nodemask = NULL,
+-		.memcg = NULL,
+-		.gfp_mask = 0,
+-		.order = 0,
+-	};
++	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
++				      DEFAULT_RATELIMIT_BURST);
  
- static int __init sprd_pmic_init(void)
--- 
-2.33.0
-
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
+@@ -1139,8 +1135,6 @@ void pagefault_out_of_memory(void)
+ 	if (fatal_signal_pending(current))
+ 		return;
+ 
+-	if (!mutex_trylock(&oom_lock))
+-		return;
+-	out_of_memory(&oc);
+-	mutex_unlock(&oom_lock);
++	if (__ratelimit(&pfoom_rs))
++		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
+ }
 
 
