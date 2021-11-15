@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4CC451410
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF44513F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348943AbhKOUBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:01:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46096 "EHLO mail.kernel.org"
+        id S1348771AbhKOT7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:59:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239541AbhKOSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239542AbhKOSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:01:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1993263344;
-        Mon, 15 Nov 2021 17:36:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4F463348;
+        Mon, 15 Nov 2021 17:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997798;
-        bh=Idgu4DDNcl1FXQN6NTh07ooap8DRVzi2XKmEZ04Oi8Q=;
+        s=korg; t=1636997803;
+        bh=7g4gkYK8IbuZds4BvV1tX0BFyRb7krKJy7LLIUnd5iM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MCMeoD4maKqIO8Xw0f+HsCdMVYWwtvsWaXvRqD/yIn1GpSQigZuHr/odpsP2B9Hdj
-         2cxzByIZSmL7apeXHWOCjkaBXIkgjx4g3sTTKNMQd0YqQ0ZqS9q3lU9tTWpoHVmKs9
-         ax1sw40M+CvWsLbv8p2f2fjlkFvX6quRXmPYFhvM=
+        b=BcFQToER7I4ThgteRzVM6m7KWVrSbMkTDNuwAa9igThw44h3VJ92fRkD5O/aL1Msr
+         AVwPTlAlSehz/EIG+aj6MTnfmz0GDSQcwidxhlWrJ9NZYgt/4ybqcjOP25LjAPRuaB
+         s+XrEgd09dfHyovtRhrSakytYTIxpHjbBaoSJhX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Sriram R <srirrama@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 279/575] ath11k: fix some sleeping in atomic bugs
-Date:   Mon, 15 Nov 2021 18:00:04 +0100
-Message-Id: <20211115165353.421758991@linuxfoundation.org>
+Subject: [PATCH 5.10 280/575] ath11k: Avoid race during regd updates
+Date:   Mon, 15 Nov 2021 18:00:05 +0100
+Message-Id: <20211115165353.466357003@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,91 +41,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sriram R <srirrama@codeaurora.org>
 
-[ Upstream commit aadf7c81a0771b8f1c97dabca6a48bae1b387779 ]
+[ Upstream commit 1db2b0d0a39102238fcbf9092cefa65a710642e9 ]
 
-The ath11k_dbring_bufs_replenish() and ath11k_dbring_fill_bufs()
-take a "gfp" parameter but they since they take spinlocks, the
-allocations they do have to be atomic.  This causes a bug because
-ath11k_dbring_buf_setup passes GFP_KERNEL for the gfp flags.
+Whenever ath11k is bootup with a user country already set, cfg80211
+notifies this country info to ath11k soon after registration, where the
+notification is sent to the firmware for fetching the rules of this user
+country input.
 
-The fix is to use GFP_ATOMIC and remove the unused parameters.
+Multiple race conditions could be seen in this scenario where a new
+request is either lost as pointed in [1] or a new regd overwrites the
+default regd provided by the firmware during bootup. Note that, the
+default regd is used for intersection purpose and hence it should not be
+overwritten.
 
-Fixes: bd6478559e27 ("ath11k: Add direct buffer ring support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+The main reason as pointed by [1] is the usage of ATH11K_FLAG_REGISTERED
+flag which is updated after completion of core registration, whereas the
+reg notification from cfg80211 and wmi events for the corresponding
+request can happen much before that. Since the ATH11K_FLAG_REGISTERED is
+currently used to determine if the event containing reg rules belong to
+default regd or for user request, there is a possibility of the default
+regd getting overwritten.
+
+Since the default reg rules will be received only once per pdev on
+firmware load, the above flag based check can be replaced with a check
+to see if default_regd is already set, so that we can now always update
+the new_regd. Also if the new_regd is set, this will be always used to
+update the reg rules for the registered phy.
+
+[1] https://patchwork.kernel.org/project/linux-wireless/patch/1829665.1PRlr7bOQj@ripper/
+
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.4.0.1-01460-QCAHKSWPL_SILICONZ-1
+Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210812070434.GE31863@kili
+Link: https://lore.kernel.org/r/20210721212029.142388-4-jouni@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/dbring.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath11k/mac.c |  2 +-
+ drivers/net/wireless/ath/ath11k/reg.c | 11 ++++++-----
+ drivers/net/wireless/ath/ath11k/reg.h |  2 +-
+ drivers/net/wireless/ath/ath11k/wmi.c | 16 ++++++----------
+ 4 files changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/dbring.c b/drivers/net/wireless/ath/ath11k/dbring.c
-index 5e1f5437b4185..fd98ba5b1130b 100644
---- a/drivers/net/wireless/ath/ath11k/dbring.c
-+++ b/drivers/net/wireless/ath/ath11k/dbring.c
-@@ -8,8 +8,7 @@
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index 63d70aecbd0f1..0924bc8b35205 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -6320,7 +6320,7 @@ static int __ath11k_mac_register(struct ath11k *ar)
+ 		ar->hw->wiphy->interface_modes &= ~BIT(NL80211_IFTYPE_MONITOR);
  
- static int ath11k_dbring_bufs_replenish(struct ath11k *ar,
- 					struct ath11k_dbring *ring,
--					struct ath11k_dbring_element *buff,
--					gfp_t gfp)
-+					struct ath11k_dbring_element *buff)
- {
- 	struct ath11k_base *ab = ar->ab;
- 	struct hal_srng *srng;
-@@ -35,7 +34,7 @@ static int ath11k_dbring_bufs_replenish(struct ath11k *ar,
- 		goto err;
- 
- 	spin_lock_bh(&ring->idr_lock);
--	buf_id = idr_alloc(&ring->bufs_idr, buff, 0, ring->bufs_max, gfp);
-+	buf_id = idr_alloc(&ring->bufs_idr, buff, 0, ring->bufs_max, GFP_ATOMIC);
- 	spin_unlock_bh(&ring->idr_lock);
- 	if (buf_id < 0) {
- 		ret = -ENOBUFS;
-@@ -72,8 +71,7 @@ err:
+ 	/* Apply the regd received during initialization */
+-	ret = ath11k_regd_update(ar, true);
++	ret = ath11k_regd_update(ar);
+ 	if (ret) {
+ 		ath11k_err(ar->ab, "ath11k regd update failed: %d\n", ret);
+ 		goto err_unregister_hw;
+diff --git a/drivers/net/wireless/ath/ath11k/reg.c b/drivers/net/wireless/ath/ath11k/reg.c
+index 678d0885fcee7..b8f9f34408879 100644
+--- a/drivers/net/wireless/ath/ath11k/reg.c
++++ b/drivers/net/wireless/ath/ath11k/reg.c
+@@ -198,7 +198,7 @@ static void ath11k_copy_regd(struct ieee80211_regdomain *regd_orig,
+ 		       sizeof(struct ieee80211_reg_rule));
  }
  
- static int ath11k_dbring_fill_bufs(struct ath11k *ar,
--				   struct ath11k_dbring *ring,
--				   gfp_t gfp)
-+				   struct ath11k_dbring *ring)
+-int ath11k_regd_update(struct ath11k *ar, bool init)
++int ath11k_regd_update(struct ath11k *ar)
  {
- 	struct ath11k_dbring_element *buff;
- 	struct hal_srng *srng;
-@@ -92,11 +90,11 @@ static int ath11k_dbring_fill_bufs(struct ath11k *ar,
- 	size = sizeof(*buff) + ring->buf_sz + align - 1;
+ 	struct ieee80211_regdomain *regd, *regd_copy = NULL;
+ 	int ret, regd_len, pdev_id;
+@@ -209,7 +209,10 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
  
- 	while (num_remain > 0) {
--		buff = kzalloc(size, gfp);
-+		buff = kzalloc(size, GFP_ATOMIC);
- 		if (!buff)
- 			break;
+ 	spin_lock_bh(&ab->base_lock);
  
--		ret = ath11k_dbring_bufs_replenish(ar, ring, buff, gfp);
-+		ret = ath11k_dbring_bufs_replenish(ar, ring, buff);
- 		if (ret) {
- 			ath11k_warn(ar->ab, "failed to replenish db ring num_remain %d req_ent %d\n",
- 				    num_remain, req_entries);
-@@ -176,7 +174,7 @@ int ath11k_dbring_buf_setup(struct ath11k *ar,
- 	ring->hp_addr = ath11k_hal_srng_get_hp_addr(ar->ab, srng);
- 	ring->tp_addr = ath11k_hal_srng_get_tp_addr(ar->ab, srng);
- 
--	ret = ath11k_dbring_fill_bufs(ar, ring, GFP_KERNEL);
-+	ret = ath11k_dbring_fill_bufs(ar, ring);
- 
- 	return ret;
- }
-@@ -322,7 +320,7 @@ int ath11k_dbring_buffer_release_event(struct ath11k_base *ab,
+-	if (init) {
++	/* Prefer the latest regd update over default if it's available */
++	if (ab->new_regd[pdev_id]) {
++		regd = ab->new_regd[pdev_id];
++	} else {
+ 		/* Apply the regd received during init through
+ 		 * WMI_REG_CHAN_LIST_CC event. In case of failure to
+ 		 * receive the regd, initialize with a default world
+@@ -222,8 +225,6 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 				    "failed to receive default regd during init\n");
+ 			regd = (struct ieee80211_regdomain *)&ath11k_world_regd;
  		}
- 
- 		memset(buff, 0, size);
--		ath11k_dbring_bufs_replenish(ar, ring, buff, GFP_ATOMIC);
-+		ath11k_dbring_bufs_replenish(ar, ring, buff);
+-	} else {
+-		regd = ab->new_regd[pdev_id];
  	}
  
- 	spin_unlock_bh(&srng->lock);
+ 	if (!regd) {
+@@ -680,7 +681,7 @@ void ath11k_regd_update_work(struct work_struct *work)
+ 					 regd_update_work);
+ 	int ret;
+ 
+-	ret = ath11k_regd_update(ar, false);
++	ret = ath11k_regd_update(ar);
+ 	if (ret) {
+ 		/* Firmware has already moved to the new regd. We need
+ 		 * to maintain channel consistency across FW, Host driver
+diff --git a/drivers/net/wireless/ath/ath11k/reg.h b/drivers/net/wireless/ath/ath11k/reg.h
+index 39b7fc9435415..7dbbba9fae1d2 100644
+--- a/drivers/net/wireless/ath/ath11k/reg.h
++++ b/drivers/net/wireless/ath/ath11k/reg.h
+@@ -30,6 +30,6 @@ void ath11k_regd_update_work(struct work_struct *work);
+ struct ieee80211_regdomain *
+ ath11k_reg_build_regd(struct ath11k_base *ab,
+ 		      struct cur_regulatory_info *reg_info, bool intersect);
+-int ath11k_regd_update(struct ath11k *ar, bool init);
++int ath11k_regd_update(struct ath11k *ar);
+ int ath11k_reg_update_chan_list(struct ath11k *ar);
+ #endif
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index cf0f778b0cbc9..e17419c8dde0d 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -5410,10 +5410,10 @@ static int ath11k_reg_chan_list_event(struct ath11k_base *ab, struct sk_buff *sk
+ 	}
+ 
+ 	spin_lock(&ab->base_lock);
+-	if (test_bit(ATH11K_FLAG_REGISTERED, &ab->dev_flags)) {
+-		/* Once mac is registered, ar is valid and all CC events from
+-		 * fw is considered to be received due to user requests
+-		 * currently.
++	if (ab->default_regd[pdev_idx]) {
++		/* The initial rules from FW after WMI Init is to build
++		 * the default regd. From then on, any rules updated for
++		 * the pdev could be due to user reg changes.
+ 		 * Free previously built regd before assigning the newly
+ 		 * generated regd to ar. NULL pointer handling will be
+ 		 * taken care by kfree itself.
+@@ -5423,13 +5423,9 @@ static int ath11k_reg_chan_list_event(struct ath11k_base *ab, struct sk_buff *sk
+ 		ab->new_regd[pdev_idx] = regd;
+ 		ieee80211_queue_work(ar->hw, &ar->regd_update_work);
+ 	} else {
+-		/* Multiple events for the same *ar is not expected. But we
+-		 * can still clear any previously stored default_regd if we
+-		 * are receiving this event for the same radio by mistake.
+-		 * NULL pointer handling will be taken care by kfree itself.
++		/* This regd would be applied during mac registration and is
++		 * held constant throughout for regd intersection purpose
+ 		 */
+-		kfree(ab->default_regd[pdev_idx]);
+-		/* This regd would be applied during mac registration */
+ 		ab->default_regd[pdev_idx] = regd;
+ 	}
+ 	ab->dfs_region = reg_info->dfs_region;
 -- 
 2.33.0
 
