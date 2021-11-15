@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F6E45198D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA575451EF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351718AbhKOXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:23:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
+        id S1347636AbhKPAiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244827AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1556763427;
-        Mon, 15 Nov 2021 18:24:17 +0000 (UTC)
+        id S1344637AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B2D63354;
+        Mon, 15 Nov 2021 19:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000658;
-        bh=E9TGLs9oSovW9p3RtBn/5jKBgQduH2TL3SKteHMoLE4=;
+        s=korg; t=1637002880;
+        bh=M7Ejnyu+C91jtdf0w6kIO7mmSOv60oYyPFb91OywY8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JAwWB+nhytmO+4rJXEXD1mQH90GDHtLyaW99N8cMG60XTH1cNTyKQeZj4TOGh0a8O
-         I6tOtuOwnc1XUbLOOuGZ1ohq0OEjw2nQoUabnRZDahOresg4ixAGZ95sw+UuH1661A
-         Uz96lEC6sX6l4s7ktTrnNHKPst9SN5EeuVwoBgTc=
+        b=vXplyhDX65P2RepElAu1ogltL6QD9hukxBaqwOaEVbUuiQeOu5U049mf8A/A8YQ1E
+         m/AwH59Z1U9B2QVNexfmyk9B4/E11p/FNVt/0wFwQlaR4hcuadPFKLnWqIAQgF2b6A
+         RSaV8A1m0a0HrIwN/Ud9gI6hw24+SdPegqhKkOEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 741/849] ALSA: memalloc: Catch call with NULL snd_dma_buffer pointer
+        stable@vger.kernel.org,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 729/917] dmaengine: stm32-dma: fix stm32_dma_get_max_width
 Date:   Mon, 15 Nov 2021 18:03:44 +0100
-Message-Id: <20211115165445.318711597@linuxfoundation.org>
+Message-Id: <20211115165453.636730032@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-[ Upstream commit dce9446192439eaac81c21f517325fb473735e53 ]
+[ Upstream commit b20fd5fa310cbf7ec367f263a34382a24c4cee73 ]
 
-Although we've covered all calls with NULL dma buffer pointer, so far,
-there may be still some else in the wild.  For catching such a case
-more easily, add a WARN_ON_ONCE() in snd_dma_get_ops().
+buf_addr parameter of stm32_dma_set_xfer_param function is a dma_addr_t.
+We only need to check the remainder of buf_addr/max_width, so, no need to
+use do_div and extra u64 addr. Use '%' instead.
 
-Fixes: 37af81c5998f ("ALSA: core: Abstract memory alloc helpers")
-Link: https://lore.kernel.org/r/20211105102103.28148-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: e0ebdbdcb42a ("dmaengine: stm32-dma: take address into account when computing max width")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211011094259.315023-3-amelie.delaunay@foss.st.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/memalloc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/dma/stm32-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 05e3a2bcbea7d..fcb082b4e6bd3 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -403,6 +403,8 @@ static const struct snd_malloc_ops *dma_ops[] = {
- 
- static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffer *dmab)
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 9063c727962ed..fdda916555ec5 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -270,7 +270,6 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 						       u32 threshold)
  {
-+	if (WARN_ON_ONCE(!dmab))
-+		return NULL;
- 	if (WARN_ON_ONCE(dmab->dev.type <= SNDRV_DMA_TYPE_UNKNOWN ||
- 			 dmab->dev.type >= ARRAY_SIZE(dma_ops)))
- 		return NULL;
+ 	enum dma_slave_buswidth max_width;
+-	u64 addr = buf_addr;
+ 
+ 	if (threshold == STM32_DMA_FIFO_THRESHOLD_FULL)
+ 		max_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+@@ -281,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+ 		max_width = max_width >> 1;
+ 
+-	if (do_div(addr, max_width))
++	if (buf_addr % max_width)
+ 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+ 
+ 	return max_width;
 -- 
 2.33.0
 
