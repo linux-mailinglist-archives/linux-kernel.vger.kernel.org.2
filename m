@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390D9451F80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0594A451BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242612AbhKPAlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:41:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        id S1345810AbhKPAGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:06:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345033AbhKOT0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C7AE63211;
-        Mon, 15 Nov 2021 19:08:53 +0000 (UTC)
+        id S1345048AbhKOT0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:26:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8105C60E75;
+        Mon, 15 Nov 2021 19:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003333;
-        bh=lBpdn+B9seS1uPWS8j/E842itKbZRNset1I1CEZ01pQ=;
+        s=korg; t=1637003363;
+        bh=jEqHrvJj4EkUp1+FpWu4AgdMv5dt5vED+zo7+9IGW8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4ELoXkSVK/V7LlrKMHeSXaiTv7LWHODzoIwFIo/LDOLeqsabtnYIgMyw+Ybt4h3J
-         bLbgI2UxW/BGSoZUbqZX2R2bet9kp7V/R39yDlWvdRp90bln+T+NhGmLzrqY8Xqp51
-         SavQcMUsQDr2IzsH+g2SIZeUvTiFATuE6fM+1Op0=
+        b=DZKdcuLnlHzAhejLwoM4c/psIuXOK+CVJcDoyRTdX98VYokFsdG0u2/XyHLlW9RYJ
+         CFGebGC+B5K+Dy7FCUvD562RWJ98D88s65U8Za/Fzr/bo7XAfrV49Yp5TfHoKjueB0
+         2hcPAjhKJbDVK/SXiLxEefuwZyMUZD4fji9jhN0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        stable@vger.kernel.org, Xu Yu <xuyu@linux.alibaba.com>,
+        Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Yang Shi <shy828301@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.15 879/917] mm, oom: do not trigger out_of_memory from the #PF
-Date:   Mon, 15 Nov 2021 18:06:14 +0100
-Message-Id: <20211115165458.860476431@linuxfoundation.org>
+Subject: [PATCH 5.15 880/917] mm, thp: lock filemap when truncating page cache
+Date:   Mon, 15 Nov 2021 18:06:15 +0100
+Message-Id: <20211115165458.899696411@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -49,104 +48,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+From: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 
-commit 60e2793d440a3ec95abb5d6d4fc034a4b480472d upstream.
+commit 55fc0d91746759c71bc165bba62a2db64ac98e35 upstream.
 
-Any allocation failure during the #PF path will return with VM_FAULT_OOM
-which in turn results in pagefault_out_of_memory.  This can happen for 2
-different reasons.  a) Memcg is out of memory and we rely on
-mem_cgroup_oom_synchronize to perform the memcg OOM handling or b)
-normal allocation fails.
+Patch series "fix two bugs for file THP".
 
-The latter is quite problematic because allocation paths already trigger
-out_of_memory and the page allocator tries really hard to not fail
-allocations.  Anyway, if the OOM killer has been already invoked there
-is no reason to invoke it again from the #PF path.  Especially when the
-OOM condition might be gone by that time and we have no way to find out
-other than allocate.
+This patch (of 2):
 
-Moreover if the allocation failed and the OOM killer hasn't been invoked
-then we are unlikely to do the right thing from the #PF context because
-we have already lost the allocation context and restictions and
-therefore might oom kill a task from a different NUMA domain.
+Transparent huge page has supported read-only non-shmem files.  The
+file- backed THP is collapsed by khugepaged and truncated when written
+(for shared libraries).
 
-This all suggests that there is no legitimate reason to trigger
-out_of_memory from pagefault_out_of_memory so drop it.  Just to be sure
-that no #PF path returns with VM_FAULT_OOM without allocation print a
-warning that this is happening before we restart the #PF.
+However, there is a race when multiple writers truncate the same page
+cache concurrently.
 
-[VvS: #PF allocation can hit into limit of cgroup v1 kmem controller.
-This is a local problem related to memcg, however, it causes unnecessary
-global OOM kills that are repeated over and over again and escalate into a
-real disaster.  This has been broken since kmem accounting has been
-introduced for cgroup v1 (3.8).  There was no kmem specific reclaim for
-the separate limit so the only way to handle kmem hard limit was to return
-with ENOMEM.  In upstream the problem will be fixed by removing the
-outdated kmem limit, however stable and LTS kernels cannot do it and are
-still affected.  This patch fixes the problem and should be backported
-into stable/LTS.]
+In that case, subpage(s) of file THP can be revealed by find_get_entry
+in truncate_inode_pages_range, which will trigger PageTail BUG_ON in
+truncate_inode_page, as follows:
 
-Link: https://lkml.kernel.org/r/f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
+    page:000000009e420ff2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ff pfn:0x50c3ff
+    head:0000000075ff816d order:9 compound_mapcount:0 compound_pincount:0
+    flags: 0x37fffe0000010815(locked|uptodate|lru|arch_1|head)
+    raw: 37fffe0000000000 fffffe0013108001 dead000000000122 dead000000000400
+    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+    head: 37fffe0000010815 fffffe001066bd48 ffff000404183c20 0000000000000000
+    head: 0000000000000600 0000000000000000 00000001ffffffff ffff000c0345a000
+    page dumped because: VM_BUG_ON_PAGE(PageTail(page))
+    ------------[ cut here ]------------
+    kernel BUG at mm/truncate.c:213!
+    Internal error: Oops - BUG: 0 [#1] SMP
+    Modules linked in: xfs(E) libcrc32c(E) rfkill(E) ...
+    CPU: 14 PID: 11394 Comm: check_madvise_d Kdump: ...
+    Hardware name: ECS, BIOS 0.0.0 02/06/2015
+    pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+    Call trace:
+     truncate_inode_page+0x64/0x70
+     truncate_inode_pages_range+0x550/0x7e4
+     truncate_pagecache+0x58/0x80
+     do_dentry_open+0x1e4/0x3c0
+     vfs_open+0x38/0x44
+     do_open+0x1f0/0x310
+     path_openat+0x114/0x1dc
+     do_filp_open+0x84/0x134
+     do_sys_openat2+0xbc/0x164
+     __arm64_sys_openat+0x74/0xc0
+     el0_svc_common.constprop.0+0x88/0x220
+     do_el0_svc+0x30/0xa0
+     el0_svc+0x20/0x30
+     el0_sync_handler+0x1a4/0x1b0
+     el0_sync+0x180/0x1c0
+    Code: aa0103e0 900061e1 910ec021 9400d300 (d4210000)
+
+This patch mainly to lock filemap when one enter truncate_pagecache(),
+avoiding truncating the same page cache concurrently.
+
+Link: https://lkml.kernel.org/r/20211025092134.18562-1-rongwei.wang@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20211025092134.18562-2-rongwei.wang@linux.alibaba.com
+Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Tested-by: Song Liu <song@kernel.org>
+Cc: Collin Fijalkovich <cfijalkovich@google.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: William Kucharski <william.kucharski@oracle.com>
+Cc: Yang Shi <shy828301@gmail.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/oom_kill.c |   22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ fs/open.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -1120,19 +1120,15 @@ bool out_of_memory(struct oom_control *o
- }
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f
+ 		 * of THPs into the page cache will fail.
+ 		 */
+ 		smp_mb();
+-		if (filemap_nr_thps(inode->i_mapping))
++		if (filemap_nr_thps(inode->i_mapping)) {
++			filemap_invalidate_lock(inode->i_mapping);
+ 			truncate_pagecache(inode, 0);
++			filemap_invalidate_unlock(inode->i_mapping);
++		}
+ 	}
  
- /*
-- * The pagefault handler calls here because it is out of memory, so kill a
-- * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
-- * killing is already in progress so do nothing.
-+ * The pagefault handler calls here because some allocation has failed. We have
-+ * to take care of the memcg OOM here because this is the only safe context without
-+ * any locks held but let the oom killer triggered from the allocation context care
-+ * about the global OOM.
-  */
- void pagefault_out_of_memory(void)
- {
--	struct oom_control oc = {
--		.zonelist = NULL,
--		.nodemask = NULL,
--		.memcg = NULL,
--		.gfp_mask = 0,
--		.order = 0,
--	};
-+	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
-+				      DEFAULT_RATELIMIT_BURST);
- 
- 	if (mem_cgroup_oom_synchronize(true))
- 		return;
-@@ -1140,10 +1136,8 @@ void pagefault_out_of_memory(void)
- 	if (fatal_signal_pending(current))
- 		return;
- 
--	if (!mutex_trylock(&oom_lock))
--		return;
--	out_of_memory(&oc);
--	mutex_unlock(&oom_lock);
-+	if (__ratelimit(&pfoom_rs))
-+		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
- }
- 
- SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+ 	return 0;
 
 
