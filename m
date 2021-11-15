@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA0F4519D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A13451F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346941AbhKOX2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:28:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
+        id S1351467AbhKPAjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:39:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245101AbhKOTTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94DF66350D;
-        Mon, 15 Nov 2021 18:28:28 +0000 (UTC)
+        id S1344864AbhKOTZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9ADF633E8;
+        Mon, 15 Nov 2021 19:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000909;
-        bh=F+y8T0eTPE35YwxE2gPKn3zUcJvUy+Q85fQsxNfOlGQ=;
+        s=korg; t=1637003142;
+        bh=Cf6z/Ij3iuscSZD3q8tQBFiZJ4Qvzg0vi+xJHVZWXsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b5d3V/QXHuhlv22P14c9YupTzSTIh3XiVf5XqxdzvBVU9YWaBtYm1cEgELMrTa6GQ
-         e6v7FGRfawnbBtbyUKXzdzH5raSsCllVDfdRucPiTukU2XVCzywA/F45gz3ccNnXbm
-         JmTmPW7/swjseMiUfSWWa7wDvVGhq882c4jSHZaE=
+        b=hntzXPtOxGA26s2PL/xpY/7v6fpOd2+knJACk/9IuRBjp7gfjy7J3M45dJM1E4gTu
+         XQzgIWDTFbEEDNh5M/KDMYkTg24wzCjH4S4V+l/BD0CJlxqvKu5T+mRwjUznk5qruu
+         gQOlbpoDwEHHTT9Dc0Ss7EQNOPJrcImprhn54mbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.14 838/849] powerpc/powernv/prd: Unregister OPAL_MSG_PRD2 notifier during module unload
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 826/917] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
 Date:   Mon, 15 Nov 2021 18:05:21 +0100
-Message-Id: <20211115165448.591227195@linuxfoundation.org>
+Message-Id: <20211115165457.065564669@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,106 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 52862ab33c5d97490f3fa345d6529829e6d6637b upstream.
+[ Upstream commit 2498363310e9b5e5de0e104709adc35c9f3ff7d9 ]
 
-Commit 587164cd, introduced new opal message type (OPAL_MSG_PRD2) and
-added opal notifier. But I missed to unregister the notifier during
-module unload path. This results in below call trace if you try to
-unload and load opal_prd module.
+Using the % operator on a 64-bit variable is expensive and can
+cause a link failure:
 
-Also add new notifier_block for OPAL_MSG_PRD2 message.
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
+stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
+stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
 
-Sample calltrace (modprobe -r opal_prd; modprobe opal_prd)
-  BUG: Unable to handle kernel data access on read at 0xc0080000192200e0
-  Faulting instruction address: 0xc00000000018d1cc
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
-  CPU: 66 PID: 7446 Comm: modprobe Kdump: loaded Tainted: G            E     5.14.0prd #759
-  NIP:  c00000000018d1cc LR: c00000000018d2a8 CTR: c0000000000cde10
-  REGS: c0000003c4c0f0a0 TRAP: 0300   Tainted: G            E      (5.14.0prd)
-  MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 24224824  XER: 20040000
-  CFAR: c00000000018d2a4 DAR: c0080000192200e0 DSISR: 40000000 IRQMASK: 1
-  ...
-  NIP notifier_chain_register+0x2c/0xc0
-  LR  atomic_notifier_chain_register+0x48/0x80
-  Call Trace:
-    0xc000000002090610 (unreliable)
-    atomic_notifier_chain_register+0x58/0x80
-    opal_message_notifier_register+0x7c/0x1e0
-    opal_prd_probe+0x84/0x150 [opal_prd]
-    platform_probe+0x78/0x130
-    really_probe+0x110/0x5d0
-    __driver_probe_device+0x17c/0x230
-    driver_probe_device+0x60/0x130
-    __driver_attach+0xfc/0x220
-    bus_for_each_dev+0xa8/0x130
-    driver_attach+0x34/0x50
-    bus_add_driver+0x1b0/0x300
-    driver_register+0x98/0x1a0
-    __platform_driver_register+0x38/0x50
-    opal_prd_driver_init+0x34/0x50 [opal_prd]
-    do_one_initcall+0x60/0x2d0
-    do_init_module+0x7c/0x320
-    load_module+0x3394/0x3650
-    __do_sys_finit_module+0xd4/0x160
-    system_call_exception+0x140/0x290
-    system_call_common+0xf4/0x258
+As we know that we just want to check the alignment in
+stm32_dma_get_max_width(), there is no need for a full division, and
+using a simple mask is a faster replacement.
 
-Fixes: 587164cd593c ("powerpc/powernv: Add new opal message type")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211028165716.41300-1-hegdevasant@linux.vnet.ibm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Same in stm32_dma_set_xfer_param(), change this to only allow burst
+transfers if the address is a multiple of the length.
+stm32_dma_get_best_burst just after will take buf_len into account to fix
+burst in case of misalignment.
+
+Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211103153312.41483-1-amelie.delaunay@foss.st.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/powernv/opal-prd.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/dma/stm32-dma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/platforms/powernv/opal-prd.c
-+++ b/arch/powerpc/platforms/powernv/opal-prd.c
-@@ -369,6 +369,12 @@ static struct notifier_block opal_prd_ev
- 	.priority	= 0,
- };
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index c276a39aa7930..7dfc743ac4338 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+ 		max_width = max_width >> 1;
  
-+static struct notifier_block opal_prd_event_nb2 = {
-+	.notifier_call	= opal_prd_msg_notifier,
-+	.next		= NULL,
-+	.priority	= 0,
-+};
-+
- static int opal_prd_probe(struct platform_device *pdev)
- {
- 	int rc;
-@@ -390,9 +396,10 @@ static int opal_prd_probe(struct platfor
- 		return rc;
- 	}
+-	if (buf_addr % max_width)
++	if (buf_addr & (max_width - 1))
+ 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
  
--	rc = opal_message_notifier_register(OPAL_MSG_PRD2, &opal_prd_event_nb);
-+	rc = opal_message_notifier_register(OPAL_MSG_PRD2, &opal_prd_event_nb2);
- 	if (rc) {
- 		pr_err("Couldn't register PRD2 event notifier\n");
-+		opal_message_notifier_unregister(OPAL_MSG_PRD, &opal_prd_event_nb);
- 		return rc;
- 	}
- 
-@@ -401,6 +408,8 @@ static int opal_prd_probe(struct platfor
- 		pr_err("failed to register miscdev\n");
- 		opal_message_notifier_unregister(OPAL_MSG_PRD,
- 				&opal_prd_event_nb);
-+		opal_message_notifier_unregister(OPAL_MSG_PRD2,
-+				&opal_prd_event_nb2);
- 		return rc;
- 	}
- 
-@@ -411,6 +420,7 @@ static int opal_prd_remove(struct platfo
- {
- 	misc_deregister(&opal_prd_dev);
- 	opal_message_notifier_unregister(OPAL_MSG_PRD, &opal_prd_event_nb);
-+	opal_message_notifier_unregister(OPAL_MSG_PRD2, &opal_prd_event_nb2);
- 	return 0;
- }
- 
+ 	return max_width;
+@@ -756,7 +756,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			src_maxburst = 1;
+ 		else
+ 			src_maxburst = STM32_DMA_MAX_BURST;
+@@ -812,7 +812,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			dst_maxburst = 1;
+ 		else
+ 			dst_maxburst = STM32_DMA_MAX_BURST;
+-- 
+2.33.0
+
 
 
