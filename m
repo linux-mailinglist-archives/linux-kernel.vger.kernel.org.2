@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB72451C30
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAF8451C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356124AbhKPAOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:08 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49041 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237592AbhKOWaW (ORCPT
+        id S244293AbhKPAOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:14:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245366AbhKOWcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:30:22 -0500
-Received: by mail-io1-f72.google.com with SMTP id g23-20020a6be617000000b005e245747fb4so11589194ioh.15
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:27:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=kIpSl7OTDOLHk20ReymEq1RTk5wHjvJPF9rqkcV16TU=;
-        b=8IfQyR2FZZSq8EF25Q7Fd4wK/nidchyo4AZuJkNIDalDSJJw0vRPKI+/NLVz3EGlvK
-         DlYQGYmoCH0CcpAbPyTEvizB/mtGqLeVVagcrQeOLSfg65hnHuxNrHgYT21ZpJm3mqKD
-         xilY3KczhEvEJPSPyfBpQJAeEJlf/C4z8D7qlQXeFWAzduOq10it9PN1Av+C9D5nmVmm
-         RgicoWlLwF64oDUk/xW860QzV1cNqE46USeO/az94K4sRciTXJxaklinp7MP5J97IOnb
-         3QEbhXlm/rQQnX1848bTZMWSQ0ZVw5GJ0SpARrZ5BJxeYUyUQ5iONrneW0zHA51vcfZL
-         TJaQ==
-X-Gm-Message-State: AOAM533irg49rhsIH6O8GKG6qfY1Qt6V4Cpnd1mnzBvMrnVT2s1Q9Jvp
-        xWLS6EXIApJCWry15gViPmCSDhMuUulUTioi8rMVtdoZc+1L
-X-Google-Smtp-Source: ABdhPJy6tnPSbbeVXiUhnfpdq4GWAwFnOefCVem4X3H2LWQuOSWfKmyuyet81M11GbYIOR9vlM6+eyXDYKYkf/fhlWF8tEG/FZ79
+        Mon, 15 Nov 2021 17:32:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637015356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OIt+27Ybc/xFYhGbecRA+0z9cXZAuYWYBls/D16W8Nw=;
+        b=GX4cwn56feQ/3aRIW84ikHaRlFCzigBJK6dPR4fKU6r4cUJ6Oj15Z3S9FDafGWHaoePY9E
+        +Vhwk6M1UDvAUl+RXLlJ7LKt5M85vkrVWHeFllYfihUzIli949gAnvH8GVZJGqivcZLVDP
+        OChOyKbWNtfeUxHa01oUFWNjW/ToDV8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-EW6pyXFhMWW_xake_gd2mw-1; Mon, 15 Nov 2021 17:29:14 -0500
+X-MC-Unique: EW6pyXFhMWW_xake_gd2mw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D20418D6A2C;
+        Mon, 15 Nov 2021 22:29:13 +0000 (UTC)
+Received: from [10.22.33.148] (unknown [10.22.33.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7576960657;
+        Mon, 15 Nov 2021 22:29:11 +0000 (UTC)
+Message-ID: <ce034084-364b-e30f-cb7c-d6434afe3a7d@redhat.com>
+Date:   Mon, 15 Nov 2021 17:29:10 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c47:: with SMTP id d7mr1511320ilg.195.1637015246514;
- Mon, 15 Nov 2021 14:27:26 -0800 (PST)
-Date:   Mon, 15 Nov 2021 14:27:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000042b02105d0db5037@google.com>
-Subject: [syzbot] WARNING in mntput_no_expire (3)
-From:   syzbot <syzbot+5b1e53987f858500ec00@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v4] locking/rwsem: Make handoff bit handling more
+ consistent
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        mazhenhua <mazhenhua@xiaomi.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Maria Yu <quic_aiquny@quicinc.com>
+References: <20211112040753.389380-1-longman@redhat.com>
+ <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
+ <a141b93d-1945-a44d-467f-54b648cbf4d0@redhat.com>
+ <YZKEc+SgijOcB+0W@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YZKEc+SgijOcB+0W@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 11/15/21 11:01, Peter Zijlstra wrote:
+> On Sun, Nov 14, 2021 at 10:38:57PM -0500, Waiman Long wrote:
+>> On 11/12/21 07:10, Peter Zijlstra wrote:
+>>> Argh, rwsem_mark_wake() doesn't clear HANDOFF when list_empty(), and
+>>> write_slowpath() is *far* too clever about all of this.
+>> rwsem_mark_wake() does clear the HANDOFF flag if it was set.
+> Argh, yeah, I got confused by the whole !woken case, but that case won't
+> ever hit list_empty() either. Perhaps that stuff could use a bit of a
+> reflow too.
+I think your modification already have included the rewrite for that part.
+>
+>>>> @@ -1098,7 +1110,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
+>>>>    		 * In this case, we attempt to acquire the lock again
+>>>>    		 * without sleeping.
+>>>>    		 */
+>>>> -		if (wstate == WRITER_HANDOFF) {
+>>>> +		if (waiter.handoff_set) {
+>>> I'm thinking this wants to be something like:
+>>>
+>>> 		if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
+>> handoff_set flag is only set when the waiter becomes the first.
+> Yes, but a random waiter can wake up and see it be set and also start
+> spinning.
 
-HEAD commit:    fceb07950a7a Merge https://git.kernel.org/pub/scm/linux/ke..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f9e61ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5d447cdc3ae81d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=5b1e53987f858500ec00
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+The handoff_set flag can only be true for a first waiter. A random 
+waiter in the middle of a wait queue will never has this flag set.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This flag is set in two places in rwsem_try_write_lock():
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5b1e53987f858500ec00@syzkaller.appspotmail.com
+1)
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 13724 at fs/namespace.c:1187 mntput_no_expire+0xada/0xcd0 fs/namespace.c:1187
-Modules linked in:
-CPU: 0 PID: 13724 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:mntput_no_expire+0xada/0xcd0 fs/namespace.c:1187
-Code: 30 84 c0 0f 84 b9 fe ff ff 3c 03 0f 8f b1 fe ff ff 4c 89 44 24 10 e8 45 3e ec ff 4c 8b 44 24 10 e9 9d fe ff ff e8 d6 d1 a5 ff <0f> 0b e9 19 fd ff ff e8 ca d1 a5 ff e8 b5 e1 65 07 31 ff 89 c5 89
-RSP: 0018:ffffc90003fffc18 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff920007fff89 RCX: 0000000000000000
-RDX: ffff8880746c3a00 RSI: ffffffff81d1a0ba RDI: 0000000000000003
-RBP: ffff88807324ad80 R08: 0000000000000000 R09: ffffffff8fd39a0f
-R10: ffffffff81d19dd1 R11: 0000000000000000 R12: 0000000000000008
-R13: ffffc90003fffc68 R14: 00000000ffffffff R15: 0000000000000002
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fee49cd9c18 CR3: 0000000030b77000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- <TASK>
- mntput fs/namespace.c:1233 [inline]
- namespace_unlock+0x26b/0x410 fs/namespace.c:1452
- drop_collected_mounts fs/namespace.c:1935 [inline]
- put_mnt_ns fs/namespace.c:4344 [inline]
- put_mnt_ns+0x106/0x140 fs/namespace.c:4340
- free_nsproxy+0x43/0x4c0 kernel/nsproxy.c:191
- put_nsproxy include/linux/nsproxy.h:105 [inline]
- switch_task_namespaces+0xad/0xc0 kernel/nsproxy.c:249
- do_exit+0xba5/0x2a20 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:923
- __do_sys_exit_group kernel/exit.c:934 [inline]
- __se_sys_exit_group kernel/exit.c:932 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:932
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fee49bf8ae9
-Code: Unable to access opcode bytes at RIP 0x7fee49bf8abf.
-RSP: 002b:00007ffe70646608 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000029 RCX: 00007fee49bf8ae9
-RDX: 00007fee49bfa13a RSI: 0000000000000000 RDI: 0000000000000007
-RBP: 0000000000000007 R08: ffffffffffff0000 R09: 0000000000000029
-R10: 00000000000003b8 R11: 0000000000000246 R12: 00007ffe70646c70
-R13: 0000000000000003 R14: 00007ffe70646c0c R15: 00007fee49cd9b60
- </TASK>
+                if (has_handoff && !first)
+                         return false;
+                 new = count;
+
+                 if (count & RWSEM_LOCK_MASK) {
+                         /*
+                          * Only the first waiter can inherit a 
+previously set
+                          * handoff bit.
+                          */
+                         waiter->handoff_set = has_handoff;
+
+handoff_set can only be set to true here if first is also true. In that 
+case, it will also return false immediately afterward.
+
+2)
+
+         if (new & RWSEM_FLAG_HANDOFF) {
+                 waiter->handoff_set = true;
+                 lockevent_inc(rwsem_wlock_handoff);
+                 return false;
+         }
+
+Again, only first waiter will have a chance of setting the handoff bit 
+and have handoff_set set to true.
+
+>>>>    			enum owner_state owner_state;
+>>>>    			preempt_disable();
+>>> @@ -575,6 +610,11 @@ static inline bool rwsem_try_write_lock(
+>>>    		return false;
+>>>    	}
+>>> +	/*
+>>> +	 * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
+>>> +	 * success.
+>>> +	 */
+>>> +	list_del(&waiter->list);
+>>>    	rwsem_set_owner(sem);
+>>>    	return true;
+>>>    }
+>>> @@ -1128,16 +1153,14 @@ rwsem_down_write_slowpath(struct rw_sema
+>>>    		raw_spin_lock_irq(&sem->wait_lock);
+>>>    	}
+>>>    	__set_current_state(TASK_RUNNING);
+>>> -	list_del(&waiter.list);
+>> +    rwsem_del_waiter(sem, &waiters); ?
+> I tried that, but then we get an extra atomic in this path. As is I made
+> try_write_lock() do the full del_waiter, see the hunk above.
+
+You are right. I missed your change in rwsem_try_write_lock().
+
+Thanks,
+Longman
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
