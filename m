@@ -2,208 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E807B44FD49
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 03:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A3644FD4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 03:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhKOC6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 21:58:04 -0500
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:27434 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229714AbhKOC5z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 21:57:55 -0500
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AF2hYVE025818;
-        Mon, 15 Nov 2021 02:54:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=KYygJIlyzdOLDDJSZJZoyAkNmO7cQjjGtkcha/Ovnc0=;
- b=FUgEsnxKUa+C0/zsK2mnoOWhVDKiFt6/BzuBbE698I39ewbWChxFiLP4Nu6YSeUfZER0
- gPcvOg9vZjOf/wZXOeoFYJXAJirwrI4xy12o1po6pO7MNge/PjITLdHERyzboQicapOx
- a8UHu/C9DIKPt36DsEMdqTiXOBgHB0a3CvLmmVnyMiSSLq1f9B1sfX6Sb3YtIDkPJxps
- bdmjkPNPLhyFvq++is1zXlBCz0kKGx1syP4OYmCidV5Eflga0GByrhIqPsE7XhgXtq+h
- +N5NrW8M1YY6bMKWCJ1vVX5ArX2B/HawTl92gu9C8YPr9JWkV9u9AM47T5ZzNMa7kmml zw== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ca4b81df7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 02:54:40 +0000
+        id S229854AbhKODCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:02:30 -0500
+Received: from mail-sgaapc01on2108.outbound.protection.outlook.com ([40.107.215.108]:53089
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229568AbhKODCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 22:02:17 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I33XgkGSF1lpObVX2Lo3AAlHQJGlLj62xq4FGgrUmh96LTUbmiu4wb/eezNRfHr2ibgoWXLLeHSpsyDIigsPuKhsbi/rKTHnTUd8nBCFmlg/fyvArdq4qzeyMDusf3jdLnwQqSNDywOL0gfiK+FOYoWdiIKiHOxMMYOBqIm85cZVKco2MmmsdgIhdH+ocAmtLm/wwZJidbdzfIvcKgppLeHm1MlXB4/DCjCDORGo81lXmcQZ261DWRXu31BSElchFBC7gHTSndeuz3peiSun+IrTaUbWor7u1Q8K3UHfto0d4QBh4e17jiX5tYzrGdspOWTxgBEcd1WbVK1FdqW0yA==
+ b=Z8DEfvBiTcp9mLUr6hL4j5REiSPxOWN/+WLseiQeuUkisdh/iHSUHA0tWBDJzAwpbqyAnZpfB2oxJQn/IxWmGT5jU3ws70VT3wayRF96hPlGpVlbHZzWalo/zMZQealP9O4DLs/M6vcL6q+fa1L7ygJQGsZt757qOFX1ZECOq4d6m0F0j8J9bzeIUuR/VNeIdhqMvL5INQcSpJRyAdrp3NI23VC4aZG+ilqasyS+YksUpbgjf47+Fmzc9M1t5eGEnlI4yZ1Le4Ig3pe0eR2HlEahDx+SyuApZ2tpCQzLLPDDB1IZ9K6bstcVjJWSnsD09U4HxS9HRlxa3dGgViZC/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KYygJIlyzdOLDDJSZJZoyAkNmO7cQjjGtkcha/Ovnc0=;
- b=YD0bI2WyhiJRHreCiZhtDenJ/1LcWItEFpe2yJD5E4rAyPZG+D2JpHNXu5iFsBhxcoGEQ5v70q9BWr3eq8BNqkGxaHJ0D3AohxVt746cS0CkcRhNqUt5wl+Pk7AuBlxZ8zbXvS/5Kk5ENC/XVRKm3B7rXpw7bfSXQF8bikZrH4zc1wQtZohQ/mp//Ar944f+NmDvaA7OcabnbuLLABWEf2ReZjjc3mg+JBCyapEMcXm1UxKw/ynt/SqJCtQuKR3Z9ipJREb2LQ76qpU2qlMqtf8PySDkQjLvskVbuqBtgiDNrZ85XcUmEdFegzLYXXGN0u1FwK6Joo/qx422xIKFHw==
+ bh=2dkRKmHTyuGUijfe5dOG8G27tgwkg7/s+k9Y9wzs+Gs=;
+ b=QnlfJ4OrfX+IY0ZVNIgSTg5vSWdXFahl5/JZ/Syv8vZecR5OeCBlX4BuCCmfcCnn0UsL+LqWt9UYOxEvHwF5Rv+XvDl+RJVVlCpeL6RKW2zhIhDapaEArvGi8WnNVNipRfL2f98SIRxNk/sna5UueEcHg/qNA6AF7JChkW53xOuMoUf010FisRexAUxyFg5YCo1pltD03N4i3V14XKdrO9y378ee4fScghcWIErVAlpac5SnGg0fhpdAYLqHNO/KxWlzK8raHZYF3msELz3k/lsyCuIGDvGF2FSBY3eWow2qWqwUfJXIUOapr8AuAnZK7rZFKVVuDKSIa+2bAX5v0w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
- by PH7PR11MB5885.namprd11.prod.outlook.com (2603:10b6:510:134::22) with
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2dkRKmHTyuGUijfe5dOG8G27tgwkg7/s+k9Y9wzs+Gs=;
+ b=Ls+mt7XH/Yjcx/tbodci45P+1OMZQGioz8nJwae8GGHrCNT3XkzPfOL4sQFjHXoIRCljLfQ8c32iD1I+ZSAjYsvxVFhjLgGb0ivikJdR4bbcx47BKxJS3fTw8TxrS3ngFKPniMRY8l86MPWqSRJM2qBPoUKTTgWxkxjSfoKY/IM=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=vivo.com;
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com (2603:1096:301:37::11)
+ by PS2PR06MB2903.apcprd06.prod.outlook.com (2603:1096:300:53::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 15 Nov
- 2021 02:54:37 +0000
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::a090:40db:80ae:f06a]) by PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::a090:40db:80ae:f06a%9]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 02:54:37 +0000
-From:   "Li, Meng" <Meng.Li@windriver.com>
-To:     "horia.geanta@nxp.com" <horia.geanta@nxp.com>,
-        "pankaj.gupta@nxp.com" <pankaj.gupta@nxp.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] driver: crypto: caam: replace this_cpu_ptr with
- raw_cpu_ptr
-Thread-Topic: [PATCH v2] driver: crypto: caam: replace this_cpu_ptr with
- raw_cpu_ptr
-Thread-Index: AQHXzs6MNRGiDXkbWkOiBbqJdXuioKwD+oHQ
-Date:   Mon, 15 Nov 2021 02:54:36 +0000
-Message-ID: <PH0PR11MB5191886DE114EF98DF3694CBF1989@PH0PR11MB5191.namprd11.prod.outlook.com>
-References: <20211101031353.2119-1-Meng.Li@windriver.com>
-In-Reply-To: <20211101031353.2119-1-Meng.Li@windriver.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=windriver.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 499036b0-13a4-4be8-b432-08d9a7e3430b
-x-ms-traffictypediagnostic: PH7PR11MB5885:
-x-microsoft-antispam-prvs: <PH7PR11MB58859A763AA40948CBA4B834F1989@PH7PR11MB5885.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:486;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PsSWsFJLT7+14JIdQbXcVkJ24V7cyDjHeLvrpjGv8NXV+3pqY+GM13TtOyaNzI6XXxaQ1avKEeGEeNF/hb3OtQCzAbsNB2aQqg1jWgQqzq0LLqNZxotc0OoQ9tlIxLFVmkMtZGS43UekEK7V5aJu2QAQP3lTFOErZrcqaX1TgBqZojsvzZzAEySJdxbLH6OyKsP1CBPJvyQfnHNvNVe2/Ze/SX2CzYpha6ngCNaPQtHFCUIAoFtgiT8dvT3hY2reckW4Tfi496eVj3yTy67tBB9myNpbaLn7KZi3TIxTRfqgjTH+npLscGuCz/QgkKKcxiHgNIgo31r1Ip7GYaeQXCdvuzv4IMh2ZnwNHVhIoRZQ3LAhilHdK4PDdDC5ToKBbhcsEgNPWggEVI/4bAtFE07/tKOa5I3dXxUS0vvYOHeI7z3itu4UWnTfGGHvZry9P1aCximGc0VzTHD2zUDhcG0/b+ckOITUfIU9tFLdwfu+hRaRaqPkNhQs3DoYXnRp0CjhZuxdm1h+GT7DcDEGu99H5XCVyQBH77MJ9np6DVb7ROGvlI7oju92be8rIcimEgov9ekFAMl7HIxJYMaeHoiST5nFzvxkow/P0JrZjng4vCW348UNC6g8MDw1wJ/zNkS3ierDUDu4n4V2aM8A3/vIr/RCiQwpO6L6Za9f/mEwSE3yVLQyzl9k4aj6BOGOB6aA/9lzNji7a5Nc0ah/iA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(55016002)(7696005)(316002)(110136005)(54906003)(186003)(71200400001)(66476007)(66556008)(64756008)(66946007)(4326008)(83380400001)(66446008)(86362001)(5660300002)(76116006)(9686003)(8936002)(122000001)(33656002)(2906002)(38070700005)(8676002)(52536014)(6506007)(508600001)(53546011)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WC23yuu1gj1u8knSYInGj6Aa4hNinmeSxayXA3idsxOZ1Wpjbx4Y72IyD9Nn?=
- =?us-ascii?Q?XHUtB82KIKTh686OvmJtq3lAcua6L1KufDV8QoVOzB3hUcT4+0vZ5CCFj4Ne?=
- =?us-ascii?Q?4sGtf1N1cT5xga6/K9d8ghzM25Qu0dGYrfpCsmBxVgiOwCS1tF9LXu5ENtdR?=
- =?us-ascii?Q?bwDB9y3yl4oPHDT1T4nEgybYPhp8GGwvKQ5z4+c2wr1I0jUsWrTcQQfeodzt?=
- =?us-ascii?Q?KiTwhL8/YcsLTelM88BFhfRAuK9TId1d2pLr5K0+Y3DZRLn9GohymQ5GFajJ?=
- =?us-ascii?Q?oNzKT0NUJu6NIz7eIYfyqWM4GSc7gHAj8zkZYdzbJ0iBQcTZ9tvgSnENZWD6?=
- =?us-ascii?Q?pSKupv/tllEIwoPvkWmppH0zClKzhG7UpP3+Bukb0XGIme7aA1WPSTpulUhg?=
- =?us-ascii?Q?Wyv3VEAJzM6B/Rg/iCg9qxUrTJ9AbAGK2gq2Sc/4Oewy7h2USPbCE4IONwzV?=
- =?us-ascii?Q?LoU9ntzKFKy4NAIj9FIHQ5mj3EevTZdHuqBVMxL80GlIMtZmx28lG0nwR2jk?=
- =?us-ascii?Q?bqeRISjj4mFCDcsJBZW4bzfnOlSBEp4wdUyxuCdA2kk4Tn3945V25RYtpTDf?=
- =?us-ascii?Q?pUF6eQAj8GwAJtSQene1bM/NmHzuYRKiX5hMEZpnF2OqaenAHNmWalyHAr87?=
- =?us-ascii?Q?a3jEPD8ScuALZ+k6wvgCX9ZWhNuecUo6uUD9vXNceRHcFe6eSbfJMldD95yF?=
- =?us-ascii?Q?E+oSYI1eHgtDDsRjEQReErrhRy33SnVSk/cPq3HzD/Ujt45A7lfs6pJBNuAH?=
- =?us-ascii?Q?HrKjy/DPxFP1VTaynQGAcDSFYacW6ngZPZb9VXKt1Tcd/OYAsfAGXcHGjbj2?=
- =?us-ascii?Q?h6rcG0Zz3T7Wpj8mxNVoFMhCUETcMupxRaCxUgZbJ0rabsczgb4EqV+rZNqH?=
- =?us-ascii?Q?cLn+GiETRqMwmlRShmcm958e8bF9GgN/2BJh+JuuG6eMCw0hU50gyLHJnWtU?=
- =?us-ascii?Q?IMwtDk8D6yq28t4dhej8p7P4YTlrUclWA0MdFP15RcbqJO2rnwllHt1Y85Da?=
- =?us-ascii?Q?VA1DlXUsNIKAJC9kX8lMfbemNoSYvzVP2fmzNUYhCxxprpP5nnY7l+9I1PRl?=
- =?us-ascii?Q?nSBa+dPCxKUPsODkZKt5hiV6CXA3yql/N+Jz/f809FDef5aju84oibq08GPF?=
- =?us-ascii?Q?vdiLwKKuCasthTKyERKggwPwZmZBGj+rwcg9Qk5ck5alagIKN/whM9tB+5JK?=
- =?us-ascii?Q?UHnYxXmQiYaWbezQfJpSX1uTlFnVFWsbj/SF5N0go0Q8TyyuNubvT2aZUkN+?=
- =?us-ascii?Q?aUN3VCbBvPOjshiyhWHCreW9GGMrNdvBFJHHfBDBmmgq6JjZTIZVA/JTTATQ?=
- =?us-ascii?Q?E36MFaOSRW9nQNI4pUj57zRoRDup5OT4c9TE3ag5zRm3KLe/fdUVSErjdDQ/?=
- =?us-ascii?Q?4LgJmRRUADBfEMXSLqA3KljTCMffhyKXpo1gfdWvpedO1ex9gBbI/YApyEt8?=
- =?us-ascii?Q?bgwxYwlNqxVMQlO/mxhr/4zTDm+s0dv/XpGO6rjwMPpSTDzvFQwoT8idaWYc?=
- =?us-ascii?Q?XozWDtVRabc27Dc1uOf5GffFAxeCgVtLQ937sASeP1L9y8rt1nKwMinJTxm6?=
- =?us-ascii?Q?VaMIHU1vDZEBqqJvd2NIeN2vPDNYB5JfG/PWzNy6ZgbOHJ+vuu4rjFTnMWTn?=
- =?us-ascii?Q?cA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.18; Mon, 15 Nov
+ 2021 02:59:18 +0000
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385]) by PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385%5]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 02:59:18 +0000
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        Felix Kuehling <felix.kuehling@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Evan Quan <evan.quan@amd.com>, shaoyunl <shaoyun.liu@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/amd/amdgpu: fix potential memleak
+Date:   Sun, 14 Nov 2021 18:58:50 -0800
+Message-Id: <20211115025901.2598-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.33.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0073.apcprd02.prod.outlook.com
+ (2603:1096:4:90::13) To PSAPR06MB4021.apcprd06.prod.outlook.com
+ (2603:1096:301:37::11)
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
+Received: from ubuntu.localdomain (218.213.202.190) by SG2PR02CA0073.apcprd02.prod.outlook.com (2603:1096:4:90::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend Transport; Mon, 15 Nov 2021 02:59:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: abc96290-75d6-4456-ede3-08d9a7e3ea3e
+X-MS-TrafficTypeDiagnostic: PS2PR06MB2903:
+X-Microsoft-Antispam-PRVS: <PS2PR06MB2903810E60E18A811D651330DF989@PS2PR06MB2903.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qcRsVUei7IMG2gcGfqvKjL+enIfJozMfFYP9NLFMdUSTqqwB6QBwYUP/g0qZpFppeBUS0nDEDlhxciV+WsOsGIAhe5TnRY+svc+QSm9bhpEo8/VbX3fJ8t/iwEglmtRw/9PAEsgpKeU3CrxJAbHbtxL8joNkYnB4bViaGj8ghq92CCteuIDy0HePgtLSgb0HVVLlG6nRhqvZJsehF75uCzPFbM6o33HXrsvrA+X4lHc3OSYgpyKLIf0zqNKkCg+IVCpzfX8FeYh0UXkq/zUJl/yAG50J9MJKqqJJqzLvEuj0rUcsq+WI5hGQqMhnglavRoLbmdhBPU83ej0/wVIizbc42RFBILGXO9nBxzYbKiXvJOVFt5iZ9FqveAXd9dEgtm8qqXTSrh5HNYvPJv3adpUWyC0mutdtgClgfY2xGyF6vepxQHY9L0wraqREJw3EGbLQlGPZhyh3xuqKk0uuUSEb0ByrFqEz3yZ6QlHU7cMPAvL8qDf2brdzy32TN7wGuRa9Cz3HFlixtCmx2gQy8G6wzMUh3U2YzPFa8T2/w6yJ8RSVeedKUEoPk4sN3So4t1W/vR7ukC2yBaCQRngDzVQNSEdFV/v1IBN+UDnE4M+Isa8jX4p/wXWf2vq34a21tHPT9fndZeX/Tm7zJPofW84Gs9G2N24xf0Ijx8V2JKu3PYU30W3aIiysc31Kd8sv98pYeg0N5UIqucpQr3VjH50mzh0rQ1+3UZgFeCqz/uE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB4021.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(4744005)(956004)(66476007)(66556008)(6666004)(2616005)(1076003)(38350700002)(38100700002)(6486002)(6506007)(66946007)(8676002)(2906002)(921005)(36756003)(5660300002)(86362001)(26005)(508600001)(4326008)(107886003)(7416002)(316002)(6512007)(52116002)(186003)(110136005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4AsGnTKUBZZPStOYN1ckNEnNHeIW/F00308f7qgDKPC3395WBOxLRwomnyFl?=
+ =?us-ascii?Q?F40z3rQBZd/ggmFe0qGajbWVGq3W7N8cjuBYPUCiTdg5Cqgyx67shMtzbr1B?=
+ =?us-ascii?Q?97faOycMt7q6TFoE2P5INsMX5Yz/4z3x549gp9m0zLNOKFYH6gB4Os0Dv+7H?=
+ =?us-ascii?Q?eknQWSO+QaSnd1uEeF37grDI0s6f8tTlA2FU8Z+Wrd9YpBQiu1G91DgK2mlH?=
+ =?us-ascii?Q?HC1F5rkWtlyq8zTpMBRv9XCAaYVhrQndNgzMRDUOg/paeDGArIudB97c/5ON?=
+ =?us-ascii?Q?zIRro75kWQZ3TpxmfMG5qd+tQNFWkMMyT9EwAu74L3HL1dkntt8IUlmYUC6b?=
+ =?us-ascii?Q?x40ASwIFZk2uQ9nWtFmy+csTnlFgkxrBBkz7gIDNwHjyS6b1Bbj2ckr7VyNp?=
+ =?us-ascii?Q?2v55NnaPM+SzqOzNjvCaz4TqzO0zUo4X1qfBKHNM+11UuouhHbVG0jMjudhS?=
+ =?us-ascii?Q?u2JqSsK9yJMFhPFUmwZLqqlzkH1Iwvv5FwVWa3ZKTEBKnK3vRrWEM18jpWv2?=
+ =?us-ascii?Q?rTvVAkGDoQo9oO91/o/JtzD/rH91EDBwcmu477bbk+FX/mQ5uftNHzc9fg0K?=
+ =?us-ascii?Q?y0DSnqExCZSKunCxkZ5VhxboR+5h/EqUbgvZeBIY8Z1YKFPtlfkxtOzRGFZM?=
+ =?us-ascii?Q?19nB2SzzlSgVeg+MNwFdcxjQ+uzdt9H4hUlrYZq9ebqLBg2M+eVJpQvCyj3e?=
+ =?us-ascii?Q?/JaMJiZ6rtBDEJ5lPRJ7eDICx8U9AiQ0mGV+gk4bNQ2HzYoWF5upLYkCK7pp?=
+ =?us-ascii?Q?RV8tF6FDaGboATjuNjWC9Z1QN6iPc8uy3R/NFN1ICswu6zmp38+E8sgw2SIy?=
+ =?us-ascii?Q?peqx6vjgPMQQzb5TTLZPKVTTx53AC6VRCsj/FSmxXR5t1u5fmjmQa6/4LPAm?=
+ =?us-ascii?Q?AVN9vVkiCtxIuBee5zwQWvVkNXYBnmmHwALOsMNLUpCSYTWbrEL1wsB0mUqv?=
+ =?us-ascii?Q?KCf3uLMpHvrLVjAIoibKjTyQURugYgYsgkbpRb7NsznuoQAYDCqusgaQ9M4Q?=
+ =?us-ascii?Q?3anFCX99V89X++ztP06VWfHGGMDkQL1yrnKjaB0Om2J2HSvqr75gO5M+bzw6?=
+ =?us-ascii?Q?YrB/bIzC2JtKJnyxOddrYeqeQOAldHBOIRpuyL8uGzBzK4Ws4fRGHqRLxl1N?=
+ =?us-ascii?Q?/ZRh6416j9u9xQOoPclAFCc3zmWGB9vND8oWGxVyXc0i9Cc+nHUCvU/5G0IY?=
+ =?us-ascii?Q?hYsWRjCFk8B7Ixjfq8C0ZVzdWkVNyaRgyKqAINOUCrdo2Hy82aqgLyIwH5wD?=
+ =?us-ascii?Q?YHICfDSdHMyOXlZs1BsrNsj0zONEg51hKIKJG5yx9pVMoAxetVjmYpetmvg9?=
+ =?us-ascii?Q?xr+mpt6t9bYQVf3l8lYL2EHry6wadkGtvW2AtjNbf6mxp9miWLmc2UK7FG//?=
+ =?us-ascii?Q?+S7jy5/2LWpQe2m/OVB2DqR8Oau6L4Sa27XeU9MBa1LhrGmGt1xJcNHnLmZ3?=
+ =?us-ascii?Q?qEREX91o/CNG0ShigbTzaJWGPbsbVeNs2gYahbXOs95OCtx/zB2uEH1lmlXu?=
+ =?us-ascii?Q?bV7c3QiTk6rZ0yoHmEOpHxlNH+6Rrz8oz5uzWcZ9qPm2LB2R/01bwy/UZtge?=
+ =?us-ascii?Q?WjOXgTuDAMfo//AEfp4LYRtL+BeVTPpSwASjCF++jwU3u/jbmSZb8YKIowXo?=
+ =?us-ascii?Q?t5EOdY/13vciQraEqSBwe/Y=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abc96290-75d6-4456-ede3-08d9a7e3ea3e
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4021.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 499036b0-13a4-4be8-b432-08d9a7e3430b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 02:54:36.9908
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 02:59:18.2089
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dbJUj7xHsaG3sWh/pcjrR0+l/RdnjpL/wenTy2dsIpXf/KHKme/YeoX+EW9EJAxQ3U1A/PBcMkUl9jGzYtADmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5885
-X-Proofpoint-GUID: Yy6DzVernAwvrx0QYBT1ztNiknIQ4gvm
-X-Proofpoint-ORIG-GUID: Yy6DzVernAwvrx0QYBT1ztNiknIQ4gvm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_02,2021-11-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 spamscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111150014
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: paYU84gXcavc6ZHpx/Afv0m3FtAOKbtcsHtE2j/ysnXtT5NRA6Gop1D6GQynJ8jBo9bOJJ/cr7JGRkFFxByY0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PS2PR06MB2903
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Is there any comments about this patch?
+In function amdgpu_get_xgmi_hive, when kobject_init_and_add failed
+There is a potential memleak if not call kobject_put.
 
-Thanks,
-Limeng
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> -----Original Message-----
-> From: Li, Meng <Meng.Li@windriver.com>
-> Sent: Monday, November 1, 2021 11:14 AM
-> To: horia.geanta@nxp.com; pankaj.gupta@nxp.com;
-> herbert@gondor.apana.org.au; davem@davemloft.net
-> Cc: linux-crypto@vger.kernel.org; linux-kernel@vger.kernel.org; Li, Meng
-> <Meng.Li@windriver.com>
-> Subject: [PATCH v2] driver: crypto: caam: replace this_cpu_ptr with
-> raw_cpu_ptr
->=20
-> When enable the kernel debug config, there is below calltrace detected:
-> BUG: using smp_processor_id() in preemptible [00000000] code:
-> cryptomgr_test/339 caller is debug_smp_processor_id+0x20/0x30
-> CPU: 9 PID: 339 Comm: cryptomgr_test Not tainted 5.10.63-yocto-standard
-> #1 Hardware name: NXP Layerscape LX2160ARDB (DT) Call trace:
->  dump_backtrace+0x0/0x1a0
->  show_stack+0x24/0x30
->  dump_stack+0xf0/0x13c
->  check_preemption_disabled+0x100/0x110
->  debug_smp_processor_id+0x20/0x30
->  dpaa2_caam_enqueue+0x10c/0x25c
->  ......
->  cryptomgr_test+0x38/0x60
->  kthread+0x158/0x164
->  ret_from_fork+0x10/0x38
-> According to the comment in commit ac5d15b4519f("crypto: caam/qi2
->  - use affine DPIOs "), because preemption is no longer disabled while tr=
-ying
-> to enqueue an FQID, it might be possible to run the enqueue on a differen=
-t
-> CPU(due to migration, when in process context), however this wouldn't be =
-a
-> functionality issue. But there will be above calltrace when enable kernel
-> debug config. So, replace this_cpu_ptr with raw_cpu_ptr to avoid above ca=
-ll
-> trace.
->=20
-> Fixes: ac5d15b4519f ("crypto: caam/qi2 - use affine DPIOs")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
-> v2:
->=20
-> Add comment to describe why the raw_cpu_ptr is safe.
->  drivers/crypto/caam/caamalg_qi2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/crypto/caam/caamalg_qi2.c
-> b/drivers/crypto/caam/caamalg_qi2.c
-> index 8b8ed77d8715..6753f0e6e55d 100644
-> --- a/drivers/crypto/caam/caamalg_qi2.c
-> +++ b/drivers/crypto/caam/caamalg_qi2.c
-> @@ -5470,7 +5470,7 @@ int dpaa2_caam_enqueue(struct device *dev,
-> struct caam_request *req)
->  	dpaa2_fd_set_len(&fd, dpaa2_fl_get_len(&req->fd_flt[1]));
->  	dpaa2_fd_set_flc(&fd, req->flc_dma);
->=20
-> -	ppriv =3D this_cpu_ptr(priv->ppriv);
-> +	ppriv =3D raw_cpu_ptr(priv->ppriv);
->  	for (i =3D 0; i < (priv->dpseci_attr.num_tx_queues << 1); i++) {
->  		err =3D dpaa2_io_service_enqueue_fq(ppriv->dpio, ppriv-
-> >req_fqid,
->  						  &fd);
-> --
-> 2.17.1
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+index 0fad2bf854ae..567df2db23ac 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+@@ -386,6 +386,7 @@ struct amdgpu_hive_info *amdgpu_get_xgmi_hive(struct amdgpu_device *adev)
+ 			"%s", "xgmi_hive_info");
+ 	if (ret) {
+ 		dev_err(adev->dev, "XGMI: failed initializing kobject for xgmi hive\n");
++		kobject_put(&hive->kobj);
+ 		kfree(hive);
+ 		hive = NULL;
+ 		goto pro_end;
+-- 
+2.33.1
 
