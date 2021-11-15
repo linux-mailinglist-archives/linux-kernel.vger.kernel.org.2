@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542614518D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FE2451ABC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351776AbhKOXI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59676 "EHLO mail.kernel.org"
+        id S1351357AbhKOXmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243375AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E3516348C;
-        Mon, 15 Nov 2021 18:12:26 +0000 (UTC)
+        id S1343966AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF9F561504;
+        Mon, 15 Nov 2021 18:49:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999947;
-        bh=dO4Em7Otl80EnctTdADWwVVQuJMq6UvPT5Gx1yuNDcA=;
+        s=korg; t=1637002183;
+        bh=wAEORlIloIhquPQmQylodOIuiUktgC2qMMWzZ4isTm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pg5JkR089e+86QxjC/qHYiJm+JSwcRW/otTLp/Ns9NmU4TH+je+eitoOAbCIgghSy
-         RS2BHAfT3GGkxq28bktNwiIyExdWWJNwSBOnQ6qYvJW8NvGWiY0mgLvBf67YOqJE0u
-         jkvSIMG40PQMYRFNHRSDUTBc3RIOhSpNzxMv8lTI=
+        b=nqo1cAckKJxoiUDj+5KGwhTk1n/VCGUyebhAKn8kYvowTsUaHsKtMTG4o2Gnt/8ik
+         NQgXaJZ/VdtyFdBYDuryq3JsdIKoy9wgnTHzGZ70+EqTWyM04urpBNblidwW/9P7Uo
+         4C97e1sg9bv3FG/z27Fp6nO7SIf2APcwJq4FScxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Tim Gardner <tim.gardner@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 481/849] net: enetc: unmap DMA in enetc_send_cmd()
+        stable@vger.kernel.org, Deren Wu <deren.wu@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 469/917] mt76: mt7921: fix dma hang in rmmod
 Date:   Mon, 15 Nov 2021 17:59:24 +0100
-Message-Id: <20211115165436.550986319@linuxfoundation.org>
+Message-Id: <20211115165444.680127147@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Gardner <tim.gardner@canonical.com>
+From: Deren Wu <deren.wu@mediatek.com>
 
-[ Upstream commit cd4bc63de774eee95e9bac26a565cd80e0fca421 ]
+[ Upstream commit a23f80aa9c5e6ad4ec8df88037b7ffd4162b1ec4 ]
 
-Coverity complains of a possible dereference of a null return value.
+The dma would be broken after rmmod flow. There are two different
+cases causing this issue.
+1. dma access without privilege.
+2. hw access sequence borken by another context.
 
-   	5. returned_null: kzalloc returns NULL. [show details]
-   	6. var_assigned: Assigning: si_data = NULL return value from kzalloc.
-488        si_data = kzalloc(data_size, __GFP_DMA | GFP_KERNEL);
-489        cbd.length = cpu_to_le16(data_size);
-490
-491        dma = dma_map_single(&priv->si->pdev->dev, si_data,
-492                             data_size, DMA_FROM_DEVICE);
+This patch handle both cases to avoid hw crash.
 
-While this kzalloc() is unlikely to fail, I did notice that the function
-returned without unmapping si_data.
-
-Fix this by refactoring the error paths and checking for kzalloc()
-failure.
-
-Fixes: 888ae5a3952ba ("net: enetc: add tc flower psfp offload driver")
-Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org (open list)
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-Acked-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2b9ea5a8cf1bd ("mt76: mt7921: add mt7921_dma_cleanup in mt7921_unregister_device")
+Signed-off-by: Deren Wu <deren.wu@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/freescale/enetc/enetc_qos.c   | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/init.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_qos.c b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-index 4577226d3c6ad..0536d2c76fbc4 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-@@ -486,14 +486,16 @@ static int enetc_streamid_hw_set(struct enetc_ndev_priv *priv,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+index 52d40385fab6c..78a00028137bd 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+@@ -251,8 +251,17 @@ int mt7921_register_device(struct mt7921_dev *dev)
  
- 	data_size = sizeof(struct streamid_data);
- 	si_data = kzalloc(data_size, __GFP_DMA | GFP_KERNEL);
-+	if (!si_data)
-+		return -ENOMEM;
- 	cbd.length = cpu_to_le16(data_size);
- 
- 	dma = dma_map_single(&priv->si->pdev->dev, si_data,
- 			     data_size, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(&priv->si->pdev->dev, dma)) {
- 		netdev_err(priv->si->ndev, "DMA mapping failed!\n");
--		kfree(si_data);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto out;
- 	}
- 
- 	cbd.addr[0] = cpu_to_le32(lower_32_bits(dma));
-@@ -512,12 +514,10 @@ static int enetc_streamid_hw_set(struct enetc_ndev_priv *priv,
- 
- 	err = enetc_send_cmd(priv->si, &cbd);
- 	if (err)
--		return -EINVAL;
-+		goto out;
- 
--	if (!enable) {
--		kfree(si_data);
--		return 0;
--	}
-+	if (!enable)
-+		goto out;
- 
- 	/* Enable the entry overwrite again incase space flushed by hardware */
- 	memset(&cbd, 0, sizeof(cbd));
-@@ -560,6 +560,10 @@ static int enetc_streamid_hw_set(struct enetc_ndev_priv *priv,
- 	}
- 
- 	err = enetc_send_cmd(priv->si, &cbd);
-+out:
-+	if (!dma_mapping_error(&priv->si->pdev->dev, dma))
-+		dma_unmap_single(&priv->si->pdev->dev, dma, data_size, DMA_FROM_DEVICE);
+ void mt7921_unregister_device(struct mt7921_dev *dev)
+ {
++	int i;
++	struct mt76_connac_pm *pm = &dev->pm;
 +
- 	kfree(si_data);
+ 	mt76_unregister_device(&dev->mt76);
++	mt76_for_each_q_rx(&dev->mt76, i)
++		napi_disable(&dev->mt76.napi[i]);
++	cancel_delayed_work_sync(&pm->ps_work);
++	cancel_work_sync(&pm->wake_work);
++
+ 	mt7921_tx_token_put(dev);
++	mt7921_mcu_drv_pmctrl(dev);
+ 	mt7921_dma_cleanup(dev);
+ 	mt7921_mcu_exit(dev);
  
- 	return err;
 -- 
 2.33.0
 
