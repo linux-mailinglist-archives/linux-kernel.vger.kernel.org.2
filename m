@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9180A451998
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88AA451F0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353893AbhKOXYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:24:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        id S1352897AbhKPAiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244902AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CD763280;
-        Mon, 15 Nov 2021 18:25:12 +0000 (UTC)
+        id S1344683AbhKOTZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C4F9636AB;
+        Mon, 15 Nov 2021 19:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000712;
-        bh=CetfNMgAKZlEJwEoEBexEWFzrY/qhFBW5oH6L+yRd68=;
+        s=korg; t=1637002935;
+        bh=PaFViRxYXC6xhGa2I6uhquoAwS32oBto5srNQd+dT1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YJDcZ5xYheeFjO2s+YQd0LsSx4xZeakycL+BdRkUiGnCtvhZsxqjSx80XpmkXcPcY
-         gF1bzzmN3wPDl5jUuMHvB0mpublb5wKDRnnZFGUxkALukA9HJxl50mgCOPuEyFbFeV
-         NEO/MCBIy+gSNBp6dg/EVVG9GTdadBAE3fPyYAyI=
+        b=JknHKOVb7ccV0VHMAc15L4oGgeazg2fm/Ha7fOp2MK0CGW0jQgHKQ/UBHLGRviZ/W
+         GV6h6vlaCbJb928t2GTHgUk/N2qO5r7zY8cffZvSAAuVQCoFmoRe1nzLMAOXM+it+g
+         BR0yfyWCHJIivAOz3IDbeYBFmD5xgoH2xXOCXNcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jussi Maki <joamaki@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 763/849] bpf, sockmap: Remove unhash handler for BPF sockmap usage
+Subject: [PATCH 5.15 751/917] scsi: qla2xxx: edif: Fix app start delay
 Date:   Mon, 15 Nov 2021 18:04:06 +0100
-Message-Id: <20211115165446.062554275@linuxfoundation.org>
+Message-Id: <20211115165454.383059057@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +43,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit b8b8315e39ffaca82e79d86dde26e9144addf66b ]
+[ Upstream commit b492d6a4880fddce098472dec5086d37802c68d3 ]
 
-We do not need to handle unhash from BPF side we can simply wait for the
-close to happen. The original concern was a socket could transition from
-ESTABLISHED state to a new state while the BPF hook was still attached.
-But, we convinced ourself this is no longer possible and we also improved
-BPF sockmap to handle listen sockets so this is no longer a problem.
+Current driver does unnecessary pause for each session to get to certain
+state before allowing the app start call to return. In larger environment,
+this introduces a long delay.  Originally the delay was meant to
+synchronize app and driver. However, the with current implementation the
+two sides use various events to synchronize their state.
 
-More importantly though there are cases where unhash is called when data is
-in the receive queue. The BPF unhash logic will flush this data which is
-wrong. To be correct it should keep the data in the receive queue and allow
-a receiving application to continue reading the data. This may happen when
-tcp_abort() is received for example. Instead of complicating the logic in
-unhash simply moving all this to tcp_close() hook solves this.
+The same is applied to the authentication failure call.
 
-Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20211103204736.248403-3-john.fastabend@gmail.com
+Link: https://lore.kernel.org/r/20211026115412.27691-6-njavali@marvell.com
+Fixes: 4de067e5df12 ("scsi: qla2xxx: edif: Add N2N support for EDIF")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_edif.c | 64 ++-------------------------------
+ 1 file changed, 3 insertions(+), 61 deletions(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 9d068153c3168..cd6c2ebc1185c 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -488,7 +488,6 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 				   struct proto *base)
- {
- 	prot[TCP_BPF_BASE]			= *base;
--	prot[TCP_BPF_BASE].unhash		= sock_map_unhash;
- 	prot[TCP_BPF_BASE].close		= sock_map_close;
- 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
- 	prot[TCP_BPF_BASE].stream_memory_read	= tcp_bpf_stream_read;
+diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
+index 615596becb7a1..cf62f26ce27d9 100644
+--- a/drivers/scsi/qla2xxx/qla_edif.c
++++ b/drivers/scsi/qla2xxx/qla_edif.c
+@@ -290,63 +290,6 @@ qla_edif_app_check(scsi_qla_host_t *vha, struct app_id appid)
+ 	return false;
+ }
+ 
+-static void qla_edif_reset_auth_wait(struct fc_port *fcport, int state,
+-		int waitonly)
+-{
+-	int cnt, max_cnt = 200;
+-	bool traced = false;
+-
+-	fcport->keep_nport_handle = 1;
+-
+-	if (!waitonly) {
+-		qla2x00_set_fcport_disc_state(fcport, state);
+-		qlt_schedule_sess_for_deletion(fcport);
+-	} else {
+-		qla2x00_set_fcport_disc_state(fcport, state);
+-	}
+-
+-	ql_dbg(ql_dbg_edif, fcport->vha, 0xf086,
+-		"%s: waiting for session, max_cnt=%u\n",
+-		__func__, max_cnt);
+-
+-	cnt = 0;
+-
+-	if (waitonly) {
+-		/* Marker wait min 10 msecs. */
+-		msleep(50);
+-		cnt += 50;
+-	}
+-	while (1) {
+-		if (!traced) {
+-			ql_dbg(ql_dbg_edif, fcport->vha, 0xf086,
+-			    "%s: session sleep.\n",
+-			    __func__);
+-			traced = true;
+-		}
+-		msleep(20);
+-		cnt++;
+-		if (waitonly && (fcport->disc_state == state ||
+-			fcport->disc_state == DSC_LOGIN_COMPLETE))
+-			break;
+-		if (fcport->disc_state == DSC_LOGIN_AUTH_PEND)
+-			break;
+-		if (cnt > max_cnt)
+-			break;
+-	}
+-
+-	if (!waitonly) {
+-		ql_dbg(ql_dbg_edif, fcport->vha, 0xf086,
+-		    "%s: waited for session - %8phC, loopid=%x portid=%06x fcport=%p state=%u, cnt=%u\n",
+-		    __func__, fcport->port_name, fcport->loop_id,
+-		    fcport->d_id.b24, fcport, fcport->disc_state, cnt);
+-	} else {
+-		ql_dbg(ql_dbg_edif, fcport->vha, 0xf086,
+-		    "%s: waited ONLY for session - %8phC, loopid=%x portid=%06x fcport=%p state=%u, cnt=%u\n",
+-		    __func__, fcport->port_name, fcport->loop_id,
+-		    fcport->d_id.b24, fcport, fcport->disc_state, cnt);
+-	}
+-}
+-
+ static void
+ qla_edif_free_sa_ctl(fc_port_t *fcport, struct edif_sa_ctl *sa_ctl,
+ 	int index)
+@@ -583,8 +526,8 @@ qla_edif_app_start(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
+ 			ql_dbg(ql_dbg_edif, vha, 0x911e,
+ 			       "%s wwpn %8phC calling qla_edif_reset_auth_wait\n",
+ 			       __func__, fcport->port_name);
+-			fcport->edif.app_sess_online = 1;
+-			qla_edif_reset_auth_wait(fcport, DSC_LOGIN_PEND, 0);
++			fcport->edif.app_sess_online = 0;
++			qlt_schedule_sess_for_deletion(fcport);
+ 			qla_edif_sa_ctl_init(vha, fcport);
+ 		}
+ 	}
+@@ -800,7 +743,6 @@ qla_edif_app_authok(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
+ 		ql_dbg(ql_dbg_edif, vha, 0x911e,
+ 		    "%s AUTH complete - RESUME with prli for wwpn %8phC\n",
+ 		    __func__, fcport->port_name);
+-		qla_edif_reset_auth_wait(fcport, DSC_LOGIN_PEND, 1);
+ 		qla24xx_post_prli_work(vha, fcport);
+ 	}
+ 
+@@ -873,7 +815,7 @@ qla_edif_app_authfail(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
+ 
+ 		if (qla_ini_mode_enabled(fcport->vha)) {
+ 			fcport->send_els_logo = 1;
+-			qla_edif_reset_auth_wait(fcport, DSC_LOGIN_PEND, 0);
++			qlt_schedule_sess_for_deletion(fcport);
+ 		}
+ 	}
+ 
 -- 
 2.33.0
 
