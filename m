@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177A94518D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B891451E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352126AbhKOXIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59656 "EHLO mail.kernel.org"
+        id S1344625AbhKPAfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243373AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 049F06348A;
-        Mon, 15 Nov 2021 18:12:45 +0000 (UTC)
+        id S233731AbhKOTXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBFC633B4;
+        Mon, 15 Nov 2021 18:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999966;
-        bh=JkJmVm8ZoAWcAvwlNM2cb7p0UHZ0HUuqm7pbgcOVThA=;
+        s=korg; t=1637002201;
+        bh=RdOplR5AugF+eTUgdrMUIknooNqDt6t07r9snoXRdpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5loYFmI/LqBD5d7HpjpGXGF4XpzosuBy9g6MuwtPOXjNIBlMBj9tkMnq1JwZSG4y
-         8xuwugyn64OI2zEWfql4E3XuYcd6m9eYFyOIxWzBa8COtv/O7EZ6PoviT2tp3UuJqh
-         4DtA93Hcli8M6n2b2zpHegoMWclSQO8GSCNer72w=
+        b=N4cDiS9I0UaJcdPjYXe7drsVBGueD1wmS3tQQyUmC2hSCnHd28O8WnH07if16SDDJ
+         4eByvDhbJVxM9kN0cWU5byig7LBtaeXRdJ6Q/T4s7lyr9Gv06qa2nMw/viixrj2/g+
+         kv7ohsDZeWXKqGk29AlSqd2YjGF1JucPztoEqj/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jessica Zhang <jesszhan@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 488/849] drm/msm: Fix potential NULL dereference in DPU SSPP
+        stable@vger.kernel.org, Ben Greear <greearb@candelatech.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 476/917] mt76: mt7915: fix hwmon temp sensor mem use-after-free
 Date:   Mon, 15 Nov 2021 17:59:31 +0100
-Message-Id: <20211115165436.793388782@linuxfoundation.org>
+Message-Id: <20211115165444.913149583@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jessica Zhang <jesszhan@codeaurora.org>
+From: Ben Greear <greearb@candelatech.com>
 
-[ Upstream commit 8bf71a5719b6cc5b6ba358096081e5d50ea23ab6 ]
+[ Upstream commit 0ae3ff5684514d72357240f1033a7494c51f93ed ]
 
-Move initialization of sblk in _sspp_subblk_offset() after NULL check to
-avoid potential NULL pointer dereference.
+Without this change, garbage is seen in the hwmon name and sensors output
+for mt7915 is garbled. It appears that the hwmon logic does not make a
+copy of the incoming string, but instead just copies a char* and expects
+it to never go away.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jessica Zhang <jesszhan@codeaurora.org>
-Link: https://lore.kernel.org/r/20211020175733.3379-1-jesszhan@codeaurora.org
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 33fe9c639c13 ("mt76: mt7915: add thermal sensor device support")
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/init.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
-index 69eed79324865..f9460672176aa 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
-@@ -138,11 +138,13 @@ static int _sspp_subblk_offset(struct dpu_hw_pipe *ctx,
- 		u32 *idx)
- {
- 	int rc = 0;
--	const struct dpu_sspp_sub_blks *sblk = ctx->cap->sblk;
-+	const struct dpu_sspp_sub_blks *sblk;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+index 4798d6344305d..b171027e0cfa8 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+@@ -130,9 +130,12 @@ static int mt7915_thermal_init(struct mt7915_phy *phy)
+ 	struct wiphy *wiphy = phy->mt76->hw->wiphy;
+ 	struct thermal_cooling_device *cdev;
+ 	struct device *hwmon;
++	const char *name;
  
--	if (!ctx)
-+	if (!ctx || !ctx->cap || !ctx->cap->sblk)
- 		return -EINVAL;
- 
-+	sblk = ctx->cap->sblk;
+-	cdev = thermal_cooling_device_register(wiphy_name(wiphy), phy,
+-					       &mt7915_thermal_ops);
++	name = devm_kasprintf(&wiphy->dev, GFP_KERNEL, "mt7915_%s",
++			      wiphy_name(wiphy));
 +
- 	switch (s_id) {
- 	case DPU_SSPP_SRC:
- 		*idx = sblk->src_blk.base;
-@@ -419,7 +421,7 @@ static void _dpu_hw_sspp_setup_scaler3(struct dpu_hw_pipe *ctx,
++	cdev = thermal_cooling_device_register(name, phy, &mt7915_thermal_ops);
+ 	if (!IS_ERR(cdev)) {
+ 		if (sysfs_create_link(&wiphy->dev.kobj, &cdev->device.kobj,
+ 				      "cooling_device") < 0)
+@@ -144,8 +147,7 @@ static int mt7915_thermal_init(struct mt7915_phy *phy)
+ 	if (!IS_REACHABLE(CONFIG_HWMON))
+ 		return 0;
  
- 	(void)pe;
- 	if (_sspp_subblk_offset(ctx, DPU_SSPP_SCALER_QSEED3, &idx) || !sspp
--		|| !scaler3_cfg || !ctx || !ctx->cap || !ctx->cap->sblk)
-+		|| !scaler3_cfg)
- 		return;
- 
- 	dpu_hw_setup_scaler3(&ctx->hw, scaler3_cfg, idx,
+-	hwmon = devm_hwmon_device_register_with_groups(&wiphy->dev,
+-						       wiphy_name(wiphy), phy,
++	hwmon = devm_hwmon_device_register_with_groups(&wiphy->dev, name, phy,
+ 						       mt7915_hwmon_groups);
+ 	if (IS_ERR(hwmon))
+ 		return PTR_ERR(hwmon);
 -- 
 2.33.0
 
