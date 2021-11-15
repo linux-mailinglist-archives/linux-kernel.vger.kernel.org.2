@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D6A451B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CEA452026
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245121AbhKPADN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1357855AbhKPAtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344619AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344617AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 966C1636A1;
-        Mon, 15 Nov 2021 19:01:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D776369D;
+        Mon, 15 Nov 2021 19:01:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002867;
-        bh=I8+lQ5Z1q2APXXHJT9NnaBLx4LcYgZQhXPDpEFdAGRA=;
+        s=korg; t=1637002869;
+        bh=hGtE3FjcXtpIv9Tr8HrNibI0gaaZ/A411/jXa95PZjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cs1I69RLItfRCmnHrk86Sjf/jwWhEYxitHBgnfZeFVPk23oQIUXRVHNgeeKfOv9mP
-         vz40F5nQK3FmLg8ksB3v2s3f3eym0KTGktccrg8HK/aIctDQADyn8+14Zcj1X7laoR
-         GF/zbGlpnimJA82/zfp1KnfTC0Ees3Rnwyyaz1m8=
+        b=jUTIlRM3MJgqHbphA0wdwjgugWI8SzeDanPCuIqZ1quwbm/V0dC/lKYqI8G9Yot2G
+         3sIYAUuawxUuBvf/Z6o2zFgdYKeUj7VLlv8I2/SjIXU+K3XHC5pnhV8CYN5mA8hiNW
+         7DCsROdGL3tn1LnLWHWmjWVGr6QhjpDYygmqRpeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 725/917] remoteproc: Fix a memory leak in an error handling path in rproc_handle_vdev()
-Date:   Mon, 15 Nov 2021 18:03:40 +0100
-Message-Id: <20211115165453.500155753@linuxfoundation.org>
+Subject: [PATCH 5.15 726/917] rtc: rv3032: fix error handling in rv3032_clkout_set_rate()
+Date:   Mon, 15 Nov 2021 18:03:41 +0100
+Message-Id: <20211115165453.534070127@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,54 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 0374a4ea7269645c46c3eb288526ea072fa19e79 ]
+[ Upstream commit c3336b8ac6091df60a5c1049a8c685d0b947cc61 ]
 
-If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
-Move the 'copy_dma_range_map()' call after the device registration so
-that 'rproc_rvdev_release()' can be called to free some resources.
+Do not call rv3032_exit_eerd() if the enter function fails but don't
+forget to call the exit when the enter succeeds.
 
-Also, branch to the error handling path if 'copy_dma_range_map()' instead
-of a direct return to avoid some other leaks.
-
-Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Jim Quinlan <james.quinlan@broadcom.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr
+Fixes: 2eeaa532acca ("rtc: rv3032: Add a driver for Microcrystal RV-3032")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20211012101028.GT2083@kadam
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-rv3032.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 502b6604b757b..775df165eb450 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -556,9 +556,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
- 	/* Initialise vdev subdevice */
- 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
- 	rvdev->dev.parent = &rproc->dev;
--	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
--	if (ret)
--		return ret;
- 	rvdev->dev.release = rproc_rvdev_release;
- 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
- 	dev_set_drvdata(&rvdev->dev, rvdev);
-@@ -568,6 +565,11 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
- 		put_device(&rvdev->dev);
- 		return ret;
- 	}
-+
-+	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
-+	if (ret)
-+		goto free_rvdev;
-+
- 	/* Make device dma capable by inheriting from parent's capabilities */
- 	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+diff --git a/drivers/rtc/rtc-rv3032.c b/drivers/rtc/rtc-rv3032.c
+index d63102d5cb1e4..1b62ed2f14594 100644
+--- a/drivers/rtc/rtc-rv3032.c
++++ b/drivers/rtc/rtc-rv3032.c
+@@ -617,11 +617,11 @@ static int rv3032_clkout_set_rate(struct clk_hw *hw, unsigned long rate,
  
+ 	ret = rv3032_enter_eerd(rv3032, &eerd);
+ 	if (ret)
+-		goto exit_eerd;
++		return ret;
+ 
+ 	ret = regmap_write(rv3032->regmap, RV3032_CLKOUT1, hfd & 0xff);
+ 	if (ret)
+-		return ret;
++		goto exit_eerd;
+ 
+ 	ret = regmap_write(rv3032->regmap, RV3032_CLKOUT2, RV3032_CLKOUT2_OS |
+ 			    FIELD_PREP(RV3032_CLKOUT2_HFD_MSK, hfd >> 8));
 -- 
 2.33.0
 
