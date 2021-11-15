@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7560E450FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64412450F46
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242243AbhKOSh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:37:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47380 "EHLO mail.kernel.org"
+        id S238991AbhKOS3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:29:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238198AbhKORdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:33:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E94056324F;
-        Mon, 15 Nov 2021 17:22:08 +0000 (UTC)
+        id S232123AbhKOReS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:34:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C74632B7;
+        Mon, 15 Nov 2021 17:22:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996929;
-        bh=XKDM2wSvc7k6ELQfFGa1QyevVpfUtWRiutV0sZVyoWk=;
+        s=korg; t=1636996958;
+        bh=QdCuTrerCYzph3/hR6NHSxUhLpJXJmr6rZhQmEhun28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Kz/zTjKUSP1JcYvNRb8j7YGmiZwVGS/klZoiwYluIqzKi2I9M6xmdRshw93TME3N
-         bKPbUw/fx/J3kt/3CQbOaRRVMC6Q5k1+g2465fJzXS0+yMMYChl07vkDuaNjcuPK/g
-         TiZoipQ25FCmn3WVbeXdx3mz0vRVmj9NM7OX+byw=
+        b=o7eweGu9YMo1lqyJQcD2V44klSoHRhutRmwhdx4oy9KCfRR8s0xSimSnWGNhHUPXL
+         eA8EvGJcsSzLeh3wcmj9Da3GPBesnWqNH6quSW86SV1vnY1VW67J1/8bQljdsSgN0y
+         +bGa/hTcszKwxmvrVqiRrTCKexeHKdXPfY6K/NWY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 312/355] scsi: qla2xxx: Turn off target reset during issue_lip
-Date:   Mon, 15 Nov 2021 18:03:56 +0100
-Message-Id: <20211115165323.811769569@linuxfoundation.org>
+Subject: [PATCH 5.4 313/355] NFSv4: Fix a regression in nfs_set_open_stateid_locked()
+Date:   Mon, 15 Nov 2021 18:03:57 +0100
+Message-Id: <20211115165323.843930691@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,129 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
+[ Upstream commit 01d29f87fcfef38d51ce2b473981a5c1e861ac0a ]
 
-When user uses issue_lip to do link bounce, driver sends additional target
-reset to remote device before resetting the link. The target reset would
-affect other paths with active I/Os. This patch will remove the unnecessary
-target reset.
+If we already hold open state on the client, yet the server gives us a
+completely different stateid to the one we already hold, then we
+currently treat it as if it were an out-of-sequence update, and wait for
+5 seconds for other updates to come in.
+This commit fixes the behaviour so that we immediately start processing
+of the new stateid, and then leave it to the call to
+nfs4_test_and_free_stateid() to decide what to do with the old stateid.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
-Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_gbl.h |  2 --
- drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
- drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
- 3 files changed, 2 insertions(+), 50 deletions(-)
+ fs/nfs/nfs4proc.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 7aa233771ec86..1a98e37c9be22 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -156,7 +156,6 @@ extern int ql2xasynctmfenable;
- extern int ql2xgffidenable;
- extern int ql2xenabledif;
- extern int ql2xenablehba_err_chk;
--extern int ql2xtargetreset;
- extern int ql2xdontresethba;
- extern uint64_t ql2xmaxlun;
- extern int ql2xmdcapmask;
-@@ -770,7 +769,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
- extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
- extern void qlafx00_timer_routine(scsi_qla_host_t *);
- extern int qlafx00_rescan_isp(scsi_qla_host_t *);
--extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
- 
- /* qla82xx related functions */
- 
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index 605b59c76c901..badd09c5dd429 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -740,29 +740,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
- 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 5ecaf7b6b0fa1..fb3d1532f11dd 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -1549,15 +1549,16 @@ static bool nfs_stateid_is_sequential(struct nfs4_state *state,
+ {
+ 	if (test_bit(NFS_OPEN_STATE, &state->flags)) {
+ 		/* The common case - we're updating to a new sequence number */
+-		if (nfs4_stateid_match_other(stateid, &state->open_stateid) &&
+-			nfs4_stateid_is_next(&state->open_stateid, stateid)) {
+-			return true;
++		if (nfs4_stateid_match_other(stateid, &state->open_stateid)) {
++			if (nfs4_stateid_is_next(&state->open_stateid, stateid))
++				return true;
++			return false;
+ 		}
+-	} else {
+-		/* This is the first OPEN in this generation */
+-		if (stateid->seqid == cpu_to_be32(1))
+-			return true;
++		/* The server returned a new stateid */
+ 	}
++	/* This is the first OPEN in this generation */
++	if (stateid->seqid == cpu_to_be32(1))
++		return true;
+ 	return false;
  }
  
--int
--qlafx00_loop_reset(scsi_qla_host_t *vha)
--{
--	int ret;
--	struct fc_port *fcport;
--	struct qla_hw_data *ha = vha->hw;
--
--	if (ql2xtargetreset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x803d,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--	return QLA_SUCCESS;
--}
--
- int
- qlafx00_iospace_config(struct qla_hw_data *ha)
- {
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 049a68c59c137..c1d4c964b0dd4 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -191,12 +191,6 @@ MODULE_PARM_DESC(ql2xdbwr,
- 		" 0 -- Regular doorbell.\n"
- 		" 1 -- CAMRAM doorbell (faster).\n");
- 
--int ql2xtargetreset = 1;
--module_param(ql2xtargetreset, int, S_IRUGO);
--MODULE_PARM_DESC(ql2xtargetreset,
--		 "Enable target reset."
--		 "Default is 1 - use hw defaults.");
--
- int ql2xgffidenable;
- module_param(ql2xgffidenable, int, S_IRUGO);
- MODULE_PARM_DESC(ql2xgffidenable,
-@@ -1638,27 +1632,10 @@ int
- qla2x00_loop_reset(scsi_qla_host_t *vha)
- {
- 	int ret;
--	struct fc_port *fcport;
- 	struct qla_hw_data *ha = vha->hw;
- 
--	if (IS_QLAFX00(ha)) {
--		return qlafx00_loop_reset(vha);
--	}
--
--	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x802c,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--
-+	if (IS_QLAFX00(ha))
-+		return QLA_SUCCESS;
- 
- 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
- 		atomic_set(&vha->loop_state, LOOP_DOWN);
 -- 
 2.33.0
 
