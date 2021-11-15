@@ -2,259 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3760B45003E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB1C450048
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhKOIuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:50:16 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:16759 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236706AbhKOIs1 (ORCPT
+        id S236367AbhKOIw6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 03:52:58 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4093 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhKOIwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:48:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636965899;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=dO3ADDPrtn5Id/yZtKIECynwqcEkF8YOxxKpEn1qPWQ=;
-    b=OAb9Bu1uzXlZ0KPLrqSDBtfc9LoHYu4qbcQgS9yZtpvIh+LA8k+M+jElKEQybxkZgy
-    fSYs9nUBmnsxVtbojriA4NS7VNV6tDt4Nwj6ZX9urZV0Q1jPYP7Y9T6W+TW2mQ2aanBU
-    OruKPywIgUdylo4NchNYr5ZmofZTzq58uaNGFbMjDXJjfQkLu4RPT41KFiBtdlGwjlHD
-    UatmhDM8F5CAvgxDuDSax91J/ki++NV9RWp+ortioTgod1AGHy1HB5Z9lFAuwqpmyYWy
-    vxaTKXQNsgdhtmGqD8jtwpbCioS7evLGO7Kt9lWZ5RnwdMnZgYTM+ONY4KcfYogBtpZR
-    1T1g==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXvTOeuXTEc="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id U02dfbxAF8iwU8n
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 15 Nov 2021 09:44:58 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     herbert@gondor.apana.org.au
-Cc:     ebiggers@kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
-Subject: [PATCH v3 4/4] security: DH - use KDF implementation from crypto API
-Date:   Mon, 15 Nov 2021 09:44:25 +0100
-Message-ID: <9271627.eNJFYEL58v@positron.chronox.de>
-In-Reply-To: <2589009.vuYhMxLoTh@positron.chronox.de>
-References: <2589009.vuYhMxLoTh@positron.chronox.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        Mon, 15 Nov 2021 03:52:39 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ht2pc5G6Tz67qYR;
+        Mon, 15 Nov 2021 16:46:00 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 15 Nov 2021 09:49:41 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
+ Mon, 15 Nov 2021 09:49:41 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH 5/5] shmem: Add fsverity support
+Thread-Topic: [RFC][PATCH 5/5] shmem: Add fsverity support
+Thread-Index: AQHX18M/qVU4RXchik23Vn+neZuDEKwAMhaAgAQN/bA=
+Date:   Mon, 15 Nov 2021 08:49:41 +0000
+Message-ID: <6adb6da30b734213942f976745c456f6@huawei.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-6-roberto.sassu@huawei.com>
+ <YY68iXKPWN8+rd+0@gmail.com>
+In-Reply-To: <YY68iXKPWN8+rd+0@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel crypto API provides the SP800-108 counter KDF implementation.
-Thus, the separate implementation provided as part of the keys subsystem
-can be replaced with calls to the KDF offered by the kernel crypto API.
+> From: Eric Biggers [mailto:ebiggers@kernel.org]
+> Sent: Friday, November 12, 2021 8:12 PM
+> On Fri, Nov 12, 2021 at 01:44:11PM +0100, Roberto Sassu wrote:
+> > Make the necessary modifications to support fsverity in tmpfs.
+> >
+> > First, implement the fsverity operations (in a similar way of f2fs). These
+> > operations make use of shmem_read_mapping_page() instead of
+> > read_mapping_page() to handle the case where the page has been swapped
+> out.
+> > The fsverity descriptor is placed at the end of the file and its location
+> > is stored in an xattr.
+> >
+> > Second, implement the ioctl operations to enable, measure and read fsverity
+> > metadata.
+> >
+> > Lastly, add calls to fsverity functions, to ensure that fsverity-relevant
+> > operations are checked and handled by fsverity (file open, attr set, inode
+> > evict).
+> >
+> > Fsverity support can be enabled through the kernel configuration and
+> > remains enabled by default for every tmpfs filesystem instantiated (there
+> > should be no overhead, unless fsverity is enabled for a file).
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> I don't see how this makes sense at all.  The point of fs-verity is to avoid
+> having to hash the whole file when verifying it.  However, obviously the whole
+> file still has to be hashed to build the Merkle tree in the first place.  That
+> makes sense for a persistent filesystem where a file can be written once and
+> verified many times.  I don't see how it makes sense for tmpfs, where files have
+> to be re-created on every boot.  You might as well just hash the whole file.
 
-The keys subsystem uses the counter KDF with a hash primitive. Thus,
-it only uses the call to crypto_kdf108_ctr_generate.
+The point of adding fsverity support for tmpfs was to being able to do
+integrity enforcement with just one mechanism, given that I was
+planning to do integrity verification with reference values loaded
+to the kernel with DIGLIM [1].
 
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- security/keys/Kconfig |  2 +-
- security/keys/dh.c    | 97 +++++++------------------------------------
- 2 files changed, 15 insertions(+), 84 deletions(-)
+With an LSM such as IPE [2], integrity verification would consist in
+querying the fsverity digest with DIGLIM and allowing the operation
+if the digest was found. With fsverity support in tmpfs, this can be
+done from the very beginning of the boot process.
 
-diff --git a/security/keys/Kconfig b/security/keys/Kconfig
-index 64b81abd087e..969122c7b92f 100644
---- a/security/keys/Kconfig
-+++ b/security/keys/Kconfig
-@@ -109,7 +109,7 @@ config KEY_DH_OPERATIONS
-        bool "Diffie-Hellman operations on retained keys"
-        depends on KEYS
-        select CRYPTO
--       select CRYPTO_HASH
-+       select CRYPTO_KDF800108_CTR
-        select CRYPTO_DH
-        help
- 	 This option provides support for calculating Diffie-Hellman
-diff --git a/security/keys/dh.c b/security/keys/dh.c
-index 56e12dae4534..46fa442b81ec 100644
---- a/security/keys/dh.c
-+++ b/security/keys/dh.c
-@@ -11,6 +11,7 @@
- #include <crypto/hash.h>
- #include <crypto/kpp.h>
- #include <crypto/dh.h>
-+#include <crypto/kdf_sp800108.h>
- #include <keys/user-type.h>
- #include "internal.h"
- 
-@@ -79,16 +80,9 @@ static void dh_crypto_done(struct crypto_async_request *req, int err)
- 	complete(&compl->completion);
- }
- 
--struct kdf_sdesc {
--	struct shash_desc shash;
--	char ctx[];
--};
--
--static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
-+static int kdf_alloc(struct crypto_shash **hash, char *hashname)
- {
- 	struct crypto_shash *tfm;
--	struct kdf_sdesc *sdesc;
--	int size;
- 	int err;
- 
- 	/* allocate synchronous hash */
-@@ -102,14 +96,7 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
- 	if (crypto_shash_digestsize(tfm) == 0)
- 		goto out_free_tfm;
- 
--	err = -ENOMEM;
--	size = sizeof(struct shash_desc) + crypto_shash_descsize(tfm);
--	sdesc = kmalloc(size, GFP_KERNEL);
--	if (!sdesc)
--		goto out_free_tfm;
--	sdesc->shash.tfm = tfm;
--
--	*sdesc_ret = sdesc;
-+	*hash = tfm;
- 
- 	return 0;
- 
-@@ -118,76 +105,20 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
- 	return err;
- }
- 
--static void kdf_dealloc(struct kdf_sdesc *sdesc)
--{
--	if (!sdesc)
--		return;
--
--	if (sdesc->shash.tfm)
--		crypto_free_shash(sdesc->shash.tfm);
--
--	kfree_sensitive(sdesc);
--}
--
--/*
-- * Implementation of the KDF in counter mode according to SP800-108 section 5.1
-- * as well as SP800-56A section 5.8.1 (Single-step KDF).
-- *
-- * SP800-56A:
-- * The src pointer is defined as Z || other info where Z is the shared secret
-- * from DH and other info is an arbitrary string (see SP800-56A section
-- * 5.8.1.2).
-- *
-- * 'dlen' must be a multiple of the digest size.
-- */
--static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
--		   u8 *dst, unsigned int dlen)
-+static void kdf_dealloc(struct crypto_shash *hash)
- {
--	struct shash_desc *desc = &sdesc->shash;
--	unsigned int h = crypto_shash_digestsize(desc->tfm);
--	int err = 0;
--	u8 *dst_orig = dst;
--	__be32 counter = cpu_to_be32(1);
--
--	while (dlen) {
--		err = crypto_shash_init(desc);
--		if (err)
--			goto err;
--
--		err = crypto_shash_update(desc, (u8 *)&counter, sizeof(__be32));
--		if (err)
--			goto err;
--
--		if (src && slen) {
--			err = crypto_shash_update(desc, src, slen);
--			if (err)
--				goto err;
--		}
--
--		err = crypto_shash_final(desc, dst);
--		if (err)
--			goto err;
--
--		dlen -= h;
--		dst += h;
--		counter = cpu_to_be32(be32_to_cpu(counter) + 1);
--	}
--
--	return 0;
--
--err:
--	memzero_explicit(dst_orig, dlen);
--	return err;
-+	if (hash)
-+		crypto_free_shash(hash);
- }
- 
--static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
-+static int keyctl_dh_compute_kdf(struct crypto_shash *hash,
- 				 char __user *buffer, size_t buflen,
- 				 uint8_t *kbuf, size_t kbuflen)
- {
-+	struct kvec kbuf_iov = { .iov_base = kbuf, .iov_len = kbuflen };
- 	uint8_t *outbuf = NULL;
- 	int ret;
--	size_t outbuf_len = roundup(buflen,
--				    crypto_shash_digestsize(sdesc->shash.tfm));
-+	size_t outbuf_len = roundup(buflen, crypto_shash_digestsize(hash));
- 
- 	outbuf = kmalloc(outbuf_len, GFP_KERNEL);
- 	if (!outbuf) {
-@@ -195,7 +126,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
- 		goto err;
- 	}
- 
--	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len);
-+	ret = crypto_kdf108_ctr_generate(hash, &kbuf_iov, 1, outbuf, outbuf_len);
- 	if (ret)
- 		goto err;
- 
-@@ -224,7 +155,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 	struct kpp_request *req;
- 	uint8_t *secret;
- 	uint8_t *outbuf;
--	struct kdf_sdesc *sdesc = NULL;
-+	struct crypto_shash *hash = NULL;
- 
- 	if (!params || (!buffer && buflen)) {
- 		ret = -EINVAL;
-@@ -257,7 +188,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 		}
- 
- 		/* allocate KDF from the kernel crypto API */
--		ret = kdf_alloc(&sdesc, hashname);
-+		ret = kdf_alloc(&hash, hashname);
- 		kfree(hashname);
- 		if (ret)
- 			goto out1;
-@@ -367,7 +298,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- 			goto out6;
- 		}
- 
--		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
-+		ret = keyctl_dh_compute_kdf(hash, buffer, buflen, outbuf,
- 					    req->dst_len + kdfcopy->otherinfolen);
- 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
- 		ret = req->dst_len;
-@@ -386,7 +317,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
- out2:
- 	dh_free_data(&dh_inputs);
- out1:
--	kdf_dealloc(sdesc);
-+	kdf_dealloc(hash);
- 	return ret;
- }
- 
--- 
-2.33.1
+Using regular file digests would be also possible but this requires
+loading with DIGLIM both fsverity and non-fsverity reference values.
+It would also require two separate mechanisms for calculating
+the file digest depending on the filesystem. It could be done, but
+I thought it was easier to add support for fsverity in tmpfs.
 
+> Also, you didn't implement actually verifying the data (by calling
+> fsverity_verify_page()), so this patch doesn't really do anything anyway.
 
+Yes, at the end I didn't add it. Probably the only place where
+calling fsverity_verify_page() would make sense is when a page
+is swapped in (assuming that the swap device is untrusted).
 
+I tried to add a call in shmem_swapin_page() but fsverity complained
+due to the fact that the page was already up to date, and also
+rejected the page. I will check it better.
 
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
+
+[1] https://lore.kernel.org/linux-integrity/20210914163401.864635-1-roberto.sassu@huawei.com/
+[2] https://lore.kernel.org/linux-security-module/1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com/
