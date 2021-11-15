@@ -2,208 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF963451BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CD0451BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350949AbhKPAIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:06 -0500
-Received: from mga12.intel.com ([192.55.52.136]:29777 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347219AbhKOTjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:39:06 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213547103"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="213547103"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 11:29:13 -0800
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="506056920"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 11:29:12 -0800
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
-        x86@kernel.org
-Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH V3] x86/sgx: Fix free page accounting
-Date:   Mon, 15 Nov 2021 11:29:04 -0800
-Message-Id: <a95a40743bbd3f795b465f30922dde7f1ea9e0eb.1637004094.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1354021AbhKPAHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347398AbhKOTjt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:39:49 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEACC061220
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:30:09 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id k2so30299252lji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:30:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JlBg5LtyqKvrpUdGEugnNnbVsAfgz6T1HCSvSGsjlZk=;
+        b=GM4JCZ3y0BLNP/TxHX2RKDzwzQXrmBW3C2YVhDU0aTewQCnpDjP3k3KVYqcP9gtkkf
+         a0vY7CrJ3Ao7m/3NH2aReiYRb0ktb4y8NsVCnG8VB9RLC1M/an8/s1yLEu+HLbf8rcFN
+         iLQ+vuqBDlgbWLjd+SpjFNoacndfywNLpTnxuoMP9sz4B7oDAlkOkYvWzWi2XbmuE1z0
+         l9Nd620wI7fij/Jfc1YZFf2aNuGYvBnJIAcQwBZk+ig/TCXePlNpJuUe7hheKF8RB9Ia
+         X/Iwogst9O0aHNxoC716dOFOdcH49ifqcHR6Zx3s0khksOrtpHwaG7fHh1TqjX9/ZjYw
+         Z5wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JlBg5LtyqKvrpUdGEugnNnbVsAfgz6T1HCSvSGsjlZk=;
+        b=4Nqozkg6KwO97R7HPWqncadxNQMid55W2BkrbQyVoLXCA28D/m32SC7UplpP1JYRBs
+         CrRxgw+rxbhNzVU7ROhVP8XkstAPWwvKRTTzZTTBWXJawWVoIRffeUghpT13NVF5bARY
+         rQG2Dj0YBXj745kiH7P7RJTY/AoAhtO+WJB3zxoCO7W8YgOcHFNVOHzshx9vOtfJAbZR
+         FhL2f28SdSVkVAbKvWoIu/GOKP6mO27m+g/3oYhQitQ81TCLnnx1PlgCmP6KnzWXjvGH
+         OwxySTmn/gAte8DjwZUoK3FGx45DuwtatYFfID1BuJP14xKqeZvbwmFwfjuXue6EPwHl
+         MVSA==
+X-Gm-Message-State: AOAM532LA0x/YWbS88gKwFqKf7L+YJJv9vuJrqg/oZkXCo9KgQovghaR
+        JBvaezxnWIJbx8mscch65NiT3qPcV1ADrcFKC3paPw==
+X-Google-Smtp-Source: ABdhPJzE8zq/IQ4W4/8Y/EEjilAn9vCsEXb84iRBWktB/ycTLjv28nMT0r/8iAKgJiA4OXYHBe6L2zu42b2iPQv+NNU=
+X-Received: by 2002:a2e:8895:: with SMTP id k21mr1005211lji.331.1637004607113;
+ Mon, 15 Nov 2021 11:30:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211111221448.2683827-1-seanjc@google.com> <CALzav=dpzzKgaNRLrSBy71WBvybWmRJ39eDv4hPXsbU_DSS-fA@mail.gmail.com>
+ <YZKzr4mn1jJ3vdqK@google.com>
+In-Reply-To: <YZKzr4mn1jJ3vdqK@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Mon, 15 Nov 2021 11:29:40 -0800
+Message-ID: <CALzav=fKycSowAyaymt9a9hpffbWnFeXvACC5pE5-rMpx+4H4g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Update number of zapped pages even if page
+ list is stable
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SGX driver maintains a single global free page counter,
-sgx_nr_free_pages, that reflects the number of free pages available
-across all NUMA nodes. Correspondingly, a list of free pages is
-associated with each NUMA node and sgx_nr_free_pages is updated
-every time a page is added or removed from any of the free page
-lists. The main usage of sgx_nr_free_pages is by the reclaimer
-that runs when it (sgx_nr_free_pages) goes below a watermark
-to ensure that there are always some free pages available to, for
-example, support efficient page faults.
+On Mon, Nov 15, 2021 at 11:23 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Nov 15, 2021, David Matlack wrote:
+> > On Thu, Nov 11, 2021 at 2:14 PM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > When zapping obsolete pages, update the running count of zapped pages
+> > > regardless of whether or not the list has become unstable due to zapping
+> > > a shadow page with its own child shadow pages.  If the VM is backed by
+> > > mostly 4kb pages, KVM can zap an absurd number of SPTEs without bumping
+> > > the batch count and thus without yielding.  In the worst case scenario,
+> > > this can cause an RCU stall.
+> > >
+> > >   rcu: INFO: rcu_sched self-detected stall on CPU
+> > >   rcu:     52-....: (20999 ticks this GP) idle=7be/1/0x4000000000000000
+> > >                                           softirq=15759/15759 fqs=5058
+> > >    (t=21016 jiffies g=66453 q=238577)
+> > >   NMI backtrace for cpu 52
+> > >   Call Trace:
+> > >    ...
+> > >    mark_page_accessed+0x266/0x2f0
+> > >    kvm_set_pfn_accessed+0x31/0x40
+> > >    handle_removed_tdp_mmu_page+0x259/0x2e0
+> > >    __handle_changed_spte+0x223/0x2c0
+> > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
+> > >    __handle_changed_spte+0x223/0x2c0
+> > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
+> > >    __handle_changed_spte+0x223/0x2c0
+> > >    zap_gfn_range+0x141/0x3b0
+> > >    kvm_tdp_mmu_zap_invalidated_roots+0xc8/0x130
+> >
+> > This is a useful patch but I don't see the connection with this stall.
+> > The stall is detected in kvm_tdp_mmu_zap_invalidated_roots, which runs
+> > after kvm_zap_obsolete_pages. How would rescheduling during
+> > kvm_zap_obsolete_pages help?
+>
+> Ah shoot, I copy+pasted the wrong splat.  The correct, revelant backtrace is:
 
-With sgx_nr_free_pages accessed and modified from a few places
-it is essential to ensure that these accesses are done safely but
-this is not the case. sgx_nr_free_pages is read without any
-protection and updated with inconsistent protection by any one
-of the spin locks associated with the individual NUMA nodes.
-For example:
-
-      CPU_A                                 CPU_B
-      -----                                 -----
- spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
- ...                                   ...
- sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
-
- spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
-
-Since sgx_nr_free_pages may be protected by different spin locks
-while being modified from different CPUs, the following scenario
-is possible:
-
-      CPU_A                                CPU_B
-      -----                                -----
-{sgx_nr_free_pages = 100}
- spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
- sgx_nr_free_pages--;                  sgx_nr_free_pages--;
- /* LOAD sgx_nr_free_pages = 100 */    /* LOAD sgx_nr_free_pages = 100 */
- /* sgx_nr_free_pages--          */    /* sgx_nr_free_pages--          */
- /* STORE sgx_nr_free_pages = 99 */    /* STORE sgx_nr_free_pages = 99 */
- spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
-
-In the above scenario, sgx_nr_free_pages is decremented from two CPUs
-but instead of sgx_nr_free_pages ending with a value that is two less
-than it started with, it was only decremented by one while the number
-of free pages were actually reduced by two. The consequence of
-sgx_nr_free_pages not being protected is that its value may not
-accurately reflect the actual number of free pages on the system,
-impacting the availability of free pages in support of many flows.
-
-The problematic scenario is when the reclaimer does not run because it
-believes there to be sufficient free pages while any attempt to allocate
-a page fails because there are no free pages available. In the SGX driver
-the reclaimer's watermark is only 32 pages so after encountering the
-above example scenario 32 times a user space hang is possible when there
-are no more free pages because of repeated page faults caused by no
-free pages made available.
-
-The following flow was encountered:
-asm_exc_page_fault
- ...
-   sgx_vma_fault()
-     sgx_encl_load_page()
-       sgx_encl_eldu() // Encrypted page needs to be loaded from backing
-                       // storage into newly allocated SGX memory page
-         sgx_alloc_epc_page() // Allocate a page of SGX memory
-           __sgx_alloc_epc_page() // Fails, no free SGX memory
-           ...
-           if (sgx_should_reclaim(SGX_NR_LOW_PAGES)) // Wake reclaimer
-             wake_up(&ksgxd_waitq);
-           return -EBUSY; // Return -EBUSY giving reclaimer time to run
-       return -EBUSY;
-     return -EBUSY;
-   return VM_FAULT_NOPAGE;
-
-The reclaimer is triggered in above flow with the following code:
-
-static bool sgx_should_reclaim(unsigned long watermark)
-{
-        return sgx_nr_free_pages < watermark &&
-               !list_empty(&sgx_active_page_list);
-}
-
-In the problematic scenario there were no free pages available yet the
-value of sgx_nr_free_pages was above the watermark. The allocation of
-SGX memory thus always failed because of a lack of free pages while no
-free pages were made available because the reclaimer is never started
-because of sgx_nr_free_pages' incorrect value. The consequence was that
-user space kept encountering VM_FAULT_NOPAGE that caused the same
-address to be accessed repeatedly with the same result.
-
-Change the global free page counter to an atomic type that
-ensures simultaneous updates are done safely. While doing so, move
-the updating of the variable outside of the spin lock critical
-section to which it does not belong.
-
-Cc: stable@vger.kernel.org
-Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
-Changes since V2:
-- V2:
-https://lore.kernel.org/lkml/b2e69e9febcae5d98d331de094d9cc7ce3217e66.1636487172.git.reinette.chatre@intel.com/
-- Update changelog to provide example of unsafe variable modification (Jarkko).
-
-Changes since V1:
-- V1:
-  https://lore.kernel.org/lkml/373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com/
-- Add static to definition of sgx_nr_free_pages (Tony).
-- Add Tony's signature.
-- Provide detail about error scenario in changelog (Jarkko).
-
- arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..8471a8b9b48e 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
--/* The free page list lock protected variables prepend the lock. */
--static unsigned long sgx_nr_free_pages;
-+static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
- 
- /* Nodes with one or more EPC sections. */
- static nodemask_t sgx_numa_mask;
-@@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
- 
- 		spin_lock(&node->lock);
- 		list_add_tail(&epc_page->list, &node->free_page_list);
--		sgx_nr_free_pages++;
- 		spin_unlock(&node->lock);
-+		atomic_long_inc(&sgx_nr_free_pages);
- 	}
- }
- 
- static bool sgx_should_reclaim(unsigned long watermark)
- {
--	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
-+	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
-+	       !list_empty(&sgx_active_page_list);
- }
- 
- static int ksgxd(void *p)
-@@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- 
- 	page = list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
- 	list_del_init(&page->list);
--	sgx_nr_free_pages--;
- 
- 	spin_unlock(&node->lock);
-+	atomic_long_dec(&sgx_nr_free_pages);
- 
- 	return page;
- }
-@@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 	spin_lock(&node->lock);
- 
- 	list_add_tail(&page->list, &node->free_page_list);
--	sgx_nr_free_pages++;
- 
- 	spin_unlock(&node->lock);
-+	atomic_long_inc(&sgx_nr_free_pages);
- }
- 
- static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
--- 
-2.25.1
-
+Ok that makes more sense :). Also that was a soft lockup rather than
+an RCU stall.
+>
+>    mark_page_accessed+0x266/0x2e0
+>    kvm_set_pfn_accessed+0x31/0x40
+>    mmu_spte_clear_track_bits+0x136/0x1c0
+>    drop_spte+0x1a/0xc0
+>    mmu_page_zap_pte+0xef/0x120
+>    __kvm_mmu_prepare_zap_page+0x205/0x5e0
+>    kvm_mmu_zap_all_fast+0xd7/0x190
+>    kvm_mmu_invalidate_zap_pages_in_memslot+0xe/0x10
+>    kvm_page_track_flush_slot+0x5c/0x80
+>    kvm_arch_flush_shadow_memslot+0xe/0x10
+>    kvm_set_memslot+0x1a8/0x5d0
+>    __kvm_set_memory_region+0x337/0x590
+>    kvm_vm_ioctl+0xb08/0x1040
