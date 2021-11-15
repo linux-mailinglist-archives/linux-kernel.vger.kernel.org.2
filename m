@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C0A4514F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EC54514A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhKOURf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:17:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45994 "EHLO mail.kernel.org"
+        id S1348913AbhKOULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:11:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239940AbhKOSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CC0C632ED;
-        Mon, 15 Nov 2021 17:40:19 +0000 (UTC)
+        id S239730AbhKOSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:04:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15F0561A6C;
+        Mon, 15 Nov 2021 17:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998020;
-        bh=+Ieg6c3hIgJ0lyTICqOdCMQN83KQ3PflYloijUHZXqU=;
+        s=korg; t=1636997938;
+        bh=PXtuF2T+E6tKHKqYQ/4u7Gdoq6jU4lrYzuClMwUkFEE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcKhfeo++hf6qyGKb/RSeWjuyRwilJ8D77ciVwHC0kNtQ4a22kexrWCR1EHGUC8z0
-         rCkFYD1Lf2wLC4dRUB27a6/YwC91JvO6Y30l+eHBYl+RxvsJaRLn3yowfTCKmcjxV+
-         8GQHIYzGVoX2XSQmbBHBR/EtBJa76wRkBe9nE1dE=
+        b=csELxSBF2kaTwVVe0KTfIkRySM2qMs4V0L1Yc7JEKzGETL8F3EvL6Q6PN+bVl3o+d
+         +yHV+JPR4h8MAEMi7qVw5O8v8M45wCDTCgzq5ZU5lCIBtAqSMPTTtjvRuLduy/k7Ty
+         SAMl3nGtLSZsqp0f7q+ia1D5f2SkSI676ybN06g4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 325/575] drm/msm: potential error pointer dereference in init()
-Date:   Mon, 15 Nov 2021 18:00:50 +0100
-Message-Id: <20211115165355.045616927@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 330/575] block: ataflop: fix breakage introduced at blk-mq refactoring
+Date:   Mon, 15 Nov 2021 18:00:55 +0100
+Message-Id: <20211115165355.204188309@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,40 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
 
-[ Upstream commit b6816441a14bbe356ba8590de79cfea2de6a085c ]
+[ Upstream commit 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6 ]
 
-The msm_iommu_new() returns error pointers on failure so check for that
-to avoid an Oops.
+Refactoring of the Atari floppy driver when converting to blk-mq
+has broken the state machine in not-so-subtle ways:
 
-Fixes: ccac7ce373c1 ("drm/msm: Refactor address space initialization")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20211004103806.GD25015@kili
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+finish_fdc() must be called when operations on the floppy device
+have completed. This is crucial in order to relase the ST-DMA
+lock, which protects against concurrent access to the ST-DMA
+controller by other drivers (some DMA related, most just related
+to device register access - broken beyond compare, I know).
+
+When rewriting the driver's old do_request() function, the fact
+that finish_fdc() was called only when all queued requests had
+completed appears to have been overlooked. Instead, the new
+request function calls finish_fdc() immediately after the last
+request has been queued. finish_fdc() executes a dummy seek after
+most requests, and this overwrites the state machine's interrupt
+hander that was set up to wait for completion of the read/write
+request just prior. To make matters worse, finish_fdc() is called
+before device interrupts are re-enabled, making certain that the
+read/write interupt is missed.
+
+Shifting the finish_fdc() call into the read/write request
+completion handler ensures the driver waits for the request to
+actually complete. With a queue depth of 2, we won't see long
+request sequences, so calling finish_fdc() unconditionally just
+adds a little overhead for the dummy seeks, and keeps the code
+simple.
+
+While we're at it, kill ataflop_commit_rqs() which does nothing
+but run finish_fdc() unconditionally, again likely wiping out an
+in-flight request.
+
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Fixes: 6ec3938cff95 ("ataflop: convert to blk-mq")
+CC: linux-block@vger.kernel.org
+CC: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Link: https://lore.kernel.org/r/20211019061321.26425-1-schmitzmic@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/block/ataflop.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index c8217f4858a15..b4a2e8eb35dd2 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -846,6 +846,10 @@ static int _dpu_kms_mmu_init(struct dpu_kms *dpu_kms)
- 		return 0;
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index 3e881fdb06e0a..cd612cd04767a 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -653,9 +653,6 @@ static inline void copy_buffer(void *from, void *to)
+ 		*p2++ = *p1++;
+ }
  
- 	mmu = msm_iommu_new(dpu_kms->dev->dev, domain);
-+	if (IS_ERR(mmu)) {
-+		iommu_domain_free(domain);
-+		return PTR_ERR(mmu);
-+	}
- 	aspace = msm_gem_address_space_create(mmu, "dpu1",
- 		0x1000, 0x100000000 - 0x1000);
+-  
+-  
+-
+ /* General Interrupt Handling */
  
+ static void (*FloppyIRQHandler)( int status ) = NULL;
+@@ -1225,6 +1222,7 @@ static void fd_rwsec_done1(int status)
+ 	}
+ 	else {
+ 		/* all sectors finished */
++		finish_fdc();
+ 		fd_end_request_cur(BLK_STS_OK);
+ 	}
+ 	return;
+@@ -1472,15 +1470,6 @@ static void setup_req_params( int drive )
+ 			ReqTrack, ReqSector, (unsigned long)ReqData ));
+ }
+ 
+-static void ataflop_commit_rqs(struct blk_mq_hw_ctx *hctx)
+-{
+-	spin_lock_irq(&ataflop_lock);
+-	atari_disable_irq(IRQ_MFP_FDC);
+-	finish_fdc();
+-	atari_enable_irq(IRQ_MFP_FDC);
+-	spin_unlock_irq(&ataflop_lock);
+-}
+-
+ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 				     const struct blk_mq_queue_data *bd)
+ {
+@@ -1488,6 +1477,8 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	int drive = floppy - unit;
+ 	int type = floppy->type;
+ 
++	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
++
+ 	spin_lock_irq(&ataflop_lock);
+ 	if (fd_request) {
+ 		spin_unlock_irq(&ataflop_lock);
+@@ -1547,8 +1538,6 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	setup_req_params( drive );
+ 	do_fd_action( drive );
+ 
+-	if (bd->last)
+-		finish_fdc();
+ 	atari_enable_irq( IRQ_MFP_FDC );
+ 
+ out:
+@@ -1959,7 +1948,6 @@ static const struct block_device_operations floppy_fops = {
+ 
+ static const struct blk_mq_ops ataflop_mq_ops = {
+ 	.queue_rq = ataflop_queue_rq,
+-	.commit_rqs = ataflop_commit_rqs,
+ };
+ 
+ static struct kobject *floppy_find(dev_t dev, int *part, void *data)
 -- 
 2.33.0
 
