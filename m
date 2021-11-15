@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C67450F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1D6450F06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241937AbhKOSZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
+        id S241854AbhKOSZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:25:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238176AbhKORdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238177AbhKORdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:33:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0531A60F22;
-        Mon, 15 Nov 2021 17:21:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD908610A8;
+        Mon, 15 Nov 2021 17:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996902;
-        bh=iIKX5yfv9uwF+P+1c+mH0hmTXAkbWkdnhEr6khbfSpI=;
+        s=korg; t=1636996905;
+        bh=4orzY68ttIvfNzv9/yysQL70wj1wk9PzZjE5LPDvIag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A23Pin89CkGH/fkHRMK+mMUvsbBhbFqBbMlJl4doOCuxHyRCQGCx5yvYJSM06MCq2
-         NYWqNlDX9a+MJf61N7RgLM97sCEVqXM0Gjg2hapCsjSlo9ulDY6CakQPI0CMQbIQxs
-         0pzXf+O76/6WgTrfkOL/Q5u0HLYeI6OBFQHQZiVw=
+        b=ovdMc4Y8pdrTIl9N0hRqxeTV2yBhTm6Qi92Ybzfn6aGU3uDfcNI2x2LNC3+NCxOgA
+         /AkX9IobEgznYpwXJfohlXF8jElGX2QAUXTjgazvOOJwss7IdbSNDdShNsbsITMBQJ
+         vX2Fh8vYlB8JJwid8UFxUFcfFRezDSsgX6pob9+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 308/355] m68k: set a default value for MEMORY_RESERVE
-Date:   Mon, 15 Nov 2021 18:03:52 +0100
-Message-Id: <20211115165323.686018432@linuxfoundation.org>
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 309/355] watchdog: f71808e_wdt: fix inaccurate report in WDIOC_GETTIMEOUT
+Date:   Mon, 15 Nov 2021 18:03:53 +0100
+Message-Id: <20211115165323.715636593@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,48 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit 1aaa557b2db95c9506ed0981bc34505c32d6b62b ]
+[ Upstream commit 164483c735190775f29d0dcbac0363adc51a068d ]
 
-'make randconfig' can produce a .config file with
-"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
-When a subsequent 'make all' is done, kconfig restarts the config
-and prompts for a value for MEMORY_RESERVE. This breaks
-scripting/automation where there is no interactive user input.
+The fintek watchdog timer can configure timeouts of second granularity
+only up to 255 seconds. Beyond that, the timeout needs to be configured
+with minute granularity. WDIOC_GETTIMEOUT should report the actual
+timeout configured, not just echo back the timeout configured by the
+user. Do so.
 
-Add a default value for MEMORY_RESERVE. (Any integer value will
-work here for kconfig.)
-
-Fixes a kconfig warning:
-
-.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
-* Restart config...
-Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Link: https://lore.kernel.org/r/5e17960fe8cc0e3cb2ba53de4730b75d9a0f33d5.1628525954.git-series.a.fatoum@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/Kconfig.machine | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/watchdog/f71808e_wdt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 1bbe0dd0c4fe5..b88a980f56f8a 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -190,6 +190,7 @@ config INIT_LCD
- config MEMORY_RESERVE
- 	int "Memory reservation (MiB)"
- 	depends on (UCSIMM || UCDIMM)
-+	default 0
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
+diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+index 893cef70c1599..aa57498009c34 100644
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -228,15 +228,17 @@ static int watchdog_set_timeout(int timeout)
  
+ 	mutex_lock(&watchdog.lock);
+ 
+-	watchdog.timeout = timeout;
+ 	if (timeout > 0xff) {
+ 		watchdog.timer_val = DIV_ROUND_UP(timeout, 60);
+ 		watchdog.minutes_mode = true;
++		timeout = watchdog.timer_val * 60;
+ 	} else {
+ 		watchdog.timer_val = timeout;
+ 		watchdog.minutes_mode = false;
+ 	}
+ 
++	watchdog.timeout = timeout;
++
+ 	mutex_unlock(&watchdog.lock);
+ 
+ 	return 0;
 -- 
 2.33.0
 
