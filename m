@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A844517B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078504517BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351410AbhKOWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:44:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47396 "EHLO mail.kernel.org"
+        id S1351606AbhKOWo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:44:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242360AbhKOSks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:40:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A7AC6328C;
-        Mon, 15 Nov 2021 18:04:26 +0000 (UTC)
+        id S242274AbhKOSlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:41:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DD2461163;
+        Mon, 15 Nov 2021 18:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999467;
-        bh=LYR2W95ebjp7DRuQ9X3HmqQlJt75WLxMhBbupiA0wIs=;
+        s=korg; t=1636999491;
+        bh=KfMJRgSboppxZC1GM15J9QRH/7T2RLy+M1M9hzrxPDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y9022DJJG64z25FRwhVDeCIOLmSlvbpIjqbakwir5lJW3KUlgBvGndSpLB+wS4Get
-         28ji65Rw2Y3G4IuzLDX0vKN58Y26C3oMwD76bJDNi6XlfVOHiLegaecGMu8Rt4aWQL
-         u4dVGaLIxjBkQZgsRVZPwaZS5dB/xwJpr1yNTJ4M=
+        b=t+kbOmXDuAIQso6LJKuU0tOllxxXCOQetlH+45aDvyhIHwPzYaehtEiglm56ZshSV
+         qyhd0aP6/RWZ4e59SzdqzldNG00R+1Voe5jTgNRDB2F/c3Ba8+Hl95EK5TBGFfksMf
+         dF2iuZQWToJCQYFwCsUk5vgm825D8/Aj61e/XeLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 307/849] ARM: clang: Do not rely on lr register for stacktrace
-Date:   Mon, 15 Nov 2021 17:56:30 +0100
-Message-Id: <20211115165430.631643115@linuxfoundation.org>
+Subject: [PATCH 5.14 315/849] vrf: run conntrack only in context of lower/physdev for locally generated packets
+Date:   Mon, 15 Nov 2021 17:56:38 +0100
+Message-Id: <20211115165430.904707626@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,44 +41,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit b3ea5d56f212ad81328c82454829a736197ebccc ]
+[ Upstream commit 8c9c296adfae9ea05f655d69e9f6e13daa86fb4a ]
 
-Currently the stacktrace on clang compiled arm kernel uses the 'lr'
-register to find the first frame address from pt_regs. However, that
-is wrong after calling another function, because the 'lr' register
-is used by 'bl' instruction and never be recovered.
+The VRF driver invokes netfilter for output+postrouting hooks so that users
+can create rules that check for 'oif $vrf' rather than lower device name.
 
-As same as gcc arm kernel, directly use the frame pointer (r11) of
-the pt_regs to find the first frame address.
+This is a problem when NAT rules are configured.
 
-Note that this fixes kretprobe stacktrace issue only with
-CONFIG_UNWINDER_FRAME_POINTER=y. For the CONFIG_UNWINDER_ARM,
-we need another fix.
+To avoid any conntrack involvement in round 1, tag skbs as 'untracked'
+to prevent conntrack from picking them up.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+This gets cleared before the packet gets handed to the ip stack so
+conntrack will be active on the second iteration.
+
+One remaining issue is that a rule like
+
+  output ... oif $vrfname notrack
+
+won't propagate to the second round because we can't tell
+'notrack set via ruleset' and 'notrack set by vrf driver' apart.
+However, this isn't a regression: the 'notrack' removal happens
+instead of unconditional nf_reset_ct().
+I'd also like to avoid leaking more vrf specific conditionals into the
+netfilter infra.
+
+For ingress, conntrack has already been done before the packet makes it
+to the vrf driver, with this patch egress does connection tracking with
+lower/physical device as well.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Acked-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/stacktrace.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/vrf.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index 76ea4178a55cb..db798eac74315 100644
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -54,8 +54,7 @@ int notrace unwind_frame(struct stackframe *frame)
+diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
+index 2b1b944d4b281..ec06d3bb9beeb 100644
+--- a/drivers/net/vrf.c
++++ b/drivers/net/vrf.c
+@@ -35,6 +35,7 @@
+ #include <net/l3mdev.h>
+ #include <net/fib_rules.h>
+ #include <net/netns/generic.h>
++#include <net/netfilter/nf_conntrack.h>
  
- 	frame->sp = frame->fp;
- 	frame->fp = *(unsigned long *)(fp);
--	frame->pc = frame->lr;
--	frame->lr = *(unsigned long *)(fp + 4);
-+	frame->pc = *(unsigned long *)(fp + 4);
- #else
- 	/* check current frame pointer is within bounds */
- 	if (fp < low + 12 || fp > high - 4)
+ #define DRV_NAME	"vrf"
+ #define DRV_VERSION	"1.1"
+@@ -424,12 +425,26 @@ static int vrf_local_xmit(struct sk_buff *skb, struct net_device *dev,
+ 	return NETDEV_TX_OK;
+ }
+ 
++static void vrf_nf_set_untracked(struct sk_buff *skb)
++{
++	if (skb_get_nfct(skb) == 0)
++		nf_ct_set(skb, NULL, IP_CT_UNTRACKED);
++}
++
++static void vrf_nf_reset_ct(struct sk_buff *skb)
++{
++	if (skb_get_nfct(skb) == IP_CT_UNTRACKED)
++		nf_reset_ct(skb);
++}
++
+ #if IS_ENABLED(CONFIG_IPV6)
+ static int vrf_ip6_local_out(struct net *net, struct sock *sk,
+ 			     struct sk_buff *skb)
+ {
+ 	int err;
+ 
++	vrf_nf_reset_ct(skb);
++
+ 	err = nf_hook(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net,
+ 		      sk, skb, NULL, skb_dst(skb)->dev, dst_output);
+ 
+@@ -508,6 +523,8 @@ static int vrf_ip_local_out(struct net *net, struct sock *sk,
+ {
+ 	int err;
+ 
++	vrf_nf_reset_ct(skb);
++
+ 	err = nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, net, sk,
+ 		      skb, NULL, skb_dst(skb)->dev, dst_output);
+ 	if (likely(err == 1))
+@@ -626,8 +643,7 @@ static void vrf_finish_direct(struct sk_buff *skb)
+ 		skb_pull(skb, ETH_HLEN);
+ 	}
+ 
+-	/* reset skb device */
+-	nf_reset_ct(skb);
++	vrf_nf_reset_ct(skb);
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+@@ -641,7 +657,7 @@ static int vrf_finish_output6(struct net *net, struct sock *sk,
+ 	struct neighbour *neigh;
+ 	int ret;
+ 
+-	nf_reset_ct(skb);
++	vrf_nf_reset_ct(skb);
+ 
+ 	skb->protocol = htons(ETH_P_IPV6);
+ 	skb->dev = dev;
+@@ -752,6 +768,8 @@ static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
+ 
+ 	skb->dev = vrf_dev;
+ 
++	vrf_nf_set_untracked(skb);
++
+ 	err = nf_hook(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net, sk,
+ 		      skb, NULL, vrf_dev, vrf_ip6_out_direct_finish);
+ 
+@@ -859,7 +877,7 @@ static int vrf_finish_output(struct net *net, struct sock *sk, struct sk_buff *s
+ 	bool is_v6gw = false;
+ 	int ret = -EINVAL;
+ 
+-	nf_reset_ct(skb);
++	vrf_nf_reset_ct(skb);
+ 
+ 	/* Be paranoid, rather than too clever. */
+ 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
+@@ -987,6 +1005,8 @@ static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
+ 
+ 	skb->dev = vrf_dev;
+ 
++	vrf_nf_set_untracked(skb);
++
+ 	err = nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, net, sk,
+ 		      skb, NULL, vrf_dev, vrf_ip_out_direct_finish);
+ 
 -- 
 2.33.0
 
