@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEB1450A2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B7C450A30
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhKOQzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:55:09 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:45536 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhKOQzC (ORCPT
+        id S230420AbhKOQzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:55:49 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58386
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231862AbhKOQz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:55:02 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 15 Nov 2021 11:55:29 -0500
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DB8B1FD67;
-        Mon, 15 Nov 2021 16:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636995125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cF6gRwZuLUiNl2xcIEuaWtuAmHNRho9AqC9wCZCdOO8=;
-        b=2KJORy1sTUR9wRfGJRyXN1nv07fZ38SBxoGMzZx7j5ZUIZb07k43gywgWn6t5eaokma2eZ
-        SEcLIqcap+ac8M6xGtYdBATImFf7P060wRgr3dildxU+BJj9kcIfeXqUf53ODeHzDaXPSz
-        Df8u11CzGh0d4gL04sJ103q8h2MjttM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636995125;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cF6gRwZuLUiNl2xcIEuaWtuAmHNRho9AqC9wCZCdOO8=;
-        b=3+c573I918+mekzNcqL4MXr9DiRfrPEXE6oGKP4NmbVr/eMLhegZYO4En6CtGo1+4FVTzP
-        M0kPCq11m8zgA8Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2AE9F13A66;
-        Mon, 15 Nov 2021 16:52:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0yGvCDSQkmFoEwAAMHmgww
-        (envelope-from <jroedel@suse.de>); Mon, 15 Nov 2021 16:52:04 +0000
-Date:   Mon, 15 Nov 2021 17:52:02 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <Michael.Roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZKQMgyebV6NT0P0@suse.de>
-References: <YY7FAW5ti7YMeejj@google.com>
- <YY7I6sgqIPubTrtA@zn.tnic>
- <YY7Qp8c/gTD1rT86@google.com>
- <CAA03e5GwHMPYHHq3Nkkq1HnEJUUsw-Vk+5wFCott3pmJY7WuAw@mail.gmail.com>
- <2cb3217b-8af5-4349-b59f-ca4a3703a01a@www.fastmail.com>
- <CAA03e5Fw9cRnb=+eJmzEB+0QmdgaGZ7=fPTUYx7f55mGVXLRMA@mail.gmail.com>
- <CAMkAt6q9Wsw_KYypyZxhA1gkd=kFepk5rC5QeZ6Vo==P6=EAxg@mail.gmail.com>
- <YY8Mi36N/e4PzGP0@google.com>
- <CAA03e5F=7T3TcJBksiJ9ovafX65YfzAc0S+uYu5LjfTQ60yC7w@mail.gmail.com>
- <YZADwHxsx5cZ6m47@google.com>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id BC9873F1B0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636995150;
+        bh=PNH2v6es8O5TOQZzDLjEqkCgdBVGSVqHubwT7Cy+HTU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=CU4CBpfM4YuPt/teKruLLRKucAGjvddKhKs1PGKICag8ROjQ95O2lu1R3wvendmG9
+         +6b0rLoida6drtws2TQo+e8lRq7kVW9KuB0+FHMIaKX0cMI8WX+DzTKfOY9RQ4i5QI
+         p2D0PDEW56XVSyDXKovtpc88+ucxjDEXoUnpQ/tx15pwefANHx2R1/2dOKBKhYqyG3
+         8f+3R+0i91Gf5L1Fbi/Amg4Uo5Zt30PbRyffWdx73jLcGcsjgax+4FBzt0aScygyae
+         mRCm8d+lbfAljLXw+z9F2GdhkMWFMaor0ZiX84dJ8y1lSJyT8pVBL4olWV/GtIozQ5
+         UiyMdC2GLp+uA==
+Received: by mail-ed1-f69.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso14606664edb.19
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:52:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PNH2v6es8O5TOQZzDLjEqkCgdBVGSVqHubwT7Cy+HTU=;
+        b=YFwJNcvTUZAKM5mpcIgEaL0YE8haNqCx+TsI+xiMiBWd4Osi1Z3XZyvhYLUeGe6QvW
+         tyHDuP5MMq96Gx7oUx89FoNvbUtp/6FfTXj9TSkys+fJRRbkAvGHQVUixHAkMBQOocs5
+         GuVYHrkupImP+A++EfXBLKYamRPyxww7fXEQso5eOqoqYU/eyKpxj45cWJpcdpCiMtiE
+         RhCBO/ltN8TJK814Bh234YC47LBHy2iPnoJM06bLEbyjsrHtloX0Vh0ECZUm6odSY5rc
+         5M/yw5GP9P7COMjDLAFFAp6H5ABRJnuPWu/JCy3iUqiXHR8p6XI0Qjhwxbnfl+/zCBDa
+         CslA==
+X-Gm-Message-State: AOAM532lz0dJXBANUOseoJIjqYh4EdAS1FotX1mvHt5E85bl5SeiGhXV
+        B2VOaj5h2PcFb9e28kz0WMaJVoEviiFpaHEmxFW/IlYDoLKHeYeD3QMvEzb9+EIqomNTtzom6om
+        dz/aPsqbO5ZP6IA+xxqImtcRDozhAuxSeJFM7N6+lmQ==
+X-Received: by 2002:a17:906:4099:: with SMTP id u25mr447161ejj.453.1636995150309;
+        Mon, 15 Nov 2021 08:52:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz1ddN8Ya6WZiEz3nrE5A7ROfH6GkWWKrtT46rgA6RW+xJPsLTeHGOQjE2zXjDLcd9AVi28lQ==
+X-Received: by 2002:a17:906:4099:: with SMTP id u25mr447122ejj.453.1636995150100;
+        Mon, 15 Nov 2021 08:52:30 -0800 (PST)
+Received: from arighi-desktop.homenet.telecomitalia.it ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id o14sm7770903edj.15.2021.11.15.08.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 08:52:29 -0800 (PST)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/seccomp: fix check of fds being assigned
+Date:   Mon, 15 Nov 2021 17:52:27 +0100
+Message-Id: <20211115165227.101124-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZADwHxsx5cZ6m47@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 06:28:16PM +0000, Sean Christopherson wrote:
-> Another issue is that the host kernel, which despite being "untrusted", absolutely
-> should be acting in the best interests of the guest.  Allowing userspace to inject
-> #VC, e.g. to attempt to attack the guest by triggering a spurious PVALIDATE, means
-> the kernel is failing miserably on that front.
+There might be an arbitrary free open fd slot when we run the addfd
+sub-test, so checking for progressive numbers of file descriptors
+starting from memfd is not always a reliable check and we could get the
+following failure:
 
-Well, no. The kernel is only a part of the hypervisor, KVM userspace is
-another. It is possible today for the userspace part(s) to interact in bad
-ways with the guest and trick or kill it. Allowing user-space to cause a
-#VC in the guest is no different from that.
+  #  RUN           global.user_notification_addfd ...
+  # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
+  # user_notification_addfd: Test terminated by assertion
 
-Regards,
+Simply check if memfd and listener are valid file descriptors and start
+counting for progressive file checking with the listener fd.
 
--- 
-Jörg Rödel
-jroedel@suse.de
+Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index d425688cf59c..4f37153378a1 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
+ 	/* There may be arbitrary already-open fds at test start. */
+ 	memfd = memfd_create("test", 0);
+ 	ASSERT_GE(memfd, 0);
+-	nextfd = memfd + 1;
  
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Ivo Totev
+ 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+ 	ASSERT_EQ(0, ret) {
+ 		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+ 	}
+ 
+-	/* fd: 4 */
+ 	/* Check that the basic notification machinery works */
+ 	listener = user_notif_syscall(__NR_getppid,
+ 				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
+-	ASSERT_EQ(listener, nextfd++);
++	ASSERT_GE(listener, 0);
++	nextfd = listener + 1;
+ 
+ 	pid = fork();
+ 	ASSERT_GE(pid, 0);
+-- 
+2.32.0
 
