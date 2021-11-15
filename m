@@ -2,139 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B238A4507F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CADD4507ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhKOPN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:13:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:19287 "EHLO mga03.intel.com"
+        id S236519AbhKOPNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:13:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236354AbhKOPNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:13:10 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233400355"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="233400355"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 07:10:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="644860964"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2021 07:09:56 -0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>, Chen Yu <yu.c.chen@intel.com>,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
-Subject: [PATCH v10 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Date:   Mon, 15 Nov 2021 23:09:00 +0800
-Message-Id: <92ac1df6f6498fad0dd47a150e85b82646188818.1636987638.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1636987638.git.yu.c.chen@intel.com>
-References: <cover.1636987638.git.yu.c.chen@intel.com>
+        id S236532AbhKOPMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:12:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 233AF63220;
+        Mon, 15 Nov 2021 15:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636988988;
+        bh=VLTdUeoULn5i5kUL9zmhdeStxQYR1dRXo5h6KpJfniA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=us/Y7QAxqrUDJFk2+BCWwW8+VIeN/WlQaw2E7oSlSeI4rgvLIUlCnVDWmyteeq5uz
+         ZROP7kiNPx5Sv6K04zToREy9eytIWt19MWqCzgiQ5bFS3nOdiprPzTxuUtkBT5uBEj
+         nKTSDv3PTMLTgx3qqVfnHbQdjkZq0o8dBywwhyBY=
+Date:   Mon, 15 Nov 2021 16:09:09 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
+Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
+Message-ID: <YZJ4Fabumtte54cA@kroah.com>
+References: <20211103155438.11167-1-andrzej.p@collabora.com>
+ <20211104120111.GB23122@duo.ucw.cz>
+ <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
+ <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2111041311260.57165@angie.orcam.me.uk>
+ <9fbe062a-2992-0361-e72a-f2b1523143dd@collabora.com>
+ <b3a917ef-8a70-80b6-8c79-48ce4628b9e8@collabora.com>
+ <YYUxNaDG0DquQvke@kroah.com>
+ <bec3ea81-4084-02ab-d26d-7215296cf2ee@collabora.com>
+ <cfb67d0e-99d9-3dc9-f0fe-3a1b90b3c3b0@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cfb67d0e-99d9-3dc9-f0fe-3a1b90b3c3b0@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform Firmware Runtime Update image starts with UEFI headers, and the
-headers are defined in UEFI specification, but some of them have not been
-defined in the kernel yet.
+On Mon, Nov 15, 2021 at 03:48:59PM +0100, Andrzej Pietrasiewicz wrote:
+> Jiri, Greg,
+> 
+> 
+> W dniu 05.11.2021 o 15:06, Andrzej Pietrasiewicz pisze:
+> > Hi Greg,
+> > 
+> > W dniu 05.11.2021 o 14:27, Greg Kroah-Hartman pisze:
+> > > On Fri, Nov 05, 2021 at 02:01:23PM +0100, Andrzej Pietrasiewicz wrote:
+> > > > Hi,
+> > > > 
+> > > > W dniu 04.11.2021 o 15:17, Andrzej Pietrasiewicz pisze:
+> > > > > Hi Maciej,
+> > > > > 
+> > > > > W dniu 04.11.2021 o 14:13, Maciej W. Rozycki pisze:
+> > > > > > On Thu, 4 Nov 2021, Maciej W. Rozycki wrote:
+> > > > > > 
+> > > > > > >    The reason for this is with their more recent laptops Lenovo in their
+> > > > > > > infinite wisdom have placed the <PrintScreen> key (which in a traditional
+> > > > > > > PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their
+> > > > > > > keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being
+> > > > > > > as accurate as other fingers (and the overall misdesign of the keyboard
+> > > > > > > and touchpad interface) you can imagine how often I have inadvertently hit
+> > > > > > > <SysRq> combined with a letter key, wreaking havoc to my system (and of
+> > > > > > > course I want to keep the key enabled for times when I do need it).
+> > > > > > 
+> > > > > >    On second thoughts this can be disabled with `setkeycodes 54 0' once we
+> > > > > > do have an alternative combination available.
+> > > > > > 
+> > > > > 
+> > > > > Doesn't `setkeycodes` affect only one keyboard? What if there are more
+> > > > > keyboards connected to a machine?
+> > > > > 
+> > > > >   From drivers/tty/vt/keyboard.c:
+> > > > > 
+> > > > > /*
+> > > > >    * Translation of scancodes to keycodes. We set them on only the first
+> > > > >    * keyboard in the list that accepts the scancode and keycode.
+> > > > >    * Explanation for not choosing the first attached keyboard anymore:
+> > > > >    *  USB keyboards for example have two event devices: one for all "normal"
+> > > > >    *  keys and one for extra function keys (like "volume up", "make coffee",
+> > > > >    *  etc.). So this means that scancodes for the extra function keys won't
+> > > > >    *  be valid for the first event device, but will be for the second.
+> > > > >    */
+> > > > > 
+> > > > 
+> > > > My second thoughts: if we run `setkeycodes` to map, say, F10 as SysRq,
+> > > > don't we lose F10?
+> > > 
+> > > The fact that this patch adds a "new" sysrq key no matter what is a
+> > > non-starter, please think through the consequences of such a change...
+> > > 
+> > 
+> > I wouldn't say this RFC adds a "new" sysrq no matter what. It does so only
+> > when the input device (keyboard) does _not_ have SysRq key at all. So I would
+> > say that this patch adds a replacement SysRq key if the SysRq key proper is
+> > _physically_ absent. Which seems not such a bad thing to me. The problem I'm
+> > trying to solve is exactly this: what to use as SysRq if there's no SysRq?
+> > 
+> 
+> What approach is acceptable then? Any criteria other than "go guess"?
+> Is "connect an external keyboard" the _only_ choice Linux wants to offer
+> to its users in case of devices such as e.g. Chromebooks?
 
-For example, the header layout of a capsule file looks like this:
+I don't see how this patch only kicks in if a keyboard does not have a
+sysrq key present given that you are allowing a different key to be used
+as it also.
 
-EFI_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-EFI_FIRMWARE_IMAGE_AUTHENTICATION
+Anyway, it's an RFC, which can't be applied to the tree so I'll wait to
+review it "for real" when you feel comfortable enough to submit it for
+inclusion.
 
-These structures would be used by the Platform Firmware Runtime Update
-driver to parse the format of capsule file to verify if the corresponding
-version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-kernel, however the rest are not, thus introduce corresponding UEFI
-structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
-in the uefi specification. Ard has pointed out that, the __packed
-attribute does indicate to the compiler that the entire thing can appear
-misaligned in memory. So if one follows the other in the capsule header,
-the __packed attribute may be appropriate to ensure that the second one
-is not accessed using misaligned loads and stores.
+thanks,
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v10:No change since v9.
-v9: No change since v8.
-v8: Use efi_guid_t instead of guid_t. (Andy Shevchenko)
-v7: Use __packed instead of pragma pack(1). (Greg Kroah-Hartman, Ard Biesheuve)
-v6: No change since v5.
-v5: No change since v4.
-v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
----
- include/linux/efi.h | 46 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index dbd39b20e034..ac526af84394 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -148,6 +148,52 @@ typedef struct {
- 	u32 imagesize;
- } efi_capsule_header_t;
- 
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-+struct efi_manage_capsule_header {
-+	u32 ver;
-+	u16 emb_drv_cnt;
-+	u16 payload_cnt;
-+	/*
-+	 * Variable array indicated by number of
-+	 * (emb_drv_cnt + payload_cnt)
-+	 */
-+	u64 offset_list[];
-+} __packed;
-+
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-+struct efi_manage_capsule_image_header {
-+	u32 ver;
-+	efi_guid_t image_type_id;
-+	u8 image_index;
-+	u8 reserved_bytes[3];
-+	u32 image_size;
-+	u32 vendor_code_size;
-+	/* ver = 2. */
-+	u64 hw_ins;
-+	/* ver = v3. */
-+	u64 capsule_support;
-+} __packed;
-+
-+/* WIN_CERTIFICATE */
-+struct win_cert {
-+	u32 len;
-+	u16 rev;
-+	u16 cert_type;
-+};
-+
-+/* WIN_CERTIFICATE_UEFI_GUID */
-+struct win_cert_uefi_guid {
-+	struct win_cert	hdr;
-+	efi_guid_t cert_type;
-+	u8 cert_data[];
-+};
-+
-+/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
-+struct efi_image_auth {
-+	u64 mon_count;
-+	struct win_cert_uefi_guid auth_info;
-+};
-+
- /*
-  * EFI capsule flags
-  */
--- 
-2.25.1
-
+greg k-h
