@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274E5451418
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A6D45144E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348967AbhKOUB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:01:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43724 "EHLO mail.kernel.org"
+        id S232971AbhKOUCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:02:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239245AbhKOSCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:02:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 214BF632DA;
-        Mon, 15 Nov 2021 17:37:16 +0000 (UTC)
+        id S239579AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:03:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A7563347;
+        Mon, 15 Nov 2021 17:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997837;
-        bh=eG9j6xrVgPLLX3Z+sb3gZLBMmYe4uiFbhuijqRHNX3Y=;
+        s=korg; t=1636997868;
+        bh=wzfks4W1c6gQCOK1Fdo5BssSFDsbB1hAIfcAgl/geGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHw/6Gq9G5eZBbSFwQm3gpa85X/xSazJMxLbIAr4I7MaccDSme0ld389PsevIHat9
-         mObFvgOGdxt9yknPxF64jRfAHjqHxHrULMiWUR6w/mxsHoLuWy+o/GuJuTlmdUP3Ic
-         OMo5zsosAU3bOxIkZ/QpLYHJJMZvY/a2wrwOB4pg=
+        b=aa1tMWIVcvDx39lbub7FcVGIqzX71mjYkP9lvYAjaEXdStm/GzpuRYSeTy8vhg4kB
+         RFxM/uEjQLSHAGGiKbAutfty0z+QYerhxzaJcZyAT2mb045YfGwSU8bzB2JhvKqA9h
+         xRKz36SmioYZBql4Esxw9jKE1LTFMqI+1nMI1f0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
-        Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Georgi Djakov <quic_c_gdjako@quicinc.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 286/575] arm64: mm: update max_pfn after memory hotplug
-Date:   Mon, 15 Nov 2021 18:00:11 +0100
-Message-Id: <20211115165353.674982441@linuxfoundation.org>
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 287/575] drm/amdgpu: fix warning for overflow check
+Date:   Mon, 15 Nov 2021 18:00:12 +0100
+Message-Id: <20211115165353.707618871@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -44,46 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 8fac67ca236b961b573355e203dbaf62a706a2e5 ]
+[ Upstream commit 335aea75b0d95518951cad7c4c676e6f1c02c150 ]
 
-After new memory blocks have been hotplugged, max_pfn and max_low_pfn
-needs updating to reflect on new PFNs being hot added to system.
-Without this patch, debug-related functions that use max_pfn such as
-get_max_dump_pfn() or read_page_owner() will not work with any page in
-memory that is hot-added after boot.
+The overflow check in amdgpu_bo_list_create() causes a warning with
+clang-14 on 64-bit architectures, since the limit can never be
+exceeded.
 
-Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
-Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-Acked-by: David Hildenbrand <david@redhat.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Georgi Djakov <quic_c_gdjako@quicinc.com>
-Tested-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-Link: https://lore.kernel.org/r/a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com
-Signed-off-by: Will Deacon <will@kernel.org>
+drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
+            ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The check remains useful for 32-bit architectures, so just avoid the
+warning by using size_t as the type for the count.
+
+Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/mmu.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 58dc93e566179..2601a514d8c4a 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1492,6 +1492,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (ret)
- 		__remove_pgd_mapping(swapper_pg_dir,
- 				     __phys_to_virt(start), size);
-+	else {
-+		max_pfn = PFN_UP(start + size);
-+		max_low_pfn = max_pfn;
-+	}
-+
- 	return ret;
- }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+index 15c45b2a39835..714178f1b6c6e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+@@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
  
+ int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
+ 			  struct drm_amdgpu_bo_list_entry *info,
+-			  unsigned num_entries, struct amdgpu_bo_list **result)
++			  size_t num_entries, struct amdgpu_bo_list **result)
+ {
+ 	unsigned last_entry = 0, first_userptr = num_entries;
+ 	struct amdgpu_bo_list_entry *array;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+index a130e766cbdbe..529d52a204cf4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+@@ -60,7 +60,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
+ int amdgpu_bo_list_create(struct amdgpu_device *adev,
+ 				 struct drm_file *filp,
+ 				 struct drm_amdgpu_bo_list_entry *info,
+-				 unsigned num_entries,
++				 size_t num_entries,
+ 				 struct amdgpu_bo_list **list);
+ 
+ static inline struct amdgpu_bo_list_entry *
 -- 
 2.33.0
 
