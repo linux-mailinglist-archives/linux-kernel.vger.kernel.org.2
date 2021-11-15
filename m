@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936C2452166
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D634524BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376425AbhKPBEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:04:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
+        id S1350702AbhKPBmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:42:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245681AbhKOTVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6382263573;
-        Mon, 15 Nov 2021 18:39:15 +0000 (UTC)
+        id S242351AbhKOSfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42F7F61BD2;
+        Mon, 15 Nov 2021 18:01:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001555;
-        bh=7Z7rbzuRBNK1LCrIaA6pLspwcPKRQVybE9E+2dbLt/s=;
+        s=korg; t=1636999310;
+        bh=lqja+aXNrY0PtiNQSr6pn5A2SzDxYQOqk8fABxKC7JA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMLtByHzXbAzWQKpY8IulC8F6iNQ36NfKVw5riRuAMiUpfZZF0jhZ8AaYxJdZoV3b
-         XpJv482Fl4mem3dPUwiJgzPG/q51im8vltLoyvMbQoWT4EQ6DywxLWHWlT7j/GT6b8
-         Hyv251ebs9F7VjKImdi5ZHNCWVe1+bFtBZ7JqzL4=
+        b=UuujUYIcMwImm9lt4MrRFX2PKmtF/Dqe0XVK/al4u55I8fA0uK5lxwvJfnsKENOAu
+         k+F5joTXGKxZC2bcAoSolryv1yZN8DoVYSpPoupkCyDlamvDGPb57R6c3RaApZFIqo
+         q6amFxeHlH7GHd4Ya/h+xgiGvRiyQw0YHjdcTue4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Matthew Massey <matthewmassey@fb.com>,
+        Dave Taht <dave.taht@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 202/917] x86/mm/64: Improve stack overflow warnings
-Date:   Mon, 15 Nov 2021 17:54:57 +0100
-Message-Id: <20211115165435.643213636@linuxfoundation.org>
+Subject: [PATCH 5.14 217/849] net: sched: update default qdisc visibility after Tx queue cnt changes
+Date:   Mon, 15 Nov 2021 17:55:00 +0100
+Message-Id: <20211115165427.563239549@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,287 +42,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 44b979fa302cab91bdd2cc982823e5c13202cd4e ]
+[ Upstream commit 1e080f17750d1083e8a32f7b350584ae1cd7ff20 ]
 
-Current code has an explicit check for hitting the task stack guard;
-but overflowing any of the other stacks will get you a non-descript
-general #DF warning.
+mq / mqprio make the default child qdiscs visible. They only do
+so for the qdiscs which are within real_num_tx_queues when the
+device is registered. Depending on order of calls in the driver,
+or if user space changes config via ethtool -L the number of
+qdiscs visible under tc qdisc show will differ from the number
+of queues. This is confusing to users and potentially to system
+configuration scripts which try to make sure qdiscs have the
+right parameters.
 
-Improve matters by using get_stack_info_noinstr() to detetrmine if and
-which stack guard page got hit, enabling a better stack warning.
+Add a new Qdisc_ops callback and make relevant qdiscs TTRT.
 
-In specific, Michael Wang reported what turned out to be an NMI
-exception stack overflow, which is now clearly reported as such:
+Note that this uncovers the "shortcut" created by
+commit 1f27cde313d7 ("net: sched: use pfifo_fast for non real queues")
+The default child qdiscs beyond initial real_num_tx are always
+pfifo_fast, no matter what the sysfs setting is. Fixing this
+gets a little tricky because we'd need to keep a reference
+on whatever the default qdisc was at the time of creation.
+In practice this is likely an non-issue the qdiscs likely have
+to be configured to non-default settings, so whatever user space
+is doing such configuration can replace the pfifos... now that
+it will see them.
 
-  [] BUG: NMI stack guard page was hit at 0000000085fd977b (stack is 000000003a55b09e..00000000d8cce1a5)
-
-Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Michael Wang <yun.wang@linux.alibaba.com>
-Link: https://lkml.kernel.org/r/YUTE/NuqnaWbST8n@hirez.programming.kicks-ass.net
+Reported-by: Matthew Massey <matthewmassey@fb.com>
+Reviewed-by: Dave Taht <dave.taht@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/irq_stack.h  | 37 +++++++++++++++++++++----------
- arch/x86/include/asm/stacktrace.h | 10 +++++++++
- arch/x86/include/asm/traps.h      |  6 ++---
- arch/x86/kernel/dumpstack_64.c    |  6 +++++
- arch/x86/kernel/traps.c           | 25 +++++++++++----------
- arch/x86/mm/fault.c               | 20 ++++++++---------
- 6 files changed, 67 insertions(+), 37 deletions(-)
+ include/net/sch_generic.h |  4 ++++
+ net/core/dev.c            |  2 ++
+ net/sched/sch_generic.c   |  9 +++++++++
+ net/sched/sch_mq.c        | 24 ++++++++++++++++++++++++
+ net/sched/sch_mqprio.c    | 23 +++++++++++++++++++++++
+ 5 files changed, 62 insertions(+)
 
-diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
-index 562854c608082..8d55bd11848cb 100644
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -77,11 +77,11 @@
-  *     Function calls can clobber anything except the callee-saved
-  *     registers. Tell the compiler.
-  */
--#define call_on_irqstack(func, asm_call, argconstr...)			\
-+#define call_on_stack(stack, func, asm_call, argconstr...)		\
- {									\
- 	register void *tos asm("r11");					\
- 									\
--	tos = ((void *)__this_cpu_read(hardirq_stack_ptr));		\
-+	tos = ((void *)(stack));					\
- 									\
- 	asm_inline volatile(						\
- 	"movq	%%rsp, (%[tos])				\n"		\
-@@ -98,6 +98,25 @@
- 	);								\
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 9ed33e6840bd6..30da65a421d7a 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -308,6 +308,8 @@ struct Qdisc_ops {
+ 					  struct netlink_ext_ack *extack);
+ 	void			(*attach)(struct Qdisc *sch);
+ 	int			(*change_tx_queue_len)(struct Qdisc *, unsigned int);
++	void			(*change_real_num_tx)(struct Qdisc *sch,
++						      unsigned int new_real_tx);
+ 
+ 	int			(*dump)(struct Qdisc *, struct sk_buff *);
+ 	int			(*dump_stats)(struct Qdisc *, struct gnet_dump *);
+@@ -684,6 +686,8 @@ void qdisc_class_hash_grow(struct Qdisc *, struct Qdisc_class_hash *);
+ void qdisc_class_hash_destroy(struct Qdisc_class_hash *);
+ 
+ int dev_qdisc_change_tx_queue_len(struct net_device *dev);
++void dev_qdisc_change_real_num_tx(struct net_device *dev,
++				  unsigned int new_real_tx);
+ void dev_init_scheduler(struct net_device *dev);
+ void dev_shutdown(struct net_device *dev);
+ void dev_activate(struct net_device *dev);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 2015074d8d9ab..1d66548b6fc01 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3048,6 +3048,8 @@ int netif_set_real_num_tx_queues(struct net_device *dev, unsigned int txq)
+ 		if (dev->num_tc)
+ 			netif_setup_tc(dev, txq);
+ 
++		dev_qdisc_change_real_num_tx(dev, txq);
++
+ 		dev->real_num_tx_queues = txq;
+ 
+ 		if (disabling) {
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index a8dd06c74e318..66d2fbe9ef501 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -1330,6 +1330,15 @@ static int qdisc_change_tx_queue_len(struct net_device *dev,
+ 	return 0;
  }
  
-+#define ASM_CALL_ARG0							\
-+	"call %P[__func]				\n"
-+
-+#define ASM_CALL_ARG1							\
-+	"movq	%[arg1], %%rdi				\n"		\
-+	ASM_CALL_ARG0
-+
-+#define ASM_CALL_ARG2							\
-+	"movq	%[arg2], %%rsi				\n"		\
-+	ASM_CALL_ARG1
-+
-+#define ASM_CALL_ARG3							\
-+	"movq	%[arg3], %%rdx				\n"		\
-+	ASM_CALL_ARG2
-+
-+#define call_on_irqstack(func, asm_call, argconstr...)			\
-+	call_on_stack(__this_cpu_read(hardirq_stack_ptr),		\
-+		      func, asm_call, argconstr)
-+
- /* Macros to assert type correctness for run_*_on_irqstack macros */
- #define assert_function_type(func, proto)				\
- 	static_assert(__builtin_types_compatible_p(typeof(&func), proto))
-@@ -147,8 +166,7 @@
-  */
- #define ASM_CALL_SYSVEC							\
- 	"call irq_enter_rcu				\n"		\
--	"movq	%[arg1], %%rdi				\n"		\
--	"call %P[__func]				\n"		\
-+	ASM_CALL_ARG1							\
- 	"call irq_exit_rcu				\n"
- 
- #define SYSVEC_CONSTRAINTS	, [arg1] "r" (regs)
-@@ -168,12 +186,10 @@
-  */
- #define ASM_CALL_IRQ							\
- 	"call irq_enter_rcu				\n"		\
--	"movq	%[arg1], %%rdi				\n"		\
--	"movl	%[arg2], %%esi				\n"		\
--	"call %P[__func]				\n"		\
-+	ASM_CALL_ARG2							\
- 	"call irq_exit_rcu				\n"
- 
--#define IRQ_CONSTRAINTS	, [arg1] "r" (regs), [arg2] "r" (vector)
-+#define IRQ_CONSTRAINTS	, [arg1] "r" (regs), [arg2] "r" ((unsigned long)vector)
- 
- #define run_irq_on_irqstack_cond(func, regs, vector)			\
- {									\
-@@ -185,9 +201,6 @@
- 			      IRQ_CONSTRAINTS, regs, vector);		\
- }
- 
--#define ASM_CALL_SOFTIRQ						\
--	"call %P[__func]				\n"
--
- /*
-  * Macro to invoke __do_softirq on the irq stack. This is only called from
-  * task context when bottom halves are about to be reenabled and soft
-@@ -197,7 +210,7 @@
- #define do_softirq_own_stack()						\
- {									\
- 	__this_cpu_write(hardirq_stack_inuse, true);			\
--	call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
-+	call_on_irqstack(__do_softirq, ASM_CALL_ARG0);			\
- 	__this_cpu_write(hardirq_stack_inuse, false);			\
- }
- 
-diff --git a/arch/x86/include/asm/stacktrace.h b/arch/x86/include/asm/stacktrace.h
-index f248eb2ac2d4a..3881b5333eb81 100644
---- a/arch/x86/include/asm/stacktrace.h
-+++ b/arch/x86/include/asm/stacktrace.h
-@@ -38,6 +38,16 @@ int get_stack_info(unsigned long *stack, struct task_struct *task,
- bool get_stack_info_noinstr(unsigned long *stack, struct task_struct *task,
- 			    struct stack_info *info);
- 
-+static __always_inline
-+bool get_stack_guard_info(unsigned long *stack, struct stack_info *info)
++void dev_qdisc_change_real_num_tx(struct net_device *dev,
++				  unsigned int new_real_tx)
 +{
-+	/* make sure it's not in the stack proper */
-+	if (get_stack_info_noinstr(stack, current, info))
-+		return false;
-+	/* but if it is in the page below it, we hit a guard */
-+	return get_stack_info_noinstr((void *)stack + PAGE_SIZE, current, info);
++	struct Qdisc *qdisc = dev->qdisc;
++
++	if (qdisc->ops->change_real_num_tx)
++		qdisc->ops->change_real_num_tx(qdisc, new_real_tx);
 +}
 +
- const char *stack_type_name(enum stack_type type);
- 
- static inline bool on_stack(struct stack_info *info, void *addr, size_t len)
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 7f7200021bd13..6221be7cafc3b 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -40,9 +40,9 @@ void math_emulate(struct math_emu_info *);
- bool fault_in_kernel_space(unsigned long address);
- 
- #ifdef CONFIG_VMAP_STACK
--void __noreturn handle_stack_overflow(const char *message,
--				      struct pt_regs *regs,
--				      unsigned long fault_address);
-+void __noreturn handle_stack_overflow(struct pt_regs *regs,
-+				      unsigned long fault_address,
-+				      struct stack_info *info);
- #endif
- 
- #endif /* _ASM_X86_TRAPS_H */
-diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
-index 5601b95944fae..6c5defd6569a3 100644
---- a/arch/x86/kernel/dumpstack_64.c
-+++ b/arch/x86/kernel/dumpstack_64.c
-@@ -32,9 +32,15 @@ const char *stack_type_name(enum stack_type type)
+ int dev_qdisc_change_tx_queue_len(struct net_device *dev)
  {
- 	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
- 
-+	if (type == STACK_TYPE_TASK)
-+		return "TASK";
-+
- 	if (type == STACK_TYPE_IRQ)
- 		return "IRQ";
- 
-+	if (type == STACK_TYPE_SOFTIRQ)
-+		return "SOFTIRQ";
-+
- 	if (type == STACK_TYPE_ENTRY) {
- 		/*
- 		 * On 64-bit, we have a generic entry stack that we
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index f3f3034b06f34..cc6de3a01293c 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -313,17 +313,19 @@ out:
+ 	bool up = dev->flags & IFF_UP;
+diff --git a/net/sched/sch_mq.c b/net/sched/sch_mq.c
+index e79f1afe0cfd6..db18d8a860f9c 100644
+--- a/net/sched/sch_mq.c
++++ b/net/sched/sch_mq.c
+@@ -125,6 +125,29 @@ static void mq_attach(struct Qdisc *sch)
+ 	priv->qdiscs = NULL;
  }
  
- #ifdef CONFIG_VMAP_STACK
--__visible void __noreturn handle_stack_overflow(const char *message,
--						struct pt_regs *regs,
--						unsigned long fault_address)
-+__visible void __noreturn handle_stack_overflow(struct pt_regs *regs,
-+						unsigned long fault_address,
-+						struct stack_info *info)
- {
--	printk(KERN_EMERG "BUG: stack guard page was hit at %p (stack is %p..%p)\n",
--		 (void *)fault_address, current->stack,
--		 (char *)current->stack + THREAD_SIZE - 1);
--	die(message, regs, 0);
-+	const char *name = stack_type_name(info->type);
++static void mq_change_real_num_tx(struct Qdisc *sch, unsigned int new_real_tx)
++{
++#ifdef CONFIG_NET_SCHED
++	struct net_device *dev = qdisc_dev(sch);
++	struct Qdisc *qdisc;
++	unsigned int i;
 +
-+	printk(KERN_EMERG "BUG: %s stack guard page was hit at %p (stack is %p..%p)\n",
-+	       name, (void *)fault_address, info->begin, info->end);
-+
-+	die("stack guard page", regs, 0);
- 
- 	/* Be absolutely certain we don't return. */
--	panic("%s", message);
-+	panic("%s stack guard hit", name);
- }
- #endif
- 
-@@ -353,6 +355,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- 
- #ifdef CONFIG_VMAP_STACK
- 	unsigned long address = read_cr2();
-+	struct stack_info info;
- #endif
- 
- #ifdef CONFIG_X86_ESPFIX64
-@@ -455,10 +458,8 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- 	 * stack even if the actual trigger for the double fault was
- 	 * something else.
- 	 */
--	if ((unsigned long)task_stack_page(tsk) - 1 - address < PAGE_SIZE) {
--		handle_stack_overflow("kernel stack overflow (double-fault)",
--				      regs, address);
--	}
-+	if (get_stack_guard_info((void *)address, &info))
-+		handle_stack_overflow(regs, address, &info);
- #endif
- 
- 	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 84a2c8c4af735..4bfed53e210ec 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -32,6 +32,7 @@
- #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
- #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
- #include <asm/vdso.h>			/* fixup_vdso_exception()	*/
-+#include <asm/irq_stack.h>
- 
- #define CREATE_TRACE_POINTS
- #include <asm/trace/exceptions.h>
-@@ -631,6 +632,9 @@ static noinline void
- page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- 		unsigned long address)
- {
-+#ifdef CONFIG_VMAP_STACK
-+	struct stack_info info;
++	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
++		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
++		/* Only update the default qdiscs we created,
++		 * qdiscs with handles are always hashed.
++		 */
++		if (qdisc != &noop_qdisc && !qdisc->handle)
++			qdisc_hash_del(qdisc);
++	}
++	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
++		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
++		if (qdisc != &noop_qdisc && !qdisc->handle)
++			qdisc_hash_add(qdisc, false);
++	}
 +#endif
- 	unsigned long flags;
- 	int sig;
- 
-@@ -649,9 +653,7 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- 	 * that we're in vmalloc space to avoid this.
- 	 */
- 	if (is_vmalloc_addr((void *)address) &&
--	    (((unsigned long)current->stack - 1 - address < PAGE_SIZE) ||
--	     address - ((unsigned long)current->stack + THREAD_SIZE) < PAGE_SIZE)) {
--		unsigned long stack = __this_cpu_ist_top_va(DF) - sizeof(void *);
-+	    get_stack_guard_info((void *)address, &info)) {
- 		/*
- 		 * We're likely to be running with very little stack space
- 		 * left.  It's plausible that we'd hit this condition but
-@@ -662,13 +664,11 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- 		 * and then double-fault, though, because we're likely to
- 		 * break the console driver and lose most of the stack dump.
- 		 */
--		asm volatile ("movq %[stack], %%rsp\n\t"
--			      "call handle_stack_overflow\n\t"
--			      "1: jmp 1b"
--			      : ASM_CALL_CONSTRAINT
--			      : "D" ("kernel stack overflow (page fault)"),
--				"S" (regs), "d" (address),
--				[stack] "rm" (stack));
-+		call_on_stack(__this_cpu_ist_top_va(DF) - sizeof(void*),
-+			      handle_stack_overflow,
-+			      ASM_CALL_ARG3,
-+			      , [arg1] "r" (regs), [arg2] "r" (address), [arg3] "r" (&info));
++}
 +
- 		unreachable();
- 	}
- #endif
+ static int mq_dump(struct Qdisc *sch, struct sk_buff *skb)
+ {
+ 	struct net_device *dev = qdisc_dev(sch);
+@@ -288,6 +311,7 @@ struct Qdisc_ops mq_qdisc_ops __read_mostly = {
+ 	.init		= mq_init,
+ 	.destroy	= mq_destroy,
+ 	.attach		= mq_attach,
++	.change_real_num_tx = mq_change_real_num_tx,
+ 	.dump		= mq_dump,
+ 	.owner		= THIS_MODULE,
+ };
+diff --git a/net/sched/sch_mqprio.c b/net/sched/sch_mqprio.c
+index 5eb3b1b7ae5e7..50e15add6068f 100644
+--- a/net/sched/sch_mqprio.c
++++ b/net/sched/sch_mqprio.c
+@@ -306,6 +306,28 @@ static void mqprio_attach(struct Qdisc *sch)
+ 	priv->qdiscs = NULL;
+ }
+ 
++static void mqprio_change_real_num_tx(struct Qdisc *sch,
++				      unsigned int new_real_tx)
++{
++	struct net_device *dev = qdisc_dev(sch);
++	struct Qdisc *qdisc;
++	unsigned int i;
++
++	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
++		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
++		/* Only update the default qdiscs we created,
++		 * qdiscs with handles are always hashed.
++		 */
++		if (qdisc != &noop_qdisc && !qdisc->handle)
++			qdisc_hash_del(qdisc);
++	}
++	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
++		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
++		if (qdisc != &noop_qdisc && !qdisc->handle)
++			qdisc_hash_add(qdisc, false);
++	}
++}
++
+ static struct netdev_queue *mqprio_queue_get(struct Qdisc *sch,
+ 					     unsigned long cl)
+ {
+@@ -629,6 +651,7 @@ static struct Qdisc_ops mqprio_qdisc_ops __read_mostly = {
+ 	.init		= mqprio_init,
+ 	.destroy	= mqprio_destroy,
+ 	.attach		= mqprio_attach,
++	.change_real_num_tx = mqprio_change_real_num_tx,
+ 	.dump		= mqprio_dump,
+ 	.owner		= THIS_MODULE,
+ };
 -- 
 2.33.0
 
