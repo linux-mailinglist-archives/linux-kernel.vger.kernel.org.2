@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5D4451931
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD97C451B61
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349010AbhKOXPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:15:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38776 "EHLO mail.kernel.org"
+        id S236536AbhKPAAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:00:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238296AbhKOTKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 009DD63495;
-        Mon, 15 Nov 2021 18:18:19 +0000 (UTC)
+        id S233789AbhKOTYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A5563675;
+        Mon, 15 Nov 2021 18:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000300;
-        bh=yIzlTmEWChwZQlGr+UE5tzq2u0HIYJzQuxIIgotRxm0=;
+        s=korg; t=1637002610;
+        bh=5zkn8EtUAC03mm/4g4bHXKqDjNKVIIDJ/CXnOXbyv2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CSITWBCgM9rMo3zTczHrj+MbKNWOhGdJ5CEcYCIiho/YAj5EnGQQZ5Vz0txjzQrk+
-         TXlKZmFyooNl/TGhJMcGSFh01EkFiDwDMWNNwdyYmV5TvE4Ik09VG2LazJmkCV2dSy
-         iYljBsJ3VAGkySTqYQo10zj29Ux1uWE8hvx5tdAg=
+        b=gRoqgQ8T+nOEP4NQaHcTJFhb2eVTbul8y448/U/vszxGU6HAnDTR265jDX9hYeqAX
+         WgSbJjWIVrCRWyqrkmYHQQ32Kw3aY6NZh9ethT4WIFLmjnDTRtqyTN5NGpEI43t+gs
+         DfFgJ42ZPifdmnLp7mVhtBZ6k9IzJRx9+8yw2OeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <jroedel@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 611/849] ARM: dts: stm32: Reduce DHCOR SPI NOR frequency to 50 MHz
+Subject: [PATCH 5.15 599/917] iommu/mediatek: Fix out-of-range warning with clang
 Date:   Mon, 15 Nov 2021 18:01:34 +0100
-Message-Id: <20211115165440.911664687@linuxfoundation.org>
+Message-Id: <20211115165449.076175662@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 2012579b31293d0a8cf2024e9dab66810bf1a15e ]
+[ Upstream commit f13efafc1a2cf30d4a74c00f40210d6de36db2d0 ]
 
-The SPI NOR is a bit further away from the SoC on DHCOR than on DHCOM,
-which causes additional signal delay. At 108 MHz, this delay triggers
-a sporadic issue where the first bit of RX data is not received by the
-QSPI controller.
+clang-14 notices that a comparison is never true when
+CONFIG_PHYS_ADDR_T_64BIT is disabled:
 
-There are two options of addressing this problem, either by using the
-DLYB block to compensate the extra delay, or by reducing the QSPI bus
-clock frequency. The former requires calibration and that is overly
-complex, so opt for the second option.
+drivers/iommu/mtk_iommu.c:553:34: error: result of comparison of constant 5368709120 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
+                                     ~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 76045bc457104 ("ARM: dts: stm32: Add QSPI NOR on AV96")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
-Cc: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Add an explicit check for the type of the variable to skip the check
+and the warning in that case.
+
+Fixes: b4dad40e4f35 ("iommu/mediatek: Adjust the PA for the 4GB Mode")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Yong Wu <yong.wu@mediatek.com>
+Link: https://lore.kernel.org/r/20210927121857.941160-1-arnd@kernel.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/mtk_iommu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-index 2b0ac605549d7..44ecc47085871 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
-@@ -202,7 +202,7 @@
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
- 		spi-rx-bus-width = <4>;
--		spi-max-frequency = <108000000>;
-+		spi-max-frequency = <50000000>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 	};
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index d837adfd1da55..25b834104790c 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -550,7 +550,9 @@ static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
+ 	phys_addr_t pa;
+ 
+ 	pa = dom->iop->iova_to_phys(dom->iop, iova);
+-	if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
++	if (IS_ENABLED(CONFIG_PHYS_ADDR_T_64BIT) &&
++	    dom->data->enable_4GB &&
++	    pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
+ 		pa &= ~BIT_ULL(32);
+ 
+ 	return pa;
 -- 
 2.33.0
 
