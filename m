@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A023F45061E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FCB45061F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhKON7P convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 08:59:15 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:52651 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbhKON7M (ORCPT
+        id S231613AbhKOOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:00:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229588AbhKOOAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:59:12 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M4JiJ-1mmta92BST-000I5W; Mon, 15 Nov 2021 14:56:12 +0100
-Received: by mail-wr1-f51.google.com with SMTP id u1so30887459wru.13;
-        Mon, 15 Nov 2021 05:56:12 -0800 (PST)
-X-Gm-Message-State: AOAM5319m8vghGPTjZGBTb6s6MI+Eh6K4M3/BjL28kuf3UgbdHBGRyt5
-        QNDNGKcHTDB94iVtF5+ZSWQACARgEhOFtwxitmQ=
-X-Google-Smtp-Source: ABdhPJwZu1Y0NQaJduThy0FATNKQ7q57R8j31tpZxHMuJRrVI5TgHIDpuqzbH7XhZV1NVo7L4AeuZOFUGvZ90zQokAs=
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr47933601wrd.369.1636984572170;
- Mon, 15 Nov 2021 05:56:12 -0800 (PST)
+        Mon, 15 Nov 2021 09:00:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636984625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y9DzvPWkK06n+ni/1MC77gLjtMv5YGXUlofXA3Q/O/c=;
+        b=hdyBEUjF75T6HpCHTH5IJkrxHW6povhuNillWUIqJifKLVY2lrD3+xx03k3RW+trcWXqqo
+        tmPqsXTTNdOaRy9aEpiWb26G/JfK7P3K499yPKOeR6RrLAbpIXtoM8M7FyL6qUjJXxe4r5
+        4RxbMtm7IHae7g2DHwIAw37Jo+LdwmU=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-uaJfisEmN_C7ybA__m8QMQ-1; Mon, 15 Nov 2021 08:57:04 -0500
+X-MC-Unique: uaJfisEmN_C7ybA__m8QMQ-1
+Received: by mail-pj1-f72.google.com with SMTP id pg9-20020a17090b1e0900b001a689204b52so8668366pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:57:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Y9DzvPWkK06n+ni/1MC77gLjtMv5YGXUlofXA3Q/O/c=;
+        b=FVFQ6SmmZ/VUVQEhpiCanZYkKTGDbVjT+Ep5J/pdKv2WpGsrRi8JJp8HvJicluQRm+
+         VEav74f2asphIiB6vviTOP/dQpM+1nt2qdzuR+ssfrBR8xHLr4RNvUbL7MVap7lVmNTk
+         kr6cAkybORsSOv2Qn1lmm63JilDvq1y4FXqu/apswAHeouenv3bsbBEAxUB1J6ZrTZt1
+         3E3Kk4/gIu2uSovYSxM1W6DiOx0DrxT2VM4jGBmBHG+NNXfrdswwxNNCg6Sap17D9lks
+         CO9942Ht2Rsxbk5NeaLS0YPDNQUAfC98uJsy8YzuuL2cbNniF5I8q8AOrgu7Q8nU5ZYo
+         kpFg==
+X-Gm-Message-State: AOAM532zpNBXlZWiaRPkI9Hw2Hvrc52OT8hb8hlVvgEZBWA6n3mShZR0
+        VRhdSWn2vxipdHIvUyKIzrSTypK7/aGbtMJCXKj0dwQ8JguUp7cEc9f6P+r1Mt0HLRX/M7kzvsi
+        YZja/iFiPeMSSTKtQungMGf5u
+X-Received: by 2002:a63:6d49:: with SMTP id i70mr25535398pgc.40.1636984623386;
+        Mon, 15 Nov 2021 05:57:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5cednGe778Wy/mBuz6qjfb0PVvKjg/S4inKv/KP14bnfhwMQ3ShFTx3x/j32fsOkLYg3zzA==
+X-Received: by 2002:a63:6d49:: with SMTP id i70mr25535371pgc.40.1636984623145;
+        Mon, 15 Nov 2021 05:57:03 -0800 (PST)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b12sm16405028pfv.118.2021.11.15.05.57.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 05:57:02 -0800 (PST)
+Subject: Re: [RFC PATCH 0/5] Firmware Upload Framework
+To:     Russ Weight <russell.h.weight@intel.com>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, ardb@kernel.org,
+        bjorn.andersson@linaro.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, "Gong, Richard" <richard.gong@intel.com>
+References: <20211111011345.25049-1-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8b7bbdcd-ef48-9f48-10c0-021c41575522@redhat.com>
+Date:   Mon, 15 Nov 2021 05:57:01 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20211115070809.15529-1-sergio.paracuellos@gmail.com>
- <20211115070809.15529-5-sergio.paracuellos@gmail.com> <YZJWM33dXqW1BsuV@rocinante>
- <CAK8P3a0A9xAcwDLFbUk--X2+7gFpOL7HJw-9Sk8KZxfoidcxuw@mail.gmail.com> <CAMhs-H9ox3qeAKCN7ug1BxJArmvjDBSqgubOvr_tK1hasPNs3A@mail.gmail.com>
-In-Reply-To: <CAMhs-H9ox3qeAKCN7ug1BxJArmvjDBSqgubOvr_tK1hasPNs3A@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 15 Nov 2021 14:55:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2-C1zo81hHcua6d7+XE8Gm=s6h0JTR9Q71DbDU9f2WwA@mail.gmail.com>
-Message-ID: <CAK8P3a2-C1zo81hHcua6d7+XE8Gm=s6h0JTR9Q71DbDU9f2WwA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] PCI: mt7621: Add missing 'MODULE_LICENSE()' definition
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:wb8B/5taonV8CMaacygLepBOELSZjLqzcgYsoB/1BAukZjP9EjL
- 2drXOxYrtTbMH7gwoKdRgcAxzYs2DsKzLj7fey1I+TVc5d0cTG5H2agR5lpgFUwyYOCwp82
- tjYfqpe74j/zRyPODutwGJZdGfMIhRu9Qm9KM0HMAoTWfepDyx5QFnR/rPJYXi/QgxqYlR9
- gPp8wHwY3nI0JietAreHA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2aQuj2BncJE=:WQ9r1Cjeg/6FpsXaSyXKMs
- hN2i4azc5OwbArKFJ95gGrAUGSna6BpZIjxETqTz94FhnDkxLsZtq7Tq5VVRf6s783UqsO0cn
- FgIc/GFBk6UTB1NVoRqEUF6NNIdWr9h0QqyRl/ceAxCv/fi3JUCzrc6uFrTQ51NgFIESlOe1F
- +rrVYewgP39ASKviGP7bEg/5AiMQkZ10nxDOIQQBFxrfi6bJSzqeqJm8+aCJio1ujKapNci3I
- t8SLDJpWYHT8KSrrZlkWUiqnDwpgYT15uFrBonYb71uglgwcPdt1ZieYMtxU/TGdWeX36/+oI
- zLB4yxOYLCs7z6Hs/BQaCitpRYBzI7bIUOG+i+fdSPCV2cufHSFnv0b+DBLBPcbDbANJ+h2Fm
- T5AUJ+SNlGtm8gC0OFsX5L5BcTj92gfXvRLX+ovVTamvsaFhKts5FSjVmzf3Frnv6iUfY57OA
- QOTSYg4zJgquHM1xE/LCEaiL6aGyyScdiUTMoFcLU+hFsm5Ryyjh2K8KSATwuxCXxKtrakAjQ
- GA1GSTQ1MfYk2hUMGZuPDw0cpZAsE9itp9gV8ei8Qe8m7M8BieaB21sa7jTU0Ct6MgXhgxPyC
- i3WSly7eLOmW+kt36gjTm11ULf9DuciwlYohVIZ8xlLfSOCAzS/XuEz1FzNph8DWyR9TeRVUn
- TpAPbHH9pNGXy5XuPo6azY2GxvkQp+9TAF+LVJZohGXDufmVckFJK4PP7+3kzOlVc+a5lWUgJ
- j/TiWjmjzKyEGUrJu82+C9fm5FeWyxRbzJ/c+0a3wxpj4H3rzbe3p5Ls8qIFsJ1vF5ezzgkz9
- IGDHJLRUPEAGcpZAzg4Svo3PftsVwrzZ2C8lMEtugh8GQnQGZE=
+In-Reply-To: <20211111011345.25049-1-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 2:51 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Mon, Nov 15, 2021 at 2:00 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Mon, Nov 15, 2021 at 1:44 PM Krzysztof Wilczyński <kw@linux.com> wrote:
-> > This is often use for PCI drivers, but after Rob reworked this code a while
-> > back, it should actually be possible to reliably remove and reload PCI
-> > host bridge drivers, and it would be good to eventually lift the restriction
-> > here as well.
+
+On 11/10/21 5:13 PM, Russ Weight wrote:
+> The Firmware Upload framework provides a common API for uploading firmware
+> files to target devices. An example use case involves FPGA devices that
+> load FPGA, Card BMC, and firmware images from FLASH when the card boots.
+> Users need the ability to update these firmware images while the card is
+> in use.
 >
-> I see. Thanks for letting me know. I will search for a way to
-> accomplish this but that will be a different patch series.
+> Device drivers that instantiate the Firmware Upload class driver will
+> interact with the target device to transfer and authenticate the firmware
+> data. Uploads are performed in the context of a kernel worker thread in
+> order to facilitate progress indicators during lengthy uploads.
+>
+> This driver was previously submitted in the context of the FPGA sub-
+> system as the "FPGA Image Load Framework", but the framework is generic
+> enough to support other devices as well. The previous submission of this
+> patch-set can be viewed here:
+>
+> https://marc.info/?l=linux-kernel&m=163295640216820&w=2
+>
+> The n3000bmc-sec-update driver is the first driver to use the Firmware
+> Upload API. A recent version of these patches can be viewed here:
+>
+> https://marc.info/?l=linux-kernel&m=163295697217095&w=2
+>
+> I don't think I am duplicating any functionality that is currently covered
+> in the firmware subsystem. I appreciate your feedback on these patches.
 
-Right, that is what I meant. I don't think it will be difficult, but
-there is no point
-intermixing it with your current work.
+This may be a common api for fpga/dfl-, but it is not likely common for 
+general devices.
 
-       Arnd
+Could the scope of this patchset be reduced to just fpga/dfl for now ?
+
+Something more like stratix10-rsu.
+
+Tom
+
+>
+> - Russ
+>
+> Russ Weight (5):
+>    firmware: Create firmware upload framework
+>    firmware: upload: Enable firmware uploads
+>    firmware: upload: Signal eventfd when complete
+>    firmware: upload: Add status ioctl
+>    firmware: upload: Enable cancel of firmware upload
+>
+>   .../driver-api/firmware/firmware-upload.rst   |  54 +++
+>   Documentation/driver-api/firmware/index.rst   |   1 +
+>   MAINTAINERS                                   |   9 +
+>   drivers/firmware/Kconfig                      |   8 +
+>   drivers/firmware/Makefile                     |   1 +
+>   drivers/firmware/firmware-upload.c            | 413 ++++++++++++++++++
+>   include/linux/firmware/firmware-upload.h      |  69 +++
+>   include/uapi/linux/firmware-upload.h          |  73 ++++
+>   8 files changed, 628 insertions(+)
+>   create mode 100644 Documentation/driver-api/firmware/firmware-upload.rst
+>   create mode 100644 drivers/firmware/firmware-upload.c
+>   create mode 100644 include/linux/firmware/firmware-upload.h
+>   create mode 100644 include/uapi/linux/firmware-upload.h
+>
+
