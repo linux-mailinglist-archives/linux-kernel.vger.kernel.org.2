@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784B04517A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A64245176C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241184AbhKOWhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:37:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44298 "EHLO mail.kernel.org"
+        id S1347240AbhKOW1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:27:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242544AbhKOSiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:38:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82B6D632DF;
-        Mon, 15 Nov 2021 18:03:15 +0000 (UTC)
+        id S242362AbhKOSfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:35:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B37B963255;
+        Mon, 15 Nov 2021 18:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999396;
-        bh=tap+HRvvemmA8l2EyCeQCQUxgwnf1ec60xbv7fMIo9o=;
+        s=korg; t=1636999319;
+        bh=ZcSCgMqc+eeKZejniw6KgFcgaDl/BizMQNnKd37bD/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r9r5mUsJsa8ZmEf850D7pIKFGkhcm+eCYGy2LxmttGEjM+40lctaHbMZiRvV4Ddsz
-         S4qsAxth4etP5Xb3LtW9ffITZPb2SBYkS7WqWS3x3fyd3zJ4CCMTh1Egi9Y1hJBdlR
-         Z3G/6LfaNUwWj0M0+kdIMg/qSOWFJbGEL9CvAK0E=
+        b=LstZKg/QQ/ihuVx6jhjj4z1PiYo2v/4fbz5QsxbNSTw93/44ju0Weesqtba+AEQ9M
+         Z7tjEOowGe/zXwcnclk9w+asD8DSNXSJrIyz8vqVup1VOyRxI/c5KpPg8lKb21FAeK
+         iZ+FIKOPchaC4ZYzBs8/1aLR5Ss2qM1AswxpUyyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 249/849] media: imx: set a media_device bus_info string
-Date:   Mon, 15 Nov 2021 17:55:32 +0100
-Message-Id: <20211115165428.635741862@linuxfoundation.org>
+Subject: [PATCH 5.14 255/849] media: rcar-csi2: Add checking to rcsi2_start_receiver()
+Date:   Mon, 15 Nov 2021 17:55:38 +0100
+Message-Id: <20211115165428.864130968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -43,39 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Kepplinger <martin.kepplinger@puri.sm>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 6d0d779b212c27293d9ccb4da092ff0ccb6efa39 ]
+[ Upstream commit fc41665498332ad394b7db37f23e9394096ddc71 ]
 
-Some tools like v4l2-compliance let users select a media device based
-on the bus_info string which can be quite convenient. Use a unique
-string for that.
+If rcsi2_code_to_fmt() return NULL, then null pointer dereference occurs
+in the next cycle. That should not be possible now but adding checking
+protects from future bugs.
+The patch adds checking if format is NULL.
 
-This also fixes the following v4l2-compliance warning:
-warn: v4l2-test-media.cpp(52): empty bus_info
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-dev-common.c | 2 ++
+ drivers/media/platform/rcar-vin/rcar-csi2.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/media/imx/imx-media-dev-common.c b/drivers/staging/media/imx/imx-media-dev-common.c
-index d186179388d03..4d873726a461b 100644
---- a/drivers/staging/media/imx/imx-media-dev-common.c
-+++ b/drivers/staging/media/imx/imx-media-dev-common.c
-@@ -367,6 +367,8 @@ struct imx_media_dev *imx_media_dev_init(struct device *dev,
- 	imxmd->v4l2_dev.notify = imx_media_notify;
- 	strscpy(imxmd->v4l2_dev.name, "imx-media",
- 		sizeof(imxmd->v4l2_dev.name));
-+	snprintf(imxmd->md.bus_info, sizeof(imxmd->md.bus_info),
-+		 "platform:%s", dev_name(imxmd->md.dev));
+diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+index e28eff0396888..ba4a380016cc4 100644
+--- a/drivers/media/platform/rcar-vin/rcar-csi2.c
++++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+@@ -553,6 +553,8 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
  
- 	media_device_init(&imxmd->md);
+ 	/* Code is validated in set_fmt. */
+ 	format = rcsi2_code_to_fmt(priv->mf.code);
++	if (!format)
++		return -EINVAL;
  
+ 	/*
+ 	 * Enable all supported CSI-2 channels with virtual channel and
 -- 
 2.33.0
 
