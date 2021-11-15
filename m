@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3332452338
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F62945235E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378219AbhKPBWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:22:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42932 "EHLO mail.kernel.org"
+        id S1379578AbhKPBYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:24:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244219AbhKOTMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:12:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D0D0634A5;
-        Mon, 15 Nov 2021 18:19:20 +0000 (UTC)
+        id S244243AbhKOTMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:12:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE41C634A6;
+        Mon, 15 Nov 2021 18:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000360;
-        bh=RipKnghJetfR6VOGmIU6oRF+ArQW+BVj6gzzGdCdxdQ=;
+        s=korg; t=1637000366;
+        bh=1zNvRbAmzmEwWsT4j4vDl2gW6vUm69UsjwpF0rjnpS0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0hc9LxYlZQfvUqmNzQ0BPR1fDD+LqgybWx2bvxUa46xl/K4XULI7jO7Z0clqrRDV0
-         xWI0yOB8YNLm99yxMCAAq7fAWoSl/mmfwHaglZoc5agW6kHSrDzSk8RNUO8a7dXDFa
-         XYaNFyasmgUgjTV+WYHLy6nr9sRmCd843b7GIJ3g=
+        b=dBVdrCM1EGdCy7xMpBdsvSHMGigej4nkiMzaXFGGPmLcZ2q+pCJqw1b473mSu6Pp2
+         q6BzDD4dLRv/dzr1/quPxY97Wb8DP0FXr+9yB0JpW3awFC7IJ5HVuo36F7AHcpsfgM
+         rm+aYH6S0hBgjoUlABDZgb+4lhjl4rPYIFm26+cg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Stephen Boyd <swboyd@chromium.org>,
+        stable@vger.kernel.org, Wan Jiabing <wanjiabing@vivo.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 631/849] firmware: qcom_scm: Fix error retval in __qcom_scm_is_call_available()
-Date:   Mon, 15 Nov 2021 18:01:54 +0100
-Message-Id: <20211115165441.617092217@linuxfoundation.org>
+Subject: [PATCH 5.14 633/849] soc: qcom: apr: Add of_node_put() before return
+Date:   Mon, 15 Nov 2021 18:01:56 +0100
+Message-Id: <20211115165441.688118877@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,42 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guru Das Srinagesh <quic_gurus@quicinc.com>
+From: Wan Jiabing <wanjiabing@vivo.com>
 
-[ Upstream commit 38212b2a8a6fc4c3a6fa99d7445b833bedc9a67c ]
+[ Upstream commit 72f1aa6205d84337b90b065f602a8fe190821781 ]
 
-Since __qcom_scm_is_call_available() returns bool, have it return false
-instead of -EINVAL if an invalid SMC convention is detected.
+Fix following coccicheck warning:
 
-This fixes the Smatch static checker warning:
+./drivers/soc/qcom/apr.c:485:1-23: WARNING: Function
+for_each_child_of_node should have of_node_put() before return
 
-	drivers/firmware/qcom_scm.c:255 __qcom_scm_is_call_available()
-	warn: signedness bug returning '(-22)'
+Early exits from for_each_child_of_node should decrement the
+node reference counter.
 
-Fixes: 9d11af8b06a8 ("firmware: qcom_scm: Make __qcom_scm_is_call_available() return bool")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 834735662602 ("soc: qcom: apr: Add avs/audio tracking functionality")
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/1633982414-28347-1-git-send-email-quic_gurus@quicinc.com
+Link: https://lore.kernel.org/r/20211014083017.19714-1-wanjiabing@vivo.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/qcom_scm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soc/qcom/apr.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 47ea2bd42b100..0aa0fe86ca8c7 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -252,7 +252,7 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
- 		break;
- 	default:
- 		pr_err("Unknown SMC convention being used\n");
--		return -EINVAL;
-+		return false;
- 	}
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 7abfc8c4fdc72..f736d208362c9 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -323,12 +323,14 @@ static int of_apr_add_pd_lookups(struct device *dev)
+ 						    1, &service_path);
+ 		if (ret < 0) {
+ 			dev_err(dev, "pdr service path missing: %d\n", ret);
++			of_node_put(node);
+ 			return ret;
+ 		}
  
- 	ret = qcom_scm_call(dev, &desc, &res);
+ 		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
+ 		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+ 			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
++			of_node_put(node);
+ 			return PTR_ERR(pds);
+ 		}
+ 	}
 -- 
 2.33.0
 
