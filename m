@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DA14515AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FCB4515B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352701AbhKOUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:48:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
+        id S1347009AbhKOUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:49:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240226AbhKOSH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45EE761526;
-        Mon, 15 Nov 2021 17:43:53 +0000 (UTC)
+        id S240251AbhKOSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F7B861AAA;
+        Mon, 15 Nov 2021 17:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998233;
-        bh=LTH443FliPQmfzbk+3NBwOGJaE7Log7RdLAW4nIej1k=;
+        s=korg; t=1636998236;
+        bh=U0c9k/qrcvx5RXUay2VEnf+w919Maj0xL4chiNYBK+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rTmgqzs+28Lgg/e6RdOejhIXFLoET2fVaY5hCKXewErUdGWOazAh5Dcw6hqgcK/7K
-         bPf8oTuqtK6jt/pSkSegZIdbOxtaiwBE3TWKd3xizkPFWMXeSn1v8e4SpdgKCWamHR
-         GMtPcIf84gxVj9lgTEWrudtjpEq1+BgTodCl02rM=
+        b=hyc27xBgrj14Udlh/qfE0uYlBhh/cGEzaHH3Cbq0XiQHVlSQx0L5yjbUo26j1sYMZ
+         rCV9gORo/EVLAWXgSYBl+zzO5JunHVbdEjIqCHJ4ub/cCPOIi1gyQc3MvJ3v0JXaTA
+         D/uwQhZAX5Dse1V5Fwpi+/g+xY8otN/U1s2aTv04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 437/575] ARM: dts: stm32: fix AV96 board SAI2 pin muxing on stm32mp15
-Date:   Mon, 15 Nov 2021 18:02:42 +0100
-Message-Id: <20211115165358.884153484@linuxfoundation.org>
+Subject: [PATCH 5.10 438/575] ASoC: cs42l42: Correct some register default values
+Date:   Mon, 15 Nov 2021 18:02:43 +0100
+Message-Id: <20211115165358.915461947@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,63 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olivier Moysan <olivier.moysan@foss.st.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 1a9a9d226f0f0ef5d9bf588ab432e0d679bb1954 ]
+[ Upstream commit d591d4b32aa9552af14a0c7c586a2d3fe9ecc6e0 ]
 
-Fix SAI2A and SAI2B pin muxings for AV96 board on STM32MP15.
-Change sai2a-4 & sai2a-5 to sai2a-2 & sai2a-2.
-Change sai2a-4 & sai2a-sleep-5 to sai2b-2 & sai2b-sleep-2
+Some registers had wrong default values in cs42l42_reg_defaults[].
 
-Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
-
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-Reviewed-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Link: https://lore.kernel.org/r/20211015133619.4698-4-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs42l42.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index dee4d32ab32c4..ccf66adbbf623 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -1091,7 +1091,7 @@
- 		};
- 	};
- 
--	sai2a_pins_c: sai2a-4 {
-+	sai2a_pins_c: sai2a-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
- 				 <STM32_PINMUX('D', 11, AF10)>, /* SAI2_SD_A */
-@@ -1102,7 +1102,7 @@
- 		};
- 	};
- 
--	sai2a_sleep_pins_c: sai2a-5 {
-+	sai2a_sleep_pins_c: sai2a-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
- 				 <STM32_PINMUX('D', 11, ANALOG)>, /* SAI2_SD_A */
-@@ -1147,14 +1147,14 @@
- 		};
- 	};
- 
--	sai2b_pins_c: sai2a-4 {
-+	sai2b_pins_c: sai2b-2 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
- 			bias-disable;
- 		};
- 	};
- 
--	sai2b_sleep_pins_c: sai2a-sleep-5 {
-+	sai2b_sleep_pins_c: sai2b-sleep-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
- 		};
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 828dc78202e8b..8e44d0f34194e 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -91,7 +91,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_ASP_RX_INT_MASK,		0x1F },
+ 	{ CS42L42_ASP_TX_INT_MASK,		0x0F },
+ 	{ CS42L42_CODEC_INT_MASK,		0x03 },
+-	{ CS42L42_SRCPL_INT_MASK,		0xFF },
++	{ CS42L42_SRCPL_INT_MASK,		0x7F },
+ 	{ CS42L42_VPMON_INT_MASK,		0x01 },
+ 	{ CS42L42_PLL_LOCK_INT_MASK,		0x01 },
+ 	{ CS42L42_TSRS_PLUG_INT_MASK,		0x0F },
+@@ -128,7 +128,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_MIXER_CHA_VOL,		0x3F },
+ 	{ CS42L42_MIXER_ADC_VOL,		0x3F },
+ 	{ CS42L42_MIXER_CHB_VOL,		0x3F },
+-	{ CS42L42_EQ_COEF_IN0,			0x22 },
++	{ CS42L42_EQ_COEF_IN0,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN1,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN2,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN3,			0x00 },
 -- 
 2.33.0
 
