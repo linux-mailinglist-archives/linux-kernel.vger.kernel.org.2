@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2E2452019
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9CE4519AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357470AbhKPAsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:48:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1349168AbhKOXZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:25:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344729AbhKOTZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C42A363278;
-        Mon, 15 Nov 2021 19:03:15 +0000 (UTC)
+        id S233357AbhKOTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33F3C634E5;
+        Mon, 15 Nov 2021 18:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002996;
-        bh=45ZJCceUUvUW6UIrrGAmsv1isRggW6JSEpTRfj4mi8c=;
+        s=korg; t=1637000768;
+        bh=SklSF0rHcGX5j+5akmCLn1Z4/i9pqYPezdgWk7c+2FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nxg3cQt2SH7B8LBfy2j62OJ8jmUMXz32ySRPrSeo6rd9u+gsMZYMfeSOAsFEgOKh/
-         bFN9xJMQ1vl/E/1zVQO/tAET8Wvq8+q43TRu1NhP6ZxkXTndzYeknYDKWwuxQhBiuG
-         NISilRQoIOntt0qOFNhlQx0zh33WRVbJ2CRe/paw=
+        b=Sdo1p3mIK53EGv5OF3x/F3SgcaHstNzhoJjAtCM47BnH8TYMGvt1xT01EjSQbWqae
+         puBAu1sStIsOV+F7vCKqrqumSASKZbpoeuk+GosSRhJlfW+5wpxKknYt5Wc7aBdRXb
+         3jf9YAdrbhYvbOeibbrXYCm2ugkvpinxeiDgmtYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 739/917] dmaengine: tegra210-adma: fix pm runtime unbalance
-Date:   Mon, 15 Nov 2021 18:03:54 +0100
-Message-Id: <20211115165453.971279813@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Acked-by: Jani Nikula" <jani.nikula@intel.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 752/849] drm: fb_helper: improve CONFIG_FB dependency
+Date:   Mon, 15 Nov 2021 18:03:55 +0100
+Message-Id: <20211115165445.692214585@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit c5a51fc89c0103c03b8a54cf12dac7d014b3a2bf ]
+[ Upstream commit 9d6366e743f37d36ef69347924ead7bcc596076e ]
 
-The previous commit 059e969c2a7d ("dmaengine: tegra210-adma: Using
-pm_runtime_resume_and_get to replace open coding") forgets to replace
-the pm_runtime_get_sync in the tegra_adma_probe, but removes the
-pm_runtime_put_noidle.
+My previous patch correctly addressed the possible link failure, but as
+Jani points out, the dependency is now stricter than it needs to be.
 
-Fix this by continuing to replace pm_runtime_get_sync with
-pm_runtime_resume_and_get in tegra_adma_probe.
+Change it again, to allow DRM_FBDEV_EMULATION to be used when
+DRM_KMS_HELPER and FB are both loadable modules and DRM is linked into
+the kernel.
 
-Fixes: 059e969c2a7d ("dmaengine: tegra210-adma: Using pm_runtime_resume_and_get to replace open coding")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20211021030538.3465287-1-mudongliangabcd@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+As a side-effect, the option is now only visible when at least one DRM
+driver makes use of DRM_KMS_HELPER. This is better, because the option
+has no effect otherwise.
+
+Fixes: 606b102876e3 ("drm: fb_helper: fix CONFIG_FB dependency")
+Suggested-by: Acked-by: Jani Nikula <jani.nikula@intel.com>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211029120307.1407047-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/tegra210-adma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/Kconfig | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-index b1115a6d1935c..d1dff3a29db59 100644
---- a/drivers/dma/tegra210-adma.c
-+++ b/drivers/dma/tegra210-adma.c
-@@ -867,7 +867,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 061f4382c796e..0bba672176b10 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -97,9 +97,8 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
  
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0)
- 		goto rpm_disable;
- 
+ config DRM_FBDEV_EMULATION
+ 	bool "Enable legacy fbdev support for your modesetting driver"
+-	depends on DRM
+-	depends on FB=y || FB=DRM
+-	select DRM_KMS_HELPER
++	depends on DRM_KMS_HELPER
++	depends on FB=y || FB=DRM_KMS_HELPER
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
 -- 
 2.33.0
 
