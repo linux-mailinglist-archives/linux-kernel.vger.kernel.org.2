@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F09545039E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9432745039F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhKOLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:40:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230494AbhKOLkF (ORCPT
+        id S231295AbhKOLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhKOLkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:40:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636976229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fWcZZsgQOAso1mx0RHkRaCfmhEXrgIWNcifLJw+coog=;
-        b=RlXbSa8MjZfdIF9NJ4UOAduZK4NnZutN7JlDmc/kGVIzPA6yX7MsSc/+uzm4L6dHtUIU6d
-        7wwl5Zizgf+2utuYqiHa8Q3kbZ0g1N9ZaxD5KPSl8sXDGuulzqMVA2geftTYtTYmreOM6Z
-        J2b6bYSKQWTM7u+dnL1VxW1TogmwIgY=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-glWBYO9DOa2jhw7-IxzZsw-1; Mon, 15 Nov 2021 06:37:07 -0500
-X-MC-Unique: glWBYO9DOa2jhw7-IxzZsw-1
-Received: by mail-pf1-f197.google.com with SMTP id 184-20020a6217c1000000b0049f9aad0040so9793898pfx.21
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:37:07 -0800 (PST)
+        Mon, 15 Nov 2021 06:40:55 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109E3C061746;
+        Mon, 15 Nov 2021 03:37:58 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id n66so34075928oia.9;
+        Mon, 15 Nov 2021 03:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H0MaBm2tCNOzB7pxkxpAcyTPKCZcMQtr/VIW7MJsUgQ=;
+        b=qTz/EZkX979C2y62JUPQuqDRKsfB3tWivmXImqgc5AxOejpWrusp6Tf/0BhalJZ83j
+         bHSSje7oWXVZMP8qK5xYvRxJdpXZ28FPevlfqgm59grjJVZsrmBkKfQrKov/7o6VGd9+
+         Vb3f+6den9moXBzjoerkc20XUDz1VDJuLGY178NXxrQi1M2h78+j945ZLHPrP2jGBzUU
+         tPtx0wXoOIClo2xAkaX/JhyO/SCbcUkkKmpUzWS+ue6ikTQ7MaomiijiN6nh3Y2yJ3+W
+         1TvXaH4jaZ669TF8D2xyK4WF+McS2j6zGLILvnVwT/wYjbeU0DXVIv+tz8xKvNQgM1MY
+         E50g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fWcZZsgQOAso1mx0RHkRaCfmhEXrgIWNcifLJw+coog=;
-        b=kDTj01dhob4PE/48O7AnOOmeOk+gx+HEpuYQ9IJ2Bb/qNXjTtT4vlBrT+NHGk8gpEb
-         o+PShsbPImZwuOz+mbVaBOnH8inQ6C2BV8G8/H33IUrFtNa6OSyvm9b6kBrLkaL6iItr
-         v7dYEtoPRIuX0XhxBj8QyrKE+cliMkwy/tJsKScyouf6cCk57F2Q4ICIV9aQzh0f0He5
-         qFr84uRsxl37AaAxyn1YqonFGcyZPli7nK+FlDQ1YjKaH8cqaoKKeG/JwfWdYorRlUvy
-         GRk/5hMFdZRU5mpqpHJiVtkdlMtcJ0xLFf41qS2sEUejX9wUx0Cf/g+e1o0jr/T24l7J
-         cEmw==
-X-Gm-Message-State: AOAM530IBras2qN0EfZN53EV4YPQPpRHhbX5w4NOsvutv2ex5sF6kHec
-        LoKCdHOEDY0mcvRaI3c3Yo08/FqHdPkPZ5TLZ852AjWYlAfwm0UkcyFul/mxtoqpmY83ItqWcRe
-        LBXLoGUl/uecEHPDjlQUkL0jO
-X-Received: by 2002:a05:6a00:188a:b0:49f:c31f:b2c3 with SMTP id x10-20020a056a00188a00b0049fc31fb2c3mr32513727pfh.9.1636976226755;
-        Mon, 15 Nov 2021 03:37:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwUWvk0nHKiGokqgCW4tmnKRRgIPnG7AT9YnPKPuqVrUfPf/cpmMXUHSUdBhSCVprLzSyRC+Q==
-X-Received: by 2002:a05:6a00:188a:b0:49f:c31f:b2c3 with SMTP id x10-20020a056a00188a00b0049fc31fb2c3mr32513707pfh.9.1636976226519;
-        Mon, 15 Nov 2021 03:37:06 -0800 (PST)
-Received: from xz-m1.local ([94.177.118.80])
-        by smtp.gmail.com with ESMTPSA id w192sm14640457pfd.21.2021.11.15.03.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 03:37:06 -0800 (PST)
-Date:   Mon, 15 Nov 2021 19:37:00 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH RFC 2/2] mm: Rework swap handling of zap_pte_range
-Message-ID: <YZJFVK8g8LhWlICo@xz-m1.local>
-References: <20211110082952.19266-1-peterx@redhat.com>
- <20211110082952.19266-3-peterx@redhat.com>
- <71100340.4M9YG836mP@nvdebian>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H0MaBm2tCNOzB7pxkxpAcyTPKCZcMQtr/VIW7MJsUgQ=;
+        b=J0BRSoq6IpOQ6+WCHfazsEXZBAPQ98t3CyGqyIeI5PIg8IO08T4DcYN67ZHfWm65wc
+         SCYtDDYW2tUec0YFno3C9k4pQE+Q4r2lbLzA2s7Qw5D+/rVPaDjJm1Ne+kCjmyGbeO7O
+         Npch3710tGq2uCVoGgAdjcyYMcAsVG/pzDeXhyM0PYgSb6zEBEkZ/HuTlnD0LN7m0dJx
+         GcsYj23/mZMUO5aVxdMVyfapSkoFHDbqgStgBZx06/A4YD5csLdySlyajpiDCc54Iy3w
+         HBiauZvyj8SOf2VVB9KtehgQYqSa6vaUPLY1p1d0N9+d0NVrPEsrczPsmyrt/2VfZx2o
+         TK0g==
+X-Gm-Message-State: AOAM530Y84hkNeaQF3yJyQq4ibj7Ou1PvLm38p3XPR+sdalv7SHoy4+N
+        kfB2xgiXR+yGIuqvdG/yZCgI4Ed4D/KS7SVLVAh1OX77hoXp7Q==
+X-Google-Smtp-Source: ABdhPJxCkoOTLSfk6A9QBUZwpfU4iWuHy9PNDHr4sst+/yML5Gwy6pBqNPujWetD8QFsLI5kYqMAgyIsZlc0negOeW4=
+X-Received: by 2002:a05:6808:d54:: with SMTP id w20mr31698921oik.91.1636976277388;
+ Mon, 15 Nov 2021 03:37:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <71100340.4M9YG836mP@nvdebian>
+References: <20211114204331.39555-1-huobean@gmail.com> <20211114204331.39555-2-huobean@gmail.com>
+ <CAHP4M8VAhcTysoBRfNQSiN3fTY6GK9fTz5+hzvzoEuNfC+9CHQ@mail.gmail.com> <937514c9cbb3dd86a659d3fff11fb0f6fa3de8e9.camel@gmail.com>
+In-Reply-To: <937514c9cbb3dd86a659d3fff11fb0f6fa3de8e9.camel@gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Mon, 15 Nov 2021 17:07:45 +0530
+Message-ID: <CAHP4M8W=EE+v7LeORkLSPBChQQjmALNR-Nm+GY6TkUjE4qiiDw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mmc-utils: Use memcpy instead of strncpy
+To:     Bean Huo <huobean@gmail.com>
+Cc:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beanhuo@micron.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:21:18PM +1100, Alistair Popple wrote:
-> Hi Peter,
+> I don't understand how above memcpy() overflow/underflow/out-of-bounds?
+> would you please provide more specific reason?
+>
+> memcpy(lbuf, (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION], 8);
+>
+> here lbuf is a char array lbuf[10], and ext_csd is a __u8 array, __u8
+> ext_csd[512].
 
-Hi, Alistair,
+Ok, in the given information parameters, it might work fine at runtime.
 
-> 
-> I was having trouble applying this cleanly to any of my local trees so was
-> wondering which sha1 should I be applying this on top of? Thanks.
+But still, using 8 as the magic number makes the code illegible for a
+third-party. Plus the code is also unoptimised, eg :
 
-Thanks for considering trying it out.  I thought it was easy to apply onto any
-of the recent branches as long as with -mm's rc1 applied, and I just did it to
-Linus's 5.16-rc1 in my uffd-wp rebase:
+i)
+If ext = "abc", then we need to copy (3 + 1) bytes.
+However, currently memcpy would copy (8 + 1) bytes.
 
-https://github.com/xzpeter/linux/commits/uffd-wp-shmem-hugetlbfs
+ii)
+If ext = "abcdefghijklmnopqrst", then we need to copy (9 + 1) bytes.
+However, currently memcpy would copy (8 + 1) bytes.
 
-This commit is here:
 
-https://github.com/xzpeter/linux/commit/c32043436282bb352e6fe10eb5fa693340fe5281
+> Yes, but please remember that mmc-utils is mainly used for embedded
+> platforms, they are not easy/inconvenient to update to the latest
+> library to support these two APIs(strlcpy needs libbsd-dev, and strscpy
+> needs some one else.).  If we use strlcpy or strscpy, mmc-utils will
+> not be portable. Do you know any other API that can be used and make
+> code more portable and simpler?
+>
 
-It could be that "git rebase" is normally smarter so I didn't notice it's not
-applicable directly.
+Hmm, you can always start adding code locally in your codebase.
+Anyways, if you *must* use only "already available code", snprintf is
+an alternative.
 
-I'll repost a new version soon, please also consider to fetch directly from the
-git tree too before I do so.
-
-Thanks,
-
--- 
-Peter Xu
-
+snprintf(lbuf, sizeof(lbuf), (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION]);
