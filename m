@@ -2,338 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96547450998
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7DE45099D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhKOQaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhKOQaD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:30:03 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFC7C061570;
-        Mon, 15 Nov 2021 08:27:07 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id n29so31804909wra.11;
-        Mon, 15 Nov 2021 08:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=nAJZ/8qBlkSeumTdsWvf6jWRnWI5SJHgxgMuaAAXq3o=;
-        b=BXS3nKzWpOZD+Xhwu4uHcArysuwKdApgrodmIaA2LaYXzSAxIAUlegzcKtQ8ZBsHrE
-         e5te+Xf9Nx0OeRH04kcXrWlIIsXbOMbHdHRnOAF7aM2GiH2BHXtWvzsof8Cil5D923n2
-         gusBkFSEvt/GXgrg7fNI5/4Ogy6dFAnIYoTrLd3VVcJQ8HJvhzb6SWLHmbvxlHiNRAuD
-         oR/R2eGjw2eBnjSsvyEVlVVPZZ1zYXFIAUQ2b7KwNDOyFMx5mGFc5h6LEtJpwANCar6p
-         d53OBflD8F37uMzh9mueJ2jaAfyhRChBnnLt8zn00aeU4eG2xpOJA/Ayzwc/TILlVg7I
-         5xag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=nAJZ/8qBlkSeumTdsWvf6jWRnWI5SJHgxgMuaAAXq3o=;
-        b=2qgauL+DCeNsRsxL4CBQ8okrPquuZcijL3ek76gp6N6weBT4t8eK9HEAX5UUQ6h/ZG
-         Hk9g71QuJmyS084vTYlqYfoQi5tBlon4bQ0gTftNGyyjl5fzwNv/FIEoJcr9lFGVVhLb
-         4yKHxwGV3ljZm2VOXh39tXWgCjRHgfaGuF58DlrVNdTbEwLMvc6BknDuKf2N/Z2pYrHw
-         +UHtFKSYaxUA+pme565D2yCISMB6S6wvjGRIDH0e1JJXOu3LfeFuLtYkmuB371TSKUN/
-         dfcbZT4NbNr3/Z1ReFoSw5A1XozkIA3p24YRAgL5bCG6tTGyaD9EEu9utYgaDa41r90Y
-         TYYg==
-X-Gm-Message-State: AOAM531Rn3258X/V2PL+hpUirwNbqNpbTViw5Vv7/42v5jT6/mJBvX8C
-        5hXc6PvX/HztaAZHncsVx1EHcy3vUC0=
-X-Google-Smtp-Source: ABdhPJzzAKpVTkRMgFqXkIwX+JryWBKs/hcZHsMQlUjkbZOR+Zu2WitCf3UVQuX2X30tgKDlb5+VPQ==
-X-Received: by 2002:adf:f9d2:: with SMTP id w18mr247969wrr.303.1636993625973;
-        Mon, 15 Nov 2021 08:27:05 -0800 (PST)
-Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
-        by smtp.gmail.com with ESMTPSA id m22sm16377559wmq.38.2021.11.15.08.27.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 08:27:05 -0800 (PST)
-Message-ID: <d411aec5-efa8-c71d-8179-54ff52c17039@gmail.com>
-Date:   Mon, 15 Nov 2021 17:27:04 +0100
+        id S231902AbhKOQag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:30:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231639AbhKOQad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:30:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E5960235;
+        Mon, 15 Nov 2021 16:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636993656;
+        bh=4JbhaJa+WKgNpMtMZdbDTrTF43/5Tpkk286u8m+D2q8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DiziJVtUjHRR5a2WuY01BjtVns2jwsr+GsL2MyTH00JvwAMa2/A/181Jxnj/ccGC9
+         3h71mVzPIfFbKi9dFWK1mF4nEbD67jENiphimWiwftNmwTGTQBwc68KhQRDl3tcHdT
+         hJ9ceH21hBj6XbgPcxcvKXqqhkz0THLwsCf4UiTRrv4vHj2sP1s2HAP+V34um2DSjC
+         nMeO0s0qOOsSrf7GsLCCvfe0HKyy99+Lw8jqP1N6vL7QJ2vwvhrJvwar3FUkbMGbbO
+         XHm2yWdmxjmxpnBlsSWqmSejYZ7lYffxoRlfu2a4bS5hpslqhehXw82nMSkhDfNy9N
+         zQP0VQWA3MBLg==
+Date:   Mon, 15 Nov 2021 10:27:34 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
+        lenb@kernel.org, rjw@rjwysocki.net, bhelgaas@google.com,
+        zhangliguang@linux.alibaba.com, zhuo.song@linux.alibaba.com
+Subject: Re: [RFC PATCH v3] ACPI: Move sdei_init and ghes_init ahead
+Message-ID: <20211115162734.GA1566887@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
-References: <20211018114009.13350-1-sam.shih@mediatek.com>
- <20211018114009.13350-3-sam.shih@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v7 2/3] arm64: dts: mediatek: add basic mt7986a support
-In-Reply-To: <20211018114009.13350-3-sam.shih@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115064415.29933-1-xueshuai@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The subject says *what* the patch does, but doesn't give any clue
+about *why* we want this.
 
-On 18/10/2021 13:40, Sam Shih wrote:
-> Add basic chip support for Mediatek mt7986a, include
-> basic uart nodes, rng node and watchdog node.
-> 
-> Add cpu node, timer node, gic node, psci and reserved-memory node
-> for ARM Trusted Firmware.
-> 
+On Mon, Nov 15, 2021 at 02:44:15PM +0800, Shuai Xue wrote:
+> On an ACPI system, ACPI is initialised very early from a
+> subsys_initcall(), while SDEI is not ready until a subsys_initcall().
 
-What is the exact difference between mt7986a and mt7986b? Right now, it's only 
-the compatible, for that it makes no sense to split them.
+This sentence sounds like it's setting up a contrast between ACPI init
+and SDEI init, but apparently both are subsys_initcall(), so this
+doesn't actually say what the difference is.
 
-It would be good to see what the exact differences are, so that we can see if it 
-makes sense to have one of the alternatives:
-1) use a common mt7986.dtsi which get included by mt7986[a,b].dtsi
-2) Use on mt7986.dtsi and only add one mt7986a.dtsi or mt7986b.dtsi which has 
-add-ons.
+> More seriously, the kernel is able to handle and report errors until the
+> GHES is initialised by device_initcall().
 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> 
+Did you mean "unable"?  Or do you really mean the kernel can handle
+errors until GHES is initialized, but can't handle errors *after* GHES
+is initialized?
+
+> Consequently, when an error occurs during the kernel booting, the
+> phyiscal sdei dispatcher in firmware fails to dispatch error events. All
+> errors that occurred before GHES initialization are missed and there is
+> no chance to report and find them again.
+
+s/phyiscal/physical/
+s/sdei/SDEI/
+
+This doesn't explain how something in the kernel can prevent the
+dispatcher in firmware from doing something.  Maybe the firmware emits
+an event and the kernel isn't listening?
+
+What is SDEI?  Please provide a citation to whatever spec is relevant.
+
+> In this patch, move sdei_init and ghes_init as far ahead as possible,
+> right after acpi_hest_init().
+
+Please be explicit about what the dependencies are here.  Is there
+something in sdei_init() that depends on acpi_hest_init()?  If so,
+what is it specifically?
+
+Similarly, does ghes_init() depend on something in sdei_init()?
+
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
 > ---
-> v7: added memory node back to dts
-> v6: removed clock and pinctrl node, to separate basic part into a single
->      patch series
-> 
-> Original thread:
-> https://lore.kernel.org/all/20211004124155.1404-1-sam.shih@mediatek.com/
-> 
-> v5: follow reviewr's comment: removed clock freqency node in timer due to
->      we have set CNTFRQ_EL0 in ATF firmware, and also corrected GICD range
-> v4: added missing gic register bases, and fixed range of GICR
-> v3: used the stdout-path instead of console=ttyS0
-> v2: modified clock and uart node due to clock driver updated
+> Changelog v2 -> v3:
+> Fix compile error in X86
+> Reported-by: kernel test robot<lkp@intel.com>
 > ---
->   arch/arm64/boot/dts/mediatek/Makefile        |   1 +
->   arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts |  38 +++++
->   arch/arm64/boot/dts/mediatek/mt7986a.dtsi    | 149 +++++++++++++++++++
->   3 files changed, 188 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+>  drivers/acpi/apei/ghes.c    | 3 +--
+>  drivers/acpi/pci_root.c     | 8 +++++++-
+>  drivers/firmware/arm_sdei.c | 9 +--------
+>  include/acpi/apei.h         | 2 ++
+>  include/linux/arm_sdei.h    | 2 ++
+>  5 files changed, 13 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index 4f68ebed2e31..e6c3a73b9e4a 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-evb.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
-> new file mode 100644
-> index 000000000000..ca074cf8e578
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2021 MediaTek Inc.
-> + * Author: Sam.Shih <sam.shih@mediatek.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt7986a.dtsi"
-> +
-> +/ {
-> +	model = "MediaTek MT7986a RFB";
-> +	compatible = "mediatek,mt7986a-rfb";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index 0c8330ed1ffd..4200369503b8 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -1457,7 +1457,7 @@ static struct platform_driver ghes_platform_driver = {
+>  	.remove		= ghes_remove,
+>  };
+>  
+> -static int __init ghes_init(void)
+> +int __init ghes_init(void)
+>  {
+>  	int rc;
+>  
+> @@ -1499,4 +1499,3 @@ static int __init ghes_init(void)
+>  err:
+>  	return rc;
+>  }
+> -device_initcall(ghes_init);
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index ab2f7dfb0c44..7658ae509377 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -23,7 +23,7 @@
+>  #include <linux/dmi.h>
+>  #include <linux/platform_data/x86/apple.h>
+>  #include <acpi/apei.h>	/* for acpi_hest_init() */
+> -
+> +#include <linux/arm_sdei.h> /* for sdei_init() */
+>  #include "internal.h"
+>  
+>  #define ACPI_PCI_ROOT_CLASS		"pci_bridge"
+> @@ -946,6 +946,12 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>  void __init acpi_pci_root_init(void)
+>  {
+>  	acpi_hest_init();
+> +	#ifdef CONFIG_ARM_SDE_INTERFACE
+> +	sdei_init();
+> +	#endif 
+> +	#ifdef CONFIG_ACPI_APEI_GHES
+> +	ghes_init();
+> +	#endif 
 
-We normally don't add earlycon parameter to the normal bootargs, as it's only 
-for debugging. Also what do we need the swiotlb? Are there any limitation in the 
-HW that makes us need it?
+I love to replace initcalls with explicit calls.  You provided stubs
+below, so why the #ifdefs here?
 
-Regards,
-Matthias
+>  	if (acpi_pci_disabled)
+>  		return;
+>  
+> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+> index a7e762c352f9..606520be326e 100644
+> --- a/drivers/firmware/arm_sdei.c
+> +++ b/drivers/firmware/arm_sdei.c
+> @@ -1059,7 +1059,7 @@ static bool __init sdei_present_acpi(void)
+>  	return true;
+>  }
+>  
+> -static int __init sdei_init(void)
+> +int __init sdei_init(void)
+>  {
+>  	struct platform_device *pdev;
+>  	int ret;
+> @@ -1080,13 +1080,6 @@ static int __init sdei_init(void)
+>  	return ret;
+>  }
+>  
+> -/*
+> - * On an ACPI system SDEI needs to be ready before HEST:GHES tries to register
+> - * its events. ACPI is initialised from a subsys_initcall(), GHES is initialised
+> - * by device_initcall(). We want to be called in the middle.
+> - */
+> -subsys_initcall_sync(sdei_init);
 
-> +	};
-> +
-> +	memory {
-> +		reg = <0 0x40000000 0 0x40000000>;
-> +	};
-> +};
-> +
-> +&uart0 {
-> +	status = "okay";
-> +};
-> +
-> +&uart1 {
-> +	status = "okay";
-> +};
-> +
-> +&uart2 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> new file mode 100644
-> index 000000000000..75912bcf6c9c
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> @@ -0,0 +1,149 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2021 MediaTek Inc.
-> + * Author: Sam.Shih <sam.shih@mediatek.com>
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/ {
-> +	compatible = "mediatek,mt7986a";
-> +	interrupt-parent = <&gic>;
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +
-> +	system_clk: dummy40m {
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <40000000>;
-> +		#clock-cells = <0>;
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		cpu0: cpu@0 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x0>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x1>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu2: cpu@2 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x2>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu3: cpu@3 {
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x3>;
-> +			#cooling-cells = <2>;
-> +		};
-> +	};
-> +
-> +	psci {
-> +		compatible  = "arm,psci-0.2";
-> +		method      = "smc";
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-> +		secmon_reserved: secmon@43000000 {
-> +			reg = <0 0x43000000 0 0x30000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-> +		interrupt-parent = <&gic>;
-> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-> +	};
-> +
-> +	soc {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		compatible = "simple-bus";
-> +		ranges;
-> +
-> +		gic: interrupt-controller@c000000 {
-> +			compatible = "arm,gic-v3";
-> +			#interrupt-cells = <3>;
-> +			interrupt-parent = <&gic>;
-> +			interrupt-controller;
-> +			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
-> +			      <0 0x0c080000 0 0x80000>,  /* GICR */
-> +			      <0 0x0c400000 0 0x2000>,   /* GICC */
-> +			      <0 0x0c410000 0 0x1000>,   /* GICH */
-> +			      <0 0x0c420000 0 0x2000>;   /* GICV */
-> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		watchdog: watchdog@1001c000 {
-> +			compatible = "mediatek,mt7986-wdt",
-> +				     "mediatek,mt6589-wdt";
-> +			reg = <0 0x1001c000 0 0x1000>;
-> +			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +			#reset-cells = <1>;
-> +			status = "disabled";
-> +		};
-> +
-> +		trng: trng@1020f000 {
-> +			compatible = "mediatek,mt7986-rng",
-> +				     "mediatek,mt7623-rng";
-> +			reg = <0 0x1020f000 0 0x100>;
-> +			clocks = <&system_clk>;
-> +			clock-names = "rng";
-> +			status = "disabled";
-> +		};
-> +
-> +		uart0: serial@11002000 {
-> +			compatible = "mediatek,mt7986-uart",
-> +				     "mediatek,mt6577-uart";
-> +			reg = <0 0x11002000 0 0x400>;
-> +			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&system_clk>;
-> +			status = "disabled";
-> +		};
-> +
-> +		uart1: serial@11003000 {
-> +			compatible = "mediatek,mt7986-uart",
-> +				     "mediatek,mt6577-uart";
-> +			reg = <0 0x11003000 0 0x400>;
-> +			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&system_clk>;
-> +			status = "disabled";
-> +		};
-> +
-> +		uart2: serial@11004000 {
-> +			compatible = "mediatek,mt7986-uart",
-> +				     "mediatek,mt6577-uart";
-> +			reg = <0 0x11004000 0 0x400>;
-> +			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&system_clk>;
-> +			status = "disabled";
-> +		};
-> +
-> +	};
-> +
-> +};
+Ugh.  It's really good to get rid of this sort of implicit ordering.
+
+>  int sdei_event_handler(struct pt_regs *regs,
+>  		       struct sdei_registered_event *arg)
+>  {
+> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+> index ece0a8af2bae..155a0fe417c6 100644
+> --- a/include/acpi/apei.h
+> +++ b/include/acpi/apei.h
+> @@ -27,8 +27,10 @@ extern int hest_disable;
+>  extern int erst_disable;
+>  #ifdef CONFIG_ACPI_APEI_GHES
+>  extern bool ghes_disable;
+> +int __init ghes_init(void);
+>  #else
+>  #define ghes_disable 1
+> +static inline int ghes_init(void) { return 0; }
+
+I think the only reason ghes_init() returns int is because that's what
+initcall_t requires.  If ghes_init() is no longer an initcall and
+nobody looks at its return value, it should return void instead.
+
+Same with sdei_init().
+
+>  #endif
+>  
+>  #ifdef CONFIG_ACPI_APEI
+> diff --git a/include/linux/arm_sdei.h b/include/linux/arm_sdei.h
+> index 0a241c5c911d..983b7404bff9 100644
+> --- a/include/linux/arm_sdei.h
+> +++ b/include/linux/arm_sdei.h
+> @@ -46,9 +46,11 @@ int sdei_unregister_ghes(struct ghes *ghes);
+>  /* For use by arch code when CPU hotplug notifiers are not appropriate. */
+>  int sdei_mask_local_cpu(void);
+>  int sdei_unmask_local_cpu(void);
+> +int __init sdei_init(void);
+>  #else
+>  static inline int sdei_mask_local_cpu(void) { return 0; }
+>  static inline int sdei_unmask_local_cpu(void) { return 0; }
+> +static inline int sdei_init(void) { return 0; }
+>  #endif /* CONFIG_ARM_SDE_INTERFACE */
+>  
+>  
+> -- 
+> 2.20.1.12.g72788fdb
 > 
