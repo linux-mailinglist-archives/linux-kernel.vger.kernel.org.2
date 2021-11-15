@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0EA450546
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E6450549
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhKONXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhKONWQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:22:16 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F643C061207;
-        Mon, 15 Nov 2021 05:19:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=69jae/wjyQfkyaDaAim/24/42ZGsXhbhGlXLbyRhrMU=; b=yAo36Onanje4bf94Z46twaSwfn
-        pnAWuBY6xcx2AvbUZlko+Bqska2HYn9n4YMse1lB4EyF5WvSoMIEqJuv8BelI0bf40ea3FNSejYUC
-        n58rgjMnllP7V9cZHuQQFvWsX2s8EXm+GXBz389X8cWQVcDl5LMhlDOoHEf1bbDAgOsziF8WVS70I
-        Tk4pgIEVi+Y/HfbAHeg0VYU35QtCKa8aeWK+wInu5qhspe+2XIuxknoOydCrjxDTlVTjKWbs+tuY3
-        5aUzbHkO7J4mCDo7IxtWVtVD3rf9SN8+5AFlpBvhpFhAFZNbbsMD6qTKdrB7zM7ZoXR1dFOqonWQW
-        4TjlWxyw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmbt0-00FdmM-EI; Mon, 15 Nov 2021 13:19:02 +0000
-Date:   Mon, 15 Nov 2021 05:19:02 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, linux-pci@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 02/11] driver core: Set DMA ownership during driver
- bind/unbind
-Message-ID: <YZJeRomcJjDqDv9q@infradead.org>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-3-baolu.lu@linux.intel.com>
+        id S234982AbhKONYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:24:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231913AbhKONXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:23:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9A53F63210;
+        Mon, 15 Nov 2021 13:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636982410;
+        bh=2+6Q+ASYuJ/HE6E6L+Q/56BvaTJg2xvxyMzwjMoFnyA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XtaPSAGy3pYgG0lEpM5TQpiMXniUlA8IplRHkxyMJE6VMk+eX4Bn2B/buRcfFoAAc
+         AbPMAMShnTmOJCEbTalDaqStUmKo1IrT1/BLQhc0trmEp4d60sHiM1793ELpKNUJFH
+         z3gV5oVeEN9ldzgduV4cuNuXmKDPwp25vRGIeDH4LL9LRaSXLSJ7FaP7VOhe5zzchs
+         MTs2MhtVeke115tOmokbmx9YjD6rp1TDshznOsu4RhORbAFO2V96/lzAq4ZC8UdAWV
+         EOkGv/5RSW7ys9o/LcQD58c4NbaGcvULy7YY/xTY65gPLk1FOxlv6Bf/COGEX45jOd
+         5du4W15VKpM3w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92AD960A88;
+        Mon, 15 Nov 2021 13:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115020552.2378167-3-baolu.lu@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/1] net: stmmac: enhance XDP ZC driver level
+ switching performance
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163698241059.21342.15722076817804554278.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Nov 2021 13:20:10 +0000
+References: <20211111143949.2806049-1-boon.leong.ong@intel.com>
+In-Reply-To: <20211111143949.2806049-1-boon.leong.ong@intel.com>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kurt.kanzenbach@linutronix.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:05:43AM +0800, Lu Baolu wrote:
-> @@ -566,6 +567,12 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->  		goto done;
->  	}
->  
-> +	if (!drv->suppress_auto_claim_dma_owner) {
-> +		ret = iommu_device_set_dma_owner(dev, DMA_OWNER_KERNEL, NULL);
-> +		if (ret)
-> +			return ret;
-> +	}
+Hello:
 
-I'd expect this to go into iommu_setup_dma_ops (and its arm and s390
-equivalents), as that is what claims an IOMMU for in-kernel usage
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 11 Nov 2021 22:39:49 +0800 you wrote:
+> The previous stmmac_xdp_set_prog() implementation uses stmmac_release()
+> and stmmac_open() which tear down the PHY device and causes undesirable
+> autonegotiation which causes a delay whenever AFXDP ZC is setup.
+> 
+> This patch introduces two new functions that just sufficiently tear
+> down DMA descriptors, buffer, NAPI process, and IRQs and reestablish
+> them accordingly in both stmmac_xdp_release() and stammac_xdp_open().
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/1] net: stmmac: enhance XDP ZC driver level switching performance
+    https://git.kernel.org/netdev/net-next/c/ac746c8520d9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
