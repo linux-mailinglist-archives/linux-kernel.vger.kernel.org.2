@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90F6452861
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C0B452863
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244328AbhKPDTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 22:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S245392AbhKPDTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238653AbhKPDSA (ORCPT
+        with ESMTP id S238984AbhKPDSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 22:18:00 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B027C03AA00
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:46:09 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id y68-20020a626447000000b004a2b2d0c39eso2978129pfb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:46:09 -0800 (PST)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1323C03AA02
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:46:10 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id b11-20020a17090acc0b00b001a9179dc89fso348271pju.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:46:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=nyFgzVEyCb72eNk2VPGomrdPJdYxRfeEzI0NSb6F/8s=;
-        b=FhwSo+AeArEwiboUCjKrKMx7ZmN/9qUIupIm2aZQAugw8dJDwnhnLiP3VJTF8bT1AK
-         jayIojnrkZaa7jiUDGHwFP7G3QBGerYyLehza9KYtn8XtebTX01R5RVExHPxf9O3VPcS
-         1Awn5+p8ZnWwEfsh4oDQWZV7LTQGB/cEkZ2Gk1na4VJavTk+NtbQTNu8HhfgMEkQi+wc
-         1prwoPhZvdYbcDDATxT5EL6XEMkTG2w+aS0u+jtU8+uBwLBVMtxgzO37bzqj5A/g9lgl
-         kerfqBf+QDMqIvG+mMaXL01J3WBJy1tC9gZzHhi7Sy5SXotbfNiC2tIU1O9NgYsxdMLM
-         HDag==
+        bh=CrzbjrscULj4Dg1fX5nLFO7ahCBMSKg0nQziJBU00js=;
+        b=RK3viodQvs2MBG+iV942VqiKjAzlEyYpVczlVa9BP/a4aBKi29lpfBZfx9H9/jeaCD
+         uteQxO5FLk+uC0FX+8j2+XWx2xMIlkBFpOgmdWDT+EIfa+MDSZHRAKXPtdFuSSycPNiD
+         g/IscGCEOV4nSRXT6e2FWOLQ5PIxHF6AuzcpkcXO6GHtyPKhCmGz2g+sK8dPU1ciN2n2
+         xhnoc5MGIGcaz2GCm5isat9SyT9EeQuuNFV7nh9jVdrsA7TP1/5ebvz+O4kqGD6SkhAy
+         2dEZg/Qgb/QnMn8wsNq/mv+03SvQpR2ggu3Spbm+FcW9P2pROIdIdcfpfqke0TEZc5nW
+         GlGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=nyFgzVEyCb72eNk2VPGomrdPJdYxRfeEzI0NSb6F/8s=;
-        b=cerNoMrqS72S6gBMfnm8BenFi4BwsPKgbxsNfueyJfTzyqjU2phb7l6PglWxZqmMQz
-         iRWtl+LdF9YgJxlQxV/eYcPEXyHtKTSX5tge/pGE563jNXa60cbTpqlZi7/x2P3MOpqg
-         QMJjL//SYXJyYrqxYb8BNGHlrZdbK2aRwvgj5JI4nrtGOKO8aKQJIPNP0Ci90WjtKHBU
-         MukpN12C4O6uDLCybZHjZFjxBbT9iOxLGjychNz6W4lPmy3gUkYpkfkb1Sn03o3NzEZz
-         SKSbYc2p3tWjNbbTYHtUNAxlZCMUrhsjtLLAaRk8t09iytVSya8Se5ovlw/WAgbGQO/O
-         P/Ew==
-X-Gm-Message-State: AOAM532Kq7AuOn83nxbL9fEKJDZK8rDdiAMXRbqCZgWAJBEZ0+i++mhL
-        +LT4vq99vdGZVLPsaQW7erh7KRFw0ZMnrdwisk5JEzbm8L83dD/WAWpYahYp1Qrg5H92Zte+33I
-        v2J315Nku+JcT5Ahn8tEZohdtZxgiB3bcwQfP5oNQgzGkxE1oyAb1u8GZTAltkxVnJ91FJfYL
-X-Google-Smtp-Source: ABdhPJyUpLKPY0hJHdO9XvEjt/lnw3HVEnRL357TT0PU6WuDTHxaiDtzi5W6QrLBfSrYf6aop5hTIjuD5YGG
+        bh=CrzbjrscULj4Dg1fX5nLFO7ahCBMSKg0nQziJBU00js=;
+        b=Bsh/WWQP4f2CF8ObN6oJGuQ9jQBa9Qa4nC8aj/IibaQ2+QTR3Zt8rQwdHEd9S1mq8W
+         J6REma/FqpYjMWj+U8TLsKGWInItuwH0CyluwmNyFs1IUiLE5vgNWch5EDrspBnemYrk
+         G+FrI9UaR0PukEFldoBVBtcmDTAVdzTGVV9uebgXUACpwt4h/vTkNsxgfXIYB2R9B/IH
+         PcYThtpetqfSX98gZh5rI6BBrX/wO7DeBcu4WLJWcJQxzcCMP6P9NKI9DoPTg40fyKZU
+         zGvLEyl+UbobvNa8Txff7+1KGI21VfzRvAqlVXQIpZa6oTIJ9kf8Qo2rww8ac5jfVvBd
+         Kl4g==
+X-Gm-Message-State: AOAM5302XHD9X9TPmeEqE9KfekSUI7TEhi222x5+N7SaB9HOmpJ+2c2c
+        oZ5gQ56VULaSENPhhfeCCAJUNc5n1Ii7VkkOt/LjRuKIxGJDmycNS4exsXX2ctJ+bAKEcjHHVio
+        VMwvA0MGIzX8qcGfHjrzLo0Wdl7CSbCVKaX23ILshMoYsPdwMs8EUvO4W+zsnXFZUyrgnOnhg
+X-Google-Smtp-Source: ABdhPJzInLL2Tp8AmTKtaUk8NgsD6eRTMx8aQqk+UjES9ao9u2Kr2nWwYtamHV/chMSUqFhO1MeM/GCWz0KS
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:916d:2253:5849:9965])
- (user=bgardon job=sendgmr) by 2002:a17:902:6a8a:b0:143:905f:aec7 with SMTP id
- n10-20020a1709026a8a00b00143905faec7mr40786543plk.8.1637019968545; Mon, 15
- Nov 2021 15:46:08 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:45:49 -0800
+ (user=bgardon job=sendgmr) by 2002:a17:90b:17cf:: with SMTP id
+ me15mr3038244pjb.125.1637019970413; Mon, 15 Nov 2021 15:46:10 -0800 (PST)
+Date:   Mon, 15 Nov 2021 15:45:50 -0800
 In-Reply-To: <20211115234603.2908381-1-bgardon@google.com>
-Message-Id: <20211115234603.2908381-2-bgardon@google.com>
+Message-Id: <20211115234603.2908381-3-bgardon@google.com>
 Mime-Version: 1.0
 References: <20211115234603.2908381-1-bgardon@google.com>
 X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH 01/15] KVM: x86/mmu: Remove redundant flushes when disabling
- dirty logging
+Subject: [PATCH 02/15] KVM: x86/mmu: Introduce vcpu_make_spte
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -74,112 +72,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tdp_mmu_zap_spte_atomic flushes on every zap already, so no need to
-flush again after it's done.
+Add a wrapper around make_spte which conveys the vCPU-specific context of
+the function. This will facilitate factoring out all uses of the vCPU
+pointer from make_spte in subsequent commits.
 
-Reviewed-by: David Matlack <dmatlack@google.com>
+No functional change intended.
+
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     |  4 +---
- arch/x86/kvm/mmu/tdp_mmu.c | 21 ++++++---------------
- arch/x86/kvm/mmu/tdp_mmu.h |  5 ++---
- 3 files changed, 9 insertions(+), 21 deletions(-)
+ arch/x86/kvm/mmu/mmu.c         |  2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h |  6 +++---
+ arch/x86/kvm/mmu/spte.c        | 17 +++++++++++++----
+ arch/x86/kvm/mmu/spte.h        | 12 ++++++++----
+ arch/x86/kvm/mmu/tdp_mmu.c     |  7 ++++---
+ 5 files changed, 29 insertions(+), 15 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 354d2ca92df4..baa94acab516 100644
+index baa94acab516..2ada6dee920a 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5870,9 +5870,7 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 
- 	if (is_tdp_mmu_enabled(kvm)) {
- 		read_lock(&kvm->mmu_lock);
--		flush = kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot, flush);
--		if (flush)
--			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-+		kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot);
- 		read_unlock(&kvm->mmu_lock);
+@@ -2723,7 +2723,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+ 			was_rmapped = 1;
  	}
+ 
+-	wrprot = make_spte(vcpu, sp, slot, pte_access, gfn, pfn, *sptep, prefetch,
++	wrprot = vcpu_make_spte(vcpu, sp, slot, pte_access, gfn, pfn, *sptep, prefetch,
+ 			   true, host_writable, &spte);
+ 
+ 	if (*sptep == spte) {
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index f87d36898c44..edb8ebd1a775 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -1129,9 +1129,9 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ 		spte = *sptep;
+ 		host_writable = spte & shadow_host_writable_mask;
+ 		slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+-		make_spte(vcpu, sp, slot, pte_access, gfn,
+-			  spte_to_pfn(spte), spte, true, false,
+-			  host_writable, &spte);
++		vcpu_make_spte(vcpu, sp, slot, pte_access, gfn,
++			       spte_to_pfn(spte), spte, true, false,
++			       host_writable, &spte);
+ 
+ 		flush |= mmu_spte_update(sptep, spte);
+ 	}
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index 0c76c45fdb68..04d26e913941 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -90,10 +90,9 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
  }
+ 
+ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+-	       struct kvm_memory_slot *slot,
+-	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+-	       u64 old_spte, bool prefetch, bool can_unsync,
+-	       bool host_writable, u64 *new_spte)
++	       struct kvm_memory_slot *slot, unsigned int pte_access,
++	       gfn_t gfn, kvm_pfn_t pfn, u64 old_spte, bool prefetch,
++	       bool can_unsync, bool host_writable, u64 *new_spte)
+ {
+ 	int level = sp->role.level;
+ 	u64 spte = SPTE_MMU_PRESENT_MASK;
+@@ -191,6 +190,16 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+ 	return wrprot;
+ }
+ 
++bool vcpu_make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
++		    struct kvm_memory_slot *slot, unsigned int pte_access,
++		    gfn_t gfn, kvm_pfn_t pfn, u64 old_spte, bool prefetch,
++		    bool can_unsync, bool host_writable, u64 *new_spte)
++{
++	return make_spte(vcpu, sp, slot, pte_access, gfn, pfn, old_spte,
++			 prefetch, can_unsync, host_writable, new_spte);
++
++}
++
+ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled)
+ {
+ 	u64 spte = SPTE_MMU_PRESENT_MASK;
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index cc432f9a966b..14f18082d505 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -330,10 +330,14 @@ static inline u64 get_mmio_spte_generation(u64 spte)
+ }
+ 
+ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+-	       struct kvm_memory_slot *slot,
+-	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+-	       u64 old_spte, bool prefetch, bool can_unsync,
+-	       bool host_writable, u64 *new_spte);
++	       struct kvm_memory_slot *slot, unsigned int pte_access,
++	       gfn_t gfn, kvm_pfn_t pfn, u64 old_spte, bool prefetch,
++	       bool can_unsync, bool host_writable, u64 *new_spte);
++bool vcpu_make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
++		    struct kvm_memory_slot *slot,
++		    unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
++		    u64 old_spte, bool prefetch, bool can_unsync,
++		    bool host_writable, u64 *new_spte);
+ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled);
+ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access);
+ u64 mark_spte_for_access_track(u64 spte);
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 7c5dd83e52de..b3c78568ae60 100644
+index b3c78568ae60..43c7834b4f0a 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1364,10 +1364,9 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
-  * Clear leaf entries which could be replaced by large mappings, for
-  * GFNs within the slot.
-  */
--static bool zap_collapsible_spte_range(struct kvm *kvm,
-+static void zap_collapsible_spte_range(struct kvm *kvm,
- 				       struct kvm_mmu_page *root,
--				       const struct kvm_memory_slot *slot,
--				       bool flush)
-+				       const struct kvm_memory_slot *slot)
- {
- 	gfn_t start = slot->base_gfn;
- 	gfn_t end = start + slot->npages;
-@@ -1378,10 +1377,8 @@ static bool zap_collapsible_spte_range(struct kvm *kvm,
+@@ -906,9 +906,10 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+ 	if (unlikely(!fault->slot))
+ 		new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+ 	else
+-		wrprot = make_spte(vcpu, sp, fault->slot, ACC_ALL, iter->gfn,
+-					 fault->pfn, iter->old_spte, fault->prefetch, true,
+-					 fault->map_writable, &new_spte);
++		wrprot = vcpu_make_spte(vcpu, sp, fault->slot, ACC_ALL,
++					iter->gfn, fault->pfn, iter->old_spte,
++					fault->prefetch, true,
++					fault->map_writable, &new_spte);
  
- 	tdp_root_for_each_pte(iter, root, start, end) {
- retry:
--		if (tdp_mmu_iter_cond_resched(kvm, &iter, flush, true)) {
--			flush = false;
-+		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
- 			continue;
--		}
- 
- 		if (!is_shadow_present_pte(iter.old_spte) ||
- 		    !is_last_spte(iter.old_spte, iter.level))
-@@ -1401,30 +1398,24 @@ static bool zap_collapsible_spte_range(struct kvm *kvm,
- 			iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
- 			goto retry;
- 		}
--		flush = true;
- 	}
- 
- 	rcu_read_unlock();
--
--	return flush;
- }
- 
- /*
-  * Clear non-leaf entries (and free associated page tables) which could
-  * be replaced by large mappings, for GFNs within the slot.
-  */
--bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
--				       const struct kvm_memory_slot *slot,
--				       bool flush)
-+void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-+				       const struct kvm_memory_slot *slot)
- {
- 	struct kvm_mmu_page *root;
- 
- 	lockdep_assert_held_read(&kvm->mmu_lock);
- 
- 	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
--		flush = zap_collapsible_spte_range(kvm, root, slot, flush);
--
--	return flush;
-+		zap_collapsible_spte_range(kvm, root, slot);
- }
- 
- /*
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 476b133544dd..3899004a5d91 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -64,9 +64,8 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
- 				       struct kvm_memory_slot *slot,
- 				       gfn_t gfn, unsigned long mask,
- 				       bool wrprot);
--bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
--				       const struct kvm_memory_slot *slot,
--				       bool flush);
-+void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-+				       const struct kvm_memory_slot *slot);
- 
- bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
- 				   struct kvm_memory_slot *slot, gfn_t gfn,
+ 	if (new_spte == iter->old_spte)
+ 		ret = RET_PF_SPURIOUS;
 -- 
 2.34.0.rc1.387.gb447b232ab-goog
 
