@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD12C451B22
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5051545191C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344030AbhKOXwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:52:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1350484AbhKOXOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:14:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344293AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 195E563320;
-        Mon, 15 Nov 2021 18:55:01 +0000 (UTC)
+        id S244123AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:10:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A911F60231;
+        Mon, 15 Nov 2021 18:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002502;
-        bh=q3k5bFoKqFHNCI+fFQWAy2ou5p19PYoWREQn28ru6dY=;
+        s=korg; t=1637000328;
+        bh=xdEyeh42BxXPB41NBdisx1lK3QAfQdkGC4Brr9+jr3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pYjmQyUpFQEbJ0rcHx+Qqn0+s20HQaqusJo3tNZU2H7fu/xDOoqMhfCxSK7IL6XEV
-         UYhsJk/pe+aFZL/gZAK2I+fPnAgrqeTcOcnQnBbae2FN0v63DZhKwPGNJzCVMKps5O
-         u9iN8sZ77ZPS7XXKOy+0m/kXqxsiwmvlwnOrWLMQ=
+        b=RsckS0IXUGtEI6xH1mBF9/QRB98pu5uayK6mJBlXkl8lJE/OrOF9hczz6TUccasRS
+         hhR2VStG2wZMnC+kN3dic26H/hbRt77Q81ght9VGU6/Q0yKIhFF902Cz3qPle/u7TG
+         UMaBZ2iJ6C14Fgjq2cz46EwKvZenolf9KsoZ7k3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Naina Mehta <nainmeht@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 590/917] soc: qcom: llcc: Disable MMUHWT retention
-Date:   Mon, 15 Nov 2021 18:01:25 +0100
-Message-Id: <20211115165448.770233812@linuxfoundation.org>
+Subject: [PATCH 5.14 603/849] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
+Date:   Mon, 15 Nov 2021 18:01:26 +0100
+Message-Id: <20211115165440.652014225@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naina Mehta <nainmeht@codeaurora.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 3a461009e195c3c17f6af73da310b886991309fd ]
+[ Upstream commit f4875d509a0a78ad294a1a538d534b5ba94e685a ]
 
-Disable MMUHWT retention for SC7280 as done for other platforms
-to avoid more power burn.
+This variable is just a temporary variable, used to do an endian
+conversion.  The problem is that the last byte is not initialized.  After
+the conversion is completely done, the last byte is discarded so it doesn't
+cause a problem.  But static checkers and the KMSan runtime checker can
+detect the uninitialized read and will complain about it.
 
-Fixes: f6a07be63301 ("soc: qcom: llcc: Add configuration data for SC7280")
-Signed-off-by: Naina Mehta <nainmeht@codeaurora.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210921055942.30600-1-saiprakash.ranjan@codeaurora.org
+Link: https://lore.kernel.org/r/20211006073242.GA8404@kili
+Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/llcc-qcom.c | 2 +-
+ drivers/scsi/csiostor/csio_lnode.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index 15a36dcab990e..e53109a5c3da9 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -115,7 +115,7 @@ static const struct llcc_slice_config sc7280_data[] =  {
- 	{ LLCC_CMPT,     10, 768, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
- 	{ LLCC_GPUHTW,   11, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
- 	{ LLCC_GPU,      12, 512, 1, 0, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
--	{ LLCC_MMUHWT,   13, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 1, 0},
-+	{ LLCC_MMUHWT,   13, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 0, 1, 0},
- 	{ LLCC_MDMPNG,   21, 768, 0, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
- 	{ LLCC_WLHW,     24, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
- 	{ LLCC_MODPE,    29, 64,  1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+index dc98f51f466fb..d5ac938970232 100644
+--- a/drivers/scsi/csiostor/csio_lnode.c
++++ b/drivers/scsi/csiostor/csio_lnode.c
+@@ -619,7 +619,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
+ 	struct fc_els_csp *csp;
+ 	struct fc_els_cssp *clsp;
+ 	enum fw_retval retval;
+-	__be32 nport_id;
++	__be32 nport_id = 0;
+ 
+ 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
+ 	if (retval != FW_SUCCESS) {
 -- 
 2.33.0
 
