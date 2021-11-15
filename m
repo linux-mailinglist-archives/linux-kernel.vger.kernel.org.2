@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EF745228C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976B1452555
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378089AbhKPBNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:13:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
+        id S1382263AbhKPBtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:49:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245265AbhKOTT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E9E63458;
-        Mon, 15 Nov 2021 18:31:28 +0000 (UTC)
+        id S241554AbhKOSWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:22:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ED2F63415;
+        Mon, 15 Nov 2021 17:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001089;
-        bh=LciqGcGJNfI5Wq3ND7FILYPpk0fTBWohVCtK08FPE+k=;
+        s=korg; t=1636998808;
+        bh=wHJuatrHECD/rAZlHZ94hOODw5p+QMyTaOaVaNr1G7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5J8WmY3nxs/uDWdbC31xkHLj2QUhB15SG2LTwhgoNt8l9pCYWjkil+kzEgQvC/AJ
-         NnVcuxnLb0BT0tPEbI7T2yz5t84a5oz/vvZl93p5dLkPwQ7J8bkuP+qrpGo1Ey2ry+
-         Jxrxx2Z51CxDeYXhUGVJ2bKYPsXiPHWSu82RX0Kk=
+        b=ibdupBCGturIeE0wbgSG4gpGHjCFjRUPWrhwxkYCqmT5EKezp3RXdl1PUjGP/Bd8o
+         emA9v6901knnPjNdN4eoFSDL+xtzmbnVzdyTeHQ35JID5uis2f2e1x4WWETuBJ75Q/
+         ei5S7fS8F27ObTF48Tqkj803r9JhDxBL2XWnwFAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        Kyle McMartin <kyle@mcmartin.ca>
-Subject: [PATCH 5.15 023/917] parisc: Fix ptrace check on syscall return
-Date:   Mon, 15 Nov 2021 17:51:58 +0100
-Message-Id: <20211115165429.520041707@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.14 036/849] ALSA: ua101: fix division by zero at probe
+Date:   Mon, 15 Nov 2021 17:51:59 +0100
+Message-Id: <20211115165421.225950620@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit 8779e05ba8aaffec1829872ef9774a71f44f6580 upstream.
+commit 55f261b73a7e1cb254577c3536cef8f415de220a upstream.
 
-The TIF_XXX flags are stored in the flags field in the thread_info
-struct (TI_FLAGS), not in the flags field of the task_struct structure
-(TASK_FLAGS).
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in alloc_stream_buffers() in case a malicious device
+has broken descriptors (or when doing descriptor fuzz testing).
 
-It seems this bug didn't generate any important side-effects, otherwise it
-wouldn't have went unnoticed for 12 years (since v2.6.32).
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: ecd3d4bc06e48 ("parisc: stop using task->ptrace for {single,block}step flags")
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: stable@vger.kernel.org
+Fixes: 63978ab3e3e9 ("sound: add Edirol UA-101 support")
+Cc: stable@vger.kernel.org      # 2.6.34
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026095401.26522-1-johan@kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/parisc/kernel/entry.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/misc/ua101.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1834,7 +1834,7 @@ syscall_restore:
- 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1000,7 +1000,7 @@ static int detect_usb_format(struct ua10
+ 		fmt_playback->bSubframeSize * ua->playback.channels;
  
- 	/* Are we being ptraced? */
--	ldw	TASK_FLAGS(%r1),%r19
-+	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
- 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
- 	and,COND(=)	%r19,%r2,%r0
- 	b,n	syscall_restore_rfi
+ 	epd = &ua->intf[INTF_CAPTURE]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_in(epd)) {
++	if (!usb_endpoint_is_isoc_in(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid capture endpoint\n");
+ 		return -ENXIO;
+ 	}
+@@ -1008,7 +1008,7 @@ static int detect_usb_format(struct ua10
+ 	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
+ 
+ 	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_out(epd)) {
++	if (!usb_endpoint_is_isoc_out(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid playback endpoint\n");
+ 		return -ENXIO;
+ 	}
 
 
