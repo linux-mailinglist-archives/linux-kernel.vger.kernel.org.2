@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE19450EED
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E363450EEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239748AbhKOSVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:21:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47376 "EHLO mail.kernel.org"
+        id S238647AbhKOSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:21:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237460AbhKORcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238072AbhKORcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:32:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0D7863246;
-        Mon, 15 Nov 2021 17:21:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C4663277;
+        Mon, 15 Nov 2021 17:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996879;
-        bh=kShRhABdBUyJwOpt0C2fuKl59fR3o3fwKi6brQChbe8=;
+        s=korg; t=1636996881;
+        bh=uouSn8IDOlhslog09f0y9GNwtNt+c3zy4w0XhmU9Vkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WwM/7b/eToPwuV2whlMi4d9HouvjlSimRaQofNY9nBumcQwtDruSD+8PfiMINFy9l
-         YLVS2NcF1Kuf1QiiZ7PiJwZqMmRUSiql2aZ5nxPzoNAF+4kK6xY45GFJd75o+5Cpzc
-         Dl2Nf3h95oWYwIgwsRbHRJ+LseMqg56HvfNMLbjQ=
+        b=MFKEgO0CHliZxKSDi1x0RDAGHrJImW0ymjYCZC2RDRDdfBpTYlinM0BrdJR/GWYVw
+         cQ14nymAmlSkk+N98ZSKaK/UpXAq2TzyJ8CjcjFecChqfsH2ZcaO0CyzeWJzRXqNiW
+         /QEUpgZoN6YaxRLC6a/pTXyopKLqhiiYe5ou095c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 300/355] dmaengine: at_xdmac: fix AT_XDMAC_CC_PERID() macro
-Date:   Mon, 15 Nov 2021 18:03:44 +0100
-Message-Id: <20211115165323.420799756@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 301/355] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+Date:   Mon, 15 Nov 2021 18:03:45 +0100
+Message-Id: <20211115165323.454645595@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,39 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit 320c88a3104dc955f928a1eecebd551ff89530c0 ]
+[ Upstream commit afcb5a811ff3ab3969f09666535eb6018a160358 ]
 
-AT_XDMAC_CC_PERID() should be used to setup bits 24..30 of XDMAC_CC
-register. Using it without parenthesis around 0x7f & (i) will lead to
-setting all the time zero for bits 24..30 of XDMAC_CC as the << operator
-has higher precedence over bitwise &. Thus, add paranthesis around
-0x7f & (i).
+While writing an empty string to a device attribute is a no-op, and thus
+does not need explicit safeguards, the user can still write a single
+newline to an attribute file:
 
-Fixes: 15a03850ab8f ("dmaengine: at_xdmac: fix macro typo")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20211007111230.2331837-3-claudiu.beznea@microchip.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+    echo > .../message
+
+If that happens, img_ascii_lcd_display() trims the newline, yielding an
+empty string, and causing an infinite loop in img_ascii_lcd_scroll().
+
+Fix this by adding a check for empty strings.  Clear the display in case
+one is encountered.
+
+Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/at_xdmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index b58ac720d9a12..6f1e97ba3e786 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -145,7 +145,7 @@
- #define		AT_XDMAC_CC_WRIP	(0x1 << 23)	/* Write in Progress (read only) */
- #define			AT_XDMAC_CC_WRIP_DONE		(0x0 << 23)
- #define			AT_XDMAC_CC_WRIP_IN_PROGRESS	(0x1 << 23)
--#define		AT_XDMAC_CC_PERID(i)	(0x7f & (i) << 24)	/* Channel Peripheral Identifier */
-+#define		AT_XDMAC_CC_PERID(i)	((0x7f & (i)) << 24)	/* Channel Peripheral Identifier */
- #define AT_XDMAC_CDS_MSP	0x2C	/* Channel Data Stride Memory Set Pattern */
- #define AT_XDMAC_CSUS		0x30	/* Channel Source Microblock Stride */
- #define AT_XDMAC_CDUS		0x34	/* Channel Destination Microblock Stride */
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index efb928e25aef3..9556d6827f005 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
+ 	if (msg[count - 1] == '\n')
+ 		count--;
+ 
++	if (!count) {
++		/* clear the LCD */
++		devm_kfree(&ctx->pdev->dev, ctx->message);
++		ctx->message = NULL;
++		ctx->message_len = 0;
++		memset(ctx->curr, ' ', ctx->cfg->num_chars);
++		ctx->cfg->update(ctx);
++		return 0;
++	}
++
+ 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
 -- 
 2.33.0
 
