@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11870451B11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3F4451911
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356380AbhKOXtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:49:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1349819AbhKOXOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:14:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344209AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8542463640;
-        Mon, 15 Nov 2021 18:53:51 +0000 (UTC)
+        id S244026AbhKOTIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:08:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9F7263405;
+        Mon, 15 Nov 2021 18:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002431;
-        bh=R/fx+xIwvyzK1rDFa+j8Fl561fg3gXSRF1xdue3bc/4=;
+        s=korg; t=1637000281;
+        bh=ktiQlAr03wTODgE0WDOZ329NnHLJV/l+gP1tWQzDaZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NMFE05A5ac9mswYEFf/eR35xIG5+1GYpjMuc9k1hviXIxref0nnvJsaTpQuT+TjtU
-         OyYeDeX3IawUXNEVVQ/H21dYW/RbPUkoPpRXPbOXGQRmUGZAG5dPwG9ekKfNrQtqjO
-         FFHUlOwNV/4SSy0dLsrdWuyo9hXUbbT7tm0FYeIQ=
+        b=T6XPcgEKNlyj1L8oJxccZFe/5CzGf6rzhC94iSEaLLQjGYXdwcpDUayZJ+E7OOB5t
+         3ErlEXirEWXggQXLPAuxf9dY/EEtcfx31vY7HBiKbx88EdgRG8h3cigDawyrKJJSq4
+         WeYusbwrc1rmEP6xoXEYSSb93kz0EkmqjitiAFWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vaishnavi Bhat <vaish123@in.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 557/917] ibmvnic: Process crqs after enabling interrupts
-Date:   Mon, 15 Nov 2021 18:00:52 +0100
-Message-Id: <20211115165447.683420225@linuxfoundation.org>
+Subject: [PATCH 5.14 570/849] ARM: dts: at91: tse850: the emac<->phy interface is rmii
+Date:   Mon, 15 Nov 2021 18:00:53 +0100
+Message-Id: <20211115165439.527044333@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Peter Rosin <peda@axentia.se>
 
-[ Upstream commit 6e20d00158f31f7631d68b86996b7e951c4451c8 ]
+[ Upstream commit dcdbc335a91a26e022a803e1a6b837266989c032 ]
 
-Soon after registering a CRQ it is possible that we get a fail over or
-maybe a CRQ_INIT from the VIOS while interrupts were disabled.
+This went unnoticed until commit 7897b071ac3b ("net: macb: convert
+to phylink") which tickled the problem. The sama5d3 emac has never
+been capable of rgmii, and it all just happened to work before that
+commit.
 
-Look for any such CRQs after enabling interrupts.
-
-Otherwise we can intermittently fail to bring up ibmvnic adapters during
-boot, specially in kexec/kdump kernels.
-
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Reported-by: Vaishnavi Bhat <vaish123@in.ibm.com>
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Reviewed-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 21dd0ece34c2 ("ARM: dts: at91: add devicetree for the Axentia TSE-850")
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/ea781f5e-422f-6cbf-3cf4-d5a7bac9392d@axentia.se
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/at91-tse850-3.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 7438138c3766a..84961a83803b7 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -5412,6 +5412,9 @@ static int init_crq_queue(struct ibmvnic_adapter *adapter)
- 	crq->cur = 0;
- 	spin_lock_init(&crq->lock);
+diff --git a/arch/arm/boot/dts/at91-tse850-3.dts b/arch/arm/boot/dts/at91-tse850-3.dts
+index 3ca97b47c69ce..7e5c598e7e68f 100644
+--- a/arch/arm/boot/dts/at91-tse850-3.dts
++++ b/arch/arm/boot/dts/at91-tse850-3.dts
+@@ -262,7 +262,7 @@
+ &macb1 {
+ 	status = "okay";
  
-+	/* process any CRQs that were queued before we enabled interrupts */
-+	tasklet_schedule(&adapter->tasklet);
-+
- 	return retrc;
+-	phy-mode = "rgmii";
++	phy-mode = "rmii";
  
- req_irq_failed:
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
 -- 
 2.33.0
 
