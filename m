@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9595452056
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2736451938
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358310AbhKPAwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S243487AbhKOXQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:16:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344356AbhKOTYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A7D6366F;
-        Mon, 15 Nov 2021 18:56:24 +0000 (UTC)
+        id S244240AbhKOTMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:12:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6558E634A8;
+        Mon, 15 Nov 2021 18:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002585;
-        bh=l0aKp8ca26bq3qWZd9dQxTWCS4ZcATBIyEK80Ijq2g8=;
+        s=korg; t=1637000371;
+        bh=OAX4fnghNW392E2IeNfOChmlLqD1OWEfT+wl3RBJPnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DmSRWsvZCTJxuRu8JrFtpyAI/vAdquAImCYNvos88Ri21ivgGKASwI66Nj87Ad07n
-         zpJguGazZDruXWN8zSda8Pifxy4DG8cvQvyyZ7FrKHcd+Tz8MEEuO9ypAMqBEly7dw
-         jQWeW+1AmOdqlVeVsCP9MO2V01BU2LjD6jvIzgsI=
+        b=LNEe9x/NNJRMq9NJsL6yQwG7msPMIzp6IPte8fgAkIyBe5VjGiFfe6cqPZmVUkNNz
+         IHqvH7VvsfgM3YfoXOWHLRGujzT2MIu7RZC9OLsb/alDMTGgnAoez2PYXCtSZBHZ+/
+         pCoIDxOT7/njrlOME3ZSOnaEUML/2razegMveh04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 622/917] powerpc/paravirt: correct preempt debug splat in vcpu_is_preempted()
-Date:   Mon, 15 Nov 2021 18:01:57 +0100
-Message-Id: <20211115165449.885533008@linuxfoundation.org>
+Subject: [PATCH 5.14 635/849] arm64: dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
+Date:   Mon, 15 Nov 2021 18:01:58 +0100
+Message-Id: <20211115165441.752149173@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 
-[ Upstream commit fda0eb220021a97c1d656434b9340ebf3fc4704a ]
+[ Upstream commit eed1d9b6e36b06faa53c6dc74134ec21b1336d94 ]
 
-vcpu_is_preempted() can be used outside of preempt-disabled critical
-sections, yielding warnings such as:
+In commit 3e482859f1ef ("dts: qcom: sdm845: Add dt entries
+to support crypto engine."), we decided to use the value indicated
+by constant RPMH_CE_CLK rather than using it directly.
 
-BUG: using smp_processor_id() in preemptible [00000000] code: systemd-udevd/185
-caller is rwsem_spin_on_owner+0x1cc/0x2d0
-CPU: 1 PID: 185 Comm: systemd-udevd Not tainted 5.15.0-rc2+ #33
-Call Trace:
-[c000000012907ac0] [c000000000aa30a8] dump_stack_lvl+0xac/0x108 (unreliable)
-[c000000012907b00] [c000000001371f70] check_preemption_disabled+0x150/0x160
-[c000000012907b90] [c0000000001e0e8c] rwsem_spin_on_owner+0x1cc/0x2d0
-[c000000012907be0] [c0000000001e1408] rwsem_down_write_slowpath+0x478/0x9a0
-[c000000012907ca0] [c000000000576cf4] filename_create+0x94/0x1e0
-[c000000012907d10] [c00000000057ac08] do_symlinkat+0x68/0x1a0
-[c000000012907d70] [c00000000057ae18] sys_symlink+0x58/0x70
-[c000000012907da0] [c00000000002e448] system_call_exception+0x198/0x3c0
-[c000000012907e10] [c00000000000c54c] system_call_common+0xec/0x250
+Now that the same RPMH clock value might be used for other
+SoCs (in addition to sdm845), let's use the constant
+RPMH_CE_CLK to make sure that this dtsi is compatible with the
+other qcom ones.
 
-The result of vcpu_is_preempted() is always used speculatively, and the
-function does not access per-cpu resources in a (Linux) preempt-unsafe way.
-Use raw_smp_processor_id() to avoid such warnings, adding explanatory
-comments.
-
-Fixes: ca3f969dcb11 ("powerpc/paravirt: Use is_kvm_guest() in vcpu_is_preempted()")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210928214147.312412-3-nathanl@linux.ibm.com
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+Link: https://lore.kernel.org/r/20210519143700.27392-8-bhupesh.sharma@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/paravirt.h | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index bcb7b5f917be6..b325022ffa2b0 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -97,7 +97,23 @@ static inline bool vcpu_is_preempted(int cpu)
- 
- #ifdef CONFIG_PPC_SPLPAR
- 	if (!is_kvm_guest()) {
--		int first_cpu = cpu_first_thread_sibling(smp_processor_id());
-+		int first_cpu;
-+
-+		/*
-+		 * The result of vcpu_is_preempted() is used in a
-+		 * speculative way, and is always subject to invalidation
-+		 * by events internal and external to Linux. While we can
-+		 * be called in preemptable context (in the Linux sense),
-+		 * we're not accessing per-cpu resources in a way that can
-+		 * race destructively with Linux scheduler preemption and
-+		 * migration, and callers can tolerate the potential for
-+		 * error introduced by sampling the CPU index without
-+		 * pinning the task to it. So it is permissible to use
-+		 * raw_smp_processor_id() here to defeat the preempt debug
-+		 * warnings that can arise from using smp_processor_id()
-+		 * in arbitrary contexts.
-+		 */
-+		first_cpu = cpu_first_thread_sibling(raw_smp_processor_id());
- 
- 		/*
- 		 * Preemption can only happen at core granularity. This CPU
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 0a86fe71a66d1..2ec4be930fd6f 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -2316,7 +2316,7 @@
+ 			compatible = "qcom,bam-v1.7.0";
+ 			reg = <0 0x01dc4000 0 0x24000>;
+ 			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&rpmhcc 15>;
++			clocks = <&rpmhcc RPMH_CE_CLK>;
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+ 			qcom,ee = <0>;
+@@ -2332,7 +2332,7 @@
+ 			reg = <0 0x01dfa000 0 0x6000>;
+ 			clocks = <&gcc GCC_CE1_AHB_CLK>,
+ 				 <&gcc GCC_CE1_AHB_CLK>,
+-				 <&rpmhcc 15>;
++				 <&rpmhcc RPMH_CE_CLK>;
+ 			clock-names = "iface", "bus", "core";
+ 			dmas = <&cryptobam 6>, <&cryptobam 7>;
+ 			dma-names = "rx", "tx";
 -- 
 2.33.0
 
