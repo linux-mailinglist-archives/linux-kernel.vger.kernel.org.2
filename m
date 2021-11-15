@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB2D4519B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DBB452005
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347754AbhKOXZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:25:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1343872AbhKPArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:47:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244991AbhKOTST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD09634E8;
-        Mon, 15 Nov 2021 18:26:26 +0000 (UTC)
+        id S1344825AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80ADB636D4;
+        Mon, 15 Nov 2021 19:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000787;
-        bh=Dhp3BJ2GwnWDqF5Y9kUk8zMGnF7gZgqJ0rp8i4g7Vo0=;
+        s=korg; t=1637003105;
+        bh=K4ne8YE2c/7j1spFSp9l1T/d44YzHGl6QRftd2lQY5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBvyKlySAu4kvd+1XYBoGhVeLAzZxL7fKXWCvTO01du16BcsD+41qB5x2jWZLMQ5B
-         6ra7UmUZ72/VNci4EVwC70C68SjSJwauxK/jSzxqlIML1iqGWcylFeWz+XywveiBhV
-         tG8dCI/SU0tq2hBtRpxvNueDkMvkCe4497fEDXEo=
+        b=JGpCE2ZwUXsf2ynf1R4JQKXMYFk2Pyh/gDKac42mdBxUuuPnjJkGURrWpm7atNpPq
+         /hc3mVtrwn6lkeS6VU5RvDUQYOQxOAZUM7sRFcJIemf7RoaPuZA90FPzx1iJGn4XAm
+         mUt8JOXm/gUn19Yz0s47O8dNGmznW5xaZgmU66B4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Jones <davej@codemonkey.org.uk>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.14 792/849] x86/mce: Add errata workaround for Skylake SKX37
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 780/917] scsi: ufs: ufshpb: Use proper power management API
 Date:   Mon, 15 Nov 2021 18:04:35 +0100
-Message-Id: <20211115165447.037723800@linuxfoundation.org>
+Message-Id: <20211115165455.394125962@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jones <davej@codemonkey.org.uk>
+From: Daejun Park <daejun7.park@samsung.com>
 
-commit e629fc1407a63dbb748f828f9814463ffc2a0af0 upstream.
+[ Upstream commit 351b3a849ac7d92449dc75c43db8a857b38387ea ]
 
-Errata SKX37 is word-for-word identical to the other errata listed in
-this workaround.   I happened to notice this after investigating a CMCI
-storm on a Skylake host.  While I can't confirm this was the root cause,
-spurious corrected errors does sound like a likely suspect.
+In ufshpb, pm_runtime_{get,put}_sync() are used to avoid unwanted runtime
+suspend during query requests. Whereas commit b294ff3e3449 ("scsi: ufs:
+core: Enable power management for wlun") modified the driver core to use
+ufshcd_rpm_{get,put}_sync() APIs.
 
-Fixes: 2976908e4198 ("x86/mce: Do not log spurious corrected mce errors")
-Signed-off-by: Dave Jones <davej@codemonkey.org.uk>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20211029205759.GA7385@codemonkey.org.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Switch to these APIs in HPB module as well.
+
+Link: https://lore.kernel.org/r/20210902003534epcms2p1937a0f0eeb48a441cb69f5ef13ff8430@epcms2p1
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mce/intel.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshpb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -547,12 +547,13 @@ bool intel_filter_mce(struct mce *m)
- {
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 026a133149dce..46cdfb0dfca94 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -2371,11 +2371,11 @@ static int ufshpb_get_lu_info(struct ufs_hba *hba, int lun,
  
--	/* MCE errata HSD131, HSM142, HSW131, BDM48, and HSM142 */
-+	/* MCE errata HSD131, HSM142, HSW131, BDM48, HSM142 and SKX37 */
- 	if ((c->x86 == 6) &&
- 	    ((c->x86_model == INTEL_FAM6_HASWELL) ||
- 	     (c->x86_model == INTEL_FAM6_HASWELL_L) ||
- 	     (c->x86_model == INTEL_FAM6_BROADWELL) ||
--	     (c->x86_model == INTEL_FAM6_HASWELL_G)) &&
-+	     (c->x86_model == INTEL_FAM6_HASWELL_G) ||
-+	     (c->x86_model == INTEL_FAM6_SKYLAKE_X)) &&
- 	    (m->bank == 0) &&
- 	    ((m->status & 0xa0000000ffffffff) == 0x80000000000f0005))
- 		return true;
+ 	ufshcd_map_desc_id_to_length(hba, QUERY_DESC_IDN_UNIT, &size);
+ 
+-	pm_runtime_get_sync(hba->dev);
++	ufshcd_rpm_get_sync(hba);
+ 	ret = ufshcd_query_descriptor_retry(hba, UPIU_QUERY_OPCODE_READ_DESC,
+ 					    QUERY_DESC_IDN_UNIT, lun, 0,
+ 					    desc_buf, &size);
+-	pm_runtime_put_sync(hba->dev);
++	ufshcd_rpm_put_sync(hba);
+ 
+ 	if (ret) {
+ 		dev_err(hba->dev,
+@@ -2598,10 +2598,10 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+ 	if (version == HPB_SUPPORT_LEGACY_VERSION)
+ 		hpb_dev_info->is_legacy = true;
+ 
+-	pm_runtime_get_sync(hba->dev);
++	ufshcd_rpm_get_sync(hba);
+ 	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+ 		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
+-	pm_runtime_put_sync(hba->dev);
++	ufshcd_rpm_put_sync(hba);
+ 
+ 	if (ret)
+ 		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
+-- 
+2.33.0
+
 
 
