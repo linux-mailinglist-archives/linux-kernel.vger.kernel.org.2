@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ED8451F8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EB8451927
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243778AbhKPAmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:42:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345085AbhKOT0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B574063714;
-        Mon, 15 Nov 2021 19:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003407;
-        bh=uZNir75XsZvIfTz9O+1kYBpQT4j6bPdlKpNcJKhNYtc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7BB7Fc3xvt/hKDVp6NHi9CAlbbyGVubOtGNCe30J6nhNXovm64AKu5Z6DWiMG+zz
-         OxNWuf7BmMK/Xzcgcfm5OrZ/PEaalaXXCVY/e4Lvu6MwOIg3gnez5lk4f+eBnYlG8L
-         xA2M5qyV+W0PRX7MtJCd0DetCDw5PYWoQLku06X4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman.Li@amd.com,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.15 917/917] drm/amd/display: Look at firmware version to determine using dmub on dcn21
-Date:   Mon, 15 Nov 2021 18:06:52 +0100
-Message-Id: <20211115165500.132569186@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1352543AbhKOXN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243407AbhKOTIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:08:06 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58532C06EDDD;
+        Mon, 15 Nov 2021 09:58:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MkQmNnWorQXmyvdRrfkGhZFoHmndUW6YwurWpJlwk+M=; b=r4x2VN6R6qBR+zBOJ/yx5EQHd3
+        V/u/BEExj7qrCqc9z/pZuu6OSMqbP/6DR1d1xqHewY5Sk7b10EYSAu/j4fcIXbTIQM4akT/sd38Vk
+        YUMRjVxjdNb4KOU57MlNgMf6ghubwtAb+VazFz6lcdTTjcQrbrk12zDzl8+GDzAuYNM2IKx51GD43
+        PxkMHnN8EScCcFoMxn8C3QEotSxG7K2Ep1S06w4xxZrr3F3DJw9Jp47bWjjLEKkgdqMH1WFWQ1YJt
+        st6/s1vUxUrA5MGuinkDKzdBnHqEbZ7GXW1ZQHw5oLlyIgDsEhYv5yn1PhQ6Ic/wvmvhOx74KogLX
+        hBVco44A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmgF5-00Gc7F-Up; Mon, 15 Nov 2021 17:58:07 +0000
+Date:   Mon, 15 Nov 2021 09:58:07 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jubin Zhong <zhongjubin@huawei.com>
+Cc:     viro@zeniv.linux.org.uk, wangfangpeng1@huawei.com,
+        kechengsong@huawei.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Fix truncate never updates m/ctime
+Message-ID: <YZKfr5ZIvNBmKDQI@infradead.org>
+References: <1636974018-31285-1-git-send-email-zhongjubin@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636974018-31285-1-git-send-email-zhongjubin@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+On Mon, Nov 15, 2021 at 07:00:18PM +0800, Jubin Zhong wrote:
+> From: zhongjubin <zhongjubin@huawei.com>
+> 
+> Syscall truncate() never updates m/ctime even if the file size is
+> changed. However, this is incorrect according to man file:
+> 
+>   truncate (2):
+>   If  the  size  changed, then the st_ctime and st_mtime fields
+>   (respectively, time of last status change and time of last modification;
+>   see stat(2)) for the file are updated, and the set-user-ID and
+>   set-group-ID mode bits may be cleared.
+> 
+> Check file size before do_truncate() to fix this.
 
-commit 91adec9e07097e538691daed5d934e7886dd1dc3 upstream.
-
-commit 652de07addd2 ("drm/amd/display: Fully switch to dmub for all dcn21
-asics") switched over to using dmub on Renoir to fix Gitlab 1735, but this
-implied a new dependency on newer firmware which might not be met on older
-kernel versions.
-
-Since sw_init runs before hw_init, there is an opportunity to determine
-whether or not the firmware version is new to adjust the behavior.
-
-Cc: Roman.Li@amd.com
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1772
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1735
-Fixes: 652de07addd2 ("drm/amd/display: Fully switch to dmub for all dcn21 asics")
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Roman Li <Roman.Li@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1141,8 +1141,15 @@ static int amdgpu_dm_init(struct amdgpu_
- 	case CHIP_RAVEN:
- 	case CHIP_RENOIR:
- 		init_data.flags.gpu_vm_support = true;
--		if (ASICREV_IS_GREEN_SARDINE(adev->external_rev_id))
-+		switch (adev->dm.dmcub_fw_version) {
-+		case 0: /* development */
-+		case 0x1: /* linux-firmware.git hash 6d9f399 */
-+		case 0x01000000: /* linux-firmware.git hash 9a0b0f4 */
-+			init_data.flags.disable_dmcu = false;
-+			break;
-+		default:
- 			init_data.flags.disable_dmcu = true;
-+		}
- 		break;
- 	case CHIP_VANGOGH:
- 	case CHIP_YELLOW_CARP:
-
-
+Please try to actually reproduce your alleged "bug".  And maybe also
+look at the actual setattr implementations.  Hint: The XFS one even
+has extensive comments.
