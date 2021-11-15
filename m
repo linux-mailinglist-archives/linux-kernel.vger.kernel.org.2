@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CE1451ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB054518D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhKOXmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1351638AbhKOXI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:08:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343949AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F7B63363;
-        Mon, 15 Nov 2021 18:49:05 +0000 (UTC)
+        id S243139AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63C663488;
+        Mon, 15 Nov 2021 18:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002146;
-        bh=DdA0QretWp4k5PwhTyCRv9R5py7QCQlDtuhwqxPqFFA=;
+        s=korg; t=1636999938;
+        bh=wAEORlIloIhquPQmQylodOIuiUktgC2qMMWzZ4isTm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8OlW/D6IL9iLtFIKLcVz14EzeaCejiCtOAskAV7Yaz/g+YbwfD2abJsSeMh4MfaT
-         3EriCMDHG2hUlX0nW9YwLny4ioT+o6KywT8yTmv/h4h8U+3lMaixbWo44VMmysDnG0
-         BDmB0yowAn4SPFUfA7Ayam5RzfOirmEZTX5LnGI0=
+        b=CLSy3OQ09zcR8ixRA++XRHN+A2iJxstqwz7wm6NNRxZtA3zYcQ+fLGXnHtJeQqVsq
+         0Trmp5BwWA9KP1J8IxeZoVg/Yn4Ku1nxKGrP7kX7OAEJG180YJVmMUrbB9rvG+pZWX
+         K+/ERmionBTEtg3IsV3QGckx5lO1KGN6np20/dG4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bixuan Cui <cuibixuan@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        Hao Xu <haoxu@linux.alibaba.com>
-Subject: [PATCH 5.15 448/917] io-wq: Remove duplicate code in io_workqueue_create()
-Date:   Mon, 15 Nov 2021 17:59:03 +0100
-Message-Id: <20211115165443.969728103@linuxfoundation.org>
+        stable@vger.kernel.org, Deren Wu <deren.wu@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 461/849] mt76: mt7921: fix dma hang in rmmod
+Date:   Mon, 15 Nov 2021 17:59:04 +0100
+Message-Id: <20211115165435.887080950@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Deren Wu <deren.wu@mediatek.com>
 
-[ Upstream commit 71e1cef2d794338cc7b979d4c6144e1dc12718b5 ]
+[ Upstream commit a23f80aa9c5e6ad4ec8df88037b7ffd4162b1ec4 ]
 
-While task_work_add() in io_workqueue_create() is true,
-then duplicate code is executed:
+The dma would be broken after rmmod flow. There are two different
+cases causing this issue.
+1. dma access without privilege.
+2. hw access sequence borken by another context.
 
-  -> clear_bit_unlock(0, &worker->create_state);
-  -> io_worker_release(worker);
-  -> atomic_dec(&acct->nr_running);
-  -> io_worker_ref_put(wq);
-  -> return false;
+This patch handle both cases to avoid hw crash.
 
-  -> clear_bit_unlock(0, &worker->create_state); // back to io_workqueue_create()
-  -> io_worker_release(worker);
-  -> kfree(worker);
-
-The io_worker_release() and clear_bit_unlock() are executed twice.
-
-Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Link: https://lore.kernel.org/r/20210911085847.34849-1-cuibixuan@huawei.com
-Reviwed-by: Hao Xu <haoxu@linux.alibaba.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 2b9ea5a8cf1bd ("mt76: mt7921: add mt7921_dma_cleanup in mt7921_unregister_device")
+Signed-off-by: Deren Wu <deren.wu@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/init.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 203c0e2a5dfae..5d189b24a8d4b 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -359,8 +359,10 @@ static bool io_queue_worker_create(struct io_worker *worker,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+index 52d40385fab6c..78a00028137bd 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+@@ -251,8 +251,17 @@ int mt7921_register_device(struct mt7921_dev *dev)
  
- 	init_task_work(&worker->create_work, func);
- 	worker->create_index = acct->index;
--	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
-+	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL)) {
-+		clear_bit_unlock(0, &worker->create_state);
- 		return true;
-+	}
- 	clear_bit_unlock(0, &worker->create_state);
- fail_release:
- 	io_worker_release(worker);
-@@ -765,11 +767,8 @@ static void io_workqueue_create(struct work_struct *work)
- 	struct io_worker *worker = container_of(work, struct io_worker, work);
- 	struct io_wqe_acct *acct = io_wqe_get_acct(worker);
+ void mt7921_unregister_device(struct mt7921_dev *dev)
+ {
++	int i;
++	struct mt76_connac_pm *pm = &dev->pm;
++
+ 	mt76_unregister_device(&dev->mt76);
++	mt76_for_each_q_rx(&dev->mt76, i)
++		napi_disable(&dev->mt76.napi[i]);
++	cancel_delayed_work_sync(&pm->ps_work);
++	cancel_work_sync(&pm->wake_work);
++
+ 	mt7921_tx_token_put(dev);
++	mt7921_mcu_drv_pmctrl(dev);
+ 	mt7921_dma_cleanup(dev);
+ 	mt7921_mcu_exit(dev);
  
--	if (!io_queue_worker_create(worker, acct, create_worker_cont)) {
--		clear_bit_unlock(0, &worker->create_state);
--		io_worker_release(worker);
-+	if (!io_queue_worker_create(worker, acct, create_worker_cont))
- 		kfree(worker);
--	}
- }
- 
- static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
 -- 
 2.33.0
 
