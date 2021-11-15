@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12EF450B59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49818450B74
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237593AbhKORXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:23:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        id S237257AbhKORYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:24:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236804AbhKORNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:13:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E16EB61BF5;
-        Mon, 15 Nov 2021 17:10:12 +0000 (UTC)
+        id S236844AbhKORNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:13:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BC5863237;
+        Mon, 15 Nov 2021 17:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996213;
-        bh=gkLkjXb4iqRXT7QvuN16O3lslBVjnwBA4c/WO/36FZw=;
+        s=korg; t=1636996229;
+        bh=zh/hEah7YPED7qJko3DfIUvMvtMcOm9HD6oPTNJyQ+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sf6r3UMFyxdI4cVEjcbFTeNXiuAjCI1MaqwUEnxDc11jJORuUk9r9qjSiI6qYPke5
-         UFBGu7nb32heM1nBCu5+KmmopN7qt8iS8S/g/BMajqTBvpdlfM5ohuaWMPzbAA3G/T
-         P7nFjxD4rs9QJnaIlfBQkkqtweIVbpsh6Le56z04=
+        b=1k0jNTcGoEw7Lt60dr+Fpnot/8XzlHmaN17VKPDX48g8PaPuZo4WdI1HsTLJOvSII
+         o4uuJnSowpZlesOSe+Qx9Mjj693jGpMmM8GWFsCYdfMmrFVnnltJwLMGLUGvBJoXKx
+         5aDItXUYH3GuliFEdCSRpo2cuwANH1cg4966QD8c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Wensheng <wangwensheng4@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 030/355] ALSA: timer: Fix use-after-free problem
-Date:   Mon, 15 Nov 2021 17:59:14 +0100
-Message-Id: <20211115165314.522452533@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 031/355] ALSA: timer: Unconditionally unlink slave instances, too
+Date:   Mon, 15 Nov 2021 17:59:15 +0100
+Message-Id: <20211115165314.555166080@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,53 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wensheng <wangwensheng4@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit c0317c0e87094f5b5782b6fdef5ae0a4b150496c upstream.
+commit ffdd98277f0a1d15a67a74ae09bee713df4c0dbc upstream.
 
-When the timer instance was add into ack_list but was not currently in
-process, the user could stop it via snd_timer_stop1() without delete it
-from the ack_list. Then the user could free the timer instance and when
-it was actually processed UAF occurred.
+Like the previous fix (commit c0317c0e8709 "ALSA: timer: Fix
+use-after-free problem"), we have to unlink slave timer instances
+immediately at snd_timer_stop(), too.  Otherwise it may leave a stale
+entry in the list if the slave instance is freed before actually
+running.
 
-This issue could be reproduced via testcase snd_timer01 in ltp - running
-several instances of that testcase at the same time.
-
-What I actually met was that the ack_list of the timer broken and the
-kernel went into deadloop with irqoff. That could be detected by
-hardlockup detector on board or when we run it on qemu, we could use gdb
-to dump the ack_list when the console has no response.
-
-To fix this issue, we delete the timer instance from ack_list and
-active_list unconditionally in snd_timer_stop1().
-
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211103033517.80531-1-wangwensheng4@huawei.com
+Link: https://lore.kernel.org/r/20211105091517.21733-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/timer.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/core/timer.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 --- a/sound/core/timer.c
 +++ b/sound/core/timer.c
-@@ -595,13 +595,13 @@ static int snd_timer_stop1(struct snd_ti
- 	if (!timer)
- 		return -EINVAL;
- 	spin_lock_irqsave(&timer->lock, flags);
-+	list_del_init(&timeri->ack_list);
-+	list_del_init(&timeri->active_list);
- 	if (!(timeri->flags & (SNDRV_TIMER_IFLG_RUNNING |
- 			       SNDRV_TIMER_IFLG_START))) {
- 		result = -EBUSY;
- 		goto unlock;
+@@ -636,23 +636,22 @@ static int snd_timer_stop1(struct snd_ti
+ static int snd_timer_stop_slave(struct snd_timer_instance *timeri, bool stop)
+ {
+ 	unsigned long flags;
++	bool running;
+ 
+ 	spin_lock_irqsave(&slave_active_lock, flags);
+-	if (!(timeri->flags & SNDRV_TIMER_IFLG_RUNNING)) {
+-		spin_unlock_irqrestore(&slave_active_lock, flags);
+-		return -EBUSY;
+-	}
++	running = timeri->flags & SNDRV_TIMER_IFLG_RUNNING;
+ 	timeri->flags &= ~SNDRV_TIMER_IFLG_RUNNING;
+ 	if (timeri->timer) {
+ 		spin_lock(&timeri->timer->lock);
+ 		list_del_init(&timeri->ack_list);
+ 		list_del_init(&timeri->active_list);
+-		snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
+-				  SNDRV_TIMER_EVENT_PAUSE);
++		if (running)
++			snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
++					  SNDRV_TIMER_EVENT_PAUSE);
+ 		spin_unlock(&timeri->timer->lock);
  	}
--	list_del_init(&timeri->ack_list);
--	list_del_init(&timeri->active_list);
- 	if (timer->card && timer->card->shutdown)
- 		goto unlock;
- 	if (stop) {
+ 	spin_unlock_irqrestore(&slave_active_lock, flags);
+-	return 0;
++	return running ? 0 : -EBUSY;
+ }
+ 
+ /*
 
 
