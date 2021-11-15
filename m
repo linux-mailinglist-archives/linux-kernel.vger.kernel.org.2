@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70B44515A5
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC304515A4
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352414AbhKOUpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:45:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50072 "EHLO mail.kernel.org"
+        id S1352393AbhKOUpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:45:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240312AbhKOSHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240313AbhKOSHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F24763305;
-        Mon, 15 Nov 2021 17:44:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 323D663306;
+        Mon, 15 Nov 2021 17:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998270;
-        bh=dEGP4LITW/muASRlsEeWsHD5e9oeK2uLVaypXlduXBU=;
+        s=korg; t=1636998272;
+        bh=OXRQUmIw8c6w3x5521GPDy04TPzDpS7Q4dc2midSmIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=myJ/ngPy3d26quw+OqDjX34u149+hbz7btEVwvLowXhOa4AvCExg7mVYZUoDKjs0z
-         91n1vg9axbjh8jK+1jx4iW7nEsLfzfRoS444vp4gcT3fwMlTcf+7cyht3YRgSB8Id6
-         aJfQ1wBhZN2wuC5JMotVJuRZBJm5W/ZWNe//mjMQ=
+        b=Y+Ixx6CD6F0eAKXqW2DAf/Ii0gT089zgKrho98px+n6CYR2dh/+bmSHGkmrvNkVXV
+         Wlcy9wqLnS5rPLO/J/PidODbrv0ESY+mbgkt9iPXuqTiy36A//uxqhmmrVAeWuv9wm
+         J5/h4qeaRIFPgYYNGWktwyj6xz7SfHDYLvF3cavU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 449/575] usb: dwc2: drd: reset current session before setting the new one
-Date:   Mon, 15 Nov 2021 18:02:54 +0100
-Message-Id: <20211115165359.277494223@linuxfoundation.org>
+Subject: [PATCH 5.10 450/575] firmware: qcom_scm: Fix error retval in __qcom_scm_is_call_available()
+Date:   Mon, 15 Nov 2021 18:02:55 +0100
+Message-Id: <20211115165359.316721679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,46 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+From: Guru Das Srinagesh <quic_gurus@quicinc.com>
 
-[ Upstream commit 1ad707f559f7cb12c64f3d7cb37f0b1ea27c1058 ]
+[ Upstream commit 38212b2a8a6fc4c3a6fa99d7445b833bedc9a67c ]
 
-If role is changed without the "none" step, A- and B- valid session could
-be set at the same time. It is an issue.
-This patch resets A-session if role switch sets B-session, and resets
-B-session if role switch sets A-session.
-Then, it is possible to change the role without the "none" step.
+Since __qcom_scm_is_call_available() returns bool, have it return false
+instead of -EINVAL if an invalid SMC convention is detected.
 
-Fixes: 17f934024e84 ("usb: dwc2: override PHY input signals with usb role switch support")
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Link: https://lore.kernel.org/r/20211005095305.66397-4-amelie.delaunay@foss.st.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes the Smatch static checker warning:
+
+	drivers/firmware/qcom_scm.c:255 __qcom_scm_is_call_available()
+	warn: signedness bug returning '(-22)'
+
+Fixes: 9d11af8b06a8 ("firmware: qcom_scm: Make __qcom_scm_is_call_available() return bool")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/1633982414-28347-1-git-send-email-quic_gurus@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/drd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/firmware/qcom_scm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
-index 99672360f34b0..aa6eb76f64ddc 100644
---- a/drivers/usb/dwc2/drd.c
-+++ b/drivers/usb/dwc2/drd.c
-@@ -40,6 +40,7 @@ static int dwc2_ovr_avalid(struct dwc2_hsotg *hsotg, bool valid)
- 	    (!valid && !(gotgctl & GOTGCTL_ASESVLD)))
- 		return -EALREADY;
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index c5b20bdc08e9d..e10a99860ca4b 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -252,7 +252,7 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+ 		break;
+ 	default:
+ 		pr_err("Unknown SMC convention being used\n");
+-		return -EINVAL;
++		return false;
+ 	}
  
-+	gotgctl &= ~GOTGCTL_BVALOVAL;
- 	if (valid)
- 		gotgctl |= GOTGCTL_AVALOVAL | GOTGCTL_VBVALOVAL;
- 	else
-@@ -58,6 +59,7 @@ static int dwc2_ovr_bvalid(struct dwc2_hsotg *hsotg, bool valid)
- 	    (!valid && !(gotgctl & GOTGCTL_BSESVLD)))
- 		return -EALREADY;
- 
-+	gotgctl &= ~GOTGCTL_AVALOVAL;
- 	if (valid)
- 		gotgctl |= GOTGCTL_BVALOVAL | GOTGCTL_VBVALOVAL;
- 	else
+ 	ret = qcom_scm_call(dev, &desc, &res);
 -- 
 2.33.0
 
