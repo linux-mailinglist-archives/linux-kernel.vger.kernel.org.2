@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D507A451C14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBEB451C1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352955AbhKPAMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:12:14 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:48357 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348988AbhKOVNx (ORCPT
+        id S1351556AbhKPAMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:12:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349747AbhKOV3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:13:53 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HtML51WvXz4xbM;
-        Tue, 16 Nov 2021 08:10:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637010653;
-        bh=ouiiKAgaax/jlItXSm8ObRYTMiRsdExBEOmVlnBfIQM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HnD1g3K2B1MU5DiQBVhfliUnlQEYvOT5A7/8RSAwX0zaveoPqWRsSZT5lR/b/6aVS
-         oBG4KEBjOp+V76S2C5vGw+aCs4ikElZ30GZIVVP6LjFgTxx7JOw9YFgfmVnaSB36eb
-         B8I9F2X7sxTASncyOCRn/TU9QvRM27u8vC4jJcP5BYw3kvVsHcchi4RsSf9jK7bEZj
-         UXbaK21kTTxXvOrRi9lSP/FD/QgnzURwH9KJpaZuvY6XsZ8IeHtz/LroUuJmres9Nd
-         fwx5645A0NRQS44+Lo9DIo7/4H+vKq4FnCY7nLAuvbCcIf6PQtwcufZ78uzwtLS95J
-         Yt4F9RA0ET0Kg==
-Date:   Tue, 16 Nov 2021 08:10:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dillon Min <dillon.minfei@gmail.com>,
+        Mon, 15 Nov 2021 16:29:01 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4F9C061229
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:12:55 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637010773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMg6PRGHFyMnRKcSWWdIjV/tEeqqS7jgOA5IYp5dU1o=;
+        b=DfBXh0tS1Mvkb5sOWI+u7gmf0TZHY91bn4lFc4waeXs2ugMyh7I5yFK+z/d/OBNxdcIDcc
+        7P2qONGm2q462axc2a5fGbnr7IyJ1lxLHaMy1gWnW3BhlELsz7Cvr1w/20steG1ebOjXsr
+        Xhe8l/E2ujGpitw5w9tX5wgI6QgmBGtnKrK4FIBMeD2gnM511ZToH0i4quwcmIXr3DDAdW
+        wRMn9bRK9cTGCaQ8RkkmXJZBRdIyhALXSU6WOa1j3OW8YDfnE3dufwkJ5vofmxsT37+KYw
+        rSfrGMmUW/pekl//7br0CYG1kCVRGRypK+VdCleA+mXYoBZpbFbS3igJRVy54g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637010773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMg6PRGHFyMnRKcSWWdIjV/tEeqqS7jgOA5IYp5dU1o=;
+        b=M3Dg5kpMWlvy21DeCbJ742SN98pNC4RXU2wdzuoieGexLnWRuCIVWw0IFFq6M0i7f8Th0l
+        pERvA1oyvY9P7BBg==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Asit K Mallick <asit.k.mallick@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the v4l-dvb-next tree
-Message-ID: <20211116081051.2066724f@canb.auug.org.au>
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Revisiting XFD-based AMX and heterogenous systems
+In-Reply-To: <0f03a9e2-4611-4b5c-962f-93a7e1d2bde8@www.fastmail.com>
+References: <0f03a9e2-4611-4b5c-962f-93a7e1d2bde8@www.fastmail.com>
+Date:   Mon, 15 Nov 2021 22:12:52 +0100
+Message-ID: <8735nx6s2z.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9pFV1GLELZsjSIUBnHqras3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9pFV1GLELZsjSIUBnHqras3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Andy,
 
-Hi all,
+On Mon, Nov 15 2021 at 11:59, Andy Lutomirski wrote:
+> So I suggest that we go back and switch to the XCR0 model.  Tasks will
+> start out with AMX clear in XCR0.  If they want AMX, they issue a
+> prctl asking for AMX, AMX gets set in XCR0, and the tasks need to be
+> able to tolerate the XCR0 change.
 
-In commit
+We can do that, but that still want's XFD for avoiding allocating large
+buffers for all tasks in such a process which never use that feature.
 
-  d9fbdedc56ea ("media: stm32-dma2d: fix compile-testing failed")
+Aside of that as we all know context switching XCR0 sucks.
 
-Fixes tag
+> Then, if Intel ever wants to expose the full Alder Lake physical
+> capabilities and support efficiency cores and AVX-512 on the same
+> boot, we can have a mode in which tasks start with AVX-512 clear in
+> XCR0 and can opt in with prctl.  This will require HPC-like apps to be
+> recompiled or run with a special wrapper bit will otherwise expose the
+> full HW capabilities. (Of course this assumes that Intel sets up MSRs
+> or ucode or whatever to support this.)
 
-  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
+If software needs to be recompiled or wrapped anyway then Intel can just
+provide XFD support for AVX512 if it wants to expose this at runtime on
+those CPUs.
 
-has these problem(s):
+As that needs to be implemented for AMX anyway the logical consequence
+for user space is:
 
-  - Target SHA1 does not exist
+    available = arch_prctl(ARCH_GET_XCOMP_SUPP);        // Same as XCR0
+    permitted = arch_prctl(ARCH_GET_XCOMP_PERM);        // XRC0 & permission bits
 
-Maybe you meant
+and work from there. If done with future XFD support for other features
+than AMX in mind (even retroactively added for AVX512) then this should
+be straight forward to adjust.
 
-Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
+For the kernel adding XFD for AVX512 even conditionally based on a CPUID
+bit is pretty straight forward now. It needs a small change to the way
+how we distinguish XFD based and unconditional features, but that's
+trivial effort compared to going for XCR0 switching with all its
+downsides.
 
-In commit
+Thanks,
 
-  147907e93224 ("media: stm32-dma2d: fix compile errors when W=3D1")
-
-Fixes tag
-
-  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
-
-In commit
-
-  22f2cac62dea ("media: atomisp-ov2680: properly set the vts value")
-
-Fixes tag
-
-  Fixes: 62b984359b6f ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing=
- up high exposure settings")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 29400b5063db ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing u=
-p high exposure settings")
-
-In commit
-
-  d9916e7c87c9 ("media: atomisp-ov2680: initialize return var")
-
-Fixes tag
-
-  Fixes: 6b5b60687ada ("media: atomisp-ov2680: Save/restore exposure and ga=
-in over sensor power-down")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 4ed2caf85337 ("media: atomisp-ov2680: Save/restore exposure and gain=
- over sensor power-down")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9pFV1GLELZsjSIUBnHqras3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGSzNsACgkQAVBC80lX
-0GxDlAf+LujFZn1TAWIT0Zuck5bYoMjMOi2Lo1RZ7VBpl6WVi8W18pSWRiOp5ymq
-KN4aRwYXHUGBfv46FMPmeTCO5mgrKAbEigVoHcsAWtzoA9XSJTrP1z+maV1qFpHb
-uJiKZ7VyXBoUlRZUQyYQCcOB83FhivjjB0Z7UvM9VOBR2EnONqDKu6cO97zp9UEE
-2Ksr/Oc2J8aZ4K8Mnwpn0yTDboA7lFpIUCW8kW8gsTwsJQLIV+6RJu4Zz3zE1kC8
-sa+tOXQeBYSut0LkqaredFZxoZYzHOcVBg3mh05DD+RAtYEi6/gIDEgMJPwQUvnX
-2XPsqxdvsTPN0o/MGhLwglWR2ut0+w==
-=EJpY
------END PGP SIGNATURE-----
-
---Sig_/9pFV1GLELZsjSIUBnHqras3--
+        tglx
