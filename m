@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38387451954
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE630451E93
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352908AbhKOXS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1345655AbhKPAge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244625AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ABCD61B44;
-        Mon, 15 Nov 2021 18:22:10 +0000 (UTC)
+        id S233400AbhKOTYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C248163321;
+        Mon, 15 Nov 2021 18:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000531;
-        bh=0hsI4YDMGAhptLhRTnSi3BZAiLFMj3piUW3GFS5g3I0=;
+        s=korg; t=1637002745;
+        bh=zBCsemRnDpXLZ1NcLFO8pi2JteQM58ljLbuSkvFBjc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cY/Ped+L0pojmGDLq61I7txDRxDCOUqd+EyXRR+JNlHhV7pX0m7hGVqGNwPBI2xaj
-         pvqSBvBUsHeZUzn2Px0NGiCYPR6Kp9gAKOiDOu93INZaG2EdfetnTSyewyxLMRABJj
-         20w9LQ2NRvEy8lr/P3TVERGIXS/nlW8GCBy49t6A=
+        b=GGyq9yEbK0bfAd80LaogF0qUZltxGE0EchkgVVFIuieO7XSfmbEhfn7bl3X20RJ9B
+         T4eh6wqw0bQvBYkWkGUZRoZh1mYBabRGDezVJb2ZvWgjSIIHJLTP0HpDAULy82MVV/
+         T2DCjOU045qecfSPCIE/kGEqEloPIbbkb3A7Bmp8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 694/849] dmaengine: at_xdmac: call at_xdmac_axi_config() on resume path
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 682/917] powerpc: Dont provide __kernel_map_pages() without ARCH_SUPPORTS_DEBUG_PAGEALLOC
 Date:   Mon, 15 Nov 2021 18:02:57 +0100
-Message-Id: <20211115165443.729946240@linuxfoundation.org>
+Message-Id: <20211115165452.020672914@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit fa5270ec2f2688d98a82895be7039b81c87d856c ]
+[ Upstream commit f8c0e36b48e32b14bb83332d24e0646acd31d9e9 ]
 
-at_xdmac could be used on SoCs which supports backup mode (where most
-of the SoC power, including power to DMA controller, is closed at suspend
-time). Thus, on resume, the settings which were previously done need to be
-restored. Do the same for axi configuration.
+When ARCH_SUPPORTS_DEBUG_PAGEALLOC is not selected, the user can
+still select CONFIG_DEBUG_PAGEALLOC in which case __kernel_map_pages()
+is provided by mm/page_poison.c
 
-Fixes: f40566f220a1 ("dmaengine: at_xdmac: add AXI priority support and recommended settings")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20211007111230.2331837-2-claudiu.beznea@microchip.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+So only define __kernel_map_pages() when both
+CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC and CONFIG_DEBUG_PAGEALLOC
+are defined.
+
+Fixes: 68b44f94d637 ("powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/971b69739ff4746252e711a9845210465c023a9e.1635425947.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/at_xdmac.c | 51 ++++++++++++++++++++++--------------------
- 1 file changed, 27 insertions(+), 24 deletions(-)
+ arch/powerpc/mm/pgtable_32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 64a52bf4d7377..855a59f3248ee 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -1926,6 +1926,30 @@ static void at_xdmac_free_chan_resources(struct dma_chan *chan)
- 	return;
+diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+index dcf5ecca19d99..fde1ed445ca46 100644
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@ -173,7 +173,7 @@ void mark_rodata_ro(void)
  }
+ #endif
  
-+static void at_xdmac_axi_config(struct platform_device *pdev)
-+{
-+	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
-+	bool dev_m2m = false;
-+	u32 dma_requests;
-+
-+	if (!atxdmac->layout->axi_config)
-+		return; /* Not supported */
-+
-+	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
-+				  &dma_requests)) {
-+		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
-+		dev_m2m = true;
-+	}
-+
-+	if (dev_m2m) {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
-+	} else {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
-+	}
-+}
-+
- #ifdef CONFIG_PM
- static int atmel_xdmac_prepare(struct device *dev)
+-#ifdef CONFIG_DEBUG_PAGEALLOC
++#if defined(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) && defined(CONFIG_DEBUG_PAGEALLOC)
+ void __kernel_map_pages(struct page *page, int numpages, int enable)
  {
-@@ -1975,6 +1999,7 @@ static int atmel_xdmac_resume(struct device *dev)
- 	struct at_xdmac		*atxdmac = dev_get_drvdata(dev);
- 	struct at_xdmac_chan	*atchan;
- 	struct dma_chan		*chan, *_chan;
-+	struct platform_device	*pdev = container_of(dev, struct platform_device, dev);
- 	int			i;
- 	int ret;
- 
-@@ -1982,6 +2007,8 @@ static int atmel_xdmac_resume(struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	at_xdmac_axi_config(pdev);
-+
- 	/* Clear pending interrupts. */
- 	for (i = 0; i < atxdmac->dma.chancnt; i++) {
- 		atchan = &atxdmac->chan[i];
-@@ -2007,30 +2034,6 @@ static int atmel_xdmac_resume(struct device *dev)
- }
- #endif /* CONFIG_PM_SLEEP */
- 
--static void at_xdmac_axi_config(struct platform_device *pdev)
--{
--	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
--	bool dev_m2m = false;
--	u32 dma_requests;
--
--	if (!atxdmac->layout->axi_config)
--		return; /* Not supported */
--
--	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
--				  &dma_requests)) {
--		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
--		dev_m2m = true;
--	}
--
--	if (dev_m2m) {
--		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
--		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
--	} else {
--		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
--		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
--	}
--}
--
- static int at_xdmac_probe(struct platform_device *pdev)
- {
- 	struct at_xdmac	*atxdmac;
+ 	unsigned long addr = (unsigned long)page_address(page);
 -- 
 2.33.0
 
