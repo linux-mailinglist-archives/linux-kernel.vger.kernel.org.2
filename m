@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9231D45226E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6957452584
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348098AbhKPBMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:12:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
+        id S1382571AbhKPBx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:53:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245396AbhKOTU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2C7611AF;
-        Mon, 15 Nov 2021 18:33:48 +0000 (UTC)
+        id S241901AbhKOSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:25:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6F26342B;
+        Mon, 15 Nov 2021 17:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001229;
-        bh=eajIuobfbs5aY/C3Q8dSjCf3Ko6DnXwHvuvfvoHM2uc=;
+        s=korg; t=1636998956;
+        bh=c9e0JVzpYrCDaXhy2yfRx+e3NlUNzE9VIMxJ2XvqOZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJwDbcXCW7/90TZJuEdGf90Rg2Ye7LasEuLwf4MhAB2L2aqGg4pzl4UyrbULBtJfr
-         /YDz2bvuEsvRXe9dWACNyeoHEfpilet1EtXL0MjlmSghXk02oxAvkuTL2TbTk4cxeD
-         bPG8tsKmG1HMgNWIjON4V1wv8l//oWxku6cW4qbg=
+        b=R8xxJtJh9kmLAkLkvWSoGW/KABV8GlGE+BbbqnwPwaLDWEVBjD1uAiGjfAO/O1VyA
+         rUGjkC8BE4dNhfieO142W5RMOAMKvvP/KDkPaFeN+WvhM7khUQuyG7N+0hfpCWl/hy
+         20ATIKXB3hEm3HLeoS0dWMoopPPtUJWjqH/pBf8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.15 110/917] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
-Date:   Mon, 15 Nov 2021 17:53:25 +0100
-Message-Id: <20211115165432.484048342@linuxfoundation.org>
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.14 123/849] HID: surface-hid: Use correct event registry for managing HID events
+Date:   Mon, 15 Nov 2021 17:53:26 +0100
+Message-Id: <20211115165424.257619685@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
+commit dc0fd0acb6e0e8025a0a43ada54513b216254fac upstream.
 
-When an instruction to save or restore a register from the stack fails
-in _save_fp_context or _restore_fp_context return with -EFAULT.  This
-change was made to r2300_fpu.S[1] but it looks like it got lost with
-the introduction of EX2[2].  This is also what the other implementation
-of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
-what is needed for the callers to be able to handle the error.
+Until now, we have only ever seen the REG-category registry being used
+on devices addressed with target ID 2. In fact, we have only ever seen
+Surface Aggregator Module (SAM) HID devices with target ID 2. For those
+devices, the registry also has to be addressed with target ID 2.
 
-Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
-it does not terminate the entire process it just terminates a single
-thread.
+Some devices, like the new Surface Laptop Studio, however, address their
+HID devices on target ID 1. As a result of this, any target ID 2
+commands time out. This includes event management commands addressed to
+the target ID 2 REG-category registry. For these devices, the registry
+has to be addressed via target ID 1 instead.
 
-As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
-remove the problematic and now unused helper function.
+We therefore assume that the target ID of the registry to be used
+depends on the target ID of the respective device. Implement this
+accordingly.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
-[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Cc: stable@vger.kernel.org
-Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Note that we currently allow the surface HID driver to only load against
+devices with target ID 2, so these timeouts are not happening (yet).
+This is just a preparation step before we allow the driver to load
+against all target IDs.
+
+Cc: stable@vger.kernel.org # 5.14+
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Link: https://lore.kernel.org/r/20211021130904.862610-3-luzmaximilian@gmail.com
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/kernel/r2300_fpu.S |    4 ++--
- arch/mips/kernel/syscall.c   |    9 ---------
- 2 files changed, 2 insertions(+), 11 deletions(-)
+ drivers/hid/surface-hid/surface_hid.c         |    2 +-
+ include/linux/surface_aggregator/controller.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/mips/kernel/r2300_fpu.S
-+++ b/arch/mips/kernel/r2300_fpu.S
-@@ -29,8 +29,8 @@
- #define EX2(a,b)						\
- 9:	a,##b;							\
- 	.section __ex_table,"a";				\
--	PTR	9b,bad_stack;					\
--	PTR	9b+4,bad_stack;					\
-+	PTR	9b,fault;					\
-+	PTR	9b+4,fault;					\
- 	.previous
+--- a/drivers/hid/surface-hid/surface_hid.c
++++ b/drivers/hid/surface-hid/surface_hid.c
+@@ -209,7 +209,7 @@ static int surface_hid_probe(struct ssam
  
- 	.set	mips1
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -240,12 +240,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
- {
- 	return -ENOSYS;
- }
--
--/*
-- * If we ever come here the user sp is bad.  Zap the process right away.
-- * Due to the bad stack signaling wouldn't work.
-- */
--asmlinkage void bad_stack(void)
--{
--	do_exit(SIGSEGV);
--}
+ 	shid->notif.base.priority = 1;
+ 	shid->notif.base.fn = ssam_hid_event_fn;
+-	shid->notif.event.reg = SSAM_EVENT_REGISTRY_REG;
++	shid->notif.event.reg = SSAM_EVENT_REGISTRY_REG(sdev->uid.target);
+ 	shid->notif.event.id.target_category = sdev->uid.category;
+ 	shid->notif.event.id.instance = sdev->uid.instance;
+ 	shid->notif.event.mask = SSAM_EVENT_MASK_STRICT;
+--- a/include/linux/surface_aggregator/controller.h
++++ b/include/linux/surface_aggregator/controller.h
+@@ -792,8 +792,8 @@ enum ssam_event_mask {
+ #define SSAM_EVENT_REGISTRY_KIP	\
+ 	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_KIP, 0x02, 0x27, 0x28)
+ 
+-#define SSAM_EVENT_REGISTRY_REG \
+-	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_REG, 0x02, 0x01, 0x02)
++#define SSAM_EVENT_REGISTRY_REG(tid)\
++	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_REG, tid, 0x01, 0x02)
+ 
+ /**
+  * enum ssam_event_notifier_flags - Flags for event notifiers.
 
 
