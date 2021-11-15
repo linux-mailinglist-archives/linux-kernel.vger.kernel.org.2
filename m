@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327364520B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92024451AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343627AbhKPA4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        id S1351325AbhKOXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:41:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343784AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343790AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:22:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DD6635E1;
-        Mon, 15 Nov 2021 18:45:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD7D063394;
+        Mon, 15 Nov 2021 18:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001959;
-        bh=gk9i/QMV6qjMsowELFGQHJlWlPx2evps556UGxorL5k=;
+        s=korg; t=1637001988;
+        bh=NwVAEw8pXSnNnlI6Ody0seAk24M1eBgAHYUa5YFC+Pg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aMzqH3+dyAXoIluEDTahktC/9q+io9fNgpOps/YVKz3WqBiYgBfhr0/IL8Y9Y1/BS
-         1al08rZ5lWs7Xrtu9ZpWZQoDhmyZuuOSm2v4oPuI7nY/IM0mNePf7vzlmI4rgZfxft
-         HLl3WAfNWcN+Pef9u2HJ7g8u/1YxNqk+7g07T+EQ=
+        b=YPnU7ONBAhYeB88ktqUVHFL5v0lajMrLnWITcFJ6obla/Drb3MzjzZcUvgzGJZPjk
+         +5GuPoDNO9d6RuMpY2NW0Z2m6koiQo68TXcOt3QsbSw+iXqtZmmvteWxio7K7Ghu/N
+         2VMI8o9Hs9pJnxdsrN8tM504QQgktEL3H/t8M7Rk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 378/917] media: meson-ge2d: Fix rotation parameter changes detection in ge2d_s_ctrl()
-Date:   Mon, 15 Nov 2021 17:57:53 +0100
-Message-Id: <20211115165441.586122863@linuxfoundation.org>
+Subject: [PATCH 5.15 379/917] media: cxd2880-spi: Fix a null pointer dereference on error handling path
+Date:   Mon, 15 Nov 2021 17:57:54 +0100
+Message-Id: <20211115165441.617631115@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,42 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 4b9e3e8af4b336eefca1f1ee535bc4b6734ed6aa ]
+[ Upstream commit 11b982e950d2138e90bd120501df10a439006ff8 ]
 
-There is likely a typo here. To be consistent, we should compare
-'fmt.height' with 'ctx->out.pix_fmt.height', not 'ctx->out.pix_fmt.width'.
+Currently the null pointer check on dvb_spi->vcc_supply is inverted and
+this leads to only null values of the dvb_spi->vcc_supply being passed
+to the call of regulator_disable causing null pointer dereferences.
+Fix this by only calling regulator_disable if dvb_spi->vcc_supply is
+not null.
 
-Instead of fixing the test, just remove it and copy 'fmt' unconditionally.
+Addresses-Coverity: ("Dereference after null check")
 
-Fixes: 59a635327ca7 ("media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: dcb014582101 ("media: cxd2880-spi: Fix an error handling path")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/meson/ge2d/ge2d.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/media/spi/cxd2880-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
-index a1393fefa8aea..9b1e973e78da3 100644
---- a/drivers/media/platform/meson/ge2d/ge2d.c
-+++ b/drivers/media/platform/meson/ge2d/ge2d.c
-@@ -779,11 +779,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
- 		 * If the rotation parameter changes the OUTPUT frames
- 		 * parameters, take them in account
- 		 */
--		if (fmt.width != ctx->out.pix_fmt.width ||
--		    fmt.height != ctx->out.pix_fmt.width ||
--		    fmt.bytesperline > ctx->out.pix_fmt.bytesperline ||
--		    fmt.sizeimage > ctx->out.pix_fmt.sizeimage)
--			ctx->out.pix_fmt = fmt;
-+		ctx->out.pix_fmt = fmt;
- 
- 		break;
- 	}
+diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
+index b91a1e845b972..506f52c1af101 100644
+--- a/drivers/media/spi/cxd2880-spi.c
++++ b/drivers/media/spi/cxd2880-spi.c
+@@ -618,7 +618,7 @@ fail_frontend:
+ fail_attach:
+ 	dvb_unregister_adapter(&dvb_spi->adapter);
+ fail_adapter:
+-	if (!dvb_spi->vcc_supply)
++	if (dvb_spi->vcc_supply)
+ 		regulator_disable(dvb_spi->vcc_supply);
+ fail_regulator:
+ 	kfree(dvb_spi);
 -- 
 2.33.0
 
