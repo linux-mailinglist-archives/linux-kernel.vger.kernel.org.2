@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926D54518E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0A9451E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348953AbhKOXKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:10:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
+        id S1352424AbhKPAfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243419AbhKOTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:00:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB546632FA;
-        Mon, 15 Nov 2021 18:14:10 +0000 (UTC)
+        id S1344076AbhKOTXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BE2663473;
+        Mon, 15 Nov 2021 18:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000051;
-        bh=/A8UUi9gIgtJyekcrxEmk2W0fgEVgkaZLrTGsXxbZEA=;
+        s=korg; t=1637002282;
+        bh=JKQPYMonYzsh+qa/FDrPSLIJMgOJAcrsvmFdZbXspQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUgP0thpjvVmc1DczK6BA8R/o38da/5oPTSnBl38q5hiLx3V1httY0r3FkucCIBsb
-         EcRbmDl5s0xeDrkMsUgf42ITrcnbFVHcNRgkefTBiYqESOo4nzVcJ4WYJzWQG4vegM
-         V0D/DVFtkJsYN2Hbmqs9UDBQl+dRGaapuApjwh1c=
+        b=cDP87DqegSb8qnenzyJYMi46CYHgeVbptXDfnuIo87/Ov62d57J0/CycwGuLjku39
+         as1w8P6VbPq/kFgGnXbP2FqQFyP2Pg/kiqgXRPhIByGZy7SOnhqBmIg7nVirEf3fqP
+         8Z6ll20jSS29CARCzYzijKioZ+eyeJN03RRMbYbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
         Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 519/849] KVM: s390: Fix handle_sske page fault handling
+Subject: [PATCH 5.15 507/917] s390/gmap: dont unconditionally call pte_unmap_unlock() in __gmap_zap()
 Date:   Mon, 15 Nov 2021 18:00:02 +0100
-Message-Id: <20211115165437.831703374@linuxfoundation.org>
+Message-Id: <20211115165445.958647135@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 85f517b29418158d3e6e90c3f0fc01b306d2f1a1 ]
+[ Upstream commit b159f94c86b43cf7e73e654bc527255b1f4eafc4 ]
 
-If handle_sske cannot set the storage key, because there is no
-page table entry or no present large page entry, it calls
-fixup_user_fault.
-However, currently, if the call succeeds, handle_sske returns
--EAGAIN, without having set the storage key.
-Instead, retry by continue'ing the loop without incrementing the
-address.
-The same issue in handle_pfmf was fixed by
-a11bdb1a6b78 ("KVM: s390: Fix pfmf and conditional skey emulation").
+... otherwise we will try unlocking a spinlock that was never locked via a
+garbage pointer.
 
-Fixes: bd096f644319 ("KVM: s390: Add skey emulation fault handling")
-Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+At the time we reach this code path, we usually successfully looked up
+a PGSTE already; however, evil user space could have manipulated the VMA
+layout in the meantime and triggered removal of the page table.
+
+Fixes: 1e133ab296f3 ("s390/mm: split arch/s390/mm/pgtable.c")
+Signed-off-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Link: https://lore.kernel.org/r/20211022152648.26536-1-scgl@linux.ibm.com
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210909162248.14969-3-david@redhat.com
 Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/priv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/mm/gmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-index 9928f785c6773..12dcf97571082 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -397,6 +397,8 @@ static int handle_sske(struct kvm_vcpu *vcpu)
- 		mmap_read_unlock(current->mm);
- 		if (rc == -EFAULT)
- 			return kvm_s390_inject_program_int(vcpu, PGM_ADDRESSING);
-+		if (rc == -EAGAIN)
-+			continue;
- 		if (rc < 0)
- 			return rc;
- 		start += PAGE_SIZE;
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index e0735c3437759..d63c0ccc5ccda 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -689,9 +689,10 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+ 
+ 		/* Get pointer to the page table entry */
+ 		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
+-		if (likely(ptep))
++		if (likely(ptep)) {
+ 			ptep_zap_unused(gmap->mm, vmaddr, ptep, 0);
+-		pte_unmap_unlock(ptep, ptl);
++			pte_unmap_unlock(ptep, ptl);
++		}
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(__gmap_zap);
 -- 
 2.33.0
 
