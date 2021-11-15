@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F434517BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEC74517DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353685AbhKOWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:45:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50176 "EHLO mail.kernel.org"
+        id S1347682AbhKOWsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:48:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242216AbhKOSme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:42:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F47632F5;
-        Mon, 15 Nov 2021 18:04:58 +0000 (UTC)
+        id S239514AbhKOSmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:42:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59DFA632F8;
+        Mon, 15 Nov 2021 18:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999499;
-        bh=qBXhcfRIkT+gW40R/i3GsRWC5nKLP/VUTkqRaf1BxYg=;
+        s=korg; t=1636999501;
+        bh=d9w1cBdH6v5n/h5LLRMUKB84BGRL1BZ/mjkB/q3FV9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=op8QxQvhcB550hmy68mu1A970ACW9Cu+JZHmU25rM/4bemsXn9esLwNZXOKvc1tqG
-         myPtK/dqOgImRm+JiMvnVMKkrKPfTe3dczpvjnh4Y7F765T4LNYS+VXZDAisHrrJBF
-         5F2Ykh+jLsgIS6+e+jgpjQU6f7Ba5WNM0/r/u3ww=
+        b=ezSlVt757pHBIUT5sHOvrPo24Qrg5n9dowKRi3CPSXjZz2pyc9QFGRjp7IuHjDryW
+         MaZhkoQy5md7fiT87Li9pb1FYCAUWi+Xz4Z7dcBE0Z849dKkC/g+MhEfEyF8M8eHhh
+         UqP4mAWV02PdGZwDxM7mrmF+SfMvbX5bHdG7RnKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yanfei Xu <yanfei.xu@windriver.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, Lasse Collin <lasse.collin@tukaani.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 286/849] locking/rwsem: Disable preemption for spinning region
-Date:   Mon, 15 Nov 2021 17:56:09 +0100
-Message-Id: <20211115165429.948858608@linuxfoundation.org>
+Subject: [PATCH 5.14 287/849] lib/xz: Avoid overlapping memcpy() with invalid input with in-place decompression
+Date:   Mon, 15 Nov 2021 17:56:10 +0100
+Message-Id: <20211115165429.978796563@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,112 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+From: Lasse Collin <lasse.collin@tukaani.org>
 
-[ Upstream commit 7cdacc5f52d68a9370f182c844b5b3e6cc975cc1 ]
+[ Upstream commit 83d3c4f22a36d005b55f44628f46cc0d319a75e8 ]
 
-The spinning region rwsem_spin_on_owner() should not be preempted,
-however the rwsem_down_write_slowpath() invokes it and don't disable
-preemption. Fix it by adding a pair of preempt_disable/enable().
+With valid files, the safety margin described in lib/decompress_unxz.c
+ensures that these buffers cannot overlap. But if the uncompressed size
+of the input is larger than the caller thought, which is possible when
+the input file is invalid/corrupt, the buffers can overlap. Obviously
+the result will then be garbage (and usually the decoder will return
+an error too) but no other harm will happen when such an over-run occurs.
 
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-[peterz: Fix CONFIG_RWSEM_SPIN_ON_OWNER=n build]
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/r/20211013134154.1085649-3-yanfei.xu@windriver.com
+This change only affects uncompressed LZMA2 chunks and so this
+should have no effect on performance.
+
+Link: https://lore.kernel.org/r/20211010213145.17462-2-xiang@kernel.org
+Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/rwsem.c | 53 ++++++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 23 deletions(-)
+ lib/decompress_unxz.c |  2 +-
+ lib/xz/xz_dec_lzma2.c | 21 +++++++++++++++++++--
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 16bfbb10c74d7..1d42c18736380 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -576,6 +576,24 @@ static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
- 	return true;
- }
+diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
+index a2f38e23004aa..f7a3dc13316a3 100644
+--- a/lib/decompress_unxz.c
++++ b/lib/decompress_unxz.c
+@@ -167,7 +167,7 @@
+  * memeq and memzero are not used much and any remotely sane implementation
+  * is fast enough. memcpy/memmove speed matters in multi-call mode, but
+  * the kernel image is decompressed in single-call mode, in which only
+- * memcpy speed can matter and only if there is a lot of uncompressible data
++ * memmove speed can matter and only if there is a lot of uncompressible data
+  * (LZMA2 stores uncompressible chunks in uncompressed form). Thus, the
+  * functions below should just be kept small; it's probably not worth
+  * optimizing for speed.
+diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
+index 7a6781e3f47b6..d548cf0e59fe6 100644
+--- a/lib/xz/xz_dec_lzma2.c
++++ b/lib/xz/xz_dec_lzma2.c
+@@ -387,7 +387,14 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
  
-+/*
-+ * The rwsem_spin_on_owner() function returns the following 4 values
-+ * depending on the lock owner state.
-+ *   OWNER_NULL  : owner is currently NULL
-+ *   OWNER_WRITER: when owner changes and is a writer
-+ *   OWNER_READER: when owner changes and the new owner may be a reader.
-+ *   OWNER_NONSPINNABLE:
-+ *		   when optimistic spinning has to stop because either the
-+ *		   owner stops running, is unknown, or its timeslice has
-+ *		   been used up.
-+ */
-+enum owner_state {
-+	OWNER_NULL		= 1 << 0,
-+	OWNER_WRITER		= 1 << 1,
-+	OWNER_READER		= 1 << 2,
-+	OWNER_NONSPINNABLE	= 1 << 3,
-+};
-+
- #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- /*
-  * Try to acquire write lock before the writer has been put on wait queue.
-@@ -631,23 +649,6 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
- 	return ret;
- }
+ 		*left -= copy_size;
  
--/*
-- * The rwsem_spin_on_owner() function returns the following 4 values
-- * depending on the lock owner state.
-- *   OWNER_NULL  : owner is currently NULL
-- *   OWNER_WRITER: when owner changes and is a writer
-- *   OWNER_READER: when owner changes and the new owner may be a reader.
-- *   OWNER_NONSPINNABLE:
-- *		   when optimistic spinning has to stop because either the
-- *		   owner stops running, is unknown, or its timeslice has
-- *		   been used up.
-- */
--enum owner_state {
--	OWNER_NULL		= 1 << 0,
--	OWNER_WRITER		= 1 << 1,
--	OWNER_READER		= 1 << 2,
--	OWNER_NONSPINNABLE	= 1 << 3,
--};
- #define OWNER_SPINNABLE		(OWNER_NULL | OWNER_WRITER | OWNER_READER)
+-		memcpy(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
++		/*
++		 * If doing in-place decompression in single-call mode and the
++		 * uncompressed size of the file is larger than the caller
++		 * thought (i.e. it is invalid input!), the buffers below may
++		 * overlap and cause undefined behavior with memcpy().
++		 * With valid inputs memcpy() would be fine here.
++		 */
++		memmove(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
+ 		dict->pos += copy_size;
  
- static inline enum owner_state
-@@ -877,12 +878,11 @@ static inline bool rwsem_optimistic_spin(struct rw_semaphore *sem)
+ 		if (dict->full < dict->pos)
+@@ -397,7 +404,11 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
+ 			if (dict->pos == dict->end)
+ 				dict->pos = 0;
  
- static inline void clear_nonspinnable(struct rw_semaphore *sem) { }
+-			memcpy(b->out + b->out_pos, b->in + b->in_pos,
++			/*
++			 * Like above but for multi-call mode: use memmove()
++			 * to avoid undefined behavior with invalid input.
++			 */
++			memmove(b->out + b->out_pos, b->in + b->in_pos,
+ 					copy_size);
+ 		}
  
--static inline int
-+static inline enum owner_state
- rwsem_spin_on_owner(struct rw_semaphore *sem)
- {
--	return 0;
-+	return OWNER_NONSPINNABLE;
- }
--#define OWNER_NULL	1
- #endif
+@@ -421,6 +432,12 @@ static uint32_t dict_flush(struct dictionary *dict, struct xz_buf *b)
+ 		if (dict->pos == dict->end)
+ 			dict->pos = 0;
  
- /*
-@@ -1094,9 +1094,16 @@ wait:
- 		 * In this case, we attempt to acquire the lock again
- 		 * without sleeping.
- 		 */
--		if (wstate == WRITER_HANDOFF &&
--		    rwsem_spin_on_owner(sem) == OWNER_NULL)
--			goto trylock_again;
-+		if (wstate == WRITER_HANDOFF) {
-+			enum owner_state owner_state;
-+
-+			preempt_disable();
-+			owner_state = rwsem_spin_on_owner(sem);
-+			preempt_enable();
-+
-+			if (owner_state == OWNER_NULL)
-+				goto trylock_again;
-+		}
- 
- 		/* Block until there are no active lockers. */
- 		for (;;) {
++		/*
++		 * These buffers cannot overlap even if doing in-place
++		 * decompression because in multi-call mode dict->buf
++		 * has been allocated by us in this file; it's not
++		 * provided by the caller like in single-call mode.
++		 */
+ 		memcpy(b->out + b->out_pos, dict->buf + dict->start,
+ 				copy_size);
+ 	}
 -- 
 2.33.0
 
