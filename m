@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73785451C34
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D104451C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354300AbhKPAOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:30 -0500
-Received: from sender3-of-o52.zoho.com ([136.143.184.52]:21817 "EHLO
-        sender3-of-o52.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353623AbhKOWpC (ORCPT
+        id S1356020AbhKPAOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:14:05 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:55880 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349461AbhKOW10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:45:02 -0500
-X-Greylist: delayed 1203 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 17:45:01 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1637014891; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=R4DYxJ0D7TWoJ2kUxxw6g4H1oUr+7LngUMNiKntdvD2Ks1iCkDfFCUhiKX2xEKsoBfH3M+cctLU9dtnpV3wsA9k72MQ7E6fF7YUz4+i6S3cHN3GIyaRnN5tlgSVtazjiPNhS1VBe8485oglJceTcgYPAwFU3FxFgNFJd05UGjyU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1637014891; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=CSKP+pxK1OMbD7DMwbimwVntVO3vlL1NhMt2dPOplyc=; 
-        b=G8JjF2+jkYkP7S+IOuKNMNaqWJwClenk6EzSqd5YNMc1PA0bylH06a09uUneO1M3YfJBmc+G8OZlAoFbyaxT0pjGcbx417zqiDY58aCSXVeAenN00ESSWqeAUUPHnG5a4ET4rSAnivE/GMCwZBeZwWbeghHuKlcQnsdiXJdFvqQ=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=maidavale.org;
-        spf=pass  smtp.mailfrom=ed@maidavale.org;
-        dmarc=pass header.from=<ed@maidavale.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637014891;
-        s=zoho; d=maidavale.org; i=ed@maidavale.org;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=CSKP+pxK1OMbD7DMwbimwVntVO3vlL1NhMt2dPOplyc=;
-        b=Il+OW/KJ+qoFO7xk9trhHafNAq3xJiBMlm+HUC4KrLgvsBNjbq834a0LyTnMN1V7
-        N7oYtcDuCVk2cgGN7WFjfAUGsMypPl5VZnx/kllC4XOdrNzh8HBBmK7FOv2jyMoWzu+
-        wMkHP7wXiOhmsd5vEupLd7ozljRENZUNFXa9adDU=
-Received: from [192.168.0.8] (94.14.150.106 [94.14.150.106]) by mx.zohomail.com
-        with SMTPS id 1637014886071648.4298650141733; Mon, 15 Nov 2021 14:21:26 -0800 (PST)
-Message-ID: <fb0bfe97-41c2-8aeb-f4f2-e8a07c5fda92@maidavale.org>
-Date:   Mon, 15 Nov 2021 22:21:00 +0000
+        Mon, 15 Nov 2021 17:27:26 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 2386D10A222;
+        Tue, 16 Nov 2021 09:24:18 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mmkOf-009HGm-MV; Tue, 16 Nov 2021 09:24:17 +1100
+Date:   Tue, 16 Nov 2021 09:24:17 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ian Kent <raven@themaw.net>, xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <20211115222417.GO449541@dread.disaster.area>
+References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
+ <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
+ <20211112003249.GL449541@dread.disaster.area>
+ <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
+ <20211114231834.GM449541@dread.disaster.area>
+ <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v11 0/2] Update ASUS WMI supported boards
-Content-Language: en-US
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
-        platform-driver-x86@vger.kernel.org, thomas@weissschuh.net,
-        kernel@maidavale.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211115210842.11972-1-pauk.denis@gmail.com>
-From:   Ed Brindley <ed@maidavale.org>
-In-Reply-To: <20211115210842.11972-1-pauk.denis@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=6192de15
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=HsDoLlocmGUuF16g:21 a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
+        a=hBwIGOmajLrGL4O3OTcA:9 a=CjuIK1q_8ugA:10 a=hl_xKfOxWho2XEkUDbUg:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/11/2021 21:08, Denis Pauk wrote:
-> Add support by WMI interface provided by Asus for B550/X570 boards:
-> * PRIME X570-PRO,
-> * ROG CROSSHAIR VIII HERO
-> * ROG CROSSHAIR VIII DARK HERO
-> * ROG CROSSHAIR VIII FORMULA
-> * ROG STRIX X570-E GAMING
-> * ROG STRIX B550-I GAMING
-> * ROG STRIX B550-E GAMING
+On Mon, Nov 15, 2021 at 10:21:03AM +0100, Miklos Szeredi wrote:
+> On Mon, 15 Nov 2021 at 00:18, Dave Chinner <david@fromorbit.com> wrote:
+> > I just can't see how this race condition is XFS specific and why
+> > fixing it requires XFS to sepcifically handle it while we ignore
+> > similar theoretical issues in other filesystems...
 > 
-> Add support by WMI interface provided by Asus for X370/X470/
-> B450/X399 boards:
-> * ROG CROSSHAIR VI HERO,
-> * PRIME X399-A,
-> * PRIME X470-PRO,
-> * ROG CROSSHAIR VI EXTREME,
-> * ROG CROSSHAIR VI HERO (WI-FI AC),
-> * ROG CROSSHAIR VII HERO,
-> * ROG CROSSHAIR VII HERO (WI-FI),
-> * ROG STRIX Z390-F GAMING
-> * ROG STRIX B450-E GAMING,
-> * ROG STRIX B450-F GAMING,
-> * ROG STRIX B450-I GAMING,
-> * ROG STRIX X399-E GAMING,
-> * ROG STRIX X470-F GAMING,
-> * ROG STRIX X470-I GAMING,
-> * ROG ZENITH EXTREME,
-> * ROG ZENITH EXTREME ALPHA.
+> It is XFS specific, because all other filesystems RCU free the in-core
+> inode after eviction.
 > 
-> I have added "ROG STRIX Z390-F GAMING" to list of supported boards in
-> asus_wmi_sensors.
-> 
-> Could you please review?
-> 
-I don't believe "ROG STRIX Z390-F GAMING" should be added to the driver. 
-It's an Intel board and looking at the UEFI image I don't believe it has 
-the WMI interface present.
+> XFS is the only one that reuses the in-core inode object and that is
+> very much different from anything the other filesystems do and what
+> the VFS expects.
 
-Ed Brindley
+Sure, but I was refering to the xfs_ifree issue that the patch
+addressed, not the re-use issue that the *first patch addressed*.
+
+> I don't see how clearing the quick link buffer in ext4_evict_inode()
+> could do anything bad.  The contents are irrelevant, the lookup will
+> be restarted anyway, the important thing is that the buffer is not
+> freed and that it's null terminated, and both hold for the ext4,
+> AFAICS.
+
+You miss the point (which, admittedly, probably wasn't clear).
+
+I suggested just zeroing the buffer in xfs_ifree instead of zeroing
+it, which you seemed to suggest wouldn't work and we should move the
+XFS functionality to .free_inode. That's what I was refering to as
+"not being XFS specific" - if it is safe for ext4 to zero the link
+buffer in .evict while lockless lookups can still be accessing the
+link buffer, it is safe for XFS to do the same thing in .destroy
+context.
+
+If it isn't safe for ext4 to do that, then we have a general
+pathwalk problem, not an XFS issue. But, as you say, it is safe to
+do this zeroing, so the fix to xfs_ifree() is to zero the link
+buffer instead of freeing it, just like ext4 does.
+
+As a side issue, we really don't want to move what XFS does in
+.destroy_inode to .free_inode because that then means we need to add
+synchronise_rcu() calls everywhere in XFS that might need to wait on
+inodes being inactivated and/or reclaimed. And because inode reclaim
+uses lockless rcu lookups, there's substantial danger of adding rcu
+callback related deadlocks to XFS here. That's just not a direction
+we should be moving in.
+
+I'll also point out that this would require XFS inodes to pass
+through *two* rcu grace periods before the memory they hold could be
+freed because, as I mentioned, xfs inode reclaim uses rcu protected
+inode lookups and so relies on inodes to be freed by rcu callback...
+
+> I tend to agree with Brian and Ian at this point: return -ECHILD from
+> xfs_vn_get_link_inline() until xfs's inode resue vs. rcu walk
+> implications are fully dealt with.  No way to fix this from VFS alone.
+
+I disagree from a fundamental process POV - this is just sweeping
+the issue under the table and leaving it for someone else to solve
+because the root cause of the inode re-use issue has not been
+identified. But to the person who architected the lockless XFS inode
+cache 15 years ago, it's pretty obvious, so let's just solve it now.
+
+With the xfs_ifree() problem solved by zeroing rather than freeing,
+then the only other problem is inode reuse *within an rcu grace
+period*. Immediate inode reuse tends to be rare, (we can actually
+trace occurrences to validate this assertion), and implementation
+wise reuse is isolated to a single function: xfs_iget_recycle().
+
+xfs_iget_recycle() drops the rcu_read_lock() inode lookup context
+that found the inode marks it as being reclaimed (preventing other
+lookups from finding it), then re-initialises the inode. This is
+what makes .get_link change in the middle of pathwalk - we're
+reinitialising the inode without waiting for the RCU grace period to
+expire.
+
+The obvious thing to do here is that after we drop the RCU read
+context, we simply call synchronize_rcu() before we start
+re-initialising the inode to wait for the current grace period to
+expire. This ensures that any pathwalk that may have found that
+inode has seen the sequence number change and droppped out of
+lockless mode and is no longer trying to access that inode.  Then we
+can safely reinitialise the inode as it has passed through a RCU
+grace period just like it would have if it was freed and
+reallocated.
+
+This completely removes the entire class of "reused inodes race with
+VFS level RCU walks" bugs from the XFS inode cache implementation,
+hence XFS inodes behave the same as all other filesystems w.r.t RCU
+grace period expiry needing to occur before a VFS inode is reused.
+
+So, it looks like three patches to fix this entirely:
+
+1. the pathwalk link sequence check fix
+2. zeroing the inline link buffer in xfs_ifree()
+3. adding synchronize_rcu() (or some variant) to xfs_iget_recycle()
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
