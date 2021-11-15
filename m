@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64988450821
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A6145082D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbhKOPXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhKOPXI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:23:08 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56DAC061570;
-        Mon, 15 Nov 2021 07:20:11 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id m20so27702508edc.5;
-        Mon, 15 Nov 2021 07:20:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WOYdJpMpXy3DnmNfQTnpkndW2MOealtUhKN8wP1v95E=;
-        b=CAu2a4oNDZbbP1pXzOx/lOgpWOmaJSQhdhxk+BiJfc3E78YGv+/QkQYm3N0CwD2FW4
-         n11GfjkCysN+cbpMvenLPKXgySoyn5tp8IsaBfwUtCYLol+A63v4Yx++5KpePsVr768R
-         G9hEAS7Q7KpuWbTnynpdnggVmiQsgbwBnjpM64Oj1o2IdcY+BCfFHXuzK7XFYhQ7F6cP
-         Y0rvd+SH0ZCYhZNf590iSlgvhii/kosz3bzCweyRaSWhhkTMvxCRFNAKVgfyYG+M7K34
-         sQeq3tbZrtVhPSeNRMXkXFosYEFnod//IK344jbUmdqL6HJ3dmI4tUO8zbY9y3wEXi1r
-         qMOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WOYdJpMpXy3DnmNfQTnpkndW2MOealtUhKN8wP1v95E=;
-        b=T6WFW68VRY5Bhs2pgm//a8bx2GohIv+djx1j+9zTSwvHfY7BIlduro7H5HVK+CI3Iz
-         dAylkAR4DAru3k2VaFl21LEXDrIyWQ4iFiWRAXD4sTScTGEJdghKNaT4XpnTG06pDsUk
-         CPuh++1CzQUL2aRieIBVZtcGKPdGohq8FYkwIbsnqn9swBocGDxoGizoD0JLNFSEu09Q
-         G0MmSFtO9Z7vdMHXtPH9i3Brx1kE1YQgf2bRyoHxKKgR9JhWYugiU4RUi/LB5/jKK0pA
-         B6k7HDfxLSGIvMugQQf4p6KEsx63HNJ2DeLCidGCvocasTRlkIqB/mLw+inxEh2NKw7Y
-         ftew==
-X-Gm-Message-State: AOAM531+h6Y5x9AhNZZd76gZfKK+JxpYMctSueuzMbupULIvfn4gQ4EP
-        VcBsiDtVtIhwtVNvJXts5bvwvWYRL0lGnO3K7Pg=
-X-Google-Smtp-Source: ABdhPJx2gD54wqAIqJ+c+IUxDANSOcQ7zKseUyGrPfMPv8SCKBk5l+XB15nH516cssOUY0hinrpXQd302salKjxuS9w=
-X-Received: by 2002:a05:6402:84b:: with SMTP id b11mr27510759edz.107.1636989610439;
- Mon, 15 Nov 2021 07:20:10 -0800 (PST)
+        id S236381AbhKOPZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:25:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236405AbhKOPZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E77EE61AA5;
+        Mon, 15 Nov 2021 15:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636989728;
+        bh=LYHyyDxw+fkw7Qpj63Y+bbXJh3cpxa/7tIYdjpyAAa0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tMGTzAAoFW81I1se350f9ba0pm1HsRmHclMPFvcwAtPKfgyVWshgxbiwSt08wLVGy
+         uDRRDgCCHmYm4UESgBYJSeEnr9oS+lQxDWHgI4VeFn7zjpbwu7PFmxbbcFDPlfexqY
+         IktSo5eA2/4E/neecXyve0V3oyhwD28vz/DfAZZ9WKDiV53yXnyBtlFtDU+pP+2x4i
+         Hl5WwfTkPsHSmKOZAWKJnjZc9jGBLEsR7homItPyX/W+jscTK7Tlfq2KulR1WPBjJ4
+         0UfaPmMPckRNfBoRcCsGltnf6awsf/+SZ4bX6QvWQUGFvbEcVm5mtIoEuGduGlGjee
+         wjwZc9kfNHU5Q==
+Date:   Mon, 15 Nov 2021 07:22:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211115072206.72435d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211115150931.GA2386342@nvidia.com>
+References: <20211109153335.GH1740502@nvidia.com>
+        <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211109182427.GJ1740502@nvidia.com>
+        <YY0G90fJpu/OtF8L@nanopsycho>
+        <YY0J8IOLQBBhok2M@unreal>
+        <YY4aEFkVuqR+vauw@nanopsycho>
+        <YZCqVig9GQi/o1iz@unreal>
+        <YZJCdSy+wzqlwrE2@nanopsycho>
+        <20211115125359.GM2105516@nvidia.com>
+        <YZJx8raQt+FkKaeY@nanopsycho>
+        <20211115150931.GA2386342@nvidia.com>
 MIME-Version: 1.0
-References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
- <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
- <YZJwTgAPZYVvzGpi@smile.fi.intel.com> <20211115150856.ma2wjg2ev5wylspg@mobilestation>
-In-Reply-To: <20211115150856.ma2wjg2ev5wylspg@mobilestation>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Nov 2021 17:19:28 +0200
-Message-ID: <CAHp75VdsAzpUiM7U+f69PguGAa4QV+izM0p5DNNWp=d9yNT0eA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core
- version checker
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 5:08 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> On Mon, Nov 15, 2021 at 04:35:58PM +0200, Andy Shevchenko wrote:
-> > On Mon, Nov 15, 2021 at 01:30:26AM +0300, Serge Semin wrote:
+On Mon, 15 Nov 2021 11:09:31 -0400 Jason Gunthorpe wrote:
+> On Mon, Nov 15, 2021 at 03:42:58PM +0100, Jiri Pirko wrote:
+> > >Sorry, I don't agree that registering a net notifier in an aux device
+> > >probe function is non-standard or wrong.  
+> > 
+> > Listening to events which happen in different namespaces and react to
+> > them is the non-standard behaviour which I refered to. If you would not
+> > need to do it, you could just use netns notofier which would solve your
+> > issue. You know it.  
+> 
+> Huh?
+> 
+> It calls the bog standard
+> 
+>  register_netdevice_notifier() 
+> 
+> Like hundreds of other drivers do from their probe functions
+> 
+> Which does:
+> 
+> int register_netdevice_notifier(struct notifier_block *nb)
+> {
+> 	struct net *net;
+> 	int err;
+> 
+> 	/* Close race with setup_net() and cleanup_net() */
+> 	down_write(&pernet_ops_rwsem);
+> 
+> And deadlocks because devlink hols the pernet_ops_rwsem when it
+> triggers reload in some paths.
+> 
+> There is nothing wrong with a driver doing this standard pattern.
+> 
+> There is only one place in the entire kernel calling the per-ns
+> register_netdevice_notifier_dev_net() and it is burred inside another
+> part of mlx5 for some reason..
+> 
+> I believe Parav already looked at using that in rdma and it didn't
+> work for some reason I've forgotten. 
+> 
+> It is not that we care about events in different namespaces, it is
+> that rdma, like everything else, doesn't care about namespaces and
+> wants events from the netdev no matter where it is located.
 
-...
-
-> > >  /* DW SPI controller capabilities */
-> > >  #define DW_SPI_CAP_CS_OVERRIDE             BIT(0)
-> > >  #define DW_SPI_CAP_KEEMBAY_MST             BIT(1)
-> > > -#define DW_SPI_CAP_DWC_HSSI                BIT(2)
-> > > -#define DW_SPI_CAP_DFS32           BIT(3)
-> > > +#define DW_SPI_CAP_DFS32           BIT(2)
->
-> > In one patch you move this in the file upper.
-> > Here you reshuffling it due to dropping one bit.
-> >
-> > Now I'm wondering if you may split these two into a separate patch, which
-> > brings us to simple
-> >
-> > -#define DW_SPI_CAP_DWC_HSSI          BIT(3)
-> >
-> > here.
->
-> I can change the bit-numbers assignment in the previous patch, which
-> moves this block of macros up to the top of the file. Thus we'll
-> have just a single
-> -#define DW_SPI_CAP_DWC_HSSI            BIT(3)
-> here. What do you think? Is that what you meant?
-
-I think that reassignment doesn't fit the previous patch per se, hence
-I proposed to have yet another one, But in any case it's a minor
-thingy.
-
--- 
-With Best Regards,
-Andy Shevchenko
+devlink now allows drivers to be net ns-aware, and they should 
+obey if they declare support.  Can we add a flag / capability 
+to devlink and make it an explicit opt-in for drivers who care?
