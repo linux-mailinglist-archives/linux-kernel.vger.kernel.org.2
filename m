@@ -2,227 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E97345254D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991C14524C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382356AbhKPBtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:49:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
+        id S1353483AbhKPBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241547AbhKOSWj (ORCPT
+        with ESMTP id S242005AbhKOScU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:22:39 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A40C03D7B5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:42:26 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id i63so37216302lji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:42:26 -0800 (PST)
+        Mon, 15 Nov 2021 13:32:20 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670D2C04A186;
+        Mon, 15 Nov 2021 09:46:01 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id i6so36577591uae.6;
+        Mon, 15 Nov 2021 09:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5xIADJi9ekMEUENhhegYqkH8VVmisPGPsysNbshnuDM=;
-        b=gnk1R/wDQk5d0HI+b/+mZP9CPDLNAv2un9RJbvouBLPdlLGFYY8cLFSZRFmwBJAK0f
-         eq9ne4mvmoEfpBB2BlrC2QlTUKhJh4Mno2dpUQxpCzloJPTAL5paTIuZmllSpEo0ulp9
-         anoaKuB4FfkK/TBZQnUPCr6X3F26SqjpaWpQb6b8ag4klywvtHC8yhDkuojdJFfQWDZV
-         pNWCSdNaRYM5FQOaplkOB21MXAfsh0YLn6YLBraJFj2s0H6CwlpM5FOBzQKxNmNMYpuS
-         pb+J62G1/Kmb9G14yEqlbm/qyF5vmq4PMJtlyOcXR2HEcz/NMA9SQaiXarheh3+NAmxj
-         xuww==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=sZywcLSDmIQPbI6r1LbyMv5+Wpsnx09V/Ks0vRfdKnE=;
+        b=hktlfPgCOnIbxTUxtV8RbkbUZmrGA/0N2oRbhlVSVTyX/NWn3cAnLcwe1cP9PZ0EX2
+         e6jkbh757dnIOPhR0ZdS7e/dH0BigR3CSxeifpnTX8PIlXEva19RXx+DUbcAY/9DC562
+         vPIyIKXWvyzXx8WgZacpvwPVdf0tgqB1hvs9BMOJLO8nr7bu2ISl+H32Oc0tsHgHXzAB
+         X3lMkfTumdjKJ/jCbnLnC8sfMJpN6FB31OrYHS7BT5BEJ9qAoT4mZjcvUueLXT8AXZhd
+         lwoVOO7l+75XplYfrQay23xJgrEFQ0TQcoUrfh0xt7CXZ8yFSompmrIBTlRw3xdElYSU
+         S6fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5xIADJi9ekMEUENhhegYqkH8VVmisPGPsysNbshnuDM=;
-        b=K85cZ6HoUMt4HGT1Av6z1D2XHAZS1zyfSqN13zG1qK4UmVugQTSkzdZgVG+PJXhk2s
-         Lw5JOO8jdK2C3ZXStaXqWSWtgB8KRKbyY7HHggJLgBEUwROsbsCZyUkKM2XVscXVKlhB
-         0mu6oDyMxS7GZSGajD6jNfDrEfJn4ntx6FIiIGIO1laegiugdqzqPzNylPEC3lFvQYYB
-         YudEP0Oad+wtb3xvH+jnrN7ivHqIq2hyBZkLJ/LCnOAkNFTJ+VkuBTKPqzK/ML84tNAQ
-         Bd+MDIOmDme/wfesd/QcO28ddt1Y0Yk5yqyZ6gSO7CZdcg+FH60tkoDD4xWVQUJdPcZP
-         y0Jw==
-X-Gm-Message-State: AOAM5336CiD4B1cKOv9Fk3R/AiHqUduJ+T6HnGdBfmIIfluh8jjAsypD
-        Z7yxD0qjGVMuo8glkmOml+xWWrVlT7U+WcUET9d1ZQ==
-X-Google-Smtp-Source: ABdhPJxBOaiY8wJ3p50iWIoRKoLRTV2MdvsT3lU78DpJsebhDXZ7Lwbxsjo8/wFqr85VivHkOR9Nj/80ZPgzwOCD/gQ=
-X-Received: by 2002:a2e:b013:: with SMTP id y19mr368219ljk.132.1636998144273;
- Mon, 15 Nov 2021 09:42:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=sZywcLSDmIQPbI6r1LbyMv5+Wpsnx09V/Ks0vRfdKnE=;
+        b=IHXX74LGzeM+/rxLbztU9mc0sYarQRWlk2bRp5XIDKhOPF5sjm95Lna/a+bP++PSQI
+         EkjmP/OjBMMmey9QipL0W0AsCXV4PchuMwWYZnHOa/ShfYFR2W+6XDoJnvzHq7TJ1hLK
+         D4mQAXrUIT0vVkqPArupfvV58ixpbrI3hDG06mjd+G/E+rASR/BTJJ++J0S3illAAInL
+         owczu8nBi+6Qcubj1UCnARwZcgk9lXvosNivEfpvMsqIkPODUcbuBI60NFMQ6I8ifEQs
+         tE3+24fiVGI5tHMJp8Mj+zue3HCew40pX3d9yYCTqOQZglZR8Q4c/hqZhPZC9VsAC716
+         U3Pg==
+X-Gm-Message-State: AOAM531fpywQtDvQ4fIvVFZtsbZN+EwdTFPFiCYACdMWsj5no6SS38Q4
+        /8xyDrjp/jFFSpIZf9MqKe4=
+X-Google-Smtp-Source: ABdhPJxzTxW2CXoaJP9CO+GNDzoKF40lGOZ7Tnkjg84p9LUajN28B9HytJ4mNxi22WWir7YP7ItbLw==
+X-Received: by 2002:a05:6102:e07:: with SMTP id o7mr45987356vst.27.1636998360126;
+        Mon, 15 Nov 2021 09:46:00 -0800 (PST)
+Received: from [127.0.0.1] ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id t5sm9649586vsk.24.2021.11.15.09.45.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 09:45:58 -0800 (PST)
+Date:   Mon, 15 Nov 2021 14:44:59 -0300
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+To:     John Garry <john.garry@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        jolsa@redhat.com, masahiroy@kernel.org,
+        Laura Abbott <labbott@kernel.org>
+CC:     peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com
+Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
+User-Agent: K-9 Mail for Android
+In-Reply-To: <591edce2-5aaa-22bc-6fd3-5a247f623eb3@huawei.com>
+References: <1635525041-151876-1-git-send-email-john.garry@huawei.com> <YYbXMd3N4+aXYLTJ@kernel.org> <591edce2-5aaa-22bc-6fd3-5a247f623eb3@huawei.com>
+Message-ID: <239840A9-F713-4FED-B638-14D6B91FBBF2@gmail.com>
 MIME-Version: 1.0
-References: <20211102142331.3753798-1-pgonda@google.com> <20211102142331.3753798-5-pgonda@google.com>
- <YYquDWbkIwCkixxD@google.com> <CAMkAt6rHdsdD-L4PbZL7qaOY7GRHmApVJam0V0yY2BnYdhmPjA@mail.gmail.com>
- <YYrZXRTukz3RccPN@google.com> <CAMkAt6qauoiTBXF9VXRGiqtJD5pTAV=NqKHZgNFXHCkrR50gkg@mail.gmail.com>
- <eff7a2cb-f78a-646a-dc0c-b24998e9e9af@amd.com> <CAMkAt6rj94Mzb6HBaqQbi7HHfhS4q1O4fxO8M7Xe=TZeZ0zZOg@mail.gmail.com>
- <CAMkAt6r5MJq0rGYg7MAqm83Xp4mBADSKtQxV=i2_OFuQnDd5Yg@mail.gmail.com>
- <14e6c746-c7d3-8cca-47ed-b90f31e4e495@amd.com> <CAMkAt6otpLr687q0iag2s6iXo3MXpF_2yQhARf279xAu2SeEmA@mail.gmail.com>
- <24780f17-6aa0-f237-e581-63b407106894@amd.com>
-In-Reply-To: <24780f17-6aa0-f237-e581-63b407106894@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Mon, 15 Nov 2021 10:42:12 -0700
-Message-ID: <CAMkAt6qDsBQuiJ=yv6LO7Whr9ododJ=kr-vKh+7U_yg_TLaDRA@mail.gmail.com>
-Subject: Re: [PATCH V3 4/4] crypto: ccp - Add SEV_INIT_EX support
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>, Thomas.Lendacky@amd.com,
-        David Rientjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 4:50 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
->
-> On 11/12/21 5:44 PM, Peter Gonda wrote:
-> > On Fri, Nov 12, 2021 at 4:39 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> >>
-> >> On 11/12/21 10:55 AM, Peter Gonda wrote:
-> >>> On Wed, Nov 10, 2021 at 8:32 AM Peter Gonda <pgonda@google.com> wrote:
-> >>>> On Tue, Nov 9, 2021 at 3:20 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> >>>>>
-> >>>>> On 11/9/21 2:46 PM, Peter Gonda wrote:
-> >>>>>> On Tue, Nov 9, 2021 at 1:26 PM Sean Christopherson <seanjc@google.com> wrote:
-> >>>>>>> On Tue, Nov 09, 2021, Peter Gonda wrote:
-> >>>>>>>> On Tue, Nov 9, 2021 at 10:21 AM Sean Christopherson <seanjc@google.com> wrote:
-> >>>>>>>>> There's no need for this to be a function pointer, and the duplicate code can be
-> >>>>>>>>> consolidated.
-> >>>>>>>>>
-> >>>>>>>>> static int sev_do_init_locked(int cmd, void *data, int *error)
-> >>>>>>>>> {
-> >>>>>>>>>          if (sev_es_tmr) {
-> >>>>>>>>>                  /*
-> >>>>>>>>>                   * Do not include the encryption mask on the physical
-> >>>>>>>>>                   * address of the TMR (firmware should clear it anyway).
-> >>>>>>>>>                   */
-> >>>>>>>>>                  data.flags |= SEV_INIT_FLAGS_SEV_ES;
-> >>>>>>>>>                  data.tmr_address = __pa(sev_es_tmr);
-> >>>>>>>>>                  data.tmr_len = SEV_ES_TMR_SIZE;
-> >>>>>>>>>          }
-> >>>>>>>>>          return __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> >>>>>>>>> }
-> >>>>>>>>>
-> >>>>>>>>> static int __sev_init_locked(int *error)
-> >>>>>>>>> {
-> >>>>>>>>>          struct sev_data_init data;
-> >>>>>>>>>
-> >>>>>>>>>          memset(&data, 0, sizeof(data));
-> >>>>>>>>>          return sev_do_init_locked(cmd, &data, error);
-> >>>>>>>>> }
-> >>>>>>>>>
-> >>>>>>>>> static int __sev_init_ex_locked(int *error)
-> >>>>>>>>> {
-> >>>>>>>>>          struct sev_data_init_ex data;
-> >>>>>>>>>
-> >>>>>>>>>          memset(&data, 0, sizeof(data));
-> >>>>>>>>>          data.length = sizeof(data);
-> >>>>>>>>>          data.nv_address = __psp_pa(sev_init_ex_nv_address);
-> >>>>>>>>>          data.nv_len = NV_LENGTH;
-> >>>>>>>>>          return sev_do_init_locked(SEV_CMD_INIT_EX, &data, error);
-> >>>>>>>>> }
-> >>>>>>>> I am missing how this removes the duplication of the retry code,
-> >>>>>>>> parameter checking, and other error checking code.. With what you have
-> >>>>>>>> typed out I would assume I still need to function pointer between
-> >>>>>>>> __sev_init_ex_locked and __sev_init_locked. Can you please elaborate
-> >>>>>>>> here?
-> >>>>>>> Hmm.  Ah, I got distracted between the original thought, the realization that
-> >>>>>>> the two commands used different structs, and typing up the above.
-> >>>>>>>
-> >>>>>>>> Also is there some reason the function pointer is not acceptable?
-> >>>>>>> It's not unacceptable, it would just be nice to avoid, assuming the alternative
-> >>>>>>> is cleaner.  But I don't think any alternative is cleaner, since as you pointed
-> >>>>>>> out the above is a half-baked thought.
-> >>>>>> OK I'll leave as is.
-> >>>>>>
-> >>>>>>>>>> +     rc = init_function(error);
-> >>>>>>>>>>        if (rc && *error == SEV_RET_SECURE_DATA_INVALID) {
-> >>>>>>>>>>                /*
-> >>>>>>>>>>                 * INIT command returned an integrity check failure
-> >>>>>>>>>> @@ -286,8 +423,8 @@ static int __sev_platform_init_locked(int *error)
-> >>>>>>>>>>                 * failed and persistent state has been erased.
-> >>>>>>>>>>                 * Retrying INIT command here should succeed.
-> >>>>>>>>>>                 */
-> >>>>>>>>>> -             dev_dbg(sev->dev, "SEV: retrying INIT command");
-> >>>>>>>>>> -             rc = __sev_do_cmd_locked(SEV_CMD_INIT, &data, error);
-> >>>>>>>>>> +             dev_notice(sev->dev, "SEV: retrying INIT command");
-> >>>>>>>>>> +             rc = init_function(error);
-> >>>>>>>>> The above comment says "persistent state has been erased", but __sev_do_cmd_locked()
-> >>>>>>>>> only writes back to the file if a relevant command was successful, which means
-> >>>>>>>>> that rereading the userspace file in __sev_init_ex_locked() will retry INIT_EX
-> >>>>>>>>> with the same garbage data.
-> >>>>>>>> Ack my mistake, that comment is stale. I will update it so its correct
-> >>>>>>>> for the INIT and INIT_EX flows.
-> >>>>>>>>> IMO, the behavior should be to read the file on load and then use the kernel buffer
-> >>>>>>>>> without ever reloading (unless this is built as a module and is unloaded and reloaded).
-> >>>>>>>>> The writeback then becomes opportunistic in the sense that if it fails for some reason,
-> >>>>>>>>> the kernel's internal state isn't blasted away.
-> >>>>>>>> One issue here is that the file read can fail on load so we use the
-> >>>>>>>> late retry to guarantee we can read the file.
-> >>>>>>> But why continue loading if reading the file fails on load?
-> >>>>>>>
-> >>>>>>>> The other point seems like preference. Users may wish to shutdown the PSP FW,
-> >>>>>>>> load a new file, and INIT_EX again with that new data. Why should we preclude
-> >>>>>>>> them from that functionality?
-> >>>>>>> I don't think we should preclude that functionality, but it needs to be explicitly
-> >>>>>>> tied to a userspace action, e.g. either on module load or on writing the param to
-> >>>>>>> change the path.  If the latter is allowed, then it needs to be denied if the PSP
-> >>>>>>> is initialized, otherwise the kernel will be in a non-coherent state and AFAICT
-> >>>>>>> userspace will have a heck of a time even understanding what state has been used
-> >>>>>>> to initialize the PSP.
-> >>>>>> If this driver is builtin the filesystem will be unavailable during
-> >>>>>> __init. Using the existing retries already built into
-> >>>>>> sev_platform_init() also the file to be read once userspace is
-> >>>>>> running, meaning the file system is usable. As I tried to explain in
-> >>>>>> the commit message. We could remove the sev_platform_init call during
-> >>>>>> sev_pci_init since this only actually needs to be initialized when the
-> >>>>>> first command requiring it is issues (either reading some keys/certs
-> >>>>>> from the PSP or launching an SEV guest). Then userspace in both the
-> >>>>>> builtin and module usage would know running one of those commands
-> >>>>>> cause the file to be read for PSP usage. Tom any thoughts on this?
-> >>>>>>
-> >>>>> One thing to note is that if we do the INIT on the first command then
-> >>>>> the first guest launch will take a longer. The init command is not
-> >>>>> cheap (especially with the SNP, it may take a longer because it has to
-> >>>>> do all those RMP setup etc). IIRC, in my early SEV series in I was doing
-> >>>>> the INIT during the first command execution and based on the
-> >>>>> recommendation moved to do the init on probe.
-> >>>>>
-> >>>>> Should we add a module param to control whether to do INIT on probe or
-> >>>>> delay until the first command ?
-> >>>> Thats a good point Brijesh. I've only been testing this with SEV and
-> >>>> ES so haven't noticed that long setup time. I like the idea of a
-> >>>> module parameter to decide when to INIT, that should satisfy Sean's
-> >>>> concern that the user doesn't know when the INIT_EX file would be read
-> >>>> and that there is extra retry code (duplicated between sev_pci_init
-> >>>> and all the PSP commands). I'll get started on that.
-> >>> I need a little guidance on how to proceed with this. Should I have
-> >>> the new module parameter 'psp_init_on_probe' just disable PSP init on
-> >>> module init if false. Or should it also disable PSP init during
-> >>> command flow if it's true?
-> >>>
-> >>> I was thinking I should just have 'psp_init_on_probe' default to true,
-> >>> and if false it stops the PSP init during sev_pci_init(). If I add the
-> >>> second change that seems like it changes the ABI. Thoughts?
-> >>>
-> >> Good point that a module params may break the ABI. How about if we add a
-> >> new ioctl that can be used to initialize the SEV_INIT_EX. The ioctl
-> >> implementation will be similar to the PLATFORM_RESET; it will shutdown
-> >> the firmware then call INIT_EX. A platform provisioning tool may use ioctl.
-> > Would just a 'skip_psp_init_on_probe' parameter be simpler. We default
-> > to false but if users set it, we can skip that init attempt in
-> > sev_pci_init(). The init attempts on all other commands that require
-> > the INIT state would then provide users with INIT_EX functionality.
-> > They would also know exactly when INIT or INIT_EX would be attempted
-> > based on the parameter.
->
-> Yes, I think that option is also acceptable. Because we are requiring
-> the user to explicitly say that it does not want to INIT on boot.
 
-OK sent out a V4 with this mode param approach.
 
+On November 15, 2021 12:53:33 PM GMT-03:00, John Garry <john=2Egarry@huawe=
+i=2Ecom> wrote:
+>On 06/11/2021 19:27, Arnaldo Carvalho de Melo wrote:
+>> Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
+>>> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purpo=
+ses=2E
+>>>
+>>> However this is not set for anything under tools/
+>>>
+>>> As such, host tools apps built have no compiler warnings enabled=2E
+>>>
+>>> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
+>>> declaration of host_c_flags=2E HOSTCFLAGS comes from EXTRA_WARNINGS, w=
+hich
+>>> is independent of target platform/arch warning flags=2E
+>>>
+>>> Suggested-by: Jiri Olsa <jolsa@redhat=2Ecom>
+>>> Signed-off-by: John Garry <john=2Egarry@huawei=2Ecom>
+>>> --
+>>> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
+>>> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
+>>> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
+>>> Masahiro=2E
+>>=20
+>> Laura's redhat e-mail bouncedm updated it to her kernel=2Eorg one, Laur=
+a,
+>> Masahiro, would you please comment? Jiri?
 >
+>Any opinion on this one? Shall I just resend =2E=2E=2E ? or just apply it=
+ if=20
+>no one cares too much :)
+
+I'll apply it now that everybody got enough time to review it =2E :-)
+
+- Arnaldo
 >
-> >
-> > Otherwise a new ioctl sounds reasonable.
-> >> -Brijesh
-> >>
+>Thanks,
+>John
+>
+>>=20
+>> - Arnaldo
+>>  =20
+>>> diff --git a/tools/build/Build=2Einclude b/tools/build/Build=2Einclude
+>>> index 2cf3b1bde86e=2E=2Ec2a95ab47379 100644
+>>> --- a/tools/build/Build=2Einclude
+>>> +++ b/tools/build/Build=2Einclude
+>>> @@ -99,7 +99,7 @@ cxx_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLA=
+GS) -D"BUILD_STR(s)=3D\#s" $(CXX
+>>>   ###
+>>>   ## HOSTCC C flags
+>>>  =20
+>>> -host_c_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -=
+D"BUILD_STR(s)=3D\#s" $(HOSTCFLAGS_$(basetarget)=2Eo) $(HOSTCFLAGS_$(obj))
+>>> +host_c_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD=
+_STR(s)=3D\#s" $(HOSTCFLAGS_$(basetarget)=2Eo) $(HOSTCFLAGS_$(obj))
+>>>  =20
+>>>   # output directory for tests below
+>>>   TMPOUT =3D =2Etmp_$$$$
+>>> diff --git a/tools/perf/Makefile=2Econfig b/tools/perf/Makefile=2Econf=
+ig
+>>> index 4a9baed28f2e=2E=2E9b95ba09657f 100644
+>>> --- a/tools/perf/Makefile=2Econfig
+>>> +++ b/tools/perf/Makefile=2Econfig
+>>> @@ -17,6 +17,7 @@ detected     =3D $(shell echo "$(1)=3Dy"       >> $(=
+OUTPUT)=2Econfig-detected)
+>>>   detected_var =3D $(shell echo "$(1)=3D$($(1))" >> $(OUTPUT)=2Econfig=
+-detected)
+>>>  =20
+>>>   CFLAGS :=3D $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WA=
+RNINGS))
+>>> +HOSTCFLAGS :=3D $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+>>>  =20
+>>>   include $(srctree)/tools/scripts/Makefile=2Earch
+>>>  =20
+>>> @@ -211,6 +212,7 @@ endif
+>>>   ifneq ($(WERROR),0)
+>>>     CORE_CFLAGS +=3D -Werror
+>>>     CXXFLAGS +=3D -Werror
+>>> +  HOSTCFLAGS +=3D -Werror
+>>>   endif
+>>>  =20
+>>>   ifndef DEBUG
+>>> @@ -292,6 +294,9 @@ CXXFLAGS +=3D -ggdb3
+>>>   CXXFLAGS +=3D -funwind-tables
+>>>   CXXFLAGS +=3D -Wno-strict-aliasing
+>>>  =20
+>>> +HOSTCFLAGS +=3D -Wall
+>>> +HOSTCFLAGS +=3D -Wextra
+>>> +
+>>>   # Enforce a non-executable stack, as we may regress (again) in the f=
+uture by
+>>>   # adding assembler files missing the =2EGNU-stack linker note=2E
+>>>   LDFLAGS +=3D -Wl,-z,noexecstack
+>>> diff --git a/tools/perf/Makefile=2Eperf b/tools/perf/Makefile=2Eperf
+>>> index a3966f290297=2E=2E8ca656aa8b06 100644
+>>> --- a/tools/perf/Makefile=2Eperf
+>>> +++ b/tools/perf/Makefile=2Eperf
+>>> @@ -226,7 +226,7 @@ else
+>>>   endif
+>>>  =20
+>>>   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX A=
+WK
+>>> -export HOSTCC HOSTLD HOSTAR
+>>> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+>>>  =20
+>>>   include $(srctree)/tools/build/Makefile=2Einclude
+>>>  =20
+>>> --=20
+>>> 2=2E17=2E1
+>>=20
+>
