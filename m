@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1389451B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04356451B73
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244882AbhKPACV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:02:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S243243AbhKPAC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:02:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344513AbhKOTYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344510AbhKOTYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9045E61ABF;
-        Mon, 15 Nov 2021 18:58:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7059761BF5;
+        Mon, 15 Nov 2021 18:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002734;
-        bh=nV0pbrdkHPY5eKY+aHXvF0B3I4WxIca4P2TKnrr5/HY=;
+        s=korg; t=1637002736;
+        bh=9Dt2WeY5goV7VW60hIBAvhlo60gq48XwzH3uUjzjX6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U78pdxn/pfPh00BMSpTl+Q+Xrr7NbvNbocTzUMUbyAnpamUoNU0cp16k3HFF3w0rI
-         n5mb3KmcYSU2ePkA7ECxD8gm43EAZBOUnAzzlBiFBLuiqS0lymvxH/9nMQ7dChazor
-         1DIIveVN4ZMIoCn263fkAAu8ycMkGkrkYivqT1EU=
+        b=v+R1yHVQznlho6LCLZ8s4JNYtNMVOLOuJIBWiOjf/msrHGH0UaJer0WswnGI7Tgbs
+         Znww3lNvi1gY3HZb8qsO5u+KtHzY9Rc8X41qaQwdtjURcFqY5gRrPqVB7f/xroLpHG
+         iMVladFyeRwAOomkm69LjJAa5IYE4AakBHG9mmFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bixuan Cui <cuibixuan@linux.alibaba.com>,
+        stable@vger.kernel.org, Denis Kirjanov <kda@linux-powerpc.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 678/917] powerpc/44x/fsp2: add missing of_node_put
-Date:   Mon, 15 Nov 2021 18:02:53 +0100
-Message-Id: <20211115165451.883673562@linuxfoundation.org>
+Subject: [PATCH 5.15 679/917] powerpc/xmon: fix task state output
+Date:   Mon, 15 Nov 2021 18:02:54 +0100
+Message-Id: <20211115165451.915646621@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,46 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@linux.alibaba.com>
+From: Denis Kirjanov <kda@linux-powerpc.org>
 
-[ Upstream commit 290fe8aa69ef5c51c778c0bb33f8ef0181c769f5 ]
+[ Upstream commit b1f896ce3542eb2eede5949ee2e481526fae1108 ]
 
-Early exits from for_each_compatible_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+p_state is unsigned since the commit 2f064a59a11f
 
-./arch/powerpc/platforms/44x/fsp2.c:206:1-25: WARNING: Function
-"for_each_compatible_node" should have of_node_put() before return
-around line 218.
+The patch also uses TASK_RUNNING instead of null.
 
-Fixes: 7813043e1bbc ("powerpc/44x/fsp2: Add irq error handlers")
-Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+Fixes: 2f064a59a11f ("sched: Change task_struct::state")
+Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1635406102-88719-1-git-send-email-cuibixuan@linux.alibaba.com
+Link: https://lore.kernel.org/r/20211026133108.7113-1-kda@linux-powerpc.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/44x/fsp2.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/xmon/xmon.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/44x/fsp2.c b/arch/powerpc/platforms/44x/fsp2.c
-index b299e43f5ef94..823397c802def 100644
---- a/arch/powerpc/platforms/44x/fsp2.c
-+++ b/arch/powerpc/platforms/44x/fsp2.c
-@@ -208,6 +208,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
- 		if (irq == NO_IRQ) {
- 			pr_err("device tree node %pOFn is missing a interrupt",
- 			      np);
-+			of_node_put(np);
- 			return;
- 		}
- 
-@@ -215,6 +216,7 @@ static void node_irq_request(const char *compat, irq_handler_t errirq_handler)
- 		if (rc) {
- 			pr_err("fsp_of_probe: request_irq failed: np=%pOF rc=%d",
- 			      np, rc);
-+			of_node_put(np);
- 			return;
- 		}
- 	}
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index dd8241c009e53..8b28ff9d98d16 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -3264,8 +3264,7 @@ static void show_task(struct task_struct *volatile tsk)
+ 	 * appropriate for calling from xmon. This could be moved
+ 	 * to a common, generic, routine used by both.
+ 	 */
+-	state = (p_state == 0) ? 'R' :
+-		(p_state < 0) ? 'U' :
++	state = (p_state == TASK_RUNNING) ? 'R' :
+ 		(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
+ 		(p_state & TASK_STOPPED) ? 'T' :
+ 		(p_state & TASK_TRACED) ? 'C' :
 -- 
 2.33.0
 
