@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A53D452167
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4469D452409
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376445AbhKPBEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:04:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S1354267AbhKPBfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:35:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245677AbhKOTVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA1A363578;
-        Mon, 15 Nov 2021 18:39:07 +0000 (UTC)
+        id S242341AbhKOSfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:35:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFFB632D9;
+        Mon, 15 Nov 2021 18:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001548;
-        bh=KxrF9qoE5kZVi++j8rzgQeIsVxV07q20Pd1Lmu1DxSQ=;
+        s=korg; t=1636999291;
+        bh=6XPr30Qa6htGATQEnJrk0YD7dgGT0l9kyX5Ji03LveA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zjgWPcIHY1D2F9Ocg8nrOFjJVCKc6wWfBXY0TKLRfSN2zpV+hPouj/YaDYi9kBlvn
-         gMEEnTEl1BOYgKOgEGY0ekGl/i5cg0mo5GCnQU+7rzke9pm6wAPZgMPwrorBbEeyfw
-         zD9YJrikso5CQ0n0ctpE9ymZy3ku2COETzHnA2WM=
+        b=cWxkQA/bKWwjaBAlUfMdvKtG7Rg4Kz0l6VvkCIq0zwx2KDVH8OluvNHMdZMi3HC/s
+         UAYcJbdJlEqVGt2CmoUuC/+RPDlTmKvcu2BgLYUj2nk5bKjT4mQB1vzZuIhwlExqy7
+         ZrWmBxu5mEOMXA3K86OI+yFsd2q9H+hGGxU82IIg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com,
-        Rajat Asthana <rajatasthana4@gmail.com>,
-        Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 231/917] media: mceusb: return without resubmitting URB in case of -EPROTO error.
+Subject: [PATCH 5.14 243/849] media: uvcvideo: Return -EIO for control errors
 Date:   Mon, 15 Nov 2021 17:55:26 +0100
-Message-Id: <20211115165436.619510431@linuxfoundation.org>
+Message-Id: <20211115165428.430798085@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajat Asthana <rajatasthana4@gmail.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit 476db72e521983ecb847e4013b263072bb1110fc ]
+[ Upstream commit ffccdde5f0e17d2f0d788a9d831a027187890eaa ]
 
-Syzkaller reported a warning called "rcu detected stall in dummy_timer".
+The device is doing something unexpected with the control. Either because
+the protocol is not properly implemented or there has been a HW error.
 
-The error seems to be an error in mceusb_dev_recv(). In the case of
--EPROTO error, the routine immediately resubmits the URB. Instead it
-should return without resubmitting URB.
+Fixes v4l2-compliance:
 
-Reported-by: syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com
-Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
+Control ioctls (Input 0):
+                fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+        test VIDIOC_G/S_CTRL: FAIL
+                fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/mceusb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/uvc/uvc_video.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
-index e03dd1f0144f0..137a71954aabf 100644
---- a/drivers/media/rc/mceusb.c
-+++ b/drivers/media/rc/mceusb.c
-@@ -1386,6 +1386,7 @@ static void mceusb_dev_recv(struct urb *urb)
- 	case -ECONNRESET:
- 	case -ENOENT:
- 	case -EILSEQ:
-+	case -EPROTO:
- 	case -ESHUTDOWN:
- 		usb_unlink_urb(urb);
- 		return;
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index e16464606b140..9f37eaf28ce7e 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -115,6 +115,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+ 	case 5: /* Invalid unit */
+ 	case 6: /* Invalid control */
+ 	case 7: /* Invalid Request */
++		/*
++		 * The firmware has not properly implemented
++		 * the control or there has been a HW error.
++		 */
++		return -EIO;
+ 	case 8: /* Invalid value within range */
+ 		return -EINVAL;
+ 	default: /* reserved or unknown */
 -- 
 2.33.0
 
