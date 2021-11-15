@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585EA45196F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05E445202B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351954AbhKOXTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:19:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S1357965AbhKPAtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244762AbhKOTR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE0746341E;
-        Mon, 15 Nov 2021 18:23:42 +0000 (UTC)
+        id S1344602AbhKOTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2E1B63347;
+        Mon, 15 Nov 2021 19:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000623;
-        bh=uaHD+LvuPo7bRxbxm2rQJYilBcs8/qgDugmjycUS0/k=;
+        s=korg; t=1637002842;
+        bh=47UUidKVJvjpqfqoGXab7vR8mElUYdvuxqyYcFCoWuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjSl1BS6oCN+zsSHHinahFwwhtew8Dyjt1YDU3HMOMrw3LCEFAw/Ahajhy+8boJM2
-         zuXW9PS+wedSBi9eIGf5EztSKCGFok6wNAW2ibMQLYCU3iJNl/QZ4ZNBJYnOviiyYL
-         nDDCAPXN4VqXo0Y0OL6dsDKX+WbK8wZaWA1zjg/U=
+        b=znjwJr9UC55v5BmJ2lcF2+I2Nc0M0JrPF3xY57aU2yBBKFDRReDbcCg+LhgEy1LPB
+         7kGuzAnc+RbBIf8959SZMBJbrl4isYRb4IJGmkcygz8WtlWZEnDa1ENIkWEZl1Lni1
+         kmr0Njs+EQUbE5U1ZjcmjtB9r1KCaYeuok4ujcdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nicolas Schier <n.schier@avm.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 729/849] PCI: j721e: Fix j721e_pcie_probe() error path
+Subject: [PATCH 5.15 717/917] sparc: Add missing "FORCE" target when using if_changed
 Date:   Mon, 15 Nov 2021 18:03:32 +0100
-Message-Id: <20211115165444.913162154@linuxfoundation.org>
+Message-Id: <20211115165453.214509557@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 496bb18483cc0474913e81e18a6b313aaea4c120 ]
+[ Upstream commit a3c7ca2b141b9735eb383246e966a4f4322e3e65 ]
 
-If an error occurs after a successful cdns_pcie_init_phy() call, it must be
-undone by a cdns_pcie_disable_phy() call, as already done above and below.
+Fix observed warning:
 
-Update the goto to branch at the correct place of the error handling path.
+    /builds/linux/arch/sparc/boot/Makefile:35: FORCE prerequisite is missing
 
-Link: https://lore.kernel.org/r/db477b0cb444891a17c4bb424467667dc30d0bab.1624794264.git.christophe.jaillet@wanadoo.fr
-Fixes: 49e0efdce791 ("PCI: j721e: Add support to provide refclk to PCIe connector")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Fixes: e1f86d7b4b2a ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Nicolas Schier <n.schier@avm.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/boot/Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index ffb176d288cd9..918e11082e6a7 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -474,7 +474,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 		ret = clk_prepare_enable(clk);
- 		if (ret) {
- 			dev_err(dev, "failed to enable pcie_refclk\n");
--			goto err_get_sync;
-+			goto err_pcie_setup;
- 		}
- 		pcie->refclk = clk;
+diff --git a/arch/sparc/boot/Makefile b/arch/sparc/boot/Makefile
+index 849236d4eca48..45e5c76d449ea 100644
+--- a/arch/sparc/boot/Makefile
++++ b/arch/sparc/boot/Makefile
+@@ -22,7 +22,7 @@ ifeq ($(CONFIG_SPARC64),y)
  
+ # Actual linking
+ 
+-$(obj)/zImage: $(obj)/image
++$(obj)/zImage: $(obj)/image FORCE
+ 	$(call if_changed,gzip)
+ 	@echo '  kernel: $@ is ready'
+ 
+@@ -31,7 +31,7 @@ $(obj)/vmlinux.aout: vmlinux FORCE
+ 	@echo '  kernel: $@ is ready'
+ else
+ 
+-$(obj)/zImage: $(obj)/image
++$(obj)/zImage: $(obj)/image FORCE
+ 	$(call if_changed,strip)
+ 	@echo '  kernel: $@ is ready'
+ 
+@@ -44,7 +44,7 @@ OBJCOPYFLAGS_image.bin := -S -O binary -R .note -R .comment
+ $(obj)/image.bin: $(obj)/image FORCE
+ 	$(call if_changed,objcopy)
+ 
+-$(obj)/image.gz: $(obj)/image.bin
++$(obj)/image.gz: $(obj)/image.bin FORCE
+ 	$(call if_changed,gzip)
+ 
+ UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
+@@ -56,7 +56,7 @@ quiet_cmd_uimage.o = UIMAGE.O $@
+                      -r -b binary $@ -o $@.o
+ 
+ targets += uImage
+-$(obj)/uImage: $(obj)/image.gz
++$(obj)/uImage: $(obj)/image.gz FORCE
+ 	$(call if_changed,uimage)
+ 	$(call if_changed,uimage.o)
+ 	@echo '  Image $@ is ready'
 -- 
 2.33.0
 
