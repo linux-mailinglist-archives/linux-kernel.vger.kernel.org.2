@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3C74527BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E4A45269F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350432AbhKPCbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:31:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
+        id S1359791AbhKPCIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:08:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236859AbhKORRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:17:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 880E261BFE;
-        Mon, 15 Nov 2021 17:12:56 +0000 (UTC)
+        id S239589AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:03:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E10186322D;
+        Mon, 15 Nov 2021 17:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996377;
-        bh=yDgTj+AOYsL4nq7OifvfLKf9C5BzpgQD6Xjpx5Hx5cc=;
+        s=korg; t=1636997851;
+        bh=uLdlxvi8FN6P/hDQoes6sMnZpDVvK6iWDCRQ2Tk/neA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LRz5o97Rg+IlQP8cdvSqMh5xntMMOHVT8iDT8w5UEtY/JNKcCYceFyYr/az1EFjdP
-         s3faG2y2hbOBb+AppNHE+79W5Ue3S6WwhTuADQUl8nxlXlP6syGng2SHOzfCZhBiOV
-         62W1RHgPDRxl8PeIwBPiCJ/ENfcM/pWFbU/MAUUg=
+        b=jKoIogYongbF0icq09LuZ/Jt8ycwINp8mtaDhALq4HAWcbKBMbrvumUgzygmKLRbS
+         TEu+pJtQhd5dLz8pJDvtroUfeKJG/SKqPT1lBNo/iquZC70npoW8MFOqbSKWShT5iw
+         5wtJ/OXx6BHc1Oj6yaKkGLZmKOpwa2DR4yv4w+UM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Remi Pommarel <repk@triplefau.lt>
-Subject: [PATCH 5.4 100/355] PCI: aardvark: Fix checking for link up via LTSSM state
+        stable@vger.kernel.org, Punit Agrawal <punitagrawal@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 299/575] kprobes: Do not use local variable when creating debugfs file
 Date:   Mon, 15 Nov 2021 18:00:24 +0100
-Message-Id: <20211115165317.036839152@linuxfoundation.org>
+Message-Id: <20211115165354.112059073@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
-References: <20211115165313.549179499@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,145 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Punit Agrawal <punitagrawal@gmail.com>
 
-commit 661c399a651c11aaf83c45cbfe0b4a1fb7bc3179 upstream.
+[ Upstream commit 8f7262cd66699a4b02eb7549b35c81b2116aad95 ]
 
-Current implementation of advk_pcie_link_up() is wrong as it marks also
-link disabled or hot reset states as link up.
+debugfs_create_file() takes a pointer argument that can be used during
+file operation callbacks (accessible via i_private in the inode
+structure). An obvious requirement is for the pointer to refer to
+valid memory when used.
 
-Fix it by marking link up only to those states which are defined in PCIe
-Base specification 3.0, Table 4-14: Link Status Mapped to the LTSSM.
+When creating the debugfs file to dynamically enable / disable
+kprobes, a pointer to local variable is passed to
+debugfs_create_file(); which will go out of scope when the init
+function returns. The reason this hasn't triggered random memory
+corruption is because the pointer is not accessed during the debugfs
+file callbacks.
 
-To simplify implementation, Define macros for every LTSSM state which
-aardvark hardware can return in CFG_REG register.
+Since the enabled state is managed by the kprobes_all_disabled global
+variable, the local variable is not needed. Fix the incorrect (and
+unnecessary) usage of local variable during debugfs_file_create() by
+passing NULL instead.
 
-Fix also checking for link training according to the same Table 4-14.
-Define a new function advk_pcie_link_training() for this purpose.
+Link: https://lkml.kernel.org/r/163163031686.489837.4476867635937014973.stgit@devnote2
 
-Link: https://lore.kernel.org/r/20211005180952.6812-13-kabel@kernel.org
-Fixes: 8c39d710363c ("PCI: aardvark: Add Aardvark PCI host controller driver")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Remi Pommarel <repk@triplefau.lt>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
+Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |   76 +++++++++++++++++++++++++++++++---
- 1 file changed, 70 insertions(+), 6 deletions(-)
+ kernel/kprobes.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -126,8 +126,50 @@
- #define CFG_REG					(LMI_BASE_ADDR + 0x0)
- #define     LTSSM_SHIFT				24
- #define     LTSSM_MASK				0x3f
--#define     LTSSM_L0				0x10
- #define     RC_BAR_CONFIG			0x300
-+
-+/* LTSSM values in CFG_REG */
-+enum {
-+	LTSSM_DETECT_QUIET			= 0x0,
-+	LTSSM_DETECT_ACTIVE			= 0x1,
-+	LTSSM_POLLING_ACTIVE			= 0x2,
-+	LTSSM_POLLING_COMPLIANCE		= 0x3,
-+	LTSSM_POLLING_CONFIGURATION		= 0x4,
-+	LTSSM_CONFIG_LINKWIDTH_START		= 0x5,
-+	LTSSM_CONFIG_LINKWIDTH_ACCEPT		= 0x6,
-+	LTSSM_CONFIG_LANENUM_ACCEPT		= 0x7,
-+	LTSSM_CONFIG_LANENUM_WAIT		= 0x8,
-+	LTSSM_CONFIG_COMPLETE			= 0x9,
-+	LTSSM_CONFIG_IDLE			= 0xa,
-+	LTSSM_RECOVERY_RCVR_LOCK		= 0xb,
-+	LTSSM_RECOVERY_SPEED			= 0xc,
-+	LTSSM_RECOVERY_RCVR_CFG			= 0xd,
-+	LTSSM_RECOVERY_IDLE			= 0xe,
-+	LTSSM_L0				= 0x10,
-+	LTSSM_RX_L0S_ENTRY			= 0x11,
-+	LTSSM_RX_L0S_IDLE			= 0x12,
-+	LTSSM_RX_L0S_FTS			= 0x13,
-+	LTSSM_TX_L0S_ENTRY			= 0x14,
-+	LTSSM_TX_L0S_IDLE			= 0x15,
-+	LTSSM_TX_L0S_FTS			= 0x16,
-+	LTSSM_L1_ENTRY				= 0x17,
-+	LTSSM_L1_IDLE				= 0x18,
-+	LTSSM_L2_IDLE				= 0x19,
-+	LTSSM_L2_TRANSMIT_WAKE			= 0x1a,
-+	LTSSM_DISABLED				= 0x20,
-+	LTSSM_LOOPBACK_ENTRY_MASTER		= 0x21,
-+	LTSSM_LOOPBACK_ACTIVE_MASTER		= 0x22,
-+	LTSSM_LOOPBACK_EXIT_MASTER		= 0x23,
-+	LTSSM_LOOPBACK_ENTRY_SLAVE		= 0x24,
-+	LTSSM_LOOPBACK_ACTIVE_SLAVE		= 0x25,
-+	LTSSM_LOOPBACK_EXIT_SLAVE		= 0x26,
-+	LTSSM_HOT_RESET				= 0x27,
-+	LTSSM_RECOVERY_EQUALIZATION_PHASE0	= 0x28,
-+	LTSSM_RECOVERY_EQUALIZATION_PHASE1	= 0x29,
-+	LTSSM_RECOVERY_EQUALIZATION_PHASE2	= 0x2a,
-+	LTSSM_RECOVERY_EQUALIZATION_PHASE3	= 0x2b,
-+};
-+
- #define VENDOR_ID_REG				(LMI_BASE_ADDR + 0x44)
- 
- /* PCIe core controller registers */
-@@ -219,13 +261,35 @@ static inline u32 advk_readl(struct advk
- 	return readl(pcie->base + reg);
- }
- 
--static int advk_pcie_link_up(struct advk_pcie *pcie)
-+static u8 advk_pcie_ltssm_state(struct advk_pcie *pcie)
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index f590e9ff37062..66a6ba81edb1e 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2943,13 +2943,12 @@ static const struct file_operations fops_kp = {
+ static int __init debugfs_kprobe_init(void)
  {
--	u32 val, ltssm_state;
-+	u32 val;
-+	u8 ltssm_state;
+ 	struct dentry *dir;
+-	unsigned int value = 1;
  
- 	val = advk_readl(pcie, CFG_REG);
- 	ltssm_state = (val >> LTSSM_SHIFT) & LTSSM_MASK;
--	return ltssm_state >= LTSSM_L0;
-+	return ltssm_state;
-+}
-+
-+static inline bool advk_pcie_link_up(struct advk_pcie *pcie)
-+{
-+	/* check if LTSSM is in normal operation - some L* state */
-+	u8 ltssm_state = advk_pcie_ltssm_state(pcie);
-+	return ltssm_state >= LTSSM_L0 && ltssm_state < LTSSM_DISABLED;
-+}
-+
-+static inline bool advk_pcie_link_training(struct advk_pcie *pcie)
-+{
-+	/*
-+	 * According to PCIe Base specification 3.0, Table 4-14: Link
-+	 * Status Mapped to the LTSSM is Link Training mapped to LTSSM
-+	 * Configuration and Recovery states.
-+	 */
-+	u8 ltssm_state = advk_pcie_ltssm_state(pcie);
-+	return ((ltssm_state >= LTSSM_CONFIG_LINKWIDTH_START &&
-+		 ltssm_state < LTSSM_L0) ||
-+		(ltssm_state >= LTSSM_RECOVERY_EQUALIZATION_PHASE0 &&
-+		 ltssm_state <= LTSSM_RECOVERY_EQUALIZATION_PHASE3));
- }
+ 	dir = debugfs_create_dir("kprobes", NULL);
  
- static int advk_pcie_wait_for_link(struct advk_pcie *pcie)
-@@ -252,7 +316,7 @@ static void advk_pcie_wait_for_retrain(s
- 	size_t retries;
+ 	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
  
- 	for (retries = 0; retries < RETRAIN_WAIT_MAX_RETRIES; ++retries) {
--		if (!advk_pcie_link_up(pcie))
-+		if (advk_pcie_link_training(pcie))
- 			break;
- 		udelay(RETRAIN_WAIT_USLEEP_US);
- 	}
-@@ -516,7 +580,7 @@ advk_pci_bridge_emul_pcie_conf_read(stru
- 		/* u32 contains both PCI_EXP_LNKCTL and PCI_EXP_LNKSTA */
- 		u32 val = advk_readl(pcie, PCIE_CORE_PCIEXP_CAP + reg) &
- 			~(PCI_EXP_LNKSTA_LT << 16);
--		if (!advk_pcie_link_up(pcie))
-+		if (advk_pcie_link_training(pcie))
- 			val |= (PCI_EXP_LNKSTA_LT << 16);
- 		*value = val;
- 		return PCI_BRIDGE_EMUL_HANDLED;
+-	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
++	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
+ 
+ 	debugfs_create_file("blacklist", 0400, dir, NULL,
+ 			    &kprobe_blacklist_fops);
+-- 
+2.33.0
+
 
 
