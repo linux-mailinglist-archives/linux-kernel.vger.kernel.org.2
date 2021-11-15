@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4FE452004
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D69451B99
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239728AbhKPArR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:47:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S244917AbhKPAEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:04:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344876AbhKOTZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD922636DA;
-        Mon, 15 Nov 2021 19:06:00 +0000 (UTC)
+        id S1344893AbhKOTZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AE5636DC;
+        Mon, 15 Nov 2021 19:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003161;
-        bh=15HXLQbDJoZL5+VAeLIUIrK2GNHxn5/nNzrrF2r7ZYc=;
+        s=korg; t=1637003164;
+        bh=SXpQl//cSzbQ+JqKvV+gLM4SyzCJrP/Vt0cswMvhN00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B33bmwpdvTnkSzq6ZQd2jVd3kkSwJHlm9ozlL4FkoEbaNWEFmwySSDlhE0atP8fsf
-         GeVob+aoiQ4CrKIcsfgbNCjjWwcQ3UWPkCFcO39XhNHXJrxb7+QF1RVYvQSnSl9cPe
-         dgJsCkI/9ED6wuzOwCXSi/FnodRuK9Awbnqz43JY=
+        b=zo1RMsnNA2EjWtd7nzqEC/BLyM8RJAEMQ7M4KtkcXSA7EaWkgAMqlutwE3GqG+Ztc
+         3JMuvBlit5INkMPveaRq3uOQJ9Teeeff20151o+nP2RlyN2jgdZvN9BX4fWp6eM9Sm
+         zuKIDqb2fc3Q7WaePkBFSsgtelqvZtwd2wv9EwRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Jie Wang <wangjie125@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 833/917] net/sched: sch_taprio: fix undefined behavior in ktime_mono_to_any
-Date:   Mon, 15 Nov 2021 18:05:28 +0100
-Message-Id: <20211115165457.297057759@linuxfoundation.org>
+Subject: [PATCH 5.15 834/917] net: hns3: fix ROCE base interrupt vector initialization bug
+Date:   Mon, 15 Nov 2021 18:05:29 +0100
+Message-Id: <20211115165457.327518138@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,136 +41,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jie Wang <wangjie125@huawei.com>
 
-[ Upstream commit 6dc25401cba4d428328eade8ceae717633fdd702 ]
+[ Upstream commit beb27ca451a57a1c0e52b5268703f3c3173c1f8c ]
 
-1) if q->tk_offset == TK_OFFS_MAX, then get_tcp_tstamp() calls
-   ktime_mono_to_any() with out-of-bound value.
+Currently, NIC init ROCE interrupt vector with MSIX interrupt. But ROCE use
+pci_irq_vector() to get interrupt vector, which adds the relative interrupt
+vector again and gets wrong interrupt vector.
 
-2) if q->tk_offset is changed in taprio_parse_clockid(),
-   taprio_get_time() might also call ktime_mono_to_any()
-   with out-of-bound value as sysbot found:
+So fixes it by assign relative interrupt vector to ROCE instead of MSIX
+interrupt vector and delete the unused struct member base_msi_vector
+declaration of hclgevf_dev.
 
-UBSAN: array-index-out-of-bounds in kernel/time/timekeeping.c:908:27
-index 3 is out of range for type 'ktime_t *[3]'
-CPU: 1 PID: 25668 Comm: kworker/u4:0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- ktime_mono_to_any+0x1d4/0x1e0 kernel/time/timekeeping.c:908
- get_tcp_tstamp net/sched/sch_taprio.c:322 [inline]
- get_packet_txtime net/sched/sch_taprio.c:353 [inline]
- taprio_enqueue_one+0x5b0/0x1460 net/sched/sch_taprio.c:420
- taprio_enqueue+0x3b1/0x730 net/sched/sch_taprio.c:485
- dev_qdisc_enqueue+0x40/0x300 net/core/dev.c:3785
- __dev_xmit_skb net/core/dev.c:3869 [inline]
- __dev_queue_xmit+0x1f6e/0x3630 net/core/dev.c:4194
- batadv_send_skb_packet+0x4a9/0x5f0 net/batman-adv/send.c:108
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:421 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x6d7/0x8e0 net/batman-adv/bat_iv_ogm.c:1701
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Fixes: 7ede7b03484b ("taprio: make clock reference conversions easier")
-Fixes: 54002066100b ("taprio: Adjust timestamps for TCP packets")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Vedang Patel <vedang.patel@intel.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Reviewed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Link: https://lore.kernel.org/r/20211108180815.1822479-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 46a3df9f9718 ("net: hns3: Add HNS3 Acceleration Engine & Compatibility Layer Support")
+Signed-off-by: Jie Wang <wangjie125@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_taprio.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 6 +-----
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h   | 2 --
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 5 +----
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h | 2 --
+ 4 files changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index b9fd18d986464..a66398fb2d6d0 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -95,18 +95,22 @@ static ktime_t sched_base_time(const struct sched_gate_list *sched)
- 	return ns_to_ktime(sched->base_time);
- }
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index d891390d492f6..ffd85cd297ef3 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -2498,7 +2498,7 @@ static int hclge_init_roce_base_info(struct hclge_vport *vport)
+ 	if (hdev->num_msi < hdev->num_nic_msi + hdev->num_roce_msi)
+ 		return -EINVAL;
  
--static ktime_t taprio_get_time(struct taprio_sched *q)
-+static ktime_t taprio_mono_to_any(const struct taprio_sched *q, ktime_t mono)
- {
--	ktime_t mono = ktime_get();
-+	/* This pairs with WRITE_ONCE() in taprio_parse_clockid() */
-+	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
+-	roce->rinfo.base_vector = hdev->roce_base_vector;
++	roce->rinfo.base_vector = hdev->num_nic_msi;
  
--	switch (q->tk_offset) {
-+	switch (tk_offset) {
- 	case TK_OFFS_MAX:
- 		return mono;
- 	default:
--		return ktime_mono_to_any(mono, q->tk_offset);
-+		return ktime_mono_to_any(mono, tk_offset);
- 	}
-+}
+ 	roce->rinfo.netdev = nic->kinfo.netdev;
+ 	roce->rinfo.roce_io_base = hdev->hw.io_base;
+@@ -2534,10 +2534,6 @@ static int hclge_init_msi(struct hclge_dev *hdev)
+ 	hdev->num_msi = vectors;
+ 	hdev->num_msi_left = vectors;
  
--	return KTIME_MAX;
-+static ktime_t taprio_get_time(const struct taprio_sched *q)
-+{
-+	return taprio_mono_to_any(q, ktime_get());
- }
+-	hdev->base_msi_vector = pdev->irq;
+-	hdev->roce_base_vector = hdev->base_msi_vector +
+-				hdev->num_nic_msi;
+-
+ 	hdev->vector_status = devm_kcalloc(&pdev->dev, hdev->num_msi,
+ 					   sizeof(u16), GFP_KERNEL);
+ 	if (!hdev->vector_status) {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+index 69cd8f87b4c86..9111b8c84d786 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+@@ -876,12 +876,10 @@ struct hclge_dev {
+ 	u16 num_msi;
+ 	u16 num_msi_left;
+ 	u16 num_msi_used;
+-	u32 base_msi_vector;
+ 	u16 *vector_status;
+ 	int *vector_irq;
+ 	u16 num_nic_msi;	/* Num of nic vectors for this PF */
+ 	u16 num_roce_msi;	/* Num of roce vectors for this PF */
+-	int roce_base_vector;
  
- static void taprio_free_sched_cb(struct rcu_head *head)
-@@ -319,7 +323,7 @@ static ktime_t get_tcp_tstamp(struct taprio_sched *q, struct sk_buff *skb)
- 		return 0;
- 	}
+ 	unsigned long service_timer_period;
+ 	unsigned long service_timer_previous;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index cf00ad7bb881f..4cf34f1693544 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2557,7 +2557,7 @@ static int hclgevf_init_roce_base_info(struct hclgevf_dev *hdev)
+ 	    hdev->num_msi_left == 0)
+ 		return -EINVAL;
  
--	return ktime_mono_to_any(skb->skb_mstamp_ns, q->tk_offset);
-+	return taprio_mono_to_any(q, skb->skb_mstamp_ns);
- }
+-	roce->rinfo.base_vector = hdev->roce_base_vector;
++	roce->rinfo.base_vector = hdev->roce_base_msix_offset;
  
- /* There are a few scenarios where we will have to modify the txtime from
-@@ -1352,6 +1356,7 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
- 		}
- 	} else if (tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]) {
- 		int clockid = nla_get_s32(tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]);
-+		enum tk_offsets tk_offset;
+ 	roce->rinfo.netdev = nic->kinfo.netdev;
+ 	roce->rinfo.roce_io_base = hdev->hw.io_base;
+@@ -2823,9 +2823,6 @@ static int hclgevf_init_msi(struct hclgevf_dev *hdev)
+ 	hdev->num_msi = vectors;
+ 	hdev->num_msi_left = vectors;
  
- 		/* We only support static clockids and we don't allow
- 		 * for it to be modified after the first init.
-@@ -1366,22 +1371,24 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
+-	hdev->base_msi_vector = pdev->irq;
+-	hdev->roce_base_vector = pdev->irq + hdev->roce_base_msix_offset;
+-
+ 	hdev->vector_status = devm_kcalloc(&pdev->dev, hdev->num_msi,
+ 					   sizeof(u16), GFP_KERNEL);
+ 	if (!hdev->vector_status) {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h
+index 28288d7e33032..4bd922b475012 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h
+@@ -308,8 +308,6 @@ struct hclgevf_dev {
+ 	u16 num_nic_msix;	/* Num of nic vectors for this VF */
+ 	u16 num_roce_msix;	/* Num of roce vectors for this VF */
+ 	u16 roce_base_msix_offset;
+-	int roce_base_vector;
+-	u32 base_msi_vector;
+ 	u16 *vector_status;
+ 	int *vector_irq;
  
- 		switch (clockid) {
- 		case CLOCK_REALTIME:
--			q->tk_offset = TK_OFFS_REAL;
-+			tk_offset = TK_OFFS_REAL;
- 			break;
- 		case CLOCK_MONOTONIC:
--			q->tk_offset = TK_OFFS_MAX;
-+			tk_offset = TK_OFFS_MAX;
- 			break;
- 		case CLOCK_BOOTTIME:
--			q->tk_offset = TK_OFFS_BOOT;
-+			tk_offset = TK_OFFS_BOOT;
- 			break;
- 		case CLOCK_TAI:
--			q->tk_offset = TK_OFFS_TAI;
-+			tk_offset = TK_OFFS_TAI;
- 			break;
- 		default:
- 			NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
- 			err = -EINVAL;
- 			goto out;
- 		}
-+		/* This pairs with READ_ONCE() in taprio_mono_to_any */
-+		WRITE_ONCE(q->tk_offset, tk_offset);
- 
- 		q->clockid = clockid;
- 	} else {
 -- 
 2.33.0
 
