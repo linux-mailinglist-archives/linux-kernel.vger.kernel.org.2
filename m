@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19475451B27
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38653451B1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349908AbhKOXxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
+        id S1347950AbhKOXum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344289AbhKOTYZ (ORCPT
+        with ESMTP id S1344279AbhKOTYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:25 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617A2C04A195
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:32:44 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id o4so36652557oia.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:32:44 -0800 (PST)
+        Mon, 15 Nov 2021 14:24:18 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3C0C04A18E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:32:41 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id c4so15814976pfj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:32:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y1TKddjxKZ5v+j9dZNgjQaGVeBF/kGBo0N15AUsK7L8=;
-        b=V6Hux7zvB7lremLUtn3yHu5xFS6Z8EBAqeknZZPnplV4XLP/OE/3HdxArTFWXX6277
-         HXygrRfJw8tEueaDPl13ofnLYjXcvpVq9QKVJr2siHWIgDnfKouT4kM/6fHU/3VE0e9K
-         YvKxo9x8NonLsCzbR0S9c/9YXkV6rm2Ss2NtVPOLBmrPJNC/U1LrcmZgmKv92Ar5RvfS
-         Vx+CdQHPENf99vKCeXJa8rO6sByHj3/NVwi3LyU7sr3siPXpNrKq+W+DRA1ua3RZzHz1
-         z5bh+KQ9CmqpxX3Kx+Rhb6UgQEueZAaDpm+BTYFJStfvIHOhY42INnCK0rfl9uMRtozT
-         +GUg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=5PG6sJZZOAhklRWq8XWd5solPtqMOwcN4ocpP/2rOgo=;
+        b=c0ugunSMVvj/7NWkNPRmlZauTvMBW5Ew04+LO78zKp5Wf/vWGVmU9Ead+SlqLCKzh7
+         MafHouCZR65vh9x2jl+joX95OYkKC/f2bvBH4ciHBC2hmlKL71bgQqN2gcAQNLHOsoXs
+         QRJyRJJZmhT4bbR/kcigHVYOKlgKCJj5O6sy3McyMSV1XIAFcXOPqNHP970te1q0H8td
+         lYmSWtO/BB/lo4r/4PRubwvMc8EhmCOCmEEkV1deJW+aC680/4mdfF5oYwF5v1RPt5Ei
+         +/bcRcf3apsLhpT53bzIzT00mN/lG8+R9s6MDBW0kFdZaNC+I3TshFwuQ8s+dl4Ppdql
+         gmBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y1TKddjxKZ5v+j9dZNgjQaGVeBF/kGBo0N15AUsK7L8=;
-        b=qFS8YbVgp9E6DVENTRLYvU93UIXmMVcyGmZDdvs6zKnkfxRtnDUMr6g7jecT9iJs2g
-         uEaeCGLLs3zNN4Py7Bt5txLekXRUHozuvyqS0OvCj9D92b0hcPPvgPZOg5w2W4Sgx7lI
-         cIoXIN3lshNbTRldVzJNTqna+L4lgYhFfeU/TMxI7Fc7WJ6vQXB4Vp1vCnukUKCSnYAN
-         Wnc2Z7n89/IPWH5ZPChSV5vcwj5Y+0t76sHY9UY0EAb+gW2cbnX/HGqjy2j0el0SklxV
-         ObiZfpIuKx6sOi1obrekHFeK6WilTGZwYEs5FlW+4+tBO6evd9XcrgpGKuXaHwJ53znb
-         JeGw==
-X-Gm-Message-State: AOAM532Kxdd7h5GYrbnWsR0s/10QOe3Q3HxRTKeoZAgtiYnXrA6Bcq2j
-        Pa4unlimN3V9JaQuWSdbEFPNrA==
-X-Google-Smtp-Source: ABdhPJx+ctQTPfrO9WziAND3PxHA9yTsBw8L5+tuxONnM43DjPiOhuKuQ66TI40t4uivTyKlYnZp0w==
-X-Received: by 2002:a05:6808:2187:: with SMTP id be7mr39151347oib.97.1637001164202;
-        Mon, 15 Nov 2021 10:32:44 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w5sm1396878otk.70.2021.11.15.10.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 10:32:43 -0800 (PST)
-Date:   Mon, 15 Nov 2021 12:32:40 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v5 19/22] crypto: qce: Add 'sm8250-qce' compatible string
- check
-Message-ID: <YZKnyAeIsv44DA9Y@builder.lan>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-20-bhupesh.sharma@linaro.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=5PG6sJZZOAhklRWq8XWd5solPtqMOwcN4ocpP/2rOgo=;
+        b=gAnKbPVtviRA8GL72qoykwqJKyWgKSrIu3HqxIbDQJOAm4GVAAQfdUJADGxbmnJYBT
+         Pka/Kz2xgTFFwnTh9r1+I3BVKOfis6QqoviaRgR3tcedc5YTdiNVqfJMSoNMxU4AdGPS
+         Dn69awXmW5BAnPLtFo+Y0BhWCWPHGz7ginKA0wdk7NHaq3pV5eCQSD9BkNE+7Iy2v12c
+         Ky54TzSO+qNnWw9aQAxUsXh/d/k2kXzJ3H2MOrtQhmznTfuS/fUZwci5d5iqQPoKjIjc
+         w1rwY9rZfwibkIqpp4JYZFve+IKOzk+Ha1WH5hyE9tz/49hv84rkEuIiRNs7wA6xMkIr
+         0PEg==
+X-Gm-Message-State: AOAM531tIrZmQN+9askCh29CkA1+MBakNisyjWfR8+hO/km9TEabYjYL
+        IqShewTJujmfyxGPv1OdH1Leuw==
+X-Google-Smtp-Source: ABdhPJy2IaPVOSbtMr7GPsVcsLYjo+Qs6gh3P/TfN9wxgzx8aAoH98fxe4o84CeDNxN1VA9qVYJ1sA==
+X-Received: by 2002:a63:1d21:: with SMTP id d33mr632920pgd.101.1637001161172;
+        Mon, 15 Nov 2021 10:32:41 -0800 (PST)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id f5sm69667pju.15.2021.11.15.10.32.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 10:32:40 -0800 (PST)
+Message-ID: <1563f090-2217-959e-cc80-30a7a804c567@linaro.org>
+Date:   Mon, 15 Nov 2021 10:32:40 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110105922.217895-20-bhupesh.sharma@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 5.10 011/575] scsi: core: Remove command size deduction
+ from scsi_setup_scsi_cmnd()
+Content-Language: en-US
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
+References: <20211115165343.579890274@linuxfoundation.org>
+ <20211115165343.996963128@linuxfoundation.org>
+ <7ed36c27-a150-39a6-d8e3-483c76bbedc5@acm.org>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <7ed36c27-a150-39a6-d8e3-483c76bbedc5@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
-
-> Add 'sm8250-qce' compatible string check in qce crypto
-> driver as we add support for sm8250 crypto device in the
-> device-tree in the subsequent patch.
+On 11/15/21 09:58, Bart Van Assche wrote:
+> Hi Greg,
 > 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-
-Both patch 19 and 20 can be squashed with the previous patch adding
-sdm845 & ipq6018.
-
-Regards,
-Bjorn
-
-> ---
->  drivers/crypto/qce/core.c | 1 +
->  1 file changed, 1 insertion(+)
+> Thanks for having queued this patch for the 5.10 stable branch.
 > 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 84ed9e253d5d..a7d7d7d5d02f 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -309,6 +309,7 @@ static const struct of_device_id qce_crypto_of_match[] = {
->  	/* Add compatible strings as per updated dt-bindings, here: */
->  	{ .compatible = "qcom,ipq6018-qce", },
->  	{ .compatible = "qcom,sdm845-qce", },
-> +	{ .compatible = "qcom,sm8250-qce", },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
-> -- 
-> 2.31.1
+> Do you plan to also include commit 20aaef52eb08 ("scsi: scsi_ioctl: Validate 
+> command size")? That patch prevents that the bug in the commit mentioned above 
+> can be triggered.
 > 
+> Thanks,
+
+Hi Brad,
+The "scsi_ioctl: Validate command size" patch is not needed for either 5.10 nor
+5.14 as the it is set directly from COMMAND_SIZE(opcode). See:
+
+https://elixir.bootlin.com/linux/v5.14.18/source/block/scsi_ioctl.c#L445
+https://elixir.bootlin.com/linux/v5.10.79/source/block/scsi_ioctl.c#L447
+
+-- 
+Thanks,
+Tadeusz
