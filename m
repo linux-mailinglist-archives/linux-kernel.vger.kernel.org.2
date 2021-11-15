@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE4451B56
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5D4451931
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349546AbhKOX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:59:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1349010AbhKOXPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:15:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344389AbhKOTYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C13066366C;
-        Mon, 15 Nov 2021 18:56:46 +0000 (UTC)
+        id S238296AbhKOTKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:10:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 009DD63495;
+        Mon, 15 Nov 2021 18:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002607;
-        bh=5xvMpRD9le189Abdi1JrqSaAV7ieI75m9uNIfj5CMow=;
+        s=korg; t=1637000300;
+        bh=yIzlTmEWChwZQlGr+UE5tzq2u0HIYJzQuxIIgotRxm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTT3fuA2g3Im3wkzK8bMOdzNW0375/u+H6t3YUgBrUq6BzpbsIjpb+hd6+COhtPqv
-         ZH5wu7BUnJAbneO47se9R2d5hNJGjzEo+RIl9KUyVWw6DF6al3chIh4NvldmMAbla1
-         dszWj7kpDs0NDJPNCmz7U5521ZmgPdQ+tti/mQEk=
+        b=CSITWBCgM9rMo3zTczHrj+MbKNWOhGdJ5CEcYCIiho/YAj5EnGQQZ5Vz0txjzQrk+
+         TXlKZmFyooNl/TGhJMcGSFh01EkFiDwDMWNNwdyYmV5TvE4Ik09VG2LazJmkCV2dSy
+         iYljBsJ3VAGkySTqYQo10zj29Ux1uWE8hvx5tdAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 598/917] arm64: dts: renesas: beacon: Fix Ethernet PHY mode
-Date:   Mon, 15 Nov 2021 18:01:33 +0100
-Message-Id: <20211115165449.041880493@linuxfoundation.org>
+Subject: [PATCH 5.14 611/849] ARM: dts: stm32: Reduce DHCOR SPI NOR frequency to 50 MHz
+Date:   Mon, 15 Nov 2021 18:01:34 +0100
+Message-Id: <20211115165440.911664687@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 59a8bda062f8646d99ff8c4956adf37dee1cb75e ]
+[ Upstream commit 2012579b31293d0a8cf2024e9dab66810bf1a15e ]
 
-While networking works fine in RGMII mode when using the Linux generic
-PHY driver, it fails when using the Atheros PHY driver.
-Fix this by correcting the Ethernet PHY mode to RGMII-RXID, which works
-fine with both drivers.
+The SPI NOR is a bit further away from the SoC on DHCOR than on DHCOM,
+which causes additional signal delay. At 108 MHz, this delay triggers
+a sporadic issue where the first bit of RX data is not received by the
+QSPI controller.
 
-Fixes: a5200e63af57d05e ("arm64: dts: renesas: rzg2: Convert EtherAVB to explicit delay handling")
-Reported-by: Adam Ford <aford173@gmail.com>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/2a4c15b2df23bb63f15abf9dfb88860477f4f523.1632465965.git.geert+renesas@glider.be
+There are two options of addressing this problem, either by using the
+DLYB block to compensate the extra delay, or by reducing the QSPI bus
+clock frequency. The former requires calibration and that is overly
+complex, so opt for the second option.
+
+Fixes: 76045bc457104 ("ARM: dts: stm32: Add QSPI NOR on AV96")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-index 090dc9c4f57b5..937d17a426b66 100644
---- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-+++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-@@ -50,6 +50,7 @@
- &avb {
- 	pinctrl-0 = <&avb_pins>;
- 	pinctrl-names = "default";
-+	phy-mode = "rgmii-rxid";
- 	phy-handle = <&phy0>;
- 	rx-internal-delay-ps = <1800>;
- 	tx-internal-delay-ps = <2000>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+index 2b0ac605549d7..44ecc47085871 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
+@@ -202,7 +202,7 @@
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+ 		spi-rx-bus-width = <4>;
+-		spi-max-frequency = <108000000>;
++		spi-max-frequency = <50000000>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 	};
 -- 
 2.33.0
 
