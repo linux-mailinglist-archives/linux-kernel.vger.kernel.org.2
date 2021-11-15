@@ -2,278 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6FF45036E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992EC450372
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhKOLcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:32:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhKOLb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:31:56 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D5C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:29:00 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id f3-20020a5d50c3000000b00183ce1379feso3421640wrt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:29:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xf9u2CscKkkxKfWTXnB3UoCYnr7mB7Mfxpso9hhGJvU=;
-        b=lCCgT0Pg/s0d5kWjOirDWetiOTfHhG/rOIc+xzoJMaGxpLGfVM815S16HQ7dw0go19
-         sb7L0qY4qRM8Id5NXOfaPLPzRyFlgPrvtqti4swO7J5wfLURaRu0Q3WQCUEMa940SVal
-         thwlHIAIUtbbSTqZEzhqzGRSKqNeLcMNyxjZ8QjWYQ9H+5y4JMcQB0Fwbd6cgGxBEjsh
-         s/7exRMWG3X1Ccdr6e2sKTnMH/4c3DNlGE0UemYSnc+NBo5d/ng+9NlbqTDgxZEaSGdx
-         ntq1CpHrMFbIXloxSiA5qr2CIo07yENP8hBvxp0HE9ZIBdrcWUca2+KmJl7AssUxKeuo
-         OhCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xf9u2CscKkkxKfWTXnB3UoCYnr7mB7Mfxpso9hhGJvU=;
-        b=6ZFwt1MeH0jweah6fc7LXWGGgrpDUG0tLYefpf7qy60l6EmtWAqVIlAVzhIUD3E12U
-         UkCqIcuyObvi0ESggwxeMZWJccotyPfZx/8/xWahlInZcHY7tIU2Acx9lIj+TTytXHe7
-         Gtrb2xWM/mvvRMIV6pjv6xkjIMaDcWtDKAqY8Is2BHDxceMQhqc8r9nQ6LFKgv4gsA2a
-         4f8gAVTPX4HFkggtN89VJueLTrGkq08PiJQEMhPvSgklD4WEVAggUgq+wlIuhcZ3Z3YJ
-         DYlv8nDDA3tUEiFnmmcH/0zMAxnLeNUWlq/bcFBNiJ/Lj3X87/XUBx3FCOfxqInwDvqD
-         gQIQ==
-X-Gm-Message-State: AOAM533SoZZ834Q0n24Xlrt69Eu0elMfS9q4LTo6Kbp9KOmon9NYTuAp
-        OhSl8/rxspwWBmqLrFf8Ajwwb4413g==
-X-Google-Smtp-Source: ABdhPJy44OmjsRfhXZqtGzrTHSHnR7sJeJ592+WMWmAMcYSNScvLc0qF4MOaa/uij/ycYan2ozVuYFPuAQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6385:6bd0:4ede:d8c6])
- (user=elver job=sendgmr) by 2002:a05:600c:104b:: with SMTP id
- 11mr60511649wmx.54.1636975739083; Mon, 15 Nov 2021 03:28:59 -0800 (PST)
-Date:   Mon, 15 Nov 2021 12:28:23 +0100
-Message-Id: <20211115112822.4077224-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] perf test: Add basic stress test for sigtrap handling
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Fabian Hemmer <copy@copy.sh>, Ian Rogers <irogers@google.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231550AbhKOLc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:32:57 -0500
+Received: from mga05.intel.com ([192.55.52.43]:38921 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231361AbhKOLcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:32:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="319633660"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="319633660"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:29:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="453992353"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2021 03:29:01 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 92FC722B; Mon, 15 Nov 2021 13:29:04 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Subject: [PATCH v2 1/1] PCI: probe: Use pci_find_vsec_capability() when looking for TBT devices
+Date:   Mon, 15 Nov 2021 13:29:02 +0200
+Message-Id: <20211115112902.24033-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic stress test for sigtrap handling as a perf tool built-in test.
-This allows sanity checking the basic sigtrap functionality from within
-the perf tool.
+Currently the set_pcie_thunderbolt() open codes pci_find_vsec_capability().
+Refactor the former to use the latter. No functional change intended.
 
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 ---
- tools/perf/tests/Build          |   1 +
- tools/perf/tests/builtin-test.c |   1 +
- tools/perf/tests/sigtrap.c      | 154 ++++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h        |   1 +
- 4 files changed, 157 insertions(+)
- create mode 100644 tools/perf/tests/sigtrap.c
+v2: preserved comment (Lukas), added tag (Krzysztof)
+ drivers/pci/probe.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 803ca426f8e6..af2b37ef7c70 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -65,6 +65,7 @@ perf-y += pe-file-parsing.o
- perf-y += expand-cgroup.o
- perf-y += perf-time-to-tsc.o
- perf-y += dlfilter-test.o
-+perf-y += sigtrap.o
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 087d3658f75c..496c8b8d903c 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1579,20 +1579,12 @@ void set_pcie_hotplug_bridge(struct pci_dev *pdev)
  
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 8cb5a1c3489e..f1e6d2a3a578 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -107,6 +107,7 @@ static struct test_suite *generic_tests[] = {
- 	&suite__expand_cgroup_events,
- 	&suite__perf_time_to_tsc,
- 	&suite__dlfilter,
-+	&suite__sigtrap,
- 	NULL,
- };
+ static void set_pcie_thunderbolt(struct pci_dev *dev)
+ {
+-	int vsec = 0;
+-	u32 header;
++	u16 vsec;
  
-diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-new file mode 100644
-index 000000000000..febfa1609356
---- /dev/null
-+++ b/tools/perf/tests/sigtrap.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Basic test for sigtrap support.
-+ *
-+ * Copyright (C) 2021, Google LLC.
-+ */
-+
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <linux/hw_breakpoint.h>
-+#include <pthread.h>
-+#include <signal.h>
-+#include <sys/ioctl.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+#include "cloexec.h"
-+#include "debug.h"
-+#include "event.h"
-+#include "tests.h"
-+#include "../perf-sys.h"
-+
-+#define NUM_THREADS 5
-+
-+static struct {
-+	int tids_want_signal;		/* Which threads still want a signal. */
-+	int signal_count;		/* Sanity check number of signals received. */
-+	volatile int iterate_on;	/* Variable to set breakpoint on. */
-+	siginfo_t first_siginfo;	/* First observed siginfo_t. */
-+} ctx;
-+
-+#define TEST_SIG_DATA (~(unsigned long)(&ctx.iterate_on))
-+
-+static struct perf_event_attr make_event_attr(void)
-+{
-+	struct perf_event_attr attr = {
-+		.type		= PERF_TYPE_BREAKPOINT,
-+		.size		= sizeof(attr),
-+		.sample_period	= 1,
-+		.disabled	= 1,
-+		.bp_addr	= (unsigned long)&ctx.iterate_on,
-+		.bp_type	= HW_BREAKPOINT_RW,
-+		.bp_len		= HW_BREAKPOINT_LEN_1,
-+		.inherit	= 1, /* Children inherit events ... */
-+		.inherit_thread = 1, /* ... but only cloned with CLONE_THREAD. */
-+		.remove_on_exec = 1, /* Required by sigtrap. */
-+		.sigtrap	= 1, /* Request synchronous SIGTRAP on event. */
-+		.sig_data	= TEST_SIG_DATA,
-+	};
-+	return attr;
-+}
-+
-+static void
-+sigtrap_handler(int signum __maybe_unused, siginfo_t *info, void *ucontext __maybe_unused)
-+{
-+	if (!__atomic_fetch_add(&ctx.signal_count, 1, __ATOMIC_RELAXED))
-+		ctx.first_siginfo = *info;
-+	__atomic_fetch_sub(&ctx.tids_want_signal, syscall(SYS_gettid), __ATOMIC_RELAXED);
-+}
-+
-+static void *test_thread(void *arg)
-+{
-+	pthread_barrier_t *barrier = (pthread_barrier_t *)arg;
-+	pid_t tid = syscall(SYS_gettid);
-+	int i;
-+
-+	pthread_barrier_wait(barrier);
-+
-+	__atomic_fetch_add(&ctx.tids_want_signal, tid, __ATOMIC_RELAXED);
-+	for (i = 0; i < ctx.iterate_on - 1; i++)
-+		__atomic_fetch_add(&ctx.tids_want_signal, tid, __ATOMIC_RELAXED);
-+
-+	return NULL;
-+}
-+
-+static int run_test_threads(pthread_t *threads, pthread_barrier_t *barrier)
-+{
-+	int i;
-+
-+	pthread_barrier_wait(barrier);
-+	for (i = 0; i < NUM_THREADS; i++)
-+		TEST_ASSERT_EQUAL("pthread_join() failed", pthread_join(threads[i], NULL), 0);
-+
-+	return TEST_OK;
-+}
-+
-+static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrier)
-+{
-+	int ret;
-+
-+	ctx.iterate_on = 3000;
-+
-+	TEST_ASSERT_EQUAL("misfired signal?", ctx.signal_count, 0);
-+	TEST_ASSERT_EQUAL("enable failed", ioctl(fd, PERF_EVENT_IOC_ENABLE, 0), 0);
-+	ret = run_test_threads(threads, barrier);
-+	TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
-+
-+	TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-+	TEST_ASSERT_EQUAL("missing signals or incorrectly delivered", ctx.tids_want_signal, 0);
-+	TEST_ASSERT_VAL("unexpected si_addr", ctx.first_siginfo.si_addr == &ctx.iterate_on);
-+#if 0 /* FIXME: enable when libc's signal.h has si_perf_{type,data} */
-+	TEST_ASSERT_EQUAL("unexpected si_perf_type", ctx.first_siginfo.si_perf_type,
-+			  PERF_TYPE_BREAKPOINT);
-+	TEST_ASSERT_EQUAL("unexpected si_perf_data", ctx.first_siginfo.si_perf_data,
-+			  TEST_SIG_DATA);
-+#endif
-+
-+	return ret;
-+}
-+
-+static int test__sigtrap(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	struct perf_event_attr attr = make_event_attr();
-+	struct sigaction action = {};
-+	struct sigaction oldact;
-+	pthread_t threads[NUM_THREADS];
-+	pthread_barrier_t barrier;
-+	int i, fd, ret = TEST_FAIL;
-+
-+	pthread_barrier_init(&barrier, NULL, NUM_THREADS + 1);
-+
-+	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-+	action.sa_sigaction = sigtrap_handler;
-+	sigemptyset(&action.sa_mask);
-+	if (sigaction(SIGTRAP, &action, &oldact)) {
-+		pr_debug("FAILED sigaction()\n");
-+		goto out;
-+	}
-+
-+	fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
-+	if (fd < 0) {
-+		pr_debug("FAILED sys_perf_event_open()\n");
-+		goto out_restore_sigaction;
-+	}
-+
-+	for (i = 0; i < NUM_THREADS; i++) {
-+		if (pthread_create(&threads[i], NULL, test_thread, &barrier)) {
-+			pr_debug("FAILED pthread_create()");
-+			goto out_close_perf_event;
-+		}
-+	}
-+
-+	ret = run_stress_test(fd, threads, &barrier);
-+
-+out_close_perf_event:
-+	close(fd);
-+out_restore_sigaction:
-+	sigaction(SIGTRAP, &oldact, NULL);
-+out:
-+	pthread_barrier_destroy(&barrier);
-+	return ret;
-+}
-+
-+DEFINE_SUITE("Sigtrap", sigtrap);
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 8f65098110fc..5bbb8f6a48fc 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -146,6 +146,7 @@ DECLARE_SUITE(pe_file_parsing);
- DECLARE_SUITE(expand_cgroup_events);
- DECLARE_SUITE(perf_time_to_tsc);
- DECLARE_SUITE(dlfilter);
-+DECLARE_SUITE(sigtrap);
+-	while ((vsec = pci_find_next_ext_capability(dev, vsec,
+-						    PCI_EXT_CAP_ID_VNDR))) {
+-		pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER, &header);
+-
+-		/* Is the device part of a Thunderbolt controller? */
+-		if (dev->vendor == PCI_VENDOR_ID_INTEL &&
+-		    PCI_VNDR_HEADER_ID(header) == PCI_VSEC_ID_INTEL_TBT) {
+-			dev->is_thunderbolt = 1;
+-			return;
+-		}
+-	}
++	/* Is the device part of a Thunderbolt controller? */
++	vsec = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_TBT);
++	if (vsec)
++		dev->is_thunderbolt = 1;
+ }
  
- /*
-  * PowerPC and S390 do not support creation of instruction breakpoints using the
+ static void set_pcie_untrusted(struct pci_dev *dev)
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
+2.33.0
 
