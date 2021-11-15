@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810644525F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76FB452349
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359005AbhKPCAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:00:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
+        id S1344159AbhKPBWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240447AbhKOSJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:09:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA6806329F;
-        Mon, 15 Nov 2021 17:47:02 +0000 (UTC)
+        id S244830AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A327863426;
+        Mon, 15 Nov 2021 18:24:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998423;
-        bh=uyU8KxEH4j7slgjg/8d/vW/9rjTJvSXEafDH9lIvhfQ=;
+        s=korg; t=1637000671;
+        bh=YtaMPtqdXB9HnZuqhvw6aEJQon/86GJold/KYhtH5Kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uJyT4DHbzNhA/7zzsnvVJTe7EY/oZt/PCVUAWAfSD7/mVmrNQ4pxB9wPKmj3dk4tY
-         62gXqPJT6uW9egT41GfS/LjakOMTDVmEZgCNMhx+22UelfCOBe5YBTmLp0wBmjOQP6
-         pKvN+aMO5Y8f3aKiD9i1Wmt7A2x+4rmQxafZs3+0=
+        b=Vf5pN9zrmcZVDQoJ5weLs7BKNH0gbX3suuWIyL9gUZf1STUoL9U5PqVHGRFww4zwU
+         prO2x7keT5yDzOQHc4b4e7+9mScAoyFqf69oCChTkz52tExbs1JQ4w9MtWsBwR9MuJ
+         Xa+ZAbfa7kMzUs0RN8supeqTWJUUiRTOUZRkaKHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 471/575] NFS: Fix dentry verifier races
-Date:   Mon, 15 Nov 2021 18:03:16 +0100
-Message-Id: <20211115165400.015513952@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 714/849] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
+Date:   Mon, 15 Nov 2021 18:03:17 +0100
+Message-Id: <20211115165444.407075776@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit cec08f452a687fce9dfdf47946d00a1d12a8bec5 ]
+[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
 
-If the directory changed while we were revalidating the dentry, then
-don't update the dentry verifier. There is no value in setting the
-verifier to an older value, and we could end up overwriting a more up to
-date verifier from a parallel revalidation.
+A successful 'clk_prepare()' call should be balanced by a corresponding
+'clk_unprepare()' call in the error handling path of the probe, as already
+done in the remove function.
 
-Fixes: efeda80da38d ("NFSv4: Fix revalidation of dentries with delegations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Tested-by: Benjamin Coddington <bcodding@redhat.com>
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
+also already called. So just the unprepare step has still to be done.
+
+Update the error handling path accordingly.
+
+Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/dir.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-xlr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index c837675cd395a..8b963c72dd3b1 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -1061,13 +1061,12 @@ static bool nfs_verifier_is_delegated(struct dentry *dentry)
- static void nfs_set_verifier_locked(struct dentry *dentry, unsigned long verf)
- {
- 	struct inode *inode = d_inode(dentry);
-+	struct inode *dir = d_inode(dentry->d_parent);
+diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
+index 126d1393e548b..9ce20652d4942 100644
+--- a/drivers/i2c/busses/i2c-xlr.c
++++ b/drivers/i2c/busses/i2c-xlr.c
+@@ -431,11 +431,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
+ 	i2c_set_adapdata(&priv->adap, priv);
+ 	ret = i2c_add_numbered_adapter(&priv->adap);
+ 	if (ret < 0)
+-		return ret;
++		goto err_unprepare_clk;
  
--	if (!nfs_verifier_is_delegated(dentry) &&
--	    !nfs_verify_change_attribute(d_inode(dentry->d_parent), verf))
--		goto out;
-+	if (!nfs_verify_change_attribute(dir, verf))
-+		return;
- 	if (inode && NFS_PROTO(inode)->have_delegation(inode, FMODE_READ))
- 		nfs_set_verifier_delegated(&verf);
--out:
- 	dentry->d_time = verf;
+ 	platform_set_drvdata(pdev, priv);
+ 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_unprepare(clk);
++	return ret;
  }
  
+ static int xlr_i2c_remove(struct platform_device *pdev)
 -- 
 2.33.0
 
