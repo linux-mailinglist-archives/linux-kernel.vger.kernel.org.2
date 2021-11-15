@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9241445259B
+	by mail.lfdr.de (Postfix) with ESMTP id DBAD245259C
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382920AbhKPByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:54:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58650 "EHLO mail.kernel.org"
+        id S1382945AbhKPByg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:54:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241230AbhKOSUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241223AbhKOSUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:20:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F046632B2;
-        Mon, 15 Nov 2021 17:52:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44790632B5;
+        Mon, 15 Nov 2021 17:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998733;
-        bh=gPr0o248vJKaSOCdYUe+kpqj45yiTlbagqJQUXeXdow=;
+        s=korg; t=1636998736;
+        bh=kyBB5mGC8He0V3JTvuWwZu2h8vIbBXAy3jvWl0SnliY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/RbBXCjxAK/5RYCc7zOi8xrYq39awczshOdl7XSdgbfuUWwf01LPa6H+zQQVWkpb
-         GX8Jp0uTVvTNDeuyXj3YMzhyXaVbhkEv1cLOr2XoNV7WD3abO1MlmvDn9uI3DWOxtC
-         nPWSHAvLj8e8XhMrQuFL1nzzwcWQk9cZMOFOU7s8=
+        b=djLUpoZ6UOr8jX41EWzfTRPlEmS0POmiBW1vJ7C+2W8ek6DvVkeurMb0kqlFgDsUm
+         t7xK2oFmS6BQurKcYehia1WZAGemn2f7/IwyHX/41RWorfFJSIdYzpydrv9w9kmfRJ
+         nQ7ah28fGj/UiTJ2n68s7FbZlFNUHYS6igoRlgVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.14 042/849] ALSA: usb-audio: Add registration quirk for JBL Quantum 400
-Date:   Mon, 15 Nov 2021 17:52:05 +0100
-Message-Id: <20211115165421.427075711@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH 5.14 043/849] ALSA: hda: Free card instance properly at probe errors
+Date:   Mon, 15 Nov 2021 17:52:06 +0100
+Message-Id: <20211115165421.459699799@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -39,31 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Tsoy <alexander@tsoy.me>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 763d92ed5dece7d439fc28a88b2d2728d525ffd9 upstream.
+commit 39173303c83859723dab32c2abfb97296d6af3bf upstream.
 
-Add another device ID for JBL Quantum 400. It requires the same quirk as
-other JBL Quantum devices.
+The recent change in hda-intel driver to allow repeated probes
+surfaced a problem that has been hidden until; the probe process in
+the work calls azx_free() at the error path, and this skips the card
+free process that eventually releases codec instances.  As a result,
+we get a kernel WARNING like:
 
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+  snd_hda_intel 0000:00:1f.3: Cannot probe codecs, giving up
+  ------------[ cut here ]------------
+  WARNING: CPU: 14 PID: 186 at sound/hda/hdac_bus.c:73
+  ....
+
+For fixing this, we need to call snd_card_free() instead of
+azx_free().  Additionally, the device drvdata has to be cleared, as
+the driver binding itself is still active.  Then the PM and other
+driver callbacks will ignore the procedure.
+
+Fixes: c0f1886de7e1 ("ALSA: hda: intel: Allow repeatedly probing on codec configuration errors")
+Reported-and-tested-by: Scott Branden <scott.branden@broadcom.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211030174308.1011825-1-alexander@tsoy.me
+Link: https://lore.kernel.org/r/063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com
+Link: https://lore.kernel.org/r/20211110194633.19098-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/hda_intel.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1899,6 +1899,7 @@ static const struct registration_quirk r
- 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x1f47, 2),	/* JBL Quantum 800 */
-+	REG_QUIRK_ENTRY(0x0ecb, 0x1f4c, 2),	/* JBL Quantum 400 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2358,7 +2358,8 @@ static int azx_probe_continue(struct azx
+ 
+ out_free:
+ 	if (err < 0) {
+-		azx_free(chip);
++		pci_set_drvdata(pci, NULL);
++		snd_card_free(chip->card);
+ 		return err;
+ 	}
+ 
 
 
