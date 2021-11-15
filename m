@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31774450D5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE42450D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238792AbhKORzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:55:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50868 "EHLO mail.kernel.org"
+        id S238611AbhKORyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:54:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237777AbhKORYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F3963286;
-        Mon, 15 Nov 2021 17:18:24 +0000 (UTC)
+        id S237639AbhKORXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:23:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55E7F63241;
+        Mon, 15 Nov 2021 17:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996705;
-        bh=DbtiOiCLEsnKuUdPZWFWTy0CB/G5GaTeDk2npq8/nNE=;
+        s=korg; t=1636996707;
+        bh=7erEOay1acck7TIAS+dFokqbJDK72/3mljr9YHxdieI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hRpmUDQcXdUhjRC7TbJrCnhRpbEOw7TUc6H/bANKZNNs82ZxYmCMGVKwqcGjvacv8
-         nFyDdzmXqH+yV0Ow0UkrR8dje3J8EvDZtvYSyNJvyf0SaQ7uqW0ezuROhFcgd82A/S
-         omi9u1Z89C45ufY8DpwVdZagA4vu4bZXSJdDsoIg=
+        b=hOBffIZE3aQpDwOzIDbdG5u1Xj2ZDSCohuZ5siXoVHc+kQMR6fb5/X/JJPytOcV8x
+         T2Gz6NA+0C4sBelwiOYKLvkJA3MkgPEs5OzcXtHsZ6bOqNECsRksvQlK8vUusyXZmi
+         ibuKfrjZ8DUsaV0v7qVmydBBMJ1b4OHzM0hh/D24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jessica Zhang <jesszhan@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 236/355] clocksource/drivers/timer-ti-dm: Select TIMER_OF
-Date:   Mon, 15 Nov 2021 18:02:40 +0100
-Message-Id: <20211115165321.385021610@linuxfoundation.org>
+Subject: [PATCH 5.4 237/355] drm/msm: Fix potential NULL dereference in DPU SSPP
+Date:   Mon, 15 Nov 2021 18:02:41 +0100
+Message-Id: <20211115165321.415975112@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -46,47 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Jessica Zhang <jesszhan@codeaurora.org>
 
-[ Upstream commit eda9a4f7af6ee47e9e131f20e4f8a41a97379293 ]
+[ Upstream commit 8bf71a5719b6cc5b6ba358096081e5d50ea23ab6 ]
 
-When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
-due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
-CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
+Move initialization of sblk in _sspp_subblk_offset() after NULL check to
+avoid potential NULL pointer dereference.
 
-arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: linux-omap@vger.kernel.org
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210828175747.3777891-1-keescook@chromium.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jessica Zhang <jesszhan@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020175733.3379-1-jesszhan@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 3bb5625504e2f..9bfe4c5af87e3 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -24,6 +24,7 @@ config I8253_LOCK
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
+index 4f8b813aab810..8256f06218d0f 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
+@@ -137,11 +137,13 @@ static int _sspp_subblk_offset(struct dpu_hw_pipe *ctx,
+ 		u32 *idx)
+ {
+ 	int rc = 0;
+-	const struct dpu_sspp_sub_blks *sblk = ctx->cap->sblk;
++	const struct dpu_sspp_sub_blks *sblk;
  
- config OMAP_DM_TIMER
- 	bool
-+	select TIMER_OF
+-	if (!ctx)
++	if (!ctx || !ctx->cap || !ctx->cap->sblk)
+ 		return -EINVAL;
  
- config CLKBLD_I8253
- 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
++	sblk = ctx->cap->sblk;
++
+ 	switch (s_id) {
+ 	case DPU_SSPP_SRC:
+ 		*idx = sblk->src_blk.base;
+@@ -404,7 +406,7 @@ static void _dpu_hw_sspp_setup_scaler3(struct dpu_hw_pipe *ctx,
+ 
+ 	(void)pe;
+ 	if (_sspp_subblk_offset(ctx, DPU_SSPP_SCALER_QSEED3, &idx) || !sspp
+-		|| !scaler3_cfg || !ctx || !ctx->cap || !ctx->cap->sblk)
++		|| !scaler3_cfg)
+ 		return;
+ 
+ 	dpu_hw_setup_scaler3(&ctx->hw, scaler3_cfg, idx,
 -- 
 2.33.0
 
