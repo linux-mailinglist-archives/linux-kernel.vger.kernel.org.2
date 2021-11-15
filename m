@@ -2,192 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA8A44FE01
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 05:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8969944FE07
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236416AbhKOE7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 23:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhKOE72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 23:59:28 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032A9C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 20:56:18 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id be32so32293169oib.11
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 20:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q98dyu74MJe5navKxdckyMo+w5gQ0k/mUeimmz+GJ/Y=;
-        b=n+WGS0Ni0D+xgVih/OamcGVVp5y/g1euL1JZEA0fdhU11BPaTwraG6eFQFX9Xebe42
-         wNdHX/nQ5LT4EJw8+3IntergmBNSTGLDMhZy557vlCe9HdIRilrmdi7blw7resm3invF
-         LRKDf6ToHFUyg1lTPyDfo4qf09Dv5GRuWgQVN4Vx950VISxspuonRKx2cjvojI+zrKLg
-         m3s38gSeQWnfk0bQK80iN5E74oxhqYPRyptJkYrOaYpyGvZCnrp/QLoO4PwnHRvdfPet
-         fhszwEyqocI7k+zeOT+/LuHYVGGEK8n9a6NPXlkvUBr9/kIAEAKoo+FOmMzdhIPsh9Qe
-         NcrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=q98dyu74MJe5navKxdckyMo+w5gQ0k/mUeimmz+GJ/Y=;
-        b=Qql60Pl+Mur1O3OJcNtnnRb/j89Zhqtvhqa2LZjuCU4mEzwzK31PtlhVw8Gdx8GNID
-         iEX7QE9lyxvi7UyY5UOmeEoEihGkB1xBvq3fGXirib4AwxOdk3ZpzuWo01AO2E2ioYUM
-         6+wEXleOY7Kl4ZJ07rJoC3jCwglvFHEB7LP4Ak1me7a4WktmYCYrtxjmXBctcMmv9Tc0
-         8n7ZEgSRwTtnJdYzuq6+axdzV3HMW8nrBO3f6n6qE6HzDnq7unWfMhbyOhkBTTGenhtv
-         HL1PGlvJUJMM/1eBupA/f/WvfuIa0E+Cw5+UKM3ptx9QI+Dk68OY7mxVBe5Uwka4aknl
-         g5VA==
-X-Gm-Message-State: AOAM53030acAA+0vtdnBwRjfL5MMbOeH0mRfw3ArRSfUHcOEJcH3fEDI
-        kymCTsv6TWsG+oiSMLb30hVGHek1yqU=
-X-Google-Smtp-Source: ABdhPJywoFfmeOAXu4lKAgkDverrd1RwKqApbMFzuiVZJTDoubS/DDsC0d472DIHe383xH03bFcdNQ==
-X-Received: by 2002:a05:6808:98e:: with SMTP id a14mr33170390oic.48.1636952178268;
-        Sun, 14 Nov 2021 20:56:18 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w19sm1841837oik.58.2021.11.14.20.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 20:56:17 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 14 Nov 2021 20:56:16 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.16-rc1
-Message-ID: <20211115045616.GA1012538@roeck-us.net>
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        id S229840AbhKOFFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 00:05:07 -0500
+Received: from mail-eopbgr1320092.outbound.protection.outlook.com ([40.107.132.92]:52771
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229488AbhKOFEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 00:04:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qkwk7rWVHb3V8qkTpDbwgA4LJnkVU8cM7Zy3DqdRqaXpLg7Sf8MsuYlxODKk5Xh+0IgBIGL2aCHKt9qDEi4P3XNXOmdLfEuHaPmHg9z0pYUcyfrCRMs8v+FX01GOyMwMmIAyAcDgXQ4giCkXLvEZtiTQjVAB7ih5Lu8KtnD+hoq7zpXnv7eeo1+QpU+LkO5fJXqEcL4P8INucKMWFaLxOgP9LuBD1GRiWuAhuJQD4avQQyI5DBeXyTdLqm4/LvCiHP0gu4oW9RnTLbWQAHsQN+8SGeVTqT48QdrQfaowZsEZ1AAnGGQbG+hRN45Fp++2aMcqgNG8r6yhJTvHxKb2cQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=97IRTGcVexradqIrSx7PArj/WTzygMoaAR2+3qqWHF8=;
+ b=A3qscRGgto1vzIKLNJrUu+AurbhSvw/6jN7GOVy6PVHQKXBPq0YIOWL8MxLxR9U6+EnUE92HFGGx5/pau3SyMhkTX3yp9JRyG2DoSFX+VJPvMI+CqELNRBOV/kinFKxEbC+gRARlkG5/7N6tvb+2KCKlOv/rvdzJ4SPk5f52pWkjuFwz00RqZLCQoyKyeUGahu+tJHXT/yHtgYrtNHjfSxCgMvEFxezdSXwBulrE3L/DYyDP8jLCTlH4xq0r5+xrvb5mu0yRRoP1t+yCmFLfu+OgMR1Ovtur2XgkcFqiUE59O51jVAuzigMZfAKkr+ZpPIkDs9qX4rnMfHOJivVgiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=97IRTGcVexradqIrSx7PArj/WTzygMoaAR2+3qqWHF8=;
+ b=hLKvrDO9JQmKURp7+kstyF/Aeq48Xsj94irAKodm8zgIpmI11B0ApPsvVailnTWyFUa2+ffG8SHUf0xIlsVYISiuvOc/V7z4K+YQMaNsGOzROgze8sOCkRdRYT9vd3ALt9BhsYhlF17HkT97u4ybEj89p7gdUPKmeM1RnVzL9Tg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
+ by HK2PR06MB3425.apcprd06.prod.outlook.com (2603:1096:202:3c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Mon, 15 Nov
+ 2021 05:01:43 +0000
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::814a:4668:a3bd:768]) by HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::814a:4668:a3bd:768%7]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 05:01:43 +0000
+From:   Guo Zhengkui <guozhengkui@vivo.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Guo Zhengkui <guozhengkui@vivo.com>,
+        Daode Huang <huangdaode@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Alejandro Colomar <colomar.6.4.3@gmail.com>
+Subject: [PATCH] hinic: use ARRAY_SIZE instead of ARRAY_LEN
+Date:   Mon, 15 Nov 2021 13:00:10 +0800
+Message-Id: <20211115050026.5622-1-guozhengkui@vivo.com>
+X-Mailer: git-send-email 2.20.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0093.apcprd02.prod.outlook.com
+ (2603:1096:4:90::33) To HK2PR06MB3492.apcprd06.prod.outlook.com
+ (2603:1096:202:2f::10)
+MIME-Version: 1.0
+Received: from localhost.localdomain (203.90.234.87) by SG2PR02CA0093.apcprd02.prod.outlook.com (2603:1096:4:90::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend Transport; Mon, 15 Nov 2021 05:01:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 25be90b5-97c8-483b-f1d2-08d9a7f5045d
+X-MS-TrafficTypeDiagnostic: HK2PR06MB3425:
+X-Microsoft-Antispam-PRVS: <HK2PR06MB342579EA5F6415D98250CA0EC7989@HK2PR06MB3425.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: daIulB/p4xRB7lJCB8MuKnVmg7T7wDmG4JiEDXQ9V7HKavvNUgEGpUFLLy/2NbPWmXa7GY5zEI91FK9RbYP/1lpWlI2h4r9Pkuql5LVSwS8DL3jziSJBFwMh4D4TpI3+LDy69grPeP+96sb0Zv/wN95fd7fHz37/+74ZJtHSQRMhyFWLum+pZB2Z9+FA3nTaQPJd4Hfr1IjMydFlQAPe2xUF/mnHJDynC7u6s38scgHmhzUzyIA6Ya5Aii+P5VhKUYU4YESw9GPha8XTJgIZ7shptEpuCQVyo7xxudHoMVbzuc/5B6vE9KLJOnNMSjDKwt27O7bcOPN1Ed4q/htrfqzHKzoG7sE0pFtyPrhqhbWEWXD3UyXiUmyLgGNrOb1AZILIrYpKZ799zGpcfD0E5ix8A4lLX8vf63b7nkNVh0L0knNoKuQu3GXYQQA6ZMEH1xiJdyBSec5dzU0Q4qpP8tWKoEaUGzl+D6kOVoF92mx04aYKHYyh1cRbLHH/R1m8quImfsazMaOKP28dPPFN6/jCpk4JUBGiFJ15B50X9Vom9B8aLWYdSZybbu9P25IYKM+pnros0J/g5acS17QjVoxd9IWlhBqSJiTi7rJNSlJxdvTD7/QBMzbBquT5Q/jlu386u+IkZHHpcyIkRo2bavudWxbWSyZwJpSayCwwYOrkFBi5S/7Uzdv19T09IhW1u7q+rIkzyuYtlynaoLqAllDQQK5UNjQY+tFyfJRHL1k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(38100700002)(38350700002)(6666004)(6512007)(8936002)(83380400001)(508600001)(4326008)(956004)(36756003)(2616005)(6486002)(86362001)(66556008)(52116002)(5660300002)(921005)(110136005)(2906002)(7416002)(66946007)(26005)(1076003)(316002)(186003)(8676002)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/GHFPHRVGYstj/yFC11n1TJq+0fBfnXGfCD4ZjedOEOb9BEw5DATPWpt57o2?=
+ =?us-ascii?Q?PCejLAywgexkqoRSdHf2vdRNmZZUxrBYn+3i8roCgpwRPqT5/dEvwYPL/F/Y?=
+ =?us-ascii?Q?Qk8nTWy7U2U0Ij/VDaHF6JeP9nTsdeXEG6opUbspGhrExIuBqyR/kQ3MJ/3/?=
+ =?us-ascii?Q?QRcAIll7g0y4DVP2X+FdzmxbEXJS5Z/wHdMyPonegKLXCwmXihdzPI1mJKMd?=
+ =?us-ascii?Q?xgNbMhiIZJC2yrjHOYiZxDMpgbbyTSYSDnMztbDz+V1yK+QoOXW6gjDP1M0o?=
+ =?us-ascii?Q?QvXRKnl6hwYRiuHDAmotNBNBMIDRTfTOtJH+51+Pw6MY8AT+/9+grSVB4atk?=
+ =?us-ascii?Q?6Za826CnbTV0akDDTW2gylXv/7rlqqfJcpgOc2zgAmYOa/MPo2Q7PPb/x0t+?=
+ =?us-ascii?Q?EdX4g8O06ndQMxBltrHrJSKkl97LgVGD3IJwL9jPl2CvKz5T9mSg03Pi/qbB?=
+ =?us-ascii?Q?4bQWYHoKawOhUOmGc6p3PKDRX2lX1ikK0ZT5qIZnw3pD2Me5e23P1iWUdCou?=
+ =?us-ascii?Q?cxUwjCou3CzhxF5lPuPhYD/jXJsoipIJzH1Tr1DJLWOFRKEwYO/2rG7Fg6cL?=
+ =?us-ascii?Q?L9DmJKyaVh6So1lAltkX54/8qtyzrp/ZIR9A1RRINIniKs3PbjCpmmsQvhc+?=
+ =?us-ascii?Q?oHugeqBIRpN4kgwnnGYqiYV7762ilqlYyYZS14jVxhkUYIHHdKY7r31L9B9b?=
+ =?us-ascii?Q?5FEST1n1HzTVlMBhWVTXxdHhjq+amZ6AY2w3HAl5NPChEpvqFNgKkUfDeaPJ?=
+ =?us-ascii?Q?ZXTP6C8yjLw+qa4XSzQoX/sFVTCM62O8ceV4bjGtx7wag5lYpoEq739IiRzS?=
+ =?us-ascii?Q?VKKQB2YpSXwNtkjHZBpx1I7b+9+FAVFGxsCBbzR2X7Qg6rCNzz+fAsQIfGau?=
+ =?us-ascii?Q?9qwSQiVSYnJYpDNyjDQJ7J6pAz9LJq7rxP4ZERZcEAWI4heljqVdXegdqpFi?=
+ =?us-ascii?Q?+vyhPpByNyD3OtcK3MTVECUKjxLCFc/MR+xpCFSZDB6MwxHF/eP16gXjOeCl?=
+ =?us-ascii?Q?HgsQQ5tycUChiJQ2wZ2W/TM5BuMLoY6gF2FTVMUoGEprQ2siscdwMcMF05Q7?=
+ =?us-ascii?Q?jpwNDCUWwUurNV6zYHey2za1ynR/D71VZTPhG+YXdVtr9os1bEyZNL7xY/nE?=
+ =?us-ascii?Q?hH2iMY/Yd+SEND+LT1ipPjaPUrHteLR17nd7tJQhb1VhJdBcjEOoPuiTkicI?=
+ =?us-ascii?Q?cN5oxLh3tZLkpwRWx9N8+qlYl/D0OQri6Iz260gVdA1Z4LZho7Uxt6WuVLs+?=
+ =?us-ascii?Q?60ngYYHYQgKH4qA5kwvUvAIUHUOQA8FCD8NdZ52n0M6WiJjHg49gtZv6Ckd7?=
+ =?us-ascii?Q?uchqf7B4/owsegA0StJZkRmMcgHbiOrBP18A3KZd27VUFGYPaDy/Zp5c2Z4M?=
+ =?us-ascii?Q?Er0FKwNz9wY2p+eqgZjaUHA3Trop8hrJsMbHV+u0GHXIFlMQgERbcnJeZrcx?=
+ =?us-ascii?Q?bHctPem66QEaBHeIMxu+rY9mJ5BH0kyl8xrOoeDe0IUweKE9s5xcwnl8061g?=
+ =?us-ascii?Q?mT9i37s5mlTl5K93sVq+3FPik8HVSYUpARDDzGvhWfdJDjS7/jXRNl2SAxso?=
+ =?us-ascii?Q?9y+EGGLHPmrhw0VMV01El/fhkmeEh59UfE6TXuVlMKx5D7uJjaP9ywlWkG43?=
+ =?us-ascii?Q?ehnoRUU2Vg9eaEqmjCFWXnI=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25be90b5-97c8-483b-f1d2-08d9a7f5045d
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 05:01:43.3596
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7BPonnTcxKjiitmGkqjPyyJIzuBoC7D/UyGeyXjrVe/duOAXWaWx6CUu/CWEfpwNfoqIX2zomIGGGbZvTEDoqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3425
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 02:28:55PM -0800, Linus Torvalds wrote:
-> It's been two weeks, and the merge window is thus closed.
-> 
-> I actually anticipated more problems during the merge window than we
-> hit - I was traveling with a laptop for a few days early on in the
-> merge window, and that's usually fairly painful. But - knock wood - it
-> all worked out fine. Partly thanks to a lot of people sending in their
-> pull requests fairly early, so that I could get a bit of a head start
-> before travels. But partly also because I didn't end up having any
-> "uhhuh, things aren't working and now I need to bisect where they
-> broke" events for me on any of my machines. At least yet.
-> 
-> So who knows? Maybe this will be one of those painless releases where
-> everything just works.
-> 
+ARRAY_SIZE defined in <linux/kernel.h> is safer than self-defined
+macros to get size of an array such as ARRAY_LEN used here. Because
+ARRAY_SIZE uses __must_be_array(arr) to ensure arr is really an array.
 
-I don't think so.
+Reported-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+---
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c | 32 +++++++++----------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
-Build results:
-	total: 153 pass: 141 fail: 12
-Failed builds:
-	arm:allmodconfig
-	arm64:allmodconfig
-	csky:defconfig
-	csky:allmodconfig
-	mips:allmodconfig
-	parisc:allmodconfig
-	powerpc:allmodconfig
-	powerpc:ppc6xx_defconfig
-	riscv32:allmodconfig
-	riscv:allmodconfig
-	s390:allmodconfig
-	sparc64:allmodconfig
-Qemu test results:
-	total: 482 pass: 436 fail: 46
-Failed tests:
-	<all mips>
-	ppc64:mac99:ppc64_book3s_defconfig:smp:net,ne2k_pci:initrd
-	ppc64:mac99:ppc64_book3s_defconfig:smp:net,pcnet:ide:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:net,e1000:sdhci:mmc:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:net,e1000e:nvme:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:net,virtio-net:scsi[DC395]:rootfs
-	<all sheb>
-	<all sparc32>
-	<all xtensa>
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+index a85667078b72..a35a80f9a234 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+@@ -1205,8 +1205,6 @@ static u32 hinic_get_rxfh_indir_size(struct net_device *netdev)
+ 	return HINIC_RSS_INDIR_SIZE;
+ }
+ 
+-#define ARRAY_LEN(arr) ((int)((int)sizeof(arr) / (int)sizeof(arr[0])))
+-
+ #define HINIC_FUNC_STAT(_stat_item) {	\
+ 	.name = #_stat_item, \
+ 	.size = sizeof_field(struct hinic_vport_stats, _stat_item), \
+@@ -1374,7 +1372,7 @@ static void get_drv_queue_stats(struct hinic_dev *nic_dev, u64 *data)
+ 			break;
+ 
+ 		hinic_txq_get_stats(&nic_dev->txqs[qid], &txq_stats);
+-		for (j = 0; j < ARRAY_LEN(hinic_tx_queue_stats); j++, i++) {
++		for (j = 0; j < ARRAY_SIZE(hinic_tx_queue_stats); j++, i++) {
+ 			p = (char *)&txq_stats +
+ 				hinic_tx_queue_stats[j].offset;
+ 			data[i] = (hinic_tx_queue_stats[j].size ==
+@@ -1387,7 +1385,7 @@ static void get_drv_queue_stats(struct hinic_dev *nic_dev, u64 *data)
+ 			break;
+ 
+ 		hinic_rxq_get_stats(&nic_dev->rxqs[qid], &rxq_stats);
+-		for (j = 0; j < ARRAY_LEN(hinic_rx_queue_stats); j++, i++) {
++		for (j = 0; j < ARRAY_SIZE(hinic_rx_queue_stats); j++, i++) {
+ 			p = (char *)&rxq_stats +
+ 				hinic_rx_queue_stats[j].offset;
+ 			data[i] = (hinic_rx_queue_stats[j].size ==
+@@ -1411,7 +1409,7 @@ static void hinic_get_ethtool_stats(struct net_device *netdev,
+ 		netif_err(nic_dev, drv, netdev,
+ 			  "Failed to get vport stats from firmware\n");
+ 
+-	for (j = 0; j < ARRAY_LEN(hinic_function_stats); j++, i++) {
++	for (j = 0; j < ARRAY_SIZE(hinic_function_stats); j++, i++) {
+ 		p = (char *)&vport_stats + hinic_function_stats[j].offset;
+ 		data[i] = (hinic_function_stats[j].size ==
+ 				sizeof(u64)) ? *(u64 *)p : *(u32 *)p;
+@@ -1420,8 +1418,8 @@ static void hinic_get_ethtool_stats(struct net_device *netdev,
+ 	port_stats = kzalloc(sizeof(*port_stats), GFP_KERNEL);
+ 	if (!port_stats) {
+ 		memset(&data[i], 0,
+-		       ARRAY_LEN(hinic_port_stats) * sizeof(*data));
+-		i += ARRAY_LEN(hinic_port_stats);
++		       ARRAY_SIZE(hinic_port_stats) * sizeof(*data));
++		i += ARRAY_SIZE(hinic_port_stats);
+ 		goto get_drv_stats;
+ 	}
+ 
+@@ -1430,7 +1428,7 @@ static void hinic_get_ethtool_stats(struct net_device *netdev,
+ 		netif_err(nic_dev, drv, netdev,
+ 			  "Failed to get port stats from firmware\n");
+ 
+-	for (j = 0; j < ARRAY_LEN(hinic_port_stats); j++, i++) {
++	for (j = 0; j < ARRAY_SIZE(hinic_port_stats); j++, i++) {
+ 		p = (char *)port_stats + hinic_port_stats[j].offset;
+ 		data[i] = (hinic_port_stats[j].size ==
+ 				sizeof(u64)) ? *(u64 *)p : *(u32 *)p;
+@@ -1449,14 +1447,14 @@ static int hinic_get_sset_count(struct net_device *netdev, int sset)
+ 
+ 	switch (sset) {
+ 	case ETH_SS_TEST:
+-		return ARRAY_LEN(hinic_test_strings);
++		return ARRAY_SIZE(hinic_test_strings);
+ 	case ETH_SS_STATS:
+ 		q_num = nic_dev->num_qps;
+-		count = ARRAY_LEN(hinic_function_stats) +
+-			(ARRAY_LEN(hinic_tx_queue_stats) +
+-			ARRAY_LEN(hinic_rx_queue_stats)) * q_num;
++		count = ARRAY_SIZE(hinic_function_stats) +
++			(ARRAY_SIZE(hinic_tx_queue_stats) +
++			ARRAY_SIZE(hinic_rx_queue_stats)) * q_num;
+ 
+-		count += ARRAY_LEN(hinic_port_stats);
++		count += ARRAY_SIZE(hinic_port_stats);
+ 
+ 		return count;
+ 	default:
+@@ -1476,27 +1474,27 @@ static void hinic_get_strings(struct net_device *netdev,
+ 		memcpy(data, *hinic_test_strings, sizeof(hinic_test_strings));
+ 		return;
+ 	case ETH_SS_STATS:
+-		for (i = 0; i < ARRAY_LEN(hinic_function_stats); i++) {
++		for (i = 0; i < ARRAY_SIZE(hinic_function_stats); i++) {
+ 			memcpy(p, hinic_function_stats[i].name,
+ 			       ETH_GSTRING_LEN);
+ 			p += ETH_GSTRING_LEN;
+ 		}
+ 
+-		for (i = 0; i < ARRAY_LEN(hinic_port_stats); i++) {
++		for (i = 0; i < ARRAY_SIZE(hinic_port_stats); i++) {
+ 			memcpy(p, hinic_port_stats[i].name,
+ 			       ETH_GSTRING_LEN);
+ 			p += ETH_GSTRING_LEN;
+ 		}
+ 
+ 		for (i = 0; i < nic_dev->num_qps; i++) {
+-			for (j = 0; j < ARRAY_LEN(hinic_tx_queue_stats); j++) {
++			for (j = 0; j < ARRAY_SIZE(hinic_tx_queue_stats); j++) {
+ 				sprintf(p, hinic_tx_queue_stats[j].name, i);
+ 				p += ETH_GSTRING_LEN;
+ 			}
+ 		}
+ 
+ 		for (i = 0; i < nic_dev->num_qps; i++) {
+-			for (j = 0; j < ARRAY_LEN(hinic_rx_queue_stats); j++) {
++			for (j = 0; j < ARRAY_SIZE(hinic_rx_queue_stats); j++) {
+ 				sprintf(p, hinic_rx_queue_stats[j].name, i);
+ 				p += ETH_GSTRING_LEN;
+ 			}
+-- 
+2.20.1
 
-Various compile errors:
-
-arm:allmodconfig
-arm64:allmodconfig
-riscv32:allmodconfig
-riscv64:allmodconfig
-s390:allmodconfig
-
-In function 'memcmp',
-    inlined from 'kasan_memcmp' at lib/test_kasan.c:897:2:
-include/linux/fortify-string.h:263:25: error:
-	call to '__read_overflow' declared with attribute error: detected read beyond size of object
-
-csky:defconfig
-sparc64:allmodconfig
-
-fs/netfs/read_helper.c: In function 'netfs_rreq_unlock':
-fs/netfs/read_helper.c:435:25: error: implicit declaration of function 'flush_dcache_folio'
-
-mips:allmodconfig
-
-ERROR: modpost: missing MODULE_LICENSE() in drivers/pci/controller/pcie-mt7621.o
-ERROR: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-
-parisc:allmodconfig
-
-arch/parisc/include/asm/jump_label.h: In function 'arch_static_branch':
-arch/parisc/include/asm/jump_label.h:18:18: error: expected ':' before '__stringify'
-
-and other similar errors.
-
-drivers/gpu/drm/msm/msm_drv.h:531: error: "COND" redefined
-arch/parisc/include/asm/assembly.h:37: note: this is the location of the previous definition
-
-powerpc:allmodconfig
-
-fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-fs/ntfs/aops.c:1311:1: error: the frame size of 2240 bytes is larger than 2048 bytes
-
-powerpc:ppc6xx_defconfig
-
-arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c: In function 'mcu_remove':
-arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c:189:13: error: unused variable 'ret'
-
-With gcc 5.4, mips:mapta_defconfig
-
-mips-linux-gcc.br_real: error: unrecognized command line option ‘-Wimplicit-fallthrough=5’
-
-Various powerpc qemu builds:
-
-arch/powerpc/mm/slice.c: In function ‘slice_get_unmapped_area’:
-arch/powerpc/mm/slice.c:639:1: error: the frame size of 1056 bytes is larger than 1024 bytes
-
-sheb, gcc-6.3.0:
-
-sh4eb-linux-gcc.br_real: error: unrecognized command line option ‘-Wimplicit-fallthrough=5’
-
-sparc32, gcc 6.5.0:
-
-sparc64-linux-gcc.br_real: error: unrecognized command line option ‘-Wimplicit-fallthrough=5’
-
-xtensa, gcc 6.3.0 and gcc 6.4.0:
-
-xtensa-linux-gcc.br_real: error: unrecognized command line option ‘-Wimplicit-fallthrough=5’
-
-Some of those, like the kasan and the mips build errors, have been fixed
-in -next. The "unrecognized command line option" is brand new. I did not
-have time to look into the others. From a testing perspective this release
-was a nightmare: at times there were more than 100 qemu boot test failures
-in my tests. Ultimately that means that bisectability will be limited.
-
-Not that it helps, but yesterday the situation looked much better than
-today.
-
-Guenter
