@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012BC45215C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9303452442
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350181AbhKPBDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:03:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
+        id S241219AbhKPBgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:36:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245735AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 659E863289;
-        Mon, 15 Nov 2021 18:40:21 +0000 (UTC)
+        id S242417AbhKOSgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:36:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE8E6326C;
+        Mon, 15 Nov 2021 18:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001621;
-        bh=g9YqIBsJqPHUuvpLJDbPcXidbZmOm3hbsrEoiwDQWSs=;
+        s=korg; t=1636999367;
+        bh=8Ch3EU3UK83abFyDFxq8C9tda3V4GfTWuRtUmaB6dXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MBqNIV1KywugpJydBLQL3d7LTA4thSa/tSLwbSaczeO4vD1HDSRCU7ARZNceIfe2s
-         NPRJBFYiXJtmjePcr06jfRWMxBUh3oxYOuL0eelSgzJLsQW9NSgggPij0ZKQ7UdKXE
-         h6PiiW3mlMfYeSLCg41zbt0xP1gGRAosBx4uTDHw=
+        b=o16OJqN2pU2bH6RgVp0F+0L9iuuZj42/+FzJDewueC4gcU4XumqUeGqIUzLvzipSv
+         iBL94DAVUOBkuwTmqHlyQrgAGlwDdOlhHklirA5ZD11YOY4Eql3dUz26uTJhn4sK8G
+         qfrmkDl/8wk7oEHGeAVVrubPwVBzp3vBCVy7plvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 259/917] leaking_addresses: Always print a trailing newline
+Subject: [PATCH 5.14 271/849] mmc: moxart: Fix reference count leaks in moxart_probe
 Date:   Mon, 15 Nov 2021 17:55:54 +0100
-Message-Id: <20211115165437.573360982@linuxfoundation.org>
+Message-Id: <20211115165429.412105624@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
+[ Upstream commit 8105c2abbf36296bf38ca44f55ee45d160db476a ]
 
-For files that lack trailing newlines and match a leaking address (e.g.
-wchan[1]), the leaking_addresses.pl report would run together with the
-next line, making things look corrupted.
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement one or both objects'
+reference count increased earlier by dma_request_chan(), causing
+reference count leaks.
 
-Unconditionally remove the newline on input, and write it back out on
-output.
+Fix it by balancing the refcounts of both objects in some error
+handling paths. In correspondence with the changes in moxart_probe(),
+IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
 
-[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/20211009041918.28419-1-xiongx18@fudan.edu.cn
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/leaking_addresses.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
-index b2d8b8aa2d99e..8f636a23bc3f2 100755
---- a/scripts/leaking_addresses.pl
-+++ b/scripts/leaking_addresses.pl
-@@ -455,8 +455,9 @@ sub parse_file
- 
- 	open my $fh, "<", $file or return;
- 	while ( <$fh> ) {
-+		chomp;
- 		if (may_leak_address($_)) {
--			print $file . ': ' . $_;
-+			printf("$file: $_\n");
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 6c9d38132f74c..7b9fcef490de7 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
+ 			ret = -EPROBE_DEFER;
+ 			goto out;
  		}
- 	}
- 	close $fh;
++		if (!IS_ERR(host->dma_chan_tx)) {
++			dma_release_channel(host->dma_chan_tx);
++			host->dma_chan_tx = NULL;
++		}
++		if (!IS_ERR(host->dma_chan_rx)) {
++			dma_release_channel(host->dma_chan_rx);
++			host->dma_chan_rx = NULL;
++		}
+ 		dev_dbg(dev, "PIO mode transfer enabled\n");
+ 		host->have_dma = false;
+ 	} else {
+@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out:
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
++		dma_release_channel(host->dma_chan_tx);
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
++		dma_release_channel(host->dma_chan_rx);
+ 	if (mmc)
+ 		mmc_free_host(mmc);
+ 	return ret;
+@@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, NULL);
+ 
+-	if (!IS_ERR(host->dma_chan_tx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+ 		dma_release_channel(host->dma_chan_tx);
+-	if (!IS_ERR(host->dma_chan_rx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+ 		dma_release_channel(host->dma_chan_rx);
+ 	mmc_remove_host(mmc);
+ 	mmc_free_host(mmc);
 -- 
 2.33.0
 
