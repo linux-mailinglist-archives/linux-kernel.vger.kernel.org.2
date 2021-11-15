@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5163845110A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456C4451108
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbhKOTAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:00:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
+        id S238489AbhKOTAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237492AbhKORju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237703AbhKORju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:39:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93EA16326F;
-        Mon, 15 Nov 2021 17:26:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4094963255;
+        Mon, 15 Nov 2021 17:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997168;
-        bh=XyEOQ2Uhi8Dk+Ki1OohyONEwrWz+HBmc9Y8BVNDNPoA=;
+        s=korg; t=1636997170;
+        bh=AAUqR2G3xqVKK6kcnXLtci/+oRXd0dLMkQ8vN+VtREE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zB0/HN9axKQAINWVeUTyeIxEdRF+55ovOC+ICXbCvQ7lhRBF+joDAhA5c6aXfYUyT
-         Qo/sqsw+g8Qm4LSl2B4Pi/S/0zzRU/WfcqPKN/JXqJSwlHGumD83KxO7C1t1zHCDpJ
-         cyy69CzIbwtZ8voi2VKuo8gqZOReREAA72zO6WrI=
+        b=knKLudDooLM1H9Hi/yGWICpPqLScfsevnjd5kfur5KxqDIxLZVaswOgk867djAF8Y
+         iiUnKC3xKOYo73Pdr6If7Ki3JoIjjPitBs32U4B7rna6fdVhteQXJIbZkQD7O/7Jou
+         7ncpvgZbj4ZfAZFihUbBjDO11FlTDHHyitrLLo6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 050/575] ASoC: soc-core: fix null-ptr-deref in snd_soc_del_component_unlocked()
-Date:   Mon, 15 Nov 2021 17:56:15 +0100
-Message-Id: <20211115165345.368459729@linuxfoundation.org>
+        stable@vger.kernel.org, Davide Baldo <davide@baldo.me>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 051/575] ALSA: hda/realtek: Fixes HP Spectre x360 15-eb1xxx speakers
+Date:   Mon, 15 Nov 2021 17:56:16 +0100
+Message-Id: <20211115165345.402692298@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,48 +39,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Davide Baldo <davide@baldo.me>
 
-[ Upstream commit c448b7aa3e66042fc0f849d9a0fb90d1af82e948 ]
+[ Upstream commit d94befbb5ae379f6dfd4fa6d460eacc09fa7b9c3 ]
 
-'component' is allocated in snd_soc_register_component(), but component->list
-is not initalized, this may cause snd_soc_del_component_unlocked() deref null
-ptr in the error handing case.
+In laptop 'HP Spectre x360 Convertible 15-eb1xxx/8811' both front and
+rear speakers are silent, this patch fixes that by overriding the pin
+layout and by initializing the amplifier which needs a GPIO pin to be
+set to 1 then 0, similar to the existing HP Spectre x360 14 model.
 
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-RIP: 0010:__list_del_entry_valid+0x81/0xf0
-Call Trace:
- snd_soc_del_component_unlocked+0x69/0x1b0 [snd_soc_core]
- snd_soc_add_component.cold+0x54/0x6c [snd_soc_core]
- snd_soc_register_component+0x70/0x90 [snd_soc_core]
- devm_snd_soc_register_component+0x5e/0xd0 [snd_soc_core]
- tas2552_probe+0x265/0x320 [snd_soc_tas2552]
- ? tas2552_component_probe+0x1e0/0x1e0 [snd_soc_tas2552]
- i2c_device_probe+0xa31/0xbe0
+In order to have volume control, both front and rear speakers were
+forced to use the DAC1.
 
-Fix by adding INIT_LIST_HEAD() to snd_soc_component_initialize().
+This patch also correctly map the mute LED but since there is no
+microphone on/off switch exposed by the alsa subsystem it never turns
+on by itself.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211009065840.3196239-1-yangyingliang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+There are still known audio issues in this laptop: headset microphone
+doesn't work, the button to mute/unmute microphone is not yet mapped,
+the LED of the mute/unmute speakers doesn't seems to be exposed via
+GPIO and never turns on.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213953
+Signed-off-by: Davide Baldo <davide@baldo.me>
+Link: https://lore.kernel.org/r/20211015072121.5287-1-davide@baldo.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 46 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e677422c10585..1332965968646 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2454,6 +2454,7 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
- 	INIT_LIST_HEAD(&component->dai_list);
- 	INIT_LIST_HEAD(&component->dobj_list);
- 	INIT_LIST_HEAD(&component->card_list);
-+	INIT_LIST_HEAD(&component->list);
- 	mutex_init(&component->io_mutex);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 5b28275147057..2eb06351de1fb 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6363,6 +6363,44 @@ static void alc_fixup_no_int_mic(struct hda_codec *codec,
+ 	}
+ }
  
- 	component->name = fmt_single_name(dev, &component->id);
++/* GPIO1 = amplifier on/off
++ * GPIO3 = mic mute LED
++ */
++static void alc285_fixup_hp_spectre_x360_eb1(struct hda_codec *codec,
++					  const struct hda_fixup *fix, int action)
++{
++	static const hda_nid_t conn[] = { 0x02 };
++
++	struct alc_spec *spec = codec->spec;
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x14, 0x90170110 },  /* front/high speakers */
++		{ 0x17, 0x90170130 },  /* back/bass speakers */
++		{ }
++	};
++
++	//enable micmute led
++	alc_fixup_hp_gpio_led(codec, action, 0x00, 0x04);
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		spec->micmute_led_polarity = 1;
++		/* needed for amp of back speakers */
++		spec->gpio_mask |= 0x01;
++		spec->gpio_dir |= 0x01;
++		snd_hda_apply_pincfgs(codec, pincfgs);
++		/* share DAC to have unified volume control */
++		snd_hda_override_conn_list(codec, 0x14, ARRAY_SIZE(conn), conn);
++		snd_hda_override_conn_list(codec, 0x17, ARRAY_SIZE(conn), conn);
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		/* need to toggle GPIO to enable the amp of back speakers */
++		alc_update_gpio_data(codec, 0x01, true);
++		msleep(100);
++		alc_update_gpio_data(codec, 0x01, false);
++		break;
++	}
++}
++
+ static void alc285_fixup_hp_spectre_x360(struct hda_codec *codec,
+ 					  const struct hda_fixup *fix, int action)
+ {
+@@ -6515,6 +6553,7 @@ enum {
+ 	ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED,
+ 	ALC280_FIXUP_HP_9480M,
+ 	ALC245_FIXUP_HP_X360_AMP,
++	ALC285_FIXUP_HP_SPECTRE_X360_EB1,
+ 	ALC288_FIXUP_DELL_HEADSET_MODE,
+ 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC288_FIXUP_DELL_XPS_13,
+@@ -8205,6 +8244,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_hp_spectre_x360,
+ 	},
++	[ALC285_FIXUP_HP_SPECTRE_X360_EB1] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_spectre_x360_eb1
++	},
+ 	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_ideapad_s740_coef,
+@@ -8555,6 +8598,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+ 	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8811, "HP Spectre x360 15-eb1xxx", ALC285_FIXUP_HP_SPECTRE_X360_EB1),
++	SND_PCI_QUIRK(0x103c, 0x8812, "HP Spectre x360 15-eb1xxx", ALC285_FIXUP_HP_SPECTRE_X360_EB1),
+ 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+@@ -8979,6 +9024,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
++	{.id = ALC285_FIXUP_HP_SPECTRE_X360_EB1, .name = "alc285-hp-spectre-x360-eb1"},
+ 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
+ 	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
+ 	{.id = ALC255_FIXUP_ACER_HEADPHONE_AND_MIC, .name = "alc255-acer-headphone-and-mic"},
 -- 
 2.33.0
 
