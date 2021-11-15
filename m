@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A612E45029C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D124502E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhKOKlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:41:53 -0500
-Received: from mga03.intel.com ([134.134.136.65]:65461 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237554AbhKOKlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:41:18 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233358804"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="233358804"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:38:14 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="671461205"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:38:12 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mmZND-0071tm-OB;
-        Mon, 15 Nov 2021 12:38:03 +0200
-Date:   Mon, 15 Nov 2021 12:38:03 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v1 1/1] printk: Remove printk.h inclusion in percpu.h
-Message-ID: <YZI4i5hsgD4pDjoQ@smile.fi.intel.com>
-References: <20211112140749.80042-1-andriy.shevchenko@linux.intel.com>
- <YY6vV2zUTdH5SNt5@fedora>
- <YZIs1FvxA0hKylNd@alley>
+        id S231207AbhKOK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:59:39 -0500
+Received: from cnshjsmin03.app.nokia-sbell.com ([116.246.26.71]:37131 "EHLO
+        CNSHJSMIN03.NOKIA-SBELL.COM" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230456AbhKOK7L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:59:11 -0500
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 05:59:09 EST
+X-AuditID: ac189297-7e7ff7000000e1d5-6f-619239423c96
+Received: from CNSHPPEXCH1609.nsn-intra.net (Unknown_Domain [135.251.51.109])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by CNSHJSMIN03.NOKIA-SBELL.COM (Symantec Messaging Gateway) with SMTP id 58.63.57813.24932916; Mon, 15 Nov 2021 18:41:06 +0800 (HKT)
+Received: from CNSHPPEXCH1604.nsn-intra.net (135.251.51.104) by
+ CNSHPPEXCH1609.nsn-intra.net (135.251.51.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 15 Nov 2021 18:41:06 +0800
+Received: from CNSHPPEXCH1604.nsn-intra.net ([135.251.51.104]) by
+ CNSHPPEXCH1604.nsn-intra.net ([135.251.51.104]) with mapi id 15.01.2242.012;
+ Mon, 15 Nov 2021 18:41:06 +0800
+From:   "Wang, Lawrence (NSB - CN/Hangzhou)" <lawrence.wang@nokia-sbell.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang@wrlinb193.emea.nsn-net.net" <Wang@wrlinb193.emea.nsn-net.net>
+Subject: RE: [PATCH] i2c: designware: Get HCNT/LCNT values from dts
+Thread-Topic: [PATCH] i2c: designware: Get HCNT/LCNT values from dts
+Thread-Index: AQHX2gQzxQOOCXSt8UerjvWLFXHhaawD2mMAgAACfwCAAIZzsA==
+Date:   Mon, 15 Nov 2021 10:41:06 +0000
+Message-ID: <587c61a76c8547d0a36dd11071bfcb2d@nokia-sbell.com>
+References: <20211115093556.7154-1-lawrence.wang@nokia-sbell.com>
+ <YZI0LuDK63+Wb7wi@smile.fi.intel.com> <YZI2RnFgO0Y75KlF@smile.fi.intel.com>
+In-Reply-To: <YZI2RnFgO0Y75KlF@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [135.251.51.115]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZIs1FvxA0hKylNd@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsXS/ts4V9fJclKiwZzFVha9TdOZLOa8Wc5i
+        0fH3C6PF5V1z2CymbD/CbnGhp5XJgc1j3slAj8+b5Dw+XP/OFMAcxWWTkpqTWZZapG+XwJWx
+        ZHYPS8Ez+YqGz8tZGxj/yHUxcnBICJhIzOnQ72Lk4hASOMQkse3+U2YI5x+jxJu3rxi7GDmB
+        nE2MEsseB4A0sAl4SVydnA0SFhEwl1g3aREbSD2zwFkmiV2PHzODJIQFnCV2tGxngyhykTi9
+        cBeU7SSxb/cxdhCbRUBVYnLzDLA4r4CdREvDGhaIxf2MEpfePwMbxClgJHGkfRLYEYwCYhLf
+        T61hArGZBcQlbj2ZD2ZLCAhILNlznhnCFpV4+fgfK8RnShJ9G6DKtSTmNfyGshUlpnQ/ZIfY
+        KyhxcuYTlgmMYrOQTJ2FpGUWkpZZSFoWMLKsYpR29gv28Ar29fQzMNbz8/f2dNQNdnL18dFz
+        9vfdxAiMvDUSk6bvYDw395veIUYmDsZDjBIczEoivAnTJiYK8aYkVlalFuXHF5XmpBYfYpTm
+        YFES5y3635AoJJCeWJKanZpakFoEk2Xi4JRqYGIKYyk/xHTN1vhT72FB3TX9bgvnigm7dU9i
+        uHie/b206qYl9xaqzRLqbRNZHLbs+xml9QXpdtordPSf3JZ2XnxF4FYe37vGb/O39NUuM9Sq
+        sz91JEPOP25l9w8Nttz1s3urTt8SZFw8/731snWTfpekTj3Mqdb6tcCeK4j1ary9l+7zVads
+        /ZMrd5cJ6guUikmZHizd9ZC5S9JGNaosd+t86VKeGd6y6q+49dpV4jq0PTf93s5teMKR98r8
+        nf/0Of0m2S1yttuwfX08q8Dnkpe7FxWx5B+8toF334dnhX03BEL5S3yZ/Od2tF0wObks78zB
+        y2UyPM/VfrC07BBn71g954Cr+CnpqPZVx5V+KLEUZyQaajEXFScCAHmhWQ0rAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:48:04AM +0100, Petr Mladek wrote:
-> On Fri 2021-11-12 13:15:51, Dennis Zhou wrote:
-> > On Fri, Nov 12, 2021 at 04:07:49PM +0200, Andy Shevchenko wrote:
-> > > After the commit 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
-> > > in NMI") the printk.h is not needed anymore in percpu.h.
-> > > 
-> > > Moreover `make headerdep` complains (an excerpt)
-> > > 
-> > > In file included from linux/printk.h,
-> > >                  from linux/dynamic_debug.h:188
-> > >                  from linux/printk.h:559 <-- here
-> > >                  from linux/percpu.h:9
-> > >                  from linux/idr.h:17
-> > > include/net/9p/client.h:13: warning: recursive header inclusion
-> > > 
-> > > Yeah, it's not a root cause of this, but removing will help to reduce
-> > > the noise.
-> > > 
-> > > Fixes: 42a0bb3f7138 ("printk/nmi: generic solution for safe printk
-> > > in NMI")
-> 
-> Yup, the include was there because of printk_func_t definition that
-> was removed by the above commit.
-> 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> 
-> > Hey Andrew, it doesn't seem like I have anything big coming through
-> > percpu, do you mind taking this. I might have some stuff due to sh, but
-> > I'm still working on that with them.
-> 
-> I assume that either Andrew or Dennis will take this patch.
-
-I assumed you take it, that's why I haven't Cc'ed Andrew in the first place,
-but it seems you have a consensus with Dennis that Andrew is the best
-maintainer to take this. So, I'll send v2 with tags and Cc to him.
-
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+SGVsbG8gU2hldmNoZW5rbw0KDQpUaGFua3MgZm9yIHlvdXIgcXVpY2sgcmVwbHkuDQoNCkJlc2lk
+ZXMgdGhlIGZhY3QgaXQgbWlzc2VzIERUIHNjaGVtYSB1cGRhdGUsIHdoeSB0aGlzIGlzIG5lZWRl
+ZCBhdCBhbGw/IA0KLS0tLS0tPiB3ZSBuZWVkIGEgaW50ZXJmYWNlIHRvIGNvbmZpZ3VyZSB0aGUg
+SENOVC9MQ05UIHZpYSBkdHMgKGN1cnJlbnQgd2UganVzdCBoYXZlIEFDUEkgdG8gY29uZmlnIGl0
+KS4NCldoYXQncyB3cm9uZyB3aXRoIHRoZSBleGlzdGluZyBEVCB0aW1pbmdzPyANCi0tLS0tLS0t
+PiB0aGUgSENOVC9MQ05UIHZhbHVlIGNhbGN1bGF0ZWQgYnkgY29kZSBpcyBub3QgYWNjdXJhY3ku
+IFRoaXMgaXMgc2ltaWxhciBjaGFuZ2VzIGFzIHRoZSBBQ1BJIGludGVyZmFjZS4NCglpMmNfZHdf
+YWNwaV9wYXJhbXMoZGV2aWNlLCAiU1NDTiIsICZkZXYtPnNzX2hjbnQsICZkZXYtPnNzX2xjbnQs
+ICZzc19odCk7DQoJaTJjX2R3X2FjcGlfcGFyYW1zKGRldmljZSwgIkZQQ04iLCAmZGV2LT5mcF9o
+Y250LCAmZGV2LT5mcF9sY250LCAmZnBfaHQpOw0KCWkyY19kd19hY3BpX3BhcmFtcyhkZXZpY2Us
+ICJIU0NOIiwgJmRldi0+aHNfaGNudCwgJmRldi0+aHNfbGNudCwgJmhzX2h0KTsNCglpMmNfZHdf
+YWNwaV9wYXJhbXMoZGV2aWNlLCAiRk1DTiIsICZkZXYtPmZzX2hjbnQsICZkZXYtPmZzX2xjbnQs
+ICZmc19odCk7DQoJCQkJCQkJCQkJICAgDQotIGkyYy1zY2wtZmFsbGluZy10aW1lLW5zDQotIGky
+Yy1zY2wtaW50ZXJuYWwtZGVsYXktbnMNCi0gaTJjLXNjbC1yaXNpbmctdGltZS1ucw0KLSBpMmMt
+c2RhLWZhbGxpbmctdGltZS1ucw0KWWVhaCwgSSBrbm93IHRob3NlIHByb3BlcnRpZXMuIEJ1dCB0
+aG9zZSBhcmUgY29tbW9uIGZvciBpMmMuDQpNeSBjaGFuZ2VzIGlzIGZvciB0aGUgc3BlY2lmaWMg
+SFcgY29udHJvbGxlcihkZXNpZ253YXJlKSBmb3IgY29uZmlndXJpbmcgaXRzIHR3byByZWdpc3Rl
+ciBIQ05UL0xDTlQuDQpJbiB0aGlzIGNhc2UsIHN0aWxsIHdlIG5lZWQgb25lIHByb3BlcnR5IHBl
+ciBlYWNoIHZhbHVlPw0KDQoNCi0tDQpXaXRoIEJlc3QgUmVnYXJkcywNCkxhd3JlbmNlLCBXYW5n
+DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBBbmR5IFNoZXZjaGVua28gPGFu
+ZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4gDQpTZW50OiAyMDIxxOoxMdTCMTXI1SAx
+ODoyOA0KVG86IFdhbmcsIExhd3JlbmNlIChOU0IgLSBDTi9IYW5nemhvdSkgPGxhd3JlbmNlLndh
+bmdAbm9raWEtc2JlbGwuY29tPg0KQ2M6IGphcmtrby5uaWt1bGFAbGludXguaW50ZWwuY29tOyBt
+aWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tOyBsaW51eC1pMmNAdmdlci5rZXJuZWwub3Jn
+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBXYW5nQHdybGluYjE5My5lbWVhLm5zbi1u
+ZXQubmV0DQpTdWJqZWN0OiBSZTogW1BBVENIXSBpMmM6IGRlc2lnbndhcmU6IEdldCBIQ05UL0xD
+TlQgdmFsdWVzIGZyb20gZHRzDQoNCk9uIE1vbiwgTm92IDE1LCAyMDIxIGF0IDEyOjE5OjI2UE0g
+KzAyMDAsIEFuZHkgU2hldmNoZW5rbyB3cm90ZToNCj4gT24gTW9uLCBOb3YgMTUsIDIwMjEgYXQg
+MTA6MzU6NTVBTSArMDEwMCwgTGF3cmVuY2UsV2FuZyB3cm90ZToNCj4gPiBGcm9tOiAiV2FuZywg
+TGF3cmVuY2UiIDxsYXdyZW5jZS53YW5nQG5va2lhLXNiZWxsLmNvbT4NCj4gPiANCj4gPiBDdXJy
+ZW50IGNvZGUgc3VwcG9ydCBjb25maWcgdGhlIEhDTlQvTENOVCBvbmx5IHZpYSBBQ1BJIG1ldGhv
+ZC4gZm9yIA0KPiA+IHRob3NlIHBsYXRmb3JtIHRoYXQgbm90IHN1cHBvcnQgQUNQSSwgd2lsbCBn
+ZXQgdGhlIEhDTlQvTENOVCB2YWx1ZSANCj4gPiBiYXNlZCBvbiBpbnB1dCBjbG9jay4gQnV0IGl0
+IGlzIG5vdCBhbHdheXMgYWNjdXJhY3kuIGZvciBleGFtcGxlIGluIA0KPiA+IHNvbWUgcGxhdGZv
+cm0gd2lsbCBnZXQgbG93ZXIgc3BlZWQoMzIwa2h6KSBpbiBmYXN0IG1vZGUsIGFuZCBnZXQgDQo+
+ID4gZmFzdGVyIHNwZWVkKDEwNWtoei9ldmVuIG1vcmUpIGluIHN0YW5kYXJkIG1vZGUuDQo+ID4g
+DQo+ID4gVGhpcyBwYXRjaCBtYWtlcyBpdCBwb3NzaWJsZSBmb3IgdGhlIG5vbi1BQ1BJIHBsYXRm
+b3JtIHRvIHBhc3MgbW9yZSANCj4gPiBvcHRpbWFsIEhDTlQvTENOVCB2YWx1ZXMgdG8gdGhlIGNv
+cmUgZHJpdmVyIHZpYSBkdHMgaWYgdGhleSBhcmUga25vd24gYmVmb3JlaGFuZC4NCj4gPiBJZiB0
+aGVzZSBhcmUgbm90IHNldCB3ZSB1c2UgdGhlIGNhbGN1bGF0ZWQgdmFsdWVzLg0KPiANCj4gQmVz
+aWRlcyB0aGUgZmFjdCBpdCBtaXNzZXMgRFQgc2NoZW1hIHVwZGF0ZSwgd2h5IHRoaXMgaXMgbmVl
+ZGVkIGF0IGFsbD8NCj4gV2hhdCdzIHdyb25nIHdpdGggdGhlIGV4aXN0aW5nIERUIHRpbWluZ3M/
+DQoNCkp1c3QgZm9yIHlvdXIgY29udmVuaWVuY2UgYW4gZXhjZXJwdCBmcm9tIERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLnR4dA0KDQotIGkyYy1zY2wtZmFsbGluZy10
+aW1lLW5zDQpOdW1iZXIgb2YgbmFub3NlY29uZHMgdGhlIFNDTCBzaWduYWwgdGFrZXMgdG8gZmFs
+bDsgdChmKSBpbiB0aGUgSTJDIHNwZWNpZmljYXRpb24uDQoNCi0gaTJjLXNjbC1pbnRlcm5hbC1k
+ZWxheS1ucw0KTnVtYmVyIG9mIG5hbm9zZWNvbmRzIHRoZSBJUCBjb3JlIGFkZGl0aW9uYWxseSBu
+ZWVkcyB0byBzZXR1cCBTQ0wuDQoNCi0gaTJjLXNjbC1yaXNpbmctdGltZS1ucw0KTnVtYmVyIG9m
+IG5hbm9zZWNvbmRzIHRoZSBTQ0wgc2lnbmFsIHRha2VzIHRvIHJpc2U7IHQocikgaW4gdGhlIEky
+QyBzcGVjaWZpY2F0aW9uLg0KDQotIGkyYy1zZGEtZmFsbGluZy10aW1lLW5zDQpOdW1iZXIgb2Yg
+bmFub3NlY29uZHMgdGhlIFNEQSBzaWduYWwgdGFrZXMgdG8gZmFsbDsgdChmKSBpbiB0aGUgSTJD
+IHNwZWNpZmljYXRpb24uDQoNCi0tDQpXaXRoIEJlc3QgUmVnYXJkcywNCkFuZHkgU2hldmNoZW5r
+bw0KDQoNCg==
