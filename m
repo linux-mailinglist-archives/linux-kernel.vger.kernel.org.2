@@ -2,200 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B409451BE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B058A451BEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhKPAI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350359AbhKOUXk (ORCPT
+        id S1354760AbhKPAIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:08:44 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46842 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349373AbhKOUMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:23:40 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C63C06122B
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:08:39 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id d27so33025005wrb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:08:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vv3++EAvq4bz+YuG3ou53n/DT6vcjuuoVxgm/bXL6Vw=;
-        b=ETdHq22ic93KuqD21fistzxz9DwapDxVE5IFlchvdlZLMZVkDkdQdtI0XfWM0TkRMo
-         7owXz/jTpVlQoqmO+nXOnmpKpkYm0l5uFLvT8Qobk+ks9yiZAscigvn/wu+20NFYsXsz
-         p+Zwq5DBi561IUJfq0Me8tBsFvjsxuiNVzw3DwofnZysI0e0XvegFAETn/Bad0dhhC0p
-         NrhzFo4UBQFQMxWbL0eDEAfrPHNfgX5VBDQmbs2NZ/avjNMU/5vcBiudHr+7SivjuCct
-         GcURA9tHOs9rXQi/w7PtVzwMCSMuUCDG2AlLExJ/TKtfJqjCgkofIaG2xyBX69GAK2h0
-         nV5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vv3++EAvq4bz+YuG3ou53n/DT6vcjuuoVxgm/bXL6Vw=;
-        b=bXa9EmJ9mPoR+bE8EyQot9seCMJxMwpn7Wx05ab1oD/kjj2RF+71TO0i5SSuswg0Lt
-         U/KdMBs8+7HNdXmAnwIspHD9ccxizowlufldu8v6fYH9UJEa0+ayNeN3JIrUyChyvbtx
-         e9xxzDJLo15cum8/sL4hcjeYbO4sUjiiOePmqHEDVyCKVGl64gV7HkcrCncnbkAEqbuu
-         MRM7Lc4ZGbwDP59YesugtUobDE6yU7b3DhpswzGdgOifwQrwIxoqbveUoCWmeLR7wcC3
-         7k8rPjeRvrJlzOSYoMbB0hx/hD8cLl3wMF9rM8RUc0+juIGqZg0DGc7filFplSZdmMSq
-         RkIw==
-X-Gm-Message-State: AOAM533kfMn09/hL6JZ2VPV6DHA7lJ+/pPpFgOMUejqUmuJDDhhpDpQ8
-        C88IxMMS84u08lvFtDDo/As=
-X-Google-Smtp-Source: ABdhPJzJcHuXy3LPbIo21wm3J2OBVA00Rxd1RPMy7rqvNd62ZvgeaLU5H2MB62p4KuUsBnAXDoedPg==
-X-Received: by 2002:adf:f947:: with SMTP id q7mr2120309wrr.260.1637006917995;
-        Mon, 15 Nov 2021 12:08:37 -0800 (PST)
-Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id h13sm15645389wrx.82.2021.11.15.12.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 12:08:37 -0800 (PST)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] ASoC: sunxi: sun4i-spdif: Implement IEC958 control
-Date:   Mon, 15 Nov 2021 21:08:33 +0100
-Message-Id: <20211115200833.452559-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Mon, 15 Nov 2021 15:12:08 -0500
+Date:   Mon, 15 Nov 2021 20:09:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637006949;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h7C3j6qNV9EvpK1L15B+3dts8d/yyelFHxK1xl+UHaU=;
+        b=GII00Hrr0wXIn2OkkBwsVJcoAkWgsbQc24UiIYt9UV+gEhCmN3ExrGFYrywgbTT0eT2HnX
+        ZDWOzIRO7MW2gH7Z5ck6Op71/YnsbMX9QK9zdQnd0jmJwRo2RmDHLluzoEGhK4tGhckvqE
+        YJtP827wjYK+/I9KoYVi74KBnYyfeLDFJHiBSkOzBzwIvr2YZULJtp6HLpfV5pO9sE7zEy
+        3MbXNaTQeI80Ub88YuyJ5kTOAELk3VyZlbYDFqNI1/+2vRBhB/IpTj0OTSttZzwj9xxSIp
+        2GkQsamLP1zqQUTiXEy6wWUtejRwd0xtv9mpJjvgIhYT0ZvPDWZV6IoK+echlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637006949;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h7C3j6qNV9EvpK1L15B+3dts8d/yyelFHxK1xl+UHaU=;
+        b=W34EfPflln7RLZNkaKxnGx01+hiczVY+Nf1E/YmEsciUUi71RG6Rcg7JHyFCmEh8EuZFOG
+        SKtL1DmSwpeAFeDw==
+From:   "tip-bot2 for Lucas De Marchi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/mm: Nuke PAGE_KERNEL_IO
+Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211021181511.1533377-3-lucas.demarchi@intel.com>
+References: <20211021181511.1533377-3-lucas.demarchi@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163700694839.414.7021126134852690042.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SPDIF core is capable of sending custom status.
+The following commit has been merged into the x86/mm branch of tip:
 
-Implement IEC958 control handling.
+Commit-ID:     27dff0f58bdef4bcafdad8a8c2217d561bcf9506
+Gitweb:        https://git.kernel.org/tip/27dff0f58bdef4bcafdad8a8c2217d561bcf9506
+Author:        Lucas De Marchi <lucas.demarchi@intel.com>
+AuthorDate:    Thu, 21 Oct 2021 11:15:11 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Mon, 15 Nov 2021 10:57:55 -08:00
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+x86/mm: Nuke PAGE_KERNEL_IO
+
+PAGE_KERNEL_IO is only defined for x86 and nowadays is the same as
+PAGE_KERNEL. It was different for some time, OR'ing a `_PAGE_IOMAP` flag
+in commit be43d72835ba ("x86: add _PAGE_IOMAP pte flag for IO
+mappings").  This got removed in commit f955371ca9d3 ("x86: remove the
+Xen-specific _PAGE_IOMAP PTE flag"), so today they are just the same.
+
+With the last users outside arch/x86 being remove we can now remove
+PAGE_KERNEL_IO.
+
+[ dhansen: dropped arch/x86/xen/setup.c hunk.  This
+	   9a58b352e9e8 ("xen/x86: restrict PV Dom0 identity mapping")
+	   already axed its use of PAGE_KERNEL_IO ]
+
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20211021181511.1533377-3-lucas.demarchi@intel.com
 ---
- sound/soc/sunxi/sun4i-spdif.c | 99 +++++++++++++++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
+ arch/x86/include/asm/fixmap.h        | 2 +-
+ arch/x86/include/asm/pgtable_types.h | 7 -------
+ arch/x86/mm/ioremap.c                | 2 +-
+ include/asm-generic/fixmap.h         | 2 +-
+ 4 files changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index a10949bf0ca1..f7438e3ece65 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -21,6 +21,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-+#include <sound/asoundef.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -385,11 +386,109 @@ static int sun4i_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return ret;
- }
+diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
+index d0dcefb..5e186a6 100644
+--- a/arch/x86/include/asm/fixmap.h
++++ b/arch/x86/include/asm/fixmap.h
+@@ -173,7 +173,7 @@ static inline void __set_fixmap(enum fixed_addresses idx,
+  * supported for MMIO addresses, so make sure that the memory encryption
+  * mask is not part of the page attributes.
+  */
+-#define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_IO_NOCACHE
++#define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_NOCACHE
  
-+static int sun4i_spdif_info(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+
-+	return 0;
-+}
-+
-+static int sun4i_spdif_get_status_mask(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	u8 *status = ucontrol->value.iec958.status;
-+
-+	status[0] = 0xff;
-+	status[1] = 0xff;
-+	status[2] = 0xff;
-+	status[3] = 0xff;
-+	status[4] = 0xff;
-+	status[5] = 0x03;
-+
-+	return 0;
-+}
-+
-+static int sun4i_spdif_get_status(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
-+	u8 *status = ucontrol->value.iec958.status;
-+	unsigned int reg;
-+
-+	regmap_read(host->regmap, SUN4I_SPDIF_TXCHSTA0, &reg);
-+
-+	status[0] = reg & 0xff;
-+	status[1] = (reg >> 8) & 0xff;
-+	status[2] = (reg >> 16) & 0xff;
-+	status[3] = (reg >> 24) & 0xff;
-+
-+	regmap_read(host->regmap, SUN4I_SPDIF_TXCHSTA1, &reg);
-+
-+	status[4] = reg & 0xff;
-+	status[5] = (reg >> 8) & 0x3;
-+
-+	return 0;
-+}
-+
-+static int sun4i_spdif_set_status(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
-+	u8 *status = ucontrol->value.iec958.status;
-+	unsigned int reg;
-+
-+	reg = (u32)status[3] << 24;
-+	reg |= (u32)status[2] << 16;
-+	reg |= (u32)status[1] << 8;
-+	reg |= (u32)status[0];
-+
-+	regmap_write(host->regmap, SUN4I_SPDIF_TXCHSTA0, reg);
-+
-+	reg = (u32)(status[5] & 3) << 8;
-+	reg |= (u32)status[4];
-+
-+	regmap_write(host->regmap, SUN4I_SPDIF_TXCHSTA1, reg);
-+
-+	reg = SUN4I_SPDIF_TXCFG_CHSTMODE;
-+	if (status[0] & IEC958_AES0_NONAUDIO)
-+		reg |= SUN4I_SPDIF_TXCFG_NONAUDIO;
-+
-+	regmap_update_bits(host->regmap, SUN4I_SPDIF_TXCFG,
-+			   SUN4I_SPDIF_TXCFG_CHSTMODE |
-+			   SUN4I_SPDIF_TXCFG_NONAUDIO, reg);
-+
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new sun4i_spdif_controls[] = {
-+	{
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, MASK),
-+		.info = sun4i_spdif_info,
-+		.get = sun4i_spdif_get_status_mask
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.info = sun4i_spdif_info,
-+		.get = sun4i_spdif_get_status,
-+		.put = sun4i_spdif_set_status
-+	}
-+};
-+
- static int sun4i_spdif_soc_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(dai);
+ /*
+  * Early memremap routines used for in-place encryption. The mappings created
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 40497a9..a872247 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -199,10 +199,6 @@ enum page_cache_mode {
+ #define __PAGE_KERNEL_WP	 (__PP|__RW|   0|___A|__NX|___D|   0|___G| __WP)
  
- 	snd_soc_dai_init_dma_data(dai, &host->dma_params_tx, NULL);
-+	snd_soc_add_dai_controls(dai, sun4i_spdif_controls,
-+				 ARRAY_SIZE(sun4i_spdif_controls));
-+
- 	return 0;
- }
  
--- 
-2.33.1
-
+-#define __PAGE_KERNEL_IO		__PAGE_KERNEL
+-#define __PAGE_KERNEL_IO_NOCACHE	__PAGE_KERNEL_NOCACHE
+-
+-
+ #ifndef __ASSEMBLY__
+ 
+ #define __PAGE_KERNEL_ENC	(__PAGE_KERNEL    | _ENC)
+@@ -223,9 +219,6 @@ enum page_cache_mode {
+ #define PAGE_KERNEL_LARGE_EXEC	__pgprot_mask(__PAGE_KERNEL_LARGE_EXEC | _ENC)
+ #define PAGE_KERNEL_VVAR	__pgprot_mask(__PAGE_KERNEL_VVAR       | _ENC)
+ 
+-#define PAGE_KERNEL_IO		__pgprot_mask(__PAGE_KERNEL_IO)
+-#define PAGE_KERNEL_IO_NOCACHE	__pgprot_mask(__PAGE_KERNEL_IO_NOCACHE)
+-
+ #endif	/* __ASSEMBLY__ */
+ 
+ /*         xwr */
+diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+index 026031b..3102dda 100644
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -243,7 +243,7 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+ 	 * make sure the memory encryption attribute is enabled in the
+ 	 * resulting mapping.
+ 	 */
+-	prot = PAGE_KERNEL_IO;
++	prot = PAGE_KERNEL;
+ 	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+ 		prot = pgprot_encrypted(prot);
+ 
+diff --git a/include/asm-generic/fixmap.h b/include/asm-generic/fixmap.h
+index 8cc7b09..f1b0c6f 100644
+--- a/include/asm-generic/fixmap.h
++++ b/include/asm-generic/fixmap.h
+@@ -54,7 +54,7 @@ static inline unsigned long virt_to_fix(const unsigned long vaddr)
+ #define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_NOCACHE
+ #endif
+ #ifndef FIXMAP_PAGE_IO
+-#define FIXMAP_PAGE_IO PAGE_KERNEL_IO
++#define FIXMAP_PAGE_IO PAGE_KERNEL
+ #endif
+ #ifndef FIXMAP_PAGE_CLEAR
+ #define FIXMAP_PAGE_CLEAR __pgprot(0)
