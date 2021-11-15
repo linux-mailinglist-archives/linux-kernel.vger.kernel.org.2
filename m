@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ACF450919
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD5245091C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbhKOQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhKOQCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:02:38 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE49C061714;
-        Mon, 15 Nov 2021 07:59:41 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id e7so22018995ljq.12;
-        Mon, 15 Nov 2021 07:59:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QzUIYcTDeu7AABPbQcjXh6JIQXphQGEMy7nbkxcrjJA=;
-        b=KbSslb+9UE5qfEOdmCWAMaI5UlDWuLQ78L/FXMwh3HEqZA3TWV7Ko7DuD8+0+bHdbZ
-         gv1cFNK7XgaOaV8Ed4+y1avedzPv/WbT/ktEtuFDAkjk4UDtr3hMe+lZ4qlWTjopHw09
-         qDt+iy/mi3fmfQNGNHpGK4WJZ1zm2AHfXVIhMMLdNsfUbNAyGaehm/pSW5aMO172ZDcq
-         NCpM3NJAA8EwpeKtMC26cRRL6FKU5VlMqX+D1dh3/Wp4G1YxlGW95Ah67ebPs9azrY96
-         AiYwE6HulCWPTLJkFtx+3PlU5WONEbzKRPBceMfnpSaPwrV3nA4etTZUhKfmCZ53Zmb7
-         R3Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QzUIYcTDeu7AABPbQcjXh6JIQXphQGEMy7nbkxcrjJA=;
-        b=g6iCQEv++0w24LCUl1PKjHc19pYaLdkzICeQBM6M+nfyme4M8qoPIlmbtDgcd2ocOK
-         qhGeH8BL779IX3dVi1CX8iY2TU7fS1vej0T7eZewOszJxUTwf6y4hjI+jAGsC4pP+5vj
-         2REc2wQrM88U8GfCv29X3GLn3Rr5i7YLInfF05UtnWe1uXXJjcSoVgMM+iBEhHyX0zs8
-         Xd8PUQP4WnU9eD9r1tevurNdFwFnNVlQ4R4x39cJf1YzSRo4ATsy3alkezUONmH47LJP
-         d4ockVH1woLxcws3BtXXLT7+O6fiT23o5iMdoOgoYIDoASZNfNmDghRtSxNdphBBNtVk
-         PBuA==
-X-Gm-Message-State: AOAM530To9fLGuHFEpL1L2LSxVuF1IsetegWYjSoGzeulrw/V/imonZo
-        gcmKk5kgiLxFzFgjGaZ0hIA=
-X-Google-Smtp-Source: ABdhPJzdlK9tvsO7ov7NVTwvGE2wpeq1+BGMgQHa6DQaiLwmVBMweiq1NqUrBTigvjHxfnscsctkAA==
-X-Received: by 2002:a05:651c:2123:: with SMTP id a35mr40416450ljq.285.1636991980338;
-        Mon, 15 Nov 2021 07:59:40 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id t1sm1527341ljd.43.2021.11.15.07.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 07:59:39 -0800 (PST)
-Date:   Mon, 15 Nov 2021 18:59:38 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core
- version checker
-Message-ID: <20211115155938.xicjyjxmy4hfk2xf@mobilestation>
-References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
- <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
- <YZJwTgAPZYVvzGpi@smile.fi.intel.com>
- <20211115150856.ma2wjg2ev5wylspg@mobilestation>
- <CAHp75VdsAzpUiM7U+f69PguGAa4QV+izM0p5DNNWp=d9yNT0eA@mail.gmail.com>
+        id S236389AbhKOQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:05:16 -0500
+Received: from li1434-30.members.linode.com ([45.33.107.30]:46208 "EHLO
+        node.akkea.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231562AbhKOQE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:04:59 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by node.akkea.ca (Postfix) with ESMTP id 9719B5DE02F;
+        Mon, 15 Nov 2021 16:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1636992121; bh=9HCm74kmLej6uZvnc+Jiw+vlQTg3fDIin0BTbXZI4JE=;
+        h=From:To:Cc:Subject:Date;
+        b=UrsM7o0LNweHYdsuci+94sY6mmLbd4D1j+oxptcPAKDJC09Flz8NBsEPwegN1jie7
+         C1zvmsF5Is2zwZdDJFdKBn/djRwUGYt8qQAD0+fAG1/SDnh8jsbKqJEd26nCiTnUKk
+         zcts+xprIiV+a0Zeg5R1UTpsAynKOzwm+fk3C5w4=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Si97c3LbDJVX; Mon, 15 Nov 2021 16:02:00 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [70.66.86.75])
+        by node.akkea.ca (Postfix) with ESMTPSA id 7F8385DE01D;
+        Mon, 15 Nov 2021 16:02:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1636992120; bh=9HCm74kmLej6uZvnc+Jiw+vlQTg3fDIin0BTbXZI4JE=;
+        h=From:To:Cc:Subject:Date;
+        b=GtXvJDtgW7fqQ9ZaIQ7Xljs23Hs8Yvops0NMI7kZuwTFwKV/rwlenobDPBygAaJa/
+         /0YG1AEseqfuOuf3InjmRKNCus1RouuLv4l0/FXfiKc/xCQDdNXWp6QxUzlQtyxj8B
+         u7jNfpfpRFIFHX+b9NSwsITUwIODDeC5VbnF2Ie4=
+From:   Angus Ainslie <angus@akkea.ca>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>
+Subject: [PATCH] drm: drm_probe_helper: add modes upto 1920x1080
+Date:   Mon, 15 Nov 2021 08:01:35 -0800
+Message-Id: <20211115160135.25451-1-angus@akkea.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdsAzpUiM7U+f69PguGAa4QV+izM0p5DNNWp=d9yNT0eA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:19:28PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 15, 2021 at 5:08 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> > On Mon, Nov 15, 2021 at 04:35:58PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Nov 15, 2021 at 01:30:26AM +0300, Serge Semin wrote:
-> 
-> ...
-> 
-> > > >  /* DW SPI controller capabilities */
-> > > >  #define DW_SPI_CAP_CS_OVERRIDE             BIT(0)
-> > > >  #define DW_SPI_CAP_KEEMBAY_MST             BIT(1)
-> > > > -#define DW_SPI_CAP_DWC_HSSI                BIT(2)
-> > > > -#define DW_SPI_CAP_DFS32           BIT(3)
-> > > > +#define DW_SPI_CAP_DFS32           BIT(2)
-> >
-> > > In one patch you move this in the file upper.
-> > > Here you reshuffling it due to dropping one bit.
-> > >
-> > > Now I'm wondering if you may split these two into a separate patch, which
-> > > brings us to simple
-> > >
-> > > -#define DW_SPI_CAP_DWC_HSSI          BIT(3)
-> > >
-> > > here.
-> >
-> > I can change the bit-numbers assignment in the previous patch, which
-> > moves this block of macros up to the top of the file. Thus we'll
-> > have just a single
-> > -#define DW_SPI_CAP_DWC_HSSI            BIT(3)
-> > here. What do you think? Is that what you meant?
-> 
-> I think that reassignment doesn't fit the previous patch per se, hence
-> I proposed to have yet another one,
+Lots of monitors nowdays support more than 1024x768 so if the EDID is
+unknown then add resolutions upto 1920x1080.
 
-> But in any case it's a minor
-> thingy.
+Signed-off-by: Angus Ainslie <angus@akkea.ca>
+---
+ drivers/gpu/drm/drm_probe_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Since I have to resend the series one more time I'll do as you
-suggested and unpin the bit numbering change into a separate patch.
+diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+index e7e1ee2aa352..5ad66ae9916e 100644
+--- a/drivers/gpu/drm/drm_probe_helper.c
++++ b/drivers/gpu/drm/drm_probe_helper.c
+@@ -517,7 +517,7 @@ int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
+ 
+ 	if (count == 0 && (connector->status == connector_status_connected ||
+ 			   connector->status == connector_status_unknown))
+-		count = drm_add_modes_noedid(connector, 1024, 768);
++		count = drm_add_modes_noedid(connector, 1920, 1080);
+ 	count += drm_helper_probe_add_cmdline_mode(connector);
+ 	if (count == 0)
+ 		goto prune;
+-- 
+2.25.1
 
--Sergey
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
