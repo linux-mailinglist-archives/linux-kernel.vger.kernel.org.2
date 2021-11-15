@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64313451AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950274520DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241816AbhKOXlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:41:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S244746AbhKPA4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:56:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343742AbhKOTV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343740AbhKOTV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:21:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE0763296;
-        Mon, 15 Nov 2021 18:45:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0411463385;
+        Mon, 15 Nov 2021 18:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001928;
-        bh=aFwVWyObgqDnVTp1yQd/rsY+wDdJUy/Sircfosmh8CU=;
+        s=korg; t=1637001931;
+        bh=ucQjVbr8ybsf9jj/eP5/L7HbY9Rcy9soWSz3ZBPEyc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h82CuuZE/0Z5iZSIJzmL56lOJgaOucw0zRSPpfmWxyfNKlZHBvP96qrb3hJ/Sqo2m
-         yFj1sRu+3WVZ0DEgrIjy/A4ZVawosYQKuBqiAegQmuR35mPdw88JDsxRhVhmGgooDx
-         tUiyRUMECL0q+Kcsd7IcbhNKy7TxZ9x8AsJ2IyEc=
+        b=bs0fPDKUj9VA9RId6v1yL3syVTH/Ujatq3W37WY9i6QGnm4M/lH77n9a5CK9Wltxn
+         G7MbirS8eRzhnFHLa55hOZT1Zl4cVvqMunk1uxc9rd+tsKU+UQJgZKIrU9YPPqDEmV
+         hBYay3EGeyosTA2b+u259KTCd5KUzfopF54SBWe8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 373/917] drm/ttm: stop calling tt_swapin in vm_access
-Date:   Mon, 15 Nov 2021 17:57:48 +0100
-Message-Id: <20211115165441.410239317@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+        Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Georgi Djakov <quic_c_gdjako@quicinc.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 374/917] arm64: mm: update max_pfn after memory hotplug
+Date:   Mon, 15 Nov 2021 17:57:49 +0100
+Message-Id: <20211115165441.443420977@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,57 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Auld <matthew.auld@intel.com>
+From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
 
-[ Upstream commit f5d28856b89baab4232a9f841e565763fcebcdf9 ]
+[ Upstream commit 8fac67ca236b961b573355e203dbaf62a706a2e5 ]
 
-In commit:
+After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+needs updating to reflect on new PFNs being hot added to system.
+Without this patch, debug-related functions that use max_pfn such as
+get_max_dump_pfn() or read_page_owner() will not work with any page in
+memory that is hot-added after boot.
 
-commit 09ac4fcb3f255e9225967c75f5893325c116cdbe
-Author: Felix Kuehling <Felix.Kuehling@amd.com>
-Date:   Thu Jul 13 17:01:16 2017 -0400
-
-    drm/ttm: Implement vm_operations_struct.access v2
-
-we added the vm_access hook, where we also directly call tt_swapin for
-some reason. If something is swapped-out then the ttm_tt must also be
-unpopulated, and since access_kmap should also call tt_populate, if
-needed, then swapping-in will already be handled there.
-
-If anything, calling tt_swapin directly here would likely always fail
-since the tt->pages won't yet be populated, or worse since the tt->pages
-array is never actually cleared in unpopulate this might lead to a nasty
-uaf.
-
-Fixes: 09ac4fcb3f25 ("drm/ttm: Implement vm_operations_struct.access v2")
-Signed-off-by: Matthew Auld <matthew.auld@intel.com>
-Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210927114114.152310-1-matthew.auld@intel.com
-Signed-off-by: Christian König <christian.koenig@amd.com>
+Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Tested-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Link: https://lore.kernel.org/r/a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ttm/ttm_bo_vm.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/mm/mmu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-index f56be5bc0861e..5b9b7fd01a692 100644
---- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-@@ -519,11 +519,6 @@ int ttm_bo_vm_access(struct vm_area_struct *vma, unsigned long addr,
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index cfd9deb347c38..fd85b51b9d50f 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+ 	if (ret)
+ 		__remove_pgd_mapping(swapper_pg_dir,
+ 				     __phys_to_virt(start), size);
++	else {
++		max_pfn = PFN_UP(start + size);
++		max_low_pfn = max_pfn;
++	}
++
+ 	return ret;
+ }
  
- 	switch (bo->resource->mem_type) {
- 	case TTM_PL_SYSTEM:
--		if (unlikely(bo->ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)) {
--			ret = ttm_tt_swapin(bo->ttm);
--			if (unlikely(ret != 0))
--				return ret;
--		}
- 		fallthrough;
- 	case TTM_PL_TT:
- 		ret = ttm_bo_vm_access_kmap(bo, offset, buf, len, write);
 -- 
 2.33.0
 
