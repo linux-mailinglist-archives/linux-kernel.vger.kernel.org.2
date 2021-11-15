@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06215450050
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDE3450061
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhKOI4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:56:36 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:47751 "EHLO pegase2.c-s.fr"
+        id S230266AbhKOI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:57:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229999AbhKOI4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:56:25 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Ht2zF0qR0z9sSH;
-        Mon, 15 Nov 2021 09:53:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id whCArfjl7wVR; Mon, 15 Nov 2021 09:53:29 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Ht2zD726Yz9sSB;
-        Mon, 15 Nov 2021 09:53:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D817C8B767;
-        Mon, 15 Nov 2021 09:53:28 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id kuNXKDjQbMwa; Mon, 15 Nov 2021 09:53:28 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AB2368B763;
-        Mon, 15 Nov 2021 09:53:28 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 1AF8rJTO135062
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 09:53:19 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 1AF8rDA2135046;
-        Mon, 15 Nov 2021 09:53:13 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Christopher M . Riedl" <cmr@bluescreens.de>,
-        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
-        Stan Johnson <userm57@yahoo.com>
-Subject: [PATCH] powerpc/signal32: Fix sigset_t copy
-Date:   Mon, 15 Nov 2021 09:52:55 +0100
-Message-Id: <99ef38d61c0eb3f79c68942deb0c35995a93a777.1636966353.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S229919AbhKOI5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:57:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9880061BE2;
+        Mon, 15 Nov 2021 08:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636966486;
+        bh=1h0g2AYqXFphX4dDyELLl2t7YQIUXZ6UIHT7JYg2iMs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kv+C8zB0tbPMdXf3ORNkXrRH4MrGq92/hxOUWQ7rrNLjPwyN92rkebIKY8icgiOfU
+         pMdG65xZlUKOnr8NUOP6pmXxc3gZzuCmcsiwcDOb6St8hs6LkWB6n1ZZo98RlrnVvp
+         FkqOBIn33Yi9JZOuQ6miAmszWpYRosGKoEiu9hmpXWXS0VgUXakje0NXKySH0Rz+mZ
+         5B6hNND+tRm0kn91fmSGmzeWYTduFgTH0JLa1xNb8xKQOI2gwIYz/OsIEp39PngVMt
+         ez7HK1j37N1+6Gl5sR4/i/hvvdNCZ5Sdb+Rvh2P8BC4uYTPFd5lIc2Ou5i9m3hH8E0
+         48X4U7Q98MS4A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH 00/11] dmaengine: kill off dma_slave_config->slave_id
+Date:   Mon, 15 Nov 2021 09:53:52 +0100
+Message-Id: <20211115085403.360194-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1636966371; l=2320; s=20211009; h=from:subject:message-id; bh=fZPpiXO4Sl6nxpscgwKm8fGE1QxieiimfErqhQs2Q+0=; b=TT/pMU/Kq2uF3azjX28nUSpUIgSMS0xTw5bIAlmU6r8XXTX6cgtMMfJeiBoecUExwC+wtaPTO6QR ZcZmSuwmCCg5PGuf9U6ykT6ALCuF0Ceo3fSyyQ8fVhj/5gwRtMVM
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion from __copy_from_user() to __get_user() by
-commit d3ccc9781560 ("powerpc/signal: Use __get_user() to copy
-sigset_t") introduced a regression in __get_user_sigset() for
-powerpc/32. The bug was subsequently moved into
-unsafe_get_user_sigset().
+From: Arnd Bergmann <arnd@arndb.de>
 
-The bug is due to the copied 64 bit value being truncated to
-32 bits while being assigned to dst->sig[0]
+I recently came across some new uses of the 'slave_id' field that
+I had (almost) removed a few years ago. There are no legitimate
+uses of this field in the kernel, only a few stale references and
+two drivers that abuse the field as a side-channel between the
+dmaengine driver and its client.
 
-The regression was reported by users of the Xorg packages distributed in
-Debian/powerpc --
+Let's change the xilinx and qualcomm drivers to use the documented
+side-channel (peripheral_data) instead, and remove the remnants of
+it to prevent new users from coming in.
 
-    "The symptoms are that the fb screen goes blank, with the backlight
-    remaining on and no errors logged in /var/log; wdm (or startx) run
-    with no effect (I tried logging in in the blind, with no effect).
-    And they are hard to kill, requiring 'kill -KILL ...'"
+As the last patch in the series depends on all the others, it would
+be nice have everything merged into the dmaengine tree for v5.17.
 
-Fix the regression by copying each word of the sigset, not only the
-first one.
+       Arnd
 
-__get_user_sigset() was tentatively optimised to copy 64 bits at once
-in order to minimise KUAP unlock/lock impact, but the unsafe variant
-doesn't suffer that, so it can just copy words.
+Arnd Bergmann (11):
+  ASoC: dai_dma: remove slave_id field
+  spi: pic32: stop setting dma_config->slave_id
+  mmc: bcm2835: stop setting chan_config->slave_id
+  dmaengine: shdma: remove legacy slave_id parsing
+  dmaengine: pxa/mmp: stop referencing config->slave_id
+  dmaengine: sprd: stop referencing config->slave_id
+  dmaengine: qcom-adm: stop abusing slave_id config
+  dmaengine: xilinx_dpdma: stop using slave_id field
+  dmaengine: tegra20-apb: stop checking config->slave_id
+  staging: ralink-gdma: stop using slave_id config
+  dmaengine: remove slave_id config field
 
-Cc: Christopher M. Riedl <cmr@bluescreens.de>
-Fixes: 887f3ceb51cd ("powerpc/signal32: Convert do_setcontext[_tm]() to user access block")
-Cc: stable@vger.kernel.org
-Reported-by: Finn Thain <fthain@linux-m68k.org>
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/signal.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/dma/mmp_pdma.c                    |  6 ---
+ drivers/dma/pxa_dma.c                     |  7 ---
+ drivers/dma/qcom/qcom_adm.c               | 56 ++++++++++++++++++++---
+ drivers/dma/sh/shdma-base.c               |  8 ----
+ drivers/dma/sprd-dma.c                    |  3 --
+ drivers/dma/tegra20-apb-dma.c             |  6 ---
+ drivers/dma/xilinx/xilinx_dpdma.c         | 12 +++--
+ drivers/gpu/drm/xlnx/zynqmp_disp.c        |  9 +++-
+ drivers/mmc/host/bcm2835.c                |  2 -
+ drivers/mtd/nand/raw/qcom_nandc.c         | 14 +++++-
+ drivers/spi/spi-pic32.c                   |  2 -
+ drivers/staging/ralink-gdma/ralink-gdma.c | 12 ++---
+ drivers/tty/serial/msm_serial.c           | 15 +++++-
+ include/linux/dma/qcom_adm.h              | 12 +++++
+ include/linux/dma/xilinx_dpdma.h          | 11 +++++
+ include/linux/dmaengine.h                 |  4 --
+ include/sound/dmaengine_pcm.h             |  2 -
+ sound/core/pcm_dmaengine.c                |  5 +-
+ sound/soc/tegra/tegra20_spdif.c           |  1 -
+ 19 files changed, 119 insertions(+), 68 deletions(-)
+ create mode 100644 include/linux/dma/qcom_adm.h
+ create mode 100644 include/linux/dma/xilinx_dpdma.h
 
-diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
-index 1f07317964e4..618aeccdf691 100644
---- a/arch/powerpc/kernel/signal.h
-+++ b/arch/powerpc/kernel/signal.h
-@@ -25,8 +25,14 @@ static inline int __get_user_sigset(sigset_t *dst, const sigset_t __user *src)
- 
- 	return __get_user(dst->sig[0], (u64 __user *)&src->sig[0]);
- }
--#define unsafe_get_user_sigset(dst, src, label) \
--	unsafe_get_user((dst)->sig[0], (u64 __user *)&(src)->sig[0], label)
-+#define unsafe_get_user_sigset(dst, src, label) do {			\
-+	sigset_t *__dst = dst;						\
-+	const sigset_t __user *__src = src;				\
-+	int i;								\
-+									\
-+	for (i = 0; i < _NSIG_WORDS; i++)				\
-+		unsafe_get_user(__dst->sig[i], &__src->sig[i], label);	\
-+} while (0)
- 
- #ifdef CONFIG_VSX
- extern unsigned long copy_vsx_to_user(void __user *to,
 -- 
-2.31.1
+2.30.2
 
+Cc: Andy Gross <agross@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: dmaengine@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rpi-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-tegra@vger.kernel.org
