@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E8C45178B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A4E451794
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347070AbhKOWcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:32:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46110 "EHLO mail.kernel.org"
+        id S232917AbhKOWdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:33:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242432AbhKOSgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242433AbhKOSgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:36:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB38A63270;
-        Mon, 15 Nov 2021 18:03:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE7163273;
+        Mon, 15 Nov 2021 18:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999384;
-        bh=61IdOsDbuR23eh4huIIIW5QN7TMSHXB+vB+VngHPjD8=;
+        s=korg; t=1636999387;
+        bh=2FNSaQtIK1xtf6h2ey8cw1D/v18nJ78M6xaDzSKJEHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z3nCmxNdXdkpl/m9tyX3i8FdjlOrfgDBjyyoF62rl4q+4VVxcZ7Yvrxr0+jZVfTfQ
-         gduiQG8HiYMee1nqYenjKBwYcvIrqCxdyyf83d/UL/oo713qL7JEPqItnltP5qQUV6
-         r4Kr6fB8VxVXnoEyR/AjfVZ7FyLZcEOHO/3mE8DI=
+        b=JxzCYoaLZ78xNx0+ZkTmJwnjcubTLiHK/jDay1+VclKVB2KLWKzmL9kcjM6piTQdE
+         tgawrm157broYCNTrx8zO2muugEU1DuQlwhvMI17BUDdqbpv4TfZwl1VTBWk3wnCXq
+         dTfdk3WV9Tys5TvbaYfZ4lk3Lw0INhloaZKdurIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, youling <youling257@gmail.com>,
-        Yifan Zhang <yifan1.zhang@amd.com>,
-        James Zhu <James.Zhu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 276/849] drm/amdkfd: fix resume error when iommu disabled in Picasso
-Date:   Mon, 15 Nov 2021 17:55:59 +0100
-Message-Id: <20211115165429.584416461@linuxfoundation.org>
+Subject: [PATCH 5.14 277/849] net: phy: micrel: make *-skew-ps check more lenient
+Date:   Mon, 15 Nov 2021 17:56:00 +0100
+Message-Id: <20211115165429.615929259@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifan Zhang <yifan1.zhang@amd.com>
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-[ Upstream commit 6f4b590aae217da16cfa44039a2abcfb209137ab ]
+[ Upstream commit 67ca5159dbe2edb5dae7544447b8677d2596933a ]
 
-When IOMMU disabled in sbios and kfd in iommuv2 path,
-IOMMU resume failure blocks system resume. Don't allow kfd to
-use iommu v2 when iommu is disabled.
+It seems reasonable to fine-tune only some of the skew values when using
+one of the rgmii-*id PHY modes, and even when all skew values are
+specified, using the correct ID PHY mode makes sense for documentation
+purposes. Such a configuration also appears in the binding docs in
+Documentation/devicetree/bindings/net/micrel-ksz90x1.txt, so the driver
+should not warn about it.
 
-Reported-by: youling <youling257@gmail.com>
-Tested-by: youling <youling257@gmail.com>
-Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
-Reviewed-by: James Zhu <James.Zhu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Link: https://lore.kernel.org/r/20211012103402.21438-1-matthias.schiffer@ew.tq-group.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/micrel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index ef64fb8f1bbf5..900ea693c71c6 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -867,6 +867,7 @@ bool kgd2kfd_device_init(struct kfd_dev *kfd,
- 	kfd_double_confirm_iommu_support(kfd);
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 5c928f827173c..643b1c1827a92 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -863,9 +863,9 @@ static int ksz9031_config_init(struct phy_device *phydev)
+ 				MII_KSZ9031RN_TX_DATA_PAD_SKEW, 4,
+ 				tx_data_skews, 4, &update);
  
- 	if (kfd_iommu_device_init(kfd)) {
-+		kfd->use_iommu_v2 = false;
- 		dev_err(kfd_device, "Error initializing iommuv2\n");
- 		goto device_iommu_error;
- 	}
+-		if (update && phydev->interface != PHY_INTERFACE_MODE_RGMII)
++		if (update && !phy_interface_is_rgmii(phydev))
+ 			phydev_warn(phydev,
+-				    "*-skew-ps values should be used only with phy-mode = \"rgmii\"\n");
++				    "*-skew-ps values should be used only with RGMII PHY modes\n");
+ 
+ 		/* Silicon Errata Sheet (DS80000691D or DS80000692D):
+ 		 * When the device links in the 1000BASE-T slave mode only,
 -- 
 2.33.0
 
