@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869E2451967
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59130452027
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350935AbhKOXTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:19:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        id S1357880AbhKPAtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244787AbhKOTRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B51CE60F44;
-        Mon, 15 Nov 2021 18:23:53 +0000 (UTC)
+        id S1344614AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C656369B;
+        Mon, 15 Nov 2021 19:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000634;
-        bh=0FheslEMrfGSQyN7MCA88IHJ6w+86BGSAvBCsVviE9c=;
+        s=korg; t=1637002856;
+        bh=kTg7vA0T5h8J6aM/WFZfU/0eUdXmNFLFTgfEQnUOvbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0B8bavpTRjn8Iedv53zKGgHatrZOAd9LOwi7aHDgv4ru26ZW6Vlr8RRpVr2XCl17E
-         91kb3wLWGZsBo34exbRPNDW4Z38bzEcAcXFXuOJlgXtmx3zhf2j/6UUTKidMUfibC2
-         Rl+n0xQNNclZUemcyYW9zUEZEoawEPp6sIuIFBFg=
+        b=c1Oe/7ch7st3QS50MBq/6NVgra0CnG51lZAERPJMOLtp45JTpvY3oR+t58zvNC5Hv
+         qFFVpJyh5f5M6Ao4gXUpIm981j5Rm7Kcg3HRo4ykkkfYYwaa/Gb8McTirQCt4+/CgH
+         imwmkhYj/qI61HudpzdSPtCuqnftzUKq7zoQHSXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 733/849] block/ataflop: add registration bool before calling del_gendisk()
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 721/917] mtd: spi-nor: hisi-sfc: Remove excessive clk_disable_unprepare()
 Date:   Mon, 15 Nov 2021 18:03:36 +0100
-Message-Id: <20211115165445.041718929@linuxfoundation.org>
+Message-Id: <20211115165453.355868374@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 573effb298011d3fcabc9b12025cf637f8a07911 ]
+[ Upstream commit 78e4d342187625585932bb437ec26e1060f7fc6f ]
 
-The ataflop assumes del_gendisk() is safe to call, this is only
-true because add_disk() does not return a failure, but that will
-change soon. And so, before we get to adding error handling for
-that case, let's make sure we keep track of which disks actually
-get registered. Then we use this to only call del_gendisk for them.
+hisi_spi_nor_probe() invokes clk_disable_unprepare() on all paths after
+successful call of clk_prepare_enable(). Besides, the clock is enabled by
+hispi_spi_nor_prep() and disabled by hispi_spi_nor_unprep(). So at remove
+time it is not possible to have the clock enabled. The patch removes
+excessive clk_disable_unprepare() from hisi_spi_nor_remove().
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/20210927220302.1073499-13-mcgrof@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: e523f11141bd ("mtd: spi-nor: add hisilicon spi-nor flash controller driver")
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Link: https://lore.kernel.org/r/20210709144529.31379-1-novikov@ispras.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 1a908455ff96f..55f6d6f6dbd34 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -298,6 +298,7 @@ static struct atari_floppy_struct {
- 				   disk change detection) */
- 	int flags;		/* flags */
- 	struct gendisk *disk[NUM_DISK_MINORS];
-+	bool registered[NUM_DISK_MINORS];
- 	int ref;
- 	int type;
- 	struct blk_mq_tag_set tag_set;
-@@ -2021,8 +2022,10 @@ static void ataflop_probe(dev_t dev)
- 		return;
- 	mutex_lock(&ataflop_probe_lock);
- 	if (!unit[drive].disk[type]) {
--		if (ataflop_alloc_disk(drive, type) == 0)
-+		if (ataflop_alloc_disk(drive, type) == 0) {
- 			add_disk(unit[drive].disk[type]);
-+			unit[drive].registered[type] = true;
-+		}
- 	}
- 	mutex_unlock(&ataflop_probe_lock);
- }
-@@ -2086,6 +2089,7 @@ static int __init atari_floppy_init (void)
- 		unit[i].track = -1;
- 		unit[i].flags = 0;
- 		add_disk(unit[i].disk[0]);
-+		unit[i].registered[0] = true;
- 	}
+diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+index 47fbf1d1e5573..516e502694780 100644
+--- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+@@ -477,7 +477,6 @@ static int hisi_spi_nor_remove(struct platform_device *pdev)
  
- 	printk(KERN_INFO "Atari floppy driver: max. %cD, %strack buffering\n",
-@@ -2154,7 +2158,8 @@ static void __exit atari_floppy_exit(void)
- 		for (type = 0; type < NUM_DISK_MINORS; type++) {
- 			if (!unit[i].disk[type])
- 				continue;
--			del_gendisk(unit[i].disk[type]);
-+			if (unit[i].registered[type])
-+				del_gendisk(unit[i].disk[type]);
- 			blk_cleanup_disk(unit[i].disk[type]);
- 		}
- 		blk_mq_free_tag_set(&unit[i].tag_set);
+ 	hisi_spi_nor_unregister_all(host);
+ 	mutex_destroy(&host->lock);
+-	clk_disable_unprepare(host->clk);
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
