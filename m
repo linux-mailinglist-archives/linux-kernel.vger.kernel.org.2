@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B4F452634
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B565452350
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239234AbhKPCCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:02:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
+        id S1379369AbhKPBXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:23:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240108AbhKOSFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABAB163291;
-        Mon, 15 Nov 2021 17:42:39 +0000 (UTC)
+        id S244357AbhKOTNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:13:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0690F634B4;
+        Mon, 15 Nov 2021 18:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998160;
-        bh=G0FlLdFRD173aR5K2iEGsQ5OZSDzcH9YDEYBQqLWCmk=;
+        s=korg; t=1637000417;
+        bh=M2YtDN5c5DMIpf+rhEpGDTps8TZEA1RWaTDBl5L9Ey8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OIvxbilYvji1RRbtFosDCjDpKTShrYK8EhmSKB/Qudd1nq4jrPcE9NlMvyhFBU4fF
-         nZzf26DgJPUHsGbxr3q8LSex/+mgUsT5Od76NqTOFUi+C9wJKgFafLCpZwvfTCf8H9
-         Izwix2e9RP6LD3xmnxGOA6Al9JyfnT+N5IcBbFjA=
+        b=y8yiByHpLtijlzRuBLBgLhknjBVXDN0OuZLk2712Dq9O6divj2/KozSbQCVlfselA
+         IXydCr10dv8v87lvVs9c5kL2xlAM/IWkmseUGQ8KK9zQ9KXxpMXECBlr0G3XHSFVEp
+         4UxHp/VTO3pYXSPn3iHXxLjq6vQ+FEFXEI9wmp6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 410/575] ALSA: hda: Use position buffer for SKL+ again
-Date:   Mon, 15 Nov 2021 18:02:15 +0100
-Message-Id: <20211115165357.943776979@linuxfoundation.org>
+Subject: [PATCH 5.14 653/849] ALSA: oxfw: fix functional regression for Mackie Onyx 1640i in v5.14 or later
+Date:   Mon, 15 Nov 2021 18:02:16 +0100
+Message-Id: <20211115165442.354615986@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +39,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit c4ca3871e21fa085096316f5f8d9975cf3dfde1d ]
+[ Upstream commit cddcd5472abb7b8a9c37ccbcf0908b79740a01b5 ]
 
-The commit f87e7f25893d ("ALSA: hda - Improved position reporting on
-SKL+") changed the PCM position report for SKL+ chips to use DPIB, but
-according to Pierre, DPIB is no best choice for the accurate position
-reports and it often reports too early.  The recommended method is
-rather the classical position buffer.
+A user reports functional regression for Mackie Onyx 1640i that the device
+generates slow sound with ALSA oxfw driver which supports media clock
+recovery. Although the device is based on OXFW971 ASIC, it does not
+transfer isochronous packet with own event frequency as expected. The
+device seems to adjust event frequency according to events in received
+isochronous packets in the beginning of packet streaming. This is
+unknown quirk.
 
-This patch makes the PCM position reporting on SKL+ back to the
-position buffer again.
+This commit fixes the regression to turn the recovery off in driver
+side. As a result, nominal frequency is used in duplex packet streaming
+between device and driver. For stability of sampling rate in events of
+transferred isochronous packet, 4,000 isochronous packets are skipped
+in the beginning of packet streaming.
 
-Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210929072934.6809-3-tiwai@suse.de
+Reference: https://github.com/takaswie/snd-firewire-improve/issues/38
+Fixes: 029ffc429440 ("ALSA: oxfw: perform sequence replay for media clock recovery")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20211028130325.45772-1-o-takashi@sakamocchi.jp
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+ sound/firewire/oxfw/oxfw-stream.c | 7 ++++++-
+ sound/firewire/oxfw/oxfw.c        | 8 ++++++++
+ sound/firewire/oxfw/oxfw.h        | 5 +++++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index a0955e17adee9..64115a796af06 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -915,27 +915,6 @@ static int azx_get_delay_from_fifo(struct azx *chip, struct azx_dev *azx_dev,
- 	return substream->runtime->delay;
- }
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index fff18b5d4e052..f4a702def3979 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -9,7 +9,7 @@
+ #include <linux/delay.h>
  
--static unsigned int azx_skl_get_dpib_pos(struct azx *chip,
--					 struct azx_dev *azx_dev)
--{
--	return _snd_hdac_chip_readl(azx_bus(chip),
--				    AZX_REG_VS_SDXDPIB_XBASE +
--				    (AZX_REG_VS_SDXDPIB_XINTERVAL *
--				     azx_dev->core.index));
--}
--
--/* get the current DMA position with correction on SKL+ chips */
--static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
--{
--	/* DPIB register gives a more accurate position for playback */
--	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return azx_skl_get_dpib_pos(chip, azx_dev);
--
--	/* read of DPIB fetches the actual posbuf */
--	azx_skl_get_dpib_pos(chip, azx_dev);
--	return azx_get_pos_posbuf(chip, azx_dev);
--}
--
- static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
- {
- 	azx_stop_chip(chip);
-@@ -1632,7 +1611,7 @@ static void assign_position_fix(struct azx *chip, int fix)
- 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
- 		[POS_FIX_VIACOMBO] = azx_via_get_position,
- 		[POS_FIX_COMBO] = azx_get_pos_lpib,
--		[POS_FIX_SKL] = azx_get_pos_skl,
-+		[POS_FIX_SKL] = azx_get_pos_posbuf,
- 		[POS_FIX_FIFO] = azx_get_pos_fifo,
- 	};
+ #define AVC_GENERIC_FRAME_MAXIMUM_BYTES	512
+-#define READY_TIMEOUT_MS	200
++#define READY_TIMEOUT_MS	600
  
+ /*
+  * According to datasheet of Oxford Semiconductor:
+@@ -367,6 +367,11 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
+ 				// Just after changing sampling transfer frequency, many cycles are
+ 				// skipped for packet transmission.
+ 				tx_init_skip_cycles = 400;
++			} else if (oxfw->quirks & SND_OXFW_QUIRK_VOLUNTARY_RECOVERY) {
++				// It takes a bit time for target device to adjust event frequency
++				// according to nominal event frequency in isochronous packets from
++				// ALSA oxfw driver.
++				tx_init_skip_cycles = 4000;
+ 			} else {
+ 				replay_seq = true;
+ 			}
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index daf731364695b..b496f87841aec 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -25,6 +25,7 @@
+ #define MODEL_SATELLITE		0x00200f
+ #define MODEL_SCS1M		0x001000
+ #define MODEL_DUET_FW		0x01dddd
++#define MODEL_ONYX_1640I	0x001640
+ 
+ #define SPECIFIER_1394TA	0x00a02d
+ #define VERSION_AVC		0x010001
+@@ -192,6 +193,13 @@ static int detect_quirks(struct snd_oxfw *oxfw, const struct ieee1394_device_id
+ 		// OXFW971-based models may transfer events by blocking method.
+ 		if (!(oxfw->quirks & SND_OXFW_QUIRK_JUMBO_PAYLOAD))
+ 			oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION;
++
++		if (model == MODEL_ONYX_1640I) {
++			//Unless receiving packets without NOINFO packet, the device transfers
++			//mostly half of events in packets than expected.
++			oxfw->quirks |= SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET |
++					SND_OXFW_QUIRK_VOLUNTARY_RECOVERY;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index c13034f6c2ca5..d728e451a25c6 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -47,6 +47,11 @@ enum snd_oxfw_quirk {
+ 	// the device to process audio data even if the value is invalid in a point of
+ 	// IEC 61883-1/6.
+ 	SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET = 0x10,
++	// Loud Technologies Mackie Onyx 1640i seems to configure OXFW971 ASIC so that it decides
++	// event frequency according to events in received isochronous packets. The device looks to
++	// performs media clock recovery voluntarily. In the recovery, the packets with NO_INFO
++	// are ignored, thus driver should transfer packets with timestamp.
++	SND_OXFW_QUIRK_VOLUNTARY_RECOVERY = 0x20,
+ };
+ 
+ /* This is an arbitrary number for convinience. */
 -- 
 2.33.0
 
