@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EDF44FD74
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BECF744FD75
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236574AbhKOD1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 22:27:50 -0500
-Received: from mail-eopbgr1300111.outbound.protection.outlook.com ([40.107.130.111]:47017
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236556AbhKOD1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 22:27:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eMuyPiJ7K6Ir8xMJphgkGjG2hqNHcLt5d6Y0Wwz+1t+zEf9ISFXgyu0q+Ei2Hx3Mhojqchf6bRnskDWHFMQlcfNsaupMh/Xpdg9OfrH+PZxJBGmuEDGKOpcyVeg4A11Qczx/+H0eK4oJMeyW4ESL9kh9tGrO2D1/sXYV13pN2cI1BZo1VPwEZayEJaLp/yvg73Tw+4C+YoCI7nZuZvYvjTWeAru2XDL4QfuvJbEb1pXxhsCJzc05BLTj+cOCW6Nx9dp4mvaP8nhvbkWmuK4oGcdrqkBn+B2r3gtWi26cfnkpV4bfmLJLiIkpxv0WUEyBw+LR+HYGU1nAimWBBfgjTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TY9FAXAEq9PFcRD3sRCvxdJhL/A6IxDjKVTo8iy+Ojk=;
- b=Mm3lWqTsdaiXk3Go3uliKG+jRkv3AkM6TPDnMg/Eh8MO9CU3+KC93ZLFFGLFPJB8gmawawmUo873TRtUEGHTjfzauHK+nObB5PcI6yEv4PyJzeg9P+esDlGH8n0xlj2tyTGeMbG+na8lTyY8J9dX+uFtdpvtpMQPdXnze5Ckq+1vDpXgr1eJfi+kzXVce44MA00lAv/pYIbkdVO5gXTqaTMvDTOPtQ9pxwjm2KHXOk88T/ChTdGpdSafloxyQp+krefktnqntGQRrmsjLhKiIBG/A5Xn2YC5JT3S1Jge9jZzySkrjJx0sDSD70TZhKJ1h6TrzknBpfouicJZxeWdrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TY9FAXAEq9PFcRD3sRCvxdJhL/A6IxDjKVTo8iy+Ojk=;
- b=joyXy7u3HEUeG5K1tUDY+agQrOvtNMG4yxpfDx9Qo4LG7zFaCjUrHEiVFCCyTayR6LsRjEfX2ptnzJb2x8SEm4adfyBPuF11DrnXEVMB6cuu5ITkBaIe8Ya69jUCpF7jDgRwGklEJBpKy0gx/IBTT+mtVkGKESxeNn0ikzPgdYg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
- by TYZPR06MB3902.apcprd06.prod.outlook.com (2603:1096:400:21::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19; Mon, 15 Nov
- 2021 03:24:45 +0000
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e]) by TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::5e:78e1:eba3:7d0e%8]) with mapi id 15.20.4669.016; Mon, 15 Nov 2021
- 03:24:45 +0000
-From:   Yihao Han <hanyihao@vivo.com>
-To:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Yihao Han <hanyihao@vivo.com>
-Subject: [PATCH] leds: tca6507: use swap() to make code cleaner
-Date:   Sun, 14 Nov 2021 19:24:28 -0800
-Message-Id: <20211115032428.4379-1-hanyihao@vivo.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0181.apcprd02.prod.outlook.com
- (2603:1096:201:21::17) To TYZPR06MB4173.apcprd06.prod.outlook.com
- (2603:1096:400:26::14)
+        id S236584AbhKOD2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:28:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236559AbhKOD2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 22:28:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636946705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=deBTIAsAlkL1c5loCCR5YUvVFcYQZfZsSo44wOme8So=;
+        b=SHWaGxY9P1Ywd47GsDfdr5tV/zh4fylWbg2/QFdicvzeMM45L+7OZ8Re7lBUoVJFRqcBxO
+        t7GhzkvGsILbzQYkv7VTAgphnTLUkTG2zf4/Sl+ollUfWlEzxdEwaO4Kie264icGftDBmb
+        K2PoDhS41sYWr2HHRm0051sSGC+88CM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-bSxmr3U5NLamSAA32cyX6Q-1; Sun, 14 Nov 2021 22:24:59 -0500
+X-MC-Unique: bSxmr3U5NLamSAA32cyX6Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10E063E74A;
+        Mon, 15 Nov 2021 03:24:58 +0000 (UTC)
+Received: from [10.22.16.82] (unknown [10.22.16.82])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B51F65DEFB;
+        Mon, 15 Nov 2021 03:24:56 +0000 (UTC)
+Message-ID: <e2d300c4-cc0d-47c4-3e7d-8a1cc3546719@redhat.com>
+Date:   Sun, 14 Nov 2021 22:24:56 -0500
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HK2PR02CA0181.apcprd02.prod.outlook.com (2603:1096:201:21::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Mon, 15 Nov 2021 03:24:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c84856f3-6320-49a4-d4d7-08d9a7e7788a
-X-MS-TrafficTypeDiagnostic: TYZPR06MB3902:
-X-Microsoft-Antispam-PRVS: <TYZPR06MB3902BAD05B254B102A82CBD3A2989@TYZPR06MB3902.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nMCSjeflFKRsv1B645zb/BeNq8Ti/n108LrWMjVTqV/Y4Ak8QuvbAjYE+qLuYkhLPF6ef6zRUIckm9ngiqL6o9lZ1SMgx7EjB6wMc/hhk6YkQxsSOxXD4hgDtz0XZLaO41PAG21MdaVi72rWvCSAAzem6HqMW5cOkuQrxVyNlCifCmZ0I2w2iemfI/e8fI5fgL6SafX/cpNBFh5KgTaw3TRE1nB7JWtd8UvmOHdkBeeUhGLhyUM8rmpVVqXlcA5fyVU1z0bIwrN0REi6zEck82dDmziICV2s+bXILMy/iMFCXm39wCNUt7t97CwKJ6j3Ua6r01ewkUoqZeehEEnwt9/1tazFujaXlSEHtvK1qBZNx8CFtL9avDqse6eU6yxaU7rF8Sj7JtIx18yxTeb5fKYhjTVe4D/OjwFSKsbv0FREe+0qWGf3PX+lWoMvuvZPiQB60CRcRp8ey4A81b+ZtHPBYCxHHAbwQ1M4HGkciGUrdQwoLfCKblGkhYNmfE1PKPKADDZlcEyjg7YU1w5HcgK+cmzll72aFOxvLRcxqWd0WJJHmIkyWVUoXebP2tFCvnWlQ3bXUe/c9RmafJK7VuSuqCMijzCSnux5QPyEGHpHk2vnkt8VTOp6ZpC8YYN8cBgYLmssjtOBmsobnUpi9dcJTLBQKlVci6GnXVOMBAYIyH3ipkOOx432goc/vEM3dMFEF3DtBJ98M8V3uNwsoQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4173.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(66946007)(186003)(36756003)(508600001)(38350700002)(8676002)(66476007)(6512007)(38100700002)(6486002)(5660300002)(52116002)(2616005)(956004)(107886003)(8936002)(4744005)(26005)(66556008)(86362001)(6666004)(1076003)(4326008)(316002)(83380400001)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?scZGJu6Q6MSNHDdP17KCA4DnYwulRgB4EAglpQI1yK3GEEUfHfogLcFjuhAs?=
- =?us-ascii?Q?YT8e7uBoQ07f8R748KKfHmVvCBtQd55UQ9cUP6LRf2d/3LP9QqDXNIO4cCPH?=
- =?us-ascii?Q?/RUn5lk3+8AuVKuS4wxoz/Hd6ITDpYeuSNrlD56B/EvXktnEUajStE3NFN1k?=
- =?us-ascii?Q?iPh2LaX9jEOB+USnKa8kCjJa/38IZXvajrQCqVXDzo6i/SWD9OIQnfd1/jtM?=
- =?us-ascii?Q?bonOzK+s5/Tne9DJeS8zVr/SKpJ/e1DS333ovcIQpPkcTqBdOcPB2AIDjOJU?=
- =?us-ascii?Q?ii2+Un6uwVtRQxK9rgV1wOuRysQuME/ySAsY8IzteQptgisiVa7C5bHkcYFF?=
- =?us-ascii?Q?YgepJ7xsdOy6ijsEwr3sufYpP4yT2V49Fj+e1OZ/yvn7N3gkwlojOhdcFaSd?=
- =?us-ascii?Q?IT/NgJKeKYmmdSf0A9ny3UH+gqeSDCA598RV4kzENicawa3vgz3fz0pFwYx9?=
- =?us-ascii?Q?yV0kqLC+gK6blFHc7TCdWYKHbS30zcUfy5r0x0wcHLCOjJEUBOZKSD06Pwyq?=
- =?us-ascii?Q?NMjIpYk0eDASJMqjfXM/EhnJeehsbBonZzdtbhJJC2i0whFHlRKBYFOcrmLk?=
- =?us-ascii?Q?x7oPht76DOG7qJY+j+Qp2jYjzt5to5GMn7MV/A+xtxGevHhnWPd/DNGGELC/?=
- =?us-ascii?Q?kDN711tSjchL4H2vodJyw5iZZ/fhJ8pGYgbLznGmdYgiW5xO2meOZG1ggeis?=
- =?us-ascii?Q?+lSJALUmdu+90Y5UOWXY2UWZit6LIvl9+VahnsstxYM9hLKmC1Lxglv0AbxF?=
- =?us-ascii?Q?M2y/mOjmi/UxWpFeQ2/bFHw10WBRYJH4YTWe3ok95zy+aA1xj5FieIBK1BFH?=
- =?us-ascii?Q?8VuVVgskQS0Qyg5GtiA/ndJ/GB/4SPgudzYzz4fr48HeckHj/AAQLzqoVFLs?=
- =?us-ascii?Q?dpom1X0WrPZZmXmHa0LqN7xCFdl/0Mkr/3UD6KxdYyF06M2BvDjGyb/Nmhtj?=
- =?us-ascii?Q?w++CPYtczP1ti2Zq9vjZRpy3VY9dZHIf9ZfxwCzGP5em6m4c2Bfdykv1XLIw?=
- =?us-ascii?Q?jEeXXFI8Gd8K3UsP4pDNRGEgSUtM7kz8UvAkNreQsJfSqQWX3pT6LvgbWJj2?=
- =?us-ascii?Q?hcQibrSKJ6q2uvKxnMIU+dZ49hkfsKc/q3bbi1K+kUpSvzN9FBwE5RlbKlYY?=
- =?us-ascii?Q?RDZlkvtS4Q2u8a0ieWq6OM5xzFKfojlze5pS3MdfDVzJhqS4X3Mmt/NYh9pj?=
- =?us-ascii?Q?9g52LU0Gy/XhCsCcjBYP+boD2/fKBSHD7PsOYJV0L2o0H8WnOyL1uKANC4l/?=
- =?us-ascii?Q?t/S+BbqRFpHCuQDHhxDhWxWlOrVjFCHHIvo94ML8oFIGb3+MwkP/dAC9lKGN?=
- =?us-ascii?Q?gpRCjZIHlC2odEKxOrAZBhH6eu23rnsJovENyqaTJdTPHCuTKS74TiYJmWxb?=
- =?us-ascii?Q?t3pRfjGsHvhUmcOKIuqOflCuV20BDVuLK+MyGbNMAY8G8+HOuEtfgD2o2Wn4?=
- =?us-ascii?Q?PhLRvIxf9luQOMH+ygk0lrcm+WDZ/y2CcPSGYbrFrIEgQegJcrRFM+pLAAhM?=
- =?us-ascii?Q?aL04XshkmNuCiz2cfLzolNSxfMdL7fo+EPveTV1rzcUqmM/BIVtfsQy/pC87?=
- =?us-ascii?Q?QwYohxleNj4ZkbUJFvbTe5gOwAe1xr+Z7KPD1vpwkaEA94enA3znOSpSywMm?=
- =?us-ascii?Q?8ezwcH9Ok/Ft6KlUH9VAjbY=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c84856f3-6320-49a4-d4d7-08d9a7e7788a
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 03:24:45.2668
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d5PO8x7a+ZgsR+HrP02Atcaw7axjrqSsu3j0+X81VYZ7TWd4dm9KYltpeyQwuuZUz8cxeYpvxZo8g/OF0XFqkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB3902
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
+ clocksources
+Content-Language: en-US
+To:     Feng Tang <feng.tang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20211110221732.272986-1-longman@redhat.com>
+ <20211110221732.272986-2-longman@redhat.com>
+ <20211111045703.GA15896@shbuild999.sh.intel.com>
+ <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211112054417.GA29845@shbuild999.sh.intel.com>
+ <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
+ <20211114155407.GB641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211115020851.GB29845@shbuild999.sh.intel.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211115020851.GB29845@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
 
-Signed-off-by: Yihao Han <hanyihao@vivo.com>
----
- drivers/leds/leds-tca6507.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On 11/14/21 21:08, Feng Tang wrote:
+> Or did you have something else in mind?
+>>>> I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
+>>>> the delay between watchdog's (HPET here) read were not linear, that
+>>>> from debug data, sometimes the 3-2 difference could be bigger or much
+>>>> bigger than the 2-1 difference.
+>>>>
+>>>> The reason could be the gap between 2 reads depends hugely on the system
+>>>> pressure at that time that 3 HPET read happens. On our test box (a
+>>>> 2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
+>>>> about 2.5 us,  while under the stress it could be bumped to from 6 us
+>>>> to 2800 us.
+>>>>
+>>>> So I think checking the 3-2 difference plus increasing the max retries
+>>>> to 10 may be a simple way, if the watchdog read is found to be
+>>>> abnormally long, we skip this round of check.
+>>> On one of the test system, I had measured that normal delay
+>>> (hpet->tsc->hpet) was normally a bit over 2us. It was a bit more than 4us at
+>>> bootup time. However, the same system under stress could have a delay of
+>>> over 200us at bootup time. When I measured the consecutive hpet delay, it
+>>> was about 180us. So hpet read did dominate the total clocksource read delay.
+>> Thank you both for the data!
+>>
+>>> I would not suggest increasing the max retries as it may still fail in most
+>>> cases because the system stress will likely not be going away within a short
+>>> time. So we are likely just wasting cpu times. I believe we should just skip
+>>> it if it is the watchdog read that is causing most of the delay.
+>> If anything, adding that extra read would cause me to -reduce- the number
+>> of retries to avoid increasing the per-watchdog overhead.
+>   
+> I understand Waiman's concern here, and in our test patch, the 2
+> consecutive watchdog read delay check is done inside this retrying
+> loop accompanying the 'cs' read, and once an abnormal delay is found,
+> the watchdog check is skipped without waiting for the max-retries to
+> complete.
+>
+> Our test data shows the consecutive delay is not always big even when
+> the system is much stressed, that's why I suggest to increase the
+> retries.
 
-diff --git a/drivers/leds/leds-tca6507.c b/drivers/leds/leds-tca6507.c
-index 225b765830bd..de8eed9b667d 100644
---- a/drivers/leds/leds-tca6507.c
-+++ b/drivers/leds/leds-tca6507.c
-@@ -242,9 +242,7 @@ static int choose_times(int msec, int *c1p, int *c2p)
- 	if (diff < 65536) {
- 		int actual;
- 		if (msec & 1) {
--			c1 = *c2p;
--			*c2p = *c1p;
--			*c1p = c1;
-+			swap(*c2p, *c1p);
- 		}
- 		actual = time_codes[*c1p] + time_codes[*c2p];
- 		if (*c1p < *c2p)
--- 
-2.17.1
+If we need a large number of retries to avoid triggering the unstable 
+TSC message, we should consider increase the threshod instead. Right?
+
+That is why my patch 2 makes the max skew value a configurable option so 
+that we can tune it if necessary.
+
+Cheers,
+Longman
 
