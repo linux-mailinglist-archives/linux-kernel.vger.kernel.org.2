@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF6445197B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93703451ED9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346346AbhKOXV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:21:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S241557AbhKPAhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:37:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244727AbhKOTRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E254632C6;
-        Mon, 15 Nov 2021 18:23:17 +0000 (UTC)
+        id S1344655AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A37B63357;
+        Mon, 15 Nov 2021 19:01:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000597;
-        bh=HNPfO/Ovchg2xkC5RaAtl9ysDi+CYwZXqKjqLhN+Sv0=;
+        s=korg; t=1637002910;
+        bh=2uBG98njyRcAWRJVScVJIz9Ar2oswvT+HqjAEIe/IO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MxrJV4Bp0haGKHLiBOHYGJ+hC8xg2HcIpGuQdjqiiOkaRGD6dPjNUyAloN7IYSx43
-         pnSFqfd4HXoeVmiISclYePnUq8LffblWdABr3xTUAhdXdmpFqFMlQLMccep6HSkiuu
-         EN2P6OTo3SdEb8RDniIczl+sfjwJB2jTdiSTJ6yY=
+        b=nyETfHNSgo/NBGzhE8DMKpTQCtrd4ifQIALwGYUmXszysGX7iJwtgx9OZ5R13TAkC
+         h8i7OIxvtc3pxDE7aNslyIIVfBZREAe0FzUMfxobOE4yID1LEoWiYoSPZn3Gd5bgpT
+         h0yoekqHhfMRAbhw4YL1ZqzZHbg94oXpSgDGN4FQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Benjamin Coddington <bcodding@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 720/849] kselftests/net: add missed icmp.sh test to Makefile
+Subject: [PATCH 5.15 708/917] NFS: Ignore the directory size when marking for revalidation
 Date:   Mon, 15 Nov 2021 18:03:23 +0100
-Message-Id: <20211115165444.609236028@linuxfoundation.org>
+Message-Id: <20211115165452.902593088@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit ca3676f94b8f40f52d285f9aef36dfd6725bfc14 ]
+[ Upstream commit a6a361c4ca3cc3e6f3b39d1b6bca1de90f5f4b11 ]
 
-When generating the selftests to another folder, the icmp.sh test will
-miss as it is not in Makefile, e.g.
+If we want to revalidate the directory, then just mark the change
+attribute as invalid.
 
-  make -C tools/testing/selftests/ install \
-      TARGETS="net" INSTALL_PATH=/tmp/kselftests
-
-Fixes: 7e9838b7915e ("selftests/net: Add icmp.sh for testing ICMP dummy address responses")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 13c0b082b6a9 ("NFS: Replace use of NFS_INO_REVAL_PAGECACHE when checking cache validity")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Tested-by: Benjamin Coddington <bcodding@redhat.com>
+Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/Makefile | 2 +-
+ fs/nfs/dir.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 79c9eb0034d58..a9b98d88df687 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -12,7 +12,7 @@ TEST_PROGS += udpgro_bench.sh udpgro.sh test_vxlan_under_vrf.sh reuseport_addr_a
- TEST_PROGS += test_vxlan_fdb_changelink.sh so_txtime.sh ipv6_flowlabel.sh
- TEST_PROGS += tcp_fastopen_backup_key.sh fcnal-test.sh l2tp.sh traceroute.sh
- TEST_PROGS += fin_ack_lat.sh fib_nexthop_multiprefix.sh fib_nexthops.sh
--TEST_PROGS += altnames.sh icmp_redirect.sh ip6_gre_headroom.sh
-+TEST_PROGS += altnames.sh icmp.sh icmp_redirect.sh ip6_gre_headroom.sh
- TEST_PROGS += route_localnet.sh
- TEST_PROGS += reuseaddr_ports_exhausted.sh
- TEST_PROGS += txtimestamp.sh
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index 1a6d2867fba4f..085b8ecdc17d9 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -1413,7 +1413,7 @@ out_force:
+ static void nfs_mark_dir_for_revalidate(struct inode *inode)
+ {
+ 	spin_lock(&inode->i_lock);
+-	nfs_set_cache_invalid(inode, NFS_INO_REVAL_PAGECACHE);
++	nfs_set_cache_invalid(inode, NFS_INO_INVALID_CHANGE);
+ 	spin_unlock(&inode->i_lock);
+ }
+ 
 -- 
 2.33.0
 
