@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0D8451940
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD50451B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347683AbhKOXQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:16:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42962 "EHLO mail.kernel.org"
+        id S1346566AbhKPABc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:01:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244388AbhKOTOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D3C0634B6;
-        Mon, 15 Nov 2021 18:20:31 +0000 (UTC)
+        id S1344422AbhKOTYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD996348B;
+        Mon, 15 Nov 2021 18:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000431;
-        bh=N7LUOq01zWU37ULwI9wO+7caatsylTJ0EFOwYwfj3uo=;
+        s=korg; t=1637002646;
+        bh=NewOX6p9U7y1vzv/hqnyCIclbc9xLMmMqtkeHr/JZJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rG6utlkPVFF8Y7Yc6QPoumvp5MFlYJcSsZSk0R6Q757zNNKPiEdclbR1TsnrN4tCe
-         ydZFeY1w82450Gi7AsxbylW7KFbkSHvt1GW3McXCxqMMtKsACYOyqq5Ypiv6Vr296z
-         bUbcHB1xQtPZDEDNpM+W3xeWOWJwfVWtl279JkJk=
+        b=Oc2uYRCwfGbyV8IGPLpXXuIn74MECTkCrbDbG4Kk1xhWRA6vxpLiNLNaoqhJbNV+C
+         uSoHEtD8gkZsl7qXhABNBYfGTyrbE8+ZFZAaJ0iasarDLME+yo10ZdZH43sR9CvVE2
+         ImWyOxlUiTi3SxutK85QpWqGipAaBisY5MXRjpA0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yixing Liu <liuyixing1@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        linux-usb@vger.kernel.org,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 657/849] RDMA/hns: Modify the value of MAX_LP_MSG_LEN to meet hardware compatibility
-Date:   Mon, 15 Nov 2021 18:02:20 +0100
-Message-Id: <20211115165442.490098622@linuxfoundation.org>
+Subject: [PATCH 5.15 646/917] usb: typec: STUSB160X should select REGMAP_I2C
+Date:   Mon, 15 Nov 2021 18:02:21 +0100
+Message-Id: <20211115165450.758514061@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 0e60778efb072d47efc7100c4009b5bd97273b0b ]
+[ Upstream commit 8ef1e58783b9f55daa4a865c7801dc75cbeb8260 ]
 
-The upper limit of MAX_LP_MSG_LEN on HIP08 is 64K, and the upper limit on
-HIP09 is 16K. Regardless of whether it is HIP08 or HIP09, only 16K will be
-used. In order to ensure compatibility, it is unified to 16K.
+REGMAP_I2C is not a user visible kconfig symbol so driver configs
+should not "depend on" it. They should depend on I2C and then
+select REGMAP_I2C.
 
-Setting MAX_LP_MSG_LEN to 16K will not cause performance loss on HIP08.
+If this worked, it was only because some other driver had set/enabled
+REGMAP_I2C.
 
-Fixes: fbed9d2be292 ("RDMA/hns: Fix configuration of ack_req_freq in QPC")
-Link: https://lore.kernel.org/r/20211029100537.27299-1-liangwenpeng@huawei.com
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Amelie Delaunay <amelie.delaunay@st.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20211015013609.7300-1-rdunlap@infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+ drivers/usb/typec/Kconfig | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index a77732c218dcb..e2547e8b4d21c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4413,8 +4413,8 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 	mtu = ib_mtu_enum_to_int(ib_mtu);
- 	if (WARN_ON(mtu <= 0))
- 		return -EINVAL;
--#define MAX_LP_MSG_LEN 65536
--	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
-+#define MAX_LP_MSG_LEN 16384
-+	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 16KB */
- 	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / mtu);
- 	if (WARN_ON(lp_pktn_ini >= 0xF))
- 		return -EINVAL;
+diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
+index a0418f23b4aae..ab480f38523aa 100644
+--- a/drivers/usb/typec/Kconfig
++++ b/drivers/usb/typec/Kconfig
+@@ -65,9 +65,9 @@ config TYPEC_HD3SS3220
+ 
+ config TYPEC_STUSB160X
+ 	tristate "STMicroelectronics STUSB160x Type-C controller driver"
+-	depends on I2C
+-	depends on REGMAP_I2C
+ 	depends on USB_ROLE_SWITCH || !USB_ROLE_SWITCH
++	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  Say Y or M here if your system has STMicroelectronics STUSB160x
+ 	  Type-C port controller.
 -- 
 2.33.0
 
