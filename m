@@ -2,247 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B79451C6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F39451C73
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245682AbhKPARw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:17:52 -0500
-Received: from mail-eopbgr00046.outbound.protection.outlook.com ([40.107.0.46]:35399
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345333AbhKOXjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:39:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oBDjGBC3ZQ4yg+xqT52VyW69P9y/AXwOq/Xcp/8q2WTp5a274C+awve45xgcA4TU1R9V8I5aWdTmuv2P8DA3QSGtabSqoLaIjoWuPbBakatpb1UY8fQKB+8h0QNdMDWYZWFVL/XGoFNnyfa0gpf4kTecowxUvWQagoSYkb/DUfTN/HNbhEgOHh7Oa+rJquZvMUbaorAnBa7YD/up69xtFt7eRC6rPvOklv+ZbCpG+MlgMbTWQq3X2i63zWzx1Pcq6ZRR1cYnh3Pq0qdWP5dOskpYVx6BsoiwAzafGmjurCdEqRrRY4bc3tz2N7nVURlIqFLHv9tYwDYAXdZMSZsORQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SPvIC9Xbnf6yUY3qEedTcAEDNNFDLfjWYpaK+C7ZGIM=;
- b=Spo5PdYDwhrKQz9VR1yM3xOJ3LeRLjZ3MeL5aVInV/33qJcURqosfXk2ZU23COygAayePfi+ipBouBbq2BPmE7iquf5WJD7hPkwBW3kuqivqkX4/3ExmUvyrErPSWP0qWIgUnFGUPx2JcAiHcA7sjbYTOdOxCdCMjG8PqgwH4+rGYaNvid5a2NJWgr8dkPKt0YH4ZfCBSR+DugSgbf1S6xTs0jRDZbdRqa9DWcnQG0QerCVbmZuFFT++1ja8ZQ9bXiZPr2o5nd9IV+KiFAifah1rjc/mRStgRNXZ1c3RKmA82TeEC38Hd0sH1A52fSLw4mIWiEGME9OxeW1YaojEgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SPvIC9Xbnf6yUY3qEedTcAEDNNFDLfjWYpaK+C7ZGIM=;
- b=IZQi7r8DWbR7DtBB4ZtxMMg9CLMl3DQOk4qiiex+zBBLw9bUrnGgYQt9AU0k1NaQSac0OxDadZi/dQSjjVIHbUH8/Q+W8Ffbt4TMThwLXoUwOAZ0d8uhmvLvpXA1V9osfAw9MfBnu1JEPYMvydnAn4vOxSzHJfnue1c9rGyLFtk=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Mon, 15 Nov
- 2021 23:36:23 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4669.022; Mon, 15 Nov 2021
- 23:36:23 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 169/355] net: dsa: lantiq_gswip: serialize access to
- the PCE table
-Thread-Topic: [PATCH 5.4 169/355] net: dsa: lantiq_gswip: serialize access to
- the PCE table
-Thread-Index: AQHX2kSnOkmxsoPWP0Cc60mbFnJbHqwFPqgA
-Date:   Mon, 15 Nov 2021 23:36:23 +0000
-Message-ID: <20211115233622.qdsnq72hlusszzxr@skbuf>
-References: <20211115165313.549179499@linuxfoundation.org>
- <20211115165319.255917034@linuxfoundation.org>
-In-Reply-To: <20211115165319.255917034@linuxfoundation.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 960af84b-518e-4070-b023-08d9a890bc0a
-x-ms-traffictypediagnostic: VI1PR04MB5696:
-x-microsoft-antispam-prvs: <VI1PR04MB569632AB73831C5CEB958D35E0989@VI1PR04MB5696.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5TejrGSgJ0VsSZfa0KKMj2Jo/aflBzJavP2oltTx9TKOZZa3CAtj0imMGEn9flhKNBjP2xmC/QDZ0SleIBOICsEg9T1Q+g8lwjz85LNxcFkMFzjDNMS7LlfjgOKa3WUfiu64Y4Vn008ITASomTgzOlzwOTKVLdQ2VY5jXOcUeCAjbRXVgUiRK5njBp0yVj1LpHbItWoI2LHJ9ez3Xgu8j/M+WGekrnt82O5QKvHslprctHLDA1XNbhPIGkj2yyZmBowOZ71xZgTS4zHtTXOofIFc/6y8REODcWUq+/uFDF0bAD9uWK8BKxtADjqMpT3uQkIKMDLWHeOkXFA6V18Nq6Lb/oPz1nZAarnD7G/eVy6pmNXJowPFN/GOuMozabY6JgGc3jr1cMc04YE9qpavJhyaoWlGMso0oWumW3Qz6CpT83ZlPqihnmJmr4vJewrNcxBJTUg178AHQS9ymllGQKDykGG+B3tDB8hWwbWlI4R5pIz0H9ErkWAl6ht27lpFd2qstZh5FG42ASTzV/uKNPNT86ZBBEV/f5zaT9jUBPENddqXnqMjtP7EAvJJWLwlGvmxuQTw3YnOuEb3RjCLD0Kg27PhisTrJHzomekp2D5pLuAR5KHooYlxzxuZfWkNEhY5BmL0txsxQ0sfWAUb8Odtsd/Sww+JEbLI6D3qoah4Vu1tdWgQx9YlqttK2F2tZkT39Gk6zeY+523LbFo3zw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(54906003)(186003)(66946007)(66476007)(66556008)(91956017)(26005)(66446008)(64756008)(33716001)(76116006)(9686003)(6512007)(38070700005)(508600001)(44832011)(8936002)(5660300002)(8676002)(71200400001)(2906002)(86362001)(1076003)(6506007)(6916009)(122000001)(6486002)(83380400001)(38100700002)(316002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?s9TZhN7X+WEC3Gf08uCgoPM9cFvaZNfIq2W7j9XUo4TLHvqC5LLQiGOeXY1a?=
- =?us-ascii?Q?tfXnsRAgQPada3eXP9hLv6HIyImpHvWALASLJUXS+4LSjJUTiD8euYR8SmO+?=
- =?us-ascii?Q?wsVe8G1KT8E51TigK4evaZwpSkdNZ1dK+4HpSH9bzQL/ofxoZPQ+yGIT+1Vr?=
- =?us-ascii?Q?Wt9MQVqqcDSYtiRILR0Sg1INra87weN03VPvQB2QmGOwR8lm8dMi4ieVNeOA?=
- =?us-ascii?Q?eYKFHMAItF5jZ2KIgOsdr+VCSOomJMS76TJWTA5LjKDeLryoOMMlHJ9htiPw?=
- =?us-ascii?Q?F2h0usxNNhpbb5ae7K5RM/2Z8hZPHr0cpr0KjxxtuYOaZwA+Oo1OQW7jDDWx?=
- =?us-ascii?Q?8jLGHlgK1I4qtZRmQtxJlEb7obsU1Nk3AWITkrXavqi33mHcZ/dhHYX1XHHA?=
- =?us-ascii?Q?VqOM+lLdJLIYYv70ein+4tPMJorCwM8QkmLcHH6yA5ta9Xz9CImxOO1FabXm?=
- =?us-ascii?Q?zPyDP2rT6QdnZc85oHhLkI51fKEQnXarKCyS18jqgoBLtn54myZQX6+evzUG?=
- =?us-ascii?Q?MRFHEh0sE1ZHiUFo5j0Vvl2sterbRWGsnX2tNuhn4xOeWiKEB140/1K1N6pn?=
- =?us-ascii?Q?QXuYZZhrfSfIZxp3Ka5yDC2E1336naEVafCpjCo2x5yOdA5QcXN2GLWLdfOg?=
- =?us-ascii?Q?bctE+lxoimFDK8Td5KwoqpIuDetRrbsMqauWKIXgMOl+s9ZyJFhzweUwZ71O?=
- =?us-ascii?Q?3XNCLWfhyt+I7oVWS39xZuaSVPysmHKM8gSV+wdqEdxZY3srGTRhHMr7X/hr?=
- =?us-ascii?Q?/RBiP+8MuN3MjbkFjB0swyGAQAMUdoOpc3+GEAUYk3lzS94DgwXzmTvaSIxo?=
- =?us-ascii?Q?OVF3QxBc8YsH5FNLjIMfZrv+osrhRLHjCMMlbdCW0OjqlH66yM9Yn74u5y4t?=
- =?us-ascii?Q?sW3lPG/TxyyBXz7z+ckwQhOtRMOIlrt7cbtsy0RtGApr0jJ27XBfS/M8fTMy?=
- =?us-ascii?Q?0R1suaU3hn7aTT/B33OhdlUqd0QDcDV7hxcgKf/lfe2CadDVcWQy5qCoGhi9?=
- =?us-ascii?Q?xK7+y/C70t8SHGrlb72RwLNX7PUAzP6Ze7Crs+nhBS60nAczEal9I/Ph6j+L?=
- =?us-ascii?Q?tSjnY+kqLd8zlF43KqkQd47K6wS1SU8C3+saBllowFrC+Ygh8x2zDtsshG9U?=
- =?us-ascii?Q?qsY6yehXx536t7B38ehxPuJztkS0aTuPKHP0CJGS/9ja4egk+ZH4ruzD0wA2?=
- =?us-ascii?Q?/QF88spWV5D5KIfrneoLprZXA6mln31dXE36QpG3wXowM0xx0XHts6M3iYPA?=
- =?us-ascii?Q?BgeUI6ULNwTFxCs8OtkMXLPDJ52ZbyxCd0iYg7j3MJ4cpmbPFPUBMCecjTN4?=
- =?us-ascii?Q?b2KveUgjWbkUW5z8YiBTnRyYI2DnwFxIm4F5yk9sGCBiCxb5EC+V6P+0rGit?=
- =?us-ascii?Q?lEzHbtCkFPbK0+0ZpCQwMijEMGZzpk6DANwDHMnTH9Zk8yxEEsAjKI9bjT+d?=
- =?us-ascii?Q?YLOpss/MB3GKM4mgwjlVic/LM+R5/jimMmq7o9ieVlYOa7mPAftyTq6OwkLm?=
- =?us-ascii?Q?UfIsn/OUhSER84rdPhDuISYgqX8Erelrnn5AnPO9pobQksrD1xYsuBNwBGAR?=
- =?us-ascii?Q?i9rb0RzAaNp1NkpEwVPq+oOcq5hz45ZiY8W7ENH4XpwBbh6KUBuiSi6QjgDz?=
- =?us-ascii?Q?IpwIcVdVzVpTHoV4ScEJr+E=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <CBAA8669196C554192E3D77D0EFDA869@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1352390AbhKPASQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:18:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355340AbhKOXlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 18:41:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E86CC63272;
+        Mon, 15 Nov 2021 23:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637019406;
+        bh=cctpZu5Y6zldBTQH9BYecYmoFJAIKu/tEYPP+N2ifkg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BUm+Or9GZUEVDVDQzn5Avd+95mdVhm4Ue+D7E4a+p7ajRCd5/l6Ays9aEhEEd8+Gg
+         thA2uLAZJD9ZVWzlqZvL/WFoGabVcwiynnUswgq40HjdebxPBO+XwPoQhDa6wey8rJ
+         zrrr/oLf7UjiMhWh7+3f0uSpgbnTofAjQLfpck/naZHMhtCvwsfMmhDMEB+e7srKqO
+         k0Rdc5GNWGFGIQPC4ZJ9oh++gp9Rq/XyTpzNfVynSZBEU/5rJxDQLuBGyx2yr/8Utv
+         fnG6HhVuGI2AMXi7ZdPmPLwMlw8uv5D+NBZxqc7AeXUMy9EO1MVcPDJV7fnDwCnHbD
+         UtbAx+QWfJyWQ==
+Received: by mail-ed1-f51.google.com with SMTP id r11so15347163edd.9;
+        Mon, 15 Nov 2021 15:36:46 -0800 (PST)
+X-Gm-Message-State: AOAM533ACluWjIP1qxJ5gVu6haaYv7qjxWD3EVM67thrBUfWW1y6GUL5
+        y66TfeztcOWGsj56L7liNEVqWcvehjApJGabQw==
+X-Google-Smtp-Source: ABdhPJxBF8uXp/soiWJMvx1BBMQh38TTql9xsdOjCMlzFG/WKZ34mL89epAie4tWiEUIrY4Yg2UkZ8zuSWFa0MXJF2Y=
+X-Received: by 2002:aa7:c415:: with SMTP id j21mr3624586edq.357.1637019405373;
+ Mon, 15 Nov 2021 15:36:45 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 960af84b-518e-4070-b023-08d9a890bc0a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 23:36:23.2150
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PGV/6NPjYJa4sUWQ+W7I9Ey3I1dtJuj3IlbZKLy4ivLkdU2rTS2DqhVug1SwXHtk0pL1xLTsjsY+H7Xj7n+Rnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5696
+References: <20210930155222.5861-1-yongqiang.niu@mediatek.com> <20210930155222.5861-3-yongqiang.niu@mediatek.com>
+In-Reply-To: <20210930155222.5861-3-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 16 Nov 2021 07:36:34 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9R+=VPXMLEo0QTuzJSePyVNi6hmHUoCe8ctbKYKLDU1g@mail.gmail.com>
+Message-ID: <CAAOTY_9R+=VPXMLEo0QTuzJSePyVNi6hmHUoCe8ctbKYKLDU1g@mail.gmail.com>
+Subject: Re: [PATCH v10, 2/5] drm/mediatek: add component POSTMASK
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 06:01:33PM +0100, Greg Kroah-Hartman wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->=20
-> [ Upstream commit 49753a75b9a32de4c0393bb8d1e51ea223fda8e4 ]
->=20
-> Looking at the code, the GSWIP switch appears to hold bridging service
-> structures (VLANs, FDBs, forwarding rules) in PCE table entries.
-> Hardware access to the PCE table is non-atomic, and is comprised of
-> several register reads and writes.
->=20
-> These accesses are currently serialized by the rtnl_lock, but DSA is
-> changing its driver API and that lock will no longer be held when
-> calling ->port_fdb_add() and ->port_fdb_del().
->=20
-> So this driver needs to serialize the access to the PCE table using its
-> own locking scheme. This patch adds that.
->=20
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/dsa/lantiq_gswip.c | 28 +++++++++++++++++++++++-----
->  1 file changed, 23 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswi=
-p.c
-> index 60e36f46f8abe..d612ef8648baa 100644
-> --- a/drivers/net/dsa/lantiq_gswip.c
-> +++ b/drivers/net/dsa/lantiq_gswip.c
-> @@ -274,6 +274,7 @@ struct gswip_priv {
->  	int num_gphy_fw;
->  	struct gswip_gphy_fw *gphy_fw;
->  	u32 port_vlan_filter;
-> +	struct mutex pce_table_lock;
->  };
-> =20
->  struct gswip_pce_table_entry {
-> @@ -521,10 +522,14 @@ static int gswip_pce_table_entry_read(struct gswip_=
-priv *priv,
->  	u16 addr_mode =3D tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSRD :
->  					GSWIP_PCE_TBL_CTRL_OPMOD_ADRD;
-> =20
-> +	mutex_lock(&priv->pce_table_lock);
-> +
->  	err =3D gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
->  				     GSWIP_PCE_TBL_CTRL_BAS);
-> -	if (err)
-> +	if (err) {
-> +		mutex_unlock(&priv->pce_table_lock);
->  		return err;
-> +	}
-> =20
->  	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
->  	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
-> @@ -534,8 +539,10 @@ static int gswip_pce_table_entry_read(struct gswip_p=
-riv *priv,
-> =20
->  	err =3D gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
->  				     GSWIP_PCE_TBL_CTRL_BAS);
-> -	if (err)
-> +	if (err) {
-> +		mutex_unlock(&priv->pce_table_lock);
->  		return err;
-> +	}
-> =20
->  	for (i =3D 0; i < ARRAY_SIZE(tbl->key); i++)
->  		tbl->key[i] =3D gswip_switch_r(priv, GSWIP_PCE_TBL_KEY(i));
-> @@ -551,6 +558,8 @@ static int gswip_pce_table_entry_read(struct gswip_pr=
-iv *priv,
->  	tbl->valid =3D !!(crtl & GSWIP_PCE_TBL_CTRL_VLD);
->  	tbl->gmap =3D (crtl & GSWIP_PCE_TBL_CTRL_GMAP_MASK) >> 7;
-> =20
-> +	mutex_unlock(&priv->pce_table_lock);
-> +
->  	return 0;
->  }
-> =20
-> @@ -563,10 +572,14 @@ static int gswip_pce_table_entry_write(struct gswip=
-_priv *priv,
->  	u16 addr_mode =3D tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSWR :
->  					GSWIP_PCE_TBL_CTRL_OPMOD_ADWR;
-> =20
-> +	mutex_lock(&priv->pce_table_lock);
-> +
->  	err =3D gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
->  				     GSWIP_PCE_TBL_CTRL_BAS);
-> -	if (err)
-> +	if (err) {
-> +		mutex_unlock(&priv->pce_table_lock);
->  		return err;
-> +	}
-> =20
->  	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
->  	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
-> @@ -598,8 +611,12 @@ static int gswip_pce_table_entry_write(struct gswip_=
-priv *priv,
->  	crtl |=3D GSWIP_PCE_TBL_CTRL_BAS;
->  	gswip_switch_w(priv, crtl, GSWIP_PCE_TBL_CTRL);
-> =20
-> -	return gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
-> -				      GSWIP_PCE_TBL_CTRL_BAS);
-> +	err =3D gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
-> +				     GSWIP_PCE_TBL_CTRL_BAS);
-> +
-> +	mutex_unlock(&priv->pce_table_lock);
-> +
-> +	return err;
->  }
-> =20
->  /* Add the LAN port into a bridge with the CPU port by
-> @@ -2020,6 +2037,7 @@ static int gswip_probe(struct platform_device *pdev=
-)
->  	priv->ds->priv =3D priv;
->  	priv->ds->ops =3D &gswip_switch_ops;
->  	priv->dev =3D dev;
-> +	mutex_init(&priv->pce_table_lock);
->  	version =3D gswip_switch_r(priv, GSWIP_VERSION);
-> =20
->  	/* bring up the mdio bus */
-> --=20
-> 2.33.0
->=20
->=20
->
+Hi, Yongqiang:
 
-As discussed on the v5.14 backport, this patch can be dropped. Same
-thing for the 5.10 version of the backport.=
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8830=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:52=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> This patch add component POSTMASK.
+
+Applied to mediatek-drm-next [1], thanks.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
+
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 102 ++++++++++++++------
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   1 +
+>  2 files changed, 73 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.c
+> index 4a2abcf3e5f9..89170ad825fd 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -62,6 +62,12 @@
+>  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
+>  #define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
+>
+> +#define DISP_POSTMASK_EN                       0x0000
+> +#define POSTMASK_EN                                    BIT(0)
+> +#define DISP_POSTMASK_CFG                      0x0020
+> +#define POSTMASK_RELAY_MODE                            BIT(0)
+> +#define DISP_POSTMASK_SIZE                     0x0030
+> +
+>  struct mtk_ddp_comp_dev {
+>         struct clk *clk;
+>         void __iomem *regs;
+> @@ -214,6 +220,32 @@ static void mtk_dither_stop(struct device *dev)
+>         writel_relaxed(0x0, priv->regs + DISP_DITHER_EN);
+>  }
+>
+> +static void mtk_postmask_config(struct device *dev, unsigned int w,
+> +                               unsigned int h, unsigned int vrefresh,
+> +                               unsigned int bpc, struct cmdq_pkt *cmdq_p=
+kt)
+> +{
+> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
+> +
+> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs,
+> +                     DISP_POSTMASK_SIZE);
+> +       mtk_ddp_write(cmdq_pkt, POSTMASK_RELAY_MODE, &priv->cmdq_reg,
+> +                     priv->regs, DISP_POSTMASK_CFG);
+> +}
+> +
+> +static void mtk_postmask_start(struct device *dev)
+> +{
+> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
+> +
+> +       writel(POSTMASK_EN, priv->regs + DISP_POSTMASK_EN);
+> +}
+> +
+> +static void mtk_postmask_stop(struct device *dev)
+> +{
+> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
+> +
+> +       writel_relaxed(0x0, priv->regs + DISP_POSTMASK_EN);
+> +}
+> +
+>  static const struct mtk_ddp_comp_funcs ddp_aal =3D {
+>         .clk_enable =3D mtk_aal_clk_enable,
+>         .clk_disable =3D mtk_aal_clk_disable,
+> @@ -289,6 +321,14 @@ static const struct mtk_ddp_comp_funcs ddp_ovl =3D {
+>         .bgclr_in_off =3D mtk_ovl_bgclr_in_off,
+>  };
+>
+> +static const struct mtk_ddp_comp_funcs ddp_postmask =3D {
+> +       .clk_enable =3D mtk_ddp_clk_enable,
+> +       .clk_disable =3D mtk_ddp_clk_disable,
+> +       .config =3D mtk_postmask_config,
+> +       .start =3D mtk_postmask_start,
+> +       .stop =3D mtk_postmask_stop,
+> +};
+> +
+>  static const struct mtk_ddp_comp_funcs ddp_rdma =3D {
+>         .clk_enable =3D mtk_rdma_clk_enable,
+>         .clk_disable =3D mtk_rdma_clk_disable,
+> @@ -324,6 +364,7 @@ static const char * const mtk_ddp_comp_stem[MTK_DDP_C=
+OMP_TYPE_MAX] =3D {
+>         [MTK_DISP_MUTEX] =3D "mutex",
+>         [MTK_DISP_OD] =3D "od",
+>         [MTK_DISP_BLS] =3D "bls",
+> +       [MTK_DISP_POSTMASK] =3D "postmask",
+>  };
+>
+>  struct mtk_ddp_comp_match {
+> @@ -333,36 +374,37 @@ struct mtk_ddp_comp_match {
+>  };
+>
+>  static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_ID_=
+MAX] =3D {
+> -       [DDP_COMPONENT_AAL0]    =3D { MTK_DISP_AAL,       0, &ddp_aal },
+> -       [DDP_COMPONENT_AAL1]    =3D { MTK_DISP_AAL,       1, &ddp_aal },
+> -       [DDP_COMPONENT_BLS]     =3D { MTK_DISP_BLS,       0, NULL },
+> -       [DDP_COMPONENT_CCORR]   =3D { MTK_DISP_CCORR,     0, &ddp_ccorr }=
+,
+> -       [DDP_COMPONENT_COLOR0]  =3D { MTK_DISP_COLOR,     0, &ddp_color }=
+,
+> -       [DDP_COMPONENT_COLOR1]  =3D { MTK_DISP_COLOR,     1, &ddp_color }=
+,
+> -       [DDP_COMPONENT_DITHER]  =3D { MTK_DISP_DITHER,    0, &ddp_dither =
+},
+> -       [DDP_COMPONENT_DPI0]    =3D { MTK_DPI,            0, &ddp_dpi },
+> -       [DDP_COMPONENT_DPI1]    =3D { MTK_DPI,            1, &ddp_dpi },
+> -       [DDP_COMPONENT_DSI0]    =3D { MTK_DSI,            0, &ddp_dsi },
+> -       [DDP_COMPONENT_DSI1]    =3D { MTK_DSI,            1, &ddp_dsi },
+> -       [DDP_COMPONENT_DSI2]    =3D { MTK_DSI,            2, &ddp_dsi },
+> -       [DDP_COMPONENT_DSI3]    =3D { MTK_DSI,            3, &ddp_dsi },
+> -       [DDP_COMPONENT_GAMMA]   =3D { MTK_DISP_GAMMA,     0, &ddp_gamma }=
+,
+> -       [DDP_COMPONENT_OD0]     =3D { MTK_DISP_OD,        0, &ddp_od },
+> -       [DDP_COMPONENT_OD1]     =3D { MTK_DISP_OD,        1, &ddp_od },
+> -       [DDP_COMPONENT_OVL0]    =3D { MTK_DISP_OVL,       0, &ddp_ovl },
+> -       [DDP_COMPONENT_OVL1]    =3D { MTK_DISP_OVL,       1, &ddp_ovl },
+> -       [DDP_COMPONENT_OVL_2L0] =3D { MTK_DISP_OVL_2L,    0, &ddp_ovl },
+> -       [DDP_COMPONENT_OVL_2L1] =3D { MTK_DISP_OVL_2L,    1, &ddp_ovl },
+> -       [DDP_COMPONENT_OVL_2L2] =3D { MTK_DISP_OVL_2L,    2, &ddp_ovl },
+> -       [DDP_COMPONENT_PWM0]    =3D { MTK_DISP_PWM,       0, NULL },
+> -       [DDP_COMPONENT_PWM1]    =3D { MTK_DISP_PWM,       1, NULL },
+> -       [DDP_COMPONENT_PWM2]    =3D { MTK_DISP_PWM,       2, NULL },
+> -       [DDP_COMPONENT_RDMA0]   =3D { MTK_DISP_RDMA,      0, &ddp_rdma },
+> -       [DDP_COMPONENT_RDMA1]   =3D { MTK_DISP_RDMA,      1, &ddp_rdma },
+> -       [DDP_COMPONENT_RDMA2]   =3D { MTK_DISP_RDMA,      2, &ddp_rdma },
+> -       [DDP_COMPONENT_UFOE]    =3D { MTK_DISP_UFOE,      0, &ddp_ufoe },
+> -       [DDP_COMPONENT_WDMA0]   =3D { MTK_DISP_WDMA,      0, NULL },
+> -       [DDP_COMPONENT_WDMA1]   =3D { MTK_DISP_WDMA,      1, NULL },
+> +       [DDP_COMPONENT_AAL0]            =3D { MTK_DISP_AAL,       0, &ddp=
+_aal },
+> +       [DDP_COMPONENT_AAL1]            =3D { MTK_DISP_AAL,       1, &ddp=
+_aal },
+> +       [DDP_COMPONENT_BLS]             =3D { MTK_DISP_BLS,       0, NULL=
+ },
+> +       [DDP_COMPONENT_CCORR]           =3D { MTK_DISP_CCORR,     0, &ddp=
+_ccorr },
+> +       [DDP_COMPONENT_COLOR0]          =3D { MTK_DISP_COLOR,     0, &ddp=
+_color },
+> +       [DDP_COMPONENT_COLOR1]          =3D { MTK_DISP_COLOR,     1, &ddp=
+_color },
+> +       [DDP_COMPONENT_DITHER]          =3D { MTK_DISP_DITHER,    0, &ddp=
+_dither },
+> +       [DDP_COMPONENT_DPI0]            =3D { MTK_DPI,            0, &ddp=
+_dpi },
+> +       [DDP_COMPONENT_DPI1]            =3D { MTK_DPI,            1, &ddp=
+_dpi },
+> +       [DDP_COMPONENT_DSI0]            =3D { MTK_DSI,            0, &ddp=
+_dsi },
+> +       [DDP_COMPONENT_DSI1]            =3D { MTK_DSI,            1, &ddp=
+_dsi },
+> +       [DDP_COMPONENT_DSI2]            =3D { MTK_DSI,            2, &ddp=
+_dsi },
+> +       [DDP_COMPONENT_DSI3]            =3D { MTK_DSI,            3, &ddp=
+_dsi },
+> +       [DDP_COMPONENT_GAMMA]           =3D { MTK_DISP_GAMMA,     0, &ddp=
+_gamma },
+> +       [DDP_COMPONENT_OD0]             =3D { MTK_DISP_OD,        0, &ddp=
+_od },
+> +       [DDP_COMPONENT_OD1]             =3D { MTK_DISP_OD,        1, &ddp=
+_od },
+> +       [DDP_COMPONENT_OVL0]            =3D { MTK_DISP_OVL,       0, &ddp=
+_ovl },
+> +       [DDP_COMPONENT_OVL1]            =3D { MTK_DISP_OVL,       1, &ddp=
+_ovl },
+> +       [DDP_COMPONENT_OVL_2L0]         =3D { MTK_DISP_OVL_2L,    0, &ddp=
+_ovl },
+> +       [DDP_COMPONENT_OVL_2L1]         =3D { MTK_DISP_OVL_2L,    1, &ddp=
+_ovl },
+> +       [DDP_COMPONENT_OVL_2L2]         =3D { MTK_DISP_OVL_2L,    2, &ddp=
+_ovl },
+> +       [DDP_COMPONENT_POSTMASK0]       =3D { MTK_DISP_POSTMASK,  0, &ddp=
+_postmask },
+> +       [DDP_COMPONENT_PWM0]            =3D { MTK_DISP_PWM,       0, NULL=
+ },
+> +       [DDP_COMPONENT_PWM1]            =3D { MTK_DISP_PWM,       1, NULL=
+ },
+> +       [DDP_COMPONENT_PWM2]            =3D { MTK_DISP_PWM,       2, NULL=
+ },
+> +       [DDP_COMPONENT_RDMA0]           =3D { MTK_DISP_RDMA,      0, &ddp=
+_rdma },
+> +       [DDP_COMPONENT_RDMA1]           =3D { MTK_DISP_RDMA,      1, &ddp=
+_rdma },
+> +       [DDP_COMPONENT_RDMA2]           =3D { MTK_DISP_RDMA,      2, &ddp=
+_rdma },
+> +       [DDP_COMPONENT_UFOE]            =3D { MTK_DISP_UFOE,      0, &ddp=
+_ufoe },
+> +       [DDP_COMPONENT_WDMA0]           =3D { MTK_DISP_WDMA,      0, NULL=
+ },
+> +       [DDP_COMPONENT_WDMA1]           =3D { MTK_DISP_WDMA,      1, NULL=
+ },
+>  };
+>
+>  static bool mtk_drm_find_comp_in_ddp(struct device *dev,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.h
+> index bb914d976cf5..cd1dec6b4cdf 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> @@ -30,6 +30,7 @@ enum mtk_ddp_comp_type {
+>         MTK_DISP_UFOE,
+>         MTK_DSI,
+>         MTK_DPI,
+> +       MTK_DISP_POSTMASK,
+>         MTK_DISP_PWM,
+>         MTK_DISP_MUTEX,
+>         MTK_DISP_OD,
+> --
+> 2.25.1
+>
