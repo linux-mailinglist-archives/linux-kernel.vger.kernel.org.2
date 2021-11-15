@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67A5451C44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772C5451C31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356061AbhKPAOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349653AbhKOW2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:28:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7A9661B5E;
-        Mon, 15 Nov 2021 22:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637015108;
-        bh=vJSsxRlroSa+Wf1PfSlk5Zcswft53H0QxDAKhSabyYs=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=BmWjiqc3dkXXeSpniJ6dzODtEuEJtDZJf1qW9i1Q5p2kyyOHXLaJn0rzSjli3lMUB
-         eXGwsX2Bjd0ZfgH5ZDJhCi9ZLTWo5zlr3AVgbjrJN92qY1dwwF++LJJ//g0ugs0Tri
-         WILh8gR3RXxVviHiDaTgOmbYjIpCdmtVhW34SPkG9OjdRj5t1u3OqmnV/EczLUcU1T
-         BktqC0+BvkXPC56RsyKujUDfmYijhLIBaTr2j62PZCWG3aOvNVY9aU+kIn1Oe3xljW
-         CcT+Pa4JMh59X4eQxVu26jrismAF1mULzxs4gPL3gFFD5LTphRR7LQ2wIHB7c1XqoR
-         Pz4icykEWV/3w==
-Date:   Mon, 15 Nov 2021 14:25:06 -0800 (PST)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To:     Jan Beulich <jbeulich@suse.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Stable@vger.kernel.org, jgross@suse.com
-Subject: Re: [PATCH] xen: don't continue xenstore initialization in case of
- errors
-In-Reply-To: <6be8285f-6cbe-c115-a826-585664c91022@suse.com>
-Message-ID: <alpine.DEB.2.22.394.2111151424510.1412361@ubuntu-linux-20-04-desktop>
-References: <20211112214709.1763928-1-sstabellini@kernel.org> <6be8285f-6cbe-c115-a826-585664c91022@suse.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S245310AbhKPAOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:14:11 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:57519 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242275AbhKOW37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 17:29:59 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 35875A3EE7;
+        Tue, 16 Nov 2021 09:26:28 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mmkQm-009HS0-AB; Tue, 16 Nov 2021 09:26:28 +1100
+Date:   Tue, 16 Nov 2021 09:26:28 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ian Kent <raven@themaw.net>
+Cc:     xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2 2/2] xfs: make sure link path does not go away at access
+Message-ID: <20211115222628.GP449541@dread.disaster.area>
+References: <163694289979.229789.1176392639284347792.stgit@mickey.themaw.net>
+ <163694306800.229789.11812765289669370510.stgit@mickey.themaw.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163694306800.229789.11812765289669370510.stgit@mickey.themaw.net>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=6192de97
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=HsDoLlocmGUuF16g:21 a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=jUFqNg-nAAAA:8
+        a=7-415B0cAAAA:8 a=EyonS_EgehF9X83yCPAA:9 a=CjuIK1q_8ugA:10
+        a=hl_xKfOxWho2XEkUDbUg:22 a=-tElvS_Zar9K8zhlwiSp:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021, Jan Beulich wrote:
-> On 12.11.2021 22:47, Stefano Stabellini wrote:
-> > --- a/drivers/xen/xenbus/xenbus_probe.c
-> > +++ b/drivers/xen/xenbus/xenbus_probe.c
-> > @@ -983,8 +983,10 @@ static int __init xenbus_init(void)
-> >  	 */
-> >  	proc_create_mount_point("xen");
-> >  #endif
-> > +	return err;
+On Mon, Nov 15, 2021 at 10:24:28AM +0800, Ian Kent wrote:
+> When following an inline symlink in rcu-walk mode it's possible to
+> succeed in getting the ->get_link() method pointer but the link path
+> string be deallocated while it's being used.
 > 
-> Personally I think such cases would better be "return 0". With
-> that done here, err's initializer could (imo should) then also
-> be dropped.
-
-I'll make both changes in the next version
-
-
-> >  out_error:
-> > +	xen_store_domain_type = XS_UNKNOWN;
-> >  	return err;
-> >  }
-> >  
-> > 
+> This is becuase of the xfs inode reclaim mechanism. While rcu freeing
+> the link path can prevent it from being freed during use the inode
+> reclaim could assign a new value to the field at any time outside of
+> the path walk and result in an invalid link path pointer being
+> returned. Admittedly a very small race window but possible.
 > 
+> The best way to mitigate this risk is to return -ECHILD to the VFS
+> if the inline symlink method, ->get_link(), is called in rcu-walk mode
+> so the VFS can switch to ref-walk mode or redo the walk if the inode
+> has become invalid.
+> 
+> If it's discovered that staying in rcu-walk mode gives a worth while
+> performance improvement (unlikely) then the link path could be freed
+> under rcu once potential side effects of the xfs inode reclaim
+> sub-system have been analysed and dealt with if needed.
+> 
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> ---
+>  fs/xfs/xfs_iops.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index a607d6aca5c4..0a96183c5381 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -520,6 +520,9 @@ xfs_vn_get_link_inline(
+>  	struct xfs_inode	*ip = XFS_I(inode);
+>  	char			*link;
+>  
+> +	if (!dentry)
+> +		return ERR_PTR(-ECHILD);
+> +
+>  	ASSERT(ip->i_df.if_format == XFS_DINODE_FMT_LOCAL);
+
+NACK. As I just mentioned in the original thread, we can fix this
+inode reuse within the RCU grace period problem realtively easily
+without needing to turn off lockless pathwalk support for inline
+symlinks.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
