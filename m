@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F5245154A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544914514F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351400AbhKOUeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:34:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
+        id S232546AbhKOUSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:18:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239999AbhKOSFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240000AbhKOSFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:05:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9A156336C;
-        Mon, 15 Nov 2021 17:41:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 639646336F;
+        Mon, 15 Nov 2021 17:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998061;
-        bh=+01wE7kexrBhH+3wNvt8GwILd4+MHhbRnSkfgp3UMWI=;
+        s=korg; t=1636998063;
+        bh=2IH9MM1rZ3/aSVmZLZllG7RS/eIZYJrMnnBQ5yJFil0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4UJrrqhPSUOrlQbDsb1emWemm3siWIzeXxfnGPt43/A8BM5H0Y2qLPy070yMkjOZ
-         IKl6szLzZfnBt/zSUFgLXcuq7bR+j4A1jTA4oKL3bI9lXVzHlKbX+QyKDMXVn60iXd
-         NHYffK1ui2Vf9JjSEJnxEe404hFseB8WVBvY12Eg=
+        b=VFXqtCbMsFUH5tKqa1DxffLKOmnv5QM5BhaJ7BgCuQf0bM1uy9T6dmxmU/+5P+hk2
+         M1Z8KrFhB/Ml5FqCLoXPjpQWXiKn7rOEFDGsedHbUjRaYeLhFw9KWFr3icSkNXjDBA
+         UKcq3pk8jnkpZqjRQ7SdXtH+mFRBUUv/F0kg+5xs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 374/575] selftests/bpf: Fix fd cleanup in sk_lookup test
-Date:   Mon, 15 Nov 2021 18:01:39 +0100
-Message-Id: <20211115165356.715122354@linuxfoundation.org>
+Subject: [PATCH 5.10 375/575] net: amd-xgbe: Toggle PLL settings during rate change
+Date:   Mon, 15 Nov 2021 18:01:40 +0100
+Message-Id: <20211115165356.749049679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,54 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit c3fc706e94f5653def2783ffcd809a38676b7551 ]
+[ Upstream commit daf182d360e509a494db18666799f4e85d83dda0 ]
 
-Similar to the fix in commit:
-e31eec77e4ab ("bpf: selftests: Fix fd cleanup in get_branch_snapshot")
+For each rate change command submission, the FW has to do a phy
+power off sequence internally. For this to happen correctly, the
+PLL re-initialization control setting has to be turned off before
+sending mailbox commands and re-enabled once the command submission
+is complete.
 
-We use designated initializer to set fds to -1 without breaking on
-future changes to MAX_SERVER constant denoting the array size.
+Without the PLL control setting, the link up takes longer time in a
+fixed phy configuration.
 
-The particular close(0) occurs on non-reuseport tests, so it can be seen
-with -n 115/{2,3} but not 115/4. This can cause problems with future
-tests if they depend on BTF fd never being acquired as fd 0, breaking
-internal libbpf assumptions.
-
-Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20211028063501.2239335-8-memxor@gmail.com
+Fixes: 47f164deab22 ("amd-xgbe: Add PCI device support")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-common.h |  8 ++++++++
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 20 +++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index 45c82db3c58c5..b4c9f4a96ae4d 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -598,7 +598,7 @@ close:
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+index b2cd3bdba9f89..533b8519ec352 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+@@ -1331,6 +1331,10 @@
+ #define MDIO_VEND2_PMA_CDR_CONTROL	0x8056
+ #endif
  
- static void run_lookup_prog(const struct test *t)
++#ifndef MDIO_VEND2_PMA_MISC_CTRL0
++#define MDIO_VEND2_PMA_MISC_CTRL0	0x8090
++#endif
++
+ #ifndef MDIO_CTRL1_SPEED1G
+ #define MDIO_CTRL1_SPEED1G		(MDIO_CTRL1_SPEED10G & ~BMCR_SPEED100)
+ #endif
+@@ -1389,6 +1393,10 @@
+ #define XGBE_PMA_RX_RST_0_RESET_ON	0x10
+ #define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
+ 
++#define XGBE_PMA_PLL_CTRL_MASK		BIT(15)
++#define XGBE_PMA_PLL_CTRL_ENABLE	BIT(15)
++#define XGBE_PMA_PLL_CTRL_DISABLE	0x0000
++
+ /* Bit setting and getting macros
+  *  The get macro will extract the current bit field value from within
+  *  the variable
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+index 18e48b3bc402b..213769054391c 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+@@ -1977,12 +1977,26 @@ static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
+ 	}
+ }
+ 
++static void xgbe_phy_pll_ctrl(struct xgbe_prv_data *pdata, bool enable)
++{
++	XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_VEND2_PMA_MISC_CTRL0,
++			 XGBE_PMA_PLL_CTRL_MASK,
++			 enable ? XGBE_PMA_PLL_CTRL_ENABLE
++				: XGBE_PMA_PLL_CTRL_DISABLE);
++
++	/* Wait for command to complete */
++	usleep_range(100, 200);
++}
++
+ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 					unsigned int cmd, unsigned int sub_cmd)
  {
--	int server_fds[MAX_SERVERS] = { -1 };
-+	int server_fds[] = { [0 ... MAX_SERVERS - 1] = -1 };
- 	int client_fd, reuse_conn_fd = -1;
- 	struct bpf_link *lookup_link;
- 	int i, err;
-@@ -1053,7 +1053,7 @@ static void run_sk_assign(struct test_sk_lookup *skel,
- 			  struct bpf_program *lookup_prog,
- 			  const char *remote_ip, const char *local_ip)
- {
--	int server_fds[MAX_SERVERS] = { -1 };
-+	int server_fds[] = { [0 ... MAX_SERVERS - 1] = -1 };
- 	struct bpf_sk_lookup ctx;
- 	__u64 server_cookie;
- 	int i, err;
+ 	unsigned int s0 = 0;
+ 	unsigned int wait;
+ 
++	/* Disable PLL re-initialization during FW command processing */
++	xgbe_phy_pll_ctrl(pdata, false);
++
+ 	/* Log if a previous command did not complete */
+ 	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
+ 		netif_dbg(pdata, link, pdata->netdev,
+@@ -2003,7 +2017,7 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 	wait = XGBE_RATECHANGE_COUNT;
+ 	while (wait--) {
+ 		if (!XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
+-			return;
++			goto reenable_pll;
+ 
+ 		usleep_range(1000, 2000);
+ 	}
+@@ -2013,6 +2027,10 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 
+ 	/* Reset on error */
+ 	xgbe_phy_rx_reset(pdata);
++
++reenable_pll:
++	/* Enable PLL re-initialization */
++	xgbe_phy_pll_ctrl(pdata, true);
+ }
+ 
+ static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
 -- 
 2.33.0
 
