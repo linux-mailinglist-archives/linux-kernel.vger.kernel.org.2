@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63ACE45125F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A526D451276
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346608AbhKOTfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:35:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
+        id S1346656AbhKOTf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:35:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239153AbhKORyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239155AbhKORyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:54:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4804E632BD;
-        Mon, 15 Nov 2021 17:33:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C07AC63325;
+        Mon, 15 Nov 2021 17:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997595;
-        bh=ZZ8x2XZC0tg2Sx2zJtYUZu4bgy6Z9QEYp3T+x/yTBNs=;
+        s=korg; t=1636997607;
+        bh=753irU6cRhY3kJQbeKGcHWtB6o98fnXHj6Eu4MLKNgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=urshJhPrc+mEVZz2dpQEXBcVetOiDzsZd4tpRu8+VQCDoUZeUt1Xc+Axuir1xJ5G3
-         isdpe4OqvU/wbVQHclYszB7+ZTQJy3AGiLiyW1TD2R3kHodxHEL2Lje3grxJpGuR7n
-         o9nMnPW57LC85fKeJzzY0GrOUwv6rB1JCLQuox/o=
+        b=B74Z69Ugx++jXOeaAsLmgih4L8hAf0ojZCDd/Y+qWQy1o5ZMf9WSdZVVXZYi94q12
+         7VwW9WUEze2iW1EMx3JEfho59UbUvo3Bk8mWCqlswnBNPlLM+fArzffOBjSslNqv6m
+         22202k+JKCMk2yEL9D1MuE/2cDFtAcwi8vaCTq20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Reik Keutterling <spielkind@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 205/575] ACPICA: Avoid evaluating methods too early during system resume
-Date:   Mon, 15 Nov 2021 17:58:50 +0100
-Message-Id: <20211115165350.802507407@linuxfoundation.org>
+Subject: [PATCH 5.10 209/575] net-sysfs: try not to restart the syscall if it will fail eventually
+Date:   Mon, 15 Nov 2021 17:58:54 +0100
+Message-Id: <20211115165350.936826535@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,128 +41,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit d3c4b6f64ad356c0d9ddbcf73fa471e6a841cc5c ]
+[ Upstream commit 146e5e733310379f51924111068f08a3af0db830 ]
 
-ACPICA commit 0762982923f95eb652cf7ded27356b247c9774de
+Due to deadlocks in the networking subsystem spotted 12 years ago[1],
+a workaround was put in place[2] to avoid taking the rtnl lock when it
+was not available and restarting the syscall (back to VFS, letting
+userspace spin). The following construction is found a lot in the net
+sysfs and sysctl code:
 
-During wakeup from system-wide sleep states, acpi_get_sleep_type_data()
-is called and it tries to get memory from the slab allocator in order
-to evaluate a control method, but if KFENCE is enabled in the kernel,
-the memory allocation attempt causes an IRQ work to be queued and a
-self-IPI to be sent to the CPU running the code which requires the
-memory controller to be ready, so if that happens too early in the
-wakeup path, it doesn't work.
+  if (!rtnl_trylock())
+          return restart_syscall();
 
-Prevent that from taking place by calling acpi_get_sleep_type_data()
-for S0 upfront, when preparing to enter a given sleep state, and
-saving the data obtained by it for later use during system wakeup.
+This can be problematic when multiple userspace threads use such
+interfaces in a short period, making them to spin a lot. This happens
+for example when adding and moving virtual interfaces: userspace
+programs listening on events, such as systemd-udevd and NetworkManager,
+do trigger actions reading files in sysfs. It gets worse when a lot of
+virtual interfaces are created concurrently, say when creating
+containers at boot time.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214271
-Reported-by: Reik Keutterling <spielkind@gmail.com>
-Tested-by: Reik Keutterling <spielkind@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Returning early without hitting the above pattern when the syscall will
+fail eventually does make things better. While it is not a fix for the
+issue, it does ease things.
+
+[1] https://lore.kernel.org/netdev/49A4D5D5.5090602@trash.net/
+    https://lore.kernel.org/netdev/m14oyhis31.fsf@fess.ebiederm.org/
+    and https://lore.kernel.org/netdev/20090226084924.16cb3e08@nehalam/
+[2] Rightfully, those deadlocks are *hard* to solve.
+
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/acglobal.h  |  2 ++
- drivers/acpi/acpica/hwesleep.c  |  8 ++------
- drivers/acpi/acpica/hwsleep.c   | 11 ++++-------
- drivers/acpi/acpica/hwxfsleep.c |  7 +++++++
- 4 files changed, 15 insertions(+), 13 deletions(-)
+ net/core/net-sysfs.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acglobal.h
-index 2fee91f57b213..bd84d7f95e5f9 100644
---- a/drivers/acpi/acpica/acglobal.h
-+++ b/drivers/acpi/acpica/acglobal.h
-@@ -226,6 +226,8 @@ extern struct acpi_bit_register_info
-     acpi_gbl_bit_register_info[ACPI_NUM_BITREG];
- ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a);
- ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b);
-+ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a_s0);
-+ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b_s0);
- 
- /*****************************************************************************
-  *
-diff --git a/drivers/acpi/acpica/hwesleep.c b/drivers/acpi/acpica/hwesleep.c
-index d9be5d0545d4c..4836a4b8b38b8 100644
---- a/drivers/acpi/acpica/hwesleep.c
-+++ b/drivers/acpi/acpica/hwesleep.c
-@@ -147,17 +147,13 @@ acpi_status acpi_hw_extended_sleep(u8 sleep_state)
- 
- acpi_status acpi_hw_extended_wake_prep(u8 sleep_state)
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index cc5f760c78250..af59123601055 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -175,6 +175,14 @@ static int change_carrier(struct net_device *dev, unsigned long new_carrier)
+ static ssize_t carrier_store(struct device *dev, struct device_attribute *attr,
+ 			     const char *buf, size_t len)
  {
--	acpi_status status;
- 	u8 sleep_type_value;
- 
- 	ACPI_FUNCTION_TRACE(hw_extended_wake_prep);
- 
--	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
--					  &acpi_gbl_sleep_type_a,
--					  &acpi_gbl_sleep_type_b);
--	if (ACPI_SUCCESS(status)) {
-+	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
- 		sleep_type_value =
--		    ((acpi_gbl_sleep_type_a << ACPI_X_SLEEP_TYPE_POSITION) &
-+		    ((acpi_gbl_sleep_type_a_s0 << ACPI_X_SLEEP_TYPE_POSITION) &
- 		     ACPI_X_SLEEP_TYPE_MASK);
- 
- 		(void)acpi_write((u64)(sleep_type_value | ACPI_X_SLEEP_ENABLE),
-diff --git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c
-index 317ae870336b7..fcc84d196238a 100644
---- a/drivers/acpi/acpica/hwsleep.c
-+++ b/drivers/acpi/acpica/hwsleep.c
-@@ -179,7 +179,7 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
- 
- acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
- {
--	acpi_status status;
-+	acpi_status status = AE_OK;
- 	struct acpi_bit_register_info *sleep_type_reg_info;
- 	struct acpi_bit_register_info *sleep_enable_reg_info;
- 	u32 pm1a_control;
-@@ -192,10 +192,7 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
- 	 * This is unclear from the ACPI Spec, but it is required
- 	 * by some machines.
- 	 */
--	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
--					  &acpi_gbl_sleep_type_a,
--					  &acpi_gbl_sleep_type_b);
--	if (ACPI_SUCCESS(status)) {
-+	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
- 		sleep_type_reg_info =
- 		    acpi_hw_get_bit_register_info(ACPI_BITREG_SLEEP_TYPE);
- 		sleep_enable_reg_info =
-@@ -216,9 +213,9 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
- 
- 			/* Insert the SLP_TYP bits */
- 
--			pm1a_control |= (acpi_gbl_sleep_type_a <<
-+			pm1a_control |= (acpi_gbl_sleep_type_a_s0 <<
- 					 sleep_type_reg_info->bit_position);
--			pm1b_control |= (acpi_gbl_sleep_type_b <<
-+			pm1b_control |= (acpi_gbl_sleep_type_b_s0 <<
- 					 sleep_type_reg_info->bit_position);
- 
- 			/* Write the control registers and ignore any errors */
-diff --git a/drivers/acpi/acpica/hwxfsleep.c b/drivers/acpi/acpica/hwxfsleep.c
-index a4b66f4b27141..f1645d87864c3 100644
---- a/drivers/acpi/acpica/hwxfsleep.c
-+++ b/drivers/acpi/acpica/hwxfsleep.c
-@@ -217,6 +217,13 @@ acpi_status acpi_enter_sleep_state_prep(u8 sleep_state)
- 		return_ACPI_STATUS(status);
- 	}
- 
-+	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
-+					  &acpi_gbl_sleep_type_a_s0,
-+					  &acpi_gbl_sleep_type_b_s0);
-+	if (ACPI_FAILURE(status)) {
-+		acpi_gbl_sleep_type_a_s0 = ACPI_SLEEP_TYPE_INVALID;
-+	}
++	struct net_device *netdev = to_net_dev(dev);
 +
- 	/* Execute the _PTS method (Prepare To Sleep) */
++	/* The check is also done in change_carrier; this helps returning early
++	 * without hitting the trylock/restart in netdev_store.
++	 */
++	if (!netdev->netdev_ops->ndo_change_carrier)
++		return -EOPNOTSUPP;
++
+ 	return netdev_store(dev, attr, buf, len, change_carrier);
+ }
  
- 	arg_list.count = 1;
+@@ -196,6 +204,12 @@ static ssize_t speed_show(struct device *dev,
+ 	struct net_device *netdev = to_net_dev(dev);
+ 	int ret = -EINVAL;
+ 
++	/* The check is also done in __ethtool_get_link_ksettings; this helps
++	 * returning early without hitting the trylock/restart below.
++	 */
++	if (!netdev->ethtool_ops->get_link_ksettings)
++		return ret;
++
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
+ 
+@@ -216,6 +230,12 @@ static ssize_t duplex_show(struct device *dev,
+ 	struct net_device *netdev = to_net_dev(dev);
+ 	int ret = -EINVAL;
+ 
++	/* The check is also done in __ethtool_get_link_ksettings; this helps
++	 * returning early without hitting the trylock/restart below.
++	 */
++	if (!netdev->ethtool_ops->get_link_ksettings)
++		return ret;
++
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
+ 
+@@ -468,6 +488,14 @@ static ssize_t proto_down_store(struct device *dev,
+ 				struct device_attribute *attr,
+ 				const char *buf, size_t len)
+ {
++	struct net_device *netdev = to_net_dev(dev);
++
++	/* The check is also done in change_proto_down; this helps returning
++	 * early without hitting the trylock/restart in netdev_store.
++	 */
++	if (!netdev->netdev_ops->ndo_change_proto_down)
++		return -EOPNOTSUPP;
++
+ 	return netdev_store(dev, attr, buf, len, change_proto_down);
+ }
+ NETDEVICE_SHOW_RW(proto_down, fmt_dec);
+@@ -478,6 +506,12 @@ static ssize_t phys_port_id_show(struct device *dev,
+ 	struct net_device *netdev = to_net_dev(dev);
+ 	ssize_t ret = -EINVAL;
+ 
++	/* The check is also done in dev_get_phys_port_id; this helps returning
++	 * early without hitting the trylock/restart below.
++	 */
++	if (!netdev->netdev_ops->ndo_get_phys_port_id)
++		return -EOPNOTSUPP;
++
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
+ 
+@@ -500,6 +534,13 @@ static ssize_t phys_port_name_show(struct device *dev,
+ 	struct net_device *netdev = to_net_dev(dev);
+ 	ssize_t ret = -EINVAL;
+ 
++	/* The checks are also done in dev_get_phys_port_name; this helps
++	 * returning early without hitting the trylock/restart below.
++	 */
++	if (!netdev->netdev_ops->ndo_get_phys_port_name &&
++	    !netdev->netdev_ops->ndo_get_devlink_port)
++		return -EOPNOTSUPP;
++
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
+ 
+@@ -522,6 +563,14 @@ static ssize_t phys_switch_id_show(struct device *dev,
+ 	struct net_device *netdev = to_net_dev(dev);
+ 	ssize_t ret = -EINVAL;
+ 
++	/* The checks are also done in dev_get_phys_port_name; this helps
++	 * returning early without hitting the trylock/restart below. This works
++	 * because recurse is false when calling dev_get_port_parent_id.
++	 */
++	if (!netdev->netdev_ops->ndo_get_port_parent_id &&
++	    !netdev->netdev_ops->ndo_get_devlink_port)
++		return -EOPNOTSUPP;
++
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
+ 
+@@ -1179,6 +1228,12 @@ static ssize_t tx_maxrate_store(struct netdev_queue *queue,
+ 	if (!capable(CAP_NET_ADMIN))
+ 		return -EPERM;
+ 
++	/* The check is also done later; this helps returning early without
++	 * hitting the trylock/restart below.
++	 */
++	if (!dev->netdev_ops->ndo_set_tx_maxrate)
++		return -EOPNOTSUPP;
++
+ 	err = kstrtou32(buf, 10, &rate);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.33.0
 
