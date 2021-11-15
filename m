@@ -2,127 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E07451C32
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74961451C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349123AbhKPAOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:17 -0500
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:46666 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351060AbhKOWiy (ORCPT
+        id S1355008AbhKPAR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:17:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355258AbhKOXkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:38:54 -0500
-Received: from [128.177.79.46] (helo=csail.mit.edu)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1mmkZp-0005ex-25; Mon, 15 Nov 2021 17:35:49 -0500
-Date:   Mon, 15 Nov 2021 14:39:00 -0800
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com, joe@perches.com,
-        kuba@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
- and VMware hypervisor interface
-Message-ID: <20211115223900.GA22267@csail.mit.edu>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
- <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
- <YYy9P7Rjg9hntmm3@kroah.com>
- <20211111153916.GA7966@csail.mit.edu>
- <YY1krlfM5R7uEzJF@kroah.com>
- <20211111194002.GA8739@csail.mit.edu>
- <YY6hhWtvh+OvOqAl@sashalap>
+        Mon, 15 Nov 2021 18:40:36 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B29C079783
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:39:19 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id k1so18311073ilo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yUwYNrMRiIW2ymDJW4VJI2eBOXEvnHxjYgLtMFL5dtU=;
+        b=Mo/no1eO3vUwMxvosgyzBvyvml0KAnKn/aMS3fSt247ikjoAu4SCRvsIfJlkpuh+9B
+         tG//C1fmSb74+p6D17IuHCFggu0q3Qzh+L6Jb5N5Fsj0gGT0MEK5G7Ib+USRXDKR0ed2
+         NDX1ksAU2ZxMRsfrBtwXwHJ+/Irzw+yiGRyM3YWngxcstF0+cEw6V50qtli576exi6+2
+         zbCjdAXUAXWfIKDZxSepAsTyF0Oa8pGle7gJyIyv5Eq/1Y31zklmfsDdXdqCgXclhRVO
+         R9nUxATXHCKISlMsT9vOtnYnPMTEmXJO/wiT6ib2Z9Oqyo7AtyvpuQMy/pHQHoPCrmAE
+         qRAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yUwYNrMRiIW2ymDJW4VJI2eBOXEvnHxjYgLtMFL5dtU=;
+        b=oS4gDr19BfvjyPDw6ELqOIARucKfaIzs7dXTE/VVsfcv55XdJBafQ9FFfTlP7BK5x4
+         yThE29isXuV56p8aRb7Kc6xuqwGfXGO7lUKuWpFZMsuYv6O6J2+mJYoQZv2zHGUnPGci
+         Cckcn5p8Fdx6U0KB32K+DNSlWiLIdAuW0/KggjUuej60IF9UtxBfdtLmVv3RCROBgu/x
+         kiw9ZwVbkm0xkzg7QfLq0dWgwWblrZE9CRcHz97BDMn1KuEUxMc91BAbFVWNXFvLtcjO
+         3oSVe1t0T9s+948VYZqfd8o9GVVHqcAP/G1mI5OjbRAO30eXJnVrPeTIfkyzAXouBGPR
+         Sjxw==
+X-Gm-Message-State: AOAM533ZsGpRIalwmsRkeUMHvF0+O6UWkAbYlXNbVGIVq7/l09Gfwnas
+        Ir6qsu816uoSqVtjVIEOjlSipOE1PZmepcNBizW4CQ==
+X-Google-Smtp-Source: ABdhPJxa2fag4jC2rjJuDGd7c5qYustjXIyKp92upm3FPQdlPFxwFtSLX6D9aLUQpOE0tQ99ZytDTyAFtZtQWiNAhbA=
+X-Received: by 2002:a92:6b0b:: with SMTP id g11mr1585697ilc.146.1637015959237;
+ Mon, 15 Nov 2021 14:39:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YY6hhWtvh+OvOqAl@sashalap>
+References: <20211113154412.91134-1-minhquangbui99@gmail.com> <20211115131633.81e1879e36aed4a0290e6f0c@linux-foundation.org>
+In-Reply-To: <20211115131633.81e1879e36aed4a0290e6f0c@linux-foundation.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 15 Nov 2021 14:39:08 -0800
+Message-ID: <CAHS8izOogXwHAcrvL6HtXFh56EbD+mUJ6cAaq4ADqtQngKEzZQ@mail.gmail.com>
+Subject: Re: [PATCH] hugetlb: fix hugetlb cgroup refcounting during mremap
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
-> On Thu, Nov 11, 2021 at 11:40:02AM -0800, Srivatsa S. Bhat wrote:
-> > On Thu, Nov 11, 2021 at 07:45:02PM +0100, Greg KH wrote:
-> > > On Thu, Nov 11, 2021 at 07:39:16AM -0800, Srivatsa S. Bhat wrote:
-> > > > On Thu, Nov 11, 2021 at 07:50:39AM +0100, Greg KH wrote:
-> > > > > On Wed, Nov 10, 2021 at 12:08:16PM -0800, Srivatsa S. Bhat wrote:
-> > > > > > From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
-> > > > > >
-> > > > > > Deep has decided to transfer maintainership of the VMware hypervisor
-> > > > > > interface to Srivatsa, and the joint-maintainership of paravirt ops in
-> > > > > > the Linux kernel to Srivatsa and Alexey. Update the MAINTAINERS file
-> > > > > > to reflect this change.
-> > > > > >
-> > > > > > Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
-> > > > > > Acked-by: Alexey Makhalov <amakhalov@vmware.com>
-> > > > > > Acked-by: Deep Shah <sdeep@vmware.com>
-> > > > > > Acked-by: Juergen Gross <jgross@suse.com>
-> > > > > > Cc: stable@vger.kernel.org
-> > > > >
-> > > > > Why are MAINTAINERS updates needed for stable?  That's not normal :(
-> > > >
-> > > > So that people posting bug-fixes / backports to these subsystems for
-> > > > older kernels (stable and LTS releases) will CC the new subsystem
-> > > > maintainers.
-> > > 
-> > > That's not how stable releases work at all.
-> > > 
-> > > > That's why I added CC stable tag only to the first two
-> > > > patches which add/replace maintainers and not the third patch which is
-> > > > just a cleanup.
-> > > 
-> > > Patches for stable kernels need to go into Linus's tree first, and if
-> > > you have the MAINTAINERS file updated properly there, then you will be
-> > > properly cc:ed.  We do not look at the MAINTAINERS file for the older
-> > > kernel when sending patches out, it's totally ignored as that was the
-> > > snapshot at a point in time, which is usually no longer the true state.
-> > > 
-> > 
-> > Sure, but that's the case for patches that get mainlined (and
-> > subsequently backported to -stable) /after/ this update to the
-> > MAINTAINERS file gets merged into mainline.
-> > 
-> > When adding the CC stable tag, the case I was trying to address was
-> > for patches that are already in mainline but weren't CC'ed to stable,
-> > and at some later point, somebody decides to backport them to older
-> > stable kernels. In that case, there is a chance that the contributor
-> > might run ./get_maintainer.pl against the stable tree (as that's the
-> > tree they are backporting the upstream commit against) and end up not
-> > CC'ing the new maintainers. So, I thought it would be good to keep the
-> > maintainer info updated in the older stable kernels too.
-> 
-> If you look at cases like these, I can see an argument around bringing
-> it back to -stable. However, changes in the upstream MAINTAINERS file
-> aren't limited to just change in maintainers.
-> 
-> How would we handle addition of maintainers of a new code upstream? Or
-> removal of maintainers due to code deletion? Or code movement upstream
-> that isn't reflected in the stable tree (think a driver graduating from
-> staging).
-> 
+On Mon, Nov 15, 2021 at 1:16 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Sat, 13 Nov 2021 22:44:10 +0700 Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>
+> > When hugetlb_vm_op_open() is called during copy_vma(), we may take the
+> > reference to resv_map->css. Later, when clearing the reservation pointer
+> > of old_vma after transferring it to new_vma, we forget to drop the
+> > reference to resv_map->css. This leads to a reference leak of css.
+> >
+> > Fixes this by adding a check to drop reservation css  reference in
+> > clear_vma_resv_huge_pages()
+>
+> Thanks.  I added cc:stable to this (550a7d60bd5e35a was merged a year
+> ago) and I've queued it for 5.16-rc2, pending suitable reviewer feedback.
+>
 
-Good point!
+Thanks,
 
-> It becomes a mess quite quickly and the easiest solution here is to just
-> use upstream's MAINTAINERS file.
-> 
-
-Agreed.
-
-> Maybe we should just remove MAINTAINERS from stable trees to make it
-> obvious.
-> 
-
-I don't think we should go quite that far. Instead, perhaps we can
-modify get_maintainer.pl (if needed) such that it prints out a warning
-or reminder to consult the upstream MAINTAINERS file if the script is
-invoked on an older stable kernel.
-
-Regards,
-Srivatsa
+Reviewed-by: Mina Almasry <almasrymina@google.com>
