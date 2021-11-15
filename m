@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E55C451219
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB3E4512C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346025AbhKOT3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:29:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        id S1347315AbhKOTjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:39:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238252AbhKORwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:52:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 254F063263;
-        Mon, 15 Nov 2021 17:31:55 +0000 (UTC)
+        id S239289AbhKOR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:56:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C3A563212;
+        Mon, 15 Nov 2021 17:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997515;
-        bh=EeFNJO/4EYoKOgODXyidChl70wn+VUC5QynnOUgqfR4=;
+        s=korg; t=1636997642;
+        bh=FBLJMvMK9sZBRnyOIEugINT7BTWVQ9fBWUo5UEldWnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTvM8vR/J7NJ80GKxLk31hx8NN2TtmXdIRyR3QsiOsArI/E48RfrVt09vje9Xo2oZ
-         pz8CJZHpkcREHLoArU2ZZQcFtuzecjl0Zfv60N1xPCbf0aFal4FWhWFWsJk05LMJVe
-         vyomCsebEjEIgi4ukekox+W38DpXcYDuc1gr1Uw8=
+        b=vxnPr71C53X9KUuk/JBHi0gt5ZatDsnOSa7xP/JlbL9BmCsHKRdEldrHddVuufULL
+         dK5F95rlx1hC2g/EIXRuspfNwdDluXyw+TZfyesnr06xxWvKfo+w45d6Z6id3GbkTN
+         iyOgfVHKea5dZZQeFxeonyqxrurM3QxrXrgKc6+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Massey <matthewmassey@fb.com>,
-        Dave Taht <dave.taht@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 175/575] net: sched: update default qdisc visibility after Tx queue cnt changes
-Date:   Mon, 15 Nov 2021 17:58:20 +0100
-Message-Id: <20211115165349.756605551@linuxfoundation.org>
+Subject: [PATCH 5.10 180/575] mwifiex: Run SET_BSS_MODE when changing from P2P to STATION vif-type
+Date:   Mon, 15 Nov 2021 17:58:25 +0100
+Message-Id: <20211115165349.929454195@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,183 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit 1e080f17750d1083e8a32f7b350584ae1cd7ff20 ]
+[ Upstream commit c2e9666cdffd347460a2b17988db4cfaf2a68fb9 ]
 
-mq / mqprio make the default child qdiscs visible. They only do
-so for the qdiscs which are within real_num_tx_queues when the
-device is registered. Depending on order of calls in the driver,
-or if user space changes config via ethtool -L the number of
-qdiscs visible under tc qdisc show will differ from the number
-of queues. This is confusing to users and potentially to system
-configuration scripts which try to make sure qdiscs have the
-right parameters.
+We currently handle changing from the P2P to the STATION virtual
+interface type slightly different than changing from P2P to ADHOC: When
+changing to STATION, we don't send the SET_BSS_MODE command. We do send
+that command on all other type-changes though, and it probably makes
+sense to send the command since after all we just changed our BSS_MODE.
+Looking at prior changes to this part of the code, it seems that this is
+simply a leftover from old refactorings.
 
-Add a new Qdisc_ops callback and make relevant qdiscs TTRT.
+Since sending the SET_BSS_MODE command is the only difference between
+mwifiex_change_vif_to_sta_adhoc() and the current code, we can now use
+mwifiex_change_vif_to_sta_adhoc() for both switching to ADHOC and
+STATION interface type.
 
-Note that this uncovers the "shortcut" created by
-commit 1f27cde313d7 ("net: sched: use pfifo_fast for non real queues")
-The default child qdiscs beyond initial real_num_tx are always
-pfifo_fast, no matter what the sysfs setting is. Fixing this
-gets a little tricky because we'd need to keep a reference
-on whatever the default qdisc was at the time of creation.
-In practice this is likely an non-issue the qdiscs likely have
-to be configured to non-default settings, so whatever user space
-is doing such configuration can replace the pfifos... now that
-it will see them.
+This does not fix any particular bug and just "looked right", so there's
+a small chance it might be a regression.
 
-Reported-by: Matthew Massey <matthewmassey@fb.com>
-Reviewed-by: Dave Taht <dave.taht@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210914195909.36035-4-verdre@v0yd.nl
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sch_generic.h |  4 ++++
- net/core/dev.c            |  2 ++
- net/sched/sch_generic.c   |  9 +++++++++
- net/sched/sch_mq.c        | 24 ++++++++++++++++++++++++
- net/sched/sch_mqprio.c    | 23 +++++++++++++++++++++++
- 5 files changed, 62 insertions(+)
+ .../net/wireless/marvell/mwifiex/cfg80211.c   | 22 ++++---------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index f8631ad3c8686..9226a84dcc14d 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -302,6 +302,8 @@ struct Qdisc_ops {
- 					  struct netlink_ext_ack *extack);
- 	void			(*attach)(struct Qdisc *sch);
- 	int			(*change_tx_queue_len)(struct Qdisc *, unsigned int);
-+	void			(*change_real_num_tx)(struct Qdisc *sch,
-+						      unsigned int new_real_tx);
- 
- 	int			(*dump)(struct Qdisc *, struct sk_buff *);
- 	int			(*dump_stats)(struct Qdisc *, struct gnet_dump *);
-@@ -683,6 +685,8 @@ void qdisc_class_hash_grow(struct Qdisc *, struct Qdisc_class_hash *);
- void qdisc_class_hash_destroy(struct Qdisc_class_hash *);
- 
- int dev_qdisc_change_tx_queue_len(struct net_device *dev);
-+void dev_qdisc_change_real_num_tx(struct net_device *dev,
-+				  unsigned int new_real_tx);
- void dev_init_scheduler(struct net_device *dev);
- void dev_shutdown(struct net_device *dev);
- void dev_activate(struct net_device *dev);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index e14294e9ba321..7dd7b9fb600c8 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2973,6 +2973,8 @@ int netif_set_real_num_tx_queues(struct net_device *dev, unsigned int txq)
- 		if (dev->num_tc)
- 			netif_setup_tc(dev, txq);
- 
-+		dev_qdisc_change_real_num_tx(dev, txq);
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index a6b9dc6700b14..7a4e3c693d38b 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -1229,29 +1229,15 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
+ 		break;
+ 	case NL80211_IFTYPE_P2P_CLIENT:
+ 	case NL80211_IFTYPE_P2P_GO:
++		if (mwifiex_cfg80211_deinit_p2p(priv))
++			return -EFAULT;
 +
- 		dev->real_num_tx_queues = txq;
- 
- 		if (disabling) {
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 05aa2571a4095..6a9c1a39874a0 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1303,6 +1303,15 @@ static int qdisc_change_tx_queue_len(struct net_device *dev,
- 	return 0;
- }
- 
-+void dev_qdisc_change_real_num_tx(struct net_device *dev,
-+				  unsigned int new_real_tx)
-+{
-+	struct Qdisc *qdisc = dev->qdisc;
-+
-+	if (qdisc->ops->change_real_num_tx)
-+		qdisc->ops->change_real_num_tx(qdisc, new_real_tx);
-+}
-+
- int dev_qdisc_change_tx_queue_len(struct net_device *dev)
- {
- 	bool up = dev->flags & IFF_UP;
-diff --git a/net/sched/sch_mq.c b/net/sched/sch_mq.c
-index e79f1afe0cfd6..db18d8a860f9c 100644
---- a/net/sched/sch_mq.c
-+++ b/net/sched/sch_mq.c
-@@ -125,6 +125,29 @@ static void mq_attach(struct Qdisc *sch)
- 	priv->qdiscs = NULL;
- }
- 
-+static void mq_change_real_num_tx(struct Qdisc *sch, unsigned int new_real_tx)
-+{
-+#ifdef CONFIG_NET_SCHED
-+	struct net_device *dev = qdisc_dev(sch);
-+	struct Qdisc *qdisc;
-+	unsigned int i;
-+
-+	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		/* Only update the default qdiscs we created,
-+		 * qdiscs with handles are always hashed.
-+		 */
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_del(qdisc);
-+	}
-+	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_add(qdisc, false);
-+	}
-+#endif
-+}
-+
- static int mq_dump(struct Qdisc *sch, struct sk_buff *skb)
- {
- 	struct net_device *dev = qdisc_dev(sch);
-@@ -288,6 +311,7 @@ struct Qdisc_ops mq_qdisc_ops __read_mostly = {
- 	.init		= mq_init,
- 	.destroy	= mq_destroy,
- 	.attach		= mq_attach,
-+	.change_real_num_tx = mq_change_real_num_tx,
- 	.dump		= mq_dump,
- 	.owner		= THIS_MODULE,
- };
-diff --git a/net/sched/sch_mqprio.c b/net/sched/sch_mqprio.c
-index 5eb3b1b7ae5e7..50e15add6068f 100644
---- a/net/sched/sch_mqprio.c
-+++ b/net/sched/sch_mqprio.c
-@@ -306,6 +306,28 @@ static void mqprio_attach(struct Qdisc *sch)
- 	priv->qdiscs = NULL;
- }
- 
-+static void mqprio_change_real_num_tx(struct Qdisc *sch,
-+				      unsigned int new_real_tx)
-+{
-+	struct net_device *dev = qdisc_dev(sch);
-+	struct Qdisc *qdisc;
-+	unsigned int i;
-+
-+	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		/* Only update the default qdiscs we created,
-+		 * qdiscs with handles are always hashed.
-+		 */
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_del(qdisc);
-+	}
-+	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_add(qdisc, false);
-+	}
-+}
-+
- static struct netdev_queue *mqprio_queue_get(struct Qdisc *sch,
- 					     unsigned long cl)
- {
-@@ -629,6 +651,7 @@ static struct Qdisc_ops mqprio_qdisc_ops __read_mostly = {
- 	.init		= mqprio_init,
- 	.destroy	= mqprio_destroy,
- 	.attach		= mqprio_attach,
-+	.change_real_num_tx = mqprio_change_real_num_tx,
- 	.dump		= mqprio_dump,
- 	.owner		= THIS_MODULE,
- };
+ 		switch (type) {
+-		case NL80211_IFTYPE_STATION:
+-			if (mwifiex_cfg80211_deinit_p2p(priv))
+-				return -EFAULT;
+-			priv->adapter->curr_iface_comb.p2p_intf--;
+-			priv->adapter->curr_iface_comb.sta_intf++;
+-			dev->ieee80211_ptr->iftype = type;
+-			if (mwifiex_deinit_priv_params(priv))
+-				return -1;
+-			if (mwifiex_init_new_priv_params(priv, dev, type))
+-				return -1;
+-			if (mwifiex_sta_init_cmd(priv, false, false))
+-				return -1;
+-			break;
+ 		case NL80211_IFTYPE_ADHOC:
+-			if (mwifiex_cfg80211_deinit_p2p(priv))
+-				return -EFAULT;
++		case NL80211_IFTYPE_STATION:
+ 			return mwifiex_change_vif_to_sta_adhoc(dev, curr_iftype,
+ 							       type, params);
+-			break;
+ 		case NL80211_IFTYPE_AP:
+-			if (mwifiex_cfg80211_deinit_p2p(priv))
+-				return -EFAULT;
+ 			return mwifiex_change_vif_to_ap(dev, curr_iftype, type,
+ 							params);
+ 		case NL80211_IFTYPE_UNSPECIFIED:
 -- 
 2.33.0
 
