@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E32450663
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821A5450661
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhKOOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:14:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
+        id S235186AbhKOON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:13:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231929AbhKOONG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232072AbhKOONG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 09:13:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BF9FC63218;
-        Mon, 15 Nov 2021 14:10:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0ADBB6322D;
+        Mon, 15 Nov 2021 14:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636985408;
-        bh=36hUQYfLJLMml8hFNibWqn0xVmvSLdPuzBLRLi3O0/A=;
+        s=k20201202; t=1636985409;
+        bh=SIs+iwklv8KfbyfcsPobIZu2x2aKdT3tn5NnV3mSFn4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=F762VF+y360U37bS172dS6FTNNxAShJRwQKPkxpOp1/U+bWQY7XPYkc/Tsvxfh5AU
-         MTisMvQ5w9fpzNpirodqlU1kHVkEReYCXoHo/vdwLZHsZYAbSR8BRr5PPYTrWAwQGw
-         NbvXfUOeb4sk/wrXh5FMnGoBBDvqBDE8tU9MQHH9SW2WoR3ngmLsksMMbL4m3HtPXf
-         IObhdsQiI1sPiLW0YCiKcrXNMmR4W9NHFy13VuHwlZDiQHX9wSS2fbt2NG7cPNeIOx
-         ESheYtLeG22BFzzjrJiwBsuGgUwkzemp7HGYsMns8KxC9LW8FK5qB3EYLaApdBOQZi
-         9dqDZmfDVfbZA==
+        b=QSuzW6b5ffmWFK6oCQMl0O0SLjurwpJFG8GxvAO2g9Sk2Rv0TQioBmBD4sRv/AJj5
+         b7D/RfbIrxEFoyJ4AzQpizyhRhcqF3pPlu66g4S1WM7CfOk1Rx6G3ID6YcEu6KlDa2
+         AKLbAn/ECR677rrfE50nCkryxroRvS3GuSbWGAD7w1Z/frl+CSK/aH3645kkkXfgYn
+         4Uk0kNAGciQOT1oT0IEyqXZoSpsnNEHBiV+7ehahmPMgC7AHq4+IlkUU7nH7+n6CwI
+         aRotyVbz0jH9xXuebLTnPYcsj5xucJ9QfUe8Ta3LV/wsRwqAd68yr7XkMcyrUjXVBv
+         caQBg3M38LjFQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A8DB860A88;
-        Mon, 15 Nov 2021 14:10:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 011986095A;
+        Mon, 15 Nov 2021 14:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] atlantic: Fix OOB read and write in hw_atl_utils_fw_rpc_wait
+Subject: Re: [PATCH] net: bridge: Slightly optimize 'find_portno()'
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163698540868.13805.17800408021782408762.git-patchwork-notify@kernel.org>
+Message-Id: <163698540899.13805.10527037556945584609.git-patchwork-notify@kernel.org>
 Date:   Mon, 15 Nov 2021 14:10:08 +0000
-References: <YZCBeNdJaWqaH1jG@Zekuns-MBP-16.fios-router.home>
-In-Reply-To: <YZCBeNdJaWqaH1jG@Zekuns-MBP-16.fios-router.home>
-To:     Zekun Shen <bruceshenzk@gmail.com>
-Cc:     irusskikh@marvell.com, davem@davemloft.net, kuba@kernel.org,
+References: <00c39d09c8df7ad0673bf2043f6566d6ef08b789.1636916479.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <00c39d09c8df7ad0673bf2043f6566d6ef08b789.1636916479.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, bridge@lists.linux-foundation.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brendandg@nyu.edu
+        kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
+This patch was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Sat, 13 Nov 2021 22:24:40 -0500 you wrote:
-> This bug report shows up when running our research tools. The
-> reports is SOOB read, but it seems SOOB write is also possible
-> a few lines below.
+On Sun, 14 Nov 2021 20:02:35 +0100 you wrote:
+> The 'inuse' bitmap is local to this function. So we can use the
+> non-atomic '__set_bit()' to save a few cycles.
 > 
-> In details, fw.len and sw.len are inputs coming from io. A len
-> over the size of self->rpc triggers SOOB. The patch fixes the
-> bugs by adding sanity checks.
+> While at it, also remove some useless {}.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
 > [...]
 
 Here is the summary with links:
-  - atlantic: Fix OOB read and write in hw_atl_utils_fw_rpc_wait
-    https://git.kernel.org/netdev/net/c/b922f622592a
+  - net: bridge: Slightly optimize 'find_portno()'
+    https://git.kernel.org/netdev/net-next/c/cc0be1ad686f
 
 You are awesome, thank you!
 -- 
