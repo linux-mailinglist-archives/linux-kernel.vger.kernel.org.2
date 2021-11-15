@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7F1450B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73336450B16
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236765AbhKORZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:25:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47250 "EHLO mail.kernel.org"
+        id S237248AbhKORS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:18:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236881AbhKOROC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:14:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED51663240;
-        Mon, 15 Nov 2021 17:10:42 +0000 (UTC)
+        id S236635AbhKORMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:12:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9331761BE5;
+        Mon, 15 Nov 2021 17:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996243;
-        bh=L7NEpTlyYyiobl5GSjv62Sk7HZv4zLiUjSV4LlnqAJw=;
+        s=korg; t=1636996157;
+        bh=pQb1psDP2g/e0zAvNWY0zjFnqwUsYoFMyKBpBLNkKQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/amBoIqjmeTLJjNOTN2mXRASKujS7r9fsuOIBGxZKvmk4dZUwKLnLgbM5ANuv/R3
-         +Blp70zk6dhYqYuFmdbIwZBe2wLC+G78wpyWk3cin2FLN8uEiaccKQ+MveYc5DDM1g
-         A1/e1MKgIYr90OTObdgUWOh0Hooy6zPNfYfYMcPQ=
+        b=u6JPawlYyHdUuQvowAYszWEYMVGg5vGbtj/J0bpq1Ta3EQJMZCV3dHb2pfR11VdgM
+         vFmQ3NSj3dDV//OcTfCYgnIWhqEf8ElTc1O9Vl/zkzZefHerPb+gbLYLtFuPA9gdnu
+         Mce8HEkgsKn3H/EZRb28oci9ETygN9ol5FjMCL1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Zheyu Ma <zheyuma97@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 036/355] cavium: Return negative value when pci_alloc_irq_vectors() fails
-Date:   Mon, 15 Nov 2021 17:59:20 +0100
-Message-Id: <20211115165314.714147599@linuxfoundation.org>
+Subject: [PATCH 5.4 037/355] scsi: qla2xxx: Return -ENOMEM if kzalloc() fails
+Date:   Mon, 15 Nov 2021 17:59:21 +0100
+Message-Id: <20211115165314.745579930@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,31 +44,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit b2cddb44bddc1a9c5949a978bb454bba863264db ]
+[ Upstream commit 06634d5b6e923ed0d4772aba8def5a618f44c7fe ]
 
-During the process of driver probing, the probe function should return < 0
-for failure, otherwise, the kernel will treat value > 0 as success.
+The driver probing function should return < 0 for failure, otherwise
+kernel will treat value > 0 as success.
 
+Link: https://lore.kernel.org/r/1634522181-31166-1-git-send-email-zheyuma97@gmail.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/thunder/nic_main.c | 2 +-
+ drivers/scsi/qla2xxx/qla_os.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/thunder/nic_main.c b/drivers/net/ethernet/cavium/thunder/nic_main.c
-index 9361f964bb9b2..816453a4f8d6c 100644
---- a/drivers/net/ethernet/cavium/thunder/nic_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nic_main.c
-@@ -1193,7 +1193,7 @@ static int nic_register_interrupts(struct nicpf *nic)
- 		dev_err(&nic->pdev->dev,
- 			"Request for #%d msix vectors failed, returned %d\n",
- 			   nic->num_vec, ret);
--		return 1;
-+		return ret;
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 8b68879058132..049a68c59c137 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4066,7 +4066,7 @@ qla2x00_mem_alloc(struct qla_hw_data *ha, uint16_t req_len, uint16_t rsp_len,
+ 					ql_dbg_pci(ql_dbg_init, ha->pdev,
+ 					    0xe0ee, "%s: failed alloc dsd\n",
+ 					    __func__);
+-					return 1;
++					return -ENOMEM;
+ 				}
+ 				ha->dif_bundle_kallocs++;
  
- 	/* Register mailbox interrupt handler */
 -- 
 2.33.0
 
