@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA83D4506FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8168545070F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236540AbhKOOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:34:07 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:23852 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236557AbhKOOcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:32:51 -0500
-Received: from localhost.localdomain (unknown [222.205.2.245])
-        by mail-app4 (Coremail) with SMTP id cS_KCgAHDyvXbpJhuPsPBQ--.20703S4;
-        Mon, 15 Nov 2021 22:29:43 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     netdev@vger.kernel.org
-Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
-        kuba@kernel.org, jirislaby@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v0] NFC: reorganize the functions in nci_request
-Date:   Mon, 15 Nov 2021 22:29:38 +0800
-Message-Id: <20211115142938.8109-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.33.1
+        id S236820AbhKOOgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:36:02 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:40165 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236641AbhKOOdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:33:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1636986617; x=1668522617;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zuThhgTn4F0rTfrp7sz4M3WkIvUF2eQwlt70tY+m8ik=;
+  b=rBbxDf08Ws0GTfP2csVtX8bmtwGJb2k53x7FqyjvAl9VlEUn0RKmUyJh
+   kOWDzJrdJkl7F2TNsjW/k/Z7AWMr/VLE4cG7zL724q1GRwvoIn9MjGYnS
+   4KHH4P+OIWfGUou+xZrnFrPcn1F7Dt011r3WpD9fOXbawAxflBD5rUN++
+   M4Td2aEJsTGJiyJFnm1vVakVN7/aEpY1kpl5AtQPnysVrJeX8MRmy6OSo
+   /Hibl/CXtUCXAehYuEEnu5YdvEtjk/K9nKOKsHJQ21ArR5hCU/1ghKkEc
+   rOv1r3ZXOwEJ9BN9OqzFmorAPTPkk1b72lQsf52BXAhwShqGKu9EvoRUR
+   Q==;
+IronPort-SDR: RyZmDDRmWa63cpRskOdKhXT6QNg9JXpkCeybnqhcNSJlPwi3m5W6rqXtVsx4Pfc4YvvXfJbzS+
+ 4L6sTsHrOzEAvikVuAcQX4+VeheuogrPYRai4I48MxHCHF27MjfzwjUw1p5Byz1D/Bk03p4X3K
+ Y1TBS1WS6P4ow47Hik/bXbiripHKEYVmg2wCW1Bi13fRthee2jZ/inia7UIXSZSBcSO81kPRXg
+ 1Vi3lSQ/G9uIbIx+RHx3m3lB+wRbY8cVAhjlKNYqQg+GjZPNM+25SRMb/f3BIUyBnVwaa66Lxw
+ mlKrmCPAxde2b23yg8pJBL3h
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="76457711"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Nov 2021 07:30:13 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 15 Nov 2021 07:30:13 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 15 Nov 2021 07:30:10 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <richard.genoud@gmail.com>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <linux-serial@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH] tty: serial: atmel: Check return code of dmaengine_submit()
+Date:   Mon, 15 Nov 2021 16:30:04 +0200
+Message-ID: <20211115143004.32743-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgAHDyvXbpJhuPsPBQ--.20703S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7urWxGw43Kw4rtr15ZrykGrg_yoW8Gw4rp3
-        95KFyayFyxZ3y7Ar40yw18Xw15ZF10ka97Ga4Ykw1xCr9xXrnrtr1DtFW5Xryfu395ZFW3
-        XFy5ta4Fkr1UWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUO4
-        E_DUUUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a possible data race as shown below:
+dma_cookie_t < 0 indicates an error code, check for it.
 
-thread-A in nci_request()       | thread-B in nci_close_device()
-                                | mutex_lock(&ndev->req_lock);
-test_bit(NCI_UP, &ndev->flags); |
-...                             | test_and_clear_bit(NCI_UP, &ndev->flags)
-mutex_lock(&ndev->req_lock);    |
-                                |
-
-This race will allow __nci_request() to be awaked while the device is
-getting removed.
-
-Similar to commit e2cb6b891ad2 ("bluetooth: eliminate the potential race
-condition when removing the HCI controller"). this patch alters the
-function sequence in nci_request() to prevent the data races between the
-nci_close_device().
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- net/nfc/nci/core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/tty/serial/atmel_serial.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 6fd873aa86be..2ab2d6a1a143 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -144,12 +144,15 @@ inline int nci_request(struct nci_dev *ndev,
- {
- 	int rc;
+diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+index 2c99a47a2535..376f7a9c2868 100644
+--- a/drivers/tty/serial/atmel_serial.c
++++ b/drivers/tty/serial/atmel_serial.c
+@@ -1004,6 +1004,11 @@ static void atmel_tx_dma(struct uart_port *port)
+ 		desc->callback = atmel_complete_tx_dma;
+ 		desc->callback_param = atmel_port;
+ 		atmel_port->cookie_tx = dmaengine_submit(desc);
++		if (dma_submit_error(atmel_port->cookie_tx)) {
++			dev_err(port->dev, "dma_submit_error %d\n",
++				atmel_port->cookie_tx);
++			return;
++		}
+ 	}
  
--	if (!test_bit(NCI_UP, &ndev->flags))
--		return -ENETDOWN;
--
- 	/* Serialize all requests */
- 	mutex_lock(&ndev->req_lock);
--	rc = __nci_request(ndev, req, opt, timeout);
-+	/* check the state after obtaing the lock against any races
-+	 * from nci_close_device when the device gets removed.
-+	 */
-+	if (test_bit(NCI_UP, &ndev->flags))
-+		rc = __nci_request(ndev, req, opt, timeout);
-+	else
-+		rc = -ENETDOWN;
- 	mutex_unlock(&ndev->req_lock);
+ 	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+@@ -1258,6 +1263,11 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
+ 	desc->callback_param = port;
+ 	atmel_port->desc_rx = desc;
+ 	atmel_port->cookie_rx = dmaengine_submit(desc);
++	if (dma_submit_error(atmel_port->cookie_rx)) {
++		dev_err(port->dev, "dma_submit_error %d\n",
++			atmel_port->cookie_rx);
++		goto chan_err;
++	}
  
- 	return rc;
+ 	return 0;
+ 
 -- 
-2.33.1
+2.25.1
 
