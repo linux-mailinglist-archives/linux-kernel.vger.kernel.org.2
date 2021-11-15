@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191F745012A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0DD45013B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237330AbhKOJZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237612AbhKOJYo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:24:44 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3267FC061210
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:21:15 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id l24so29133940uak.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tZRzmfr33ksKeGczCmevzip8qq4bvVpQ08XPdQssnGM=;
-        b=Y84O2jZqcupp8FDVBul7yU6K8vTd5w3H9tzfxrA7LsguHQZteSZok4EkX2CPJY7dZn
-         3w8nxo4AjZrg+As2RYcufNPbIGt69kE8Vljtp8OCBe5Ejr0+zQ5J+aQDF3h9zQEnl9mC
-         ASWxFDzY2HScF4fbXg1VHe2h/605lZgd2tF1k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tZRzmfr33ksKeGczCmevzip8qq4bvVpQ08XPdQssnGM=;
-        b=1Ckr/56AAjFXcTMok/PZSdUsMu4p1aYC5mw30KO4O5kxKfcAZ396IxjPch/tLee11J
-         sOh10ek78aRjs1AzVUSuNWEXZ8PDrztmRehoKD3834aNLT5FvbQaSCxINRttmlJWM3ac
-         +BBEkQAxxL7m02RIWVNHhJHiJaTEBTOWitx5Jnu80QDoqpt7hRmIR6qe4ERRX2pv+4Kz
-         5iynPjDqN7oV7D1ZlaLEwTbVLMKzyPt+nsHtc7IaXispOwhWLsQmDic9fobH/TMmDO/1
-         6SX5fR79Iwt8QfbMBQXV8Zt8b3uPKd5IMpuN3bP0igdAJfOnNZCgN+IvKHPfvj2axgi7
-         95Jg==
-X-Gm-Message-State: AOAM530zhomVzHaX69ogNYmBM/jYIj9BUuB7Zn7miBqGvXGcw7Ft71N9
-        AKWdswBO5MqfhNOhyEzNNH7S69CeeIjvyLTh/kkbAJo1jRtgvA==
-X-Google-Smtp-Source: ABdhPJz6Az5+mHWva6UQPGv4CesuEhoWD83B1tbTD9++PDTzvwyfRwLJrKTpW6bVxPpoAioKST8WlGxph+8gyAztdMA=
-X-Received: by 2002:a67:ec94:: with SMTP id h20mr39959755vsp.59.1636968074344;
- Mon, 15 Nov 2021 01:21:14 -0800 (PST)
+        id S230373AbhKOJ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:27:41 -0500
+Received: from mga01.intel.com ([192.55.52.88]:64451 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237574AbhKOJ0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 04:26:24 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="257156736"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="257156736"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 01:21:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="644783363"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 15 Nov 2021 01:21:32 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 15 Nov 2021 11:21:31 +0200
+Date:   Mon, 15 Nov 2021 11:21:31 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
+        <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] usb: typec: fusb302: Fix masking of comparator and
+ bc_lvl interrupts
+Message-ID: <YZImm0UIy3os5H6Q@kuha.fi.intel.com>
+References: <20211108102833.2793803-1-megous@megous.com>
+ <YZIILh++KIEK/ZA5@kuha.fi.intel.com>
+ <20211115085532.xoufihjxkxzhxehv@core>
 MIME-Version: 1.0
-References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
- <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
- <20211112003249.GL449541@dread.disaster.area> <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
- <20211114231834.GM449541@dread.disaster.area>
-In-Reply-To: <20211114231834.GM449541@dread.disaster.area>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 15 Nov 2021 10:21:03 +0100
-Message-ID: <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ian Kent <raven@themaw.net>, xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211115085532.xoufihjxkxzhxehv@core>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 at 00:18, Dave Chinner <david@fromorbit.com> wrote:
-> I just can't see how this race condition is XFS specific and why
-> fixing it requires XFS to sepcifically handle it while we ignore
-> similar theoretical issues in other filesystems...
+On Mon, Nov 15, 2021 at 09:55:32AM +0100, Ondřej Jirman wrote:
+> On Mon, Nov 15, 2021 at 09:11:42AM +0200, Heikki Krogerus wrote:
+> > On Mon, Nov 08, 2021 at 11:28:32AM +0100, Ondrej Jirman wrote:
+> > > The code that enables either BC_LVL or COMP_CHNG interrupt in tcpm_set_cc
+> > > wrongly assumes that the interrupt is unmasked by writing 1 to the apropriate
+> > > bit in the mask register. In fact, interrupts are enabled when the mask
+> > > is 0, so the tcpm_set_cc enables interrupt for COMP_CHNG when it expects
+> > > BC_LVL interrupt to be enabled.
+> > > 
+> > > This causes inability of the driver to recognize cable unplug events
+> > > in host mode (unplug is recognized only via a COMP_CHNG interrupt).
+> > > 
+> > > In device mode this bug was masked by simultaneous triggering of the VBUS
+> > > change interrupt, because of loss of VBUS when the port peer is providing
+> > > power.
+> > > 
+> > > Fixes: 48242e30532b ("usb: typec: fusb302: Revert "Resolve fixed power role contract setup"")
+> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
+> > > Cc: Hans de Goede <hdegoede@redhat.com>
+> > 
+> > Should this go to stable?
+> 
+> Without this patch, VBUS is not turned off when I disconnect a hub from the
+> Type-C port (because fusb302 will not notice the disconnect), and it stays on
+> until next plugin of some device, say a normal non PD charger.
+> 
+> So I guess for a brief period you can have both sides provide VBUS (until
+> fusb302/tcpm processes the next plugin). It may be a problem if VBUS was more
+> than 5V (not very likely for devices running this driver, I guess).
 
-It is XFS specific, because all other filesystems RCU free the in-core
-inode after eviction.
+OK. So this should find it's way to the stable kernel releases as
+well, and it should have the appropriate "Cc: stable@vger.kernel.org"
+tag:
 
-XFS is the only one that reuses the in-core inode object and that is
-very much different from anything the other filesystems do and what
-the VFS expects.
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#select-the-recipients-for-your-patch
 
-I don't see how clearing the quick link buffer in ext4_evict_inode()
-could do anything bad.  The contents are irrelevant, the lookup will
-be restarted anyway, the important thing is that the buffer is not
-freed and that it's null terminated, and both hold for the ext4,
-AFAICS.
+thanks,
 
-I tend to agree with Brian and Ian at this point: return -ECHILD from
-xfs_vn_get_link_inline() until xfs's inode resue vs. rcu walk
-implications are fully dealt with.  No way to fix this from VFS alone.
-
-Thanks,
-Miklos
+-- 
+heikki
