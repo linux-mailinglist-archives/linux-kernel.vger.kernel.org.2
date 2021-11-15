@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF55451BE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658BA451BE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354826AbhKPAIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46854 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349369AbhKOUMH (ORCPT
+        id S1344144AbhKPAJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350407AbhKOUXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:12:07 -0500
-Date:   Mon, 15 Nov 2021 20:09:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637006950;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BCWCtJirk7NfWGlMkDiZHZ2/fzGZjhNO1704SJFY7LQ=;
-        b=1cO0tPjItm3qpUDrzKREV/QLOykT1owuzdT54DLjuRFlF/Vw5+sK2WbTvOSGtmkTBRYa8U
-        97vxOQhDixLQ5n5HvkRsV1+NfO2KQnceo1Z3PSSwRiW4GjMPlSnWrifCmPkwsmOJ9QI28A
-        fU5CMyl7iskZXU1Geo281KeWDTkxm2HnpqQhbMZVQ3B+SO8OUL5uQwu6Kk53gaWTXZa+UI
-        eMq0Pr6bilgypzwohoRGEI4YEqvyJwOqkTpfJkkgnOvB43hiK9epZZpVss1aiTrNv1yqEU
-        cYPcKcgvYUmjvUHoueDkSuYeRJddtEISxSv+75n6UL1qnKI2SjXBQE1MeYhmRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637006950;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BCWCtJirk7NfWGlMkDiZHZ2/fzGZjhNO1704SJFY7LQ=;
-        b=nd4xDx2oCmFrSG9KyPUSPwqScVjcjt1MwDrJzOnoshrJHfkGX2G0VEIIw/lN8W7EAVNtfW
-        wX8lb+cCCK+AdYCA==
-From:   "tip-bot2 for Lucas De Marchi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] drm/i915/gem: Stop using PAGE_KERNEL_IO
-Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211020090625.1037517-1-lucas.demarchi@intel.com>
-References: <20211020090625.1037517-1-lucas.demarchi@intel.com>
+        Mon, 15 Nov 2021 15:23:48 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74606C036FAC
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:10:13 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id t83so15771961qke.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:10:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZAvsXMw5VujpbEjnWwHvbWvBPNgg8YXYVEoE9t7ECg=;
+        b=Uh3/RBwTszJDkfZwDcl1v2hZCuzXcEXIGt822Hi0S97Bw2FhTtT1RUhI8uCgFtzs6n
+         wQ94ldpu0lUS9D+Yy1asUQXqqXxNYqIMfQdKr0g0i0NW7kTxihduOQj3QqRUqiz3LM/3
+         uIqzcivTIJo/ZIe048N1QKD01XnagxGYkNAXQ4tpVDzdxt0xe8hxh1lprJiE4bp2CFYm
+         iaiApc/Pxu3XzTISOi6x+MXZgw54tyrETX1ks0lkx1MG1Z4D3M38QPGpy6gqY9o+pVy7
+         D5iZiswlmmc8/qSukJLeE0jYpMdXtlQ3tJCGNw7lNsv/qKXhwTtOks/CCJWvdm3Jtaom
+         tR9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZAvsXMw5VujpbEjnWwHvbWvBPNgg8YXYVEoE9t7ECg=;
+        b=3SBHsWlnJMVZZH2NILIKqfaygReR/MFdXrxcVjcd4nqGnmoVDfZlNQmSpsiehdF4c0
+         c0eoV0CkbsxvjM+ODOVpttZr9B/Z1lnWTEmxC54Bpnobk4lRxbzUTKBpy0LcQ7sPKT96
+         8ecuUEfDjqz5XtK0DXp88RXdxhbEnrab6o9AIU8NHuVJb4fXoSMh3tcojyS8EJLyTysv
+         TVEffBWX15bp/jo+Oqd2JH11uFjQvK+rrdmzR9iZ4tTI3vEnLtp/CTWUC6QqzoGRurHr
+         PGo4mAl9ppqGfRyUDk9MYGHRu8aBRfcSl4KMW9MxvT6ZnJ2UI17S1cq18WJB90xgq0H1
+         5FOA==
+X-Gm-Message-State: AOAM530HieyYB7eE1jELo2P1c1Shyq2d6bHGGGqJPOibLT9vMF+s28FQ
+        h+78OPI5oWYzy1EluMQxv2cYAw==
+X-Google-Smtp-Source: ABdhPJwg4OYwLbT2S33NVs6YPRAeSmxuo7GGJChe7nuFNWv6zdzQcXKKQMzMrLNXDOMAk2Hm8xVU7w==
+X-Received: by 2002:a05:620a:288f:: with SMTP id j15mr1509817qkp.280.1637007011887;
+        Mon, 15 Nov 2021 12:10:11 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id m19sm6935664qkn.129.2021.11.15.12.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 12:10:11 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH] base: arch_topology: Use policy->max to calculate freq_factor
+Date:   Mon, 15 Nov 2021 15:10:10 -0500
+Message-Id: <20211115201010.68567-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <163700694919.414.15045515173084346246.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+we don't consider boost frequencies while calculating cpu capacities, use
+policy->max to populate the freq_factor during boot up.
 
-Commit-ID:     6b2a2138cf36e67783884058c772bfeb63a999ad
-Gitweb:        https://git.kernel.org/tip/6b2a2138cf36e67783884058c772bfeb63a999ad
-Author:        Lucas De Marchi <lucas.demarchi@intel.com>
-AuthorDate:    Thu, 21 Oct 2021 11:15:10 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 15 Nov 2021 10:31:49 -08:00
-
-drm/i915/gem: Stop using PAGE_KERNEL_IO
-
-PAGE_KERNEL_IO is only defined for x86 and nowadays is the same as
-PAGE_KERNEL. It was different for some time, OR'ing a `_PAGE_IOMAP` flag
-in commit be43d72835ba ("x86: add _PAGE_IOMAP pte flag for IO
-mappings").  This got removed in commit f955371ca9d3 ("x86: remove the
-Xen-specific _PAGE_IOMAP PTE flag"), so today they are just the same.
-
-This is the same that was done in commit ac96b5566926 ("io-mapping.h:
-s/PAGE_KERNEL_IO/PAGE_KERNEL/").
-
-There is a subsequent commit with
-'Fixes: ac96b5566926 ("io-mapping.h: s/PAGE_KERNEL_IO/PAGE_KERNEL/")' -
-but that is not relevant here since is it's actually fixing the different
-names for pgprot_writecombine(), which we also don't have today since
-all archs expose pgprot_writecombine(). Microblaze, mentioned in that
-discussion, gained pgprot_writecombine() in
-commit 97ccedd793ac ("microblaze: Provide pgprot_device/writecombine
-macros for nommu").
-
-So, just use PAGE_KERNEL, and just use pgprot_writecombine().
-
-Link: https://patchwork.freedesktop.org/patch/msgid/20211020090625.1037517-1-lucas.demarchi@intel.com
-Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20211021181511.1533377-2-lucas.demarchi@intel.com
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_pages.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/base/arch_topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_pages.c b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-index 8eb1c3a..68fe183 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-@@ -289,7 +289,7 @@ static void *i915_gem_object_map_page(struct drm_i915_gem_object *obj,
- 		pgprot = PAGE_KERNEL;
- 		break;
- 	case I915_MAP_WC:
--		pgprot = pgprot_writecombine(PAGE_KERNEL_IO);
-+		pgprot = pgprot_writecombine(PAGE_KERNEL);
- 		break;
- 	}
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 43407665918f..df818b439bc3 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -334,7 +334,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+ 	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
  
-@@ -333,7 +333,7 @@ static void *i915_gem_object_map_pfn(struct drm_i915_gem_object *obj,
- 	i = 0;
- 	for_each_sgt_daddr(addr, iter, obj->mm.pages)
- 		pfns[i++] = (iomap + addr) >> PAGE_SHIFT;
--	vaddr = vmap_pfn(pfns, n_pfn, pgprot_writecombine(PAGE_KERNEL_IO));
-+	vaddr = vmap_pfn(pfns, n_pfn, pgprot_writecombine(PAGE_KERNEL));
- 	if (pfns != stack)
- 		kvfree(pfns);
+ 	for_each_cpu(cpu, policy->related_cpus)
+-		per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
++		per_cpu(freq_factor, cpu) = policy->max / 1000;
  
+ 	if (cpumask_empty(cpus_to_visit)) {
+ 		topology_normalize_cpu_scale();
+-- 
+2.25.1
+
