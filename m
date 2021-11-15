@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDD845194D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3680D45204D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347074AbhKOXRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:17:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
+        id S1349197AbhKPAvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:51:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244394AbhKOTOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B81FF634BB;
-        Mon, 15 Nov 2021 18:20:45 +0000 (UTC)
+        id S1344437AbhKOTYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CA363492;
+        Mon, 15 Nov 2021 18:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000446;
-        bh=WTVOg6UfWqBwkhA/w3webc8VR/6JwSWz53HUV3C/n/U=;
+        s=korg; t=1637002660;
+        bh=UU1P0n2MZuxrGUHrRfKy5j7rup4560+xJAJEEg7ZDPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ae05vWbeSKGqtJPv76sMw1pTs5HWkbXW0+kMcBmsiY/qLNqNui172decmV+AyvwGg
-         DedUHgEg4ij/YTQ4LwY969eW5Ob5LbL3u1JkDNafvWlkEPQARnOY/eBnEsV+UMeViA
-         rNDFJsKQeRxQICtuxFqM+dteSmvaxA2AyT3LLuP8=
+        b=yjlTFvbC42Ha9vocZTmcVZ3UbLMr1RjFWzEmUUYrEwgbtOsc6IhCM3+cSSmgNcifz
+         hQLeIrmmxG1ZMg3j3OPLSXgf0MouBrOvVsidxvPATGzuY62vSBkMvr6YLAUvuCb53c
+         phhljLsKpCf7mo5gN2eIB9El5z8hHFCO45KxWI+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Andrew F. Davis" <afd@ti.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 662/849] power: supply: bq27xxx: Fix kernel crash on IRQ handler register error
+Subject: [PATCH 5.15 650/917] scsi: lpfc: Wait for successful restart of SLI3 adapter during host sg_reset
 Date:   Mon, 15 Nov 2021 18:02:25 +0100
-Message-Id: <20211115165442.655282549@linuxfoundation.org>
+Message-Id: <20211115165450.906426342@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit cdf10ffe8f626d8a2edc354abf063df0078b2d71 ]
+[ Upstream commit d305c253af693e69a36cedec880aca6d0c6d789d ]
 
-When registering the IRQ handler fails, do not just return the error code,
-this will free the devm_kzalloc()-ed data struct while leaving the queued
-work queued and the registered power_supply registered with both of them
-now pointing to free-ed memory, resulting in various kernel crashes
-soon afterwards.
+A prior patch introduced HBA_NEEDS_CFG_PORT flag logic, but in
+lpfc_sli_brdrestart_s3() code path, right after HBA_NEEDS_CFG_PORT is set,
+the phba->hba_flag is cleared in lpfc_sli_brdreset().
 
-Instead properly tear-down things on IRQ handler register errors.
+Fix by calling lpfc_sli_chipset_init() to wait for successful restart of
+the HBA in lpfc_host_reset_handler() after lpfc_sli_brdrestart().
 
-Fixes: 703df6c09795 ("power: bq27xxx_battery: Reorganize I2C into a module")
-Cc: Andrew F. Davis <afd@ti.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+lpfc_sli_chipset_init() sets the HBA_NEEDS_CFG_PORT flag so that the
+lpfc_sli_hba_setup() routine from lpfc_online() will execute
+lpfc_sli_config_port() initialization step when the brdrestart is
+successful.
+
+Link: https://lore.kernel.org/r/20211020211417.88754-3-jsmart2021@gmail.com
+Fixes: d2f2547efd39 ("scsi: lpfc: Fix auto sli_mode and its effect on CONFIG_PORT for SLI3")
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/bq27xxx_battery_i2c.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_scsi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/power/supply/bq27xxx_battery_i2c.c b/drivers/power/supply/bq27xxx_battery_i2c.c
-index 46f078350fd3f..cf38cbfe13e9d 100644
---- a/drivers/power/supply/bq27xxx_battery_i2c.c
-+++ b/drivers/power/supply/bq27xxx_battery_i2c.c
-@@ -187,7 +187,8 @@ static int bq27xxx_battery_i2c_probe(struct i2c_client *client,
- 			dev_err(&client->dev,
- 				"Unable to register IRQ %d error %d\n",
- 				client->irq, ret);
--			return ret;
-+			bq27xxx_battery_teardown(di);
-+			goto err_failed;
- 		}
- 	}
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index befdf864c43bd..364c8a9b99095 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -6628,6 +6628,13 @@ lpfc_host_reset_handler(struct scsi_cmnd *cmnd)
+ 	if (rc)
+ 		goto error;
  
++	/* Wait for successful restart of adapter */
++	if (phba->sli_rev < LPFC_SLI_REV4) {
++		rc = lpfc_sli_chipset_init(phba);
++		if (rc)
++			goto error;
++	}
++
+ 	rc = lpfc_online(phba);
+ 	if (rc)
+ 		goto error;
 -- 
 2.33.0
 
