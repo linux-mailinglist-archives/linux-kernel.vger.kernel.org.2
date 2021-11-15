@@ -2,39 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A81450FA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF034450F9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242159AbhKOSes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:34:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
+        id S242199AbhKOSez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238288AbhKOReT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238095AbhKOReT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:34:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF2F6632B9;
-        Mon, 15 Nov 2021 17:22:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C667E632BC;
+        Mon, 15 Nov 2021 17:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996969;
-        bh=msCvi68ZfQgV7tmKQ385smOG81DnSVfI0M/DZAKiFOI=;
+        s=korg; t=1636996972;
+        bh=1BPrSXSixKxHZRmINOcDWcxbjubO2ggsAIYCCiV9kr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGJjiX4+qDYLOnDT2BdKxcJaxu58hWDLqLpZVHBGvuK0os9OFdlUs2BlPP3FZeNXU
-         KN6zB+6WtcEYzxmF5F5OZuN+P5TAOKec8VPLPJs2m4Eu7H1nrsTPsiSMAfTI/X2fwk
-         R9dZocJYReZ1tEuJojCHoP943LKNQgrAPlz3VJiI=
+        b=atk4Nzc/Vtibn3OWrZszH8AqweKWwGhIQoN7TSdXELTrCAOoY1PY6b3+YFH4UnMl6
+         9xPtvOwA4k5lDWQS+cfXdNsmpOkXfWEc1x5L2j5zTpXSn3zfjzYCsp8dOH4ZMMMlSp
+         NuRFrq3y8xsQKb/pew5oya8cqOEmBEgW+Y3u+pJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Matthias Klose <doko@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 5.4 334/355] ARM: 9156/1: drop cc-option fallbacks for architecture selection
-Date:   Mon, 15 Nov 2021 18:04:18 +0100
-Message-Id: <20211115165324.543227259@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        stable@kernel.org
+Subject: [PATCH 5.4 335/355] parisc: Fix backtrace to always include init funtion names
+Date:   Mon, 15 Nov 2021 18:04:19 +0100
+Message-Id: <20211115165324.577560405@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -46,103 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Helge Deller <deller@gmx.de>
 
-commit 418ace9992a7647c446ed3186df40cf165b67298 upstream.
+commit 279917e27edc293eb645a25428c6ab3f3bca3f86 upstream.
 
-Naresh and Antonio ran into a build failure with latest Debian
-armhf compilers, with lots of output like
+I noticed that sometimes at kernel startup the backtraces did not
+included the function names of init functions. Their address were not
+resolved to function names and instead only the address was printed.
 
- tmp/ccY3nOAs.s:2215: Error: selected processor does not support `cpsid i' in ARM mode
+Debugging shows that the culprit is is_ksym_addr() which is called
+by the backtrace functions to check if an address belongs to a function in
+the kernel. The problem occurs only for CONFIG_KALLSYMS_ALL=y.
 
-As it turns out, $(cc-option) fails early here when the FPU is not
-selected before CPU architecture is selected, as the compiler
-option check runs before enabling -msoft-float, which causes
-a problem when testing a target architecture level without an FPU:
+When looking at is_ksym_addr() one can see that for CONFIG_KALLSYMS_ALL=y
+the function only tries to resolve the address via is_kernel() function,
+which checks like this:
+	if (addr >= _stext && addr <= _end)
+                return 1;
+On parisc the init functions are located before _stext, so this check fails.
+Other platforms seem to have all functions (including init functions)
+behind _stext.
 
-cc1: error: '-mfloat-abi=hard': selected architecture lacks an FPU
+The following patch moves the _stext symbol at the beginning of the
+kernel and thus includes the init section. This fixes the check and does
+not seem to have any negative side effects on where the kernel mapping
+happens in the map_pages() function in arch/parisc/mm/init.c.
 
-Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
-issue, but the fallback logic is already broken because all supported
-compilers (gcc-5 and higher) are much more recent than these options,
-and building with -march=armv5t as a fallback no longer works.
-
-The best way forward that I see is to just remove all the checks, which
-also has the nice side-effect of slightly improving the startup time for
-'make'.
-
-The -mtune=marvell-f option was apparently never supported by any mainline
-compiler, and the custom Codesourcery gcc build that did support is
-now too old to build kernels, so just use -mtune=xscale unconditionally
-for those.
-
-This should be safe to apply on all stable kernels, and will be required
-in order to keep building them with gcc-11 and higher.
-
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
-
-Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Cc: Matthias Klose <doko@debian.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@kernel.org # 5.4+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/Makefile |   22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/parisc/kernel/vmlinux.lds.S |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -66,15 +66,15 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-i
- # Note that GCC does not numerically define an architecture version
- # macro, but instead defines a whole series of macros which makes
- # testing for a specific architecture or later rather impossible.
--arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
--arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
--arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
-+arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m
-+arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
-+arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 -march=armv6
- # Only override the compiler option if ARMv6. The ARMv6K extensions are
- # always available in ARMv7
- ifeq ($(CONFIG_CPU_32v6),y)
--arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6k,-march=armv5t -Wa$(comma)-march=armv6k)
-+arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 -march=armv6k
- endif
--arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 $(call cc-option,-march=armv5te,-march=armv4t)
-+arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 -march=armv5te
- arch-$(CONFIG_CPU_32v4T)	=-D__LINUX_ARM_ARCH__=4 -march=armv4t
- arch-$(CONFIG_CPU_32v4)		=-D__LINUX_ARM_ARCH__=4 -march=armv4
- arch-$(CONFIG_CPU_32v3)		=-D__LINUX_ARM_ARCH__=3 -march=armv3m
-@@ -88,7 +88,7 @@ tune-$(CONFIG_CPU_ARM720T)	=-mtune=arm7t
- tune-$(CONFIG_CPU_ARM740T)	=-mtune=arm7tdmi
- tune-$(CONFIG_CPU_ARM9TDMI)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM940T)	=-mtune=arm9tdmi
--tune-$(CONFIG_CPU_ARM946E)	=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
-+tune-$(CONFIG_CPU_ARM946E)	=-mtune=arm9e
- tune-$(CONFIG_CPU_ARM920T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM922T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM925T)	=-mtune=arm9tdmi
-@@ -96,11 +96,11 @@ tune-$(CONFIG_CPU_ARM926T)	=-mtune=arm9t
- tune-$(CONFIG_CPU_FA526)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_SA110)	=-mtune=strongarm110
- tune-$(CONFIG_CPU_SA1100)	=-mtune=strongarm1100
--tune-$(CONFIG_CPU_XSCALE)	=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_XSC3)		=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_FEROCEON)	=$(call cc-option,-mtune=marvell-f,-mtune=xscale)
--tune-$(CONFIG_CPU_V6)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
--tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
-+tune-$(CONFIG_CPU_XSCALE)	=-mtune=xscale
-+tune-$(CONFIG_CPU_XSC3)		=-mtune=xscale
-+tune-$(CONFIG_CPU_FEROCEON)	=-mtune=xscale
-+tune-$(CONFIG_CPU_V6)		=-mtune=arm1136j-s
-+tune-$(CONFIG_CPU_V6K)		=-mtune=arm1136j-s
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -56,6 +56,8 @@ SECTIONS
+ {
+ 	. = KERNEL_BINARY_TEXT_START;
  
- # Evaluate tune cc-option calls now
- tune-y := $(tune-y)
++	_stext = .;	/* start of kernel text, includes init code & data */
++
+ 	__init_begin = .;
+ 	HEAD_TEXT_SECTION
+ 	MLONGCALL_DISCARD(INIT_TEXT_SECTION(8))
+@@ -79,7 +81,6 @@ SECTIONS
+ 	/* freed after init ends here */
+ 
+ 	_text = .;		/* Text and read-only data */
+-	_stext = .;
+ 	MLONGCALL_KEEP(INIT_TEXT_SECTION(8))
+ 	.text ALIGN(PAGE_SIZE) : {
+ 		TEXT_TEXT
 
 
