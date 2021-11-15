@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D403144FF92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E86B44FF95
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236564AbhKOIAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:00:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28565 "EHLO
+        id S229696AbhKOIAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:00:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32745 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230418AbhKOH7W (ORCPT
+        by vger.kernel.org with ESMTP id S236397AbhKOH7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 02:59:22 -0500
+        Mon, 15 Nov 2021 02:59:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636962987;
+        s=mimecast20190719; t=1636962995;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PQTAYR2U0B9NQT5q5Dh9pQHL0/MM7Qz5TQPJEv+v98g=;
-        b=fVQDpNllnVkoHborceNRRJenMuUzKbgvBCOs6/U4tHY1Q+TvgtSNWFAwY9bZuNleRzD7xF
-        XZRksP++zhsXvbxv+fAGvenzoXgoOHGvTgjj5ttYCfyC9CqW//IHr0tKlTGvuqaPI9S0Mx
-        6e3bWeCD8xITUyGP8xcPHp18oXhvqXM=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-hNMXCEovP02jqIykmRYpLQ-1; Mon, 15 Nov 2021 02:56:25 -0500
-X-MC-Unique: hNMXCEovP02jqIykmRYpLQ-1
-Received: by mail-pj1-f69.google.com with SMTP id o4-20020a17090a3d4400b001a66f10df6cso4880344pjf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 23:56:25 -0800 (PST)
+        bh=bNc70TgztEilFYXrr/S3QzbmII7tOwB+GzXzdIRG250=;
+        b=I3d6NV6S79SbdI/EqQHpvnf+HKSOVRvJ4kPICHWZ3xcj/z22ci4DTJVG+z3GgSc0AatzrY
+        hG9kBRQgQkpH3rhRFVdz3m5AXcN3dlQKdM0tpXNCF3mvdBdLM7K3VTxYmLah58ipdegRQr
+        Szm+lMD9/sSNqswNQGlmnx/7C1jfKZ4=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-zwEWQSU6PNWHYIvHwZpEyA-1; Mon, 15 Nov 2021 02:56:33 -0500
+X-MC-Unique: zwEWQSU6PNWHYIvHwZpEyA-1
+Received: by mail-pj1-f72.google.com with SMTP id l10-20020a17090a4d4a00b001a6f817f57eso8612410pjh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 23:56:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PQTAYR2U0B9NQT5q5Dh9pQHL0/MM7Qz5TQPJEv+v98g=;
-        b=VsxkS/1+KjRQbru9RazNMclgGJfxO9xS1y6PmTOXSmKh2MhCgCIxi7LRTj6T5Wfy2U
-         A8XvBUTugZYMKyzRwM2b+Q3pVtF5sO+IqJzr0ZnFZLTOSbBDfRA2lZ8J3yO6vXLZrsMs
-         IZbDNwAl3ojnmyryAmlLy5QKIP4ILIwvW8FkBr6EVV/z9Gw+lsFt9Dswwi1GuGtcXNS6
-         zJGseyZBBNhYTr7VW9LeBfqwy/dyv8AxkZhISecPKBz34v2vips3sRqjbvyr23reH1h8
-         S6XT3H82i4GvRvGLrOB1BmqHhQ2tTeQJc2FXgdCdBxhMD9qFGaXxwdphZIsJnADJyEZs
-         2WoA==
-X-Gm-Message-State: AOAM531yIC/s1rUImfHFU0+T7947erAODDHMGrC4ml0Z0gaupA74uCtR
-        RDBAeidVSOIGu2WCLYNAMcxy0Gsw17FyBWxWv1Fhhg2GAbx/WNBuokxMwutw3SatbKzLHgMgCp3
-        RVxB54PA/4fmjptHJp1VhMjcY
-X-Received: by 2002:a17:90a:ca81:: with SMTP id y1mr61191340pjt.231.1636962984418;
-        Sun, 14 Nov 2021 23:56:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQVZcj01aFlbyqYO4BSw1DS5ur5lPKwB1eRxjFMR30tJL7G2a+EjobAshXx0ZYvcchxwbzZQ==
-X-Received: by 2002:a17:90a:ca81:: with SMTP id y1mr61191302pjt.231.1636962984128;
-        Sun, 14 Nov 2021 23:56:24 -0800 (PST)
+        bh=bNc70TgztEilFYXrr/S3QzbmII7tOwB+GzXzdIRG250=;
+        b=D6KltdgCGxwLMmK3KiRRK0bqRMoJ3jLLpxLVMREt6ETnjl1dRmyG75tfEkYkWsZLRP
+         gah2LwTny5IbiPhRCo8VPMahcWBiFZZsaEq5RwDEhLOuJJ5AYVW46nd40jokODkLEEhz
+         7g0iPunPFvLsREC0wpQdXxR4En7hL61mtCLnz/7aNEZABOqEMVayTVTTun3IqZkfEbim
+         DqgG8QgEW8CXbtbvB53xyY4T0fKc2GDRniRZrzmA34UWQa/osmgXhEQFR4v3Sg5FclV6
+         6JNM3jVJFmX4wnGlLHIECAvW/24S2ftPPUvypWH2C+KKgSDWqUvkpPymR7h5U3YJU7zB
+         ZH+Q==
+X-Gm-Message-State: AOAM533VOZOaBaDxnow+GFoQaGbHP1XAOyc+C4ueD/MsXqsLSppS5hVL
+        3cmsdVWwA4yGoP+2NSYlPPPh6IaHQtmmajID7rc0L5ko0WcxAdOV5jn3GGR4hvx1fjbH/yHKGdb
+        ZgveRNFF1XbNqmGUsXh5KMEQ1
+X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr6509920pjy.48.1636962991987;
+        Sun, 14 Nov 2021 23:56:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwcWLiSu54dg3NGApWSpCAOU0KSpIFrzWp5wpXMgcgfTovXA+wja+X2pK0NLh2KBFy3bdsyhw==
+X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr6509874pjy.48.1636962991714;
+        Sun, 14 Nov 2021 23:56:31 -0800 (PST)
 Received: from localhost.localdomain ([191.101.132.223])
-        by smtp.gmail.com with ESMTPSA id e10sm15792796pfv.140.2021.11.14.23.56.16
+        by smtp.gmail.com with ESMTPSA id e10sm15792796pfv.140.2021.11.14.23.56.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Nov 2021 23:56:23 -0800 (PST)
+        Sun, 14 Nov 2021 23:56:31 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -65,9 +65,9 @@ Cc:     Axel Rasmussen <axelrasmussen@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         David Hildenbrand <david@redhat.com>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: [PATCH v6 06/23] mm/shmem: Handle uffd-wp special pte in page fault handler
-Date:   Mon, 15 Nov 2021 15:55:05 +0800
-Message-Id: <20211115075522.73795-7-peterx@redhat.com>
+Subject: [PATCH v6 07/23] mm/shmem: Persist uffd-wp bit across zapping for file-backed
+Date:   Mon, 15 Nov 2021 15:55:06 +0800
+Message-Id: <20211115075522.73795-8-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211115075522.73795-1-peterx@redhat.com>
 References: <20211115075522.73795-1-peterx@redhat.com>
@@ -77,194 +77,258 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-File-backed memories are prone to unmap/swap so the ptes are always unstable,
-because they can be easily faulted back later using the page cache.  This could
-lead to uffd-wp getting lost when unmapping or swapping out such memory.  One
-example is shmem.  PTE markers are needed to store those information.
+File-backed memory is prone to being unmapped at any time.  It means all
+information in the pte will be dropped, including the uffd-wp flag.
 
-This patch prepares it by handling uffd-wp pte markers first it is applied
-elsewhere, so that the page fault handler can recognize uffd-wp pte markers.
+To persist the uffd-wp flag, we'll use the pte markers.  This patch teaches the
+zap code to understand uffd-wp and know when to keep or drop the uffd-wp bit.
 
-The handling of uffd-wp pte markers is similar to missing fault, it's just that
-we'll handle this "missing fault" when we see the pte markers, meanwhile we
-need to make sure the marker information is kept during processing the fault.
-
-This is a slow path of uffd-wp handling, because zapping of wr-protected shmem
-ptes should be rare.  So far it should only trigger in two conditions:
-
-  (1) When trying to punch holes in shmem_fallocate(), there is an optimization
-      to zap the pgtables before evicting the page.
-
-  (2) When swapping out shmem pages.
-
-Because of this, the page fault handling is simplifed too by not sending the
-wr-protect message in the 1st page fault, instead the page will be installed
-read-only, so the uffd-wp message will be generated in the next fault, which
-will trigger the do_wp_page() path of general uffd-wp handling.
-
-Disable fault-around for all uffd-wp registered ranges for extra safety just
-like uffd-minor fault, and clean the code up.
+Add a new flag ZAP_FLAG_DROP_MARKER and set it in zap_details when we don't
+want to persist such an information, for example, when destroying the whole
+vma, or punching a hole in a shmem file.  For the rest cases we should never
+drop the uffd-wp bit, or the wr-protect information will get lost.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/userfaultfd_k.h | 17 +++++++++
- mm/memory.c                   | 71 ++++++++++++++++++++++++++++++-----
- 2 files changed, 79 insertions(+), 9 deletions(-)
+ include/linux/mm.h        | 20 +++++++++++++++++
+ include/linux/mm_inline.h | 45 +++++++++++++++++++++++++++++++++++++++
+ mm/memory.c               | 38 +++++++++++++++++++++++++++++++--
+ mm/rmap.c                 |  8 +++++++
+ 4 files changed, 109 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index 7d7ffec53ddb..05cec02140cb 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -96,6 +96,18 @@ static inline bool uffd_disable_huge_pmd_share(struct vm_area_struct *vma)
- 	return vma->vm_flags & (VM_UFFD_WP | VM_UFFD_MINOR);
- }
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a7e4a9e7d807..015e287063a8 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1825,12 +1825,23 @@ static inline bool can_do_mlock(void) { return false; }
+ extern int user_shm_lock(size_t, struct ucounts *);
+ extern void user_shm_unlock(size_t, struct ucounts *);
  
-+/*
-+ * Don't do fault around for either WP or MINOR registered uffd range.  For
-+ * MINOR registered range, fault around will be a total disaster and ptes can
-+ * be installed without notifications; for WP it should mostly be fine as long
-+ * as the fault around checks for pte_none() before the installation, however
-+ * to be super safe we just forbid it.
-+ */
-+static inline bool uffd_disable_fault_around(struct vm_area_struct *vma)
-+{
-+	return vma->vm_flags & (VM_UFFD_WP | VM_UFFD_MINOR);
-+}
-+
- static inline bool userfaultfd_missing(struct vm_area_struct *vma)
- {
- 	return vma->vm_flags & VM_UFFD_MISSING;
-@@ -236,6 +248,11 @@ static inline void userfaultfd_unmap_complete(struct mm_struct *mm,
- {
- }
- 
-+static inline bool uffd_disable_fault_around(struct vm_area_struct *vma)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_USERFAULTFD */
- 
- static inline bool is_pte_marker_uffd_wp(pte_t pte)
-diff --git a/mm/memory.c b/mm/memory.c
-index d5966d9e24c3..e8557d43a87d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3452,6 +3452,43 @@ static vm_fault_t remove_device_exclusive_entry(struct vm_fault *vmf)
- 	return 0;
- }
- 
-+static vm_fault_t pte_marker_clear(struct vm_fault *vmf)
-+{
-+	vmf->pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
-+				       vmf->address, &vmf->ptl);
-+	/*
-+	 * Be careful so that we will only recover a special uffd-wp pte into a
-+	 * none pte.  Otherwise it means the pte could have changed, so retry.
-+	 */
-+	if (is_pte_marker(*vmf->pte))
-+		pte_clear(vmf->vma->vm_mm, vmf->address, vmf->pte);
-+	pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	return 0;
-+}
++typedef unsigned int __bitwise zap_flags_t;
 +
 +/*
-+ * This is actually a page-missing access, but with uffd-wp special pte
-+ * installed.  It means this pte was wr-protected before being unmapped.
++ * Whether to drop the pte markers, for example, the uffd-wp information for
++ * file-backed memory.  This should only be specified when we will completely
++ * drop the page in the mm, either by truncation or unmapping of the vma.  By
++ * default, the flag is not set.
 + */
-+static vm_fault_t pte_marker_handle_uffd_wp(struct vm_fault *vmf)
-+{
-+	/* Careful!  vmf->pte unmapped after return */
-+	if (!pte_unmap_same(vmf))
-+		return 0;
++#define  ZAP_FLAG_DROP_MARKER        ((__force zap_flags_t) BIT(0))
 +
-+	/*
-+	 * Just in case there're leftover special ptes even after the region
-+	 * got unregistered - we can simply clear them.  We can also do that
-+	 * proactively when e.g. when we do UFFDIO_UNREGISTER upon some uffd-wp
-+	 * ranges, but it should be more efficient to be done lazily here.
-+	 */
-+	if (unlikely(!userfaultfd_wp(vmf->vma) || vma_is_anonymous(vmf->vma)))
-+		return pte_marker_clear(vmf);
-+
-+	/* do_fault() can handle pte markers too like none pte */
-+	return do_fault(vmf);
-+}
-+
- static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
- {
- 	swp_entry_t entry = pte_to_swp_entry(vmf->orig_pte);
-@@ -3465,8 +3502,11 @@ static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
- 	if (WARN_ON_ONCE(vma_is_anonymous(vmf->vma) || !marker))
- 		return VM_FAULT_SIGBUS;
- 
--	/* TODO: handle pte markers */
--	return 0;
-+	if (marker & PTE_MARKER_UFFD_WP)
-+		return pte_marker_handle_uffd_wp(vmf);
-+
-+	/* This is an unknown pte marker */
-+	return VM_FAULT_SIGBUS;
- }
+ /*
+  * Parameter block passed down to zap_pte_range in exceptional cases.
+  */
+ struct zap_details {
+ 	struct address_space *zap_mapping;	/* Check page->mapping if set */
+ 	struct page *single_page;		/* Locked page to be unmapped */
++	zap_flags_t zap_flags;			/* Extra flags for zapping */
+ };
  
  /*
-@@ -3968,6 +4008,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
- {
- 	struct vm_area_struct *vma = vmf->vma;
-+	bool uffd_wp = is_pte_marker_uffd_wp(vmf->orig_pte);
- 	bool write = vmf->flags & FAULT_FLAG_WRITE;
- 	bool prefault = vmf->address != addr;
- 	pte_t entry;
-@@ -3982,6 +4023,8 @@ void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
- 
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-+	if (unlikely(uffd_wp))
-+		entry = pte_mkuffd_wp(pte_wrprotect(entry));
- 	/* copy-on-write page */
- 	if (write && !(vma->vm_flags & VM_SHARED)) {
- 		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
-@@ -4155,9 +4198,21 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
- 	return vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
+@@ -1847,6 +1858,15 @@ zap_skip_check_mapping(struct zap_details *details, struct page *page)
+ 	    (details->zap_mapping != page_rmapping(page));
  }
  
-+/* Return true if we should do read fault-around, false otherwise */
-+static inline bool should_fault_around(struct vm_fault *vmf)
++static inline bool
++zap_drop_file_uffd_wp(struct zap_details *details)
 +{
-+	/* No ->map_pages?  No way to fault around... */
-+	if (!vmf->vma->vm_ops->map_pages)
++	if (!details)
 +		return false;
 +
-+	if (uffd_disable_fault_around(vmf->vma))
-+		return false;
-+
-+	return fault_around_bytes >> PAGE_SHIFT > 1;
++	return details->zap_flags & ZAP_FLAG_DROP_MARKER;
 +}
 +
- static vm_fault_t do_read_fault(struct vm_fault *vmf)
+ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+ 			     pte_t pte);
+ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+index e2ec68b0515c..ca861e910938 100644
+--- a/include/linux/mm_inline.h
++++ b/include/linux/mm_inline.h
+@@ -4,6 +4,8 @@
+ 
+ #include <linux/huge_mm.h>
+ #include <linux/swap.h>
++#include <linux/userfaultfd_k.h>
++#include <linux/swapops.h>
+ 
+ /**
+  * folio_is_file_lru - Should the folio be on a file LRU or anon LRU?
+@@ -135,4 +137,47 @@ static __always_inline void del_page_from_lru_list(struct page *page,
  {
--	struct vm_area_struct *vma = vmf->vma;
- 	vm_fault_t ret = 0;
+ 	lruvec_del_folio(lruvec, page_folio(page));
+ }
++
++/*
++ * If this pte is wr-protected by uffd-wp in any form, arm the special pte to
++ * replace a none pte.  NOTE!  This should only be called when *pte is already
++ * cleared so we will never accidentally replace something valuable.  Meanwhile
++ * none pte also means we are not demoting the pte so tlb flushed is not needed.
++ * E.g., when pte cleared the caller should have taken care of the tlb flush.
++ *
++ * Must be called with pgtable lock held so that no thread will see the none
++ * pte, and if they see it, they'll fault and serialize at the pgtable lock.
++ *
++ * This function is a no-op if PTE_MARKER_UFFD_WP is not enabled.
++ */
++static inline void
++pte_install_uffd_wp_if_needed(struct vm_area_struct *vma, unsigned long addr,
++			      pte_t *pte, pte_t pteval)
++{
++#ifdef CONFIG_PTE_MARKER_UFFD_WP
++	bool arm_uffd_pte = false;
++
++	/* The current status of the pte should be "cleared" before calling */
++	WARN_ON_ONCE(!pte_none(*pte));
++
++	if (vma_is_anonymous(vma))
++		return;
++
++	/* A uffd-wp wr-protected normal pte */
++	if (unlikely(pte_present(pteval) && pte_uffd_wp(pteval)))
++		arm_uffd_pte = true;
++
++	/*
++	 * A uffd-wp wr-protected swap pte.  Note: this should even cover an
++	 * existing pte marker with uffd-wp bit set.
++	 */
++	if (unlikely(pte_swp_uffd_wp_any(pteval)))
++		arm_uffd_pte = true;
++
++	if (unlikely(arm_uffd_pte))
++		set_pte_at(vma->vm_mm, addr, pte,
++			   make_pte_marker(PTE_MARKER_UFFD_WP));
++#endif
++}
++
+ #endif
+diff --git a/mm/memory.c b/mm/memory.c
+index e8557d43a87d..fef6a91c5dfb 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -73,6 +73,7 @@
+ #include <linux/perf_event.h>
+ #include <linux/ptrace.h>
+ #include <linux/vmalloc.h>
++#include <linux/mm_inline.h>
  
- 	/*
-@@ -4165,12 +4220,10 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
- 	 * if page by the offset is not ready to be mapped (cold cache or
- 	 * something).
- 	 */
--	if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > 1) {
--		if (likely(!userfaultfd_minor(vmf->vma))) {
--			ret = do_fault_around(vmf);
--			if (ret)
--				return ret;
--		}
-+	if (should_fault_around(vmf)) {
-+		ret = do_fault_around(vmf);
-+		if (ret)
-+			return ret;
- 	}
+ #include <trace/events/kmem.h>
  
- 	ret = __do_fault(vmf);
+@@ -1306,6 +1307,21 @@ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ 	return ret;
+ }
+ 
++/*
++ * This function makes sure that we'll replace the none pte with an uffd-wp
++ * swap special pte marker when necessary. Must be with the pgtable lock held.
++ */
++static inline void
++zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
++			      unsigned long addr, pte_t *pte,
++			      struct zap_details *details, pte_t pteval)
++{
++	if (zap_drop_file_uffd_wp(details))
++		return;
++
++	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
++}
++
+ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 				struct vm_area_struct *vma, pmd_t *pmd,
+ 				unsigned long addr, unsigned long end,
+@@ -1343,6 +1359,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
++			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
++						      ptent);
+ 			if (unlikely(!page))
+ 				continue;
+ 
+@@ -1373,6 +1391,13 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			page = pfn_swap_entry_to_page(entry);
+ 			if (unlikely(zap_skip_check_mapping(details, page)))
+ 				continue;
++			/*
++			 * Both device private/exclusive mappings should only
++			 * work with anonymous page so far, so we don't need to
++			 * consider uffd-wp bit when zap. For more information,
++			 * see zap_install_uffd_wp_if_needed().
++			 */
++			WARN_ON_ONCE(!vma_is_anonymous(vma));
+ 			rss[mm_counter(page)]--;
+ 			if (is_device_private_entry(entry))
+ 				page_remove_rmap(page, false);
+@@ -1383,13 +1408,18 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 				continue;
+ 			rss[mm_counter(page)]--;
+ 		} else if (is_pte_marker_entry(entry)) {
+-			/* By default, simply drop all pte markers when zap */
++			/* Currently there's only uffd-wp marker bit */
++			WARN_ON_ONCE(!(pte_marker_get(entry) & PTE_MARKER_UFFD_WP));
++			/* Only drop the uffd-wp marker if explicitly requested */
++			if (!zap_drop_file_uffd_wp(details))
++				continue;
+ 		} else if (!non_swap_entry(entry)) {
+ 			rss[MM_SWAPENTS]--;
+ 			if (unlikely(!free_swap_and_cache(entry)))
+ 				print_bad_pte(vma, addr, ptent, NULL);
+ 		}
+ 		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
++		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+ 	} while (pte++, addr += PAGE_SIZE, addr != end);
+ 
+ 	add_mm_rss_vec(mm, rss);
+@@ -1600,12 +1630,15 @@ void unmap_vmas(struct mmu_gather *tlb,
+ 		unsigned long end_addr)
+ {
+ 	struct mmu_notifier_range range;
++	struct zap_details details = {
++		.zap_flags = ZAP_FLAG_DROP_MARKER,
++	};
+ 
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+ 				start_addr, end_addr);
+ 	mmu_notifier_invalidate_range_start(&range);
+ 	for ( ; vma && vma->vm_start < end_addr; vma = vma->vm_next)
+-		unmap_single_vma(tlb, vma, start_addr, end_addr, NULL);
++		unmap_single_vma(tlb, vma, start_addr, end_addr, &details);
+ 	mmu_notifier_invalidate_range_end(&range);
+ }
+ 
+@@ -3350,6 +3383,7 @@ void unmap_mapping_page(struct page *page)
+ 
+ 	details.zap_mapping = mapping;
+ 	details.single_page = page;
++	details.zap_flags = ZAP_FLAG_DROP_MARKER;
+ 
+ 	i_mmap_lock_write(mapping);
+ 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 163ac4e6bcee..89068e957486 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -73,6 +73,7 @@
+ #include <linux/page_idle.h>
+ #include <linux/memremap.h>
+ #include <linux/userfaultfd_k.h>
++#include <linux/mm_inline.h>
+ 
+ #include <asm/tlbflush.h>
+ 
+@@ -1517,6 +1518,13 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 			pteval = ptep_clear_flush(vma, address, pvmw.pte);
+ 		}
+ 
++		/*
++		 * Now the pte is cleared.  If this is uffd-wp armed pte, we
++		 * may want to replace a none pte with a marker pte if it's
++		 * file-backed, so we don't lose the tracking information.
++		 */
++		pte_install_uffd_wp_if_needed(vma, address, pvmw.pte, pteval);
++
+ 		/* Move the dirty bit to the page. Now the pte is gone. */
+ 		if (pte_dirty(pteval))
+ 			set_page_dirty(page);
 -- 
 2.32.0
 
