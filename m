@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C69450CF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D42450D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237736AbhKORrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:47:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
+        id S238862AbhKORsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:48:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236948AbhKORTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236930AbhKORTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:19:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E2A163231;
-        Mon, 15 Nov 2021 17:14:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BE3E63268;
+        Mon, 15 Nov 2021 17:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996493;
-        bh=BGDNT5BNG8+JfEt8R+bfpD7rMkJCywA5cFQjaYYDBAQ=;
+        s=korg; t=1636996495;
+        bh=7LodHMx0j3am7O18QWQ3deYaJwnUpwNYAJtaxw9CR+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mOQjSYFJ3dFpNGmFN90XdBP9GFKzX6J4B93wlQ6OFxerSrAwuKNlxUMbx5NLQVoqO
-         o7cjuvtV+spyXVDMmPg8o4j1D/fHukNfhRLwJx+X8hTK9cplqaeoBeTcIYb6WZd9eN
-         lus9WejwSWnbYxRb4DMa1j4uyAvrqKxXC/o0nymY=
+        b=Xcje/0uE1/5pwAA7a42qeAR0EnGDl+jik33CK9fTIeqs/OcKtxdT39FfswZbgH47n
+         Yp+zHyJyGwg74zn9O9Sldha6crRr57Gv+E79TVTLK6eHv1hwkf0g27OAbfrlV8rjx1
+         CaZVNtPhbbrodEwG9VgV6cNU6ccTuUKCz+xaFlhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 159/355] block: remove inaccurate requeue check
-Date:   Mon, 15 Nov 2021 18:01:23 +0100
-Message-Id: <20211115165318.926823814@linuxfoundation.org>
+        stable@vger.kernel.org, Israel Rukshin <israelr@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 160/355] nvmet: fix use-after-free when a port is removed
+Date:   Mon, 15 Nov 2021 18:01:24 +0100
+Message-Id: <20211115165318.958980422@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,38 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Israel Rukshin <israelr@nvidia.com>
 
-[ Upstream commit 037057a5a979c7eeb2ee5d12cf4c24b805192c75 ]
+[ Upstream commit e3e19dcc4c416d65f99f13d55be2b787f8d0050e ]
 
-This check is meant to catch cases where a requeue is attempted on a
-request that is still inserted. It's never really been useful to catch any
-misuse, and now it's actively wrong. Outside of that, this should not be a
-BUG_ON() to begin with.
+When a port is removed through configfs, any connected controllers
+are starting teardown flow asynchronously and can still send commands.
+This causes a use-after-free bug for any command that dereferences
+req->port (like in nvmet_parse_io_cmd).
 
-Remove the check as it's now causing active harm, as requeue off the plug
-path will trigger it even though the request state is just fine.
+To fix this, wait for all the teardown scheduled works to complete
+(like release_work at rdma/tcp drivers). This ensures there are no
+active controllers when the port is eventually removed.
 
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Link: https://lore.kernel.org/linux-block/CAHj4cs80zAUc2grnCZ015-2Rvd-=gXRfB_dFKy=RTm+wRo09HQ@mail.gmail.com/
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Israel Rukshin <israelr@nvidia.com>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/nvme/target/configfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 0674f53c60528..84798d09ca464 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -733,7 +733,6 @@ void blk_mq_requeue_request(struct request *rq, bool kick_requeue_list)
- 	/* this request will be re-inserted to io scheduler queue */
- 	blk_mq_sched_requeue_request(rq);
+diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
+index 98613a45bd3b4..baf8a3e4ed12a 100644
+--- a/drivers/nvme/target/configfs.c
++++ b/drivers/nvme/target/configfs.c
+@@ -1148,6 +1148,8 @@ static void nvmet_port_release(struct config_item *item)
+ {
+ 	struct nvmet_port *port = to_nvmet_port(item);
  
--	BUG_ON(!list_empty(&rq->queuelist));
- 	blk_mq_add_to_requeue_list(rq, true, kick_requeue_list);
- }
- EXPORT_SYMBOL(blk_mq_requeue_request);
++	/* Let inflight controllers teardown complete */
++	flush_scheduled_work();
+ 	list_del(&port->global_entry);
+ 
+ 	kfree(port->ana_state);
 -- 
 2.33.0
 
