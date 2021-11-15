@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B4F451B2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A98451B30
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355821AbhKOXyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:54:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1356472AbhKOXyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344310AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344313AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 555006365C;
-        Mon, 15 Nov 2021 18:55:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDA4633CB;
+        Mon, 15 Nov 2021 18:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002535;
-        bh=TojhX51gRm5TdXwuyg+Qsw3e/Vyy071o6zMEREfMUHU=;
+        s=korg; t=1637002538;
+        bh=AlDYZYESXTj9g84izod3EgH2s/APmTwHtMQWSyBmrBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNiTtrBFb3GfMG6CEkIpOoecs8xiRfK8zxE6iukh4iFD3gGQruBHuHDvtYSIEht2l
-         DGflzqRnHVvhvQHCKt0bFNU29yvfa8LtmHsnRXfvSoK58JlOQzMzqLPk+ObcADjTdX
-         EFl09YyiJUI0ybpORK5v0JrW7Ju0x8On4+rNnLEY=
+        b=WBldGANWWMnKSrGQLn7lcWym+Lgb3IxXIqfHcQeV5TwJ70384HQAP6ZsxfHxTpPp2
+         QK1eYinZ4DGzbprYKg16tuUx0ftfeYC9wcuP/YFwIS4USH4CfBINpClpQ2AsXqNoTQ
+         POqVxhqrn193Gr+zOVkf8NkXAFjNJsaihz80KULE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 605/917] ALSA: usb-audio: Fix possible race at sync of urb completions
-Date:   Mon, 15 Nov 2021 18:01:40 +0100
-Message-Id: <20211115165449.283935107@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 606/917] soundwire: debugfs: use controller id and link_id for debugfs
+Date:   Mon, 15 Nov 2021 18:01:41 +0100
+Message-Id: <20211115165449.328460667@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,99 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 86a42ad07905110f82648853c0ea3434b4eab173 ]
+[ Upstream commit 75eac387a2539aa6c6bbee3affa23435f2096396 ]
 
-USB-audio driver tries to sync with the clear of all pending URBs in
-wait_clear_urbs(), and it waits for all bits in active_mask getting
-cleared.  This works fine for the normal operations, but when a stream
-is managed in the implicit feedback mode, there is still a very thin
-race window: namely, in snd_complete_usb(), the active_mask bit for
-the current URB is once cleared before re-submitted in
-queue_pending_output_urbs().  If wait_clear_urbs() is called during
-that period, it may pass the test and go forward even though there may
-be a still pending URB.
+link_id can be zero and if we have multiple controller instances
+in a system like Qualcomm debugfs will end-up with duplicate namespace
+resulting in incorrect debugfs entries.
 
-For covering it, this patch adds a new counter to each endpoint to
-keep the number of in-flight URBs, and changes wait_clear_urbs()
-checking this number instead.  The counter is decremented at the end
-of URB complete, hence the reference is kept as long as the URB
-complete is in process.
+Using bus-id and link-id combination should give a unique debugfs directory
+entry and should fix below warning too.
+"debugfs: Directory 'master-0' with parent 'soundwire' already present!"
 
-Link: https://lore.kernel.org/r/20210929080844.11583-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: bf03473d5bcc ("soundwire: add debugfs support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210907105332.1257-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/card.h     | 1 +
- sound/usb/endpoint.c | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/soundwire/debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 5b19901f305a3..860faaf249ea6 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -97,6 +97,7 @@ struct snd_usb_endpoint {
- 	unsigned int nominal_queue_size; /* total buffer sizes in URBs */
- 	unsigned long active_mask;	/* bitmask of active urbs */
- 	unsigned long unlink_mask;	/* bitmask of unlinked urbs */
-+	atomic_t submitted_urbs;	/* currently submitted urbs */
- 	char *syncbuf;			/* sync buffer for all sync URBs */
- 	dma_addr_t sync_dma;		/* DMA address of syncbuf */
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+index b6cad0d59b7b9..49900cd207bc7 100644
+--- a/drivers/soundwire/debugfs.c
++++ b/drivers/soundwire/debugfs.c
+@@ -19,7 +19,7 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
+ 		return;
  
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 533919a28856f..ba2d7e6884207 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -451,6 +451,7 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 		}
- 
- 		set_bit(ctx->index, &ep->active_mask);
-+		atomic_inc(&ep->submitted_urbs);
- 	}
+ 	/* create the debugfs master-N */
+-	snprintf(name, sizeof(name), "master-%d", bus->link_id);
++	snprintf(name, sizeof(name), "master-%d-%d", bus->id, bus->link_id);
+ 	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
  }
  
-@@ -488,6 +489,7 @@ static void snd_complete_urb(struct urb *urb)
- 			clear_bit(ctx->index, &ep->active_mask);
- 			spin_unlock_irqrestore(&ep->lock, flags);
- 			queue_pending_output_urbs(ep);
-+			atomic_dec(&ep->submitted_urbs); /* decrement at last */
- 			return;
- 		}
- 
-@@ -513,6 +515,7 @@ static void snd_complete_urb(struct urb *urb)
- 
- exit_clear:
- 	clear_bit(ctx->index, &ep->active_mask);
-+	atomic_dec(&ep->submitted_urbs);
- }
- 
- /*
-@@ -596,6 +599,7 @@ int snd_usb_add_endpoint(struct snd_usb_audio *chip, int ep_num, int type)
- 	ep->type = type;
- 	ep->ep_num = ep_num;
- 	INIT_LIST_HEAD(&ep->ready_playback_urbs);
-+	atomic_set(&ep->submitted_urbs, 0);
- 
- 	is_playback = ((ep_num & USB_ENDPOINT_DIR_MASK) == USB_DIR_OUT);
- 	ep_num &= USB_ENDPOINT_NUMBER_MASK;
-@@ -859,7 +863,7 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
- 		return 0;
- 
- 	do {
--		alive = bitmap_weight(&ep->active_mask, ep->nurbs);
-+		alive = atomic_read(&ep->submitted_urbs);
- 		if (!alive)
- 			break;
- 
-@@ -1420,6 +1424,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 			goto __error;
- 		}
- 		set_bit(i, &ep->active_mask);
-+		atomic_inc(&ep->submitted_urbs);
- 	}
- 
- 	usb_audio_dbg(ep->chip, "%d URBs submitted for EP 0x%x\n",
 -- 
 2.33.0
 
