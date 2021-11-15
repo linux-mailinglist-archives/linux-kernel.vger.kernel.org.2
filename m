@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E8845077C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9447D450781
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232120AbhKOOvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:51:41 -0500
-Received: from mga05.intel.com ([192.55.52.43]:52838 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230038AbhKOOvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:51:10 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="319662285"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="319662285"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:48:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="494043353"
-Received: from mylly.fi.intel.com (HELO [10.237.72.160]) ([10.237.72.160])
-  by orsmga007.jf.intel.com with ESMTP; 15 Nov 2021 06:48:01 -0800
-Subject: Re: [PATCH net 1/4] can: m_can: pci: fix incorrect reference clock
- rate
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Felipe Balbi (Intel)" <balbi@kernel.org>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
- <c9cf3995f45c363e432b3ae8eb1275e54f009fc8.1636967198.git.matthias.schiffer@ew.tq-group.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <48d37d59-e7d1-e151-4201-1dcc151819fe@linux.intel.com>
-Date:   Mon, 15 Nov 2021 16:48:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S232158AbhKOOwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231889AbhKOOvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:51:22 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A97C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:48:24 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id k21so21769659ioh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9FCW6g5zB5F6uZTMJ8sDO6YWFUFBv4q++8NoxT2qhK8=;
+        b=CkfUiUStuyBAawZjXu0hBc0XZNUS5ri4Ch1WJxisZvRgIJ8UrkfF0V9wSR9uL8g//I
+         a9ok2WOENC2ms7OHlb9bB04em6xw6uRm1lJBEchWgSt9NUaeYup9WnUumcZSqDEDww5j
+         bhKHmyalkvbD651Cibh1Fg3lUlsZiwC4bTb2hq1br8HI64O+Cq2Khdy4DX9O2thSeeeJ
+         rTM+iG77En3zdsYQyUn8KnhpsOzq2YjeAhwLfuqNSAJvx/ypg7jDS0X2wqRl0YIPt2Zv
+         ewV8RcB95hWbT/HRjZbxjrMUCvmmFUFaWHkIdftBPrI26ov0pxAyVIiqg4NAF0zqAkMQ
+         u97g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9FCW6g5zB5F6uZTMJ8sDO6YWFUFBv4q++8NoxT2qhK8=;
+        b=V9zDspJ4OygSOnGAm8fDu2qJvNLYo5tv9VOilgf7CnBO4WOmdTtnlhOhHl6Jvu6BJI
+         wg8AgrvfRdCdMGrBneId9XdBUiJzadN5H5BX8WmP7rtXdsg36jglPHrRCad0X900h0O/
+         mGz2TwCY9pHX75enHjBwxkDXz8S5pOXqYUH7VDrWTQMgy1qv49ZKG99rciv8Q5xfBc0a
+         27Lrz4Qd0xNpNYy87ezsELao19EGdtZOpVGJNnwV+WsMA5EvZ1r6wTze60zDpiMWDCMz
+         npbpJ1YXqDMno3mu1zhg1APUw2YYkbCdVROcdwFHGsuqAzmPxEwOnHnc7ilytHQ41qho
+         Pi5Q==
+X-Gm-Message-State: AOAM530YbT3jMvqN9FlxAin7HToaJex+8DyetiskwpH68W6PnxM0MFIZ
+        GTaCwYI/PXQLg8IekVH2x5edeo+ELGpLVYxWphQ=
+X-Google-Smtp-Source: ABdhPJwx/lyjSmArScE0iLpY/E1M4fYsxsq0itER3LvybWVVgWCxIip2jc2CvZcvlvC9+C6mbBcw+zeJxI1OaIzRRMU=
+X-Received: by 2002:a5e:da09:: with SMTP id x9mr26876017ioj.171.1636987703449;
+ Mon, 15 Nov 2021 06:48:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c9cf3995f45c363e432b3ae8eb1275e54f009fc8.1636967198.git.matthias.schiffer@ew.tq-group.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6e02:2143:0:0:0:0 with HTTP; Mon, 15 Nov 2021 06:48:23
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi488@gmail.com>
+Date:   Mon, 15 Nov 2021 06:48:23 -0800
+Message-ID: <CAOXivUre9xUzRHB0pYOQQfxoSRKXpu1-9BDJ4u5Fmb-srqtNEw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Dear Friend,
 
-On 11/15/21 11:18 AM, Matthias Schiffer wrote:
-> When testing the CAN controller on our Ekhart Lake hardware, we
-> determined that all communication was running with twice the configured
-> bitrate. Changing the reference clock rate from 100MHz to 200MHz fixed
-> this. Intel's support has confirmed to us that 200MHz is indeed the
-> correct clock rate.
-> 
-> Fixes: cab7ffc0324f ("can: m_can: add PCI glue driver for Intel Elkhart Lake")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
->   drivers/net/can/m_can/m_can_pci.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-> index 89cc3d41e952..d3c030a13cbe 100644
-> --- a/drivers/net/can/m_can/m_can_pci.c
-> +++ b/drivers/net/can/m_can/m_can_pci.c
-> @@ -18,7 +18,7 @@
->   
->   #define M_CAN_PCI_MMIO_BAR		0
->   
-> -#define M_CAN_CLOCK_FREQ_EHL		100000000
-> +#define M_CAN_CLOCK_FREQ_EHL		200000000
->   #define CTL_CSR_INT_CTL_OFFSET		0x508
->   
-I'll double check this from HW people but at quick test on an HW I have 
-the signals on an oscilloscope were having 1 us shortest cycle (~500 ns 
-low, ~500 ns high) when testing like below:
+I came across your e-mail contact prior a private search while in need
+of your assistance. My name is Aisha Gaddafi a single
 
-ip link set can0 type can bitrate 1000000 dbitrate 2000000 fd on
-ip link set can0 up
-ip link set can1 type can bitrate 1000000 dbitrate 2000000 fd on
-ip link set can1 up
+Mother and a Widow with three Children. I am the only biological
+Daughter of late Libyan President (Late Colonel Muammar
 
-candump can0 &
+Gaddafi).
 
-cansend can1 01a#11223344AABBCCDD
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a
 
-Caveat: I'm not an CAN signaling expert at all.
+trusted investment Manager/Partner because of my current refugee
+status, however, I am interested in you for investment
 
-Jarkko
+project assistance in your country, may be from there, we can build
+business relationship in the nearest future.
+
+I am willing to negotiate investment/business profit sharing ratio
+with you base on the future investment earning profits.
+Best Regards
+Mrs Aisha Al-Qaddafi
