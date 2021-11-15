@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25754515AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F826451558
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352647AbhKOUr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:47:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
+        id S1351597AbhKOUfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:35:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240228AbhKOSH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240231AbhKOSH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B9163399;
-        Mon, 15 Nov 2021 17:43:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8E7663303;
+        Mon, 15 Nov 2021 17:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998222;
-        bh=ktiQlAr03wTODgE0WDOZ329NnHLJV/l+gP1tWQzDaZg=;
+        s=korg; t=1636998225;
+        bh=H4qjAOMbG5tTX3XaVQorMMmPmBn+OjvHU7MkW8h6F/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FGi5q4v6jBifKK5EExNKElUssL35QXSgRceY9cVEXgfMLUwMFEO5D0E7SeSOqzWvN
-         nbbKiX3bfoqmRdbRYgSnv6J/kFA9ezQzBsscCKTcvwRNd2DpGPQFw7L0GX0bRTMLR6
-         Lq1+ycYlq1mu6Hs2S86Xvx+OlWNv6ZPn6BC0z6C4=
+        b=br/rkUpBVbhUZO54rmH8FEKF5OeNYcqEsJbIFqcVlrY+v5gwj2MrRLYb8jzMPRykn
+         Q+bQQB9e7Do2ZjYZT5cWoyfZS7jKfp/2J4Ljm29Ax//fx+jnKgB+hOUSE6pS8uc8ab
+         XLBfAgBuGSDgK1CTk9s1NY27mBB31iGDfnnHVirU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
+        Tong Zhang <ztong0001@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 400/575] ARM: dts: at91: tse850: the emac<->phy interface is rmii
-Date:   Mon, 15 Nov 2021 18:02:05 +0100
-Message-Id: <20211115165357.603380421@linuxfoundation.org>
+Subject: [PATCH 5.10 401/575] scsi: dc395: Fix error case unwinding
+Date:   Mon, 15 Nov 2021 18:02:06 +0100
+Message-Id: <20211115165357.637171339@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,37 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Rosin <peda@axentia.se>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit dcdbc335a91a26e022a803e1a6b837266989c032 ]
+[ Upstream commit cbd9a3347c757383f3d2b50cf7cfd03eb479c481 ]
 
-This went unnoticed until commit 7897b071ac3b ("net: macb: convert
-to phylink") which tickled the problem. The sama5d3 emac has never
-been capable of rgmii, and it all just happened to work before that
-commit.
+dc395x_init_one()->adapter_init() might fail. In this case, the acb is
+already cleaned up by adapter_init(), no need to do that in
+adapter_uninit(acb) again.
 
-Fixes: 21dd0ece34c2 ("ARM: dts: at91: add devicetree for the Axentia TSE-850")
-Signed-off-by: Peter Rosin <peda@axentia.se>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Link: https://lore.kernel.org/r/ea781f5e-422f-6cbf-3cf4-d5a7bac9392d@axentia.se
+[    1.252251] dc395x: adapter init failed
+[    1.254900] RIP: 0010:adapter_uninit+0x94/0x170 [dc395x]
+[    1.260307] Call Trace:
+[    1.260442]  dc395x_init_one.cold+0x72a/0x9bb [dc395x]
+
+Link: https://lore.kernel.org/r/20210907040702.1846409-1-ztong0001@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91-tse850-3.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/dc395x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/at91-tse850-3.dts b/arch/arm/boot/dts/at91-tse850-3.dts
-index 3ca97b47c69ce..7e5c598e7e68f 100644
---- a/arch/arm/boot/dts/at91-tse850-3.dts
-+++ b/arch/arm/boot/dts/at91-tse850-3.dts
-@@ -262,7 +262,7 @@
- &macb1 {
- 	status = "okay";
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index fa16894d8758c..6cb48ae8e1241 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -4658,6 +4658,7 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+ 	/* initialise the adapter and everything we need */
+  	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
+ 		dprintkl(KERN_INFO, "adapter init failed\n");
++		acb = NULL;
+ 		goto fail;
+ 	}
  
--	phy-mode = "rgmii";
-+	phy-mode = "rmii";
- 
- 	#address-cells = <1>;
- 	#size-cells = <0>;
 -- 
 2.33.0
 
