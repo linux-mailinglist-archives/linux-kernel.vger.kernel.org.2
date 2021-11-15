@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93703451ED9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E56451978
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241557AbhKPAhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:37:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S240167AbhKOXUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344655AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A37B63357;
-        Mon, 15 Nov 2021 19:01:50 +0000 (UTC)
+        id S244726AbhKOTRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85E43632C9;
+        Mon, 15 Nov 2021 18:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002910;
-        bh=2uBG98njyRcAWRJVScVJIz9Ar2oswvT+HqjAEIe/IO8=;
+        s=korg; t=1637000600;
+        bh=KZ51aFIuzywb7/grdl9Zcnf9MqAlkUEytIqHnCzyb2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyETfHNSgo/NBGzhE8DMKpTQCtrd4ifQIALwGYUmXszysGX7iJwtgx9OZ5R13TAkC
-         h8i7OIxvtc3pxDE7aNslyIIVfBZREAe0FzUMfxobOE4yID1LEoWiYoSPZn3Gd5bgpT
-         h0yoekqHhfMRAbhw4YL1ZqzZHbg94oXpSgDGN4FQ=
+        b=lxWvVc4wphtfN7ToTS5Q5C5UWPCefmHLZkf49jAi68W2kIdA66gbOjG3OD+Rzqubg
+         I7FKYgH2YFX4hAaL49igIbspKWPf2cB1JwhbvESwP2RHvdnwnOLPBMEV20DWkuh0aj
+         NzuywHRSKf7bGJGsRkbfRpVdY73M0raVKiI3Knjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 708/917] NFS: Ignore the directory size when marking for revalidation
-Date:   Mon, 15 Nov 2021 18:03:23 +0100
-Message-Id: <20211115165452.902593088@linuxfoundation.org>
+Subject: [PATCH 5.14 721/849] ethtool: fix ethtool msg len calculation for pause stats
+Date:   Mon, 15 Nov 2021 18:03:24 +0100
+Message-Id: <20211115165444.647717195@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit a6a361c4ca3cc3e6f3b39d1b6bca1de90f5f4b11 ]
+[ Upstream commit 1aabe578dd86e9f2867c4db4fba9a15f4ba1825d ]
 
-If we want to revalidate the directory, then just mark the change
-attribute as invalid.
+ETHTOOL_A_PAUSE_STAT_MAX is the MAX attribute id,
+so we need to subtract non-stats and add one to
+get a count (IOW -2+1 == -1).
 
-Fixes: 13c0b082b6a9 ("NFS: Replace use of NFS_INO_REVAL_PAGECACHE when checking cache validity")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Tested-by: Benjamin Coddington <bcodding@redhat.com>
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+Otherwise we'll see:
+
+  ethnl cmd 21: calculated reply length 40, but consumed 52
+
+Fixes: 9a27a33027f2 ("ethtool: add standard pause stats")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/dir.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/ethtool_netlink.h      | 3 +++
+ include/uapi/linux/ethtool_netlink.h | 4 +++-
+ net/ethtool/pause.c                  | 3 +--
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 1a6d2867fba4f..085b8ecdc17d9 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -1413,7 +1413,7 @@ out_force:
- static void nfs_mark_dir_for_revalidate(struct inode *inode)
- {
- 	spin_lock(&inode->i_lock);
--	nfs_set_cache_invalid(inode, NFS_INO_REVAL_PAGECACHE);
-+	nfs_set_cache_invalid(inode, NFS_INO_INVALID_CHANGE);
- 	spin_unlock(&inode->i_lock);
+diff --git a/include/linux/ethtool_netlink.h b/include/linux/ethtool_netlink.h
+index 1e7bf78cb3829..aba348d58ff61 100644
+--- a/include/linux/ethtool_netlink.h
++++ b/include/linux/ethtool_netlink.h
+@@ -10,6 +10,9 @@
+ #define __ETHTOOL_LINK_MODE_MASK_NWORDS \
+ 	DIV_ROUND_UP(__ETHTOOL_LINK_MODE_MASK_NBITS, 32)
+ 
++#define ETHTOOL_PAUSE_STAT_CNT	(__ETHTOOL_A_PAUSE_STAT_CNT -		\
++				 ETHTOOL_A_PAUSE_STAT_TX_FRAMES)
++
+ enum ethtool_multicast_groups {
+ 	ETHNL_MCGRP_MONITOR,
+ };
+diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
+index b3b93710eff70..010edbb7382d4 100644
+--- a/include/uapi/linux/ethtool_netlink.h
++++ b/include/uapi/linux/ethtool_netlink.h
+@@ -405,7 +405,9 @@ enum {
+ 	ETHTOOL_A_PAUSE_STAT_TX_FRAMES,
+ 	ETHTOOL_A_PAUSE_STAT_RX_FRAMES,
+ 
+-	/* add new constants above here */
++	/* add new constants above here
++	 * adjust ETHTOOL_PAUSE_STAT_CNT if adding non-stats!
++	 */
+ 	__ETHTOOL_A_PAUSE_STAT_CNT,
+ 	ETHTOOL_A_PAUSE_STAT_MAX = (__ETHTOOL_A_PAUSE_STAT_CNT - 1)
+ };
+diff --git a/net/ethtool/pause.c b/net/ethtool/pause.c
+index 9009f412151e7..ee1e5806bc93a 100644
+--- a/net/ethtool/pause.c
++++ b/net/ethtool/pause.c
+@@ -56,8 +56,7 @@ static int pause_reply_size(const struct ethnl_req_info *req_base,
+ 
+ 	if (req_base->flags & ETHTOOL_FLAG_STATS)
+ 		n += nla_total_size(0) +	/* _PAUSE_STATS */
+-			nla_total_size_64bit(sizeof(u64)) *
+-				(ETHTOOL_A_PAUSE_STAT_MAX - 2);
++		     nla_total_size_64bit(sizeof(u64)) * ETHTOOL_PAUSE_STAT_CNT;
+ 	return n;
  }
  
 -- 
