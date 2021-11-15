@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B88B450282
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F360945028B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhKOK3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:29:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhKOK3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:29:06 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C40C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:26:08 -0800 (PST)
-Received: from [10.1.250.9] (riviera.nat.ds.pw.edu.pl [194.29.137.1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 568011F625;
-        Mon, 15 Nov 2021 11:26:04 +0100 (CET)
-Message-ID: <2af9b75a-b8f9-4ee8-efbe-53dd04365a18@somainline.org>
-Date:   Mon, 15 Nov 2021 11:26:02 +0100
+        id S237465AbhKOKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:31:38 -0500
+Received: from mga12.intel.com ([192.55.52.136]:5595 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231135AbhKOKb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:31:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="213450191"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="213450191"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:28:33 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="471863092"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 02:28:31 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mmZDq-0071ir-Qu;
+        Mon, 15 Nov 2021 12:28:22 +0200
+Date:   Mon, 15 Nov 2021 12:28:22 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Lawrence,Wang" <lawrence.wang@nokia-sbell.com>
+Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wang@wrlinb193.emea.nsn-net.net
+Subject: Re: [PATCH] i2c: designware: Get HCNT/LCNT values from dts
+Message-ID: <YZI2RnFgO0Y75KlF@smile.fi.intel.com>
+References: <20211115093556.7154-1-lawrence.wang@nokia-sbell.com>
+ <YZI0LuDK63+Wb7wi@smile.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH 13/16] arm64: dts: qcom: Add support for Xperia 1 III / 5
- III
-To:     Trilok Soni <quic_tsoni@quicinc.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211114012755.112226-1-konrad.dybcio@somainline.org>
- <20211114012755.112226-13-konrad.dybcio@somainline.org>
- <51341a10-c0a5-079e-b7f1-159d42211bf3@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <51341a10-c0a5-079e-b7f1-159d42211bf3@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZI0LuDK63+Wb7wi@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 15, 2021 at 12:19:26PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 10:35:55AM +0100, Lawrence,Wang wrote:
+> > From: "Wang, Lawrence" <lawrence.wang@nokia-sbell.com>
+> > 
+> > Current code support config the HCNT/LCNT only via ACPI method. for those
+> > platform that not support ACPI, will get the HCNT/LCNT value based on input
+> > clock. But it is not always accuracy. for example in some platform will get
+> > lower speed(320khz) in fast mode, and get faster speed(105khz/even more) in
+> > standard mode.
+> > 
+> > This patch makes it possible for the non-ACPI platform to pass more optimal
+> > HCNT/LCNT values to the core driver via dts if they are known beforehand.
+> > If these are not set we use the calculated values.
+> 
+> Besides the fact it misses DT schema update, why this is needed at all?
+> What's wrong with the existing DT timings?
 
-On 14/11/2021 20:47, Trilok Soni wrote:
-> Hi Konrad,
->
-> On 11/13/2021 5:27 PM, Konrad Dybcio wrote:
->>
->> Then, you need to flash it on the device and get rid of all the
->> vendor_boot/dtbo mess:
->>
->> fastboot flash boot boot.img-sony-xperia-pdx215
->> fastboot erase vendor_boot
->> fastboot flash dtbo emptydtbo.img
->> fastboot reboot
->>
->> Where emptydtbo.img is a tiny file that consists of 2 bytes (all 
->> zeroes), doing
->> a "fastboot erase" won't cut it, the bootloader will go crazy and 
->> things will
->> fall apart when it tries to overlay random bytes from an empty 
->> partition onto a
->> perfectly good appended DTB.
->
->
-> I will check on this part and see if we can make simpler support 
-> fastboot erase dtbo without the extra emptydtbo.
->
-> ---Trilok Soni
+Just for your convenience an excerpt from
+Documentation/devicetree/bindings/i2c/i2c.txt
 
+- i2c-scl-falling-time-ns
+Number of nanoseconds the SCL signal takes to fall; t(f) in the I2C
+specification.
 
-Hi Trilok,
+- i2c-scl-internal-delay-ns
+Number of nanoseconds the IP core additionally needs to setup SCL.
 
+- i2c-scl-rising-time-ns
+Number of nanoseconds the SCL signal takes to rise; t(r) in the I2C
+specification.
 
-that sounds great, thanks for looking into it! Could you also check why 
-using a boot.img header version 2 (with a dtb embedded into the boot 
-image using the --dtb option in mkbootimg) seems to be broken on 8350, too?
+- i2c-sda-falling-time-ns
+Number of nanoseconds the SDA signal takes to fall; t(f) in the I2C
+specification.
 
-I get a "your device is corrupted and will not boot" error, even though 
-I disabled vbmeta/vbmeta_system and performed the same steps described 
-in this commit message to dtbo/vendor_boot. It worked fine on 
-4.19-release SoCs without vendor_boot (8250, 6350), but it seems it 
-doesn't anymore.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-
-Konrad
 
