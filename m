@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6823A451778
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4750745177E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347245AbhKOW3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
+        id S1346979AbhKOW3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:29:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242275AbhKOShD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:37:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBF73632DC;
-        Mon, 15 Nov 2021 18:03:09 +0000 (UTC)
+        id S239188AbhKOShH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:37:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A238B632DB;
+        Mon, 15 Nov 2021 18:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999390;
-        bh=g9YqIBsJqPHUuvpLJDbPcXidbZmOm3hbsrEoiwDQWSs=;
+        s=korg; t=1636999393;
+        bh=qoemVxa7ZJJA84I2qEwqFTIIScJkbLpfTVZa4Wcglc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SOlWEnE8uWsnOhjW/7Fo2imwXQC9H7FJTxDhgXuR1mxP8O8zNwpwf7up8Uk2qOoVH
-         QS92R/ol9mEaf4mgbLPKAZAaqt4iZ3InqmLGuB6omN97jjHvdKbs4a7fMaZ5lEtgAg
-         xQxlreWIN3us837Zl/LJvbSiDuanuvYjf4hg4jlk=
+        b=ybuRFKItaErHCisR0bPglHgCOVEYK7dqzuLIkXhWKjBRCsWfK+MjiMORxMlWlrSM0
+         6zjFwlLY2PgRUi+LIV+pAOwc7XmUtHGUa0p5U0GWOnEdeYHf2SuAzWchBPJQegFneA
+         gq+mAHGxZlPCjlNV18r4CIT5kZCbvQJ3aZn4ixog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Yuanzheng Song <songyuanzheng@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 278/849] leaking_addresses: Always print a trailing newline
-Date:   Mon, 15 Nov 2021 17:56:01 +0100
-Message-Id: <20211115165429.647687545@linuxfoundation.org>
+Subject: [PATCH 5.14 279/849] thermal/core: Fix null pointer dereference in thermal_release()
+Date:   Mon, 15 Nov 2021 17:56:02 +0100
+Message-Id: <20211115165429.684132860@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,42 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Yuanzheng Song <songyuanzheng@huawei.com>
 
-[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
+[ Upstream commit 1dd7128b839f631b31a9e9dce3aaf639bef74e9d ]
 
-For files that lack trailing newlines and match a leaking address (e.g.
-wchan[1]), the leaking_addresses.pl report would run together with the
-next line, making things look corrupted.
+If both dev_set_name() and device_register() failed, then null pointer
+dereference occurs in thermal_release() which will use strncmp() to
+compare the name.
 
-Unconditionally remove the newline on input, and write it back out on
-output.
+So fix it by adding dev_set_name() return value check.
 
-[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
+Signed-off-by: Yuanzheng Song <songyuanzheng@huawei.com>
+Link: https://lore.kernel.org/r/20211015083230.67658-1-songyuanzheng@huawei.com
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/leaking_addresses.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/thermal/thermal_core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
-index b2d8b8aa2d99e..8f636a23bc3f2 100755
---- a/scripts/leaking_addresses.pl
-+++ b/scripts/leaking_addresses.pl
-@@ -455,8 +455,9 @@ sub parse_file
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 51374f4e1ccaf..d094ebbde0ed7 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -902,6 +902,10 @@ __thermal_cooling_device_register(struct device_node *np,
+ 		goto out_kfree_cdev;
+ 	cdev->id = ret;
  
- 	open my $fh, "<", $file or return;
- 	while ( <$fh> ) {
-+		chomp;
- 		if (may_leak_address($_)) {
--			print $file . ': ' . $_;
-+			printf("$file: $_\n");
- 		}
- 	}
- 	close $fh;
++	ret = dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
++	if (ret)
++		goto out_ida_remove;
++
+ 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+ 	if (!cdev->type) {
+ 		ret = -ENOMEM;
+@@ -916,7 +920,6 @@ __thermal_cooling_device_register(struct device_node *np,
+ 	cdev->device.class = &thermal_class;
+ 	cdev->devdata = devdata;
+ 	thermal_cooling_device_setup_sysfs(cdev);
+-	dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
+ 	ret = device_register(&cdev->device);
+ 	if (ret)
+ 		goto out_kfree_type;
+@@ -1227,6 +1230,10 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	tz->id = id;
+ 	strlcpy(tz->type, type, sizeof(tz->type));
+ 
++	result = dev_set_name(&tz->device, "thermal_zone%d", tz->id);
++	if (result)
++		goto remove_id;
++
+ 	if (!ops->critical)
+ 		ops->critical = thermal_zone_device_critical;
+ 
+@@ -1248,7 +1255,6 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	/* A new thermal zone needs to be updated anyway. */
+ 	atomic_set(&tz->need_update, 1);
+ 
+-	dev_set_name(&tz->device, "thermal_zone%d", tz->id);
+ 	result = device_register(&tz->device);
+ 	if (result)
+ 		goto release_device;
 -- 
 2.33.0
 
