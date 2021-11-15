@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF17451F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0EE451BA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352843AbhKPAiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        id S1353035AbhKPADZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:03:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344665AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344668AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A964763376;
-        Mon, 15 Nov 2021 19:02:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFB66336A;
+        Mon, 15 Nov 2021 19:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002924;
-        bh=jfTiw9UZQklgf79bDPoDz0PZ4l8HhdW2uSnEvYUGk8Y=;
+        s=korg; t=1637002927;
+        bh=8nMh4556PnSqMvey3LDI6Te4hPxj8FVySxLxuQaqzbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oM1S9bSIadLPN64zuqjBhzJlHhixlEnFkhlQgcxY05Aaw48nO871FcQxCD4tY0El2
-         k3X9IpyzVFPLpLzPkQDbWr6zmSjRMEJhsVu81gMlRtVkjK91fGLfG/mOwZ/bwLZESj
-         mTrq6LzyHdTthkv57z266HQf48v9YyAIvo0uDGcQ=
+        b=Wgf1/BnQEkdq5mCaJIK/HZdhtsmSvP2U7WuxPsn951lKcAVocpJxI2bBNhXdgyUkb
+         EVkhFKi0UbBOS1/VF3CIm3Wz7TpRanhIjFCQiCcOFM6U5ZkW52vp/qJu6GpG+BftnA
+         HTi7yNlu+8j7cKfSGTeVSlqVdpcjXIaWIxJnsKtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,9 +29,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Nilesh Javali <njavali@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 747/917] scsi: qla2xxx: Relogin during fabric disturbance
-Date:   Mon, 15 Nov 2021 18:04:02 +0100
-Message-Id: <20211115165454.245184917@linuxfoundation.org>
+Subject: [PATCH 5.15 748/917] scsi: qla2xxx: Fix gnl list corruption
+Date:   Mon, 15 Nov 2021 18:04:03 +0100
+Message-Id: <20211115165454.281401795@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -45,91 +45,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit bb2ca6b3f09ac20e8357d257d0557ab5ddf6adcd ]
+[ Upstream commit c98c5daaa24b583cba1369b7d167f93c6ae7299c ]
 
-For RSCN of type "Area, Domain, or Fabric", which indicate a portion or
-entire fabric was disturbed, current driver does not set the scan_need flag
-to indicate a session was affected by the disturbance. This in turn can
-lead to I/O timeout and delay of relogin. Hence initiate relogin in the
-event of fabric disturbance.
+Current code does list element deletion and addition in and out of lock
+protection. This patch moves deletion behind lock.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-2-njavali@marvell.com
-Fixes: 1560bafdff9e ("scsi: qla2xxx: Use complete switch scan for RSCN events")
+list_add double add: new=ffff9130b5eb89f8, prev=ffff9130b5eb89f8,
+    next=ffff9130c6a715f0.
+ ------------[ cut here ]------------
+ kernel BUG at lib/list_debug.c:31!
+ invalid opcode: 0000 [#1] SMP PTI
+ CPU: 1 PID: 182395 Comm: kworker/1:37 Kdump: loaded Tainted: G W  OE
+ --------- -  - 4.18.0-193.el8.x86_64 #1
+ Hardware name: HP ProLiant DL160 Gen8, BIOS J03 02/10/2014
+ Workqueue: qla2xxx_wq qla2x00_iocb_work_fn [qla2xxx]
+ RIP: 0010:__list_add_valid+0x41/0x50
+ Code: 85 94 00 00 00 48 39 c7 74 0b 48 39 d7 74 06 b8 01 00 00 00 c3 48 89 f2
+ 4c 89 c1 48 89 fe 48 c7 c7 60 83 ad 97 e8 4d bd ce ff <0f> 0b 0f 1f 00 66 2e
+ 0f 1f 84 00 00 00 00 00 48 8b 07 48 8b 57 08
+ RSP: 0018:ffffaba306f47d68 EFLAGS: 00010046
+ RAX: 0000000000000058 RBX: ffff9130b5eb8800 RCX: 0000000000000006
+ RDX: 0000000000000000 RSI: 0000000000000096 RDI: ffff9130b7456a00
+ RBP: ffff9130c6a70a58 R08: 000000000008d7be R09: 0000000000000001
+ R10: 0000000000000000 R11: 0000000000000001 R12: ffff9130c6a715f0
+ R13: ffff9130b5eb8824 R14: ffff9130b5eb89f8 R15: ffff9130b5eb89f8
+ FS:  0000000000000000(0000) GS:ffff9130b7440000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007efcaaef11a0 CR3: 000000005200a002 CR4: 00000000000606e0
+ Call Trace:
+  qla24xx_async_gnl+0x113/0x3c0 [qla2xxx]
+  ? qla2x00_iocb_work_fn+0x53/0x80 [qla2xxx]
+  ? process_one_work+0x1a7/0x3b0
+  ? worker_thread+0x30/0x390
+  ? create_worker+0x1a0/0x1a0
+  ? kthread+0x112/0x130
+
+Link: https://lore.kernel.org/r/20211026115412.27691-3-njavali@marvell.com
+Fixes: 726b85487067 ("qla2xxx: Add framework for async fabric discovery")
 Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 Signed-off-by: Quinn Tran <qutran@marvell.com>
 Signed-off-by: Nilesh Javali <njavali@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_init.c | 54 +++++++++++++++++++++++++++------
- 1 file changed, 45 insertions(+), 9 deletions(-)
+ drivers/scsi/qla2xxx/qla_init.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 7e64e4730b259..df3884d9f12a2 100644
+index df3884d9f12a2..6da4419bcec16 100644
 --- a/drivers/scsi/qla2xxx/qla_init.c
 +++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -1786,16 +1786,52 @@ void qla2x00_handle_rscn(scsi_qla_host_t *vha, struct event_arg *ea)
- 	fc_port_t *fcport;
- 	unsigned long flags;
+@@ -987,8 +987,6 @@ static void qla24xx_async_gnl_sp_done(srb_t *sp, int res)
+ 	    sp->name, res, sp->u.iocb_cmd.u.mbx.in_mb[1],
+ 	    sp->u.iocb_cmd.u.mbx.in_mb[2]);
  
--	fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
--	if (fcport) {
--		if (fcport->flags & FCF_FCP2_DEVICE) {
--			ql_dbg(ql_dbg_disc, vha, 0x2115,
--			       "Delaying session delete for FCP2 portid=%06x %8phC ",
--			       fcport->d_id.b24, fcport->port_name);
--			return;
-+	switch (ea->id.b.rsvd_1) {
-+	case RSCN_PORT_ADDR:
-+		fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
-+		if (fcport) {
-+			if (fcport->flags & FCF_FCP2_DEVICE) {
-+				ql_dbg(ql_dbg_disc, vha, 0x2115,
-+				       "Delaying session delete for FCP2 portid=%06x %8phC ",
-+					fcport->d_id.b24, fcport->port_name);
-+				return;
-+			}
-+			fcport->scan_needed = 1;
-+			fcport->rscn_gen++;
-+		}
-+		break;
-+	case RSCN_AREA_ADDR:
-+		list_for_each_entry(fcport, &vha->vp_fcports, list) {
-+			if (fcport->flags & FCF_FCP2_DEVICE)
-+				continue;
-+
-+			if ((ea->id.b24 & 0xffff00) == (fcport->d_id.b24 & 0xffff00)) {
-+				fcport->scan_needed = 1;
-+				fcport->rscn_gen++;
-+			}
- 		}
--		fcport->scan_needed = 1;
--		fcport->rscn_gen++;
-+		break;
-+	case RSCN_DOM_ADDR:
-+		list_for_each_entry(fcport, &vha->vp_fcports, list) {
-+			if (fcport->flags & FCF_FCP2_DEVICE)
-+				continue;
-+
-+			if ((ea->id.b24 & 0xff0000) == (fcport->d_id.b24 & 0xff0000)) {
-+				fcport->scan_needed = 1;
-+				fcport->rscn_gen++;
-+			}
-+		}
-+		break;
-+	case RSCN_FAB_ADDR:
-+	default:
-+		list_for_each_entry(fcport, &vha->vp_fcports, list) {
-+			if (fcport->flags & FCF_FCP2_DEVICE)
-+				continue;
-+
-+			fcport->scan_needed = 1;
-+			fcport->rscn_gen++;
-+		}
-+		break;
- 	}
+-	if (res == QLA_FUNCTION_TIMEOUT)
+-		return;
  
- 	spin_lock_irqsave(&vha->work_lock, flags);
+ 	sp->fcport->flags &= ~(FCF_ASYNC_SENT|FCF_ASYNC_ACTIVE);
+ 	memset(&ea, 0, sizeof(ea));
+@@ -1026,8 +1024,8 @@ static void qla24xx_async_gnl_sp_done(srb_t *sp, int res)
+ 	spin_unlock_irqrestore(&vha->hw->tgt.sess_lock, flags);
+ 
+ 	list_for_each_entry_safe(fcport, tf, &h, gnl_entry) {
+-		list_del_init(&fcport->gnl_entry);
+ 		spin_lock_irqsave(&vha->hw->tgt.sess_lock, flags);
++		list_del_init(&fcport->gnl_entry);
+ 		fcport->flags &= ~(FCF_ASYNC_SENT | FCF_ASYNC_ACTIVE);
+ 		spin_unlock_irqrestore(&vha->hw->tgt.sess_lock, flags);
+ 		ea.fcport = fcport;
 -- 
 2.33.0
 
