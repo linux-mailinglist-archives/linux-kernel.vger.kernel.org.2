@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39914515CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D384515C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353096AbhKOUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:54:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
+        id S1347788AbhKOUvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:51:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239406AbhKOSHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239761AbhKOSHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04E1C633A9;
-        Mon, 15 Nov 2021 17:45:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EF4A633AB;
+        Mon, 15 Nov 2021 17:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998332;
-        bh=0zQX922MRo9mZHGDc+lpSJAjgNSvX6Fct3dI6G8PcMQ=;
+        s=korg; t=1636998334;
+        bh=fWuWmIPGI5GtDA01JmYFFBJuPO5kD7ENMC6lsgU3Hmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zwRe8Gd2LRLklOqDoSSwOOZz0DS4bet5tc80iEr6MgaISx4l5o1ni9N1+ch6gEAL8
-         WSFTiLQ3iXm+oSaAHZdxL9gDL55k2KOK7r7QxosZDT55S9QY+9vViTnxP7T+LkJFY6
-         3lc3Z7M1DTpDJ4ec+ygTXC1lahJ5z9I5Z4wnLM84=
+        b=jc6h+l7hUCpj+2Nb3jZXgwN4IpwPtbCpP3pZ8B5fkxlNoprVZuDiEm+Y4tx2Dl3kl
+         uKjYzf0Q8xc3UkVu8b5qWdWvi46lQrqZFcgp3qm1PxkOHRCoeM3qY0kIyP/I4fuhKU
+         36g0Lt5ypH0tiMjwPoGi9xDaHCHzX8Uzl6uriRy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Simon Ser <contact@emersion.fr>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 464/575] virtio_ring: check desc == NULL when using indirect with packed
-Date:   Mon, 15 Nov 2021 18:03:09 +0100
-Message-Id: <20211115165359.778776223@linuxfoundation.org>
+Subject: [PATCH 5.10 473/575] drm/plane-helper: fix uninitialized variable reference
+Date:   Mon, 15 Nov 2021 18:03:18 +0100
+Message-Id: <20211115165400.087003236@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,61 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
 
-[ Upstream commit fc6d70f40b3d0b3219e2026d05be0409695f620d ]
+[ Upstream commit 7be28bd73f23e53d6e7f5fe891ba9503fc0c7210 ]
 
-When using indirect with packed, we don't check for allocation failures.
-This patch checks that and fall back on direct.
+drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
+drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
+  113 |         struct drm_plane_state plane_state = {
+      |                                ^~~~~~~~~~~
+drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
+  178 |         bool visible;
+      |              ^~~~~~~
+cc1: all warnings being treated as errors
 
-Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Link: https://lore.kernel.org/r/20211020112323.67466-3-xuanzhuo@linux.alibaba.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+visible is an output, not an input. in practice this use might turn out
+OK but it's still UB.
+
+Fixes: df86af9133b4 ("drm/plane-helper: Add drm_plane_helper_check_state()")
+Reviewed-by: Simon Ser <contact@emersion.fr>
+Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+Signed-off-by: Simon Ser <contact@emersion.fr>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211007063706.305984-1-alex_y_xu@yahoo.ca
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_plane_helper.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 6c730d6d50f71..e9432dbbec0a7 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -992,6 +992,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
- 
- 	head = vq->packed.next_avail_idx;
- 	desc = alloc_indirect_packed(total_sg, gfp);
-+	if (!desc)
-+		return -ENOMEM;
- 
- 	if (unlikely(vq->vq.num_free < 1)) {
- 		pr_debug("Can't add buf len 1 - avail = 0\n");
-@@ -1103,6 +1105,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 	unsigned int i, n, c, descs_used, err_idx;
- 	__le16 head_flags, flags;
- 	u16 head, id, prev, curr, avail_used_flags;
-+	int err;
- 
- 	START_USE(vq);
- 
-@@ -1118,9 +1121,14 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 
- 	BUG_ON(total_sg == 0);
- 
--	if (virtqueue_use_indirect(_vq, total_sg))
--		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
--				out_sgs, in_sgs, data, gfp);
-+	if (virtqueue_use_indirect(_vq, total_sg)) {
-+		err = virtqueue_add_indirect_packed(vq, sgs, total_sg, out_sgs,
-+						    in_sgs, data, gfp);
-+		if (err != -ENOMEM)
-+			return err;
-+
-+		/* fall back on direct */
-+	}
- 
- 	head = vq->packed.next_avail_idx;
- 	avail_used_flags = vq->packed.avail_used_flags;
+diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
+index 3aae7ea522f23..c3f2292dc93d5 100644
+--- a/drivers/gpu/drm/drm_plane_helper.c
++++ b/drivers/gpu/drm/drm_plane_helper.c
+@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
+ 		.crtc_w = drm_rect_width(dst),
+ 		.crtc_h = drm_rect_height(dst),
+ 		.rotation = rotation,
+-		.visible = *visible,
+ 	};
+ 	struct drm_crtc_state crtc_state = {
+ 		.crtc = crtc,
 -- 
 2.33.0
 
