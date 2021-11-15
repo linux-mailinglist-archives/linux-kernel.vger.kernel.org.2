@@ -2,37 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8673D451F44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08894519C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355832AbhKPAim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1347455AbhKOX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344789AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D49632C2;
-        Mon, 15 Nov 2021 19:04:18 +0000 (UTC)
+        id S245019AbhKOTSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9992C63452;
+        Mon, 15 Nov 2021 18:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003059;
-        bh=x8c3oIyx7mvFo0HRAFo9anyAyJ6HpuZ++qT4atRC9dg=;
+        s=korg; t=1637000833;
+        bh=LvXFF8Mz/4Y1o+iYqxwez/PCgsngKiEOQLHkzwCZsR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTTEhOA8+Lqt6NuuD8i/c4dYhvcWFSgCEZHdV6YBlq5ttiWVbCGVCbvvkAoO8hmJw
-         WwW+ESIzoO1X/iQnTXwPyo/BSQXTZoI/8Rwb3xkX2scmy3G1ddqw9YwN5cT/8Fad1u
-         3xwfkTge3fR5vumg2Ou2HqTcYl1+j5Hlr9lbEgoQ=
+        b=EZ0KPjd+2R5BhZ3JsW5Uag0qw3Nk9jhBg6BrW988mH+u9ZQP1FswwfTSH82HY32UF
+         /8XnK1+FbUn5JlqPFQei9WNNchLVewNoWiwzSlZ0aC6UJHPZ637AwkPS/1hDBC8wNX
+         5QWzlhCLJYwybfTDeemkXoUoCktnXArwsIn19HKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huang Guobin <huangguobin4@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 795/917] bonding: Fix a use-after-free problem when bond_sysfs_slave_add() failed
-Date:   Mon, 15 Nov 2021 18:04:50 +0100
-Message-Id: <20211115165455.929012558@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 808/849] memcg: prohibit unconditional exceeding the limit of dying tasks
+Date:   Mon, 15 Nov 2021 18:04:51 +0100
+Message-Id: <20211115165447.578146630@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,199 +49,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Guobin <huangguobin4@huawei.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit b93c6a911a3fe926b00add28f3b932007827c4ca ]
+commit a4ebf1b6ca1e011289677239a2a361fde4a88076 upstream.
 
-When I do fuzz test for bonding device interface, I got the following
-use-after-free Calltrace:
+Memory cgroup charging allows killed or exiting tasks to exceed the hard
+limit.  It is assumed that the amount of the memory charged by those
+tasks is bound and most of the memory will get released while the task
+is exiting.  This is resembling a heuristic for the global OOM situation
+when tasks get access to memory reserves.  There is no global memory
+shortage at the memcg level so the memcg heuristic is more relieved.
 
-==================================================================
-BUG: KASAN: use-after-free in bond_enslave+0x1521/0x24f0
-Read of size 8 at addr ffff88825bc11c00 by task ifenslave/7365
+The above assumption is overly optimistic though.  E.g.  vmalloc can
+scale to really large requests and the heuristic would allow that.  We
+used to have an early break in the vmalloc allocator for killed tasks
+but this has been reverted by commit b8c8a338f75e ("Revert "vmalloc:
+back off when the current task is killed"").  There are likely other
+similar code paths which do not check for fatal signals in an
+allocation&charge loop.  Also there are some kernel objects charged to a
+memcg which are not bound to a process life time.
 
-CPU: 5 PID: 7365 Comm: ifenslave Tainted: G            E     5.15.0-rc1+ #13
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-Call Trace:
- dump_stack_lvl+0x6c/0x8b
- print_address_description.constprop.0+0x48/0x70
- kasan_report.cold+0x82/0xdb
- __asan_load8+0x69/0x90
- bond_enslave+0x1521/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f19159cf577
-Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 78
-RSP: 002b:00007ffeb3083c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffeb3084bca RCX: 00007f19159cf577
-RDX: 00007ffeb3083ce0 RSI: 0000000000008990 RDI: 0000000000000003
-RBP: 00007ffeb3084bc4 R08: 0000000000000040 R09: 0000000000000000
-R10: 00007ffeb3084bc0 R11: 0000000000000246 R12: 00007ffeb3083ce0
-R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeb3083cb0
+It has been observed that it is not really hard to trigger these
+bypasses and cause global OOM situation.
 
-Allocated by task 7365:
- kasan_save_stack+0x23/0x50
- __kasan_kmalloc+0x83/0xa0
- kmem_cache_alloc_trace+0x22e/0x470
- bond_enslave+0x2e1/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+One potential way to address these runaways would be to limit the amount
+of excess (similar to the global OOM with limited oom reserves).  This
+is certainly possible but it is not really clear how much of an excess
+is desirable and still protects from global OOMs as that would have to
+consider the overall memcg configuration.
 
-Freed by task 7365:
- kasan_save_stack+0x23/0x50
- kasan_set_track+0x20/0x30
- kasan_set_free_info+0x24/0x40
- __kasan_slab_free+0xf2/0x130
- kfree+0xd1/0x5c0
- slave_kobj_release+0x61/0x90
- kobject_put+0x102/0x180
- bond_sysfs_slave_add+0x7a/0xa0
- bond_enslave+0x11b6/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+This patch is addressing the problem by removing the heuristic
+altogether.  Bypass is only allowed for requests which either cannot
+fail or where the failure is not desirable while excess should be still
+limited (e.g.  atomic requests).  Implementation wise a killed or dying
+task fails to charge if it has passed the OOM killer stage.  That should
+give all forms of reclaim chance to restore the limit before the failure
+(ENOMEM) and tell the caller to back off.
 
-Last potentially related work creation:
- kasan_save_stack+0x23/0x50
- kasan_record_aux_stack+0xb7/0xd0
- insert_work+0x43/0x190
- __queue_work+0x2e3/0x970
- delayed_work_timer_fn+0x3e/0x50
- call_timer_fn+0x148/0x470
- run_timer_softirq+0x8a8/0xc50
- __do_softirq+0x107/0x55f
+In addition, this patch renames should_force_charge() helper to
+task_is_dying() because now its use is not associated witch forced
+charging.
 
-Second to last potentially related work creation:
- kasan_save_stack+0x23/0x50
- kasan_record_aux_stack+0xb7/0xd0
- insert_work+0x43/0x190
- __queue_work+0x2e3/0x970
- __queue_delayed_work+0x130/0x180
- queue_delayed_work_on+0xa7/0xb0
- bond_enslave+0xe25/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+This patch depends on pagefault_out_of_memory() to not trigger
+out_of_memory(), because then a memcg failure can unwind to VM_FAULT_OOM
+and cause a global OOM killer.
 
-The buggy address belongs to the object at ffff88825bc11c00
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 0 bytes inside of
- 1024-byte region [ffff88825bc11c00, ffff88825bc12000)
-The buggy address belongs to the page:
-page:ffffea00096f0400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25bc10
-head:ffffea00096f0400 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-raw: 057ff00000010200 ffffea0009a71c08 ffff888240001968 ffff88810004dbc0
-raw: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88825bc11b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88825bc11b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88825bc11c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88825bc11c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88825bc11d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-Put new_slave in bond_sysfs_slave_add() will cause use-after-free problems
-when new_slave is accessed in the subsequent error handling process. Since
-new_slave will be put in the subsequent error handling process, remove the
-unnecessary put to fix it.
-In addition, when sysfs_create_file() fails, if some files have been crea-
-ted successfully, we need to call sysfs_remove_file() to remove them.
-Since there are sysfs_create_files() & sysfs_remove_files() can be used,
-use these two functions instead.
-
-Fixes: 7afcaec49696 (bonding: use kobject_put instead of _del after kobject_add)
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/bonding/bond_sysfs_slave.c | 36 ++++++++------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
+ mm/memcontrol.c |   27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_sysfs_slave.c b/drivers/net/bonding/bond_sysfs_slave.c
-index fd07561da0348..6a6cdd0bb2585 100644
---- a/drivers/net/bonding/bond_sysfs_slave.c
-+++ b/drivers/net/bonding/bond_sysfs_slave.c
-@@ -108,15 +108,15 @@ static ssize_t ad_partner_oper_port_state_show(struct slave *slave, char *buf)
- }
- static SLAVE_ATTR_RO(ad_partner_oper_port_state);
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -234,7 +234,7 @@ enum res_type {
+ 	     iter != NULL;				\
+ 	     iter = mem_cgroup_iter(NULL, iter, NULL))
  
--static const struct slave_attribute *slave_attrs[] = {
--	&slave_attr_state,
--	&slave_attr_mii_status,
--	&slave_attr_link_failure_count,
--	&slave_attr_perm_hwaddr,
--	&slave_attr_queue_id,
--	&slave_attr_ad_aggregator_id,
--	&slave_attr_ad_actor_oper_port_state,
--	&slave_attr_ad_partner_oper_port_state,
-+static const struct attribute *slave_attrs[] = {
-+	&slave_attr_state.attr,
-+	&slave_attr_mii_status.attr,
-+	&slave_attr_link_failure_count.attr,
-+	&slave_attr_perm_hwaddr.attr,
-+	&slave_attr_queue_id.attr,
-+	&slave_attr_ad_aggregator_id.attr,
-+	&slave_attr_ad_actor_oper_port_state.attr,
-+	&slave_attr_ad_partner_oper_port_state.attr,
- 	NULL
- };
- 
-@@ -137,24 +137,10 @@ const struct sysfs_ops slave_sysfs_ops = {
- 
- int bond_sysfs_slave_add(struct slave *slave)
+-static inline bool should_force_charge(void)
++static inline bool task_is_dying(void)
  {
--	const struct slave_attribute **a;
--	int err;
--
--	for (a = slave_attrs; *a; ++a) {
--		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
--		if (err) {
--			kobject_put(&slave->kobj);
--			return err;
--		}
--	}
--
--	return 0;
-+	return sysfs_create_files(&slave->kobj, slave_attrs);
- }
+ 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+ 		(current->flags & PF_EXITING);
+@@ -1607,7 +1607,7 @@ static bool mem_cgroup_out_of_memory(str
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = should_force_charge() || out_of_memory(&oc);
++	ret = task_is_dying() || out_of_memory(&oc);
  
- void bond_sysfs_slave_del(struct slave *slave)
- {
--	const struct slave_attribute **a;
+ unlock:
+ 	mutex_unlock(&oom_lock);
+@@ -2588,6 +2588,7 @@ static int try_charge_memcg(struct mem_c
+ 	struct page_counter *counter;
+ 	enum oom_status oom_status;
+ 	unsigned long nr_reclaimed;
++	bool passed_oom = false;
+ 	bool may_swap = true;
+ 	bool drained = false;
+ 	unsigned long pflags;
+@@ -2623,15 +2624,6 @@ retry:
+ 		goto force;
+ 
+ 	/*
+-	 * Unlike in global OOM situations, memcg is not in a physical
+-	 * memory shortage.  Allow dying and OOM-killed tasks to
+-	 * bypass the last charges so that they can exit quickly and
+-	 * free their memory.
+-	 */
+-	if (unlikely(should_force_charge()))
+-		goto force;
 -
--	for (a = slave_attrs; *a; ++a)
--		sysfs_remove_file(&slave->kobj, &((*a)->attr));
-+	sysfs_remove_files(&slave->kobj, slave_attrs);
- }
--- 
-2.33.0
-
+-	/*
+ 	 * Prevent unbounded recursion when reclaim operations need to
+ 	 * allocate memory. This might exceed the limits temporarily,
+ 	 * but we prefer facilitating memory reclaim and getting back
+@@ -2688,8 +2680,9 @@ retry:
+ 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+ 		goto nomem;
+ 
+-	if (fatal_signal_pending(current))
+-		goto force;
++	/* Avoid endless loop for tasks bypassed by the oom killer */
++	if (passed_oom && task_is_dying())
++		goto nomem;
+ 
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+@@ -2698,14 +2691,10 @@ retry:
+ 	 */
+ 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+-	switch (oom_status) {
+-	case OOM_SUCCESS:
++	if (oom_status == OOM_SUCCESS) {
++		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+-	case OOM_FAILED:
+-		goto force;
+-	default:
+-		goto nomem;
+ 	}
+ nomem:
+ 	if (!(gfp_mask & __GFP_NOFAIL))
 
 
