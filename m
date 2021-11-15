@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566E4451920
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA77A451B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352616AbhKOXPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:15:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
+        id S1355562AbhKOXx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:53:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244120AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BCA363271;
-        Mon, 15 Nov 2021 18:18:31 +0000 (UTC)
+        id S1344311AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BF56365B;
+        Mon, 15 Nov 2021 18:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000312;
-        bh=1c4dQ9V2IxoB4O86rY0juB9nexB8rPkDAWg7V0anUKs=;
+        s=korg; t=1637002533;
+        bh=jHJ9EuWDwTLlOvDNLGXPSe0N4N42R8Qbm+unTi9E2p0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q3MXvvpyk26dF/ommf4+gBTqN3DUUHr5hibsAHIy93FJZi90UaHtvoyooYjPlT8Tg
-         zEncCMhTf+VvzUaOgn0s+8W0i26ALH7srG7LnTfpbQEv/ek89A7RQ90FP8DG7QvjUO
-         sskwicOUKU0oaZb8YZ1MDhkcSaKg2T5xfQMc7TI8=
+        b=BcMXXldT0cBXSmPp3y0Tn8NxOQx9/rGm+yqkv1FLNozheXuCvbbi9+2sHnfMof9lq
+         t+bIA5vddo2UQWiZxywVJw6jgB4J2lf0/DusAZkzdArUqyQdjjzyRNld0VtnKOldpa
+         RsWdWe9ABZIaUZGkruFGi4E4xZxD7ASd/0zaVsZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 615/849] ASoC: cs42l42: Always configure both ASP TX channels
-Date:   Mon, 15 Nov 2021 18:01:38 +0100
-Message-Id: <20211115165441.044749578@linuxfoundation.org>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 604/917] ALSA: hda: Use position buffer for SKL+ again
+Date:   Mon, 15 Nov 2021 18:01:39 +0100
+Message-Id: <20211115165449.250603455@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 6e6825801ab926360f7f4f2dbcfd107d5ab8f025 ]
+[ Upstream commit c4ca3871e21fa085096316f5f8d9975cf3dfde1d ]
 
-An I2S frame always has two slots (left and right) even when sending
-mono. The right channel (channel 2) of ASP TX will always have the
-same bit width as the left channel and will always be on the high
-phase of LRCLK.
+The commit f87e7f25893d ("ALSA: hda - Improved position reporting on
+SKL+") changed the PCM position report for SKL+ chips to use DPIB, but
+according to Pierre, DPIB is no best choice for the accurate position
+reports and it often reports too early.  The recommended method is
+rather the classical position buffer.
 
-The previous implementation always passed the field masks for both
-channels to snd_soc_component_update_bits() but for mono the written value
-only contained the settings for channel 1. The result was that for mono
-channel 2 was set to 8-bit (which is an invalid configuration) with both
-channels on the low phase of LRCLK.
+This patch makes the PCM position reporting on SKL+ back to the
+position buffer again.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 585e7079de0e ("ASoC: cs42l42: Add Capture Support")
-Link: https://lore.kernel.org/r/20211015133619.4698-3-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210929072934.6809-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_intel.c | 23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 8838b9a0de8e4..4f8d8a65643df 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -845,11 +845,10 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 95b9a615c47ca..90e9263ac0bd7 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -881,27 +881,6 @@ static int azx_get_delay_from_fifo(struct azx *chip, struct azx_dev *azx_dev,
+ 	return substream->runtime->delay;
+ }
  
- 	switch(substream->stream) {
- 	case SNDRV_PCM_STREAM_CAPTURE:
--		if (channels == 2) {
--			val |= CS42L42_ASP_TX_CH2_AP_MASK;
--			val |= width << CS42L42_ASP_TX_CH2_RES_SHIFT;
--		}
--		val |= width << CS42L42_ASP_TX_CH1_RES_SHIFT;
-+		/* channel 2 on high LRCLK */
-+		val = CS42L42_ASP_TX_CH2_AP_MASK |
-+		      (width << CS42L42_ASP_TX_CH2_RES_SHIFT) |
-+		      (width << CS42L42_ASP_TX_CH1_RES_SHIFT);
+-static unsigned int azx_skl_get_dpib_pos(struct azx *chip,
+-					 struct azx_dev *azx_dev)
+-{
+-	return _snd_hdac_chip_readl(azx_bus(chip),
+-				    AZX_REG_VS_SDXDPIB_XBASE +
+-				    (AZX_REG_VS_SDXDPIB_XINTERVAL *
+-				     azx_dev->core.index));
+-}
+-
+-/* get the current DMA position with correction on SKL+ chips */
+-static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+-{
+-	/* DPIB register gives a more accurate position for playback */
+-	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		return azx_skl_get_dpib_pos(chip, azx_dev);
+-
+-	/* read of DPIB fetches the actual posbuf */
+-	azx_skl_get_dpib_pos(chip, azx_dev);
+-	return azx_get_pos_posbuf(chip, azx_dev);
+-}
+-
+ static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
+ {
+ 	azx_stop_chip(chip);
+@@ -1591,7 +1570,7 @@ static void assign_position_fix(struct azx *chip, int fix)
+ 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
+ 		[POS_FIX_VIACOMBO] = azx_via_get_position,
+ 		[POS_FIX_COMBO] = azx_get_pos_lpib,
+-		[POS_FIX_SKL] = azx_get_pos_skl,
++		[POS_FIX_SKL] = azx_get_pos_posbuf,
+ 		[POS_FIX_FIFO] = azx_get_pos_fifo,
+ 	};
  
- 		snd_soc_component_update_bits(component, CS42L42_ASP_TX_CH_AP_RES,
- 				CS42L42_ASP_TX_CH1_AP_MASK | CS42L42_ASP_TX_CH2_AP_MASK |
 -- 
 2.33.0
 
