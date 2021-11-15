@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B9B451994
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E01F6451F12
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353771AbhKOXYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:24:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
+        id S1355451AbhKPAiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244899AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F18C63328;
-        Mon, 15 Nov 2021 18:25:17 +0000 (UTC)
+        id S1344682AbhKOTZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0F2636AE;
+        Mon, 15 Nov 2021 19:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000718;
-        bh=+u2ETiKrAnS55F0DpA/MmD9STJIABn4sZZuynnL2mLU=;
+        s=korg; t=1637002941;
+        bh=bPjtF1Os32zaf7B71YsT+UfoeHjqh9+nqJcdbIVyoaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nWfTrzUdJfZ+erYrAW3oO7F3R8x7KxQTeKUC21J035x0qyjR+wtADMbsF4pZVAJpq
-         Kda3yYZT9jftCRsp/bpYhZU9LiZhFNBw6ZfzrJNfIXDqbZwCEffY2QXOYgRlqGUsfM
-         V3C/tjNdu1CLioYkeTMX4R/5GUsFzSvQ/RgNuDwI=
+        b=EaQetJOTrbaSbffL4HYbLINCol0l45o23RqEJg9ad7A2+AEph59tcanIZlBW/8pzH
+         jKGJ7PB4lXkpZMC4aHrQgwFmCbl+ch8ikkuZnBREOLl0/q3EniAfwcSFOWfVyZDP9i
+         VUXyUxzStldI8ajvz1ritlTj6OXN0xbo+4o79UZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jussi Maki <joamaki@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 765/849] bpf: sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
+Subject: [PATCH 5.15 753/917] scsi: qla2xxx: edif: Increase ELS payload
 Date:   Mon, 15 Nov 2021 18:04:08 +0100
-Message-Id: <20211115165446.144853880@linuxfoundation.org>
+Message-Id: <20211115165454.445750352@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,147 +43,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit e0dc3b93bd7bcff8c3813d1df43e0908499c7cf0 ]
+[ Upstream commit 0f6d600a26e89d31d8381b324fc970f72579a126 ]
 
-Strparser is reusing the qdisc_skb_cb struct to stash the skb message handling
-progress, e.g. offset and length of the skb. First this is poorly named and
-inherits a struct from qdisc that doesn't reflect the actual usage of cb[] at
-this layer.
+Currently, firmware limits ELS payload to FC frame size/2112.  This patch
+adjusts memory buffer size to be able to handle max ELS payload.
 
-But, more importantly strparser is using the following to access its metadata.
-
-  (struct _strp_msg *)((void *)skb->cb + offsetof(struct qdisc_skb_cb, data))
-
-Where _strp_msg is defined as:
-
-  struct _strp_msg {
-        struct strp_msg            strp;                 /*     0     8 */
-        int                        accum_len;            /*     8     4 */
-
-        /* size: 12, cachelines: 1, members: 2 */
-        /* last cacheline: 12 bytes */
-  };
-
-So we use 12 bytes of ->data[] in struct. However in BPF code running parser
-and verdict the user has read capabilities into the data[] array as well. Its
-not too problematic, but we should not be exposing internal state to BPF
-program. If its really needed then we can use the probe_read() APIs which allow
-reading kernel memory. And I don't believe cb[] layer poses any API breakage by
-moving this around because programs can't depend on cb[] across layers.
-
-In order to fix another issue with a ctx rewrite we need to stash a temp
-variable somewhere. To make this work cleanly this patch builds a cb struct
-for sk_skb types called sk_skb_cb struct. Then we can use this consistently
-in the strparser, sockmap space. Additionally we can start allowing ->cb[]
-write access after this.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20211103204736.248403-5-john.fastabend@gmail.com
+Link: https://lore.kernel.org/r/20211026115412.27691-11-njavali@marvell.com
+Fixes: 84318a9f01ce ("scsi: qla2xxx: edif: Add send, receive, and accept for auth_els")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/strparser.h   | 16 +++++++++++++++-
- net/core/filter.c         | 22 ++++++++++++++++++++++
- net/strparser/strparser.c | 10 +---------
- 3 files changed, 38 insertions(+), 10 deletions(-)
+ drivers/scsi/qla2xxx/qla_edif.c     | 2 +-
+ drivers/scsi/qla2xxx/qla_edif.h     | 3 ++-
+ drivers/scsi/qla2xxx/qla_edif_bsg.h | 2 +-
+ drivers/scsi/qla2xxx/qla_init.c     | 4 ++++
+ drivers/scsi/qla2xxx/qla_os.c       | 2 +-
+ 5 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/strparser.h b/include/net/strparser.h
-index 1d20b98493a10..bec1439bd3be6 100644
---- a/include/net/strparser.h
-+++ b/include/net/strparser.h
-@@ -54,10 +54,24 @@ struct strp_msg {
- 	int offset;
+diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
+index 3931bae3222b3..98235df803aef 100644
+--- a/drivers/scsi/qla2xxx/qla_edif.c
++++ b/drivers/scsi/qla2xxx/qla_edif.c
+@@ -2384,7 +2384,7 @@ void qla24xx_auth_els(scsi_qla_host_t *vha, void **pkt, struct rsp_que **rsp)
+ 		return;
+ 	}
+ 
+-	if (totlen > MAX_PAYLOAD) {
++	if (totlen > ELS_MAX_PAYLOAD) {
+ 		ql_dbg(ql_dbg_edif, vha, 0x0910d,
+ 		    "%s WARNING: verbose ELS frame received (totlen=%x)\n",
+ 		    __func__, totlen);
+diff --git a/drivers/scsi/qla2xxx/qla_edif.h b/drivers/scsi/qla2xxx/qla_edif.h
+index 9e8f28d0caa1b..45cf87e337780 100644
+--- a/drivers/scsi/qla2xxx/qla_edif.h
++++ b/drivers/scsi/qla2xxx/qla_edif.h
+@@ -93,7 +93,6 @@ struct sa_update_28xx {
  };
  
-+struct _strp_msg {
-+	/* Internal cb structure. struct strp_msg must be first for passing
-+	 * to upper layer.
-+	 */
-+	struct strp_msg strp;
-+	int accum_len;
-+};
-+
-+struct sk_skb_cb {
-+#define SK_SKB_CB_PRIV_LEN 20
-+	unsigned char data[SK_SKB_CB_PRIV_LEN];
-+	struct _strp_msg strp;
-+};
-+
- static inline struct strp_msg *strp_msg(struct sk_buff *skb)
- {
- 	return (struct strp_msg *)((void *)skb->cb +
--		offsetof(struct qdisc_skb_cb, data));
-+		offsetof(struct sk_skb_cb, strp));
- }
+ #define        NUM_ENTRIES     256
+-#define        MAX_PAYLOAD     1024
+ #define        PUR_GET         1
  
- /* Structure for an attached lower socket */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index d70187ce851bc..e0b0ff681e68d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -9681,11 +9681,33 @@ static u32 sk_skb_convert_ctx_access(enum bpf_access_type type,
- 				     struct bpf_prog *prog, u32 *target_size)
- {
- 	struct bpf_insn *insn = insn_buf;
-+	int off;
+ struct dinfo {
+@@ -128,6 +127,8 @@ struct enode {
+ 	} u;
+ };
  
- 	switch (si->off) {
- 	case offsetof(struct __sk_buff, data_end):
- 		insn = bpf_convert_data_end_access(si, insn);
- 		break;
-+	case offsetof(struct __sk_buff, cb[0]) ...
-+	     offsetofend(struct __sk_buff, cb[4]) - 1:
-+		BUILD_BUG_ON(sizeof_field(struct sk_skb_cb, data) < 20);
-+		BUILD_BUG_ON((offsetof(struct sk_buff, cb) +
-+			      offsetof(struct sk_skb_cb, data)) %
-+			     sizeof(__u64));
++#define RX_ELS_SIZE (roundup(sizeof(struct enode) + ELS_MAX_PAYLOAD, SMP_CACHE_BYTES))
 +
-+		prog->cb_access = 1;
-+		off  = si->off;
-+		off -= offsetof(struct __sk_buff, cb[0]);
-+		off += offsetof(struct sk_buff, cb);
-+		off += offsetof(struct sk_skb_cb, data);
-+		if (type == BPF_WRITE)
-+			*insn++ = BPF_STX_MEM(BPF_SIZE(si->code), si->dst_reg,
-+					      si->src_reg, off);
-+		else
-+			*insn++ = BPF_LDX_MEM(BPF_SIZE(si->code), si->dst_reg,
-+					      si->src_reg, off);
-+		break;
+ #define EDIF_SESSION_DOWN(_s) \
+ 	(qla_ini_mode_enabled(_s->vha) && (_s->disc_state == DSC_DELETE_PEND || \
+ 	 _s->disc_state == DSC_DELETED || \
+diff --git a/drivers/scsi/qla2xxx/qla_edif_bsg.h b/drivers/scsi/qla2xxx/qla_edif_bsg.h
+index 58b718d35d19a..53026d82ebffe 100644
+--- a/drivers/scsi/qla2xxx/qla_edif_bsg.h
++++ b/drivers/scsi/qla2xxx/qla_edif_bsg.h
+@@ -8,7 +8,7 @@
+ #define __QLA_EDIF_BSG_H
+ 
+ /* BSG Vendor specific commands */
+-#define	ELS_MAX_PAYLOAD		1024
++#define	ELS_MAX_PAYLOAD		2112
+ #ifndef	WWN_SIZE
+ #define WWN_SIZE		8
+ #endif
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 6da4419bcec16..847a6e5d9cb07 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -4467,6 +4467,10 @@ qla2x00_init_rings(scsi_qla_host_t *vha)
+ 		    (ha->flags.fawwpn_enabled) ? "enabled" : "disabled");
+ 	}
+ 
++	/* ELS pass through payload is limit by frame size. */
++	if (ha->flags.edif_enabled)
++		mid_init_cb->init_cb.frame_payload_size = cpu_to_le16(ELS_MAX_PAYLOAD);
 +
-+
- 	default:
- 		return bpf_convert_ctx_access(type, si, insn_buf, prog,
- 					      target_size);
-diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-index 9c0343568d2a0..1a72c67afed5e 100644
---- a/net/strparser/strparser.c
-+++ b/net/strparser/strparser.c
-@@ -27,18 +27,10 @@
+ 	rval = qla2x00_init_firmware(vha, ha->init_cb_size);
+ next_check:
+ 	if (rval) {
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index b5346d9066dc6..8d87cfae9c598 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4337,7 +4337,7 @@ qla2x00_mem_alloc(struct qla_hw_data *ha, uint16_t req_len, uint16_t rsp_len,
  
- static struct workqueue_struct *strp_wq;
+ 	/* allocate the purex dma pool */
+ 	ha->purex_dma_pool = dma_pool_create(name, &ha->pdev->dev,
+-	    MAX_PAYLOAD, 8, 0);
++	    ELS_MAX_PAYLOAD, 8, 0);
  
--struct _strp_msg {
--	/* Internal cb structure. struct strp_msg must be first for passing
--	 * to upper layer.
--	 */
--	struct strp_msg strp;
--	int accum_len;
--};
--
- static inline struct _strp_msg *_strp_msg(struct sk_buff *skb)
- {
- 	return (struct _strp_msg *)((void *)skb->cb +
--		offsetof(struct qdisc_skb_cb, data));
-+		offsetof(struct sk_skb_cb, strp));
- }
- 
- /* Lower lock held */
+ 	if (!ha->purex_dma_pool) {
+ 		ql_dbg_pci(ql_dbg_init, ha->pdev, 0x011b,
 -- 
 2.33.0
 
