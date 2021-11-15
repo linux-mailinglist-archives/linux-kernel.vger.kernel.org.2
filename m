@@ -2,257 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CEC44FF47
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B0044FF4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhKOHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 02:40:21 -0500
-Received: from mail.nearlyone.de ([46.163.114.145]:59672 "EHLO
-        mail.nearlyone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbhKOHkL (ORCPT
+        id S231244AbhKOHlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 02:41:35 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53194 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhKOHlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 02:40:11 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 35E1760F75;
-        Mon, 15 Nov 2021 08:37:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1636961830; h=from:subject:date:message-id:to;
-        bh=TeCk3gvJ6+Mjm04z5ffaknqpeJglYEJvIZZEjynE2oU=;
-        b=ACxhieK5v4mmsorczWm0dENwTE5IqGxDVrxHbwPRuWUU0S7bk2kQRIVUmgy9znRqctI/jE
-        RqbJ0x3PJX9DAu73+ZMReNpNTFZjtooAOWUecneIbFrKEk9oOtAyk+8qqIvyjb/h2ZTvXm
-        ddbL7DGA3JcgglJVEwYZI7N6zM1iAdWC1o2ukSiZkBrm2VwadQM+jCSHlgvHeUgs9cT07u
-        cGVlHXvtiE3V1sag/HSAuXUcC03MY3fqL30qt3Vo0xgPiVE5KFkdjdvrru0muh0nTt3XbO
-        XnCrN6dYKtMnnrj91ZP6OP5D535r5zkBfS4QPckHMvPw68kdQqwv3LcwnD5Lvw==
-From:   Daniel Wagner <wagi@monom.org>
-Subject: [ANNOUNCE] 4.4.292-rt228
-Date:   Mon, 15 Nov 2021 07:36:01 -0000
-Message-ID: <163696176156.14899.13751363449660255266@beryllium.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
-X-Last-TLS-Session-Version: TLSv1.3
+        Mon, 15 Nov 2021 02:41:19 -0500
+Received: by mail-il1-f199.google.com with SMTP id h12-20020a056e021b8c00b0026e094f4a33so9953356ili.19
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 23:38:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wAcAJvwVLUQg9owDLLhZ6P7Y4ndIiH5QD0qB5tdkIn8=;
+        b=yByqD8j8438RAis6MHC8WHkraUfZ7XQuJcyu5drRu8dkF/u8xN/9xK9fakgs2WZPII
+         Qyjf2sacBIsIb/OTJhVYUy8LK9S7jO28iXBuhECgTVcnrvfwTgk1ZJC9YVu3rMrK/LpV
+         CHPQ1WZrYeMsZRPXP1QF2heTQQULXPGYxwlaSk3191FX2V+Zd/jX5ylSwzbiXyN4PEd7
+         VS/AoLonBYiWNcoZFJuf7vNjzcsoYUpvIT3qn6FLETkA9EjtdKMPDj62+ytRFJqLBzue
+         9bV1gWfbyELem6MGX+Eo1pDr/rBTaWZFxgQyw9k8vEErWqHpx6cKSV0iM9scd7dbGYFO
+         9qtQ==
+X-Gm-Message-State: AOAM5335/M7lnuzNHI5/SISktJlEkT9UNKkkXOlRnjgl4n6Hb/tKHt8Y
+        mdlc0ULSoU20FRdgsVWvAvKbwwaZvg9icrv05DSFS++XvbYA
+X-Google-Smtp-Source: ABdhPJwUDoRWDhgTf8XrfrouKYXV1uId24KuTAbyeov6j2HHWcumh9j0lVSFqB9YAlAsPxsj0yhKc8QrUtXV3ONFYEosPH60L30m
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1529:: with SMTP id i9mr19982807ilu.23.1636961903367;
+ Sun, 14 Nov 2021 23:38:23 -0800 (PST)
+Date:   Sun, 14 Nov 2021 23:38:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2dccb05d0cee49a@google.com>
+Subject: [syzbot] WARNING in ieee80211_free_ack_frame (2)
+From:   syzbot <syzbot+ac648b0525be1feba506@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Hello,
 
-I'm pleased to announce the 4.4.292-rt228 stable release.  This is
-only an update to the latest stable kernel, no RT specific changes.
+syzbot found the following issue on:
 
-You can get this release via the git tree at:
+HEAD commit:    89d714ab6043 Merge tag 'linux-watchdog-5.16-rc1' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=108e7c3eb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dcce4e862d74e466
+dashboard link: https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  branch: v4.4-rt
-  Head SHA1: ca03c567a938fd6ed11a786d4d43d125b0e914e1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ac648b0525be1feba506@syzkaller.appspotmail.com
 
-Enjoy!
-Daniel
+netdevsim netdevsim1 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim1 netdevsim1 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim1 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+------------[ cut here ]------------
+Have pending ack frames!
+WARNING: CPU: 0 PID: 10 at net/mac80211/main.c:1419 ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1419
+Modules linked in:
+CPU: 0 PID: 10 Comm: kworker/u4:1 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1419
+Code: e8 0d dc f3 f8 48 89 ef e8 d5 c6 97 fe 31 c0 5b 5d c3 e8 fb db f3 f8 48 c7 c7 00 9b ab 8a c6 05 b3 00 d8 04 01 e8 89 e9 72 00 <0f> 0b eb d2 0f 1f 40 00 41 57 41 56 49 89 f6 41 55 41 54 49 89 d4
+RSP: 0018:ffffc90000f0f9d8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888011c3c280 RSI: ffffffff815e6b88 RDI: fffff520001e1f2d
+RBP: ffff8880781a6000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815e095e R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffffff888320f0 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055c247c48cf0 CR3: 0000000021d96000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ idr_for_each+0x113/0x220 lib/idr.c:208
+ ieee80211_free_hw+0x9b/0x2b0 net/mac80211/main.c:1435
+ mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3586 [inline]
+ hwsim_exit_net+0x55f/0xca0 drivers/net/wireless/mac80211_hwsim.c:4346
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ cleanup_net+0x4ea/0xb00 net/core/net_namespace.c:593
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
 
-Changes from v4.4.289-rt227:
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Aleksander Morgado (1):
-      USB: serial: qcserial: add EM9191 QDL support
-
-Andreas Kemnade (1):
-      net: hso: register netdev later to avoid a race condition
-
-Antoine Tenart (1):
-      netfilter: ipvs: make global sysctl readonly in non-init netns
-
-Ard Biesheuvel (1):
-      efi/cper: use stack buffer for error record decoding
-
-Arnd Bergmann (4):
-      cb710: avoid NULL pointer subtraction
-      ethernet: s2io: fix setting mac address during resume
-      ARM: 9134/1: remove duplicate memcpy() definition
-      ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
-
-Benjamin Coddington (1):
-      NFSD: Keep existing listeners on portlist error
-
-Brendan Grieve (1):
-      ALSA: usb-audio: Provide quirk for Sennheiser GSP670 Headset
-
-Cheah Kok Cheong (1):
-      staging: comedi: drivers: replace le16_to_cpu() with usb_endpoint_maxp()
-
-Christophe JAILLET (1):
-      iio: adc128s052: Fix the error handling path of 'adc128_probe()'
-
-Colin Ian King (1):
-      drm/msm: Fix null pointer dereference on pointer edp
-
-Dan Carpenter (3):
-      iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
-      iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
-      pata_legacy: fix a couple uninitialized variable bugs
-
-Daniel Wagner (2):
-      Merge tag 'v4.4.292' into v4.4-rt
-      Linux 4.4.292-rt228
-
-Daniele Palmas (1):
-      USB: serial: option: add Telit LE910Cx composition 0x1204
-
-Dongliang Mu (1):
-      usb: hso: fix error handling code of hso_create_net_device
-
-Geert Uytterhoeven (1):
-      usb: gadget: Mark USB_FSL_QE broken on 64-bit
-
-Greg Kroah-Hartman (3):
-      Linux 4.4.290
-      Linux 4.4.291
-      Linux 4.4.292
-
-Guenter Roeck (1):
-      nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
-
-Gustavo A. R. Silva (1):
-      IB/qib: Use struct_size() helper
-
-Herve Codina (1):
-      ARM: dts: spear3xx: Fix gmac node
-
-Jaehoon Chung (1):
-      mmc: dw_mmc: exynos: fix the finding clock sample value
-
-James Buren (1):
-      usb-storage: Add compatibility quirk flags for iODD 2531/2541
-
-Jan Kara (1):
-      isofs: Fix out of bound access for corrupted isofs image
-
-Johan Hovold (10):
-      mmc: vub300: fix control-message timeouts
-      net: lan78xx: fix division by zero in send path
-      comedi: dt9812: fix DMA buffers on stack
-      comedi: ni_usb6501: fix NULL-deref in command paths
-      comedi: vmk80xx: fix transfer-buffer overflows
-      comedi: vmk80xx: fix bulk-buffer overflow
-      comedi: vmk80xx: fix bulk and interrupt message timeouts
-      staging: r8712u: fix control-message timeout
-      staging: rtl8192u: fix control-message timeouts
-      rsi: fix control-message timeout
-
-Kai Vehmanen (1):
-      ALSA: hda: avoid write to STATESTS if controller is in reset
-
-Krzysztof Kozlowski (1):
-      nfc: port100: fix using -ERRNO as command type mask
-
-Lin Ma (1):
-      nfc: nci: fix the UAF of rf_conn_info object
-
-Lukas Bulwahn (1):
-      elfcore: correct reference to CONFIG_UML
-
-Michael Cullen (1):
-      Input: xpad - add support for another USB ID of Nacon GC-100
-
-Mike Marciniszyn (1):
-      IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
-
-Ming Lei (1):
-      scsi: core: Put LLD module refcnt after SCSI device is released
-
-Nanyong Sun (1):
-      net: encx24j600: check error in devm_regmap_init_encx24j600
-
-Nathan Chancellor (1):
-      ARM: 8819/1: Remove '-p' from LDFLAGS
-
-Nick Desaulniers (2):
-      ARM: 9122/1: select HAVE_FUTEX_CMPXCHG
-      ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
-
-Nikolay Martynov (1):
-      xhci: Enable trust tx length quirk for Fresco FL11 USB controller
-
-Oliver Neukum (1):
-      usbnet: sanity check for maxpacket
-
-Pavel Skripkin (1):
-      Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
-
-Petr Mladek (1):
-      printk/console: Allow to disable console output by using console="" or console=null
-
-Prashant Malani (1):
-      platform/x86: intel_scu_ipc: Update timeout value in comment
-
-Randy Dunlap (1):
-      NIOS2: irqflags: rename a redefined register name
-
-Roberto Sassu (1):
-      s390: fix strrchr() implementation
-
-Shawn Guo (1):
-      mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-
-Stephane Grosjean (1):
-      can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
-
-Stephen Boyd (1):
-      nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
-
-Steven Rostedt (VMware) (1):
-      tracing: Have all levels of checks prevent recursion
-
-Takashi Iwai (2):
-      ALSA: seq: Fix a potential UAF by wrong private_free call order
-      ASoC: DAPM: Fix missing kctl change notifications
-
-Valentin Vidic (1):
-      ocfs2: mount fails with buffer overflow in strlen
-
-Vegard Nossum (4):
-      net: arc: select CRC32
-      net: korina: select CRC32
-      r8152: select CRC32 and CRYPTO/CRYPTO_HASH/CRYPTO_SHA256
-      netfilter: Kconfig: use 'default y' instead of 'm' for bool config option
-
-Wang Hai (1):
-      usbnet: fix error return code in usbnet_probe()
-
-Wang Kefeng (1):
-      ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
-
-Xiaolong Huang (1):
-      isdn: cpai: check ctr->cnr to avoid array index out of bound
-
-Xin Long (2):
-      sctp: use init_tag from inithdr for ABORT chunk
-      sctp: add vtag check in sctp_sf_violation
-
-Yanfei Xu (1):
-      net: mdiobus: Fix memory leak in __mdiobus_register
-
-Yang Yingliang (1):
-      regmap: Fix possible double-free in regcache_rbtree_exit()
-
-Yoshihiro Shimoda (1):
-      can: rcar_can: fix suspend/resume
-
-Zheng Liang (1):
-      ovl: fix missing negative dentry check in ovl_rename()
-
-Zheyu Ma (3):
-      can: peak_pci: peak_pci_remove(): fix UAF
-      isdn: mISDN: Fix sleeping function called from invalid context
-      ata: sata_mv: Fix the error handling of mv_chip_id()
-
-Ziyang Xuan (3):
-      nfc: fix error handling of nfc_proto_register()
-      NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
-      NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
