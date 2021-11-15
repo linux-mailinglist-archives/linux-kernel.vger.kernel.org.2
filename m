@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8CC452181
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94A24523EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244383AbhKPBFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:05:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S243028AbhKPBfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:35:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245621AbhKOTUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 317F263298;
-        Mon, 15 Nov 2021 18:38:04 +0000 (UTC)
+        id S242126AbhKOSeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:34:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED7D163468;
+        Mon, 15 Nov 2021 18:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001484;
-        bh=knCY6D7aCB+BkrG8V+oWIX0tCtUxpWh8jsn5yxxGT9A=;
+        s=korg; t=1636999222;
+        bh=qT2SY6fv46Gn9/Bc1mnjMQbsZb5EuuRuEpMBD50gTC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XmDRL+OW3XOsghFdl3DEvh5/Kmr2kcWMEezHUFKWyEwXRnvHYjlncMbcg/8DHaZ8O
-         yqHchgf9QzwEXuD4VlZunvy0xgdgRqi6GpwZToAjFg/ts8uS+tsipB2gZMf327T9dc
-         /gMM2Lq0n4gJ/DsBcRmZROgQsyopP2ZYpKZ2xZoI=
+        b=d2aB1B/99VFejPatbknTEU3lMczgDsfCW4VpSaUB8q8vf/E3X+/hQiX5Ol9mNvkqb
+         lujAZ5CDMxklXw5SArQJH9A8YxzfVPQ1fgY4lC5LhVoRc2QBHF/aD2q+RbUx+NJSKK
+         VRZw3cOUHVY6TayFRtfuBs1EQRgAD4RE0rL/+YiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aric Cyr <aric.cyr@amd.com>,
-        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Jimmy Kizito <Jimmy.Kizito@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Ritesh Singh <ritesi@codeaurora.org>,
+        Seevalamuthu Mariappan <seevalam@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 209/917] drm/amd/display: Fix null pointer dereference for encoders
+Subject: [PATCH 5.14 221/849] ath11k: Align bss_chan_info structure with firmware
 Date:   Mon, 15 Nov 2021 17:55:04 +0100
-Message-Id: <20211115165435.883812536@linuxfoundation.org>
+Message-Id: <20211115165427.695670683@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jimmy Kizito <Jimmy.Kizito@amd.com>
+From: Seevalamuthu Mariappan <seevalam@codeaurora.org>
 
-[ Upstream commit 60f39edd897ea134a4ddb789a6795681691c3183 ]
+[ Upstream commit feab5bb8f1d4621025dceae7eef62d5f92de34ac ]
 
-[Why]
-Links which are dynamically assigned link encoders have their link
-encoder set to NULL.
+pdev_id in structure 'wmi_pdev_bss_chan_info_event' is wrongly placed
+at the beginning. This causes invalid values in survey dump. Hence, align
+the structure with the firmware.
 
-[How]
-Check that a pointer to a link_encoder object is non-NULL before using
-it.
+Note: The firmware releases follow this order since the feature was
+implemented. Also, it is not changing across the branches including
+QCA6390.
 
-Reviewed-by: Aric Cyr <aric.cyr@amd.com>
-Reviewed-by: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Jimmy Kizito <Jimmy.Kizito@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.1.0.1-01228-QCAHKSWPL_SILICONZ-1
+
+Signed-off-by: Ritesh Singh <ritesi@codeaurora.org>
+Signed-off-by: Seevalamuthu Mariappan <seevalam@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210720214922.118078-3-jouni@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c          | 2 +-
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 1 +
+ drivers/net/wireless/ath/ath11k/wmi.h | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index 6d655e158267a..61c18637f84dc 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -4690,7 +4690,7 @@ enum dc_status dp_set_fec_ready(struct dc_link *link, bool ready)
- 				link_enc->funcs->fec_set_ready(link_enc, true);
- 				link->fec_state = dc_link_fec_ready;
- 			} else {
--				link_enc->funcs->fec_set_ready(link->link_enc, false);
-+				link_enc->funcs->fec_set_ready(link_enc, false);
- 				link->fec_state = dc_link_fec_not_ready;
- 				dm_error("dpcd write failed to set fec_ready");
- 			}
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index df8a7718a85fc..3af49cdf89ebd 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -1522,7 +1522,7 @@ void dcn10_power_down_on_boot(struct dc *dc)
- 		for (i = 0; i < dc->link_count; i++) {
- 			struct dc_link *link = dc->links[i];
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 6c253eae9d069..27c060dd3fb47 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -1339,6 +1339,7 @@ int ath11k_wmi_pdev_bss_chan_info_request(struct ath11k *ar,
+ 				     WMI_TAG_PDEV_BSS_CHAN_INFO_REQUEST) |
+ 			  FIELD_PREP(WMI_TLV_LEN, sizeof(*cmd) - TLV_HDR_SIZE);
+ 	cmd->req_type = type;
++	cmd->pdev_id = ar->pdev->pdev_id;
  
--			if (link->link_enc->funcs->is_dig_enabled &&
-+			if (link->link_enc && link->link_enc->funcs->is_dig_enabled &&
- 					link->link_enc->funcs->is_dig_enabled(link->link_enc) &&
- 					dc->hwss.power_down) {
- 				dc->hwss.power_down(dc);
+ 	ath11k_dbg(ar->ab, ATH11K_DBG_WMI,
+ 		   "WMI bss chan info req type %d\n", type);
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/ath/ath11k/wmi.h
+index d35c47e0b19d4..0b7d337b36930 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.h
++++ b/drivers/net/wireless/ath/ath11k/wmi.h
+@@ -2960,6 +2960,7 @@ struct wmi_pdev_bss_chan_info_req_cmd {
+ 	u32 tlv_header;
+ 	/* ref wmi_bss_chan_info_req_type */
+ 	u32 req_type;
++	u32 pdev_id;
+ } __packed;
+ 
+ struct wmi_ap_ps_peer_cmd {
+@@ -4056,7 +4057,6 @@ struct wmi_vdev_stopped_event {
+ } __packed;
+ 
+ struct wmi_pdev_bss_chan_info_event {
+-	u32 pdev_id;
+ 	u32 freq;	/* Units in MHz */
+ 	u32 noise_floor;	/* units are dBm */
+ 	/* rx clear - how often the channel was unused */
+@@ -4074,6 +4074,7 @@ struct wmi_pdev_bss_chan_info_event {
+ 	/*rx_cycle cnt for my bss in 64bits format */
+ 	u32 rx_bss_cycle_count_low;
+ 	u32 rx_bss_cycle_count_high;
++	u32 pdev_id;
+ } __packed;
+ 
+ #define WMI_VDEV_INSTALL_KEY_COMPL_STATUS_SUCCESS 0
 -- 
 2.33.0
 
