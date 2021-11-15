@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E0D45201E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4B64519A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357615AbhKPAsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:48:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
+        id S242358AbhKOXYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:24:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344704AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA927636B3;
-        Mon, 15 Nov 2021 19:02:42 +0000 (UTC)
+        id S244932AbhKOTSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30C2463437;
+        Mon, 15 Nov 2021 18:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002963;
-        bh=5ifuhpAhEvvHZda+IFKyY6VJ3j2xluz7Ou2+Xm5stTU=;
+        s=korg; t=1637000741;
+        bh=15HXLQbDJoZL5+VAeLIUIrK2GNHxn5/nNzrrF2r7ZYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N9S9YL7k4iewhFksGU3XMbP/xL0cfzQgjkUSdaSRSgUjvC1tULv/RZ5cl59ZKhOY5
-         cjarhhEJY6/AyMpQny9yq5s2vgkIJbByU0LXHLSWOA7F3d0FaugEvrWBGEEks6QAzg
-         FrA7K3PFwlxJmt/vaYezHNBpoRUtEYCyU0cb6r4U=
+        b=tZqB7wz6/9I3wZl/8hN2gxrvUEjNRVFqAOU0oBBJ0ZULDRzVWvSxP3o2YVdyI3Lvl
+         420YHizhu7aEGKqgfBdRriVgivyL9RRIypqUDcmJ1V0Fmx83MsyAYgUmxYpWhNs/8F
+         9QEPiFVwLPBpzjztsUPX//I3rTfzlDGDvrRX4OIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 760/917] nbd: fix max value for first_minor
-Date:   Mon, 15 Nov 2021 18:04:15 +0100
-Message-Id: <20211115165454.696863676@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 773/849] net/sched: sch_taprio: fix undefined behavior in ktime_mono_to_any
+Date:   Mon, 15 Nov 2021 18:04:16 +0100
+Message-Id: <20211115165446.402932378@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +43,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit e4c4871a73944353ea23e319de27ef73ce546623 ]
+[ Upstream commit 6dc25401cba4d428328eade8ceae717633fdd702 ]
 
-commit b1a811633f73 ("block: nbd: add sanity check for first_minor")
-checks that 'first_minor' should not be greater than 0xff, which is
-wrong. Whitout the commit, the details that when user pass 0x100000,
-it ends up create sysfs dir "/sys/block/43:0" are as follows:
+1) if q->tk_offset == TK_OFFS_MAX, then get_tcp_tstamp() calls
+   ktime_mono_to_any() with out-of-bound value.
 
-nbd_dev_add
- disk->first_minor = index << part_shift
-  -> default part_shift is 5, first_minor is 0x2000000
-  device_add_disk
-   ddev->devt = MKDEV(disk->major, disk->first_minor)
-    -> (0x2b << 20) | (0x2000000) = 0x2b00000
-   device_add
-    device_create_sys_dev_entry
-	 format_dev_t
-	  sprintf(buffer, "%u:%u", MAJOR(dev), MINOR(dev));
-	   -> got 43:0
-	  sysfs_create_link -> /sys/block/43:0
+2) if q->tk_offset is changed in taprio_parse_clockid(),
+   taprio_get_time() might also call ktime_mono_to_any()
+   with out-of-bound value as sysbot found:
 
-By the way, with the wrong fix, when part_shift is the default value,
-only 8 ndb devices can be created since 8 << 5 is greater than 0xff.
+UBSAN: array-index-out-of-bounds in kernel/time/timekeeping.c:908:27
+index 3 is out of range for type 'ktime_t *[3]'
+CPU: 1 PID: 25668 Comm: kworker/u4:0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
+ ktime_mono_to_any+0x1d4/0x1e0 kernel/time/timekeeping.c:908
+ get_tcp_tstamp net/sched/sch_taprio.c:322 [inline]
+ get_packet_txtime net/sched/sch_taprio.c:353 [inline]
+ taprio_enqueue_one+0x5b0/0x1460 net/sched/sch_taprio.c:420
+ taprio_enqueue+0x3b1/0x730 net/sched/sch_taprio.c:485
+ dev_qdisc_enqueue+0x40/0x300 net/core/dev.c:3785
+ __dev_xmit_skb net/core/dev.c:3869 [inline]
+ __dev_queue_xmit+0x1f6e/0x3630 net/core/dev.c:4194
+ batadv_send_skb_packet+0x4a9/0x5f0 net/batman-adv/send.c:108
+ batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
+ batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:421 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x6d7/0x8e0 net/batman-adv/bat_iv_ogm.c:1701
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-Since the max bits for 'first_minor' should be the same as what
-MKDEV() does, which is 20. Change the upper bound of 'first_minor'
-from 0xff to 0xfffff.
-
-Fixes: b1a811633f73 ("block: nbd: add sanity check for first_minor")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Link: https://lore.kernel.org/r/20211102015237.2309763-2-yebin10@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 7ede7b03484b ("taprio: make clock reference conversions easier")
+Fixes: 54002066100b ("taprio: Adjust timestamps for TCP packets")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Vedang Patel <vedang.patel@intel.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reviewed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Link: https://lore.kernel.org/r/20211108180815.1822479-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/sched/sch_taprio.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 4f1b591c3a555..0d820c4dec176 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1749,11 +1749,11 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
- 	disk->major = NBD_MAJOR;
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index b9fd18d986464..a66398fb2d6d0 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -95,18 +95,22 @@ static ktime_t sched_base_time(const struct sched_gate_list *sched)
+ 	return ns_to_ktime(sched->base_time);
+ }
  
- 	/* Too big first_minor can cause duplicate creation of
--	 * sysfs files/links, since first_minor will be truncated to
--	 * byte in __device_add_disk().
-+	 * sysfs files/links, since MKDEV() expect that the max bits of
-+	 * first_minor is 20.
- 	 */
- 	disk->first_minor = index << part_shift;
--	if (disk->first_minor > 0xff) {
-+	if (disk->first_minor > MINORMASK) {
- 		err = -EINVAL;
- 		goto out_free_idr;
+-static ktime_t taprio_get_time(struct taprio_sched *q)
++static ktime_t taprio_mono_to_any(const struct taprio_sched *q, ktime_t mono)
+ {
+-	ktime_t mono = ktime_get();
++	/* This pairs with WRITE_ONCE() in taprio_parse_clockid() */
++	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
+ 
+-	switch (q->tk_offset) {
++	switch (tk_offset) {
+ 	case TK_OFFS_MAX:
+ 		return mono;
+ 	default:
+-		return ktime_mono_to_any(mono, q->tk_offset);
++		return ktime_mono_to_any(mono, tk_offset);
  	}
++}
+ 
+-	return KTIME_MAX;
++static ktime_t taprio_get_time(const struct taprio_sched *q)
++{
++	return taprio_mono_to_any(q, ktime_get());
+ }
+ 
+ static void taprio_free_sched_cb(struct rcu_head *head)
+@@ -319,7 +323,7 @@ static ktime_t get_tcp_tstamp(struct taprio_sched *q, struct sk_buff *skb)
+ 		return 0;
+ 	}
+ 
+-	return ktime_mono_to_any(skb->skb_mstamp_ns, q->tk_offset);
++	return taprio_mono_to_any(q, skb->skb_mstamp_ns);
+ }
+ 
+ /* There are a few scenarios where we will have to modify the txtime from
+@@ -1352,6 +1356,7 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
+ 		}
+ 	} else if (tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]) {
+ 		int clockid = nla_get_s32(tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]);
++		enum tk_offsets tk_offset;
+ 
+ 		/* We only support static clockids and we don't allow
+ 		 * for it to be modified after the first init.
+@@ -1366,22 +1371,24 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
+ 
+ 		switch (clockid) {
+ 		case CLOCK_REALTIME:
+-			q->tk_offset = TK_OFFS_REAL;
++			tk_offset = TK_OFFS_REAL;
+ 			break;
+ 		case CLOCK_MONOTONIC:
+-			q->tk_offset = TK_OFFS_MAX;
++			tk_offset = TK_OFFS_MAX;
+ 			break;
+ 		case CLOCK_BOOTTIME:
+-			q->tk_offset = TK_OFFS_BOOT;
++			tk_offset = TK_OFFS_BOOT;
+ 			break;
+ 		case CLOCK_TAI:
+-			q->tk_offset = TK_OFFS_TAI;
++			tk_offset = TK_OFFS_TAI;
+ 			break;
+ 		default:
+ 			NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
+ 			err = -EINVAL;
+ 			goto out;
+ 		}
++		/* This pairs with READ_ONCE() in taprio_mono_to_any */
++		WRITE_ONCE(q->tk_offset, tk_offset);
+ 
+ 		q->clockid = clockid;
+ 	} else {
 -- 
 2.33.0
 
