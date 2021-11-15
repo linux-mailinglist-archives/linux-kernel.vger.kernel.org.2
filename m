@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D2B451AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F47451AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350415AbhKOXqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:46:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1351694AbhKOXq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:46:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344118AbhKOTX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6B86362E;
-        Mon, 15 Nov 2021 18:52:17 +0000 (UTC)
+        id S1344148AbhKOTXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0DD63639;
+        Mon, 15 Nov 2021 18:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002338;
-        bh=SCN5aa6sZco6dzL9HU0MMi0W+4jJJx1rWX7LrT34Wwk=;
+        s=korg; t=1637002366;
+        bh=qQjTWBBKkkXc5wVQqANwUpgKMvtUSX+JFcNiZiipAMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3PsAty2MADuZpF3eLm7FoM2r45cO+kv0cyBm5ed+qFbH0jaLiVmuvjgbiq0vyHcw
-         pV1SbQH6KfedXzVj93ON9HesowDTzmmYMUIOGX8cdUEwiiCvk4RmehRJh9iN/GLSa9
-         Mmb1DDEAauTScVXdK1XEiN22Y7f6Il2IPPcLDezw=
+        b=EAUWNBiuBoHfkmV64b2h0+8UvoonRyE9WDQQjQiy/5WiFOxdlEclL/kK0e4XEBBCT
+         s3+is2s0EyUvWCsR8/uFl1IDvt2C80d/9Mbkj1bcFaYKe3NOnPcBcTAsUag6dv5TPR
+         82Ups8Gvx0kLCSAbOXeSYvfmYRaPasb/A1dI51bk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 521/917] tpm_tis_spi: Add missing SPI ID
-Date:   Mon, 15 Nov 2021 18:00:16 +0100
-Message-Id: <20211115165446.433197920@linuxfoundation.org>
+Subject: [PATCH 5.15 522/917] libbpf: Fix endianness detection in BPF_CORE_READ_BITFIELD_PROBED()
+Date:   Mon, 15 Nov 2021 18:00:17 +0100
+Message-Id: <20211115165446.464988910@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,42 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-[ Upstream commit 7eba41fe8c7bb01ff3d4b757bd622375792bc720 ]
+[ Upstream commit 45f2bebc8079788f62f22d9e8b2819afb1789d7b ]
 
-In commit c46ed2281bbe ("tpm_tis_spi: add missing SPI device ID entries")
-we added SPI IDs for all the DT aliases to handle the fact that we always
-use SPI modaliases to load modules even when probed via DT however the
-mentioned commit missed that the SPI and OF device ID entries did not
-match and were different and so DT nodes with compatible
-"tcg,tpm_tis-spi" will not match.  Add an extra ID for tpm_tis-spi
-rather than just fix the existing one since what's currently there is
-going to be better for anyone actually using SPI IDs to instantiate.
+__BYTE_ORDER is supposed to be defined by a libc, and __BYTE_ORDER__ -
+by a compiler. bpf_core_read.h checks __BYTE_ORDER == __LITTLE_ENDIAN,
+which is true if neither are defined, leading to incorrect behavior on
+big-endian hosts if libc headers are not included, which is often the
+case.
 
-Fixes: c46ed2281bbe ("tpm_tis_spi: add missing SPI device ID entries")
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fixes: ee26dade0e3b ("libbpf: Add support for relocatable bitfields")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20211026010831.748682-2-iii@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_spi_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/lib/bpf/bpf_core_read.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 54584b4b00d19..aaa59a00eeaef 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -267,6 +267,7 @@ static const struct spi_device_id tpm_tis_spi_id[] = {
- 	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
- 	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
- 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
-+	{ "tpm_tis-spi", (unsigned long)tpm_tis_spi_probe },
- 	{ "cr50", (unsigned long)cr50_spi_probe },
- 	{}
- };
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index 09ebe3db5f2f8..e4aa9996a5501 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -40,7 +40,7 @@ enum bpf_enum_value_kind {
+ #define __CORE_RELO(src, field, info)					      \
+ 	__builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+ 
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ #define __CORE_BITFIELD_PROBE_READ(dst, src, fld)			      \
+ 	bpf_probe_read_kernel(						      \
+ 			(void *)dst,				      \
 -- 
 2.33.0
 
