@@ -2,155 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A294504DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BC54504E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhKONFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:05:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231288AbhKONEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:04:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636981279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nats6Tb5h/tFfC8AybE1A4hOx07KzU2pOLvXBwr1UEU=;
-        b=PSBWf7rujbsSt5DOLBlhz/xoelo5Z09znsy+IpxYLWY7nonij+n3coZiDR8b7J/UXbfwLy
-        wNS/DCocMOC9FcfZ5YMLyWSBzzhTypPt+dDghKbvRMnbFQba8Ch96sYyfw23ZhSeKOU4hN
-        E1+yWSKOAsjnXp5iqbXrN1H8Rb9iooA=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-JmANe10lPHe19oiHAwThlg-1; Mon, 15 Nov 2021 08:01:18 -0500
-X-MC-Unique: JmANe10lPHe19oiHAwThlg-1
-Received: by mail-qt1-f200.google.com with SMTP id 4-20020ac85744000000b002b2f329efc2so708732qtx.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:01:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nats6Tb5h/tFfC8AybE1A4hOx07KzU2pOLvXBwr1UEU=;
-        b=G7psYkx+pMKiuW4417B/YpSWVInsC299jifZTM4bcOx0X5e3bfwcJOXRVDnOSSF9S5
-         zAL2v/NErIW91JQb1ZrBQMLigK9/aa+dI1tFiSFC2J8gQKAyrUny/Jkx8xod+oWEQPDX
-         0qJAAMdzFXVAJlUP1S+p7NcQwnG9rF+vL8dGLV7eIPxiNROH5JFbLfx4yMrSOJOHsiDA
-         0RdoxLCmIqkbQ3B6mJedUqBeGLCLXp26Zl8eZ/4faTUTdfUee2LV6eNOOfonC1VmWUOP
-         8zyP4E7o/DnNFfQ2crM8R96DRxpCFKvv0nvWIw7L737V7vEQicv+jPmxQxuuh30+OFXA
-         s/TQ==
-X-Gm-Message-State: AOAM531kBxprJX1KZ2VWVwGdJNwvPkPOo1L+aufBs+Uap+8RSRKb8Nwr
-        4j872MjKZyJy/UESxqEKBrfyZTdbEjAbVbQwvWI7khfVrriU6TOO1iuucR8E9fOabdXU85leSEi
-        Zjf0NIBX4vLN0STuY31rvz9Be
-X-Received: by 2002:ac8:7f4d:: with SMTP id g13mr29560469qtk.215.1636981277161;
-        Mon, 15 Nov 2021 05:01:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzxo1TcK9VaFtc0WGUCxGECNqw3DyHE06QastGf5ME9Y9wH8of7nS6CgIuc4ZtPxY+OPzSVtg==
-X-Received: by 2002:ac8:7f4d:: with SMTP id g13mr29560174qtk.215.1636981275470;
-        Mon, 15 Nov 2021 05:01:15 -0800 (PST)
-Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
-        by smtp.gmail.com with ESMTPSA id e13sm1816470qte.56.2021.11.15.05.01.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 05:01:15 -0800 (PST)
-To:     Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        live-patching@vger.kernel.org
-References: <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
- <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
- <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
- <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <20211109210736.GV174703@worktop.programming.kicks-ass.net>
- <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
- <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
- <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
- <20211112015003.pefl656m3zmir6ov@treble>
- <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net>
- <20211113053500.jcnx5airbn7g763a@treble>
- <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <68b37450-d4bd-fa46-7bad-08d237e922b1@redhat.com>
-Date:   Mon, 15 Nov 2021 08:01:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231538AbhKONG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:06:57 -0500
+Received: from www.zeus03.de ([194.117.254.33]:45384 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231535AbhKONGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:06:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=OLQihzRKyh2y1tQZCycpI3W9roJE
+        NIrd1K7JiBrcKzw=; b=e3Bu02K7i7uyvNYMDoFHa46HUAPsXRIPSBTVuOHM4mR/
+        vrYNlMettOwqW611Y6BjqKTTJzT2FGszgkpJme9B3HYLTrfcCET06f9hgR/7WSXY
+        8l/kPvJQrXup+4Myb+hu4+4gmiBxQ4m2sErKCtDDPnUsCwNHfRw+js+cxSlSvus=
+Received: (qmail 2337764 invoked from network); 15 Nov 2021 14:03:50 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 15 Nov 2021 14:03:50 +0100
+X-UD-Smtp-Session: l3s3148p1@2jancNPQvrYgAwDPXwfBADNdh3YJLcIx
+Date:   Mon, 15 Nov 2021 14:03:50 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+Message-ID: <YZJatk2Xs6bYdCyB@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ih87i6XTGwSWpEQ3"
+Content-Disposition: inline
+In-Reply-To: <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 7:36 AM, Miroslav Benes wrote:
-> On Fri, 12 Nov 2021, Josh Poimboeuf wrote:
-> 
->> On Fri, Nov 12, 2021 at 10:33:36AM +0100, Peter Zijlstra wrote:
->>> On Thu, Nov 11, 2021 at 05:50:03PM -0800, Josh Poimboeuf wrote:
->>>
->>>> Hm, I think there is actually a livepatch problem here.
->>>
->>> I suspected as much, because I couldn't find any code dealing with it
->>> when I looked in a hurry.. :/
->>>
->>>> Some ideas to fix:
->>>
->>>> c) Update the reliable stacktrace code to mark the stack unreliable if
->>>>    it has a function with ".cold" in the name?
->>>
->>> Why not simply match func.cold as func in the transition thing? Then
->>> func won't get patched as long as it (or it's .cold part) is in use.
->>> This seems like the natural thing to do.
->>
->> Well yes, you're basically hinting at my first two options a and b:
->>
->> a) Add a field to 'klp_func' which allows the patch module to specify a
->>    function's .cold counterpart?
->>
->> b) Detect such cold counterparts in klp_enable_patch()?  Presumably it
->>    would require searching kallsyms for "<func>.cold", which is somewhat
->>    problematic as there might be duplicates.
->>
->> It's basically a two-step process:  1) match func to .cold if it exists;
->> 2) check for both in klp_check_stack_func().  The above two options are
->> proposals for the 1st step.  The 2nd step was implied.
-> 
-> This reminded me... one of the things I have on my todo list for a long 
-> time is to add an option for a live patch creator to specify functions 
-> which are not contained in the live patch but their presence on stacks 
-> should be checked for. It could save some space in the final live patch 
-> when one would add functions (callers) just because the consistency 
-> requires it.
-> 
 
-Yea, I've used this technique once (adding a nop to a function so
-kpatch-build would detect and include in klp_funcs[]) to make a set of
-changes safer with respect to the consistency model.  Making it simpler
-to for the livepatch author to say, "I'm not changing foo(), but I don't
-want it doing anything while patching a task" sounds reasonable.
+--ih87i6XTGwSWpEQ3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I took as a convenience feature with a low priority and forgot about it. 
-> The problem above changes it. So should we take the opportunity and 
-> implement both in one step? I wanted to include a list of functions in 
-> on a patch level (klp_patch structure) and klp_check_stack() would just 
-> have more to check.
-> 
+On Mon, Oct 25, 2021 at 09:56:31PM +0100, Lad Prabhakar wrote:
+> SPI Multi I/O Bus Controller on RZ/G2L SoC is almost identical to
+> the RPC-IF interface found on R-Car Gen3 SoC's.
+>=20
+> This patch adds a new compatible string for the RZ/G2L family so
+> that the timing values on RZ/G2L can be adjusted.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-As far as I read the original problem, I think it would solve for that,
-too, so I would say go for it.
+After some internal investigations we found out that we have to live
+with these magic numbers. We shouldn't mix documentation there. So, this
+patch is fine as is. The minor nit I will fix incrementally because I
+will work on this file soon as well.
 
--- 
-Joe
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+
+--ih87i6XTGwSWpEQ3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGSWrUACgkQFA3kzBSg
+KbZACQ//QW6h49hTvyDnW3FXxCnOu8Fjy4Du93vzYyiffKiu1rT1kWz/eCxEDYIe
+nAjwuUERonPPxtlnfyH7b1ZvC4wAde8dskw01huc7sJT/gNFHNp5t20B9Aj1R/eP
+yMNoG5cEtDcYNUvjTQkfLZ9XQvH8m7KWVQUOcVx9IgCnCL9QGzOe6lGVADhTf5gX
+orNojeAF09rUS/VkjzEbvcsx/8l4zKHQYmYWEIb9Q3nPvrv3UtT0DZeK7S9r1LMi
+NsCrQCTKQQ4F31Vl3VQQMF+WhO3hGHXpzQKWK6MjccNGA/HgccptkYmgx7MECgrX
++k5deLVADSt18C+1ExdaODcD056JYw39cqOZL3Ig1K+9YVeWDFXXIcfFGoSUwFNR
+eCn6Z+ps5LWaVqRIUkLHjo6X80IXoK3Z8GX2R518BLxc+tLRZbC0LObGPmIr3T+l
+U0AE2NjVxscEFB/CFHRx4JR0W1ywyD6ZwbIoZVo2Mf5kdvjzJGajGRrGQLbPzLkO
+9K8as9oOsjHwDhMKTJ4a8/9qTzWgsmzz5x9hZB+30g8JJm9l18+s0EKHFwmt0kR/
+Ly0L8nVSI3C4NSTf+i02jsxC5wXoUXUZzAJc57XdME5SQEGxEbDJNbNvhstKsyZh
+je4ZKZtMQKci6ngq+QhKF/eODcypttoHlG886SPcmoH5W+U6cKA=
+=JiqE
+-----END PGP SIGNATURE-----
+
+--ih87i6XTGwSWpEQ3--
