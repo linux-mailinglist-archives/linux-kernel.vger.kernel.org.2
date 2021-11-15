@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F75451F98
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B054518A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351679AbhKPAnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:43:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S236848AbhKOXE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343870AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A56C2632A0;
-        Mon, 15 Nov 2021 18:47:47 +0000 (UTC)
+        id S243058AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 694AE633C2;
+        Mon, 15 Nov 2021 18:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002068;
-        bh=CiqiMcsR+FxPL8RYA/TbTDWlZtYqTLptODb+rDL8XdI=;
+        s=korg; t=1636999830;
+        bh=73VVUh2iN1iuRBzrcEG8w9ExRYK8I8jkI4ftxEIab00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ci2ERDjvP7maQJv8mxNoGrRFgm9GQBCB3kFoSoMYSm+Ma5hB+bXFKid4TYX6wLyBG
-         9VpikHjTlJbLUKGPx/mZNemh4aU3qTmLEr9pBWeaznYlfqVPOnMNJgOsWiCSGEqeIg
-         s7hxg8ktBhUbgnj5sGdIVEjtxx1P+GjiYMM3+uOg=
+        b=kCAwCTR1+lHSmzupr7I7n5Ok4fkVUUUhr2gwZdyf3/0yddnpxn3ZJNJzgB0umAbNS
+         FRYrWShkw9h1WVwIhxe5XhaxWFyD72VDl4A0GI3pq/k8CxGfH+lgMkwsePweL285Rq
+         G/CfdbJlyR7+iIpgIIoLwmfAGdi5Rr+wDN5Wvo5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <seckelmann@datto.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 427/917] ath10k: fix max antenna gain unit
-Date:   Mon, 15 Nov 2021 17:58:42 +0100
-Message-Id: <20211115165443.272201076@linuxfoundation.org>
+Subject: [PATCH 5.14 440/849] mailbox: Remove WARN_ON for async_cb.cb in cmdq_exec_done
+Date:   Mon, 15 Nov 2021 17:58:43 +0100
+Message-Id: <20211115165435.170008485@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <seckelmann@datto.com>
+From: jason-jh.lin <jason-jh.lin@mediatek.com>
 
-[ Upstream commit 0a491167fe0cf9f26062462de2a8688b96125d48 ]
+[ Upstream commit ce1537fe288469bf68ee0aabdb860a790b4755ef ]
 
-Most of the txpower for the ath10k firmware is stored as twicepower (0.5 dB
-steps). This isn't the case for max_antenna_gain - which is still expected
-by the firmware as dB.
+Because mtk_drm_crtc_update_config is not using cmdq_pkt_flush_async,
+it won't have pkt->async_cb.cb anymore.
 
-The firmware is converting it from dB to the internal (twicepower)
-representation when it calculates the limits of a channel. This can be seen
-in tpc_stats when configuring "12" as max_antenna_gain. Instead of the
-expected 12 (6 dB), the tpc_stats shows 24 (12 dB).
+So remove the WARN_ON check of pkt->async_cb.cb at cmdq_exec_done.
 
-Tested on QCA9888 and IPQ4019 with firmware 10.4-3.5.3-00057.
-
-Fixes: 02256930d9b8 ("ath10k: use proper tx power unit")
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20190611172131.6064-1-sven@narfation.org
+Fixes: 1b6b0ce2240e ("mailbox: mtk-cmdq: Use mailbox rx_callback")
+Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
- drivers/net/wireless/ath/ath10k/wmi.h | 3 +++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/mailbox/mtk-cmdq-mailbox.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7ca68c81d9b61..5ec19d91cf372 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1052,7 +1052,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = channel->max_power * 2;
- 	arg.channel.max_reg_power = channel->max_reg_power * 2;
--	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = channel->max_antenna_gain;
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index 4f907e8f3894b..5e2796db026d2 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -186,7 +186,6 @@ static void cmdq_task_exec_done(struct cmdq_task *task, int sta)
+ 	struct cmdq_task_cb *cb = &task->pkt->async_cb;
+ 	struct cmdq_cb_data data;
  
- 	reinit_completion(&ar->vdev_setup_done);
- 	reinit_completion(&ar->vdev_delete_done);
-@@ -1498,7 +1498,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = chandef->chan->max_power * 2;
- 	arg.channel.max_reg_power = chandef->chan->max_reg_power * 2;
--	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain;
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		arg.ssid = arvif->u.ap.ssid;
-@@ -3426,7 +3426,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 			ch->min_power = 0;
- 			ch->max_power = channel->max_power * 2;
- 			ch->max_reg_power = channel->max_reg_power * 2;
--			ch->max_antenna_gain = channel->max_antenna_gain * 2;
-+			ch->max_antenna_gain = channel->max_antenna_gain;
- 			ch->reg_class_id = 0; /* FIXME */
- 
- 			/* FIXME: why use only legacy modes, why not any
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 41c1a3d339c25..01bfd09a9d88c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2066,7 +2066,9 @@ struct wmi_channel {
- 	union {
- 		__le32 reginfo1;
- 		struct {
-+			/* note: power unit is 1 dBm */
- 			u8 antenna_max;
-+			/* note: power unit is 0.5 dBm */
- 			u8 max_tx_power;
- 		} __packed;
- 	} __packed;
-@@ -2086,6 +2088,7 @@ struct wmi_channel_arg {
- 	u32 min_power;
- 	u32 max_power;
- 	u32 max_reg_power;
-+	/* note: power unit is 1 dBm */
- 	u32 max_antenna_gain;
- 	u32 reg_class_id;
- 	enum wmi_phy_mode mode;
+-	WARN_ON(cb->cb == (cmdq_async_flush_cb)NULL);
+ 	data.sta = sta;
+ 	data.data = cb->data;
+ 	data.pkt = task->pkt;
 -- 
 2.33.0
 
