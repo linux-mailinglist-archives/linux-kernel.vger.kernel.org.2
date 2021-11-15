@@ -2,105 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5734508F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2FA4508ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhKOPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:55:44 -0500
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:38052 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232479AbhKOPxc (ORCPT
+        id S232360AbhKOPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236566AbhKOPx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:53:32 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id B268F821D9;
-        Mon, 15 Nov 2021 18:50:17 +0300 (MSK)
+        Mon, 15 Nov 2021 10:53:56 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2ACC061200
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:50:58 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id o14so14819151plg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:50:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1636991417;
-        bh=qD3HKvrsZCU1PXTGecu+drDpYLl62caCO8M8BtKuoPg=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=cAIMFjsumCl22bvvmlJkb53uXjM+mYIuLw7DuGZjgb5snYLQPLLPzbMSHhk1tzipU
-         do+RcBh1iFp2InlBrxPwHLENIn8xHmDYMY0Ss0m6+fAGXj7NHkgmiMzEB4LvR4Cjwt
-         zzLs73bs6EeMyUYS1kuZTcCv6A0hCOrpREoTcIYs=
-Received: from [192.168.211.139] (192.168.211.139) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 15 Nov 2021 18:50:17 +0300
-Message-ID: <2a86fac1-5363-96c0-7132-dc8b33853a16@paragon-software.com>
-Date:   Mon, 15 Nov 2021 18:50:17 +0300
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BME1fSm2ROoLW7jWsWBGz1p8OXFk8JxNq5V1TauLp5Q=;
+        b=HLvcHQp96QuOXyuPkCmhG2g+hcaPjiFRwauPLK//j87Y8hIfIJCg2yJtpLe6zKLUtz
+         wmHI9JKK53uxNOBhREJNRGMMO1WAUt1qAiQlZ0GlSWqw5dR8zZ5hMwtHXmHL19rzoJPh
+         X8X7pAkulAeWcuzJu8LGJE4zzTk4eGKX9EnwVyunm12PqycouX4nkBcZXdgKlxXNDUVn
+         xz8+KQhL2Y4xVqqmDcPwRJC66+Aq7Q/LGx0TRytcv9s67zx1DBu3Kt3G2UoYLqzLat5a
+         wmFg58k56pIJsp/BLajEadwgSrqZaSfxzCqwRV3BhY49uKpOFvI47q19MJhBQjzireUw
+         1ZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BME1fSm2ROoLW7jWsWBGz1p8OXFk8JxNq5V1TauLp5Q=;
+        b=dUSjRbwbZk2KPLmG3mIs9ojZrfb//qhoWmPI6WISIQCc6Sp5245PzUuFV265GCjswJ
+         Delv1AtTvhDDPDrzlFFoT8sHBG9YgVf5QzYgQOg7FM34F0g0Uc4aemGIllNW5F5zRj1o
+         0ylZnaGFpa5skDnTt1cglgRRxFeHcHztRViAH8hOopo1u2O+BVrZ6jpta+lBbsRolsJO
+         /29QAGtI9xqIekvaL3TcV05Rtk3DPSAVEIC1/rDipdCGWhOPqb105Xan1p0p1OZnlCLq
+         q1Ofi9cYikZq934rglxgCpwXEE6XVtrn221BSPXLpuMPygGknv0NzoXKM8A2mrheBcoq
+         TXSQ==
+X-Gm-Message-State: AOAM533xEFYqR0H1R0RQd1JxD3l1/l7fky/QuKoaN3JMYzW9LQE8Wgrl
+        0TyvCr+xciufdQTJxF1I/RNq+qVaYkC+CQ==
+X-Google-Smtp-Source: ABdhPJzkfNPFqJ2eOjVOjj++a8Q9aY0YzRwahIlHWylknHl5m6qCJ7esoFXilZ+0DUMiswsVTzJoWA==
+X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id i11-20020a1709026acb00b0014276c3d35fmr36151012plt.89.1636991457936;
+        Mon, 15 Nov 2021 07:50:57 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v16sm12279434pgo.71.2021.11.15.07.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 07:50:57 -0800 (PST)
+Date:   Mon, 15 Nov 2021 15:50:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v2 1/2] KVM: nVMX: don't use vcpu->arch.efer when
+ checking host state on nested state load
+Message-ID: <YZKB3Q1ZMsPD6hHl@google.com>
+References: <20211115131837.195527-1-mlevitsk@redhat.com>
+ <20211115131837.195527-2-mlevitsk@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 3/4] fs/ntfs3: Update i_ctime when xattr is added
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>
-CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
- <d5482090-67d1-3a54-c351-b756b757a647@paragon-software.com>
- <20211026204132.kyez7uu4qhv7q2wl@kari-VirtualBox>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20211026204132.kyez7uu4qhv7q2wl@kari-VirtualBox>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.139]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115131837.195527-2-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 15, 2021, Maxim Levitsky wrote:
+> When loading the nested state, due to the way qemu loads
+> the nested state, vcpu->arch.efer contains L2' IA32_EFER which
+> can be completely different from L1's IA32_EFER, thus it is
+> wrong to do consistency check of it vs the vmcs12 exit fields.
+
+This is not sufficient justification.  It makes it sound like KVM is hacking
+around a bug in its ABI, which it is not, but that fact is _very_ subtle.  The
+"trust" blurb in bullet (3) in particular is misleading.
+
+Instead, I would like something like:
+
+  When loading nested state, don't use check vcpu->arch.efer to get the
+  L1 host's 64-bit vs. 32-bit state and don't check it for consistency
+  with respect to VM_EXIT_HOST_ADDR_SPACE_SIZE, as register state in vCPU
+  may be stale when KVM_SET_NESTED_STATE is called and conceptually does
+  not exist.  When the CPU is in non-root mode, i.e. when restoring L2
+  state in KVM, there is no snapshot of L1 host state, it is (conditionally)
+  loaded on VM-Exit.  E.g. EFER is either preserved on exit, loaded from the
+  VMCS (vmcs12 in this case), or loaded from the MSR load list.
+
+  Use vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE to determine the target mode of
+  the L1 host, as it is the source of truth in this case.  Perform the EFER
+  vs. vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE consistency check only on VM-Enter,
+  as conceptually there's no "current" L1 EFER to check.
+
+  Note, KVM still checks vmcs12.HOST_EFER for consistency if
+  if vmcs12.VM_EXIT_LOAD_IA32_EFER is set, i.e. this skips only the check
+  against current vCPU state, which does not exist, when loading nested state.
+
+> To fix this
+> 
+> 1. Split the host state consistency check
+> between current IA32_EFER.LMA and 'host address space' bit in VMCS12 into
+> nested_vmx_check_address_state_size.
+> 
+> 2. Call this check only on a normal VM entry, while skipping this call
+> on loading the nested state.
+> 
+> 3. Trust the 'host address space' bit to contain correct ia32e
+> value on loading the nested state as it is the best value of
+> it at that point.
+> Still do a consistency check of it vs host_ia32_efer in vmcs12.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index b4ee5e9f9e201..7b1d5510a7cdc 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2866,6 +2866,17 @@ static int nested_vmx_check_controls(struct kvm_vcpu *vcpu,
+>  	return 0;
+>  }
+>  
+> +static int nested_vmx_check_address_state_size(struct kvm_vcpu *vcpu,
+> +				       struct vmcs12 *vmcs12)
+
+Bad indentation.
+
+> +{
+> +#ifdef CONFIG_X86_64
+> +	if (CC(!!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) !=
+> +		!!(vcpu->arch.efer & EFER_LMA)))
+
+Bad indentation.  The number of !'s is also unnecessary.  This also needs a comment
+explaining why it's not included in the KVM_SET_NESTED_STATE path.
+
+> +		return -EINVAL;
+> +#endif
+> +	return 0;
+> +}
+> +
+>  static int nested_vmx_check_host_state(struct kvm_vcpu *vcpu,
+>  				       struct vmcs12 *vmcs12)
+>  {
+> @@ -2890,18 +2901,16 @@ static int nested_vmx_check_host_state(struct kvm_vcpu *vcpu,
+>  		return -EINVAL;
+>  
+>  #ifdef CONFIG_X86_64
+> -	ia32e = !!(vcpu->arch.efer & EFER_LMA);
+> +	ia32e = !!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE);
 
 
-On 26.10.2021 23:41, Kari Argillander wrote:
-> On Tue, Oct 26, 2021 at 07:41:50PM +0300, Konstantin Komarov wrote:
->> Ctime wasn't updated after setfacl command.
->> This commit fixes xfstest generic/307
+>  #else
+>  	ia32e = false;
+>  #endif
+>  
+>  	if (ia32e) {
+> -		if (CC(!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE)) ||
+> -		    CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
+> +		if (CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
+>  			return -EINVAL;
+>  	} else {
+> -		if (CC(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) ||
+> -		    CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
+> +		if (CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
+>  		    CC(vmcs12->host_cr4 & X86_CR4_PCIDE) ||
+>  		    CC((vmcs12->host_rip) >> 32))
+>  			return -EINVAL;
+> @@ -3571,6 +3580,9 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>  	if (nested_vmx_check_controls(vcpu, vmcs12))
+>  		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_CONTROL_FIELD);
+>  
+> +	if (nested_vmx_check_address_state_size(vcpu, vmcs12))
+> +		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
+> +
+>  	if (nested_vmx_check_host_state(vcpu, vmcs12))
+>  		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
+>  
+> -- 
+> 2.26.3
 > 
-> When I run xfstest I get
-> 
-> generic/307		[20:37:41][   21.436315] run fstests generic/307 at 2021-10-26 20:37:41
-> [   23.362544]  vdc:
-> [failed, exit status 1] [20:37:45]- output mismatch (see /results/ntfs3/results-default/generic/307.out.bad)
->     --- tests/generic/307.out	2021-08-03 00:08:10.000000000 +0000
->     +++ /results/ntfs3/results-default/generic/307.out.bad	2021-10-26 20:37:45.172171949 +0000
->     @@ -1,2 +1,4 @@
->      QA output created by 307
->      Silence is golden
->     +setfacl: symbol lookup error: setfacl: undefined symbol: walk_tree
->     +error: ctime not updated after setfacl
->     ...
->     (Run 'diff -u /root/xfstests/tests/generic/307.out /results/ntfs3/results-default/generic/307.out.bad'  to see the entire diff)
-> 
-> any ideas you get different result?
-> 
-
-What are mount options for this test?
-generic/307 passes with "acl" and "sparse,acl".
-Can you try to locate where is "undefined symbol: walk_tree" coming from?
-
->> Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
->>
->> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
->> ---
->>  fs/ntfs3/xattr.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
->> index 3ccdb8c2ac0b..157b70aecb4f 100644
->> --- a/fs/ntfs3/xattr.c
->> +++ b/fs/ntfs3/xattr.c
->> @@ -992,6 +992,9 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
->>  	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
->>  
->>  out:
->> +	inode->i_ctime = current_time(inode);
->> +	mark_inode_dirty(inode);
->> +
->>  	return err;
->>  }
->>  
->> -- 
->> 2.33.0
->>
->>
