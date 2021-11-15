@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5824511CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0245C4511BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243984AbhKOTOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:14:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58628 "EHLO mail.kernel.org"
+        id S244377AbhKOTN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:13:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238636AbhKORnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238639AbhKORnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:43:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5BDD632FC;
-        Mon, 15 Nov 2021 17:28:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5247632F5;
+        Mon, 15 Nov 2021 17:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997307;
-        bh=Evu+K9Wkb9pU6sX9ikL1VUHN234Qn9kIHg2N8HqSdVQ=;
+        s=korg; t=1636997310;
+        bh=SbuKvyUjnzr2t6us1hKrFAz3S84DcHuGAFr+Bu2n18g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GGd+vwu8gw/vm0ZbEWfXdujGNKpyfju/91PdthxxhanST0sSEaiSk7bCSbUkRIHyl
-         bWi99kDwQRWeHNWwHGcJW4hVZkIIR1BJ7SYAtjbZhM2IQkNWZ63JvZWDu5Vk0AOUX6
-         RLIF6Qlu08eMIX7ESnwRLG2IyfSClHgOXWkK8CWg=
+        b=ulorxn+bNXsIFZhky4wH5ybWOJqO2zsnWbkRlPVqwC6bnl94YTol6/BLfOxr/WQkP
+         VdsZg5pcbEsVt0+Fn+JYmWcV8HNpmKUX4zMnD90jSCkMaA+6NoF9TS03yPZEB2YGvS
+         JiLtD3DlpVrokSuK3M04yOA5VXDwiBmUs3HImDLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 100/575] rtl8187: fix control-message timeouts
-Date:   Mon, 15 Nov 2021 17:57:05 +0100
-Message-Id: <20211115165347.114112593@linuxfoundation.org>
+        stable@vger.kernel.org, Austin Kim <austin.kim@lge.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.10 101/575] evm: mark evm_fixmode as __ro_after_init
+Date:   Mon, 15 Nov 2021 17:57:06 +0100
+Message-Id: <20211115165347.152538610@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,87 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Austin Kim <austin.kim@lge.com>
 
-commit 2e9be536a213e838daed6ba42024dd68954ac061 upstream.
+commit 32ba540f3c2a7ef61ed5a577ce25069a3d714fc9 upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+The evm_fixmode is only configurable by command-line option and it is never
+modified outside initcalls, so declaring it with __ro_after_init is better.
 
-Fixes: 605bebe23bf6 ("[PATCH] Add rtl8187 wireless driver")
-Cc: stable@vger.kernel.org      # 2.6.23
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025120522.6045-4-johan@kernel.org
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/realtek/rtl818x/rtl8187/rtl8225.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ security/integrity/evm/evm_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/realtek/rtl818x/rtl8187/rtl8225.c
-+++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/rtl8225.c
-@@ -28,7 +28,7 @@ u8 rtl818x_ioread8_idx(struct rtl8187_pr
- 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits8, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits8, sizeof(val), 500);
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -54,7 +54,7 @@ static struct xattr_list evm_config_defa
  
- 	val = priv->io_dmabuf->bits8;
- 	mutex_unlock(&priv->io_mutex);
-@@ -45,7 +45,7 @@ u16 rtl818x_ioread16_idx(struct rtl8187_
- 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits16, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits16, sizeof(val), 500);
+ LIST_HEAD(evm_config_xattrnames);
  
- 	val = priv->io_dmabuf->bits16;
- 	mutex_unlock(&priv->io_mutex);
-@@ -62,7 +62,7 @@ u32 rtl818x_ioread32_idx(struct rtl8187_
- 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits32, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits32, sizeof(val), 500);
- 
- 	val = priv->io_dmabuf->bits32;
- 	mutex_unlock(&priv->io_mutex);
-@@ -79,7 +79,7 @@ void rtl818x_iowrite8_idx(struct rtl8187
- 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits8, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits8, sizeof(val), 500);
- 
- 	mutex_unlock(&priv->io_mutex);
- }
-@@ -93,7 +93,7 @@ void rtl818x_iowrite16_idx(struct rtl818
- 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits16, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits16, sizeof(val), 500);
- 
- 	mutex_unlock(&priv->io_mutex);
- }
-@@ -107,7 +107,7 @@ void rtl818x_iowrite32_idx(struct rtl818
- 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
- 			(unsigned long)addr, idx & 0x03,
--			&priv->io_dmabuf->bits32, sizeof(val), HZ / 2);
-+			&priv->io_dmabuf->bits32, sizeof(val), 500);
- 
- 	mutex_unlock(&priv->io_mutex);
- }
-@@ -183,7 +183,7 @@ static void rtl8225_write_8051(struct ie
- 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
- 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
- 			addr, 0x8225, &priv->io_dmabuf->bits16, sizeof(data),
--			HZ / 2);
-+			500);
- 
- 	mutex_unlock(&priv->io_mutex);
- 
+-static int evm_fixmode;
++static int evm_fixmode __ro_after_init;
+ static int __init evm_set_fixmode(char *str)
+ {
+ 	if (strncmp(str, "fix", 3) == 0)
 
 
