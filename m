@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B87C451B64
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDD845194D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345246AbhKPAA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1347074AbhKOXRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:17:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344427AbhKOTYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C158963491;
-        Mon, 15 Nov 2021 18:57:36 +0000 (UTC)
+        id S244394AbhKOTOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:14:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B81FF634BB;
+        Mon, 15 Nov 2021 18:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002657;
-        bh=LRl468M4MZZiIM/cUvq7vGAThhER+auvJ6nEzPrl5os=;
+        s=korg; t=1637000446;
+        bh=WTVOg6UfWqBwkhA/w3webc8VR/6JwSWz53HUV3C/n/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZsytaYo/AklM/g3Czex0jyQlAaoO+ukoUEpn+2ce4g7dd/zwQAMSkPhsZIf+NMwf4
-         0lEStYATD6LgyKMo3hrTLudorHINcDwx124IwXYKsmxC292jcv9sr/wZtqlHXrpDnu
-         a++OQ9uSy/jP4OXUcbfdluUemc+DMtQtNskHxOBA=
+        b=ae05vWbeSKGqtJPv76sMw1pTs5HWkbXW0+kMcBmsiY/qLNqNui172decmV+AyvwGg
+         DedUHgEg4ij/YTQ4LwY969eW5Ob5LbL3u1JkDNafvWlkEPQARnOY/eBnEsV+UMeViA
+         rNDFJsKQeRxQICtuxFqM+dteSmvaxA2AyT3LLuP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, "Andrew F. Davis" <afd@ti.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 649/917] scsi: ufs: ufshcd-pltfrm: Fix memory leak due to probe defer
-Date:   Mon, 15 Nov 2021 18:02:24 +0100
-Message-Id: <20211115165450.873727338@linuxfoundation.org>
+Subject: [PATCH 5.14 662/849] power: supply: bq27xxx: Fix kernel crash on IRQ handler register error
+Date:   Mon, 15 Nov 2021 18:02:25 +0100
+Message-Id: <20211115165442.655282549@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,83 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b6ca770ae7f2c560a29bbd02c4e3d734fafaf804 ]
+[ Upstream commit cdf10ffe8f626d8a2edc354abf063df0078b2d71 ]
 
-UFS drivers that probe defer will end up leaking memory allocated for clk
-and regulator names via kstrdup() because the structure that is holding
-this memory is allocated via devm_* variants which will be freed during
-probe defer but the names are never freed.
+When registering the IRQ handler fails, do not just return the error code,
+this will free the devm_kzalloc()-ed data struct while leaving the queued
+work queued and the registered power_supply registered with both of them
+now pointing to free-ed memory, resulting in various kernel crashes
+soon afterwards.
 
-Use same devm_* variant of kstrdup to free the memory allocated to name
-when driver probe defers.
+Instead properly tear-down things on IRQ handler register errors.
 
-Kmemleak found around 11 leaks on Qualcomm Dragon Board RB5:
-
-unreferenced object 0xffff66f243fb2c00 (size 128):
-  comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
-  hex dump (first 32 bytes):
-    63 6f 72 65 5f 63 6c 6b 00 76 69 72 74 75 61 6c  core_clk.virtual
-    2f 77 6f 72 6b 71 75 65 75 65 2f 73 63 73 69 5f  /workqueue/scsi_
-  backtrace:
-    [<000000006f788cd1>] slab_post_alloc_hook+0x88/0x410
-    [<00000000cfd1372b>] __kmalloc_track_caller+0x138/0x230
-    [<00000000a92ab17b>] kstrdup+0xb0/0x110
-    [<0000000037263ab6>] ufshcd_pltfrm_init+0x1a8/0x500
-    [<00000000a20a5caa>] ufs_qcom_probe+0x20/0x58
-    [<00000000a5e43067>] platform_probe+0x6c/0x118
-    [<00000000ef686e3f>] really_probe+0xc4/0x330
-    [<000000005b18792c>] __driver_probe_device+0x88/0x118
-    [<00000000a5d295e8>] driver_probe_device+0x44/0x158
-    [<000000007e83f58d>] __device_attach_driver+0xb4/0x128
-    [<000000004bfa4470>] bus_for_each_drv+0x68/0xd0
-    [<00000000b89a83bc>] __device_attach+0xec/0x170
-    [<00000000ada2beea>] device_initial_probe+0x14/0x20
-    [<0000000079921612>] bus_probe_device+0x9c/0xa8
-    [<00000000d268bf7c>] deferred_probe_work_func+0x90/0xd0
-    [<000000009ef64bfa>] process_one_work+0x29c/0x788
-unreferenced object 0xffff66f243fb2c80 (size 128):
-  comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
-  hex dump (first 32 bytes):
-    62 75 73 5f 61 67 67 72 5f 63 6c 6b 00 00 00 00  bus_aggr_clk....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-
-With this patch no memory leaks are reported.
-
-Link: https://lore.kernel.org/r/20210914092214.6468-1-srinivas.kandagatla@linaro.org
-Fixes: aa4976130934 ("ufs: Add regulator enable support")
-Fixes: c6e79dacd86f ("ufs: Add clock initialization support")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 703df6c09795 ("power: bq27xxx_battery: Reorganize I2C into a module")
+Cc: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd-pltfrm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/power/supply/bq27xxx_battery_i2c.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index 8859c13f4e091..eaeae83b999fd 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -91,7 +91,7 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
+diff --git a/drivers/power/supply/bq27xxx_battery_i2c.c b/drivers/power/supply/bq27xxx_battery_i2c.c
+index 46f078350fd3f..cf38cbfe13e9d 100644
+--- a/drivers/power/supply/bq27xxx_battery_i2c.c
++++ b/drivers/power/supply/bq27xxx_battery_i2c.c
+@@ -187,7 +187,8 @@ static int bq27xxx_battery_i2c_probe(struct i2c_client *client,
+ 			dev_err(&client->dev,
+ 				"Unable to register IRQ %d error %d\n",
+ 				client->irq, ret);
+-			return ret;
++			bq27xxx_battery_teardown(di);
++			goto err_failed;
+ 		}
+ 	}
  
- 		clki->min_freq = clkfreq[i];
- 		clki->max_freq = clkfreq[i+1];
--		clki->name = kstrdup(name, GFP_KERNEL);
-+		clki->name = devm_kstrdup(dev, name, GFP_KERNEL);
- 		if (!strcmp(name, "ref_clk"))
- 			clki->keep_link_active = true;
- 		dev_dbg(dev, "%s: min %u max %u name %s\n", "freq-table-hz",
-@@ -126,7 +126,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 	if (!vreg)
- 		return -ENOMEM;
- 
--	vreg->name = kstrdup(name, GFP_KERNEL);
-+	vreg->name = devm_kstrdup(dev, name, GFP_KERNEL);
- 
- 	snprintf(prop_name, MAX_PROP_SIZE, "%s-max-microamp", name);
- 	if (of_property_read_u32(np, prop_name, &vreg->max_uA)) {
 -- 
 2.33.0
 
