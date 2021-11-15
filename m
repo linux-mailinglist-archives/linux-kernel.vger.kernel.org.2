@@ -2,229 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD48D451951
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABBC451D86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352665AbhKOXSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:17 -0500
-Received: from 8.mo552.mail-out.ovh.net ([46.105.37.156]:45737 "EHLO
-        8.mo552.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244151AbhKOTPE (ORCPT
+        id S1349866AbhKPAaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345919AbhKOT3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:15:04 -0500
-X-Greylist: delayed 405 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 14:15:04 EST
-Received: from mxplan5.mail.ovh.net (unknown [10.108.20.180])
-        by mo552.mail-out.ovh.net (Postfix) with ESMTPS id AB05520EE3;
-        Mon, 15 Nov 2021 19:05:18 +0000 (UTC)
-Received: from kaod.org (37.59.142.106) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 15 Nov
- 2021 20:05:18 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-106R0067dd14582-1412-4631-8fa2-d8a1cb31cee9,
-                    B170A238E9997327E6DA2770AA6356012EAFCF51) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.64.250.170
-Message-ID: <1fe9d629-0f5f-4807-b97c-77b3b3c7de72@kaod.org>
-Date:   Mon, 15 Nov 2021 20:05:17 +0100
+        Mon, 15 Nov 2021 14:29:33 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493B8C06F69D
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:06:40 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id w1so10339833edc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:06:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uCbqKs1ZcW/d50rZafmZ+SyLk/Uguxy204CBYFA2gEw=;
+        b=ZNFnn/GoqMfn2uOtaWD4XYyNUAuMEtxNSMZr4cJumapKrsn2DcW2/pxhHC1JS3djHf
+         L0XLZ4SwtSrW6cseMin9NI53UmyIbtSPnvMjxtMZ9mr6oh114gi4cazu68z6inUkMWmD
+         1F5xqaVpv60aRaai4JsyzFHfrds0Db4suzcI0wunwG2al/E73Dwhr0nHCpcIcr2VKhBC
+         a3y0Xjv/ZV6E9rTu3yN/Mj93mRKIq19H0clkFrrG1KMX9cw6tL4jGC76IdZP0eEv3VT9
+         QckyVHgDCPUyYa/fw34mTGeG1BipFA4nYxfJ1Gqwi0pLAEfiWew+k6lZxgiM+5GohEDz
+         pjhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uCbqKs1ZcW/d50rZafmZ+SyLk/Uguxy204CBYFA2gEw=;
+        b=IV7VqLxwpzyFjhiOy45fi/H3yolJooi9lqVKMDgXmVDMjh2qH2yVB2zoDZdeLp+zJ1
+         uc64FCuPb0pj11kOz3YCcuZXP700lDzVCv5BpLlOb0Yx51nNAs78DCBC5TZYL/czrxZM
+         l7QBJPTS4G4rk6wVu9WcsF7kyOmTKgdE1y07AL28C0gElmzhg8DWfE1uBt3k9rpNi+cS
+         42KBmzuwdgjNyVDQ257WoVYPbkM6w0AcaGPh0bHL/3i2gUAg1NxAQSWWy8PlsuYahQ+i
+         sDobNvacc7V12KebI+NB1LrhvFVHWGVZQaXUxuy+dX0GkyHLxf0PivD5pbPgo89+R4bo
+         A5wg==
+X-Gm-Message-State: AOAM533DN/WsKN9qdapBXr064dgcKZb0Ldu8aTOiTFZ8iiMNCuTHOlWL
+        Evljl9qv/R7al941zhU0emuivFsU/15x2YwEWRU=
+X-Google-Smtp-Source: ABdhPJwMLXzdDIvmeIdYTuS5wG0oJ87UJwctiuV18ZCm3LyqYdqClQ4WdBRrWFmirungf3BfBhNer5/8bCSLWasyEMo=
+X-Received: by 2002:a05:6402:2926:: with SMTP id ee38mr1422987edb.71.1637003198157;
+ Mon, 15 Nov 2021 11:06:38 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 16/39] irqdomain: Make normal and nomap irqdomains
- exclusive
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Greg Kurz <groug@kaod.org>
-References: <20210520163751.27325-1-maz@kernel.org>
- <20210520163751.27325-17-maz@kernel.org>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-In-Reply-To: <20210520163751.27325-17-maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.106]
-X-ClientProxiedBy: DAG8EX2.mxp5.local (172.16.2.72) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: eb9f6b47-83ae-4727-9694-cdc3b8086037
-X-Ovh-Tracer-Id: 12641041204814514982
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfedtgdelgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfhfhfgjtgfgihesthejredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpefhhfelgeeukedtteffvdffueeiuefgkeekleehleetfedtgfetffefheeugeelheenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehgrhhouhhgsehkrghougdrohhrgh
+References: <a31dc065a7901bcdca0d9642d0def0f57e865e20.1636683991.git.baolin.wang@linux.alibaba.com>
+ <CAHbLzkpTo0yW9YWPyE6omiiP2QiwMRETe1ZJ1x4sEJCk0WZOkg@mail.gmail.com> <d953e533-e175-17ba-c065-dfd1354a858f@linux.alibaba.com>
+In-Reply-To: <d953e533-e175-17ba-c065-dfd1354a858f@linux.alibaba.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 15 Nov 2021 11:06:26 -0800
+Message-ID: <CAHbLzkqSqCL+g7dfzeOw8fPyeEC0BBv13Ny1UVGHDkadnQdR=g@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: migrate: Support multiple target nodes demotion
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>,
+        zhongjiang-ali@linux.alibaba.com,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
+On Sun, Nov 14, 2021 at 6:40 AM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 2021/11/13 3:05, Yang Shi wrote:
+> > On Thu, Nov 11, 2021 at 6:28 PM Baolin Wang
+> > <baolin.wang@linux.alibaba.com> wrote:
+> >>
+> >> We have some machines with multiple memory types like below, which
+> >> have one fast (DRAM) memory node and two slow (persistent memory) memory
+> >> nodes. According to current node demotion policy, if node 0 fills up,
+> >> its memory should be migrated to node 1, when node 1 fills up, its
+> >> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
+> >>
+> >> But this is not efficient and suitbale memory migration route
+> >> for our machine with multiple slow memory nodes. Since the distance
+> >> between node 0 to node 1 and node 0 to node 2 is equal, and memory
+> >> migration between slow memory nodes will increase persistent memory
+> >> bandwidth greatly, which will hurt the whole system's performance.
+> >>
+> >> Thus for this case, we can treat the slow memory node 1 and node 2
+> >> as a whole slow memory region, and we should migrate memory from
+> >> node 0 to node 1 and node 2 if node 0 fills up.
+> >>
+> >> This patch changes the node_demotion data structure to support multiple
+> >> target nodes, and establishes the migration path to support multiple
+> >> target nodes with validating if the node distance is the best or not.
+> >>
+> >> available: 3 nodes (0-2)
+> >> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> >> node 0 size: 62153 MB
+> >> node 0 free: 55135 MB
+> >> node 1 cpus:
+> >> node 1 size: 127007 MB
+> >> node 1 free: 126930 MB
+> >> node 2 cpus:
+> >> node 2 size: 126968 MB
+> >> node 2 free: 126878 MB
+> >> node distances:
+> >> node   0   1   2
+> >>    0:  10  20  20
+> >>    1:  20  10  20
+> >>    2:  20  20  10
+> >>
+> >> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> >> ---
+> >> Changes from v2:
+> >>   - Redefine the DEMOTION_TARGET_NODES macro according to the
+> >>     MAX_NUMNODES.
+> >>   - Change node_demotion to a pointer and allocate it dynamically.
+> >>
+> >> Changes from v1:
+> >>   - Add a new patch to allocate the node_demotion dynamically.
+> >>   - Update some comments.
+> >>   - Simplify some variables' name.
+> >>
+> >> Changes from RFC v2:
+> >>   - Change to 'short' type for target nodes array.
+> >>   - Remove nodemask instead selecting target node directly.
+> >>   - Add WARN_ONCE() if the target nodes exceed the maximum value.
+> >>
+> >> Changes from RFC v1:
+> >>   - Re-define the node_demotion structure.
+> >>   - Set up multiple target nodes by validating the node distance.
+> >>   - Add more comments.
+> >> ---
+> >>   mm/migrate.c | 167 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+> >>   1 file changed, 132 insertions(+), 35 deletions(-)
+> >>
+> >> diff --git a/mm/migrate.c b/mm/migrate.c
+> >> index cf25b00..9b8a813 100644
+> >> --- a/mm/migrate.c
+> >> +++ b/mm/migrate.c
+> >> @@ -50,6 +50,7 @@
+> >>   #include <linux/ptrace.h>
+> >>   #include <linux/oom.h>
+> >>   #include <linux/memory.h>
+> >> +#include <linux/random.h>
+> >>
+> >>   #include <asm/tlbflush.h>
+> >>
+> >> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+> >>    *
+> >>    * This is represented in the node_demotion[] like this:
+> >>    *
+> >> - *     {  1, // Node 0 migrates to 1
+> >> - *        2, // Node 1 migrates to 2
+> >> - *       -1, // Node 2 does not migrate
+> >> - *        4, // Node 3 migrates to 4
+> >> - *        5, // Node 4 migrates to 5
+> >> - *       -1} // Node 5 does not migrate
+> >> + *     {  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
+> >> + *     {  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
+> >> + *     {  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
+> >> + *     {  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
+> >> + *     {  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
+> >> + *     {  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
+> >> + *
+> >> + * Moreover some systems may have multiple slow memory nodes.
+> >> + * Suppose a system has one socket with 3 memory nodes, node 0
+> >> + * is fast memory type, and node 1/2 both are slow memory
+> >> + * type, and the distance between fast memory node and slow
+> >> + * memory node is same. So the migration path should be:
+> >> + *
+> >> + *     0 -> 1/2 -> stop
+> >> + *
+> >> + * This is represented in the node_demotion[] like this:
+> >> + *     { nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
+> >> + *     { nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
+> >> + *     { nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+> >>    */
+> >>
+> >>   /*
+> >> @@ -1135,8 +1149,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+> >>    * must be held over all reads to ensure that no cycles are
+> >>    * observed.
+> >>    */
+> >> -static int node_demotion[MAX_NUMNODES] __read_mostly =
+> >> -       {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+> >> +#define DEFAULT_DEMOTION_TARGET_NODES 15
+> >> +
+> >> +#if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
+> >> +#define DEMOTION_TARGET_NODES  (MAX_NUMNODES - 1)
+> >> +#else
+> >> +#define DEMOTION_TARGET_NODES  DEFAULT_DEMOTION_TARGET_NODES
+> >> +#endif
+> >> +
+> >> +struct demotion_nodes {
+> >> +       unsigned short nr;
+> >> +       short nodes[DEMOTION_TARGET_NODES];
+> >> +};
+> >> +
+> >> +static struct demotion_nodes *node_demotion __read_mostly;
+> >>
+> >>   /**
+> >>    * next_demotion_node() - Get the next node in the demotion path
+> >> @@ -1149,8 +1175,15 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+> >>    */
+> >>   int next_demotion_node(int node)
+> >>   {
+> >> +       struct demotion_nodes *nd;
+> >> +       unsigned short target_nr, index;
+> >>          int target;
+> >>
+> >> +       if (!node_demotion)
+> >> +               return NUMA_NO_NODE;
+> >> +
+> >> +       nd = &node_demotion[node];
+> >> +
+> >>          /*
+> >>           * node_demotion[] is updated without excluding this
+> >>           * function from running.  RCU doesn't provide any
+> >> @@ -1161,9 +1194,28 @@ int next_demotion_node(int node)
+> >>           * node_demotion[] reads need to be consistent.
+> >>           */
+> >>          rcu_read_lock();
+> >> -       target = READ_ONCE(node_demotion[node]);
+> >> -       rcu_read_unlock();
+> >> +       target_nr = READ_ONCE(nd->nr);
+> >> +
+> >> +       switch (target_nr) {
+> >> +       case 0:
+> >> +               target = NUMA_NO_NODE;
+> >> +               goto out;
+> >> +       case 1:
+> >> +               index = 0;
+> >> +               break;
+> >> +       default:
+> >> +               /*
+> >> +                * If there are multiple target nodes, just select one
+> >> +                * target node randomly.
+> >> +                */
+> >> +               index = get_random_int() % target_nr;
+> >
+> > Sorry for chiming in late. I don't get why not select demotion targe > node interleave? TBH, it makes more sense to me. Random is ok, but at
+> > least I'd expect to see some explanation about why random is used.
+>
+> My first version patch[1] already did round-robin to select target node.
+> For interleave (or round-robin), we should introduce another member to
+> record last selected target node, as Dave and Ying said, that will cause
+> cache ping-pong to hurt performance, or introduce per-cpu data to avoid
+> this, which seems more complicated now.
 
-On 5/20/21 18:37, Marc Zyngier wrote:
-> Direct mappings are completely exclusive of normal mappings, meaning
-> that we can refactor the code slightly so that we can get rid of
-> the revmap_direct_max_irq field and use the revmap_size field
-> instead, reducing the size of the irqdomain structure.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Thanks. It should be better to have some words in the commit log or
+code to elaborate this? Someone else may have the same question in the
+future.
 
-
-This patch is breaking the POWER9/POWER10 XIVE driver (these are not
-old PPC systems :) on machines sharing the same LSI HW IRQ. For instance,
-a linux KVM guest with a virtio-rng and a virtio-balloon device. In that
-case, Linux creates two distinct IRQ mappings which can lead to some
-unexpected behavior.
-
-A fix to go forward would be to change the XIVE IRQ domain to use a
-'Tree' domain for reverse mapping and not the 'No Map' domain mapping.
-I will keep you updated for XIVE.
-
-Thanks,
-
-C.
-
-
-> ---
->   include/linux/irqdomain.h |  6 +++---
->   kernel/irq/irqdomain.c    | 45 ++++++++++++++++++++++++++++++---------
->   2 files changed, 38 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-> index 723495ec5a2f..0916cf9c6e20 100644
-> --- a/include/linux/irqdomain.h
-> +++ b/include/linux/irqdomain.h
-> @@ -149,8 +149,6 @@ struct irq_domain_chip_generic;
->    * @parent: Pointer to parent irq_domain to support hierarchy irq_domains
->    *
->    * Revmap data, used internally by irq_domain
-> - * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
-> - *                         support direct mapping
->    * @revmap_size: Size of the linear map table @revmap[]
->    * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
->    * @revmap: Linear table of hwirq->virq reverse mappings
-> @@ -173,7 +171,6 @@ struct irq_domain {
->   
->   	/* reverse map data. The linear map gets appended to the irq_domain */
->   	irq_hw_number_t hwirq_max;
-> -	unsigned int revmap_direct_max_irq;
->   	unsigned int revmap_size;
->   	struct radix_tree_root revmap_tree;
->   	struct mutex revmap_tree_mutex;
-> @@ -207,6 +204,9 @@ enum {
->   	 */
->   	IRQ_DOMAIN_MSI_NOMASK_QUIRK	= (1 << 6),
->   
-> +	/* Irq domain doesn't translate anything */
-> +	IRQ_DOMAIN_FLAG_NO_MAP		= (1 << 7),
-> +
->   	/*
->   	 * Flags starting from IRQ_DOMAIN_FLAG_NONCORE are reserved
->   	 * for implementation specific purposes and ignored by the
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index e0143e640683..fa94c86e47d4 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -146,6 +146,10 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
->   
->   	static atomic_t unknown_domains;
->   
-> +	if (WARN_ON((size && direct_max) ||
-> +		    (!IS_ENABLED(CONFIG_IRQ_DOMAIN_NOMAP) && direct_max)))
-> +		return NULL;
-> +
->   	domain = kzalloc_node(sizeof(*domain) + (sizeof(unsigned int) * size),
->   			      GFP_KERNEL, of_node_to_nid(to_of_node(fwnode)));
->   	if (!domain)
-> @@ -213,8 +217,14 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
->   	domain->ops = ops;
->   	domain->host_data = host_data;
->   	domain->hwirq_max = hwirq_max;
-> +
-> +	if (direct_max) {
-> +		size = direct_max;
-> +		domain->flags |= IRQ_DOMAIN_FLAG_NO_MAP;
-> +	}
-> +
->   	domain->revmap_size = size;
-> -	domain->revmap_direct_max_irq = direct_max;
-> +
->   	irq_domain_check_hierarchy(domain);
->   
->   	mutex_lock(&irq_domain_mutex);
-> @@ -482,9 +492,18 @@ struct irq_domain *irq_get_default_host(void)
->   	return irq_default_domain;
->   }
->   
-> +static bool irq_domain_is_nomap(struct irq_domain *domain)
-> +{
-> +	return IS_ENABLED(CONFIG_IRQ_DOMAIN_NOMAP) &&
-> +	       (domain->flags & IRQ_DOMAIN_FLAG_NO_MAP);
-> +}
-> +
->   static void irq_domain_clear_mapping(struct irq_domain *domain,
->   				     irq_hw_number_t hwirq)
->   {
-> +	if (irq_domain_is_nomap(domain))
-> +		return;
-> +
->   	if (hwirq < domain->revmap_size) {
->   		domain->revmap[hwirq] = 0;
->   	} else {
-> @@ -498,6 +517,9 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
->   				   irq_hw_number_t hwirq,
->   				   struct irq_data *irq_data)
->   {
-> +	if (irq_domain_is_nomap(domain))
-> +		return;
-> +
->   	if (hwirq < domain->revmap_size) {
->   		domain->revmap[hwirq] = irq_data->irq;
->   	} else {
-> @@ -629,9 +651,9 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
->   		pr_debug("create_direct virq allocation failed\n");
->   		return 0;
->   	}
-> -	if (virq >= domain->revmap_direct_max_irq) {
-> +	if (virq >= domain->revmap_size) {
->   		pr_err("ERROR: no free irqs available below %i maximum\n",
-> -			domain->revmap_direct_max_irq);
-> +			domain->revmap_size);
->   		irq_free_desc(virq);
->   		return 0;
->   	}
-> @@ -879,10 +901,14 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
->   	if (domain == NULL)
->   		return 0;
->   
-> -	if (hwirq < domain->revmap_direct_max_irq) {
-> -		data = irq_domain_get_irq_data(domain, hwirq);
-> -		if (data && data->hwirq == hwirq)
-> -			return hwirq;
-> +	if (irq_domain_is_nomap(domain)) {
-> +		if (hwirq < domain->revmap_size) {
-> +			data = irq_domain_get_irq_data(domain, hwirq);
-> +			if (data && data->hwirq == hwirq)
-> +				return hwirq;
-> +		}
-> +
-> +		return 0;
->   	}
->   
->   	/* Check if the hwirq is in the linear revmap. */
-> @@ -1470,7 +1496,7 @@ static void irq_domain_fix_revmap(struct irq_data *d)
->   {
->   	void __rcu **slot;
->   
-> -	if (d->hwirq < d->domain->revmap_size)
-> +	if (irq_domain_is_nomap(d->domain) || d->hwirq < d->domain->revmap_size)
->   		return; /* Not using radix tree. */
->   
->   	/* Fix up the revmap. */
-> @@ -1830,8 +1856,7 @@ static void
->   irq_domain_debug_show_one(struct seq_file *m, struct irq_domain *d, int ind)
->   {
->   	seq_printf(m, "%*sname:   %s\n", ind, "", d->name);
-> -	seq_printf(m, "%*ssize:   %u\n", ind + 1, "",
-> -		   d->revmap_size + d->revmap_direct_max_irq);
-> +	seq_printf(m, "%*ssize:   %u\n", ind + 1, "", d->revmap_size);
->   	seq_printf(m, "%*smapped: %u\n", ind + 1, "", d->mapcount);
->   	seq_printf(m, "%*sflags:  0x%08x\n", ind +1 , "", d->flags);
->   	if (d->ops && d->ops->debug_show)
-> 
-
+>
+> [1]
+> https://lore.kernel.org/all/c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com/
