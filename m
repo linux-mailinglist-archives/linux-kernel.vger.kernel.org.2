@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB70452057
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC25451B54
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357937AbhKPAwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1346970AbhKOX7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344344AbhKOTYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 952DD63666;
-        Mon, 15 Nov 2021 18:56:11 +0000 (UTC)
+        id S1344354AbhKOTYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACB236366B;
+        Mon, 15 Nov 2021 18:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002572;
-        bh=susqupJ+Dygupq88Lp3tGxosSgZU+Qn+gXubyF3rN+4=;
+        s=korg; t=1637002575;
+        bh=+7Yw0/uD2q8RPOwNfAd3r3Ux8OqWoYp+JSP1sPITtDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dn02xIngGeNtY15GMHVUTAoTMld+rNWR0zcn6M8f0yIRISjjRhHdl/SvVu+oHepYk
-         hVwlrpxYsBI9+JH0oD4hfWP/iJ3qtXvUCbxa/Ybf+XkoNqt5gf7eWHNYo731DLGy9U
-         QZq0IvtXFqEWp9KLxDF/Gm/yVErETeAuVEUHKkSw=
+        b=CgUP5Q5vQ1oxDzKl7G8cDecKwLw6y/9t9Woqu8c1B9attSs5xXSps9U2K1yzXjeWr
+         XVumK1gJdPU683ACwYhvqyIfTeoT2qA/h1ToStsP5MG9ZTFsBdcMggUa4uDIEmaAJo
+         Jaw88Bw7SmHarHUlodcaxeaWqfpglVzkjN+Fafag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 618/917] clk: at91: check pmc node status before registering syscore ops
-Date:   Mon, 15 Nov 2021 18:01:53 +0100
-Message-Id: <20211115165449.754210486@linuxfoundation.org>
+Subject: [PATCH 5.15 619/917] powerpc/mem: Fix arch/powerpc/mm/mem.c:53:12: error: no previous prototype for create_section_mapping
+Date:   Mon, 15 Nov 2021 18:01:54 +0100
+Message-Id: <20211115165449.787812878@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,44 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Léger <clement.leger@bootlin.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit c405f5c15e9f6094f2fa1658e73e56f3058e2122 ]
+[ Upstream commit 7eff9bc00ddf1e2281dff575884b7f676c85b006 ]
 
-Currently, at91 pmc driver always register the syscore_ops whatever
-the status of the pmc node that has been found. When set as secure
-and disabled, the pmc should not be accessed or this will generate
-abort exceptions.
-To avoid this, add a check on node availability before registering
-the syscore operations.
+Commit 8e11d62e2e87 ("powerpc/mem: Add back missing header to fix 'no
+previous prototype' error") was supposed to fix the problem, but in
+the meantime commit a927bd6ba952 ("mm: fix phys_to_target_node() and*
+memory_add_physaddr_to_nid() exports") moved create_section_mapping()
+prototype from asm/sparsemem.h to asm/mmzone.h
 
-Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-Link: https://lore.kernel.org/r/20210913082633.110168-1-clement.leger@bootlin.com
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Fixes: b3b02eac33ed ("clk: at91: Add sama5d2 suspend/resume")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 8e11d62e2e87 ("powerpc/mem: Add back missing header to fix 'no previous prototype' error")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/025754fde3d027904ae9d0191f395890bec93369.1631541649.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/at91/pmc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/powerpc/mm/mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-index 20ee9dccee787..b40035b011d0a 100644
---- a/drivers/clk/at91/pmc.c
-+++ b/drivers/clk/at91/pmc.c
-@@ -267,6 +267,11 @@ static int __init pmc_register_ops(void)
- 	if (!np)
- 		return -ENODEV;
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index c3c4e31462eca..05b9c3f31456c 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -20,8 +20,8 @@
+ #include <asm/machdep.h>
+ #include <asm/rtas.h>
+ #include <asm/kasan.h>
+-#include <asm/sparsemem.h>
+ #include <asm/svm.h>
++#include <asm/mmzone.h>
  
-+	if (!of_device_is_available(np)) {
-+		of_node_put(np);
-+		return -ENODEV;
-+	}
-+
- 	pmcreg = device_node_to_regmap(np);
- 	of_node_put(np);
- 	if (IS_ERR(pmcreg))
+ #include <mm/mmu_decl.h>
+ 
 -- 
 2.33.0
 
