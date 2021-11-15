@@ -2,40 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550934513DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA704513E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347871AbhKOT5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:57:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
+        id S1348692AbhKOT7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:59:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239515AbhKOSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239554AbhKOSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:01:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0D963345;
-        Mon, 15 Nov 2021 17:36:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B833610CA;
+        Mon, 15 Nov 2021 17:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997801;
-        bh=4DndtlRSBiA4Tb3+XFDDzO74ya/d+9wX4l8eeH+yB/4=;
+        s=korg; t=1636997820;
+        bh=+tMZrWAU6WgtK2gvUHEnNXA3MMLzpioVtqizpD77yso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DZhQd019MLLrCtu7nGKeBE97mmo++v6Nv+ytIBVK4eLO7bs9RgKEcfGQFCV2vENvU
-         CnM0FZk9vqOMDr7iWpORAZ4i5K2GPmjMZkhxt+39rdkCw/OX6IdEuLkFWEYm+WS1A/
-         P1/LxwjDGPx8vW+ZrLuphCX+/AQiCvq+WIKPQZ20=
+        b=RyMNbWILrOyporYn7JjX4ks7LwaJerBOgD1K4BtPTO4xbpZ85KLF0CvJ3X273qAy1
+         B0xEk1xPbOr9UDnblW+6Udu84fkTgA2YJzqdC/y8knQws0BNeN7G/apsbg37JmRdS4
+         nzXqWT0bHEPV5v9BLCO9Jucy4naowtGBSznw21h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Agustin Gutierrez <agustin.gutierrez@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 253/575] drm/amd/display: dcn20_resource_construct reduce scope of FPU enabled
-Date:   Mon, 15 Nov 2021 17:59:38 +0100
-Message-Id: <20211115165352.527602093@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 255/575] parisc: fix warning in flush_tlb_all
+Date:   Mon, 15 Nov 2021 17:59:40 +0100
+Message-Id: <20211115165352.599765652@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -47,106 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Jacob <Anson.Jacob@amd.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit bc39a69a2ac484e6575a958567c162ef56c9f278 ]
+[ Upstream commit 1030d681319b43869e0d5b568b9d0226652d1a6f ]
 
-Limit when FPU is enabled to only functions that does FPU operations for
-dcn20_resource_construct, which gets called during driver
-initialization.
+I've got the following splat after enabling preemption:
 
-Enabling FPU operation disables preemption.  Sleeping functions(mutex
-(un)lock, memory allocation using GFP_KERNEL, etc.) should not be called
-when preemption is disabled.
+[    3.724721] BUG: using __this_cpu_add() in preemptible [00000000] code: swapper/0/1
+[    3.734630] caller is __this_cpu_preempt_check+0x38/0x50
+[    3.740635] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4-64bit+ #324
+[    3.744605] Hardware name: 9000/785/C8000
+[    3.744605] Backtrace:
+[    3.744605]  [<00000000401d9d58>] show_stack+0x74/0xb0
+[    3.744605]  [<0000000040c27bd4>] dump_stack_lvl+0x10c/0x188
+[    3.744605]  [<0000000040c27c84>] dump_stack+0x34/0x48
+[    3.744605]  [<0000000040c33438>] check_preemption_disabled+0x178/0x1b0
+[    3.744605]  [<0000000040c334f8>] __this_cpu_preempt_check+0x38/0x50
+[    3.744605]  [<00000000401d632c>] flush_tlb_all+0x58/0x2e0
+[    3.744605]  [<00000000401075c0>] 0x401075c0
+[    3.744605]  [<000000004010b8fc>] 0x4010b8fc
+[    3.744605]  [<00000000401080fc>] 0x401080fc
+[    3.744605]  [<00000000401d5224>] do_one_initcall+0x128/0x378
+[    3.744605]  [<0000000040102de8>] 0x40102de8
+[    3.744605]  [<0000000040c33864>] kernel_init+0x60/0x3a8
+[    3.744605]  [<00000000401d1020>] ret_from_kernel_thread+0x20/0x28
+[    3.744605]
 
-Fixes the following case caught by enabling
-CONFIG_DEBUG_ATOMIC_SLEEP in kernel config
-[    1.338434] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:281
-[    1.347395] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 197, name: systemd-udevd
-[    1.356356] CPU: 7 PID: 197 Comm: systemd-udevd Not tainted 5.13.0+ #3
-[    1.356358] Hardware name: System manufacturer System Product Name/PRIME X570-PRO, BIOS 3405 02/01/2021
-[    1.356360] Call Trace:
-[    1.356361]  dump_stack+0x6b/0x86
-[    1.356366]  ___might_sleep.cold+0x87/0x98
-[    1.356370]  __might_sleep+0x4b/0x80
-[    1.356372]  mutex_lock+0x21/0x50
-[    1.356376]  smu_get_uclk_dpm_states+0x3f/0x80 [amdgpu]
-[    1.356538]  pp_nv_get_uclk_dpm_states+0x35/0x50 [amdgpu]
-[    1.356711]  init_soc_bounding_box+0xf9/0x210 [amdgpu]
-[    1.356892]  ? create_object+0x20d/0x340
-[    1.356897]  ? dcn20_resource_construct+0x46f/0xd30 [amdgpu]
-[    1.357077]  dcn20_resource_construct+0x4b1/0xd30 [amdgpu]
-...
+Fix this by moving the __inc_irq_stat() into the locked section.
 
-Tested on: 5700XT (NAVI10 0x1002:0x731F 0x1DA2:0xE410 0xC1)
-
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Hersen Wu <hersenxs.wu@amd.com>
-Cc: Anson Jacob <Anson.Jacob@amd.com>
-Cc: Harry Wentland <harry.wentland@amd.com>
-
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Acked-by: Agustin Gutierrez <agustin.gutierrez@amd.com>
-Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/dcn20/dcn20_resource.c    | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/parisc/mm/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-index 5dbc290bcbe86..3121816546467 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -3754,16 +3754,22 @@ static bool init_soc_bounding_box(struct dc *dc,
- 			clock_limits_available = (status == PP_SMU_RESULT_OK);
- 		}
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 3ec633b11b542..8f10cc6ee0fce 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -844,9 +844,9 @@ void flush_tlb_all(void)
+ {
+ 	int do_recycle;
  
--		if (clock_limits_available && uclk_states_available && num_states)
-+		if (clock_limits_available && uclk_states_available && num_states) {
-+			DC_FP_START();
- 			dcn20_update_bounding_box(dc, loaded_bb, &max_clocks, uclk_states, num_states);
--		else if (clock_limits_available)
-+			DC_FP_END();
-+		} else if (clock_limits_available) {
-+			DC_FP_START();
- 			dcn20_cap_soc_clocks(loaded_bb, max_clocks);
-+			DC_FP_END();
-+		}
- 	}
- 
- 	loaded_ip->max_num_otg = pool->base.res_cap->num_timing_generator;
- 	loaded_ip->max_num_dpp = pool->base.pipe_count;
-+	DC_FP_START();
- 	dcn20_patch_bounding_box(dc, loaded_bb);
--
-+	DC_FP_END();
- 	return true;
- }
- 
-@@ -3783,8 +3789,6 @@ static bool dcn20_resource_construct(
- 	enum dml_project dml_project_version =
- 			get_dml_project_version(ctx->asic_id.hw_internal_rev);
- 
--	DC_FP_START();
--
- 	ctx->dc_bios->regs = &bios_regs;
- 	pool->base.funcs = &dcn20_res_pool_funcs;
- 
-@@ -4128,12 +4132,10 @@ static bool dcn20_resource_construct(
- 		pool->base.oem_device = NULL;
- 	}
- 
--	DC_FP_END();
- 	return true;
- 
- create_fail:
- 
--	DC_FP_END();
- 	dcn20_resource_destruct(pool);
- 
- 	return false;
+-	__inc_irq_stat(irq_tlb_count);
+ 	do_recycle = 0;
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	if (dirty_space_ids > RECYCLE_THRESHOLD) {
+ 	    BUG_ON(recycle_inuse);  /* FIXME: Use a semaphore/wait queue here */
+ 	    get_dirty_sids(&recycle_ndirty,recycle_dirty_array);
+@@ -865,8 +865,8 @@ void flush_tlb_all(void)
+ #else
+ void flush_tlb_all(void)
+ {
+-	__inc_irq_stat(irq_tlb_count);
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	flush_tlb_all_local(NULL);
+ 	recycle_sids();
+ 	spin_unlock(&sid_lock);
 -- 
 2.33.0
 
