@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816A1452162
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3812C4524B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359849AbhKPBD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:03:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
+        id S1351790AbhKPBm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:42:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245713AbhKOTVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE5B96328B;
-        Mon, 15 Nov 2021 18:39:56 +0000 (UTC)
+        id S241781AbhKOSgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:36:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A6061A6C;
+        Mon, 15 Nov 2021 18:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001597;
-        bh=fV5uOh05VxwKaWWs9g5a6o9+meRze9rqC/tFkdxlLWA=;
+        s=korg; t=1636999340;
+        bh=rHUsHtngfJ01PWkzk+xW18SXgQk96K+dt0s8V893RUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TVoDhxGGk8231VrLFRL4mTSH8NS7eup5ASeucLBjTJSVjJlOkoohqenAGqJcbbKTR
-         EsBYqeE0PdSdoDB31Gw3iEiaGiUlREhwhYegm7Z1botpHihjrhtHCEIF5rcx6gOY+G
-         ErfsVwDW8jMAot3/YXpdtUKVSgHl3iSpJbAXCx9A=
+        b=VL57jwGT2VJtMgonHem6H2uw9LTwcR42EwRg5fX7ldyKz+917y4aqJS9BVEIWOzi5
+         lbgSIQeAt/vlXSNvwmmZNLFJlm+OBB1zASRvfxnzuN0MVrWR2U9TfCM0/j/l95UWY6
+         gtT8u7J+D2T524E3+cv8BIJ95ytUiKQitHf+NWuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 251/917] KVM: arm64: Propagate errors from __pkvm_prot_finalize hypercall
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 263/849] media: ipu3-imgu: imgu_fmt: Handle properly try
 Date:   Mon, 15 Nov 2021 17:55:46 +0100
-Message-Id: <20211115165437.302624318@linuxfoundation.org>
+Message-Id: <20211115165429.141003104@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,76 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit 2f2e1a5069679491d18cf9021da19b40c56a17f3 ]
+[ Upstream commit 553481e38045f349bb9aa596d03bebd020020c9c ]
 
-If the __pkvm_prot_finalize hypercall returns an error, we WARN but fail
-to propagate the failure code back to kvm_arch_init().
+For a try_fmt call, the node noes not need to be enabled.
 
-Pass a pointer to a zero-initialised return variable so that failure
-to finalise the pKVM protections on a host CPU can be reported back to
-KVM.
+Fixes v4l2-compliance
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Quentin Perret <qperret@google.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211008135839.1193-5-will@kernel.org
+fail: v4l2-test-formats.cpp(717): Video Output Multiplanar is valid, but
+				  no TRY_FMT was implemented
+test VIDIOC_TRY_FMT: FAIL
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/arm.c | 30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index fe102cd2e5183..9b328bb05596a 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1971,9 +1971,25 @@ out_err:
- 	return err;
- }
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 38a2407645096..ea746e8054eb7 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -696,7 +696,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
  
--static void _kvm_host_prot_finalize(void *discard)
-+static void _kvm_host_prot_finalize(void *arg)
- {
--	WARN_ON(kvm_call_hyp_nvhe(__pkvm_prot_finalize));
-+	int *err = arg;
-+
-+	if (WARN_ON(kvm_call_hyp_nvhe(__pkvm_prot_finalize)))
-+		WRITE_ONCE(*err, -EINVAL);
-+}
-+
-+static int pkvm_drop_host_privileges(void)
-+{
-+	int ret = 0;
-+
-+	/*
-+	 * Flip the static key upfront as that may no longer be possible
-+	 * once the host stage 2 is installed.
-+	 */
-+	static_branch_enable(&kvm_protected_mode_initialized);
-+	on_each_cpu(_kvm_host_prot_finalize, &ret, 1);
-+	return ret;
- }
- 
- static int finalize_hyp_mode(void)
-@@ -1987,15 +2003,7 @@ static int finalize_hyp_mode(void)
- 	 * None of other sections should ever be introspected.
- 	 */
- 	kmemleak_free_part(__hyp_bss_start, __hyp_bss_end - __hyp_bss_start);
--
--	/*
--	 * Flip the static key upfront as that may no longer be possible
--	 * once the host stage 2 is installed.
--	 */
--	static_branch_enable(&kvm_protected_mode_initialized);
--	on_each_cpu(_kvm_host_prot_finalize, NULL, 1);
--
--	return 0;
-+	return pkvm_drop_host_privileges();
- }
- 
- struct kvm_vcpu *kvm_mpidr_to_vcpu(struct kvm *kvm, unsigned long mpidr)
+ 		/* CSS expects some format on OUT queue */
+ 		if (i != IPU3_CSS_QUEUE_OUT &&
+-		    !imgu_pipe->nodes[inode].enabled) {
++		    !imgu_pipe->nodes[inode].enabled && !try) {
+ 			fmts[i] = NULL;
+ 			continue;
+ 		}
 -- 
 2.33.0
 
