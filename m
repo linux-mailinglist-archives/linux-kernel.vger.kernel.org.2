@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52455451199
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED10451145
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239307AbhKOTLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:11:23 -0500
+        id S243196AbhKOTDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:03:06 -0500
 Received: from mail.kernel.org ([198.145.29.99]:57870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236737AbhKORly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:41:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF56E632FA;
-        Mon, 15 Nov 2021 17:27:31 +0000 (UTC)
+        id S237953AbhKORjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:39:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 575836324A;
+        Mon, 15 Nov 2021 17:26:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997252;
-        bh=Ko5D5mV1DDGZ+ZCRNSmh6+HpGcoSQ6mZgJejfpXHfCM=;
+        s=korg; t=1636997198;
+        bh=r8lz0dyZKz8fXwRGSzLHh99p+dcOFLime4hri3FIvFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QF4Me3pv+HTc+cVq5SUvUpFHNOcQvJhow+pYZXPXk/8ZjLU1n68hDMb5Fe2d3sGja
-         nYqZ8MuWc814+/f51FbqqCxw0i4QC+5MdJTtFiuBAWDf6W+doBpAqmzkQsj9n+61Wx
-         gkmsNoYLr2AuUdNxbpXjq+dxgVEwD2S9aOBLRf98=
+        b=E6y1n2AYr1b3oGT2JUNxudCvk86+OBI1OyBrc/QF+pKw7Ifc2nsOJi9Yf1gBVL4En
+         nyXOZuaEriB9HBu6HrljfLe0wd/JLM0JAii8zDs7Xv88fHK0Rh0k/rixwSBLFcD0tA
+         ddOME3GibRdfyPVpu6951dfug1JKT5LmqpiFivfY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 5.10 047/575] x86/sme: Use #define USE_EARLY_PGTABLE_L5 in mem_encrypt_identity.c
-Date:   Mon, 15 Nov 2021 17:56:12 +0100
-Message-Id: <20211115165345.264813819@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Bastien=20Roucari=C3=A8s?= <rouca@debian.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 060/575] ARM: dts: sun7i: A20-olinuxino-lime2: Fix ethernet phy-mode
+Date:   Mon, 15 Nov 2021 17:56:25 +0100
+Message-Id: <20211115165345.719774124@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,57 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+From: Bastien Roucariès <rouca@debian.org>
 
-commit e7d445ab26db833d6640d4c9a08bee176777cc82 upstream.
+[ Upstream commit 55dd7e059098ce4bd0a55c251cb78e74604abb57 ]
 
-When runtime support for converting between 4-level and 5-level pagetables
-was added to the kernel, the SME code that built pagetables was updated
-to use the pagetable functions, e.g. p4d_offset(), etc., in order to
-simplify the code. However, the use of the pagetable functions in early
-boot code requires the use of the USE_EARLY_PGTABLE_L5 #define in order to
-ensure that the proper definition of pgtable_l5_enabled() is used.
+Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+config") sets the RX/TX delay according to the phy-mode property in the
+device tree. For the A20-olinuxino-lime2 board this is "rgmii", which is the
+wrong setting.
 
-Without the #define, pgtable_l5_enabled() is #defined as
-cpu_feature_enabled(X86_FEATURE_LA57). In early boot, the CPU features
-have not yet been discovered and populated, so pgtable_l5_enabled() will
-return false even when 5-level paging is enabled. This causes the SME code
-to always build 4-level pagetables to perform the in-place encryption.
-If 5-level paging is enabled, switching to the SME pagetables results in
-a page-fault that kills the boot.
+Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
+Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
+the Ethernet working again on this board.
 
-Adding the #define results in pgtable_l5_enabled() using the
-__pgtable_l5_enabled variable set in early boot and the SME code building
-pagetables for the proper paging level.
-
-Fixes: aad983913d77 ("x86/mm/encrypt: Simplify sme_populate_pgd() and sme_populate_pgd_large()")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: <stable@vger.kernel.org> # 4.18.x
-Link: https://lkml.kernel.org/r/2cb8329655f5c753905812d951e212022a480475.1634318656.git.thomas.lendacky@amd.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Bastien Roucariès <rouca@debian.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210916081721.237137-1-rouca@debian.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mem_encrypt_identity.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -27,6 +27,15 @@
- #undef CONFIG_PARAVIRT_XXL
- #undef CONFIG_PARAVIRT_SPINLOCKS
+diff --git a/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts b/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
+index 9ba62774e89a1..488933b87ad5a 100644
+--- a/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
++++ b/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
+@@ -112,7 +112,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac_rgmii_pins>;
+ 	phy-handle = <&phy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	status = "okay";
+ };
  
-+/*
-+ * This code runs before CPU feature bits are set. By default, the
-+ * pgtable_l5_enabled() function uses bit X86_FEATURE_LA57 to determine if
-+ * 5-level paging is active, so that won't work here. USE_EARLY_PGTABLE_L5
-+ * is provided to handle this situation and, instead, use a variable that
-+ * has been set by the early boot code.
-+ */
-+#define USE_EARLY_PGTABLE_L5
-+
- #include <linux/kernel.h>
- #include <linux/mm.h>
- #include <linux/mem_encrypt.h>
+-- 
+2.33.0
+
 
 
