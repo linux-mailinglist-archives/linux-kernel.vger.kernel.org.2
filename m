@@ -2,87 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2390C45066A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C75450670
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbhKOOPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:15:12 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41504 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbhKOONy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:13:54 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B56A21C0B7F; Mon, 15 Nov 2021 15:10:57 +0100 (CET)
-Date:   Mon, 15 Nov 2021 15:10:56 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: led-core: Update fwnode with device_set_node
-Message-ID: <20211115141056.GB14175@duo.ucw.cz>
-References: <20211113211113.573881-1-sander@svanheule.net>
+        id S235121AbhKOOP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236330AbhKOOP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:15:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 038C161AA9;
+        Mon, 15 Nov 2021 14:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636985553;
+        bh=rdG0qdS7xFz61S3CJ+yHo5n/KsphbmMwntjtHoRHHys=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oKAalQulMA+piBox2bnWLmX7K4a6a4Y5rEY+U7XQoGgHxtWe92u4Kdnf/sScaxrqW
+         m3hfpld3fHOLRlEj9IpWahxRSBdkGumkOkPPYT7O+EIfWC8wcNwW/qS3s8tk2wXLDH
+         EzKQ9r1FesGLdJzw3vz3MR53LU59S9V5thZ64vftTURXQPV6U8GL37nyMWur/nEtUD
+         NIScC9kA5O0et3Udu3p4oIOoPjKNQn6kyI+01pkzrOfCe6pGSvpXOz0Ynh+irr2mcJ
+         pSEKULCzzZY76vPy9GanmEx0B141CDLqG5snOX1wVh8O3YL/JmYKxwruLp3JBh0jcz
+         xV7TDq6uKVUpw==
+Date:   Mon, 15 Nov 2021 06:12:31 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     aelior@marvell.com, skalluru@marvell.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: bnx2x: fix variable dereferenced before check
+Message-ID: <20211115061231.0426ceb4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <b99360be-feea-c33f-40ab-e7301307a794@gmail.com>
+References: <20211113223636.11446-1-paskripkin@gmail.com>
+        <b99360be-feea-c33f-40ab-e7301307a794@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
-Content-Disposition: inline
-In-Reply-To: <20211113211113.573881-1-sander@svanheule.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 14 Nov 2021 01:41:59 +0300 Pavel Skripkin wrote:
+> Btw, looks like GR-everest-linux-l2@marvell.com doesn't exist anymore. 
+> It's listed in 2 MAINTAINERS entries. Should it be removed from 
+> MAINTAINERS file?
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat 2021-11-13 22:11:13, Sander Vanheule wrote:
-> Update a newly created device's fwnode and of_node pointers using the
-> recently added device_set_node helper. This keeps some firmware node
-> specifics out of led-class and should help tracking future changes
-> regarding device firmware node updates.
->=20
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-
-Thanks, applied.
-							Pavel
-						=09
-> ---
->  drivers/leds/led-class.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-> index f4bb02f6e042..6a8ea94834fa 100644
-> --- a/drivers/leds/led-class.c
-> +++ b/drivers/leds/led-class.c
-> @@ -375,10 +375,8 @@ int led_classdev_register_ext(struct device *parent,
->  		mutex_unlock(&led_cdev->led_access);
->  		return PTR_ERR(led_cdev->dev);
->  	}
-> -	if (init_data && init_data->fwnode) {
-> -		led_cdev->dev->fwnode =3D init_data->fwnode;
-> -		led_cdev->dev->of_node =3D to_of_node(init_data->fwnode);
-> -	}
-> +	if (init_data && init_data->fwnode)
-> +		device_set_node(led_cdev->dev, init_data->fwnode);
-> =20
->  	if (ret)
->  		dev_warn(parent, "Led %s renamed to %s due to name collision",
-> --=20
-> 2.33.1
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---gj572EiMnwbLXET9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYZJqcAAKCRAw5/Bqldv6
-8iAuAJ48s1Ind0LaGP8AAwkCEX5i5QLDBwCfbH1VTEH0jAPlhrLxnaVis9aec14=
-=KzwF
------END PGP SIGNATURE-----
-
---gj572EiMnwbLXET9--
+Yes, if it bounces it should be removed. Can you send a patch?
