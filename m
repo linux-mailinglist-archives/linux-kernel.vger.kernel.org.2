@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807EC45205A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8685A451B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356922AbhKPAwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1356901AbhKOX6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:58:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344249AbhKOTYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B0786364C;
-        Mon, 15 Nov 2021 18:54:30 +0000 (UTC)
+        id S1344254AbhKOTYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8250763654;
+        Mon, 15 Nov 2021 18:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002471;
-        bh=EYQqwvIU2Jf5xonjsiX1RsACkhcB4QJwMFfsRuPF8uo=;
+        s=korg; t=1637002474;
+        bh=Qu5ebb7LkPrK8WpT9/gVyPOEZI6UeCOW6Ud2RwNmAYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AcxdxoMAjGBUX0e3eqku9Tmkdwq1uPyP7iq07UFBS4g7WeFwtI4i/xjb9/LzUBmei
-         kVf2VD83rFXRraR+Znp4GeROb3jK6TX+34hyxBicYScFaJyb1yJkste1oeK+qWZ+c2
-         C1bNbnbnj6THeHgMJVJhI7hFHCe/hAyprW95/B/c=
+        b=0kppJFb1da5ewIUAYoKaGI4f03eoouH3zaUmpZjmbwt1BD+Uixq4bxUU7VRmVoQvn
+         lZe6dcovFhXNfqDVy+zpvRlISO9j2vgNNC42O/960jgnIkWsMt9zFXqgL9DVnsxBYP
+         GSvoNdpfzDz+UVsdWEitFSzz4zL7N3acDuYXuWXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 579/917] RDMA/bnxt_re: Fix query SRQ failure
-Date:   Mon, 15 Nov 2021 18:01:14 +0100
-Message-Id: <20211115165448.408631271@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 580/917] arm64: dts: ti: k3-j721e-main: Fix "max-virtual-functions" in PCIe EP nodes
+Date:   Mon, 15 Nov 2021 18:01:15 +0100
+Message-Id: <20211115165448.443794086@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,41 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvin Xavier <selvin.xavier@broadcom.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 598d16fa1bf93431ad35bbab3ed1affe4fb7b562 ]
+[ Upstream commit 9af3ef954975c383eeb667aee207d9ce6fbef8c4 ]
 
-Fill the missing parameters for the FW command while querying SRQ.
+commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device
+tree nodes") added "max-virtual-functions" to have 16 bit values.
+Fix "max-virtual-functions" in PCIe endpoint (EP) nodes to have 8 bit
+values instead of 16.
 
-Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-Link: https://lore.kernel.org/r/1631709163-2287-8-git-send-email-selvin.xavier@broadcom.com
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210915055358.19997-2-kishon@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index d4d4959c2434c..bd153aa7e9ab3 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -707,12 +707,13 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 	int rc = 0;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index cf3482376c1e6..43be5d23130b4 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -636,7 +636,7 @@
+ 		clocks = <&k3_clks 239 1>;
+ 		clock-names = "fck";
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
  
- 	RCFW_CMD_PREP(req, QUERY_SRQ, cmd_flags);
--	req.srq_cid = cpu_to_le32(srq->id);
+@@ -684,7 +684,7 @@
+ 		clocks = <&k3_clks 240 1>;
+ 		clock-names = "fck";
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
  
- 	/* Configure the request */
- 	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
- 	if (!sbuf)
- 		return -ENOMEM;
-+	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
-+	req.srq_cid = cpu_to_le32(srq->id);
- 	sb = sbuf->sb;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
- 					  (void *)sbuf, 0);
+@@ -732,7 +732,7 @@
+ 		clocks = <&k3_clks 241 1>;
+ 		clock-names = "fck";
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 	};
+ 
+@@ -780,7 +780,7 @@
+ 		clocks = <&k3_clks 242 1>;
+ 		clock-names = "fck";
+ 		max-functions = /bits/ 8 <6>;
+-		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
++		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+ 		dma-coherent;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
 -- 
 2.33.0
 
