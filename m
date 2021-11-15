@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEF4450ADD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4A4450ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236935AbhKORPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:15:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41950 "EHLO mail.kernel.org"
+        id S236789AbhKORP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:15:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhKORL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:11:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 018D961BF9;
-        Mon, 15 Nov 2021 17:08:59 +0000 (UTC)
+        id S236498AbhKORL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B95361BFE;
+        Mon, 15 Nov 2021 17:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996140;
-        bh=x4gTGycKSpgXNJDhakoN3yJk+8xVdnyBfXkxFwTH7cs=;
+        s=korg; t=1636996143;
+        bh=Xl9CXrdLPgcEC7lELflZA9TbHN8aE1cpmesjhxmrT6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OT3ONhFYQ8GlLStAAj1Qh00gC+6rMxmYqodRD5fza+kVVKrBXk1UOeBiR38q705nY
-         LpUtLCe/8kQ8Wm6zveHMNfSkylxt8Lhzzyjx+xHmcUJVUpxkvyU4hXReEM/9RIEHxq
-         L1ElGtbMz9fSERfZ1k4IWtLsIeMyu9NiSNEY9dUg=
+        b=KsuzY6Dk4SmOBkdrZWQ50iQY4E4FMtTi/aZuHXWo9AJ2Ne94WwtxX7CTMpmBA2gv+
+         lSHS5NsrWg1JqK/lBilt342obWKmG8LLkZakMtK72tcEzFrivyhjqyOnQ3yvGrG6hA
+         VpvV/Dgh8ls39lbp/AdhIvDQPxcLsZKD1SoTBsCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, Phoenix Huang <phoenix@emc.com.tw>,
+        Yufei Du <yufeidu@cs.unc.edu>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 006/355] Input: iforce - fix control-message timeout
-Date:   Mon, 15 Nov 2021 17:58:50 +0100
-Message-Id: <20211115165313.761901515@linuxfoundation.org>
+Subject: [PATCH 5.4 007/355] Input: elantench - fix misreporting trackpoint coordinates
+Date:   Mon, 15 Nov 2021 17:58:51 +0100
+Message-Id: <20211115165313.794481727@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,33 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Phoenix Huang <phoenix@emc.com.tw>
 
-commit 744d0090a5f6dfa4c81b53402ccdf08313100429 upstream.
+commit be896bd3b72b44126c55768f14c22a8729b0992e upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+Some firmwares occasionally report bogus data from trackpoint, with X or Y
+displacement being too large (outside of [-127, 127] range). Let's drop such
+packets so that we do not generate jumps.
 
-Fixes: 487358627825 ("Input: iforce - use DMA-safe buffer when getting IDs from USB")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Cc: stable@vger.kernel.org      # 5.3
-Link: https://lore.kernel.org/r/20211025115501.5190-1-johan@kernel.org
+Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+Tested-by: Yufei Du <yufeidu@cs.unc.edu>
+Link: https://lore.kernel.org/r/20210729010940.5752-1-phoenix@emc.com.tw
+Cc: stable@vger.kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/joystick/iforce/iforce-usb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/mouse/elantech.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/drivers/input/joystick/iforce/iforce-usb.c
-+++ b/drivers/input/joystick/iforce/iforce-usb.c
-@@ -92,7 +92,7 @@ static int iforce_usb_get_id(struct ifor
- 				 id,
- 				 USB_TYPE_VENDOR | USB_DIR_IN |
- 					USB_RECIP_INTERFACE,
--				 0, 0, buf, IFORCE_MAX_LENGTH, HZ);
-+				 0, 0, buf, IFORCE_MAX_LENGTH, 1000);
- 	if (status < 0) {
- 		dev_err(&iforce_usb->intf->dev,
- 			"usb_submit_urb failed: %d\n", status);
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -517,6 +517,19 @@ static void elantech_report_trackpoint(s
+ 	case 0x16008020U:
+ 	case 0x26800010U:
+ 	case 0x36808000U:
++
++		/*
++		 * This firmware misreport coordinates for trackpoint
++		 * occasionally. Discard packets outside of [-127, 127] range
++		 * to prevent cursor jumps.
++		 */
++		if (packet[4] == 0x80 || packet[5] == 0x80 ||
++		    packet[1] >> 7 == packet[4] >> 7 ||
++		    packet[2] >> 7 == packet[5] >> 7) {
++			elantech_debug("discarding packet [%6ph]\n", packet);
++			break;
++
++		}
+ 		x = packet[4] - (int)((packet[1]^0x80) << 1);
+ 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+ 
 
 
