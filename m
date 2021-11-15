@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5109045190B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC69A451F64
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352304AbhKOXNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:13:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243960AbhKOTHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:07:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637003060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v/SBXUx2gshVEpRR5lkDqOIRh1bD4WZmOak2pzCj75s=;
-        b=CI+RBIVCNAGb7wL9M+nRNMMmRAezEua6e/g7R20OS0FeZQTCD2CC1A6rYMFkFJw3Lk5GFv
-        e7sU5mUq5yW3DnnKwdkblnkjpJrelGP34BXl1Mw6pEaTLTfr7qrsvLetiklzFaJyzgVXlC
-        a9aF434o1u198t13DZSymtSjfAgGT6I=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-tISOsRmgOZOMo3SuQX9Y5g-1; Mon, 15 Nov 2021 14:04:19 -0500
-X-MC-Unique: tISOsRmgOZOMo3SuQX9Y5g-1
-Received: by mail-yb1-f197.google.com with SMTP id v20-20020a25fc14000000b005c2109e5ad1so27881306ybd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:04:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v/SBXUx2gshVEpRR5lkDqOIRh1bD4WZmOak2pzCj75s=;
-        b=IlWoZZuI3Flduq9NQfOdoXb4pCFPMypquwK8tt/34xr4/xMigTAjei78ZjEt5GRH3R
-         L0ZA++70g+op7Zn+/upB31a8MEYXEwb8X/IpgsuXEaKrkJXioRYTpD5WnpwWHQWi7r3J
-         7IG3taRJun+JNCHUhaJLX5JJwATkQhFaU3AAH0GHbQ1afCbVLDVVhuo0nI93qscWksmJ
-         1epiPsWfTle06wjtjGJnyWL8ER9+WdSsXHyRIPvzGlzh61oRh3jM6O4Sff657lje7jKp
-         XAnq+/Pu2ENaF2PszbMQ+8oftW1+XD4hK1UvPSNyUMCzxllGrglLTN7h0p14b6N8/Ish
-         K6tg==
-X-Gm-Message-State: AOAM530SM9DplHVdJomz4Euq8sufY9pCgs64lh4Wbl/V58eU5ayAvhfG
-        YivbNTOjKqFBoVcW5r6pGVIJ10/fmoAI3bI8mKk3yy2eiIdP8jPl3hwWPO0m4Y207GICJmlmnIz
-        HrW24YqukSMUTTFfNHMCMkqrzyOJ8RudigGUEMJdf
-X-Received: by 2002:a25:3283:: with SMTP id y125mr1233686yby.479.1637003058347;
-        Mon, 15 Nov 2021 11:04:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzDg/2EKuxykc6+iQIz1Ve049nNfAryXwGXOETwxe8O1IwCanztgTBfr04ISJwL8oujwWmHkrKy78vI+kFMlCQ=
-X-Received: by 2002:a25:3283:: with SMTP id y125mr1233623yby.479.1637003057823;
- Mon, 15 Nov 2021 11:04:17 -0800 (PST)
+        id S1356237AbhKPAi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344826AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D4FF636D2;
+        Mon, 15 Nov 2021 19:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637003102;
+        bh=OxbA2Dy+guUtV/oxu3huaKUI54o5bkpBbR72qWRaAfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FxEl08qu4dUEMgEsJFpcX25p/KAprHCVG4O2xUjklk6MvshRaaVwAbSWxfPyA3ba3
+         G5+kXBoJGUkezo7WNhBgi7qQVqg29NVjmQ/iemHcndYQvpHT/o2OusJ6ufzGCTt+X3
+         COwh9q9xxmf2+gdOCzIjNRJdYEmTDEEmGYON1C6E7fpxnhNw1Y4p/lUjcPsdYh267J
+         C3X3PW3x+ePAkJZQrUJ7enxU3FrOy4YKGrdwtzow9e996b4sFxvokIygVh8H3+jh5G
+         +nw98sTQbGfTlWDj+RTeADtMTm/qxJwgZO1jIRN9zBcTRtzn63a8XeyX6Ju7SZR0oI
+         WB07kdDfXRzhA==
+Date:   Mon, 15 Nov 2021 11:05:00 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH 5/5] shmem: Add fsverity support
+Message-ID: <YZKvXK+vX/we4GCD@gmail.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-6-roberto.sassu@huawei.com>
+ <YY68iXKPWN8+rd+0@gmail.com>
+ <6adb6da30b734213942f976745c456f6@huawei.com>
 MIME-Version: 1.0
-References: <20211115173850.3598768-1-adelva@google.com>
-In-Reply-To: <20211115173850.3598768-1-adelva@google.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Mon, 15 Nov 2021 20:04:05 +0100
-Message-ID: <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
-Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-To:     Alistair Delva <adelva@google.com>
-Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Stable maillist <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6adb6da30b734213942f976745c456f6@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
-> Booting to Android userspace on 5.14 or newer triggers the following
-> SELinux denial:
->
-> avc: denied { sys_nice } for comm="init" capability=23
->      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
->      permissive=0
->
-> Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
-> better compatibility with older SEPolicy, check ADMIN before NICE.
+On Mon, Nov 15, 2021 at 08:49:41AM +0000, Roberto Sassu wrote:
+> > From: Eric Biggers [mailto:ebiggers@kernel.org]
+> > Sent: Friday, November 12, 2021 8:12 PM
+> > On Fri, Nov 12, 2021 at 01:44:11PM +0100, Roberto Sassu wrote:
+> > > Make the necessary modifications to support fsverity in tmpfs.
+> > >
+> > > First, implement the fsverity operations (in a similar way of f2fs). These
+> > > operations make use of shmem_read_mapping_page() instead of
+> > > read_mapping_page() to handle the case where the page has been swapped
+> > out.
+> > > The fsverity descriptor is placed at the end of the file and its location
+> > > is stored in an xattr.
+> > >
+> > > Second, implement the ioctl operations to enable, measure and read fsverity
+> > > metadata.
+> > >
+> > > Lastly, add calls to fsverity functions, to ensure that fsverity-relevant
+> > > operations are checked and handled by fsverity (file open, attr set, inode
+> > > evict).
+> > >
+> > > Fsverity support can be enabled through the kernel configuration and
+> > > remains enabled by default for every tmpfs filesystem instantiated (there
+> > > should be no overhead, unless fsverity is enabled for a file).
+> > >
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > I don't see how this makes sense at all.  The point of fs-verity is to avoid
+> > having to hash the whole file when verifying it.  However, obviously the whole
+> > file still has to be hashed to build the Merkle tree in the first place.  That
+> > makes sense for a persistent filesystem where a file can be written once and
+> > verified many times.  I don't see how it makes sense for tmpfs, where files have
+> > to be re-created on every boot.  You might as well just hash the whole file.
+> 
+> The point of adding fsverity support for tmpfs was to being able to do
+> integrity enforcement with just one mechanism, given that I was
+> planning to do integrity verification with reference values loaded
+> to the kernel with DIGLIM [1].
+> 
+> With an LSM such as IPE [2], integrity verification would consist in
+> querying the fsverity digest with DIGLIM and allowing the operation
+> if the digest was found. With fsverity support in tmpfs, this can be
+> done from the very beginning of the boot process.
+> 
+> Using regular file digests would be also possible but this requires
+> loading with DIGLIM both fsverity and non-fsverity reference values.
+> It would also require two separate mechanisms for calculating
+> the file digest depending on the filesystem. It could be done, but
+> I thought it was easier to add support for fsverity in tmpfs.
+> 
+> > Also, you didn't implement actually verifying the data (by calling
+> > fsverity_verify_page()), so this patch doesn't really do anything anyway.
+> 
+> Yes, at the end I didn't add it. Probably the only place where
+> calling fsverity_verify_page() would make sense is when a page
+> is swapped in (assuming that the swap device is untrusted).
+> 
+> I tried to add a call in shmem_swapin_page() but fsverity complained
+> due to the fact that the page was already up to date, and also
+> rejected the page. I will check it better.
+> 
 
-But with this patch you in turn punish the new/better policies that
-try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
-the more granular capabilities wherever possible), which may now get a
-bogus sys_admin denial. IMHO the order is better as it is, as it
-motivates the "good" policy writing behavior - i.e. spelling out the
-capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
+It sounds like you really only care about calculating fs-verity file digests.
+That's just an algorithm for hashing a file, so it could just be implemented in
+generic code that operates on any file on any filesystem, like how IMA
+implemennts full file hashing for any file.  There isn't a need for any special
+filesystem support to do this.
 
-IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
-grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
-the denial correctly flags it as an issue in your policy and
-encourages you to add that sys_nice permission to the domain. Then
-when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
-removed, your policy will be ready for that and things will keep
-working.
-
-Feel free to carry that patch downstream if patching the kernel is
-easier for you than fixing the policy, but for the upstream kernel
-this is just a step in the wrong direction.
-
->
-> Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
-> Signed-off-by: Alistair Delva <adelva@google.com>
-> Cc: Khazhismel Kumykov <khazhy@google.com>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Serge Hallyn <serge@hallyn.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: selinux@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: kernel-team@android.com
-> Cc: stable@vger.kernel.org # v5.14+
-> ---
->  block/ioprio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/block/ioprio.c b/block/ioprio.c
-> index 0e4ff245f2bf..4d59c559e057 100644
-> --- a/block/ioprio.c
-> +++ b/block/ioprio.c
-> @@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
->
->         switch (class) {
->                 case IOPRIO_CLASS_RT:
-> -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
-> +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
->                                 return -EPERM;
->                         fallthrough;
->                         /* rt has prio field too */
-> --
-> 2.34.0.rc1.387.gb447b232ab-goog
->
-
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
-
+- Eric
