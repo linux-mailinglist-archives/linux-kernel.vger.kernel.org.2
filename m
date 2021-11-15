@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4261844FF41
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6058A44FF35
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhKOHfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 02:35:53 -0500
-Received: from 113.196.136.146.ll.static.sparqnet.net ([113.196.136.146]:33814
-        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229663AbhKOHfs (ORCPT
+        id S230330AbhKOHbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 02:31:17 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:40650 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhKOHbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 02:35:48 -0500
-X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 02:35:47 EST
-X-MailGates: (compute_score:DELIVER,40,3)
-Received: from 172.17.9.202
-        by mg02.sunplus.com with MailGates ESMTP Server V5.0(23393:0:AUTH_RELAY)
-        (envelope-from <vincent.shih@sunplus.com>); Mon, 15 Nov 2021 15:25:22 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 15 Nov 2021 15:25:17 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Mon, 15 Nov
- 2021 15:25:17 +0800
-From:   =?big5?B?VmluY2VudCBTaGloIKxJwEPCRQ==?= <vincent.shih@sunplus.com>
-To:     Rob Herring <robh@kernel.org>,
-        Vincent Shih <vincent.sunplus@gmail.com>
-CC:     "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH 2/2] dt-bindings: nvmem: Convert Sunplus OCOTP to
- json-schema
-Thread-Topic: [PATCH 2/2] dt-bindings: nvmem: Convert Sunplus OCOTP to
- json-schema
-Thread-Index: AQHXzt+Bi4bot/K8A0ijdtTeY0vwWav/kYWAgASdYUA=
-Date:   Mon, 15 Nov 2021 07:25:17 +0000
-Message-ID: <9e500e29435140279d21ea42a85c9d2e@sphcmbx02.sunplus.com.tw>
-References: <1635743712-25358-1-git-send-email-vincent.shih@sunplus.com>
- <1635743712-25358-3-git-send-email-vincent.shih@sunplus.com>
- <YY6JXT2UK+tyXfdY@robh.at.kernel.org>
-In-Reply-To: <YY6JXT2UK+tyXfdY@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.45]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Mon, 15 Nov 2021 02:31:12 -0500
+Received: by mail-io1-f71.google.com with SMTP id d12-20020a0566022d4c00b005ebda1035b1so5961378iow.7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 23:28:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=7XpsCj38ktcfnv4VVdcUtYPxcdovmZ/Fms2+vpqFRgU=;
+        b=zSqTzIZwYozrJicfoxockkAG9C99t9oZVLe40wFPNwqwDYtlVDmwT5yquNPSV59bR6
+         vtZnKRiAKpoZ4SDsbkLwWuKw5iy00++ohK63Ne9oZUK82UgYhTWn/4DpRCH07TbvhEQ2
+         YHo79ndJO5Ci90O+vArD9Y+4F+jXboAdaQ+Yl++EcUsk8luCd6AkP4MZ4vcgFQcpFQV6
+         sxzLI7zR8yZAmXW9Mg8LnIogt0/sDe6DadsngQcy7z6ckM4dahhByaci0SfnHrjJyJfq
+         /UlPsuiMBxrGuga+StDFHTfeWITiDM6I7NFPDlGEFMJ/X4iZ8bvMamSKdiVRppG0XBHo
+         2hzg==
+X-Gm-Message-State: AOAM531alC98gIgqkibfk82itpzW5X0SmbPce/sy7wCMoBp9kH5tCQfz
+        SN1ua324x5PsQkciLkwLxtbwrsip2XBAz5JvNqXC1kh0N6/l
+X-Google-Smtp-Source: ABdhPJyNhudIndiLt/UqOqGvlhxrQfyymFyOIOh2KqHNFnvarLVsa/ad5ydbDL/Y0jrQdrSfdLBw+mDdevk3gRZehUV1Ub5PxVdZ
 MIME-Version: 1.0
+X-Received: by 2002:a5d:928c:: with SMTP id s12mr24320290iom.163.1636961297459;
+ Sun, 14 Nov 2021 23:28:17 -0800 (PST)
+Date:   Sun, 14 Nov 2021 23:28:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a56e9105d0cec021@google.com>
+Subject: [syzbot] WARNING in usbnet_start_xmit/usb_submit_urb
+From:   syzbot <syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        oneukum@suse.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-aGVsbG8NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSb2IgSGVycmlu
-ZyA8cm9iaEBrZXJuZWwub3JnPg0KPiBTZW50OiBGcmlkYXksIE5vdmVtYmVyIDEyLCAyMDIxIDEx
-OjM0IFBNDQo+IFRvOiBWaW5jZW50IFNoaWggPHZpbmNlbnQuc3VucGx1c0BnbWFpbC5jb20+DQo+
-IENjOiBzcmluaXZhcy5rYW5kYWdhdGxhQGxpbmFyby5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBWaW5jZW50DQo+IFNoaWggrEnA
-Q8JFIDx2aW5jZW50LnNoaWhAc3VucGx1cy5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMi8y
-XSBkdC1iaW5kaW5nczogbnZtZW06IENvbnZlcnQgU3VucGx1cyBPQ09UUCB0byBqc29uLXNjaGVt
-YQ0KPiANCj4gT24gTW9uLCBOb3YgMDEsIDIwMjEgYXQgMDE6MTU6MTJQTSArMDgwMCwgVmluY2Vu
-dCBTaGloIHdyb3RlOg0KPiA+IENvbnZlcnQgU3VucGx1cyBPQ09UUCB0byBqc29uLXNjaGVtYQ0K
-PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogVmluY2VudCBTaGloIDx2aW5jZW50LnNoaWhAc3VucGx1
-cy5jb20+DQo+IA0KPiBBdXRob3IgYW5kIFNvYiBlbWFpbHMgZG9uJ3QgbWF0Y2guDQo+IA0KPiA+
-IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvbnZtZW0vc3VucGx1cyxzcDcwMjEtb2NvdHAueWFtbCAg
-ICAgICB8IDExNiArKysrKysrKysrKysrKysrKysrKysNCj4gPiAgTUFJTlRBSU5FUlMgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ICAyIGZpbGVzIGNo
-YW5nZWQsIDExNyBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiA+IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9zdW5wbHVzLHNwNzAyMS1vY290
-cC55YW1sDQo+ID4NCj4gPiBkaWZmIC0tZ2l0DQo+ID4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbnZtZW0vc3VucGx1cyxzcDcwMjEtb2NvdHAueWFtbA0KPiA+IGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL3N1bnBsdXMsc3A3MDIxLW9jb3RwLnlh
-bWwNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAuLjJkMThmMzgN
-Cj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL252bWVtL3N1bnBsdXMsc3A3MDIxLW9jb3RwLnlhbQ0KPiA+ICsrKyBsDQo+ID4gQEAg
-LTAsMCArMSwxMTYgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAt
-b25seSBPUiBCU0QtMi1DbGF1c2UpICMgQ29weXJpZ2h0DQo+ID4gKyhDKSBTdW5wbHVzIENvLiwg
-THRkLiAyMDIxICVZQU1MIDEuMg0KPiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJl
-ZS5vcmcvc2NoZW1hcy9udm1lbS9zdW5wbHVzLHNwNzAyMS1vY290cC55YW1sIw0KPiA+ICskc2No
-ZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gPiAr
-DQo+ID4gK3RpdGxlOiBPbi1DaGlwIE9UUCBNZW1vcnkgZm9yIFN1bnBsdXMgc3A3MDIxDQo+ID4g
-Kw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIFZpbmNlbnQgU2hpaCA8dmluY2VudC5zaGlo
-QHN1bnBsdXMuY29tPg0KPiA+ICsNCj4gPiArYWxsT2Y6DQo+ID4gKyAgLSAkcmVmOiAibnZtZW0u
-eWFtbCMiDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4g
-KyAgICBjb25zdDogc3VucGx1cyxzcDcwMjEtb2NvdHANCj4gPiArDQo+ID4gKyAgcmVnOg0KPiA+
-ICsgICAgbWF4SXRlbXM6IDINCj4gPiArDQo+ID4gKyAgcmVnLW5hbWVzOg0KPiA+ICsgICAgaXRl
-bXM6DQo+ID4gKyAgICAgIC0gY29uc3Q6IGhiX2dwaW8NCj4gPiArICAgICAgLSBjb25zdDogb3Rw
-cngNCj4gPiArDQo+ID4gKyAgY2xvY2tzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+
-ID4gKyAgcmVzZXRzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgIiNhZGRy
-ZXNzLWNlbGxzIjoNCj4gPiArICAgIGNvbnN0OiAxDQo+ID4gKw0KPiA+ICsgICIjc2l6ZS1jZWxs
-cyI6DQo+ID4gKyAgICBjb25zdDogMQ0KPiA+ICsNCj4gPiArICB0aGVybV9jYWxpYjoNCj4gDQo+
-IHMvXy8tLyBpbiBub2RlIG5hbWVzLg0KPiANCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsg
-ICAgZGVzY3JpcHRpb246IHRoZXJtYWwgY2FsaWJyYXRpb24gdmFsdWVzDQo+IA0KPiA+ICsgICAg
-cHJvcGVydGllczoNCj4gPiArICAgICAgcmVnOg0KPiA+ICsgICAgICAgIG1heEl0ZW1zOiAxDQo+
-ID4gKw0KPiA+ICsgICAgcmVxdWlyZWQ6DQo+ID4gKyAgICAgIC0gcmVnDQo+IA0KPiBZb3UgY2Fu
-IGRyb3AgJ3JlZycgYXMgbnZtZW0ueWFtbCBzaG91bGQgY292ZXIgdGhhdC4NCj4gDQo+ID4gKw0K
-PiA+ICsgIG1hY19hZGRyMDoNCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgZGVzY3Jp
-cHRpb246IE1BQyBhZGRyZXNzIG9mIGV0aGVybmV0IHBvcnQgMA0KPiA+ICsgICAgcHJvcGVydGll
-czoNCj4gPiArICAgICAgcmVnOg0KPiA+ICsgICAgICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+
-ICsgICAgcmVxdWlyZWQ6DQo+ID4gKyAgICAgIC0gcmVnDQo+ID4gKw0KPiA+ICsgIG1hY19hZGRy
-MToNCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgZGVzY3JpcHRpb246IE1BQyBhZGRy
-ZXNzIG9mIGV0aGVybmV0IHBvcnQgMQ0KPiA+ICsgICAgcHJvcGVydGllczoNCj4gPiArICAgICAg
-cmVnOg0KPiA+ICsgICAgICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgICAgcmVxdWlyZWQ6
-DQo+ID4gKyAgICAgIC0gcmVnDQo+ID4gKw0KPiA+ICsgIGRpc2Nfdm9sOg0KPiA+ICsgICAgdHlw
-ZTogb2JqZWN0DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogZGlzY29ubmVjdCB2b2x0YWdlcyBvZiB1
-c2IyIHBvcnQgMCBhbmQgcG9ydCAxDQo+ID4gKyAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICBy
-ZWc6DQo+ID4gKyAgICAgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgICByZXF1aXJlZDoN
-Cj4gPiArICAgICAgLSByZWcNCj4gPiArDQo+ID4gK3JlcXVpcmVkOg0KPiA+ICsgIC0gY29tcGF0
-aWJsZQ0KPiA+ICsgIC0gcmVnDQo+ID4gKyAgLSByZWctbmFtZXMNCj4gPiArICAtIGNsb2Nrcw0K
-PiA+ICsgIC0gcmVzZXRzDQo+ID4gKw0KPiA+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNl
-DQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAtIHwNCj4gPiArICAgICNpbmNsdWRlIDxk
-dC1iaW5kaW5ncy9jbG9jay9zcC1zcDcwMjEuaD4NCj4gPiArICAgICNpbmNsdWRlIDxkdC1iaW5k
-aW5ncy9yZXNldC9zcC1zcDcwMjEuaD4NCj4gPiArDQo+ID4gKyAgICBvdHA6IG90cEA5QzAwQUYw
-MCB7DQo+IA0KPiBMb3dlcmNhc2UgaGV4IGZvciB1bml0LWFkZHJlc3MNCj4gDQo+ID4gKyAgICAg
-ICAgY29tcGF0aWJsZSA9ICJzdW5wbHVzLHNwNzAyMS1vY290cCI7DQo+ID4gKyAgICAgICAgcmVn
-ID0gPDB4OUMwMEFGMDAgMHgzND4sIDwweDlDMDBBRjgwIDB4NTg+Ow0KPiA+ICsgICAgICAgIHJl
-Zy1uYW1lcyA9ICJoYl9ncGlvIiwgIm90cHJ4IjsNCj4gPiArICAgICAgICBjbG9ja3MgPSA8JmNs
-a3MgT1RQUlg+Ow0KPiA+ICsgICAgICAgIHJlc2V0cyA9IDwmcnN0YyBSU1RfT1RQUlg+Ow0KPiA+
-ICsNCj4gPiArICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPiArICAgICAgICAjc2l6
-ZS1jZWxscyA9IDwxPjsNCj4gPiArICAgICAgICB0aGVybV9jYWxpYjogdGhlcm1fY2FsaWJAMTQg
-ew0KPiA+ICsgICAgICAgICAgcmVnID0gPDB4MTQgMHgzPjsNCj4gPiArICAgICAgICB9Ow0KPiA+
-ICsgICAgICAgIG1hY19hZGRyMDogbWFjX2FkZHIwQDM0IHsNCj4gPiArICAgICAgICAgIHJlZyA9
-IDwweDM0IDB4Nj47DQo+ID4gKyAgICAgICAgfTsNCj4gPiArICAgICAgICBtYWNfYWRkcjE6IG1h
-Y19hZGRyMUAzQSB7DQo+IA0KPiBIZXJlIHRvby4gSWYgbnZtZW0ueWFtbCBpcyBub3QgY2hlY2tp
-bmcgdGhpcywgaXQgc2hvdWxkIGJlLg0KPiANCj4gPiArICAgICAgICAgIHJlZyA9IDwweDNBIDB4
-Nj47DQo+ID4gKyAgICAgICAgfTsNCj4gPiArICAgICAgICBkaXNjX3ZvbDogZGlzY192b2xAMTgg
-ew0KPiANCj4gU29ydCBub2RlcyBpbiBvcmRlciBvZiB1bml0LWFkZHJlc3MuDQo+IA0KPiA+ICsg
-ICAgICAgICAgcmVnID0gPDB4MTggMHgyPjsNCj4gPiArICAgICAgICB9Ow0KPiA+ICsgICAgfTsN
-Cj4gPiArLi4uDQo+ID4gZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJTlRBSU5FUlMgaW5k
-ZXggYjdkZjJmMS4uYzBjY2M5NSAxMDA2NDQNCj4gPiAtLS0gYS9NQUlOVEFJTkVSUw0KPiA+ICsr
-KyBiL01BSU5UQUlORVJTDQo+ID4gQEAgLTE3OTUwLDYgKzE3OTUwLDcgQEAgRjoJZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvZGxpbmsvc3VuZGFuY2UuYw0KPiA+ICBTVU5QTFVTIE9DT1RQIERSSVZFUg0K
-PiA+ICBNOglWaW5jZW50IFNoaWggPHZpbmNlbnQuc2hpaEBzdW5wbHVzLmNvbT4NCj4gPiAgUzoJ
-TWFpbnRhaW5lZA0KPiA+ICtGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZt
-ZW0vc3VucGx1cyxzcDcwMjEtb2NvdHAueWFtbA0KPiA+ICBGOglkcml2ZXJzL252bWVtL3N1bnBs
-dXMtb2NvdHAuYw0KPiA+ICBGOglkcml2ZXJzL252bWVtL3N1bnBsdXMtb2NvdHAuaA0KPiA+ICBG
-Oglkcml2ZXJzL252bWVtL3N1bnBsdXMtb2NvdHAwLmMNCj4gPiAtLQ0KPiA+IDIuNy40DQo+ID4N
-Cj4gPg0KDQpSZWZlciB0byB5b3VyIGNvbW1lbnRzLCBJIG1vZGlmaWVkIHRoZSBzdGF0ZW1lbnRz
-IHNob3duIGJlbG93DQouLi4NCi4uLg0KICB0aGVybWFsLWNhbGlicmF0aW9uOg0KICAgIHR5cGU6
-IG9iamVjdA0KICAgIGRlc2NyaXB0aW9uOiB0aGVybWFsIGNhbGlicmF0aW9uIHZhbHVlcw0KDQog
-IGRpc2Nvbm5lY3Qtdm9sdGFnZToNCiAgICB0eXBlOiBvYmplY3QNCiAgICBkZXNjcmlwdGlvbjog
-ZGlzY29ubmVjdCB2b2x0YWdlcyBvZiB1c2IyIHBvcnQgMCBhbmQgcG9ydCAxDQoNCiAgbWFjLWFk
-ZHJlc3MwOg0KICAgIHR5cGU6IG9iamVjdA0KICAgIGRlc2NyaXB0aW9uOiBNQUMgYWRkcmVzcyBv
-ZiBldGhlcm5ldCBwb3J0IDANCg0KICBtYWMtYWRkcmVzczE6DQogICAgdHlwZTogb2JqZWN0DQog
-ICAgZGVzY3JpcHRpb246IE1BQyBhZGRyZXNzIG9mIGV0aGVybmV0IHBvcnQgMQ0KDQpyZXF1aXJl
-ZDoNCiAgLSBjb21wYXRpYmxlDQogIC0gcmVnDQogIC0gcmVnLW5hbWVzDQogIC0gY2xvY2tzDQog
-IC0gcmVzZXRzDQoNCkV4YW1wbGVzOg0KICAtIHwNCiAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3Mv
-Y2xvY2svc3Atc3A3MDIxLmg+DQogICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3Jlc2V0L3NwLXNw
-NzAyMS5oPg0KDQogICAgb3RwOiBvdHBAOWMwMGFmMDAgew0KICAgICAgY29tcGF0aWJsZSA9ICJz
-dW5wbHVzLHNwNzAyMS1vY290cCI7DQogICAgICByZWcgPSA8MHg5YzAwYWYwMCAweDM0PiwgPDB4
-OWMwMGFmODAsIDB4NTg+Ow0KICAgICAgcmVnLW5hbWVzID0gImhiX2dwaW8iLCAib3RwcngiOw0K
-ICAgICAgY2xvY2tzID0gPCZjbGtzIE9UUFJYPjsNCiAgICAgIHJlc2V0cyA9IDwmcnN0YywgUlNU
-X09UUFJYPjsNCg0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQogICAgICAjc2l6ZS1jZWxs
-cyA9IDwxPjsNCiAgICAgIHRoZXJtX2NhbGliOiB0aGVybWFsLWNhbGlicmF0aW9uQDE0IHsNCiAg
-ICAgICAgcmVnID0gPDB4MTQgMHgzPjsNCiAgICAgIH0NCiAgICAgIGRpc2Nfdm9sOiBkaXNjb25u
-ZWN0LXZvbHRhZ2VAMTggew0KICAgICAgICByZWcgPSA8MHgxOCAweDI+Ow0KICAgICAgfQ0KICAg
-ICAgbWFjX2FkZHIwOiBtYWMtYWRkcmVzczBAMzQgew0KICAgICAgICByZWcgPSA8MHgzNCAweDY+
-Ow0KICAgICAgfQ0KICAgICAgbWFjX2FkZHIxOiBtYWMtYWRkcmVzczFAM2Egew0KICAgICAgICBy
-ZWcgPSA8MHgzYSAweDY+Ow0KICAgICAgfTsNCiAgICB9Ow0KLi4uDQoNCklzIHRoYXQgY29ycmVj
-dD8NClRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXcgIQ0K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    048ff8629e11 Merge tag 'usb-5.16-rc1' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=1480ade1b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d6b387bc5d3e50f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=63ee658b9a100ffadbe2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1313cb7cb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a2f676b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+usb 5-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 1291 at drivers/usb/core/urb.c:502 usb_submit_urb+0xed2/0x18a0 drivers/usb/core/urb.c:502
+Modules linked in:
+CPU: 0 PID: 1291 Comm: kworker/0:3 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: mld mld_ifc_work
+RIP: 0010:usb_submit_urb+0xed2/0x18a0 drivers/usb/core/urb.c:502
+Code: 7c 24 18 e8 40 2b aa fd 48 8b 7c 24 18 e8 c6 23 1a ff 41 89 d8 44 89 e1 4c 89 ea 48 89 c6 48 c7 c7 40 c0 85 86 e8 e5 66 03 02 <0f> 0b e9 58 f8 ff ff e8 12 2b aa fd 48 81 c5 80 06 00 00 e9 84 f7
+RSP: 0018:ffffc90000f0f580 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888108599c00 RSI: ffffffff812bae18 RDI: fffff520001e1ea2
+RBP: ffff88810b887b00 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff812b4bfe R11: 0000000000000000 R12: 0000000000000003
+R13: ffff8881067d9dc0 R14: 0000000000000003 R15: ffff88810d2dd700
+FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3815d25ff8 CR3: 000000010bdba000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ usbnet_start_xmit+0x5ed/0x1f70 drivers/net/usb/usbnet.c:1460
+ __netdev_start_xmit include/linux/netdevice.h:4987 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5001 [inline]
+ xmit_one net/core/dev.c:3590 [inline]
+ dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3606
+ sch_direct_xmit+0x25b/0x790 net/sched/sch_generic.c:342
+ __dev_xmit_skb net/core/dev.c:3817 [inline]
+ __dev_queue_xmit+0x11bf/0x31d0 net/core/dev.c:4194
+ neigh_resolve_output net/core/neighbour.c:1523 [inline]
+ neigh_resolve_output+0x50e/0x820 net/core/neighbour.c:1503
+ neigh_output include/net/neighbour.h:527 [inline]
+ ip6_finish_output2+0xb49/0x1af0 net/ipv6/ip6_output.c:126
+ __ip6_finish_output.part.0+0x387/0xbb0 net/ipv6/ip6_output.c:191
+ __ip6_finish_output include/linux/skbuff.h:986 [inline]
+ ip6_finish_output net/ipv6/ip6_output.c:201 [inline]
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip6_output+0x3d2/0x810 net/ipv6/ip6_output.c:224
+ dst_output include/net/dst.h:450 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ mld_sendpack+0x96d/0xe00 net/ipv6/mcast.c:1826
+ mld_send_cr net/ipv6/mcast.c:2127 [inline]
+ mld_ifc_work+0x71c/0xdc0 net/ipv6/mcast.c:2659
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x40b/0x500 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
