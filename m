@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907D3451260
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E47845134E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347674AbhKOTlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
+        id S1348040AbhKOTtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:49:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239065AbhKOR5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:57:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73E4260EE9;
-        Mon, 15 Nov 2021 17:34:37 +0000 (UTC)
+        id S239199AbhKOR5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:57:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB14760EBC;
+        Mon, 15 Nov 2021 17:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997678;
-        bh=nosFUrgZVJO9waeAAJC7CGOmBp18rnYq8jhKm6CSv/A=;
+        s=korg; t=1636997683;
+        bh=XJyp2o3NJbCWJGAcDoSTzvzP79UaDesOKzag2W7ehNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VnC0vMC0/UGMG9ENcHyJVcYFitwh0YrpVTUouu0vItpl/mX6xxS9SZ3HiBy74DLao
-         Vbsprg4PuSGkBaQciMFP0YPjha+QYCz8oTmWeTze/Bc6Wydq84dfzMNXF+QPgYuTIp
-         FC0WRqSbEKzXyU75KAbMGBEv0HAiAg4qBf0zYb6k=
+        b=fdk2XsNCqY1EsNSUkT7UhOh1ruHVBO4hNrceWRDDmHRq1tyauNL4VD4cz0MDbyysu
+         QERuFlAmB47ddsSsXH3dnvKEqYvpITrhHhLRXBCMd7LaAQfzLgF87eOLyEE9p/szM/
+         KnKJWdm3U95yy0fbz6ilUSMy6jH+eAl+4Q9dyL/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 235/575] selftests: kvm: fix mismatched fclose() after popen()
-Date:   Mon, 15 Nov 2021 17:59:20 +0100
-Message-Id: <20211115165351.862026051@linuxfoundation.org>
+Subject: [PATCH 5.10 237/575] iwlwifi: mvm: disable RX-diversity in powersave
+Date:   Mon, 15 Nov 2021 17:59:22 +0100
+Message-Id: <20211115165351.926176894@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,43 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit c3867ab5924b7a9a0b4a117902a08669d8be7c21 ]
+[ Upstream commit e5322b9ab5f63536c41301150b7ce64605ce52cc ]
 
-get_warnings_count() does fclose() using File * returned from popen().
-Fix it to call pclose() as it should.
+Just like we have default SMPS mode as dynamic in powersave,
+we should not enable RX-diversity in powersave, to reduce
+power consumption when connected to a non-MIMO AP.
 
-tools/testing/selftests/kvm/x86_64/mmio_warning_test
-x86_64/mmio_warning_test.c: In function ‘get_warnings_count’:
-x86_64/mmio_warning_test.c:87:9: warning: ‘fclose’ called on pointer returned from a mismatched allocation function [-Wmismatched-dealloc]
-   87 |         fclose(f);
-      |         ^~~~~~~~~
-x86_64/mmio_warning_test.c:84:13: note: returned from ‘popen’
-   84 |         f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20211017113927.fc896bc5cdaa.I1d11da71b8a5cbe921a37058d5f578f1b14a2023@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/x86_64/mmio_warning_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/utils.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-index 8039e1eff9388..9f55ccd169a13 100644
---- a/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/mmio_warning_test.c
-@@ -84,7 +84,7 @@ int get_warnings_count(void)
- 	f = popen("dmesg | grep \"WARNING:\" | wc -l", "r");
- 	if (fscanf(f, "%d", &warnings) < 1)
- 		warnings = 0;
--	fclose(f);
-+	pclose(f);
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+index 3123036978a59..caf38ef64d3ce 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+@@ -741,6 +741,9 @@ bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm)
  
- 	return warnings;
- }
+ 	lockdep_assert_held(&mvm->mutex);
+ 
++	if (iwlmvm_mod_params.power_scheme != IWL_POWER_SCHEME_CAM)
++		return false;
++
+ 	if (num_of_ant(iwl_mvm_get_valid_rx_ant(mvm)) == 1)
+ 		return false;
+ 
 -- 
 2.33.0
 
