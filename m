@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A64245176C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC14451775
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347240AbhKOW1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:27:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
+        id S234567AbhKOW1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:27:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242362AbhKOSfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242365AbhKOSfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:35:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37B963255;
-        Mon, 15 Nov 2021 18:01:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 960366101B;
+        Mon, 15 Nov 2021 18:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999319;
-        bh=ZcSCgMqc+eeKZejniw6KgFcgaDl/BizMQNnKd37bD/o=;
+        s=korg; t=1636999322;
+        bh=Obdhc/0pMyV0hrek8x+/GRvmUnhklhKVjt35VANmS00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LstZKg/QQ/ihuVx6jhjj4z1PiYo2v/4fbz5QsxbNSTw93/44ju0Weesqtba+AEQ9M
-         Z7tjEOowGe/zXwcnclk9w+asD8DSNXSJrIyz8vqVup1VOyRxI/c5KpPg8lKb21FAeK
-         iZ+FIKOPchaC4ZYzBs8/1aLR5Ss2qM1AswxpUyyQ=
+        b=PZXJ2SGfZ6rWe1d+5KKGXVCb1up+1vFFRFeQvPK/pZ2gvfv2y99jIz1tYDvqxIEJQ
+         QgjXdbXxR0hcX5kQ7Np0etnqUqOa4swB//aXLLvzq+PR3s9703pKdUzHSsYk66xNJK
+         dVpwMjdZQbmD25XFlgTfpem7ohgj/njBA+UQ++QY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 255/849] media: rcar-csi2: Add checking to rcsi2_start_receiver()
-Date:   Mon, 15 Nov 2021 17:55:38 +0100
-Message-Id: <20211115165428.864130968@linuxfoundation.org>
+Subject: [PATCH 5.14 256/849] ipmi: Disable some operations during a panic
+Date:   Mon, 15 Nov 2021 17:55:39 +0100
+Message-Id: <20211115165428.900178358@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -44,40 +39,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Corey Minyard <cminyard@mvista.com>
 
-[ Upstream commit fc41665498332ad394b7db37f23e9394096ddc71 ]
+[ Upstream commit b36eb5e7b75a756baa64909a176dd4269ee05a8b ]
 
-If rcsi2_code_to_fmt() return NULL, then null pointer dereference occurs
-in the next cycle. That should not be possible now but adding checking
-protects from future bugs.
-The patch adds checking if format is NULL.
+Don't do kfree or other risky things when oops_in_progress is set.
+It's easy enough to avoid doing them
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar-vin/rcar-csi2.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/char/ipmi/ipmi_msghandler.c | 10 +++++++---
+ drivers/char/ipmi/ipmi_watchdog.c   | 17 ++++++++++++-----
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-index e28eff0396888..ba4a380016cc4 100644
---- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-@@ -553,6 +553,8 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index e96cb5c4f97a3..a08f53f208bfe 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -4789,7 +4789,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
+ static void free_smi_msg(struct ipmi_smi_msg *msg)
+ {
+ 	atomic_dec(&smi_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
  
- 	/* Code is validated in set_fmt. */
- 	format = rcsi2_code_to_fmt(priv->mf.code);
-+	if (!format)
-+		return -EINVAL;
+ struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
+@@ -4808,7 +4810,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
+ static void free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+ 	atomic_dec(&recv_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
  
- 	/*
- 	 * Enable all supported CSI-2 channels with virtual channel and
+ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+@@ -4826,7 +4830,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+ 
+ void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+-	if (msg->user)
++	if (msg->user && !oops_in_progress)
+ 		kref_put(&msg->user->refcount, free_user);
+ 	msg->done(msg);
+ }
+diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+index f855a9665c284..883b4a3410122 100644
+--- a/drivers/char/ipmi/ipmi_watchdog.c
++++ b/drivers/char/ipmi/ipmi_watchdog.c
+@@ -342,13 +342,17 @@ static atomic_t msg_tofree = ATOMIC_INIT(0);
+ static DECLARE_COMPLETION(msg_wait);
+ static void msg_free_smi(struct ipmi_smi_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static void msg_free_recv(struct ipmi_recv_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static struct ipmi_smi_msg smi_msg = {
+ 	.done = msg_free_smi
+@@ -434,8 +438,10 @@ static int _ipmi_set_timeout(int do_heartbeat)
+ 	rv = __ipmi_set_timeout(&smi_msg,
+ 				&recv_msg,
+ 				&send_heartbeat_now);
+-	if (rv)
++	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		return rv;
++	}
+ 
+ 	wait_for_completion(&msg_wait);
+ 
+@@ -580,6 +586,7 @@ restart:
+ 				      &recv_msg,
+ 				      1);
+ 	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		pr_warn("heartbeat send failure: %d\n", rv);
+ 		return rv;
+ 	}
 -- 
 2.33.0
 
