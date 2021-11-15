@@ -2,189 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBCA450855
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86316450862
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbhKOPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:33:16 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:55040 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236407AbhKOPbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:31:18 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwkTWPf_1636990097;
-Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UwkTWPf_1636990097)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 15 Nov 2021 23:28:21 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-To:     sjpark@amazon.de
-Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 4/4] mm/damon: Remove some no need func definitions in damon.h file
-Date:   Mon, 15 Nov 2021 23:26:15 +0800
-Message-Id: <45fd5b3ef6cce8e28dbc1c92f9dc845ccfc949d7.1636989871.git.xhao@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <cover.1636989871.git.xhao@linux.alibaba.com>
-References: <cover.1636989871.git.xhao@linux.alibaba.com>
+        id S236652AbhKOPdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:33:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:56642 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236522AbhKOPc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:32:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EF1C6D;
+        Mon, 15 Nov 2021 07:30:02 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 557F03F766;
+        Mon, 15 Nov 2021 07:30:00 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Galbraith <efault@gmx.de>, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 3/5] powerpc: Use preemption model accessors
+In-Reply-To: <87o86rmgu8.fsf@mpe.ellerman.id.au>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com> <20211110202448.4054153-4-valentin.schneider@arm.com> <87o86rmgu8.fsf@mpe.ellerman.id.au>
+Date:   Mon, 15 Nov 2021 15:29:53 +0000
+Message-ID: <87lf1pqvwu.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the damon.h header file, some func definitions about VA & PA
-can only be used in its own file, so there no need to define in
-the header file, and the header file will looks cleaner.
 
-If other files later call these functions, then put them to the
-header file will not be late.
+Doh, thought I had sent this one out already...
 
-Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
-Reviewed-by: SeongJae Park <sj@kernel.org>
----
- include/linux/damon.h | 25 ++-----------------------
- mm/damon/paddr.c      |  8 ++++----
- mm/damon/vaddr.c      | 12 ++++++------
- 3 files changed, 12 insertions(+), 33 deletions(-)
+On 11/11/21 15:55, Michael Ellerman wrote:
+> Valentin Schneider <valentin.schneider@arm.com> writes:
+>> Per PREEMPT_DYNAMIC, checking CONFIG_PREEMPT doesn't tell you the actual
+>> preemption model of the live kernel. Use the newly-introduced accessors
+>> instead.
+>>
+>> sched_init() -> preempt_dynamic_init() happens way before IRQs are set up,
+>> so this should be fine.
+>
+> Despite the name interrupt_exit_kernel_prepare() is called before IRQs
+> are setup, traps and page faults are "interrupts" here.
+>
+> So I'm not sure about adding that call there, because it will trigger a
+> WARN if called early in boot, which will trigger a trap and depending on
+> the context we may not survive.
+>
+> I'd be happier if we can make it a build-time check.
+>
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 321de9d72360..8a73e825e0d5 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -461,34 +461,13 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
- #endif	/* CONFIG_DAMON */
+This can't be done at build-time for PREEMPT_DYNAMIC, but that can be
+punted off to whoever will implement ppc support for that :-) AFAICT if
+this can't use preempt_dynamic_mode (due to how "late" it is setup), the
+preempt_schedule_irq() needs to go and ppc needs to use irqentry_exit() /
+irqentry_exit_cond_resched().
 
- #ifdef CONFIG_DAMON_VADDR
--
--/* Monitoring primitives for virtual memory address spaces */
--void damon_va_init(struct damon_ctx *ctx);
--void damon_va_update(struct damon_ctx *ctx);
--void damon_va_prepare_access_checks(struct damon_ctx *ctx);
--unsigned int damon_va_check_accesses(struct damon_ctx *ctx);
--bool damon_va_target_valid(void *t);
--void damon_va_cleanup(struct damon_ctx *ctx);
--int damon_va_apply_scheme(struct damon_ctx *context, struct damon_target *t,
--		struct damon_region *r, struct damos *scheme);
--int damon_va_scheme_score(struct damon_ctx *context, struct damon_target *t,
--		struct damon_region *r, struct damos *scheme);
- void damon_va_set_primitives(struct damon_ctx *ctx);
--
-+bool damon_va_target_valid(void *t);
- #endif	/* CONFIG_DAMON_VADDR */
+I dropped that for v2.
 
- #ifdef CONFIG_DAMON_PADDR
--
--/* Monitoring primitives for the physical memory address space */
--void damon_pa_prepare_access_checks(struct damon_ctx *ctx);
--unsigned int damon_pa_check_accesses(struct damon_ctx *ctx);
--bool damon_pa_target_valid(void *t);
--int damon_pa_apply_scheme(struct damon_ctx *context, struct damon_target *t,
--		struct damon_region *r, struct damos *scheme);
--int damon_pa_scheme_score(struct damon_ctx *context, struct damon_target *t,
--		struct damon_region *r, struct damos *scheme);
- void damon_pa_set_primitives(struct damon_ctx *ctx);
--
-+bool damon_pa_target_valid(void *t);
- #endif	/* CONFIG_DAMON_PADDR */
-
- #endif	/* _DAMON_H */
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index a496d6f203d6..5c3a29d32638 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -73,7 +73,7 @@ static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
- 	damon_pa_mkold(r->sampling_addr);
- }
-
--void damon_pa_prepare_access_checks(struct damon_ctx *ctx)
-+static void damon_pa_prepare_access_checks(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
- 	struct damon_region *r;
-@@ -192,7 +192,7 @@ static void __damon_pa_check_access(struct damon_ctx *ctx,
- 	last_addr = r->sampling_addr;
- }
-
--unsigned int damon_pa_check_accesses(struct damon_ctx *ctx)
-+static unsigned int damon_pa_check_accesses(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
- 	struct damon_region *r;
-@@ -213,7 +213,7 @@ bool damon_pa_target_valid(void *t)
- 	return true;
- }
-
--int damon_pa_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
-+static int damon_pa_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
- 		struct damon_region *r, struct damos *scheme)
- {
- 	unsigned long addr;
-@@ -246,7 +246,7 @@ int damon_pa_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
- 	return 0;
- }
-
--int damon_pa_scheme_score(struct damon_ctx *context, struct damon_target *t,
-+static int damon_pa_scheme_score(struct damon_ctx *context, struct damon_target *t,
- 		struct damon_region *r, struct damos *scheme)
- {
- 	switch (scheme->action) {
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index 905e0fc8a8ec..eb1e955b5aba 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -271,7 +271,7 @@ static void __damon_va_init_regions(struct damon_ctx *ctx,
- }
-
- /* Initialize '->regions_list' of every target (task) */
--void damon_va_init(struct damon_ctx *ctx)
-+static void damon_va_init(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
-
-@@ -355,7 +355,7 @@ static void damon_va_apply_three_regions(struct damon_target *t,
- /*
-  * Update regions for current memory mappings
-  */
--void damon_va_update(struct damon_ctx *ctx)
-+static void damon_va_update(struct damon_ctx *ctx)
- {
- 	struct damon_addr_range three_regions[3];
- 	struct damon_target *t;
-@@ -417,7 +417,7 @@ static void __damon_va_prepare_access_check(struct damon_ctx *ctx,
- 	damon_va_mkold(mm, r->sampling_addr);
- }
-
--void damon_va_prepare_access_checks(struct damon_ctx *ctx)
-+static void damon_va_prepare_access_checks(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
- 	struct mm_struct *mm;
-@@ -538,7 +538,7 @@ static void __damon_va_check_access(struct damon_ctx *ctx,
- 	last_addr = r->sampling_addr;
- }
-
--unsigned int damon_va_check_accesses(struct damon_ctx *ctx)
-+static unsigned int damon_va_check_accesses(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
- 	struct mm_struct *mm;
-@@ -602,7 +602,7 @@ static int damos_madvise(struct damon_target *target, struct damon_region *r,
- }
- #endif	/* CONFIG_ADVISE_SYSCALLS */
-
--int damon_va_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
-+static int damon_va_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
- 		struct damon_region *r, struct damos *scheme)
- {
- 	int madv_action;
-@@ -633,7 +633,7 @@ int damon_va_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
- 	return damos_madvise(t, r, madv_action);
- }
-
--int damon_va_scheme_score(struct damon_ctx *context, struct damon_target *t,
-+static int damon_va_scheme_score(struct damon_ctx *context, struct damon_target *t,
- 		struct damon_region *r, struct damos *scheme)
- {
-
---
-2.31.0
+> cheers
+>
