@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE193451B83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF6445197B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352736AbhKPADU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:03:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1346346AbhKOXV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:21:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344650AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4084F63356;
-        Mon, 15 Nov 2021 19:01:47 +0000 (UTC)
+        id S244727AbhKOTRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E254632C6;
+        Mon, 15 Nov 2021 18:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002907;
-        bh=UXXQVHeHtyJP2cKEqWskxuA237ekK3ZYRAQatTnXhXk=;
+        s=korg; t=1637000597;
+        bh=HNPfO/Ovchg2xkC5RaAtl9ysDi+CYwZXqKjqLhN+Sv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XfaH4qPsJC1ZbTjYhVj2Vmy1GVa/7H03WEek1njTlRTGaYAUYDJQKN24wBoxWFY4j
-         khQmoUfDciA5isRR1PGr4SzRIBFgoRDBOadbbCQzdCUGON+WdiCbGsIQmnu7xIYvHD
-         GX89BqifXpiP/ro1Kz6YGBOe8B54wLPBKG2Xm8aM=
+        b=MxrJV4Bp0haGKHLiBOHYGJ+hC8xg2HcIpGuQdjqiiOkaRGD6dPjNUyAloN7IYSx43
+         pnSFqfd4HXoeVmiISclYePnUq8LffblWdABr3xTUAhdXdmpFqFMlQLMccep6HSkiuu
+         EN2P6OTo3SdEb8RDniIczl+sfjwJB2jTdiSTJ6yY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 707/917] NFS: Dont set NFS_INO_DATA_INVAL_DEFER and NFS_INO_INVALID_DATA
-Date:   Mon, 15 Nov 2021 18:03:22 +0100
-Message-Id: <20211115165452.870981868@linuxfoundation.org>
+Subject: [PATCH 5.14 720/849] kselftests/net: add missed icmp.sh test to Makefile
+Date:   Mon, 15 Nov 2021 18:03:23 +0100
+Message-Id: <20211115165444.609236028@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 488796ec1e39fb9194cc8175f770823d40fbf0ed ]
+[ Upstream commit ca3676f94b8f40f52d285f9aef36dfd6725bfc14 ]
 
-NFS_INO_DATA_INVAL_DEFER and NFS_INO_INVALID_DATA should be considered
-mutually exclusive.
+When generating the selftests to another folder, the icmp.sh test will
+miss as it is not in Makefile, e.g.
 
-Fixes: 1c341b777501 ("NFS: Add deferred cache invalidation for close-to-open consistency violations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Tested-by: Benjamin Coddington <bcodding@redhat.com>
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+  make -C tools/testing/selftests/ install \
+      TARGETS="net" INSTALL_PATH=/tmp/kselftests
+
+Fixes: 7e9838b7915e ("selftests/net: Add icmp.sh for testing ICMP dummy address responses")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 6ea1bde33cb62..f9d3ad3acf114 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -210,10 +210,15 @@ void nfs_set_cache_invalid(struct inode *inode, unsigned long flags)
- 		flags &= ~NFS_INO_INVALID_XATTR;
- 	if (flags & NFS_INO_INVALID_DATA)
- 		nfs_fscache_invalidate(inode);
--	if (inode->i_mapping->nrpages == 0)
--		flags &= ~(NFS_INO_INVALID_DATA|NFS_INO_DATA_INVAL_DEFER);
- 	flags &= ~(NFS_INO_REVAL_PAGECACHE | NFS_INO_REVAL_FORCED);
-+
- 	nfsi->cache_validity |= flags;
-+
-+	if (inode->i_mapping->nrpages == 0)
-+		nfsi->cache_validity &= ~(NFS_INO_INVALID_DATA |
-+					  NFS_INO_DATA_INVAL_DEFER);
-+	else if (nfsi->cache_validity & NFS_INO_INVALID_DATA)
-+		nfsi->cache_validity &= ~NFS_INO_DATA_INVAL_DEFER;
- }
- EXPORT_SYMBOL_GPL(nfs_set_cache_invalid);
- 
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 79c9eb0034d58..a9b98d88df687 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -12,7 +12,7 @@ TEST_PROGS += udpgro_bench.sh udpgro.sh test_vxlan_under_vrf.sh reuseport_addr_a
+ TEST_PROGS += test_vxlan_fdb_changelink.sh so_txtime.sh ipv6_flowlabel.sh
+ TEST_PROGS += tcp_fastopen_backup_key.sh fcnal-test.sh l2tp.sh traceroute.sh
+ TEST_PROGS += fin_ack_lat.sh fib_nexthop_multiprefix.sh fib_nexthops.sh
+-TEST_PROGS += altnames.sh icmp_redirect.sh ip6_gre_headroom.sh
++TEST_PROGS += altnames.sh icmp.sh icmp_redirect.sh ip6_gre_headroom.sh
+ TEST_PROGS += route_localnet.sh
+ TEST_PROGS += reuseaddr_ports_exhausted.sh
+ TEST_PROGS += txtimestamp.sh
 -- 
 2.33.0
 
