@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE95045191F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35493451B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352595AbhKOXO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:14:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39112 "EHLO mail.kernel.org"
+        id S1356039AbhKOXyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:54:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244122AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BED66349E;
-        Mon, 15 Nov 2021 18:18:41 +0000 (UTC)
+        id S1344309AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3D426365E;
+        Mon, 15 Nov 2021 18:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000322;
-        bh=WXy4SMD51L4UiKKQv2jcYJE8QwPHG7HRm7p96HQx/B8=;
+        s=korg; t=1637002543;
+        bh=5tNJ7cn2V77si9hZuvtyH4t0dwIsYFYNiyA4DJomHtA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lmc2NURtiVrXkN2FVOz6v70s0ARx9o//0789JvCk/bgEr0dyTOEzcnKXLSkRPVO8P
-         gY0dh7zORPEHF2ZkWoygHscFNdnz9J5sXCgoTTuWCfll545f4LtIYoxohqCv5nda4p
-         Lz5xD6Xqi9FfyW4kpYPeOOm4f08d19kZozZPy9Ac=
+        b=eblf+ywOhWGLnEyrI61EeDp6sYdu8zcY8ioqgLLTa3FS01Kk2Angh83g+pQp/fWqU
+         tmyeiCGh7av4bcn4ZXZ0EjgZfLHkbVEmbiUKPhYecHqMrBjwm/aEB7SxPC5W2KxoMO
+         aFKpQg29nT5QkntWkoafnfA1HBGQRN5gQyvX91X8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Bean Huo <beanhuo@micron.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 619/849] soc: qcom: socinfo: add two missing PMIC IDs
-Date:   Mon, 15 Nov 2021 18:01:42 +0100
-Message-Id: <20211115165441.197344570@linuxfoundation.org>
+Subject: [PATCH 5.15 608/917] scsi: ufs: core: Fix ufshcd_probe_hba() prototype to match the definition
+Date:   Mon, 15 Nov 2021 18:01:43 +0100
+Message-Id: <20211115165449.407912089@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Bean Huo <beanhuo@micron.com>
 
-[ Upstream commit 2fae3ecc70405b72ea6c923b216d34547559d6a9 ]
+[ Upstream commit 68444d73d6a5864ede12df6366bd6602e022ae5b ]
 
-Add IDs for PMK8001 and PMI8996. They also fall in the list of
-'duplicated' IDs, where the same index was used for multiple chips.
+Since commit 568dd9959611 ("scsi: ufs: Rename the second ufshcd_probe_hba()
+argument"), the second ufshcd_probe_hba() argument has been changed to
+init_dev_params.
 
-Fixes: 7fda2b0bfbd9 ("soc: qcom: socinfo: import PMIC IDs from pmic-spmi")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20211016190607.49866-1-dmitry.baryshkov@linaro.org
+Link: https://lore.kernel.org/r/20210929200640.828611-3-huobean@gmail.com
+Fixes: 568dd9959611 ("scsi: ufs: Rename the second ufshcd_probe_hba() argument")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/socinfo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-index a6cffd57d3c7b..0818eee31b295 100644
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -87,8 +87,8 @@ static const char *const pmic_models[] = {
- 	[15] = "PM8901",
- 	[16] = "PM8950/PM8027",
- 	[17] = "PMI8950/ISL9519",
--	[18] = "PM8921",
--	[19] = "PM8018",
-+	[18] = "PMK8001/PM8921",
-+	[19] = "PMI8996/PM8018",
- 	[20] = "PM8998/PM8015",
- 	[21] = "PMI8998/PM8014",
- 	[22] = "PM8821",
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 41f2ff35f82b2..b02feb3ab7b56 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -223,7 +223,7 @@ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
+ static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
+ static void ufshcd_hba_exit(struct ufs_hba *hba);
+ static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+-static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
++static int ufshcd_probe_hba(struct ufs_hba *hba, bool init_dev_params);
+ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+ static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
 -- 
 2.33.0
 
