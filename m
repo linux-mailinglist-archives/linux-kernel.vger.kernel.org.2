@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3604514FF
+	by mail.lfdr.de (Postfix) with ESMTP id 2235A4514FE
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350222AbhKOUWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:22:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46098 "EHLO mail.kernel.org"
+        id S1350185AbhKOUWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240091AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240090AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:05:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 830E763385;
-        Mon, 15 Nov 2021 17:42:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 088B063386;
+        Mon, 15 Nov 2021 17:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998124;
-        bh=5ZRyhR1sQ/XjuYxHdwM/gQ4abtkBchC2RBxuua8zseA=;
+        s=korg; t=1636998127;
+        bh=GXPRDjNuXpgcoFRVlD8/CTYNFU26E+nImIcXkUd4pQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hieZAhzHra7Hw4VEi1CtiK3OL6z2pscgatbIf/SBmFc8ziFHz6VHskbmPr4EKvFaN
-         L0ZOVc8XftbRj4BoAAfCZwUjpgPLNI/RReVNVT8dR3sJPd/0b7wIZHQIKVplXCzc4x
-         bk+AKGtzb9N1g1++wl81tLNkJbIT4pIdRcOWvIww=
+        b=pSjxvV8ThqA0acEVfZICknahEkR4O+/uq69lPuvYFqS2oE/OtpPkb4nS1oJLCnbpU
+         8PER8O4Wyuwm47hR2xsnM/zsAiHPGwl3Q3Wf1/auPg5iKzI1+lCWQik+TaEJV77OCc
+         E2GMeZmugbD/C6tOkX0KZ96fWoLzcxx7jWM7Te2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Jon Maxwell <jmaxwell37@gmail.com>,
+        Monir Zouaoui <Monir.Zouaoui@mail.schwarz>,
+        Simon Stier <simon.stier@mail.schwarz>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 363/575] libbpf: Fix endianness detection in BPF_CORE_READ_BITFIELD_PROBED()
-Date:   Mon, 15 Nov 2021 18:01:28 +0100
-Message-Id: <20211115165356.359557579@linuxfoundation.org>
+Subject: [PATCH 5.10 364/575] tcp: dont free a FIN sk_buff in tcp_remove_empty_skb()
+Date:   Mon, 15 Nov 2021 18:01:29 +0100
+Message-Id: <20211115165356.391473328@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,38 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Jon Maxwell <jmaxwell37@gmail.com>
 
-[ Upstream commit 45f2bebc8079788f62f22d9e8b2819afb1789d7b ]
+[ Upstream commit cf12e6f9124629b18a6182deefc0315f0a73a199 ]
 
-__BYTE_ORDER is supposed to be defined by a libc, and __BYTE_ORDER__ -
-by a compiler. bpf_core_read.h checks __BYTE_ORDER == __LITTLE_ENDIAN,
-which is true if neither are defined, leading to incorrect behavior on
-big-endian hosts if libc headers are not included, which is often the
-case.
+v1: Implement a more general statement as recommended by Eric Dumazet. The
+sequence number will be advanced, so this check will fix the FIN case and
+other cases.
 
-Fixes: ee26dade0e3b ("libbpf: Add support for relocatable bitfields")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20211026010831.748682-2-iii@linux.ibm.com
+A customer reported sockets stuck in the CLOSING state. A Vmcore revealed that
+the write_queue was not empty as determined by tcp_write_queue_empty() but the
+sk_buff containing the FIN flag had been freed and the socket was zombied in
+that state. Corresponding pcaps show no FIN from the Linux kernel on the wire.
+
+Some instrumentation was added to the kernel and it was found that there is a
+timing window where tcp_sendmsg() can run after tcp_send_fin().
+
+tcp_sendmsg() will hit an error, for example:
+
+1269 ▹       if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))↩
+1270 ▹       ▹       goto do_error;↩
+
+tcp_remove_empty_skb() will then free the FIN sk_buff as "skb->len == 0". The
+TCP socket is now wedged in the FIN-WAIT-1 state because the FIN is never sent.
+
+If the other side sends a FIN packet the socket will transition to CLOSING and
+remain that way until the system is rebooted.
+
+Fix this by checking for the FIN flag in the sk_buff and don't free it if that
+is the case. Testing confirmed that fixed the issue.
+
+Fixes: fdfc5c8594c2 ("tcp: remove empty skb from write queue in error cases")
+Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+Reported-by: Monir Zouaoui <Monir.Zouaoui@mail.schwarz>
+Reported-by: Simon Stier <simon.stier@mail.schwarz>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf_core_read.h | 2 +-
+ net/ipv4/tcp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index 4538ed762a209..f05cfc082915d 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -40,7 +40,7 @@ enum bpf_enum_value_kind {
- #define __CORE_RELO(src, field, info)					      \
- 	__builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
- 
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- #define __CORE_BITFIELD_PROBE_READ(dst, src, fld)			      \
- 	bpf_probe_read_kernel(						      \
- 			(void *)dst,				      \
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 65eb0a523e3f5..e8aca226c4ae3 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -956,7 +956,7 @@ int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
+  */
+ static void tcp_remove_empty_skb(struct sock *sk, struct sk_buff *skb)
+ {
+-	if (skb && !skb->len) {
++	if (skb && TCP_SKB_CB(skb)->seq == TCP_SKB_CB(skb)->end_seq) {
+ 		tcp_unlink_write_queue(skb, sk);
+ 		if (tcp_write_queue_empty(sk))
+ 			tcp_chrono_stop(sk, TCP_CHRONO_BUSY);
 -- 
 2.33.0
 
