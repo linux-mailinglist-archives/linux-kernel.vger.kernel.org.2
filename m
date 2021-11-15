@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A6C451ABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16EE4518B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351155AbhKOXmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1344263AbhKOXFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:05:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343936AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D906335C;
-        Mon, 15 Nov 2021 18:48:52 +0000 (UTC)
+        id S243217AbhKOSzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:55:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA3C6331A;
+        Mon, 15 Nov 2021 18:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002132;
-        bh=vzmCeukmoJV4Y5z/1dgwWqVxS8X1Oudm9E9o5Kg1Zo0=;
+        s=korg; t=1636999900;
+        bh=tTmXqmdG6aVwUcyq2RC2+4ytls6JqpiwL+hCByUlcWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J7qWbM2g1WsE/AlVsI0K7w2GDCJvHonGXYPZHbXLv4A95VDBEVzLmGX58ZzbflMcU
-         onUH1GpIQwEpXpugCOJzpepIe6mxiOmUwPjPBXSOhGpGbpPr6EKN0L7Hki6xWtaphR
-         n323jxrqTip4KaV5mIplodVhNDLDf7eqIUdkhS/M=
+        b=h0TfuMelGMj1raRkDwdz4zoLTvfnMZp+EOsegWZMYwOBA3e7+mh+TdIQLvsLZsGsY
+         xGwvk5T4uPZUrTrkOfY8AAsSyE4nXGm0KrIaYlr9f6h+HiwvSMFQ6O+7HkLJilZHZw
+         v/OQdaUcI0qpRf188KzjbVknWmw0nwKTMcu7SH0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fraker <jfraker@google.com>,
-        David Awogbemila <awogbemila@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 418/917] gve: Recover from queue stall due to missed IRQ
-Date:   Mon, 15 Nov 2021 17:58:33 +0100
-Message-Id: <20211115165442.974100181@linuxfoundation.org>
+Subject: [PATCH 5.14 431/849] x86: Fix get_wchan() to support the ORC unwinder
+Date:   Mon, 15 Nov 2021 17:58:34 +0100
+Message-Id: <20211115165434.858419932@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,134 +41,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fraker <jfraker@google.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-[ Upstream commit 87a7f321bb6a45e54b7d6c90d032ee5636a6ad97 ]
+[ Upstream commit bc9bbb81730ea667c31c5b284f95ee312bab466f ]
 
-Don't always reset the driver on a TX timeout. Attempt to
-recover by kicking the queue in case an IRQ was missed.
+Currently, the kernel CONFIG_UNWINDER_ORC option is enabled by default
+on x86, but the implementation of get_wchan() is still based on the frame
+pointer unwinder, so the /proc/<pid>/wchan usually returned 0 regardless
+of whether the task <pid> is running.
 
-Fixes: 9e5f7d26a4c08 ("gve: Add workqueue and reset support")
-Signed-off-by: John Fraker <jfraker@google.com>
-Signed-off-by: David Awogbemila <awogbemila@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reimplement get_wchan() by calling stack_trace_save_tsk(), which is
+adapted to the ORC and frame pointer unwinders.
+
+Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20211008111626.271115116@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve.h        |  4 +-
- drivers/net/ethernet/google/gve/gve_adminq.h |  1 +
- drivers/net/ethernet/google/gve/gve_main.c   | 48 +++++++++++++++++++-
- 3 files changed, 51 insertions(+), 2 deletions(-)
+ arch/x86/kernel/process.c | 51 +++------------------------------------
+ 1 file changed, 3 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index 2f93ed4705905..c1d4042671f9f 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -30,7 +30,7 @@
- #define GVE_MIN_MSIX 3
- 
- /* Numbers of gve tx/rx stats in stats report. */
--#define GVE_TX_STATS_REPORT_NUM	5
-+#define GVE_TX_STATS_REPORT_NUM	6
- #define GVE_RX_STATS_REPORT_NUM	2
- 
- /* Interval to schedule a stats report update, 20000ms. */
-@@ -413,7 +413,9 @@ struct gve_tx_ring {
- 	u32 q_num ____cacheline_aligned; /* queue idx */
- 	u32 stop_queue; /* count of queue stops */
- 	u32 wake_queue; /* count of queue wakes */
-+	u32 queue_timeout; /* count of queue timeouts */
- 	u32 ntfy_id; /* notification block index */
-+	u32 last_kick_msec; /* Last time the queue was kicked */
- 	dma_addr_t bus; /* dma address of the descr ring */
- 	dma_addr_t q_resources_bus; /* dma address of the queue resources */
- 	dma_addr_t complq_bus_dqo; /* dma address of the dqo.compl_ring */
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.h b/drivers/net/ethernet/google/gve/gve_adminq.h
-index 47c3d8f313fcf..3953f6f7a4273 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.h
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.h
-@@ -270,6 +270,7 @@ enum gve_stat_names {
- 	TX_LAST_COMPLETION_PROCESSED	= 5,
- 	RX_NEXT_EXPECTED_SEQUENCE	= 6,
- 	RX_BUFFERS_POSTED		= 7,
-+	TX_TIMEOUT_CNT			= 8,
- 	// stats from NIC
- 	RX_QUEUE_DROP_CNT		= 65,
- 	RX_NO_BUFFERS_POSTED		= 66,
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index bf8a4a7c43f78..8c996e72748d2 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -24,6 +24,9 @@
- #define GVE_VERSION		"1.0.0"
- #define GVE_VERSION_PREFIX	"GVE-"
- 
-+// Minimum amount of time between queue kicks in msec (10 seconds)
-+#define MIN_TX_TIMEOUT_GAP (1000 * 10)
-+
- const char gve_version_str[] = GVE_VERSION;
- static const char gve_version_prefix[] = GVE_VERSION_PREFIX;
- 
-@@ -1116,9 +1119,47 @@ static void gve_turnup(struct gve_priv *priv)
- 
- static void gve_tx_timeout(struct net_device *dev, unsigned int txqueue)
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index f2f733bcb2b95..cd426c3283ee1 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -945,58 +945,13 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
+  */
+ unsigned long get_wchan(struct task_struct *p)
  {
--	struct gve_priv *priv = netdev_priv(dev);
-+	struct gve_notify_block *block;
-+	struct gve_tx_ring *tx = NULL;
-+	struct gve_priv *priv;
-+	u32 last_nic_done;
-+	u32 current_time;
-+	u32 ntfy_idx;
-+
-+	netdev_info(dev, "Timeout on tx queue, %d", txqueue);
-+	priv = netdev_priv(dev);
-+	if (txqueue > priv->tx_cfg.num_queues)
-+		goto reset;
-+
-+	ntfy_idx = gve_tx_idx_to_ntfy(priv, txqueue);
-+	if (ntfy_idx > priv->num_ntfy_blks)
-+		goto reset;
-+
-+	block = &priv->ntfy_blocks[ntfy_idx];
-+	tx = block->tx;
+-	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
+-	int count = 0;
++	unsigned long entry = 0;
  
-+	current_time = jiffies_to_msecs(jiffies);
-+	if (tx->last_kick_msec + MIN_TX_TIMEOUT_GAP > current_time)
-+		goto reset;
-+
-+	/* Check to see if there are missed completions, which will allow us to
-+	 * kick the queue.
-+	 */
-+	last_nic_done = gve_tx_load_event_counter(priv, tx);
-+	if (last_nic_done - tx->done) {
-+		netdev_info(dev, "Kicking queue %d", txqueue);
-+		iowrite32be(GVE_IRQ_MASK, gve_irq_doorbell(priv, block));
-+		napi_schedule(&block->napi);
-+		tx->last_kick_msec = current_time;
-+		goto out;
-+	} // Else reset.
-+
-+reset:
- 	gve_schedule_reset(priv);
-+
-+out:
-+	if (tx)
-+		tx->queue_timeout++;
- 	priv->tx_timeo_cnt++;
+ 	if (p == current || task_is_running(p))
+ 		return 0;
+ 
+-	if (!try_get_task_stack(p))
+-		return 0;
+-
+-	start = (unsigned long)task_stack_page(p);
+-	if (!start)
+-		goto out;
+-
+-	/*
+-	 * Layout of the stack page:
+-	 *
+-	 * ----------- topmax = start + THREAD_SIZE - sizeof(unsigned long)
+-	 * PADDING
+-	 * ----------- top = topmax - TOP_OF_KERNEL_STACK_PADDING
+-	 * stack
+-	 * ----------- bottom = start
+-	 *
+-	 * The tasks stack pointer points at the location where the
+-	 * framepointer is stored. The data on the stack is:
+-	 * ... IP FP ... IP FP
+-	 *
+-	 * We need to read FP and IP, so we need to adjust the upper
+-	 * bound by another unsigned long.
+-	 */
+-	top = start + THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING;
+-	top -= 2 * sizeof(unsigned long);
+-	bottom = start;
+-
+-	sp = READ_ONCE(p->thread.sp);
+-	if (sp < bottom || sp > top)
+-		goto out;
+-
+-	fp = READ_ONCE_NOCHECK(((struct inactive_task_frame *)sp)->bp);
+-	do {
+-		if (fp < bottom || fp > top)
+-			goto out;
+-		ip = READ_ONCE_NOCHECK(*(unsigned long *)(fp + sizeof(unsigned long)));
+-		if (!in_sched_functions(ip)) {
+-			ret = ip;
+-			goto out;
+-		}
+-		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
+-	} while (count++ < 16 && !task_is_running(p));
+-
+-out:
+-	put_task_stack(p);
+-	return ret;
++	stack_trace_save_tsk(p, &entry, 1, 0);
++	return entry;
  }
  
-@@ -1247,6 +1288,11 @@ void gve_handle_report_stats(struct gve_priv *priv)
- 				.value = cpu_to_be64(last_completion),
- 				.queue_id = cpu_to_be32(idx),
- 			};
-+			stats[stats_idx++] = (struct stats) {
-+				.stat_name = cpu_to_be32(TX_TIMEOUT_CNT),
-+				.value = cpu_to_be64(priv->tx[idx].queue_timeout),
-+				.queue_id = cpu_to_be32(idx),
-+			};
- 		}
- 	}
- 	/* rx stats */
+ long do_arch_prctl_common(struct task_struct *task, int option,
 -- 
 2.33.0
 
