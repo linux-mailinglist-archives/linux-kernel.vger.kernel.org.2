@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF63451254
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F281945125D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240789AbhKOTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:34:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S1347631AbhKOTkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:40:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238414AbhKORxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:53:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E883632B5;
-        Mon, 15 Nov 2021 17:32:41 +0000 (UTC)
+        id S239145AbhKORyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:54:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E306F632BC;
+        Mon, 15 Nov 2021 17:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997562;
-        bh=ck8XyBZYnj+ck7af5VYCTGfN3BGiqOHzr1XyLdEhGOw=;
+        s=korg; t=1636997590;
+        bh=rlwGY74GnDEID8pp7q2XayTP5DUvMxuhhnOMg7+CKhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YhPfbFY1t38nZB5UFdny8fg/iEAsGeiB2/AzEApQJf3c0S5EVl/jtThyT5Pa8diKc
-         h8/ggV7TYT4qptp1F2sJP3xY0RERY5U5xlxHT9+WI+qIgMO9xP/zDxh5oS07URpPqz
-         2ZBM1Q3F30KloixvaRl7v9CrQ4eDrEbdrlVEBQQQ=
+        b=fLe2rrypOYJ/JwMM5Swv+fwztkoP41dbN1Q88SF4xWcMYzC9Z7zoA21zJlUsiDITG
+         qnQKxzr9gdKWCTo1+Uko3kyN7Yi4ludwFUe9rSEnlMREvakRR+NK1C+Cb4hKl0Tep4
+         UnCU5ZJBp3yt+0siaS+51XK8VkXc1sVt1boc5wyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 194/575] media: uvcvideo: Set unique vdev name based in type
-Date:   Mon, 15 Nov 2021 17:58:39 +0100
-Message-Id: <20211115165350.419514724@linuxfoundation.org>
+Subject: [PATCH 5.10 203/575] ipmi: Disable some operations during a panic
+Date:   Mon, 15 Nov 2021 17:58:48 +0100
+Message-Id: <20211115165350.727150895@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,65 +39,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Corey Minyard <cminyard@mvista.com>
 
-[ Upstream commit e3f60e7e1a2b451f538f9926763432249bcf39c4 ]
+[ Upstream commit b36eb5e7b75a756baa64909a176dd4269ee05a8b ]
 
-All the entities must have a unique name. We can have a descriptive and
-unique name by appending the function and the entity->id.
+Don't do kfree or other risky things when oops_in_progress is set.
+It's easy enough to avoid doing them
 
-This is even resilent to multi chain devices.
-
-Fixes v4l2-compliance:
-Media Controller ioctls:
-                fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
-        test MEDIA_IOC_G_TOPOLOGY: FAIL
-                fail: v4l2-test-media.cpp(394): num_data_links != num_links
-	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/char/ipmi/ipmi_msghandler.c | 10 +++++++---
+ drivers/char/ipmi/ipmi_watchdog.c   | 17 ++++++++++++-----
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 282f3d2388cc2..447b6a198926e 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2065,6 +2065,7 @@ int uvc_register_video_device(struct uvc_device *dev,
- 			      const struct v4l2_file_operations *fops,
- 			      const struct v4l2_ioctl_ops *ioctl_ops)
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 8774a3b8ff959..abb865b1dff29 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -4802,7 +4802,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
+ static void free_smi_msg(struct ipmi_smi_msg *msg)
  {
-+	const char *name;
- 	int ret;
+ 	atomic_dec(&smi_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
  
- 	/* Initialize the video buffers queue. */
-@@ -2093,16 +2094,20 @@ int uvc_register_video_device(struct uvc_device *dev,
- 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
- 	default:
- 		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
-+		name = "Video Capture";
- 		break;
- 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
- 		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
-+		name = "Video Output";
- 		break;
- 	case V4L2_BUF_TYPE_META_CAPTURE:
- 		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
-+		name = "Metadata";
- 		break;
+ struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
+@@ -4821,7 +4823,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
+ static void free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+ 	atomic_dec(&recv_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
+ 
+ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+@@ -4839,7 +4843,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+ 
+ void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+-	if (msg->user)
++	if (msg->user && !oops_in_progress)
+ 		kref_put(&msg->user->refcount, free_user);
+ 	msg->done(msg);
+ }
+diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+index 6384510c48d6b..92eda5b2f1341 100644
+--- a/drivers/char/ipmi/ipmi_watchdog.c
++++ b/drivers/char/ipmi/ipmi_watchdog.c
+@@ -342,13 +342,17 @@ static atomic_t msg_tofree = ATOMIC_INIT(0);
+ static DECLARE_COMPLETION(msg_wait);
+ static void msg_free_smi(struct ipmi_smi_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static void msg_free_recv(struct ipmi_recv_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static struct ipmi_smi_msg smi_msg = {
+ 	.done = msg_free_smi
+@@ -434,8 +438,10 @@ static int _ipmi_set_timeout(int do_heartbeat)
+ 	rv = __ipmi_set_timeout(&smi_msg,
+ 				&recv_msg,
+ 				&send_heartbeat_now);
+-	if (rv)
++	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		return rv;
++	}
+ 
+ 	wait_for_completion(&msg_wait);
+ 
+@@ -580,6 +586,7 @@ restart:
+ 				      &recv_msg,
+ 				      1);
+ 	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		pr_warn("heartbeat send failure: %d\n", rv);
+ 		return rv;
  	}
- 
--	strscpy(vdev->name, dev->name, sizeof(vdev->name));
-+	snprintf(vdev->name, sizeof(vdev->name), "%s %u", name,
-+		 stream->header.bTerminalLink);
- 
- 	/*
- 	 * Set the driver data before calling video_register_device, otherwise
 -- 
 2.33.0
 
