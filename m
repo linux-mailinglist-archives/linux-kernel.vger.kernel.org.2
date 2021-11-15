@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352A344FFA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF73644FFA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhKOIEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:04:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236817AbhKOID7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:03:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4806E63219;
-        Mon, 15 Nov 2021 08:01:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636963264;
-        bh=Gvg9PuBayQuUuUQ0PJ/p8tpgZlb8vKjAFLRFIv55ViA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HgwmkVSo1eiNXwc5OipRo8asB6K0p0hlfI0P+Uu6/T4683Tk3eR+9IjeiCdJP5oub
-         KIpFQPZSnyswDIyyUXFI6H5PEOacScb8mt/W3hVWCb9kHP+6lS3M/TahznZi4uJQuz
-         DA60URjPPxyHDx6TctnphfGw3dBpb0tyaoeP0i58X+lo2om09nXKEW2r0gmqbWxk7I
-         XOeQLortoHZ7CUrxitcoksx3I2LRFtDP+01M6xzGD2WC2Y7FwqjgDq/SzRC6EJY5R+
-         A+XUoj+koPEAhR2SSiAfzuAFCG5hYCdMuzh5ZgAK2/SKYHjoKh9PH7PMDFKjIctgEN
-         2EfIBqY81JOHA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mmWv4-0006EA-Ru; Mon, 15 Nov 2021 09:00:50 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>
-Subject: [PATCH stable-4.9] USB: chipidea: fix interrupt deadlock
-Date:   Mon, 15 Nov 2021 09:00:43 +0100
-Message-Id: <20211115080043.23894-1-johan@kernel.org>
+        id S230418AbhKOIEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:04:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60561 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236597AbhKOIEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:04:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636963266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CT33CO1P4m9z3srlG1n5DsePRxe7FxchG1iBDIBzjEc=;
+        b=C54FE1t8/2oxCNnbYNW6aX8lbrmXuY0H7pVAL1C21oP5NaquAkN0g32hv7PB1L9LWIoZd+
+        lSlimUI/xDl0ALapM/vBo5E+6OkrPXBckLMzoVqk6CmMNdP5NZABf78rf/kKUoUB1LQv7l
+        sJPrwjANHrtxMumWnPi2J+Ma95992nM=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-mTHVQRXxONWDQIEBYFHjww-1; Mon, 15 Nov 2021 03:01:03 -0500
+X-MC-Unique: mTHVQRXxONWDQIEBYFHjww-1
+Received: by mail-pf1-f198.google.com with SMTP id c21-20020a62e815000000b004a29ebf0aa7so2627506pfi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:01:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CT33CO1P4m9z3srlG1n5DsePRxe7FxchG1iBDIBzjEc=;
+        b=aK1fDP4i7qDV4q0DAx0jel5EMpzVjdf6fWEr8tC9jF7LJd74hYGtdd07h13ViswVRv
+         1/uia7vLUftmzdXezK01tKAlJSsc2RsdR21laHe5AsrCEubNFDG+CTCm6SSt7cbpaL/w
+         PAFEFLtBrqF7s/ZuYDgBPaTEokyyPbyGOhNEECpXaeGyX/nNksqH5P+IP0aj95v7sqPM
+         17g7OG8hwTBePFw38QVLUXxTpoSlDNz+P/H6wI63XUzN2y7pf4XOoUsLMxWvQZq2xZqK
+         826n6aWP3CslVA0OH79aAT4Kdp5tN/noLTQ4Q81jwgiQBpFCyWPZ5WN0B3tVEK//7Pxs
+         2QVg==
+X-Gm-Message-State: AOAM531AnkMOpdgk8YXlo2CtBqXAFbYUtYOOng3hI0+lU+ghCis+Z4uh
+        0juf3Tfss82dAEktkCZ8hD7HX9ygP9qVc62ZunISq1s9jm/+aImbHklil3yyp8voSwuKrU//YoA
+        68mkuP7MbetEvzK1Dw5zbFlQw
+X-Received: by 2002:a17:90a:e60a:: with SMTP id j10mr63679958pjy.169.1636963262738;
+        Mon, 15 Nov 2021 00:01:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw5fbAzVfzXaTeCmw8VY664lWE42EUqztZ2N89jbHIauCly+ZiaTzVAzB2oLqZABMH3u9HTaw==
+X-Received: by 2002:a17:90a:e60a:: with SMTP id j10mr63679926pjy.169.1636963262451;
+        Mon, 15 Nov 2021 00:01:02 -0800 (PST)
+Received: from localhost.localdomain ([94.177.118.89])
+        by smtp.gmail.com with ESMTPSA id rj8sm2841393pjb.0.2021.11.15.00.00.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Nov 2021 00:01:01 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Nadav Amit <nadav.amit@gmail.com>, peterx@redhat.com,
+        Alistair Popple <apopple@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH v6 09/23] mm/shmem: Allows file-back mem to be uffd wr-protected on thps
+Date:   Mon, 15 Nov 2021 16:00:48 +0800
+Message-Id: <20211115080048.74584-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211115075522.73795-1-peterx@redhat.com>
+References: <20211115075522.73795-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
+We don't have "huge" version of pte markers, instead when necessary we split
+the thp.
 
-Chipidea core was calling the interrupt handler from non-IRQ context
-with interrupts enabled, something which can lead to a deadlock if
-there's an actual interrupt trying to take a lock that's already held
-(e.g. the controller lock in udc_irq()).
+However split the thp is not enough, because file-backed thp is handled totally
+differently comparing to anonymous thps: rather than doing a real split, the
+thp pmd will simply got cleared in __split_huge_pmd_locked().
 
-Add a wrapper that can be used to fake interrupts instead of calling the
-handler directly.
+That is not enough if e.g. when there is a thp covers range [0, 2M) but we want
+to wr-protect small page resides in [4K, 8K) range, because after
+__split_huge_pmd() returns, there will be a none pmd, and change_pmd_range()
+will just skip it right after the split.
 
-Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
-Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
-Cc: Peter Chen <peter.chen@kernel.org>
-Cc: stable@vger.kernel.org      # 4.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[ johan: backport to 4.9; adjust context ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Here we leverage the previously introduced change_pmd_prepare() macro so that
+we'll populate the pmd with a pgtable page after the pmd split (in which
+process the pmd will be cleared for cases like shmem).  Then change_pte_range()
+will do all the rest for us by installing the uffd-wp pte marker at any none
+pte that we'd like to wr-protect.
+
+Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
+ mm/mprotect.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-This one should apply to 4.4 as well.
-
-Johan
-
-
- drivers/usb/chipidea/core.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
-index 6062a5d816a6..f4b13f0637ea 100644
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -516,7 +516,7 @@ int hw_device_reset(struct ci_hdrc *ci)
- 	return 0;
- }
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index be837c4dbc64..0d4bf755cee8 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -319,8 +319,15 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
+ 		}
  
--static irqreturn_t ci_irq(int irq, void *data)
-+static irqreturn_t ci_irq_handler(int irq, void *data)
- {
- 	struct ci_hdrc *ci = data;
- 	irqreturn_t ret = IRQ_NONE;
-@@ -569,6 +569,15 @@ static irqreturn_t ci_irq(int irq, void *data)
- 	return ret;
- }
- 
-+static void ci_irq(struct ci_hdrc *ci)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	ci_irq_handler(ci->irq, ci);
-+	local_irq_restore(flags);
-+}
-+
- static int ci_vbus_notifier(struct notifier_block *nb, unsigned long event,
- 			    void *ptr)
- {
-@@ -582,7 +591,7 @@ static int ci_vbus_notifier(struct notifier_block *nb, unsigned long event,
- 
- 	vbus->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -599,7 +608,7 @@ static int ci_id_notifier(struct notifier_block *nb, unsigned long event,
- 
- 	id->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -1011,7 +1020,7 @@ static int ci_hdrc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, ci);
--	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
-+	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
- 			ci->platdata->name, ci);
- 	if (ret)
- 		goto stop;
-@@ -1126,11 +1135,11 @@ static void ci_extcon_wakeup_int(struct ci_hdrc *ci)
- 
- 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 
- 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- }
- 
- static int ci_controller_resume(struct device *dev)
+ 		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
+-			if (next - addr != HPAGE_PMD_SIZE) {
++			if ((next - addr != HPAGE_PMD_SIZE) ||
++			    uffd_wp_protect_file(vma, cp_flags)) {
+ 				__split_huge_pmd(vma, pmd, addr, false, NULL);
++				/*
++				 * For file-backed, the pmd could have been
++				 * cleared; make sure pmd populated if
++				 * necessary, then fall-through to pte level.
++				 */
++				change_pmd_prepare(vma, pmd, cp_flags);
+ 			} else {
+ 				int nr_ptes = change_huge_pmd(vma, pmd, addr,
+ 							      newprot, cp_flags);
 -- 
 2.32.0
 
