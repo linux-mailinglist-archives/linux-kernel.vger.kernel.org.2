@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183C4451962
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC82451E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353064AbhKOXSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42964 "EHLO mail.kernel.org"
+        id S1348194AbhKPAgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244630AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E63561B51;
-        Mon, 15 Nov 2021 18:22:28 +0000 (UTC)
+        id S1344534AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACDB563490;
+        Mon, 15 Nov 2021 18:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000549;
-        bh=1dHm21T4UeTtSEIeJiM96XflCawUHcWq5TUazqyfz2Y=;
+        s=korg; t=1637002767;
+        bh=v+Q0hMj+CzyYjXFSdfpzCJ5UeoWx5JFwDBjYlUuOn4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xKWkVr24WTxuQUgWVyj+vT0FVMC3/DMzDNGT1tinOLGmSXqW1kLsxBCie5zlXhfIJ
-         e5n/rdDJvncQcekD/oKDNhRJceCmgSp0C7BZNdnZEOm6zF7uMk86xCgF8qrAcL6ce9
-         uGt/Hq4J0ZVwpg2Hc3NFAY2YZetBoIz+xFnnK3Pg=
+        b=yM1IDkJLIPOnSEZ3ZZS6hRC84mZdo0t45LZhaz8FwqEaqQ1OGgtPXD3LozMliOhUl
+         uz7G1S2qw+sEOWSwcbb1x9c9bC16pmlOV+5NHKMkAdgI3Qtq0T4/2sVQLMF+Byz2A1
+         GWjM+/z7u6JdjNxIRPqcYri4gtLmTNJ9F7KLJdd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 701/849] auxdisplay: ht16k33: Connect backlight to fbdev
+Subject: [PATCH 5.15 689/917] vdpa/mlx5: Fix clearing of VIRTIO_NET_F_MAC feature bit
 Date:   Mon, 15 Nov 2021 18:03:04 +0100
-Message-Id: <20211115165443.968038285@linuxfoundation.org>
+Message-Id: <20211115165452.256711711@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Parav Pandit <parav@nvidia.com>
 
-[ Upstream commit 80f9eb70fd9276938f0a131f76d438021bfd8b34 ]
+[ Upstream commit ef76eb83a17e803a66b64ac95b36ae48b3d17c22 ]
 
-Currently /sys/class/graphics/fb0/bl_curve is not accessible (-ENODEV),
-as the driver does not connect the backlight to the frame buffer device.
-Fix this moving backlight initialization up, and filling in
-fb_info.bl_dev.
+Cited patch in the fixes tag clears the features bit during reset.
+mlx5 vdpa device feature bits are static decided by device capabilities.
+These feature bits (including VIRTIO_NET_F_MAC) are initialized during
+device addition time.
 
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Robin van der Gracht <robin@protonic.nl>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Clearing features bit in reset callback cleared the VIRTIO_NET_F_MAC. Due
+to this, MAC address provided by the device is not honored.
+
+Fix it by not clearing the static feature bits during reset.
+
+Fixes: 0686082dbf7a ("vdpa: Add reset callback in vdpa_config_ops")
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+Reviewed-by: Eli Cohen <elic@nvidia.com>
+Link: https://lore.kernel.org/r/20211026175519.87795-7-parav@nvidia.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 56 ++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 1e69cc6d21a0d..2b630e194570f 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -413,6 +413,33 @@ static int ht16k33_probe(struct i2c_client *client,
- 	if (err)
- 		return err;
- 
-+	/* Backlight */
-+	memset(&bl_props, 0, sizeof(struct backlight_properties));
-+	bl_props.type = BACKLIGHT_RAW;
-+	bl_props.max_brightness = MAX_BRIGHTNESS;
-+
-+	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
-+					    &client->dev, priv,
-+					    &ht16k33_bl_ops, &bl_props);
-+	if (IS_ERR(bl)) {
-+		dev_err(&client->dev, "failed to register backlight\n");
-+		return PTR_ERR(bl);
-+	}
-+
-+	err = of_property_read_u32(node, "default-brightness-level",
-+				   &dft_brightness);
-+	if (err) {
-+		dft_brightness = MAX_BRIGHTNESS;
-+	} else if (dft_brightness > MAX_BRIGHTNESS) {
-+		dev_warn(&client->dev,
-+			 "invalid default brightness level: %u, using %u\n",
-+			 dft_brightness, MAX_BRIGHTNESS);
-+		dft_brightness = MAX_BRIGHTNESS;
-+	}
-+
-+	bl->props.brightness = dft_brightness;
-+	ht16k33_bl_update_status(bl);
-+
- 	/* Framebuffer (2 bytes per column) */
- 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
- 	fbdev->buffer = (unsigned char *) get_zeroed_page(GFP_KERNEL);
-@@ -445,6 +472,7 @@ static int ht16k33_probe(struct i2c_client *client,
- 	fbdev->info->screen_size = HT16K33_FB_SIZE;
- 	fbdev->info->fix = ht16k33_fb_fix;
- 	fbdev->info->var = ht16k33_fb_var;
-+	fbdev->info->bl_dev = bl;
- 	fbdev->info->pseudo_palette = NULL;
- 	fbdev->info->flags = FBINFO_FLAG_DEFAULT;
- 	fbdev->info->par = priv;
-@@ -460,34 +488,6 @@ static int ht16k33_probe(struct i2c_client *client,
- 			goto err_fbdev_unregister;
- 	}
- 
--	/* Backlight */
--	memset(&bl_props, 0, sizeof(struct backlight_properties));
--	bl_props.type = BACKLIGHT_RAW;
--	bl_props.max_brightness = MAX_BRIGHTNESS;
--
--	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
--					    &client->dev, priv,
--					    &ht16k33_bl_ops, &bl_props);
--	if (IS_ERR(bl)) {
--		dev_err(&client->dev, "failed to register backlight\n");
--		err = PTR_ERR(bl);
--		goto err_fbdev_unregister;
--	}
--
--	err = of_property_read_u32(node, "default-brightness-level",
--				   &dft_brightness);
--	if (err) {
--		dft_brightness = MAX_BRIGHTNESS;
--	} else if (dft_brightness > MAX_BRIGHTNESS) {
--		dev_warn(&client->dev,
--			 "invalid default brightness level: %u, using %u\n",
--			 dft_brightness, MAX_BRIGHTNESS);
--		dft_brightness = MAX_BRIGHTNESS;
--	}
--
--	bl->props.brightness = dft_brightness;
--	ht16k33_bl_update_status(bl);
--
- 	ht16k33_fb_queue(priv);
- 	return 0;
- 
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index bd56de7484dcb..ae85d2dd6eb76 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -2192,7 +2192,6 @@ static int mlx5_vdpa_reset(struct vdpa_device *vdev)
+ 	clear_vqs_ready(ndev);
+ 	mlx5_vdpa_destroy_mr(&ndev->mvdev);
+ 	ndev->mvdev.status = 0;
+-	ndev->mvdev.mlx_features = 0;
+ 	memset(ndev->event_cbs, 0, sizeof(ndev->event_cbs));
+ 	ndev->mvdev.actual_features = 0;
+ 	++mvdev->generation;
 -- 
 2.33.0
 
