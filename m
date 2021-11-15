@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A72B451BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF855451E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348903AbhKPAG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:06:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1348926AbhKPAgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345091AbhKOT0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 313006124B;
-        Mon, 15 Nov 2021 19:10:12 +0000 (UTC)
+        id S1344408AbhKOTYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD2616348A;
+        Mon, 15 Nov 2021 18:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003412;
-        bh=SEH46agP6ZMS85HjcoMU4AlhgQX8KdSJvWw7MBgZVyI=;
+        s=korg; t=1637002635;
+        bh=DU8lCCDMi5TqitbBuQIkHLckv9UR1pWObLstAkldp/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWx7dXbq5muyN/hlq91Gx+FwoycbGZxfg/4T2AfL1krY65gnfRzzkkDRSOcHwjnYG
-         vBd7MVS5YYEqInjhyHdrjDMsutgiQsq35pC53Lr2Ej//ZbEj1ItEgGso7u5CWNcemM
-         igDRfyTV+Z4IZIVvp6xU5t373HQvrlPB/ITPpzpA=
+        b=PvYy+nLHSTtN6JWxhi7Ni1YSWLik4jzbWQXHNO2jz5X9Y7fiwidcgmkgmE8fB4Wq7
+         1CNkmhZIZNUeQKGwd3TTutgTWU4Ipu5JsQgmMvvZXcn7ZGeWzGwKI+6WRfOyocpA9f
+         AYPXrMJ0HwwA/2yXon4KYimVKpK5GcxoAfXzu/TI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 213/355] crypto: qat - detect PFVF collision after ACK
+Subject: [PATCH 5.15 642/917] ASoC: cs42l42: Defer probe if request_threaded_irq() returns EPROBE_DEFER
 Date:   Mon, 15 Nov 2021 18:02:17 +0100
-Message-Id: <20211115165320.655792348@linuxfoundation.org>
+Message-Id: <20211115165450.615613857@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
-References: <20211115165313.549179499@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 9b768e8a3909ac1ab39ed44a3933716da7761a6f ]
+[ Upstream commit 0306988789d9d91a18ff70bd2bf165d3ae0ef1dd ]
 
-Detect a PFVF collision between the local and the remote function by
-checking if the message on the PFVF CSR has been overwritten.
-This is done after the remote function confirms that the message has
-been received, by clearing the interrupt bit, or the maximum number of
-attempts (ADF_IOV_MSG_ACK_MAX_RETRY) to check the CSR has been exceeded.
+The driver can run without an interrupt so if devm_request_threaded_irq()
+failed, the probe() just carried on. But if this was EPROBE_DEFER the
+driver would continue without an interrupt instead of deferring to wait
+for the interrupt to become available.
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Co-developed-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20211015133619.4698-6-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs42l42.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-index c64481160b711..72fd2bbbe704e 100644
---- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-@@ -195,6 +195,13 @@ static int __adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
- 		val = ADF_CSR_RD(pmisc_bar_addr, pf2vf_offset);
- 	} while ((val & int_bit) && (count++ < ADF_IOV_MSG_ACK_MAX_RETRY));
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 205f81d27c30f..6034e439d3132 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -1947,8 +1947,9 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 			NULL, cs42l42_irq_thread,
+ 			IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+ 			"cs42l42", cs42l42);
+-
+-	if (ret != 0)
++	if (ret == -EPROBE_DEFER)
++		goto err_disable;
++	else if (ret != 0)
+ 		dev_err(&i2c_client->dev,
+ 			"Failed to request IRQ: %d\n", ret);
  
-+	if (val != msg) {
-+		dev_dbg(&GET_DEV(accel_dev),
-+			"Collision - PFVF CSR overwritten by remote function\n");
-+		ret = -EIO;
-+		goto out;
-+	}
-+
- 	if (val & int_bit) {
- 		dev_dbg(&GET_DEV(accel_dev), "ACK not received from remote\n");
- 		val &= ~int_bit;
 -- 
 2.33.0
 
