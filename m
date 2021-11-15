@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942FE451E47
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887794518E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344317AbhKPAfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1344832AbhKOXJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:09:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344074AbhKOTXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0296063475;
-        Mon, 15 Nov 2021 18:51:24 +0000 (UTC)
+        id S243265AbhKOTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:00:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFF563350;
+        Mon, 15 Nov 2021 18:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002285;
-        bh=6jg59KeOtWTOOTqUvKxkoD9QZkQuB9r1NntRaML17pI=;
+        s=korg; t=1637000056;
+        bh=Ft5spIUE9njj7hiEe3Zznwr1C/bl1i6GG9RYr9kwZhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zVrZu2p+rD7vyH+AQI1pY7jeYe+XSeL1NUHDw3iqRdB/d+LwbZZYHNyOHgOAIBHqa
-         a8VvZWIuTl1/8MQksVrHUZIKSfiS2vnqgct4VwcUN+zZCrWjHbTwen08mZr8nrtRgN
-         k4dP+pXb+iSn0AMmnOIxrLrVm3wFqf8nfo7xTsv8=
+        b=n9mDHLKN2yibYSHGEZQ7sEVCKS6PmQiSWVCNYCWsbG6ahSXe3v3GQn2kTSWvU3GlS
+         DgOCe/A7IbW04bcJoFvA78UCYprdgAimJHvlejiiDdlcOfWMhpAwH2xFHzfRJswUXL
+         aZMTsJBtKDcmdWqLiKSiEA33wIGVbFDGxg4ddOIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 508/917] s390/mm: validate VMA in PGSTE manipulation functions
-Date:   Mon, 15 Nov 2021 18:00:03 +0100
-Message-Id: <20211115165445.989411726@linuxfoundation.org>
+Subject: [PATCH 5.14 521/849] libertas: Fix possible memory leak in probe and disconnect
+Date:   Mon, 15 Nov 2021 18:00:04 +0100
+Message-Id: <20211115165437.904921162@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit fe3d10024073f06f04c74b9674bd71ccc1d787cf ]
+[ Upstream commit 9692151e2fe7a326bafe99836fd1f20a2cc3a049 ]
 
-We should not walk/touch page tables outside of VMA boundaries when
-holding only the mmap sem in read mode. Evil user space can modify the
-VMA layout just before this function runs and e.g., trigger races with
-page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
-with read mmap_sem in munmap"). gfn_to_hva() will only translate using
-KVM memory regions, but won't validate the VMA.
+I got memory leak as follows when doing fault injection test:
 
-Further, we should not allocate page tables outside of VMA boundaries: if
-evil user space decides to map hugetlbfs to these ranges, bad things will
-happen because we suddenly have PTE or PMD page tables where we
-shouldn't have them.
+unreferenced object 0xffff88812c7d7400 (size 512):
+  comm "kworker/6:1", pid 176, jiffies 4295003332 (age 822.830s)
+  hex dump (first 32 bytes):
+    00 68 1e 04 81 88 ff ff 01 00 00 00 00 00 00 00  .h..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+    [<ffffffffa02c9873>] if_usb_probe+0x63/0x446 [usb8xxx]
+    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+    [<ffffffff82b59630>] really_probe+0x190/0x480
+    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
+    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
+    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
+    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
+    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
+    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
+    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
+    [<ffffffff82b52e49>] device_add+0x829/0x1300
+    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
+    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
+    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
 
-Similarly, we have to check if we suddenly find a hugetlbfs VMA, before
-calling get_locked_pte().
+cardp is missing being freed in the error handling path of the probe
+and the path of the disconnect, which will cause memory leak.
 
-Fixes: 2d42f9477320 ("s390/kvm: Add PGSTE manipulation functions")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210909162248.14969-4-david@redhat.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+This patch adds the missing kfree().
+
+Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020120345.2016045-3-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/mm/pgtable.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/wireless/marvell/libertas/if_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/s390/mm/pgtable.c b/arch/s390/mm/pgtable.c
-index 034721a68d8fd..2717a406edeb3 100644
---- a/arch/s390/mm/pgtable.c
-+++ b/arch/s390/mm/pgtable.c
-@@ -988,6 +988,7 @@ EXPORT_SYMBOL(get_guest_storage_key);
- int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
- 			unsigned long *oldpte, unsigned long *oldpgste)
- {
-+	struct vm_area_struct *vma;
- 	unsigned long pgstev;
- 	spinlock_t *ptl;
- 	pgste_t pgste;
-@@ -997,6 +998,10 @@ int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
- 	WARN_ON_ONCE(orc > ESSA_MAX);
- 	if (unlikely(orc > ESSA_MAX))
- 		return -EINVAL;
-+
-+	vma = vma_lookup(mm, hva);
-+	if (!vma || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
-@@ -1089,10 +1094,14 @@ EXPORT_SYMBOL(pgste_perform_essa);
- int set_pgste_bits(struct mm_struct *mm, unsigned long hva,
- 			unsigned long bits, unsigned long value)
- {
-+	struct vm_area_struct *vma;
- 	spinlock_t *ptl;
- 	pgste_t new;
- 	pte_t *ptep;
+diff --git a/drivers/net/wireless/marvell/libertas/if_usb.c b/drivers/net/wireless/marvell/libertas/if_usb.c
+index 20436a289d5cd..5d6dc1dd050d4 100644
+--- a/drivers/net/wireless/marvell/libertas/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas/if_usb.c
+@@ -292,6 +292,7 @@ err_add_card:
+ 	if_usb_reset_device(cardp);
+ dealloc:
+ 	if_usb_free(cardp);
++	kfree(cardp);
  
-+	vma = vma_lookup(mm, hva);
-+	if (!vma || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
-@@ -1117,9 +1126,13 @@ EXPORT_SYMBOL(set_pgste_bits);
-  */
- int get_pgste(struct mm_struct *mm, unsigned long hva, unsigned long *pgstep)
- {
-+	struct vm_area_struct *vma;
- 	spinlock_t *ptl;
- 	pte_t *ptep;
+ error:
+ 	return r;
+@@ -316,6 +317,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
  
-+	vma = vma_lookup(mm, hva);
-+	if (!vma || is_vm_hugetlb_page(vma))
-+		return -EFAULT;
- 	ptep = get_locked_pte(mm, hva, &ptl);
- 	if (unlikely(!ptep))
- 		return -EFAULT;
+ 	/* Unlink and free urb */
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ 
+ 	usb_set_intfdata(intf, NULL);
+ 	usb_put_dev(interface_to_usbdev(intf));
 -- 
 2.33.0
 
