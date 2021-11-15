@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5E745153A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C9845153C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349898AbhKOUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:30:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
+        id S1351015AbhKOUaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:30:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240132AbhKOSFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240135AbhKOSFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:05:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A5E632FC;
-        Mon, 15 Nov 2021 17:42:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A056328E;
+        Mon, 15 Nov 2021 17:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998162;
-        bh=AlDYZYESXTj9g84izod3EgH2s/APmTwHtMQWSyBmrBc=;
+        s=korg; t=1636998168;
+        bh=UtjqxZWRze2aYZLRYH3XCMkx7eZPNuLAn9ROZRLXKIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RgVLqctRP9XTvG90h1/Sf8hjYkrNsxWC8jWTwyySNwJDLM9QV/hLu5f/SY3D1yDlf
-         VD5pzhDHEeVeAO5hmalZtkMfSBuP1GgUtrQWP23CfYHWi+KTPfdL3BSrE0CD00wYMX
-         rrW0w8VwfO6OH4l94gYt+iN0cuGK5lsGRJkXYOms=
+        b=a+dFs1RKqVWPtR4Fwj3UdlV0WL4xogRVb3BVn6QvA1EqZSgoP8rdQ+hUbzveQPtui
+         OIbEuxYM32nqXZXyg17fs5wNy8RGs6b0XQOUDQ13JW20QB8cnuiCnUIRxueqD8sHPE
+         Wu05otGm5vtvS3MtxXvixNtIvV2ekAO/CQQio2iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 411/575] soundwire: debugfs: use controller id and link_id for debugfs
-Date:   Mon, 15 Nov 2021 18:02:16 +0100
-Message-Id: <20211115165357.975343856@linuxfoundation.org>
+        stable@vger.kernel.org, Changyuan Lyu <changyuanl@google.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Igor Pylypiv <ipylypiv@google.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 412/575] scsi: pm80xx: Fix misleading log statement in pm8001_mpi_get_nvmd_resp()
+Date:   Mon, 15 Nov 2021 18:02:17 +0100
+Message-Id: <20211115165358.005877103@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,41 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Igor Pylypiv <ipylypiv@google.com>
 
-[ Upstream commit 75eac387a2539aa6c6bbee3affa23435f2096396 ]
+[ Upstream commit 4084a7235d38311a77c86ba69ba849bd787db87b ]
 
-link_id can be zero and if we have multiple controller instances
-in a system like Qualcomm debugfs will end-up with duplicate namespace
-resulting in incorrect debugfs entries.
+pm8001_mpi_get_nvmd_resp() handles a GET_NVMD_DATA response, not a
+SET_NVMD_DATA response, as the log statement implies.
 
-Using bus-id and link-id combination should give a unique debugfs directory
-entry and should fix below warning too.
-"debugfs: Directory 'master-0' with parent 'soundwire' already present!"
-
-Fixes: bf03473d5bcc ("soundwire: add debugfs support")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210907105332.1257-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 1f889b58716a ("scsi: pm80xx: Fix pm8001_mpi_get_nvmd_resp() race condition")
+Link: https://lore.kernel.org/r/20210929025847.646999-1-ipylypiv@google.com
+Reviewed-by: Changyuan Lyu <changyuanl@google.com>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/debugfs.c | 2 +-
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index b6cad0d59b7b9..49900cd207bc7 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -19,7 +19,7 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
- 		return;
- 
- 	/* create the debugfs master-N */
--	snprintf(name, sizeof(name), "master-%d", bus->link_id);
-+	snprintf(name, sizeof(name), "master-%d-%d", bus->id, bus->link_id);
- 	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
- }
- 
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 2114d2dd3501a..5d751628a6340 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -3107,7 +3107,7 @@ pm8001_mpi_get_nvmd_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 	 * fw_control_context->usrAddr
+ 	 */
+ 	complete(pm8001_ha->nvmd_completion);
+-	pm8001_dbg(pm8001_ha, MSG, "Set nvm data complete!\n");
++	pm8001_dbg(pm8001_ha, MSG, "Get nvmd data complete!\n");
+ 	ccb->task = NULL;
+ 	ccb->ccb_tag = 0xFFFFFFFF;
+ 	pm8001_tag_free(pm8001_ha, tag);
 -- 
 2.33.0
 
