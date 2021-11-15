@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36F54510C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776CC4510EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242931AbhKOSzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:55:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57850 "EHLO mail.kernel.org"
+        id S241837AbhKOS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:56:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237936AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238039AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A9D632D8;
-        Mon, 15 Nov 2021 17:25:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13AD961452;
+        Mon, 15 Nov 2021 17:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997119;
-        bh=asKNJVXTWJsmdjle9L8YwZOF5Cjk6wVaH6GvTdwnvA4=;
+        s=korg; t=1636997139;
+        bh=x4gTGycKSpgXNJDhakoN3yJk+8xVdnyBfXkxFwTH7cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgUMD/kld74Ln/mvKgD+DD+/LAbi82S8IycZbcA/jjmHaYlZc6vR4yOoolrl79ZqA
-         c/47uh3X6jcaD0jKnP/T7D1tuQUtrP89Ypmr+LkJn8WiY0Go7P1Vs9aObh7wK8M6Ie
-         ccDp61gwuuemnMlzsl6GWJy5pjHdtN3moeJf3a7Y=
+        b=YMbtDZBKwF45BtPmDcBE60fnvq3SNuTrrXsz1B0esqziR1bpOewnQSZ4qpDVQhuPv
+         wqOZjOy0b+rARqjgFlsVMQkwqa63y79UVpYmAdfHf5HicbvIWaq1mpRkhe8C6BaO5m
+         FcrNZl4IaZq7r/+Om4M+O139Y+vA77m5pXuizy5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.10 005/575] binder: use cred instead of task for getsecid
-Date:   Mon, 15 Nov 2021 17:55:30 +0100
-Message-Id: <20211115165343.790464393@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.10 006/575] Input: iforce - fix control-message timeout
+Date:   Mon, 15 Nov 2021 17:55:31 +0100
+Message-Id: <20211115165343.823856986@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,52 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Todd Kjos <tkjos@google.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 4d5b5539742d2554591751b4248b0204d20dcc9d upstream.
+commit 744d0090a5f6dfa4c81b53402ccdf08313100429 upstream.
 
-Use the 'struct cred' saved at binder_open() to lookup
-the security ID via security_cred_getsecid(). This
-ensures that the security context that opened binder
-is the one used to generate the secctx.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Cc: stable@vger.kernel.org # 5.4+
-Fixes: ec74136ded79 ("binder: create node flag to request sender's security context")
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Fixes: 487358627825 ("Input: iforce - use DMA-safe buffer when getting IDs from USB")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: stable@vger.kernel.org      # 5.3
+Link: https://lore.kernel.org/r/20211025115501.5190-1-johan@kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/android/binder.c |    2 +-
- include/linux/security.h |    5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/input/joystick/iforce/iforce-usb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -3102,7 +3102,7 @@ static void binder_transaction(struct bi
- 		u32 secid;
- 		size_t added_size;
- 
--		security_task_getsecid(proc->tsk, &secid);
-+		security_cred_getsecid(proc->cred, &secid);
- 		ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
- 		if (ret) {
- 			return_error = BR_FAILED_REPLY;
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1003,6 +1003,11 @@ static inline void security_transfer_cre
- {
- }
- 
-+static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
-+{
-+	*secid = 0;
-+}
-+
- static inline int security_kernel_act_as(struct cred *cred, u32 secid)
- {
- 	return 0;
+--- a/drivers/input/joystick/iforce/iforce-usb.c
++++ b/drivers/input/joystick/iforce/iforce-usb.c
+@@ -92,7 +92,7 @@ static int iforce_usb_get_id(struct ifor
+ 				 id,
+ 				 USB_TYPE_VENDOR | USB_DIR_IN |
+ 					USB_RECIP_INTERFACE,
+-				 0, 0, buf, IFORCE_MAX_LENGTH, HZ);
++				 0, 0, buf, IFORCE_MAX_LENGTH, 1000);
+ 	if (status < 0) {
+ 		dev_err(&iforce_usb->intf->dev,
+ 			"usb_submit_urb failed: %d\n", status);
 
 
