@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7946451AB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8488A4518A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349311AbhKOXmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1351865AbhKOXEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343893AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 483C8633A2;
-        Mon, 15 Nov 2021 18:48:01 +0000 (UTC)
+        id S243238AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB52C633C6;
+        Mon, 15 Nov 2021 18:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002081;
-        bh=OvQjb5L/MnyxUI5jdUwSaRCSWLG+glPe0AryTFQtWes=;
+        s=korg; t=1636999870;
+        bh=N2FZnSZFoO0MwQO7esxwLdsf5a+KCVLvrc7YZmABSbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qOoDdGtZFbwAR3Sx7qS6Zhj9TmVV4w7bb9+wHBeq27Q+BLrBgL50fV99aOTLi3OhR
-         6BAUKYqS7b81qkjmWYbDpZB7mv271SU2iqDLuNbOyApWvxWd0LtFQ0+JohwA8WABDH
-         BUztDNxLj4MxEQYe0j7RJIfS2bPo7iPbzbRsoInw=
+        b=IgAH1H6qcPMa9+OnkhAjlILHKdSfv2ieriYkAUvSbf6zXJnpnJWXbND7MnT58nWoX
+         1BggK0o4XrSVNZj7T3sugd2844G6rIh+74ys2cvRxFJzp7hnzNTlh0Q1L8wwdimEnA
+         Lze4W0GT/6YJ8fIDiXIfZcvAl4uT9eVqH40LZkdw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 414/917] hwrng: mtk - Force runtime pm ops for sleep ops
+Subject: [PATCH 5.14 426/849] hwmon: (pmbus/lm25066) Let compiler determine outer dimension of lm25066_coeff
 Date:   Mon, 15 Nov 2021 17:58:29 +0100
-Message-Id: <20211115165442.826221312@linuxfoundation.org>
+Message-Id: <20211115165434.674795172@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-[ Upstream commit b6f5f0c8f72d348b2d07b20d7b680ef13a7ffe98 ]
+[ Upstream commit b7931a7b0e0df4d2a25fedd895ad32c746b77bc1 ]
 
-Currently mtk_rng_runtime_suspend/resume is called for both runtime pm
-and system sleep operations.
+Maintaining this manually is error prone (there are currently only
+five chips supported, not six); gcc can do it for us automatically.
 
-This is wrong as these should only be runtime ops as the name already
-suggests. Currently freezing the system will lead to a call to
-mtk_rng_runtime_suspend even if the device currently isn't active. This
-leads to a clock warning because it is disabled/unprepared although it
-isn't enabled/prepared currently.
-
-This patch fixes this by only setting the runtime pm ops and forces to
-call the runtime pm ops from the system sleep ops as well if active but
-not otherwise.
-
-Fixes: 81d2b34508c6 ("hwrng: mtk - add runtime PM support")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Fixes: 666c14906b49 ("hwmon: (pmbus/lm25066) Drop support for LM25063")
+Link: https://lore.kernel.org/r/20210928092242.30036-5-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/hw_random/mtk-rng.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/hwmon/pmbus/lm25066.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/mtk-rng.c b/drivers/char/hw_random/mtk-rng.c
-index 8ad7b515a51b8..6c00ea0085553 100644
---- a/drivers/char/hw_random/mtk-rng.c
-+++ b/drivers/char/hw_random/mtk-rng.c
-@@ -166,8 +166,13 @@ static int mtk_rng_runtime_resume(struct device *dev)
- 	return mtk_rng_init(&priv->rng);
- }
+diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
+index 1a660c4cd19f4..66d3e88b54172 100644
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -51,7 +51,7 @@ struct __coeff {
+ #define PSC_CURRENT_IN_L	(PSC_NUM_CLASSES)
+ #define PSC_POWER_L		(PSC_NUM_CLASSES + 1)
  
--static UNIVERSAL_DEV_PM_OPS(mtk_rng_pm_ops, mtk_rng_runtime_suspend,
--			    mtk_rng_runtime_resume, NULL);
-+static const struct dev_pm_ops mtk_rng_pm_ops = {
-+	SET_RUNTIME_PM_OPS(mtk_rng_runtime_suspend,
-+			   mtk_rng_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+};
-+
- #define MTK_RNG_PM_OPS (&mtk_rng_pm_ops)
- #else	/* CONFIG_PM */
- #define MTK_RNG_PM_OPS NULL
+-static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
++static struct __coeff lm25066_coeff[][PSC_NUM_CLASSES + 2] = {
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
 -- 
 2.33.0
 
