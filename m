@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E9245203D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0597451961
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350584AbhKPAuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:50:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1353030AbhKOXSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:18:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344531AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 644F8633D4;
-        Mon, 15 Nov 2021 18:59:18 +0000 (UTC)
+        id S244628AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E18D61B4C;
+        Mon, 15 Nov 2021 18:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002758;
-        bh=+XnHw3g7g9D+RFsVTPRs+GWW8on9ZiD2JFN64wI7XZ8=;
+        s=korg; t=1637000544;
+        bh=9/vGCjDKh0FtxxuDvYqCS9oR8L1aHwnLR2f8pWJbRPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jB8qdlV5RuJU5fmhqi5sX8h9i822gUkSKzJj73WOHURMkC4dFmysBIVxRgkZP1q9T
-         jCZ6L9effyn6q5j4Ohri7c/TPl9prn21gYpuW5EQ9zLJCKPsM6z5CVg44hVtUbA36d
-         HZwjW8xPP7s1ElDIm+yXeJ2xgevnAqLcBd/Ao28k=
+        b=l9eI9gEHi4r20D58TvJKj1BuPMJWGVL2hwq58hPYOHfe2H69xykBVsov5OxR27isw
+         FeOkXUn8/Ib8u5admElNR37W+ONzRUZUj95ViNEYl2HYMM8qmUpCfqhNCeB8KmgBXw
+         R/ki4XBWacKRJTUEM0hpc6eyKAF7fhdNMnJWIfB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Alexey Gladkov <legion@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 686/917] ASoC: rsnd: Fix an error handling path in rsnd_node_count()
-Date:   Mon, 15 Nov 2021 18:03:01 +0100
-Message-Id: <20211115165452.159744655@linuxfoundation.org>
+Subject: [PATCH 5.14 699/849] Fix user namespace leak
+Date:   Mon, 15 Nov 2021 18:03:02 +0100
+Message-Id: <20211115165443.898684373@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Alexey Gladkov <legion@kernel.org>
 
-[ Upstream commit 173632358fde7a567f28e07c4549b959ee857986 ]
+[ Upstream commit d5f458a979650e5ed37212f6134e4ee2b28cb6ed ]
 
-If we return before the end of the 'for_each_child_of_node()' iterator, the
-reference taken on 'np' must be released.
-
-Add the missing 'of_node_put()' call.
-
-Fixes: c413983eb66a ("ASoC: rsnd: adjust disabled module")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/4c0e893cbfa21dc76c1ede0b6f4f8cff42209299.1634586167.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
+Signed-off-by: Alexey Gladkov <legion@kernel.org>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/nfs4idmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 978bd0406729a..6a8fe0da7670b 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1225,6 +1225,7 @@ int rsnd_node_count(struct rsnd_priv *priv, struct device_node *node, char *name
- 		if (i < 0) {
- 			dev_err(dev, "strange node numbering (%s)",
- 				of_node_full_name(node));
-+			of_node_put(np);
- 			return 0;
- 		}
- 		i++;
+diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
+index 8d8aba305ecca..f331866dd4182 100644
+--- a/fs/nfs/nfs4idmap.c
++++ b/fs/nfs/nfs4idmap.c
+@@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
+ err_destroy_pipe:
+ 	rpc_destroy_pipe_data(idmap->idmap_pipe);
+ err:
+-	get_user_ns(idmap->user_ns);
++	put_user_ns(idmap->user_ns);
+ 	kfree(idmap);
+ 	return error;
+ }
 -- 
 2.33.0
 
