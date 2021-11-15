@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51279451BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2A7451F70
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352045AbhKPAFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:05:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S240746AbhKPAk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:40:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344943AbhKOTZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66349636FD;
-        Mon, 15 Nov 2021 19:07:22 +0000 (UTC)
+        id S234487AbhKOTZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13753633F9;
+        Mon, 15 Nov 2021 19:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003243;
-        bh=C8gM2fcdLMFlozC0N5gpMU6z5lj/cT4un22z9qSwOqg=;
+        s=korg; t=1637003245;
+        bh=XjN6s1TAEWEsaZr7+njzTlkjZMcd19mRodiyZEu7/GM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TRpb93K5S+S2C5mLjHzoPzoNKjuVYWcdhkjDutxlRQnu+ZtNKNwpL91+jWxjFPPam
-         6QDyKCJCeFOLS4lKPzCgYdXoUe602NoZcrLFIALgqKKk+d3M+00eyQzoDg7K2x2x45
-         Gr+blmtN4iPTCG7DFGtfOJmaVkEo5JjwoAkDXdqc=
+        b=12GGGiRyclyu2LfT58+efGmeY8RkWewlywJv8caWPfP6QHjoS2184IhFjzx+CH2Ju
+         dcMKNOPKeySe6cm8dbmC4sNJ+Li0ULoGELMDJxTRJsRKnXsCK0198NYlFUK/Dqb6VD
+         osi6BAwGRyajfMhQAceh8gBQw+kWKg5hMgCPa2SY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 5.15 863/917] ceph: fix mdsmap decode when there are MDSs beyond max_mds
-Date:   Mon, 15 Nov 2021 18:05:58 +0100
-Message-Id: <20211115165458.290802129@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5.15 864/917] erofs: fix unsafe pagevec reuse of hooked pclusters
+Date:   Mon, 15 Nov 2021 18:05:59 +0100
+Message-Id: <20211115165458.322837831@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,40 +39,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-commit 0e24421ac431e7af62d4acef6c638b85aae51728 upstream.
+commit 86432a6dca9bed79111990851df5756d3eb5f57c upstream.
 
-If the max_mds is decreased in a cephfs cluster, there is a window
-of time before the MDSs are removed. If a map goes out during this
-period, the mdsmap may show the decreased max_mds but still shows
-those MDSes as in or in the export target list.
+There are pclusters in runtime marked with Z_EROFS_PCLUSTER_TAIL
+before actual I/O submission. Thus, the decompression chain can be
+extended if the following pcluster chain hooks such tail pcluster.
 
-Ensure that we don't fail the map decode in that case.
+As the related comment mentioned, if some page is made of a hooked
+pcluster and another followed pcluster, it can be reused for in-place
+I/O (since I/O should be submitted anyway):
+ _______________________________________________________________
+|  tail (partial) page |          head (partial) page           |
+|_____PRIMARY_HOOKED___|____________PRIMARY_FOLLOWED____________|
 
-Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/52436
-Fixes: d517b3983dd3 ("ceph: reconnect to the export targets on new mdsmaps")
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+However, it's by no means safe to reuse as pagevec since if such
+PRIMARY_HOOKED pclusters finally move into bypass chain without I/O
+submission. It's somewhat hard to reproduce with LZ4 and I just found
+it (general protection fault) by ro_fsstressing a LZMA image for long
+time.
+
+I'm going to actively clean up related code together with multi-page
+folio adaption in the next few months. Let's address it directly for
+easier backporting for now.
+
+Call trace for reference:
+  z_erofs_decompress_pcluster+0x10a/0x8a0 [erofs]
+  z_erofs_decompress_queue.isra.36+0x3c/0x60 [erofs]
+  z_erofs_runqueue+0x5f3/0x840 [erofs]
+  z_erofs_readahead+0x1e8/0x320 [erofs]
+  read_pages+0x91/0x270
+  page_cache_ra_unbounded+0x18b/0x240
+  filemap_get_pages+0x10a/0x5f0
+  filemap_read+0xa9/0x330
+  new_sync_read+0x11b/0x1a0
+  vfs_read+0xf1/0x190
+
+Link: https://lore.kernel.org/r/20211103182006.4040-1-xiang@kernel.org
+Fixes: 3883a79abd02 ("staging: erofs: introduce VLE decompression support")
+Cc: <stable@vger.kernel.org> # 4.19+
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ceph/mdsmap.c |    4 ----
- 1 file changed, 4 deletions(-)
+ fs/erofs/zdata.c |   13 +++++++------
+ fs/erofs/zpvec.h |   13 ++++++++++---
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
---- a/fs/ceph/mdsmap.c
-+++ b/fs/ceph/mdsmap.c
-@@ -263,10 +263,6 @@ struct ceph_mdsmap *ceph_mdsmap_decode(v
- 				goto nomem;
- 			for (j = 0; j < num_export_targets; j++) {
- 				target = ceph_decode_32(&pexport_targets);
--				if (target >= m->possible_max_rank) {
--					err = -EIO;
--					goto corrupt;
--				}
- 				info->export_targets[j] = target;
- 			}
- 		} else {
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -373,8 +373,8 @@ static bool z_erofs_try_inplace_io(struc
+ 
+ /* callers must be with collection lock held */
+ static int z_erofs_attach_page(struct z_erofs_collector *clt,
+-			       struct page *page,
+-			       enum z_erofs_page_type type)
++			       struct page *page, enum z_erofs_page_type type,
++			       bool pvec_safereuse)
+ {
+ 	int ret;
+ 
+@@ -384,9 +384,9 @@ static int z_erofs_attach_page(struct z_
+ 	    z_erofs_try_inplace_io(clt, page))
+ 		return 0;
+ 
+-	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type);
++	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type,
++				      pvec_safereuse);
+ 	clt->cl->vcnt += (unsigned int)ret;
+-
+ 	return ret ? 0 : -EAGAIN;
+ }
+ 
+@@ -729,7 +729,8 @@ hitted:
+ 		tight &= (clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 
+ retry:
+-	err = z_erofs_attach_page(clt, page, page_type);
++	err = z_erofs_attach_page(clt, page, page_type,
++				  clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 	/* should allocate an additional short-lived page for pagevec */
+ 	if (err == -EAGAIN) {
+ 		struct page *const newpage =
+@@ -737,7 +738,7 @@ retry:
+ 
+ 		set_page_private(newpage, Z_EROFS_SHORTLIVED_PAGE);
+ 		err = z_erofs_attach_page(clt, newpage,
+-					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
++					  Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
+ 		if (!err)
+ 			goto retry;
+ 	}
+--- a/fs/erofs/zpvec.h
++++ b/fs/erofs/zpvec.h
+@@ -106,11 +106,18 @@ static inline void z_erofs_pagevec_ctor_
+ 
+ static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
+ 					   struct page *page,
+-					   enum z_erofs_page_type type)
++					   enum z_erofs_page_type type,
++					   bool pvec_safereuse)
+ {
+-	if (!ctor->next && type)
+-		if (ctor->index + 1 == ctor->nr)
++	if (!ctor->next) {
++		/* some pages cannot be reused as pvec safely without I/O */
++		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
++			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
++
++		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
++		    ctor->index + 1 == ctor->nr)
+ 			return false;
++	}
+ 
+ 	if (ctor->index >= ctor->nr)
+ 		z_erofs_pagevec_ctor_pagedown(ctor, false);
 
 
