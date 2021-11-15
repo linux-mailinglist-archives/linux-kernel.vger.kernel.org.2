@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B0645157E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3A2451580
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350496AbhKOUjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:39:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        id S241208AbhKOUjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:39:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237423AbhKOSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238465AbhKOSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6572F63311;
-        Mon, 15 Nov 2021 17:44:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3460B63313;
+        Mon, 15 Nov 2021 17:44:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998288;
-        bh=GR0fljt0G1elFmA68E1eDDmfb/3n6UJkx0cc6bf18js=;
+        s=korg; t=1636998294;
+        bh=v/oeFtZlzZFVzk5N2nMBoHypZ7Txme4BAlmNd7i7Hn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuOvJYI5GIKs7e8Q7Vg3jGdvhVNuLYjBezXHiLuM0f8JhHPMMA5S1T00YxaCCZ1it
-         1scZZpldRFWQ9JSMPHYHlWpcmrXBP7TDP0Xz+ORx/EocwAOuJZzDq5l1vWHjdktBn0
-         /FDf4dABvhmUAR8jenAnyAClKfDU4ZxsuHoqgGg0=
+        b=LgVQdKPN2IkQbANUIBaP8CGtsL4eA6BYvEyWzLD7d6J0XaeBq5hXNKKly347OS5Hf
+         62SvV2HrAszE8UxSyvX4QGzvkja0GFuzJi21Rm5Kvbn43nBcBflnqzA9PezCWuygor
+         fbLyAnEWryq4MJmtOoJ4nAQs678Js7SQ2IafNp30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anssi Hannula <anssi.hannula@bitwise.fi>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 456/575] serial: xilinx_uartps: Fix race condition causing stuck TX
-Date:   Mon, 15 Nov 2021 18:03:01 +0100
-Message-Id: <20211115165359.517643257@linuxfoundation.org>
+Subject: [PATCH 5.10 457/575] clk: at91: sam9x60-pll: use DIV_ROUND_CLOSEST_ULL
+Date:   Mon, 15 Nov 2021 18:03:02 +0100
+Message-Id: <20211115165359.548488388@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,67 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 88b20f84f0fe47409342669caf3e58a3fc64c316 ]
+[ Upstream commit f12d028b743bb6136da60b17228a1b6162886444 ]
 
-xilinx_uartps .start_tx() clears TXEMPTY when enabling TXEMPTY to avoid
-any previous TXEVENT event asserting the UART interrupt. This clear
-operation is done immediately after filling the TX FIFO.
+Use DIV_ROUND_CLOSEST_ULL() to avoid any inconsistency b/w the rate
+computed in sam9x60_frac_pll_recalc_rate() and the one computed in
+sam9x60_frac_pll_compute_mul_frac().
 
-However, if the bytes inserted by cdns_uart_handle_tx() are consumed by
-the UART before the TXEMPTY is cleared, the clear operation eats the new
-TXEMPTY event as well, causing cdns_uart_isr() to never receive the
-TXEMPTY event. If there are bytes still queued in circbuf, TX will get
-stuck as they will never get transferred to FIFO (unless new bytes are
-queued to circbuf in which case .start_tx() is called again).
-
-While the racy missed TXEMPTY occurs fairly often with short data
-sequences (e.g. write 1 byte), in those cases circbuf is usually empty
-so no action on TXEMPTY would have been needed anyway. On the other
-hand, longer data sequences make the race much more unlikely as UART
-takes longer to consume the TX FIFO. Therefore it is rare for this race
-to cause visible issues in general.
-
-Fix the race by clearing the TXEMPTY bit in ISR *before* filling the
-FIFO.
-
-The TXEMPTY bit in ISR will only get asserted at the exact moment the
-TX FIFO *becomes* empty, so clearing the bit before filling FIFO does
-not cause an extra immediate assertion even if the FIFO is initially
-empty.
-
-This is hard to reproduce directly on a normal system, but inserting
-e.g. udelay(200) after cdns_uart_handle_tx(port), setting 4000000 baud,
-and then running "dd if=/dev/zero bs=128 of=/dev/ttyPS0 count=50"
-reliably reproduces the issue on my ZynqMP test system unless this fix
-is applied.
-
-Fixes: 85baf542d54e ("tty: xuartps: support 64 byte FIFO size")
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Link: https://lore.kernel.org/r/20211026102741.2910441-1-anssi.hannula@bitwise.fi
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 43b1bb4a9b3e1 ("clk: at91: clk-sam9x60-pll: re-factor to support plls with multiple outputs")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lore.kernel.org/r/20211011112719.3951784-8-claudiu.beznea@microchip.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/xilinx_uartps.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/at91/clk-sam9x60-pll.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index a9b1ee27183a7..b5a8afbc452ba 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -601,9 +601,10 @@ static void cdns_uart_start_tx(struct uart_port *port)
- 	if (uart_circ_empty(&port->state->xmit))
- 		return;
+diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk-sam9x60-pll.c
+index 78f458a7b2ef4..5a9daa3643a72 100644
+--- a/drivers/clk/at91/clk-sam9x60-pll.c
++++ b/drivers/clk/at91/clk-sam9x60-pll.c
+@@ -71,8 +71,8 @@ static unsigned long sam9x60_frac_pll_recalc_rate(struct clk_hw *hw,
+ 	struct sam9x60_pll_core *core = to_sam9x60_pll_core(hw);
+ 	struct sam9x60_frac *frac = to_sam9x60_frac(core);
  
-+	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
-+
- 	cdns_uart_handle_tx(port);
- 
--	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
- 	/* Enable the TX Empty interrupt */
- 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+-	return (parent_rate * (frac->mul + 1) +
+-		((u64)parent_rate * frac->frac >> 22));
++	return parent_rate * (frac->mul + 1) +
++		DIV_ROUND_CLOSEST_ULL((u64)parent_rate * frac->frac, (1 << 22));
  }
+ 
+ static int sam9x60_frac_pll_prepare(struct clk_hw *hw)
 -- 
 2.33.0
 
