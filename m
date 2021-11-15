@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3364A452232
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A4245222D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347719AbhKPBKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S1344335AbhKPBKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:10:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245454AbhKOTUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245452AbhKOTUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:20:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E1F66353C;
-        Mon, 15 Nov 2021 18:34:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA356353D;
+        Mon, 15 Nov 2021 18:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001292;
-        bh=DQzFJzwYqXW1MqU9b1rH5aH6VUlwpponX/2AkRaLICE=;
+        s=korg; t=1637001294;
+        bh=3rWkvLQMX4G20KChSH47VaCpvUP56uJTMo/FwsC88jQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mk/NuOl7s3DULtlQWNFajUlGQPxhZP4B2ZcomHBpbsRVOarqiXkIbscih30mmgU1b
-         L3YZzeRlmrEVMs8uk7y7AB75qnSpXFazZ3Al/GWqfHl5nYQZGET6VmRv//6k6PPmnZ
-         0319R7CXL1pCNLtuYzo9zTVOvPwxbu9iD1e6Q/y0=
+        b=PSSRngio2CXxc5+zrSRvM9j/zSGBjt+ithN4DuGeErmzxZrDNjNRksFFyX5Aqf8nW
+         QVzkyZQavBxRxWpPzA0+SJkmVFNnFk2twZhMNEr15DHs1Uy7q6O40HsFFyzkN/2Sbm
+         raMGF1cXUuCAZMm5BMbywHDmlKm1/r/Owew/RdB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.15 135/917] serial: core: Fix initializing and restoring termios speed
-Date:   Mon, 15 Nov 2021 17:53:50 +0100
-Message-Id: <20211115165433.349423547@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.15 136/917] ifb: fix building without CONFIG_NET_CLS_ACT
+Date:   Mon, 15 Nov 2021 17:53:51 +0100
+Message-Id: <20211115165433.380288151@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,108 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 027b57170bf8bb6999a28e4a5f3d78bf1db0f90c upstream.
+commit 7444d706be31753f65052c7f6325fc8470cc1789 upstream.
 
-Since commit edc6afc54968 ("tty: switch to ktermios and new framework")
-termios speed is no longer stored only in c_cflag member but also in new
-additional c_ispeed and c_ospeed members. If BOTHER flag is set in c_cflag
-then termios speed is stored only in these new members.
+The driver no longer depends on this option, but it fails to
+build if it's disabled because the skb->tc_skip_classify is
+hidden behind an #ifdef:
 
-Therefore to correctly restore termios speed it is required to store also
-ispeed and ospeed members, not only cflag member.
+drivers/net/ifb.c:81:8: error: no member named 'tc_skip_classify' in 'struct sk_buff'
+                skb->tc_skip_classify = 1;
 
-In case only cflag member with BOTHER flag is restored then functions
-tty_termios_baud_rate() and tty_termios_input_baud_rate() returns baudrate
-stored in c_ospeed / c_ispeed member, which is zero as it was not restored
-too. If reported baudrate is invalid (e.g. zero) then serial core functions
-report fallback baudrate value 9600. So it means that in this case original
-baudrate is lost and kernel changes it to value 9600.
+Use the same #ifdef around the assignment.
 
-Simple reproducer of this issue is to boot kernel with following command
-line argument: "console=ttyXXX,86400" (where ttyXXX is the device name).
-For speed 86400 there is no Bnnn constant and therefore kernel has to
-represent this speed via BOTHER c_cflag. Which means that speed is stored
-only in c_ospeed and c_ispeed members, not in c_cflag anymore.
-
-If bootloader correctly configures serial device to speed 86400 then kernel
-prints boot log to early console at speed speed 86400 without any issue.
-But after kernel starts initializing real console device ttyXXX then speed
-is changed to fallback value 9600 because information about speed was lost.
-
-This patch fixes above issue by storing and restoring also ispeed and
-ospeed members, which are required for BOTHER flag.
-
-Fixes: edc6afc54968 ("[PATCH] tty: switch to ktermios and new framework")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20211002130900.9518-1-pali@kernel.org
+Fixes: 046178e726c2 ("ifb: Depend on netfilter alternatively to tc")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial_core.c |   16 ++++++++++++++--
- include/linux/console.h          |    2 ++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/net/ifb.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -222,7 +222,11 @@ static int uart_port_startup(struct tty_
- 	if (retval == 0) {
- 		if (uart_console(uport) && uport->cons->cflag) {
- 			tty->termios.c_cflag = uport->cons->cflag;
-+			tty->termios.c_ispeed = uport->cons->ispeed;
-+			tty->termios.c_ospeed = uport->cons->ospeed;
- 			uport->cons->cflag = 0;
-+			uport->cons->ispeed = 0;
-+			uport->cons->ospeed = 0;
- 		}
- 		/*
- 		 * Initialise the hardware port settings.
-@@ -290,8 +294,11 @@ static void uart_shutdown(struct tty_str
- 		/*
- 		 * Turn off DTR and RTS early.
- 		 */
--		if (uport && uart_console(uport) && tty)
-+		if (uport && uart_console(uport) && tty) {
- 			uport->cons->cflag = tty->termios.c_cflag;
-+			uport->cons->ispeed = tty->termios.c_ispeed;
-+			uport->cons->ospeed = tty->termios.c_ospeed;
-+		}
+--- a/drivers/net/ifb.c
++++ b/drivers/net/ifb.c
+@@ -76,7 +76,9 @@ static void ifb_ri_tasklet(struct taskle
  
- 		if (!tty || C_HUPCL(tty))
- 			uart_port_dtr_rts(uport, 0);
-@@ -2094,8 +2101,11 @@ uart_set_options(struct uart_port *port,
- 	 * Allow the setting of the UART parameters with a NULL console
- 	 * too:
- 	 */
--	if (co)
-+	if (co) {
- 		co->cflag = termios.c_cflag;
-+		co->ispeed = termios.c_ispeed;
-+		co->ospeed = termios.c_ospeed;
-+	}
+ 	while ((skb = __skb_dequeue(&txp->tq)) != NULL) {
+ 		skb->redirected = 0;
++#ifdef CONFIG_NET_CLS_ACT
+ 		skb->tc_skip_classify = 1;
++#endif
  
- 	return 0;
- }
-@@ -2229,6 +2239,8 @@ int uart_resume_port(struct uart_driver
- 		 */
- 		memset(&termios, 0, sizeof(struct ktermios));
- 		termios.c_cflag = uport->cons->cflag;
-+		termios.c_ispeed = uport->cons->ispeed;
-+		termios.c_ospeed = uport->cons->ospeed;
- 
- 		/*
- 		 * If that's unset, use the tty termios setting.
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -149,6 +149,8 @@ struct console {
- 	short	flags;
- 	short	index;
- 	int	cflag;
-+	uint	ispeed;
-+	uint	ospeed;
- 	void	*data;
- 	struct	 console *next;
- };
+ 		u64_stats_update_begin(&txp->tsync);
+ 		txp->tx_packets++;
 
 
