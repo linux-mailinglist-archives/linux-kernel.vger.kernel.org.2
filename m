@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C6B450F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985F7450F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241756AbhKOSZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:25:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47378 "EHLO mail.kernel.org"
+        id S232471AbhKOScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:32:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238069AbhKORcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:32:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 035C0632B5;
-        Mon, 15 Nov 2021 17:21:23 +0000 (UTC)
+        id S238116AbhKORcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:32:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D8263278;
+        Mon, 15 Nov 2021 17:21:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996884;
-        bh=mqayO+PN9OuF1rTOBIV6NSA1dYzKZSWldlGoVPG6kNo=;
+        s=korg; t=1636996887;
+        bh=ebAujnYUy/ArH7u3IVC169vpY3cIPYcgtitSdevbcFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s4n2ftmle+Uz/lfZtCGeV9Vyivlncw2XR9YeyloyV020sxu0lAOtLdMK8U6V+4bSS
-         4ycsbdPK8cDbK99XL14z2VCYP4EGKiEOYQ4fd1HLSLdMQfOVVAwDYVUdXyKD9/VAI9
-         nNMVk/47AAtUHq1Qmf0AdAZgL3btr/AtmlY+trYg=
+        b=aA0JSdTCuBQaTL7k3Hp9xjPxY0SDILlnh+WmuLHR8GYZbBXExxdEblWGpL8TQr3Bk
+         tmXqfuBAB4LER8Uep4Crlz1HHbeSs1h2phiT/yGT047/ioHtVWA3+b0Q6m0Qg+MUH1
+         r9pMXIE1jy6WFuxnPwqN4x1L12xzEQylBLEqzmCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Robin van der Gracht <robin@protonic.nl>,
+        stable@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 302/355] auxdisplay: ht16k33: Connect backlight to fbdev
-Date:   Mon, 15 Nov 2021 18:03:46 +0100
-Message-Id: <20211115165323.488705804@linuxfoundation.org>
+Subject: [PATCH 5.4 303/355] auxdisplay: ht16k33: Fix frame buffer device blanking
+Date:   Mon, 15 Nov 2021 18:03:47 +0100
+Message-Id: <20211115165323.519337229@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,103 +43,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit 80f9eb70fd9276938f0a131f76d438021bfd8b34 ]
+[ Upstream commit 840fe258332544aa7321921e1723d37b772af7a9 ]
 
-Currently /sys/class/graphics/fb0/bl_curve is not accessible (-ENODEV),
-as the driver does not connect the backlight to the frame buffer device.
-Fix this moving backlight initialization up, and filling in
-fb_info.bl_dev.
+As the ht16k33 frame buffer sub-driver does not register an
+fb_ops.fb_blank() handler, blanking does not work:
 
+    $ echo 1 > /sys/class/graphics/fb0/blank
+    sh: write error: Invalid argument
+
+Fix this by providing a handler that always returns zero, to make sure
+blank events will be sent to the actual device handling the backlight.
+
+Reported-by: Robin van der Gracht <robin@protonic.nl>
+Suggested-by: Robin van der Gracht <robin@protonic.nl>
 Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Robin van der Gracht <robin@protonic.nl>
 Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 56 ++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 33b887b389061..1b0e8232517dd 100644
+index 1b0e8232517dd..59109b410c67f 100644
 --- a/drivers/auxdisplay/ht16k33.c
 +++ b/drivers/auxdisplay/ht16k33.c
-@@ -418,6 +418,33 @@ static int ht16k33_probe(struct i2c_client *client,
- 	if (err)
- 		return err;
+@@ -219,6 +219,15 @@ static const struct backlight_ops ht16k33_bl_ops = {
+ 	.check_fb	= ht16k33_bl_check_fb,
+ };
  
-+	/* Backlight */
-+	memset(&bl_props, 0, sizeof(struct backlight_properties));
-+	bl_props.type = BACKLIGHT_RAW;
-+	bl_props.max_brightness = MAX_BRIGHTNESS;
++/*
++ * Blank events will be passed to the actual device handling the backlight when
++ * we return zero here.
++ */
++static int ht16k33_blank(int blank, struct fb_info *info)
++{
++	return 0;
++}
 +
-+	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
-+					    &client->dev, priv,
-+					    &ht16k33_bl_ops, &bl_props);
-+	if (IS_ERR(bl)) {
-+		dev_err(&client->dev, "failed to register backlight\n");
-+		return PTR_ERR(bl);
-+	}
-+
-+	err = of_property_read_u32(node, "default-brightness-level",
-+				   &dft_brightness);
-+	if (err) {
-+		dft_brightness = MAX_BRIGHTNESS;
-+	} else if (dft_brightness > MAX_BRIGHTNESS) {
-+		dev_warn(&client->dev,
-+			 "invalid default brightness level: %u, using %u\n",
-+			 dft_brightness, MAX_BRIGHTNESS);
-+		dft_brightness = MAX_BRIGHTNESS;
-+	}
-+
-+	bl->props.brightness = dft_brightness;
-+	ht16k33_bl_update_status(bl);
-+
- 	/* Framebuffer (2 bytes per column) */
- 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
- 	fbdev->buffer = (unsigned char *) get_zeroed_page(GFP_KERNEL);
-@@ -450,6 +477,7 @@ static int ht16k33_probe(struct i2c_client *client,
- 	fbdev->info->screen_size = HT16K33_FB_SIZE;
- 	fbdev->info->fix = ht16k33_fb_fix;
- 	fbdev->info->var = ht16k33_fb_var;
-+	fbdev->info->bl_dev = bl;
- 	fbdev->info->pseudo_palette = NULL;
- 	fbdev->info->flags = FBINFO_FLAG_DEFAULT;
- 	fbdev->info->par = priv;
-@@ -462,34 +490,6 @@ static int ht16k33_probe(struct i2c_client *client,
- 	if (err)
- 		goto err_fbdev_unregister;
- 
--	/* Backlight */
--	memset(&bl_props, 0, sizeof(struct backlight_properties));
--	bl_props.type = BACKLIGHT_RAW;
--	bl_props.max_brightness = MAX_BRIGHTNESS;
--
--	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
--					    &client->dev, priv,
--					    &ht16k33_bl_ops, &bl_props);
--	if (IS_ERR(bl)) {
--		dev_err(&client->dev, "failed to register backlight\n");
--		err = PTR_ERR(bl);
--		goto err_fbdev_unregister;
--	}
--
--	err = of_property_read_u32(node, "default-brightness-level",
--				   &dft_brightness);
--	if (err) {
--		dft_brightness = MAX_BRIGHTNESS;
--	} else if (dft_brightness > MAX_BRIGHTNESS) {
--		dev_warn(&client->dev,
--			 "invalid default brightness level: %u, using %u\n",
--			 dft_brightness, MAX_BRIGHTNESS);
--		dft_brightness = MAX_BRIGHTNESS;
--	}
--
--	bl->props.brightness = dft_brightness;
--	ht16k33_bl_update_status(bl);
--
- 	ht16k33_fb_queue(priv);
- 	return 0;
- 
+ static int ht16k33_mmap(struct fb_info *info, struct vm_area_struct *vma)
+ {
+ 	struct ht16k33_priv *priv = info->par;
+@@ -231,6 +240,7 @@ static struct fb_ops ht16k33_fb_ops = {
+ 	.owner = THIS_MODULE,
+ 	.fb_read = fb_sys_read,
+ 	.fb_write = fb_sys_write,
++	.fb_blank = ht16k33_blank,
+ 	.fb_fillrect = sys_fillrect,
+ 	.fb_copyarea = sys_copyarea,
+ 	.fb_imageblit = sys_imageblit,
 -- 
 2.33.0
 
