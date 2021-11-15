@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3FE4515EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790E04515E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348322AbhKOVBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:01:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49944 "EHLO mail.kernel.org"
+        id S1348019AbhKOVAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:00:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240689AbhKOSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240686AbhKOSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:11:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A65C3633C6;
-        Mon, 15 Nov 2021 17:47:44 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A62A76329A;
+        Mon, 15 Nov 2021 17:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998465;
-        bh=US9g5eSyH8Vyi1KL9kcHTb9JN7vDmJepUDjhQxgmL5M=;
+        s=korg; t=1636998468;
+        bh=Yr5MWcSH8vL+VOxhzPRgyUoe+naXLj3rYSzfBsNCDMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wibNjgyI1y/u7Z+KGyYBtEAFzddO/GsNfnYriXIw68gDn06WtHw6OTU8hLH8swRJB
-         +FFnPLS2IaXn0yelJ6XvRGt1JfOyyTpYk53LlS6Wur84JA9igf6fGbxGFXdGepMPod
-         48mAK0UqVHDQfrxENh2QWY072uuIvZSX3JgdPO2Y=
+        b=TYM2Pdi1u4qJRnrUiCTOLMXq8R8Jc9EYWPX0lsVsUgJu2wjSzM/MSM62fDaJpqHmU
+         uxTaxsV46ocuG29tVZCcioiOAKatPovgrYezYZgTSs3h1qw4ZWh/UnOGBTq18PFysq
+         xJ10wcRagKZPEV6OY/5XmswDWVaF0/eIC458o4pM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 519/575] mfd: core: Add missing of_node_put for loop iteration
-Date:   Mon, 15 Nov 2021 18:04:04 +0100
-Message-Id: <20211115165401.627621692@linuxfoundation.org>
+Subject: [PATCH 5.10 520/575] can: mcp251xfd: mcp251xfd_chip_start(): fix error handling for mcp251xfd_chip_rx_int_enable()
+Date:   Mon, 15 Nov 2021 18:04:05 +0100
+Message-Id: <20211115165401.657661613@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,45 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit 002be81140075e17a1ebd5c3c55e356fbab0ddad ]
+[ Upstream commit 69c55f6e7669d46bb40e41f6e2b218428178368a ]
 
-Early exits from for_each_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+This patch fixes the error handling for mcp251xfd_chip_rx_int_enable().
+Instead just returning the error, properly shut down the chip.
 
-  drivers/mfd/mfd-core.c:197:2-24: WARNING:
-    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
-
-Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20210528115126.18370-1-krzysztof.kozlowski@canonical.com
+Link: https://lore.kernel.org/all/20211106201526.44292-2-mkl@pengutronix.de
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/mfd-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index fc00aaccb5f72..a3a6faa99de05 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -210,6 +210,7 @@ static int mfd_add_device(struct device *parent, int id,
- 			if (of_device_is_compatible(np, cell->of_compatible)) {
- 				/* Ignore 'disabled' devices error free */
- 				if (!of_device_is_available(np)) {
-+					of_node_put(np);
- 					ret = 0;
- 					goto fail_alias;
- 				}
-@@ -217,6 +218,7 @@ static int mfd_add_device(struct device *parent, int id,
- 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
- 				if (ret == -EAGAIN)
- 					continue;
-+				of_node_put(np);
- 				if (ret)
- 					goto fail_alias;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 68ff931993c25..4e13f6dfb91a2 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1041,7 +1041,7 @@ static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
  
+ 	err = mcp251xfd_chip_rx_int_enable(priv);
+ 	if (err)
+-		return err;
++		goto out_chip_stop;
+ 
+ 	err = mcp251xfd_chip_ecc_init(priv);
+ 	if (err)
 -- 
 2.33.0
 
