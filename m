@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F364451C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 855DC451C68
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356553AbhKPARo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:17:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45360 "EHLO mail.kernel.org"
+        id S1356453AbhKPARd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:17:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355081AbhKOXjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355086AbhKOXjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 18:39:00 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B375661A0C;
+        by mail.kernel.org (Postfix) with ESMTPSA id DD98361B1E;
         Mon, 15 Nov 2021 23:34:03 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mmlUA-000ou3-Qz;
-        Mon, 15 Nov 2021 18:34:02 -0500
-Message-ID: <20211115233402.665115219@goodmis.org>
+        id 1mmlUB-000oub-0x;
+        Mon, 15 Nov 2021 18:34:03 -0500
+Message-ID: <20211115233402.856431229@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 15 Nov 2021 18:33:44 -0500
+Date:   Mon, 15 Nov 2021 18:33:45 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -32,9 +32,8 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        stable-rt@vger.kernel.org, Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH RT 5/9] mm: Disable NUMA_BALANCING_DEFAULT_ENABLED and TRANSPARENT_HUGEPAGE
- on PREEMPT_RT
+        Gregor Beck <gregor.beck@gmail.com>, stable-rt@vger.kernel.org
+Subject: [PATCH RT 6/9] fscache: Use only one fscache_object_cong_wait.
 References: <20211115233339.509057092@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,46 +48,125 @@ If anyone has any objections, please let me know.
 
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-TRANSPARENT_HUGEPAGE:
-There are potential non-deterministic delays to an RT thread if a critical
-memory region is not THP-aligned and a non-RT buffer is located in the same
-hugepage-aligned region. It's also possible for an unrelated thread to migrate
-pages belonging to an RT task incurring unexpected page faults due to memory
-defragmentation even if khugepaged is disabled.
+In the commit mentioned below, fscache was converted from slow-work to
+workqueue. slow_work_enqueue() and slow_work_sleep_till_thread_needed()
+did not use a per-CPU workqueue. They choose from two global waitqueues
+depending on the SLOW_WORK_VERY_SLOW bit which was not set so it always
+one waitqueue.
 
-Regular HUGEPAGEs are not affected by this can be used.
+I can't find out how it is ensured that a waiter on certain CPU is woken
+up be the other side. My guess is that the timeout in schedule_timeout()
+ensures that it does not wait forever (or a random wake up).
 
-NUMA_BALANCING:
-There is a non-deterministic delay to mark PTEs PROT_NONE to gather NUMA fault
-samples, increased page faults of regions even if mlocked and non-deterministic
-delays when migrating pages.
+fscache_object_sleep_till_congested() must be invoked from preemptible
+context in order for schedule() to work. In this case this_cpu_ptr()
+should complain with CONFIG_DEBUG_PREEMPT enabled except the thread is
+bound to one CPU.
 
-[Mel Gorman worded 99% of the commit description].
+wake_up() wakes only one waiter and I'm not sure if it is guaranteed
+that only one waiter exists.
 
-Link: https://lore.kernel.org/all/20200304091159.GN3818@techsingularity.net/
-Link: https://lore.kernel.org/all/20211026165100.ahz5bkx44lrrw5pt@linutronix.de/
+Replace the per-CPU waitqueue with one global waitqueue.
+
+Fixes: 8b8edefa2fffb ("fscache: convert object to use workqueue instead of slow-work")
+Reported-by: Gregor Beck <gregor.beck@gmail.com>
 Cc: stable-rt@vger.kernel.org
-Cc: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-Link: https://lore.kernel.org/r/20211028143327.hfbxjze7palrpfgp@linutronix.de
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- init/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fscache/internal.h |  1 -
+ fs/fscache/main.c     |  6 ------
+ fs/fscache/object.c   | 11 +++++------
+ 3 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 7ba2b602b707..9bfc60e7eead 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -861,7 +861,7 @@ config NUMA_BALANCING
- 	bool "Memory placement aware NUMA scheduler"
- 	depends on ARCH_SUPPORTS_NUMA_BALANCING
- 	depends on !ARCH_WANT_NUMA_VARIABLE_LOCALITY
--	depends on SMP && NUMA && MIGRATION
-+	depends on SMP && NUMA && MIGRATION && !PREEMPT_RT
- 	help
- 	  This option adds support for automatic NUMA aware memory/task placement.
- 	  The mechanism is quite primitive and is based on migrating memory when
+diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+index 64aa552b296d..7dae569dafb9 100644
+--- a/fs/fscache/internal.h
++++ b/fs/fscache/internal.h
+@@ -95,7 +95,6 @@ extern unsigned fscache_debug;
+ extern struct kobject *fscache_root;
+ extern struct workqueue_struct *fscache_object_wq;
+ extern struct workqueue_struct *fscache_op_wq;
+-DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
+ 
+ extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n);
+ 
+diff --git a/fs/fscache/main.c b/fs/fscache/main.c
+index 4207f98e405f..85f8cf3a323d 100644
+--- a/fs/fscache/main.c
++++ b/fs/fscache/main.c
+@@ -41,8 +41,6 @@ struct kobject *fscache_root;
+ struct workqueue_struct *fscache_object_wq;
+ struct workqueue_struct *fscache_op_wq;
+ 
+-DEFINE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
+-
+ /* these values serve as lower bounds, will be adjusted in fscache_init() */
+ static unsigned fscache_object_max_active = 4;
+ static unsigned fscache_op_max_active = 2;
+@@ -138,7 +136,6 @@ unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n)
+ static int __init fscache_init(void)
+ {
+ 	unsigned int nr_cpus = num_possible_cpus();
+-	unsigned int cpu;
+ 	int ret;
+ 
+ 	fscache_object_max_active =
+@@ -161,9 +158,6 @@ static int __init fscache_init(void)
+ 	if (!fscache_op_wq)
+ 		goto error_op_wq;
+ 
+-	for_each_possible_cpu(cpu)
+-		init_waitqueue_head(&per_cpu(fscache_object_cong_wait, cpu));
+-
+ 	ret = fscache_proc_init();
+ 	if (ret < 0)
+ 		goto error_proc;
+diff --git a/fs/fscache/object.c b/fs/fscache/object.c
+index cb2146e02cd5..55158f30d093 100644
+--- a/fs/fscache/object.c
++++ b/fs/fscache/object.c
+@@ -807,6 +807,8 @@ void fscache_object_destroy(struct fscache_object *object)
+ }
+ EXPORT_SYMBOL(fscache_object_destroy);
+ 
++static DECLARE_WAIT_QUEUE_HEAD(fscache_object_cong_wait);
++
+ /*
+  * enqueue an object for metadata-type processing
+  */
+@@ -815,12 +817,10 @@ void fscache_enqueue_object(struct fscache_object *object)
+ 	_enter("{OBJ%x}", object->debug_id);
+ 
+ 	if (fscache_get_object(object, fscache_obj_get_queue) >= 0) {
+-		wait_queue_head_t *cong_wq =
+-			&get_cpu_var(fscache_object_cong_wait);
+ 
+ 		if (queue_work(fscache_object_wq, &object->work)) {
+ 			if (fscache_object_congested())
+-				wake_up(cong_wq);
++				wake_up(&fscache_object_cong_wait);
+ 		} else
+ 			fscache_put_object(object, fscache_obj_put_queue);
+ 
+@@ -842,16 +842,15 @@ void fscache_enqueue_object(struct fscache_object *object)
+  */
+ bool fscache_object_sleep_till_congested(signed long *timeoutp)
+ {
+-	wait_queue_head_t *cong_wq = this_cpu_ptr(&fscache_object_cong_wait);
+ 	DEFINE_WAIT(wait);
+ 
+ 	if (fscache_object_congested())
+ 		return true;
+ 
+-	add_wait_queue_exclusive(cong_wq, &wait);
++	add_wait_queue_exclusive(&fscache_object_cong_wait, &wait);
+ 	if (!fscache_object_congested())
+ 		*timeoutp = schedule_timeout(*timeoutp);
+-	finish_wait(cong_wq, &wait);
++	finish_wait(&fscache_object_cong_wait, &wait);
+ 
+ 	return fscache_object_congested();
+ }
 -- 
 2.33.0
