@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C3144FE6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D5144FE81
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhKOFhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 00:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S230222AbhKOGAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 01:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhKOFhi (ORCPT
+        with ESMTP id S229651AbhKOGAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 00:37:38 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF703C061767
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:34:42 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so25562094otj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:34:42 -0800 (PST)
+        Mon, 15 Nov 2021 01:00:30 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EFBC061746;
+        Sun, 14 Nov 2021 21:57:34 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so12111455pjb.5;
+        Sun, 14 Nov 2021 21:57:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0v+LGI2uk93QWh0zE0VchiXosnpImd7/fjmzIO4RhH4=;
-        b=ljdiFAqtZ9NPKkvltzxH4bg3ngROQECeo8ejU0Y6tHLuMP3wi1QCPrFvplPgDFWNzf
-         15JJjBoHIQ8Isk/aYpGaqQLD/wk9IR2Q97xUbnp1IKi5niLXS6HBKX8qZSJ1SU3r//Tl
-         XZ+f37jt3IOPdJRdRTpEAwdIaoi/JorESwGeobXlgr+s/VRJJCTYulzOtybsIRhk59Rr
-         BgHLjxs2DRdrE09uIGldzbPF0aoXjwJjsZeca+b3C08tzAP4YvPlF8kwL3N0I0Uz/zoD
-         AMBiVM6cFv5bOrwWvDR2XrfqqvtUIDYmHXkVu0UQfon2XyM4HV/noyNefHz5dU+Fb02e
-         NzfA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ogwLJYhRl6mAF5zsE0HWAzRXmuhZqIu9WWvR7F7G9Uw=;
+        b=jiiJ+FypMEHEq0AY7xqmOhTt699d0jkMZE2VzfuZGtmxKj8/xUm5WSG+aTKJvEpDoQ
+         3Sjdyiu0G0Qg/NmsTaT5j9rRR/5Tp5ul28D0wDyT8tfleaFaKISCj7Ktz7pgIU19KeU5
+         hrFnW+1BsLKng43XkZ0JROWjIRaW23J6VdHTC+Gtvjoj10yXSREUESRW4TOfcclCnjhz
+         ARDaB699gRj63j6i71k5/XzH1lUGuG583qilyPiTLFeBtsqjcUE8CzvlY5M25WIAfGhU
+         ZtJZb4/Ps52aeHTckyprnD3BHelRu8/hbHPkn+i5R0u0A5ZCkaBSaJE6vSaHaM7d66tE
+         407g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0v+LGI2uk93QWh0zE0VchiXosnpImd7/fjmzIO4RhH4=;
-        b=px9HURyBhYQgpWMCQYBLYyMVh/DOVW6EO476Ao2dlYsbdhcfuUuxKTvuWuxFIReQ/Y
-         4/R4PzG1heF/+HeiSr9AmrjFdZPlNsuX4VFxij/Gvpkta0+8rgugAfGUAdMrIFAzY4AA
-         6LRBAJTzdHAFn0EADaedQ0CoX+wA2bdcMIpKS5Yh4Y7LB2E/HtwyCz8/IUKuqKzlwjIr
-         ksuLyyQ90Q8q44mlCv1bAyrPQCATA79c3ujlWWWfYZ9Z9QGEDaF63z8M6i5ajkUaaUX+
-         kFqqXrdJzIQ4aZrBX7JGRAxUzRTtx5Occ0bsgFeER/5Crmi0L6bUDrYZjcLLxwexXVy8
-         5TTQ==
-X-Gm-Message-State: AOAM532UuQqVhpfWc8puIO7WVt5Np2T3+dA4qHWsrgP4RnfipXnMRbtT
-        Gxccv4W3K2K8FCYVUYn3mC8EDkJnHx3Zmqs6rJDmZw==
-X-Google-Smtp-Source: ABdhPJwHFd1VM2HzkhZ7fd6WbE+aZtyX+zR0/Z8uF68YjNe5BDchdN2S4CXJSImAUK2bAuhAc0W+NfpsQA6yL2f8HY0=
-X-Received: by 2002:a05:6830:34a0:: with SMTP id c32mr30374599otu.379.1636954482214;
- Sun, 14 Nov 2021 21:34:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ogwLJYhRl6mAF5zsE0HWAzRXmuhZqIu9WWvR7F7G9Uw=;
+        b=DbwtgXlDCM/SN4i0VTws56aPHPEwmC6WO/0OWlIc8e1/e67YqUjeDaDIlRlgrXLoDs
+         0ulYXsoHT4LNNR22q+Nk8o6cecsj54E52RFci8/Ba4+tOg1H1NjsARap/qZg/ZVlzwZq
+         UGe9eHAIT8LjRjmJTxv/XCMqBGE5jVJ1V0/oWO+dCq342DTocp6skBg0uwLa3HjXubjB
+         /yIMeJ9MsS1Iindy4Ds7wt+0OfbFWrmeAk1o1Bhn3VmN06qI56U8HeZNzZ6A41etC/wA
+         H54afxCPxbSzR/K4puCmvBvzABu7hTsSVDyW5eY7EY/Tq4Xu9YDhV116on6QlZZvQfGv
+         ENbg==
+X-Gm-Message-State: AOAM531s0gbR4uUgm/uNjQI+gPalIjwd0sZgfE4TNuwtbxGCkkCiELb7
+        YEXtUe27DzbYgWjLaBmcHTw=
+X-Google-Smtp-Source: ABdhPJxOSQpy8Zq0oETPPCXNmdMH4+p+Ien8tZmgYjFwiNnc0We3kHRb7XsrldnWMV8MwoSSiO2Wxg==
+X-Received: by 2002:a17:903:11d0:b0:13f:ecf6:26ce with SMTP id q16-20020a17090311d000b0013fecf626cemr32703258plh.2.1636955853938;
+        Sun, 14 Nov 2021 21:57:33 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id y184sm14070281pfg.175.2021.11.14.21.57.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 21:57:33 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     james.smart@broadcom.com
+Cc:     ram.vegesna@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, dwagner@suse.de, hare@suse.de,
+        christophe.jaillet@wanadoo.fr, chi.minghao@zte.com.cn,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cm>
+Subject: [PATCH] scsi:elx: fix cond_no_effect.cocci warnings
+Date:   Mon, 15 Nov 2021 05:57:25 +0000
+Message-Id: <20211115055725.85631-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-10-bhupesh.sharma@linaro.org> <YZAZxmsp5WLeOBuF@builder.lan>
-In-Reply-To: <YZAZxmsp5WLeOBuF@builder.lan>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 15 Nov 2021 11:04:31 +0530
-Message-ID: <CAH=2NtwGM0==3etkG6seV=3+xO347VNEoKghpyBs9DjZPU4xNA@mail.gmail.com>
-Subject: Re: [PATCH v5 09/22] dt-bindings: qcom-qce: Move 'clocks' to optional properties
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+From: chiminghao <chi.minghao@zte.com.cn>
 
-On Sun, 14 Nov 2021 at 01:32, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
->
-> > QCom QCE block on some SoCs like ipq6018 don't
-> > require clock as the required property, so the properties
-> > 'clocks' and 'clock-names' can be moved instead in the dt-bindings
-> > to the 'optional' properties section.
-> >
-> > Otherwise, running 'make dtbs_check' leads to the following
-> > errors:
-> >
-> > dma-controller@7984000: clock-names:0: 'bam_clk' was expected
-> >       arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> >
-> > dma-controller@7984000: clock-names: Additional items are not allowed ('bam_clk' was unexpected)
-> >       arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> >
-> > dma-controller@7984000: clock-names: ['iface_clk', 'bam_clk'] is too long
-> >       arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> >
-> > dma-controller@7984000: clocks: [[9, 138], [9, 137]] is too long
-> >       arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> > index 30deaa0fa93d..f35bdb9ee7a8 100644
-> > --- a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> > +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> > @@ -53,8 +53,6 @@ properties:
-> >  required:
-> >    - compatible
-> >    - reg
-> > -  - clocks
-> > -  - clock-names
->
-> I would prefer that we make this conditional on the compatible. That
-> said, if this only applies to ipq6018 I think we should double check the
-> fact that there's no clock there...
->
-> For the sake of making progress on the series, I think you should omit
-> this patch from the next version.
+Fix the following coccicheck WARNING:
+./drivers/scsi/elx/libefc_sli/sli4.c, 2320, 2-4, WARNING
+possible condition with no effect (if == else)
 
-Without this patch, 'make dtbs_check' fails with the following error:
-dma-controller@7984000: clock-names:0: 'bam_clk' was expected
-        arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ drivers/scsi/elx/libefc_sli/sli4.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-dma-controller@7984000: clock-names: Additional items are not allowed
-('bam_clk' was unexpected)
-        arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+diff --git a/drivers/scsi/elx/libefc_sli/sli4.c b/drivers/scsi/elx/libefc_sli/sli4.c
+index 907d67aeac23..b74065a4e5c1 100644
+--- a/drivers/scsi/elx/libefc_sli/sli4.c
++++ b/drivers/scsi/elx/libefc_sli/sli4.c
+@@ -2317,12 +2317,8 @@ sli_xmit_bls_rsp64_wqe(struct sli4 *sli, void *buf,
+ 		SLI4_GENERIC_CONTEXT_VPI << SLI4_BLS_RSP_WQE_CT_SHFT;
+ 		bls->context_tag = cpu_to_le16(params->vpi);
+ 
+-		if (params->s_id != U32_MAX)
+-			bls->local_n_port_id_dword |=
+-				cpu_to_le32(params->s_id & 0x00ffffff);
+-		else
+-			bls->local_n_port_id_dword |=
+-				cpu_to_le32(params->s_id & 0x00ffffff);
++		bls->local_n_port_id_dword |=
++			cpu_to_le32(params->s_id & 0x00ffffff);
+ 
+ 		dw_ridflags = (dw_ridflags & ~SLI4_BLS_RSP_RID) |
+ 			       (params->d_id & SLI4_BLS_RSP_RID);
+-- 
+2.25.1
 
-which I think is making Rob bot-check fail.
-
-So, I think instead of dropping the patch, let's try and understand
-from the 'ipq6018 qce' documentation if the clocks are really
-'optional' there for the qce block (as clock properties are not
-mentioned in the dts from the very first upstream version). If not, we
-can try and fix the 'ipq6018 qce' dts node itself.
-
-Regards,
-Bhupesh
