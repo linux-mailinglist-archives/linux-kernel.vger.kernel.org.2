@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45C345201A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047404519B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357494AbhKPAsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:48:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1345968AbhKOXZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:25:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344717AbhKOTZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE7FC636BA;
-        Mon, 15 Nov 2021 19:03:01 +0000 (UTC)
+        id S244952AbhKOTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8B8D634E6;
+        Mon, 15 Nov 2021 18:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002982;
-        bh=wQ3ijpmlWoNmTCBki1mPMfUrL5bgRaFJxUnxnd64jSM=;
+        s=korg; t=1637000774;
+        bh=RVPesjfFaUpLuAjJj4MexMZO7Ju4/g9b/3mA5ZBD1+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ffk5ArpLLZVaQkHpzyZ5Sq+A40KitEPn5qyYb0Q/MGYV8gFVyFaRMy6+TukcrCaDi
-         pEe1Y8DeWBCkLTZIYKzx+zpUs0fsW/br1nSnywTyu3yWputjuftGDStX9qkiwsPSUM
-         uVJ/2Pq0bNFp90g8LRt6l9xLbpFKzjG43L4uirok=
+        b=Jx2n+rsutWhw9cyjqslddDXduioS0ZA1jUYg7Rsz2GOw77/4G3d5woEdhueNRzQmM
+         Buu11XuGE+tP+10vHncgtyFn6ZAfcR8MtlgTcht/2Olg6BT/8Jno7ovzXmEzpoKgLw
+         bs7cnEzgzxxSCFk+VTHQxAJoRC8U8mKgGFnNTDAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 766/917] kselftests/net: add missed SRv6 tests
-Date:   Mon, 15 Nov 2021 18:04:21 +0100
-Message-Id: <20211115165454.907002266@linuxfoundation.org>
+Subject: [PATCH 5.14 779/849] net: ethernet: ti: cpsw_ale: Fix access to un-initialized memory
+Date:   Mon, 15 Nov 2021 18:04:22 +0100
+Message-Id: <20211115165446.597835254@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 653e7f19b4a0a632cead2390281bde352d3d3273 ]
+[ Upstream commit 7a166854b4e24c57d56b3eba9fe1594985ee0a2c ]
 
-When generating the selftests to another folder, the SRv6 tests are
-missing as they are not in Makefile, e.g.
+It is spurious to allocate a bitmap without initializing it.
+So, better safe than sorry, initialize it to 0 at least to have some known
+values.
 
-  make -C tools/testing/selftests/ install \
-      TARGETS="net" INSTALL_PATH=/tmp/kselftests
+While at it, switch to the devm_bitmap_ API which is less verbose.
 
-Fixes: 03a0b567a03d ("selftests: seg6: add selftest for SRv6 End.DT46 Behavior")
-Fixes: 2195444e09b4 ("selftests: add selftest for the SRv6 End.DT4 behavior")
-Fixes: 2bc035538e16 ("selftests: add selftest for the SRv6 End.DT6 (VRF) behavior")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Fixes: 4b41d3436796 ("net: ethernet: ti: cpsw: allow untagged traffic on host port")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/ti/cpsw_ale.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 63ee01c1437b6..8a6264da52763 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -28,6 +28,9 @@ TEST_PROGS += veth.sh
- TEST_PROGS += ioam6.sh
- TEST_PROGS += gro.sh
- TEST_PROGS += gre_gso.sh
-+TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
-+TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-+TEST_PROGS += srv6_end_dt6_l3vpn_test.sh
- TEST_PROGS_EXTENDED := in_netns.sh setup_loopback.sh setup_veth.sh
- TEST_GEN_FILES =  socket nettest
- TEST_GEN_FILES += psock_fanout psock_tpacket msg_zerocopy reuseport_addr_any
+diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
+index 0c75e0576ee1f..1ef0aaef5c61c 100644
+--- a/drivers/net/ethernet/ti/cpsw_ale.c
++++ b/drivers/net/ethernet/ti/cpsw_ale.c
+@@ -1299,10 +1299,8 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
+ 	if (!ale)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ale->p0_untag_vid_mask =
+-		devm_kmalloc_array(params->dev, BITS_TO_LONGS(VLAN_N_VID),
+-				   sizeof(unsigned long),
+-				   GFP_KERNEL);
++	ale->p0_untag_vid_mask = devm_bitmap_zalloc(params->dev, VLAN_N_VID,
++						    GFP_KERNEL);
+ 	if (!ale->p0_untag_vid_mask)
+ 		return ERR_PTR(-ENOMEM);
+ 
 -- 
 2.33.0
 
