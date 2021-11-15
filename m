@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED3D4515FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B94451601
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347221AbhKOVFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:05:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
+        id S1347286AbhKOVFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:05:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240805AbhKOSNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240806AbhKOSNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:13:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C151633CA;
-        Mon, 15 Nov 2021 17:48:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8E11633CB;
+        Mon, 15 Nov 2021 17:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998512;
-        bh=YtaMPtqdXB9HnZuqhvw6aEJQon/86GJold/KYhtH5Kw=;
+        s=korg; t=1636998515;
+        bh=37R7AQxwaHqBQnqHRMW6dJ+EsQblDFNxp4DVJlhU1As=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WrAzcLGu6Yx1BkuajD9MrKw22tByod8km2Ycx7jLcnMyews/WKb4x3sTJcy1nUIe
-         8eFJIv/2IYB1d4QTHhiS9WLUS+99yzKuOZgs0nXzbdkVeo/b3GzwW++FukozmF2Ogw
-         CSNbeV95JCHhZxBAqv5B9MbwpkthfNMdMLS4hesQ=
+        b=P/ZJgRFzRX10+EcFZ4AWM+iX4we082kVcEhBY0FBzNL2enPqhbL3P+P1xGJWpizpy
+         3dcOQOlO5HZ4xZkD05s5rdWPZJcGVQj6Snu4JzPFdNG0/+/e+SbzZ9cpRIyxm9rbga
+         PipwFGi1TwBe5rNusH4jKwm8PKPYvppwaFMy6Fp0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 503/575] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
-Date:   Mon, 15 Nov 2021 18:03:48 +0100
-Message-Id: <20211115165401.086318316@linuxfoundation.org>
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 504/575] xen-pciback: Fix return in pm_ctrl_init()
+Date:   Mon, 15 Nov 2021 18:03:49 +0100
+Message-Id: <20211115165401.127172784@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,48 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
+[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+Return NULL instead of passing to ERR_PTR while err is zero,
+this fix smatch warnings:
+drivers/xen/xen-pciback/conf_space_capability.c:163
+ pm_ctrl_init() warn: passing zero to 'ERR_PTR'
 
-More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
-also already called. So just the unprepare step has still to be done.
-
-Update the error handling path accordingly.
-
-Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-xlr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
-index 126d1393e548b..9ce20652d4942 100644
---- a/drivers/i2c/busses/i2c-xlr.c
-+++ b/drivers/i2c/busses/i2c-xlr.c
-@@ -431,11 +431,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
- 	i2c_set_adapdata(&priv->adap, priv);
- 	ret = i2c_add_numbered_adapter(&priv->adap);
- 	if (ret < 0)
--		return ret;
-+		goto err_unprepare_clk;
+diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
+index 22f13abbe9130..5e53b4817f167 100644
+--- a/drivers/xen/xen-pciback/conf_space_capability.c
++++ b/drivers/xen/xen-pciback/conf_space_capability.c
+@@ -160,7 +160,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
+ 	}
  
- 	platform_set_drvdata(pdev, priv);
- 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
- 	return 0;
-+
-+err_unprepare_clk:
-+	clk_unprepare(clk);
-+	return ret;
+ out:
+-	return ERR_PTR(err);
++	return err ? ERR_PTR(err) : NULL;
  }
  
- static int xlr_i2c_remove(struct platform_device *pdev)
+ static const struct config_field caplist_pm[] = {
 -- 
 2.33.0
 
