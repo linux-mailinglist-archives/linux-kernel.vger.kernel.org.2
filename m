@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAF3451DBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64313451AA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhKOTW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:22:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35666 "EHLO mail.kernel.org"
+        id S241816AbhKOXlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:41:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238891AbhKORsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:48:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A431C6329A;
-        Mon, 15 Nov 2021 17:30:24 +0000 (UTC)
+        id S1343742AbhKOTV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE0763296;
+        Mon, 15 Nov 2021 18:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997425;
-        bh=9RkiO4g4NF3T9zFHVriGn5KFLta2My4giFSt7pHihfs=;
+        s=korg; t=1637001928;
+        bh=aFwVWyObgqDnVTp1yQd/rsY+wDdJUy/Sircfosmh8CU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GE2jIq9fIQy226PGhZc2JwK1z/Eqb0JpUbuxpIRezWkCr7Gs6qipiU/6FP6sa5FPH
-         +6Xu5UbzFxv66DMgjdxVRqR5t3TP2o4GYO6oabsmOyPjDSZqZKTpqDxt2gyO8Y1RYb
-         /DgAq00NCcDNiogp/k7LrnqSEgzp8aj6nAUzeXDQ=
+        b=h82CuuZE/0Z5iZSIJzmL56lOJgaOucw0zRSPpfmWxyfNKlZHBvP96qrb3hJ/Sqo2m
+         yFj1sRu+3WVZ0DEgrIjy/A4ZVawosYQKuBqiAegQmuR35mPdw88JDsxRhVhmGgooDx
+         tUiyRUMECL0q+Kcsd7IcbhNKy7TxZ9x8AsJ2IyEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.10 142/575] PCI: aardvark: Do not unmask unused interrupts
-Date:   Mon, 15 Nov 2021 17:57:47 +0100
-Message-Id: <20211115165348.599374136@linuxfoundation.org>
+        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 373/917] drm/ttm: stop calling tt_swapin in vm_access
+Date:   Mon, 15 Nov 2021 17:57:48 +0100
+Message-Id: <20211115165441.410239317@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Matthew Auld <matthew.auld@intel.com>
 
-commit 1fb95d7d3c7a926b002fe8a6bd27a1cb428b46dc upstream.
+[ Upstream commit f5d28856b89baab4232a9f841e565763fcebcdf9 ]
 
-There are lot of undocumented interrupt bits. To prevent unwanted
-spurious interrupts, fix all *_ALL_MASK macros to define all interrupt
-bits, so that driver can properly mask all interrupts, including those
-which are undocumented.
+In commit:
 
-Link: https://lore.kernel.org/r/20211005180952.6812-8-kabel@kernel.org
-Fixes: 8c39d710363c ("PCI: aardvark: Add Aardvark PCI host controller driver")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+commit 09ac4fcb3f255e9225967c75f5893325c116cdbe
+Author: Felix Kuehling <Felix.Kuehling@amd.com>
+Date:   Thu Jul 13 17:01:16 2017 -0400
+
+    drm/ttm: Implement vm_operations_struct.access v2
+
+we added the vm_access hook, where we also directly call tt_swapin for
+some reason. If something is swapped-out then the ttm_tt must also be
+unpopulated, and since access_kmap should also call tt_populate, if
+needed, then swapping-in will already be handled there.
+
+If anything, calling tt_swapin directly here would likely always fail
+since the tt->pages won't yet be populated, or worse since the tt->pages
+array is never actually cleared in unpopulate this might lead to a nasty
+uaf.
+
+Fixes: 09ac4fcb3f25 ("drm/ttm: Implement vm_operations_struct.access v2")
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Cc: Christian König <christian.koenig@amd.com>
+Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210927114114.152310-1-matthew.auld@intel.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo_vm.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -105,13 +105,13 @@
- #define     PCIE_ISR0_MSI_INT_PENDING		BIT(24)
- #define     PCIE_ISR0_INTX_ASSERT(val)		BIT(16 + (val))
- #define     PCIE_ISR0_INTX_DEASSERT(val)	BIT(20 + (val))
--#define	    PCIE_ISR0_ALL_MASK			GENMASK(26, 0)
-+#define     PCIE_ISR0_ALL_MASK			GENMASK(31, 0)
- #define PCIE_ISR1_REG				(CONTROL_BASE_ADDR + 0x48)
- #define PCIE_ISR1_MASK_REG			(CONTROL_BASE_ADDR + 0x4C)
- #define     PCIE_ISR1_POWER_STATE_CHANGE	BIT(4)
- #define     PCIE_ISR1_FLUSH			BIT(5)
- #define     PCIE_ISR1_INTX_ASSERT(val)		BIT(8 + (val))
--#define     PCIE_ISR1_ALL_MASK			GENMASK(11, 4)
-+#define     PCIE_ISR1_ALL_MASK			GENMASK(31, 0)
- #define PCIE_MSI_ADDR_LOW_REG			(CONTROL_BASE_ADDR + 0x50)
- #define PCIE_MSI_ADDR_HIGH_REG			(CONTROL_BASE_ADDR + 0x54)
- #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
-@@ -239,7 +239,7 @@ enum {
- #define     PCIE_IRQ_MSI_INT2_DET		BIT(21)
- #define     PCIE_IRQ_RC_DBELL_DET		BIT(22)
- #define     PCIE_IRQ_EP_STATUS			BIT(23)
--#define     PCIE_IRQ_ALL_MASK			0xfff0fb
-+#define     PCIE_IRQ_ALL_MASK			GENMASK(31, 0)
- #define     PCIE_IRQ_ENABLE_INTS_MASK		PCIE_IRQ_CORE_INT
+diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+index f56be5bc0861e..5b9b7fd01a692 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+@@ -519,11 +519,6 @@ int ttm_bo_vm_access(struct vm_area_struct *vma, unsigned long addr,
  
- /* Transaction types */
+ 	switch (bo->resource->mem_type) {
+ 	case TTM_PL_SYSTEM:
+-		if (unlikely(bo->ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)) {
+-			ret = ttm_tt_swapin(bo->ttm);
+-			if (unlikely(ret != 0))
+-				return ret;
+-		}
+ 		fallthrough;
+ 	case TTM_PL_TT:
+ 		ret = ttm_bo_vm_access_kmap(bo, offset, buf, len, write);
+-- 
+2.33.0
+
 
 
