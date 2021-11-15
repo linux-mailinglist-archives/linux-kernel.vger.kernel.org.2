@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9B44514E3
+	by mail.lfdr.de (Postfix) with ESMTP id 4094A4514E2
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349687AbhKOUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:16:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46088 "EHLO mail.kernel.org"
+        id S1349649AbhKOUQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:16:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239857AbhKOSEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239858AbhKOSEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:04:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA2B632E8;
-        Mon, 15 Nov 2021 17:39:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E610632EB;
+        Mon, 15 Nov 2021 17:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997992;
-        bh=ZfZszfZ5gIxuRi1U+YaRtY6zHkYNWB6hFWtOfjz6I4w=;
+        s=korg; t=1636997994;
+        bh=qVIrBajr0SElJtMm8mVdcxvP8Gp+KJ9J2krC21s7j4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cIZDaN+R+PB3XHS+GrIkunJhsb2IGGf1y4zkIb9Pbc7wsTtsBwDGn5mmuEmBcjTrQ
-         EOdxCFQzvT0MXsY9N34TNSBxX1hrUdkfjHKkhasFVyFtoUQb/I/yq5dqIBmuai2tca
-         EdEJPyLKpCtnjsITtDXle9vdL5iWFSUPcGX7dAOk=
+        b=pI8rpE0n2H8kT5Ng5GL1sI9nNvWIQj0mGfJB6sAlEu+sTb2HfApg3tDJLvT9yBXLD
+         Tv3sroEAgIUzz/8RvnQ9FYnCl9YJ13YNxHkx2Jxbx18Ao5f47Vv39NEQdDeVBguerN
+         PlLNwkVCawz6yFVuBSqD8M5I9XvofJAd97JBcF2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 348/575] KVM: selftests: Fix nested SVM tests when built with clang
-Date:   Mon, 15 Nov 2021 18:01:13 +0100
-Message-Id: <20211115165355.832374383@linuxfoundation.org>
+Subject: [PATCH 5.10 349/575] bpftool: Avoid leaking the JSON writer prepared for program metadata
+Date:   Mon, 15 Nov 2021 18:01:14 +0100
+Message-Id: <20211115165355.865849627@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,65 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Mattson <jmattson@google.com>
+From: Quentin Monnet <quentin@isovalent.com>
 
-[ Upstream commit ed290e1c20da19fa100a3e0f421aa31b65984960 ]
+[ Upstream commit e89ef634f81c9d90e1824ab183721f3b361472e6 ]
 
-Though gcc conveniently compiles a simple memset to "rep stos," clang
-prefers to call the libc version of memset. If a test is dynamically
-linked, the libc memset isn't available in L1 (nor is the PLT or the
-GOT, for that matter). Even if the test is statically linked, the libc
-memset may choose to use some CPU features, like AVX, which may not be
-enabled in L1. Note that __builtin_memset doesn't solve the problem,
-because (a) the compiler is free to call memset anyway, and (b)
-__builtin_memset may also choose to use features like AVX, which may
-not be available in L1.
+Bpftool creates a new JSON object for writing program metadata in plain
+text mode, regardless of metadata being present or not. Then this writer
+is freed if any metadata has been found and printed, but it leaks
+otherwise. We cannot destroy the object unconditionally, because the
+destructor prints an undesirable line break. Instead, make sure the
+writer is created only after we have found program metadata to print.
 
-To avoid a myriad of problems, use an explicit "rep stos" to clear the
-VMCB in generic_svm_setup(), which is called both from L0 and L1.
+Found with valgrind.
 
-Reported-by: Ricardo Koller <ricarkol@google.com>
-Signed-off-by: Jim Mattson <jmattson@google.com>
-Fixes: 20ba262f8631a ("selftests: KVM: AMD Nested test infrastructure")
-Message-Id: <20210930003649.4026553-1-jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: aff52e685eb3 ("bpftool: Support dumping metadata")
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20211022094743.11052-1-quentin@isovalent.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/lib/x86_64/svm.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/prog.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
-index 827fe6028dd42..a58507a7b5d6d 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
-@@ -57,6 +57,18 @@ static void vmcb_set_seg(struct vmcb_seg *seg, u16 selector,
- 	seg->base = base;
- }
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 14237ffb90bae..592536904dde2 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -304,18 +304,12 @@ static void show_prog_metadata(int fd, __u32 num_maps)
+ 		if (printed_header)
+ 			jsonw_end_object(json_wtr);
+ 	} else {
+-		json_writer_t *btf_wtr = jsonw_new(stdout);
++		json_writer_t *btf_wtr;
+ 		struct btf_dumper d = {
+ 			.btf = btf,
+-			.jw = btf_wtr,
+ 			.is_plain_text = true,
+ 		};
  
-+/*
-+ * Avoid using memset to clear the vmcb, since libc may not be
-+ * available in L1 (and, even if it is, features that libc memset may
-+ * want to use, like AVX, may not be enabled).
-+ */
-+static void clear_vmcb(struct vmcb *vmcb)
-+{
-+	int n = sizeof(*vmcb) / sizeof(u32);
-+
-+	asm volatile ("rep stosl" : "+c"(n), "+D"(vmcb) : "a"(0) : "memory");
-+}
-+
- void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_rsp)
- {
- 	struct vmcb *vmcb = svm->vmcb;
-@@ -73,7 +85,7 @@ void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_r
- 	wrmsr(MSR_EFER, efer | EFER_SVME);
- 	wrmsr(MSR_VM_HSAVE_PA, svm->save_area_gpa);
+-		if (!btf_wtr) {
+-			p_err("jsonw alloc failed");
+-			goto out_free;
+-		}
+-
+ 		for (i = 0; i < vlen; i++, vsi++) {
+ 			t_var = btf__type_by_id(btf, vsi->type);
+ 			name = btf__name_by_offset(btf, t_var->name_off);
+@@ -325,6 +319,14 @@ static void show_prog_metadata(int fd, __u32 num_maps)
  
--	memset(vmcb, 0, sizeof(*vmcb));
-+	clear_vmcb(vmcb);
- 	asm volatile ("vmsave %0\n\t" : : "a" (vmcb_gpa) : "memory");
- 	vmcb_set_seg(&save->es, get_es(), 0, -1U, data_seg_attr);
- 	vmcb_set_seg(&save->cs, get_cs(), 0, -1U, code_seg_attr);
+ 			if (!printed_header) {
+ 				printf("\tmetadata:");
++
++				btf_wtr = jsonw_new(stdout);
++				if (!btf_wtr) {
++					p_err("jsonw alloc failed");
++					goto out_free;
++				}
++				d.jw = btf_wtr,
++
+ 				printed_header = true;
+ 			}
+ 
 -- 
 2.33.0
 
