@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E04144FFF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0468344FFFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhKOI2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S229945AbhKOIeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhKOI2C (ORCPT
+        with ESMTP id S229944AbhKOId4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:28:02 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D780CC061746
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:25:06 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1mmXIH-0006uC-Lr; Mon, 15 Nov 2021 09:24:49 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1mmXIE-00060h-RX; Mon, 15 Nov 2021 09:24:46 +0100
-Date:   Mon, 15 Nov 2021 09:24:46 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
-        mcoquelin.stm32@gmail.com, kirill.shutemov@linux.intel.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] ubifs: Add missing iput if do_tmpfile() failed
- in rename whiteout
-Message-ID: <20211115082446.GC25697@pengutronix.de>
-References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
- <20211112121758.2208727-5-chengzhihao1@huawei.com>
+        Mon, 15 Nov 2021 03:33:56 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C07C061746;
+        Mon, 15 Nov 2021 00:30:56 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id z8so33743164ljz.9;
+        Mon, 15 Nov 2021 00:30:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=QQ+tRnGMv7HCE8tWnOOxb60WEdKs2mEC1kY560cUZIc=;
+        b=kal1w4vxwyqTIc3+EQZ9fx++Hhza9E8rptgelO8UtlTrjFAxtIqINF2mUDHvZUTKRu
+         4R5do/lLz5ihmzWLAlM2QzhsYVNo6+OuQs8Y1PaDIijqoMVFpwXaPVtONroDEJez3PdW
+         zggeo81bghaayjMTcpa2YBV8U98u9ny+N385gHlQoJg7EOWO3S88GtCNK6McwsuzJbHE
+         tIxAhCbIMOSGJUy2DWoPuy9fToeyClQKGf+QeVEJT3A5joHGsiKPQGHQkmWEudueZJwq
+         cS5OdYNtI1GCa+TDedyLeoonSzARKTlo89TPn7QgH07i2S9XI89PlFR0evv/Wp1TbZCk
+         Humw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=QQ+tRnGMv7HCE8tWnOOxb60WEdKs2mEC1kY560cUZIc=;
+        b=1uf7fzKbw3zd7BaXeiZRsLxFbcZ5djvahFOzYzEWxNxzBOh9Rw0vvVqS52cjOR9LFV
+         vuV3BHPIeFgs1jCQ9ezjSOiAFLoR2DqQK5EumqCPy5DDC07h6wFw++hxOjhwZjvVJe1P
+         7xV11pCMsiztFe8+UF+5Qm2xFabwnZyt+jEdRj2O8fUQm6vYtyV25PL6bAcYc9e4PBB8
+         0Mio/yd5p10HbwhfrOdZTFhmeGOPW4o7KQ853DWuSHUSfVrfBGgjo489TXHvxrt6B0RI
+         ZBPDZn11WYNNgjtlRotOHKHAK3s5cdHvQv/wWl6Cqw2mml8UuH9PJsC0UC5DnZF/r4Jz
+         aPAg==
+X-Gm-Message-State: AOAM530RLHib5u/amVBXq0JNE27jyd7vGLyocHDMlY2B0VmbqTaP1fgP
+        BVW+WYmqmZBmfkIfQd+ulg/FrLgBWBA=
+X-Google-Smtp-Source: ABdhPJyXpogCQSJ8M5IwEkKXOzIFkcg2itll7gpYGdqO02lwiXj6KcJQpgFYG2bUPGaja1S2c7rMMw==
+X-Received: by 2002:a2e:890d:: with SMTP id d13mr36341168lji.396.1636965055101;
+        Mon, 15 Nov 2021 00:30:55 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id a6sm1344734lfs.115.2021.11.15.00.30.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 00:30:54 -0800 (PST)
+Message-ID: <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
+Date:   Mon, 15 Nov 2021 11:30:53 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112121758.2208727-5-chengzhihao1@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:21:42 up 270 days, 11:45, 131 users,  load average: 0.32, 0.22,
- 0.27
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     mailhol.vincent@wanadoo.fr, wg@grandegger.com, mkl@pengutronix.de,
+        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
+ <20211115075124.17713-1-paskripkin@gmail.com>
+ <YZIWT9ATzN611n43@hovoldconsulting.com>
+ <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com>
+ <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 08:17:50PM +0800, Zhihao Cheng wrote:
-> whiteout inode should be put when do_tmpfile() failed if inode has been
-> initialized. Otherwise we will get following warning during umount:
->   UBIFS error (ubi0:0 pid 1494): ubifs_assert_failed [ubifs]: UBIFS
->   assert failed: c->bi.dd_growth == 0, in fs/ubifs/super.c:1930
->   VFS: Busy inodes after unmount of ubifs. Self-destruct in 5 seconds.
+On 11/15/21 11:16, Johan Hovold wrote:
+> On Mon, Nov 15, 2021 at 11:15:07AM +0300, Pavel Skripkin wrote:
+>> On 11/15/21 11:11, Johan Hovold wrote:
+>> > Just a drive-by comment:
+>> > 
+>> > Are you sure about this move of the netdev[channel_idx] initialisation?
+>> > What happens if the registered can device is opened before you
+>> > initialise the pointer? NULL-deref in es58x_send_msg()?
+>> > 
+>> > You generally want the driver data fully initialised before you register
+>> > the device so this looks broken.
+>> > 
+>> > And either way it is arguably an unrelated change that should go in a
+>> > separate patch explaining why it is needed and safe.
+>> > 
+>> 
+>> 
+>> It was suggested by Vincent who is the maintainer of this driver [1].
 > 
-> Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
->  fs/ubifs/dir.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Yeah, I saw that, but that doesn't necessarily mean it is correct.
 > 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 2735ad1affed..6503e6857f6e 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1334,6 +1334,8 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
->  
->  		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
->  		if (err) {
-> +			if (whiteout)
-> +				iput(whiteout);
+> You're still responsible for the changes you make and need to be able to
+> argue why they are correct.
+> 
 
-Should this rather be done in do_tmpfile() directly?
+Sure! I should have check it before sending v2 :( My bad, sorry. I see 
+now, that there is possible calltrace which can hit NULL defer.
 
-Sascha
+One thing I am wondering about is why in some code parts there are 
+validation checks for es58x_dev->netdev[i] and in others they are missing.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Anyway, it's completely out of scope of current patch, I am going to 
+resend v1 with fixed Fixes tag. Thank you for review!
+
+
+
+
+
+With regards,
+Pavel Skripkin
