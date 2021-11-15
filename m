@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0772A451503
+	by mail.lfdr.de (Postfix) with ESMTP id BE172451505
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350430AbhKOUXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:23:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48896 "EHLO mail.kernel.org"
+        id S237723AbhKOUYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:24:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240053AbhKOSFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240054AbhKOSFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:05:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B70FB6337D;
-        Mon, 15 Nov 2021 17:41:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ED116337C;
+        Mon, 15 Nov 2021 17:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998108;
-        bh=4xT4TesnqM+zVauc1n3krawXbmGARRH9F0Jx4p+K7bQ=;
+        s=korg; t=1636998111;
+        bh=AgxfXm9l8C9YN4aKCuqWuNai4N6nSe/vbJTBbCrEHds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wAGsMBhRoQkYLRxGnDDUaRrxR1cX0veOf0j5B7Qp+Ed4kTnsEhQ8HaFfXkjMEWGqG
-         h03Svy6yTIFIhViAj/XQ7BK540XR1KLz14prEAxLAUkbrFiBm8BSTqv83bZ/DgoIn0
-         BND7Tap5FvSl1AhUQlPC6e1Q886ErjFvgRlZEQ0Q=
+        b=qkSbN/c4sbUxdg8+GbiIbDAuRww0u63dfbkWkli+TqtybPkRh+Vtx6izHjOhJpHjs
+         aV0k8G6u73xNLqxj9cR6SE+TcqsorZ9rRcr4eL118Mvuu5pxNJulN6sgvKLJxiXrRA
+         khMWXnktVgSCPu/ZXXeKF2W3EUFICvjv5MWhYeLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 389/575] ARM: dts: BCM5301X: Fix memory nodes names
-Date:   Mon, 15 Nov 2021 18:01:54 +0100
-Message-Id: <20211115165357.220526086@linuxfoundation.org>
+Subject: [PATCH 5.10 390/575] clk: mvebu: ap-cpu-clk: Fix a memory leak in error handling paths
+Date:   Mon, 15 Nov 2021 18:01:55 +0100
+Message-Id: <20211115165357.252584401@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,183 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c5e1df3276d7a500678da9453be31a66ad115150 ]
+[ Upstream commit af9617b419f77cf0b99702a7b2b0519da0d27715 ]
 
-Thix fixes:
-arch/arm/boot/dts/bcm4708-netgear-r6250.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
-arch/arm/boot/dts/bcm4709-linksys-ea9200.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-netgear-r7000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-netgear-r8000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
-arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
-arch/arm/boot/dts/bcm53016-meraki-mr32.dt.yaml: /: memory: False schema does not allow {'reg': [[0, 134217728]], 'device_type': ['memory']}
-arch/arm/boot/dts/bcm94708.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
-arch/arm/boot/dts/bcm94709.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
+If we exit the for_each_of_cpu_node loop early, the reference on the
+current node must be decremented, otherwise there is a leak.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm4708-netgear-r6250.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts | 2 +-
- arch/arm/boot/dts/bcm4709-linksys-ea9200.dts      | 2 +-
- arch/arm/boot/dts/bcm4709-netgear-r7000.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-netgear-r8000.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts | 2 +-
- arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts     | 2 +-
- arch/arm/boot/dts/bcm53016-meraki-mr32.dts        | 2 +-
- arch/arm/boot/dts/bcm94708.dts                    | 2 +-
- arch/arm/boot/dts/bcm94709.dts                    | 2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/clk/mvebu/ap-cpu-clk.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-index 61c7b137607e5..7900aac4f35a9 100644
---- a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-+++ b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-@@ -20,7 +20,7 @@
- 		bootargs = "console=ttyS0,115200 earlycon";
- 	};
+diff --git a/drivers/clk/mvebu/ap-cpu-clk.c b/drivers/clk/mvebu/ap-cpu-clk.c
+index b4259b60dcfd6..25de4b6da776f 100644
+--- a/drivers/clk/mvebu/ap-cpu-clk.c
++++ b/drivers/clk/mvebu/ap-cpu-clk.c
+@@ -256,12 +256,15 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
+ 		int cpu, err;
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-index 6c6bb7b17d27a..7546c8d07bcd7 100644
---- a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-+++ b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
+ 		err = of_property_read_u32(dn, "reg", &cpu);
+-		if (WARN_ON(err))
++		if (WARN_ON(err)) {
++			of_node_put(dn);
+ 			return err;
++		}
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-index d29e7f80ea6aa..beae9eab9cb8c 100644
---- a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-+++ b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
+ 		/* If cpu2 or cpu3 is enabled */
+ 		if (cpu & APN806_CLUSTER_NUM_MASK) {
+ 			nclusters = 2;
++			of_node_put(dn);
+ 			break;
+ 		}
+ 	}
+@@ -288,8 +291,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
+ 		int cpu, err;
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x18000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-index 38fbefdf2e4e4..ee94455a7236d 100644
---- a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-+++ b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-@@ -16,7 +16,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
+ 		err = of_property_read_u32(dn, "reg", &cpu);
+-		if (WARN_ON(err))
++		if (WARN_ON(err)) {
++			of_node_put(dn);
+ 			return err;
++		}
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-index 7989a53597d4f..56d309dbc6b0d 100644
---- a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-+++ b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
+ 		cluster_index = cpu & APN806_CLUSTER_NUM_MASK;
+ 		cluster_index >>= APN806_CLUSTER_NUM_OFFSET;
+@@ -301,6 +306,7 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
+ 		parent = of_clk_get(np, cluster_index);
+ 		if (IS_ERR(parent)) {
+ 			dev_err(dev, "Could not get the clock parent\n");
++			of_node_put(dn);
+ 			return -EINVAL;
+ 		}
+ 		parent_name =  __clk_get_name(parent);
+@@ -319,8 +325,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
+ 		init.parent_names = &parent_name;
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-index 87b655be674c5..184e3039aa864 100644
---- a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-+++ b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-@@ -30,7 +30,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
+ 		ret = devm_clk_hw_register(dev, &ap_cpu_clk[cluster_index].hw);
+-		if (ret)
++		if (ret) {
++			of_node_put(dn);
+ 			return ret;
++		}
+ 		ap_cpu_data->hws[cluster_index] = &ap_cpu_clk[cluster_index].hw;
+ 	}
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-index f806be5da7237..c2a266a439d05 100644
---- a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-+++ b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-@@ -15,7 +15,7 @@
- 		bootargs = "console=ttyS0,115200 earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
-diff --git a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-index 2666195b6ffeb..3d415d874bd39 100644
---- a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-+++ b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-@@ -16,7 +16,7 @@
- 		bootargs = "earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x18000000>;
-diff --git a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-index 3b978dc8997a4..612d61852bfb9 100644
---- a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-+++ b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-@@ -20,7 +20,7 @@
- 		bootargs = " console=ttyS0,115200n8 earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;
- 		device_type = "memory";
- 	};
-diff --git a/arch/arm/boot/dts/bcm94708.dts b/arch/arm/boot/dts/bcm94708.dts
-index 3d13e46c69494..d9eb2040b9631 100644
---- a/arch/arm/boot/dts/bcm94708.dts
-+++ b/arch/arm/boot/dts/bcm94708.dts
-@@ -38,7 +38,7 @@
- 	model = "NorthStar SVK (BCM94708)";
- 	compatible = "brcm,bcm94708", "brcm,bcm4708";
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
-diff --git a/arch/arm/boot/dts/bcm94709.dts b/arch/arm/boot/dts/bcm94709.dts
-index 5017b7b259cbe..618c812eef73e 100644
---- a/arch/arm/boot/dts/bcm94709.dts
-+++ b/arch/arm/boot/dts/bcm94709.dts
-@@ -38,7 +38,7 @@
- 	model = "NorthStar SVK (BCM94709)";
- 	compatible = "brcm,bcm94709", "brcm,bcm4709", "brcm,bcm4708";
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
 -- 
 2.33.0
 
