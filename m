@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B4545198C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF17451F08
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348733AbhKOXXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:23:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
+        id S1352843AbhKPAiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244889AbhKOTSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AF6960EB4;
-        Mon, 15 Nov 2021 18:24:59 +0000 (UTC)
+        id S1344665AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A964763376;
+        Mon, 15 Nov 2021 19:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000699;
-        bh=Hw4ioX8VStx2ymBPiv3NQlNyTTnqyXkxgYUBC6NSLPw=;
+        s=korg; t=1637002924;
+        bh=jfTiw9UZQklgf79bDPoDz0PZ4l8HhdW2uSnEvYUGk8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGonXRBOO/xn0APYy4G9U7/43DSUSwaBWb3X3zpKZaAMgcSIw+5DMwzSJv4gB3YBT
-         +AAo5noCMkuNY1Ht7UBKVnPkIoxiW3Uf2CuiU+Ih/V4JEkmiollwup7JD5Z6KNrkNM
-         td9BXbquVkiVXkeBUQOnnuRtYpjOdY4Yx+cFi4Oo=
+        b=oM1S9bSIadLPN64zuqjBhzJlHhixlEnFkhlQgcxY05Aaw48nO871FcQxCD4tY0El2
+         k3X9IpyzVFPLpLzPkQDbWr6zmSjRMEJhsVu81gMlRtVkjK91fGLfG/mOwZ/bwLZESj
+         mTrq6LzyHdTthkv57z266HQf48v9YyAIvo0uDGcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 759/849] llc: fix out-of-bound array index in llc_sk_dev_hash()
+Subject: [PATCH 5.15 747/917] scsi: qla2xxx: Relogin during fabric disturbance
 Date:   Mon, 15 Nov 2021 18:04:02 +0100
-Message-Id: <20211115165445.927101517@linuxfoundation.org>
+Message-Id: <20211115165454.245184917@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit 8ac9dfd58b138f7e82098a4e0a0d46858b12215b ]
+[ Upstream commit bb2ca6b3f09ac20e8357d257d0557ab5ddf6adcd ]
 
-Both ifindex and LLC_SK_DEV_HASH_ENTRIES are signed.
+For RSCN of type "Area, Domain, or Fabric", which indicate a portion or
+entire fabric was disturbed, current driver does not set the scan_need flag
+to indicate a session was affected by the disturbance. This in turn can
+lead to I/O timeout and delay of relogin. Hence initiate relogin in the
+event of fabric disturbance.
 
-This means that (ifindex % LLC_SK_DEV_HASH_ENTRIES) is negative
-if @ifindex is negative.
-
-We could simply make LLC_SK_DEV_HASH_ENTRIES unsigned.
-
-In this patch I chose to use hash_32() to get more entropy
-from @ifindex, like llc_sk_laddr_hashfn().
-
-UBSAN: array-index-out-of-bounds in ./include/net/llc.h:75:26
-index -43 is out of range for type 'hlist_head [64]'
-CPU: 1 PID: 20999 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- llc_sk_dev_hash include/net/llc.h:75 [inline]
- llc_sap_add_socket+0x49c/0x520 net/llc/llc_conn.c:697
- llc_ui_bind+0x680/0xd70 net/llc/af_llc.c:404
- __sys_bind+0x1e9/0x250 net/socket.c:1693
- __do_sys_bind net/socket.c:1704 [inline]
- __se_sys_bind net/socket.c:1702 [inline]
- __x64_sys_bind+0x6f/0xb0 net/socket.c:1702
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa503407ae9
-
-Fixes: 6d2e3ea28446 ("llc: use a device based hash table to speed up multicast delivery")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20211026115412.27691-2-njavali@marvell.com
+Fixes: 1560bafdff9e ("scsi: qla2xxx: Use complete switch scan for RSCN events")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/llc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_init.c | 54 +++++++++++++++++++++++++++------
+ 1 file changed, 45 insertions(+), 9 deletions(-)
 
-diff --git a/include/net/llc.h b/include/net/llc.h
-index df282d9b40170..9c10b121b49b0 100644
---- a/include/net/llc.h
-+++ b/include/net/llc.h
-@@ -72,7 +72,9 @@ struct llc_sap {
- static inline
- struct hlist_head *llc_sk_dev_hash(struct llc_sap *sap, int ifindex)
- {
--	return &sap->sk_dev_hash[ifindex % LLC_SK_DEV_HASH_ENTRIES];
-+	u32 bucket = hash_32(ifindex, LLC_SK_DEV_HASH_BITS);
-+
-+	return &sap->sk_dev_hash[bucket];
- }
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 7e64e4730b259..df3884d9f12a2 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -1786,16 +1786,52 @@ void qla2x00_handle_rscn(scsi_qla_host_t *vha, struct event_arg *ea)
+ 	fc_port_t *fcport;
+ 	unsigned long flags;
  
- static inline
+-	fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
+-	if (fcport) {
+-		if (fcport->flags & FCF_FCP2_DEVICE) {
+-			ql_dbg(ql_dbg_disc, vha, 0x2115,
+-			       "Delaying session delete for FCP2 portid=%06x %8phC ",
+-			       fcport->d_id.b24, fcport->port_name);
+-			return;
++	switch (ea->id.b.rsvd_1) {
++	case RSCN_PORT_ADDR:
++		fcport = qla2x00_find_fcport_by_nportid(vha, &ea->id, 1);
++		if (fcport) {
++			if (fcport->flags & FCF_FCP2_DEVICE) {
++				ql_dbg(ql_dbg_disc, vha, 0x2115,
++				       "Delaying session delete for FCP2 portid=%06x %8phC ",
++					fcport->d_id.b24, fcport->port_name);
++				return;
++			}
++			fcport->scan_needed = 1;
++			fcport->rscn_gen++;
++		}
++		break;
++	case RSCN_AREA_ADDR:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			if ((ea->id.b24 & 0xffff00) == (fcport->d_id.b24 & 0xffff00)) {
++				fcport->scan_needed = 1;
++				fcport->rscn_gen++;
++			}
+ 		}
+-		fcport->scan_needed = 1;
+-		fcport->rscn_gen++;
++		break;
++	case RSCN_DOM_ADDR:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			if ((ea->id.b24 & 0xff0000) == (fcport->d_id.b24 & 0xff0000)) {
++				fcport->scan_needed = 1;
++				fcport->rscn_gen++;
++			}
++		}
++		break;
++	case RSCN_FAB_ADDR:
++	default:
++		list_for_each_entry(fcport, &vha->vp_fcports, list) {
++			if (fcport->flags & FCF_FCP2_DEVICE)
++				continue;
++
++			fcport->scan_needed = 1;
++			fcport->rscn_gen++;
++		}
++		break;
+ 	}
+ 
+ 	spin_lock_irqsave(&vha->work_lock, flags);
 -- 
 2.33.0
 
