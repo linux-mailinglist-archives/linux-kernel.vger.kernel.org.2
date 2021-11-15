@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8519D44FE26
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DE744FE5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 06:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhKOFYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 00:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S230241AbhKOFbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 00:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhKOFYS (ORCPT
+        with ESMTP id S229635AbhKOFaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 00:24:18 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F0C061746
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:21:23 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id m20so20503470edc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:21:23 -0800 (PST)
+        Mon, 15 Nov 2021 00:30:55 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA61C061766
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:27:59 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so17508062otj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OHzu1Tneee7dR1hnjl9EDILs5UXgndY6co+qRyPVb40=;
-        b=DBC97X1afwSflc/Zjh8YZhj1ytC3Ebg2UOUcGaPFyCLiWAce3Sfmp04VQdLZ+70Yu1
-         EAHyb83pPX6cVkmBpQgexTbaBf+cloUCBQnKI6kMjW+DBDnh0lUXVD+lw8FxAwednppz
-         tO3XrTaFa2qt3w8h6J/a1sdjQEwgXjB2+dye0=
+         :cc;
+        bh=0KUIHUy0806Q9hFGnixEypWdxlkA7g/t33VhtSh3NxY=;
+        b=T5BF7cluYfzR+FFJGYkCES/IViLHVwEcH12gc/Za84BlP91pqYX4Uyg/ataE1B88WP
+         GwhdmkP7kyU4tAYs2S66rPjjyDhxDh/cpnOPFGXbZw/4CyAYRVmiNIryNGO1LFSAo/7V
+         8WKf+rVNX0E1MrJg7Hr7P5pqa8xpO1lV35O5IaGFEEYgIQO1hTgKPUpQJcciT7WdYVnZ
+         v2k9e4gZOGHcPwHqduVGTL9oHESirlSsVSx+kOvkFuqyKdz37tzZ3wLKDdiVJK3m5yOQ
+         DZ/cnJfI4fP/PDmSojwUMRjnkaBQApl/LjWPNpLs9dwDPe+cF2RMi3eV0Es2VdtLpZPe
+         Ewxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OHzu1Tneee7dR1hnjl9EDILs5UXgndY6co+qRyPVb40=;
-        b=7tSTV1gkY7vYvq3HpfeNpa1DkYuTtXcAKlQtePn1thlsw9fGkTeedA3v7OOqLtI/Pr
-         f4XrZhjvoQIxWu2SxtN2xpFjUqno6rMBCpRrntvY2jRXA4nfY1CQnzBP9lbo+70G3cmh
-         v4i2qwI6b6qDbaX7saSivfN1VX454WgwABVlPO3Wv0o5CEqbMgpbUA1pZSHlfMBy+9mD
-         0foFmIiU62H1pp4v6FS6R3jNjB3ECfJwWoBYUv3DGvKpuatmrAg9I9JPeX7PIN/6b51j
-         firLTUifmR83nTSm4hST4f0aEEr5AW85W2mvIGEYexrDSPJ7JzSXNou1teWHLDcICCyv
-         kTLQ==
-X-Gm-Message-State: AOAM530Iit8huoOIF/3Gi6FQ2tbm7dHKpuNajN+RjEDKA4TUiecuSAxA
-        qbWLDMZrxpkQ/fgHG0fFeVuEyxi7/8SxynQf
-X-Google-Smtp-Source: ABdhPJz2TzUY1Zr7YHEac3rrkJd6YMJCRS0qf6b2Y1yN5Jb71x2g65aVQzrPkOhEeu2pkaM0xzdQCQ==
-X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr46389719ejc.493.1636953681941;
-        Sun, 14 Nov 2021 21:21:21 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id hu7sm3922074ejc.62.2021.11.14.21.21.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Nov 2021 21:21:21 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so11393160wme.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 21:21:21 -0800 (PST)
-X-Received: by 2002:a05:600c:1d97:: with SMTP id p23mr39269532wms.144.1636953681323;
- Sun, 14 Nov 2021 21:21:21 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=0KUIHUy0806Q9hFGnixEypWdxlkA7g/t33VhtSh3NxY=;
+        b=3SXBNm3NwKR8iH6VChWoNJU/mWSnTAmLSnDIiDsO3i+SM+5XabkN5Sv98OPXXTCnOE
+         4ku1RzuY2ZWlp5k8QxTaldI3dhMF6cD9t1u3M3LdUA8ZS0tPxZtk5nK2U00VEW7iFgmc
+         4m+Sv2Ljk4lLeMOyhh+j0wvCaZxx7yAH0pRw0q/6aKjTye5UCDsFZsjagjdTF4Kv3zLB
+         4QQPDkrWBzENuOa21DBaw56o7GY/LaBwlAgSpCe/55JLQobo2sNLva3groExcoaEnUML
+         eRAJp2GkR2VhW12K0i/fQ3yl8Vtw4YyvQ9VF3l4eW/HbGTTfmaPeMrkXW/x6awjWf8+R
+         BGaA==
+X-Gm-Message-State: AOAM532EHiZatGlUIC5o4t+BQIW2Qtyhu7S5x8Ryt5k1ih9tA4SNXXQw
+        NL3LxRtr4f0JsfRI8a+Aex3bTksjqcaD15p++E5Hww==
+X-Google-Smtp-Source: ABdhPJz+8GraqEO2LELBEFZ6CWfkCmRPhByZYhHbjvLczVCjTtq+ZNfhCFgUS7jPO9KW3Qk64kAKMKVqV5+XfgFbSDY=
+X-Received: by 2002:a05:6830:34a0:: with SMTP id c32mr30343456otu.379.1636954078482;
+ Sun, 14 Nov 2021 21:27:58 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
- <20211115045616.GA1012538@roeck-us.net>
-In-Reply-To: <20211115045616.GA1012538@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Nov 2021 21:21:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
-Message-ID: <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
-Subject: Re: Linux 5.16-rc1
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-14-bhupesh.sharma@linaro.org> <5fe9bb9f-ded6-1aa4-347f-ef5cd0b21358@linaro.org>
+In-Reply-To: <5fe9bb9f-ded6-1aa4-347f-ef5cd0b21358@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Mon, 15 Nov 2021 10:57:47 +0530
+Message-ID: <CAH=2Ntzd9SvepuFU6LGsrnZJ=Ef1WDMsgASESqRcCsAkaCmGjw@mail.gmail.com>
+Subject: Re: [PATCH v5 13/22] dma: qcom: bam_dma: Add support to initialize
+ interconnect path
+To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 8:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
+Hi Vladimir,
+
+On Fri, 12 Nov 2021 at 16:02, Vladimir Zapolskiy
+<vladimir.zapolskiy@linaro.org> wrote:
 >
-> With gcc 5.4, mips:mapta_defconfig
-> mips-linux-gcc.br_real: error: unrecognized command line option =E2=80=98=
--Wimplicit-fallthrough=3D5=E2=80=99
+> Hi Bhupesh,
+>
+> On 11/10/21 12:59 PM, Bhupesh Sharma wrote:
+> > From: Thara Gopinath <thara.gopinath@linaro.org>
+> >
+> > BAM dma engine associated with certain hardware blocks could require
+> > relevant interconnect pieces be initialized prior to the dma engine
+> > initialization. For e.g. crypto bam dma engine on sm8250. Such requirement
+> > is passed on to the bam dma driver from dt via the "interconnects"
+> > property.  Add support in bam_dma driver to check whether the interconnect
+> > path is accessible/enabled prior to attempting driver intializations.
+> >
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > [Make header file inclusion alphabetical and use 'devm_of_icc_get()']
+> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>
+> please let me ask you to swap your and Thara's sob tags above, there is
+> a rule applicable to all cases dealing with someone's else changes:
+>
+>  From Documentation/process/submitting-patches.rst:
+>
+>    Any further SoBs (Signed-off-by:'s) following the author's SoB are from
+>    people handling and transporting the patch, but were not involved in its
+>    development. SoB chains should reflect the **real** route a patch took
+>    as it was propagated to the maintainers and ultimately to Linus, with
+>    the first SoB entry signalling primary authorship of a single author.
 
-This (and the gcc-6.x ones for sh4eb/sparc/xtensa) are already fixed
-in my tree. They're all "old gcc didn't support that flag" things with
-a trivial one-liner fix.
+Sure, I will fix it in v6.
 
-I was hoping you didn't have older gcc versions, but you clearly do ;^p
-
-               Linus
+Regards,
+Bhupesh
