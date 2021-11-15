@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E455451923
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E836451909
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352353AbhKOXNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:13:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39100 "EHLO mail.kernel.org"
+        id S1349924AbhKOXNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243919AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243923AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:06:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6E5633EC;
-        Mon, 15 Nov 2021 18:16:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D158633E8;
+        Mon, 15 Nov 2021 18:16:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000210;
-        bh=5xvMpRD9le189Abdi1JrqSaAV7ieI75m9uNIfj5CMow=;
+        s=korg; t=1637000213;
+        bh=M02QWAk0CWVlGELd5C/PWcooZHTw12m97DuvWuIJaZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NyDNSf3+N3ZhP0uBF5fnw+Ph33maAHuA/2GnZHtE7vaEJt/aWtfVG+pr3ntjRvMNx
-         igZXf8GUyd9GlRfcjkddWCX5XRjAyi+TpqLDkeXqsiURc97HjqFcpYZSOJvi7pNnjY
-         Ei5kVOr0sOZ9J+r6pR+wVWSqHG3hdjv0JNJIlBgU=
+        b=ou6mrTnTPKGrkAmu2eRS9Z96hp5sdqbTOkrnS2CXVC+0jVG7MXjiufP8gpcIhD6zO
+         wc1e3t4dDgILr/uTjpR97Guz3Scye/2WXlyd0A29i1e+4i3+Loq+Y5CQRdgN2Y9X8n
+         IrLIhKODIqVpsruKDEvBEPg2IbVlWCm/gjxb6g8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <jroedel@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 578/849] arm64: dts: renesas: beacon: Fix Ethernet PHY mode
-Date:   Mon, 15 Nov 2021 18:01:01 +0100
-Message-Id: <20211115165439.807658828@linuxfoundation.org>
+Subject: [PATCH 5.14 579/849] iommu/mediatek: Fix out-of-range warning with clang
+Date:   Mon, 15 Nov 2021 18:01:02 +0100
+Message-Id: <20211115165439.843060295@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,36 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 59a8bda062f8646d99ff8c4956adf37dee1cb75e ]
+[ Upstream commit f13efafc1a2cf30d4a74c00f40210d6de36db2d0 ]
 
-While networking works fine in RGMII mode when using the Linux generic
-PHY driver, it fails when using the Atheros PHY driver.
-Fix this by correcting the Ethernet PHY mode to RGMII-RXID, which works
-fine with both drivers.
+clang-14 notices that a comparison is never true when
+CONFIG_PHYS_ADDR_T_64BIT is disabled:
 
-Fixes: a5200e63af57d05e ("arm64: dts: renesas: rzg2: Convert EtherAVB to explicit delay handling")
-Reported-by: Adam Ford <aford173@gmail.com>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/2a4c15b2df23bb63f15abf9dfb88860477f4f523.1632465965.git.geert+renesas@glider.be
+drivers/iommu/mtk_iommu.c:553:34: error: result of comparison of constant 5368709120 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
+                                     ~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add an explicit check for the type of the variable to skip the check
+and the warning in that case.
+
+Fixes: b4dad40e4f35 ("iommu/mediatek: Adjust the PA for the 4GB Mode")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Yong Wu <yong.wu@mediatek.com>
+Link: https://lore.kernel.org/r/20210927121857.941160-1-arnd@kernel.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iommu/mtk_iommu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-index 090dc9c4f57b5..937d17a426b66 100644
---- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-+++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
-@@ -50,6 +50,7 @@
- &avb {
- 	pinctrl-0 = <&avb_pins>;
- 	pinctrl-names = "default";
-+	phy-mode = "rgmii-rxid";
- 	phy-handle = <&phy0>;
- 	rx-internal-delay-ps = <1800>;
- 	tx-internal-delay-ps = <2000>;
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 6f7c69688ce2a..366a9c05642fa 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -561,7 +561,9 @@ static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
+ 	phys_addr_t pa;
+ 
+ 	pa = dom->iop->iova_to_phys(dom->iop, iova);
+-	if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
++	if (IS_ENABLED(CONFIG_PHYS_ADDR_T_64BIT) &&
++	    dom->data->enable_4GB &&
++	    pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
+ 		pa &= ~BIT_ULL(32);
+ 
+ 	return pa;
 -- 
 2.33.0
 
