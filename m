@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F281945125D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ACE45125F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347631AbhKOTkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:40:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
+        id S1346608AbhKOTfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:35:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239145AbhKORyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239153AbhKORyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:54:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E306F632BC;
-        Mon, 15 Nov 2021 17:33:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4804E632BD;
+        Mon, 15 Nov 2021 17:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997590;
-        bh=rlwGY74GnDEID8pp7q2XayTP5DUvMxuhhnOMg7+CKhk=;
+        s=korg; t=1636997595;
+        bh=ZZ8x2XZC0tg2Sx2zJtYUZu4bgy6Z9QEYp3T+x/yTBNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLe2rrypOYJ/JwMM5Swv+fwztkoP41dbN1Q88SF4xWcMYzC9Z7zoA21zJlUsiDITG
-         qnQKxzr9gdKWCTo1+Uko3kyN7Yi4ludwFUe9rSEnlMREvakRR+NK1C+Cb4hKl0Tep4
-         UnCU5ZJBp3yt+0siaS+51XK8VkXc1sVt1boc5wyQ=
+        b=urshJhPrc+mEVZz2dpQEXBcVetOiDzsZd4tpRu8+VQCDoUZeUt1Xc+Axuir1xJ5G3
+         isdpe4OqvU/wbVQHclYszB7+ZTQJy3AGiLiyW1TD2R3kHodxHEL2Lje3grxJpGuR7n
+         o9nMnPW57LC85fKeJzzY0GrOUwv6rB1JCLQuox/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
+        stable@vger.kernel.org, Reik Keutterling <spielkind@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 203/575] ipmi: Disable some operations during a panic
-Date:   Mon, 15 Nov 2021 17:58:48 +0100
-Message-Id: <20211115165350.727150895@linuxfoundation.org>
+Subject: [PATCH 5.10 205/575] ACPICA: Avoid evaluating methods too early during system resume
+Date:   Mon, 15 Nov 2021 17:58:50 +0100
+Message-Id: <20211115165350.802507407@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,101 +40,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corey Minyard <cminyard@mvista.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit b36eb5e7b75a756baa64909a176dd4269ee05a8b ]
+[ Upstream commit d3c4b6f64ad356c0d9ddbcf73fa471e6a841cc5c ]
 
-Don't do kfree or other risky things when oops_in_progress is set.
-It's easy enough to avoid doing them
+ACPICA commit 0762982923f95eb652cf7ded27356b247c9774de
 
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
+During wakeup from system-wide sleep states, acpi_get_sleep_type_data()
+is called and it tries to get memory from the slab allocator in order
+to evaluate a control method, but if KFENCE is enabled in the kernel,
+the memory allocation attempt causes an IRQ work to be queued and a
+self-IPI to be sent to the CPU running the code which requires the
+memory controller to be ready, so if that happens too early in the
+wakeup path, it doesn't work.
+
+Prevent that from taking place by calling acpi_get_sleep_type_data()
+for S0 upfront, when preparing to enter a given sleep state, and
+saving the data obtained by it for later use during system wakeup.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214271
+Reported-by: Reik Keutterling <spielkind@gmail.com>
+Tested-by: Reik Keutterling <spielkind@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 10 +++++++---
- drivers/char/ipmi/ipmi_watchdog.c   | 17 ++++++++++++-----
- 2 files changed, 19 insertions(+), 8 deletions(-)
+ drivers/acpi/acpica/acglobal.h  |  2 ++
+ drivers/acpi/acpica/hwesleep.c  |  8 ++------
+ drivers/acpi/acpica/hwsleep.c   | 11 ++++-------
+ drivers/acpi/acpica/hwxfsleep.c |  7 +++++++
+ 4 files changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 8774a3b8ff959..abb865b1dff29 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -4802,7 +4802,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
- static void free_smi_msg(struct ipmi_smi_msg *msg)
- {
- 	atomic_dec(&smi_msg_inuse_count);
--	kfree(msg);
-+	/* Try to keep as much stuff out of the panic path as possible. */
-+	if (!oops_in_progress)
-+		kfree(msg);
- }
+diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acglobal.h
+index 2fee91f57b213..bd84d7f95e5f9 100644
+--- a/drivers/acpi/acpica/acglobal.h
++++ b/drivers/acpi/acpica/acglobal.h
+@@ -226,6 +226,8 @@ extern struct acpi_bit_register_info
+     acpi_gbl_bit_register_info[ACPI_NUM_BITREG];
+ ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a);
+ ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b);
++ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a_s0);
++ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b_s0);
  
- struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
-@@ -4821,7 +4823,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
- static void free_recv_msg(struct ipmi_recv_msg *msg)
- {
- 	atomic_dec(&recv_msg_inuse_count);
--	kfree(msg);
-+	/* Try to keep as much stuff out of the panic path as possible. */
-+	if (!oops_in_progress)
-+		kfree(msg);
- }
+ /*****************************************************************************
+  *
+diff --git a/drivers/acpi/acpica/hwesleep.c b/drivers/acpi/acpica/hwesleep.c
+index d9be5d0545d4c..4836a4b8b38b8 100644
+--- a/drivers/acpi/acpica/hwesleep.c
++++ b/drivers/acpi/acpica/hwesleep.c
+@@ -147,17 +147,13 @@ acpi_status acpi_hw_extended_sleep(u8 sleep_state)
  
- static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
-@@ -4839,7 +4843,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
- 
- void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
+ acpi_status acpi_hw_extended_wake_prep(u8 sleep_state)
  {
--	if (msg->user)
-+	if (msg->user && !oops_in_progress)
- 		kref_put(&msg->user->refcount, free_user);
- 	msg->done(msg);
- }
-diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-index 6384510c48d6b..92eda5b2f1341 100644
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -342,13 +342,17 @@ static atomic_t msg_tofree = ATOMIC_INIT(0);
- static DECLARE_COMPLETION(msg_wait);
- static void msg_free_smi(struct ipmi_smi_msg *msg)
- {
--	if (atomic_dec_and_test(&msg_tofree))
--		complete(&msg_wait);
-+	if (atomic_dec_and_test(&msg_tofree)) {
-+		if (!oops_in_progress)
-+			complete(&msg_wait);
-+	}
- }
- static void msg_free_recv(struct ipmi_recv_msg *msg)
- {
--	if (atomic_dec_and_test(&msg_tofree))
--		complete(&msg_wait);
-+	if (atomic_dec_and_test(&msg_tofree)) {
-+		if (!oops_in_progress)
-+			complete(&msg_wait);
-+	}
- }
- static struct ipmi_smi_msg smi_msg = {
- 	.done = msg_free_smi
-@@ -434,8 +438,10 @@ static int _ipmi_set_timeout(int do_heartbeat)
- 	rv = __ipmi_set_timeout(&smi_msg,
- 				&recv_msg,
- 				&send_heartbeat_now);
--	if (rv)
-+	if (rv) {
-+		atomic_set(&msg_tofree, 0);
- 		return rv;
-+	}
+-	acpi_status status;
+ 	u8 sleep_type_value;
  
- 	wait_for_completion(&msg_wait);
+ 	ACPI_FUNCTION_TRACE(hw_extended_wake_prep);
  
-@@ -580,6 +586,7 @@ restart:
- 				      &recv_msg,
- 				      1);
- 	if (rv) {
-+		atomic_set(&msg_tofree, 0);
- 		pr_warn("heartbeat send failure: %d\n", rv);
- 		return rv;
+-	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_value =
+-		    ((acpi_gbl_sleep_type_a << ACPI_X_SLEEP_TYPE_POSITION) &
++		    ((acpi_gbl_sleep_type_a_s0 << ACPI_X_SLEEP_TYPE_POSITION) &
+ 		     ACPI_X_SLEEP_TYPE_MASK);
+ 
+ 		(void)acpi_write((u64)(sleep_type_value | ACPI_X_SLEEP_ENABLE),
+diff --git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c
+index 317ae870336b7..fcc84d196238a 100644
+--- a/drivers/acpi/acpica/hwsleep.c
++++ b/drivers/acpi/acpica/hwsleep.c
+@@ -179,7 +179,7 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
+ 
+ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ {
+-	acpi_status status;
++	acpi_status status = AE_OK;
+ 	struct acpi_bit_register_info *sleep_type_reg_info;
+ 	struct acpi_bit_register_info *sleep_enable_reg_info;
+ 	u32 pm1a_control;
+@@ -192,10 +192,7 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ 	 * This is unclear from the ACPI Spec, but it is required
+ 	 * by some machines.
+ 	 */
+-	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_reg_info =
+ 		    acpi_hw_get_bit_register_info(ACPI_BITREG_SLEEP_TYPE);
+ 		sleep_enable_reg_info =
+@@ -216,9 +213,9 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ 
+ 			/* Insert the SLP_TYP bits */
+ 
+-			pm1a_control |= (acpi_gbl_sleep_type_a <<
++			pm1a_control |= (acpi_gbl_sleep_type_a_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+-			pm1b_control |= (acpi_gbl_sleep_type_b <<
++			pm1b_control |= (acpi_gbl_sleep_type_b_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+ 
+ 			/* Write the control registers and ignore any errors */
+diff --git a/drivers/acpi/acpica/hwxfsleep.c b/drivers/acpi/acpica/hwxfsleep.c
+index a4b66f4b27141..f1645d87864c3 100644
+--- a/drivers/acpi/acpica/hwxfsleep.c
++++ b/drivers/acpi/acpica/hwxfsleep.c
+@@ -217,6 +217,13 @@ acpi_status acpi_enter_sleep_state_prep(u8 sleep_state)
+ 		return_ACPI_STATUS(status);
  	}
+ 
++	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
++					  &acpi_gbl_sleep_type_a_s0,
++					  &acpi_gbl_sleep_type_b_s0);
++	if (ACPI_FAILURE(status)) {
++		acpi_gbl_sleep_type_a_s0 = ACPI_SLEEP_TYPE_INVALID;
++	}
++
+ 	/* Execute the _PTS method (Prepare To Sleep) */
+ 
+ 	arg_list.count = 1;
 -- 
 2.33.0
 
