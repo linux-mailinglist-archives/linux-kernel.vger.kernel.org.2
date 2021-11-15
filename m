@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E6B451F05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAC1451982
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351402AbhKPAiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S241087AbhKOXWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:22:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344660AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1A7263367;
-        Mon, 15 Nov 2021 19:01:52 +0000 (UTC)
+        id S244828AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69EFE634CD;
+        Mon, 15 Nov 2021 18:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002913;
-        bh=wsGKm10ksuY31FjjYSn3/mUsd6W6EqvPSKvZOrHEg78=;
+        s=korg; t=1637000665;
+        bh=vgGxpAS2Xn37898TQ3WzWBkgtd5jFVcMbB1uoqT8Crs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aB1EMP9of9VLsqTrOg6rCkp2e7nyi4PW7Zp+ER0xjOJoQWfM5nndfrscEzNK5+aqY
-         G7spMmty3UcSGekK+MoBYj4t5tIn/Bul05KfwNTWoR25+FbkWY2npdecJ5GP4Oam1e
-         9XTt798Y/BmX3P8+yHw984mjhtE+8oVJu2i15OyI=
+        b=mZpjBzCiTXYNWqb3FBTIi1wYk5u90Ne6M2fabIf1s180wug8eneKOzekAq68llY9E
+         hYfw9siOWU8eNw4Oyr4sMfON870YNCFxNjvlu045OAkicpJ7dAtegDuDIYVROxUZNi
+         KYxODANODP4lX3UdrxSJgXOM08T/aJoMi+KMSdnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 699/917] rtc: pcf2123: Add SPI ID table
-Date:   Mon, 15 Nov 2021 18:03:14 +0100
-Message-Id: <20211115165452.589021526@linuxfoundation.org>
+Subject: [PATCH 5.14 712/849] scsi: qla2xxx: Turn off target reset during issue_lip
+Date:   Mon, 15 Nov 2021 18:03:15 +0100
+Message-Id: <20211115165444.333748407@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +43,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit 5f84478e14aa8b43a4ea85d2e091931741947749 ]
+[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding an id_table listing the
-SPI IDs for everything.
+When user uses issue_lip to do link bounce, driver sends additional target
+reset to remote device before resetting the link. The target reset would
+affect other paths with active I/Os. This patch will remove the unnecessary
+target reset.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210923194922.53386-4-broonie@kernel.org
+Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
+Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-pcf2123.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/scsi/qla2xxx/qla_gbl.h |  2 --
+ drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
+ drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
+ 3 files changed, 2 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/rtc/rtc-pcf2123.c b/drivers/rtc/rtc-pcf2123.c
-index 0f58cac81d8c0..7473e6c8a183b 100644
---- a/drivers/rtc/rtc-pcf2123.c
-+++ b/drivers/rtc/rtc-pcf2123.c
-@@ -451,12 +451,21 @@ static const struct of_device_id pcf2123_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, pcf2123_dt_ids);
- #endif
+diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
+index 2f867da822aee..9d394dce5a5c4 100644
+--- a/drivers/scsi/qla2xxx/qla_gbl.h
++++ b/drivers/scsi/qla2xxx/qla_gbl.h
+@@ -158,7 +158,6 @@ extern int ql2xasynctmfenable;
+ extern int ql2xgffidenable;
+ extern int ql2xenabledif;
+ extern int ql2xenablehba_err_chk;
+-extern int ql2xtargetreset;
+ extern int ql2xdontresethba;
+ extern uint64_t ql2xmaxlun;
+ extern int ql2xmdcapmask;
+@@ -792,7 +791,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
+ extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
+ extern void qlafx00_timer_routine(scsi_qla_host_t *);
+ extern int qlafx00_rescan_isp(scsi_qla_host_t *);
+-extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
  
-+static const struct spi_device_id pcf2123_spi_ids[] = {
-+	{ .name = "pcf2123", },
-+	{ .name = "rv2123", },
-+	{ .name = "rtc-pcf2123", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(spi, pcf2123_spi_ids);
-+
- static struct spi_driver pcf2123_driver = {
- 	.driver	= {
- 			.name	= "rtc-pcf2123",
- 			.of_match_table = of_match_ptr(pcf2123_dt_ids),
- 	},
- 	.probe	= pcf2123_probe,
-+	.id_table = pcf2123_spi_ids,
- };
+ /* qla82xx related functions */
  
- module_spi_driver(pcf2123_driver);
+diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
+index 6e920da64863e..350b0c4346fb6 100644
+--- a/drivers/scsi/qla2xxx/qla_mr.c
++++ b/drivers/scsi/qla2xxx/qla_mr.c
+@@ -738,29 +738,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
+ 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
+ }
+ 
+-int
+-qlafx00_loop_reset(scsi_qla_host_t *vha)
+-{
+-	int ret;
+-	struct fc_port *fcport;
+-	struct qla_hw_data *ha = vha->hw;
+-
+-	if (ql2xtargetreset) {
+-		list_for_each_entry(fcport, &vha->vp_fcports, list) {
+-			if (fcport->port_type != FCT_TARGET)
+-				continue;
+-
+-			ret = ha->isp_ops->target_reset(fcport, 0, 0);
+-			if (ret != QLA_SUCCESS) {
+-				ql_dbg(ql_dbg_taskm, vha, 0x803d,
+-				    "Bus Reset failed: Reset=%d "
+-				    "d_id=%x.\n", ret, fcport->d_id.b24);
+-			}
+-		}
+-	}
+-	return QLA_SUCCESS;
+-}
+-
+ int
+ qlafx00_iospace_config(struct qla_hw_data *ha)
+ {
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index b48d2344fd4ce..4f1647701175a 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -197,12 +197,6 @@ MODULE_PARM_DESC(ql2xdbwr,
+ 		" 0 -- Regular doorbell.\n"
+ 		" 1 -- CAMRAM doorbell (faster).\n");
+ 
+-int ql2xtargetreset = 1;
+-module_param(ql2xtargetreset, int, S_IRUGO);
+-MODULE_PARM_DESC(ql2xtargetreset,
+-		 "Enable target reset."
+-		 "Default is 1 - use hw defaults.");
+-
+ int ql2xgffidenable;
+ module_param(ql2xgffidenable, int, S_IRUGO);
+ MODULE_PARM_DESC(ql2xgffidenable,
+@@ -1642,27 +1636,10 @@ int
+ qla2x00_loop_reset(scsi_qla_host_t *vha)
+ {
+ 	int ret;
+-	struct fc_port *fcport;
+ 	struct qla_hw_data *ha = vha->hw;
+ 
+-	if (IS_QLAFX00(ha)) {
+-		return qlafx00_loop_reset(vha);
+-	}
+-
+-	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
+-		list_for_each_entry(fcport, &vha->vp_fcports, list) {
+-			if (fcport->port_type != FCT_TARGET)
+-				continue;
+-
+-			ret = ha->isp_ops->target_reset(fcport, 0, 0);
+-			if (ret != QLA_SUCCESS) {
+-				ql_dbg(ql_dbg_taskm, vha, 0x802c,
+-				    "Bus Reset failed: Reset=%d "
+-				    "d_id=%x.\n", ret, fcport->d_id.b24);
+-			}
+-		}
+-	}
+-
++	if (IS_QLAFX00(ha))
++		return QLA_SUCCESS;
+ 
+ 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
+ 		atomic_set(&vha->loop_state, LOOP_DOWN);
 -- 
 2.33.0
 
