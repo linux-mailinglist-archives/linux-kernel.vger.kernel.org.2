@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0597451961
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17D6451EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353030AbhKOXSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42932 "EHLO mail.kernel.org"
+        id S244382AbhKPAg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244628AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E18D61B4C;
-        Mon, 15 Nov 2021 18:22:23 +0000 (UTC)
+        id S1344533AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BA7761526;
+        Mon, 15 Nov 2021 18:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000544;
-        bh=9/vGCjDKh0FtxxuDvYqCS9oR8L1aHwnLR2f8pWJbRPQ=;
+        s=korg; t=1637002761;
+        bh=UIU8fn2r++JvQ/HB870lAGI4pAU7rADe1TVFedbvmdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9eI9gEHi4r20D58TvJKj1BuPMJWGVL2hwq58hPYOHfe2H69xykBVsov5OxR27isw
-         FeOkXUn8/Ib8u5admElNR37W+ONzRUZUj95ViNEYl2HYMM8qmUpCfqhNCeB8KmgBXw
-         R/ki4XBWacKRJTUEM0hpc6eyKAF7fhdNMnJWIfB4=
+        b=J8uFLvhkv123WNz/gow8XmH5yMD4m6sRyW1jm9M0l6dJVdRwElNOEv+N9/XDyeMsB
+         6hZS+kTlVi9axWWP3VE1atHsMkmtHSLlZPRw7DCN1stietaCMn7RP1CeNhULNjoR6Z
+         K6PNS43X65uoCWHgqPIXkkl1f2bkqWIENFLqzFVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Gladkov <legion@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 699/849] Fix user namespace leak
+Subject: [PATCH 5.15 687/917] serial: cpm_uart: Protect udbg definitions by CONFIG_SERIAL_CPM_CONSOLE
 Date:   Mon, 15 Nov 2021 18:03:02 +0100
-Message-Id: <20211115165443.898684373@linuxfoundation.org>
+Message-Id: <20211115165452.191625563@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Gladkov <legion@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit d5f458a979650e5ed37212f6134e4ee2b28cb6ed ]
+[ Upstream commit d142585bceb3218ad432ed0fcd5be9d6e3cd9052 ]
 
-Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+If CONFIG_CONSOLE_POLL=y, and CONFIG_SERIAL_CPM=m (hence
+CONFIG_SERIAL_CPM_CONSOLE=n):
+
+    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1109:12: warning: ‘udbg_cpm_getc’ defined but not used [-Wunused-function]
+     1109 | static int udbg_cpm_getc(void)
+	  |            ^~~~~~~~~~~~~
+    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1095:13: warning: ‘udbg_cpm_putc’ defined but not used [-Wunused-function]
+     1095 | static void udbg_cpm_putc(char c)
+	  |             ^~~~~~~~~~~~~
+
+Fix this by making the udbg definitions depend on
+CONFIG_SERIAL_CPM_CONSOLE, in addition to CONFIG_CONSOLE_POLL.
+
+Fixes: a60526097f42eb98 ("tty: serial: cpm_uart: Add udbg support for enabling xmon")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20211027075326.3270785-1-geert@linux-m68k.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4idmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/cpm_uart/cpm_uart_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
-index 8d8aba305ecca..f331866dd4182 100644
---- a/fs/nfs/nfs4idmap.c
-+++ b/fs/nfs/nfs4idmap.c
-@@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
- err_destroy_pipe:
- 	rpc_destroy_pipe_data(idmap->idmap_pipe);
- err:
--	get_user_ns(idmap->user_ns);
-+	put_user_ns(idmap->user_ns);
- 	kfree(idmap);
- 	return error;
+diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+index c719aa2b18328..d6d3db9c3b1f8 100644
+--- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
++++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+@@ -1090,6 +1090,7 @@ static void cpm_put_poll_char(struct uart_port *port,
+ 	cpm_uart_early_write(pinfo, ch, 1, false);
  }
+ 
++#ifdef CONFIG_SERIAL_CPM_CONSOLE
+ static struct uart_port *udbg_port;
+ 
+ static void udbg_cpm_putc(char c)
+@@ -1114,6 +1115,7 @@ static int udbg_cpm_getc(void)
+ 		cpu_relax();
+ 	return c;
+ }
++#endif /* CONFIG_SERIAL_CPM_CONSOLE */
+ 
+ #endif /* CONFIG_CONSOLE_POLL */
+ 
 -- 
 2.33.0
 
