@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985F7450F85
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6352C450F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhKOScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:32:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
+        id S241801AbhKOSZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:25:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238116AbhKORcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D8263278;
-        Mon, 15 Nov 2021 17:21:26 +0000 (UTC)
+        id S238163AbhKORdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:33:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ED96327C;
+        Mon, 15 Nov 2021 17:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996887;
-        bh=ebAujnYUy/ArH7u3IVC169vpY3cIPYcgtitSdevbcFM=;
+        s=korg; t=1636996889;
+        bh=Hhpt5/09ihCRRLXi62CCzQZ6wDu7vcGPY0lWg+4fKHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aA0JSdTCuBQaTL7k3Hp9xjPxY0SDILlnh+WmuLHR8GYZbBXExxdEblWGpL8TQr3Bk
-         tmXqfuBAB4LER8Uep4Crlz1HHbeSs1h2phiT/yGT047/ioHtVWA3+b0Q6m0Qg+MUH1
-         r9pMXIE1jy6WFuxnPwqN4x1L12xzEQylBLEqzmCA=
+        b=D5WqecgmTJXUPampVceQIaAgPLq2CO0Aa7v3b7RpRjbAUuBnCm6F+GlJLBnTwODR8
+         wetoOcL5dYgbQ8Hog08KWz/epGwBZDqZ4buwLn2fZgbRMvuy0PplO5AbMHd5EdNLiW
+         rFH7n9TjMZ/LiEqy3ws/QIismn3cA3o/TObhQaNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 303/355] auxdisplay: ht16k33: Fix frame buffer device blanking
-Date:   Mon, 15 Nov 2021 18:03:47 +0100
-Message-Id: <20211115165323.519337229@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 304/355] soc: fsl: dpaa2-console: free buffer before returning from dpaa2_console_read
+Date:   Mon, 15 Nov 2021 18:03:48 +0100
+Message-Id: <20211115165323.558561135@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,57 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
 
-[ Upstream commit 840fe258332544aa7321921e1723d37b772af7a9 ]
+[ Upstream commit 8120bd469f5525da229953c1197f2b826c0109f4 ]
 
-As the ht16k33 frame buffer sub-driver does not register an
-fb_ops.fb_blank() handler, blanking does not work:
+Free the kbuf buffer before returning from the dpaa2_console_read()
+function. The variable no longer goes out of scope, leaking the storage
+it points to.
 
-    $ echo 1 > /sys/class/graphics/fb0/blank
-    sh: write error: Invalid argument
-
-Fix this by providing a handler that always returns zero, to make sure
-blank events will be sent to the actual device handling the backlight.
-
-Reported-by: Robin van der Gracht <robin@protonic.nl>
-Suggested-by: Robin van der Gracht <robin@protonic.nl>
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Fixes: c93349d8c170 ("soc: fsl: add DPAA2 console support")
+Signed-off-by: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Signed-off-by: Li Yang <leoyang.li@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/soc/fsl/dpaa2-console.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 1b0e8232517dd..59109b410c67f 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -219,6 +219,15 @@ static const struct backlight_ops ht16k33_bl_ops = {
- 	.check_fb	= ht16k33_bl_check_fb,
- };
+diff --git a/drivers/soc/fsl/dpaa2-console.c b/drivers/soc/fsl/dpaa2-console.c
+index 27243f706f376..53917410f2bdb 100644
+--- a/drivers/soc/fsl/dpaa2-console.c
++++ b/drivers/soc/fsl/dpaa2-console.c
+@@ -231,6 +231,7 @@ static ssize_t dpaa2_console_read(struct file *fp, char __user *buf,
+ 	cd->cur_ptr += bytes;
+ 	written += bytes;
  
-+/*
-+ * Blank events will be passed to the actual device handling the backlight when
-+ * we return zero here.
-+ */
-+static int ht16k33_blank(int blank, struct fb_info *info)
-+{
-+	return 0;
-+}
-+
- static int ht16k33_mmap(struct fb_info *info, struct vm_area_struct *vma)
- {
- 	struct ht16k33_priv *priv = info->par;
-@@ -231,6 +240,7 @@ static struct fb_ops ht16k33_fb_ops = {
- 	.owner = THIS_MODULE,
- 	.fb_read = fb_sys_read,
- 	.fb_write = fb_sys_write,
-+	.fb_blank = ht16k33_blank,
- 	.fb_fillrect = sys_fillrect,
- 	.fb_copyarea = sys_copyarea,
- 	.fb_imageblit = sys_imageblit,
++	kfree(kbuf);
+ 	return written;
+ 
+ err_free_buf:
 -- 
 2.33.0
 
