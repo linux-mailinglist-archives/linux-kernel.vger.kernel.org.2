@@ -2,163 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB71644FD55
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB2444FD58
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhKODFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 22:05:41 -0500
-Received: from smtp161.vfemail.net ([146.59.185.161]:33527 "EHLO
-        smtp161.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhKODF0 (ORCPT
+        id S229697AbhKODGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:06:37 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:40828 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234884AbhKODGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 22:05:26 -0500
-Received: (qmail 21945 invoked from network); 15 Nov 2021 03:02:29 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 15 Nov 2021 03:02:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
-        :to:cc:subject:message-id:in-reply-to:references:mime-version
-        :content-type; s=2018; bh=WEQkjRj8LEY4PURnCHLMdFVayJw94vNsrm7X9f
-        TgRs0=; b=aqBSly5d2coWyFcSeqFHu8mGKRIfIUP0s7ail9EkZPFOSJoAaiwqyd
-        MbIvHpTE3v6eIsSd2JzAWn3AvnPw5y43VZF/S/A6SNxuIuuMOStVGBK6zQCmqzgU
-        SEjEl08JJtljV6K/rwv1bAl2pW/Hj+TKAwPpcSHKDMlyYz6ZLUIC4=
-Received: (qmail 85000 invoked from network); 15 Nov 2021 03:01:58 -0000
-Received: by simscan 1.4.0 ppid: 84678, pid: 84895, t: 0.3965s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 15 Nov 2021 03:01:58 -0000
-Date:   Sun, 14 Nov 2021 22:02:22 -0500
-From:   David Niklas <Hgntkwis@vfemail.net>
-To:     linux-usb@vger.kernel.org
-Cc:     stern@rowland.harvard.edu, linux-input@vger.kernel.org,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <20211114220222.31755871@Zen-II-x12.niklas.com>
-In-Reply-To: <20211114211435.GA87082@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
-        <20211114144842.72463ccc@Zen-II-x12.niklas.com>
-        <20211114211435.GA87082@rowland.harvard.edu>
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        Sun, 14 Nov 2021 22:06:20 -0500
+Received: by mail-il1-f197.google.com with SMTP id d8-20020a928748000000b0027585828bc3so9635547ilm.7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 19:03:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/1Cjsv4phlmjuFfl+XY8QJKwm4YTDC1FDffT5jszj1E=;
+        b=zLPVVOQRJ5PIuzLe60Eg6QP3P2qBgF10sV6Glky2EfCyxoizWkG6bRCXFwtr6ItA1x
+         vGOnY1pvaFGJxOXZnUaXYGmp6HZAvv2rvVISqW/ukvYykNZVW0JHvw9VNKpcBza1jSN4
+         vsb314XhWQDUrV1Iv9ZmkX9jyVZ+fkmDnW9bV33ZqrtWxHDkQ6Yq0USfR80ArHsyrblS
+         X3HBmeBy/KRDR5wvZucAJxV5SRmH5ihXfHn8noIu3t6cm8zzLXriwV+NUBqlgIHYulf5
+         hdP9ogEeu40xejE4yzvXKwvAnyP2N39w4bCNwYzC5uqixFhjJ+dd/MAQife4tNeWa1qe
+         UwCQ==
+X-Gm-Message-State: AOAM5320T5T6rlZdeKmAX14oq1lsEwovVc6QVyhGXxIBIIyKbphJLBIh
+        xvpLtNVX4/CY6CFfWxQxlJDDTCCqfKi80ZmrEMLt0RFkPiD5
+X-Google-Smtp-Source: ABdhPJxMkp7hqqv3I2dwI0hXzDpC14N+S42aKLcvjqz/gNbtD8W4H+kcA3eSlev3KRyQ5d9if11EkQtt1ZeDyW+6UZe+HBcMUsAu
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/8+8m=9DCuNOXXSGkdDFZIB0"
+X-Received: by 2002:a05:6602:2f01:: with SMTP id q1mr23200140iow.157.1636945405507;
+ Sun, 14 Nov 2021 19:03:25 -0800 (PST)
+Date:   Sun, 14 Nov 2021 19:03:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006982d305d0cb0d60@google.com>
+Subject: [syzbot] INFO: task can't die in blk_mq_freeze_queue_wait
+From:   syzbot <syzbot+81f844673361aa0541a0@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/8+8m=9DCuNOXXSGkdDFZIB0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hello,
 
-On Sun, 14 Nov 2021 16:14:35 -0500
-stern@rowland.harvard.edu wrote:
-> On Sun, Nov 14, 2021 at 02:48:42PM -0500, David Niklas wrote:
-> > Hello,
-> > 
-> > Almost 1 year ago to the date I posted a question regarding
-> > connecting my UPS to my PC (look for the same subject -ping). The
-> > input subsystem maintainers, Jiri Kosina or Ben Tissoires were asked
-> > to get back to me. No one ever did though.
-> > 
-> > Now my UPS is *not* working correctly, and I'd really really like to
-> > be able to speak to it with my PC so I can (hopefully) figure out
-> > what's wrong with it.
-> > 
-> > I'm running Linux Kernel 5.15.X on a Devuan (Debian) system. I
-> > connected my UPS (OPTI-UPS Thunder Shield TS2250B) via USB cable and
-> > got (almost the same as last time...):
-> > [ 4236.165138] usb 3-2: new low-speed USB device number 2 using
-> > xhci_hcd [ 4236.325178] usb 3-2: New USB device found, idVendor=0d9f,
-> > idProduct=0004, bcdDevice= 0.02 [ 4236.325183] usb 3-2: New USB
-> > device strings: Mfr=3, Product=1, SerialNumber=2 [ 4236.325185] usb
-> > 3-2: Product: HID UPS Battery [ 4236.325187] usb 3-2: Manufacturer:
-> > POWERCOM Co.,LTD [ 4236.325188] usb 3-2: SerialNumber: 004-0D9F-000
-> > [ 4236.423210] hid-generic 0003:0D9F:0004.000B: hiddev3,hidraw8: USB
-> > HID v1.00 Device [POWERCOM Co.,LTD HID UPS Battery] on
-> > usb-0000:11:00.3-2/input0 [ 4239.842223] usb 3-2: USB disconnect,
-> > device number 2 [ 4242.485126] usb 3-2: new low-speed USB device
-> > number 3 using xhci_hcd [ 4242.645075] usb 3-2: New USB device found,
-> > idVendor=0d9f, idProduct=0004, bcdDevice= 0.02 [ 4242.645080] usb
-> > 3-2: New USB device strings: Mfr=3, Product=1, SerialNumber=2
-> > [ 4242.645082] usb 3-2: Product: HID UPS Battery [ 4242.645084] usb
-> > 3-2: Manufacturer: POWERCOM Co.,LTD [ 4242.645085] usb 3-2:
-> > SerialNumber: 004-0D9F-000 [ 4242.727148] hid-generic
-> > 0003:0D9F:0004.000C: hiddev3,hidraw8: USB HID v1.00 Device [POWERCOM
-> > Co.,LTD HID UPS Battery] on usb-0000:11:00.3-2/input0 [ 4246.135926]
-> > usb 3-2: USB disconnect, device number 3 [ 4248.781839] usb 3-2: new
-> > low-speed USB device number 4 using xhci_hcd [ 4248.942099] usb 3-2:
-> > New USB device found, idVendor=0d9f, idProduct=0004, bcdDevice= 0.02
-> > [ 4248.942104] usb 3-2: New USB device strings: Mfr=3, Product=1,
-> > SerialNumber=2 [ 4248.942106] usb 3-2: Product: HID UPS Battery
-> > [ 4248.942108] usb 3-2: Manufacturer: POWERCOM Co.,LTD [ 4248.942109]
-> > usb 3-2: SerialNumber: 004-0D9F-000 [ 4249.031166] hid-generic
-> > 0003:0D9F:0004.000D: hiddev3,hidraw8: USB HID v1.00 Device [POWERCOM
-> > Co.,LTD HID UPS Battery] on usb-0000:11:00.3-2/input0 [ 4252.511996]
-> > usb 3-2: USB disconnect, device number 4 ...
-> > 
-> > I'd appreciate any advice trying to get my UPS to stay connected and
-> > not spam the kernel log. I'd like to have nut or apcupsd talk to it.
-> 
-> It would help to see the details of the communication between the 
-> computer and the UPS.  You can collect a usbmon trace by running (as 
-> superuser):
-> 
-> 	cat /sys/kernel/debug/usb/usbmon/3u >mon.txt
-> 
-> before plugging in the UPS cable.  (The 3 comes from the bus number of 
-> the USB port in the log above.)  Kill the process after the cable has 
-> been plugged in long enough for a couple of these disconnect messages
-> to appear, and post the output file to the mailing list.
-> 
-> Alan Stern
-> 
+syzbot found the following issue on:
 
-Attached is the info.
+HEAD commit:    09bd48c4acfa Add linux-next specific files for 20211115
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f0ace6b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=17d226c7c2fec892
+dashboard link: https://syzkaller.appspot.com/bug?extid=81f844673361aa0541a0
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-In case someone doesn't realize, I'm subscribed to the linux-kernel ML,
-but not input or usb. Please CC me if you don't want to spam the LKML.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thanks for the timely response,
-David
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81f844673361aa0541a0@syzkaller.appspotmail.com
 
---MP_/8+8m=9DCuNOXXSGkdDFZIB0
-Content-Type: application/x-bzip
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=mon.txt.bz2
+INFO: task syz-executor.0:27209 can't die for more than 143 seconds.
+task:syz-executor.0  state:D stack:29072 pid:27209 ppid: 21913 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4987 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6268
+ schedule+0xd2/0x260 kernel/sched/core.c:6341
+ blk_mq_freeze_queue_wait+0x112/0x160 block/blk-mq.c:178
+ __loop_clr_fd+0x1ae/0x1070 drivers/block/loop.c:1122
+ loop_clr_fd drivers/block/loop.c:1237 [inline]
+ lo_ioctl+0x398/0x17c0 drivers/block/loop.c:1562
+ blkdev_ioctl+0x37a/0x800 block/ioctl.c:609
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f6865788ae9
+RSP: 002b:00007f6862cbc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f686589c0e0 RCX: 00007f6865788ae9
+RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000004
+RBP: 00007f68657e2f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffb0b4b25f R14: 00007f6862cbc300 R15: 0000000000022000
+ </TASK>
+INFO: task syz-executor.0:27209 blocked for more than 143 seconds.
+      Not tainted 5.15.0-next-20211115-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:29072 pid:27209 ppid: 21913 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4987 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6268
+ schedule+0xd2/0x260 kernel/sched/core.c:6341
+ blk_mq_freeze_queue_wait+0x112/0x160 block/blk-mq.c:178
+ __loop_clr_fd+0x1ae/0x1070 drivers/block/loop.c:1122
+ loop_clr_fd drivers/block/loop.c:1237 [inline]
+ lo_ioctl+0x398/0x17c0 drivers/block/loop.c:1562
+ blkdev_ioctl+0x37a/0x800 block/ioctl.c:609
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f6865788ae9
+RSP: 002b:00007f6862cbc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f686589c0e0 RCX: 00007f6865788ae9
+RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000004
+RBP: 00007f68657e2f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffb0b4b25f R14: 00007f6862cbc300 R15: 0000000000022000
+ </TASK>
 
-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
+Showing all locks held in the system:
+1 lock held by khungtaskd/26:
+ #0: ffffffff8bb83aa0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6458
+1 lock held by in:imklog/6387:
+ #0: ffff8880733020f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
+3 locks held by kworker/u4:7/14256:
+2 locks held by agetty/24581:
+ #0: ffff888073bbc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:252
+ #1: ffffc900050eb2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xcf0/0x1230 drivers/tty/n_tty.c:2113
+2 locks held by systemd-udevd/26988:
+ #0: ffff88801a814118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb50 block/bdev.c:819
+ #1: ffff888147228360 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x75/0x120 drivers/block/loop.c:1733
+1 lock held by syz-executor.0/27209:
+ #0: ffff888147228360 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x7a/0x1070 drivers/block/loop.c:1106
 
---MP_/8+8m=9DCuNOXXSGkdDFZIB0--
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 26 Comm: khungtaskd Not tainted 5.15.0-next-20211115-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:111
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
+ watchdog+0xcb7/0xed0 kernel/hung_task.c:339
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 2959 Comm: systemd-journal Not tainted 5.15.0-next-20211115-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:hash_name fs/namei.c:2154 [inline]
+RIP: 0010:link_path_walk.part.0+0x387/0xd00 fs/namei.c:2243
+Code: e8 7e a1 aa ff 4d 85 e4 74 83 4c 89 6c 24 18 4d 89 f5 4c 8b 74 24 20 e8 d7 9e aa ff 49 8d 4c 24 ff 4c 89 e2 4c 89 e8 48 f7 d2 <4c> 8b 6c 24 18 48 be 00 00 00 00 00 fc ff df 48 21 ca 48 b9 08 06
+RSP: 0018:ffffc9000205fb58 EFLAGS: 00000293
+RAX: 2f6c616e72756f6a RBX: ffff888011241490 RCX: 7fffffffffffffff
+RDX: 7fffffffffffffff RSI: ffffffff81cd5049 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81cd5032 R11: 0000000000000000 R12: 8000000000000000
+R13: 2f6c616e72756f6a R14: ffffc9000205fce0 R15: ffff88804791c42d
+FS:  00007f8032a248c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f80300b1000 CR3: 000000001c195000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ <TASK>
+ link_path_walk fs/namei.c:2221 [inline]
+ path_lookupat+0xc8/0x860 fs/namei.c:2448
+ filename_lookup+0x1c6/0x590 fs/namei.c:2478
+ user_path_at_empty+0x42/0x60 fs/namei.c:2801
+ user_path_at include/linux/namei.h:57 [inline]
+ do_faccessat+0x127/0x850 fs/open.c:421
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8031cdf9c7
+Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
+RSP: 002b:00007fff604c5b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 00007fff604c8b50 RCX: 00007f8031cdf9c7
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00005634d00549a3
+RBP: 00007fff604c5c70 R08: 00005634d004a3e5 R09: 0000000000000018
+R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00005634d1f4d8a0 R15: 00007fff604c6160
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	e8 7e a1 aa ff       	callq  0xffaaa183
+   5:	4d 85 e4             	test   %r12,%r12
+   8:	74 83                	je     0xffffff8d
+   a:	4c 89 6c 24 18       	mov    %r13,0x18(%rsp)
+   f:	4d 89 f5             	mov    %r14,%r13
+  12:	4c 8b 74 24 20       	mov    0x20(%rsp),%r14
+  17:	e8 d7 9e aa ff       	callq  0xffaa9ef3
+  1c:	49 8d 4c 24 ff       	lea    -0x1(%r12),%rcx
+  21:	4c 89 e2             	mov    %r12,%rdx
+  24:	4c 89 e8             	mov    %r13,%rax
+  27:	48 f7 d2             	not    %rdx
+* 2a:	4c 8b 6c 24 18       	mov    0x18(%rsp),%r13 <-- trapping instruction
+  2f:	48 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%rsi
+  36:	fc ff df
+  39:	48 21 ca             	and    %rcx,%rdx
+  3c:	48                   	rex.W
+  3d:	b9                   	.byte 0xb9
+  3e:	08 06                	or     %al,(%rsi)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
