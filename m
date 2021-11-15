@@ -2,35 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A4445120E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAB9451211
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbhKOTZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35656 "EHLO mail.kernel.org"
+        id S1345167AbhKOT1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:27:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238928AbhKORul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:50:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E35E763278;
-        Mon, 15 Nov 2021 17:31:02 +0000 (UTC)
+        id S238929AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:50:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F93D63277;
+        Mon, 15 Nov 2021 17:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997463;
-        bh=df5ftTc1kOnB9Lvk09wLWgPU5nPyWmkp52Wrb8UU44U=;
+        s=korg; t=1636997466;
+        bh=SEzyjq6agc0osw1GnbYwXxUbrYZZGzLnvMTNPjg3T8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kpHl/y+QLWK4y3hMHQa5V3bMjocFMPR0CBCmuZqkwHkj7HkTJWqcjSra+L9txo2vR
-         qdnGdUoVlDacX7C3SJgVzgZUMdWTjo1EnUge36dOkZCgzL+i3egIiQ5NkYpO1vV3UT
-         b0U+bFM92BqyYLYC+fsgxCAv7oKJbA2enaK47MmI=
+        b=KxmQ5iZFEouW0JIa/dP7IPIFh9RzplsYDjiw+Y3r8MT+Bb6bXd9+cCT4YLIcsZgY+
+         oPoPa6x4Y2la6tksSSGVr04A/YTQI2TVbanmUHT8wCBqmAWjw0HuVma8VtKbbnTMMs
+         v/tkHiqpykRXUeh/dG1VNzpzhI1FFk7h7xkeq1gM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 158/575] serial: 8250: fix racy uartclk update
-Date:   Mon, 15 Nov 2021 17:58:03 +0100
-Message-Id: <20211115165349.164243918@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 159/575] most: fix control-message timeouts
+Date:   Mon, 15 Nov 2021 17:58:04 +0100
+Message-Id: <20211115165349.198483555@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -44,81 +40,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit 211cde4f5817dc88ef7f8f2fa286e57fbf14c8ee upstream.
+commit 63b3e810eff65fb8587fcb26fa0b56802be12dcf upstream.
 
-Commit 868f3ee6e452 ("serial: 8250: Add 8250 port clock update method")
-added a hack to support SoCs where the UART reference clock can
-change behind the back of the driver but failed to add the proper
-locking.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-First, make sure to take a reference to the tty struct to avoid
-dereferencing a NULL pointer if the clock change races with a hangup.
+Use the common control-message timeout defines for the five-second
+timeouts.
 
-Second, the termios semaphore must be held during the update to prevent
-a racing termios change.
-
-Fixes: 868f3ee6e452 ("serial: 8250: Add 8250 port clock update method")
-Fixes: c8dff3aa8241 ("serial: 8250: Skip uninitialized TTY port baud rate update")
+Fixes: 97a6f772f36b ("drivers: most: add USB adapter driver")
 Cc: stable@vger.kernel.org      # 5.9
-Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211015111422.1027-2-johan@kernel.org
+Link: https://lore.kernel.org/r/20211025115811.5410-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/8250/8250_port.c |   21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/most/most_usb.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2675,21 +2675,32 @@ static unsigned int serial8250_get_baud_
- void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
- {
- 	struct uart_8250_port *up = up_to_u8250p(port);
-+	struct tty_port *tport = &port->state->port;
- 	unsigned int baud, quot, frac = 0;
- 	struct ktermios *termios;
-+	struct tty_struct *tty;
- 	unsigned long flags;
+--- a/drivers/most/most_usb.c
++++ b/drivers/most/most_usb.c
+@@ -149,7 +149,8 @@ static inline int drci_rd_reg(struct usb
+ 	retval = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+ 				 DRCI_READ_REQ, req_type,
+ 				 0x0000,
+-				 reg, dma_buf, sizeof(*dma_buf), 5 * HZ);
++				 reg, dma_buf, sizeof(*dma_buf),
++				 USB_CTRL_GET_TIMEOUT);
+ 	*buf = le16_to_cpu(*dma_buf);
+ 	kfree(dma_buf);
  
--	mutex_lock(&port->state->port.mutex);
-+	tty = tty_port_tty_get(tport);
-+	if (!tty) {
-+		mutex_lock(&tport->mutex);
-+		port->uartclk = uartclk;
-+		mutex_unlock(&tport->mutex);
-+		return;
-+	}
-+
-+	down_write(&tty->termios_rwsem);
-+	mutex_lock(&tport->mutex);
- 
- 	if (port->uartclk == uartclk)
- 		goto out_lock;
- 
- 	port->uartclk = uartclk;
- 
--	if (!tty_port_initialized(&port->state->port))
-+	if (!tty_port_initialized(tport))
- 		goto out_lock;
- 
--	termios = &port->state->port.tty->termios;
-+	termios = &tty->termios;
- 
- 	baud = serial8250_get_baud_rate(port, termios, NULL);
- 	quot = serial8250_get_divisor(port, baud, &frac);
-@@ -2706,7 +2717,9 @@ void serial8250_update_uartclk(struct ua
- 	serial8250_rpm_put(up);
- 
- out_lock:
--	mutex_unlock(&port->state->port.mutex);
-+	mutex_unlock(&tport->mutex);
-+	up_write(&tty->termios_rwsem);
-+	tty_kref_put(tty);
+@@ -176,7 +177,7 @@ static inline int drci_wr_reg(struct usb
+ 			       reg,
+ 			       NULL,
+ 			       0,
+-			       5 * HZ);
++			       USB_CTRL_SET_TIMEOUT);
  }
- EXPORT_SYMBOL_GPL(serial8250_update_uartclk);
  
+ static inline int start_sync_ep(struct usb_device *usb_dev, u16 ep)
 
 
