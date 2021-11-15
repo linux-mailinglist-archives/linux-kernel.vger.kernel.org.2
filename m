@@ -2,129 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6664500CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7665D4500CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237114AbhKOJEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbhKOJBN (ORCPT
+        id S234615AbhKOJHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:07:02 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14743 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhKOJGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:01:13 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EF5C06120A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:57:42 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1636966661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RxPeFCT20glhLqQ5eY/Vl8C9iprAbdhuCAS4bnE3hdk=;
-        b=cuorowxW6xc6iHoVQfS9e1jHkqtwUX4xURi/nX6M63g13f6/SOaeOSYOsg8dWw8wnLm27B
-        MgEKZmwk5u/MLvWdX4lovVIvPBF/eEnuroj4BafGalRg3UOEAzFHZQG7Pv2xA3n2Bnh9h4
-        wFIIFXNBkAR6cubvaxj5xkS4jjgCGRI=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH net-next] skbuff: Add helper function for head_frag and pfmemalloc
-Date:   Mon, 15 Nov 2021 16:57:08 +0800
-Message-Id: <20211115085708.13901-1-yajun.deng@linux.dev>
+        Mon, 15 Nov 2021 04:06:23 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ht37y6Mr3zZd4V;
+        Mon, 15 Nov 2021 17:01:02 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 15 Nov 2021 17:03:22 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 15 Nov 2021 17:03:21 +0800
+Subject: Re: [PATCH v3 04/12] ubifs: Add missing iput if do_tmpfile() failed
+ in rename whiteout
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+CC:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+        <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
+ <20211112121758.2208727-5-chengzhihao1@huawei.com>
+ <20211115082446.GC25697@pengutronix.de>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <66c6cee0-75df-3305-7ad2-a5a3da006321@huawei.com>
+Date:   Mon, 15 Nov 2021 17:03:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20211115082446.GC25697@pengutronix.de>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series of build_skb() has the same code, add skb_set_head_frag_pfmemalloc()
-for it, at the same time, in-line skb_propagate_pfmemalloc().
-
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- include/linux/skbuff.h | 19 ++++++++++++-------
- net/core/skbuff.c      | 19 +++++--------------
- 2 files changed, 17 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 0bd6520329f6..3e26b80bde29 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3007,15 +3007,20 @@ static inline bool dev_page_is_reusable(const struct page *page)
- }
- 
- /**
-- *	skb_propagate_pfmemalloc - Propagate pfmemalloc if skb is allocated after RX page
-- *	@page: The page that was allocated from skb_alloc_page
-- *	@skb: The skb that may need pfmemalloc set
-+ *	skb_set_head_frag_pfmemalloc - Set head_frag and pfmemalloc
-+ *	@skb: The skb that may need head_frag and pfmemalloc set
-+ *      @data: data buffer provided by caller
-+ *      @frag_size: size of data, or 0 if head was kmalloced
-  */
--static inline void skb_propagate_pfmemalloc(const struct page *page,
--					    struct sk_buff *skb)
-+static inline void skb_set_head_frag_pfmemalloc(struct sk_buff *skb, void *data,
-+						unsigned int frag_size)
- {
--	if (page_is_pfmemalloc(page))
--		skb->pfmemalloc = true;
-+
-+	if (likely(skb) && frag_size) {
-+		skb->head_frag = 1;
-+		if (page_is_pfmemalloc(virt_to_head_page(data)))
-+			skb->pfmemalloc = 1;
-+	}
- }
- 
- /**
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 67a9188d8a49..7b3d2bf746ae 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -255,11 +255,8 @@ struct sk_buff *build_skb(void *data, unsigned int frag_size)
- {
- 	struct sk_buff *skb = __build_skb(data, frag_size);
- 
--	if (skb && frag_size) {
--		skb->head_frag = 1;
--		if (page_is_pfmemalloc(virt_to_head_page(data)))
--			skb->pfmemalloc = 1;
--	}
-+	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
-+
- 	return skb;
- }
- EXPORT_SYMBOL(build_skb);
-@@ -278,11 +275,8 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
- 
- 	__build_skb_around(skb, data, frag_size);
- 
--	if (frag_size) {
--		skb->head_frag = 1;
--		if (page_is_pfmemalloc(virt_to_head_page(data)))
--			skb->pfmemalloc = 1;
--	}
-+	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
-+
- 	return skb;
- }
- EXPORT_SYMBOL(build_skb_around);
-@@ -325,10 +319,7 @@ struct sk_buff *napi_build_skb(void *data, unsigned int frag_size)
- {
- 	struct sk_buff *skb = __napi_build_skb(data, frag_size);
- 
--	if (likely(skb) && frag_size) {
--		skb->head_frag = 1;
--		skb_propagate_pfmemalloc(virt_to_head_page(data), skb);
--	}
-+	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
- 
- 	return skb;
- }
--- 
-2.32.0
+ÔÚ 2021/11/15 16:24, Sascha Hauer Ð´µÀ:
+Hi, Sascha
+> On Fri, Nov 12, 2021 at 08:17:50PM +0800, Zhihao Cheng wrote:
+>> whiteout inode should be put when do_tmpfile() failed if inode has been
+>> initialized. Otherwise we will get following warning during umount:
+>>    UBIFS error (ubi0:0 pid 1494): ubifs_assert_failed [ubifs]: UBIFS
+>>    assert failed: c->bi.dd_growth == 0, in fs/ubifs/super.c:1930
+>>    VFS: Busy inodes after unmount of ubifs. Self-destruct in 5 seconds.
+>>
+>> Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+>> ---
+>>   fs/ubifs/dir.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+>> index 2735ad1affed..6503e6857f6e 100644
+>> --- a/fs/ubifs/dir.c
+>> +++ b/fs/ubifs/dir.c
+>> @@ -1334,6 +1334,8 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+>>   
+>>   		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
+>>   		if (err) {
+>> +			if (whiteout)
+>> +				iput(whiteout);
+> Should this rather be done in do_tmpfile() directly?
+Yes, I should have done it. Although next patch reconstructs do_rename() 
+which makes this ugly judgement disappered. I will fix it along with 
+other suggestions from other patches in next iteration. Thanks.
+> Sascha
+>
 
