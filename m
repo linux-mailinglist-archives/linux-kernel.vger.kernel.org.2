@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5352450216
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3688A450218
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237548AbhKOKOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:14:22 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43240 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237567AbhKOKM5 (ORCPT
+        id S237617AbhKOKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:14:37 -0500
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:38608 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237588AbhKOKNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:12:57 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C4A521FD65;
-        Mon, 15 Nov 2021 10:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636971001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OiGVPWrmmNTlf5sI8Pzksa5PXV+VV1Zp6xFl0TEHB+4=;
-        b=GSItTZmuMjpl5fyS307G/JbTBXWc8NbFF/YwT4lxmxbYB6Vo7df8lChwt5Z6Ex1yB8RCnQ
-        d7yAH0gK8xDETmfVxh04mRF6SeNlKsqIw0f1WW9HCUAwtJz1hQoG6RCBxgto8/IBcHZD0Z
-        Qhk3Nb+d548mYHqEagUQufds15alhqo=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 85AFCA3B88;
-        Mon, 15 Nov 2021 10:10:01 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 11:10:01 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Wander Costa <wcosta@redhat.com>
-Cc:     Wander Lairson Costa <wander@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v2 1/1] printk: suppress rcu stall warnings caused by
- slow console devices
-Message-ID: <YZIx+ZBEKnVHSnbO@alley>
-References: <20211111195904.618253-1-wander@redhat.com>
- <20211111195904.618253-2-wander@redhat.com>
- <YY4pmySR3VVHAtYy@alley>
- <CAAq0SUmePQEOM2AvMfTw8zAnG3k+869wsGSMt9HvFj_wb81i0g@mail.gmail.com>
+        Mon, 15 Nov 2021 05:13:53 -0500
+Received: by mail-ua1-f46.google.com with SMTP id w23so10708731uao.5;
+        Mon, 15 Nov 2021 02:10:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uczNj+JRGNzcNZDnUARVSzMZZa6FtWsEl77y1g5axMY=;
+        b=RGYfHjYonx3hsjWTuJpM+6U7LQkv7t1vCfjrkTdm9rwyLiHAGkyV/4yZ+5Fp7kq8l5
+         hhh8/03c6/xFJBmEQUQEUqkvo+qSAqlGh1StYjixtkU1xTtjsgJEOWDt4a6cxFOYu+1N
+         XxYxdH/OhZGipjEK/rm553d8hoae3/ciZnR9BwhcGRlVpI7hibraMv0qBwSG5aFPBHj1
+         AnhT0tof2wIiw7x5733EOYgaG/X8QMKi7vsxZA2IaXFClycGlY2qKpx0zCAZgWIysknG
+         es7xtlQMDc3ccPxfnr28noYXl4nVFg2LDcE0nlpNeKE2Z9QiAOLs8nFJLnKKgK+3bTl+
+         vkDQ==
+X-Gm-Message-State: AOAM532uLGStkxj4ZN/1OwBsJ8EMMzYLzkPu4WY3eR/u6ErwjiKnuZha
+        PaaDICZiEiM+Hmr9HV3OVS/NonWMb2XXbw==
+X-Google-Smtp-Source: ABdhPJzIW2+6vIsDVErFpZ8bdIkWNqdcfWrUF7xVzZwZxss56IYTacdHJs+Riu+1iFSCDE2Dav8prA==
+X-Received: by 2002:a67:e050:: with SMTP id n16mr40869277vsl.44.1636971054324;
+        Mon, 15 Nov 2021 02:10:54 -0800 (PST)
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
+        by smtp.gmail.com with ESMTPSA id f188sm8623117vsc.16.2021.11.15.02.10.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 02:10:54 -0800 (PST)
+Received: by mail-vk1-f179.google.com with SMTP id k83so7952348vke.7;
+        Mon, 15 Nov 2021 02:10:53 -0800 (PST)
+X-Received: by 2002:a1f:f24f:: with SMTP id q76mr56909184vkh.11.1636971053697;
+ Mon, 15 Nov 2021 02:10:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAq0SUmePQEOM2AvMfTw8zAnG3k+869wsGSMt9HvFj_wb81i0g@mail.gmail.com>
+References: <20211115064128.9896-1-rdunlap@infradead.org>
+In-Reply-To: <20211115064128.9896-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Nov 2021 11:10:42 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
+Message-ID: <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sh: mcount.S: fix build error when PRINTK is not enabled
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-11-12 11:08:33, Wander Costa wrote:
-> On Fri, Nov 12, 2021 at 5:45 AM Petr Mladek <pmladek@suse.com> wrote:
-> > A workaround, is to lower console_loglevel and show only the most
-> > important messages. Sometimes, a reasonable solution is to ratelimit
-> > repeated messages.
-> >
-> > Which brings the question. What is the motivation for this patch,
-> > please?
-> >
-> > Is it motivated by a particular bug report?
-> > Or does the experience shows that this report causes more harm than
-> > good?
-> >
-> QA has a test case in which they need to load hundreds of SCSI devices,
-> and they simulate it using the scsi_debug driver:
+Hi Randy,
 
-I think that SCSI devices were the first sinner who motivated the work
-on console offloading here at SUSE.
+On Mon, Nov 15, 2021 at 7:41 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> Fix a build error in mcount.S when CONFIG_PRINTK is not enabled.
+> Fixes this build error:
+>
+> sh2-linux-ld: arch/sh/lib/mcount.o: in function `stack_panic':
+> (.text+0xec): undefined reference to `dump_stack'
+>
+> Fixes: e460ab27b6c3e ("sh: Fix up stack overflow check with ftrace disabled.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-> modprobe scsi_debug virtual_gb=1 add_host=2 num_tgts=600
-> 
-> This dumps a bunch of messages to print and the serial console driver
-> cannot keep up with the data rate, causing an RCU stall. The stall is reported
-> in an IRQ context, then the ring buffer flush continues from there,
-> and then it causes
-> a soft lockup.
+Thanks for your patch!
 
-I usually suggest to reduce console_loglevel as a temporary solution.
-But I am not sure if it is acceptable in QA.
+> Possibly even more of this function should conditionally not be built...
 
-It might be done only around this test. I mean something like:
+What about making STACK_DEBUG depend on PRINTK instead?
+It doesn't make much sense to enable the former, if you won't print
+any output...
 
-CONSOLE_LOGLEVEL=`cat /proc/sys/kernel/printk`
-IGNORE_LOGLEVEL=`cat /sys/module/printk/parameters/ignore_loglevel`
-echo "3 4 1 7" >/proc/sys/kernel/printk
-echo N >/sys/module/printk/parameters/ignore_loglevel
+> --- linux-next-20211112.orig/arch/sh/lib/mcount.S
+> +++ linux-next-20211112/arch/sh/lib/mcount.S
+> @@ -257,9 +257,11 @@ return_to_handler:
+>  #ifdef CONFIG_STACK_DEBUG
+>         .globl  stack_panic
+>  stack_panic:
+> +#ifdef CONFIG_PRINTK
+>         mov.l   .Ldump_stack, r0
+>         jsr     @r0
+>          nop
+> +#endif
+>
+>         mov.l   .Lpanic, r0
+>         jsr     @r0
+> @@ -277,8 +279,10 @@ stack_panic:
+>         .long   panic
+>  .Lpanic_s:
+>         .long   .Lpanic_str
+> +#ifdef CONFIG_PRINTK
+>  .Ldump_stack:
+>         .long   dump_stack
+> +#endif
+>
+>         .section        .rodata
+>         .align 2
 
-modprobe scsi_debug virtual_gb=1 add_host=2 num_tgts=600
+Gr{oetje,eeting}s,
 
-echo $CONSOLE_LOGLEVEL >/proc/sys/kernel/printk
-echo $IGNORE_LOGLEVEL  >/sys/module/printk/parameters/ignore_loglevel
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Where /proc/sys/kernel/printk is a horrible interface. The first
-number is important. It defines the limit used for filtering messages.
-The levels are defined in include/linux/kern_levels.h.
-
-Best Regards,
-Petr
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
