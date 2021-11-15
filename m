@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E6A450564
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFD1450568
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhKONam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
+        id S229970AbhKONa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhKONaK (ORCPT
+        with ESMTP id S231357AbhKONaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:30:10 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95380C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:27:14 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id t11so35525699ljh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:27:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
-        b=NNLaK+uqWYFAKV1W3FNpIBioJgbqAWBt/7dJtv6/PaPn9/GgLIzMH+7s2+mqUAknTP
-         0lefv47874gD6/K+5WW2ti+tzMiM6Fx9GP+jZIVqhRRkC1C4A2rIIo0wS+U0T17z0/Fx
-         mbGW2yu0+LVBG+T06seZvlDNGf+DHRiFn58cP41JSdH/LLR2u18tOGbelt5IXF1XAwAe
-         bqyqAIr0oMFR5KRSBhG1VDtQpY489RguXGm2XkLMsK/Iut7FfcS3CyaHEYwENu1l3XUt
-         c3yP6amVzkMQJxDo6RohZ/1m1Vf3n0t8yNF9evYdd+f9moqO1eA7tyvGxO/mDpmwWUW6
-         eHwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NHAujRj3nNPe07TxWi88DybAbp7vcb7zQT2ctaDgCnw=;
-        b=aZfvod21/ysWHqXjw0Et0lLvUVIG8V8RDOXnm9o9NdANWz0kp6MAv1tP52kfsa+oyP
-         vuJa8gWrLSpUb/AjgnMdwt1Gp5R6+LSblIN1mhgN4BM45M+SMTej7BCveZHjI1enqGe6
-         SBt6YNQUWscu77AncseJLOHXXAp27jtKO0mPxU3BqiYXvn3OqL4zTqF5cF6kfN/L+j3b
-         pi5tRHcltK3qa3jeaLwK2Uw4EyKApFKtMELCZ2aUWSCukkzcob1uK5yK5R78NXI4NaSc
-         YQZyGc/Cj2cf7zWP3uVC2PSyMHvPi7TH2JCoOCbCn9MO8Hu4GGXVKbHSDqEXhWs6X+Vd
-         I9LQ==
-X-Gm-Message-State: AOAM530NZmrD++L+2qDrCb4BqqkVWy7MYQY0YuGU5OfITvCspyVshnCU
-        Wj8FNmAGX0j4E5XOfnS9uwmLr/4OY2ikbF2Rixc=
-X-Google-Smtp-Source: ABdhPJx04cWrboBnS+nJkJY+W0ZfEbvdmKcoLcUtIUElPCn8zzPgwa5FZfQHX8TZfdUDx4BOdZ2FcpH+fCmDXLuPkaY=
-X-Received: by 2002:a2e:95d2:: with SMTP id y18mr37755709ljh.93.1636982832967;
- Mon, 15 Nov 2021 05:27:12 -0800 (PST)
+        Mon, 15 Nov 2021 08:30:21 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6097AC061570;
+        Mon, 15 Nov 2021 05:27:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gFbWnaEtnneFXpm4hKQq3b4yTcblOu4hKmE8Ex8W9zI=; b=2m/s8W8TC+G0NpSZq+mSN4ls+u
+        jV9qfuS8az9wfjy2pVWkwDVeiceuojC/T8scEElAX0J7CUDqKb7OfLTCVc13YjjP+ZZnu2isOfMw6
+        mwbQbgDvrRCaLOpWBxfmuVGQKPyLp2n8pYtWQReF5cpBHOrUYMqWXH8LSNoVkm9XSjRc2jykB8qms
+        viVHUX3JSwg3hvKlBpec892YIh04mRxh9JJpIEgjHyfVGOwgPrweK5Ssq/N4T/hql4goL//Vv82uV
+        0xGZgDANBRCCT+IU7KIJYYhZess7GRMfJtJdYSXftYlNOGtc+Mx9gKw3Mn9vttbsipmdHTwkQpWeu
+        RxXTtqZQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmc0y-00FeyR-00; Mon, 15 Nov 2021 13:27:16 +0000
+Date:   Mon, 15 Nov 2021 05:27:15 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, linux-pci@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 06/11] iommu: Expose group variants of dma ownership
+ interfaces
+Message-ID: <YZJgMzYzuxjJpWIC@infradead.org>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-7-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Received: by 2002:a9a:7448:0:b0:14b:25db:9719 with HTTP; Mon, 15 Nov 2021
- 05:27:12 -0800 (PST)
-Reply-To: salemchantal@mail.ee
-From:   MRS Salem Chantal Lawrence <jh9216366@gmail.com>
-Date:   Mon, 15 Nov 2021 05:27:12 -0800
-Message-ID: <CAOcbk86B4Rnx5kqE1fYZM+tMWo5OQDbXnbUW0HdJ=pYdCt7wdw@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115020552.2378167-7-baolu.lu@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention
+On Mon, Nov 15, 2021 at 10:05:47AM +0800, Lu Baolu wrote:
+> The vfio needs to set DMA_OWNER_USER for the entire group when attaching
 
-You have been compensated with the sum of 4.6 million dollars in this
-United Nation the payment will be issue into Atm Visa Card and send to you
-from the Bank we need your Address Passport and your whatsapp number
+The vfio subsystem?  driver?
 
-Contact This My WhatsApp Number for more Details (+1 (201)308-2233
+> it to a vfio container. So expose group variants of setting/releasing dma
+> ownership for this purpose.
+> 
+> This also exposes the helper iommu_group_dma_owner_unclaimed() for vfio
+> report to userspace if the group is viable to user assignment, for
 
-THANKS
-MRS Salem Chantal Lawrence
+.. for vfio to report .. ?
+
+>  void iommu_device_release_dma_owner(struct device *dev, enum iommu_dma_owner owner);
+> +int iommu_group_set_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner,
+> +			      struct file *user_file);
+> +void iommu_group_release_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner);
+
+Pleae avoid all these overly long lines.
+
+> +static inline int iommu_group_set_dma_owner(struct iommu_group *group,
+> +					    enum iommu_dma_owner owner,
+> +					    struct file *user_file)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static inline void iommu_group_release_dma_owner(struct iommu_group *group,
+> +						 enum iommu_dma_owner owner)
+> +{
+> +}
+> +
+> +static inline bool iommu_group_dma_owner_unclaimed(struct iommu_group *group)
+> +{
+> +	return false;
+> +}
+
+Why do we need these stubs?  All potential callers should already
+require CONFIG_IOMMU_API?  Same for the helpers added in patch 1, btw.
+
+> +	mutex_lock(&group->mutex);
+> +	ret = __iommu_group_set_dma_owner(group, owner, user_file);
+> +	mutex_unlock(&group->mutex);
+
+> +	mutex_lock(&group->mutex);
+> +	__iommu_group_release_dma_owner(group, owner);
+> +	mutex_unlock(&group->mutex);
+
+Unless I'm missing something (just skipping over the patches),
+the existing callers also take the lock just around these calls,
+so we don't really need the __-prefixed lowlevel helpers.
+
+> +	mutex_lock(&group->mutex);
+> +	owner = group->dma_owner;
+> +	mutex_unlock(&group->mutex);
+
+No need for a lock to read a single scalar.
+
+> +
+> +	return owner == DMA_OWNER_NONE;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_group_dma_owner_unclaimed);
