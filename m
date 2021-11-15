@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED344523A9
+	by mail.lfdr.de (Postfix) with ESMTP id 91FAF4523AA
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242335AbhKPB2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S1380155AbhKPB2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:28:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243893AbhKOTEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243892AbhKOTEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:04:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB806633DC;
-        Mon, 15 Nov 2021 18:16:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F760633DE;
+        Mon, 15 Nov 2021 18:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000172;
-        bh=Qu5ebb7LkPrK8WpT9/gVyPOEZI6UeCOW6Ud2RwNmAYc=;
+        s=korg; t=1637000175;
+        bh=+7gUFY/JsKMUy689ZPiaF4dEV58+TeCt9SGME78mxlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rTeIW3JXZnISeLb8GZ95OmNiqp20QYPQcbI1Rhb+bH1y+b4AQ7z+0of09HNeIS5vh
-         qwOhA9eiyY+7aqv7/xJQcsFeO2VU7Yw8OVSH0lCT8fn3SyD+5op40icSfoOJSuFN+s
-         Yi4rKv7SRHw2uAI6RufEGam+I133Zq8oSEsR1zEQ=
+        b=w8XpV5DIuGySmzgJVggtfniPo2zk8vtQefbvNngJiTWbCClEYnlSBZZd07o44n5wu
+         RPykDXFESpLPk3fiirYbGqOXN39yHfu5JmcHn4RqqsfvnqBWpTYBGZgA1PFtWjg72L
+         wL+O4urVBZxN8OWQ4b4GwCQpRIGwxtWr70djaA+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
         Aswath Govindraju <a-govindraju@ti.com>,
         Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 562/849] arm64: dts: ti: k3-j721e-main: Fix "max-virtual-functions" in PCIe EP nodes
-Date:   Mon, 15 Nov 2021 18:00:45 +0100
-Message-Id: <20211115165439.266517391@linuxfoundation.org>
+Subject: [PATCH 5.14 563/849] arm64: dts: ti: k3-j721e-main: Fix "bus-range" upto 256 bus number for PCIe
+Date:   Mon, 15 Nov 2021 18:00:46 +0100
+Message-Id: <20211115165439.297344744@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,63 +42,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 9af3ef954975c383eeb667aee207d9ce6fbef8c4 ]
+[ Upstream commit 5f46633565b1c1e1840a927676065d72b442dac4 ]
 
 commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device
-tree nodes") added "max-virtual-functions" to have 16 bit values.
-Fix "max-virtual-functions" in PCIe endpoint (EP) nodes to have 8 bit
-values instead of 16.
+tree nodes") restricted PCIe bus numbers from 0 to 15 (due to SMMU
+restriction in J721E). However since SMMU is not enabled, allow the full
+supported bus numbers from 0 to 255.
 
 Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
 Signed-off-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20210915055358.19997-2-kishon@ti.com
+Link: https://lore.kernel.org/r/20210915055358.19997-3-kishon@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index cf3482376c1e6..43be5d23130b4 100644
+index 43be5d23130b4..08c8d1b47dcd9 100644
 --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -636,7 +636,7 @@
- 		clocks = <&k3_clks 239 1>;
+@@ -610,7 +610,7 @@
  		clock-names = "fck";
- 		max-functions = /bits/ 8 <6>;
--		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
- 		dma-coherent;
- 	};
- 
-@@ -684,7 +684,7 @@
- 		clocks = <&k3_clks 240 1>;
- 		clock-names = "fck";
- 		max-functions = /bits/ 8 <6>;
--		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
- 		dma-coherent;
- 	};
- 
-@@ -732,7 +732,7 @@
- 		clocks = <&k3_clks 241 1>;
- 		clock-names = "fck";
- 		max-functions = /bits/ 8 <6>;
--		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
- 		dma-coherent;
- 	};
- 
-@@ -780,7 +780,7 @@
- 		clocks = <&k3_clks 242 1>;
- 		clock-names = "fck";
- 		max-functions = /bits/ 8 <6>;
--		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
- 		dma-coherent;
- 		#address-cells = <2>;
+ 		#address-cells = <3>;
  		#size-cells = <2>;
+-		bus-range = <0x0 0xf>;
++		bus-range = <0x0 0xff>;
+ 		vendor-id = <0x104c>;
+ 		device-id = <0xb00d>;
+ 		msi-map = <0x0 &gic_its 0x0 0x10000>;
+@@ -658,7 +658,7 @@
+ 		clock-names = "fck";
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+-		bus-range = <0x0 0xf>;
++		bus-range = <0x0 0xff>;
+ 		vendor-id = <0x104c>;
+ 		device-id = <0xb00d>;
+ 		msi-map = <0x0 &gic_its 0x10000 0x10000>;
+@@ -706,7 +706,7 @@
+ 		clock-names = "fck";
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+-		bus-range = <0x0 0xf>;
++		bus-range = <0x0 0xff>;
+ 		vendor-id = <0x104c>;
+ 		device-id = <0xb00d>;
+ 		msi-map = <0x0 &gic_its 0x20000 0x10000>;
+@@ -754,7 +754,7 @@
+ 		clock-names = "fck";
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+-		bus-range = <0x0 0xf>;
++		bus-range = <0x0 0xff>;
+ 		vendor-id = <0x104c>;
+ 		device-id = <0xb00d>;
+ 		msi-map = <0x0 &gic_its 0x30000 0x10000>;
 -- 
 2.33.0
 
