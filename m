@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933FE451A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C1F45214A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354867AbhKOXie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:38:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
+        id S237711AbhKPBC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:02:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343617AbhKOTV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343616AbhKOTV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:21:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A516C635BC;
-        Mon, 15 Nov 2021 18:43:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3478B635BD;
+        Mon, 15 Nov 2021 18:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001789;
-        bh=eVdJx6LEFaICIzOpXoVjUMWi9onvmQSL0pE3vtaEBUs=;
+        s=korg; t=1637001791;
+        bh=DaCfvzE/PurnpKDm1f1w/40iGwtbVS7AV2SLlbTJBVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=skz85cWi3iozdvswLV2gOrejHXOfMg5oldm9GZFxf7xKIFJevbt1+1af/8NhNZgdk
-         Q90QAAqVdGJmqP2cCAEggrIJYV8+dp96xva/0Hc9fURMFsslWKwtobX6szEnBNMjmy
-         PBUQ8IE4E2z+Q98k7lEijt0teTK7ViiAqGqRCVrE=
+        b=FLAMOHxDsju5k0FAQk33LFIV6yJfXHQEME8JlGBTofCeoSn+NzjcpHmYEUXz7Apk9
+         k0KODV3AaMqO9r3h8swhz6GzN2ubzig0j3+ea0EYGm1nSGak5+qhvWklZQ0BUu4bUa
+         GuVJFoDZXBmEtAB1qU7VgP4XMhPMYI+2/7MYICQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        kernel test robot <lkp@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 322/917] drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()
-Date:   Mon, 15 Nov 2021 17:56:57 +0100
-Message-Id: <20211115165439.657867117@linuxfoundation.org>
+Subject: [PATCH 5.15 323/917] perf/x86/intel/uncore: Fix Intel SPR CHA event constraints
+Date:   Mon, 15 Nov 2021 17:56:58 +0100
+Message-Id: <20211115165439.690427774@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,68 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Foss <robert.foss@linaro.org>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 7f16d0f3b8e2d13f940e944cd17044ca8eeb8b32 ]
+[ Upstream commit 9d756e408e080d40e7916484b00c802026e6d1ad ]
 
-The return value of sp_tx_rst_aux() is not propagated, which means
-both compiler warnings and potential errors not being handled.
+SPR CHA events have the exact same event constraints as SKX, so add the
+constraints.
 
-Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
-
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210818171318.1848272-1-robert.foss@linaro.org
+Fixes: 949b11381f81 ("perf/x86/intel/uncore: Add Sapphire Rapids server CHA support")
+Reported-by: Stephane Eranian <eranian@google.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/1629991963-102621-5-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 14d73fb1dd15b..ea414cd349b5c 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -720,7 +720,7 @@ static int edid_read(struct anx7625_data *ctx,
- 		ret = sp_tx_aux_rd(ctx, 0xf1);
- 
- 		if (ret) {
--			sp_tx_rst_aux(ctx);
-+			ret = sp_tx_rst_aux(ctx);
- 			DRM_DEV_DEBUG_DRIVER(dev, "edid read fail, reset!\n");
- 		} else {
- 			ret = anx7625_reg_block_read(ctx, ctx->i2c.rx_p0_client,
-@@ -735,7 +735,7 @@ static int edid_read(struct anx7625_data *ctx,
- 	if (cnt > EDID_TRY_CNT)
- 		return -EIO;
- 
--	return 0;
-+	return ret;
- }
- 
- static int segments_edid_read(struct anx7625_data *ctx,
-@@ -785,7 +785,7 @@ static int segments_edid_read(struct anx7625_data *ctx,
- 	if (cnt > EDID_TRY_CNT)
- 		return -EIO;
- 
--	return 0;
-+	return ret;
- }
- 
- static int sp_tx_edid_read(struct anx7625_data *ctx,
-@@ -887,7 +887,11 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
- 	}
- 
- 	/* Reset aux channel */
--	sp_tx_rst_aux(ctx);
-+	ret = sp_tx_rst_aux(ctx);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(dev, "Failed to reset aux channel!\n");
-+		return ret;
-+	}
- 
- 	return (blocks_num + 1);
- }
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index d941854e4efaa..ce85ee5f60f97 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -5649,6 +5649,7 @@ static struct intel_uncore_type spr_uncore_chabox = {
+ 	.event_mask		= SPR_CHA_PMON_EVENT_MASK,
+ 	.event_mask_ext		= SPR_RAW_EVENT_MASK_EXT,
+ 	.num_shared_regs	= 1,
++	.constraints		= skx_uncore_chabox_constraints,
+ 	.ops			= &spr_uncore_chabox_ops,
+ 	.format_group		= &spr_uncore_chabox_format_group,
+ 	.attr_update		= uncore_alias_groups,
 -- 
 2.33.0
 
