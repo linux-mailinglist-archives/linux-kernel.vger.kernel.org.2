@@ -2,126 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A609451C21
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CD4451C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350365AbhKPANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347690AbhKOVbk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:31:40 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A7FC07978C;
-        Mon, 15 Nov 2021 13:16:10 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso966742pjb.0;
-        Mon, 15 Nov 2021 13:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A2H9eWpu5XFGIj2LpL3XWrpar0ldad6fVGKZSwsPS8U=;
-        b=ecBgsbCyP4rLezyg8ifBkDr4A2MT3nuunKNaswUoz7NLtAASDeH+xP27ABxc0vYgOs
-         9xVNW7taSVEq1LCJnqLIwl+Ume8HcL2CLv4LbI7OqUbYSGGPGWkYljQhR4im9BEf9Wdm
-         +2vNgD87JkQ8ehimWBd+/Dljgv/LCKtaGWFLgzwuz7H5BVtXRBVeLSZSptytyYkbFdNf
-         h9SuJI2Z7IIg9Dnmz3k+PhSPjCzEtcl1mLRizs+Xto6BONEQlBUDzV1yZC1hSM7EvKdU
-         CMvtJcnGxIfbEkKyeTw48LN0HevtYdIu7lB9w6Z9cAqqMTHTpyMsbgCaLpMTcukXPFUc
-         SLkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A2H9eWpu5XFGIj2LpL3XWrpar0ldad6fVGKZSwsPS8U=;
-        b=yAYfM7bAacu6PDJ9nX9TxBg8P6KqNX/hWLT7PG4hMFd4yY9Rto70HPEuQzmK5Z2eS4
-         S9iCVuDtCHgpMXxjSAFjCCD05ZDWfSULwCD/yFTEZ08RJTNnqItBYnp6x3kNz6WFHRLx
-         O3Zsa1ROuoO+GeH1l/onuYq1ilCNpayaNULAGmgrTMDscj15dzhUh9gE2pL+Zr+VzoHW
-         N7uS73AJBds9s7vlaKNe8lqvphJbdetRhDhmW4h3Vt8ljuCS1PjzozlBbooeYsRjL59V
-         3MT71sFoAOrLZ03YDLT54L/zMYkQig6xd4p3MaduFOaGZsUFZ3in+V9NnJ3UtJJs4xuB
-         PZ6g==
-X-Gm-Message-State: AOAM5319QjUlQtlQHPjEBFsARkGceFWba0DkCS2x87v0hZIiFFvDl+tg
-        gcfw6Z5tBm8N1sRMJ6XCVYo=
-X-Google-Smtp-Source: ABdhPJzCVvr66gTRauRC3FvA3vNC+EUo3/WhpTrRao7Y0rDoVxmWRgXrwi5qjC3Ea8dNyOsSg1r7cw==
-X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr2065531pjb.66.1637010969952;
-        Mon, 15 Nov 2021 13:16:09 -0800 (PST)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id u38sm17125234pfg.0.2021.11.15.13.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:16:09 -0800 (PST)
-Date:   Tue, 16 Nov 2021 06:16:07 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ilia Sergachev <silia@ethz.ch>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Filip Kokosinski <fkokosinski@antmicro.com>
-Subject: Re: [PATCH 3/3] serial: liteuart: fix minor-number leak on probe
- errors
-Message-ID: <YZLOF2g8DBllJg2l@antec>
-References: <20211115133745.11445-1-johan@kernel.org>
- <20211115133745.11445-4-johan@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115133745.11445-4-johan@kernel.org>
+        id S1347392AbhKPAMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:12:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349053AbhKOVTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 16:19:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF09161B3F;
+        Mon, 15 Nov 2021 21:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637010996;
+        bh=yJnT71RrqUI1R/Zlv2dp3VyuSlK7F9VY+3cz3B1YfBY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P67gNDW8zZLZYAPzwAZz2rpG4qd2SR8VtXoKSz1MJGuSXZT6S0QTtcM7MNRxxeH57
+         /odAc1QdoS/eDF9kbIr061lq39bU6wBW4762tN4TE89EcYJ7Ekrjxl/CGp3UM3WyeV
+         mLJCeFEanuCn23gzic1mU7vsgwr3ZoNHJspbmPlY=
+Date:   Mon, 15 Nov 2021 13:16:33 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Bui Quang Minh <minhquangbui99@gmail.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mina Almasry <almasrymina@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] hugetlb: fix hugetlb cgroup refcounting during mremap
+Message-Id: <20211115131633.81e1879e36aed4a0290e6f0c@linux-foundation.org>
+In-Reply-To: <20211113154412.91134-1-minhquangbui99@gmail.com>
+References: <20211113154412.91134-1-minhquangbui99@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:37:45PM +0100, Johan Hovold wrote:
-> Make sure to release the allocated minor number before returning on
-> probe errors.
-> 
-> Fixes: 1da81e5562fa ("drivers/tty/serial: add LiteUART driver")
-> Cc: stable@vger.kernel.org      # 5.11
-> Cc: Filip Kokosinski <fkokosinski@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+On Sat, 13 Nov 2021 22:44:10 +0700 Bui Quang Minh <minhquangbui99@gmail.com> wrote:
 
-Reviewed-by: Stafford Horne <shorne@gmail.com>
+> When hugetlb_vm_op_open() is called during copy_vma(), we may take the
+> reference to resv_map->css. Later, when clearing the reservation pointer
+> of old_vma after transferring it to new_vma, we forget to drop the
+> reference to resv_map->css. This leads to a reference leak of css.
+> 
+> Fixes this by adding a check to drop reservation css  reference in
+> clear_vma_resv_huge_pages()
 
-> ---
->  drivers/tty/serial/liteuart.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-> index da792d0df790..2941659e5274 100644
-> --- a/drivers/tty/serial/liteuart.c
-> +++ b/drivers/tty/serial/liteuart.c
-> @@ -270,8 +270,10 @@ static int liteuart_probe(struct platform_device *pdev)
->  
->  	/* get membase */
->  	port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-> -	if (IS_ERR(port->membase))
-> -		return PTR_ERR(port->membase);
-> +	if (IS_ERR(port->membase)) {
-> +		ret = PTR_ERR(port->membase);
-> +		goto err_erase_id;
-> +	}
->  
->  	/* values not from device tree */
->  	port->dev = &pdev->dev;
-> @@ -287,7 +289,16 @@ static int liteuart_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, port);
->  
-> -	return uart_add_one_port(&liteuart_driver, &uart->port);
-> +	ret = uart_add_one_port(&liteuart_driver, &uart->port);
-> +	if (ret)
-> +		goto err_erase_id;
-> +
-> +	return 0;
-> +
-> +err_erase_id:
-> +	xa_erase(&liteuart_array, uart->id);
-> +
-> +	return ret;
->  }
->  
->  static int liteuart_remove(struct platform_device *pdev)
-> -- 
-> 2.32.0
-> 
+Thanks.  I added cc:stable to this (550a7d60bd5e35a was merged a year
+ago) and I've queued it for 5.16-rc2, pending suitable reviewer feedback.
+
