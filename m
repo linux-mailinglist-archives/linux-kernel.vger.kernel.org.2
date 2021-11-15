@@ -2,314 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8FA44FD86
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE6E44FD87
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbhKODmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 22:42:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236885AbhKODmC (ORCPT
+        id S236908AbhKODmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:42:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236730AbhKODmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 22:42:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636947546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GqfnG3kzB7LuV3kVCOkyfsdOLqvjHJ5wK0ZM6eC+Uok=;
-        b=XSKbmqNygjqDIglrVoJVYamY7s3CTLnwxohz483H3As1HsegDiCSrr7DMF4t+4aj8ds88x
-        148fHht14NCtSFKEutRHsNkhSx/2UQ7zFtz/EFYveaxUyTrlvVQ9OA5gyj475sue4Rn2c6
-        NGjllsIz8xWRH6FUX/wgqK5x+4l6c90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-voGasRj6MQ21ACM0E0wB6A-1; Sun, 14 Nov 2021 22:39:01 -0500
-X-MC-Unique: voGasRj6MQ21ACM0E0wB6A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E55D871817;
-        Mon, 15 Nov 2021 03:38:59 +0000 (UTC)
-Received: from [10.22.16.82] (unknown [10.22.16.82])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C19A560BE5;
-        Mon, 15 Nov 2021 03:38:57 +0000 (UTC)
-Message-ID: <a141b93d-1945-a44d-467f-54b648cbf4d0@redhat.com>
-Date:   Sun, 14 Nov 2021 22:38:57 -0500
+        Sun, 14 Nov 2021 22:42:22 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E41CC061746
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 19:39:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=O37cFzy5U/nU5t/08MSG/K3BV1sQd+MXjUVeTg8sBqw=; b=UWTPuuY9QvSlhcSBb5X0H/tOE/
+        VG78r9qCTN+FVq7bUEsBXWBT2X5nr0pXhtuc92jp9/FZF2ZFkGTJPQIvW/0JxwNgZyLb5fYFYY8TS
+        C55ZDYPeTsHbso8BJ2ciPhkYH2c0UK3g0j/ogU/FeUNwTDC2Zwm+mDJTrrIWkTuMmm7LwETbnHf0K
+        E2PLSmxYytjvXJBgEaWL7m5D1nINcXUyjABi9Am9c10lOWN+W0A4zDMCcETwU8UoW3D4Re7BXk8Nt
+        rwHIcoW2/fesT0u1Z6yOXD6stT+BRgRsbqwEwNg2SFiC7vMbWXb7W/I339n5wsBVAuN/52QeRtPpn
+        QpYYYpxA==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmSq6-00EJcD-Pt; Mon, 15 Nov 2021 03:39:26 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        dri-devel@lists.freedesktop.org, Stefano Babic <sbabic@denx.de>,
+        Anatolij Gustschin <agust@denx.de>
+Subject: [PATCH] backlight: ili922x: fix kernel-doc warnings & notation
+Date:   Sun, 14 Nov 2021 19:39:25 -0800
+Message-Id: <20211115033925.22024-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4] locking/rwsem: Make handoff bit handling more
- consistent
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        mazhenhua <mazhenhua@xiaomi.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Maria Yu <quic_aiquny@quicinc.com>
-References: <20211112040753.389380-1-longman@redhat.com>
- <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 07:10, Peter Zijlstra wrote:
-> On Thu, Nov 11, 2021 at 11:07:53PM -0500, Waiman Long wrote:
->> @@ -889,6 +892,20 @@ rwsem_spin_on_owner(struct rw_semaphore *sem)
->>   }
->>   #endif
->>   
->> +/*
->> + * Common code to handle rwsem flags in out_nolock path with wait_lock held.
->> + * If there is more than one waiter in the queue and the HANDOFF bit is set,
->> + * the next waiter will inherit it if the first waiter is removed.
->> + */
->> +static inline void rwsem_out_nolock_clear_flags(struct rw_semaphore *sem,
->> +						struct rwsem_waiter *waiter)
-> I'm going to rename that, it doesn't just clear flags, it dequeues the
-> waiter.
->
-> Argh, rwsem_mark_wake() doesn't clear HANDOFF when list_empty(), and
-> write_slowpath() is *far* too clever about all of this.
-rwsem_mark_wake() does clear the HANDOFF flag if it was set.
->
->
->> +{
->> +	list_del(&waiter->list);
-> 	if (list_empty(&sem->wait_list)) {
->> +		atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS,
->> +				   &sem->count);
-> 	}
->> +}
->
->
->> @@ -1098,7 +1110,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->>   		 * In this case, we attempt to acquire the lock again
->>   		 * without sleeping.
->>   		 */
->> -		if (wstate == WRITER_HANDOFF) {
->> +		if (waiter.handoff_set) {
-> I'm thinking this wants to be something like:
->
-> 		if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
-handoff_set flag is only set when the waiter becomes the first.
->
->>   			enum owner_state owner_state;
->>   
->>   			preempt_disable();
-> How's this (on top) then?
->
-> ---
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -104,11 +104,10 @@
->    * atomic_long_fetch_add() is used to obtain reader lock, whereas
->    * atomic_long_cmpxchg() will be used to obtain writer lock.
->    *
-> - * There are four places where the lock handoff bit may be set or cleared.
-> - * 1) rwsem_mark_wake() for readers            -- set, clear
-> - * 2) rwsem_try_write_lock() for writers       -- set, clear
-> - * 3) Error path of rwsem_down_write_slowpath() -- clear
-> - * 4) Error path of rwsem_down_read_slowpath()  -- clear
-> + * There are three places where the lock handoff bit may be set or cleared.
-> + * 1) rwsem_mark_wake() for readers		-- set, clear
-> + * 2) rwsem_try_write_lock() for writers	-- set, clear
-> + * 3) rwsem_del_waiter()			-- clear
->    *
->    * For all the above cases, wait_lock will be held. A writer must also
->    * be the first one in the wait_list to be eligible for setting the handoff
-> @@ -363,6 +362,31 @@ enum rwsem_wake_type {
->    */
->   #define MAX_READERS_WAKEUP	0x100
->   
-> +static inline void
-> +rwsem_add_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
-> +{
-> +	lockdep_assert_held(&sem->wait_lock);
-> +	list_add_tail(&waiter->list, &sem->wait_list);
-> +	/* caller will set RWSEM_FLAG_WAITERS */
-> +}
-> +
-> +/*
-> + * Remove a waiter from the wait_list and clear flags.
-> + *
-> + * Both rwsem_mark_wake() and rwsem_try_write_lock() contain a full 'copy' of
-> + * this function. Modify with care.
-> + */
-> +static inline void
-> +rwsem_del_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
-> +{
-> +	lockdep_assert_held(&sem->wait_lock);
-> +	list_del(&waiter->list);
-> +	if (likely(!list_empty(&sem->wait_list)))
-> +		return;
-> +
-> +	atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS, &sem->count);
-> +}
-> +
->   /*
->    * handle the lock release when processes blocked on it that can now run
->    * - if we come here from up_xxxx(), then the RWSEM_FLAG_WAITERS bit must
-> @@ -374,6 +398,8 @@ enum rwsem_wake_type {
->    *   preferably when the wait_lock is released
->    * - woken process blocks are discarded from the list after having task zeroed
->    * - writers are only marked woken if downgrading is false
-> + *
-> + * Implies rwsem_del_waiter() for all woken readers.
->    */
->   static void rwsem_mark_wake(struct rw_semaphore *sem,
->   			    enum rwsem_wake_type wake_type,
-> @@ -488,18 +514,25 @@ static void rwsem_mark_wake(struct rw_se
->   
->   	adjustment = woken * RWSEM_READER_BIAS - adjustment;
->   	lockevent_cond_inc(rwsem_wake_reader, woken);
-> +
-> +	oldcount = atomic_long_read(&sem->count);
->   	if (list_empty(&sem->wait_list)) {
-> -		/* hit end of list above */
-> +		/*
-> +		 * Combined with list_move_tail() above, this implies
-> +		 * rwsem_del_waiter().
-> +		 */
->   		adjustment -= RWSEM_FLAG_WAITERS;
-> +		if (oldcount & RWSEM_FLAG_HANDOFF)
-> +			adjustment -= RWSEM_FLAG_HANDOFF;
-> +	} else if (woken) {
-> +		/*
-> +		 * When we've woken a reader, we no longer need to force
-> +		 * writers to give up the lock and we can clear HANDOFF.
-> +		 */
-> +		if (oldcount & RWSEM_FLAG_HANDOFF)
-> +			adjustment -= RWSEM_FLAG_HANDOFF;
->   	}
->   
-> -	/*
-> -	 * When we've woken a reader, we no longer need to force writers
-> -	 * to give up the lock and we can clear HANDOFF.
-> -	 */
-> -	if (woken && (atomic_long_read(&sem->count) & RWSEM_FLAG_HANDOFF))
-> -		adjustment -= RWSEM_FLAG_HANDOFF;
-> -
->   	if (adjustment)
->   		atomic_long_add(adjustment, &sem->count);
->   
-> @@ -529,6 +562,8 @@ static void rwsem_mark_wake(struct rw_se
->    * This function must be called with the sem->wait_lock held to prevent
->    * race conditions between checking the rwsem wait list and setting the
->    * sem->count accordingly.
-> + *
-> + * Implies rwsem_del_waiter() on success.
->    */
->   static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
->   					struct rwsem_waiter *waiter)
-> @@ -575,6 +610,11 @@ static inline bool rwsem_try_write_lock(
->   		return false;
->   	}
->   
-> +	/*
-> +	 * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
-> +	 * success.
-> +	 */
-> +	list_del(&waiter->list);
->   	rwsem_set_owner(sem);
->   	return true;
->   }
-> @@ -893,20 +933,6 @@ rwsem_spin_on_owner(struct rw_semaphore
->   #endif
->   
->   /*
-> - * Common code to handle rwsem flags in out_nolock path with wait_lock held.
-> - * If there is more than one waiter in the queue and the HANDOFF bit is set,
-> - * the next waiter will inherit it if the first waiter is removed.
-> - */
-> -static inline void rwsem_out_nolock_clear_flags(struct rw_semaphore *sem,
-> -						struct rwsem_waiter *waiter)
-> -{
-> -	list_del(&waiter->list);
-> -	if (list_empty(&sem->wait_list))
-> -		atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS,
-> -				   &sem->count);
-> -}
-> -
-> -/*
->    * Wait for the read lock to be granted
->    */
->   static struct rw_semaphore __sched *
-> @@ -973,7 +999,7 @@ rwsem_down_read_slowpath(struct rw_semap
->   		}
->   		adjustment += RWSEM_FLAG_WAITERS;
->   	}
-> -	list_add_tail(&waiter.list, &sem->wait_list);
-> +	rwsem_add_waiter(sem, &waiter);
->   
->   	/* we're now waiting on the lock, but no longer actively locking */
->   	count = atomic_long_add_return(adjustment, &sem->count);
-> @@ -1019,7 +1045,7 @@ rwsem_down_read_slowpath(struct rw_semap
->   	return sem;
->   
->   out_nolock:
-> -	rwsem_out_nolock_clear_flags(sem, &waiter);
-> +	rwsem_del_waiter(sem, &waiter);
->   	raw_spin_unlock_irq(&sem->wait_lock);
->   	__set_current_state(TASK_RUNNING);
->   	lockevent_inc(rwsem_rlock_fail);
-> @@ -1034,7 +1060,6 @@ rwsem_down_write_slowpath(struct rw_sema
->   {
->   	long count;
->   	struct rwsem_waiter waiter;
-> -	struct rw_semaphore *ret = sem;
->   	DEFINE_WAKE_Q(wake_q);
->   
->   	/* do optimistic spinning and steal lock if possible */
-> @@ -1053,7 +1078,7 @@ rwsem_down_write_slowpath(struct rw_sema
->   	waiter.handoff_set = false;
->   
->   	raw_spin_lock_irq(&sem->wait_lock);
-> -	list_add_tail(&waiter.list, &sem->wait_list);
-> +	rwsem_add_waiter(sem, &waiter);
->   
->   	/* we're now waiting on the lock */
->   	if (rwsem_first_waiter(sem) != &waiter) {
-> @@ -1110,7 +1135,7 @@ rwsem_down_write_slowpath(struct rw_sema
->   		 * In this case, we attempt to acquire the lock again
->   		 * without sleeping.
->   		 */
-> -		if (waiter.handoff_set) {
-> +		if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
->   			enum owner_state owner_state;
->   
->   			preempt_disable();
-> @@ -1128,16 +1153,14 @@ rwsem_down_write_slowpath(struct rw_sema
->   		raw_spin_lock_irq(&sem->wait_lock);
->   	}
->   	__set_current_state(TASK_RUNNING);
-> -	list_del(&waiter.list);
-+    rwsem_del_waiter(sem, &waiters); ?
->   	raw_spin_unlock_irq(&sem->wait_lock);
->   	lockevent_inc(rwsem_wlock);
-> -
-> -	return ret;
-> +	return sem;
->   
->   out_nolock:
->   	__set_current_state(TASK_RUNNING);
->   	raw_spin_lock_irq(&sem->wait_lock);
-> -	rwsem_out_nolock_clear_flags(sem, &waiter);
-> +	rwsem_del_waiter(sem, &waiter);
->   	if (!list_empty(&sem->wait_list))
->   		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
->   	raw_spin_unlock_irq(&sem->wait_lock);
->
-Sorry for the late reply as I was busy on other works.
+Convert function-like macro comments to kernel-doc notation and
+fix other kernel-doc warnings:
 
-I like the idea. I will incorporate in a new patch tomorrow.
+drivers/video/backlight/ili922x.c:85: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * START_BYTE(id, rs, rw)
+drivers/video/backlight/ili922x.c:118: warning: expecting prototype for CHECK_FREQ_REG(spi_device s, spi_transfer x)(). Prototype was for CHECK_FREQ_REG() instead
 
-Cheers,
-Longman
+ili922x.c:92: warning: contents before sections
+ili922x.c:150: warning: No description found for return value of 'ili922x_read_status'
+ili922x.c:193: warning: No description found for return value of 'ili922x_read'
+ili922x.c:247: warning: No description found for return value of 'ili922x_write'
+ili922x.c:353: warning: No description found for return value of 'ili922x_poweron'
+ili922x.c:382: warning: No description found for return value of 'ili922x_poweroff'
 
+Fixes: 4cfbfa971478 ("video: backlight: add ili922x lcd driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Stefano Babic <sbabic@denx.de>
+Cc: Anatolij Gustschin <agust@denx.de>
+---
+ drivers/video/backlight/ili922x.c |   29 ++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
+
+--- linux-next-20211102.orig/drivers/video/backlight/ili922x.c
++++ linux-next-20211102/drivers/video/backlight/ili922x.c
+@@ -82,13 +82,7 @@
+ #define START_RW_READ		1
+ 
+ /**
+- * START_BYTE(id, rs, rw)
+- *
+- * Set the start byte according to the required operation.
+- * The start byte is defined as:
+- *   ----------------------------------
+- *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
+- *   ----------------------------------
++ * START_BYTE() - Set the start byte according to the required operation
+  * @id: display's id as set by the manufacturer
+  * @rs: operation type bit, one of:
+  *	  - START_RS_INDEX	set the index register
+@@ -96,14 +90,19 @@
+  * @rw: read/write operation
+  *	 - START_RW_WRITE	write
+  *	 - START_RW_READ	read
++ *
++ * The start byte is defined as:
++ *   ----------------------------------
++ *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
++ *   ----------------------------------
+  */
+ #define START_BYTE(id, rs, rw)	\
+ 	(0x70 | (((id) & 0x01) << 2) | (((rs) & 0x01) << 1) | ((rw) & 0x01))
+ 
+ /**
+- * CHECK_FREQ_REG(spi_device s, spi_transfer x) - Check the frequency
+- *	for the SPI transfer. According to the datasheet, the controller
+- *	accept higher frequency for the GRAM transfer, but it requires
++ * CHECK_FREQ_REG() - Check the frequency for the SPI transfer
++ *	According to the datasheet, the controller
++ *	accepts higher frequency for the GRAM transfer, but it requires
+  *	lower frequency when the registers are read/written.
+  *	The macro sets the frequency in the spi_transfer structure if
+  *	the frequency exceeds the maximum value.
+@@ -145,6 +144,8 @@ struct ili922x {
+  * ili922x_read_status - read status register from display
+  * @spi: spi device
+  * @rs:  output value
++ *
++ * Return: %0 on success or a negative error code on failure
+  */
+ static int ili922x_read_status(struct spi_device *spi, u16 *rs)
+ {
+@@ -188,6 +189,8 @@ static int ili922x_read_status(struct sp
+  * @spi: spi device
+  * @reg: offset of the register to be read
+  * @rx:  output value
++ *
++ * Return: %0 on success or a negative error code on failure
+  */
+ static int ili922x_read(struct spi_device *spi, u8 reg, u16 *rx)
+ {
+@@ -242,6 +245,8 @@ static int ili922x_read(struct spi_devic
+  * @spi: struct spi_device *
+  * @reg: offset of the register to be written
+  * @value: value to be written
++ *
++ * Return: %0 on success or a negative error code on failure
+  */
+ static int ili922x_write(struct spi_device *spi, u8 reg, u16 value)
+ {
+@@ -348,6 +353,8 @@ static void set_write_to_gram_reg(struct
+  * The sequence to turn on the display is taken from
+  * the datasheet and/or the example code provided by the
+  * manufacturer.
++ *
++ * Return: %0 on success or a negative value on failure
+  */
+ static int ili922x_poweron(struct spi_device *spi)
+ {
+@@ -377,6 +384,8 @@ static int ili922x_poweron(struct spi_de
+ /**
+  * ili922x_poweroff - turn the display off
+  * @spi: spi device
++ *
++ * Return: %0 on success or a negative value on failure
+  */
+ static int ili922x_poweroff(struct spi_device *spi)
+ {
