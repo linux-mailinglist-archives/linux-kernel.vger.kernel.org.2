@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDB64511F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C260B4511EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245125AbhKOTTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:19:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58628 "EHLO mail.kernel.org"
+        id S233149AbhKOTST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:18:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238743AbhKORpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238742AbhKORpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:45:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E466330C;
-        Mon, 15 Nov 2021 17:29:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F17C6330F;
+        Mon, 15 Nov 2021 17:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997359;
-        bh=eajIuobfbs5aY/C3Q8dSjCf3Ko6DnXwHvuvfvoHM2uc=;
+        s=korg; t=1636997362;
+        bh=sF8fHi2Yg07ypCz0lBor9KwD8I+9TbF5mnw5PXmD5pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XZ4tnqUN/jap32w0dYvd2W0N0gffZ3D6jXv3LkYk2iIvQb1q+ZsCRgQrHhRINuhBg
-         BIt8neNFCMsUSklgPNtVS7f4e5bOGy2gDnjrMLLhRPQSPGGiaLdHPk6NFsRkg17cjo
-         D5sP//xpdZz7ytrDEMi3tXWKjfAaOTsT0tjpJrlM=
+        b=MBcbzp2mwKRNIO7oVU5Db0VEIRf1CKjaK4gya07QSnb6HLabxmvv1HDYFQCzt/65T
+         ULFtMOlI2ILS/xZC1U42/kPpFIjOYW4kglFL+AQrtYfx0rG/2SdVv2aCn89bTzD7HI
+         y6A7OZSNdD/v5/m8c0KRGh+1qaxmF2h1UgRvtjsg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.10 120/575] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
-Date:   Mon, 15 Nov 2021 17:57:25 +0100
-Message-Id: <20211115165347.837820916@linuxfoundation.org>
+        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
+        Li Yang <leoyang.li@nxp.com>
+Subject: [PATCH 5.10 121/575] soc: fsl: dpio: replace smp_processor_id with raw_smp_processor_id
+Date:   Mon, 15 Nov 2021 17:57:26 +0100
+Message-Id: <20211115165347.879602500@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,68 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Meng Li <Meng.Li@windriver.com>
 
-commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
+commit e775eb9fc2a4107f03222fa48bc95c2c82427e64 upstream.
 
-When an instruction to save or restore a register from the stack fails
-in _save_fp_context or _restore_fp_context return with -EFAULT.  This
-change was made to r2300_fpu.S[1] but it looks like it got lost with
-the introduction of EX2[2].  This is also what the other implementation
-of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
-what is needed for the callers to be able to handle the error.
+When enable debug kernel configs,there will be calltrace as below:
 
-Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
-it does not terminate the entire process it just terminates a single
-thread.
+BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
+caller is debug_smp_processor_id+0x20/0x30
+CPU: 6 PID: 1 Comm: swapper/0 Not tainted 5.10.63-yocto-standard #1
+Hardware name: NXP Layerscape LX2160ARDB (DT)
+Call trace:
+ dump_backtrace+0x0/0x1a0
+ show_stack+0x24/0x30
+ dump_stack+0xf0/0x13c
+ check_preemption_disabled+0x100/0x110
+ debug_smp_processor_id+0x20/0x30
+ dpaa2_io_query_fq_count+0xdc/0x154
+ dpaa2_eth_stop+0x144/0x314
+ __dev_close_many+0xdc/0x160
+ __dev_change_flags+0xe8/0x220
+ dev_change_flags+0x30/0x70
+ ic_close_devs+0x50/0x78
+ ip_auto_config+0xed0/0xf10
+ do_one_initcall+0xac/0x460
+ kernel_init_freeable+0x30c/0x378
+ kernel_init+0x20/0x128
+ ret_from_fork+0x10/0x38
 
-As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
-remove the problematic and now unused helper function.
+Based on comment in the context, it doesn't matter whether
+preemption is disable or not. So, replace smp_processor_id()
+with raw_smp_processor_id() to avoid above call trace.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
-[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
+Fixes: c89105c9b390 ("staging: fsl-mc: Move DPIO from staging to drivers/soc/fsl")
 Cc: stable@vger.kernel.org
-Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Signed-off-by: Li Yang <leoyang.li@nxp.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/kernel/r2300_fpu.S |    4 ++--
- arch/mips/kernel/syscall.c   |    9 ---------
- 2 files changed, 2 insertions(+), 11 deletions(-)
+ drivers/soc/fsl/dpio/dpio-service.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/kernel/r2300_fpu.S
-+++ b/arch/mips/kernel/r2300_fpu.S
-@@ -29,8 +29,8 @@
- #define EX2(a,b)						\
- 9:	a,##b;							\
- 	.section __ex_table,"a";				\
--	PTR	9b,bad_stack;					\
--	PTR	9b+4,bad_stack;					\
-+	PTR	9b,fault;					\
-+	PTR	9b+4,fault;					\
- 	.previous
+--- a/drivers/soc/fsl/dpio/dpio-service.c
++++ b/drivers/soc/fsl/dpio/dpio-service.c
+@@ -59,7 +59,7 @@ static inline struct dpaa2_io *service_s
+ 	 * potentially being migrated away.
+ 	 */
+ 	if (cpu < 0)
+-		cpu = smp_processor_id();
++		cpu = raw_smp_processor_id();
  
- 	.set	mips1
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -240,12 +240,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
- {
- 	return -ENOSYS;
- }
--
--/*
-- * If we ever come here the user sp is bad.  Zap the process right away.
-- * Due to the bad stack signaling wouldn't work.
-- */
--asmlinkage void bad_stack(void)
--{
--	do_exit(SIGSEGV);
--}
+ 	/* If a specific cpu was requested, pick it up immediately */
+ 	return dpio_by_cpu[cpu];
 
 
