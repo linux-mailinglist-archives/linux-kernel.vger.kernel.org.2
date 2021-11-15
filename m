@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A208D450DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F45450DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238681AbhKOSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:07:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S238654AbhKOSAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:00:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237847AbhKOR0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:26:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF8261C14;
-        Mon, 15 Nov 2021 17:16:48 +0000 (UTC)
+        id S236971AbhKORVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:21:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386A663253;
+        Mon, 15 Nov 2021 17:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996609;
-        bh=dQiUjyVYhqppDt0Inm25W2OeF8CpFYuGtBwEO0Vfj6o=;
+        s=korg; t=1636996614;
+        bh=UJSLc3jDBIUc9tkqyUOvxzR5SQxuThss1h9VtgQA6mU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eNa1TbaL5B6NiopyTPZZsHFSJfZ2uezMHergLoaGwYSdlrdlT/sHKR/qvCoz+lnjg
-         71phVQHRdBsWKWDknNBKq18WjcTZ/8JfWOISq90dGnK3UbRrgvwd/qNXfNM4Sk+qkl
-         pO3Eny6tRp0pL0jqHtxmSVJFq5CcDO7chc1nf24g=
+        b=IKfRFrWs9n0gpCF2cQL2OI85W3bQ6Nfd0yBjYue0/poHB04tx3x/tG+FdGl3sRdPW
+         RIZrmCVga4P5nQz3x3efhrzNrIRxC3+1qYBIgJMQ5VWEJLRRyGl2TynDGtvWRvKNKe
+         IeT1FCtrcL+xCvjLIu28yuXIClMndTpesQFD9M/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kees Cook <keescook@chromium.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 201/355] media: radio-wl1273: Avoid card name truncation
-Date:   Mon, 15 Nov 2021 18:02:05 +0100
-Message-Id: <20211115165320.264972928@linuxfoundation.org>
+Subject: [PATCH 5.4 203/355] media: tm6000: Avoid card name truncation
+Date:   Mon, 15 Nov 2021 18:02:07 +0100
+Message-Id: <20211115165320.328889270@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,35 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit dfadec236aa99f6086141949c9dc3ec50f3ff20d ]
+[ Upstream commit 42bb98e420d454fef3614b70ea11cc59068395f6 ]
 
 The "card" string only holds 31 characters (and the terminating NUL).
 In order to avoid truncation, use a shorter card description instead of
-the current result, "Texas Instruments Wl1273 FM Rad".
+the current result, "Trident TVMaster TM5600/6000/60".
 
 Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 87d1a50ce451 ("[media] V4L2: WL1273 FM Radio: TI WL1273 FM radio driver")
+Fixes: e28f49b0b2a8 ("V4L/DVB: tm6000: fix some info messages")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/radio/radio-wl1273.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/tm6000/tm6000-video.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/radio/radio-wl1273.c b/drivers/media/radio/radio-wl1273.c
-index 1123768731676..484046471c03f 100644
---- a/drivers/media/radio/radio-wl1273.c
-+++ b/drivers/media/radio/radio-wl1273.c
-@@ -1279,7 +1279,7 @@ static int wl1273_fm_vidioc_querycap(struct file *file, void *priv,
+diff --git a/drivers/media/usb/tm6000/tm6000-video.c b/drivers/media/usb/tm6000/tm6000-video.c
+index c46cbcfafab3f..8874b0b922eee 100644
+--- a/drivers/media/usb/tm6000/tm6000-video.c
++++ b/drivers/media/usb/tm6000/tm6000-video.c
+@@ -854,8 +854,7 @@ static int vidioc_querycap(struct file *file, void  *priv,
+ 	struct tm6000_core *dev = ((struct tm6000_fh *)priv)->dev;
  
- 	strscpy(capability->driver, WL1273_FM_DRIVER_NAME,
- 		sizeof(capability->driver));
--	strscpy(capability->card, "Texas Instruments Wl1273 FM Radio",
-+	strscpy(capability->card, "TI Wl1273 FM Radio",
- 		sizeof(capability->card));
- 	strscpy(capability->bus_info, radio->bus_type,
- 		sizeof(capability->bus_info));
+ 	strscpy(cap->driver, "tm6000", sizeof(cap->driver));
+-	strscpy(cap->card, "Trident TVMaster TM5600/6000/6010",
+-		sizeof(cap->card));
++	strscpy(cap->card, "Trident TM5600/6000/6010", sizeof(cap->card));
+ 	usb_make_path(dev->udev, cap->bus_info, sizeof(cap->bus_info));
+ 	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+ 			    V4L2_CAP_DEVICE_CAPS;
 -- 
 2.33.0
 
