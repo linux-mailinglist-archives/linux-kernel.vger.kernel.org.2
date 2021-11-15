@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAF8451C47
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0361B451C3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244293AbhKPAOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245366AbhKOWcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:32:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637015356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIt+27Ybc/xFYhGbecRA+0z9cXZAuYWYBls/D16W8Nw=;
-        b=GX4cwn56feQ/3aRIW84ikHaRlFCzigBJK6dPR4fKU6r4cUJ6Oj15Z3S9FDafGWHaoePY9E
-        +Vhwk6M1UDvAUl+RXLlJ7LKt5M85vkrVWHeFllYfihUzIli949gAnvH8GVZJGqivcZLVDP
-        OChOyKbWNtfeUxHa01oUFWNjW/ToDV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-EW6pyXFhMWW_xake_gd2mw-1; Mon, 15 Nov 2021 17:29:14 -0500
-X-MC-Unique: EW6pyXFhMWW_xake_gd2mw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D20418D6A2C;
-        Mon, 15 Nov 2021 22:29:13 +0000 (UTC)
-Received: from [10.22.33.148] (unknown [10.22.33.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7576960657;
-        Mon, 15 Nov 2021 22:29:11 +0000 (UTC)
-Message-ID: <ce034084-364b-e30f-cb7c-d6434afe3a7d@redhat.com>
-Date:   Mon, 15 Nov 2021 17:29:10 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v4] locking/rwsem: Make handoff bit handling more
- consistent
+        id S1346777AbhKPAPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:15:01 -0500
+Received: from mga04.intel.com ([192.55.52.120]:45719 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353600AbhKOWjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 17:39:53 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232269490"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="232269490"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 14:35:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="604052876"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga004.jf.intel.com with ESMTP; 15 Nov 2021 14:35:25 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 15 Nov 2021 14:35:25 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 15 Nov 2021 14:35:25 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Mon, 15 Nov 2021 14:35:25 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Mon, 15 Nov 2021 14:35:24 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AOhNf39+O8mD2pw1WUDgs7ui29IrXkpdOR+lqpruwGb+uTb1smT7lReoilk0WmS0ukb4ShikljVvPf9x7w86SX1LOqpdkxOjei6i76Bn5P9AI9Zehjanc97vSk0oKlSzJDCt44oN7j9EA5f4FteVkDwqoTRpzFauDLWtSE+1sud8bkm3j6DG54DqsLqmSvCcrZSwOlUxYEWsOj9uoGwBJDNEr/n+Fmj4mBygWipKyVkgIEzwLkhvas1NPV/zNsog0Op++/IL+4UzdRNDD5h26mQfK59rp6oT/QLpUGhaJlE0Y+5JlmKm7DfwqkUHUuxw7hhBKWjWQpHIxRiicRg41g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M/aW7KGgLZXg7ts3dPHP6JHaWVZ6xIEP+pkWmobE3iQ=;
+ b=WOZZZULg8yU4fKJT/vpUffKc3XNMpj5q67u3O1A2ztx7Dmu+CauHNDLLnYJpLLRTwJ7Mo8Yd4RiyXxIgVsvRyQtjxU/TfT2kU5LlxfA0/VOTT6XbCMGNsEqoU3xZzFHLKFOzTZvl/4An5U+Iv50PWXZru63qCRZULTcorTDCRvCnmvGeW3cC5BLRLOky8ujOcrHwgMH3ZzE41RbFBMc4xAYG5DWxDObCvcPZKbfmE9hj6nhD01prNDUVb8mljJIRyb3FosLm1or3mrtZm0imOixDbheqtjbeY7/acfRLjqAgg0HNr/gZbxidWMFYH+bfvNNQMdeYQnuV0Yk6Kq5cAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M/aW7KGgLZXg7ts3dPHP6JHaWVZ6xIEP+pkWmobE3iQ=;
+ b=hm/uFOPofm3P0DZPOVfWJKhE94O8QFGbw96q5g6H7ybN0hDAzb7z151zb4fUA2qLFy/VVTZHcNH4AvTgm++/j77undxrVvD96ndfnuIqKbn2tHe4IuHe6mOYlvyeBMcz/Fol6S9TtDJOnjxGV7hKq7rRj6A5/hIRror3cKmyuJs=
+Received: from MW4PR11MB5823.namprd11.prod.outlook.com (2603:10b6:303:186::12)
+ by CO1PR11MB5123.namprd11.prod.outlook.com (2603:10b6:303:94::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Mon, 15 Nov
+ 2021 22:35:23 +0000
+Received: from MW4PR11MB5823.namprd11.prod.outlook.com
+ ([fe80::6553:c7f9:a224:cac1]) by MW4PR11MB5823.namprd11.prod.outlook.com
+ ([fe80::6553:c7f9:a224:cac1%4]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 22:35:23 +0000
+From:   "Winiarska, Iwona" <iwona.winiarska@intel.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "olof@lixom.net" <olof@lixom.net>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "zweiss@equinix.com" <zweiss@equinix.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "bp@alien8.de" <bp@alien8.de>, "joel@jms.id.au" <joel@jms.id.au>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 06/13] peci: Add device detection
+Thread-Topic: [PATCH v3 06/13] peci: Add device detection
+Thread-Index: AQHX2k6vfpbjE6OLJ069BVykJfvHA6wE7o6AgAA++wA=
+Date:   Mon, 15 Nov 2021 22:35:23 +0000
+Message-ID: <368c990c30c5bacde15ac4bce5db8389aea3ec9c.camel@intel.com>
+References: <20211115182552.3830849-1-iwona.winiarska@intel.com>
+         <20211115182552.3830849-7-iwona.winiarska@intel.com>
+         <YZKr1Rqfx6Cmw+Ok@kroah.com>
+In-Reply-To: <YZKr1Rqfx6Cmw+Ok@kroah.com>
+Accept-Language: en-US, pl-PL
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        mazhenhua <mazhenhua@xiaomi.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Maria Yu <quic_aiquny@quicinc.com>
-References: <20211112040753.389380-1-longman@redhat.com>
- <YY5Z009P2jJ4X484@hirez.programming.kicks-ass.net>
- <a141b93d-1945-a44d-467f-54b648cbf4d0@redhat.com>
- <YZKEc+SgijOcB+0W@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YZKEc+SgijOcB+0W@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9fa09d48-837d-4073-d430-08d9a88836da
+x-ms-traffictypediagnostic: CO1PR11MB5123:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-microsoft-antispam-prvs: <CO1PR11MB51234E8E3EBDDE050A951841EC989@CO1PR11MB5123.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ufUTV4kj8T88980pNtkgc7PonAcLAie0IQWOWhyUNaxWwTC3G0s+XMPBHDI13rThEBQSXb0PvefRTKxNap/TYG9YQeKYh/Y0LDDzgpG8Cuu+wTPs2Ei3K2FQgVNExMUqV08RvZIkwG5jXToIvRkbkRKsBwsDyzkEeq4nx/sixnT0DLcShTyQi2WeUlCXJrS0V2IF+yapHRywF2/eDKcsf0LPCEOzbJYduiVzCP688fEs9aG0y1H4AsgTtdkTtxNXtqp78/H9lEl2oHd8W/oUh01nA9b2Lts+C9sPUtb+J9Cuak1h3ymtVrv5QlDc1jNn08V4t6SaZk+BR949uzHy7JJz5UKyclbecwJiDl2pkRIqCB9hm3QYaG8PRgCXJ11FJljMsTacb2eP2Ce6dUgJ3VsQIQiaUYnFP1CFeas8zkK6X5/y1xEYR5itAR0KbXgX3xTDxmEXdTkrEJY01WevN9C40KKzky7aHbKOCg6vx7/whMUnB003ai2IQT3Y/WIZLEhVQvSykNOyXXRhaLnWLY8CwLHUADBKb52hg87JMhRLxaf5EFIUjvhuzODS74a+awdgtxQm3F5V0HnlGAwPQKeqtqqaJ/O0Oj+aOZXYC/lH3Eonke247b1ZkUHa1ULRBx+Ps4P5k83w44dAthadTCyvOYm6QZDhBqZIp+OFFtLJXW2vUPfvaveOhBAFuvIrNNIRuLxZKweB2d7twflyQg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5823.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66556008)(66476007)(76116006)(71200400001)(8936002)(64756008)(316002)(54906003)(4001150100001)(36756003)(5660300002)(91956017)(2906002)(38100700002)(508600001)(122000001)(82960400001)(6506007)(6916009)(83380400001)(8676002)(6486002)(6512007)(2616005)(186003)(66446008)(86362001)(7416002)(26005)(38070700005)(66946007)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UHhlVXNHZTdkZ1hSWnlyKzU5azZkWVVvM1ZqdXRLSDNVN0tiN05OS053cDE0?=
+ =?utf-8?B?dUhrRThSM2R1TFhLL0E5Z1VYNWtDcFBuV2EzL240eEN2YzIySFAzSUROaVpp?=
+ =?utf-8?B?SmJRZExoUWFoUGpKVXppVG4zaG5kL1dRbjUwNHB5S3p0Q2RUL2VHLzJvQjNS?=
+ =?utf-8?B?ZFdZY1JoYmlCWFZpUEZyTmhMWlpOQTZwWVFBYldrT1N5T0sxZDBVS3lRQThQ?=
+ =?utf-8?B?Y3h1T04wSE5HTk1IRER4UTRTTkF1NC9KdjVyU1M1TmRpenlBRUhHY1l2T0k5?=
+ =?utf-8?B?SXVKd1g0d3NEVEVpUThYRzFTa0pVN3JBcXlIbG91T3dKcG1PZ0FQNFlQZWNQ?=
+ =?utf-8?B?Sk1meklrbm84RW1QOXNUb1lZUE15d2JRcnpTakN1QTBnOEtwMVRzZWlud05n?=
+ =?utf-8?B?VnBGYlN5dEVCTktWUnpWR1lieWJ5UkYzYkxMQ29Fc0hNdGhaUnhxRDJQMzdm?=
+ =?utf-8?B?MVRKZlZ4SzBCdlREaW5TMncxcHpvZ1lXajdsdGY3cVdaOVFZMkx5N3BXSk9I?=
+ =?utf-8?B?eXltNFBidktnMjRVODZQRlpXOVhWRW5KWDE3bmMwaXE2M2w5Z3Q2Z2VNaTFy?=
+ =?utf-8?B?WkFtSlAxd3NmL2RkMUFlMUxwNDB1ak9NYm1xNHZaT1FvQ0JZZTkyRXBNb282?=
+ =?utf-8?B?a2Z3MVo4MENLYm5mQ0ZlQm9pc0J0ZDByNkhUZkRpeGpHL2hzNmhUVkx4Q1pE?=
+ =?utf-8?B?UDNoM2t6UThzZ3oyeHM3TEkvNkYxOTVHcXdEOGJpOUtWbkZOTzBPeWJzRUxO?=
+ =?utf-8?B?TDB6d2FnOWJ3R1pEVHRQTi9zb01HbVA3ZWJJa0ozcFozdFhTcTQ3WDhML1d2?=
+ =?utf-8?B?WVZuMTRaek5vbDNTQmJYWHVKSUd1SEFVek4vekpYcE51L051YVZUYXBFNjQz?=
+ =?utf-8?B?WE9kUjk4cEJwL3JFNmdTZjFESHd6UjM0bGdzbk1qcXFqQmRqNVZOdjc2RjFI?=
+ =?utf-8?B?RCt0Y3VjUExxTmlFTXhmaFJEeHE2ZHMybEMxLzdFU1dHWko4U1hOak1yc2J1?=
+ =?utf-8?B?b2J5Njc2d1dVT0dBbnp1bEhFak45Rnd5cmgrSjNyemZmRGVVTThLbWdzSFBl?=
+ =?utf-8?B?eE1FR0EwQ1BSS243dmI5Wk5JRHd2QndERjNtMmFXUDNlcVYrTTZxTU92MmRs?=
+ =?utf-8?B?U1VkL3h4VXZiZjg5NE8zcFBmL2k2R1hPUGYwZ0JPRkNodlJMRW9iVVZWdkdo?=
+ =?utf-8?B?M2gyY3JUWTAyU2ZQR1BKTUlPSjdqUWIvVWtUekFrZThwbEpOaktiaWV2aE9u?=
+ =?utf-8?B?d2RXVWhwcUU1bmc5b2l4UDNGUUNLeTRMS2Y3OGdQcjM0RmxJUDdDc3ZPckVy?=
+ =?utf-8?B?NXdvSFc4dXFEUGphNytWbWZxRXUraUI1OW9jY2g5SHJ5UEZvSlpnTkpCcjdo?=
+ =?utf-8?B?ZDlEQ0RLdkRBdEZ4TG42WS9zRGJWQzM5TjVxOXVwTFNBb3NwcnF0bTFLNjNq?=
+ =?utf-8?B?QkpVaEd0cDJmbi9yeXFUYlg3KzdRbGFDdEVLUEI2enAySjd5TUR5M0FzcFM3?=
+ =?utf-8?B?SmhQY1phdUJjanlYUXZUM0xTTnlhSDBNd25tUU0zdHQvcDU1TFZkOHJQTHpB?=
+ =?utf-8?B?aXI2MFhVblBINllTY0Rtdk9lNWhYaDNPalZ5Q1JxZGIyYWFrUlpHbWtUU3dC?=
+ =?utf-8?B?N0hkTWY0Yng4Vzh2SlFlZVpMbVlIRG5UK3gyd3kwR09qeStmaFVvRGxMZHZk?=
+ =?utf-8?B?MG9HTlJaQkdKNzcyQmRXVUxWa1dqaGRuWkNaUyt6a1pVOWMvWmNkQTdUZmdi?=
+ =?utf-8?B?TWpLK0VZT1hZcUkwRVFmMyt1Z3B1NjRReS90VkN2aEZmc3NOOSt0R1pYSTVs?=
+ =?utf-8?B?RmlXVkRyNW1mMEhDNFd5aFNZSXN4eG82bEN0bTQ2MG93dHhRZit0TThLRTFk?=
+ =?utf-8?B?SjB1NUFVSlJTVW5sZ0dzMkdFNmZrUE11c2xNTWwrOTFET2FCcVhadDVOV2h5?=
+ =?utf-8?B?MnEzT1Q5Rm1zbkhFYTlmVnNFV3JTcHNtclN1UE5zbXlyTlNBN05yeUJoQWht?=
+ =?utf-8?B?cTQ5NitLY0ppVHU1eHdKYlM3Ti9BRXVEdFcvNW5PTHhyOWZvaGIxQUxmdmFG?=
+ =?utf-8?B?UW1ZQjZHQ2lUb2ZmM29LdkZZS3J0d0Z3WFZjaU82NmxOYUJGNjQzK3pxbGxP?=
+ =?utf-8?B?M2hrNmViaFROK3E4bVgyM3pFak1LLzdERlFubS9GemhhK0dRdVhic0VIYW9X?=
+ =?utf-8?B?ODdqbmNMdTdVakZXVGw1NmsyTnlMYWJhR3UralJZMHM0aXBoeE8rd3ZIVGdV?=
+ =?utf-8?Q?el8Zi39mO9VyTQdo/ncfc98rZxBVZioZcV9UvvUzog=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D0753BAE25815142A6592DB1F5E78778@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5823.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fa09d48-837d-4073-d430-08d9a88836da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 22:35:23.6834
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rztPXGBaWoTxNQdQrkrJItF7HZKsyIClirIsC5RW3UfrGKK3/TvSzNfJIzVns7Z6a5c4/jpIgUk5vuP8VQ0Zai0KrVMN8EIDbIqOgx588r8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5123
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/15/21 11:01, Peter Zijlstra wrote:
-> On Sun, Nov 14, 2021 at 10:38:57PM -0500, Waiman Long wrote:
->> On 11/12/21 07:10, Peter Zijlstra wrote:
->>> Argh, rwsem_mark_wake() doesn't clear HANDOFF when list_empty(), and
->>> write_slowpath() is *far* too clever about all of this.
->> rwsem_mark_wake() does clear the HANDOFF flag if it was set.
-> Argh, yeah, I got confused by the whole !woken case, but that case won't
-> ever hit list_empty() either. Perhaps that stuff could use a bit of a
-> reflow too.
-I think your modification already have included the rewrite for that part.
->
->>>> @@ -1098,7 +1110,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->>>>    		 * In this case, we attempt to acquire the lock again
->>>>    		 * without sleeping.
->>>>    		 */
->>>> -		if (wstate == WRITER_HANDOFF) {
->>>> +		if (waiter.handoff_set) {
->>> I'm thinking this wants to be something like:
->>>
->>> 		if (rwsem_first_waiter(sem) == &waiter && waiter.handoff_set) {
->> handoff_set flag is only set when the waiter becomes the first.
-> Yes, but a random waiter can wake up and see it be set and also start
-> spinning.
-
-The handoff_set flag can only be true for a first waiter. A random 
-waiter in the middle of a wait queue will never has this flag set.
-
-This flag is set in two places in rwsem_try_write_lock():
-
-1)
-
-                if (has_handoff && !first)
-                         return false;
-                 new = count;
-
-                 if (count & RWSEM_LOCK_MASK) {
-                         /*
-                          * Only the first waiter can inherit a 
-previously set
-                          * handoff bit.
-                          */
-                         waiter->handoff_set = has_handoff;
-
-handoff_set can only be set to true here if first is also true. In that 
-case, it will also return false immediately afterward.
-
-2)
-
-         if (new & RWSEM_FLAG_HANDOFF) {
-                 waiter->handoff_set = true;
-                 lockevent_inc(rwsem_wlock_handoff);
-                 return false;
-         }
-
-Again, only first waiter will have a chance of setting the handoff bit 
-and have handoff_set set to true.
-
->>>>    			enum owner_state owner_state;
->>>>    			preempt_disable();
->>> @@ -575,6 +610,11 @@ static inline bool rwsem_try_write_lock(
->>>    		return false;
->>>    	}
->>> +	/*
->>> +	 * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
->>> +	 * success.
->>> +	 */
->>> +	list_del(&waiter->list);
->>>    	rwsem_set_owner(sem);
->>>    	return true;
->>>    }
->>> @@ -1128,16 +1153,14 @@ rwsem_down_write_slowpath(struct rw_sema
->>>    		raw_spin_lock_irq(&sem->wait_lock);
->>>    	}
->>>    	__set_current_state(TASK_RUNNING);
->>> -	list_del(&waiter.list);
->> +    rwsem_del_waiter(sem, &waiters); ?
-> I tried that, but then we get an extra atomic in this path. As is I made
-> try_write_lock() do the full del_waiter, see the hunk above.
-
-You are right. I missed your change in rwsem_try_write_lock().
-
-Thanks,
-Longman
-
-
+T24gTW9uLCAyMDIxLTExLTE1IGF0IDE5OjQ5ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIE1vbiwgTm92IDE1LCAyMDIxIGF0IDA3OjI1OjQ1UE0gKzAxMDAsIEl3b25hIFdp
+bmlhcnNrYSB3cm90ZToNCj4gPiArdm9pZCBwZWNpX2RldmljZV9kZXN0cm95KHN0cnVjdCBwZWNp
+X2RldmljZSAqZGV2aWNlKQ0KPiA+ICt7DQo+ID4gK8KgwqDCoMKgwqDCoMKgYm9vbCBraWxsZWQ7
+DQo+ID4gKw0KPiA+ICvCoMKgwqDCoMKgwqDCoGRldmljZV9sb2NrKCZkZXZpY2UtPmRldik7DQo+
+ID4gK8KgwqDCoMKgwqDCoMKga2lsbGVkID0ga2lsbF9kZXZpY2UoJmRldmljZS0+ZGV2KTsNCj4g
+DQo+IEVlZWssIHdoeSBjYWxsIHRoaXM/DQo+IA0KPiA+ICvCoMKgwqDCoMKgwqDCoGRldmljZV91
+bmxvY2soJmRldmljZS0+ZGV2KTsNCj4gPiArDQo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKCFraWxs
+ZWQpDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybjsNCj4gDQo+IFdo
+YXQgaGFwcGVuZWQgaWYgc29tZXRoaW5nIGNoYW5nZWQgYWZ0ZXIgeW91IHVubG9ja2VkIGl0Pw0K
+DQpXZSBlaXRoZXIga2lsbGVkIGl0LCBvciB0aGUgb3RoZXIgY2FsbGVyIGtpbGxlZCBpdC4NCg0K
+PiANCj4gV2h5IGlzIGtpbGxfZGV2aWNlKCkgcmVxdWlyZWQgYXQgYWxsP8KgIFRoYXQncyBhIHZl
+cnkgcmFyZSBmdW5jdGlvbiB0bw0KPiBjYWxsLCBhbmQgb25lIHRoYXQgb25seSBvbmUgImJ1cyIg
+Y2FsbHMgdG9kYXkgYmVjYXVzZSBpdCBpcyB2ZXJ5DQo+IHNwZWNpYWwgKGkuZS4gY3JhenkgYW5k
+IGJyb2tlbi4uLikNCg0KSXQncyB1c2VkIHRvIGF2b2lkIGRvdWJsZS1kZWxldGUgaW4gY2FzZSBv
+ZiByYWNlcyBiZXR3ZWVuIHBlY2lfY29udHJvbGxlcg0KdW5yZWdpc3RlciBhbmQgIm1hbnVhbGx5
+IiByZW1vdmluZyB0aGUgZGV2aWNlIHVzaW5nIHN5c2ZzIChwb2ludGVkIG91dCBieSBEYW4gaW4N
+CnYyKS4gV2UncmUgY2FsbGluZyBwZWNpX2RldmljZV9kZXN0cm95KCkgaW4gYm90aCBjYWxsc2l0
+ZXMuDQpPdGhlciB3YXkgdG8gc29sdmUgaXQgd291bGQgYmUgdG8ganVzdCBoYXZlIGEgcGVjaS1z
+cGVjaWZpYyBsb2NrLCBidXQNCmtpbGxfZGV2aWNlIHNlZW1lZCB0byBiZSB3ZWxsIHN1aXRlZCBm
+b3IgdGhlIHByb2JsZW0gYXQgaGFuZC4NCkRvIHlvdSBzdWdnZXN0IHRvIHJlbW92ZSBpdCBhbmQg
+anVzdCBnbyB3aXRoIHRoZSBsb2NrPw0KDQpUaGFua3MNCi1Jd29uYQ0KDQo+IA0KPiB0aGFua3Ms
+DQo+IA0KPiBncmVnIGstaA0KDQo=
