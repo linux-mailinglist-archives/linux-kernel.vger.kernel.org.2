@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239704519D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6A1451F4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354193AbhKOX2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
+        id S244491AbhKPAji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:39:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245102AbhKOTTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 021D8632CE;
-        Mon, 15 Nov 2021 18:28:33 +0000 (UTC)
+        id S1344860AbhKOTZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78143633EC;
+        Mon, 15 Nov 2021 19:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000914;
-        bh=cxZbC6Kf5oarzP6hG/PPzTeF+T7Xk4LAtg+8GzFPaiE=;
+        s=korg; t=1637003148;
+        bh=bp8XQciujjx2tduNWt7kp6MnhtEOcBX9budyB4cej3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/4AYj9HX/xn3cyBIEEuk73R3HFsElqUUKEJt9gQIAbwr1AVfu9wjElx7mEM0dG5J
-         VcUw5cq4yNlXYpMPFokPGYpI5/ka7g+/HdcrKIWuuPQI/UAR1bFr32312eOnHV+hIv
-         NhvjvUOP1mGi3MLZJnwVtV/YAMX8iRS/gMu9TMCs=
+        b=aSVYCROKv+HzV1hxgU7AWG7tUmbXwDuIjTLGH0De+3I5SyTHNapb13NeYnL6oIE5T
+         o6+UpdW9aA0pgNROtMQHBwTSjjm1w6MVnp98HKVtRHNOtMhtSmlkwnTk/Ncbinf2hV
+         AQ9gH5q8z2o4iJ9hEYsdZDL3ZyKOHbR2u9odZuuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.14 840/849] powerpc/64s/interrupt: Fix check_return_regs_valid() false positive
+        stable@vger.kernel.org, Imre Deak <imre.deak@intel.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 828/917] drm/i915/fb: Fix rounding error in subsampled plane size calculation
 Date:   Mon, 15 Nov 2021 18:05:23 +0100
-Message-Id: <20211115165448.662623750@linuxfoundation.org>
+Message-Id: <20211115165457.130186600@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Imre Deak <imre.deak@intel.com>
 
-commit 4a5cb51f3db4be547225a4bce7a43d41b231382b upstream.
+[ Upstream commit 90ab96f3872eae816f4e07deaa77322a91237960 ]
 
-The check_return_regs_valid() can cause a false positive if the return
-regs are marked as norestart and they are an HSRR type interrupt,
-because the low bit in the bottom of regs->trap causes interrupt type
-matching to fail.
+For NV12 FBs with odd main surface tile-row height the CCS surface
+height was incorrectly calculated 1 less than the actual value. Fix this
+by rounding up the result of divison. For consistency do the same for
+the CCS surface width calculation.
 
-This can occcur for example on bare metal with a HV privileged doorbell
-interrupt that causes a signal, but do_signal returns early because
-get_signal() fails, and takes the "No signal to deliver" path. In this
-case no signal was delivered so the return location is not changed so
-return SRRs are not invalidated, yet set_trap_norestart is called, which
-messes up the match. Building go-1.16.6 is known to reproduce this.
-
-Fix it by using the TRAP() accessor which masks out the low bit.
-
-Fixes: 6eaaf9de3599 ("powerpc/64s/interrupt: Check and fix srr_valid without crashing")
-Cc: stable@vger.kernel.org # v5.14+
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211026122531.3599918-1-npiggin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b3e57bccd68a ("drm/i915/tgl: Gen-12 render decompression")
+Signed-off-by: Imre Deak <imre.deak@intel.com>
+Reviewed-by: Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211026225105.2783797-2-imre.deak@intel.com
+(cherry picked from commit 2ee5ef9c934ad26376c9282171e731e6c0339815)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/interrupt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/display/intel_fb.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -268,7 +268,7 @@ static void check_return_regs_valid(stru
- 	if (trap_is_scv(regs))
- 		return;
+diff --git a/drivers/gpu/drm/i915/display/intel_fb.c b/drivers/gpu/drm/i915/display/intel_fb.c
+index c60a81a81c09c..c6413c5409420 100644
+--- a/drivers/gpu/drm/i915/display/intel_fb.c
++++ b/drivers/gpu/drm/i915/display/intel_fb.c
+@@ -172,8 +172,9 @@ static void intel_fb_plane_dims(const struct intel_framebuffer *fb, int color_pl
  
--	trap = regs->trap;
-+	trap = TRAP(regs);
- 	// EE in HV mode sets HSRRs like 0xea0
- 	if (cpu_has_feature(CPU_FTR_HVMODE) && trap == INTERRUPT_EXTERNAL)
- 		trap = 0xea0;
+ 	intel_fb_plane_get_subsampling(&main_hsub, &main_vsub, &fb->base, main_plane);
+ 	intel_fb_plane_get_subsampling(&hsub, &vsub, &fb->base, color_plane);
+-	*w = fb->base.width / main_hsub / hsub;
+-	*h = fb->base.height / main_vsub / vsub;
++
++	*w = DIV_ROUND_UP(fb->base.width, main_hsub * hsub);
++	*h = DIV_ROUND_UP(fb->base.height, main_vsub * vsub);
+ }
+ 
+ static u32 intel_adjust_tile_offset(int *x, int *y,
+-- 
+2.33.0
+
 
 
