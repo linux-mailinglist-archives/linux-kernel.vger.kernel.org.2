@@ -2,249 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4284504C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC274504C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhKONAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhKONAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:00:03 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530ACC061570;
-        Mon, 15 Nov 2021 04:57:04 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 4DEC11F44A5C
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1636981022; bh=H4epKBtdV/VjtyEoDLxI2gaMBucBZjKSZjaVFzxKCSU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BPlOMwk+2oHaQJ7cPZKJrhL8S/FBYKpfg5pcR5rl7Mhn0vYASkfp6lfE/JAum+qv2
-         GsH6HrLz70dwb2fMhcXwpkYrsJfBlhm3ZaJhts3imqxmnDEItdNsdoXD/9yARHvxLQ
-         EGC8kQguh8+vTzdzWgMnpIAflpI8QFPILM3UCXLkW7hSKU8qEBOAFU0qpzjDPlTfr5
-         DvIwM3MUy2SrjPkASb6GrCemapJiRRxlNvscjsSaYr4H1ugxWR5Q39N9+sx5WTWvWp
-         8dwPmLba0638I1PjrQxOmF6wr/C+d0CAiPKXrMN4SX56VhOx0+4GTQseqwnqJviQEV
-         MXxpnzyBBeB0A==
-Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <b86785db-4f93-5804-d848-125d9077a8c7@xs4all.nl>
- <2e57a3ae9d76ae4484b84ba358cd3bae0931c875.camel@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <58cd7f30-6052-95fa-bc70-cbc45cacbb07@collabora.com>
-Date:   Mon, 15 Nov 2021 13:56:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <2e57a3ae9d76ae4484b84ba358cd3bae0931c875.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S230282AbhKONBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:01:09 -0500
+Received: from mail-bn1nam07on2047.outbound.protection.outlook.com ([40.107.212.47]:30784
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229453AbhKONBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:01:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mcpc2+Dom5QxuYmH8+hH8q3EjPs6Ucbs0Xxz5q9KaRrGyQMOnpI9ypPc4OSf8DKEyWBS57B/INRaymxQOkJNDot7eLjmWN4BsoTw1MhqR0c88qu5vVMfzG6wRurBt1lxKUTsJE1e6YoFV7vB7VhBbn0LxqirOxnDSXq5DdYlbQagkeKldDAcKeGRicHAuDHZxKxvJPB8PgVbSCmsjSgzGvwkDlGIofgQRwGl1FMDBqhyrNdU96kdShW3svBFSTqb3r4mKSJDUBN+z95tP5DTciJzRpm/Wx0sf0e/1g7K3dHKm1cLC1HhnBQpRwVh0r2nAgyJe+nlei6X3HLGrsJxRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n67kbimtp8MtHB3A7c08WI1fauMy5KMJ0MyxZBnmcSk=;
+ b=ZVSDIqn1JEOSh2EPnFbRrmXiZSTXoPe2zeIcYY7cL2F0Yyu221WPn730K6g1fva6Vav6q1LHLDhTNipkgXSup3IdKgLknnM6kbaijkxH+yZth01oWmCObOuwS1k3SdexWKVDEQNIiYRuSO/tHfiSKxT6vcXna8mueUL8qQnePEThDLih4jheeXli4DTcJ8W3NM+dBWpj9L/dPsMrNfAIzddujBb3GI7YXYadPseMeYPUyJp5QuhCCsQLeuXXS/m3rNtZkLJADMeRTAjP8o2ZZd3sjvkIhUdSwrOfd7Xjmn2bT8hQweU2aDKrRJe817taod7FMwOpq4wm6O+lsyZWOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n67kbimtp8MtHB3A7c08WI1fauMy5KMJ0MyxZBnmcSk=;
+ b=g6fylaDzBWMy5+PsYsX4Qxj5ZyqsdlTErr/qegMEjeYrEuBpbrUZ5WOQKGyu7eSC5vV7hfV94mqWvRTXJG/7XyAXHId5d0MNCW0Mtq0oshQyoBxlVF8FBFJj0ITc6uOGoJRnQXg+0+hosGNMPakLGqSTuzd7C/dm8tOLgiMm0hehGU4vhucU5Pyk29K4CInAHQJ8JTYk5qugisg2fLbCkH98JREEyqqTwee9Qt8GGToBKKbc+9O5LpwogLfeze/T/ugoUMk85k4LFFamIGNvLTB6CosnxS+6TJ7a1YAtIaB0smg6JLRWW3hT4IbiuRURTbLJyuYO3Ttjh5XqA/pzqg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
+ by DM6PR12MB5568.namprd12.prod.outlook.com (2603:10b6:5:20c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.20; Mon, 15 Nov
+ 2021 12:58:05 +0000
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::513c:d3d8:9c43:2cea]) by DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::513c:d3d8:9c43:2cea%9]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 12:58:05 +0000
+Message-ID: <ee7c8d05-93bf-3cc8-781f-2d6302778b3f@nvidia.com>
+Date:   Mon, 15 Nov 2021 14:57:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] net: bridge: Slightly optimize 'find_portno()'
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        roopa@nvidia.com, davem@davemloft.net, kuba@kernel.org
+Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <00c39d09c8df7ad0673bf2043f6566d6ef08b789.1636916479.git.christophe.jaillet@wanadoo.fr>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+In-Reply-To: <00c39d09c8df7ad0673bf2043f6566d6ef08b789.1636916479.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR0P278CA0198.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:44::12) To DM4PR12MB5278.namprd12.prod.outlook.com
+ (2603:10b6:5:39e::17)
+MIME-Version: 1.0
+Received: from [10.21.241.88] (213.179.129.39) by ZR0P278CA0198.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:44::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27 via Frontend Transport; Mon, 15 Nov 2021 12:58:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6fa9c7eb-76c6-4142-9b79-08d9a837908f
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5568:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB55681507EA51D5091C7839DEDF989@DM6PR12MB5568.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7s900jRkDiVo25PV/9uITPnydG9Uivxytpjoj/AQCSRNiebk7xD1ejB1l9DALDaxqVGP1Mhbzw3XyiIM8vtV2BzV8JUf6TU4au6gS/3hvIEBDD8z1RCCySjvw5xtDPULu7eqwL7aNA35X/73BNOriZRnIm0kXYv1kjAB1Osiur0PFPasWtgJWSlTBsedk5grD56ZjuMuUUACZZNgO1EDMXce66+9TPwSDkPo7ekIJjzO9qn9BlCx80CXpoJ1AUZ5+1oSaZHbMhopknjVBcQzibs7zRo5DcGr/UKBB+YNqegkxErcBiOcu+ud+H+R84Us4GHYQfNyhPU7jtFKySClvDRf6gnmEHxA6YeJLdw+BTnTrUnHMhJGi28xhJIuUIIzd+6e+FNE1IJxoVMvmPvvrLAHBQJz2BxeEqu0RsVflE0qAwhkf/qt9j7Fj9SfB4VtIqHFwK+gGZzRqe6GuWF/OGrprxmfSyfYtIEJCssvAHlTTA8dagIN4GaRXQOLnSuqFw0qIx8jmF4apWG4xLBsERzixK7ePyVSelgp0VV5J/u2Inri9JHhvhOtBbKJDBEh8RMaIA9K2p29L84tE24bCNigiDnUO7pQXAvEjWQyYvdA5zxlRWiV+6YUAfmBCfvL52ZaVyadIg3dhPoy8NCyxjsRRoEZmPdDg4Lr5291I11CdIdhC2y+i5VXBhh1f8Wd0w7JsKjoAo3TMtI0Q2cA+TsB9ULpmP1Pj7OS+IgxA0k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(8676002)(53546011)(186003)(66946007)(316002)(6486002)(2906002)(16576012)(38100700002)(4326008)(66476007)(66556008)(2616005)(5660300002)(31686004)(508600001)(31696002)(8936002)(26005)(83380400001)(86362001)(36756003)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?clFqRkthMjdrOC9xY21iNTYzbWJ6d3pRbVprZFpZYzJGK0dTOXRZNVpBR2Vn?=
+ =?utf-8?B?Y0ZSWW5OVzVxOUdJZVk3d3pjSmU4S1psOHozMDhyZ1FVUHFSVWxPOE4vS0I1?=
+ =?utf-8?B?dlF4V3FjVFBoYVhOaE1ycXV5RlBmZGdvZjNiTm1uMUlOeDFQMzA0NmlsSXNn?=
+ =?utf-8?B?RVFuRjR0enpGZXEvQXZFQjZqeDhIcHMrWjlHdmZjQ1d0WkRXakpPSUZwdTdD?=
+ =?utf-8?B?L1hTNXEvZDl0d0tTakl5RCtmK0ZVcENTZmdIalBTUFBXMm40NHozM2JGSFQ3?=
+ =?utf-8?B?SE1IeGNyR0d2KzBVNG5MRzhjTTJPMVJHOWZKdXQ4WVdJQ0hmOWg2OHRWR2J5?=
+ =?utf-8?B?eWpJdDZrM2JNdnA1aWlTYVRBd21OVEJ1eTlRbmpEVEIxaWVFc1FyVUx4NnJ6?=
+ =?utf-8?B?cWI4MUdsM2F3cUNWd0xaZnJzd21pbTlnMzNNTllRU3IxaFJaWEdGMlBrcld6?=
+ =?utf-8?B?MkJUT0p1aWc3MlBlMWlTZCs5SVRUREVBS29qK0NMK1NOdjhiZnAxS0dzVEsv?=
+ =?utf-8?B?amFmNTZKUHM2SFhweDVCeEM2ek8vdGZVclk2L3NnOUlBZVB1b3pBelVoUGEy?=
+ =?utf-8?B?UDZBVkExOEduUStRazdXK21WUGVjZ0xZK24rdjNiWDY4WjVuaSswVVZFSGdX?=
+ =?utf-8?B?OUJXUlFhbzZLeTUzR2o0N2RsMVZ6anBvZTJJVkNBZTV2ZzFUQ01ReWRaRUVv?=
+ =?utf-8?B?ZlhHcVFJNGtJR256RDIvbWxMTG9vN1MyQmdBeEFPQWlEazlhUXp2VHRFOHdW?=
+ =?utf-8?B?bnVCdWRJTVJVMDFjTEhFd0gvV01IV1ZGbVZxaUYyV0dBaTNmanRPaEMxUEkw?=
+ =?utf-8?B?cmlHR1RIVzRXR05hL2ZGbCs3TVBlVDY2ODVNdHdjMUM0R2p6VDFwdmtWTkQ4?=
+ =?utf-8?B?ZWhlS0lTQlVaeWRHRytMUnU0NEdFNEcrMHVyanNBUng4ZGtUekJBTGs2Zm1t?=
+ =?utf-8?B?Sk5lWmdwZEVQdjZQTjBMSWRMV1FIdUI3L3k2VWgzMHVwaWtzSFlvK3U5VlJD?=
+ =?utf-8?B?VGYvVWlxditJNHJaQUtKdWY2T0NOL1NvY1pzU0NBSlN6cm1jME1DUlZpV1hl?=
+ =?utf-8?B?SVRmNGFuRkRJYXN2bERZNnJkalNBbUFFSmRYei9hOXhaK0JtdWdQNUVlOXhX?=
+ =?utf-8?B?U091NEVIbWg4SFJ4N1Q0TTZDd0pKUDFwbWxRa0ZNaUEwSi9KOEcvaVNVejNU?=
+ =?utf-8?B?T082c3FCNGNSN0VMMnNqOXJjR01IOEsxdkY4ODFnQW8rSHBtbWVteFdhVTR2?=
+ =?utf-8?B?bllEUGhaY2lFWHlzTjJuajc0eUVtTDh3dE9adGtWVU5NUzNIdmNIaXZacUw0?=
+ =?utf-8?B?eEFtQldRM3pGUHRIQ1cwdWtwbzhYa1RiOE9ka1BLdTdJZk9DMndiNHY3aWpD?=
+ =?utf-8?B?NzRkUHdLdkdRQ3pUdDE5MkYwMzRMVXMxV0NpVHRTNHlMMkY0elFGenNCdmsy?=
+ =?utf-8?B?QVMxTkxWeTRCcnIxN2dOSlJWTnJKZFlHNVJ1YXlsTExFMWxGOUVGcDk2cTZX?=
+ =?utf-8?B?NlBQVnhwa2xVMTdMRkM3N3l4bm1hUlB2TzdoTUI1YmJxb1lWT2h4RnNEUkxQ?=
+ =?utf-8?B?TW1GL3JDOGo0Uy8xVHhKcVYxbXYyRDJQMkNJbEFMakF1QnRlQ2ZFVW1iVUtx?=
+ =?utf-8?B?dk9sZFBWSDlKcE16cUFnWEhJVWp2QUI0UzhTSHlxR0ErZ00wY3lqTlk2TFh5?=
+ =?utf-8?B?T3ljNXlsWVh2RWpaanpLTXNVT244bkxxUjZiaFVaVytzV29lbWdBdlFqam5z?=
+ =?utf-8?B?di9IbURUTGZwNEgvV2tFYjJZWjdzd3pjei9vM1pFc2NLb3E2UFhpaWs3eGFj?=
+ =?utf-8?B?eElrODdnYzdWVm5BQjRLNDZmR00vUURQNGRXWFZpWURUL3doZ05XWkp5NFEy?=
+ =?utf-8?B?WFpMaWFSWHZOUE8zckgvaEtndGZ6N25ZaHd1czhpWjROaGUzRkNGUlo3M0hx?=
+ =?utf-8?B?Q2psajkwamZodVkySW5wQ2l2MmMrMnJYeVljR2xGT2duVEYzeVNGbHh3dlhO?=
+ =?utf-8?B?ZWNrMVlvRk11Zm5vMjE2WnpSeWhOa0J4MjlvWS9uaFZlaGg2bE5WdExoMWNK?=
+ =?utf-8?B?aHZXendoMHFMTVFvb2hQTENhVGlCTDJ2YU4rNHJKQ1hoTUhJT1ZDUWRKeGJ0?=
+ =?utf-8?B?SkxKMmFVbm1QU1I0Um1aRmFoeVBJSHZiYjhvd0dpYURPK1dqUEVFWncvNDkr?=
+ =?utf-8?Q?Lg4nwNWFoY6yoCGGc0MH5yQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fa9c7eb-76c6-4142-9b79-08d9a837908f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 12:58:05.6104
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8t1rmFU0K14aAmXpX4f06CDB1N6ER4YpF3IUHVCDPWaWubxSE8KTngqPhqpc+/2XlkL88swMb06kH4T9dqufrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5568
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
-
-W dniu 12.11.2021 o 16:27, Nicolas Dufresne pisze:
-> Hi Hans,
+On 14/11/2021 21:02, Christophe JAILLET wrote:
+> The 'inuse' bitmap is local to this function. So we can use the
+> non-atomic '__set_bit()' to save a few cycles.
 > 
-> Le jeudi 11 novembre 2021 à 15:44 +0100, Hans Verkuil a écrit :
->> Hi all,
->>
->> Andrzej, Jernej, Nicolas, if none of you (or anyone else for that matter)
->> objects, then I'll make a PR for this early next week.
+> While at it, also remove some useless {}.
 > 
-> I have no objection. I've myself delayed replying as we have been digging a lot
-> into our compliance failures, but I believe we have explained most of them by
-> now and nothing seems to be related to the API.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  net/bridge/br_if.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> regards,
-> Nicolas
-I'm fine with making a PR, too.
-
-Andrzej
-
-> 
->>
->> Regards,
->>
->> 	Hans
->>
->> On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
->>> Dear all,
->>>
->>> This patch series adds VP9 codec V4L2 control interface and two drivers
->>> using the new controls. It is a follow-up of previous v6 series [1].
->>>
->>> In this iteration, we've implemented VP9 hardware decoding on two devices:
->>> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
->>> The i.MX8M driver needs proper power domains support, though, which is a
->>> subject of a different effort, but in all 3 cases we were able to run the
->>> drivers.
->>>
->>> GStreamer support is also available, the needed changes have been submitted
->>> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
->>> VP9 V4L2 controls to be merged and released.
->>>
->>> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
->>> using Fluster[3]. There are still a few tests that are not passing, due to
->>> dynamic frame resize (not yet supported by V4L2) and small size videos
->>> (due to IP block limitations).
->>>
->>> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
->>> merged without passing through staging, as agreed[4]. The ABI has been checked
->>> for padding and verified to contain no holes.
->>>
->>> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
->>> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
->>> [3] https://github.com/fluendo/fluster
->>> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
->>>
->>> The series depends on the YUV tiled format support prepared by Ezequiel:
->>> https://www.spinics.net/lists/linux-media/msg197047.html
->>>
->>> Rebased onto latest media_tree.
->>>
->>> Changes related to v6:
->>> - moved setting tile filter and tile bsd auxiliary buffer addresses so
->>> that they are always set, even if no tiles are used (thanks, Jernej)
->>> - added a comment near the place where the 32-bit DMA mask is applied
->>>    (thanks, Nicolas)
->>> - improved consistency in register names (thanks, Nicolas)
->>>
->>> Changes related to v5:
->>> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
->>> - improved pdf output of documentation
->>> - added Benjamin's Reviewed-by (thanks, Benjamin)
->>>
->>> Changes related to v4:
->>> - removed unused enum v4l2_vp9_intra_prediction_mode
->>> - converted remaining enums to defines to follow the convention
->>> - improved the documentation, in particular better documented how to use segmentation
->>> features
->>>
->>> Changes related to v3:
->>>
->>> Apply suggestions from Jernej's review (thanks, Jernej):
->>> - renamed a control and two structs:
->>> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
->>> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
->>> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
->>> 		v4l2_ctrl_vp9_compressed_hdr
->>> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
->>> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
->>> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
->>> - explicitly assigned values to all other vp9 enums
->>>
->>> Apply suggestion from Nicolas's review (thanks, Nicolas):
->>> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
->>> and implemented only by drivers which need it
->>>
->>> Changes related to the RFC v2:
->>>
->>> - added another driver including a postprocessor to de-tile
->>>          codec-specific tiling
->>> - reworked uAPI structs layout to follow VP8 style
->>> - changed validation of loop filter params
->>> - changed validation of segmentation params
->>> - changed validation of VP9 frame params
->>> - removed level lookup array from loop filter struct
->>>          (can be computed by drivers)
->>> - renamed some enum values to match the spec more closely
->>> - V4L2 VP9 library changed the 'eob' member of
->>>          'struct v4l2_vp9_frame_symbol_counts' so that it is an array
->>>          of pointers instead of an array of pointers to arrays
->>>          (IPs such as g2 creatively pass parts of the 'eob' counts in
->>>          the 'coeff' counts)
->>> - factored out several repeated portions of code
->>> - minor nitpicks and cleanups
->>>
->>> Andrzej Pietrasiewicz (6):
->>>    media: uapi: Add VP9 stateless decoder controls
->>>    media: Add VP9 v4l2 library
->>>    media: hantro: Rename registers
->>>    media: hantro: Prepare for other G2 codecs
->>>    media: hantro: Support VP9 on the G2 core
->>>    media: hantro: Support NV12 on the G2 core
->>>
->>> Boris Brezillon (1):
->>>    media: rkvdec: Add the VP9 backend
->>>
->>> Ezequiel Garcia (4):
->>>    hantro: postproc: Fix motion vector space size
->>>    hantro: postproc: Introduce struct hantro_postproc_ops
->>>    hantro: Simplify postprocessor
->>>    hantro: Add quirk for NV12/NV12_4L4 capture format
->>>
->>>   .../userspace-api/media/v4l/biblio.rst        |   10 +
->>>   .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
->>>   .../media/v4l/pixfmt-compressed.rst           |   15 +
->>>   .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
->>>   .../media/v4l/vidioc-queryctrl.rst            |   12 +
->>>   .../media/videodev2.h.rst.exceptions          |    2 +
->>>   drivers/media/v4l2-core/Kconfig               |    4 +
->>>   drivers/media/v4l2-core/Makefile              |    1 +
->>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
->>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
->>>   drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->>>   drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
->>>   drivers/staging/media/hantro/Kconfig          |    1 +
->>>   drivers/staging/media/hantro/Makefile         |    7 +-
->>>   drivers/staging/media/hantro/hantro.h         |   40 +-
->>>   drivers/staging/media/hantro/hantro_drv.c     |   23 +-
->>>   drivers/staging/media/hantro/hantro_g2.c      |   27 +
->>>   .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
->>>   drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
->>>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
->>>   drivers/staging/media/hantro/hantro_hw.h      |   83 +-
->>>   .../staging/media/hantro/hantro_postproc.c    |   79 +-
->>>   drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
->>>   drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
->>>   drivers/staging/media/hantro/hantro_vp9.h     |  103 +
->>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
->>>   .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
->>>   .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
->>>   drivers/staging/media/rkvdec/Kconfig          |    1 +
->>>   drivers/staging/media/rkvdec/Makefile         |    2 +-
->>>   drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
->>>   drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
->>>   drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
->>>   include/media/v4l2-ctrls.h                    |    4 +
->>>   include/media/v4l2-vp9.h                      |  182 ++
->>>   include/uapi/linux/v4l2-controls.h            |  284 +++
->>>   include/uapi/linux/videodev2.h                |    6 +
->>>   37 files changed, 6033 insertions(+), 104 deletions(-)
->>>   create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
->>>   create mode 100644 drivers/staging/media/hantro/hantro_g2.c
->>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
->>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
->>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
->>>   create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
->>>   create mode 100644 include/media/v4l2-vp9.h
->>>
->>>
->>> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
->>>
->>
+> diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+> index c1183fef1f21..64b2d4fb50f5 100644
+> --- a/net/bridge/br_if.c
+> +++ b/net/bridge/br_if.c
+> @@ -397,10 +397,10 @@ static int find_portno(struct net_bridge *br)
+>  	if (!inuse)
+>  		return -ENOMEM;
+>  
+> -	set_bit(0, inuse);	/* zero is reserved */
+> -	list_for_each_entry(p, &br->port_list, list) {
+> -		set_bit(p->port_no, inuse);
+> -	}
+> +	__set_bit(0, inuse);	/* zero is reserved */
+> +	list_for_each_entry(p, &br->port_list, list)
+> +		__set_bit(p->port_no, inuse);
+> +
+>  	index = find_first_zero_bit(inuse, BR_MAX_PORTS);
+>  	bitmap_free(inuse);
+>  
 > 
 
+This should be targeted at net-next.
+The patch itself looks ok, TBH it's a slow path so speed
+doesn't really matter but it's a straight-forward change.
+
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
