@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6F445186F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B26451843
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347218AbhKOXAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:00:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53408 "EHLO mail.kernel.org"
+        id S243457AbhKOW4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:56:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243017AbhKOStJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:49:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A42632A0;
-        Mon, 15 Nov 2021 18:08:30 +0000 (UTC)
+        id S242831AbhKOSqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:46:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E5D63385;
+        Mon, 15 Nov 2021 18:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999710;
-        bh=jZ5j3IIeFKevyECZ9SdkAnJzRNLg/HOwH9NDQyH5Cfw=;
+        s=korg; t=1636999611;
+        bh=kn6pcuTRLYUc38gZARayQOKqf/nabe3968N8ojS4hE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wX18PCCtj9pu59qoRp0aqNOsprSrmNo71t9hdnbEKPzLFmVF/jvxu4dDDmxMmNsi+
-         T0gD07VpnOntGtJn3S3jV8naYzyGgfvvV7v6DIpT3HOPK50mT1SyuWrRypKy29oo/N
-         t60qaxpNRf6zrczDtw09gH90BkoptntWPSFht9LU=
+        b=aAT7Sh82h159OeO5DOxVKw6rhOANt0UP1OVb7ylR63bZyyumfK4YhYCSXoJ3IiyAo
+         9oqNpNG8cPtImdQbsnz8ewacK2yPsxqr7XU8HbKGSaLrNBsJhbTWqgxpLv9ZCPNTMT
+         ttTm81JXPfrgQ54/YRR8rpEvJPY5Dinq3QszX9bM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Yoshitaka Ikeda <ikeda@nskint.co.jp>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 352/849] drm: bridge: it66121: Fix return value it66121_probe
-Date:   Mon, 15 Nov 2021 17:57:15 +0100
-Message-Id: <20211115165432.143667285@linuxfoundation.org>
+Subject: [PATCH 5.14 353/849] spi: Fixed division by zero warning
+Date:   Mon, 15 Nov 2021 17:57:16 +0100
+Message-Id: <20211115165432.177983870@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,62 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Yoshitaka Ikeda <ikeda@nskint.co.jp>
 
-[ Upstream commit f3bc07eba481942a246926c5b934199e7ccd567b ]
+[ Upstream commit 09134c5322df9f105d9ed324051872d5d0e162aa ]
 
-Currently it66121_probe returns -EPROBE_DEFER if the there is no remote
-endpoint found in the device tree which doesn't seem helpful, since this
-is not going to change later and it is never checked if the next bridge
-has been initialized yet. It will fail in that case later while doing
-drm_bridge_attach for the next bridge in it66121_bridge_attach.
+The reason for dividing by zero is because the dummy bus width is zero,
+but if the dummy n bytes is zero, it indicates that there is no data transfer,
+so there is no need for calculation.
 
-Since the bindings documentation for it66121 bridge driver states
-there has to be a remote endpoint defined, its safe to return -EINVAL
-in that case.
-This additonally adds a check, if the remote endpoint is enabled and
-returns -EPROBE_DEFER, if the remote bridge hasn't been initialized
-(yet).
-
-Fixes: 988156dc2fc9 ("drm: bridge: add it66121 driver")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210918140420.231346-1-knaerzche@gmail.com
+Fixes: 7512eaf54190 ("spi: cadence-quadspi: Fix dummy cycle calculation when buswidth > 1")
+Signed-off-by: Yoshitaka Ikeda <ikeda@nskint.co.jp>
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
+Link: https://lore.kernel.org/r/OSZPR01MB70049C8F56ED8902852DF97B8BD49@OSZPR01MB7004.jpnprd01.prod.outlook.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/ite-it66121.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/spi/atmel-quadspi.c  | 2 +-
+ drivers/spi/spi-bcm-qspi.c   | 3 ++-
+ drivers/spi/spi-mtk-nor.c    | 2 +-
+ drivers/spi/spi-stm32-qspi.c | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-index 9dc41a7b91362..06b59b422c696 100644
---- a/drivers/gpu/drm/bridge/ite-it66121.c
-+++ b/drivers/gpu/drm/bridge/ite-it66121.c
-@@ -918,11 +918,23 @@ static int it66121_probe(struct i2c_client *client,
- 		return -EINVAL;
+diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+index 95d4fa32c2995..92d9610df1fd8 100644
+--- a/drivers/spi/atmel-quadspi.c
++++ b/drivers/spi/atmel-quadspi.c
+@@ -310,7 +310,7 @@ static int atmel_qspi_set_cfg(struct atmel_qspi *aq,
+ 		return mode;
+ 	ifr |= atmel_qspi_modes[mode].config;
  
- 	ep = of_graph_get_remote_node(dev->of_node, 1, -1);
--	if (!ep)
--		return -EPROBE_DEFER;
-+	if (!ep) {
-+		dev_err(ctx->dev, "The endpoint is unconnected\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!of_device_is_available(ep)) {
-+		of_node_put(ep);
-+		dev_err(ctx->dev, "The remote device is disabled\n");
-+		return -ENODEV;
-+	}
+-	if (op->dummy.buswidth && op->dummy.nbytes)
++	if (op->dummy.nbytes)
+ 		dummy_cycles = op->dummy.nbytes * 8 / op->dummy.buswidth;
  
- 	ctx->next_bridge = of_drm_find_bridge(ep);
- 	of_node_put(ep);
-+	if (!ctx->next_bridge) {
-+		dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
-+		return -EPROBE_DEFER;
-+	}
+ 	/*
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index ea1865c08fc22..151e154284bde 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -395,7 +395,8 @@ static int bcm_qspi_bspi_set_flex_mode(struct bcm_qspi *qspi,
+ 	if (addrlen == BSPI_ADDRLEN_4BYTES)
+ 		bpp = BSPI_BPP_ADDR_SELECT_MASK;
  
- 	if (!ctx->next_bridge)
- 		return -EPROBE_DEFER;
+-	bpp |= (op->dummy.nbytes * 8) / op->dummy.buswidth;
++	if (op->dummy.nbytes)
++		bpp |= (op->dummy.nbytes * 8) / op->dummy.buswidth;
+ 
+ 	switch (width) {
+ 	case SPI_NBITS_SINGLE:
+diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+index 41e7b341d2616..5c93730615f8d 100644
+--- a/drivers/spi/spi-mtk-nor.c
++++ b/drivers/spi/spi-mtk-nor.c
+@@ -160,7 +160,7 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
+ {
+ 	int dummy = 0;
+ 
+-	if (op->dummy.buswidth)
++	if (op->dummy.nbytes)
+ 		dummy = op->dummy.nbytes * BITS_PER_BYTE / op->dummy.buswidth;
+ 
+ 	if ((op->data.buswidth == 2) || (op->data.buswidth == 4)) {
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index 27f35aa2d746d..514337c86d2c3 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -397,7 +397,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		ccr |= FIELD_PREP(CCR_ADSIZE_MASK, op->addr.nbytes - 1);
+ 	}
+ 
+-	if (op->dummy.buswidth && op->dummy.nbytes)
++	if (op->dummy.nbytes)
+ 		ccr |= FIELD_PREP(CCR_DCYC_MASK,
+ 				  op->dummy.nbytes * 8 / op->dummy.buswidth);
+ 
 -- 
 2.33.0
 
