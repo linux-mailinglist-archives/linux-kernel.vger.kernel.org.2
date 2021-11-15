@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EFE45189B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A190245189A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351118AbhKOXDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:03:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
+        id S1351069AbhKOXDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:03:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243237AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243242AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FDC6347C;
-        Mon, 15 Nov 2021 18:10:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F415633C3;
+        Mon, 15 Nov 2021 18:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999850;
-        bh=/Ahj1tKPRMFXqLpcC/UoHU3H1Nf7bUb9cHxIfLYN9aA=;
+        s=korg; t=1636999864;
+        bh=XMurRLKbdokoQ0wXu8uqWwWWsUmdqJRhIwYGr3T1sQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HGt2rRwOA9vJ6rYHE4cmgIBqojvuMVsPW1nWpaslSTos1/GPtIsrEf5ABMWky3MH/
-         agBUSoW1597m/dXtEtam2IHvzcUle5Tm31nqjc0uhgN63Cw4V6HQH+uZdMmlZ1BA05
-         fXgJI3UWqmWfZB5wVERnuaSIbJjyFmSNecXUeo2A=
+        b=vBwTOB4tihPQlRZSWHWMZMSlNYt4Nt13z2jErNW/wK3jAOGYw1Pf374q+zvmfVq6F
+         RhsePhEhw5q0AnupbcD6/IzyoN2xNUfWPPTaNe8AQ6Dse1X+S0W8dzmHFzoVxmYw3I
+         gamWSh1E0BS/KbW0a1WcCNEsRtdZ8D5gFZObY7wo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 446/849] ACPI: PM: Turn off unused wakeup power resources
-Date:   Mon, 15 Nov 2021 17:58:49 +0100
-Message-Id: <20211115165435.370379193@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 451/849] mt76: mt7921: fix endianness warning in mt7921_update_txs
+Date:   Mon, 15 Nov 2021 17:58:54 +0100
+Message-Id: <20211115165435.548869659@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,64 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 7a63296d6f579a02b2675b4b0fe5b1cd3235e8d3 ]
+[ Upstream commit 7fc167bbc9296e6aeaaa4063db3639e8a3db75f6 ]
 
-If an ACPI power resource is found to be "on" during the
-initialization of the list of wakeup power resources of a device,
-it is reference counted and its wakeup_enabled flag is set, which is
-problematic if the deivce in question is the only user of the given
-power resource, it is never runtime-suspended and it is not allowed
-to wake up the system from sleep, because in that case the given
-power resource will stay "on" until the system reboots and energy
-will be wasted.
+Fix the following sparse warning in mt7921_update_txs routine:
+drivers/net/wireless/mediatek/mt76/mt7921/mac.c:752:31:
+	warning: cast to restricted __le32
+drivers/net/wireless/mediatek/mt76/mt7921/mac.c:752:31:
+	warning: restricted __le32 degrades to integer
 
-It is better to simply turn off wakeup power resources that are "on"
-during the initialization unless their reference counters are not
-zero, because that may be the only opportunity to prevent them from
-staying in the "on" state all the time.
-
-Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: e5bca8c5d2cd3 ("mt76: mt7921: improve code readability for mt7921_update_txs")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/power.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-index eba7785047cad..dfe760bd7157f 100644
---- a/drivers/acpi/power.c
-+++ b/drivers/acpi/power.c
-@@ -606,20 +606,19 @@ int acpi_power_wakeup_list_init(struct list_head *list, int *system_level_p)
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index 7fe2e3a50428f..f4714b0f6e5c4 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -735,8 +735,9 @@ mt7921_mac_write_txwi_80211(struct mt7921_dev *dev, __le32 *txwi,
+ static void mt7921_update_txs(struct mt76_wcid *wcid, __le32 *txwi)
+ {
+ 	struct mt7921_sta *msta = container_of(wcid, struct mt7921_sta, wcid);
+-	u32 pid, frame_type = FIELD_GET(MT_TXD2_FRAME_TYPE, txwi[2]);
++	u32 pid, frame_type;
  
- 	list_for_each_entry(entry, list, node) {
- 		struct acpi_power_resource *resource = entry->resource;
--		int result;
- 		u8 state;
- 
- 		mutex_lock(&resource->resource_lock);
- 
--		result = acpi_power_get_state(resource, &state);
--		if (result) {
--			mutex_unlock(&resource->resource_lock);
--			return result;
--		}
--		if (state == ACPI_POWER_RESOURCE_STATE_ON) {
--			resource->ref_count++;
--			resource->wakeup_enabled = true;
--		}
-+		/*
-+		 * Make sure that the power resource state and its reference
-+		 * counter value are consistent with each other.
-+		 */
-+		if (!resource->ref_count &&
-+		    !acpi_power_get_state(resource, &state) &&
-+		    state == ACPI_POWER_RESOURCE_STATE_ON)
-+			__acpi_power_off(resource);
-+
- 		if (system_level > resource->system_level)
- 			system_level = resource->system_level;
++	frame_type = FIELD_GET(MT_TXD2_FRAME_TYPE, le32_to_cpu(txwi[2]));
+ 	if (!(frame_type & (IEEE80211_FTYPE_DATA >> 2)))
+ 		return;
  
 -- 
 2.33.0
