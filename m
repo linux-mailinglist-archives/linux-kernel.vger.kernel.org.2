@@ -2,76 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633B9452850
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F66C45285B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhKPDRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 22:17:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S239222AbhKPDSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238998AbhKPDQs (ORCPT
+        with ESMTP id S232032AbhKPDR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 22:16:48 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840D5C04A430
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:44:26 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id bk14so38311416oib.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:44:26 -0800 (PST)
+        Mon, 15 Nov 2021 22:17:56 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1607C043193;
+        Mon, 15 Nov 2021 15:45:49 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id r11so15423913edd.9;
+        Mon, 15 Nov 2021 15:45:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=PaQ00ZGEy4Uu84RCOZUTfeFZWA/YaY1Ww6m8YLQkvhs=;
-        b=W2VWXeSJ7wyysKLzDpvFz3g4Id+6kYVmETNy7ILgaFccZ0N8OZhsm0Q+E5PEBV9stG
-         tTm2eidYTQXb9mwOs5kOYnf+CLNeGHi4OziOUAHeDMh+r66riOTbQ76CaCPh+btspJCX
-         rt+DT5fyUGDvywAuuNIHdD6mIWWlFgscl1FyM=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hvMLW+1fEeSE2j4ofzxMa1EFtQorNCxPN7SvY+4csoQ=;
+        b=iv/0b7C/mWXCvUCEKp/92nOuVFKckxb0xiPZ67bOdd4NUtyUGGhup6AKkft3GFSmRK
+         aVjIL5jH0GAtBT+TZGkq1+lMmFL/boYhhZdkjvhiqPHk7XOgcPEEDwLQgHfus8hnYVvn
+         jjfh36TfcFd6rSOpHjMIfVCKpoUGUBnl5Blo3rOgEJj1Gf73pWHqmoEajU+AYFsDsP5M
+         o5kOzWKuUud71BDjruRpyQ4SeyGy+/t1iJ+OBZK/huSIl1WqkIT/NDogj5Lc/0V8+b8x
+         zoq5iaAuabEBNXwt+XhCFCckujRIux6yN/HTjmM0+tihskuTdKBlbK3ziOk5B2druSjK
+         XD+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=PaQ00ZGEy4Uu84RCOZUTfeFZWA/YaY1Ww6m8YLQkvhs=;
-        b=5v2z6ZIsNTEPeCKboRKD7l3Yw7B6JdQDgy0XQrm62RaNxYfL4EjSEIrtVE7nPijX9a
-         tWxyR/k+/sz09GjJ90nSmP/ujfL70ZnnGJfL2gcy8uNADMxgRtK6it3xBJmbpQXYhxrp
-         a0Du60GYJ2rc2jHKmwMjVUc0UUAViWdwcjhQKafepPHfB9g8gpx360Rn6GECTnlSrlDh
-         R9L1DXc2bCVxUeyH69NgjJcUWHC0z6d2CCE3G87ARZMPEkCcP8s5UkOn7uoJ0PCGMJKS
-         a3BugeMR9ivwJJu1bCed8RD4r7hTyOZ8Naf3pcSMsiIBF7FaNH+a6xzCFmSMywAFmG0v
-         tO2w==
-X-Gm-Message-State: AOAM5331PzaeOJm+dXwalUQ8ZfFUA91cvg2U0VY9oX5n9Rdlz8hqd59+
-        CBebt6QSQnZNE04X+uNyAFGHlXAsni1lq/wnlcWxIQ==
-X-Google-Smtp-Source: ABdhPJxCjyQFH++dUTHe2DWuuQH++OcFJWe93JshD2AnAevt+Mu3F1DFIzPwztSodo1vFR26oriYaUigBSgSRnqGH88=
-X-Received: by 2002:a54:4506:: with SMTP id l6mr49058489oil.32.1637019866000;
- Mon, 15 Nov 2021 15:44:26 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 15 Nov 2021 15:44:25 -0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hvMLW+1fEeSE2j4ofzxMa1EFtQorNCxPN7SvY+4csoQ=;
+        b=N+HgoeGbxXo11DKlO9++LE/w/FUrVLV9ylMUYth28EsKC5u2R6s8QRHFBrULSH/5BH
+         dIwkllobljgIFjv6189j/5IPp8XCmQhqU7TwJZm6fK+fm43YFs/KoDJjw4vKVDK7BkH0
+         PqoSR20F6WyWeyoJeQcTqQcgftlSbq634ARTYA3109fHk5PiC2rkM7w5CI0S/0Jm+dlh
+         Nn2zDnwvOBrRQjFfhKfmU7snFGbcgvXeyUpNMDZdilUQevPRrmgw3qMyHTyEIsE1i8jN
+         4dUTSRyQma+I9aXzhH58tiAxBXehEU6wxLGrvaDtuniqRBNCkuB5fn7QQt3fpTJvpPs1
+         xJVg==
+X-Gm-Message-State: AOAM530hVWLGXNqMjbSdcIWyQuKQ9uwP5HV6xgmSmNVEGqszgjE76sPw
+        R3XY9E+2pz/g8U60CpLtBLdYyacsLPk=
+X-Google-Smtp-Source: ABdhPJwyuMzphOXOmMTNF+MeDQ7TxDrz0zy1e2htZhRB5s1OvI6bL9HaIJqHA0H+iBAvpwdbVa1EVA==
+X-Received: by 2002:a17:906:3745:: with SMTP id e5mr3750975ejc.400.1637019948132;
+        Mon, 15 Nov 2021 15:45:48 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id qf8sm7280490ejc.8.2021.11.15.15.45.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 15:45:47 -0800 (PST)
+Date:   Tue, 16 Nov 2021 01:45:46 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
+ support
+Message-ID: <20211115234546.spi7hz2fsxddn4dz@skbuf>
+References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
+ <20211110123640.z5hub3nv37dypa6m@skbuf>
+ <20211112075823.GJ12195@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 15 Nov 2021 15:44:25 -0800
-Message-ID: <CAE-0n53zMYmm2DxmptUWNzXvLQb+4bY1mDby1G78Jf1Hjdbadw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: parade-ps8640: Fix additional suspend/resume
- at bootup
-To:     Laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        airlied@linux.ie, daniel@ffwll.ch, dianders@google.com,
-        jernej.skrabec@gmail.com, jonas@kwiboo.se, narmstrong@baylibre.com,
-        philipchen@chromium.org, robert.foss@linaro.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211112075823.GJ12195@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting yangcong (2021-11-12 00:43:02)
-> Through log and waveform, we can see that there will be additional
-> suspend/resume when booting. This timing does not meet the ps8640 spec.
-> It seems that the delay of 500ms does not satisfied drm_panel_get_modes.
-> I increased it to 900ms and it seems that this problem can be solved.
-> To be safe, I'd just round up to a full 1000.
->
-> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-> ---
+On Fri, Nov 12, 2021 at 08:58:23AM +0100, Oleksij Rempel wrote:
+> On Wed, Nov 10, 2021 at 02:36:40PM +0200, Vladimir Oltean wrote:
+> > On Mon, Nov 08, 2021 at 12:10:34PM +0100, Oleksij Rempel wrote:
+> > > Current driver version is able to handle only one bridge at time.
+> > > Configuring two bridges on two different ports would end up shorting this
+> > > bridges by HW. To reproduce it:
+> > > 
+> > > 	ip l a name br0 type bridge
+> > > 	ip l a name br1 type bridge
+> > > 	ip l s dev br0 up
+> > > 	ip l s dev br1 up
+> > > 	ip l s lan1 master br0
+> > > 	ip l s dev lan1 up
+> > > 	ip l s lan2 master br1
+> > > 	ip l s dev lan2 up
+> > > 
+> > > 	Ping on lan1 and get response on lan2, which should not happen.
+> > > 
+> > > This happened, because current driver version is storing one global "Port VLAN
+> > > Membership" and applying it to all ports which are members of any
+> > > bridge.
+> > > To solve this issue, we need to handle each port separately.
+> > > 
+> > > This patch is dropping the global port member storage and calculating
+> > > membership dynamically depending on STP state and bridge participation.
+> > > 
+> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > ---
+> > 
+> > Because there wasn't any restriction in the driver against multiple
+> > bridges, I would be tempted to send to the "net" tree and provide a
+> > Fixes: tag.
+> 
+> This patch looks too intrusive to me. It will be hard to backport it to
+> older versions. How about have two patches: add limit to one bridge for
+> net and add support for multiple bridges for net-next?
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+That would work.
+
+> > > +	dp = dsa_to_port(ds, port);
+> > > +
+> > > +	for (i = 0; i < ds->num_ports; i++) {
+> > > +		const struct dsa_port *dpi = dsa_to_port(ds, i);
+> > 
+> > Other drivers name this "other_dp", I don't think that name is too bad.
+> > Also, you can use "dsa_switch_for_each_user_port", which is also more
+> > efficient, although you can't if you target 'stable' with this change,
+> > since it has been introduced rather recently.
+> 
+> ok
+> 
+> > > +		struct ksz_port *pi = &dev->ports[i];
+> > 
+> > and this could be "other_p" rather than "pi".
+> 
+> ok
+> 
+> > > +		u8 val = 0;
+> > > +
+> > > +		if (!dsa_is_user_port(ds, i))
+> > >  			continue;
+> > > -		p = &dev->ports[i];
+> > > -		if (!(dev->member & (1 << i)))
+> > > +		if (port == i)
+> > >  			continue;
+> > > +		if (!dp->bridge_dev || dp->bridge_dev != dpi->bridge_dev)
+> > > +			continue;
+> > > +
+> > > +		pi = &dev->ports[i];
+> > > +		if (pi->stp_state != BR_STATE_DISABLED)
+> > > +			val |= BIT(dsa_upstream_port(ds, i));
+> > >  
+> > 
+> > This is saying:
+> > For each {user port, other port} pair, if the other port isn't DISABLED,
+> > then allow the user port to forward towards the CPU port of the other port.
+> > What sense does that make? You don't support multiple CPU ports, so this
+> > port's CPU port is that port's CPU port, and you have one more (broken)
+> > forwarding rule towards the CPU port below.
+> 
+> Ok, understand.
+> 
+> > > -		/* Port is a member of the bridge and is forwarding. */
+> > > -		if (p->stp_state == BR_STATE_FORWARDING &&
+> > > -		    p->member != dev->member)
+> > > -			dev->dev_ops->cfg_port_member(dev, i, dev->member);
+> > > +		if (pi->stp_state == BR_STATE_FORWARDING &&
+> > > +		    p->stp_state == BR_STATE_FORWARDING) {
+> > > +			val |= BIT(port);
+> > > +			port_member |= BIT(i);
+> > > +		}
+> > > +
+> > > +		dev->dev_ops->cfg_port_member(dev, i, val);
+> > >  	}
+> > > +
+> > > +	if (p->stp_state != BR_STATE_DISABLED)
+> > > +		port_member |= BIT(dsa_upstream_port(ds, port));
+> > 
+> > Why != DISABLED? I expect that dev_ops->cfg_port_member() affects only
+> > data packet forwarding, not control packet forwarding, right?
+> 
+> No. According to the KSZ9477S datasheet:
+> "The processor should program the “Static MAC Table” with the entries that it
+> needs to receive (for example, BPDU packets). The “overriding” bit should be set
+> so that the switch will forward those specific packets to the processor. The
+> processor may send packets to the port(s) in this state. Address learning is
+> disabled on the port in this state."
+> 
+> This part is not implemented.
+> 
+> In current driver implementation (before or after this patch), all
+> packets are forwarded. It looks like, current STP implementation in this driver
+> is not complete. If I create a loop, the bridge will permanently toggle one of
+> ports between blocking and listening. 
+> 
+> Currently I do not know how to proceed with it. Remove stp callback and
+> make proper, straightforward bride_join/leave? Implement common soft STP
+> for all switches without HW STP support?
+
+What does "soft STP" mean? You need to have a port state in which data
+plane packets are blocked, but BPDUs can pass. Unless you trap all
+packets to the CPU and make the selection in software (therefore,
+including the forwarding, I don't know if that is so desirable), you
+don't have much of a choice except to do what you've said above, program
+the static MAC table with entries for 01-80-c2-00-00-0x which trap those
+link-local multicast addresses to the CPU and set the STP state override
+bit for them and for them only.
+
+BTW, see the "bridge link set" section in "man bridge" for a list of
+what you should do in each STP state.
