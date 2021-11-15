@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17D6451EAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BBB45195A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244382AbhKPAg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:36:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        id S1353192AbhKOXSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:18:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344533AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BA7761526;
-        Mon, 15 Nov 2021 18:59:20 +0000 (UTC)
+        id S244621AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6595861B48;
+        Mon, 15 Nov 2021 18:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002761;
-        bh=UIU8fn2r++JvQ/HB870lAGI4pAU7rADe1TVFedbvmdQ=;
+        s=korg; t=1637000547;
+        bh=3QZfEHTy8x3dW9yDMXvdUiQZmoEHmzkyzYm70Df/AJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J8uFLvhkv123WNz/gow8XmH5yMD4m6sRyW1jm9M0l6dJVdRwElNOEv+N9/XDyeMsB
-         6hZS+kTlVi9axWWP3VE1atHsMkmtHSLlZPRw7DCN1stietaCMn7RP1CeNhULNjoR6Z
-         K6PNS43X65uoCWHgqPIXkkl1f2bkqWIENFLqzFVo=
+        b=c+xSQF7g2BFdPpgNX8a/O6TSWM+FztuWwFZUPCAdPZ3GhnKm0aNCeDML3HenJJMol
+         6JlAWbrPH1ePTnJ5SSqY7wvbXt0bhYqTQzG1beAtXy8Br6gj+jIltXeTDIywc19283
+         ssn+jN1TXMcB4DXtJG2RQ5K/xcftR5vYXORDZo8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 687/917] serial: cpm_uart: Protect udbg definitions by CONFIG_SERIAL_CPM_CONSOLE
-Date:   Mon, 15 Nov 2021 18:03:02 +0100
-Message-Id: <20211115165452.191625563@linuxfoundation.org>
+Subject: [PATCH 5.14 700/849] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+Date:   Mon, 15 Nov 2021 18:03:03 +0100
+Message-Id: <20211115165443.933180395@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +42,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit d142585bceb3218ad432ed0fcd5be9d6e3cd9052 ]
+[ Upstream commit afcb5a811ff3ab3969f09666535eb6018a160358 ]
 
-If CONFIG_CONSOLE_POLL=y, and CONFIG_SERIAL_CPM=m (hence
-CONFIG_SERIAL_CPM_CONSOLE=n):
+While writing an empty string to a device attribute is a no-op, and thus
+does not need explicit safeguards, the user can still write a single
+newline to an attribute file:
 
-    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1109:12: warning: ‘udbg_cpm_getc’ defined but not used [-Wunused-function]
-     1109 | static int udbg_cpm_getc(void)
-	  |            ^~~~~~~~~~~~~
-    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1095:13: warning: ‘udbg_cpm_putc’ defined but not used [-Wunused-function]
-     1095 | static void udbg_cpm_putc(char c)
-	  |             ^~~~~~~~~~~~~
+    echo > .../message
 
-Fix this by making the udbg definitions depend on
-CONFIG_SERIAL_CPM_CONSOLE, in addition to CONFIG_CONSOLE_POLL.
+If that happens, img_ascii_lcd_display() trims the newline, yielding an
+empty string, and causing an infinite loop in img_ascii_lcd_scroll().
 
-Fixes: a60526097f42eb98 ("tty: serial: cpm_uart: Add udbg support for enabling xmon")
+Fix this by adding a check for empty strings.  Clear the display in case
+one is encountered.
+
+Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211027075326.3270785-1-geert@linux-m68k.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/cpm_uart/cpm_uart_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-index c719aa2b18328..d6d3db9c3b1f8 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-@@ -1090,6 +1090,7 @@ static void cpm_put_poll_char(struct uart_port *port,
- 	cpm_uart_early_write(pinfo, ch, 1, false);
- }
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index 1cce409ce5cac..e33ce0151cdfd 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
+ 	if (msg[count - 1] == '\n')
+ 		count--;
  
-+#ifdef CONFIG_SERIAL_CPM_CONSOLE
- static struct uart_port *udbg_port;
- 
- static void udbg_cpm_putc(char c)
-@@ -1114,6 +1115,7 @@ static int udbg_cpm_getc(void)
- 		cpu_relax();
- 	return c;
- }
-+#endif /* CONFIG_SERIAL_CPM_CONSOLE */
- 
- #endif /* CONFIG_CONSOLE_POLL */
- 
++	if (!count) {
++		/* clear the LCD */
++		devm_kfree(&ctx->pdev->dev, ctx->message);
++		ctx->message = NULL;
++		ctx->message_len = 0;
++		memset(ctx->curr, ' ', ctx->cfg->num_chars);
++		ctx->cfg->update(ctx);
++		return 0;
++	}
++
+ 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
 -- 
 2.33.0
 
