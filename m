@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2743451030
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD49451024
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242670AbhKOSnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:43:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
+        id S242022AbhKOSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:42:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237481AbhKORhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237643AbhKORhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:37:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B443632CE;
-        Mon, 15 Nov 2021 17:24:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D104632CF;
+        Mon, 15 Nov 2021 17:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997081;
-        bh=jhoe7c1eN62SxG3PeYQcb28iPTdAV4g9WevXUqpaico=;
+        s=korg; t=1636997083;
+        bh=WB6MbKLKedrVfpPzHLDPxMlz+56MEw5M6n7E8d+mgfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrI8GNedCwm0NF87rTdbV4+PHOpOnywgbx03J9XaKfgca52pIb0hkF1QsHeis6iDq
-         k+562Ld3MT75pQdBKCi73/N6d5n2ToZhZySVkgLkFlZpz89R3GCDgVH9USbPLjs4YZ
-         119MJ8by4tBxr1EFAzE9lL9TbPn5E7Rpo0aakPaI=
+        b=fqJqOTBE80GYedMGTCgQ0Dbyjcmm7KS+28SQiFrIB6a/ycS/vwIwIRlSE+jSMijjz
+         bb99IhYBHCrx4H2UcBqFT2DiyG+nacXrPX+Vi+vFOjwFkgu8ltstjSNRjZPpce71MC
+         Jiu81iOqUtzQ9xyuOiY6vghJnldqHtN+ccJh6nTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.10 019/575] tpm: Check for integer overflow in tpm2_map_response_body()
-Date:   Mon, 15 Nov 2021 17:55:44 +0100
-Message-Id: <20211115165344.275142422@linuxfoundation.org>
+        stable@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        jing yangyang <jing.yangyang@zte.com.cn>
+Subject: [PATCH 5.10 020/575] firmware/psci: fix application of sizeof to pointer
+Date:   Mon, 15 Nov 2021 17:55:45 +0100
+Message-Id: <20211115165344.310014958@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,34 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: jing yangyang <cgel.zte@gmail.com>
 
-commit a0bcce2b2a169e10eb265c8f0ebdd5ae4c875670 upstream.
+commit 2ac5fb35cd520ab1851c9a4816c523b65276052f upstream.
 
-The "4 * be32_to_cpu(data->count)" multiplication can potentially
-overflow which would lead to memory corruption.  Add a check for that.
+sizeof when applied to a pointer typed expression gives the size of
+the pointer.
 
+./drivers/firmware/psci/psci_checker.c:158:41-47: ERROR application of sizeof to pointer
+
+This issue was detected with the help of Coccinelle.
+
+Fixes: 7401056de5f8 ("drivers/firmware: psci_checker: stash and use topology_core_cpumask for hotplug tests")
 Cc: stable@vger.kernel.org
-Fixes: 745b361e989a ("tpm: infrastructure for TPM spaces")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/tpm2-space.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/firmware/psci/psci_checker.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/tpm/tpm2-space.c
-+++ b/drivers/char/tpm/tpm2-space.c
-@@ -455,6 +455,9 @@ static int tpm2_map_response_body(struct
- 	if (be32_to_cpu(data->capability) != TPM2_CAP_HANDLES)
- 		return 0;
+--- a/drivers/firmware/psci/psci_checker.c
++++ b/drivers/firmware/psci/psci_checker.c
+@@ -155,7 +155,7 @@ static int alloc_init_cpu_groups(cpumask
+ 	if (!alloc_cpumask_var(&tmp, GFP_KERNEL))
+ 		return -ENOMEM;
  
-+	if (be32_to_cpu(data->count) > (UINT_MAX - TPM_HEADER_SIZE - 9) / 4)
-+		return -EFAULT;
-+
- 	if (len != TPM_HEADER_SIZE + 9 + 4 * be32_to_cpu(data->count))
- 		return -EFAULT;
- 
+-	cpu_groups = kcalloc(nb_available_cpus, sizeof(cpu_groups),
++	cpu_groups = kcalloc(nb_available_cpus, sizeof(*cpu_groups),
+ 			     GFP_KERNEL);
+ 	if (!cpu_groups) {
+ 		free_cpumask_var(tmp);
 
 
