@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357AC4515CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269334515D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353246AbhKOUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:55:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
+        id S230340AbhKOU4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:56:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240640AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240636AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:11:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3094633BF;
-        Mon, 15 Nov 2021 17:47:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2EF6633C0;
+        Mon, 15 Nov 2021 17:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998440;
-        bh=0HByP6zMOrxNQ0H5DB0S2Qi6Q9nbEEjG0kBXNbT+GLI=;
+        s=korg; t=1636998443;
+        bh=WNfqfHL+XDuPIiFCSXiN5p1SQMFshojtqrcyDtt4W3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyOY2xuz8L0xC0qrYV8Vt1Wra86gTVq3Wrs86s2wRTqwPnVIaSZaeMnQVleT9xF26
-         gQH1CPpU88eRgvizQE+afyfpWOIfPhtsyombvdbEHdr52jtPErqJBgwARbN7ztEEyy
-         zH9shHlOBeHs1BbeBQUznFG0AioQ7G5MwMkt4tVc=
+        b=KaPibCM9ypVaIY1uMetN8P2fV1VvTfxZ5wbhBp5kMg2rcn5L0dpULQn/HT1FuY3dp
+         5JlZA55FTHO4Ax0+BFoGcPKW7lRsKur+tNN/Fx5H6onx8/C4kGhvf3RjykDZ1kJxkg
+         3jZNW2c0bMsCLFsVYJ8YRQ4AX9yFbIBK39ABQjTU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Chenyuan Mi <cymi20@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Lyude Paul <lyude@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 511/575] ACPI: PMIC: Fix intel_pmic_regs_handler() read accesses
-Date:   Mon, 15 Nov 2021 18:03:56 +0100
-Message-Id: <20211115165401.360361929@linuxfoundation.org>
+Subject: [PATCH 5.10 512/575] drm/nouveau/svm: Fix refcount leak bug and missing check against null bug
+Date:   Mon, 15 Nov 2021 18:03:57 +0100
+Message-Id: <20211115165401.391650995@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,139 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Chenyuan Mi <cymi20@fudan.edu.cn>
 
-[ Upstream commit 009a789443fe4c8e6b1ecb7c16b4865c026184cd ]
+[ Upstream commit 6bb8c2d51811eb5e6504f49efe3b089d026009d2 ]
 
-The handling of PMIC register reads through writing 0 to address 4
-of the OpRegion is wrong. Instead of returning the read value
-through the value64, which is a no-op for function == ACPI_WRITE calls,
-store the value and then on a subsequent function == ACPI_READ with
-address == 3 (the address for the value field of the OpRegion)
-return the stored value.
+The reference counting issue happens in one exception handling path of
+nouveau_svmm_bind(). When cli->svm.svmm is null, the function forgets
+to decrease the refcount of mm increased by get_task_mm(), causing a
+refcount leak.
 
-This has been tested on a Xiaomi Mi Pad 2 and makes the ACPI battery dev
-there mostly functional (unfortunately there are still other issues).
+Fix this issue by using mmput() to decrease the refcount in the
+exception handling path.
 
-Here are the SET() / GET() functions of the PMIC ACPI device,
-which use this OpRegion, which clearly show the new behavior to
-be correct:
+Also, the function forgets to do check against null when get mm
+by get_task_mm().
 
-OperationRegion (REGS, 0x8F, Zero, 0x50)
-Field (REGS, ByteAcc, NoLock, Preserve)
-{
-    CLNT,   8,
-    SA,     8,
-    OFF,    8,
-    VAL,    8,
-    RWM,    8
-}
+Fix this issue by adding null check after get mm by get_task_mm().
 
-Method (GET, 3, Serialized)
-{
-    If ((AVBE == One))
-    {
-        CLNT = Arg0
-        SA = Arg1
-        OFF = Arg2
-        RWM = Zero
-        If ((AVBG == One))
-        {
-            GPRW = Zero
-        }
-    }
-
-    Return (VAL) /* \_SB_.PCI0.I2C7.PMI5.VAL_ */
-}
-
-Method (SET, 4, Serialized)
-{
-    If ((AVBE == One))
-    {
-        CLNT = Arg0
-        SA = Arg1
-        OFF = Arg2
-        VAL = Arg3
-        RWM = One
-        If ((AVBG == One))
-        {
-            GPRW = One
-        }
-    }
-}
-
-Fixes: 0afa877a5650 ("ACPI / PMIC: intel: add REGS operation region support")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: 822cab6150d3 ("drm/nouveau/svm: check for SVM initialized before migrating")
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210907122633.16665-1-cymi20@fudan.edu.cn
+Link: https://gitlab.freedesktop.org/drm/nouveau/-/merge_requests/14
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/pmic/intel_pmic.c | 51 +++++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 23 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_svm.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/acpi/pmic/intel_pmic.c b/drivers/acpi/pmic/intel_pmic.c
-index a371f273f99dd..9cde299eba880 100644
---- a/drivers/acpi/pmic/intel_pmic.c
-+++ b/drivers/acpi/pmic/intel_pmic.c
-@@ -211,31 +211,36 @@ static acpi_status intel_pmic_regs_handler(u32 function,
- 		void *handler_context, void *region_context)
- {
- 	struct intel_pmic_opregion *opregion = region_context;
--	int result = 0;
-+	int result = -EINVAL;
-+
-+	if (function == ACPI_WRITE) {
-+		switch (address) {
-+		case 0:
-+			return AE_OK;
-+		case 1:
-+			opregion->ctx.addr |= (*value64 & 0xff) << 8;
-+			return AE_OK;
-+		case 2:
-+			opregion->ctx.addr |= *value64 & 0xff;
-+			return AE_OK;
-+		case 3:
-+			opregion->ctx.val = *value64 & 0xff;
-+			return AE_OK;
-+		case 4:
-+			if (*value64) {
-+				result = regmap_write(opregion->regmap, opregion->ctx.addr,
-+						      opregion->ctx.val);
-+			} else {
-+				result = regmap_read(opregion->regmap, opregion->ctx.addr,
-+						     &opregion->ctx.val);
-+			}
-+			opregion->ctx.addr = 0;
-+		}
-+	}
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index 1c3f890377d2c..f67700c028c75 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -156,10 +156,14 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 	 */
  
--	switch (address) {
--	case 0:
--		return AE_OK;
--	case 1:
--		opregion->ctx.addr |= (*value64 & 0xff) << 8;
--		return AE_OK;
--	case 2:
--		opregion->ctx.addr |= *value64 & 0xff;
-+	if (function == ACPI_READ && address == 3) {
-+		*value64 = opregion->ctx.val;
- 		return AE_OK;
--	case 3:
--		opregion->ctx.val = *value64 & 0xff;
--		return AE_OK;
--	case 4:
--		if (*value64) {
--			result = regmap_write(opregion->regmap, opregion->ctx.addr,
--					      opregion->ctx.val);
--		} else {
--			result = regmap_read(opregion->regmap, opregion->ctx.addr,
--					     &opregion->ctx.val);
--			if (result == 0)
--				*value64 = opregion->ctx.val;
--		}
--		memset(&opregion->ctx, 0x00, sizeof(opregion->ctx));
+ 	mm = get_task_mm(current);
++	if (!mm) {
++		return -EINVAL;
++	}
+ 	mmap_read_lock(mm);
+ 
+ 	if (!cli->svm.svmm) {
+ 		mmap_read_unlock(mm);
++		mmput(mm);
+ 		return -EINVAL;
  	}
  
- 	if (result < 0) {
 -- 
 2.33.0
 
