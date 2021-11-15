@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512284511FC
+	by mail.lfdr.de (Postfix) with ESMTP id 9A47E4511FD
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343713AbhKOTVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
+        id S1343756AbhKOTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:21:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238827AbhKORrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:47:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58305632A1;
-        Mon, 15 Nov 2021 17:29:54 +0000 (UTC)
+        id S238085AbhKORsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:48:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8032E63309;
+        Mon, 15 Nov 2021 17:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997394;
-        bh=A2mwK9iV+z664mgYuUqmGvLtNDWzgkTZjqZYMokNOlU=;
+        s=korg; t=1636997409;
+        bh=OrRmFCszA6mAXdgGst8rddDKVWyhmmFy0oiAvl9IAgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YvDkG322wgy8tn7+hu8eOg6dTb1pUHHNRTPcZhLK0+4Ohkz9j3IjxjZGLm7TOSSyT
-         T6KJH8D8AIiMZUsOD/cR6n1W8GjFtwF04VigJKXgY3ciDpG7WZJQ8JHdeY+kdn9V2Z
-         OZRfLL61f3/+ek/qMTUUoPXmEJ4vUpIevzt3IkZQ=
+        b=ph9F69/EKfkokMWc6zogrwZIGtq0lFMPXhxWxg+QP5JHPDKhHYJ5BTaHh4m1spnBH
+         g9SvZXywwca31t6bqncQTV9BWRzJBnu+9gLC5WjwMW74OWGaqFT15PQjPn+72yyCfv
+         zGqLefi1q5QDbQqWzgtliqY/QDst1RiqMCvGFiFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.10 132/575] serial: core: Fix initializing and restoring termios speed
-Date:   Mon, 15 Nov 2021 17:57:37 +0100
-Message-Id: <20211115165348.275559033@linuxfoundation.org>
+        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.10 137/575] ovl: fix use after free in struct ovl_aio_req
+Date:   Mon, 15 Nov 2021 17:57:42 +0100
+Message-Id: <20211115165348.436431223@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,108 +39,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: yangerkun <yangerkun@huawei.com>
 
-commit 027b57170bf8bb6999a28e4a5f3d78bf1db0f90c upstream.
+commit 9a254403760041528bc8f69fe2f5e1ef86950991 upstream.
 
-Since commit edc6afc54968 ("tty: switch to ktermios and new framework")
-termios speed is no longer stored only in c_cflag member but also in new
-additional c_ispeed and c_ospeed members. If BOTHER flag is set in c_cflag
-then termios speed is stored only in these new members.
+Example for triggering use after free in a overlay on ext4 setup:
 
-Therefore to correctly restore termios speed it is required to store also
-ispeed and ospeed members, not only cflag member.
+aio_read
+  ovl_read_iter
+    vfs_iter_read
+      ext4_file_read_iter
+        ext4_dio_read_iter
+          iomap_dio_rw -> -EIOCBQUEUED
+          /*
+	   * Here IO is completed in a separate thread,
+	   * ovl_aio_cleanup_handler() frees aio_req which has iocb embedded
+	   */
+          file_accessed(iocb->ki_filp); /**BOOM**/
 
-In case only cflag member with BOTHER flag is restored then functions
-tty_termios_baud_rate() and tty_termios_input_baud_rate() returns baudrate
-stored in c_ospeed / c_ispeed member, which is zero as it was not restored
-too. If reported baudrate is invalid (e.g. zero) then serial core functions
-report fallback baudrate value 9600. So it means that in this case original
-baudrate is lost and kernel changes it to value 9600.
+Fix by introducing a refcount in ovl_aio_req similarly to aio_kiocb.  This
+guarantees that iocb is only freed after vfs_read/write_iter() returns on
+underlying fs.
 
-Simple reproducer of this issue is to boot kernel with following command
-line argument: "console=ttyXXX,86400" (where ttyXXX is the device name).
-For speed 86400 there is no Bnnn constant and therefore kernel has to
-represent this speed via BOTHER c_cflag. Which means that speed is stored
-only in c_ospeed and c_ispeed members, not in c_cflag anymore.
-
-If bootloader correctly configures serial device to speed 86400 then kernel
-prints boot log to early console at speed speed 86400 without any issue.
-But after kernel starts initializing real console device ttyXXX then speed
-is changed to fallback value 9600 because information about speed was lost.
-
-This patch fixes above issue by storing and restoring also ispeed and
-ospeed members, which are required for BOTHER flag.
-
-Fixes: edc6afc54968 ("[PATCH] tty: switch to ktermios and new framework")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20211002130900.9518-1-pali@kernel.org
+Fixes: 2406a307ac7d ("ovl: implement async IO routines")
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Link: https://lore.kernel.org/r/20210930032228.3199690-3-yangerkun@huawei.com/
+Cc: <stable@vger.kernel.org> # v5.6
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial_core.c |   16 ++++++++++++++--
- include/linux/console.h          |    2 ++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ fs/overlayfs/file.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -222,7 +222,11 @@ static int uart_port_startup(struct tty_
- 	if (retval == 0) {
- 		if (uart_console(uport) && uport->cons->cflag) {
- 			tty->termios.c_cflag = uport->cons->cflag;
-+			tty->termios.c_ispeed = uport->cons->ispeed;
-+			tty->termios.c_ospeed = uport->cons->ospeed;
- 			uport->cons->cflag = 0;
-+			uport->cons->ispeed = 0;
-+			uport->cons->ospeed = 0;
- 		}
- 		/*
- 		 * Initialise the hardware port settings.
-@@ -290,8 +294,11 @@ static void uart_shutdown(struct tty_str
- 		/*
- 		 * Turn off DTR and RTS early.
- 		 */
--		if (uport && uart_console(uport) && tty)
-+		if (uport && uart_console(uport) && tty) {
- 			uport->cons->cflag = tty->termios.c_cflag;
-+			uport->cons->ispeed = tty->termios.c_ispeed;
-+			uport->cons->ospeed = tty->termios.c_ospeed;
-+		}
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -17,6 +17,7 @@
  
- 		if (!tty || C_HUPCL(tty))
- 			uart_port_dtr_rts(uport, 0);
-@@ -2123,8 +2130,11 @@ uart_set_options(struct uart_port *port,
- 	 * Allow the setting of the UART parameters with a NULL console
- 	 * too:
- 	 */
--	if (co)
-+	if (co) {
- 		co->cflag = termios.c_cflag;
-+		co->ispeed = termios.c_ispeed;
-+		co->ospeed = termios.c_ospeed;
-+	}
- 
- 	return 0;
- }
-@@ -2258,6 +2268,8 @@ int uart_resume_port(struct uart_driver
- 		 */
- 		memset(&termios, 0, sizeof(struct ktermios));
- 		termios.c_cflag = uport->cons->cflag;
-+		termios.c_ispeed = uport->cons->ispeed;
-+		termios.c_ospeed = uport->cons->ospeed;
- 
- 		/*
- 		 * If that's unset, use the tty termios setting.
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -150,6 +150,8 @@ struct console {
- 	short	flags;
- 	short	index;
- 	int	cflag;
-+	uint	ispeed;
-+	uint	ospeed;
- 	void	*data;
- 	struct	 console *next;
+ struct ovl_aio_req {
+ 	struct kiocb iocb;
++	refcount_t ref;
+ 	struct kiocb *orig_iocb;
+ 	struct fd fd;
  };
+@@ -257,6 +258,14 @@ static rwf_t ovl_iocb_to_rwf(int ifl)
+ 	return flags;
+ }
+ 
++static inline void ovl_aio_put(struct ovl_aio_req *aio_req)
++{
++	if (refcount_dec_and_test(&aio_req->ref)) {
++		fdput(aio_req->fd);
++		kmem_cache_free(ovl_aio_request_cachep, aio_req);
++	}
++}
++
+ static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
+ {
+ 	struct kiocb *iocb = &aio_req->iocb;
+@@ -273,8 +282,7 @@ static void ovl_aio_cleanup_handler(stru
+ 	}
+ 
+ 	orig_iocb->ki_pos = iocb->ki_pos;
+-	fdput(aio_req->fd);
+-	kmem_cache_free(ovl_aio_request_cachep, aio_req);
++	ovl_aio_put(aio_req);
+ }
+ 
+ static void ovl_aio_rw_complete(struct kiocb *iocb, long res, long res2)
+@@ -324,7 +332,9 @@ static ssize_t ovl_read_iter(struct kioc
+ 		aio_req->orig_iocb = iocb;
+ 		kiocb_clone(&aio_req->iocb, iocb, real.file);
+ 		aio_req->iocb.ki_complete = ovl_aio_rw_complete;
++		refcount_set(&aio_req->ref, 2);
+ 		ret = vfs_iocb_iter_read(real.file, &aio_req->iocb, iter);
++		ovl_aio_put(aio_req);
+ 		if (ret != -EIOCBQUEUED)
+ 			ovl_aio_cleanup_handler(aio_req);
+ 	}
+@@ -395,7 +405,9 @@ static ssize_t ovl_write_iter(struct kio
+ 		kiocb_clone(&aio_req->iocb, iocb, real.file);
+ 		aio_req->iocb.ki_flags = ifl;
+ 		aio_req->iocb.ki_complete = ovl_aio_rw_complete;
++		refcount_set(&aio_req->ref, 2);
+ 		ret = vfs_iocb_iter_write(real.file, &aio_req->iocb, iter);
++		ovl_aio_put(aio_req);
+ 		if (ret != -EIOCBQUEUED)
+ 			ovl_aio_cleanup_handler(aio_req);
+ 	}
 
 
