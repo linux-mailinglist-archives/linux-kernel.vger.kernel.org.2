@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A66450AA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ED0450A9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhKORM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:12:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
+        id S231510AbhKORMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:12:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232211AbhKORLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:11:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41FE5610CA;
-        Mon, 15 Nov 2021 17:08:10 +0000 (UTC)
+        id S232387AbhKORLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00B8C61B5E;
+        Mon, 15 Nov 2021 17:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996090;
-        bh=aX4ZbAM3G0ivCKNMQNygwjqk10bL6+YKJD5usWualHg=;
+        s=korg; t=1636996093;
+        bh=IIsW6wAy0SALIeIWLH4qoOBu7RkiSSi8fyC8KamsJXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rhHZfVzJRFeVkfh4o+o1hvUN86vwS+CLo4LjOW7jHsq0AyLAQvun4wzBtHeNfsgEG
-         ioOxZQwj/EykxfNxbPR4IoLXSAu4TIbAH80j2AuoLFphHtRc9g45HctOY7/6t6Xy9T
-         fmaB35KsG1yw+yRnchAUYpF2KZeb8Qq0htZC3LOo=
+        b=vN+HnisPBH6dIWfPk2oQaHNxE2vxaK4S/47A2jncPLxNhrZFGm8yxyg8HVllcFm45
+         vpIx45jWy3R5bbDVndSShq1ziN1MAsQw7lRn33aLGtrC1yq9hIVy6f6RECLIebq0Pw
+         xZapQxzr7OVn/SEfQKkke8xPBAnYmNmmuUJhjXq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 013/355] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
-Date:   Mon, 15 Nov 2021 17:58:57 +0100
-Message-Id: <20211115165313.983021370@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Kyle McMartin <kyle@mcmartin.ca>
+Subject: [PATCH 5.4 014/355] parisc: Fix ptrace check on syscall return
+Date:   Mon, 15 Nov 2021 17:58:58 +0100
+Message-Id: <20211115165314.015030463@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,45 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Löhle <CLoehle@hyperstone.com>
+From: Helge Deller <deller@gmx.de>
 
-commit 43592c8736e84025d7a45e61a46c3fa40536a364 upstream.
+commit 8779e05ba8aaffec1829872ef9774a71f44f6580 upstream.
 
-Only wait for DRTO on reads, otherwise the driver hangs.
+The TIF_XXX flags are stored in the flags field in the thread_info
+struct (TI_FLAGS), not in the flags field of the task_struct structure
+(TASK_FLAGS).
 
-The driver prevents sending CMD12 on response errors like CRCs. According
-to the comment this is because some cards have problems with this during
-the UHS tuning sequence. Unfortunately this workaround currently also
-applies for any command with data. On reads this will set the drto timer,
-which then triggers after a while. On writes this will not set any timer
-and the tasklet will not be scheduled again.
+It seems this bug didn't generate any important side-effects, otherwise it
+wouldn't have went unnoticed for 12 years (since v2.6.32).
 
-I cannot test for the UHS workarounds need, but even if so, it should at
-most apply to reads. I have observed many hangs when CMD25 response
-contained a CRC error. This patch fixes this without touching the actual
-UHS tuning workaround.
-
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: ecd3d4bc06e48 ("parisc: stop using task->ptrace for {single,block}step flags")
+Cc: Kyle McMartin <kyle@mcmartin.ca>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/dw_mmc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/parisc/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -2013,7 +2013,8 @@ static void dw_mci_tasklet_func(unsigned
- 				 * delayed. Allowing the transfer to take place
- 				 * avoids races and keeps things simple.
- 				 */
--				if (err != -ETIMEDOUT) {
-+				if (err != -ETIMEDOUT &&
-+				    host->dir_status == DW_MCI_RECV_STATUS) {
- 					state = STATE_SENDING_DATA;
- 					continue;
- 				}
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1841,7 +1841,7 @@ syscall_restore:
+ 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
+ 
+ 	/* Are we being ptraced? */
+-	ldw	TASK_FLAGS(%r1),%r19
++	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+ 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+ 	and,COND(=)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
 
 
