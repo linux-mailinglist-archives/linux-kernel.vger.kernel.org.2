@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6387451284
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DA44512B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346765AbhKOTgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:36:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S1346943AbhKOThz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:37:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239214AbhKORzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:55:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C3E63327;
-        Mon, 15 Nov 2021 17:33:37 +0000 (UTC)
+        id S239234AbhKOR4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:56:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB5C4632BF;
+        Mon, 15 Nov 2021 17:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997618;
-        bh=vcW+5ZRdrGx+AtFDutn68szzICfIRXVYM+ST+zGdUeE=;
+        s=korg; t=1636997621;
+        bh=5D0OSs6CAyAiMAb6TI2VFOF170zKsZNjeWLJdRobvGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFf4UX7HK1fsLykjkB7u4VudRFh4y0QzYk1CXPEqc9R78rvnKpYCXYKQdl++MXBdU
-         +VTUPAY+kDhWIXKt+eMaYdPcdGq4opTcji11M9CMMsNuqqQ5MISI0xOUCim03JeauG
-         qU9DOpLpt/zaJKoDWFaSHrv03bFqoYTtkC10BPgo=
+        b=jW5xXB0qGeoD8xCaazdq6LtQclFlPM7VvB+hUvYYyiT/05aH56qULX7z/QV1sQiru
+         EkrOLKNFCwukFsR8a6p1sVS54JBu1aNlUB7sRcIxULVP/zCVS24AoO7wzJX+C/M/q8
+         0S+1VGPy+4cssFKj2OcOzbG12QXm/ymmsk/q4osg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 212/575] mmc: moxart: Fix reference count leaks in moxart_probe
-Date:   Mon, 15 Nov 2021 17:58:57 +0100
-Message-Id: <20211115165351.049813865@linuxfoundation.org>
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 213/575] iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+Date:   Mon, 15 Nov 2021 17:58:58 +0100
+Message-Id: <20211115165351.088826075@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,72 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 8105c2abbf36296bf38ca44f55ee45d160db476a ]
+[ Upstream commit 814a66741b9ffb5e1ba119e368b178edb0b7322d ]
 
-The issue happens in several error handling paths on two refcounted
-object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-these paths, the function forgets to decrement one or both objects'
-reference count increased earlier by dma_request_chan(), causing
-reference count leaks.
+Both iov_iter_get_pages and iov_iter_get_pages_alloc return the number
+of bytes of the iovec they could get the pages for.  When they cannot
+get any pages, they're supposed to return 0, but when the start of the
+iovec isn't page aligned, the calculation goes wrong and they return a
+negative value.  Fix both functions.
 
-Fix it by balancing the refcounts of both objects in some error
-handling paths. In correspondence with the changes in moxart_probe(),
-IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
+In addition, change iov_iter_get_pages_alloc to return NULL in that case
+to prevent resource leaks.
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/20211009041918.28419-1-xiongx18@fudan.edu.cn
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ lib/iov_iter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 2e4a7c6971dc9..dcd128ecdf15b 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -624,6 +624,14 @@ static int moxart_probe(struct platform_device *pdev)
- 			ret = -EPROBE_DEFER;
- 			goto out;
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 537bfdc8cd095..b364231b5fc8c 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1343,7 +1343,7 @@ ssize_t iov_iter_get_pages(struct iov_iter *i,
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0,
+ 				pages);
+-		if (unlikely(res < 0))
++		if (unlikely(res <= 0))
+ 			return res;
+ 		return (res == n ? len : res * PAGE_SIZE) - *start;
+ 	0;}),({
+@@ -1424,8 +1424,9 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
+ 			return -ENOMEM;
+ 		res = get_user_pages_fast(addr, n,
+ 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0, p);
+-		if (unlikely(res < 0)) {
++		if (unlikely(res <= 0)) {
+ 			kvfree(p);
++			*pages = NULL;
+ 			return res;
  		}
-+		if (!IS_ERR(host->dma_chan_tx)) {
-+			dma_release_channel(host->dma_chan_tx);
-+			host->dma_chan_tx = NULL;
-+		}
-+		if (!IS_ERR(host->dma_chan_rx)) {
-+			dma_release_channel(host->dma_chan_rx);
-+			host->dma_chan_rx = NULL;
-+		}
- 		dev_dbg(dev, "PIO mode transfer enabled\n");
- 		host->have_dma = false;
- 	} else {
-@@ -678,6 +686,10 @@ static int moxart_probe(struct platform_device *pdev)
- 	return 0;
- 
- out:
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
-+		dma_release_channel(host->dma_chan_tx);
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
-+		dma_release_channel(host->dma_chan_rx);
- 	if (mmc)
- 		mmc_free_host(mmc);
- 	return ret;
-@@ -690,9 +702,9 @@ static int moxart_remove(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
--	if (!IS_ERR(host->dma_chan_tx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
- 		dma_release_channel(host->dma_chan_tx);
--	if (!IS_ERR(host->dma_chan_rx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
- 		dma_release_channel(host->dma_chan_rx);
- 	mmc_remove_host(mmc);
- 	mmc_free_host(mmc);
+ 		*pages = p;
 -- 
 2.33.0
 
