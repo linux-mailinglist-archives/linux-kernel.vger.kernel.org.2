@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA06451F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B9B451994
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355530AbhKPAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1353771AbhKOXYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:24:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344685AbhKOTZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8331636AF;
-        Mon, 15 Nov 2021 19:02:17 +0000 (UTC)
+        id S244899AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F18C63328;
+        Mon, 15 Nov 2021 18:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002938;
-        bh=ej/MA4MPDd4jxpYyt9snCcgmYX6W8mw1mi8o6yViScw=;
+        s=korg; t=1637000718;
+        bh=+u2ETiKrAnS55F0DpA/MmD9STJIABn4sZZuynnL2mLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2qBQX2sk7o69aj575V64igBzBTWpn6pZ0HpBEdoWH0XcNpZIShYwLzVbOe0D1PmwP
-         /Brn3KT1sKSL6hdrFMFcSKQV9U9ySnceZHZ8fWqvY9zYp4UaOVb8oHQN/xDgU/t+2G
-         qb1xopuaOFNcNWWOdtBh/HfFGWC3RApqy1778PIE=
+        b=nWfTrzUdJfZ+erYrAW3oO7F3R8x7KxQTeKUC21J035x0qyjR+wtADMbsF4pZVAJpq
+         Kda3yYZT9jftCRsp/bpYhZU9LiZhFNBw6ZfzrJNfIXDqbZwCEffY2QXOYgRlqGUsfM
+         V3C/tjNdu1CLioYkeTMX4R/5GUsFzSvQ/RgNuDwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Karunakara Merugu <kmerugu@marvell.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jussi Maki <joamaki@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 752/917] scsi: qla2xxx: edif: Flush stale events and msgs on session down
-Date:   Mon, 15 Nov 2021 18:04:07 +0100
-Message-Id: <20211115165454.414476973@linuxfoundation.org>
+Subject: [PATCH 5.14 765/849] bpf: sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
+Date:   Mon, 15 Nov 2021 18:04:08 +0100
+Message-Id: <20211115165446.144853880@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,179 +42,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit b1af26c245545a289b331c7b71996ecd88321540 ]
+[ Upstream commit e0dc3b93bd7bcff8c3813d1df43e0908499c7cf0 ]
 
-On session down, driver will flush all stale messages and doorbell
-events. This prevents authentication application from having to process
-stale data.
+Strparser is reusing the qdisc_skb_cb struct to stash the skb message handling
+progress, e.g. offset and length of the skb. First this is poorly named and
+inherits a struct from qdisc that doesn't reflect the actual usage of cb[] at
+this layer.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-7-njavali@marvell.com
-Fixes: 4de067e5df12 ("scsi: qla2xxx: edif: Add N2N support for EDIF")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Co-developed-by: Karunakara Merugu <kmerugu@marvell.com>
-Signed-off-by: Karunakara Merugu <kmerugu@marvell.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+But, more importantly strparser is using the following to access its metadata.
+
+  (struct _strp_msg *)((void *)skb->cb + offsetof(struct qdisc_skb_cb, data))
+
+Where _strp_msg is defined as:
+
+  struct _strp_msg {
+        struct strp_msg            strp;                 /*     0     8 */
+        int                        accum_len;            /*     8     4 */
+
+        /* size: 12, cachelines: 1, members: 2 */
+        /* last cacheline: 12 bytes */
+  };
+
+So we use 12 bytes of ->data[] in struct. However in BPF code running parser
+and verdict the user has read capabilities into the data[] array as well. Its
+not too problematic, but we should not be exposing internal state to BPF
+program. If its really needed then we can use the probe_read() APIs which allow
+reading kernel memory. And I don't believe cb[] layer poses any API breakage by
+moving this around because programs can't depend on cb[] across layers.
+
+In order to fix another issue with a ctx rewrite we need to stash a temp
+variable somewhere. To make this work cleanly this patch builds a cb struct
+for sk_skb types called sk_skb_cb struct. Then we can use this consistently
+in the strparser, sockmap space. Additionally we can start allowing ->cb[]
+write access after this.
+
+Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Jussi Maki <joamaki@gmail.com>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20211103204736.248403-5-john.fastabend@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_edif.c   | 96 ++++++++++++++++++++++++++++++-
- drivers/scsi/qla2xxx/qla_gbl.h    |  2 +
- drivers/scsi/qla2xxx/qla_target.c |  1 +
- 3 files changed, 98 insertions(+), 1 deletion(-)
+ include/net/strparser.h   | 16 +++++++++++++++-
+ net/core/filter.c         | 22 ++++++++++++++++++++++
+ net/strparser/strparser.c | 10 +---------
+ 3 files changed, 38 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
-index cf62f26ce27d9..3931bae3222b3 100644
---- a/drivers/scsi/qla2xxx/qla_edif.c
-+++ b/drivers/scsi/qla2xxx/qla_edif.c
-@@ -1593,6 +1593,40 @@ qla_enode_stop(scsi_qla_host_t *vha)
- 	spin_unlock_irqrestore(&vha->pur_cinfo.pur_lock, flags);
+diff --git a/include/net/strparser.h b/include/net/strparser.h
+index 1d20b98493a10..bec1439bd3be6 100644
+--- a/include/net/strparser.h
++++ b/include/net/strparser.h
+@@ -54,10 +54,24 @@ struct strp_msg {
+ 	int offset;
+ };
+ 
++struct _strp_msg {
++	/* Internal cb structure. struct strp_msg must be first for passing
++	 * to upper layer.
++	 */
++	struct strp_msg strp;
++	int accum_len;
++};
++
++struct sk_skb_cb {
++#define SK_SKB_CB_PRIV_LEN 20
++	unsigned char data[SK_SKB_CB_PRIV_LEN];
++	struct _strp_msg strp;
++};
++
+ static inline struct strp_msg *strp_msg(struct sk_buff *skb)
+ {
+ 	return (struct strp_msg *)((void *)skb->cb +
+-		offsetof(struct qdisc_skb_cb, data));
++		offsetof(struct sk_skb_cb, strp));
  }
  
-+static void qla_enode_clear(scsi_qla_host_t *vha, port_id_t portid)
-+{
-+	unsigned    long flags;
-+	struct enode    *e, *tmp;
-+	struct purexevent   *purex;
-+	LIST_HEAD(enode_list);
+ /* Structure for an attached lower socket */
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d70187ce851bc..e0b0ff681e68d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9681,11 +9681,33 @@ static u32 sk_skb_convert_ctx_access(enum bpf_access_type type,
+ 				     struct bpf_prog *prog, u32 *target_size)
+ {
+ 	struct bpf_insn *insn = insn_buf;
++	int off;
+ 
+ 	switch (si->off) {
+ 	case offsetof(struct __sk_buff, data_end):
+ 		insn = bpf_convert_data_end_access(si, insn);
+ 		break;
++	case offsetof(struct __sk_buff, cb[0]) ...
++	     offsetofend(struct __sk_buff, cb[4]) - 1:
++		BUILD_BUG_ON(sizeof_field(struct sk_skb_cb, data) < 20);
++		BUILD_BUG_ON((offsetof(struct sk_buff, cb) +
++			      offsetof(struct sk_skb_cb, data)) %
++			     sizeof(__u64));
 +
-+	if (vha->pur_cinfo.enode_flags != ENODE_ACTIVE) {
-+		ql_dbg(ql_dbg_edif, vha, 0x09102,
-+		       "%s enode not active\n", __func__);
-+		return;
-+	}
-+	spin_lock_irqsave(&vha->pur_cinfo.pur_lock, flags);
-+	list_for_each_entry_safe(e, tmp, &vha->pur_cinfo.head, list) {
-+		purex = &e->u.purexinfo;
-+		if (purex->pur_info.pur_sid.b24 == portid.b24) {
-+			ql_dbg(ql_dbg_edif, vha, 0x911d,
-+			    "%s free ELS sid=%06x. xchg %x, nb=%xh\n",
-+			    __func__, portid.b24,
-+			    purex->pur_info.pur_rx_xchg_address,
-+			    purex->pur_info.pur_bytes_rcvd);
++		prog->cb_access = 1;
++		off  = si->off;
++		off -= offsetof(struct __sk_buff, cb[0]);
++		off += offsetof(struct sk_buff, cb);
++		off += offsetof(struct sk_skb_cb, data);
++		if (type == BPF_WRITE)
++			*insn++ = BPF_STX_MEM(BPF_SIZE(si->code), si->dst_reg,
++					      si->src_reg, off);
++		else
++			*insn++ = BPF_LDX_MEM(BPF_SIZE(si->code), si->dst_reg,
++					      si->src_reg, off);
++		break;
 +
-+			list_del_init(&e->list);
-+			list_add_tail(&e->list, &enode_list);
-+		}
-+	}
-+	spin_unlock_irqrestore(&vha->pur_cinfo.pur_lock, flags);
 +
-+	list_for_each_entry_safe(e, tmp, &enode_list, list) {
-+		list_del_init(&e->list);
-+		qla_enode_free(vha, e);
-+	}
-+}
-+
- /*
-  *  allocate enode struct and populate buffer
-  *  returns: enode pointer with buffers
-@@ -1792,6 +1826,57 @@ qla_edb_node_free(scsi_qla_host_t *vha, struct edb_node *node)
- 	node->ntype = N_UNDEF;
+ 	default:
+ 		return bpf_convert_ctx_access(type, si, insn_buf, prog,
+ 					      target_size);
+diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
+index 9c0343568d2a0..1a72c67afed5e 100644
+--- a/net/strparser/strparser.c
++++ b/net/strparser/strparser.c
+@@ -27,18 +27,10 @@
+ 
+ static struct workqueue_struct *strp_wq;
+ 
+-struct _strp_msg {
+-	/* Internal cb structure. struct strp_msg must be first for passing
+-	 * to upper layer.
+-	 */
+-	struct strp_msg strp;
+-	int accum_len;
+-};
+-
+ static inline struct _strp_msg *_strp_msg(struct sk_buff *skb)
+ {
+ 	return (struct _strp_msg *)((void *)skb->cb +
+-		offsetof(struct qdisc_skb_cb, data));
++		offsetof(struct sk_skb_cb, strp));
  }
  
-+static void qla_edb_clear(scsi_qla_host_t *vha, port_id_t portid)
-+{
-+	unsigned long flags;
-+	struct edb_node *e, *tmp;
-+	port_id_t sid;
-+	LIST_HEAD(edb_list);
-+
-+	if (vha->e_dbell.db_flags != EDB_ACTIVE) {
-+		/* doorbell list not enabled */
-+		ql_dbg(ql_dbg_edif, vha, 0x09102,
-+		       "%s doorbell not enabled\n", __func__);
-+		return;
-+	}
-+
-+	/* grab lock so list doesn't move */
-+	spin_lock_irqsave(&vha->e_dbell.db_lock, flags);
-+	list_for_each_entry_safe(e, tmp, &vha->e_dbell.head, list) {
-+		switch (e->ntype) {
-+		case VND_CMD_AUTH_STATE_NEEDED:
-+		case VND_CMD_AUTH_STATE_SESSION_SHUTDOWN:
-+			sid = e->u.plogi_did;
-+			break;
-+		case VND_CMD_AUTH_STATE_ELS_RCVD:
-+			sid = e->u.els_sid;
-+			break;
-+		case VND_CMD_AUTH_STATE_SAUPDATE_COMPL:
-+			/* app wants to see this  */
-+			continue;
-+		default:
-+			ql_log(ql_log_warn, vha, 0x09102,
-+			       "%s unknown node type: %x\n", __func__, e->ntype);
-+			sid.b24 = 0;
-+			break;
-+		}
-+		if (sid.b24 == portid.b24) {
-+			ql_dbg(ql_dbg_edif, vha, 0x910f,
-+			       "%s free doorbell event : node type = %x %p\n",
-+			       __func__, e->ntype, e);
-+			list_del_init(&e->list);
-+			list_add_tail(&e->list, &edb_list);
-+		}
-+	}
-+	spin_unlock_irqrestore(&vha->e_dbell.db_lock, flags);
-+
-+	list_for_each_entry_safe(e, tmp, &edb_list, list) {
-+		qla_edb_node_free(vha, e);
-+		list_del_init(&e->list);
-+		kfree(e);
-+	}
-+}
-+
- /* function called when app is stopping */
- 
- void
-@@ -2378,7 +2463,7 @@ void qla24xx_auth_els(scsi_qla_host_t *vha, void **pkt, struct rsp_que **rsp)
- 	ql_dbg(ql_dbg_edif, host, 0x0910c,
- 	    "%s COMPLETE purex->pur_info.pur_bytes_rcvd =%xh s:%06x -> d:%06x xchg=%xh\n",
- 	    __func__, purex->pur_info.pur_bytes_rcvd, purex->pur_info.pur_sid.b24,
--	    purex->pur_info.pur_did.b24, p->rx_xchg_addr);
-+	    purex->pur_info.pur_did.b24, purex->pur_info.pur_rx_xchg_address);
- 
- 	qla_edb_eventcreate(host, VND_CMD_AUTH_STATE_ELS_RCVD, sid, 0, NULL);
- }
-@@ -3401,3 +3486,12 @@ void qla_edif_sess_down(struct scsi_qla_host *vha, struct fc_port *sess)
- 		qla2x00_post_aen_work(vha, FCH_EVT_PORT_OFFLINE, sess->d_id.b24);
- 	}
- }
-+
-+void qla_edif_clear_appdata(struct scsi_qla_host *vha, struct fc_port *fcport)
-+{
-+	if (!(fcport->flags & FCF_FCSP_DEVICE))
-+		return;
-+
-+	qla_edb_clear(vha, fcport->d_id);
-+	qla_enode_clear(vha, fcport->d_id);
-+}
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 0a43ce9317db2..2c7e91bffb827 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -142,6 +142,8 @@ void qlt_chk_edif_rx_sa_delete_pending(scsi_qla_host_t *vha, fc_port_t *fcport,
- void qla2x00_release_all_sadb(struct scsi_qla_host *vha, struct fc_port *fcport);
- int qla_edif_process_els(scsi_qla_host_t *vha, struct bsg_job *bsgjob);
- void qla_edif_sess_down(struct scsi_qla_host *vha, struct fc_port *sess);
-+void qla_edif_clear_appdata(struct scsi_qla_host *vha,
-+			    struct fc_port *fcport);
- const char *sc_to_str(uint16_t cmd);
- 
- /*
-diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
-index 7d8242c120fc7..1aaa4238cb722 100644
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -1003,6 +1003,7 @@ void qlt_free_session_done(struct work_struct *work)
- 					"%s bypassing release_all_sadb\n",
- 					__func__);
- 			}
-+			qla_edif_clear_appdata(vha, sess);
- 			qla_edif_sess_down(vha, sess);
- 		}
- 		qla2x00_mark_device_lost(vha, sess, 0);
+ /* Lower lock held */
 -- 
 2.33.0
 
