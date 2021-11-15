@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FE2451ABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA564518D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351357AbhKOXmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1352054AbhKOXIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:08:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343966AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF9F561504;
-        Mon, 15 Nov 2021 18:49:42 +0000 (UTC)
+        id S243371AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00A8863486;
+        Mon, 15 Nov 2021 18:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002183;
-        bh=wAEORlIloIhquPQmQylodOIuiUktgC2qMMWzZ4isTm4=;
+        s=korg; t=1636999949;
+        bh=mO0fgc0I37F4CSj6sSfwAUB5W2K5JcVhunKiUDnqZ5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqo1cAckKJxoiUDj+5KGwhTk1n/VCGUyebhAKn8kYvowTsUaHsKtMTG4o2Gnt/8ik
-         NQgXaJZ/VdtyFdBYDuryq3JsdIKoy9wgnTHzGZ70+EqTWyM04urpBNblidwW/9P7Uo
-         4C97e1sg9bv3FG/z27Fp6nO7SIf2APcwJq4FScxI=
+        b=TvxV+pEJshHxvVC7uroxmFwRO0hdJW4Epd4IqGT5Pe9EL1XENfNaC5Yvs19cyqiDl
+         k2tp+lwLNfW5BSBwgPklYctNjacZigqbOd+dQMBi8pZ27KHKZuzLP1pEBReLdD05Ow
+         wP0V9DbPyiybMexj9h0BEzAZHHvIyQR6KmySk5Ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Deren Wu <deren.wu@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 469/917] mt76: mt7921: fix dma hang in rmmod
-Date:   Mon, 15 Nov 2021 17:59:24 +0100
-Message-Id: <20211115165444.680127147@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 482/849] phy: micrel: ksz8041nl: do not use power down mode
+Date:   Mon, 15 Nov 2021 17:59:25 +0100
+Message-Id: <20211115165436.588233873@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deren Wu <deren.wu@mediatek.com>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit a23f80aa9c5e6ad4ec8df88037b7ffd4162b1ec4 ]
+[ Upstream commit 2641b62d2fab52648e34cdc6994b2eacde2d27c1 ]
 
-The dma would be broken after rmmod flow. There are two different
-cases causing this issue.
-1. dma access without privilege.
-2. hw access sequence borken by another context.
+Some Micrel KSZ8041NL PHY chips exhibit continuous RX errors after using
+the power down mode bit (0.11). If the PHY is taken out of power down
+mode in a certain temperature range, the PHY enters a weird state which
+leads to continuously reporting RX errors. In that state, the MAC is not
+able to receive or send any Ethernet frames and the activity LED is
+constantly blinking. Since Linux is using the suspend callback when the
+interface is taken down, ending up in that state can easily happen
+during a normal startup.
 
-This patch handle both cases to avoid hw crash.
+Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+clock recovery when using power down mode. Even the latest revision (A4,
+Revision ID 0x1513) seems to suffer that problem, and according to the
+errata is not going to be fixed.
 
-Fixes: 2b9ea5a8cf1bd ("mt76: mt7921: add mt7921_dma_cleanup in mt7921_unregister_device")
-Signed-off-by: Deren Wu <deren.wu@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Remove the suspend/resume callback to avoid using the power down mode
+completely.
+
+[*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
+
+Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/init.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/phy/micrel.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-index 52d40385fab6c..78a00028137bd 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-@@ -251,8 +251,17 @@ int mt7921_register_device(struct mt7921_dev *dev)
- 
- void mt7921_unregister_device(struct mt7921_dev *dev)
- {
-+	int i;
-+	struct mt76_connac_pm *pm = &dev->pm;
-+
- 	mt76_unregister_device(&dev->mt76);
-+	mt76_for_each_q_rx(&dev->mt76, i)
-+		napi_disable(&dev->mt76.napi[i]);
-+	cancel_delayed_work_sync(&pm->ps_work);
-+	cancel_work_sync(&pm->wake_work);
-+
- 	mt7921_tx_token_put(dev);
-+	mt7921_mcu_drv_pmctrl(dev);
- 	mt7921_dma_cleanup(dev);
- 	mt7921_mcu_exit(dev);
- 
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 643b1c1827a92..aec0fcefdccd6 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -1593,8 +1593,9 @@ static struct phy_driver ksphy_driver[] = {
+ 	.get_sset_count = kszphy_get_sset_count,
+ 	.get_strings	= kszphy_get_strings,
+ 	.get_stats	= kszphy_get_stats,
+-	.suspend	= genphy_suspend,
+-	.resume		= genphy_resume,
++	/* No suspend/resume callbacks because of errata DS80000700A,
++	 * receiver error following software power down.
++	 */
+ }, {
+ 	.phy_id		= PHY_ID_KSZ8041RNLI,
+ 	.phy_id_mask	= MICREL_PHY_ID_MASK,
 -- 
 2.33.0
 
