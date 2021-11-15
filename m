@@ -2,164 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B0F451BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C70451BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354974AbhKPAI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:56 -0500
-Received: from mail-bn8nam12on2088.outbound.protection.outlook.com ([40.107.237.88]:65505
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1349916AbhKOUUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:20:33 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ei6eHucmFLDbpOOG/qk7Y3y0Ij3iG+e90arzGxiMuZ/kOhYfAMZrMh0aNa4tsrkLK64snD/fmIFzKbhjBRi3RCj2xPzTr4CjpDbNzn9F9tFr7Dds2Md8jpT8mmKpCsvhFAlfn2AS9cdxjInvBb5Jz9CPq5a/bVkxFiTed0mk4pC6KL8dX5TQy/hXDqdiTDtcRPqf9PJetcqFtQSJ2y2XPa3xONOuyVnQWwujaNEpyCTCjxVY/eYrwgiCUfhMaH8eJilw+lYARuxgmdRtJwPwoDQAejKrrWmX89dJuKiw7nWHDVmgXCF8FfRNg31D5YwlDEflkXJzvjrYNxS9Uc7LiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/VVL8bqbWRpeB+XKJzbFZJrnmufTsmh+lfrCAKt9p2k=;
- b=nPTxCoLsEM8TSKA+M7/Ry6eiQNL4dNG05wj7DUGy13rn4nppMbhkC5a7MBvpdqbpkPXUWSU9dbqMSDFHQ5AlUB8vgVJ94s2rbRa9aM66deg608WF463XVdkxGsTg1wNYpkPtK70o9WEYoTHnGmwSE5RbkaxicgfTaY9wcswtdCwJPqj9y1jGiieW04FlMhNhjcrxmtm2wiitizUtfi49nuOcOcus8/zNE2XkbkauOgpHdW+yNNEdamWDqzySDqhx36bT77tJNz61PTEnQUGqID4pvbZu6k1y3we5yxav0jeB4BAAfK+hzZVqTml7NGzOblYDcRy26lHg2265cGZm2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/VVL8bqbWRpeB+XKJzbFZJrnmufTsmh+lfrCAKt9p2k=;
- b=F0VNP8fyOnKD8SinZzpr1PJUbssiAxUKxAiqk62Wm6AXrDaXsSpv52TGz+wFkrtLdlgQ9sC/XhiH8GLia34xxPvi5Xo5QQux3RbCH1RSrlr1xUE67nSkKD6ZnERDP8OJSuRbgG0OUMDLuBOD1QwXZirFXlBDPdzW+Mvu5qq9ylU=
-Received: from BN6PR13CA0039.namprd13.prod.outlook.com (2603:10b6:404:13e::25)
- by DM6PR12MB3435.namprd12.prod.outlook.com (2603:10b6:5:39::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Mon, 15 Nov
- 2021 20:17:34 +0000
-Received: from BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:13e:cafe::9d) by BN6PR13CA0039.outlook.office365.com
- (2603:10b6:404:13e::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.16 via Frontend
- Transport; Mon, 15 Nov 2021 20:17:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT033.mail.protection.outlook.com (10.13.177.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 20:17:32 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Mon, 15 Nov
- 2021 14:17:31 -0600
-Date:   Mon, 15 Nov 2021 14:17:15 -0600
-From:   Michael Roth <michael.roth@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Brijesh Singh <brijesh.singh@amd.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-efi@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
-        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        <tony.luck@intel.com>, <marcorr@google.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH v7 02/45] x86/sev: detect/setup SEV/SME features earlier
- in boot
-Message-ID: <20211115201715.gv24iugujwhxmrdp@amd.com>
-References: <20211110220731.2396491-1-brijesh.singh@amd.com>
- <20211110220731.2396491-3-brijesh.singh@amd.com>
- <YZKxCdhaFTTlSHAJ@zn.tnic>
+        id S1348749AbhKPAJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:09:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350460AbhKOUXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 15:23:54 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295EBC061746
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:18:24 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id s186so50481521yba.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:18:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ti2qS38N54C0keJ4viYpkfZvuilsGcLNEF7JfCXeTTQ=;
+        b=dh/Oa9Ne/UX3lXjDB4COE5fcmk8sukuVS9CcQeo4HvaaL9inYkLrRgESiTiiJjH8Ha
+         VD+voEPVlu4lT/PFKwINwdG4d11smF+KO/ppWh9QkjAYWf9nI2V51AWJZTZVp4mOvqr/
+         OqeBQGqGBLjLgEja7DyQ3k/np69fx0UsIFBY0muAvUQRNUVa5/KFzlzavNtVE2HhmDsK
+         bmh6KbqsAKlU3IKOQjpgPqjw0dOCkZxcS8P+7EtoLtYNqQhqa9IbpkxB9gRHMNpqSxBi
+         l/xRTx3ssiex9d5VCAExW9LSc6GJtcglSAdxi43WZcr1AEmZAEonPwY3qqbOY1Qs3OD3
+         dPHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ti2qS38N54C0keJ4viYpkfZvuilsGcLNEF7JfCXeTTQ=;
+        b=6vlcEDKshIgGpQgFXG5SkQiXT4ZEe86E95+FGWI3+N70lFUjXgQHezTKGwAjTE85ra
+         B0qaPsU4/ieutWwwfVqU/6pBCpBXwEyHMJvrWwk9ar85w7xWfGCvtqcqieJViZZiAVin
+         DeTDUzjSX5ULdBHlJB278P5jjUblV8P6PpVU6vpEWcfBoX7FRMLilNApS+B2RSF9qXpW
+         3RM0y83Ijgr1wbOXOhGT1D59cqCDw50QdIfSFCZV9w2qW0cU4EayVU5/C2pciU34wuyM
+         8GkepU2MCtOedwGWDYvLhhq2PKnMh+zRDKw+bLpcnBseHC0aFq78l4LuzM1WdEiD3dG9
+         uPiA==
+X-Gm-Message-State: AOAM5330UrEHzhwnFj3JaS2D96CJAhrMW7jWrJmGIRB0hsevT9Mu4sft
+        zvFsl8RWoJG7nni/SNujVvI9MXIhLgG7L59ITqkINg==
+X-Google-Smtp-Source: ABdhPJxKkmPEnUXj0aVbJDTQXnWiiYrBJDqwAo+CYLHhYd6MMCN9FGeHm5tb4KkW7mZ9cUyGQQ0uXz7x+4W8OBjmlCo=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr1822562ybq.328.1637007502971;
+ Mon, 15 Nov 2021 12:18:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YZKxCdhaFTTlSHAJ@zn.tnic>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 029bca0d-ebec-4086-0cc7-08d9a874f4ca
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3435:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3435C345241F18C05A5413C295989@DM6PR12MB3435.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ox7iGByGcFrN/9Q6stqLHzHcZ3iJBEiSuMgD6JnJBXyXPN/QsS7NrZMz55NZ5eLw9kIN8E0AzpkM6iHrk8WxW+Jvp2+89ugnJ0vzfz5CKyrHldgz2ZoW+QqJ1uV/SOivG/Mj5HtSlAPXZUIL8emkuqvTvP0CEiiu/oD1BlWP+/e/QhnXuS72HtSCNUp07hIpyB270MF1HbuKjWZ31ZcyLWiI8uIeQPdPzz2WZgQ3aLbUk6SHqeBIRo7MR6ON7wm2lCRAfilr6WxADxwY+Ebm8aATHYBwLeLsBr4nb06651f3FBzW1gNIxUeyYfsHLVH8AjEm7VMpyToXbGKC2ny2vWFdhXon48FNpDJc/VpGNQTOGI+j/MkwyUWT6MVV6dwcBRmi0VldKhgIwR9IyaQ9G07Ok0OUviJYKn3Zx0B/95VIs+9j1Ud8erip/xFY+H3JdpxbJS4CLbIAeVEMppb52qd/VJv1LUv5ELi0H9h1PhTlpsLHgNLF5dcPAe+HagVQ3TJ84fE/McanTaZzxrkucwH3lRCgMQplhkIqraIKoXO0jfuKDXGmlKg13kmB0l6T2c4M4or+9pum67dziecY8Ntunab+gmxslZJNRDpccL17lRvr6c7DOymlr03D8O0Z7TydRUNafVLWHYtKElpQHzU/HsCHmX2oXq5+L4nMG9FJ8lGt79boa/ukyv7jfTgKKK2qjV3rPaCyFzVJ6FlbHwDQDwWVhDWjBHLCFXzSXGzFf+BdaW4rBuLhw9W6rE3rhLjM7mmJ8GwwGI4FjWSFaVWxxJH6nas6DRtN0DBgSF8MTRfFkPuiqETDczD7YKkDtfy72IGDM+l6OJ1xtHLfE2dPjwOHLp2SdTbJB1gy/Xo=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(70206006)(36756003)(81166007)(2616005)(356005)(336012)(82310400003)(86362001)(5660300002)(16526019)(7416002)(7406005)(186003)(1076003)(26005)(47076005)(966005)(426003)(44832011)(36860700001)(45080400002)(508600001)(6666004)(4326008)(54906003)(8676002)(316002)(83380400001)(70586007)(2906002)(8936002)(6916009)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 20:17:32.5731
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 029bca0d-ebec-4086-0cc7-08d9a874f4ca
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3435
+References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-2-saravanak@google.com>
+ <YYu4EglV7SBZU2Iy@ryzen> <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
+In-Reply-To: <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Nov 2021 12:17:46 -0800
+Message-ID: <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Abel Vesa <abelvesa@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:12:09PM +0100, Borislav Petkov wrote:
-> On Wed, Nov 10, 2021 at 04:06:48PM -0600, Brijesh Singh wrote:
-> > From: Michael Roth <michael.roth@amd.com>
-> > 
-> > sme_enable() handles feature detection for both SEV and SME. Future
-> > patches will also use it for SEV-SNP feature detection/setup, which
-> > will need to be done immediately after the first #VC handler is set up.
-> > Move it now in preparation.
-> 
-> I don't mind the move - what I miss is the reason why you're moving it
-> up.
+On Wed, Nov 10, 2021 at 12:24 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 4:16 AM Abel Vesa <abelvesa@kernel.org> wrote:
+> >
+> > On 21-09-28 17:07:33, Saravana Kannan wrote:
+> > > fw_devlink could end up creating device links for bus only devices.
+> > > However, bus only devices don't get probed and can block probe() or
+> > > sync_state() [1] call backs of other devices. To avoid this, probe these
+> > > devices using the simple-pm-bus driver.
+> > >
+> > > However, there are instances of devices that are not simple buses (they get
+> > > probed by their specific drivers) that also list the "simple-bus" (or other
+> > > bus only compatible strings) in their compatible property to automatically
+> > > populate their child devices. We still want these devices to get probed by
+> > > their specific drivers. So, we make sure this driver only probes devices
+> > > that are only buses.
+> > >
+> > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > > Fixes: c442a0d18744 ("driver core: Set fw_devlink to "permissive" behavior by default")
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > Tested-by: Saravana Kannan <saravanak@google.com>
+> > > Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > ---
+> > >  drivers/bus/simple-pm-bus.c | 42 ++++++++++++++++++++++++++++++++++---
+> > >  1 file changed, 39 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> > > index 01a3d0cd08ed..6b8d6257ed8a 100644
+> > > --- a/drivers/bus/simple-pm-bus.c
+> > > +++ b/drivers/bus/simple-pm-bus.c
+> > > @@ -13,11 +13,36 @@
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/pm_runtime.h>
+> > >
+> > > -
+> > >  static int simple_pm_bus_probe(struct platform_device *pdev)
+> > >  {
+> > > -     const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> > > -     struct device_node *np = pdev->dev.of_node;
+> > > +     const struct device *dev = &pdev->dev;
+> > > +     const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> > > +     struct device_node *np = dev->of_node;
+> > > +     const struct of_device_id *match;
+> > > +
+> > > +     /*
+> > > +      * Allow user to use driver_override to bind this driver to a
+> > > +      * transparent bus device which has a different compatible string
+> > > +      * that's not listed in simple_pm_bus_of_match. We don't want to do any
+> > > +      * of the simple-pm-bus tasks for these devices, so return early.
+> > > +      */
+> > > +     if (pdev->driver_override)
+> > > +             return 0;
+> > > +
+> > > +     match = of_match_device(dev->driver->of_match_table, dev);
+> > > +     /*
+> > > +      * These are transparent bus devices (not simple-pm-bus matches) that
+> > > +      * have their child nodes populated automatically.  So, don't need to
+> > > +      * do anything more. We only match with the device if this driver is
+> > > +      * the most specific match because we don't want to incorrectly bind to
+> > > +      * a device that has a more specific driver.
+> > > +      */
+> > > +     if (match && match->data) {
+> > > +             if (of_property_match_string(np, "compatible", match->compatible) == 0)
+> > > +                     return 0;
+> > > +             else
+> > > +                     return -ENODEV;
+> > > +     }
+> >
+> > This change is breaking the expected behavior for the already existent
+> > simple-bus nodes. All the simple-bus compatibles should be replaced now
+> > to simple-pm-bus. In my case, on some i.MX8 platforms, without the
+> > devlink, the devices suspend sequence changes (and even breaks).
+> >
+> > To avoid breaking the already existent simple-bus nodes, maybe the logic
+> > should've been reversed: keep the simple-bus as is and add another
+> > compatible, IDK, something like simple-trasnparent-bus, or something.
+>
+> The intent of this change IS to affect existing simple-bus nodes (but
+> not in the way it's affecting you). But if it's breaking stuff, we
+> obviously need to fix it.
+>
+> I have a hunch on what's going on in your case, but can you point me
+> to the specific simple-bus node that's getting affected? I'm expecting
+> it to be a simple-bus node that gets added AFTER this driver is
+> registered at device_initcall (module_init gets converted to
+> device_initcall).
+>
+> Also, can you try this hack patch to see if it helps your case?
+> https://lore.kernel.org/lkml/CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com/
+>
+> I have some thoughts on how I could fix this, but I need to think
+> about a few cases.
 
-The early #VC handlers are needed mainly so that early cpuid instructions
-can be handled for SEV-ES. In the case of SNP, the cpuid table needs to be
-set up at the same time so those #VC handlers can handle cpuid lookups for
-SEV-SNP guests. Previously in v6, that CPUID table setup was done with a
-separate routine, snp_cpuid_init(), which was awkward because between
-the point snp_cpuid_init() was called, and sme_enable() was called, we
-were in an in-between state where some SEV-ES/SEV-SNP features were in
-use, but they weren't actually sanity-checked against SEV status MSR and
-CPUID bits until later in sme_enable(). I tried adding some of those checks
-from sme_enable() into snp_cpuid_init(), but you'd suggested instead moving
-the CPUID table setup into sme_enable() to avoid the duplication:
+Hi Abel,
 
-https://lore.kernel.org/linux-mm/20211027151325.v3w3nghq5z2o5dto@amd.com/
+Friendly reminder.
 
-but in order for that to happen soon enough to make use of the CPUID
-table for all CPUID intructions, it needs to be moved to just after the first
-#VC handler is setup (where snp_cpuid_init() used to be in v6).
-
-As for why CPUID table needs to be used for all CPUID, it's mainly so
-that the CPUID values used throughout boot can be attested to later
-if the guest owner validates the CPUID values in the CPUID page. I
-added some documentation for why this is the case in:
-
- [PATCH 33/45] KVM: SEV: Add documentation for SEV-SNP CPUID Enforcement
-
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7Cmichael.roth%40amd.com%7C29ab37203c1a4c796bdc08d9a86bd7a4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726003477466910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=xxIMC4PM7kJ2O79gQKK7I%2BhnOsuEbckVPA9Gicz0S9w%3D&amp;reserved=0
+-Saravana
