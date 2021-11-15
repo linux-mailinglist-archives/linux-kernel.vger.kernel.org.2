@@ -2,156 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF14C44FC8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E1244FC92
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhKOAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:20:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhKOAUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE1860F44;
-        Mon, 15 Nov 2021 00:17:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636935476;
-        bh=+oQE67zSDKDG/9Y86hCe3ln8eOzRm82kVNTPNRyu5pQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=okPlKD2nsAQNoWuuKOM6ZQcOiMejAiLGDtuRM7TtGJI4O766HmvTSVQKdc05p7T/4
-         i9wPSVHz3jC804hlxMytLb08YArasA6bc3LosWBs4+7edJt00t5cWpoTYLOYF8TumP
-         kHydrz4TrDyQDhYf4mPd/QwGNTUMYbWebGY03xYMmXqqsBUpNPFRXzCxIli05tUJxn
-         4F/C5Cx/2riov8Kb3e/3t1bbkzKHfhQBh4ki6/o2QyUnhK1fqD4ehWDbR5OFiUAkvJ
-         8gSJxH+bwwwUyUPoJY8fED+0Jwjm06C/QCWKwoqctlOLfQuH8rxh2m/XOQ9qd42ppn
-         IJ6+64rdkBK9g==
-Date:   Sun, 14 Nov 2021 17:17:51 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
-Message-ID: <YZGnL3nfA5876hX3@archlinux-ax161>
-References: <20211114005725.GA27075@embeddedor>
- <YZF9MY6rRLQwdTgM@archlinux-ax161>
+        id S232642AbhKOAWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhKOAVe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 19:21:34 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1534EC061746;
+        Sun, 14 Nov 2021 16:18:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=n7f9L6nx97YdTMJtP7Ls20RES49EFohNDqW95oBsSWY=; b=Zxi1+EIOrcK/rOWj+FPvb2vDUw
+        CD/VANxP1wj4zu0JsIkcSS3zU9l3wHT7wPtYamN00RJiOtOKcBsPhsmImjKbWYlFizhj4E7t8XDeH
+        sVS3ihLgkt2rzRgX/CNcN5OE6huxfg5JJnm+QPl211tN72lnFbpOV3XP5k5aEIIm0RH2ZRKwjX7cq
+        gb53nGqNv8aQMco8wVnSwKA+WsaAeXIOYHFS0HNQI3Q708aZg2d1X9Y5sB+T92Zf/W8gnmNMfWvsD
+        1fmldmozejTswRVPzssydImLc3S4zUBGXz8hQKJwnYZj7OduV2hjGLy6fqKbvjcgftqd52A9OVsYF
+        tMt8UdTw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmPhl-00EBWr-60; Mon, 15 Nov 2021 00:18:37 +0000
+Subject: Re: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>
+References: <20211114163444.21669-1-rdunlap@infradead.org>
+ <CAHp75Veeppry=SHk0NUxpHVKbefCgRqDvi+PFJCiCABDSYg-HQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9429af8f-a301-9f51-68a0-2e42013e6e8f@infradead.org>
+Date:   Sun, 14 Nov 2021 16:18:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZF9MY6rRLQwdTgM@archlinux-ax161>
+In-Reply-To: <CAHp75Veeppry=SHk0NUxpHVKbefCgRqDvi+PFJCiCABDSYg-HQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 02:18:41PM -0700, Nathan Chancellor wrote:
-> On Sat, Nov 13, 2021 at 06:57:25PM -0600, Gustavo A. R. Silva wrote:
-> > Add Kconfig support for -Wimplicit-fallthrough for both GCC and Clang.
-> > 
-> > The compiler option is under configuration CC_IMPLICIT_FALLTHROUGH,
-> > which is enabled by default.
-> > 
-> > Special thanks to Nathan Chancellor who fixed the Clang bug[1][2]. This
-> > bugfix only appears in Clang 14.0.0, so older versions still contain
-> > the bug and -Wimplicit-fallthrough won't be enabled for them, for now.
-> > 
-> > This concludes a long journey and now we are finally getting rid
-> > of the unintentional fallthrough bug-class in the kernel, entirely. :)
-> > 
-> > [1] https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
-> > [2] https://bugs.llvm.org/show_bug.cgi?id=51094
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> > Co-developed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On 11/14/21 8:40 AM, Andy Shevchenko wrote:
+> On Sun, Nov 14, 2021 at 6:34 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+>> clk_get_parent(), so add a simple implementation of that
+>> function so that callers of it will build without errors.
+>>
+>> Fixes these build errors:
+>>
+>> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+>> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+>> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+>> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
 > 
-> This appears to do the right thing with both clang-13 and clang-14.
-
-Now that I gave this a look for the GCC side, I think it is wrong.
-
--Wimplicit-fallthrough=5 was under cc-option because it was only
-available in GCC 7.x and newer so the build is now broken for GCC 5.x
-and 6.x:
-
-gcc: error: unrecognized command line option '-Wimplicit-fallthrough=5';
-did you mean '-Wno-fallthrough'?
-
-I think this needs to be added (I can send a formal patch tomorrow
-unless someone wants to beat me to it):
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 036b750e8d8a..85882c317235 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -887,7 +887,7 @@ config CC_HAS_INT128
- 
- config CC_IMPLICIT_FALLTHROUGH
- 	string
--	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
-+	default "-Wimplicit-fallthrough=5" if $(cc-option,-Wimplicit-fallthrough=5)
- 	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
- 
- #
-
-Cheers,
-Nathan
-
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Some nit-picks below.
+> Otherwise looks good to me,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > 
-> It feels a little odd to have this in Kconfig but if it works and gets
-> the warning enabled, then so be it.
+> Suggested-by?
+
+Yes, I'll add Russell for that.
+
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Artur Rojek <contact@artur-rojek.eu>
+>> Cc: Paul Cercueil <paul@crapouillou.net>
+>> Cc: linux-mips@vger.kernel.org
+>> Cc: Jonathan Cameron <jic23@kernel.org>
+>> Cc: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: linux-iio@vger.kernel.org
+>> Cc: Florian Fainelli <f.fainelli@gmail.com>
+>> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> Cc: Russell King <linux@armlinux.org.uk>
+>> Cc: bcm-kernel-feedback-list@broadcom.com
+>> Cc: Jonas Gorski <jonas.gorski@gmail.com>
+>> ---
+>> v1 and v2 were:
+>> [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
 > 
-> > ---
-> >  Makefile     | 6 +-----
-> >  init/Kconfig | 5 +++++
-> >  2 files changed, 6 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Makefile b/Makefile
-> > index 30c7c81d0437..f18a50daad00 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -786,7 +786,7 @@ stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      := -fstack-protector-strong
-> >  KBUILD_CFLAGS += $(stackp-flags-y)
-> >  
-> >  KBUILD_CFLAGS-$(CONFIG_WERROR) += -Werror
-> > -KBUILD_CFLAGS += $(KBUILD_CFLAGS-y)
-> > +KBUILD_CFLAGS += $(KBUILD_CFLAGS-y) $(CONFIG_CC_IMPLICIT_FALLTHROUGH)
-> >  
-> >  ifdef CONFIG_CC_IS_CLANG
-> >  KBUILD_CPPFLAGS += -Qunused-arguments
-> > @@ -798,10 +798,6 @@ KBUILD_CFLAGS += -Wno-gnu
-> >  KBUILD_CFLAGS += -mno-global-merge
-> >  else
-> >  
-> > -# Warn about unmarked fall-throughs in switch statement.
-> > -# Disabled for clang while comment to attribute conversion happens and
-> > -# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
-> > -KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
-> >  # gcc inanely warns about local variables called 'main'
-> >  KBUILD_CFLAGS += -Wno-main
-> >  endif
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 11f8a845f259..b0582cd3e096 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -885,6 +885,11 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-> >  config CC_HAS_INT128
-> >  	def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0) && 64BIT
-> >  
-> > +config CC_IMPLICIT_FALLTHROUGH
-> > +	string
-> > +	default "-Wimplicit-fallthrough=5" if CC_IS_GCC
-> > +	default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-Wunreachable-code-fallthrough)
-> > +
-> >  #
-> >  # For architectures that know their GCC __int128 support is sound
-> >  #
-> > -- 
-> > 2.27.0
-> > 
-> > 
+>> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
 > 
+> Not sure why it's here. What does (the location of) this tag mean?
+
+Yesterday I didn't see what Fixes: tag I should use,
+but after looking again, it looks like I should use
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs."
+
+
+> 
+>>   arch/mips/bcm63xx/clk.c |    7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> --- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
+>> +++ linux-next-20211112/arch/mips/bcm63xx/clk.c
+>> @@ -381,6 +381,13 @@ void clk_disable(struct clk *clk)
+>>
+>>   EXPORT_SYMBOL(clk_disable);
+>>
+>> +struct clk *clk_get_parent(struct clk *clk)
+>> +{
+>> +       return NULL;
+>> +}
+> 
+>> +
+> 
+> Perhaps it's not needed even if the rest have it (I mean blank line).
+
+Sure, I'll drop it. It was for file consistency,
+but it's not a big deal either way.
+
+>> +EXPORT_SYMBOL(clk_get_parent);
+>> +
+>>   unsigned long clk_get_rate(struct clk *clk)
+>>   {
+>>          if (!clk)
+> 
+
+Thanks.
+-- 
+~Randy
