@@ -2,164 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5AC45072C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7675A450738
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhKOOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:39:44 -0500
-Received: from mga01.intel.com ([192.55.52.88]:21564 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236278AbhKOOjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:39:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="257198994"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="257198994"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:36:09 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="453833971"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:36:07 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mmd5S-0077Pv-Hd;
-        Mon, 15 Nov 2021 16:35:58 +0200
-Date:   Mon, 15 Nov 2021 16:35:58 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core
- version checker
-Message-ID: <YZJwTgAPZYVvzGpi@smile.fi.intel.com>
-References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
- <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
+        id S236629AbhKOOlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236603AbhKOOkR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:40:17 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A27C061746
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:37:20 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id w1so6806382edc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XiioWyqrq1D1dF9ZTugSJzsFvT/FPXCXiHcWrTggW1A=;
+        b=FLdgxwJMdDUlwR0XKZUGvkuM2MNDSQ4GskVPXHQWieDno5xyhAkQ/RY6avWmujJ9BR
+         OjFK/wuJ5u0TGea1y4NcILj+0ZBLckYJFooRvADUDIPpG12CBSoYlD1JXYloPbk/zK4c
+         OX1wlFQSE1qbbROjeihgOQJAJ/lfWJLFcbRGw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=XiioWyqrq1D1dF9ZTugSJzsFvT/FPXCXiHcWrTggW1A=;
+        b=gb/vKN7TuzBRCnn61M+lKmGwxtG8y+vjpxTxI0oSxglnP8NApYPGMZ+gvy9H+EWQL1
+         HXT4CR/rAJNgMeXyMG2QXJ3dazKIZtU2zQJxP4JMzk2yy3x7SQu6jGDF6bU9MLLhdwU4
+         vo4PlTL8C+bUfjQZefWTadadvZcnzb2mgPoKHxIgm3dnn1Wo00MjDmJ+QphHsWCU3EQz
+         Uj4NlruZVdMvSIXMi/a/yHD2E2nFqPNevkFx92aC912sTgALYsGzr6vzHQMoB0oLrgh5
+         MofhqCIuTwzUr76ep6b68Jl5d4zuYCRzK15fb4PPFDirogddDjSYL31HFCeycwnyccWA
+         GMlA==
+X-Gm-Message-State: AOAM532KodmkrtYUt/vYhPS9eV7CF9JoN+T6ggdJM18q9OwVIXE/L0PA
+        az3wFnYyLoHKqeSAQJZIo9bAdA==
+X-Google-Smtp-Source: ABdhPJxXT/JTqH/P5/5MlVaHqEvS+WUgUgsUsgOfhK+nTHEXsPIZlCeVRsLARxXY95P+DTZWZPXr6g==
+X-Received: by 2002:aa7:c155:: with SMTP id r21mr21275479edp.124.1636987039311;
+        Mon, 15 Nov 2021 06:37:19 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id kw10sm6507786ejc.71.2021.11.15.06.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 06:37:18 -0800 (PST)
+Date:   Mon, 15 Nov 2021 15:37:16 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 00/15] iio: buffer-dma: write() and new DMABUF based API
+Message-ID: <YZJwnPbgCOdeKq6S@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-media@vger.kernel.org
+References: <20211115141925.60164-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211114223026.13359-7-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211115141925.60164-1-paul@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 01:30:26AM +0300, Serge Semin wrote:
-> Since there is a common IP-core and component versions interface available
-> we can use it to differentiate the DW HSSI device features in the code.
-> Let's remove the corresponding DWC_HSSI capability flag then and use the
-> dw_spi_ip_is() macro instead.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-But see below.
-
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+On Mon, Nov 15, 2021 at 02:19:10PM +0000, Paul Cercueil wrote:
+> Hi Jonathan,
 > 
-> ---
+> This patchset introduces a new userspace interface based on DMABUF
+> objects, to complement the existing fileio based API.
 > 
-> Changelog v2:
-> - This is a new patch created as a logical result of a new DW SSI IP-core
->   versions internal interface introduced in the previous patch.
-> ---
->  drivers/spi/spi-dw-core.c | 8 ++++----
->  drivers/spi/spi-dw-mmio.c | 5 +++--
->  drivers/spi/spi-dw.h      | 3 +--
->  3 files changed, 8 insertions(+), 8 deletions(-)
+> The advantage of this DMABUF based interface vs. the fileio
+> interface, is that it avoids an extra copy of the data between the
+> kernel and userspace. This is particularly userful for high-speed
+> devices which produce several megabytes or even gigabytes of data per
+> second.
 > 
-> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-> index 42536b448ddd..934cc7a922e8 100644
-> --- a/drivers/spi/spi-dw-core.c
-> +++ b/drivers/spi/spi-dw-core.c
-> @@ -272,7 +272,7 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
->  {
->  	u32 cr0 = 0;
->  
-> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
-> +	if (dw_spi_ip_is(dws, PSSI)) {
->  		/* CTRLR0[ 5: 4] Frame Format */
->  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_FRF_MASK, DW_SPI_CTRLR0_FRF_MOTO_SPI);
->  
-> @@ -325,7 +325,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
->  	/* CTRLR0[ 4/3: 0] or CTRLR0[ 20: 16] Data Frame Size */
->  	cr0 |= (cfg->dfs - 1) << dws->dfs_offset;
->  
-> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI))
-> +	if (dw_spi_ip_is(dws, PSSI))
->  		/* CTRLR0[ 9:8] Transfer Mode */
->  		cr0 |= FIELD_PREP(DW_PSSI_CTRLR0_TMOD_MASK, cfg->tmode);
->  	else
-> @@ -832,7 +832,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
->  		dws->ver = dw_readl(dws, DW_SPI_VERSION);
->  
->  		dev_dbg(dev, "Synopsys DWC%sSSI v%c.%c%c\n",
-> -			(dws->caps & DW_SPI_CAP_DWC_HSSI) ? " " : " APB ",
-> +			dw_spi_ip_is(dws, PSSI) ? " APB " : " ",
->  			DW_SPI_GET_BYTE(dws->ver, 3), DW_SPI_GET_BYTE(dws->ver, 2),
->  			DW_SPI_GET_BYTE(dws->ver, 1));
->  	}
-> @@ -860,7 +860,7 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
->  	 * writability. Note DWC SSI controller also has the extended DFS, but
->  	 * with zero offset.
->  	 */
-> -	if (!(dws->caps & DW_SPI_CAP_DWC_HSSI)) {
-> +	if (dw_spi_ip_is(dws, PSSI)) {
->  		u32 cr0, tmp = dw_readl(dws, DW_SPI_CTRLR0);
->  
->  		dw_spi_enable_chip(dws, 0);
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 0b37bd32b041..c0e5bb6add0a 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -207,7 +207,7 @@ static int dw_spi_pssi_init(struct platform_device *pdev,
->  static int dw_spi_hssi_init(struct platform_device *pdev,
->  			    struct dw_spi_mmio *dwsmmio)
->  {
-> -	dwsmmio->dws.caps = DW_SPI_CAP_DWC_HSSI;
-> +	dwsmmio->dws.ip = DW_HSSI_ID;
->  
->  	dw_spi_dma_setup_generic(&dwsmmio->dws);
->  
-> @@ -217,7 +217,8 @@ static int dw_spi_hssi_init(struct platform_device *pdev,
->  static int dw_spi_keembay_init(struct platform_device *pdev,
->  			       struct dw_spi_mmio *dwsmmio)
->  {
-> -	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_HSSI;
-> +	dwsmmio->dws.ip = DW_HSSI_ID;
-> +	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST;
->  
->  	return 0;
->  }
-> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> index 2f7d77024b48..d5ee5130601e 100644
-> --- a/drivers/spi/spi-dw.h
-> +++ b/drivers/spi/spi-dw.h
-> @@ -32,8 +32,7 @@
->  /* DW SPI controller capabilities */
->  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
->  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
-> -#define DW_SPI_CAP_DWC_HSSI		BIT(2)
-> -#define DW_SPI_CAP_DFS32		BIT(3)
-> +#define DW_SPI_CAP_DFS32		BIT(2)
+> The first few patches [01/15] to [03/15] are not really related, but
+> allow to reduce the size of the patches that introduce the new API.
+> 
+> Patch [04/15] to [06/15] enables write() support to the buffer-dma
+> implementation of the buffer API, to continue the work done by
+> Mihail Chindris.
+> 
+> Patches [07/15] to [12/15] introduce the new DMABUF based API.
+> 
+> Patches [13/15] and [14/15] add support for cyclic buffers, only through
+> the new API. A cyclic buffer will be repeated on the output until the
+> buffer is disabled.
+> 
+> Patch [15/15] adds documentation about the new API.
+> 
+> For now, the API allows you to alloc DMABUF objects and mmap() them to
+> read or write the samples. It does not yet allow to import DMABUFs
+> parented to other subsystems, but that should eventually be possible
+> once it's wired.
+> 
+> This patchset is inspired by the "mmap interface" that was previously
+> submitted by Alexandru Ardelean and Lars-Peter Clausen, so it would be
+> great if I could get a review from you guys. Alexandru's commit was
+> signed with his @analog.com address but he doesn't work at ADI anymore,
+> so I believe I'll need him to sign with a new email.
 
-In one patch you move this in the file upper.
-Here you reshuffling it due to dropping one bit.
+Why dma-buf? dma-buf looks like something super generic and useful, until
+you realize that there's a metric ton of gpu/accelerator bagage piled in.
+So unless buffer sharing with a gpu/video/accel/whatever device is the
+goal here, and it's just for a convenient way to get at buffer handles,
+this doesn't sound like a good idea.
 
-Now I'm wondering if you may split these two into a separate patch, which
-brings us to simple
+Also if the idea is to this with gpus/accelerators then I'd really like to
+see the full thing, since most likely at that point you also want
+dma_fence. And once we talk dma_fence things get truly horrible from a
+locking pov :-( Or well, just highly constrained and I get to review what
+iio is doing with these buffers to make sure it all fits.
 
--#define DW_SPI_CAP_DWC_HSSI		BIT(3)
+Cheers, Daniel
 
-here.
-
->  
->  /* Register offsets (Generic for both DWC APB SSI and DWC SSI IP-cores) */
->  #define DW_SPI_CTRLR0			0x00
+> 
+> Cheers,
+> -Paul
+> 
+> Alexandru Ardelean (1):
+>   iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+> 
+> Paul Cercueil (14):
+>   iio: buffer-dma: Get rid of incoming/outgoing queues
+>   iio: buffer-dma: Remove unused iio_buffer_block struct
+>   iio: buffer-dma: Use round_down() instead of rounddown()
+>   iio: buffer-dma: Enable buffer write support
+>   iio: buffer-dmaengine: Support specifying buffer direction
+>   iio: buffer-dmaengine: Enable write support
+>   iio: core: Add new DMABUF interface infrastructure
+>   iio: buffer-dma: Use DMABUFs instead of custom solution
+>   iio: buffer-dma: Implement new DMABUF based userspace API
+>   iio: buffer-dma: Boost performance using write-combine cache setting
+>   iio: buffer-dmaengine: Support new DMABUF based userspace API
+>   iio: core: Add support for cyclic buffers
+>   iio: buffer-dmaengine: Add support for cyclic buffers
+>   Documentation: iio: Document high-speed DMABUF based API
+> 
+>  Documentation/driver-api/dma-buf.rst          |   2 +
+>  Documentation/iio/dmabuf_api.rst              |  94 +++
+>  Documentation/iio/index.rst                   |   2 +
+>  drivers/iio/adc/adi-axi-adc.c                 |   3 +-
+>  drivers/iio/buffer/industrialio-buffer-dma.c  | 670 ++++++++++++++----
+>  .../buffer/industrialio-buffer-dmaengine.c    |  42 +-
+>  drivers/iio/industrialio-buffer.c             |  49 ++
+>  include/linux/iio/buffer-dma.h                |  43 +-
+>  include/linux/iio/buffer-dmaengine.h          |   5 +-
+>  include/linux/iio/buffer_impl.h               |   8 +
+>  include/uapi/linux/iio/buffer.h               |  30 +
+>  11 files changed, 783 insertions(+), 165 deletions(-)
+>  create mode 100644 Documentation/iio/dmabuf_api.rst
+> 
+> -- 
+> 2.33.0
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
