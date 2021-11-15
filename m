@@ -2,114 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97769451BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70220451BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348959AbhKPAGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S1352195AbhKPAG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:06:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345170AbhKOT1V (ORCPT
+        with ESMTP id S1345342AbhKOT2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:27:21 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726EAC09E002
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:44:53 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 8so3906506pfo.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:44:53 -0800 (PST)
+        Mon, 15 Nov 2021 14:28:06 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A9BC055369;
+        Mon, 15 Nov 2021 10:50:19 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id z10so49763713edc.11;
+        Mon, 15 Nov 2021 10:50:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YnA5RxswdR0pXIdDfw42jEIDMfa1Anknf8jHYLDLebQ=;
-        b=b2wJRkAtOs8VLbM0lZNMe/RxwW3htbsJhf+JSJaqKtTxUt1keDFKRzlcUNWyPRBoxr
-         LBU9Tn21V6eNtb8W2Ualydb/xatXcwyrVl137vORscIWpZaHyqhtaJ4PL//nGRBuvlVf
-         5Lk0OB2dy54Hh7saCw2v3Mzu3qwwaI2j4DGdC76QW8zGmrexY7HRIYzc4TLXnHc/XzER
-         piGaJLzdwxwiNPpaBVCWww3uXt8XWY3x2Qzr69DlQN7DsLjKBaIJfEtq5ll5aehSHh79
-         9DNaDrov5aBJp9lHbu2laW/mwNkbPco4mg1trxgMYI0j2IaFvXiSMYscDWB6oXCmZKp4
-         AdyQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Gn7jXM01WcfaWXjLEWMjsDlPibi8krKRinvyDSpZnFA=;
+        b=K9fwfdf3q/Fq0L8Y1OUKCiuYmyYH8FcsXstw9vDNpYO+hB15Pv0KndCy7hi4KpfBj6
+         pGjH54IRIVxlrxlO64ZtSTS0qgVIOb2cREgAuVqUjvDtX/1GAXk9OhoGJBt6sRU6XSXW
+         ih3o8+N5oravrHbfgO/fUNpoTPorkcSonVJztLWo1YDb9ki3VNkLiOwTvXRebxHIl/nG
+         TLEMLyUPdMbNPxuFL8EppdhXBUSkFQeauFhgKBgRgSwyABChk6/c4u6Onf9QxEklkM+E
+         VJoOJr0ysuVwhotJnFgeOjsEdP/RwPz9XvbZrPMCFw5izJrYKGvYkES7uTc9eh961J4l
+         2zUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YnA5RxswdR0pXIdDfw42jEIDMfa1Anknf8jHYLDLebQ=;
-        b=l4/gdXJIVnOwSC1lgUov/EvZYpdEJvMnWcBVrVyrFmr63YRS0XMBKZ+XlG5D9xq1QK
-         UVrbwtrGRCi7v0JWpDmeRdprz5mGi/fLywULoBzITNciKpf9AmVfVb8VNTwPSDYd4OUa
-         TBurOs391vI7z7UTl1uZXd9MCgwV3JJMCEpJTc6bxpy7XAy0y185JlEscfuVvfpzaoxK
-         oojf0ev4j36ba943BVnhxWfyEUOvzlKGXM4HHCCU1drOz/xBUXYncv0zCW0K+Yi2bQDC
-         yBy0IUSENPUUe0ytqS7YmdWLECvxTA/IAWi0horm5Fj5mGLQqSnLY3JS2310jGNoUN8F
-         CZuw==
-X-Gm-Message-State: AOAM532YTwUPcu1NJbo46VTaxDnKkBHfHxXmGgih/N3xoCVhVIwQtvsF
-        09pQD2afWYDfSchAb7qy5G/6+w==
-X-Google-Smtp-Source: ABdhPJwv65aVu6kpZNGGw0N7gTXRvONlRDhXoyAUv+VgR6kFzqLSM/NP5wts15+VyzsP2RdH5A+iaA==
-X-Received: by 2002:a63:33cc:: with SMTP id z195mr669715pgz.339.1637001892769;
-        Mon, 15 Nov 2021 10:44:52 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id on6sm72382pjb.47.2021.11.15.10.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 10:44:52 -0800 (PST)
-Date:   Mon, 15 Nov 2021 18:44:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZKqoPAoMCqPZymh@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
- <YY7I6sgqIPubTrtA@zn.tnic>
- <YY7Qp8c/gTD1rT86@google.com>
- <f2edf71e-f3b5-f8e3-a75e-e0f811fe6a14@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2edf71e-f3b5-f8e3-a75e-e0f811fe6a14@amd.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Gn7jXM01WcfaWXjLEWMjsDlPibi8krKRinvyDSpZnFA=;
+        b=Rk4rPZA9NzFYwcCBu4fNYj7u0WFBM/otE+00SuuDGHe1DfS7nb8NWlL7uDLsEKFS0Z
+         Wi0g3m2wpMsicc2q/2A1SbzXl3RpHi1D+7N8QOA4YUauLzW7mDxty7kXtugN/pqQ41wL
+         K9axOvUF+QZgvKD4sCXUPPRAgMJzy2yXF5bBesQKqAW3yAIqVRnE0bc02J2WI6yhal9D
+         t7WiSD/F3UPe+rdAOuM7i1AfcK3HXVZavnSDE8CAVwUZm8IsrkpB+GRJaEekvGUS+QXY
+         cb6FxlcyI3VRSMwHASHgEaIWM3p6+MCj0cX83nGAxTkKt4Bw7xH8/trtNpe/bO9QiLb/
+         6Rzg==
+X-Gm-Message-State: AOAM530Afq4Cm83sMqaY6b4/qmNx7S1wXumsAikMLOvf5qAe2IBDdV/3
+        8AaO6HAvaAtdxpMVG/y4ryM=
+X-Google-Smtp-Source: ABdhPJyhKaz9mQ1BRMe4H1E6wkaXWCjD7Oa5jrIA3y0X3VWGJZF6rD0vhZJ66lc45u4MQOTUPpZPiQ==
+X-Received: by 2002:a05:6402:5216:: with SMTP id s22mr1240652edd.291.1637002218552;
+        Mon, 15 Nov 2021 10:50:18 -0800 (PST)
+Received: from localhost.localdomain ([46.249.74.23])
+        by smtp.gmail.com with ESMTPSA id og14sm6866287ejc.107.2021.11.15.10.50.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Nov 2021 10:50:18 -0800 (PST)
+From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+To:     tomba@kernel.org
+Cc:     matthijsvanduin@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        merlijn@wizzup.org, philipp@uvos.xyz,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Subject: [PATCH v3] drm: omapdrm: Export correct scatterlist for TILER backed BOs
+Date:   Mon, 15 Nov 2021 20:45:56 +0200
+Message-Id: <1637001956-4928-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
+References: <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021, Brijesh Singh wrote:
-> 
-> On 11/12/21 2:37 PM, Sean Christopherson wrote:
-> > This is the direction KVM TDX support is headed, though it's obviously still a WIP.
-> > 
-> 
-> Just curious, in this approach, how do you propose handling the host
-> kexec/kdump? If a kexec/kdump occurs while the VM is still active, the new
-> kernel will encounter the #PF (RMP violation) because some pages are still
-> marked 'private' in the RMP table.
+Memory of BOs backed by TILER is not contiguous, but omap_gem_map_dma_buf()
+exports it like it is. This leads to (possibly) invalid memory accesses if
+another device imports such a BO.
 
-There are two basic options: a) eagerly purge the RMP or b) lazily fixup the RMP
-on #PF.  Either approach can be made to work.  I'm not opposed to fixing up the RMP
-on #PF in the kexec/kdump case, I'm opposed to blindly updating the RMP on _all_
-RMP #PFs, i.e. the kernel should modify the RMP if and only if it knows that doing
-so is correct.  E.g. a naive lazy-fixup solution would be to track which pages have
-been sanitized and adjust the RMP on #PF to a page that hasn't yet been sanitized.
+Fix that by providing a sg that correctly describes TILER memory layout.
+Also, make sure to destroy it on unpin, as it is no longer valid.
+
+Suggested-by: Matthijs van Duin <matthijsvanduin@gmail.com>
+Signed-off-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+---
+ drivers/gpu/drm/omapdrm/omap_gem.c        | 77 +++++++++++++++++++++++++++++++
+ drivers/gpu/drm/omapdrm/omap_gem.h        |  2 +
+ drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c | 32 ++-----------
+ 3 files changed, 83 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
+index 97e5fe6..cd4a31c 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem.c
++++ b/drivers/gpu/drm/omapdrm/omap_gem.c
+@@ -862,6 +862,11 @@ static void omap_gem_unpin_locked(struct drm_gem_object *obj)
+ 		return;
+ 
+ 	if (refcount_dec_and_test(&omap_obj->dma_addr_cnt)) {
++		if (omap_obj->sgt) {
++			sg_free_table(omap_obj->sgt);
++			kfree(omap_obj->sgt);
++			omap_obj->sgt = NULL;
++		}
+ 		ret = tiler_unpin(omap_obj->block);
+ 		if (ret) {
+ 			dev_err(obj->dev->dev,
+@@ -974,6 +979,78 @@ int omap_gem_put_pages(struct drm_gem_object *obj)
+ 	return 0;
+ }
+ 
++struct sg_table *omap_gem_get_sg(struct drm_gem_object *obj)
++{
++	struct omap_gem_object *omap_obj = to_omap_bo(obj);
++	dma_addr_t addr;
++	struct sg_table *sgt;
++	struct scatterlist *sg;
++	unsigned int count, len, stride, i;
++	int ret;
++
++	ret = omap_gem_pin(obj, &addr);
++	if (ret)
++		return ERR_PTR(ret);
++
++	mutex_lock(&omap_obj->lock);
++
++	sgt = omap_obj->sgt;
++	if (sgt)
++		goto out;
++
++	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
++	if (!sgt) {
++		ret = -ENOMEM;
++		goto err_unpin;
++	}
++
++	if (omap_obj->flags & OMAP_BO_TILED_MASK) {
++		enum tiler_fmt fmt = gem2fmt(omap_obj->flags);
++
++		len = omap_obj->width << (int)fmt;
++		count = omap_obj->height;
++		stride = tiler_stride(fmt, 0);
++	} else {
++		len = obj->size;
++		count = 1;
++		stride = 0;
++	}
++
++	ret = sg_alloc_table(sgt, count, GFP_KERNEL);
++	if (ret)
++		goto err_free;
++
++	for_each_sg(sgt->sgl, sg, count, i) {
++		sg_set_page(sg, phys_to_page(addr), len, offset_in_page(addr));
++		sg_dma_address(sg) = addr;
++		sg_dma_len(sg) = len;
++
++		addr += stride;
++	}
++
++	omap_obj->sgt = sgt;
++out:
++	mutex_unlock(&omap_obj->lock);
++	return sgt;
++
++err_free:
++	kfree(sgt);
++err_unpin:
++	mutex_unlock(&omap_obj->lock);
++	omap_gem_unpin(obj);
++	return ERR_PTR(ret);
++}
++
++void omap_gem_put_sg(struct drm_gem_object *obj, struct sg_table *sgt)
++{
++	struct omap_gem_object *omap_obj = to_omap_bo(obj);
++
++	if (WARN_ON(omap_obj->sgt != sgt))
++		return;
++
++	omap_gem_unpin(obj);
++}
++
+ #ifdef CONFIG_DRM_FBDEV_EMULATION
+ /*
+  * Get kernel virtual address for CPU access.. this more or less only
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem.h b/drivers/gpu/drm/omapdrm/omap_gem.h
+index eda9b48..19209e3 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem.h
++++ b/drivers/gpu/drm/omapdrm/omap_gem.h
+@@ -82,5 +82,7 @@ int omap_gem_get_pages(struct drm_gem_object *obj, struct page ***pages,
+ int omap_gem_rotated_dma_addr(struct drm_gem_object *obj, u32 orient,
+ 		int x, int y, dma_addr_t *dma_addr);
+ int omap_gem_tiled_stride(struct drm_gem_object *obj, u32 orient);
++struct sg_table *omap_gem_get_sg(struct drm_gem_object *obj);
++void omap_gem_put_sg(struct drm_gem_object *obj, struct sg_table *sgt);
+ 
+ #endif /* __OMAPDRM_GEM_H__ */
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+index f4cde3a..9650416 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
++++ b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+@@ -21,45 +21,21 @@ static struct sg_table *omap_gem_map_dma_buf(
+ {
+ 	struct drm_gem_object *obj = attachment->dmabuf->priv;
+ 	struct sg_table *sg;
+-	dma_addr_t dma_addr;
+-	int ret;
+-
+-	sg = kzalloc(sizeof(*sg), GFP_KERNEL);
+-	if (!sg)
+-		return ERR_PTR(-ENOMEM);
+-
+-	/* camera, etc, need physically contiguous.. but we need a
+-	 * better way to know this..
+-	 */
+-	ret = omap_gem_pin(obj, &dma_addr);
+-	if (ret)
+-		goto out;
+-
+-	ret = sg_alloc_table(sg, 1, GFP_KERNEL);
+-	if (ret)
+-		goto out;
+-
+-	sg_init_table(sg->sgl, 1);
+-	sg_dma_len(sg->sgl) = obj->size;
+-	sg_set_page(sg->sgl, pfn_to_page(PFN_DOWN(dma_addr)), obj->size, 0);
+-	sg_dma_address(sg->sgl) = dma_addr;
++	sg = omap_gem_get_sg(obj);
++	if (IS_ERR(sg))
++		return sg;
+ 
+ 	/* this must be after omap_gem_pin() to ensure we have pages attached */
+ 	omap_gem_dma_sync_buffer(obj, dir);
+ 
+ 	return sg;
+-out:
+-	kfree(sg);
+-	return ERR_PTR(ret);
+ }
+ 
+ static void omap_gem_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 		struct sg_table *sg, enum dma_data_direction dir)
+ {
+ 	struct drm_gem_object *obj = attachment->dmabuf->priv;
+-	omap_gem_unpin(obj);
+-	sg_free_table(sg);
+-	kfree(sg);
++	omap_gem_put_sg(obj, sg);
+ }
+ 
+ static int omap_gem_dmabuf_begin_cpu_access(struct dma_buf *buffer,
+-- 
+1.9.1
+
