@@ -2,37 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622B54515E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4F34515E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348144AbhKOVAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:00:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        id S1347973AbhKOU73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:59:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240692AbhKOSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240695AbhKOSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:11:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 544AB632A6;
-        Mon, 15 Nov 2021 17:47:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB9063317;
+        Mon, 15 Nov 2021 17:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998470;
-        bh=2hDB47qVFPDxQokYgFMXvhZ6VWD/CiAnsL5QYSMOK68=;
+        s=korg; t=1636998476;
+        bh=QeOx66bLaohTdP8iS3no5arKK1EF+YLTTkG3AQMRpUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeQnzDwAWYp+txbZaxz+XcmrZ9Wpuppl/RE36GF1gEE5MYkU4WhR6K9mXIbCDYa8O
-         qeBMcVgX8DFZkXZz59PABiLJoRsS0ursrrd5pu+iJabTumyAyd4A4zLLBi1S0hr7xb
-         Ln80YcON2WI2RvHPdsa3wwR1k9JRjijI7YEi83uY=
+        b=0Jb2HN69OhqmKTu7S6RducJLBtUirHxHsVXOD+qgMG71LqRpE+awp1PiHnhE5bQXa
+         td3fp6odRlsECRtYzvyrBL1hlGN5nJXLzTTlaaxP5A3FH2hpzecsFFrb5p/4jfMvdS
+         RtkVcZty+lX5gXCTqSzUUMv26b4iQBLlI+HM4CEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Henry Burns <henryburns@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 521/575] mm/zsmalloc.c: close race window between zs_pool_dec_isolated() and zs_unregister_migration()
-Date:   Mon, 15 Nov 2021 18:04:06 +0100
-Message-Id: <20211115165401.689856857@linuxfoundation.org>
+Subject: [PATCH 5.10 523/575] perf bpf: Add missing free to bpf_event__print_bpf_prog_info()
+Date:   Mon, 15 Nov 2021 18:04:08 +0100
+Message-Id: <20211115165401.758780025@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -44,61 +55,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit afe8605ca45424629fdddfd85984b442c763dc47 ]
+[ Upstream commit 88c42f4d6cb249eb68524282f8d4cc32f9059984 ]
 
-There is one possible race window between zs_pool_dec_isolated() and
-zs_unregister_migration() because wait_for_isolated_drain() checks the
-isolated count without holding class->lock and there is no order inside
-zs_pool_dec_isolated().  Thus the below race window could be possible:
+If btf__new() is called then there needs to be a corresponding btf__free().
 
-  zs_pool_dec_isolated		zs_unregister_migration
-    check pool->destroying != 0
-				  pool->destroying = true;
-				  smp_mb();
-				  wait_for_isolated_drain()
-				    wait for pool->isolated_pages == 0
-    atomic_long_dec(&pool->isolated_pages);
-    atomic_long_read(&pool->isolated_pages) == 0
-
-Since we observe the pool->destroying (false) before atomic_long_dec()
-for pool->isolated_pages, waking pool->migration_wait up is missed.
-
-Fix this by ensure checking pool->destroying happens after the
-atomic_long_dec(&pool->isolated_pages).
-
-Link: https://lkml.kernel.org/r/20210708115027.7557-1-linmiaohe@huawei.com
-Fixes: 701d678599d0 ("mm/zsmalloc.c: fix race condition in zs_destroy_pool")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Henry Burns <henryburns@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f8dfeae009effc0b ("perf bpf: Show more BPF program info in print_bpf_prog_info()")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20211106053733.3580931-2-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/zsmalloc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/perf/util/bpf-event.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 7a0b79b0a6899..73cd50735df29 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -1835,10 +1835,11 @@ static inline void zs_pool_dec_isolated(struct zs_pool *pool)
- 	VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
- 	atomic_long_dec(&pool->isolated_pages);
- 	/*
--	 * There's no possibility of racing, since wait_for_isolated_drain()
--	 * checks the isolated count under &class->lock after enqueuing
--	 * on migration_wait.
-+	 * Checking pool->destroying must happen after atomic_long_dec()
-+	 * for pool->isolated_pages above. Paired with the smp_mb() in
-+	 * zs_unregister_migration().
- 	 */
-+	smp_mb__after_atomic();
- 	if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
- 		wake_up_all(&pool->migration_wait);
+diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+index 3742511a08d15..c8101575dbf45 100644
+--- a/tools/perf/util/bpf-event.c
++++ b/tools/perf/util/bpf-event.c
+@@ -557,7 +557,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
+ 		synthesize_bpf_prog_name(name, KSYM_NAME_LEN, info, btf, 0);
+ 		fprintf(fp, "# bpf_prog_info %u: %s addr 0x%llx size %u\n",
+ 			info->id, name, prog_addrs[0], prog_lens[0]);
+-		return;
++		goto out;
+ 	}
+ 
+ 	fprintf(fp, "# bpf_prog_info %u:\n", info->id);
+@@ -567,4 +567,6 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
+ 		fprintf(fp, "# \tsub_prog %u: %s addr 0x%llx size %u\n",
+ 			i, name, prog_addrs[i], prog_lens[i]);
+ 	}
++out:
++	btf__free(btf);
  }
 -- 
 2.33.0
