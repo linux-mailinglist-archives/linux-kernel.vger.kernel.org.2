@@ -2,193 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F78D44FE94
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A8644FE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhKOGJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 01:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhKOGJ0 (ORCPT
+        id S230141AbhKOGLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 01:11:47 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:46957 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229661AbhKOGLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 01:09:26 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5872DC061746;
-        Sun, 14 Nov 2021 22:06:29 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id z5so6887678edd.3;
-        Sun, 14 Nov 2021 22:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WJyGtaduRtIJa/ZtDrFpN3oGhSX1GbTvjUgEHPLUCMg=;
-        b=SWMkJ9v6DUYEK3HiLAjMV80gRSTeXHyZclo63eHyu0x98VtMwyz3kiFOu7yEXR3XO4
-         c1US89xzKDsZEz0LE73Kyh/FgOH0+Suu21hr84btmpjC3KaUlhnahiEjYtGlCLkTB1mz
-         Phc8WXeTNKW6jsEVUapPS406bYuyUqPbsppPbo3hdFd8Vtr2IJg1RryZg+Y/fArcLX5U
-         KyfjSYfCqJXm1Q71LxXIsNJR5zwEXxaGKWlRPA7gkVLq2Nj41ohHJfqqN5egLEU967A0
-         q+Mge6Wo0TSBhYYCIVCyxpMPTP+fxaldBLyM33VmbDv2bGrF8HqBQ3i1Om5S9IHZFFDP
-         hKaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WJyGtaduRtIJa/ZtDrFpN3oGhSX1GbTvjUgEHPLUCMg=;
-        b=ZKKBhYPYEBUTTY48mldQV8VXWp7KnBivtp7EF1l8YvPdOBwMgLpKvIdejHxnpZaY9S
-         WQecUuSOSd6VgEhkaPqk1myTn87ojZmfGRAeCVFK1hrEi6T24jevsNj+4424XhyKQxXY
-         +oZ7T6SnsxP5WzoHHF64ADHPl7hiTqB5iLZeQIFeChzo8qCkNLmYw5JTcrzdZaibuyiK
-         HshcvJA6c111d3NCBCztUglKpaw6mgJrjhqcDBOOOXIIwSe0H80cM0Oz5vtLN68K7hOR
-         DT3mPBZf7Rpt8WcdxpZ+KNI15UOLp1fxn+nhliZg6yajmVTcm/8QutF8+oOHT8VBejbY
-         hDmg==
-X-Gm-Message-State: AOAM533XAZNZA7ILNG/kKl9BOvVn96ADtKTKpl6JDytn5KO0FcdWiWvn
-        GHxWfbx79deFBrVCj00OfY6Rotr+fkhqHbOpEwFUk9YN
-X-Google-Smtp-Source: ABdhPJz5iujEF0gRIOihMaP1aSj04ay9mLJHtbI3Soyz1R6lWjRspvRUCY8gecc7utX0rH6lPACQni3RuU+0WhQtFOU=
-X-Received: by 2002:aa7:cd8a:: with SMTP id x10mr51748057edv.3.1636956387892;
- Sun, 14 Nov 2021 22:06:27 -0800 (PST)
-MIME-Version: 1.0
-References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
- <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
- <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com>
- <CAOuPNLg_YwyhK6iPZZbRWe57Kkr1d8LjJaDniCvvOqk4t2-Sog@mail.gmail.com>
- <CAOuPNLgYhm=goOiABjUFsAvRW+s2NqHjHYdm5MA9PvoUAMxOpg@mail.gmail.com> <4b99139a-802a-8255-adf5-2d3f9d0ccf7c@squashfs.org.uk>
-In-Reply-To: <4b99139a-802a-8255-adf5-2d3f9d0ccf7c@squashfs.org.uk>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 15 Nov 2021 11:36:16 +0530
-Message-ID: <CAOuPNLg3Te_QwNaUq25TVQ5zav_ER78tM6gakdGLtEVqWL2+AA@mail.gmail.com>
-Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
- gives SQUASHFS error: xz decompression failed, data probably corrupt
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        dm-devel@redhat.com, Mikulas Patocka <mpatocka@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Daniel Rosenberg <drosen@google.com>, astrachan@google.com,
-        speed.eom@samsung.com, Sami Tolvanen <samitolvanen@google.com>,
-        snitzer@redhat.com, squashfs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 15 Nov 2021 01:11:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UwY5h5a_1636956516;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UwY5h5a_1636956516)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 15 Nov 2021 14:08:36 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org, ying.huang@intel.com,
+        dave.hansen@linux.intel.com
+Cc:     ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
+        baolin.wang@linux.alibaba.com, zhongjiang-ali@linux.alibaba.com,
+        xlpang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] mm: migrate: Support multiple target nodes demotion
+Date:   Mon, 15 Nov 2021 14:08:28 +0800
+Message-Id: <00728da107789bb4ed9e0d28b1d08fd8056af2ef.1636697263.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 at 00:40, Phillip Lougher <phillip@squashfs.org.uk> wrote:
->
-> On 14/11/2021 07:06, Pintu Agarwal wrote:
-> > + Adding squashfs-devel to get opinion from squashfs side.
-> >
-> > On Fri, 12 Nov 2021 at 12:48, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On Tue, 9 Nov 2021 at 21:04, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> >>
-> >>>>> We only get these squashfs errors flooded in the boot logs:
-> >>>>> {{{
-> >>>>> ....
-> >>>>> [    5.153479] device-mapper: init: dm-0 is ready
-> >>>>> [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
-> >>>>> ....
-> >>>>> [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
-> >>>>> [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
-> >>>>> [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
-> >>>>> [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
-> >>>>> [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
-> >>>>> [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
-> >>>>> [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
-> >>>>> ....
-> >>>>> }}}
-> >>>>>
-> >>
-> >> One more observation:
-> >> When I disable FEC flag in bootloader, I see the below error:
-> >> [    8.360791] device-mapper: verity: 253:0: data block 2 is corrupted
-> >> [    8.361134] device-mapper: verity: 253:0: data block 3 is corrupted
-> >> [    8.366016] SQUASHFS error: squashfs_read_data failed to read block 0x1106
-> >> [    8.379652] SQUASHFS error: Unable to read data cache entry [1106]
-> >> [    8.379680] SQUASHFS error: Unable to read page, block 1106, size 7770
-> >>
-> >> Also, now I see that the decompress error is gone, but the read error
-> >> is still there.
-> >>
-> >> This seems to me that dm-verity detects some corrupted blocks but with
-> >> FEC it auto corrects itself, how when dm-verity auto corrects itself,
-> >> the squashfs decompression algorithm somehow could not understand it.
-> >>
-> >> So, it seems like there is some mis-match between the way FEC
-> >> correction and the squashfs decompression happens ?
-> >>
-> >> Is this issue seen by anybody else here ?
-> >>
-> >
-> > The squashfs version used by Kernel:
-> > [    0.355958] squashfs: version 4.0 (2009/01/31) Phillip Lougher
-> >
-> > The squashfs version available on Ubuntu:
-> > mksquashfs version 4.3-git (2014/06/09)
-> >
-> > The squashfs version used by Yocto 2.6:
-> > squashfs-tools/0001-squashfs-tools-Allow-setting-selinux-xattrs-through-.patch:61:
-> >     printf("mksquashfs version 4.3-git (2014/09/12)\n");
-> >
-> > We create dm-verity squashfs image using version 4.3 whereas, the
-> > kernel uses 4.0 version to decompress it.
-> > Is there something missing here?
-> >
-> > When FEC (Forward Error Correction) comes into picture, then squashfs
-> > decompress fails.
-> > When we remove FEC flag from dm-verity then decompress works but read
-> > error still occurs.
-> > This seems as if something is missing either in FEC handling or either
-> > in squashfs decompress logic.
-> >
-> > Just wanted to know if there are any fixes already available in the
-> > mainline for this ?
-> >
-> >
->
-> As Squashfs maintainer I want you to stop randomly blaming anything and
-> everything here.  You won't fix anything doing that.
->
-> In a previous email you stated
->
->
-> >
-> > One quick observation:
-> > This issue is seen only when we enable dm-verity in our bootloader and
-> > cross-building the bootloader/kernel (with Yocto 2.6 toolchain
-> > arm-oe-linux-gnueabi-) on Ubuntu 18.04.
-> > The issue is *NOT* seen (on the same device) when building the
-> > dm-verity enabled kernel on Ubuntu 16.04.
-> >
-> > Is it something to do with the cross-toolchain difference between
-> > Ubuntu 16 and 18 ?
-> >
->
-> If that is the case, then it is not an issue with Squashfs or any
-> kernel code, it is a build time issue and *that* is where you should
-> be concentrating your efforts.  Find out what differences are there.
->
-> You don't seem to understand that a Squashfs filesystem generated
-> by any Mksquashfs 4.X is mountable *without* errors on any kernel
-> since 2.6.29 (January 2009).  Looking for mismatches between
-> Mksquashfs and/or kernel version and blaming that for the above
-> different behaviour is a complete waste of time.
->
+We have some machines with multiple memory types like below, which
+have one fast (DRAM) memory node and two slow (persistent memory) memory
+nodes. According to current node demotion policy, if node 0 fills up,
+its memory should be migrated to node 1, when node 1 fills up, its
+memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
 
-I am sorry, but I am not blaming anybody here.
-I am just trying to put my observation here and trying to understand
-if someone else have seen a similar issue.
-Toolchain side also, it seems the same as it comes from Yocto itself.
+But this is not efficient and suitbale memory migration route
+for our machine with multiple slow memory nodes. Since the distance
+between node 0 to node 1 and node 0 to node 2 is equal, and memory
+migration between slow memory nodes will increase persistent memory
+bandwidth greatly, which will hurt the whole system's performance.
 
-It seems there is some relation between dm-verity FEC correction and
-squashfs decompression.
-So I was looking for some clues from both sides.
+Thus for this case, we can treat the slow memory node 1 and node 2
+as a whole slow memory region, and we should migrate memory from
+node 0 to node 1 and node 2 if node 0 fills up.
 
-Anyways, thank you so much for your suggestion.
-Yes, we are analysing the Yocto side build difference as well between
-Ubuntu 16 and 18.
+This patch changes the node_demotion data structure to support multiple
+target nodes, and establishes the migration path to support multiple
+target nodes with validating if the node distance is the best or not.
 
-Thank you!
-Pintu
+available: 3 nodes (0-2)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 0 size: 62153 MB
+node 0 free: 55135 MB
+node 1 cpus:
+node 1 size: 127007 MB
+node 1 free: 126930 MB
+node 2 cpus:
+node 2 size: 126968 MB
+node 2 free: 126878 MB
+node distances:
+node   0   1   2
+  0:  10  20  20
+  1:  20  10  20
+  2:  20  20  10
+
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+---
+Changes from v3:
+ - Add WARN_ON() if failed to allocate node_demotion.
+ - Add reviewed-by tag from Huang Ying.
+
+Changes from v2:
+ - Redefine the DEMOTION_TARGET_NODES macro according to the
+   MAX_NUMNODES.
+ - Change node_demotion to a pointer and allocate it dynamically.
+
+Changes from v1:
+ - Add a new patch to allocate the node_demotion dynamically.
+ - Update some comments.
+ - Simplify some variables' name.
+---
+ mm/migrate.c | 164 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 129 insertions(+), 35 deletions(-)
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index cf25b00..68fea5e 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -50,6 +50,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/oom.h>
+ #include <linux/memory.h>
++#include <linux/random.h>
+ 
+ #include <asm/tlbflush.h>
+ 
+@@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  *
+  * This is represented in the node_demotion[] like this:
+  *
+- *	{  1, // Node 0 migrates to 1
+- *	   2, // Node 1 migrates to 2
+- *	  -1, // Node 2 does not migrate
+- *	   4, // Node 3 migrates to 4
+- *	   5, // Node 4 migrates to 5
+- *	  -1} // Node 5 does not migrate
++ *	{  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
++ *	{  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
++ *	{  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
++ *	{  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
++ *	{  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
++ *	{  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
++ *
++ * Moreover some systems may have multiple slow memory nodes.
++ * Suppose a system has one socket with 3 memory nodes, node 0
++ * is fast memory type, and node 1/2 both are slow memory
++ * type, and the distance between fast memory node and slow
++ * memory node is same. So the migration path should be:
++ *
++ *	0 -> 1/2 -> stop
++ *
++ * This is represented in the node_demotion[] like this:
++ *	{ nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
++ *	{ nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
++ *	{ nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+  */
+ 
+ /*
+@@ -1135,8 +1149,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  * must be held over all reads to ensure that no cycles are
+  * observed.
+  */
+-static int node_demotion[MAX_NUMNODES] __read_mostly =
+-	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
++#define DEFAULT_DEMOTION_TARGET_NODES 15
++
++#if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
++#define DEMOTION_TARGET_NODES	(MAX_NUMNODES - 1)
++#else
++#define DEMOTION_TARGET_NODES	DEFAULT_DEMOTION_TARGET_NODES
++#endif
++
++struct demotion_nodes {
++	unsigned short nr;
++	short nodes[DEMOTION_TARGET_NODES];
++};
++
++static struct demotion_nodes *node_demotion __read_mostly;
+ 
+ /**
+  * next_demotion_node() - Get the next node in the demotion path
+@@ -1149,8 +1175,15 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+  */
+ int next_demotion_node(int node)
+ {
++	struct demotion_nodes *nd;
++	unsigned short target_nr, index;
+ 	int target;
+ 
++	if (!node_demotion)
++		return NUMA_NO_NODE;
++
++	nd = &node_demotion[node];
++
+ 	/*
+ 	 * node_demotion[] is updated without excluding this
+ 	 * function from running.  RCU doesn't provide any
+@@ -1161,9 +1194,28 @@ int next_demotion_node(int node)
+ 	 * node_demotion[] reads need to be consistent.
+ 	 */
+ 	rcu_read_lock();
+-	target = READ_ONCE(node_demotion[node]);
+-	rcu_read_unlock();
++	target_nr = READ_ONCE(nd->nr);
+ 
++	switch (target_nr) {
++	case 0:
++		target = NUMA_NO_NODE;
++		goto out;
++	case 1:
++		index = 0;
++		break;
++	default:
++		/*
++		 * If there are multiple target nodes, just select one
++		 * target node randomly.
++		 */
++		index = get_random_int() % target_nr;
++		break;
++	}
++
++	target = READ_ONCE(nd->nodes[index]);
++
++out:
++	rcu_read_unlock();
+ 	return target;
+ }
+ 
+@@ -2974,10 +3026,16 @@ void migrate_vma_finalize(struct migrate_vma *migrate)
+ /* Disable reclaim-based migration. */
+ static void __disable_all_migrate_targets(void)
+ {
+-	int node;
++	int node, i;
+ 
+-	for_each_online_node(node)
+-		node_demotion[node] = NUMA_NO_NODE;
++	if (!node_demotion)
++		return;
++
++	for_each_online_node(node) {
++		node_demotion[node].nr = 0;
++		for (i = 0; i < DEMOTION_TARGET_NODES; i++)
++			node_demotion[node].nodes[i] = NUMA_NO_NODE;
++	}
+ }
+ 
+ static void disable_all_migrate_targets(void)
+@@ -3004,26 +3062,40 @@ static void disable_all_migrate_targets(void)
+  * Failing here is OK.  It might just indicate
+  * being at the end of a chain.
+  */
+-static int establish_migrate_target(int node, nodemask_t *used)
++static int establish_migrate_target(int node, nodemask_t *used,
++				    int best_distance)
+ {
+-	int migration_target;
++	int migration_target, index, val;
++	struct demotion_nodes *nd;
+ 
+-	/*
+-	 * Can not set a migration target on a
+-	 * node with it already set.
+-	 *
+-	 * No need for READ_ONCE() here since this
+-	 * in the write path for node_demotion[].
+-	 * This should be the only thread writing.
+-	 */
+-	if (node_demotion[node] != NUMA_NO_NODE)
++	if (!node_demotion)
+ 		return NUMA_NO_NODE;
+ 
++	nd = &node_demotion[node];
++
+ 	migration_target = find_next_best_node(node, used);
+ 	if (migration_target == NUMA_NO_NODE)
+ 		return NUMA_NO_NODE;
+ 
+-	node_demotion[node] = migration_target;
++	/*
++	 * If the node has been set a migration target node before,
++	 * which means it's the best distance between them. Still
++	 * check if this node can be demoted to other target nodes
++	 * if they have a same best distance.
++	 */
++	if (best_distance != -1) {
++		val = node_distance(node, migration_target);
++		if (val > best_distance)
++			return NUMA_NO_NODE;
++	}
++
++	index = nd->nr;
++	if (WARN_ONCE(index >= DEMOTION_TARGET_NODES,
++		      "Exceeds maximum demotion target nodes\n"))
++		return NUMA_NO_NODE;
++
++	nd->nodes[index] = migration_target;
++	nd->nr++;
+ 
+ 	return migration_target;
+ }
+@@ -3039,7 +3111,9 @@ static int establish_migrate_target(int node, nodemask_t *used)
+  *
+  * The difference here is that cycles must be avoided.  If
+  * node0 migrates to node1, then neither node1, nor anything
+- * node1 migrates to can migrate to node0.
++ * node1 migrates to can migrate to node0. Also one node can
++ * be migrated to multiple nodes if the target nodes all have
++ * a same best-distance against the source node.
+  *
+  * This function can run simultaneously with readers of
+  * node_demotion[].  However, it can not run simultaneously
+@@ -3051,7 +3125,7 @@ static void __set_migration_target_nodes(void)
+ 	nodemask_t next_pass	= NODE_MASK_NONE;
+ 	nodemask_t this_pass	= NODE_MASK_NONE;
+ 	nodemask_t used_targets = NODE_MASK_NONE;
+-	int node;
++	int node, best_distance;
+ 
+ 	/*
+ 	 * Avoid any oddities like cycles that could occur
+@@ -3080,18 +3154,33 @@ static void __set_migration_target_nodes(void)
+ 	 * multiple source nodes to share a destination.
+ 	 */
+ 	nodes_or(used_targets, used_targets, this_pass);
+-	for_each_node_mask(node, this_pass) {
+-		int target_node = establish_migrate_target(node, &used_targets);
+ 
+-		if (target_node == NUMA_NO_NODE)
+-			continue;
++	for_each_node_mask(node, this_pass) {
++		best_distance = -1;
+ 
+ 		/*
+-		 * Visit targets from this pass in the next pass.
+-		 * Eventually, every node will have been part of
+-		 * a pass, and will become set in 'used_targets'.
++		 * Try to set up the migration path for the node, and the target
++		 * migration nodes can be multiple, so doing a loop to find all
++		 * the target nodes if they all have a best node distance.
+ 		 */
+-		node_set(target_node, next_pass);
++		do {
++			int target_node =
++				establish_migrate_target(node, &used_targets,
++							 best_distance);
++
++			if (target_node == NUMA_NO_NODE)
++				break;
++
++			if (best_distance == -1)
++				best_distance = node_distance(node, target_node);
++
++			/*
++			 * Visit targets from this pass in the next pass.
++			 * Eventually, every node will have been part of
++			 * a pass, and will become set in 'used_targets'.
++			 */
++			node_set(target_node, next_pass);
++		} while (1);
+ 	}
+ 	/*
+ 	 * 'next_pass' contains nodes which became migration
+@@ -3192,6 +3281,11 @@ static int __init migrate_on_reclaim_init(void)
+ {
+ 	int ret;
+ 
++	node_demotion = kmalloc_array(nr_node_ids,
++				      sizeof(struct demotion_nodes),
++				      GFP_KERNEL);
++	WARN_ON(!node_demotion);
++
+ 	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_DEAD, "mm/demotion:offline",
+ 					NULL, migration_offline_cpu);
+ 	/*
+-- 
+1.8.3.1
+
