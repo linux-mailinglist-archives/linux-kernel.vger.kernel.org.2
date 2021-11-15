@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD526451985
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1F7451ECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242238AbhKOXXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:23:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S1346933AbhKPAhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244822AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F1F563424;
-        Mon, 15 Nov 2021 18:24:12 +0000 (UTC)
+        id S1344618AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD052636A3;
+        Mon, 15 Nov 2021 19:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000653;
-        bh=r+C2PG7f6c6qNCUTfCibo+oL0MlT9iChHKRs1/e7DhU=;
+        s=korg; t=1637002872;
+        bh=MYJgA8nOfU5wFciEO+VjQWZOimo1eIo9xgFRUgbRBFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FuD+amVVnKXgX8s50eWfEs2NcSBlV+evpKUgBxFujL++rDPV7L78By0A4MKYjfXIE
-         4WJKi5h0fWuAKhdNQtWSugBMy7Vj60FsQnRSTX+eabrfkiUnv+iy+FhmgP8fJdHBAZ
-         yQz1hZKZ9XKea+yO2MEYLaaeT+zLwK0M0Pg3AHQo=
+        b=ASnQXR7kjEnTXvybLGPEE+FiDuLFK+5ndVgBxQE1jnN+sIvcpyYkA9ir+4ct/WxKI
+         o+m8+dWwLwpMUXtz7IsT3XOFLIOXHosBfP/gKTdceZ1/BKygSgANDiKYWT+1kxlKn/
+         CUxI47v/w7UMlUv7rP2WO8Uq7gdx8uwQ3+0qCPVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.helllstrom@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 739/849] drm/ttm: remove ttm_bo_vm_insert_huge()
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 727/917] dmaengine: at_xdmac: call at_xdmac_axi_config() on resume path
 Date:   Mon, 15 Nov 2021 18:03:42 +0100
-Message-Id: <20211115165445.247071645@linuxfoundation.org>
+Message-Id: <20211115165453.565542433@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,360 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 0d979509539ed1df883a30d442177ca7be609565 ]
+[ Upstream commit fa5270ec2f2688d98a82895be7039b81c87d856c ]
 
-The huge page functionality in TTM does not work safely because PUD and
-PMD entries do not have a special bit.
+at_xdmac could be used on SoCs which supports backup mode (where most
+of the SoC power, including power to DMA controller, is closed at suspend
+time). Thus, on resume, the settings which were previously done need to be
+restored. Do the same for axi configuration.
 
-get_user_pages_fast() considers any page that passed pmd_huge() as
-usable:
-
-	if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
-		     pmd_devmap(pmd))) {
-
-And vmf_insert_pfn_pmd_prot() unconditionally sets
-
-	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
-
-eg on x86 the page will be _PAGE_PRESENT | PAGE_PSE.
-
-As such gup_huge_pmd() will try to deref a struct page:
-
-	head = try_grab_compound_head(pmd_page(orig), refs, flags);
-
-and thus crash.
-
-Thomas further notices that the drivers are not expecting the struct page
-to be used by anything - in particular the refcount incr above will cause
-them to malfunction.
-
-Thus everything about this is not able to fully work correctly considering
-GUP_fast. Delete it entirely. It can return someday along with a proper
-PMD/PUD_SPECIAL bit in the page table itself to gate GUP_fast.
-
-Fixes: 314b6580adc5 ("drm/ttm, drm/vmwgfx: Support huge TTM pagefaults")
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Thomas Hellström <thomas.helllstrom@linux.intel.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-[danvet: Update subject per Thomas' &Christian's review]
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/0-v2-a44694790652+4ac-ttm_pmd_jgg@nvidia.com
+Fixes: f40566f220a1 ("dmaengine: at_xdmac: add AXI priority support and recommended settings")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/20211007111230.2331837-2-claudiu.beznea@microchip.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c    |  2 +-
- drivers/gpu/drm/nouveau/nouveau_gem.c      |  2 +-
- drivers/gpu/drm/radeon/radeon_gem.c        |  2 +-
- drivers/gpu/drm/ttm/ttm_bo_vm.c            | 94 +---------------------
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.h        |  4 -
- drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c | 72 +----------------
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c   |  3 -
- include/drm/ttm/ttm_bo_api.h               |  3 +-
- 8 files changed, 7 insertions(+), 175 deletions(-)
+ drivers/dma/at_xdmac.c | 51 ++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index 9a67746c10edd..b14ff19231b91 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@ -61,7 +61,7 @@ static vm_fault_t amdgpu_gem_fault(struct vm_fault *vmf)
- 		}
- 
- 		 ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
--						TTM_BO_VM_NUM_PREFAULT, 1);
-+						TTM_BO_VM_NUM_PREFAULT);
- 
- 		 drm_dev_exit(idx);
- 	} else {
-diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-index 8c2ecc2827232..c89d5964148fd 100644
---- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-@@ -56,7 +56,7 @@ static vm_fault_t nouveau_ttm_fault(struct vm_fault *vmf)
- 
- 	nouveau_bo_del_io_reserve_lru(bo);
- 	prot = vm_get_page_prot(vma->vm_flags);
--	ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT, 1);
-+	ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT);
- 	nouveau_bo_add_io_reserve_lru(bo);
- 	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
- 		return ret;
-diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon/radeon_gem.c
-index 458f92a708879..a36a4f2c76b09 100644
---- a/drivers/gpu/drm/radeon/radeon_gem.c
-+++ b/drivers/gpu/drm/radeon/radeon_gem.c
-@@ -61,7 +61,7 @@ static vm_fault_t radeon_gem_fault(struct vm_fault *vmf)
- 		goto unlock_resv;
- 
- 	ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
--				       TTM_BO_VM_NUM_PREFAULT, 1);
-+				       TTM_BO_VM_NUM_PREFAULT);
- 	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
- 		goto unlock_mclk;
- 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-index 5b9b7fd01a692..4a655ab23c89d 100644
---- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
-@@ -171,89 +171,6 @@ vm_fault_t ttm_bo_vm_reserve(struct ttm_buffer_object *bo,
+diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
+index ab78e0f6afd70..c66ad5706cb5a 100644
+--- a/drivers/dma/at_xdmac.c
++++ b/drivers/dma/at_xdmac.c
+@@ -1926,6 +1926,30 @@ static void at_xdmac_free_chan_resources(struct dma_chan *chan)
+ 	return;
  }
- EXPORT_SYMBOL(ttm_bo_vm_reserve);
  
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--/**
-- * ttm_bo_vm_insert_huge - Insert a pfn for PUD or PMD faults
-- * @vmf: Fault data
-- * @bo: The buffer object
-- * @page_offset: Page offset from bo start
-- * @fault_page_size: The size of the fault in pages.
-- * @pgprot: The page protections.
-- * Does additional checking whether it's possible to insert a PUD or PMD
-- * pfn and performs the insertion.
-- *
-- * Return: VM_FAULT_NOPAGE on successful insertion, VM_FAULT_FALLBACK if
-- * a huge fault was not possible, or on insertion error.
-- */
--static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
--					struct ttm_buffer_object *bo,
--					pgoff_t page_offset,
--					pgoff_t fault_page_size,
--					pgprot_t pgprot)
--{
--	pgoff_t i;
--	vm_fault_t ret;
--	unsigned long pfn;
--	pfn_t pfnt;
--	struct ttm_tt *ttm = bo->ttm;
--	bool write = vmf->flags & FAULT_FLAG_WRITE;
--
--	/* Fault should not cross bo boundary. */
--	page_offset &= ~(fault_page_size - 1);
--	if (page_offset + fault_page_size > bo->resource->num_pages)
--		goto out_fallback;
--
--	if (bo->resource->bus.is_iomem)
--		pfn = ttm_bo_io_mem_pfn(bo, page_offset);
--	else
--		pfn = page_to_pfn(ttm->pages[page_offset]);
--
--	/* pfn must be fault_page_size aligned. */
--	if ((pfn & (fault_page_size - 1)) != 0)
--		goto out_fallback;
--
--	/* Check that memory is contiguous. */
--	if (!bo->resource->bus.is_iomem) {
--		for (i = 1; i < fault_page_size; ++i) {
--			if (page_to_pfn(ttm->pages[page_offset + i]) != pfn + i)
--				goto out_fallback;
--		}
--	} else if (bo->bdev->funcs->io_mem_pfn) {
--		for (i = 1; i < fault_page_size; ++i) {
--			if (ttm_bo_io_mem_pfn(bo, page_offset + i) != pfn + i)
--				goto out_fallback;
--		}
--	}
--
--	pfnt = __pfn_to_pfn_t(pfn, PFN_DEV);
--	if (fault_page_size == (HPAGE_PMD_SIZE >> PAGE_SHIFT))
--		ret = vmf_insert_pfn_pmd_prot(vmf, pfnt, pgprot, write);
--#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
--	else if (fault_page_size == (HPAGE_PUD_SIZE >> PAGE_SHIFT))
--		ret = vmf_insert_pfn_pud_prot(vmf, pfnt, pgprot, write);
--#endif
--	else
--		WARN_ON_ONCE(ret = VM_FAULT_FALLBACK);
--
--	if (ret != VM_FAULT_NOPAGE)
--		goto out_fallback;
--
--	return VM_FAULT_NOPAGE;
--out_fallback:
--	count_vm_event(THP_FAULT_FALLBACK);
--	return VM_FAULT_FALLBACK;
--}
--#else
--static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
--					struct ttm_buffer_object *bo,
--					pgoff_t page_offset,
--					pgoff_t fault_page_size,
--					pgprot_t pgprot)
--{
--	return VM_FAULT_FALLBACK;
--}
--#endif
--
- /**
-  * ttm_bo_vm_fault_reserved - TTM fault helper
-  * @vmf: The struct vm_fault given as argument to the fault callback
-@@ -261,7 +178,6 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
-  * @num_prefault: Maximum number of prefault pages. The caller may want to
-  * specify this based on madvice settings and the size of the GPU object
-  * backed by the memory.
-- * @fault_page_size: The size of the fault in pages.
-  *
-  * This function inserts one or more page table entries pointing to the
-  * memory backing the buffer object, and then returns a return code
-@@ -275,8 +191,7 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
-  */
- vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
- 				    pgprot_t prot,
--				    pgoff_t num_prefault,
--				    pgoff_t fault_page_size)
-+				    pgoff_t num_prefault)
++static void at_xdmac_axi_config(struct platform_device *pdev)
++{
++	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
++	bool dev_m2m = false;
++	u32 dma_requests;
++
++	if (!atxdmac->layout->axi_config)
++		return; /* Not supported */
++
++	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
++				  &dma_requests)) {
++		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
++		dev_m2m = true;
++	}
++
++	if (dev_m2m) {
++		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
++		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
++	} else {
++		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
++		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
++	}
++}
++
+ #ifdef CONFIG_PM
+ static int atmel_xdmac_prepare(struct device *dev)
  {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct ttm_buffer_object *bo = vma->vm_private_data;
-@@ -327,11 +242,6 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
- 		prot = pgprot_decrypted(prot);
- 	}
+@@ -1975,6 +1999,7 @@ static int atmel_xdmac_resume(struct device *dev)
+ 	struct at_xdmac		*atxdmac = dev_get_drvdata(dev);
+ 	struct at_xdmac_chan	*atchan;
+ 	struct dma_chan		*chan, *_chan;
++	struct platform_device	*pdev = container_of(dev, struct platform_device, dev);
+ 	int			i;
+ 	int ret;
  
--	/* We don't prefault on huge faults. Yet. */
--	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && fault_page_size != 1)
--		return ttm_bo_vm_insert_huge(vmf, bo, page_offset,
--					     fault_page_size, prot);
--
- 	/*
- 	 * Speculatively prefault a number of pages. Only error on
- 	 * first page.
-@@ -429,7 +339,7 @@ vm_fault_t ttm_bo_vm_fault(struct vm_fault *vmf)
- 
- 	prot = vma->vm_page_prot;
- 	if (drm_dev_enter(ddev, &idx)) {
--		ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT, 1);
-+		ret = ttm_bo_vm_fault_reserved(vmf, prot, TTM_BO_VM_NUM_PREFAULT);
- 		drm_dev_exit(idx);
- 	} else {
- 		ret = ttm_bo_vm_dummy_page(vmf, prot);
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h
-index 5652d982b1ce6..c87d74f0afc52 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h
-@@ -1526,10 +1526,6 @@ void vmw_bo_dirty_unmap(struct vmw_buffer_object *vbo,
- 			pgoff_t start, pgoff_t end);
- vm_fault_t vmw_bo_vm_fault(struct vm_fault *vmf);
- vm_fault_t vmw_bo_vm_mkwrite(struct vm_fault *vmf);
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--vm_fault_t vmw_bo_vm_huge_fault(struct vm_fault *vmf,
--				enum page_entry_size pe_size);
--#endif
- 
- /* Transparent hugepage support - vmwgfx_thp.c */
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-index e5a9a5cbd01a7..922317d1acc8a 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
-@@ -477,7 +477,7 @@ vm_fault_t vmw_bo_vm_fault(struct vm_fault *vmf)
- 	else
- 		prot = vm_get_page_prot(vma->vm_flags);
- 
--	ret = ttm_bo_vm_fault_reserved(vmf, prot, num_prefault, 1);
-+	ret = ttm_bo_vm_fault_reserved(vmf, prot, num_prefault);
- 	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
+@@ -1982,6 +2007,8 @@ static int atmel_xdmac_resume(struct device *dev)
+ 	if (ret)
  		return ret;
  
-@@ -486,73 +486,3 @@ out_unlock:
- 
- 	return ret;
++	at_xdmac_axi_config(pdev);
++
+ 	/* Clear pending interrupts. */
+ 	for (i = 0; i < atxdmac->dma.chancnt; i++) {
+ 		atchan = &atxdmac->chan[i];
+@@ -2007,30 +2034,6 @@ static int atmel_xdmac_resume(struct device *dev)
  }
--
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--vm_fault_t vmw_bo_vm_huge_fault(struct vm_fault *vmf,
--				enum page_entry_size pe_size)
+ #endif /* CONFIG_PM_SLEEP */
+ 
+-static void at_xdmac_axi_config(struct platform_device *pdev)
 -{
--	struct vm_area_struct *vma = vmf->vma;
--	struct ttm_buffer_object *bo = (struct ttm_buffer_object *)
--	    vma->vm_private_data;
--	struct vmw_buffer_object *vbo =
--		container_of(bo, struct vmw_buffer_object, base);
--	pgprot_t prot;
--	vm_fault_t ret;
--	pgoff_t fault_page_size;
--	bool write = vmf->flags & FAULT_FLAG_WRITE;
+-	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
+-	bool dev_m2m = false;
+-	u32 dma_requests;
 -
--	switch (pe_size) {
--	case PE_SIZE_PMD:
--		fault_page_size = HPAGE_PMD_SIZE >> PAGE_SHIFT;
--		break;
--#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
--	case PE_SIZE_PUD:
--		fault_page_size = HPAGE_PUD_SIZE >> PAGE_SHIFT;
--		break;
--#endif
--	default:
--		WARN_ON_ONCE(1);
--		return VM_FAULT_FALLBACK;
+-	if (!atxdmac->layout->axi_config)
+-		return; /* Not supported */
+-
+-	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
+-				  &dma_requests)) {
+-		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
+-		dev_m2m = true;
 -	}
 -
--	/* Always do write dirty-tracking and COW on PTE level. */
--	if (write && (READ_ONCE(vbo->dirty) || is_cow_mapping(vma->vm_flags)))
--		return VM_FAULT_FALLBACK;
--
--	ret = ttm_bo_vm_reserve(bo, vmf);
--	if (ret)
--		return ret;
--
--	if (vbo->dirty) {
--		pgoff_t allowed_prefault;
--		unsigned long page_offset;
--
--		page_offset = vmf->pgoff -
--			drm_vma_node_start(&bo->base.vma_node);
--		if (page_offset >= bo->resource->num_pages ||
--		    vmw_resources_clean(vbo, page_offset,
--					page_offset + PAGE_SIZE,
--					&allowed_prefault)) {
--			ret = VM_FAULT_SIGBUS;
--			goto out_unlock;
--		}
--
--		/*
--		 * Write protect, so we get a new fault on write, and can
--		 * split.
--		 */
--		prot = vm_get_page_prot(vma->vm_flags & ~VM_SHARED);
+-	if (dev_m2m) {
+-		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
+-		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
 -	} else {
--		prot = vm_get_page_prot(vma->vm_flags);
+-		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
+-		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
 -	}
--
--	ret = ttm_bo_vm_fault_reserved(vmf, prot, 1, fault_page_size);
--	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
--		return ret;
--
--out_unlock:
--	dma_resv_unlock(bo->base.resv);
--
--	return ret;
 -}
--#endif
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
-index e6b1f98ec99f0..0a4c340252ec4 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
-@@ -61,9 +61,6 @@ int vmw_mmap(struct file *filp, struct vm_area_struct *vma)
- 		.fault = vmw_bo_vm_fault,
- 		.open = ttm_bo_vm_open,
- 		.close = ttm_bo_vm_close,
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--		.huge_fault = vmw_bo_vm_huge_fault,
--#endif
- 	};
- 	struct drm_file *file_priv = filp->private_data;
- 	struct vmw_private *dev_priv = vmw_priv(file_priv->minor->dev);
-diff --git a/include/drm/ttm/ttm_bo_api.h b/include/drm/ttm/ttm_bo_api.h
-index f681bbdbc6982..36f7eb9d06639 100644
---- a/include/drm/ttm/ttm_bo_api.h
-+++ b/include/drm/ttm/ttm_bo_api.h
-@@ -594,8 +594,7 @@ vm_fault_t ttm_bo_vm_reserve(struct ttm_buffer_object *bo,
- 
- vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
- 				    pgprot_t prot,
--				    pgoff_t num_prefault,
--				    pgoff_t fault_page_size);
-+				    pgoff_t num_prefault);
- 
- vm_fault_t ttm_bo_vm_fault(struct vm_fault *vmf);
- 
+-
+ static int at_xdmac_probe(struct platform_device *pdev)
+ {
+ 	struct at_xdmac	*atxdmac;
 -- 
 2.33.0
 
