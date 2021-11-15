@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AF2452473
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B46452730
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349951AbhKPBjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:39:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50438 "EHLO mail.kernel.org"
+        id S240758AbhKPCTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:19:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242848AbhKOSq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:46:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 478E36338D;
-        Mon, 15 Nov 2021 18:07:22 +0000 (UTC)
+        id S238772AbhKORpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:45:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5167263311;
+        Mon, 15 Nov 2021 17:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999642;
-        bh=bQfI4NAOYnv+pU89wDqeueLaq2x4Dh4kOz3V+7GHgIQ=;
+        s=korg; t=1636997367;
+        bh=hYra+e4a47V+ydyfs1YRzlOCGrI83ATxYV4qKD6WZr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wUEL7OhnAWEDvquJddts7pF1UOwUkM67P0VU6AM+L9EDqkJrYA6Ms0iS9CanCBA4a
-         5Naws7SzctmcCvFfPCdSQOWcBSaXm07mNCP6Z4szn1ubmfeijqOAjN2RelUP/41evE
-         QlCgldMP0UyPZsAl0O9Q68YrMaLL/cbY13DwqEoo=
+        b=0Vn32XJSHEwSl1ovQ/ukLae3eKi6bmoEj0bVM0OVTGhdLNsbjj7Y7mvFuwMFwVboY
+         zRmJa8PcT8/zdIA67OT63MMBazD9RFJuaaYjwz/fXxlL8OFHlKOEydrAPAlJrqkv60
+         KNRBaPyOcu5wSpxAXf+F4gG9o12UVhZyL5K1SFfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 354/849] cgroup: Make rebind_subsystems() disable v2 controllers all at once
-Date:   Mon, 15 Nov 2021 17:57:17 +0100
-Message-Id: <20211115165432.208947585@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.10 123/575] mtd: rawnand: socrates: Keep the driver compatible with on-die ECC engines
+Date:   Mon, 15 Nov 2021 17:57:28 +0100
+Message-Id: <20211115165347.963480668@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,120 +38,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 7ee285395b211cad474b2b989db52666e0430daf ]
+commit b4ebddd6540d78a7f977b3fea0261bd575c6ffe2 upstream.
 
-It was found that the following warning was displayed when remounting
-controllers from cgroup v2 to v1:
+Following the introduction of the generic ECC engine infrastructure, it
+was necessary to reorganize the code and move the ECC configuration in
+the ->attach_chip() hook. Failing to do that properly lead to a first
+series of fixes supposed to stabilize the situation. Unfortunately, this
+only fixed the use of software ECC engines, preventing any other kind of
+engine to be used, including on-die ones.
 
-[ 8042.997778] WARNING: CPU: 88 PID: 80682 at kernel/cgroup/cgroup.c:3130 cgroup_apply_control_disable+0x158/0x190
-   :
-[ 8043.091109] RIP: 0010:cgroup_apply_control_disable+0x158/0x190
-[ 8043.096946] Code: ff f6 45 54 01 74 39 48 8d 7d 10 48 c7 c6 e0 46 5a a4 e8 7b 67 33 00 e9 41 ff ff ff 49 8b 84 24 e8 01 00 00 0f b7 40 08 eb 95 <0f> 0b e9 5f ff ff ff 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f c3
-[ 8043.115692] RSP: 0018:ffffba8a47c23d28 EFLAGS: 00010202
-[ 8043.120916] RAX: 0000000000000036 RBX: ffffffffa624ce40 RCX: 000000000000181a
-[ 8043.128047] RDX: ffffffffa63c43e0 RSI: ffffffffa63c43e0 RDI: ffff9d7284ee1000
-[ 8043.135180] RBP: ffff9d72874c5800 R08: ffffffffa624b090 R09: 0000000000000004
-[ 8043.142314] R10: ffffffffa624b080 R11: 0000000000002000 R12: ffff9d7284ee1000
-[ 8043.149447] R13: ffff9d7284ee1000 R14: ffffffffa624ce70 R15: ffffffffa6269e20
-[ 8043.156576] FS:  00007f7747cff740(0000) GS:ffff9d7a5fc00000(0000) knlGS:0000000000000000
-[ 8043.164663] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 8043.170409] CR2: 00007f7747e96680 CR3: 0000000887d60001 CR4: 00000000007706e0
-[ 8043.177539] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 8043.184673] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 8043.191804] PKRU: 55555554
-[ 8043.194517] Call Trace:
-[ 8043.196970]  rebind_subsystems+0x18c/0x470
-[ 8043.201070]  cgroup_setup_root+0x16c/0x2f0
-[ 8043.205177]  cgroup1_root_to_use+0x204/0x2a0
-[ 8043.209456]  cgroup1_get_tree+0x3e/0x120
-[ 8043.213384]  vfs_get_tree+0x22/0xb0
-[ 8043.216883]  do_new_mount+0x176/0x2d0
-[ 8043.220550]  __x64_sys_mount+0x103/0x140
-[ 8043.224474]  do_syscall_64+0x38/0x90
-[ 8043.228063]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+It is now time to (finally) fix the situation by ensuring that we still
+provide a default (eg. software ECC) but will still support different
+ECC engines such as on-die ECC engines if properly described in the
+device tree.
 
-It was caused by the fact that rebind_subsystem() disables
-controllers to be rebound one by one. If more than one disabled
-controllers are originally from the default hierarchy, it means that
-cgroup_apply_control_disable() will be called multiple times for the
-same default hierarchy. A controller may be killed by css_kill() in
-the first round. In the second round, the killed controller may not be
-completely dead yet leading to the warning.
+There are no changes needed on the core side in order to do this, but we
+just need to leverage the logic there which allows:
+1- a subsystem default (set to Host engines in the raw NAND world)
+2- a driver specific default (here set to software ECC engines)
+3- any type of engine requested by the user (ie. described in the DT)
 
-To avoid this problem, we collect all the ssid's of controllers that
-needed to be disabled from the default hierarchy and then disable them
-in one go instead of one by one.
+As the raw NAND subsystem has not yet been fully converted to the ECC
+engine infrastructure, in order to provide a default ECC engine for this
+driver we need to set chip->ecc.engine_type *before* calling
+nand_scan(). During the initialization step, the core will consider this
+entry as the default engine for this driver. This value may of course
+be overloaded by the user if the usual DT properties are provided.
 
-Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b36bf0a0fe5d ("mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210928222258.199726-9-miquel.raynal@bootlin.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/cgroup/cgroup.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/socrates_nand.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 38750c385dd2c..552d86b6d6c90 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1726,6 +1726,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 	struct cgroup *dcgrp = &dst_root->cgrp;
- 	struct cgroup_subsys *ss;
- 	int ssid, i, ret;
-+	u16 dfl_disable_ss_mask = 0;
+--- a/drivers/mtd/nand/raw/socrates_nand.c
++++ b/drivers/mtd/nand/raw/socrates_nand.c
+@@ -119,9 +119,8 @@ static int socrates_nand_device_ready(st
  
- 	lockdep_assert_held(&cgroup_mutex);
+ static int socrates_attach_chip(struct nand_chip *chip)
+ {
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-
+-	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+ 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
-@@ -1742,8 +1743,28 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 		/* can't move between two non-dummy roots either */
- 		if (ss->root != &cgrp_dfl_root && dst_root != &cgrp_dfl_root)
- 			return -EBUSY;
+ 	return 0;
+@@ -175,6 +174,13 @@ static int socrates_nand_probe(struct pl
+ 	/* TODO: I have no idea what real delay is. */
+ 	nand_chip->legacy.chip_delay = 20;	/* 20us command delay time */
+ 
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	nand_chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 +
-+		/*
-+		 * Collect ssid's that need to be disabled from default
-+		 * hierarchy.
-+		 */
-+		if (ss->root == &cgrp_dfl_root)
-+			dfl_disable_ss_mask |= 1 << ssid;
-+
- 	} while_each_subsys_mask();
+ 	dev_set_drvdata(&ofdev->dev, host);
  
-+	if (dfl_disable_ss_mask) {
-+		struct cgroup *scgrp = &cgrp_dfl_root.cgrp;
-+
-+		/*
-+		 * Controllers from default hierarchy that need to be rebound
-+		 * are all disabled together in one go.
-+		 */
-+		cgrp_dfl_root.subsys_mask &= ~dfl_disable_ss_mask;
-+		WARN_ON(cgroup_apply_control(scgrp));
-+		cgroup_finalize_control(scgrp, 0);
-+	}
-+
- 	do_each_subsys_mask(ss, ssid, ss_mask) {
- 		struct cgroup_root *src_root = ss->root;
- 		struct cgroup *scgrp = &src_root->cgrp;
-@@ -1752,10 +1773,12 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 
- 		WARN_ON(!css || cgroup_css(dcgrp, ss));
- 
--		/* disable from the source */
--		src_root->subsys_mask &= ~(1 << ssid);
--		WARN_ON(cgroup_apply_control(scgrp));
--		cgroup_finalize_control(scgrp, 0);
-+		if (src_root != &cgrp_dfl_root) {
-+			/* disable from the source */
-+			src_root->subsys_mask &= ~(1 << ssid);
-+			WARN_ON(cgroup_apply_control(scgrp));
-+			cgroup_finalize_control(scgrp, 0);
-+		}
- 
- 		/* rebind */
- 		RCU_INIT_POINTER(scgrp->subsys[ssid], NULL);
--- 
-2.33.0
-
+ 	res = nand_scan(nand_chip, 1);
 
 
