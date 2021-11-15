@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE6B450762
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC1B450768
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhKOOrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:47:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        id S232178AbhKOOrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbhKOOqB (ORCPT
+        with ESMTP id S232125AbhKOOqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:46:01 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB2EC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:01 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id b15so72667056edd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:01 -0800 (PST)
+        Mon, 15 Nov 2021 09:46:54 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B58CC06120B
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:43 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id i12so16887833ila.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CzJK4JDX6paenq4KcCz6jy46RXs4ivoWCXDNifpXO7o=;
-        b=saHYB+jmp8hyRGGN65aWHLlKWn7anwGLToUEK3BOGPGcu6a5PPmg+9HWsGf93RFbuk
-         wzIzXI5sz75bfohzWYFahzSiOHV38X/dUt/UinkOXyjZZB2LBP4QzHPQmkYGkdoaX1NI
-         jiRy2h9dUmdaC4YnQs8Ei6z+wKJB3Gdtu79HDc5YL5QYeJnKxNZEKiqixDHFDGGZgl/h
-         LumvZzG2f6A1KXD44AcJZT0/qdSeW+PTas7tKmcay4ucwWmb+h4GJEW9x2TcgrlN1gTW
-         1ii3Ay3Ddo1XnwGTybmJRr4VAeNSFcIReeU5/K9GWV9eCzzbGSVt4HfM8M/NFH2KTIEH
-         WjQQ==
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JfI3JoXz0Ca1OgsWEHyo6RS3UZraM1AMQfqSQejQjIo=;
+        b=EBIcyDEqfb8Y3brMg/s64Zs7YM6DOuNsOA0EX1xqAl6dxUcFFBBLbUpWS/d8vjHk+a
+         z1svOa2SM8nlola2pw6iU6vEkk8oi16VJAZ2GZX6KodNhW5XkLYx9cAQRipwuVoG4HLI
+         OPDlJkfElrYm1BJo0jadYYXreXomivz2vs0ZvICu+FrXYcQ8dRQoczdnS9/ozcdNQ14D
+         e2ooYa2baQbWot0HL/bZh/MqYuZeYgjGRoECYsZDMwgDORUZC5zPNdyJztt2su9dZvMP
+         dyb1zu427uumWkeW4COKrCQEtrwsvREwSnY0U48YQwC9d2M/I9CTvs1fg1QPdDBw5fcp
+         31zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CzJK4JDX6paenq4KcCz6jy46RXs4ivoWCXDNifpXO7o=;
-        b=lVnalXvANp1TVNXN9RlAYYQlej9f7JZHfrlkbdPx/dyXxc+70h1hDOr9kqXIzX/niX
-         5L2FEViUsBAxS/rbuimbVFuOo4anVVWpPpMuk8fmCXQa8l/jT3Z+dwm5o90ffE4KsUTo
-         YhEH0vM0EHfEuSx9+941ZXDgKP8gRqPbP9or1o5mVR5XbpeDAw/BBVHjh8dHG2tkW42V
-         JdlmnPdV68D4LRZnCqAon19UAiKqR0dAvOBIYG9H2fuQqNh4hwvbM3Q9QeZtOwOaxzor
-         CqOvKwVrMLzBuW7vY4j23H/cvbB8UqkHpEH3mPXyAQ5xbGfXaDWv16CYrQd4X7dAHkH1
-         FlAw==
-X-Gm-Message-State: AOAM532EBGIzRgVTMzX+hIAxeJPG2fOR77OXzB21ncpNUDq4k/W85ICo
-        kwuiDYJ1UphmsKK5QNrbMf3W9g==
-X-Google-Smtp-Source: ABdhPJxmZIfHRDtPhNYfKcXFT56AD2cOKKPguslKGLKBF9rhwU+J5uDGnBOPJeNbHUgF5k93n+vz/g==
-X-Received: by 2002:a17:907:7f1a:: with SMTP id qf26mr49386530ejc.543.1636987380612;
-        Mon, 15 Nov 2021 06:43:00 -0800 (PST)
-Received: from localhost (mail.chocen-mesto.cz. [85.163.43.2])
-        by smtp.gmail.com with ESMTPSA id k9sm7515183edo.87.2021.11.15.06.42.59
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JfI3JoXz0Ca1OgsWEHyo6RS3UZraM1AMQfqSQejQjIo=;
+        b=q51aR58Wr4GexivIrfthi6c5Q+it5xKB8+d/ypWTgqA/IU9YAeIIQ5KlpRhCcSZfxc
+         XXqVqimsN/Pjmd3G7L1V04A9JY5jEhDrxOeBSZLOyASfBPT6yaidkqJQyHttk+WQWbDK
+         cknt8Yi8/XsXkgjLW1pofJJIOmSMMdjwqz42rzbQXl4VniQzvrqyOSUSd0iS/SbzTe6c
+         pD8lFk8xsakEEgVZeIrgJZKasIzo3gmc59iv5QQM/hI4DXY6525tdPCG/Pr0F8S23rLq
+         +82wFLp5A359S7EAxwHbJ15rCHEWJzEKm+yBLJ7mlL7IYzJtY3n8pRFSP46ipOLi/3E0
+         c2+w==
+X-Gm-Message-State: AOAM532V4L8kaasHKCN4MkeG9JimeilolbctSNIc0o4ozY8gKVip2jtP
+        9Ue9Brl7Wf4zT/nfWd5edlM98Q==
+X-Google-Smtp-Source: ABdhPJz2yCZ0EINqTWjSs3tzPzMvPN86GdXRv8KNX4/5f+hxt1DRdnl/BVl1YvBWMPNlUjsZEE/hQw==
+X-Received: by 2002:a05:6e02:178a:: with SMTP id y10mr21823246ilu.257.1636987422853;
+        Mon, 15 Nov 2021 06:43:42 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id o10sm8997947ilc.56.2021.11.15.06.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 06:42:59 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:42:58 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <YZJx8raQt+FkKaeY@nanopsycho>
-References: <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211109153335.GH1740502@nvidia.com>
- <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211109182427.GJ1740502@nvidia.com>
- <YY0G90fJpu/OtF8L@nanopsycho>
- <YY0J8IOLQBBhok2M@unreal>
- <YY4aEFkVuqR+vauw@nanopsycho>
- <YZCqVig9GQi/o1iz@unreal>
- <YZJCdSy+wzqlwrE2@nanopsycho>
- <20211115125359.GM2105516@nvidia.com>
+        Mon, 15 Nov 2021 06:43:42 -0800 (PST)
+Message-ID: <1411d7a3913677fee58e103f7610e122686e87bf.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 0/3] Add NVIDIA Tegra114 support to video decoder
+ driver
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 15 Nov 2021 09:43:40 -0500
+In-Reply-To: <20211114224732.11550-1-digetx@gmail.com>
+References: <20211114224732.11550-1-digetx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115125359.GM2105516@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Nov 15, 2021 at 01:53:59PM CET, jgg@nvidia.com wrote:
->On Mon, Nov 15, 2021 at 12:20:21PM +0100, Jiri Pirko wrote:
->> Sun, Nov 14, 2021 at 07:19:02AM CET, leon@kernel.org wrote:
->> >On Fri, Nov 12, 2021 at 08:38:56AM +0100, Jiri Pirko wrote:
->> >> Thu, Nov 11, 2021 at 01:17:52PM CET, leon@kernel.org wrote:
->> >> >On Thu, Nov 11, 2021 at 01:05:11PM +0100, Jiri Pirko wrote:
->> >> >> Tue, Nov 09, 2021 at 07:24:27PM CET, jgg@nvidia.com wrote:
->> >> >> >On Tue, Nov 09, 2021 at 08:20:42AM -0800, Jakub Kicinski wrote:
->> >> >> >> On Tue, 9 Nov 2021 11:33:35 -0400 Jason Gunthorpe wrote:
->> >> >> >> > > > I once sketched out fixing this by removing the need to hold the
->> >> >> >> > > > per_net_rwsem just for list iteration, which in turn avoids holding it
->> >> >> >> > > > over the devlink reload paths. It seemed like a reasonable step toward
->> >> >> >> > > > finer grained locking.  
->> >> >> >> > > 
->> >> >> >> > > Seems to me the locking is just a symptom.  
->> >> >> >> > 
->> >> >> >> > My fear is this reload during net ns destruction is devlink uAPI now
->> >> >> >> > and, yes it may be only a symptom, but the root cause may be unfixable
->> >> >> >> > uAPI constraints.
->> >> >> >> 
->> >> >> >> If I'm reading this right it locks up 100% of the time, what is a uAPI
->> >> >> >> for? DoS? ;)
->> >> >> >> 
->> >> >> >> Hence my questions about the actual use cases.
->> >> >> >
->> >> >> >Removing namespace support from devlink would solve the crasher. I
->> >> >> >certainly didn't feel bold enough to suggest such a thing :)
->> >> >> >
->> >> >> >If no other devlink driver cares about this it is probably the best
->> >> >> >idea.
->> >> >> 
->> >> >> Devlink namespace support is not generic, not related to any driver.
->> >> >
->> >> >What do you mean?
->> >> >
->> >> >devlink_pernet_pre_exit() calls to devlink reload, which means that only
->> >> >drivers that support reload care about it. The reload is driver thing.
->> >> 
->> >> However, Jason was talking about "namespace support removal from
->> >> devlink"..
->> >
->> >The code that sparkles deadlocks is in devlink_pernet_pre_exit() and
->> >this will be nice to remove. I just don't know if it is possible to do
->> >without ripping whole namespace support from devlink.
->> 
->> As discussed offline, the non-standard mlx5/IB usage of network
->> namespaces requires non standard mlx5/IB workaround. Does not make any
->> sense to remove the devlink net namespace support removal.
->
->Sorry, I don't agree that registering a net notifier in an aux device
->probe function is non-standard or wrong.
+Hi Dmitry,
 
+Le lundi 15 novembre 2021 à 01:47 +0300, Dmitry Osipenko a écrit :
+> Video decoder of Tegra114/124 SoCs uses additional memory buffer required
+> for decoding of protected content. We won't support that content, but it
+> is impossible to disable access to the buffer, hence a stub buffer needs
+> to be provided. This series enables decoder driver only for Tegra114
+> because Tegra124 support requires more non-trivial changes on both kernel
+> and userspace sides.
 
-Listening to events which happen in different namespaces and react to
-them is the non-standard behaviour which I refered to. If you would not
-need to do it, you could just use netns notofier which would solve your
-issue. You know it.
+I believe the stateless API is quite in place now, but I only see maintenance on
+this staging driver. I don't believe it really make sense to keep maintaining a
+staging driver without any step forward de-staging it. I believe it gives the
+wrong message on the Kernel staging purpose.
 
+I'm not criticizing your effort, I believe you are doing nice work for you
+community, but would prefer to see this driver be ported to the official kernel
+APIs rather then being maintain as staging till the end of time.
 
->
->This model must be supported sanely somehow in the netdev area and
->cannot be worked around in leaf drivers.
->
->Intel ice will have the same problem, as would broadcom if they ever
->get their driver modernized.
->
->Jason
+regards,
+Nicolas
+
+> 
+> Changelog:
+> 
+> v2: - Changed tegra_vde_alloc_bo() to return errno and fix unassigned
+>       error code in tegra_vde_probe().
+> 
+> Dmitry Osipenko (1):
+>   media: staging: tegra-vde: Reorder misc device registration
+> 
+> Thierry Reding (2):
+>   media: staging: tegra-vde: Support reference picture marking
+>   media: staging: tegra-vde: Properly mark invalid entries
+> 
+>  drivers/staging/media/tegra-vde/vde.c | 147 +++++++++++++++++++++++---
+>  drivers/staging/media/tegra-vde/vde.h |  18 ++++
+>  2 files changed, 152 insertions(+), 13 deletions(-)
+> 
+
