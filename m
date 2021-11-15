@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC0345201C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B622D4519CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357560AbhKPAsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:48:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1354017AbhKOX2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:28:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344714AbhKOTZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D828636B7;
-        Mon, 15 Nov 2021 19:02:59 +0000 (UTC)
+        id S245061AbhKOTTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:19:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45060634FD;
+        Mon, 15 Nov 2021 18:27:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002979;
-        bh=vpAKWvmBaxgt80dS47aqaD+iO9Qy+veH5ehNAmRzsAg=;
+        s=korg; t=1637000863;
+        bh=o2vNYiXQqL0DzCXCOJyEVsB4e/WMcKZ77Rb17LF1dX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zzUn+MK6aO22E+M1HdiaBFlv0MxE6a3AgTXA+PRV4T0CZ6Ct1b3ExZawYeawTVz4h
-         b3aUevVQvVMjKXQU5arpVZH1swhqh7i0/Seap0Blp5LJfl7iPfW7M9/K6UNBpMifC/
-         y9zqU/1Kl4A3h+ycDkUSmBM0vXEiyifPtIxA1Fag=
+        b=Xyt89mIA+eDpYT2iQCjWWIpABYgWN7gMhzZoTayLD+3K81XhGM8IogwRW/unshyA5
+         CL/yEW0iqZw3Vjw0fyhilvesRck9N5qUddwOcPZrxB29Velj27WJzNphMZydasIJ+J
+         p1jL+Cx/2DcNQgyCP8WkMJhpjlzuu1IexRYHUr7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 765/917] kselftests/net: add missed setup_loopback.sh/setup_veth.sh to Makefile
-Date:   Mon, 15 Nov 2021 18:04:20 +0100
-Message-Id: <20211115165454.871454976@linuxfoundation.org>
+Subject: [PATCH 5.14 778/849] net: stmmac: allow a tc-taprio base-time of zero
+Date:   Mon, 15 Nov 2021 18:04:21 +0100
+Message-Id: <20211115165446.559851352@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit b99ac1841147eefd8d8b52fcf00d7d917949ae7f ]
+[ Upstream commit f64ab8e4f368f48afb08ae91928e103d17b235e9 ]
 
-When generating the selftests to another folder, the include file
-setup_loopback.sh/setup_veth.sh for gro.sh/gre_gro.sh are missing as
-they are not in Makefile, e.g.
+Commit fe28c53ed71d ("net: stmmac: fix taprio configuration when
+base_time is in the past") allowed some base time values in the past,
+but apparently not all, the base-time value of 0 (Jan 1st 1970) is still
+explicitly denied by the driver.
 
-  make -C tools/testing/selftests/ install \
-      TARGETS="net" INSTALL_PATH=/tmp/kselftests
+Remove the bogus check.
 
-Fixes: 7d1575014a63 ("selftests/net: GRO coalesce test")
-Fixes: 9af771d2ec04 ("selftests/net: allow GRO coalesce test on veth")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Fixes: b60189e0392f ("net: stmmac: Integrate EST with TAPRIO scheduler API")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 9b1c2dfe12530..63ee01c1437b6 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -28,7 +28,7 @@ TEST_PROGS += veth.sh
- TEST_PROGS += ioam6.sh
- TEST_PROGS += gro.sh
- TEST_PROGS += gre_gso.sh
--TEST_PROGS_EXTENDED := in_netns.sh
-+TEST_PROGS_EXTENDED := in_netns.sh setup_loopback.sh setup_veth.sh
- TEST_GEN_FILES =  socket nettest
- TEST_GEN_FILES += psock_fanout psock_tpacket msg_zerocopy reuseport_addr_any
- TEST_GEN_FILES += tcp_mmap tcp_inq psock_snd txring_overwrite
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 8160087ee92f2..1c4ea0b1b845b 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -786,8 +786,6 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 		goto disable;
+ 	if (qopt->num_entries >= dep)
+ 		return -EINVAL;
+-	if (!qopt->base_time)
+-		return -ERANGE;
+ 	if (!qopt->cycle_time)
+ 		return -ERANGE;
+ 
 -- 
 2.33.0
 
