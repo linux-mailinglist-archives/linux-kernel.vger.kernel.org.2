@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9916A450CCD
+	by mail.lfdr.de (Postfix) with ESMTP id E3748450CCE
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238646AbhKORnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:43:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54728 "EHLO mail.kernel.org"
+        id S238679AbhKORnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:43:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237124AbhKORRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237126AbhKORRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:17:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F4A761BF9;
-        Mon, 15 Nov 2021 17:13:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C533061BF4;
+        Mon, 15 Nov 2021 17:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996393;
-        bh=YRSxY33pmsO1yhavDDiURUh/sU9e6Yw7cFolD1i292g=;
+        s=korg; t=1636996396;
+        bh=/pd5iX5CMMG/3ikllfiPRVZXqq7LkR6VQa7ufsfMr2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kX83fEWmMlafOEq+ANLISfO7KAutDb2BDH+FqSMVIUgUgMTMewWHuDjCGHug4cq19
-         JjZEDEb5rrq/yMoWRdUmH2+OOOFm1Kp/FDMMmA/aawjGUo3PRwPeEfzDNwuGnesQhx
-         ACB57Sgo4ftgHdTmGKzLXTKZp60zkI1AyEFBZwCg=
+        b=2rZGFEQ8cooh/j/rRpp3I/7DZpfkoMoteia8yAoXNF2CtLDofBBUSu97uV9c7w4kn
+         HldTI76Igc4H2nwxBTPxh6tCjMTbJRXdccghgSJSP8dGyj8E+r/mqrA7M/iA/MaYz2
+         gclUUPB3zUUzTrvFlPOyuuVxgdZ+vCOo1L4QUU0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Massey <matthewmassey@fb.com>,
-        Dave Taht <dave.taht@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 123/355] net: sched: update default qdisc visibility after Tx queue cnt changes
-Date:   Mon, 15 Nov 2021 18:00:47 +0100
-Message-Id: <20211115165317.792698933@linuxfoundation.org>
+Subject: [PATCH 5.4 124/355] smackfs: Fix use-after-free in netlbl_catmap_walk()
+Date:   Mon, 15 Nov 2021 18:00:48 +0100
+Message-Id: <20211115165317.824667340@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,183 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 
-[ Upstream commit 1e080f17750d1083e8a32f7b350584ae1cd7ff20 ]
+[ Upstream commit 0817534ff9ea809fac1322c5c8c574be8483ea57 ]
 
-mq / mqprio make the default child qdiscs visible. They only do
-so for the qdiscs which are within real_num_tx_queues when the
-device is registered. Depending on order of calls in the driver,
-or if user space changes config via ethtool -L the number of
-qdiscs visible under tc qdisc show will differ from the number
-of queues. This is confusing to users and potentially to system
-configuration scripts which try to make sure qdiscs have the
-right parameters.
+Syzkaller reported use-after-free bug as described in [1]. The bug is
+triggered when smk_set_cipso() tries to free stale category bitmaps
+while there are concurrent reader(s) using the same bitmaps.
 
-Add a new Qdisc_ops callback and make relevant qdiscs TTRT.
+Wait for RCU grace period to finish before freeing the category bitmaps
+in smk_set_cipso(). This makes sure that there are no more readers using
+the stale bitmaps and freeing them should be safe.
 
-Note that this uncovers the "shortcut" created by
-commit 1f27cde313d7 ("net: sched: use pfifo_fast for non real queues")
-The default child qdiscs beyond initial real_num_tx are always
-pfifo_fast, no matter what the sysfs setting is. Fixing this
-gets a little tricky because we'd need to keep a reference
-on whatever the default qdisc was at the time of creation.
-In practice this is likely an non-issue the qdiscs likely have
-to be configured to non-default settings, so whatever user space
-is doing such configuration can replace the pfifos... now that
-it will see them.
+[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
 
-Reported-by: Matthew Massey <matthewmassey@fb.com>
-Reviewed-by: Dave Taht <dave.taht@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sch_generic.h |  4 ++++
- net/core/dev.c            |  2 ++
- net/sched/sch_generic.c   |  9 +++++++++
- net/sched/sch_mq.c        | 24 ++++++++++++++++++++++++
- net/sched/sch_mqprio.c    | 23 +++++++++++++++++++++++
- 5 files changed, 62 insertions(+)
+ security/smack/smackfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 0cb0a4bcb5447..939fda8f97215 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -299,6 +299,8 @@ struct Qdisc_ops {
- 					  struct netlink_ext_ack *extack);
- 	void			(*attach)(struct Qdisc *sch);
- 	int			(*change_tx_queue_len)(struct Qdisc *, unsigned int);
-+	void			(*change_real_num_tx)(struct Qdisc *sch,
-+						      unsigned int new_real_tx);
- 
- 	int			(*dump)(struct Qdisc *, struct sk_buff *);
- 	int			(*dump_stats)(struct Qdisc *, struct gnet_dump *);
-@@ -675,6 +677,8 @@ void qdisc_class_hash_grow(struct Qdisc *, struct Qdisc_class_hash *);
- void qdisc_class_hash_destroy(struct Qdisc_class_hash *);
- 
- int dev_qdisc_change_tx_queue_len(struct net_device *dev);
-+void dev_qdisc_change_real_num_tx(struct net_device *dev,
-+				  unsigned int new_real_tx);
- void dev_init_scheduler(struct net_device *dev);
- void dev_shutdown(struct net_device *dev);
- void dev_activate(struct net_device *dev);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 82dc094c03971..ff336417c9b90 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2589,6 +2589,8 @@ int netif_set_real_num_tx_queues(struct net_device *dev, unsigned int txq)
- 		if (dev->num_tc)
- 			netif_setup_tc(dev, txq);
- 
-+		dev_qdisc_change_real_num_tx(dev, txq);
-+
- 		dev->real_num_tx_queues = txq;
- 
- 		if (disabling) {
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 9bc5cbe9809b8..d973f8a15e117 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1313,6 +1313,15 @@ static int qdisc_change_tx_queue_len(struct net_device *dev,
- 	return 0;
- }
- 
-+void dev_qdisc_change_real_num_tx(struct net_device *dev,
-+				  unsigned int new_real_tx)
-+{
-+	struct Qdisc *qdisc = dev->qdisc;
-+
-+	if (qdisc->ops->change_real_num_tx)
-+		qdisc->ops->change_real_num_tx(qdisc, new_real_tx);
-+}
-+
- int dev_qdisc_change_tx_queue_len(struct net_device *dev)
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 3823ab2c4e4be..cec3f56739dc2 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -831,6 +831,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
+ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *ppos, int format)
  {
- 	bool up = dev->flags & IFF_UP;
-diff --git a/net/sched/sch_mq.c b/net/sched/sch_mq.c
-index e79f1afe0cfd6..db18d8a860f9c 100644
---- a/net/sched/sch_mq.c
-+++ b/net/sched/sch_mq.c
-@@ -125,6 +125,29 @@ static void mq_attach(struct Qdisc *sch)
- 	priv->qdiscs = NULL;
- }
++	struct netlbl_lsm_catmap *old_cat;
+ 	struct smack_known *skp;
+ 	struct netlbl_lsm_secattr ncats;
+ 	char mapcatset[SMK_CIPSOLEN];
+@@ -920,9 +921,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
  
-+static void mq_change_real_num_tx(struct Qdisc *sch, unsigned int new_real_tx)
-+{
-+#ifdef CONFIG_NET_SCHED
-+	struct net_device *dev = qdisc_dev(sch);
-+	struct Qdisc *qdisc;
-+	unsigned int i;
-+
-+	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		/* Only update the default qdiscs we created,
-+		 * qdiscs with handles are always hashed.
-+		 */
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_del(qdisc);
-+	}
-+	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_add(qdisc, false);
-+	}
-+#endif
-+}
-+
- static int mq_dump(struct Qdisc *sch, struct sk_buff *skb)
- {
- 	struct net_device *dev = qdisc_dev(sch);
-@@ -288,6 +311,7 @@ struct Qdisc_ops mq_qdisc_ops __read_mostly = {
- 	.init		= mq_init,
- 	.destroy	= mq_destroy,
- 	.attach		= mq_attach,
-+	.change_real_num_tx = mq_change_real_num_tx,
- 	.dump		= mq_dump,
- 	.owner		= THIS_MODULE,
- };
-diff --git a/net/sched/sch_mqprio.c b/net/sched/sch_mqprio.c
-index 5eb3b1b7ae5e7..50e15add6068f 100644
---- a/net/sched/sch_mqprio.c
-+++ b/net/sched/sch_mqprio.c
-@@ -306,6 +306,28 @@ static void mqprio_attach(struct Qdisc *sch)
- 	priv->qdiscs = NULL;
- }
+ 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
+ 	if (rc >= 0) {
+-		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
++		old_cat = skp->smk_netlabel.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
++		synchronize_rcu();
++		netlbl_catmap_free(old_cat);
+ 		rc = count;
+ 	}
  
-+static void mqprio_change_real_num_tx(struct Qdisc *sch,
-+				      unsigned int new_real_tx)
-+{
-+	struct net_device *dev = qdisc_dev(sch);
-+	struct Qdisc *qdisc;
-+	unsigned int i;
-+
-+	for (i = new_real_tx; i < dev->real_num_tx_queues; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		/* Only update the default qdiscs we created,
-+		 * qdiscs with handles are always hashed.
-+		 */
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_del(qdisc);
-+	}
-+	for (i = dev->real_num_tx_queues; i < new_real_tx; i++) {
-+		qdisc = netdev_get_tx_queue(dev, i)->qdisc_sleeping;
-+		if (qdisc != &noop_qdisc && !qdisc->handle)
-+			qdisc_hash_add(qdisc, false);
-+	}
-+}
-+
- static struct netdev_queue *mqprio_queue_get(struct Qdisc *sch,
- 					     unsigned long cl)
- {
-@@ -629,6 +651,7 @@ static struct Qdisc_ops mqprio_qdisc_ops __read_mostly = {
- 	.init		= mqprio_init,
- 	.destroy	= mqprio_destroy,
- 	.attach		= mqprio_attach,
-+	.change_real_num_tx = mqprio_change_real_num_tx,
- 	.dump		= mqprio_dump,
- 	.owner		= THIS_MODULE,
- };
 -- 
 2.33.0
 
