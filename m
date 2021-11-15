@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96F6451575
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BFD451573
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbhKOUjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:39:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48896 "EHLO mail.kernel.org"
+        id S1351931AbhKOUiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:38:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240282AbhKOSHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240287AbhKOSHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3C463292;
-        Mon, 15 Nov 2021 17:44:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0165B6339B;
+        Mon, 15 Nov 2021 17:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998259;
-        bh=lbJ2y0sz5RTdkyM4zcKrv6bxQGMSfGl6rOfdlyq47Y0=;
+        s=korg; t=1636998264;
+        bh=l192d7uiPDmOygLE1ZTTALz/cbKkMFAV6jYQQ1aqX4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iT2aOg5eqbJvnzshiSut/YjEoWT4yRKbkywmCNlHz0AgkwdUa8C4wTu2pBOlu9Tpu
-         jYn0J8i5ln+4PzrWAfoTTdsdbFLrZErW6+lM6493csc/h/phYQHtkUr7tZbVeuHb85
-         AwU5fKdHpSAq2Y/c90/wy0EuMU9GY+wBFd+MkxgA=
+        b=wXmHiRCi17Z0DNBtpMQ4F9ISvj/n+k10d3zajzY+iJAmXxQEUvPzGx66j0po3odt+
+         3Mzq9v9gmF1lzCAvCnuFdOB+wnNnKgKlYdevFOsmc+fJHS+lvpnkTXHBbwKg7wMUXc
+         D0AXa8mT6jwddorvzIZOvFxjHV2nJ7IZXxYsBjWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Stefan Agner <stefan@agner.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 446/575] serial: imx: fix detach/attach of serial console
-Date:   Mon, 15 Nov 2021 18:02:51 +0100
-Message-Id: <20211115165359.179657481@linuxfoundation.org>
+Subject: [PATCH 5.10 447/575] usb: dwc2: drd: fix dwc2_force_mode call in dwc2_ovr_init
+Date:   Mon, 15 Nov 2021 18:02:52 +0100
+Message-Id: <20211115165359.211916772@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -43,121 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-[ Upstream commit 6d0d1b5a1b4870911beb89544ec1a9751c42fec7 ]
+[ Upstream commit b2cab2a24fb5d13ce1d384ecfb6de827fa08a048 ]
 
-If the device used as a serial console gets detached/attached at runtime,
-register_console() will try to call imx_uart_setup_console(), but this
-is not possible since it is marked as __init.
+Instead of forcing the role to Device, check the dr_mode configuration.
+If the core is Host only, force the mode to Host, this to avoid the
+dwc2_force_mode warning:
+WARNING: CPU: 1 PID: 21 at drivers/usb/dwc2/core.c:615 dwc2_drd_init+0x104/0x17c
 
-For instance
+When forcing mode to Host, dwc2_force_mode may sleep the time the host
+role is applied. To avoid sleeping while atomic context, move the call
+to dwc2_force_mode after spin_unlock_irqrestore. It is safe, as
+interrupts are not yet unmasked here.
 
-  # cat /sys/devices/virtual/tty/console/active
-  tty1 ttymxc0
-  # echo -n N > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
-  # echo -n Y > /sys/devices/virtual/tty/console/subsystem/ttymxc0/console
-
-[   73.166649] 8<--- cut here ---
-[   73.167005] Unable to handle kernel paging request at virtual address c154d928
-[   73.167601] pgd = 55433e84
-[   73.167875] [c154d928] *pgd=8141941e(bad)
-[   73.168304] Internal error: Oops: 8000000d [#1] SMP ARM
-[   73.168429] Modules linked in:
-[   73.168522] CPU: 0 PID: 536 Comm: sh Not tainted 5.15.0-rc6-00056-g3968ddcf05fb #3
-[   73.168675] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
-[   73.168791] PC is at imx_uart_console_setup+0x0/0x238
-[   73.168927] LR is at try_enable_new_console+0x98/0x124
-[   73.169056] pc : [<c154d928>]    lr : [<c0196f44>]    psr: a0000013
-[   73.169178] sp : c2ef5e70  ip : 00000000  fp : 00000000
-[   73.169281] r10: 00000000  r9 : c02cf970  r8 : 00000000
-[   73.169389] r7 : 00000001  r6 : 00000001  r5 : c1760164  r4 : c1e0fb08
-[   73.169512] r3 : c154d928  r2 : 00000000  r1 : efffcbd1  r0 : c1760164
-[   73.169641] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[   73.169782] Control: 10c5387d  Table: 8345406a  DAC: 00000051
-[   73.169895] Register r0 information: non-slab/vmalloc memory
-[   73.170032] Register r1 information: non-slab/vmalloc memory
-[   73.170158] Register r2 information: NULL pointer
-[   73.170273] Register r3 information: non-slab/vmalloc memory
-[   73.170397] Register r4 information: non-slab/vmalloc memory
-[   73.170521] Register r5 information: non-slab/vmalloc memory
-[   73.170647] Register r6 information: non-paged memory
-[   73.170771] Register r7 information: non-paged memory
-[   73.170892] Register r8 information: NULL pointer
-[   73.171009] Register r9 information: non-slab/vmalloc memory
-[   73.171142] Register r10 information: NULL pointer
-[   73.171259] Register r11 information: NULL pointer
-[   73.171375] Register r12 information: NULL pointer
-[   73.171494] Process sh (pid: 536, stack limit = 0xcd1ba82f)
-[   73.171621] Stack: (0xc2ef5e70 to 0xc2ef6000)
-[   73.171731] 5e60:                                     ???????? ???????? ???????? ????????
-[   73.171899] 5e80: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172059] 5ea0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172217] 5ec0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172377] 5ee0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172537] 5f00: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172698] 5f20: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.172856] 5f40: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173016] 5f60: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173177] 5f80: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173336] 5fa0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173496] 5fc0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173654] 5fe0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.173826] [<c0196f44>] (try_enable_new_console) from [<c01984a8>] (register_console+0x10c/0x2ec)
-[   73.174053] [<c01984a8>] (register_console) from [<c06e2c90>] (console_store+0x14c/0x168)
-[   73.174262] [<c06e2c90>] (console_store) from [<c0383718>] (kernfs_fop_write_iter+0x110/0x1cc)
-[   73.174470] [<c0383718>] (kernfs_fop_write_iter) from [<c02cf5f4>] (vfs_write+0x31c/0x548)
-[   73.174679] [<c02cf5f4>] (vfs_write) from [<c02cf970>] (ksys_write+0x60/0xec)
-[   73.174863] [<c02cf970>] (ksys_write) from [<c0100080>] (ret_fast_syscall+0x0/0x1c)
-[   73.175052] Exception stack(0xc2ef5fa8 to 0xc2ef5ff0)
-[   73.175167] 5fa0:                   ???????? ???????? ???????? ???????? ???????? ????????
-[   73.175327] 5fc0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-[   73.175486] 5fe0: ???????? ???????? ???????? ????????
-[   73.175608] Code: 00000000 00000000 00000000 00000000 (00000000)
-[   73.175744] ---[ end trace 9b75121265109bf1 ]---
-
-A similar issue could be triggered by unbinding/binding the serial
-console device [*].
-
-Drop __init so that imx_uart_setup_console() can be safely called at
-runtime.
-
-[*] https://lore.kernel.org/all/20181114174940.7865-3-stefan@agner.ch/
-
-Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-Link: https://lore.kernel.org/r/20211020192643.476895-2-francesco.dolcini@toradex.com
+Fixes: 17f934024e84 ("usb: dwc2: override PHY input signals with usb role switch support")
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211005095305.66397-2-amelie.delaunay@foss.st.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/imx.c | 4 ++--
+ drivers/usb/dwc2/drd.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index cacf7266a262d..28cc328ddb6eb 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -2049,7 +2049,7 @@ imx_uart_console_write(struct console *co, const char *s, unsigned int count)
-  * If the port was already initialised (eg, by a boot loader),
-  * try to determine the current setup.
-  */
--static void __init
-+static void
- imx_uart_console_get_options(struct imx_port *sport, int *baud,
- 			     int *parity, int *bits)
- {
-@@ -2108,7 +2108,7 @@ imx_uart_console_get_options(struct imx_port *sport, int *baud,
- 	}
+diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
+index 2d4176f5788eb..80eae88d76dda 100644
+--- a/drivers/usb/dwc2/drd.c
++++ b/drivers/usb/dwc2/drd.c
+@@ -25,9 +25,9 @@ static void dwc2_ovr_init(struct dwc2_hsotg *hsotg)
+ 	gotgctl &= ~(GOTGCTL_BVALOVAL | GOTGCTL_AVALOVAL | GOTGCTL_VBVALOVAL);
+ 	dwc2_writel(hsotg, gotgctl, GOTGCTL);
+ 
+-	dwc2_force_mode(hsotg, false);
+-
+ 	spin_unlock_irqrestore(&hsotg->lock, flags);
++
++	dwc2_force_mode(hsotg, (hsotg->dr_mode == USB_DR_MODE_HOST));
  }
  
--static int __init
-+static int
- imx_uart_console_setup(struct console *co, char *options)
- {
- 	struct imx_port *sport;
+ static int dwc2_ovr_avalid(struct dwc2_hsotg *hsotg, bool valid)
 -- 
 2.33.0
 
