@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873D6452536
+	by mail.lfdr.de (Postfix) with ESMTP id 287D7452534
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354597AbhKPBrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:47:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36388 "EHLO mail.kernel.org"
+        id S1344383AbhKPBr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:47:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241537AbhKOS0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241410AbhKOS0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:26:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CDB363331;
-        Mon, 15 Nov 2021 17:56:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D568B63332;
+        Mon, 15 Nov 2021 17:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999002;
-        bh=D3v0+mxK57xKnC0wg3ABahybZT2joCCHOzqiptJBP1s=;
+        s=korg; t=1636999005;
+        bh=KjnLQHTkAYs14/AajWgBYzfjAJOa8K0J5aYqscpfdzM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jekgtaUU6584xxn3Lmvw+0dZyif7U4IPGbgtF1OrMIWXBGG8pzFnoR/Qq6Rybs5hp
-         xoXjD/tn42hhmibvQOvDhkNOwFtYuzepRDIErFLE456Tvk+T8IFonuiBlfSjLXuRzQ
-         HG2Hn9VJSe/w9SqNlSiX+iKzMmAA5W4AGgT1iKRo=
+        b=EhuCiUVBBwMJwnLJXnj+yGYIItc4ieGsL2fTm1xIcPEchyxb0T4xJZT3BKbP43/O7
+         DL9GwGBKe++nFtZe1Ura4ypk0Ozz3LCvmbkqsfCa2PoHjuqVxVOCREfPJpRmpG69u8
+         VsD/DbHzV4Yj2xGSH8NMxudr2RThuqiHY6UzajUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Stutte <jens@chianterastutte.eu>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Song Liu <songliubraving@fb.com>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 107/849] md/raid1: only allocate write behind bio for WriteMostly device
-Date:   Mon, 15 Nov 2021 17:53:10 +0100
-Message-Id: <20211115165423.703470937@linuxfoundation.org>
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.14 108/849] hwmon: (pmbus/lm25066) Add offset coefficients
+Date:   Mon, 15 Nov 2021 17:53:11 +0100
+Message-Id: <20211115165423.734248890@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,44 +39,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@linux.dev>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-commit fd3b6975e9c11c4fa00965f82a0bfbb3b7b44101 upstream.
+commit ae59dc455a78fb73034dd1fbb337d7e59c27cbd8 upstream.
 
-Commit 6607cd319b6b91bff94e90f798a61c031650b514 ("raid1: ensure write
-behind bio has less than BIO_MAX_VECS sectors") tried to guarantee the
-size of behind bio is not bigger than BIO_MAX_VECS sectors.
+With the exception of the lm5066i, all the devices handled by this
+driver had been missing their offset ('b') coefficients for direct
+format readings.
 
-Unfortunately the same calltrace still could happen since an array could
-enable write-behind without write mostly device.
-
-To match the manpage of mdadm (which says "write-behind is only attempted
-on drives marked as write-mostly"), we need to check WriteMostly flag to
-avoid such unexpected behavior.
-
-[1]. https://bugzilla.kernel.org/show_bug.cgi?id=213181#c25
-
-Cc: stable@vger.kernel.org # v5.12+
-Cc: Jens Stutte <jens@chianterastutte.eu>
-Reported-by: Jens Stutte <jens@chianterastutte.eu>
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: stable@vger.kernel.org
+Fixes: 58615a94f6a1 ("hwmon: (pmbus/lm25066) Add support for LM25056")
+Fixes: e53e6497fc9f ("hwmon: (pmbus/lm25066) Refactor device specific coefficients")
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Link: https://lore.kernel.org/r/20210928092242.30036-2-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/raid1.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/pmbus/lm25066.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1496,7 +1496,7 @@ static void raid1_write_request(struct m
- 		if (!r1_bio->bios[i])
- 			continue;
- 
--		if (first_clone) {
-+		if (first_clone && test_bit(WriteMostly, &rdev->flags)) {
- 			/* do behind I/O ?
- 			 * Not if there are too many, or cannot
- 			 * allocate memory, or a reader on WriteMostly
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -55,22 +55,27 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
++			.b = 1343,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13797,
++			.b = -1833,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6726,
++			.b = -537,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 5501,
++			.b = -2908,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 26882,
++			.b = -5646,
+ 			.R = -4,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -82,26 +87,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm25066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13661,
++			.b = -5200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6852,
++			.b = -3100,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 736,
++			.b = -3300,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 369,
++			.b = -1900,
+ 			.R = -2,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -111,26 +122,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm5064] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4611,
++			.b = -642,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4621,
++			.b = 423,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10742,
++			.b = 1552,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5456,
++			.b = 2118,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = 8524,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 612,
++			.b = 11202,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -140,26 +157,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm5066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4587,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4587,
++			.b = -2400,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10753,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5405,
++			.b = -600,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = -6000,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 605,
++			.b = -8000,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
 
 
