@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC894515EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5079B45153F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348169AbhKOVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240122AbhKOSMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:12:16 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E43C0386D4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:38:52 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id i25-20020a631319000000b002cce0a43e94so9526513pgl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:38:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=gFHzpDmZVv3KTzaa99s4GcDQLq8lkQoNbMRzfWvXXRU=;
-        b=E0lMrhcUzQ+Xxg7MzzracGH2o8ZPywwPNThCN8B2PV1+YsxQ7pcG6fw/LsdoL5DhpJ
-         Po3s0ulyU4vPeedC/oWHYgY2QT/E5n8f1j7yGJCR4TH0EDLR7pHs43w4Fn0CYmqbDa0b
-         C0axRULUIX1exCYTmfoFg2/WV3luxC+wnavfxXcrma1naBKaP+Qwb/UAzxoe3aOMfF+9
-         /LhYB/QdqhlAwXaExqi0xERMWK/ww3Q0LLDDgsSqjoH2cQ6ymB4g9FuH95+4++E+m+gv
-         gJIlxXphc6ecxg7H1I/CcfAWBgO6rECPBHy08g79iQ2oAy5ZYNMdQUXVfhQ7q0IgGMdk
-         CAhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=gFHzpDmZVv3KTzaa99s4GcDQLq8lkQoNbMRzfWvXXRU=;
-        b=MAJse7q0oqO615Bv22F9CUCtpffnB+gYW4gJeHIvpnvpXkjZFg22HKcdHCxsStmdJo
-         HhP6HuUvLO+TZQ9zf3tB+foy+K/Q6Hfh8LTUDjtiRD69a/s/jKY9qMtu1z+S6FQjBZ56
-         yNwJLmoZq2taWthPVWqKH4EfxDPon0YWi/gl3piWB3ZwZ1FR2BpWvJvm8nINMBePz6eu
-         tBCG52uUOPypDKNT7ES2HVuYw6PepfLVGgCuGBwyUt1++z+hDkpG3Tk1p6OizISdaUxN
-         eIOmDEyW5MiHXgRll651ZZ7HIz/KnEnlJj+HdwuZbJcl6YB5yE+awOCjqgzesK0FHrfd
-         uYOg==
-X-Gm-Message-State: AOAM533IaiawE0pCU2XA5QJS+4XzsrTdNvJe5X1ar3Yplx1OXlTT5oBY
-        niJbIUi1VLd0dYyLpEr8hfQZBg3KxDd34VyYWQo8f2J+6Hx1h3tK+mLOyKHzRw6kz++QF2Z03GH
-        WP99pCZxcb4efFBg9lwPRHMmzCMe8UzrK5ckVptSVqAXlA38qFLLjNoHbQk7RmylKhDSFqA==
-X-Google-Smtp-Source: ABdhPJwTAV+ZG+2XqLkeiSQpjZ7KK5I0FTpAB9sdXiyOS+6eC4Xc72hJckhedQD25PX8UC+kT43g6OJrmDU=
-X-Received: from adelva.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:b2b])
- (user=adelva job=sendgmr) by 2002:a17:90a:c287:: with SMTP id
- f7mr60754043pjt.114.1636997931798; Mon, 15 Nov 2021 09:38:51 -0800 (PST)
-Date:   Mon, 15 Nov 2021 17:38:50 +0000
-Message-Id: <20211115173850.3598768-1-adelva@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-From:   Alistair Delva <adelva@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel-team@android.com,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1351090AbhKOUbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:31:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240188AbhKOSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21EBC63389;
+        Mon, 15 Nov 2021 17:43:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636998196;
+        bh=+cRVGDX7Sl8y+R4yFnKNAcU2pi6NOfJ9gNgSyoE5d/M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bCTEuiBM6GatYDrfo2RCIN8ai8Pk0Ys/ylCly6tdj20NtCUJapWJzYfc43Ro2X3ds
+         zCdSOwTS9AG3E5Na43o7u9MvDBCQaw1PaoVIoOk+aDyfq6/KwFDPZ8HCZCo8X9he7Q
+         azXrc17i5fzAxOle+vkP2vVQ+NOuW4s3dPAWW76PlabVUtgXhVURs35CEQ7sVH4U5j
+         JxvUahUwtIGH5fA260TcP3axqknQDw8MBxaoog7z5ZY7mJL3raAAnXgkEU8vpmKaVV
+         1sGeak7IzBiLA7zKGCyTfYl6KYk303fy67mAnf5djVjdO6afmzKZeDzEp7uw5h/MPs
+         OAd3bqHG4SYZA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@codeaurora.org>
+Cc:     linux-hexagon@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 0/3] Fixes for ARCH=hexagon allmodconfig
+Date:   Mon, 15 Nov 2021 10:42:48 -0700
+Message-Id: <20211115174250.1994179-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting to Android userspace on 5.14 or newer triggers the following
-SELinux denial:
+This series fixes some issues noticed with ARCH=hexagon allmodconfig.
 
-avc: denied { sys_nice } for comm="init" capability=23
-     scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
-     permissive=0
+The first two patches were previously sent as individual patches but it
+makes sense to bundle them together after CONFIG_WERROR as they are both
+required to fix the build.
 
-Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
-better compatibility with older SEPolicy, check ADMIN before NICE.
+The third patch is new, I only noticed it when building "normally", as
+opposed to with O=...
 
-Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
-Signed-off-by: Alistair Delva <adelva@google.com>
-Cc: Khazhismel Kumykov <khazhy@google.com>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: selinux@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: kernel-team@android.com
-Cc: stable@vger.kernel.org # v5.14+
----
- block/ioprio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I would like to see these merged into mainline sooner rather than later
+since I initially sent them in July.
 
-diff --git a/block/ioprio.c b/block/ioprio.c
-index 0e4ff245f2bf..4d59c559e057 100644
---- a/block/ioprio.c
-+++ b/block/ioprio.c
-@@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
- 
- 	switch (class) {
- 		case IOPRIO_CLASS_RT:
--			if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
-+			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
- 				return -EPERM;
- 			fallthrough;
- 			/* rt has prio field too */
+v1 -> v2:
+
+https://lore.kernel.org/r/20210708233849.3140194-1-nathan@kernel.org/
+https://lore.kernel.org/r/20210728001729.1960182-1-nathan@kernel.org/
+
+* Add patch 3.
+* Add Brian Cain's ack on patches 1 and 2.
+* The warning in patch 2 is now an error because CONFIG_WERROR is
+  enabled with allmodconfig.
+* Add stable CC for patches 1 and 2 because they fix build errors.
+
+Nathan Chancellor (3):
+  hexagon: Export raw I/O routines for modules
+  hexagon: Clean up timer-regs.h
+  hexagon: Ignore vmlinux.lds
+
+ arch/hexagon/include/asm/timer-regs.h | 26 --------------------------
+ arch/hexagon/include/asm/timex.h      |  3 +--
+ arch/hexagon/kernel/.gitignore        |  1 +
+ arch/hexagon/kernel/time.c            | 12 ++++++++++--
+ arch/hexagon/lib/io.c                 |  4 ++++
+ 5 files changed, 16 insertions(+), 30 deletions(-)
+ delete mode 100644 arch/hexagon/include/asm/timer-regs.h
+ create mode 100644 arch/hexagon/kernel/.gitignore
+
+
+base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
+2.34.0.rc0
 
