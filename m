@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4838E452699
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3024523AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359067AbhKPCIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:08:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
+        id S1380182AbhKPB2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:28:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239678AbhKOSEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:04:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFB063356;
-        Mon, 15 Nov 2021 17:38:16 +0000 (UTC)
+        id S243889AbhKOTEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:04:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D283563381;
+        Mon, 15 Nov 2021 18:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997896;
-        bh=KgUQQKseX+NyJG7owAdKylMtj5uR/FlPIw2je2cXmus=;
+        s=korg; t=1637000155;
+        bh=aJTjp7Ku+2Br8wp9uCCFVdZxi92EyVIzEBzFtN4TnSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfzsTo/4v4vuKc7SxPU/KS0tzDpGe7T2CFBX5eA8ryEyHDLqsPSxUvIH2dEDvNN5L
-         eJvR5KrcLmZgvsA/7a+tvrTWtPe2+0hxMYhaE1VbuRp+R5+Rk1Wt1QupBUhgzQBKgr
-         OPLq2OrrQkcSMqaiGVTUIuae5RF6qVwxilHDy9bg=
+        b=bGB2kJk9FFDMUkvlhRpFoLr1d35f8FlrHL46fUqdECZ+ZQdX3IARwe3/7SEMlQrOL
+         g165jZu5cDFVPieHAqvmITvuaCGH0oqdSes9jLn1BHIqD+Y4m6fKUVyVU/uZo3j+cx
+         5nG05ZRCRgUq+u8bXZNbF1Ys7hJQa6q7Kf+cuvHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fraker <jfraker@google.com>,
-        David Awogbemila <awogbemila@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 314/575] gve: Recover from queue stall due to missed IRQ
-Date:   Mon, 15 Nov 2021 18:00:39 +0100
-Message-Id: <20211115165354.652555834@linuxfoundation.org>
+Subject: [PATCH 5.14 557/849] ARM: s3c: irq-s3c24xx: Fix return value check for s3c24xx_init_intc()
+Date:   Mon, 15 Nov 2021 18:00:40 +0100
+Message-Id: <20211115165439.105462914@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,134 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fraker <jfraker@google.com>
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-[ Upstream commit 87a7f321bb6a45e54b7d6c90d032ee5636a6ad97 ]
+[ Upstream commit 2aa717473ce96c93ae43a5dc8c23cedc8ce7dd9f ]
 
-Don't always reset the driver on a TX timeout. Attempt to
-recover by kicking the queue in case an IRQ was missed.
+The s3c24xx_init_intc() returns an error pointer upon failure, not NULL.
+let's add an error pointer check in s3c24xx_handle_irq.
 
-Fixes: 9e5f7d26a4c08 ("gve: Add workqueue and reset support")
-Signed-off-by: John Fraker <jfraker@google.com>
-Signed-off-by: David Awogbemila <awogbemila@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+s3c_intc[0] is not NULL or ERR, we can simplify the code.
+
+Fixes: 1f629b7a3ced ("ARM: S3C24XX: transform irq handling into a declarative form")
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+Link: https://lore.kernel.org/r/20210901123557.1043953-1-liu.yun@linux.dev
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve.h        |  4 +-
- drivers/net/ethernet/google/gve/gve_adminq.h |  1 +
- drivers/net/ethernet/google/gve/gve_main.c   | 48 +++++++++++++++++++-
- 3 files changed, 51 insertions(+), 2 deletions(-)
+ arch/arm/mach-s3c/irq-s3c24xx.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index cfb174624d4ee..5c9a4d4362c7b 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -28,7 +28,7 @@
- #define GVE_MIN_MSIX 3
- 
- /* Numbers of gve tx/rx stats in stats report. */
--#define GVE_TX_STATS_REPORT_NUM	5
-+#define GVE_TX_STATS_REPORT_NUM	6
- #define GVE_RX_STATS_REPORT_NUM	2
- 
- /* Interval to schedule a stats report update, 20000ms. */
-@@ -147,7 +147,9 @@ struct gve_tx_ring {
- 	u32 q_num ____cacheline_aligned; /* queue idx */
- 	u32 stop_queue; /* count of queue stops */
- 	u32 wake_queue; /* count of queue wakes */
-+	u32 queue_timeout; /* count of queue timeouts */
- 	u32 ntfy_id; /* notification block index */
-+	u32 last_kick_msec; /* Last time the queue was kicked */
- 	dma_addr_t bus; /* dma address of the descr ring */
- 	dma_addr_t q_resources_bus; /* dma address of the queue resources */
- 	struct u64_stats_sync statss; /* sync stats for 32bit archs */
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.h b/drivers/net/ethernet/google/gve/gve_adminq.h
-index 015796a20118b..8dbc2c03fbbdd 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.h
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.h
-@@ -212,6 +212,7 @@ enum gve_stat_names {
- 	TX_LAST_COMPLETION_PROCESSED	= 5,
- 	RX_NEXT_EXPECTED_SEQUENCE	= 6,
- 	RX_BUFFERS_POSTED		= 7,
-+	TX_TIMEOUT_CNT			= 8,
- 	// stats from NIC
- 	RX_QUEUE_DROP_CNT		= 65,
- 	RX_NO_BUFFERS_POSTED		= 66,
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index fd52218f48846..3e96b2a11c5bf 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -23,6 +23,9 @@
- #define GVE_VERSION		"1.0.0"
- #define GVE_VERSION_PREFIX	"GVE-"
- 
-+// Minimum amount of time between queue kicks in msec (10 seconds)
-+#define MIN_TX_TIMEOUT_GAP (1000 * 10)
-+
- const char gve_version_str[] = GVE_VERSION;
- static const char gve_version_prefix[] = GVE_VERSION_PREFIX;
- 
-@@ -943,9 +946,47 @@ static void gve_turnup(struct gve_priv *priv)
- 
- static void gve_tx_timeout(struct net_device *dev, unsigned int txqueue)
+diff --git a/arch/arm/mach-s3c/irq-s3c24xx.c b/arch/arm/mach-s3c/irq-s3c24xx.c
+index 0c631c14a8172..53081505e3976 100644
+--- a/arch/arm/mach-s3c/irq-s3c24xx.c
++++ b/arch/arm/mach-s3c/irq-s3c24xx.c
+@@ -362,11 +362,25 @@ static inline int s3c24xx_handle_intc(struct s3c_irq_intc *intc,
+ static asmlinkage void __exception_irq_entry s3c24xx_handle_irq(struct pt_regs *regs)
  {
--	struct gve_priv *priv = netdev_priv(dev);
-+	struct gve_notify_block *block;
-+	struct gve_tx_ring *tx = NULL;
-+	struct gve_priv *priv;
-+	u32 last_nic_done;
-+	u32 current_time;
-+	u32 ntfy_idx;
-+
-+	netdev_info(dev, "Timeout on tx queue, %d", txqueue);
-+	priv = netdev_priv(dev);
-+	if (txqueue > priv->tx_cfg.num_queues)
-+		goto reset;
-+
-+	ntfy_idx = gve_tx_idx_to_ntfy(priv, txqueue);
-+	if (ntfy_idx > priv->num_ntfy_blks)
-+		goto reset;
-+
-+	block = &priv->ntfy_blocks[ntfy_idx];
-+	tx = block->tx;
+ 	do {
+-		if (likely(s3c_intc[0]))
+-			if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
+-				continue;
++		/*
++		 * For platform based machines, neither ERR nor NULL can happen here.
++		 * The s3c24xx_handle_irq() will be set as IRQ handler iff this succeeds:
++		 *
++		 *    s3c_intc[0] = s3c24xx_init_intc()
++		 *
++		 * If this fails, the next calls to s3c24xx_init_intc() won't be executed.
++		 *
++		 * For DT machine, s3c_init_intc_of() could set the IRQ handler without
++		 * setting s3c_intc[0] only if it was called with num_ctrl=0. There is no
++		 * such code path, so again the s3c_intc[0] will have a valid pointer if
++		 * set_handle_irq() is called.
++		 *
++		 * Therefore in s3c24xx_handle_irq(), the s3c_intc[0] is always something.
++		 */
++		if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
++			continue;
  
-+	current_time = jiffies_to_msecs(jiffies);
-+	if (tx->last_kick_msec + MIN_TX_TIMEOUT_GAP > current_time)
-+		goto reset;
-+
-+	/* Check to see if there are missed completions, which will allow us to
-+	 * kick the queue.
-+	 */
-+	last_nic_done = gve_tx_load_event_counter(priv, tx);
-+	if (last_nic_done - tx->done) {
-+		netdev_info(dev, "Kicking queue %d", txqueue);
-+		iowrite32be(GVE_IRQ_MASK, gve_irq_doorbell(priv, block));
-+		napi_schedule(&block->napi);
-+		tx->last_kick_msec = current_time;
-+		goto out;
-+	} // Else reset.
-+
-+reset:
- 	gve_schedule_reset(priv);
-+
-+out:
-+	if (tx)
-+		tx->queue_timeout++;
- 	priv->tx_timeo_cnt++;
- }
+-		if (s3c_intc[2])
++		if (!IS_ERR_OR_NULL(s3c_intc[2]))
+ 			if (s3c24xx_handle_intc(s3c_intc[2], regs, 64))
+ 				continue;
  
-@@ -1028,6 +1069,11 @@ void gve_handle_report_stats(struct gve_priv *priv)
- 				.value = cpu_to_be64(priv->tx[idx].done),
- 				.queue_id = cpu_to_be32(idx),
- 			};
-+			stats[stats_idx++] = (struct stats) {
-+				.stat_name = cpu_to_be32(TX_TIMEOUT_CNT),
-+				.value = cpu_to_be64(priv->tx[idx].queue_timeout),
-+				.queue_id = cpu_to_be32(idx),
-+			};
- 		}
- 	}
- 	/* rx stats */
 -- 
 2.33.0
 
