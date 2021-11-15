@@ -2,205 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35AC451C79
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA28451C7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356699AbhKPASf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S1356842AbhKPASp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343898AbhKOXm1 (ORCPT
+        with ESMTP id S243095AbhKOX7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:42:27 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4243C079789;
-        Mon, 15 Nov 2021 14:41:55 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so925114wme.4;
-        Mon, 15 Nov 2021 14:41:55 -0800 (PST)
+        Mon, 15 Nov 2021 18:59:50 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6E7C0431A6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:50:38 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id s14so18327887ilv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:50:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1wcRoUsi7m4so1ILzmSN202bo8uzxCLDy3lmO8Chj0s=;
-        b=A6p8nlOgTxhb0XhsUTWEURq5tT7Io7Z5Q7zNDcascjpnruwYSLkz3L6hLjxGwNFxyl
-         PJb/CoLuSrtanJwZF2woFycJ1knpO+EmTSH520PPS9kjm8nsA0QKNfbzQMVnBlLfD2/T
-         +a3jF/tf1jw11k7khy2fXKD3uIvbKmqNDsu2EBMwcWsTIRxjVcQwIR0Snuurh7qo9Hns
-         d+Ynts/T+OYP2yhQGl6kMFSbi/ha+s8QNZLB2egLZuUB5RvI7wEg29cIMdhKMbMYcnTp
-         fhRb10DKuwP6MdDG2E1XjIc8w+Bvwvg7YQXJ67+tPy2yoy4vaqqAyD9pJJgFx/25u1QC
-         LZIA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MbJjt/ncW6eOrgGWMNW+Eh6/4jlzS3HIFhQ82o7o1ZE=;
+        b=NS9lOPe9i5akbD6ebXCrGb+sx/9H3cRucOxDp7O8Ex7janJgSxxGfTF1PuUC87V/Ai
+         4ATPuckrf4HOO4HhPolfuUO0xfapDfmydxr5ROYfJGTXvz70aZqo1qv8TBP4TAy+hwY+
+         01AbCzh3jA/wwIyvVmdOve1kR34KIPnV02+3zmA8s3pUIcUAx8pjY5ks2NjOlIw2f8Fo
+         DmFHhwJmC02NwO+qta37QCnY5eyIJbXsd29hsdciEdg9pWduG7t3NSXhnOPhGu8Neflx
+         +rhpCbOE6MuJVe9aUjK5QRTsdGvIF0pj9Zg0Kzsc3WSwA5RgNlkr20JJ8Lqcfa1XpPS0
+         8ulg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1wcRoUsi7m4so1ILzmSN202bo8uzxCLDy3lmO8Chj0s=;
-        b=H5DQ6I8EfcXQLEM/Sr1+v5YkP4SbnqwsSapM1t/0JKCUKL7fOQjZg8aITDpYBiwquC
-         C0wpCm2RKPZeExkUqyhl2v6IlGqb26qdsCd5kqa/d5mkT7KIAKUKTzEF+fMXs+i+slLP
-         g+gcd6eZPbglMgDue4/geQrllCHSwAo544D83bF/HZQ+sG237ChTpmoyoubwODrWh4E5
-         Fgr67UKXby6aryY7v62l/WO3zLeHzvnnt95swWBAp1xtE3bAghl4dLEMATT5S8HlCJ/x
-         t0d4g51GpuNjKCpLIgk+jGXGboNwUropzQA62X8DZmNn1qMCSkLG9o6+RImUVSmHQ6zI
-         0HnQ==
-X-Gm-Message-State: AOAM533aAT38NytPDTB1vePgV0GUEqXKhEcurEStwwD307PhW4gu+NlO
-        nvKTdtsDSt+Ia/dLHrGjRiY=
-X-Google-Smtp-Source: ABdhPJxa52tQBjaB2iU8+hZZNsx2OY72vhMth8Lqzlaj1rlosTCBAsZBjh6xbfcKET/RaPALdPBXYg==
-X-Received: by 2002:a7b:c155:: with SMTP id z21mr62053756wmi.107.1637016114281;
-        Mon, 15 Nov 2021 14:41:54 -0800 (PST)
-Received: from pc ([197.49.250.127])
-        by smtp.gmail.com with ESMTPSA id r8sm19649518wrz.43.2021.11.15.14.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 14:41:53 -0800 (PST)
-Date:   Tue, 16 Nov 2021 00:41:51 +0200
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     rickyman7@gmail.com, irogers@google.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf bench: flush stats when pipe it to a file or to tee
-Message-ID: <20211115224151.odaewu62ltx7smty@pc>
-References: <20211112215313.108823-1-sohaib.amhmd@gmail.com>
- <YY+sqrAm1sAFEUQ4@kernel.org>
- <YY+tDhLJ5R6dijUv@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MbJjt/ncW6eOrgGWMNW+Eh6/4jlzS3HIFhQ82o7o1ZE=;
+        b=2NIv9k8lrUavUzSNyWlwRNf5ssI//z5z/lMST4PcWZEgXacny2owW53DZeIhNJPqz2
+         s6cFMai/ImOpksx4p0mxQILhx0ZJyhMNefwrWFAu986HaAARanV3BhgYr89J1Eaf4kDq
+         DEqs+J2oZ+89XEijUywLqAC16t0U4cJ7MDUwFrkRtRGtkjS4teu/caWcmMutq8kW8Crq
+         sdItVl2GltK7n+wnKIXWhcMt36PxhYOPTbez8XSuBwYUwjKqHsIt6xr8JyuggScbMm1L
+         RjvILC6NlHqKFEvWmnGibT56NRUwCiGcbVYARAAM9GROFrapt2Sepg6hQjqNgfEny7zr
+         olTA==
+X-Gm-Message-State: AOAM5304DSolV2P1l9TwCun/IHH5spgnC8Vi2pHYxaAJ0GOnrLOAUGA6
+        Orlo2PwYxumbHK1ZpkgHYq6XAaJAtdU9L0J777gK7A==
+X-Google-Smtp-Source: ABdhPJwFUJw+E4PVvoQj8Sluj9XmoKPe/cZLTm+RfdBC45c2ftLWfz10J0gBd0rqheQ6j55AB2/Z8l0cLhcRf5AFg1Y=
+X-Received: by 2002:a92:6b0b:: with SMTP id g11mr1622656ilc.146.1637016638060;
+ Mon, 15 Nov 2021 14:50:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YY+tDhLJ5R6dijUv@kernel.org>
+References: <20211107235754.1395488-1-almasrymina@google.com>
+ <YYtuqsnOSxA44AUX@t490s> <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
+ <YY4bFPkfUhlpUqvo@xz-m1.local>
+In-Reply-To: <YY4bFPkfUhlpUqvo@xz-m1.local>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 15 Nov 2021 14:50:26 -0800
+Message-ID: <CAHS8izP7_BBH9NGz3XoL2=xVniH6REor=biqDSZ4wR=NaFS-8A@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
+To:     Peter Xu <peterx@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Arnaldo
-
-On Sat, Nov 13, 2021 at 09:18:22AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Sat, Nov 13, 2021 at 09:16:42AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Nov 12, 2021 at 11:53:12PM +0200, Sohaib Mohamed escreveu:
-> > > The output of perf bench gets buffered when I pipe it to a file or to
-> > > tee, in such a way that I can see it only at the end.
-> >
-> > Good, now try with 'perf test' :-)
-> >
-> > Applying,
+On Thu, Nov 11, 2021 at 11:41 PM Peter Xu <peterx@redhat.com> wrote:
 >
-> Humm, take that back, when I almost did it for 'perf test' I used
-> setvbuf(), take a look at it so that you don't have to go sprinkling
-> fflush() calls and missing some places.
+> On Wed, Nov 10, 2021 at 09:42:25AM -0800, Mina Almasry wrote:
+> > Sorry, yes I should update the commit message with this info. The
+> > issues with smaps are:
+> > 1. Performance: I've pinged our network service folks to obtain a
+> > rough perf comparison but I haven't been able to get one. I can try to
+> > get a performance measurement myself but Peter seems to be also seeing
+> > this.
 >
-> - Arnaldo
-
-I'm not sure about the meaning of 'perf test' here, Should I write new unit
-tests?
-
-I found I could invoke this function at the beginning of perf-bench:
-setvbuf(stdout, NULL, _IONBF, 0);
-This looks to me will resolve the issue for all perf-bench subcommands.
-I'm not sure if a good practice...
-
-This probably is version 2 of this patch:
-
-
-diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
-index d0895162c2ba..a0b812cde1ee 100644
---- a/tools/perf/builtin-bench.c
-+++ b/tools/perf/builtin-bench.c
-@@ -226,7 +226,6 @@ static void run_collection(struct collection *coll)
-                if (!bench->fn)
-                        break;
-                printf("# Running %s/%s benchmark...\n", coll->name, bench->name);
--               fflush(stdout);
-
-                argv[1] = bench->name;
-                run_bench(coll->name, bench->name, bench->fn, 1, argv);
-@@ -247,6 +246,8 @@ int cmd_bench(int argc, const char **argv)
-        struct collection *coll;
-        int ret = 0;
-
-+       setvbuf(stdout, NULL, _IONBF, 0);
-+
-        if (argc < 2) {
-                /* No collection specified. */
-                print_usage();
-@@ -300,7 +301,6 @@ int cmd_bench(int argc, const char **argv)
-
-                        if (bench_format == BENCH_FORMAT_DEFAULT)
-                                printf("# Running '%s/%s' benchmark:\n", coll->name, bench->name);
--                       fflush(stdout);
-                        ret = run_bench(coll->name, bench->name, bench->fn, argc-1, argv+1);
-                        goto end;
-                }
-
-
-
-Thanks,
-- Sohaib
-
+> No I was not seeing any real issues in my environment, but I remembered people
+> complaining about it because smaps needs to walk the whole memory of the
+> process, then if one program is only interested in some small portion of the
+> whole memory, it'll be slow because smaps will still need to walk all the
+> memory anyway.
 >
-> > - Arnaldo
+> > 2. smaps output is human readable and a bit convoluted for userspace to parse.
+>
+> IMHO this is not a major issue.  AFAIK lots of programs will still try to parse
+> human readable output like smaps to get some solid numbers.  It's just that
+> it'll be indeed an perf issue if it's only a part of the memory that is of
+> interest.
+>
+> Could we consider exporting a new smaps interface that:
+>
+>   1. allows to specify a range of memory, and,
+>   2. expose information as "struct mem_size_stats" in binary format
+>      (we may want to replace "unsigned long" with "u64", then also have some
+>       versioning or having a "size" field for the struct, though; seems doable)
+>
+> I'm wondering whether this could be helpful in even more scenarios.
+>
+
+Sorry could you elaborate more? How do we allow users to specify the
+range? Are you envisioning a new added syscall? Or is there some way
+for users to pass the range to the existing /proc/pid/smaps that I'm
+missing?
+
+On Thu, Nov 11, 2021 at 11:43 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 09:50:13AM -0800, Mina Almasry wrote:
+> > On Tue, Nov 9, 2021 at 11:03 PM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > The ending "_MAPPING" seems redundant to me, how about just call it "PM_THP" or
+> > > "PM_HUGE" (as THP also means HUGE already)?
+> > >
 > >
-> > > E.g.
-> > > $ perf bench internals synthesize -t
-> > > < output comes out fine after each test run >
-> > >
-> > > $ perf bench internals synthesize -t | tee file.txt
-> > > < output comes out only at the end of all tests >
-> > >
-> > > See, also:
-> > > $ perf bench mem all | tee file.txt
-> > > $ perf bench sched all | tee file.txt
-> > > $ perf bench internals all -t | tee file.txt
-> > > $ perf bench internals all | tee file.txt
-> > >
-> > > Suggested-by: Riccardo Mancini <rickyman7@gmail.com>
-> > > Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-> > > ---
-> > >  tools/perf/bench/find-bit-bench.c | 1 +
-> > >  tools/perf/bench/synthesize.c     | 2 ++
-> > >  2 files changed, 3 insertions(+)
-> > >
-> > > diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
-> > > index 22b5cfe97023..39fb4184fbcb 100644
-> > > --- a/tools/perf/bench/find-bit-bench.c
-> > > +++ b/tools/perf/bench/find-bit-bench.c
-> > > @@ -113,6 +113,7 @@ static int do_for_each_set_bit(unsigned int num_bits)
-> > >
-> > >  		if (use_of_val == accumulator)  /* Try to avoid compiler tricks. */
-> > >  			printf("\n");
-> > > +		fflush(stdout);
-> > >  	}
-> > >  	bitmap_free(to_test);
-> > >  	return 0;
-> > > diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
-> > > index 7401ebbac100..d21d311df61b 100644
-> > > --- a/tools/perf/bench/synthesize.c
-> > > +++ b/tools/perf/bench/synthesize.c
-> > > @@ -92,6 +92,7 @@ static int do_run_single_threaded(struct perf_session *session,
-> > >  		update_stats(&event_stats, atomic_read(&event_count));
-> > >  	}
-> > >
-> > > +	fflush(stdout);
-> > >  	time_average = avg_stats(&time_stats);
-> > >  	time_stddev = stddev_stats(&time_stats);
-> > >  	printf("  Average %ssynthesis took: %.3f usec (+- %.3f usec)\n",
-> > > @@ -186,6 +187,7 @@ static int do_run_multi_threaded(struct target *target,
-> > >  		perf_session__delete(session);
-> > >  	}
-> > >
-> > > +	fflush(stdout);
-> > >  	time_average = avg_stats(&time_stats);
-> > >  	time_stddev = stddev_stats(&time_stats);
-> > >  	printf("    Average synthesis took: %.3f usec (+- %.3f usec)\n",
-> > > --
-> > > 2.25.1
-> >
-> > --
-> >
-> > - Arnaldo
+> > So I want to make it clear that the flag is set only when the page is
+> > PMD mappend and is a THP (not hugetlbfs or some other PMD device
+> > mapping). PM_THP would imply the flag is set only if the underlying
+> > page is THP without regard to whether it's actually PMD mapped or not.
+>
+> I see, that's fine.
+>
+> However as I mentioned I still think HUGE and THP dup with each other.
+> Meanwhile, "MAPPING" does not sound like a boolean status on whether it's thp
+> mapped..
+>
+> If you still prefer this approach, how about PM_THP_MAPPED?
+
+PM_THP_MAPPED sounds good to me.
+
+TBH I think I still prefer this approach because it's a very simple 2
+line patch which addresses the concrete use case I have well. I'm not
+too familiar with the smaps code to be honest but I think adding a
+range-based smaps API will be a sizeable patch to add a syscall,
+handle a stable interface, and handle cases where the memory range
+doesn't match a VMA boundary. I'm not sure the performance benefit
+would justify this patch and I'm not sure the extra info from smaps
+would be widely useful. However if you insist and folks believe this
+is the better approach I can prototype a range-based smaps and test
+its performance to see if it works for us as well, just let me know
+what kind of API you're envisioning.
+
 >
 > --
+> Peter Xu
 >
-> - Arnaldo
