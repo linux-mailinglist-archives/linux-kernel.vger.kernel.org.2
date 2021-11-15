@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A7C4501BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF74501BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237622AbhKOJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
+        id S230461AbhKOJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237588AbhKOJxV (ORCPT
+        with ESMTP id S230425AbhKOJyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:53:21 -0500
+        Mon, 15 Nov 2021 04:54:33 -0500
 Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74CAC061200;
-        Mon, 15 Nov 2021 01:50:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD842C061746;
+        Mon, 15 Nov 2021 01:51:37 -0800 (PST)
 Received: from localhost (unknown [151.82.209.177])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B7F71723;
-        Mon, 15 Nov 2021 09:50:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B7F71723
+        by ms.lwn.net (Postfix) with ESMTPSA id BC20C845;
+        Mon, 15 Nov 2021 09:51:36 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BC20C845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1636969819; bh=0oEmBIb8tog6brnSAATJ3G4wgAbmHoGDxkTOs9L3SNc=;
+        t=1636969897; bh=Sh459AP8VB6RqU7cxvM/rkvxi9zbrKxgx4z0+VYxHjw=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=TQlNtaNrbawWPqV14lxhRz6lgaXlSYDmE8K8BvHnf9Oa5zyAKtxkEb7gPU3olWVZi
-         44mVbKqeC4p+WEZJivS5kkObVgLYxvvUat/aeKgyVNqxJ88Ugwh83ThRAO+rmC1JcY
-         kRyFVW5jCNwP5/8AwzGnTs8Mp2jR+VwPwX9u/S3DSBhYV9vjz6VyfF36YWAyU3XakO
-         6+YZ66fA9GSjL9qUdyVWQFV49VD6MLwXLCu5+j+Q04WR78HZfEF4VpQiHPHdICr5rw
-         rDrZBVjGs48VNMMOjACJdd5hqGpmPmzKmgrc0JG87upxRIQmS7/6jmFuWBHNTO9QJq
-         QiCvYRzgl9zNQ==
+        b=s+iUKMWhaE8/sBMxZ6tkwX3K2N/CZzrplqOHVT6wz+MOrSVOr8On+wmQLfXefSebL
+         M4HpLYB8Z89Fuf3dTGR6DwzyToPjHlLaFSHO3EzM/jsGNBeLbdfIOU75dlCkf8UULp
+         OIZMZGCVDfDjjIol1ilV+ixlIpIQNlrFTbP3XJgakzyi8Pr7krKWUl9UQPzkDM5uuM
+         oOjszcBbjPwgZaEdqSuJDD5z+4t9mwqX/NsZleNcQJuU5odW9iDEmcCFsQ9TSPJ0gb
+         RQy0zaqFCa2A0NjVhuu8wysvJXV3JcFjILRzIXAfYQSGUFtTOwhH1NC3i+sj578MAx
+         vFfzGITuuqvFA==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Cc:     mingo@redhat.com, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Documentation: arm: marvell: Add some links to
- homepage / product infos
-In-Reply-To: <20211008160105.24225-1-pali@kernel.org>
-References: <20211008160105.24225-1-pali@kernel.org>
-Date:   Mon, 15 Nov 2021 02:50:15 -0700
-Message-ID: <871r3hn3xk.fsf@meer.lwn.net>
+Subject: Re: [PATCH] docs: ftrace: fix the wrong path of tracefs
+In-Reply-To: <20211113091145.05ba14b5@rorschach.local.home>
+References: <20211113133722.GA11656@pc>
+ <20211113091145.05ba14b5@rorschach.local.home>
+Date:   Mon, 15 Nov 2021 02:51:33 -0700
+Message-ID: <87wnl9lpay.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pali Roh=C3=A1r <pali@kernel.org> writes:
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-> Webarchive contains some useful resources like product info or links to
-> other documents.
+> On Sat, 13 Nov 2021 21:37:34 +0800
+> Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
 >
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> ---
->  Documentation/arm/marvell.rst | 7 +++++++
->  1 file changed, 7 insertions(+)
+>> Delete "tracing" due to it has been included in /proc/mounts.
+>> Delete "echo nop > $tracefs/tracing/current_tracer", maybe
+>> this command is redundant.
+>> 
+>> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>
+> Jon,
+>
+> Can you take this through your tree?
 
-I have applied this set, thanks.
+Applied, thanks.
 
 jon
