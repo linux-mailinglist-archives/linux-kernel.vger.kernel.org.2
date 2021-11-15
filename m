@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82479451E07
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96564518C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350273AbhKPAew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:34:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S238624AbhKOXHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:07:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343959AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B58604D1;
-        Mon, 15 Nov 2021 18:49:35 +0000 (UTC)
+        id S243376AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC5063487;
+        Mon, 15 Nov 2021 18:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002175;
-        bh=XjXIU3AqPDWK1zsJOZsPevZkNoJfHbMwTbUH/TcPL1c=;
+        s=korg; t=1636999969;
+        bh=bUJhkn8O66m8xRPJtc8JMligjM41Q4ed+tc24hFcbz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mx64++QGZoXEqiA19lSBFjJM0VL3XZQExTdn69mNdoJ1YCj95MK+HHm7mqveSAcGp
-         dv+BMOtzKp13OpT08s8j6+h3+sT2uunYOCpasNxh30UjYbI1StVF6FPymIofcIdj+5
-         7KncrEGk06OCZ737LzpyILy0PIwXQriymzXQMfKY=
+        b=chZNrcobXQ6tSBg4Az+kdMzp/gfejNfiwCqtq/iOEgi1gklSb+r2kmLp3mOFfYoTC
+         7A9lez4u2imRxnhaEDWI3xBsQdKMER3N8oPc3VpLWEaR3qQ4i8i+oVamCglhbqP6hu
+         W5dfUWKsk+2y0dPQv3DeykWFJMaW1R3icmoWm30U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 449/917] block: ataflop: fix breakage introduced at blk-mq refactoring
-Date:   Mon, 15 Nov 2021 17:59:04 +0100
-Message-Id: <20211115165444.006421431@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+        Leon Yen <Leon.Yen@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 462/849] mt76: connac: fix GTK rekey offload failure on WPA mixed mode
+Date:   Mon, 15 Nov 2021 17:59:05 +0100
+Message-Id: <20211115165435.918430369@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Leon Yen <Leon.Yen@mediatek.com>
 
-[ Upstream commit 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6 ]
+[ Upstream commit 781f62960c635cfed55a8f8c0f909bdaf8268257 ]
 
-Refactoring of the Atari floppy driver when converting to blk-mq
-has broken the state machine in not-so-subtle ways:
+Update the proper firmware programming sequence to fix GTK rekey
+offload failure on WPA mixed mode.
 
-finish_fdc() must be called when operations on the floppy device
-have completed. This is crucial in order to relase the ST-DMA
-lock, which protects against concurrent access to the ST-DMA
-controller by other drivers (some DMA related, most just related
-to device register access - broken beyond compare, I know).
+In the mt76_connac_mcu_key_iter,
+gtk_tlv->proto should be only set up on pairwise key
+and gtk_tlk->group_cipher should be only set up on the group key.
 
-When rewriting the driver's old do_request() function, the fact
-that finish_fdc() was called only when all queued requests had
-completed appears to have been overlooked. Instead, the new
-request function calls finish_fdc() immediately after the last
-request has been queued. finish_fdc() executes a dummy seek after
-most requests, and this overwrites the state machine's interrupt
-hander that was set up to wait for completion of the read/write
-request just prior. To make matters worse, finish_fdc() is called
-before device interrupts are re-enabled, making certain that the
-read/write interupt is missed.
+Otherwise, those parameters required by firmware would be set
+incorrectly to cause GTK rekey offload failure on WPA mixed mode
+and then disconnection follows.
 
-Shifting the finish_fdc() call into the read/write request
-completion handler ensures the driver waits for the request to
-actually complete. With a queue depth of 2, we won't see long
-request sequences, so calling finish_fdc() unconditionally just
-adds a little overhead for the dummy seeks, and keeps the code
-simple.
-
-While we're at it, kill ataflop_commit_rqs() which does nothing
-but run finish_fdc() unconditionally, again likely wiping out an
-in-flight request.
-
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Fixes: 6ec3938cff95 ("ataflop: convert to blk-mq")
-CC: linux-block@vger.kernel.org
-CC: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Link: https://lore.kernel.org/r/20211019061321.26425-1-schmitzmic@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: b47e21e75c80 ("mt76: mt7615: add gtk rekey offload support")
+Co-developed-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Leon Yen <Leon.Yen@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 18 +++---------------
- 1 file changed, 3 insertions(+), 15 deletions(-)
+ .../net/wireless/mediatek/mt76/mt76_connac_mcu.c  | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index a093644ac39fb..bbb64331cf8f4 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -653,9 +653,6 @@ static inline void copy_buffer(void *from, void *to)
- 		*p2++ = *p1++;
- }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+index 5c3a81e5f559d..f57f047fce99c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+@@ -1929,19 +1929,22 @@ mt76_connac_mcu_key_iter(struct ieee80211_hw *hw,
+ 	    key->cipher != WLAN_CIPHER_SUITE_TKIP)
+ 		return;
  
--  
--  
--
- /* General Interrupt Handling */
+-	if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
+-		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
++	if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
+ 		cipher = BIT(3);
+-	} else {
+-		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
++	else
+ 		cipher = BIT(4);
+-	}
  
- static void (*FloppyIRQHandler)( int status ) = NULL;
-@@ -1228,6 +1225,7 @@ static void fd_rwsec_done1(int status)
- 	}
- 	else {
- 		/* all sectors finished */
-+		finish_fdc();
- 		fd_end_request_cur(BLK_STS_OK);
- 	}
- 	return;
-@@ -1475,15 +1473,6 @@ static void setup_req_params( int drive )
- 			ReqTrack, ReqSector, (unsigned long)ReqData ));
- }
- 
--static void ataflop_commit_rqs(struct blk_mq_hw_ctx *hctx)
--{
--	spin_lock_irq(&ataflop_lock);
--	atari_disable_irq(IRQ_MFP_FDC);
--	finish_fdc();
--	atari_enable_irq(IRQ_MFP_FDC);
--	spin_unlock_irq(&ataflop_lock);
--}
--
- static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				     const struct blk_mq_queue_data *bd)
- {
-@@ -1491,6 +1480,8 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	int drive = floppy - unit;
- 	int type = floppy->type;
- 
-+	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
+ 	/* we are assuming here to have a single pairwise key */
+ 	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
++		if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
++			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
++		else
++			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
 +
- 	spin_lock_irq(&ataflop_lock);
- 	if (fd_request) {
- 		spin_unlock_irq(&ataflop_lock);
-@@ -1550,8 +1541,6 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	setup_req_params( drive );
- 	do_fd_action( drive );
+ 		gtk_tlv->pairwise_cipher = cpu_to_le32(cipher);
+-		gtk_tlv->group_cipher = cpu_to_le32(cipher);
+ 		gtk_tlv->keyid = key->keyidx;
++	} else {
++		gtk_tlv->group_cipher = cpu_to_le32(cipher);
+ 	}
+ }
  
--	if (bd->last)
--		finish_fdc();
- 	atari_enable_irq( IRQ_MFP_FDC );
- 
- out:
-@@ -1962,7 +1951,6 @@ static const struct block_device_operations floppy_fops = {
- 
- static const struct blk_mq_ops ataflop_mq_ops = {
- 	.queue_rq = ataflop_queue_rq,
--	.commit_rqs = ataflop_commit_rqs,
- };
- 
- static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
 -- 
 2.33.0
 
