@@ -2,157 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7AD45092F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191BF450932
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhKOQHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:07:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23212 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236616AbhKOQHM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:07:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636992256;
+        id S234821AbhKOQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:09:02 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:48242 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236618AbhKOQHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:07:50 -0500
+Received: from zn.tnic (p200300ec2f0b5600329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5600:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9BDA91EC0283;
+        Mon, 15 Nov 2021 17:04:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636992281;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNZ2k+Bbqs2mU+HEeYXnMycgNMTgeh9stKyx+F+r/jk=;
-        b=gkmpr5scOx6bLUF1eCeh4Gi69+Rsg0aMaWQ33PTdu8HgEDe8/E59wtrZs6HOygyqx06eQV
-        qm8ewGpysxpZnE/maJlM6LA00oE7iPPrwqi2YUOrp/Gbjzqh2of3Y7ahoaABG6eWkC0mdt
-        o+HVF7957MmhiN2jyAATB30LACrP8fw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-qrS4uO2SM_S8yeZVyBt1yw-1; Mon, 15 Nov 2021 11:04:08 -0500
-X-MC-Unique: qrS4uO2SM_S8yeZVyBt1yw-1
-Received: by mail-wm1-f71.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso6351361wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:04:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=kNZ2k+Bbqs2mU+HEeYXnMycgNMTgeh9stKyx+F+r/jk=;
-        b=P5NK9SmV9dBOlr+t9alXd2xGksyPnZhYpl84ZAlQXN7zUwMsnqdCzNPbvyYRV650SW
-         t8MaYULwlse2fob0F++WkNxbTjy1CocMbZ1NJTlFToXk/NC78rbJVIyoWZplYONKK8aM
-         8XEIGhgbwzZuQVxd0QIc9LIT1gG/i++e0a7iYsMr1FJN5OZBbeIoxg6Xy3WnODzfZpL4
-         7DbJrPN3p2YEPugJaoxEPgXrzuV6aU6ge2TpUpQkFPjLMKBDAxB9W9VWS8mlxHKxlrTg
-         2h8ZjOQ5plJ4MT5AzGGZpBfsWFw3IFbNFSU088zTg36rN/en+e3Xsm8TjjjEjlF68daP
-         IZeg==
-X-Gm-Message-State: AOAM530iRCyzkKkBH7kz9AyQUvUF3DtnGLUsCEL/7MnzLq/WSbu3kegS
-        hHUbytZYpBnOol+qIQ5b47ujFp8FoaA+gIbP8a+W/NAWGrTkPsmzuropVt0FR8RD4YUMfeTWFgd
-        TQK/bKl4d+vVLmjR3UgQ4hF4jGNmJcWQ5YAMlObj8DmlSgpzK82yCIOjgzrEdb5T5q5wkGtP419
-        dw
-X-Received: by 2002:a1c:cc09:: with SMTP id h9mr45662567wmb.191.1636992246812;
-        Mon, 15 Nov 2021 08:04:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwz1gqovDpiBG7rQwvXN0J5DRj1u8GplrLX76hoeAAMPE/ExRbSHuZD82FzagUh/Q8svxu6iw==
-X-Received: by 2002:a1c:cc09:: with SMTP id h9mr45662049wmb.191.1636992243301;
-        Mon, 15 Nov 2021 08:04:03 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id h27sm22065673wmc.43.2021.11.15.08.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 08:04:02 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] KVM: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS and
- re-purpose it on x86
-In-Reply-To: <ecd55383-7089-b3cd-30cc-3f9feb7eadb4@de.ibm.com>
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <4a3c7be7-12fa-6e47-64eb-02e6c5be5dbc@redhat.com>
- <ecd55383-7089-b3cd-30cc-3f9feb7eadb4@de.ibm.com>
-Date:   Mon, 15 Nov 2021 17:04:01 +0100
-Message-ID: <877dd9pfri.fsf@redhat.com>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=A5es2ls9sF041xL932PggqKzePNRYdDu0Notq+AQ++4=;
+        b=bD2S1Tx6UNeSVqnibY0x84EtiVVZga7M4RegujnuD/YDA4uoyV8LlhuCNuTSsFibbb7KYH
+        1MdKWgBjHZTpnL+wbtQ7QXQg3K7sjfiQaO7SUMCWzhOKYVQFI7K8A63rUcf4fwoGyLso9U
+        pURavpZPUKO6hm6a+r/jMCO+11tYVm0=
+Date:   Mon, 15 Nov 2021 17:04:30 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v6 5/5] EDAC/amd64: Enumerate memory on Aldebaran GPU
+ nodes
+Message-ID: <YZKFDgtaBtvD6NIz@zn.tnic>
+References: <20211028130106.15701-1-nchatrad@amd.com>
+ <20211028130106.15701-6-nchatrad@amd.com>
+ <YY0WrKjnQ20IjrhB@zn.tnic>
+ <90642509-81af-51f2-8942-c90432680fa2@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <90642509-81af-51f2-8942-c90432680fa2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Borntraeger <borntraeger@de.ibm.com> writes:
+On Mon, Nov 15, 2021 at 08:54:55PM +0530, Chatradhi, Naveen Krishna wrote:
+> The errors are not specific to GPUs, the errors are originating from HBM2e
+> memory chips on the GPU.
+> 
+> As a first step, I'm trying to leverage the existing EDAC interfaces to
+> report the HBM errors.
 
-> Am 11.11.21 um 17:32 schrieb Paolo Bonzini:
->> On 11/11/21 17:27, Vitaly Kuznetsov wrote:
->>> This is a comtinuation of "KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS"
->>> (https://lore.kernel.org/kvm/20211111134733.86601-1-vkuznets@redhat.com=
-/)
->>> work.
->>>
->>> 1) Enforce KVM_CAP_NR_VCPUS <=3D KVM_CAP_MAX_VCPUS rule on all
->>> =C2=A0 architectures. [Sean Christopherson]
->>> 2) Make KVM_CAP_NR_VCPUS return num_online_cpus() and not an arbitrary
->>> =C2=A0 value of '710' on x86.
->>>
->>> Everything but x86 was only 'eyeball tested', the change is trivial
->>> but sorry in advance if I screwed up)
->>=20
->> Christian, can you look at this for s390?=C2=A0 Returning a fixed value =
-seems wrong for KVM_CAP_NR_VCPUS.
->
-> If we talk about recommended number, then num_online_cpus() also seems to=
- make sense on s390 so
-> if you change that for s390 as well I can ACK this.
+Report them how? How do the HBM chips fit in the EDAC sysfs hierarchy?
+Does it even work with the current hierarchy or does EDAC need more
+major restructuring?
 
-Thanks!
+You can send me an example from sysfs on such a system, privately is
+fine too.
 
-For KVM_CAP_MAX_VCPUS s390 code returns one of the three things:
-KVM_S390_BSCA_CPU_SLOTS(64), KVM_MAX_VCPUS(255) or
-KVM_S390_ESCA_CPU_SLOTS(248).
+> Page retirement and storing the bad pages info on a persistent storage can
+> be the next steps.
 
-For KVM_CAP_NR_VCPUS, would it be better to return raw
-num_online_cpus():
+If you're thinking about plugging this into memory_failure(), then this
+has nothing to do with EDAC.
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 6a6dd5e1daf6..fcecbb762a1a 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -578,6 +578,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long =
-ext)
-                r =3D MEM_OP_MAX_SIZE;
-                break;
-        case KVM_CAP_NR_VCPUS:
-+               r =3D num_online_cpus();
-+               break;
-        case KVM_CAP_MAX_VCPUS:
-        case KVM_CAP_MAX_VCPU_ID:
-                r =3D KVM_S390_BSCA_CPU_SLOTS;
+All EDAC can give you is error count numbers in sysfs.
 
-or cap KVM_CAP_MAX_VCPUS value with num_online_cpus(), e.g.
+So I'd like to see where this is going first, and whether it is even
+worth it adding it to EDAC.
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 6a6dd5e1daf6..1cfe36f6432e 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -585,6 +585,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long =
-ext)
-                        r =3D KVM_MAX_VCPUS;
-                else if (sclp.has_esca && sclp.has_64bscao)
-                        r =3D KVM_S390_ESCA_CPU_SLOTS;
-+               if (ext =3D=3D KVM_CAP_NR_VCPUS)
-+                       r =3D min_t(unsigned int, num_online_cpus(), r);
-                break;
-        case KVM_CAP_S390_COW:
-                r =3D MACHINE_HAS_ESOP;
+Thx.
 
-For reference, see our ARM discussion:
-https://lore.kernel.org/kvm/20211111162746.100598-2-vkuznets@redhat.com/
-though 390's situation is different, the returned value for
-KVM_CAP_MAX_VCPUS is not VM-dependent.
+-- 
+Regards/Gruss,
+    Boris.
 
---=20
-Vitaly
-
+https://people.kernel.org/tglx/notes-about-netiquette
