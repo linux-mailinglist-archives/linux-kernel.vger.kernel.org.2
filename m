@@ -2,95 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D2B4501F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB8A4501F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237018AbhKOKHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:07:48 -0500
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:41798 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhKOKHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:07:46 -0500
-Received: by mail-vk1-f178.google.com with SMTP id a129so8768216vkb.8;
-        Mon, 15 Nov 2021 02:04:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9MNzNk4Llt9/ytxcRiqz1AimDVwVVOQtIzFg5Xenuc=;
-        b=ZSAJ0GhYez5M7vDTsxWyw1ajkQpxkPoZAHORpLOGlV//5W7VJvGpK1qxOa+dbGp2AV
-         C4tKVUvOaDocbB6SImwPflWsJyRyyceVWyw6YHo4lvKr3JEj07xHzj9nuxXV9LS60ERL
-         R/Cu0h+UQVroV/qnaUAWYFSUkPWJIDbKnpcvjqubEKk++X2054QQP+LWMzW8v1cWAShV
-         aCF/4Fz7XaGouTQQ6OejPIx2oUDIteyxdaKCbDjM7Q/rhp0hf8ZlMNAENZRNUdcdGXJT
-         8WvRGjebLFQFl8c9DkpurRcDVnZNmUe/MMe2G7G4PNUXYeYpSpHoSODa5QTojnY+3Wpf
-         QwPQ==
-X-Gm-Message-State: AOAM532+j4oj+PepYXYIuX0uqFf4eU3dW4fjg6WsvZPIPNjWKa8ZC2tw
-        x0bUoq8gY6iUEwZACiPjcBhkOSFf6WC+5w==
-X-Google-Smtp-Source: ABdhPJxIkZEDCpmUtk6e9AAMTbXQ8d7FsSadeRsKgwUiG1AwPtMLbw4+BWDS7mrSH09qpwL2jpCwOg==
-X-Received: by 2002:a1f:288:: with SMTP id 130mr57512963vkc.1.1636970690935;
-        Mon, 15 Nov 2021 02:04:50 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id n10sm1519949uaj.20.2021.11.15.02.04.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 02:04:50 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id l24so29341769uak.2;
-        Mon, 15 Nov 2021 02:04:50 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr41011407vsj.50.1636970690301;
- Mon, 15 Nov 2021 02:04:50 -0800 (PST)
+        id S237383AbhKOKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:07:52 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:42848 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237098AbhKOKHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:07:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636970694; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=crfvnZ73pTs5AL0O4MfeWfUlxKWWxzYybZTh0XOLHTg=;
+ b=p2m03v4aSjdnTwk4KWA+JabPxYTOPd4Nq/OOAHosHQuc+r5glnPOTsqzgZxL+jr7HuFmxS0w
+ qJJ0jmMFLIcO5S62p67rtMCdQINExnLgUqEj8k39hO1oYl+AU8IT97EvQ0mOV3QIa2qD506M
+ oncj+objSQ6DXl520G1xhxO17Xo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 619230c5b3d5cb1f55d20fee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Nov 2021 10:04:53
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5FC8AC4360D; Mon, 15 Nov 2021 10:04:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF3BEC4338F;
+        Mon, 15 Nov 2021 10:04:52 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211115064139.10338-1-rdunlap@infradead.org>
-In-Reply-To: <20211115064139.10338-1-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Nov 2021 11:04:38 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVYdF2f3LWkjs33qAH2r0ZSquLT+VRCEqzZsCvfiqc3aQ@mail.gmail.com>
-Message-ID: <CAMuHMdVYdF2f3LWkjs33qAH2r0ZSquLT+VRCEqzZsCvfiqc3aQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sh: math-emu: fix macro redefined warning
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 15 Nov 2021 18:04:52 +0800
+From:   tjiang@codeaurora.org
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: btusb: re-definition for board_id in struct
+ qca_version
+In-Reply-To: <8E687716-E810-4A46-B010-A08BB261D2FF@holtmann.org>
+References: <305e41a55a4c117da86f786c374a57dc@codeaurora.org>
+ <8E687716-E810-4A46-B010-A08BB261D2FF@holtmann.org>
+Message-ID: <96d03a2b0bd50da90a20990c42a814d9@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 7:42 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Fix a warning that was reported by the kernel test robot:
->
-> In file included from ../include/math-emu/soft-fp.h:27,
->                  from ../arch/sh/math-emu/math.c:22:
-> ../arch/sh/include/asm/sfp-machine.h:17: warning: "__BYTE_ORDER" redefined
->    17 | #define __BYTE_ORDER __BIG_ENDIAN
-> In file included from ../arch/sh/math-emu/math.c:21:
-> ../arch/sh/math-emu/sfp-util.h:71: note: this is the location of the previous definition
->    71 | #define __BYTE_ORDER __LITTLE_ENDIAN
->
-> Fixes: b929926f01f2 ("sh: define __BIG_ENDIAN for math-emu")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Hi Marcel:
+   the following is the explanation from qc btsoc team:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The board ID should be split into two bytes.
+The 1st byte is chip ID, and the 2nd byte is platform ID.
+For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID.
+Currently we have several platforms, and platform IDs are continuously 
+added.
+We would not distinguish different chips if we get these mixed up.
+Platform ID:
+•             0x00 is for Mobile
+•             0x01 is for X86( ID # from 257)
+•             0x02 is for Automotive(ID# from 513 )
+•             0x03 is for Consumer electronic( ID# from 769)
+…
 
-> --- linux-next-20211112.orig/arch/sh/math-emu/sfp-util.h
-> +++ linux-next-20211112/arch/sh/math-emu/sfp-util.h
-> @@ -67,7 +67,3 @@
->    } while (0)
->
->  #define abort()        return 0
-> -
-> -#define __BYTE_ORDER __LITTLE_ENDIAN
-> -
-> -
 
-Gr{oetje,eeting}s,
+regards.
+tim
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On 2021-11-09 17:37, Marcel Holtmann wrote:
+> Hi Tim,
+> 
+>> As qc btsoc will using big-endian for boardID, so align host with it.
+>> 
+>> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+>> ---
+>> drivers/bluetooth/btusb.c | 4 ++--
+>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>> index 46d892bbde62..a51b1d641043 100644
+>> --- a/drivers/bluetooth/btusb.c
+>> +++ b/drivers/bluetooth/btusb.c
+>> @@ -2883,7 +2883,7 @@ struct qca_version {
+>> 	__le32	rom_version;
+>> 	__le32	patch_version;
+>> 	__le32	ram_version;
+>> -	__le16	board_id;
+>> +	__u8	board_id[2];
+>> 	__le16	flag;
+>> 	__u8	reserved[4];
+>> } __packed;
+>> @@ -3072,7 +3072,7 @@ static void btusb_generate_qca_nvm_name(char 
+>> *fwname, size_t max_size,
+>> 	u16 flag = le16_to_cpu(ver->flag);
+>> 
+>> 	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> -		u16 board_id = le16_to_cpu(ver->board_id);
+>> +		u16 board_id = (ver->board_id[0] << 8) + ver->board_id[1];
+>> 		const char *variant;
+>> 
+>> 		switch (le32_to_cpu(ver->ram_version)) {
+> 
+> explain to me why I would merge this. The commit message is sparse
+> even after I asked to explain things.
+> 
+> I am also not merging this handwaving endian handling. Define it is
+> be16 or le16 and clearly state what it is. If Qualcomm screwed up the
+> memory layout of their NVM, then say that.
+> 
+> Regards
+> 
+> Marcel
