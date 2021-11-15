@@ -2,314 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7931E44FDCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 05:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A6F44FDD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 05:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbhKOEGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 23:06:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237366AbhKOEGD (ORCPT
+        id S237444AbhKOEMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 23:12:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54686 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237472AbhKOEMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 23:06:03 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D40FC0613B9
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 20:03:08 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id m6so32167365oim.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 20:03:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hJ/kPFaMFBXC9iFz4oTcvMGtTFuxx7SBObBu2dq6Ghc=;
-        b=M0lnck0wNApxatXdEso/4Nac5+gIBFI/iMkhUgGrjbqqxLpVSBIkcId77SyXeiE/0d
-         adN13MK1HDUFya5ZmjzNaUDix+By05Ji6WPvJ4GBmr0Tc79X2MJBUMXpe3VrfyoHn+Cd
-         hk6CAs8oW91W55yTRvMiZNxpCD1smro2g7PdlIMlBShvxLa1Rsp/XBfLVPap6YhLAf/y
-         PIoU3/mz0DrKDWtu8/WeuJT+X2WY/d+V/4HYY1FfmHaeKsOF+c3dvl2dCEEt7Q1AmfOr
-         xTwJzf5WRWgDg2+Qr4vZ3HjTAgwyv5hIBuQTXKpAEciaVUQgBP0e8FjdNM+kSJQZGxdr
-         +Dog==
+        Sun, 14 Nov 2021 23:12:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636949349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GDAF3NtZ/86J1Ftc0UQ/+Vj8njFq7ueV2mkeczZKUzE=;
+        b=IfxiT28Qx9NrNvHSH+a3CZO2ZSkyBQ7KX9DmdNf4g4a6BaZa48Q9yXmEteVaL3jKkM7i2U
+        IyuZPOq+U17cKTBJslKCzOxggJNPlioRo3xeFCu7zGHUQ89SOwEf7dxPzlM7Ov8bgIuZXZ
+        TeTRibPrjfUb1I0Ksd5KO9QQOfYs+ss=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-eDAHvMMzPfy0hiissGc65Q-1; Sun, 14 Nov 2021 23:09:07 -0500
+X-MC-Unique: eDAHvMMzPfy0hiissGc65Q-1
+Received: by mail-lf1-f69.google.com with SMTP id j9-20020a05651231c900b004037efe9fddso6162639lfe.18
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 20:09:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hJ/kPFaMFBXC9iFz4oTcvMGtTFuxx7SBObBu2dq6Ghc=;
-        b=Tk9xf+pApC6MApd6Ew6UZ+vYGYT+hS7RY42ERmt3fmVZpbm2G8XuDodDSvnE7qe674
-         hrUK4PoJQQHulpc3tBGskRzRNttvYrFPdISQvuEAnZbbsWHpT6C4AY9i1VF8zykuRxAm
-         KTPz9Z6cIcOmiVahZEL5kiQ3KsNFqfACVoxMOsPIMUx2dY27iqY4DjRZQGMJIhlv0fzd
-         oarFd84n9r2KPTnDAXjK/1j9pjgN4dCoqLf7mGtJXU74Rp2Fpa5WlHESqba6Ahwx1cTO
-         J4SXjGwBh1rfD94imHAGCgVs/c5eGii1pZ/kurbEwQw9VqHcrcrGwc6v9XNA4otycJSU
-         lfxQ==
-X-Gm-Message-State: AOAM530pVu6tOMHlLscb30y++FlTSxYJuELtvmpYvUPKipfk5NlCDlqV
-        YxxvPT2DGTSafRff2bxBbmbPDQ==
-X-Google-Smtp-Source: ABdhPJw7mqvrKQdnHEWT/5xRFMDSB8QK16xrJ14s3Zo781J5XYJFPP1LaTD5/GLsxZSxjZAULcbYTA==
-X-Received: by 2002:aca:2b02:: with SMTP id i2mr28668746oik.140.1636948987351;
-        Sun, 14 Nov 2021 20:03:07 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s17sm1047063ooj.42.2021.11.14.20.03.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 20:03:06 -0800 (PST)
-Date:   Sun, 14 Nov 2021 22:03:01 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Huang Yiwei <quic_hyiwei@quicinc.com>
-Cc:     agross@kernel.org, mani@kernel.org, jassisinghbrar@gmail.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_psodagud@quicinc.com, quic_tsoni@quicinc.com,
-        quic_aiquny@quicinc.com, quic_eberman@quicinc.com
-Subject: Re: [PATCH] mailbox: qcom-ipcc: Update the QCOM_IPCC driver
-Message-ID: <YZHb9c8HXoV3fE2w@yoga>
-References: <20211115031830.6795-1-quic_hyiwei@quicinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GDAF3NtZ/86J1Ftc0UQ/+Vj8njFq7ueV2mkeczZKUzE=;
+        b=QECKLMyTaEErZBa3mKLP4F0ILwEOcf6vvfsVBlUwr0RMPx1oeZZseFFbs38ilvyIYm
+         ScvWO0gTc3qME4q40HCL8OMVdX/1cWfH8BHzKS/xAJbvef2+si6KOa83I+iNR1VWccet
+         8+3yBiVb4QaQHNjZoPBBXF1+IarYq4z+7Pru0UdJee6KgsQ9UkpZtExZsr3mEo4sYOcS
+         GqH9Fr61HH+fR+RELN2kwWQGSZ6/cEMTg36pnon7PFIRfewvEfqyNQJcf0zXX1o6wihP
+         AyJ5VrjbGwvSdA5up4x3mkNFn7lkZhcVB2DnyLxpKdfFcWvRJChmABXI7lWClrTsgNtc
+         lMZA==
+X-Gm-Message-State: AOAM530e5QwsGHolKD9+EVP2uVgMM6zGV3weoOG7fDDdbE/xVhVs0IpL
+        bpcvL/kagWZbooNRHjGaoIHLbrGGGdeTvWbtRovoGhrxhJ7lIDNLBZL7+XILkMxPF02uogw+/9S
+        VJffGtXoG3D7cmAuwTvXqQstTSRi4qY+F4onbAUhc
+X-Received: by 2002:ac2:5310:: with SMTP id c16mr33615188lfh.580.1636949346387;
+        Sun, 14 Nov 2021 20:09:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwE9coqJRdnLJdem0vLatbGaWrTJuFC0rOu/AfdVlgUfFR0+IoO2LQrJtU0qqF5e3cZ1/fSrO7KGhIAgTtdV0s=
+X-Received: by 2002:ac2:5310:: with SMTP id c16mr33615170lfh.580.1636949346199;
+ Sun, 14 Nov 2021 20:09:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115031830.6795-1-quic_hyiwei@quicinc.com>
+References: <a2cb60cf73be9da5c4e6399242117d8818f975ae.1636946171.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <a2cb60cf73be9da5c4e6399242117d8818f975ae.1636946171.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 15 Nov 2021 12:08:55 +0800
+Message-ID: <CACGkMEuEkyqAD+sb3FpHMoM1FHnpFMLH-wgeen53c81VAUAzVg@mail.gmail.com>
+Subject: Re: [PATCH] vhost-vdpa: clean irqs before reseting vdpa device
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 14 Nov 21:18 CST 2021, Huang Yiwei wrote:
+On Mon, Nov 15, 2021 at 11:17 AM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
+>
+> Vdpa devices should be reset after unseting irqs of virtqueues, or we
+> will get errors when killing qemu process:
+>
+> >> pi_update_irte: failed to update PI IRTE
+> >> irq bypass consumer (token 0000000065102a43) unregistration fails: -22
+>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
-> Update the QCOM_IPCC driver with below main features:
-> Dynamic alloc for channel arrangement instead of static alloced
-> array.
-> Multiple instance can be supported.
-> IPCC interrupt wake up support from suspend.
-> More protocol and client ID support added.
-> 
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Whenever you have "this patch changes x, y, z" you should split that up
-in multiple patches, each changing one thing in a clean fashion.
-
-So please respin this as 4 patches, to make it possible to review.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Huang Yiwei <quic_hyiwei@quicinc.com>
 > ---
->  drivers/mailbox/qcom-ipcc.c             | 101 ++++++++++++++++++------
->  include/dt-bindings/mailbox/qcom-ipcc.h |   9 ++-
->  2 files changed, 85 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
-> index f1d4f4679b17..80bac21ccbc3 100644
-> --- a/drivers/mailbox/qcom-ipcc.c
-> +++ b/drivers/mailbox/qcom-ipcc.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
->   */
->  
->  #include <linux/bitfield.h>
-> @@ -13,8 +13,6 @@
->  
->  #include <dt-bindings/mailbox/qcom-ipcc.h>
->  
-> -#define IPCC_MBOX_MAX_CHAN		48
-> -
->  /* IPCC Register offsets */
->  #define IPCC_REG_SEND_ID		0x0c
->  #define IPCC_REG_RECV_ID		0x10
-> @@ -52,9 +50,10 @@ struct qcom_ipcc {
->  	struct device *dev;
->  	void __iomem *base;
->  	struct irq_domain *irq_domain;
-> -	struct mbox_chan chan[IPCC_MBOX_MAX_CHAN];
-> -	struct qcom_ipcc_chan_info mchan[IPCC_MBOX_MAX_CHAN];
-> +	struct mbox_chan *chans;
-> +	struct qcom_ipcc_chan_info *mchan;
->  	struct mbox_controller mbox;
-> +	int num_chans;
->  	int irq;
->  };
->  
-> @@ -166,25 +165,37 @@ static struct mbox_chan *qcom_ipcc_mbox_xlate(struct mbox_controller *mbox,
->  	struct qcom_ipcc *ipcc = to_qcom_ipcc(mbox);
->  	struct qcom_ipcc_chan_info *mchan;
->  	struct mbox_chan *chan;
-> -	unsigned int i;
-> +	struct device *dev;
-> +	int chan_id;
-> +
-> +	dev = ipcc->dev;
->  
->  	if (ph->args_count != 2)
->  		return ERR_PTR(-EINVAL);
->  
-> -	for (i = 0; i < IPCC_MBOX_MAX_CHAN; i++) {
-> -		chan = &ipcc->chan[i];
-> -		if (!chan->con_priv) {
-> -			mchan = &ipcc->mchan[i];
-> -			mchan->client_id = ph->args[0];
-> -			mchan->signal_id = ph->args[1];
-> -			chan->con_priv = mchan;
-> -			break;
-> -		}
-> +	for (chan_id = 0; chan_id < mbox->num_chans; chan_id++) {
-> +		chan = &ipcc->chans[chan_id];
-> +		mchan = chan->con_priv;
->  
-> -		chan = NULL;
-> +		if (!mchan)
-> +			break;
-> +		else if (mchan->client_id == ph->args[0] &&
-> +				mchan->signal_id == ph->args[1])
-> +			return ERR_PTR(-EBUSY);
->  	}
->  
-> -	return chan ?: ERR_PTR(-EBUSY);
-> +	if (chan_id >= mbox->num_chans)
-> +		return ERR_PTR(-EBUSY);
-> +
-> +	mchan = devm_kzalloc(dev, sizeof(*mchan), GFP_KERNEL);
-> +	if (!mchan)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	mchan->client_id = ph->args[0];
-> +	mchan->signal_id = ph->args[1];
-> +	chan->con_priv = mchan;
-> +
-> +	return chan;
->  }
->  
->  static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
-> @@ -192,15 +203,49 @@ static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
->  	.shutdown = qcom_ipcc_mbox_shutdown,
->  };
->  
-> -static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
-> +static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc,
-> +				struct device_node *controller_dn)
->  {
-> +	struct of_phandle_args curr_ph;
-> +	struct device_node *client_dn;
->  	struct mbox_controller *mbox;
->  	struct device *dev = ipcc->dev;
-> +	int i, j, ret;
-> +
-> +	/*
-> +	 * Find out the number of clients interested in this mailbox
-> +	 * and create channels accordingly.
-> +	 */
-> +	ipcc->num_chans = 0;
-> +	for_each_node_with_property(client_dn, "mboxes") {
-> +		if (!of_device_is_available(client_dn))
-> +			continue;
-> +		i = of_count_phandle_with_args(client_dn,
-> +						"mboxes", "#mbox-cells");
-> +		for (j = 0; j < i; j++) {
-> +			ret = of_parse_phandle_with_args(client_dn, "mboxes",
-> +						"#mbox-cells", j, &curr_ph);
-> +			of_node_put(curr_ph.np);
-> +			if (!ret && curr_ph.np == controller_dn) {
-> +				ipcc->num_chans++;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +
-> +	/* If no clients are found, skip registering as a mbox controller */
-> +	if (!ipcc->num_chans)
-> +		return 0;
-> +
-> +	ipcc->chans = devm_kcalloc(dev, ipcc->num_chans,
-> +					sizeof(struct mbox_chan), GFP_KERNEL);
-> +	if (!ipcc->chans)
-> +		return -ENOMEM;
->  
->  	mbox = &ipcc->mbox;
->  	mbox->dev = dev;
-> -	mbox->num_chans = IPCC_MBOX_MAX_CHAN;
-> -	mbox->chans = ipcc->chan;
-> +	mbox->num_chans = ipcc->num_chans;
-> +	mbox->chans = ipcc->chans;
->  	mbox->ops = &ipcc_mbox_chan_ops;
->  	mbox->of_xlate = qcom_ipcc_mbox_xlate;
->  	mbox->txdone_irq = false;
-> @@ -212,6 +257,8 @@ static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
->  static int qcom_ipcc_probe(struct platform_device *pdev)
->  {
->  	struct qcom_ipcc *ipcc;
-> +	static int id;
-> +	char *name;
->  	int ret;
->  
->  	ipcc = devm_kzalloc(&pdev->dev, sizeof(*ipcc), GFP_KERNEL);
-> @@ -228,27 +275,33 @@ static int qcom_ipcc_probe(struct platform_device *pdev)
->  	if (ipcc->irq < 0)
->  		return ipcc->irq;
->  
-> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "ipcc_%d", id++);
-> +	if (!name)
-> +		return -ENOMEM;
-> +
->  	ipcc->irq_domain = irq_domain_add_tree(pdev->dev.of_node,
->  					       &qcom_ipcc_irq_ops, ipcc);
->  	if (!ipcc->irq_domain)
->  		return -ENOMEM;
->  
-> -	ret = qcom_ipcc_setup_mbox(ipcc);
-> +	ret = qcom_ipcc_setup_mbox(ipcc, pdev->dev.of_node);
->  	if (ret)
->  		goto err_mbox;
->  
->  	ret = devm_request_irq(&pdev->dev, ipcc->irq, qcom_ipcc_irq_fn,
-> -			       IRQF_TRIGGER_HIGH, "ipcc", ipcc);
-> +			IRQF_TRIGGER_HIGH | IRQF_NO_SUSPEND, name, ipcc);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "Failed to register the irq: %d\n", ret);
-> -		goto err_mbox;
-> +		goto err_req_irq;
->  	}
->  
-> -	enable_irq_wake(ipcc->irq);
->  	platform_set_drvdata(pdev, ipcc);
->  
->  	return 0;
->  
-> +err_req_irq:
-> +	if (ipcc->num_chans)
-> +		mbox_controller_unregister(&ipcc->mbox);
->  err_mbox:
->  	irq_domain_remove(ipcc->irq_domain);
->  
-> diff --git a/include/dt-bindings/mailbox/qcom-ipcc.h b/include/dt-bindings/mailbox/qcom-ipcc.h
-> index eb91a6c05b71..fb405e211028 100644
-> --- a/include/dt-bindings/mailbox/qcom-ipcc.h
-> +++ b/include/dt-bindings/mailbox/qcom-ipcc.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->  /*
-> - * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
->   */
->  
->  #ifndef __DT_BINDINGS_MAILBOX_IPCC_H
-> @@ -8,8 +8,13 @@
->  
->  /* Signal IDs for MPROC protocol */
->  #define IPCC_MPROC_SIGNAL_GLINK_QMP	0
-> +#define IPCC_MPROC_SIGNAL_TZ		1
->  #define IPCC_MPROC_SIGNAL_SMP2P		2
->  #define IPCC_MPROC_SIGNAL_PING		3
-> +#define IPCC_MPROC_SIGNAL_MAX		4 /* Used by driver only */
-> +
-> +#define IPCC_COMPUTE_L0_SIGNAL_MAX	32 /* Used by driver only */
-> +#define IPCC_COMPUTE_L1_SIGNAL_MAX	32 /* Used by driver only */
->  
->  /* Client IDs */
->  #define IPCC_CLIENT_AOP			0
-> @@ -29,6 +34,8 @@
->  #define IPCC_CLIENT_PCIE1		14
->  #define IPCC_CLIENT_PCIE2		15
->  #define IPCC_CLIENT_SPSS		16
-> +#define IPCC_CLIENT_TME			23
->  #define IPCC_CLIENT_WPSS		24
-> +#define IPCC_CLIENT_MAX			25 /* Used by driver only */
->  
->  #endif
-> -- 
-> 2.17.1
-> 
+>  drivers/vhost/vdpa.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 01c59ce7e250..29cced1cd277 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -1014,12 +1014,12 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
+>
+>         mutex_lock(&d->mutex);
+>         filep->private_data = NULL;
+> +       vhost_vdpa_clean_irq(v);
+>         vhost_vdpa_reset(v);
+>         vhost_dev_stop(&v->vdev);
+>         vhost_vdpa_iotlb_free(v);
+>         vhost_vdpa_free_domain(v);
+>         vhost_vdpa_config_put(v);
+> -       vhost_vdpa_clean_irq(v);
+>         vhost_dev_cleanup(&v->vdev);
+>         kfree(v->vdev.vqs);
+>         mutex_unlock(&d->mutex);
+> --
+> 2.31.1
+>
+
