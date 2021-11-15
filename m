@@ -2,163 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB5C4506CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6705A4506CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhKOO2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:28:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236353AbhKOO1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:27:49 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645B7C0613B9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:24:53 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so72742236edz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:24:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XzW2ROAlPRz9ydv9L/AshSNhxbtWQbbcjLTS7Atescc=;
-        b=jqY7XD2SmwV3T9FBCXsO0foOKIJt8O1+RCuaDdyjfa0As1sIs2dZbe7iyhw2GZXnNX
-         eTdf11/29Tly1vIeVz9wOAo82uVZaUcTq59iK9BDv9EaQSfmSPqd2D2sW9xIJatoMnkf
-         5eZqw7jyTM8ju/xQp+bpGviSfGYQzviLspbrs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=XzW2ROAlPRz9ydv9L/AshSNhxbtWQbbcjLTS7Atescc=;
-        b=6CHHJ2z408Wb3IAyak0gxWE2UG/1FCWmhf8t8g0VdvWxWDHfwLgzHma29w7IgomhgX
-         2kS8q7Rs+5DMRUhy2beTyi3YPXcb0qTnJpqpdm4EQA+WTgVDYVA7rgy5D3RUsZSfOqhM
-         6e7r0kjp4TgbY5oLIHDbYM5dbpNKBR+lotkDaEt9ZZn3rsbpEGyb98J+w0AF0cNz6Ghe
-         xxzoqSvtx/ytBc75M3Wc+fmfM52gGYXk2w8HistxSZqGqG9BUz/FolnGHfF0d8p8WcKO
-         WOipUrnNcOrCzDy6qVPCRR5uxKVd9EucAKr8F74LGKvs9UB1vY5XJiIAHYxGy+vbNKIC
-         TuPw==
-X-Gm-Message-State: AOAM531CPJSAhK+q8Bk8CaMUgzwFFDRAGpJK8YtLEN92CS3pPYkS0uww
-        fdc+UzajJ1n4u5tBJcq3S/dltjLChRv2cA==
-X-Google-Smtp-Source: ABdhPJw5ZxU4iCIzOsNPKcXBw6KrI77E95CzPk/ozBQVETPduv7gf3e6d9dDX1FVXIzpayyJ7jBTzg==
-X-Received: by 2002:a05:6402:5158:: with SMTP id n24mr19430190edd.230.1636986292018;
-        Mon, 15 Nov 2021 06:24:52 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l11sm7651319edb.28.2021.11.15.06.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 06:24:51 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:24:49 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Nicholas Verne <nverne@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: regression with mainline kernel
-Message-ID: <YZJtsV15k6mrBt1f@phenom.ffwll.local>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Nicholas Verne <nverne@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO GPU DRIVER" <virtualization@lists.linux-foundation.org>
-References: <CADVatmOuOk6RoZF=M9sZm2L=9NuDDsSNNCJJbAtkgScG0og1Ww@mail.gmail.com>
- <CADVatmP_Sn+SS5Yu5+7sJJ5SVpcaZcW8Z_Bj5vmYz9g3kJD86g@mail.gmail.com>
- <CAADWXX80QGk7MwZ7A-n+1+GHv=yrA0qrw-70Z=pFSEsc3UXfgQ@mail.gmail.com>
+        id S235038AbhKOO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:28:53 -0500
+Received: from mga12.intel.com ([192.55.52.136]:1899 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236407AbhKOO2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:28:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="213481579"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="213481579"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:25:03 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="503825626"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:25:01 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mmcuj-0077Ev-6T;
+        Mon, 15 Nov 2021 16:24:53 +0200
+Date:   Mon, 15 Nov 2021 16:24:52 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] driver core: Don't call
+ device_remove_properties() from device_del()
+Message-ID: <YZJttIYTV+wdpJlx@smile.fi.intel.com>
+References: <20211115121001.77041-1-heikki.krogerus@linux.intel.com>
+ <20211115121001.77041-3-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADWXX80QGk7MwZ7A-n+1+GHv=yrA0qrw-70Z=pFSEsc3UXfgQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <20211115121001.77041-3-heikki.krogerus@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 09:06:57AM -0800, Linus Torvalds wrote:
-> [ Hmm. This email was marked as spam for me. I see no obvious reason
-> for it being marked as spam, but it happens.. ]
+On Mon, Nov 15, 2021 at 03:10:00PM +0300, Heikki Krogerus wrote:
+> All the drivers that relied on device_del() to call
+> device_remove_properties() have now been converted to either
+> use device_create_managed_software_node() instead of
+> device_add_properties(), or to register the software node
+> completely separately from the device.
 > 
-> On Thu, Nov 11, 2021 at 12:52 PM Sudip Mukherjee
-> <sudipm.mukherjee@gmail.com> wrote:
-> >
-> > # first bad commit: [cd7f5ca33585918febe5e2f6dc090a21cfa775b0]
-> > drm/virtio: implement context init: add virtio_gpu_fence_event
-> 
-> Hmm. Judging from your automated screenshots, the login never appears.
+> This will make it finally possible to share and reuse the
+> software nodes that hold the additional device properties.
 
-Greg also reported a regression, plus I looked at the commit and had
-questions too.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> > And, indeed reverting cd7f5ca33585 on top of debe436e77c7 has fixed
-> > the problem I was seeing on my qemu test of x86_64. The qemu image is
-> > based on Ubuntu.
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/base/core.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Presumably either that commit is somehow buggy in itself - or it does
-> exactly what it means to do, and the new poll() semantics just
-> confuses the heck out of the X server (or wayland or whatever).
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index fd034d7424472..a40b6fb1ebb01 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -3582,7 +3582,6 @@ void device_del(struct device *dev)
+>  	device_pm_remove(dev);
+>  	driver_deferred_probe_del(dev);
+>  	device_platform_notify_remove(dev);
+> -	device_remove_properties(dev);
+>  	device_links_purge(dev);
+>  
+>  	if (dev->bus)
+> -- 
+> 2.33.0
 > 
-> And honestly, if I read that thing correctly, the patch is entirely
-> broken. The new poll function (virtio_gpu_poll()) will unconditionally
-> remove the first event from the event list, and then report "Yeah, I
-> had events".
-> 
-> This is completely bogus for a few reasons:
-> 
->  - poll() really should be idempotent, because the poll function gets
-> called multiple times
-> 
->  - it doesn't even seem to check that the event that it removes is the
-> new VIRTGPU_EVENT_FENCE_SIGNALED_INTERNAL kind of event, so it will
-> unconditionally just remove random events.
-> 
->  - it does seem to check the "vfpriv->ring_idx_mask" and do the old
-> thing if that is zero, but I see absolutely no reason for that (and
-> that check itself has caused problems, see below)
-> 
-> Honestly, my reaction to this all is that that commit is fundamentally
-> broken and probably should be reverted regardless as "this commit does
-> bad things".
-> 
-> HOWEVER - it has had a fix for a NULL pointer dereference in the
-> meantime - can you check whether the current top of tree happens to
-> work for you? Maybe your problem isn't due to "that commit does
-> unnatural things", but simply due to the bug fixed in d89c0c8322ec
-> ("drm/virtio: Fix NULL dereference error in virtio_gpu_poll").
-> 
-> And if it's still broken with that commit, I'll happily revert it and
-> people need to go back to the drawing board.
-> 
-> In fact, I would really suggest that people look at that
-> virtio_gpu_poll() function regardless. That odd "let's unconditionally
-> just drop events in the poll function is really REALLY broken
-> behavior.
 
-Tbh I haven't looked at the poll implementation, but it's fishy on
-principles as in drm drivers shouldn't reinvent them. The commit message
-cites vmwgfx as example for a private driver drm_event, but that works
-perfectly fine with standard drm_poll (and is meant to work perfectly fine
-with standard drm_poll).
-
-So if it's buggy on top of questionable I think revert might be the right
-choice irrespective of whether there's some fixes in-flight.
-
-So if you end up pushing that revert:
-
-References: https://lore.kernel.org/dri-devel/YZJrutLaiwozLfSw@phenom.ffwll.local/
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-Plus credit Greg too and all that ofc.
-
-But lets wait a bit for virtio folks to chime in, it's only Monday :-)
-
-Cheers, Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+With Best Regards,
+Andy Shevchenko
+
+
