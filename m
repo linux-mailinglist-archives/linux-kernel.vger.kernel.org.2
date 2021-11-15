@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB054518D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82479451E07
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351638AbhKOXI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
+        id S1350273AbhKPAew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243139AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B63C663488;
-        Mon, 15 Nov 2021 18:12:17 +0000 (UTC)
+        id S1343959AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B58604D1;
+        Mon, 15 Nov 2021 18:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999938;
-        bh=wAEORlIloIhquPQmQylodOIuiUktgC2qMMWzZ4isTm4=;
+        s=korg; t=1637002175;
+        bh=XjXIU3AqPDWK1zsJOZsPevZkNoJfHbMwTbUH/TcPL1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLSy3OQ09zcR8ixRA++XRHN+A2iJxstqwz7wm6NNRxZtA3zYcQ+fLGXnHtJeQqVsq
-         0Trmp5BwWA9KP1J8IxeZoVg/Yn4Ku1nxKGrP7kX7OAEJG180YJVmMUrbB9rvG+pZWX
-         K+/ERmionBTEtg3IsV3QGckx5lO1KGN6np20/dG4=
+        b=Mx64++QGZoXEqiA19lSBFjJM0VL3XZQExTdn69mNdoJ1YCj95MK+HHm7mqveSAcGp
+         dv+BMOtzKp13OpT08s8j6+h3+sT2uunYOCpasNxh30UjYbI1StVF6FPymIofcIdj+5
+         7KncrEGk06OCZ737LzpyILy0PIwXQriymzXQMfKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Deren Wu <deren.wu@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 461/849] mt76: mt7921: fix dma hang in rmmod
+        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 449/917] block: ataflop: fix breakage introduced at blk-mq refactoring
 Date:   Mon, 15 Nov 2021 17:59:04 +0100
-Message-Id: <20211115165435.887080950@linuxfoundation.org>
+Message-Id: <20211115165444.006421431@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deren Wu <deren.wu@mediatek.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
 
-[ Upstream commit a23f80aa9c5e6ad4ec8df88037b7ffd4162b1ec4 ]
+[ Upstream commit 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6 ]
 
-The dma would be broken after rmmod flow. There are two different
-cases causing this issue.
-1. dma access without privilege.
-2. hw access sequence borken by another context.
+Refactoring of the Atari floppy driver when converting to blk-mq
+has broken the state machine in not-so-subtle ways:
 
-This patch handle both cases to avoid hw crash.
+finish_fdc() must be called when operations on the floppy device
+have completed. This is crucial in order to relase the ST-DMA
+lock, which protects against concurrent access to the ST-DMA
+controller by other drivers (some DMA related, most just related
+to device register access - broken beyond compare, I know).
 
-Fixes: 2b9ea5a8cf1bd ("mt76: mt7921: add mt7921_dma_cleanup in mt7921_unregister_device")
-Signed-off-by: Deren Wu <deren.wu@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+When rewriting the driver's old do_request() function, the fact
+that finish_fdc() was called only when all queued requests had
+completed appears to have been overlooked. Instead, the new
+request function calls finish_fdc() immediately after the last
+request has been queued. finish_fdc() executes a dummy seek after
+most requests, and this overwrites the state machine's interrupt
+hander that was set up to wait for completion of the read/write
+request just prior. To make matters worse, finish_fdc() is called
+before device interrupts are re-enabled, making certain that the
+read/write interupt is missed.
+
+Shifting the finish_fdc() call into the read/write request
+completion handler ensures the driver waits for the request to
+actually complete. With a queue depth of 2, we won't see long
+request sequences, so calling finish_fdc() unconditionally just
+adds a little overhead for the dummy seeks, and keeps the code
+simple.
+
+While we're at it, kill ataflop_commit_rqs() which does nothing
+but run finish_fdc() unconditionally, again likely wiping out an
+in-flight request.
+
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Fixes: 6ec3938cff95 ("ataflop: convert to blk-mq")
+CC: linux-block@vger.kernel.org
+CC: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Link: https://lore.kernel.org/r/20211019061321.26425-1-schmitzmic@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/init.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/block/ataflop.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-index 52d40385fab6c..78a00028137bd 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-@@ -251,8 +251,17 @@ int mt7921_register_device(struct mt7921_dev *dev)
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index a093644ac39fb..bbb64331cf8f4 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -653,9 +653,6 @@ static inline void copy_buffer(void *from, void *to)
+ 		*p2++ = *p1++;
+ }
  
- void mt7921_unregister_device(struct mt7921_dev *dev)
+-  
+-  
+-
+ /* General Interrupt Handling */
+ 
+ static void (*FloppyIRQHandler)( int status ) = NULL;
+@@ -1228,6 +1225,7 @@ static void fd_rwsec_done1(int status)
+ 	}
+ 	else {
+ 		/* all sectors finished */
++		finish_fdc();
+ 		fd_end_request_cur(BLK_STS_OK);
+ 	}
+ 	return;
+@@ -1475,15 +1473,6 @@ static void setup_req_params( int drive )
+ 			ReqTrack, ReqSector, (unsigned long)ReqData ));
+ }
+ 
+-static void ataflop_commit_rqs(struct blk_mq_hw_ctx *hctx)
+-{
+-	spin_lock_irq(&ataflop_lock);
+-	atari_disable_irq(IRQ_MFP_FDC);
+-	finish_fdc();
+-	atari_enable_irq(IRQ_MFP_FDC);
+-	spin_unlock_irq(&ataflop_lock);
+-}
+-
+ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 				     const struct blk_mq_queue_data *bd)
  {
-+	int i;
-+	struct mt76_connac_pm *pm = &dev->pm;
-+
- 	mt76_unregister_device(&dev->mt76);
-+	mt76_for_each_q_rx(&dev->mt76, i)
-+		napi_disable(&dev->mt76.napi[i]);
-+	cancel_delayed_work_sync(&pm->ps_work);
-+	cancel_work_sync(&pm->wake_work);
-+
- 	mt7921_tx_token_put(dev);
-+	mt7921_mcu_drv_pmctrl(dev);
- 	mt7921_dma_cleanup(dev);
- 	mt7921_mcu_exit(dev);
+@@ -1491,6 +1480,8 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	int drive = floppy - unit;
+ 	int type = floppy->type;
  
++	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
++
+ 	spin_lock_irq(&ataflop_lock);
+ 	if (fd_request) {
+ 		spin_unlock_irq(&ataflop_lock);
+@@ -1550,8 +1541,6 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	setup_req_params( drive );
+ 	do_fd_action( drive );
+ 
+-	if (bd->last)
+-		finish_fdc();
+ 	atari_enable_irq( IRQ_MFP_FDC );
+ 
+ out:
+@@ -1962,7 +1951,6 @@ static const struct block_device_operations floppy_fops = {
+ 
+ static const struct blk_mq_ops ataflop_mq_ops = {
+ 	.queue_rq = ataflop_queue_rq,
+-	.commit_rqs = ataflop_commit_rqs,
+ };
+ 
+ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
 -- 
 2.33.0
 
