@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64412450F46
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88EA4510BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238991AbhKOS3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:29:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46730 "EHLO mail.kernel.org"
+        id S239171AbhKOSym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:54:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232123AbhKOReS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:34:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C74632B7;
-        Mon, 15 Nov 2021 17:22:37 +0000 (UTC)
+        id S238183AbhKORfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:35:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 812A7632C5;
+        Mon, 15 Nov 2021 17:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996958;
-        bh=QdCuTrerCYzph3/hR6NHSxUhLpJXJmr6rZhQmEhun28=;
+        s=korg; t=1636997005;
+        bh=mawGj9bAkOCUY1SQvO7k329OHtMuiLJXsMOHqPd/XFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o7eweGu9YMo1lqyJQcD2V44klSoHRhutRmwhdx4oy9KCfRR8s0xSimSnWGNhHUPXL
-         eA8EvGJcsSzLeh3wcmj9Da3GPBesnWqNH6quSW86SV1vnY1VW67J1/8bQljdsSgN0y
-         +bGa/hTcszKwxmvrVqiRrTCKexeHKdXPfY6K/NWY=
+        b=Ydlm3hBVeAKrT5fGUfkPsX+nga0kwA+ld2PH75wPoIx0TyxlAN9l3nWWoIzJbWGB/
+         z8PnE5zZ28rGhKI6CWcNtULTZZC4JABR1d5DaC2E2bWODHarhM7tSr0XSqHOpBhRZm
+         NsYf/RLP0b5RReu5h1fq6kX2Ri+3HkTgT8tb4plQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 313/355] NFSv4: Fix a regression in nfs_set_open_stateid_locked()
-Date:   Mon, 15 Nov 2021 18:03:57 +0100
-Message-Id: <20211115165323.843930691@linuxfoundation.org>
+Subject: [PATCH 5.4 315/355] xen-pciback: Fix return in pm_ctrl_init()
+Date:   Mon, 15 Nov 2021 18:03:59 +0100
+Message-Id: <20211115165323.907176424@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,53 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 01d29f87fcfef38d51ce2b473981a5c1e861ac0a ]
+[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
 
-If we already hold open state on the client, yet the server gives us a
-completely different stateid to the one we already hold, then we
-currently treat it as if it were an out-of-sequence update, and wait for
-5 seconds for other updates to come in.
-This commit fixes the behaviour so that we immediately start processing
-of the new stateid, and then leave it to the call to
-nfs4_test_and_free_stateid() to decide what to do with the old stateid.
+Return NULL instead of passing to ERR_PTR while err is zero,
+this fix smatch warnings:
+drivers/xen/xen-pciback/conf_space_capability.c:163
+ pm_ctrl_init() warn: passing zero to 'ERR_PTR'
 
-Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 5ecaf7b6b0fa1..fb3d1532f11dd 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -1549,15 +1549,16 @@ static bool nfs_stateid_is_sequential(struct nfs4_state *state,
- {
- 	if (test_bit(NFS_OPEN_STATE, &state->flags)) {
- 		/* The common case - we're updating to a new sequence number */
--		if (nfs4_stateid_match_other(stateid, &state->open_stateid) &&
--			nfs4_stateid_is_next(&state->open_stateid, stateid)) {
--			return true;
-+		if (nfs4_stateid_match_other(stateid, &state->open_stateid)) {
-+			if (nfs4_stateid_is_next(&state->open_stateid, stateid))
-+				return true;
-+			return false;
- 		}
--	} else {
--		/* This is the first OPEN in this generation */
--		if (stateid->seqid == cpu_to_be32(1))
--			return true;
-+		/* The server returned a new stateid */
+diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
+index e5694133ebe57..42f0f64fcba47 100644
+--- a/drivers/xen/xen-pciback/conf_space_capability.c
++++ b/drivers/xen/xen-pciback/conf_space_capability.c
+@@ -160,7 +160,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
  	}
-+	/* This is the first OPEN in this generation */
-+	if (stateid->seqid == cpu_to_be32(1))
-+		return true;
- 	return false;
+ 
+ out:
+-	return ERR_PTR(err);
++	return err ? ERR_PTR(err) : NULL;
  }
  
+ static const struct config_field caplist_pm[] = {
 -- 
 2.33.0
 
