@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C05450A88
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A07E450AB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhKORLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:11:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35942 "EHLO mail.kernel.org"
+        id S236579AbhKOROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:14:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231545AbhKORKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:10:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78ECE610CA;
-        Mon, 15 Nov 2021 17:07:59 +0000 (UTC)
+        id S232376AbhKORL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92FE361BF8;
+        Mon, 15 Nov 2021 17:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996080;
-        bh=zn+V9zvLUAQFJ1PZryUNmEyAjoqNfZiNBDd8fnudbfM=;
+        s=korg; t=1636996110;
+        bh=ckRkBq2yBmN04PAm80rI/uizfgfi/YldUz76NutMXSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h5H8IcGPK8ZWx0iVG6mKsTVpaVdVJeUXeRs4HU1HNZ1CUU1A/g45kex17WSeicqDy
-         lksqn0/7/P9cHtD2BlAgPhd88FWqNf+VwfZJN0yz9hFx+x5HC8zfdFSqUPko76x7Nu
-         ZsOvittcQNy8TNVPjetcsjQjieKMD2xjkXGhvlac=
+        b=tcOjj4Ie6xixUxdIhy4vHvRRX5zmQs1CQ4Ic/PimlEohyV+AJ9llzcPu+HIsURhGi
+         8bLPXYizllPf9AOJUAlkLH4S9z21Ye4MQTIKehUg7nEqKUdQAFHVoqQHAWV9xs2tvF
+         qc3o3kqg1TyOx4YrcZ7KRsX1lyiyPIJU7cHH1rZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Walt Jr. Brake" <mr.yming81@gmail.com>,
+        stable@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
         Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 001/355] xhci: Fix USB 3.1 enumeration issues by increasing roothub power-on-good delay
-Date:   Mon, 15 Nov 2021 17:58:45 +0100
-Message-Id: <20211115165313.599088054@linuxfoundation.org>
+Subject: [PATCH 5.4 002/355] usb: xhci: Enable runtime-pm by default on AMD Yellow Carp platform
+Date:   Mon, 15 Nov 2021 17:58:46 +0100
+Message-Id: <20211115165313.630887180@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,58 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
 
-commit e1959faf085b004e6c3afaaaa743381f00e7c015 upstream.
+commit 660a92a59b9e831a0407e41ff62875656d30006e upstream.
 
-Some USB 3.1 enumeration issues were reported after the hub driver removed
-the minimum 100ms limit for the power-on-good delay.
+AMD's Yellow Carp platform supports runtime power management for
+XHCI Controllers, so enable the same by default for all XHCI Controllers.
 
-Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
-root hub") the hub driver sets the power-on-delay based on the
-bPwrOn2PwrGood value in the hub descriptor.
+[ regrouped and aligned the PCI_DEVICE_ID definitions -Mathias]
 
-xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
-on xhci spec section 5.4.8, but it's clearly not enough for the
-USB 3.1 devices, causing enumeration issues.
-
-Tests indicate full 100ms delay is needed.
-
-Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Fixes: 90d28fb53d4a ("usb: core: reduce power-on-good delay time of root hub")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211105160036.549516-1-mathias.nyman@linux.intel.com
+Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211014121200.75433-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-hub.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci-pci.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -171,7 +171,6 @@ static void xhci_common_hub_descriptor(s
- {
- 	u16 temp;
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -59,6 +59,13 @@
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_3			0x43ba
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_2			0x43bb
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_1		0x161a
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_2		0x161b
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_3		0x161d
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_4		0x161e
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_5		0x15d6
++#define PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_6		0x15d7
++
+ #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
+ #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+@@ -290,6 +297,15 @@ static void xhci_pci_quirks(struct devic
+ 	     pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4))
+ 		xhci->quirks |= XHCI_NO_SOFT_RETRY;
  
--	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.9 says 20ms max */
- 	desc->bHubContrCurrent = 0;
- 
- 	desc->bNbrPorts = ports;
-@@ -206,6 +205,7 @@ static void xhci_usb2_hub_descriptor(str
- 	desc->bDescriptorType = USB_DT_HUB;
- 	temp = 1 + (ports / 8);
- 	desc->bDescLength = USB_DT_HUB_NONVAR_SIZE + 2 * temp;
-+	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.8 says 20ms */
- 
- 	/* The Device Removable bits are reported on a byte granularity.
- 	 * If the port doesn't exist within that byte, the bit is set to 0.
-@@ -258,6 +258,7 @@ static void xhci_usb3_hub_descriptor(str
- 	xhci_common_hub_descriptor(xhci, desc, ports);
- 	desc->bDescriptorType = USB_DT_SS_HUB;
- 	desc->bDescLength = USB_DT_SS_HUB_SIZE;
-+	desc->bPwrOn2PwrGood = 50;	/* usb 3.1 may fail if less than 100ms */
- 
- 	/* header decode latency should be zero for roothubs,
- 	 * see section 4.23.5.2.
++	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
++	    (pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_1 ||
++	    pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_2 ||
++	    pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_3 ||
++	    pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_4 ||
++	    pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_5 ||
++	    pdev->device == PCI_DEVICE_ID_AMD_YELLOW_CARP_XHCI_6))
++		xhci->quirks |= XHCI_DEFAULT_PM_RUNTIME_ALLOW;
++
+ 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+ 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+ 				"QUIRK: Resetting on resume");
 
 
