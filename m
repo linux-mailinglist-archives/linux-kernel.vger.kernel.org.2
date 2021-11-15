@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A81D450515
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD8345051B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhKONOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhKONOJ (ORCPT
+        id S230004AbhKONPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:15:50 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59648
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231699AbhKONOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:14:09 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533DEC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:11:13 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id c4so15003538pfj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ROQCjN5k2UVnWi2zQNfIiQtMQl7MmqXKJ/5+MhErzDo=;
-        b=zggvuMC9M0eHUvSUyqa7tJvLh/y0iQYZN4C464D9f5aQz7qaVDsolc3tq33SAFA6Fo
-         vp6BBdl39AEnUfr5RT4GakwkGMbQvHfejCrrLzYAZ6+f6II7l3SGdutl3QEVjsSamrDh
-         BoVvUU67a1h7VPNn5m+f8iz2WJz4jnQzhkRFHfPyXAna39hfbYyFyx2AY3LbURYEDX3M
-         KmY5Kse7evxEuNEKAhe+umLvFzjE8Frzx6frS5nitNRw8EBw5aXq1X97cEv20hgcVrQC
-         tddppToqj9lVpKg6r9zl+kWVLVNLcS4VvfHE1QB5jkEUruFSKFi/Mf5qnLzGyButLVN1
-         cHXw==
+        Mon, 15 Nov 2021 08:14:34 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5DE6D3F1B4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:11:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636981898;
+        bh=C4OqJG48hYcqq30Slr+ygcxYtVuy69xtDHhMFgPr9Mk=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=P92G6422RjT8fsbm4FO4lFXfRlMDCQVDb9W/8lL0Btp2YxdU61ovEVM4kohB7vHza
+         W9FViNyYhlyCwhh8eHRJJaiduZnApgERjwjo33e6c4XpqR5hvP9kak6Rgdc7V0/pFl
+         t8ZX7dSyXFmyBtGCn9+nUe+aXdhXR/7oHtnutYREUlZMIblRZHfmWOt9LZjBoD4Yk3
+         kCVi87mn6aHdDm8FJ0+EeYyKIWlxKg0NkjXSaTJcbzEivLvFBAUJeMic63pvv0zC1I
+         GA3KVnOi4M6G4YtFQqYApTa42ytL22udJGwecA5RwQn/ZpstMuaY8khXF+Uoz4+VzD
+         9cBjmuB1hw+cw==
+Received: by mail-lj1-f197.google.com with SMTP id a7-20020a05651c210700b00219132ab503so1125685ljq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:11:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ROQCjN5k2UVnWi2zQNfIiQtMQl7MmqXKJ/5+MhErzDo=;
-        b=EYCClJb1I6hbzuDePxGP2mTnx6PL3QojxcdJo1S/OsE2gIEtrIH5yTpE3qTFcA63hl
-         FH2bbuRdgt+TuQFErmqfBWO5htIzgxAJCInhex752HoIAMZPrYSgWawMbzkOqYDu9MRS
-         oQ3PBzR937+j+O5B57RKtUiqURK195kiCkkODCmcYTD6ah8IX4IA2w+eSOTIECwgqjaC
-         zQPrn9s5oMimjr4K0EyX4004REswwICTRlsyuLyuuIpgV2nyLBctF1HUnJwy+yQOG+yM
-         wZ+yoO6K3qrP/w1b+uYex4qwVSU8QEdWMT45zYYwbHPCddZ9VBdcb9NErrvfJi3ecmNF
-         vV0A==
-X-Gm-Message-State: AOAM533IukK+UyiSDJDY/qF7raYa7oYJ7ZT9yA2e+GuQdkMUaWQfa0l3
-        VK+GwIhkro/4msaDd3Q1V+tKnQ==
-X-Google-Smtp-Source: ABdhPJwyVSeiAp2rJm2KcS0PXuotYeFbe/pDzTBO9nopAz1aF6VfBFx1Q3EpqVlgfmBO40wzvZ9q+A==
-X-Received: by 2002:a63:788d:: with SMTP id t135mr23986887pgc.2.1636981872533;
-        Mon, 15 Nov 2021 05:11:12 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([204.124.181.117])
-        by smtp.gmail.com with ESMTPSA id c20sm16705942pfl.201.2021.11.15.05.11.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=C4OqJG48hYcqq30Slr+ygcxYtVuy69xtDHhMFgPr9Mk=;
+        b=QbJGHFVEBKEPmcv0BeGtMpi5tTNOo6EpR9etuhtJxdh4xbyVrk4F4sItFIGLi91yoa
+         ZWzZJUEzXMizSt3MFZLAYd9S4uGyNLTjeMxjlVWDopHPeUTLQjMN9fYg8d7eHOCcvDDg
+         5c+Ry6aFKrq2SCV5Sm7Qr0PibLJJKcftEO0TH/Xg1AvwZ4SqZ+0LX1zUtSp4l47Y4prM
+         JicaHtWBf1ibD4iA9I0gCLJWS9TRdW+cL6wGCYXw2EJySx2QtZgGiTn4wdqWZRb/JmpO
+         ZISyeHPPa4VyUkndI7ctB30I5uToC+0zvLd0u1Fo8dSeCzzr9nU9fQ7IUgWc79UT+BTL
+         ArsQ==
+X-Gm-Message-State: AOAM532ssInj7cn0o2ErrtDIwx3AAenFD6cmwR6vRfEqmmFbshVlvLUt
+        nhye+l9MOENIrhoWkVOx53exiaFKuLgRSR3IJzNtflD9YZpSzGs1cOYBEvDzcATcSH5zNHjkmCF
+        5qu1FSFpqC3O3dtPWmbMQYXxYGBeDTBtheDCL6zkfLw==
+X-Received: by 2002:a05:651c:a12:: with SMTP id k18mr32632307ljq.251.1636981897672;
+        Mon, 15 Nov 2021 05:11:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxgfHv5Ghmc5ZcgMYQVuByaFZZUQ0C+iADPPifEfTYtAaa1iz5+nXIE+GsDCwWWK5IS1/YWHw==
+X-Received: by 2002:a05:651c:a12:: with SMTP id k18mr32632286ljq.251.1636981897542;
+        Mon, 15 Nov 2021 05:11:37 -0800 (PST)
+Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id p21sm1411254lfa.289.2021.11.15.05.11.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 05:11:11 -0800 (PST)
-Date:   Mon, 15 Nov 2021 21:11:06 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Ruyi Wang <wangruyi@huawei.com>,
-        Kaihua Zhong <zhongkaihua@huawei.com>
-Subject: Re: [PATCH] mailbox: hi3660: convert struct comments to kernel-doc
- notation
-Message-ID: <20211115131106.GB265221@leoy-ThinkPad-X240s>
-References: <20211115033119.11175-1-rdunlap@infradead.org>
+        Mon, 15 Nov 2021 05:11:37 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ARM: s3c: include header for prototype of s3c2410_modify_misccr
+Date:   Mon, 15 Nov 2021 14:11:32 +0100
+Message-Id: <163698188786.128367.13689737692316629811.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
+References: <20211111091123.50853-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115033119.11175-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 07:31:19PM -0800, Randy Dunlap wrote:
-> Convert hi3660 struct comments to kernel-doc notation and fix
-> other kernel-doc warnings:
+On Thu, 11 Nov 2021 10:11:23 +0100, Krzysztof Kozlowski wrote:
+> Include the header with prototype of s3c2410_modify_misccr to fix W=1
+> warning:
 > 
-> drivers/mailbox/hi3660-mailbox.c:47: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->     * Hi3660 mailbox channel information
-> drivers/mailbox/hi3660-mailbox.c:62: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->     * Hi3660 mailbox controller data
-> hi3660-mailbox.c:53: warning: contents before sections
-> hi3660-mailbox.c:67: warning: contents before sections
+>   arch/arm/mach-s3c/gpio-samsung.c:1309:14: warning:
+>     no previous prototype for ‘s3c2410_modify_misccr’ [-Wmissing-prototypes]
 > 
-> Fixes: 41c0e939d70d ("mailbox: Add support for Hi3660 mailbox")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Jassi Brar <jassisinghbrar@gmail.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Ruyi Wang <wangruyi@huawei.com>
-> Cc: Kaihua Zhong <zhongkaihua@huawei.com>
+> 
+> [...]
 
-Thank you for fixing and improvment comments.
+Applied, thanks!
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+[1/1] ARM: s3c: include header for prototype of s3c2410_modify_misccr
+      commit: 90dc0df9168b6c1ddb339481b440d7c13cc4417c
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
