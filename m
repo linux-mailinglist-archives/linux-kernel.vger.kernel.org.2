@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8661451E15
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A620B4520C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhKOT1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
+        id S245652AbhKPA4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:56:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238084AbhKORtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:49:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1911763319;
-        Mon, 15 Nov 2021 17:30:40 +0000 (UTC)
+        id S1343755AbhKOTV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A0F6338A;
+        Mon, 15 Nov 2021 18:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997441;
-        bh=Yw9UWI2+SWs6DTsmq52MfEyAUmXK1L2KBekRP+PcDtw=;
+        s=korg; t=1637001942;
+        bh=FIZJSShMnLhsU2S+oXsXXs9BlVFZqsBTgCjm40aVtPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iAR2xaOnOcZobaoTDbpStMA4btLgDUHQ7yTXJ9Zm8GaBQEhFbMO6xA+vdrQIeOObn
-         nNYZSAaKgik+nSioKILXDBiDNmoix/PC0PehaPzxmRwl9oGC94wanuJzUaOr7HdD1L
-         MMlgerPh6gUCrNcjqPyCf7HQX0fcetGbqbIBJd/w=
+        b=2IUSwbIXmW018RM86cbTXy/6qS4a//6GAF72qt4o3+OjRm3sVRbhXsLg3CqTZXudn
+         4bXlpn52Ru4HiUVctNB6cXayukyNU1OPAgRgWH8QCRTuwJnABaBNhC1yZWmEi0hDib
+         ykq4/SYPi/eTib25+sWpSOme/hFSot/ynkOHQk24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.10 116/575] perf/x86/intel/uncore: Fix Intel ICX IIO event constraints
+        stable@vger.kernel.org,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Benjamin Li <benl@squareup.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 346/917] wcn36xx: Fix Antenna Diversity Switching
 Date:   Mon, 15 Nov 2021 17:57:21 +0100
-Message-Id: <20211115165347.681717056@linuxfoundation.org>
+Message-Id: <20211115165440.482939874@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +43,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-commit f42e8a603c88f72bf047a710b9fc1d3579f31e71 upstream.
+[ Upstream commit 701668d3bfa03dabc5095fc383d5315544ee5b31 ]
 
-According to the latest uncore document, both NUM_OUTSTANDING_REQ_OF_CPU
-(0x88) event and COMP_BUF_OCCUPANCY(0xd5) event also have constraints. Add
-them into the event constraints table.
+We have been tracking a strange bug with Antenna Diversity Switching (ADS)
+on wcn3680b for a while.
 
-Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/1629991963-102621-4-git-send-email-kan.liang@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ADS is configured like this:
+   A. Via a firmware configuration table baked into the NV area.
+       1. Defines if ADS is enabled.
+       2. Defines which GPIOs are connected to which antenna enable pin.
+       3. Defines which antenna/GPIO is primary and which is secondary.
+
+   B. WCN36XX_CFG_VAL(ANTENNA_DIVERSITY, N)
+      N is a bitmask of available antenna.
+
+      Setting N to 3 indicates a bitmask of enabled antenna (1 | 2).
+
+      Obviously then we can set N to 1 or N to 2 to fix to a particular
+      antenna and disable antenna diversity.
+
+   C. WCN36XX_CFG_VAL(ASD_PROBE_INTERVAL, XX)
+      XX is the number of beacons between each antenna RSSI check.
+      Setting this value to 50 means, every 50 received beacons, run the
+      ADS algorithm.
+
+   D. WCN36XX_CFG_VAL(ASD_TRIGGER_THRESHOLD, YY)
+      YY is a two's complement integer which specifies the RSSI decibel
+      threshold below which ADS will run.
+      We default to -60db here, meaning a measured RSSI <= -60db will
+      trigger an ADS probe.
+
+   E. WCN36XX_CFG_VAL(ASD_RTT_RSSI_HYST_THRESHOLD, Z)
+      Z is a hysteresis value, indicating a delta which the RSSI must
+      exceed for the antenna switch to be valid.
+
+      For example if HYST_THRESHOLD == 3 AntennaId1-RSSI == -60db and
+      AntennaId-2-RSSI == -58db then firmware will not switch antenna.
+      The threshold needs to be -57db or better to satisfy the criteria.
+
+   F. A firmware feature bit also exists ANTENNA_DIVERSITY_SELECTION.
+      This feature bit is used by the firmware to report if
+      ANTENNA_DIVERSITY_SELECTION is supported. The host is not required to
+      toggle this bit to enable or disable ADS.
+
+ADS works like this:
+
+    A. Every XX beacons the firmware switches to or remains on the primary
+       antenna.
+
+    B. The firmware then sends a Request-To-Send (RTS) packet to the AP.
+
+    C. The firmware waits for a Clear-To-Send (CTS) response from the AP.
+
+    D. The firmware then notes the received RSSI on the CTS packet.
+
+    E. The firmware then repeats steps A-D on the secondary antenna.
+
+    F. Subsequently if the RSSI on the measured antenna is better than
+       ASD_TRIGGER_THRESHOLD + the active antenna's RSSI then the
+       measured antenna becomes the active antenna.
+
+    G. If RSSI rises past ASD_TRIGGER_THRESHOLD then ADS doesn't run at
+       all even if there is a substantially better RSSI on the alternative
+       antenna.
+
+What we have been observing is that the RTS packet is being sent but the
+MAC address is a byte-swapped version of the target MAC. The ADS/RTS MAC is
+corrupted only when the link is encrypted, if the AP is open the RTS MAC is
+correct. Similarly if we configure the firmware to an RTS/CTS sequence for
+regular data - the transmitted RTS MAC is correctly formatted.
+
+Internally the wcn36xx firmware uses the indexes in the SMD commands to
+populate and extract data from specific entries in an STA lookup table. The
+AP's MAC appears a number of times in different indexes within this lookup
+table, so the MAC address extracted for the data-transmit RTS and the MAC
+address extracted for the ADS/RTS packet are not the same STA table index.
+
+Our analysis indicates the relevant firmware STA table index is
+"bssSelfStaIdx".
+
+There is an STA populate function responsible for formatting the MAC
+address of the bssSelfStaIdx including byte-swapping the MAC address.
+
+Its clear then that the required STA populate command did not run for
+bssSelfStaIdx.
+
+So taking a look at the sequence of SMD commands sent to the firmware we
+see the following downstream when moving from an unencrypted to encrypted
+BSS setup.
+
+- WLAN_HAL_CONFIG_BSS_REQ
+- WLAN_HAL_CONFIG_STA_REQ
+- WLAN_HAL_SET_STAKEY_REQ
+
+Upstream in wcn36xx we have
+
+- WLAN_HAL_CONFIG_BSS_REQ
+- WLAN_HAL_SET_STAKEY_REQ
+
+The solution then is to add the missing WLAN_HAL_CONFIG_STA_REQ between
+WLAN_HAL_CONFIG_BSS_REQ and WLAN_HAL_SET_STAKEY_REQ.
+
+No surprise WLAN_HAL_CONFIG_STA_REQ is the routine responsible for
+populating the STA lookup table in the firmware and once done the MAC sent
+by the ADS routine is in the correct byte-order.
+
+This bug is apparent with ADS but it is also the case that any other
+firmware routine that depends on the "bssSelfStaIdx" would retrieve
+malformed data on an encrypted link.
+
+Fixes: 3e977c5c523d ("wcn36xx: Define wcn3680 specific firmware parameters")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested-by: Benjamin Li <benl@squareup.com>
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210909144428.2564650-2-bryan.odonoghue@linaro.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/wcn36xx/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -4898,8 +4898,10 @@ static struct event_constraint icx_uncor
- 	UNCORE_EVENT_CONSTRAINT(0x02, 0x3),
- 	UNCORE_EVENT_CONSTRAINT(0x03, 0x3),
- 	UNCORE_EVENT_CONSTRAINT(0x83, 0x3),
-+	UNCORE_EVENT_CONSTRAINT(0x88, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
-+	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
- 	EVENT_CONSTRAINT_END
- };
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index 28d6251ad77a6..5974b01f2fd92 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -571,12 +571,14 @@ static int wcn36xx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 		if (IEEE80211_KEY_FLAG_PAIRWISE & key_conf->flags) {
+ 			sta_priv->is_data_encrypted = true;
+ 			/* Reconfigure bss with encrypt_type */
+-			if (NL80211_IFTYPE_STATION == vif->type)
++			if (NL80211_IFTYPE_STATION == vif->type) {
+ 				wcn36xx_smd_config_bss(wcn,
+ 						       vif,
+ 						       sta,
+ 						       sta->addr,
+ 						       true);
++				wcn36xx_smd_config_sta(wcn, vif, sta);
++			}
  
+ 			wcn36xx_smd_set_stakey(wcn,
+ 				vif_priv->encrypt_type,
+-- 
+2.33.0
+
 
 
