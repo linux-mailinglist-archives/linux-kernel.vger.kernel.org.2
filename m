@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96564518C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFE9451E2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238624AbhKOXHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:07:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59658 "EHLO mail.kernel.org"
+        id S1348659AbhKPAfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243376AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC5063487;
-        Mon, 15 Nov 2021 18:12:48 +0000 (UTC)
+        id S1344005AbhKOTXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C72633B5;
+        Mon, 15 Nov 2021 18:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999969;
-        bh=bUJhkn8O66m8xRPJtc8JMligjM41Q4ed+tc24hFcbz8=;
+        s=korg; t=1637002204;
+        bh=2Tl6eJqLtD01E2lXx8xQTjI7Wbb9nDy/gpW8Sdk1P2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chZNrcobXQ6tSBg4Az+kdMzp/gfejNfiwCqtq/iOEgi1gklSb+r2kmLp3mOFfYoTC
-         7A9lez4u2imRxnhaEDWI3xBsQdKMER3N8oPc3VpLWEaR3qQ4i8i+oVamCglhbqP6hu
-         W5dfUWKsk+2y0dPQv3DeykWFJMaW1R3icmoWm30U=
+        b=zd9EzO2cVqxEEeyHcv2XxI8agbMauOZKRt9kV28Z+RyRLEeUtQfSWCecyfJgBC2Tj
+         vCBELIeD4Ln2l7e7Xg1nxKozAyU8dIfVZCiZLEvRFdY3ZD/WcIH49l6gbAJ7dixc+Y
+         PPYf2fiAa9wUbaIB8ag40gzULRBPTsruz+Z34bgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Leon Yen <Leon.Yen@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 462/849] mt76: connac: fix GTK rekey offload failure on WPA mixed mode
+        stable@vger.kernel.org, Andrea Righi <andrea.righi@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 450/917] blk-wbt: prevent NULL pointer dereference in wb_timer_fn
 Date:   Mon, 15 Nov 2021 17:59:05 +0100
-Message-Id: <20211115165435.918430369@linuxfoundation.org>
+Message-Id: <20211115165444.038581185@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Yen <Leon.Yen@mediatek.com>
+From: Andrea Righi <andrea.righi@canonical.com>
 
-[ Upstream commit 781f62960c635cfed55a8f8c0f909bdaf8268257 ]
+[ Upstream commit 480d42dc001bbfe953825a92073012fcd5a99161 ]
 
-Update the proper firmware programming sequence to fix GTK rekey
-offload failure on WPA mixed mode.
+The timer callback used to evaluate if the latency is exceeded can be
+executed after the corresponding disk has been released, causing the
+following NULL pointer dereference:
 
-In the mt76_connac_mcu_key_iter,
-gtk_tlv->proto should be only set up on pairwise key
-and gtk_tlk->group_cipher should be only set up on the group key.
+[ 119.987108] BUG: kernel NULL pointer dereference, address: 0000000000000098
+[ 119.987617] #PF: supervisor read access in kernel mode
+[ 119.987971] #PF: error_code(0x0000) - not-present page
+[ 119.988325] PGD 7c4a4067 P4D 7c4a4067 PUD 7bf63067 PMD 0
+[ 119.988697] Oops: 0000 [#1] SMP NOPTI
+[ 119.988959] CPU: 1 PID: 9353 Comm: cloud-init Not tainted 5.15-rc5+arighi #rc5+arighi
+[ 119.989520] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+[ 119.990055] RIP: 0010:wb_timer_fn+0x44/0x3c0
+[ 119.990376] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
+[ 119.991578] RSP: 0000:ffffb5f580957da8 EFLAGS: 00010246
+[ 119.991937] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
+[ 119.992412] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88f476d7f780
+[ 119.992895] RBP: ffffb5f580957dd0 R08: 0000000000000000 R09: 0000000000000000
+[ 119.993371] R10: 0000000000000004 R11: 0000000000000002 R12: ffff88f476c84500
+[ 119.993847] R13: ffff88f4434390c0 R14: 0000000000000000 R15: ffff88f4bdc98c00
+[ 119.994323] FS: 00007fb90bcd9c00(0000) GS:ffff88f4bdc80000(0000) knlGS:0000000000000000
+[ 119.994952] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 119.995380] CR2: 0000000000000098 CR3: 000000007c0d6000 CR4: 00000000000006e0
+[ 119.995906] Call Trace:
+[ 119.996130] ? blk_stat_free_callback_rcu+0x30/0x30
+[ 119.996505] blk_stat_timer_fn+0x138/0x140
+[ 119.996830] call_timer_fn+0x2b/0x100
+[ 119.997136] __run_timers.part.0+0x1d1/0x240
+[ 119.997470] ? kvm_clock_get_cycles+0x11/0x20
+[ 119.997826] ? ktime_get+0x3e/0xa0
+[ 119.998110] ? native_apic_msr_write+0x2c/0x30
+[ 119.998456] ? lapic_next_event+0x20/0x30
+[ 119.998779] ? clockevents_program_event+0x94/0xf0
+[ 119.999150] run_timer_softirq+0x2a/0x50
+[ 119.999465] __do_softirq+0xcb/0x26f
+[ 119.999764] irq_exit_rcu+0x8c/0xb0
+[ 120.000057] sysvec_apic_timer_interrupt+0x43/0x90
+[ 120.000429] ? asm_sysvec_apic_timer_interrupt+0xa/0x20
+[ 120.000836] asm_sysvec_apic_timer_interrupt+0x12/0x20
 
-Otherwise, those parameters required by firmware would be set
-incorrectly to cause GTK rekey offload failure on WPA mixed mode
-and then disconnection follows.
+In this case simply return from the timer callback (no action
+required) to prevent the NULL pointer dereference.
 
-Fixes: b47e21e75c80 ("mt76: mt7615: add gtk rekey offload support")
-Co-developed-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Leon Yen <Leon.Yen@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+BugLink: https://bugs.launchpad.net/bugs/1947557
+Link: https://lore.kernel.org/linux-mm/YWRNVTk9N8K0RMst@arighi-desktop/
+Fixes: 34dbad5d26e2 ("blk-stat: convert to callback-based statistics reporting")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+Link: https://lore.kernel.org/r/YW6N2qXpBU3oc50q@arighi-desktop
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt76_connac_mcu.c  | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ block/blk-wbt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-index 5c3a81e5f559d..f57f047fce99c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-@@ -1929,19 +1929,22 @@ mt76_connac_mcu_key_iter(struct ieee80211_hw *hw,
- 	    key->cipher != WLAN_CIPHER_SUITE_TKIP)
- 		return;
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index 874c1c37bf0c6..0c119be0e8133 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -357,6 +357,9 @@ static void wb_timer_fn(struct blk_stat_callback *cb)
+ 	unsigned int inflight = wbt_inflight(rwb);
+ 	int status;
  
--	if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
--		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
-+	if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
- 		cipher = BIT(3);
--	} else {
--		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
-+	else
- 		cipher = BIT(4);
--	}
- 
- 	/* we are assuming here to have a single pairwise key */
- 	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
-+		if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
-+			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
-+		else
-+			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
++	if (!rwb->rqos.q->disk)
++		return;
 +
- 		gtk_tlv->pairwise_cipher = cpu_to_le32(cipher);
--		gtk_tlv->group_cipher = cpu_to_le32(cipher);
- 		gtk_tlv->keyid = key->keyidx;
-+	} else {
-+		gtk_tlv->group_cipher = cpu_to_le32(cipher);
- 	}
- }
+ 	status = latency_exceeded(rwb, cb->stat);
  
+ 	trace_wbt_timer(rwb->rqos.q->disk->bdi, status, rqd->scale_step,
 -- 
 2.33.0
 
