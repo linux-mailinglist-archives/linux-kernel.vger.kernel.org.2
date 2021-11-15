@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD6C451849
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0A545184C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348514AbhKOW5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:57:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51382 "EHLO mail.kernel.org"
+        id S242221AbhKOW5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:57:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242838AbhKOSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:46:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C52DD6331C;
-        Mon, 15 Nov 2021 18:07:04 +0000 (UTC)
+        id S242839AbhKOSqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:46:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C8F963386;
+        Mon, 15 Nov 2021 18:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999625;
-        bh=LqB4mW/Iahc4WSQEWaRmcSjU3xOXUljaega4n7VArFQ=;
+        s=korg; t=1636999628;
+        bh=Idgu4DDNcl1FXQN6NTh07ooap8DRVzi2XKmEZ04Oi8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R3HPZIAt6zb+4u8unSCYmTzVsgwmAjT4IenpI+cUDfgKzo8+4K8ryP4zAXWz/Dxc8
-         Hcve962rCecFhkv8JMa+aEeYfLJYHk0K4FXlZOcGimJlQxRS6LGSAKkaq1Q+sr1oih
-         CL8ZiLlYeF3BxU+j6aA5aTOxCSv+VhcEcq1m4pKg=
+        b=0mSig2Mmv/6E4RGDmQfIKeOl61AsvaxaCgFHhyhqfnaJYwrcaa4MK4VABxsRkSx1p
+         tQik2VOeaSfcoUUY0VaxANQwLblJVmE0x01aUi5ywSD44xF4pxzASYM8s4wdhL1gKG
+         hWd1IxjBVvm8v1QRyCq6HjThnHRzEWfAYnVQFhaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mauri Sandberg <sandberg@mailfence.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 366/849] net: dsa: rtl8366: Fix a bug in deleting VLANs
-Date:   Mon, 15 Nov 2021 17:57:29 +0100
-Message-Id: <20211115165432.617915670@linuxfoundation.org>
+Subject: [PATCH 5.14 367/849] ath11k: fix some sleeping in atomic bugs
+Date:   Mon, 15 Nov 2021 17:57:30 +0100
+Message-Id: <20211115165432.649906719@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -45,41 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d8251b9db34a2cbc5619b610e7e8aad1d165c531 ]
+[ Upstream commit aadf7c81a0771b8f1c97dabca6a48bae1b387779 ]
 
-We were checking that the MC (member config) was != 0
-for some reason, all we need to check is that the config
-has no ports, i.e. no members. Then it can be recycled.
-This must be some misunderstanding.
+The ath11k_dbring_bufs_replenish() and ath11k_dbring_fill_bufs()
+take a "gfp" parameter but they since they take spinlocks, the
+allocations they do have to be atomic.  This causes a bug because
+ath11k_dbring_buf_setup passes GFP_KERNEL for the gfp flags.
 
-Fixes: 4ddcaf1ebb5e ("net: dsa: rtl8366: Properly clear member config")
-Cc: Mauri Sandberg <sandberg@mailfence.com>
-Cc: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The fix is to use GFP_ATOMIC and remove the unused parameters.
+
+Fixes: bd6478559e27 ("ath11k: Add direct buffer ring support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210812070434.GE31863@kili
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/rtl8366.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/dbring.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
-index 75897a3690969..ffbe5b6b2655b 100644
---- a/drivers/net/dsa/rtl8366.c
-+++ b/drivers/net/dsa/rtl8366.c
-@@ -457,7 +457,7 @@ int rtl8366_vlan_del(struct dsa_switch *ds, int port,
- 			 * anymore then clear the whole member
- 			 * config so it can be reused.
- 			 */
--			if (!vlanmc.member && vlanmc.untag) {
-+			if (!vlanmc.member) {
- 				vlanmc.vid = 0;
- 				vlanmc.priority = 0;
- 				vlanmc.fid = 0;
+diff --git a/drivers/net/wireless/ath/ath11k/dbring.c b/drivers/net/wireless/ath/ath11k/dbring.c
+index 5e1f5437b4185..fd98ba5b1130b 100644
+--- a/drivers/net/wireless/ath/ath11k/dbring.c
++++ b/drivers/net/wireless/ath/ath11k/dbring.c
+@@ -8,8 +8,7 @@
+ 
+ static int ath11k_dbring_bufs_replenish(struct ath11k *ar,
+ 					struct ath11k_dbring *ring,
+-					struct ath11k_dbring_element *buff,
+-					gfp_t gfp)
++					struct ath11k_dbring_element *buff)
+ {
+ 	struct ath11k_base *ab = ar->ab;
+ 	struct hal_srng *srng;
+@@ -35,7 +34,7 @@ static int ath11k_dbring_bufs_replenish(struct ath11k *ar,
+ 		goto err;
+ 
+ 	spin_lock_bh(&ring->idr_lock);
+-	buf_id = idr_alloc(&ring->bufs_idr, buff, 0, ring->bufs_max, gfp);
++	buf_id = idr_alloc(&ring->bufs_idr, buff, 0, ring->bufs_max, GFP_ATOMIC);
+ 	spin_unlock_bh(&ring->idr_lock);
+ 	if (buf_id < 0) {
+ 		ret = -ENOBUFS;
+@@ -72,8 +71,7 @@ err:
+ }
+ 
+ static int ath11k_dbring_fill_bufs(struct ath11k *ar,
+-				   struct ath11k_dbring *ring,
+-				   gfp_t gfp)
++				   struct ath11k_dbring *ring)
+ {
+ 	struct ath11k_dbring_element *buff;
+ 	struct hal_srng *srng;
+@@ -92,11 +90,11 @@ static int ath11k_dbring_fill_bufs(struct ath11k *ar,
+ 	size = sizeof(*buff) + ring->buf_sz + align - 1;
+ 
+ 	while (num_remain > 0) {
+-		buff = kzalloc(size, gfp);
++		buff = kzalloc(size, GFP_ATOMIC);
+ 		if (!buff)
+ 			break;
+ 
+-		ret = ath11k_dbring_bufs_replenish(ar, ring, buff, gfp);
++		ret = ath11k_dbring_bufs_replenish(ar, ring, buff);
+ 		if (ret) {
+ 			ath11k_warn(ar->ab, "failed to replenish db ring num_remain %d req_ent %d\n",
+ 				    num_remain, req_entries);
+@@ -176,7 +174,7 @@ int ath11k_dbring_buf_setup(struct ath11k *ar,
+ 	ring->hp_addr = ath11k_hal_srng_get_hp_addr(ar->ab, srng);
+ 	ring->tp_addr = ath11k_hal_srng_get_tp_addr(ar->ab, srng);
+ 
+-	ret = ath11k_dbring_fill_bufs(ar, ring, GFP_KERNEL);
++	ret = ath11k_dbring_fill_bufs(ar, ring);
+ 
+ 	return ret;
+ }
+@@ -322,7 +320,7 @@ int ath11k_dbring_buffer_release_event(struct ath11k_base *ab,
+ 		}
+ 
+ 		memset(buff, 0, size);
+-		ath11k_dbring_bufs_replenish(ar, ring, buff, GFP_ATOMIC);
++		ath11k_dbring_bufs_replenish(ar, ring, buff);
+ 	}
+ 
+ 	spin_unlock_bh(&srng->lock);
 -- 
 2.33.0
 
