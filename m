@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714434518DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3DD451E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346004AbhKOXJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:09:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
+        id S1349338AbhKPAfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243417AbhKOTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:00:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 063AD61AE3;
-        Mon, 15 Nov 2021 18:14:07 +0000 (UTC)
+        id S1344072AbhKOTXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ED6A6346E;
+        Mon, 15 Nov 2021 18:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000048;
-        bh=ihWfijKLHM+esI8o/vDEhqnlAAvHt+1vj5G5EN490Ao=;
+        s=korg; t=1637002280;
+        bh=+Q4JfkXOceYWMm4jxTxb8J+UvCdwJZ3GgIevIu/2ISg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y2eODbYFVw46y3DsiR1ADRuPxvMQWxAObnZcUWqxBP8b45RjQBx1vCFc1UgrG57/Z
-         N4NeazCnaTrNYl6zzZlFPe4HEZVYm+F5ZWk1fsMMj7uuxAzyXIW30LJrZVeb7Oog1g
-         2Lq4FoZO9Fda4GD3Ix5hDm5olMVhftUImqhKX6B0=
+        b=GflTdtR+I9nzZeRuYnAgIyTgm6V+LU5A4ivxo1baoztfJgjbQ+RdQsWux0kjA0ReH
+         rTdC7j2lid7ZzbdYLWCsmWsqJ5jHQO8hWJ06livmaY2cKL+3yK3h9R5y1ExOAJr4bT
+         j0mxTCK0Ve4GkwctPicdmVLzVhoafEwvahb0mrWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 518/849] samples/kretprobes: Fix return value if register_kretprobe() failed
+Subject: [PATCH 5.15 506/917] s390/gmap: validate VMA in __gmap_zap()
 Date:   Mon, 15 Nov 2021 18:00:01 +0100
-Message-Id: <20211115165437.800499036@linuxfoundation.org>
+Message-Id: <20211115165445.926729651@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit f76fbbbb5061fe14824ba5807c44bd7400a6b4e1 ]
+[ Upstream commit 2d8fb8f3914b40e3cc12f8cbb74daefd5245349d ]
 
-Use the actual return value instead of always -1 if register_kretprobe()
-failed.
+We should not walk/touch page tables outside of VMA boundaries when
+holding only the mmap sem in read mode. Evil user space can modify the
+VMA layout just before this function runs and e.g., trigger races with
+page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+with read mmap_sem in munmap"). The pure prescence in our guest_to_host
+radix tree does not imply that there is a VMA.
 
-E.g. without this patch:
+Further, we should not allocate page tables (via get_locked_pte()) outside
+of VMA boundaries: if evil user space decides to map hugetlbfs to these
+ranges, bad things will happen because we suddenly have PTE or PMD page
+tables where we shouldn't have them.
 
- # insmod samples/kprobes/kretprobe_example.ko func=no_such_func
- insmod: ERROR: could not insert module samples/kprobes/kretprobe_example.ko: Operation not permitted
+Similarly, we have to check if we suddenly find a hugetlbfs VMA, before
+calling get_locked_pte().
 
-With this patch:
+Note that gmap_discard() is different:
+zap_page_range()->unmap_single_vma() makes sure to stay within VMA
+boundaries.
 
- # insmod samples/kprobes/kretprobe_example.ko func=no_such_func
- insmod: ERROR: could not insert module samples/kprobes/kretprobe_example.ko: Unknown symbol in module
-
-Link: https://lkml.kernel.org/r/1635213091-24387-2-git-send-email-yangtiezhu@loongson.cn
-
-Fixes: 804defea1c02 ("Kprobes: move kprobe examples to samples/")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: b31288fa83b2 ("s390/kvm: support collaborative memory management")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210909162248.14969-2-david@redhat.com
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/kprobes/kretprobe_example.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/mm/gmap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
-index 5dc1bf3baa98b..228321ecb1616 100644
---- a/samples/kprobes/kretprobe_example.c
-+++ b/samples/kprobes/kretprobe_example.c
-@@ -86,7 +86,7 @@ static int __init kretprobe_init(void)
- 	ret = register_kretprobe(&my_kretprobe);
- 	if (ret < 0) {
- 		pr_err("register_kretprobe failed, returned %d\n", ret);
--		return -1;
-+		return ret;
- 	}
- 	pr_info("Planted return probe at %s: %p\n",
- 			my_kretprobe.kp.symbol_name, my_kretprobe.kp.addr);
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 4d3b33ce81c62..e0735c3437759 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -672,6 +672,7 @@ EXPORT_SYMBOL_GPL(gmap_fault);
+  */
+ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+ {
++	struct vm_area_struct *vma;
+ 	unsigned long vmaddr;
+ 	spinlock_t *ptl;
+ 	pte_t *ptep;
+@@ -681,6 +682,11 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+ 						   gaddr >> PMD_SHIFT);
+ 	if (vmaddr) {
+ 		vmaddr |= gaddr & ~PMD_MASK;
++
++		vma = vma_lookup(gmap->mm, vmaddr);
++		if (!vma || is_vm_hugetlb_page(vma))
++			return;
++
+ 		/* Get pointer to the page table entry */
+ 		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
+ 		if (likely(ptep))
 -- 
 2.33.0
 
