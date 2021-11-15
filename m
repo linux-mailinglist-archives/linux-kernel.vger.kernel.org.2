@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC24451933
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C647D451B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351306AbhKOXQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:16:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
+        id S1356808AbhKOX6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:58:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244126AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E014160F51;
-        Mon, 15 Nov 2021 18:18:55 +0000 (UTC)
+        id S1344335AbhKOTYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6497E63660;
+        Mon, 15 Nov 2021 18:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000336;
-        bh=J4WEKxdziVKZeSMKf6bYQgQWGqL2ENvoYxPShXVsfAQ=;
+        s=korg; t=1637002556;
+        bh=2RaGNe/VMbenF6xz2lUySj6kx3ABzEgtXx9cSPqtq+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rFt4ilnH4UpEySQLDq7cG1ssXIAv2esJ7rciGmO6ZjhjyWb8GkH8y4FmtZS0mp7Yd
-         dXxlCPv0/pCNKpMRSO0vSF/z7ar7b5a68qvcf5MK0HIDp10VTfNjLXyhJjDvFQ9Sf7
-         VBeapD0fECWEh6TQUYvPA6jOGflRoJmusKJdzIys=
+        b=OXbuPxcTPZBiE5DsJkwN+h4rdnFJ/KUmBC7qyoKmCvXbRmd5LxfR1uX0b27faC0Sw
+         NZoSsTeYzoY0YS4o13rQnMozNA6yCSOTAL9hTzWeSZrQBnYg4L4dIwEd6Pdby1X+kb
+         /lbO+ciOwAsO3KlgTN7iUX3OTaTgMzIavna+gy0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 623/849] soundwire: bus: stop dereferencing invalid slave pointer
-Date:   Mon, 15 Nov 2021 18:01:46 +0100
-Message-Id: <20211115165441.337243438@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 612/917] driver core: Fix possible memory leak in device_link_add()
+Date:   Mon, 15 Nov 2021 18:01:47 +0100
+Message-Id: <20211115165449.551933342@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 4cbbe74d906be0bcffbe1e74b43a00f99626a69c ]
+[ Upstream commit df0a18149474c7e6b21f6367fbc6bc8d0f192444 ]
 
-Slave pointer is invalid after end of list iteration, using this
-would result in below Memory abort.
+I got memory leak as follows:
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
-...
-Call trace:
- __dev_printk+0x34/0x7c
- _dev_warn+0x6c/0x90
- sdw_bus_exit_clk_stop+0x194/0x1d0
- swrm_runtime_resume+0x13c/0x238
- pm_generic_runtime_resume+0x2c/0x48
- __rpm_callback+0x44/0x150
- rpm_callback+0x6c/0x78
- rpm_resume+0x314/0x558
- rpm_resume+0x378/0x558
- rpm_resume+0x378/0x558
- __pm_runtime_resume+0x3c/0x88
+unreferenced object 0xffff88801f0b2200 (size 64):
+  comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
+  hex dump (first 32 bytes):
+    72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
+    74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
+  backtrace:
+    [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
+    [<0000000050da42d9>] kvasprintf+0xb5/0x150
+    [<000000004bbbed13>] kvasprintf_const+0x60/0x190
+    [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
+    [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
+    [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
+    [<000000009db9faed>] _regulator_get+0x297/0x680
+    [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
+    [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
+    [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
+    [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
+    [<0000000070fb977b>] really_probe+0x299/0xc30
+    [<0000000088e226ce>] __driver_probe_device+0x357/0x500
+    [<00000000c21dda32>] driver_probe_device+0x4e/0x140
+    [<000000004e650441>] __device_attach_driver+0x257/0x340
+    [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
 
-Use bus->dev instead to print this error message.
+When device_register() returns an error, the name allocated in dev_set_name()
+will be leaked, the put_device() should be used instead of kfree() to give up
+the device reference, then the name will be freed in kobject_cleanup() and the
+references of consumer and supplier will be decreased in device_link_release_fn().
 
-Fixes: b50bb8ba369cd ("soundwire: bus: handle -ENODATA errors in clock stop/start sequences")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20211012101521.32087-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210930085714.2057460-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 3e6d4addac2f6..98c526aaf24b8 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1103,7 +1103,7 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus)
- 	if (!simple_clk_stop) {
- 		ret = sdw_bus_wait_for_clk_prep_deprep(bus, SDW_BROADCAST_DEV_NUM);
- 		if (ret < 0)
--			dev_warn(&slave->dev, "clock stop deprepare wait failed:%d\n", ret);
-+			dev_warn(bus->dev, "clock stop deprepare wait failed:%d\n", ret);
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 249da496581a0..63577de268565 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -821,9 +821,7 @@ struct device_link *device_link_add(struct device *consumer,
+ 		     dev_bus_name(supplier), dev_name(supplier),
+ 		     dev_bus_name(consumer), dev_name(consumer));
+ 	if (device_register(&link->link_dev)) {
+-		put_device(consumer);
+-		put_device(supplier);
+-		kfree(link);
++		put_device(&link->link_dev);
+ 		link = NULL;
+ 		goto out;
  	}
- 
- 	list_for_each_entry(slave, &bus->slaves, node) {
 -- 
 2.33.0
 
