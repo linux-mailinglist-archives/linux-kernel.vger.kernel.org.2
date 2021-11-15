@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9A14514EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781F545137D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349742AbhKOUQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:16:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46096 "EHLO mail.kernel.org"
+        id S1348301AbhKOTvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:51:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239844AbhKOSEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:04:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D106324A;
-        Mon, 15 Nov 2021 17:39:26 +0000 (UTC)
+        id S232504AbhKOSEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:04:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 246CF63368;
+        Mon, 15 Nov 2021 17:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997967;
-        bh=YoMJBw+pwqJ7nyxDP2Zq3HG+bM29ivKvUDy+ZzE5B+4=;
+        s=korg; t=1636997997;
+        bh=N3p3ZCqk4cuW4VM4Dg4mzdr6a8Fw9oH1Dt36qv1uZaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OowWssgQNUEp4gGRKNSfYsUFNTYuzKvdxd5iabNgmQKroDOzxsXkeAVmQzkvLm7sV
-         Gta++MVSL4FoWlqMcTdrq475A7yt8i+3ZEpg/agpkD5NlW2itfIpcJBcgE8iJ1Hhkm
-         +LxaW9EMkD7dNWvNcmZA5I4ZRiW5UTuhUUdDMtiw=
+        b=VnNEpQDSdU3VgrniLjO3IDwSHRh6T2zA+DgkXw1IDiBT9BZEloSOxiCbt/F+7S2YZ
+         +QDIpJ7UI4RiggaEYDZ0ZL1xNQoYIJ2ezae3G9YlBAFQLp92zGM5E5n+02QhQfPZa9
+         mdIgzKYJbGHp9b0utzRDkkLGqdWbk006AtR/ZWqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <seckelmann@datto.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 322/575] ath10k: fix max antenna gain unit
-Date:   Mon, 15 Nov 2021 18:00:47 +0100
-Message-Id: <20211115165354.939303517@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qiao <zhangqiao22@huawei.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 323/575] kernel/sched: Fix sched_fork() access an invalid sched_task_group
+Date:   Mon, 15 Nov 2021 18:00:48 +0100
+Message-Id: <20211115165354.974252091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,84 +40,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <seckelmann@datto.com>
+From: Zhang Qiao <zhangqiao22@huawei.com>
 
-[ Upstream commit 0a491167fe0cf9f26062462de2a8688b96125d48 ]
+[ Upstream commit 4ef0c5c6b5ba1f38f0ea1cedad0cad722f00c14a ]
 
-Most of the txpower for the ath10k firmware is stored as twicepower (0.5 dB
-steps). This isn't the case for max_antenna_gain - which is still expected
-by the firmware as dB.
+There is a small race between copy_process() and sched_fork()
+where child->sched_task_group point to an already freed pointer.
 
-The firmware is converting it from dB to the internal (twicepower)
-representation when it calculates the limits of a channel. This can be seen
-in tpc_stats when configuring "12" as max_antenna_gain. Instead of the
-expected 12 (6 dB), the tpc_stats shows 24 (12 dB).
+	parent doing fork()      | someone moving the parent
+				 | to another cgroup
+  -------------------------------+-------------------------------
+  copy_process()
+      + dup_task_struct()<1>
+				  parent move to another cgroup,
+				  and free the old cgroup. <2>
+      + sched_fork()
+	+ __set_task_cpu()<3>
+	+ task_fork_fair()
+	  + sched_slice()<4>
 
-Tested on QCA9888 and IPQ4019 with firmware 10.4-3.5.3-00057.
+In the worst case, this bug can lead to "use-after-free" and
+cause panic as shown above:
 
-Fixes: 02256930d9b8 ("ath10k: use proper tx power unit")
-Signed-off-by: Sven Eckelmann <seckelmann@datto.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20190611172131.6064-1-sven@narfation.org
+  (1) parent copy its sched_task_group to child at <1>;
+
+  (2) someone move the parent to another cgroup and free the old
+      cgroup at <2>;
+
+  (3) the sched_task_group and cfs_rq that belong to the old cgroup
+      will be accessed at <3> and <4>, which cause a panic:
+
+  [] BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+  [] PGD 8000001fa0a86067 P4D 8000001fa0a86067 PUD 2029955067 PMD 0
+  [] Oops: 0000 [#1] SMP PTI
+  [] CPU: 7 PID: 648398 Comm: ebizzy Kdump: loaded Tainted: G           OE    --------- -  - 4.18.0.x86_64+ #1
+  [] RIP: 0010:sched_slice+0x84/0xc0
+
+  [] Call Trace:
+  []  task_fork_fair+0x81/0x120
+  []  sched_fork+0x132/0x240
+  []  copy_process.part.5+0x675/0x20e0
+  []  ? __handle_mm_fault+0x63f/0x690
+  []  _do_fork+0xcd/0x3b0
+  []  do_syscall_64+0x5d/0x1d0
+  []  entry_SYSCALL_64_after_hwframe+0x65/0xca
+  [] RIP: 0033:0x7f04418cd7e1
+
+Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
+membership and thus sched_task_group can't change. So update child's
+sched_task_group at sched_post_fork() and move task_fork() and
+__set_task_cpu() (where accees the sched_task_group) from sched_fork()
+to sched_post_fork().
+
+Fixes: 8323f26ce342 ("sched: Fix race in task_group")
+Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lkml.kernel.org/r/20210915064030.2231-1-zhangqiao22@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
- drivers/net/wireless/ath/ath10k/wmi.h | 3 +++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ include/linux/sched/task.h |  3 ++-
+ kernel/fork.c              |  2 +-
+ kernel/sched/core.c        | 43 +++++++++++++++++++-------------------
+ 3 files changed, 25 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 90dc48f66fbfe..c42977918e049 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1041,7 +1041,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = channel->max_power * 2;
- 	arg.channel.max_reg_power = channel->max_reg_power * 2;
--	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = channel->max_antenna_gain;
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index 85fb2f34c59b7..24cacb1ca654d 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -55,7 +55,8 @@ extern asmlinkage void schedule_tail(struct task_struct *prev);
+ extern void init_idle(struct task_struct *idle, int cpu);
  
- 	reinit_completion(&ar->vdev_setup_done);
- 	reinit_completion(&ar->vdev_delete_done);
-@@ -1487,7 +1487,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
- 	arg.channel.min_power = 0;
- 	arg.channel.max_power = chandef->chan->max_power * 2;
- 	arg.channel.max_reg_power = chandef->chan->max_reg_power * 2;
--	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain * 2;
-+	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain;
+ extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
+-extern void sched_post_fork(struct task_struct *p);
++extern void sched_post_fork(struct task_struct *p,
++			    struct kernel_clone_args *kargs);
+ extern void sched_dead(struct task_struct *p);
  
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		arg.ssid = arvif->u.ap.ssid;
-@@ -3258,7 +3258,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 			ch->min_power = 0;
- 			ch->max_power = channel->max_power * 2;
- 			ch->max_reg_power = channel->max_reg_power * 2;
--			ch->max_antenna_gain = channel->max_antenna_gain * 2;
-+			ch->max_antenna_gain = channel->max_antenna_gain;
- 			ch->reg_class_id = 0; /* FIXME */
+ void __noreturn do_task_dead(void);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 3f96400a0ac61..773b44be81f9d 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2310,7 +2310,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 	write_unlock_irq(&tasklist_lock);
  
- 			/* FIXME: why use only legacy modes, why not any
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 66ecf09068c19..e244b7038e606 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2066,7 +2066,9 @@ struct wmi_channel {
- 	union {
- 		__le32 reginfo1;
- 		struct {
-+			/* note: power unit is 1 dBm */
- 			u8 antenna_max;
-+			/* note: power unit is 0.5 dBm */
- 			u8 max_tx_power;
- 		} __packed;
- 	} __packed;
-@@ -2086,6 +2088,7 @@ struct wmi_channel_arg {
- 	u32 min_power;
- 	u32 max_power;
- 	u32 max_reg_power;
-+	/* note: power unit is 1 dBm */
- 	u32 max_antenna_gain;
- 	u32 reg_class_id;
- 	enum wmi_phy_mode mode;
+ 	proc_fork_connector(p);
+-	sched_post_fork(p);
++	sched_post_fork(p, args);
+ 	cgroup_post_fork(p, args);
+ 	perf_event_fork(p);
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e4551d1736fa3..bc8ff11e60242 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3231,8 +3231,6 @@ static inline void init_schedstats(void) {}
+  */
+ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ {
+-	unsigned long flags;
+-
+ 	__sched_fork(clone_flags, p);
+ 	/*
+ 	 * We mark the process as NEW here. This guarantees that
+@@ -3278,24 +3276,6 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 
+ 	init_entity_runnable_average(&p->se);
+ 
+-	/*
+-	 * The child is not yet in the pid-hash so no cgroup attach races,
+-	 * and the cgroup is pinned to this child due to cgroup_fork()
+-	 * is ran before sched_fork().
+-	 *
+-	 * Silence PROVE_RCU.
+-	 */
+-	raw_spin_lock_irqsave(&p->pi_lock, flags);
+-	rseq_migrate(p);
+-	/*
+-	 * We're setting the CPU for the first time, we don't migrate,
+-	 * so use __set_task_cpu().
+-	 */
+-	__set_task_cpu(p, smp_processor_id());
+-	if (p->sched_class->task_fork)
+-		p->sched_class->task_fork(p);
+-	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+-
+ #ifdef CONFIG_SCHED_INFO
+ 	if (likely(sched_info_on()))
+ 		memset(&p->sched_info, 0, sizeof(p->sched_info));
+@@ -3311,8 +3291,29 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	return 0;
+ }
+ 
+-void sched_post_fork(struct task_struct *p)
++void sched_post_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+ {
++	unsigned long flags;
++#ifdef CONFIG_CGROUP_SCHED
++	struct task_group *tg;
++#endif
++
++	raw_spin_lock_irqsave(&p->pi_lock, flags);
++#ifdef CONFIG_CGROUP_SCHED
++	tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
++			  struct task_group, css);
++	p->sched_task_group = autogroup_task_group(p, tg);
++#endif
++	rseq_migrate(p);
++	/*
++	 * We're setting the CPU for the first time, we don't migrate,
++	 * so use __set_task_cpu().
++	 */
++	__set_task_cpu(p, smp_processor_id());
++	if (p->sched_class->task_fork)
++		p->sched_class->task_fork(p);
++	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
++
+ 	uclamp_post_fork(p);
+ }
+ 
 -- 
 2.33.0
 
