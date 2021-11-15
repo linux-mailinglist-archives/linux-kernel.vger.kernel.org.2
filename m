@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68E7450437
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE154503E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhKOMQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 07:16:41 -0500
-Received: from www381.your-server.de ([78.46.137.84]:43592 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhKOMQd (ORCPT
+        id S230434AbhKOMAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 07:00:30 -0500
+Received: from mail-ed1-f42.google.com ([209.85.208.42]:38891 "EHLO
+        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhKOMAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 07:16:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=toF67llO+BAwsdq0Ra1tOzp5njbcpYDZtx+Ajrw2D5M=; b=Fdhydmz9sHTMX39b4OR+PnWK29
-        ollzQvnmIQR6UYtKJJv+pdNenKDhmJoe1m+AZz1r/UzmBuh/s/zyEVT/qUSOAY+AepfailB3KakGl
-        nzMJPMS8YSL/mnxq67rqUJ7DGip2AxA33Vlw4H7McDxqIsQkCuDgzYTS3PpC3S4JeCR7BBcBbUbNI
-        zMk0Qwr7AHYBGE7YmvvEhxReJcSjOojKOUKKRtntZ7OnV/zed4/BbkqMvJs3SZ7PDbAEwJGvaYuyr
-        n93yvvpN0QrMdCXLyiVSv13S7LoWnUnb5JznQFPOzPr8bw/l91uSL6xCRsqIjm0Tb3QDvxbpszYjo
-        WFHKC7mA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mmaYO-000B0u-Vm; Mon, 15 Nov 2021 12:53:41 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mmaYO-000AKe-8G; Mon, 15 Nov 2021 12:53:40 +0100
-Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
+        Mon, 15 Nov 2021 07:00:24 -0500
+Received: by mail-ed1-f42.google.com with SMTP id m20so24857336edc.5;
+        Mon, 15 Nov 2021 03:57:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iZwd8zOKfHOZHtZg1NiyaugaGLTtwcsli/vHUABjgyw=;
+        b=dl20a6pf9ubQUeyNWfyNb6BQCZdr75fb2PvgJJ9jg2yGvZauub9Zi9hkjA42w5YBqB
+         ukMhJ0tIRNIFyMpr2j+qGEE+qxufKdCsctb+tCGB7IPNUa1WYOkFU9OcU7Yt9gd4jklt
+         1stS8BcCeaKjky4Vz/1DAT03T60/MOAJWBk64S9Wtb8bmsxghm+/AG8Jw6g6y6P4sN0O
+         X6UU2aFHiq3mBB8sSeJIVb94Fv5xOkZvFhBID19tlFJw9nXAvao5Kk5JowAIIy2enmpy
+         bhLAc/V1tIvCx1VSlvfn9phhcG/N//AI2tL+xtvPV2flEOLXCrOWxeuAxqnzRzDkxGNJ
+         GN7A==
+X-Gm-Message-State: AOAM531S+TJCPWs6VxSnk/wdaLmAUdwoarqPAjLZncgi5YN5jOIbZKev
+        k9fzejdpaCkuKLeVonrewm8=
+X-Google-Smtp-Source: ABdhPJwW6w4WpnROjobFjseOxEMIFpGxpb+OUZBqnh8kfqVJtqdI09J1Lvv5euWDTqz0D+G9VGmPuQ==
+X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr47736793ejb.292.1636977448502;
+        Mon, 15 Nov 2021 03:57:28 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id ne33sm6491674ejc.6.2021.11.15.03.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 03:57:27 -0800 (PST)
+Date:   Mon, 15 Nov 2021 12:57:26 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Quinlan <jim2101024@gmail.com>,
         Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-2-arnd@kernel.org>
- <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
- <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <d2dd42fc-e58a-0c06-7f7e-a6a2161c368d@metafoo.de>
-Date:   Mon, 15 Nov 2021 12:53:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for
+ internal use only
+Message-ID: <YZJLJgYsKQY+5TyI@rocinante>
+References: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 11:42 AM, Arnd Bergmann wrote:
-> On Mon, Nov 15, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 11/15/21 9:53 AM, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> This field is never set, and serves no purpose, so remove it.
->> I agree that we should remove it. Its been legacy support code for a
->> while, but the description that there is no user is not right.
->>
->> The tegra20_spdif driver obviously uses it and that user is removed in
->> this patch. I think it makes sense to split that out into a separate
->> patch with a description why the driver will still work even with
->> slave_id removed. Maybe the best is to remove the whole tegra20_spdif
->> driver.
-> Ok, I'll split out the tegra patch and try to come up with a better
-> description for it. What I saw in that driver is it just passes down the
-> slave_id number from a 'struct resource', but there is nothing in
-> the kernel that sets up this resource.
->
-> Do you or someone else have more information on the state of this
-> driver? I can see that it does not contain any of_device_id based
-> probing, so it seems that this is either dead code, the platform_device
-> gets created by some other code that is no longer compatible with
-> this driver.
+Hi Andy,
 
-I've looked into this a while back, when I tried to remove slave_id. And 
-as far as I can tell there were never any in-tree users of this driver, 
-even back when we used platform board files. Maybe somebody from Nvidia 
-knows if there are out-of-tree users.
+> Use BIT() as __GENMASK() is for internal use only. The rationale
+> of switching to BIT() is to provide better generated code. The
+> GENMASK() against non-constant numbers may produce an ugly assembler
+> code. On contrary the BIT() is simply converted to corresponding shift
+> operation.
+> 
+> Note, it's the only user of __GENMASK() in the kernel outside of its own realm.
+> 
+> Fixes: 3baec684a531 ("PCI: brcmstb: Accommodate MSI for older chips")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: switched to BIT() and elaborated why, hence not included tag
+>  drivers/pci/controller/pcie-brcmstb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index 1fc7bd49a7ad..0c49fc65792c 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -619,7 +619,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+>  
+>  static void brcm_msi_set_regs(struct brcm_msi *msi)
+>  {
+> -	u32 val = __GENMASK(31, msi->legacy_shift);
+> +	u32 val = ~(BIT(msi->legacy_shift) - 1);
 
-- Lars
+Thank you!  I also personally prefer using BIT() macro here.
 
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+
+	Krzysztof
