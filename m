@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E8A452093
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7804B451A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345391AbhKPAzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:55:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1353736AbhKOXkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:40:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343787AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5005635DF;
-        Mon, 15 Nov 2021 18:45:52 +0000 (UTC)
+        id S1343681AbhKOTVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1F70635C8;
+        Mon, 15 Nov 2021 18:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001953;
-        bh=PINb1g6LeQKCTzvTgnm0/JXa7AloU7ASkA1azLLp2EI=;
+        s=korg; t=1637001865;
+        bh=762W2ySzXJ8AkGqqsv/M3SRRFaBMmh8Q8wG0iq/f+Y0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=unv/HJ+cY+kSFaNMqhi+J8XD7hHu57UUlwdt9DdeUR0bBgn2FVDIcWyGM0SKlk10S
-         Y+z4gApEyLmC+vey1HKgxdlyZKT6aaPaPyEI2CNf1RUaSo8jEdvRm4bUCgsFI1vPKn
-         JaY5S6JoAmNH0lnXvb3MecL1MCv0US5MGcwFy4mQ=
+        b=E63bP37nvSgwuPC6DTctNErhsCOoBMKbsapeHYQhvwCjJdxHAE6gWZ/jb1nELrG7w
+         jACgeQGx838pWRBjYGby23Cm79yxPHRGuAGcrZk3M7+a0JCa489c1hQWstkTMu6gQp
+         zutit+p2hDFvyb3iai8aIJPUq9kRravUlW7k5hv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        amd-gfx@lists.freedesktop.org, Arnd Bergmann <arnd@kernel.org>,
-        Leo Li <sunpeng.li@amd.com>,
+        stable@vger.kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Leslie Shi <Yuliang.Shi@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, llvm@lists.linux.dev,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 350/917] drm/amd/display: Pass display_pipe_params_st as const in DML
-Date:   Mon, 15 Nov 2021 17:57:25 +0100
-Message-Id: <20211115165440.617126769@linuxfoundation.org>
+Subject: [PATCH 5.15 351/917] drm/amdgpu: move amdgpu_virt_release_full_gpu to fini_early stage
+Date:   Mon, 15 Nov 2021 17:57:26 +0100
+Message-Id: <20211115165440.653827282@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -48,710 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Wentland <harry.wentland@amd.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-[ Upstream commit 22667e6ec6b2ce9ca706e9061660b059725d009c ]
+[ Upstream commit 6effad8abe0ba4db3d9c58ed585127858a990f35 ]
 
-[Why]
-This neither needs to be on the stack nor passed by value
-to each function call. In fact, when building with clang
-it seems to break the Linux's default 1024 byte stack
-frame limit.
+adev->rmmio is set to be NULL in amdgpu_device_unmap_mmio to prevent
+access after pci_remove, however, in SRIOV case, amdgpu_virt_release_full_gpu
+will still use adev->rmmio for access after amdgpu_device_unmap_mmio.
+The patch is to move such SRIOV calling earlier to fini_early stage.
 
-[How]
-We can simply pass this as a const pointer.
-
-This patch fixes these Coverity IDs
-Addresses-Coverity-ID: 1424031: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1423970: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1423941: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1451742: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1451887: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1454146: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1454152: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1454413: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1466144: ("Big parameter passed by value")
-Addresses-Coverity-ID: 1487237: ("Big parameter passed by value")
-
-Signed-off-by: Harry Wentland <harry.wentland@amd.com>
-Fixes: 3fe617ccafd6 ("Enable '-Werror' by default for all kernel builds")
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Leo Li <sunpeng.li@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Xinhui Pan <Xinhui.Pan@amd.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: llvm@lists.linux.dev
-Acked-by: Christian König <christian.koenig@amd.com>
-Build-tested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Leo Li <sunpeng.li@amd.com>
+Fixes: 07775fc13878 ("drm/amdgpu: Unmap all MMIO mappings")
+Cc: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Signed-off-by: Leslie Shi <Yuliang.Shi@amd.com>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/dcn20/dcn20_resource.c |  2 +-
- .../dc/dml/dcn20/display_rq_dlg_calc_20.c     |  6 +-
- .../dc/dml/dcn20/display_rq_dlg_calc_20.h     |  4 +-
- .../dc/dml/dcn20/display_rq_dlg_calc_20v2.c   |  6 +-
- .../dc/dml/dcn20/display_rq_dlg_calc_20v2.h   |  4 +-
- .../dc/dml/dcn21/display_rq_dlg_calc_21.c     | 62 ++++++++--------
- .../dc/dml/dcn21/display_rq_dlg_calc_21.h     |  4 +-
- .../dc/dml/dcn30/display_rq_dlg_calc_30.c     | 72 +++++++++----------
- .../dc/dml/dcn30/display_rq_dlg_calc_30.h     |  4 +-
- .../dc/dml/dcn31/display_rq_dlg_calc_31.c     | 68 +++++++++---------
- .../dc/dml/dcn31/display_rq_dlg_calc_31.h     |  4 +-
- .../drm/amd/display/dc/dml/display_mode_lib.h |  4 +-
- 12 files changed, 120 insertions(+), 120 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-index f2f258e70f9da..34a126816133e 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -3152,7 +3152,7 @@ void dcn20_calculate_dlg_params(
- 
- 		context->bw_ctx.dml.funcs.rq_dlg_get_rq_reg(&context->bw_ctx.dml,
- 				&context->res_ctx.pipe_ctx[i].rq_regs,
--				pipes[pipe_idx].pipe);
-+				&pipes[pipe_idx].pipe);
- 		pipe_idx++;
- 	}
- }
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.c
-index 2091dd8c252da..8c168f348a27f 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.c
-@@ -768,12 +768,12 @@ static void dml20_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib,
- 
- void dml20_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param)
-+		const display_pipe_params_st *pipe_param)
- {
- 	display_rq_params_st rq_param = {0};
- 
- 	memset(rq_regs, 0, sizeof(*rq_regs));
--	dml20_rq_dlg_get_rq_params(mode_lib, &rq_param, pipe_param.src);
-+	dml20_rq_dlg_get_rq_params(mode_lib, &rq_param, pipe_param->src);
- 	extract_rq_regs(mode_lib, rq_regs, rq_param);
- 
- 	print__rq_regs_st(mode_lib, *rq_regs);
-@@ -1549,7 +1549,7 @@ static void dml20_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
- void dml20_rq_dlg_get_dlg_reg(struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h
-index d0b90947f5409..8b23867e97c18 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20.h
-@@ -43,7 +43,7 @@ struct display_mode_lib;
- void dml20_rq_dlg_get_rq_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 
- 
- // Function: dml_rq_dlg_get_dlg_reg
-@@ -61,7 +61,7 @@ void dml20_rq_dlg_get_dlg_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.c
-index 1a0c14e465faa..26ececfd40cdc 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.c
-@@ -768,12 +768,12 @@ static void dml20v2_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib,
- 
- void dml20v2_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param)
-+		const display_pipe_params_st *pipe_param)
- {
- 	display_rq_params_st rq_param = {0};
- 
- 	memset(rq_regs, 0, sizeof(*rq_regs));
--	dml20v2_rq_dlg_get_rq_params(mode_lib, &rq_param, pipe_param.src);
-+	dml20v2_rq_dlg_get_rq_params(mode_lib, &rq_param, pipe_param->src);
- 	extract_rq_regs(mode_lib, rq_regs, rq_param);
- 
- 	print__rq_regs_st(mode_lib, *rq_regs);
-@@ -1550,7 +1550,7 @@ static void dml20v2_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
- void dml20v2_rq_dlg_get_dlg_reg(struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h
-index 27cf8bed9376f..2b4e46ea1c3df 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_rq_dlg_calc_20v2.h
-@@ -43,7 +43,7 @@ struct display_mode_lib;
- void dml20v2_rq_dlg_get_rq_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 
- 
- // Function: dml_rq_dlg_get_dlg_reg
-@@ -61,7 +61,7 @@ void dml20v2_rq_dlg_get_dlg_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.c b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.c
-index 287e31052b307..736978c4d40a1 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.c
-@@ -694,7 +694,7 @@ static void get_surf_rq_param(
- 		display_data_rq_sizing_params_st *rq_sizing_param,
- 		display_data_rq_dlg_params_st *rq_dlg_param,
- 		display_data_rq_misc_params_st *rq_misc_param,
--		const display_pipe_params_st pipe_param,
-+		const display_pipe_params_st *pipe_param,
- 		bool is_chroma)
- {
- 	bool mode_422 = false;
-@@ -706,30 +706,30 @@ static void get_surf_rq_param(
- 
- 	// FIXME check if ppe apply for both luma and chroma in 422 case
- 	if (is_chroma) {
--		vp_width = pipe_param.src.viewport_width_c / ppe;
--		vp_height = pipe_param.src.viewport_height_c;
--		data_pitch = pipe_param.src.data_pitch_c;
--		meta_pitch = pipe_param.src.meta_pitch_c;
-+		vp_width = pipe_param->src.viewport_width_c / ppe;
-+		vp_height = pipe_param->src.viewport_height_c;
-+		data_pitch = pipe_param->src.data_pitch_c;
-+		meta_pitch = pipe_param->src.meta_pitch_c;
- 	} else {
--		vp_width = pipe_param.src.viewport_width / ppe;
--		vp_height = pipe_param.src.viewport_height;
--		data_pitch = pipe_param.src.data_pitch;
--		meta_pitch = pipe_param.src.meta_pitch;
-+		vp_width = pipe_param->src.viewport_width / ppe;
-+		vp_height = pipe_param->src.viewport_height;
-+		data_pitch = pipe_param->src.data_pitch;
-+		meta_pitch = pipe_param->src.meta_pitch;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 5b88c873c8a89..f7a98e9e68d88 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -2745,6 +2745,11 @@ static int amdgpu_device_ip_fini_early(struct amdgpu_device *adev)
+ 		adev->ip_blocks[i].status.hw = false;
  	}
  
--	if (pipe_param.dest.odm_combine) {
-+	if (pipe_param->dest.odm_combine) {
- 		unsigned int access_dir;
- 		unsigned int full_src_vp_width;
- 		unsigned int hactive_half;
- 		unsigned int src_hactive_half;
--		access_dir = (pipe_param.src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
--		hactive_half  = pipe_param.dest.hactive / 2;
-+		access_dir = (pipe_param->src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
-+		hactive_half  = pipe_param->dest.hactive / 2;
- 		if (is_chroma) {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio_c * pipe_param.dest.full_recout_width;
--			src_hactive_half  = pipe_param.scale_ratio_depth.hscl_ratio_c * hactive_half;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio_c * pipe_param->dest.full_recout_width;
-+			src_hactive_half  = pipe_param->scale_ratio_depth.hscl_ratio_c * hactive_half;
- 		} else {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio * pipe_param.dest.full_recout_width;
--			src_hactive_half  = pipe_param.scale_ratio_depth.hscl_ratio * hactive_half;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio * pipe_param->dest.full_recout_width;
-+			src_hactive_half  = pipe_param->scale_ratio_depth.hscl_ratio * hactive_half;
- 		}
- 
- 		if (access_dir == 0) {
-@@ -754,7 +754,7 @@ static void get_surf_rq_param(
- 	rq_sizing_param->meta_chunk_bytes = 2048;
- 	rq_sizing_param->min_meta_chunk_bytes = 256;
- 
--	if (pipe_param.src.hostvm)
-+	if (pipe_param->src.hostvm)
- 		rq_sizing_param->mpte_group_bytes = 512;
- 	else
- 		rq_sizing_param->mpte_group_bytes = 2048;
-@@ -768,23 +768,23 @@ static void get_surf_rq_param(
- 			vp_height,
- 			data_pitch,
- 			meta_pitch,
--			pipe_param.src.source_format,
--			pipe_param.src.sw_mode,
--			pipe_param.src.macro_tile_size,
--			pipe_param.src.source_scan,
--			pipe_param.src.hostvm,
-+			pipe_param->src.source_format,
-+			pipe_param->src.sw_mode,
-+			pipe_param->src.macro_tile_size,
-+			pipe_param->src.source_scan,
-+			pipe_param->src.hostvm,
- 			is_chroma);
++	if (amdgpu_sriov_vf(adev)) {
++		if (amdgpu_virt_release_full_gpu(adev, false))
++			DRM_ERROR("failed to release exclusive mode on fini\n");
++	}
++
+ 	return 0;
  }
  
- static void dml_rq_dlg_get_rq_params(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_params_st *rq_param,
--		const display_pipe_params_st pipe_param)
-+		const display_pipe_params_st *pipe_param)
- {
- 	// get param for luma surface
--	rq_param->yuv420 = pipe_param.src.source_format == dm_420_8
--			|| pipe_param.src.source_format == dm_420_10;
--	rq_param->yuv420_10bpc = pipe_param.src.source_format == dm_420_10;
-+	rq_param->yuv420 = pipe_param->src.source_format == dm_420_8
-+			|| pipe_param->src.source_format == dm_420_10;
-+	rq_param->yuv420_10bpc = pipe_param->src.source_format == dm_420_10;
+@@ -2805,10 +2810,6 @@ static int amdgpu_device_ip_fini(struct amdgpu_device *adev)
  
- 	get_surf_rq_param(
- 			mode_lib,
-@@ -794,7 +794,7 @@ static void dml_rq_dlg_get_rq_params(
- 			pipe_param,
- 			0);
+ 	amdgpu_ras_fini(adev);
  
--	if (is_dual_plane((enum source_format_class) (pipe_param.src.source_format))) {
-+	if (is_dual_plane((enum source_format_class) (pipe_param->src.source_format))) {
- 		// get param for chroma surface
- 		get_surf_rq_param(
- 				mode_lib,
-@@ -806,14 +806,14 @@ static void dml_rq_dlg_get_rq_params(
- 	}
- 
- 	// calculate how to split the det buffer space between luma and chroma
--	handle_det_buf_split(mode_lib, rq_param, pipe_param.src);
-+	handle_det_buf_split(mode_lib, rq_param, pipe_param->src);
- 	print__rq_params_st(mode_lib, *rq_param);
+-	if (amdgpu_sriov_vf(adev))
+-		if (amdgpu_virt_release_full_gpu(adev, false))
+-			DRM_ERROR("failed to release exclusive mode on fini\n");
+-
+ 	return 0;
  }
  
- void dml21_rq_dlg_get_rq_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param)
-+		const display_pipe_params_st *pipe_param)
- {
- 	display_rq_params_st rq_param = {0};
- 
-@@ -1658,7 +1658,7 @@ void dml21_rq_dlg_get_dlg_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-@@ -1696,7 +1696,7 @@ void dml21_rq_dlg_get_dlg_reg(
- 	// system parameter calculation done
- 
- 	dml_print("DML_DLG: Calculation for pipe[%d] start\n\n", pipe_idx);
--	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, e2e_pipe_param[pipe_idx].pipe);
-+	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, &e2e_pipe_param[pipe_idx].pipe);
- 	dml_rq_dlg_get_dlg_params(
- 			mode_lib,
- 			e2e_pipe_param,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.h b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.h
-index e8f7785e3fc63..af6ad0ca9cf8a 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn21/display_rq_dlg_calc_21.h
-@@ -44,7 +44,7 @@ struct display_mode_lib;
- void dml21_rq_dlg_get_rq_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 
- // Function: dml_rq_dlg_get_dlg_reg
- //   Calculate and return DLG and TTU register struct given the system setting
-@@ -61,7 +61,7 @@ void dml21_rq_dlg_get_dlg_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-index 0d934fae1c3a6..2120e0941a095 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.c
-@@ -747,7 +747,7 @@ static void get_surf_rq_param(struct display_mode_lib *mode_lib,
- 	display_data_rq_sizing_params_st *rq_sizing_param,
- 	display_data_rq_dlg_params_st *rq_dlg_param,
- 	display_data_rq_misc_params_st *rq_misc_param,
--	const display_pipe_params_st pipe_param,
-+	const display_pipe_params_st *pipe_param,
- 	bool is_chroma,
- 	bool is_alpha)
- {
-@@ -761,32 +761,32 @@ static void get_surf_rq_param(struct display_mode_lib *mode_lib,
- 
- 	// FIXME check if ppe apply for both luma and chroma in 422 case
- 	if (is_chroma | is_alpha) {
--		vp_width = pipe_param.src.viewport_width_c / ppe;
--		vp_height = pipe_param.src.viewport_height_c;
--		data_pitch = pipe_param.src.data_pitch_c;
--		meta_pitch = pipe_param.src.meta_pitch_c;
--		surface_height = pipe_param.src.surface_height_y / 2.0;
-+		vp_width = pipe_param->src.viewport_width_c / ppe;
-+		vp_height = pipe_param->src.viewport_height_c;
-+		data_pitch = pipe_param->src.data_pitch_c;
-+		meta_pitch = pipe_param->src.meta_pitch_c;
-+		surface_height = pipe_param->src.surface_height_y / 2.0;
- 	} else {
--		vp_width = pipe_param.src.viewport_width / ppe;
--		vp_height = pipe_param.src.viewport_height;
--		data_pitch = pipe_param.src.data_pitch;
--		meta_pitch = pipe_param.src.meta_pitch;
--		surface_height = pipe_param.src.surface_height_y;
-+		vp_width = pipe_param->src.viewport_width / ppe;
-+		vp_height = pipe_param->src.viewport_height;
-+		data_pitch = pipe_param->src.data_pitch;
-+		meta_pitch = pipe_param->src.meta_pitch;
-+		surface_height = pipe_param->src.surface_height_y;
- 	}
- 
--	if (pipe_param.dest.odm_combine) {
-+	if (pipe_param->dest.odm_combine) {
- 		unsigned int access_dir = 0;
- 		unsigned int full_src_vp_width = 0;
- 		unsigned int hactive_odm = 0;
- 		unsigned int src_hactive_odm = 0;
--		access_dir = (pipe_param.src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
--		hactive_odm  = pipe_param.dest.hactive / ((unsigned int)pipe_param.dest.odm_combine*2);
-+		access_dir = (pipe_param->src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
-+		hactive_odm  = pipe_param->dest.hactive / ((unsigned int) pipe_param->dest.odm_combine*2);
- 		if (is_chroma) {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio_c * pipe_param.dest.full_recout_width;
--			src_hactive_odm  = pipe_param.scale_ratio_depth.hscl_ratio_c * hactive_odm;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio_c * pipe_param->dest.full_recout_width;
-+			src_hactive_odm  = pipe_param->scale_ratio_depth.hscl_ratio_c * hactive_odm;
- 		} else {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio * pipe_param.dest.full_recout_width;
--			src_hactive_odm  = pipe_param.scale_ratio_depth.hscl_ratio * hactive_odm;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio * pipe_param->dest.full_recout_width;
-+			src_hactive_odm  = pipe_param->scale_ratio_depth.hscl_ratio * hactive_odm;
- 		}
- 
- 		if (access_dir == 0) {
-@@ -815,7 +815,7 @@ static void get_surf_rq_param(struct display_mode_lib *mode_lib,
- 	rq_sizing_param->meta_chunk_bytes = 2048;
- 	rq_sizing_param->min_meta_chunk_bytes = 256;
- 
--	if (pipe_param.src.hostvm)
-+	if (pipe_param->src.hostvm)
- 		rq_sizing_param->mpte_group_bytes = 512;
- 	else
- 		rq_sizing_param->mpte_group_bytes = 2048;
-@@ -828,28 +828,28 @@ static void get_surf_rq_param(struct display_mode_lib *mode_lib,
- 		vp_height,
- 		data_pitch,
- 		meta_pitch,
--		pipe_param.src.source_format,
--		pipe_param.src.sw_mode,
--		pipe_param.src.macro_tile_size,
--		pipe_param.src.source_scan,
--		pipe_param.src.hostvm,
-+		pipe_param->src.source_format,
-+		pipe_param->src.sw_mode,
-+		pipe_param->src.macro_tile_size,
-+		pipe_param->src.source_scan,
-+		pipe_param->src.hostvm,
- 		is_chroma,
- 		surface_height);
- }
- 
- static void dml_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib,
- 	display_rq_params_st *rq_param,
--	const display_pipe_params_st pipe_param)
-+	const display_pipe_params_st *pipe_param)
- {
- 	// get param for luma surface
--	rq_param->yuv420 = pipe_param.src.source_format == dm_420_8
--	|| pipe_param.src.source_format == dm_420_10
--	|| pipe_param.src.source_format == dm_rgbe_alpha
--	|| pipe_param.src.source_format == dm_420_12;
-+	rq_param->yuv420 = pipe_param->src.source_format == dm_420_8
-+	|| pipe_param->src.source_format == dm_420_10
-+	|| pipe_param->src.source_format == dm_rgbe_alpha
-+	|| pipe_param->src.source_format == dm_420_12;
- 
--	rq_param->yuv420_10bpc = pipe_param.src.source_format == dm_420_10;
-+	rq_param->yuv420_10bpc = pipe_param->src.source_format == dm_420_10;
- 
--	rq_param->rgbe_alpha = (pipe_param.src.source_format == dm_rgbe_alpha)?1:0;
-+	rq_param->rgbe_alpha = (pipe_param->src.source_format == dm_rgbe_alpha)?1:0;
- 
- 	get_surf_rq_param(mode_lib,
- 		&(rq_param->sizing.rq_l),
-@@ -859,7 +859,7 @@ static void dml_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib,
- 		0,
- 		0);
- 
--	if (is_dual_plane((enum source_format_class)(pipe_param.src.source_format))) {
-+	if (is_dual_plane((enum source_format_class)(pipe_param->src.source_format))) {
- 		// get param for chroma surface
- 		get_surf_rq_param(mode_lib,
- 			&(rq_param->sizing.rq_c),
-@@ -871,13 +871,13 @@ static void dml_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib,
- 	}
- 
- 	// calculate how to split the det buffer space between luma and chroma
--	handle_det_buf_split(mode_lib, rq_param, pipe_param.src);
-+	handle_det_buf_split(mode_lib, rq_param, pipe_param->src);
- 	print__rq_params_st(mode_lib, *rq_param);
- }
- 
- void dml30_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- 	display_rq_regs_st *rq_regs,
--	const display_pipe_params_st pipe_param)
-+	const display_pipe_params_st *pipe_param)
- {
- 	display_rq_params_st rq_param = { 0 };
- 
-@@ -1831,7 +1831,7 @@ static void dml_rq_dlg_get_dlg_params(struct display_mode_lib *mode_lib,
- void dml30_rq_dlg_get_dlg_reg(struct display_mode_lib *mode_lib,
- 	display_dlg_regs_st *dlg_regs,
- 	display_ttu_regs_st *ttu_regs,
--	display_e2e_pipe_params_st *e2e_pipe_param,
-+	const display_e2e_pipe_params_st *e2e_pipe_param,
- 	const unsigned int num_pipes,
- 	const unsigned int pipe_idx,
- 	const bool cstate_en,
-@@ -1866,7 +1866,7 @@ void dml30_rq_dlg_get_dlg_reg(struct display_mode_lib *mode_lib,
- 	// system parameter calculation done
- 
- 	dml_print("DML_DLG: Calculation for pipe[%d] start\n\n", pipe_idx);
--	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, e2e_pipe_param[pipe_idx].pipe);
-+	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, &e2e_pipe_param[pipe_idx].pipe);
- 	dml_rq_dlg_get_dlg_params(mode_lib,
- 		e2e_pipe_param,
- 		num_pipes,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h
-index c04965cceff35..625e41f8d5751 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_rq_dlg_calc_30.h
-@@ -41,7 +41,7 @@ struct display_mode_lib;
- //            See also: <display_rq_regs_st>
- void dml30_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 
- // Function: dml_rq_dlg_get_dlg_reg
- //   Calculate and return DLG and TTU register struct given the system setting
-@@ -57,7 +57,7 @@ void dml30_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- void dml30_rq_dlg_get_dlg_reg(struct display_mode_lib             *mode_lib,
- 		display_dlg_regs_st          *dlg_regs,
- 		display_ttu_regs_st          *ttu_regs,
--		display_e2e_pipe_params_st   *e2e_pipe_param,
-+		const display_e2e_pipe_params_st   *e2e_pipe_param,
- 		const unsigned int            num_pipes,
- 		const unsigned int            pipe_idx,
- 		const bool                    cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.c b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.c
-index c23905bc733ae..57bd4e3f8a823 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.c
-@@ -738,7 +738,7 @@ static void get_surf_rq_param(
- 		display_data_rq_sizing_params_st *rq_sizing_param,
- 		display_data_rq_dlg_params_st *rq_dlg_param,
- 		display_data_rq_misc_params_st *rq_misc_param,
--		const display_pipe_params_st pipe_param,
-+		const display_pipe_params_st *pipe_param,
- 		bool is_chroma,
- 		bool is_alpha)
- {
-@@ -752,33 +752,33 @@ static void get_surf_rq_param(
- 
- 	// FIXME check if ppe apply for both luma and chroma in 422 case
- 	if (is_chroma | is_alpha) {
--		vp_width = pipe_param.src.viewport_width_c / ppe;
--		vp_height = pipe_param.src.viewport_height_c;
--		data_pitch = pipe_param.src.data_pitch_c;
--		meta_pitch = pipe_param.src.meta_pitch_c;
--		surface_height = pipe_param.src.surface_height_y / 2.0;
-+		vp_width = pipe_param->src.viewport_width_c / ppe;
-+		vp_height = pipe_param->src.viewport_height_c;
-+		data_pitch = pipe_param->src.data_pitch_c;
-+		meta_pitch = pipe_param->src.meta_pitch_c;
-+		surface_height = pipe_param->src.surface_height_y / 2.0;
- 	} else {
--		vp_width = pipe_param.src.viewport_width / ppe;
--		vp_height = pipe_param.src.viewport_height;
--		data_pitch = pipe_param.src.data_pitch;
--		meta_pitch = pipe_param.src.meta_pitch;
--		surface_height = pipe_param.src.surface_height_y;
-+		vp_width = pipe_param->src.viewport_width / ppe;
-+		vp_height = pipe_param->src.viewport_height;
-+		data_pitch = pipe_param->src.data_pitch;
-+		meta_pitch = pipe_param->src.meta_pitch;
-+		surface_height = pipe_param->src.surface_height_y;
- 	}
- 
--	if (pipe_param.dest.odm_combine) {
-+	if (pipe_param->dest.odm_combine) {
- 		unsigned int access_dir;
- 		unsigned int full_src_vp_width;
- 		unsigned int hactive_odm;
- 		unsigned int src_hactive_odm;
- 
--		access_dir = (pipe_param.src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
--		hactive_odm = pipe_param.dest.hactive / ((unsigned int) pipe_param.dest.odm_combine * 2);
-+		access_dir = (pipe_param->src.source_scan == dm_vert); // vp access direction: horizontal or vertical accessed
-+		hactive_odm = pipe_param->dest.hactive / ((unsigned int) pipe_param->dest.odm_combine * 2);
- 		if (is_chroma) {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio_c * pipe_param.dest.full_recout_width;
--			src_hactive_odm = pipe_param.scale_ratio_depth.hscl_ratio_c * hactive_odm;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio_c * pipe_param->dest.full_recout_width;
-+			src_hactive_odm = pipe_param->scale_ratio_depth.hscl_ratio_c * hactive_odm;
- 		} else {
--			full_src_vp_width = pipe_param.scale_ratio_depth.hscl_ratio * pipe_param.dest.full_recout_width;
--			src_hactive_odm = pipe_param.scale_ratio_depth.hscl_ratio * hactive_odm;
-+			full_src_vp_width = pipe_param->scale_ratio_depth.hscl_ratio * pipe_param->dest.full_recout_width;
-+			src_hactive_odm = pipe_param->scale_ratio_depth.hscl_ratio * hactive_odm;
- 		}
- 
- 		if (access_dir == 0) {
-@@ -808,7 +808,7 @@ static void get_surf_rq_param(
- 	rq_sizing_param->meta_chunk_bytes = 2048;
- 	rq_sizing_param->min_meta_chunk_bytes = 256;
- 
--	if (pipe_param.src.hostvm)
-+	if (pipe_param->src.hostvm)
- 		rq_sizing_param->mpte_group_bytes = 512;
- 	else
- 		rq_sizing_param->mpte_group_bytes = 2048;
-@@ -822,38 +822,38 @@ static void get_surf_rq_param(
- 			vp_height,
- 			data_pitch,
- 			meta_pitch,
--			pipe_param.src.source_format,
--			pipe_param.src.sw_mode,
--			pipe_param.src.macro_tile_size,
--			pipe_param.src.source_scan,
--			pipe_param.src.hostvm,
-+			pipe_param->src.source_format,
-+			pipe_param->src.sw_mode,
-+			pipe_param->src.macro_tile_size,
-+			pipe_param->src.source_scan,
-+			pipe_param->src.hostvm,
- 			is_chroma,
- 			surface_height);
- }
- 
--static void dml_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib, display_rq_params_st *rq_param, const display_pipe_params_st pipe_param)
-+static void dml_rq_dlg_get_rq_params(struct display_mode_lib *mode_lib, display_rq_params_st *rq_param, const display_pipe_params_st *pipe_param)
- {
- 	// get param for luma surface
--	rq_param->yuv420 = pipe_param.src.source_format == dm_420_8 || pipe_param.src.source_format == dm_420_10 || pipe_param.src.source_format == dm_rgbe_alpha
--			|| pipe_param.src.source_format == dm_420_12;
-+	rq_param->yuv420 = pipe_param->src.source_format == dm_420_8 || pipe_param->src.source_format == dm_420_10 || pipe_param->src.source_format == dm_rgbe_alpha
-+			|| pipe_param->src.source_format == dm_420_12;
- 
--	rq_param->yuv420_10bpc = pipe_param.src.source_format == dm_420_10;
-+	rq_param->yuv420_10bpc = pipe_param->src.source_format == dm_420_10;
- 
--	rq_param->rgbe_alpha = (pipe_param.src.source_format == dm_rgbe_alpha) ? 1 : 0;
-+	rq_param->rgbe_alpha = (pipe_param->src.source_format == dm_rgbe_alpha) ? 1 : 0;
- 
- 	get_surf_rq_param(mode_lib, &(rq_param->sizing.rq_l), &(rq_param->dlg.rq_l), &(rq_param->misc.rq_l), pipe_param, 0, 0);
- 
--	if (is_dual_plane((enum source_format_class) (pipe_param.src.source_format))) {
-+	if (is_dual_plane((enum source_format_class) (pipe_param->src.source_format))) {
- 		// get param for chroma surface
- 		get_surf_rq_param(mode_lib, &(rq_param->sizing.rq_c), &(rq_param->dlg.rq_c), &(rq_param->misc.rq_c), pipe_param, 1, rq_param->rgbe_alpha);
- 	}
- 
- 	// calculate how to split the det buffer space between luma and chroma
--	handle_det_buf_split(mode_lib, rq_param, pipe_param.src);
-+	handle_det_buf_split(mode_lib, rq_param, pipe_param->src);
- 	print__rq_params_st(mode_lib, *rq_param);
- }
- 
--void dml31_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib, display_rq_regs_st *rq_regs, const display_pipe_params_st pipe_param)
-+void dml31_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib, display_rq_regs_st *rq_regs, const display_pipe_params_st *pipe_param)
- {
- 	display_rq_params_st rq_param = {0};
- 
-@@ -1677,7 +1677,7 @@ void dml31_rq_dlg_get_dlg_reg(
- 		struct display_mode_lib *mode_lib,
- 		display_dlg_regs_st *dlg_regs,
- 		display_ttu_regs_st *ttu_regs,
--		display_e2e_pipe_params_st *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int num_pipes,
- 		const unsigned int pipe_idx,
- 		const bool cstate_en,
-@@ -1704,7 +1704,7 @@ void dml31_rq_dlg_get_dlg_reg(
- 	// system parameter calculation done
- 
- 	dml_print("DML_DLG: Calculation for pipe[%d] start\n\n", pipe_idx);
--	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, e2e_pipe_param[pipe_idx].pipe);
-+	dml_rq_dlg_get_rq_params(mode_lib, &rq_param, &e2e_pipe_param[pipe_idx].pipe);
- 	dml_rq_dlg_get_dlg_params(
- 			mode_lib,
- 			e2e_pipe_param,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.h b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.h
-index adf8518f761f9..8ee991351699d 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_rq_dlg_calc_31.h
-@@ -41,7 +41,7 @@ struct display_mode_lib;
- //            See also: <display_rq_regs_st>
- void dml31_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 
- // Function: dml_rq_dlg_get_dlg_reg
- //   Calculate and return DLG and TTU register struct given the system setting
-@@ -57,7 +57,7 @@ void dml31_rq_dlg_get_rq_reg(struct display_mode_lib *mode_lib,
- void dml31_rq_dlg_get_dlg_reg(struct display_mode_lib             *mode_lib,
- 		display_dlg_regs_st          *dlg_regs,
- 		display_ttu_regs_st          *ttu_regs,
--		display_e2e_pipe_params_st   *e2e_pipe_param,
-+		const display_e2e_pipe_params_st *e2e_pipe_param,
- 		const unsigned int            num_pipes,
- 		const unsigned int            pipe_idx,
- 		const bool                    cstate_en,
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/display_mode_lib.h b/drivers/gpu/drm/amd/display/dc/dml/display_mode_lib.h
-index d42a0aeca6be2..72b1957022aa2 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_lib.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_lib.h
-@@ -49,7 +49,7 @@ struct dml_funcs {
- 			struct display_mode_lib *mode_lib,
- 			display_dlg_regs_st *dlg_regs,
- 			display_ttu_regs_st *ttu_regs,
--			display_e2e_pipe_params_st *e2e_pipe_param,
-+			const display_e2e_pipe_params_st *e2e_pipe_param,
- 			const unsigned int num_pipes,
- 			const unsigned int pipe_idx,
- 			const bool cstate_en,
-@@ -60,7 +60,7 @@ struct dml_funcs {
- 	void (*rq_dlg_get_rq_reg)(
- 		struct display_mode_lib *mode_lib,
- 		display_rq_regs_st *rq_regs,
--		const display_pipe_params_st pipe_param);
-+		const display_pipe_params_st *pipe_param);
- 	void (*recalculate)(struct display_mode_lib *mode_lib);
- 	void (*validate)(struct display_mode_lib *mode_lib);
- };
 -- 
 2.33.0
 
