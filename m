@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FBC45145E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D94451463
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348528AbhKOUEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:04:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
+        id S1349177AbhKOUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:04:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239588AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239584AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:03:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A5A3632DB;
-        Mon, 15 Nov 2021 17:37:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C3863343;
+        Mon, 15 Nov 2021 17:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997857;
-        bh=1b1DCiBnuzfdBPAF32D2UpkHdSRFO5JOBtELVSsR/CE=;
+        s=korg; t=1636997862;
+        bh=QlijqyVVf6FmSs0yHkBqzhlErox9J7KEtVaiX0lyjSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvzIFgmvTSi2/+5aIfog5cVbU/FRClGv0rFbeEecFvJlvfZtwpO5BAmqvfGO9fA/R
-         bYR6sbluOijIPeuwIVYeUQSvQ6xdkpgRZ5IsDeqIDdt5fmY+SlzVJEPGwvDXxwlx0E
-         ke7DTjAmmgz7ldieT9Eut3SOmVtCAcbw41Vuth+I=
+        b=EmJ9RKqrDVVYxd+AcD6d/nQSjPz0niJfj3t0NjStgteRyFQHIpD3gciBw+/M4qn54
+         IASR/Lyu1L7/qKUYJ9xrZs17AD+vioFla+CXC2nYNgTRFk8Va3P89RPIBwfQEg/NxL
+         ak2R0MvOYPe2C1LSvAuai1jqowv+eQO+kiYNf+cU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anel Orazgaliyeva <anelkz@amazon.de>,
-        Aman Priyadarshi <apeureka@amazon.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 301/575] cpuidle: Fix kobject memory leaks in error paths
-Date:   Mon, 15 Nov 2021 18:00:26 +0100
-Message-Id: <20211115165354.184089587@linuxfoundation.org>
+Subject: [PATCH 5.10 303/575] ath9k: Fix potential interrupt storm on queue reset
+Date:   Mon, 15 Nov 2021 18:00:28 +0100
+Message-Id: <20211115165354.263113245@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,68 +43,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anel Orazgaliyeva <anelkz@amazon.de>
+From: Linus Lüssing <ll@simonwunderlich.de>
 
-[ Upstream commit e5f5a66c9aa9c331da5527c2e3fd9394e7091e01 ]
+[ Upstream commit 4925642d541278575ad1948c5924d71ffd57ef14 ]
 
-Commit c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
-fixes the cleanup of kobjects; however, it removes kfree() calls
-altogether, leading to memory leaks.
+In tests with two Lima boards from 8devices (QCA4531 based) on OpenWrt
+19.07 we could force a silent restart of a device with no serial
+output when we were sending a high amount of UDP traffic (iperf3 at 80
+MBit/s in both directions from external hosts, saturating the wifi and
+causing a load of about 4.5 to 6) and were then triggering an
+ath9k_queue_reset().
 
-Fix those and also defer the initialization of dev->kobj_dev until
-after the error check, so that we do not end up with a dangling
-pointer.
+Further debugging showed that the restart was caused by the ath79
+watchdog. With disabled watchdog we could observe that the device was
+constantly going into ath_isr() interrupt handler and was returning
+early after the ATH_OP_HW_RESET flag test, without clearing any
+interrupts. Even though ath9k_queue_reset() calls
+ath9k_hw_kill_interrupts().
 
-Fixes: c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
-Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
-Suggested-by: Aman Priyadarshi <apeureka@amazon.de>
-[ rjw: Subject edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+With JTAG we could observe the following race condition:
+
+1) ath9k_queue_reset()
+   ...
+   -> ath9k_hw_kill_interrupts()
+   -> set_bit(ATH_OP_HW_RESET, &common->op_flags);
+   ...
+   <- returns
+
+      2) ath9k_tasklet()
+         ...
+         -> ath9k_hw_resume_interrupts()
+         ...
+         <- returns
+
+                 3) loops around:
+                    ...
+                    handle_int()
+                    -> ath_isr()
+                       ...
+                       -> if (test_bit(ATH_OP_HW_RESET,
+                                       &common->op_flags))
+                            return IRQ_HANDLED;
+
+                    x) ath_reset_internal():
+                       => never reached <=
+
+And in ath_isr() we would typically see the following interrupts /
+interrupt causes:
+
+* status: 0x00111030 or 0x00110030
+* async_cause: 2 (AR_INTR_MAC_IPQ)
+* sync_cause: 0
+
+So the ath9k_tasklet() reenables the ath9k interrupts
+through ath9k_hw_resume_interrupts() which ath9k_queue_reset() had just
+disabled. And ath_isr() then keeps firing because it returns IRQ_HANDLED
+without actually clearing the interrupt.
+
+To fix this IRQ storm also clear/disable the interrupts again when we
+are in reset state.
+
+Cc: Sven Eckelmann <sven@narfation.org>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Linus Lüssing <linus.luessing@c0d3.blue>
+Fixes: 872b5d814f99 ("ath9k: do not access hardware on IRQs during reset")
+Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210914192515.9273-3-linus.luessing@c0d3.blue
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/sysfs.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-index 53ec9585ccd44..469e18547d06c 100644
---- a/drivers/cpuidle/sysfs.c
-+++ b/drivers/cpuidle/sysfs.c
-@@ -488,6 +488,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
- 					   &kdev->kobj, "state%d", i);
- 		if (ret) {
- 			kobject_put(&kobj->kobj);
-+			kfree(kobj);
- 			goto error_state;
- 		}
- 		cpuidle_add_s2idle_attr_group(kobj);
-@@ -619,6 +620,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
- 				   &kdev->kobj, "driver");
- 	if (ret) {
- 		kobject_put(&kdrv->kobj);
-+		kfree(kdrv);
- 		return ret;
- 	}
+diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
+index 5739c1dbf1661..af367696fd92f 100644
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -533,8 +533,10 @@ irqreturn_t ath_isr(int irq, void *dev)
+ 	ath9k_debug_sync_cause(sc, sync_cause);
+ 	status &= ah->imask;	/* discard unasked-for bits */
  
-@@ -705,7 +707,6 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 	if (!kdev)
- 		return -ENOMEM;
- 	kdev->dev = dev;
--	dev->kobj_dev = kdev;
+-	if (test_bit(ATH_OP_HW_RESET, &common->op_flags))
++	if (test_bit(ATH_OP_HW_RESET, &common->op_flags)) {
++		ath9k_hw_kill_interrupts(sc->sc_ah);
+ 		return IRQ_HANDLED;
++	}
  
- 	init_completion(&kdev->kobj_unregister);
- 
-@@ -713,9 +714,11 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 				   "cpuidle");
- 	if (error) {
- 		kobject_put(&kdev->kobj);
-+		kfree(kdev);
- 		return error;
- 	}
- 
-+	dev->kobj_dev = kdev;
- 	kobject_uevent(&kdev->kobj, KOBJ_ADD);
- 
- 	return 0;
+ 	/*
+ 	 * If there are no status bits set, then this interrupt was not
 -- 
 2.33.0
 
