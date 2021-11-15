@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A230450BB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695BC450BBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhKOR3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:29:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
+        id S236792AbhKOR3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:29:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236805AbhKOROw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:14:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 646866324D;
-        Mon, 15 Nov 2021 17:11:16 +0000 (UTC)
+        id S236814AbhKOROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:14:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFA163251;
+        Mon, 15 Nov 2021 17:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996277;
-        bh=3ZzOUd7KJGWBEOLR6yqZdon8VpyEbBLtR5Tv4AZdpu8=;
+        s=korg; t=1636996282;
+        bh=r0LGiRnDZpsEmQpGpk932AmsmzSV1AM7R+XdtkUqyU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wI24bbcXnzjQWygznuKRVt6Fg5A7Y1c6rqhT1bOcoWf5gElq0wbjTMxTAS+MgaZSc
-         0Kkp0HVlpu+wcqxPHAKQnrTgC/nNSNyovStdkLtN0jPPCW6P5MPqlUblJcu3jYbY9B
-         8L7krW9ULaowo6xXngAJ0U6qPLoctRFRI2Xu6ARw=
+        b=1ykZzd98O1UV2dTkDoHgAQH9jnJPEFRQTjqg3A60UFemclolcyoHkFyODcpMEPLPP
+         FZap0/LBndrZ5Q/LN+8Z7n7qC3g7Vr5oXxWfMZrzoNc1sl+bMF4ubkDcpS+1blQ0E2
+         YYZQBmHmLQvRy1HXP/890k69ZLir8+0TnHMiZbcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Martin Fuzzey <martin.fuzzey@flowbird.group>,
         Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.4 081/355] rsi: fix occasional initialisation failure with BT coex
-Date:   Mon, 15 Nov 2021 18:00:05 +0100
-Message-Id: <20211115165316.421499123@linuxfoundation.org>
+Subject: [PATCH 5.4 082/355] rsi: fix key enabled check causing unwanted encryption for vap_id > 0
+Date:   Mon, 15 Nov 2021 18:00:06 +0100
+Message-Id: <20211115165316.453383099@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,110 +42,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-commit 9b14ed6e11b72dd4806535449ca6c6962cb2369d upstream.
+commit 99ac6018821253ec67f466086afb63fc18ea48e2 upstream.
 
-When BT coexistence is enabled (eg oper mode 13, which is the default)
-the initialisation on startup sometimes silently fails.
+My previous patch checked if encryption should be enabled by directly
+checking info->control.hw_key (like the downstream driver).
+However that missed that the control and driver_info members of
+struct ieee80211_tx_info are union fields.
 
-In a normal initialisation we see
-	usb 1-1.3: Product: Wireless USB Network Module
-	usb 1-1.3: Manufacturer: Redpine Signals, Inc.
-	usb 1-1.3: SerialNumber: 000000000001
-	rsi_91x: rsi_probe: Initialized os intf ops
-	rsi_91x: rsi_load_9116_firmware: Loading chunk 0
-	rsi_91x: rsi_load_9116_firmware: Loading chunk 1
-	rsi_91x: rsi_load_9116_firmware: Loading chunk 2
-	rsi_91x: Max Stations Allowed = 1
+Due to this when rsi_core_xmit() updates fields in "tx_params"
+(driver_info) it can overwrite the control.hw_key, causing the result
+of the later test to be incorrect.
 
-But sometimes the last log is missing and the wlan net device is
-not created.
+With the current structure layout the first byte of control.hw_key is
+overlayed with the vap_id so, since we only test if control.hw_key is
+NULL / non NULL, a non zero vap_id will incorrectly enable encryption.
 
-Running a userspace loop that resets the hardware via a GPIO shows the
-problem occurring ~5/100 resets.
+In basic STA and AP modes the vap_id is always zero so it works but in
+P2P client mode a second VIF is created causing vap_id to be non zero
+and hence encryption to be enabled before keys have been set.
 
-The problem does not occur in oper mode 1 (wifi only).
+Fix this by extracting the key presence flag to a new field in the driver
+private tx_params structure and populating it first.
 
-Adding logs shows that the initialisation state machine requests a MAC
-reset via rsi_send_reset_mac() but the firmware does not reply, leading
-to the initialisation sequence being incomplete.
-
-Fix this by delaying attaching the BT adapter until the wifi
-initialisation has completed.
-
-With this applied I have done > 300 reset loops with no errors.
-
-Fixes: 716b840c7641 ("rsi: handle BT traffic in driver")
+Fixes: 314538041b56 ("rsi: fix AP mode with WPA failure due to encrypted EAPOL")
 Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
 CC: stable@vger.kernel.org
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1630337206-12410-2-git-send-email-martin.fuzzey@flowbird.group
+Link: https://lore.kernel.org/r/1630337206-12410-3-git-send-email-martin.fuzzey@flowbird.group
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_main.c |   16 +++++++++++++---
- drivers/net/wireless/rsi/rsi_91x_mgmt.c |    3 +++
- drivers/net/wireless/rsi/rsi_main.h     |    2 ++
- 3 files changed, 18 insertions(+), 3 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_core.c |    2 ++
+ drivers/net/wireless/rsi/rsi_91x_hal.c  |    2 +-
+ drivers/net/wireless/rsi/rsi_main.h     |    1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/rsi/rsi_91x_main.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_main.c
-@@ -210,9 +210,10 @@ int rsi_read_pkt(struct rsi_common *comm
- 			bt_pkt_type = frame_desc[offset + BT_RX_PKT_TYPE_OFST];
- 			if (bt_pkt_type == BT_CARD_READY_IND) {
- 				rsi_dbg(INFO_ZONE, "BT Card ready recvd\n");
--				if (rsi_bt_ops.attach(common, &g_proto_ops))
--					rsi_dbg(ERR_ZONE,
--						"Failed to attach BT module\n");
-+				if (common->fsm_state == FSM_MAC_INIT_DONE)
-+					rsi_attach_bt(common);
-+				else
-+					common->bt_defer_attach = true;
- 			} else {
- 				if (common->bt_adapter)
- 					rsi_bt_ops.recv_pkt(common->bt_adapter,
-@@ -277,6 +278,15 @@ void rsi_set_bt_context(void *priv, void
- }
- #endif
+--- a/drivers/net/wireless/rsi/rsi_91x_core.c
++++ b/drivers/net/wireless/rsi/rsi_91x_core.c
+@@ -400,6 +400,8 @@ void rsi_core_xmit(struct rsi_common *co
  
-+void rsi_attach_bt(struct rsi_common *common)
-+{
-+#ifdef CONFIG_RSI_COEX
-+	if (rsi_bt_ops.attach(common, &g_proto_ops))
-+		rsi_dbg(ERR_ZONE,
-+			"Failed to attach BT module\n");
-+#endif
-+}
-+
- /**
-  * rsi_91x_init() - This function initializes os interface operations.
-  * @void: Void.
---- a/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-@@ -2056,6 +2056,9 @@ static int rsi_handle_ta_confirm_type(st
- 				if (common->reinit_hw) {
- 					complete(&common->wlan_init_completion);
- 				} else {
-+					if (common->bt_defer_attach)
-+						rsi_attach_bt(common);
-+
- 					return rsi_mac80211_attach(common);
- 				}
- 			}
+ 	info = IEEE80211_SKB_CB(skb);
+ 	tx_params = (struct skb_info *)info->driver_data;
++	/* info->driver_data and info->control part of union so make copy */
++	tx_params->have_key = !!info->control.hw_key;
+ 	wh = (struct ieee80211_hdr *)&skb->data[0];
+ 	tx_params->sta_id = 0;
+ 
+--- a/drivers/net/wireless/rsi/rsi_91x_hal.c
++++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
+@@ -203,7 +203,7 @@ int rsi_prepare_data_desc(struct rsi_com
+ 		wh->frame_control |= cpu_to_le16(RSI_SET_PS_ENABLE);
+ 
+ 	if ((!(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)) &&
+-	    info->control.hw_key) {
++	    tx_params->have_key) {
+ 		if (rsi_is_cipher_wep(common))
+ 			ieee80211_size += 4;
+ 		else
 --- a/drivers/net/wireless/rsi/rsi_main.h
 +++ b/drivers/net/wireless/rsi/rsi_main.h
-@@ -320,6 +320,7 @@ struct rsi_common {
- 	struct ieee80211_vif *roc_vif;
+@@ -139,6 +139,7 @@ struct skb_info {
+ 	u8 internal_hdr_size;
+ 	struct ieee80211_vif *vif;
+ 	u8 vap_id;
++	bool have_key;
+ };
  
- 	bool eapol4_confirm;
-+	bool bt_defer_attach;
- 	void *bt_adapter;
- 
- 	struct cfg80211_scan_request *hwscan;
-@@ -401,5 +402,6 @@ struct rsi_host_intf_ops {
- 
- enum rsi_host_intf rsi_get_host_intf(void *priv);
- void rsi_set_bt_context(void *priv, void *bt_context);
-+void rsi_attach_bt(struct rsi_common *common);
- 
- #endif
+ enum edca_queue {
 
 
