@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB97D451E5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41716451925
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350088AbhKPAfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1352467AbhKOXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233514AbhKOTYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 304406363C;
-        Mon, 15 Nov 2021 18:54:10 +0000 (UTC)
+        id S240831AbhKOTHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:07:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23AE7633ED;
+        Mon, 15 Nov 2021 18:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002450;
-        bh=EvSXTu1vphkyQ+YKSs94SRYGn86hQWjVrD6x7mQyOqI=;
+        s=korg; t=1637000232;
+        bh=iC7IF6dVqGVqWQIH98l7aYnkMCcZP24pH6pirizffw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Em6UqhZWE6xZgV7HSKmlxluNjEv58y+rohC9zCGY3OolXDxwtMoFhZJ6Y/8eNxrLz
-         e0dLIspjIMXI8X2ExU/ejRf7nSsDJ0TbiAMX1xTmbiv/4rsK0eKpWKVXplr8tCi7vr
-         +j6A7gvXTgua/sOPnFfSYCB4AR+c3w+AXACUBl7I=
+        b=Bt9JUNRX+jPRYpuTaGord9dKJoOff8YOMY2ARbuOmnxikkaB1z19FTpYNpWB203EZ
+         V3/qSZZnGB/s4re3EHiVfKVw0jLs9diW7a0t/GZTbTvVfx74VpWGhx5hrgaN6hTIX+
+         hvZv5B+56GfjyKVEDPdXP0NyKKqy/l67deF9npbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 572/917] clk: mvebu: ap-cpu-clk: Fix a memory leak in error handling paths
-Date:   Mon, 15 Nov 2021 18:01:07 +0100
-Message-Id: <20211115165448.172999548@linuxfoundation.org>
+Subject: [PATCH 5.14 585/849] power: reset: at91-reset: check properly the return value of devm_of_iomap
+Date:   Mon, 15 Nov 2021 18:01:08 +0100
+Message-Id: <20211115165440.044478964@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit af9617b419f77cf0b99702a7b2b0519da0d27715 ]
+[ Upstream commit f558c8072c3461b65c12c0068b108f78cebc8246 ]
 
-If we exit the for_each_of_cpu_node loop early, the reference on the
-current node must be decremented, otherwise there is a leak.
+devm_of_iomap() returns error code or valid pointer. Check its return
+value with IS_ERR().
 
-Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: bd3127733f2c ("power: reset: at91-reset: use devm_of_iomap")
+Reported-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mvebu/ap-cpu-clk.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/power/reset/at91-reset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/mvebu/ap-cpu-clk.c b/drivers/clk/mvebu/ap-cpu-clk.c
-index 08ba59ec3fb17..71bdd7c3ff034 100644
---- a/drivers/clk/mvebu/ap-cpu-clk.c
-+++ b/drivers/clk/mvebu/ap-cpu-clk.c
-@@ -256,12 +256,15 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		int cpu, err;
+diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-reset.c
+index 026649409135c..64def79d557a8 100644
+--- a/drivers/power/reset/at91-reset.c
++++ b/drivers/power/reset/at91-reset.c
+@@ -193,7 +193,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- 		err = of_property_read_u32(dn, "reg", &cpu);
--		if (WARN_ON(err))
-+		if (WARN_ON(err)) {
-+			of_node_put(dn);
- 			return err;
-+		}
- 
- 		/* If cpu2 or cpu3 is enabled */
- 		if (cpu & APN806_CLUSTER_NUM_MASK) {
- 			nclusters = 2;
-+			of_node_put(dn);
- 			break;
- 		}
+ 	reset->rstc_base = devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NULL);
+-	if (!reset->rstc_base) {
++	if (IS_ERR(reset->rstc_base)) {
+ 		dev_err(&pdev->dev, "Could not map reset controller address\n");
+ 		return -ENODEV;
  	}
-@@ -288,8 +291,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		int cpu, err;
- 
- 		err = of_property_read_u32(dn, "reg", &cpu);
--		if (WARN_ON(err))
-+		if (WARN_ON(err)) {
-+			of_node_put(dn);
- 			return err;
-+		}
- 
- 		cluster_index = cpu & APN806_CLUSTER_NUM_MASK;
- 		cluster_index >>= APN806_CLUSTER_NUM_OFFSET;
-@@ -301,6 +306,7 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		parent = of_clk_get(np, cluster_index);
- 		if (IS_ERR(parent)) {
- 			dev_err(dev, "Could not get the clock parent\n");
-+			of_node_put(dn);
- 			return -EINVAL;
- 		}
- 		parent_name =  __clk_get_name(parent);
-@@ -319,8 +325,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		init.parent_names = &parent_name;
- 
- 		ret = devm_clk_hw_register(dev, &ap_cpu_clk[cluster_index].hw);
--		if (ret)
-+		if (ret) {
-+			of_node_put(dn);
- 			return ret;
-+		}
- 		ap_cpu_data->hws[cluster_index] = &ap_cpu_clk[cluster_index].hw;
- 	}
- 
+@@ -203,7 +203,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 		for_each_matching_node_and_match(np, at91_ramc_of_match, &match) {
+ 			reset->ramc_lpr = (u32)match->data;
+ 			reset->ramc_base[idx] = devm_of_iomap(&pdev->dev, np, 0, NULL);
+-			if (!reset->ramc_base[idx]) {
++			if (IS_ERR(reset->ramc_base[idx])) {
+ 				dev_err(&pdev->dev, "Could not map ram controller address\n");
+ 				of_node_put(np);
+ 				return -ENODEV;
 -- 
 2.33.0
 
