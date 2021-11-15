@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F9D4501E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2C74501E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbhKOKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:02:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29838 "EHLO
+        id S236975AbhKOKDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:03:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46514 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230476AbhKOKCn (ORCPT
+        by vger.kernel.org with ESMTP id S236907AbhKOKCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:02:43 -0500
+        Mon, 15 Nov 2021 05:02:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636970388;
+        s=mimecast20190719; t=1636970394;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=B/SvcVH7YGPEpdGy0kldgGpabVd0LqF8PKRRi3YrNP0=;
-        b=OV0fmFC1X1F4fhZlZXh+EtFcYHf/ZIip1Q4FE6QGf6xMbXgXnu1X1xfKvby+r9wqVnUU1S
-        Dp3ra/pzcxZ6OxK1ScNAK/hyKatbkBAEe38I+daUWFJUddOiWlvydoUotWUUd5c4klyjmg
-        DJn45V8/0Zn5gHLtA1wJMrETCdvmGdE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-mSROFpGfOhCDlvxYu88B0g-1; Mon, 15 Nov 2021 04:59:47 -0500
-X-MC-Unique: mSROFpGfOhCDlvxYu88B0g-1
-Received: by mail-wr1-f70.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso3338455wrj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:59:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=B/SvcVH7YGPEpdGy0kldgGpabVd0LqF8PKRRi3YrNP0=;
-        b=ghz3xEkan8IfTMhoseILjMyNXmMwkyOpTZYfRa9WqDwaoymyISt63AS4RTeHUm4asA
-         ZC1HFjns7LpzjMyLl0aMTnForxfPay6rT+j2Z5eqHFCS5YOSg7mb2ilrK4J1EXdhMNEO
-         kste8HpnVw7mBlzLtwRgzL5FbWZQWYkUoScC8NYLSaAuk+YGz9vRGiYUCAoYTgad8WPI
-         rOx+zEB3pO4xqv+WJmQbR/HBAXUYK3FGgr/RuEMWNlvYJ1Os/L2Ml1WYYIixqW9sRppr
-         lqM+IJWr/Q5aNfawTUg7Hn6j+JxsQLPd0sSeDnipwGpY4G06J7Z/vODyZPtKYKF9kK0M
-         URLw==
-X-Gm-Message-State: AOAM530PwZu8rB62t1wfoxi6kg2Ue3DSsjg1RKtBYIUSApjcZK0mJ4NS
-        x7wPT9/syaSCbtuXI1RL9zaWiojdxsHIGEefR5G6YP9oZSQmU5cjbjAsNkqb/1808GlZ/6DV/5/
-        qxkG82sBi47oxhI06yPQsp3b411N8bvaNUYdLbNvNG2iLNlVa6Xa9SKFyvGTlDEe4YZslIg+3Vv
-        cR
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr45338976wrw.104.1636970385834;
-        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxET7RTckB554LQIAx6+HrM6N8Dg2rkSK6DQZ3M5guhyRvwKp4nwnmtbibpn9DS93s70y3/RQ==
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr45338930wrw.104.1636970385596;
-        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m20sm21093886wmq.11.2021.11.15.01.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 01:59:45 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vihas Mak <makvihas@gmail.com>, pbonzini@redhat.com
-Cc:     seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: fix cocci warnings
-In-Reply-To: <20211114164312.GA28736@makvihas>
-References: <20211114164312.GA28736@makvihas>
-Date:   Mon, 15 Nov 2021 10:59:43 +0100
-Message-ID: <87o86leo34.fsf@redhat.com>
+        bh=Lt8vnfwUf+2wRUuIIg/z1Tzh6iD0Hl2ryprO+vMM6Rc=;
+        b=NHrTs38kq080Cs8h7xFjxeSjDuF1XLfM4yUiJdew+EcqUHjxbgmaG7VWVmoa34RBTd6MGO
+        RQQ/MIgkSbvsbtKazNIlU4PBOflfRsjH32T4Vj0g2vKjHB6qr/81MSRq92lNoRWYS+Nczx
+        B91U7waK5XW05aPNfX41MVM7TUtGd6c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-RFb2WsybPVS5Xj97UJAfMw-1; Mon, 15 Nov 2021 04:59:51 -0500
+X-MC-Unique: RFb2WsybPVS5Xj97UJAfMw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0D1F1015DA0;
+        Mon, 15 Nov 2021 09:59:49 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2D2D60BE5;
+        Mon, 15 Nov 2021 09:59:48 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id B3EE318000A9; Mon, 15 Nov 2021 10:59:46 +0100 (CET)
+Date:   Mon, 15 Nov 2021 10:59:46 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211115095946.54tp5glmgfged3rz@sirius.home.kraxel.org>
+References: <20211111090225.946381-1-kraxel@redhat.com>
+ <20211114163958.GA7211@wunner.de>
+ <20211114122249-mutt-send-email-mst@kernel.org>
+ <20211114180604.GA23907@wunner.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114180604.GA23907@wunner.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vihas Mak <makvihas@gmail.com> writes:
+  Hi,
 
-> change 0 to false and 1 to true to fix following cocci warnings:
->
->         arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
->         arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
->
-> Signed-off-by: Vihas Mak <makvihas@gmail.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 337943799..2fcea4a78 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1454,7 +1454,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  {
->  	u64 *sptep;
->  	struct rmap_iterator iter;
-> -	int need_flush = 0;
-> +	bool need_flush = false;
->  	u64 new_spte;
->  	kvm_pfn_t new_pfn;
->  
-> @@ -1466,7 +1466,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  		rmap_printk("spte %p %llx gfn %llx (%d)\n",
->  			    sptep, *sptep, gfn, level);
->  
-> -		need_flush = 1;
-> +		need_flush = true;
->  
->  		if (pte_write(pte)) {
->  			pte_list_remove(kvm, rmap_head, sptep);
-> @@ -1482,7 +1482,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  
->  	if (need_flush && kvm_available_flush_tlb_with_range()) {
->  		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
-> -		return 0;
-> +		return false;
->  	}
->  
->  	return need_flush;
-> @@ -1623,8 +1623,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  
->  	for_each_rmap_spte(rmap_head, &iter, sptep)
->  		if (is_accessed_spte(*sptep))
-> -			return 1;
-> -	return 0;
-> +			return true;
-> +	return false;
->  }
->  
->  #define RMAP_RECYCLE_THRESHOLD 1000
+> > This requires guest specific code though. Emulating the attention button
+> > works in a guest independent way.
+> 
+> It sounds like you're using the Attention Button because it does
+> almost, but not quite what you want for your specific use case.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Well, we want send a request to the guest to shutdown and poweroff the
+device.
 
-One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
-'kvm_handle_gfn_range()' which does
+> Why don't you just trigger surprise-removal from outside the guest?
 
-        bool ret = false;
+To give the guest a chance to shutdown the device gracefully?
+Umount filesystems, flush data to disk.
 
-        for_each_slot_rmap_range(...)
-                ret |= handler(...);
+Also guest stability.  Traditionally linux isn't very good at dealing
+with surprise removal, although the situation is improving.
 
-and I find '|=' to not be very natural with booleans. I'm not sure it's
-worth changing though.
+Emulating surprise-removal has been discussed too.  More as fallback
+in case the guest doesn't respond to the attention button.  Right now
+we don't have it but should be doable.  For some kinds of devices it
+shouldn't be a problem to go straight to surprise-removal.
 
--- 
-Vitaly
+I'll go experiment with that.
+
+take care,
+  Gerd
 
