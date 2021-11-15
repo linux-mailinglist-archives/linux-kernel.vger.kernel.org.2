@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C1B4523A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810AF45239E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244028AbhKPB1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:27:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
+        id S1350481AbhKPB1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:27:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244015AbhKOTIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244016AbhKOTIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:08:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B86633FB;
-        Mon, 15 Nov 2021 18:17:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46CB8633FA;
+        Mon, 15 Nov 2021 18:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000261;
-        bh=QpocLm3kB2Fq98EGzW6SZMc1JlzNSeBP4MUDZib06X4=;
+        s=korg; t=1637000264;
+        bh=mNXC79MpoLchEh0wVYFIsOCuo2/bIiU/kRAse4h7NeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ra1HCW+pBImkEaE2/uhy8o7anzuxyTKGxDDb95OkOpx7ZHw1GG7NCHVxG/ugagrTt
-         depTye52uK2XD4xbl+CwIVSX8zIBtszhsipXt/mbguy2/v6cIM+CiufMTiI79dGDBr
-         5aANxz/lQJQNeS7xeXKLiu3ULOoo4yegK5GHrA5Y=
+        b=lzFzz5C41S4OGH0GGTss0Ty0OnJrYIl3WXlfvWhFKxzFpXUdojNEDB4EuTffYHwaV
+         Ep1RkFGrXhGy2MpkkzG1mFiXfEN+CVwmmwTUqmoDQS8vADyqY9zCK5JjL8H/swOvBq
+         C6qdCqQaFVNz/xZ1TAPcBzqqTky65I6zwrYeW73A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, Stan Johnson <userm57@yahoo.com>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 595/849] powerpc/mem: Fix arch/powerpc/mm/mem.c:53:12: error: no previous prototype for create_section_mapping
-Date:   Mon, 15 Nov 2021 18:01:18 +0100
-Message-Id: <20211115165440.378817845@linuxfoundation.org>
+Subject: [PATCH 5.14 596/849] video: fbdev: chipsfb: use memset_io() instead of memset()
+Date:   Mon, 15 Nov 2021 18:01:19 +0100
+Message-Id: <20211115165440.411957388@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -43,38 +43,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 7eff9bc00ddf1e2281dff575884b7f676c85b006 ]
+[ Upstream commit f2719b26ae27282c145202ffd656d5ff1fe737cc ]
 
-Commit 8e11d62e2e87 ("powerpc/mem: Add back missing header to fix 'no
-previous prototype' error") was supposed to fix the problem, but in
-the meantime commit a927bd6ba952 ("mm: fix phys_to_target_node() and*
-memory_add_physaddr_to_nid() exports") moved create_section_mapping()
-prototype from asm/sparsemem.h to asm/mmzone.h
+While investigating a lockup at startup on Powerbook 3400C, it was
+identified that the fbdev driver generates alignment exception at
+startup:
 
-Fixes: 8e11d62e2e87 ("powerpc/mem: Add back missing header to fix 'no previous prototype' error")
-Reported-by: kernel test robot <lkp@intel.com>
+  --- interrupt: 600 at memset+0x60/0xc0
+  NIP:  c0021414 LR: c03fc49c CTR: 00007fff
+  REGS: ca021c10 TRAP: 0600   Tainted: G        W          (5.14.2-pmac-00727-g12a41fa69492)
+  MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 44008442  XER: 20000100
+  DAR: cab80020 DSISR: 00017c07
+  GPR00: 00000007 ca021cd0 c14412e0 cab80000 00000000 00100000 cab8001c 00000004
+  GPR08: 00100000 00007fff 00000000 00000000 84008442 00000000 c0006fb4 00000000
+  GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00100000
+  GPR24: 00000000 81800000 00000320 c15fa400 c14d1878 00000000 c14d1800 c094e19c
+  NIP [c0021414] memset+0x60/0xc0
+  LR [c03fc49c] chipsfb_pci_init+0x160/0x580
+  --- interrupt: 600
+  [ca021cd0] [c03fc46c] chipsfb_pci_init+0x130/0x580 (unreliable)
+  [ca021d20] [c03a3a70] pci_device_probe+0xf8/0x1b8
+  [ca021d50] [c043d584] really_probe.part.0+0xac/0x388
+  [ca021d70] [c043d914] __driver_probe_device+0xb4/0x170
+  [ca021d90] [c043da18] driver_probe_device+0x48/0x144
+  [ca021dc0] [c043e318] __driver_attach+0x11c/0x1c4
+  [ca021de0] [c043ad30] bus_for_each_dev+0x88/0xf0
+  [ca021e10] [c043c724] bus_add_driver+0x190/0x22c
+  [ca021e40] [c043ee94] driver_register+0x9c/0x170
+  [ca021e60] [c0006c28] do_one_initcall+0x54/0x1ec
+  [ca021ed0] [c08246e4] kernel_init_freeable+0x1c0/0x270
+  [ca021f10] [c0006fdc] kernel_init+0x28/0x11c
+  [ca021f30] [c0017148] ret_from_kernel_thread+0x14/0x1c
+  Instruction dump:
+  7d4601a4 39490777 7d4701a4 39490888 7d4801a4 39490999 7d4901a4 39290aaa
+  7d2a01a4 4c00012c 4bfffe88 0fe00000 <4bfffe80> 9421fff0 38210010 48001970
+
+This is due to 'dcbz' instruction being used on non-cached memory.
+'dcbz' instruction is used by memset() to zeroize a complete
+cacheline at once, and memset() is not expected to be used on non
+cached memory.
+
+When performing a 'sparse' check on fbdev driver, it also appears
+that the use of memset() is unexpected:
+
+  drivers/video/fbdev/chipsfb.c:334:17: warning: incorrect type in argument 1 (different address spaces)
+  drivers/video/fbdev/chipsfb.c:334:17:    expected void *
+  drivers/video/fbdev/chipsfb.c:334:17:    got char [noderef] __iomem *screen_base
+  drivers/video/fbdev/chipsfb.c:334:15: warning: memset with byte count of 1048576
+
+Use fb_memset() instead of memset(). fb_memset() is defined as
+memset_io() for powerpc.
+
+Fixes: 8c8709334cec ("[PATCH] ppc32: Remove CONFIG_PMAC_PBOOK")
+Reported-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/025754fde3d027904ae9d0191f395890bec93369.1631541649.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/884a54f1e5cb774c1d9b4db780209bee5d4f6718.1631712563.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/mem.c | 2 +-
+ drivers/video/fbdev/chipsfb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index ad198b4392224..0380efff535a1 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -20,8 +20,8 @@
- #include <asm/machdep.h>
- #include <asm/rtas.h>
- #include <asm/kasan.h>
--#include <asm/sparsemem.h>
- #include <asm/svm.h>
-+#include <asm/mmzone.h>
+diff --git a/drivers/video/fbdev/chipsfb.c b/drivers/video/fbdev/chipsfb.c
+index 998067b701fa0..393894af26f84 100644
+--- a/drivers/video/fbdev/chipsfb.c
++++ b/drivers/video/fbdev/chipsfb.c
+@@ -331,7 +331,7 @@ static const struct fb_var_screeninfo chipsfb_var = {
  
- #include <mm/mmu_decl.h>
+ static void init_chips(struct fb_info *p, unsigned long addr)
+ {
+-	memset(p->screen_base, 0, 0x100000);
++	fb_memset(p->screen_base, 0, 0x100000);
  
+ 	p->fix = chipsfb_fix;
+ 	p->fix.smem_start = addr;
 -- 
 2.33.0
 
