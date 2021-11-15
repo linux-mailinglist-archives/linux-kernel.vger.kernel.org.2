@@ -2,148 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDF2450767
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBBB45076B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhKOOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:47:12 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:62307 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbhKOOqy (ORCPT
+        id S231449AbhKOOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232052AbhKOOs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:46:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636987438; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=7XCMV7JuJ0TbWXeHCYx30uBSDutsKDC797uPkQLu/NE=; b=F4s793f+9ZSn18YXPoSp+yghXwG7/xY49GP1DzwXPHUj7P09/dsQL44YQZG5MHb/VYN4Q3AW
- 3k8JZ30ybdz2fCIUFhil16WZiD/oR/BJr8pQOIH6Ultk2Na3jx3bGpRQnFh4BLrbWdiC9v+d
- dcK4ZPGvIOn4vGj86aoeLgUgptk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6192722ee0b76a7314cafae6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Nov 2021 14:43:58
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5A2B1C43616; Mon, 15 Nov 2021 14:43:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.5] (unknown [59.89.226.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 795E8C43460;
-        Mon, 15 Nov 2021 14:43:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 795E8C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <36c9f669-c2d2-8a63-db96-31165caeeffb@codeaurora.org>
-Date:   Mon, 15 Nov 2021 20:13:47 +0530
+        Mon, 15 Nov 2021 09:48:28 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4479BC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:45:29 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id bk22so17056748qkb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:45:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tdu5IEt0CrhTdO1umI7D6SnTK3BhqQhwxPqQfGD8ylY=;
+        b=jClH9vTJfZUwAvEmZtsU3aLIbQdlYSYhpSIj7J0ttcprasUktxW+Ytt5qmC9jmT3f2
+         7pSry9zpjI8Hp9ExolPqUhaerOOJde8goOR4/TMWsngrOh0CjZN3aceuf1mr6aOWlLwg
+         IGJbeg4Z6oRiusgI2GcWKJvr7SeF/b/EIK0L8jEj3Mb31s1XwHTMWalxBKWCvzwEqBi2
+         NrPzCY4mKg9f6tHAZFsjHW515pmpv83uYUH6Ab3cqbfHKp08QFBSZw2kgjIwnRdPe6S6
+         1eRYLTS+qzwpDkVXbkSPux//7VPn0ghekFu0vOfX7zkl+vu/VbtcYKX4dbJ5r08wttsU
+         SOfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=Tdu5IEt0CrhTdO1umI7D6SnTK3BhqQhwxPqQfGD8ylY=;
+        b=3AbWt6e9lxPuAsfd5VaEYgLRk5DNazI97a3vHN4/LQ8GxYptcxvaoKn6PKLhX2MAI4
+         rXjUSKKTzlhl7OcJhDlDP5Bbhf0FoWFQTYAHVpjqvsQ2hWCdNA4IpKDPZZgYKLr+SY2c
+         svV40QnsPhg1WkB6bhzWl+LhrVd16WIjk2/mT52S6o3PzeBuQhYDQ5B8Nct0d+iLANlQ
+         PnagEHPXlktUE08/si/NZaChODWMcB2o3csnIB2i1Pg2k26lutlKpIuS02WS3I2Vouu2
+         T+UYJ5wURQezaXywshPng+rkpE2QD0ceLyejdYuS0NsqFXINki8fcuAlYN3u9lw88qRd
+         QJBw==
+X-Gm-Message-State: AOAM532zDQQqIWO3k1/UzpgvWd+43pjKJUF7BFB4hOZhVT+EExecb/tH
+        F6FNYQMAJR4Ic4tJNX2+SVp8fg3YKg==
+X-Google-Smtp-Source: ABdhPJyTXb4p5BXWAB1nFwm1mn+F0jqK/MmISSrSrGLz9gjablF/j+oH35pDTn7Qsklf63QkDHq77w==
+X-Received: by 2002:a37:2706:: with SMTP id n6mr31067877qkn.216.1636987528171;
+        Mon, 15 Nov 2021 06:45:28 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id s10sm6639946qke.132.2021.11.15.06.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 06:45:27 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f4b6:aaf6:5a5e:d0a2])
+        by serve.minyard.net (Postfix) with ESMTPSA id B339D1800BA;
+        Mon, 15 Nov 2021 14:45:26 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 08:45:25 -0600
+From:   Corey Minyard <minyard@acm.org>
+To:     Ioanna Alifieraki <ioanna-maria.alifieraki@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net
+Subject: Re: [PATCH v2] ipmi: Move remove_work to dedicated workqueue
+Message-ID: <20211115144525.GA15676@minyard.net>
+Reply-To: minyard@acm.org
+References: <20211115131645.25116-1-ioanna-maria.alifieraki@canonical.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/2] drm/msm: Restore error return on invalid fence
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
-        freedreno@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20211111192457.747899-1-robdclark@gmail.com>
- <20211111192457.747899-3-robdclark@gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-In-Reply-To: <20211111192457.747899-3-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115131645.25116-1-ioanna-maria.alifieraki@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2021 12:54 AM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Mon, Nov 15, 2021 at 03:16:45PM +0200, Ioanna Alifieraki wrote:
+> Currently when removing an ipmi_user the removal is deferred as a work on
+> the system's workqueue. Although this guarantees the free operation will
+> occur in non atomic context, it can race with the ipmi_msghandler module
+> removal (see [1]) . In case a remove_user work is scheduled for removal
+> and shortly after ipmi_msghandler module is removed we can end up in a
+> situation where the module is removed fist and when the work is executed
+> the system crashes with :
+> BUG: unable to handle page fault for address: ffffffffc05c3450
+> PF: supervisor instruction fetch in kernel mode
+> PF: error_code(0x0010) - not-present page
+> because the pages of the module are gone. In cleanup_ipmi() there is no
+> easy way to detect if there are any pending works to flush them before
+> removing the module. This patch creates a separate workqueue and schedules
+> the remove_work works on it. When removing the module the workqueue is
+> drained when destroyed to avoid the race.
+
+Thanks, this is in my for-next queue.  If nobody complains after a week
+or so I'll send it on.
+
+-corey
+
 > 
-> When converting to use an idr to map userspace fence seqno values back
-> to a dma_fence, we lost the error return when userspace passes seqno
-> that is larger than the last submitted fence.  Restore this check.
+> [1] https://bugs.launchpad.net/bugs/1950666
 > 
-> Reported-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> Fixes: a61acbbe9cf8 ("drm/msm: Track "seqno" fences by idr")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Cc: stable@vger.kernel.org
+> Fixes: 3b9a907223d7 (ipmi: fix sleep-in-atomic in free_user at cleanup SRCU user->release_barrier)
+> Signed-off-by: Ioanna Alifieraki <ioanna-maria.alifieraki@canonical.com>
 > ---
-> Note: I will rebase "drm/msm: Handle fence rollover" on top of this,
-> to simplify backporting this patch to stable kernels
+>  drivers/char/ipmi/ipmi_msghandler.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
->   drivers/gpu/drm/msm/msm_drv.c        | 6 ++++++
->   drivers/gpu/drm/msm/msm_gem_submit.c | 1 +
->   drivers/gpu/drm/msm/msm_gpu.h        | 3 +++
->   3 files changed, 10 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index cb14d997c174..56500eb5219e 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -967,6 +967,12 @@ static int wait_fence(struct msm_gpu_submitqueue *queue, uint32_t fence_id,
->   	struct dma_fence *fence;
->   	int ret;
->   
-> +	if (fence_id > queue->last_fence) {
-
-But fence_id can wrap around and then this check won't be valid.
-
--Akhil.
-
-> +		DRM_ERROR_RATELIMITED("waiting on invalid fence: %u (of %u)\n",
-> +				      fence_id, queue->last_fence);
-> +		return -EINVAL;
+> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+> index deed355422f4..1ade72bfae0f 100644
+> --- a/drivers/char/ipmi/ipmi_msghandler.c
+> +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> @@ -191,6 +191,8 @@ struct ipmi_user {
+>  	struct work_struct remove_work;
+>  };
+>  
+> +struct workqueue_struct *remove_work_wq;
+> +
+>  static struct ipmi_user *acquire_ipmi_user(struct ipmi_user *user, int *index)
+>  	__acquires(user->release_barrier)
+>  {
+> @@ -1297,7 +1299,7 @@ static void free_user(struct kref *ref)
+>  	struct ipmi_user *user = container_of(ref, struct ipmi_user, refcount);
+>  
+>  	/* SRCU cleanup must happen in task context. */
+> -	schedule_work(&user->remove_work);
+> +	queue_work(remove_work_wq, &user->remove_work);
+>  }
+>  
+>  static void _ipmi_destroy_user(struct ipmi_user *user)
+> @@ -5383,6 +5385,13 @@ static int ipmi_init_msghandler(void)
+>  
+>  	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
+>  
+> +	remove_work_wq = create_singlethread_workqueue("ipmi-msghandler-remove-wq");
+> +	if (!remove_work_wq) {
+> +		pr_err("unable to create ipmi-msghandler-remove-wq workqueue");
+> +		rv = -ENOMEM;
+> +		goto out;
 > +	}
 > +
->   	/*
->   	 * Map submitqueue scoped "seqno" (which is actually an idr key)
->   	 * back to underlying dma-fence
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index 151d19e4453c..a38f23be497d 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -911,6 +911,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
->   	drm_sched_entity_push_job(&submit->base, queue->entity);
->   
->   	args->fence = submit->fence_id;
-> +	queue->last_fence = submit->fence_id;
->   
->   	msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
->   	msm_process_post_deps(post_deps, args->nr_out_syncobjs,
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index bd4e0024033e..e73a5bb03544 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -376,6 +376,8 @@ static inline int msm_gpu_convert_priority(struct msm_gpu *gpu, int prio,
->    * @ring_nr:   the ringbuffer used by this submitqueue, which is determined
->    *             by the submitqueue's priority
->    * @faults:    the number of GPU hangs associated with this submitqueue
-> + * @last_fence: the sequence number of the last allocated fence (for error
-> + *             checking)
->    * @ctx:       the per-drm_file context associated with the submitqueue (ie.
->    *             which set of pgtables do submits jobs associated with the
->    *             submitqueue use)
-> @@ -391,6 +393,7 @@ struct msm_gpu_submitqueue {
->   	u32 flags;
->   	u32 ring_nr;
->   	int faults;
-> +	uint32_t last_fence;
->   	struct msm_file_private *ctx;
->   	struct list_head node;
->   	struct idr fence_idr;
+>  	initialized = true;
+>  
+>  out:
+> @@ -5408,6 +5417,8 @@ static void __exit cleanup_ipmi(void)
+>  	int count;
+>  
+>  	if (initialized) {
+> +		destroy_workqueue(remove_work_wq);
+> +
+>  		atomic_notifier_chain_unregister(&panic_notifier_list,
+>  						 &panic_block);
+>  
+> -- 
+> 2.17.1
 > 
-
