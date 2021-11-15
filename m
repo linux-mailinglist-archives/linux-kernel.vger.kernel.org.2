@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E5A451BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FF4451F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243327AbhKPAGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:06:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1356074AbhKPAmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345072AbhKOT0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E61663713;
-        Mon, 15 Nov 2021 19:09:48 +0000 (UTC)
+        id S1345083AbhKOT0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:26:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 212CB6109E;
+        Mon, 15 Nov 2021 19:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003389;
-        bh=AtRP5XiR+CgkAOFjl+aDTVB6Zga+m98wcHP/Bzqj6Mo=;
+        s=korg; t=1637003391;
+        bh=QQ/EFiM1Q3qH70HEMMkXoE5EpmYyYlh00KibiceVI/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cb7ghgIqR7D+OGV7A2ZaU8CITqFJSDprnlAi+f2DfsJq2fWVkRWFux+e1FtCQ0N6z
-         Vux1vstqiK7QJj81tVB16pL2FeYWg0/ISyCS4RclL+D7nhRCM0bgWtJehlroXr7xxJ
-         JB3wap3nbwcZeYsoJZkU4NcVzQNjo+LT8plmx5f8=
+        b=rboIeZJevYqPEZvO/4cHgl1soD3QfPj/4Kxr02vJLrbNswgcvl3eSDjV9bYtbosSR
+         ZocBy1p8Itb6CbrM/sCQ3WQn5G83aewalvcWUAzGfjHc3vgqyI4tkOMTpFCfzJlEB4
+         4K1EJJx097aOK0eg7PlVj3dXcClSyjYkLPZwGLjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.15 884/917] bcache: fix use-after-free problem in bcache_device_free()
-Date:   Mon, 15 Nov 2021 18:06:19 +0100
-Message-Id: <20211115165459.028711455@linuxfoundation.org>
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.15 885/917] bcache: Revert "bcache: use bvec_virt"
+Date:   Mon, 15 Nov 2021 18:06:20 +0100
+Message-Id: <20211115165459.060259009@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,42 +41,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Coly Li <colyli@suse.de>
 
-commit 8468f45091d2866affed6f6a7aecc20779139173 upstream.
+commit 2878feaed543c35f9dbbe6d8ce36fb67ac803eef upstream.
 
-In bcache_device_free(), pointer disk is referenced still in
-ida_simple_remove() after blk_cleanup_disk() gets called on this
-pointer. This may cause a potential panic by use-after-free on the
-disk pointer.
+This reverts commit 2fd3e5efe791946be0957c8e1eed9560b541fe46.
 
-This patch fixes the problem by calling blk_cleanup_disk() after
-ida_simple_remove().
+The above commit replaces page_address(bv->bv_page) by bvec_virt(bv) to
+avoid directly access to bv->bv_page, but in situation bv->bv_offset is
+not zero and page_address(bv->bv_page) is not equal to bvec_virt(bv). In
+such case a memory corruption may happen because memory in next page is
+tainted by following line in do_btree_node_write(),
+	memcpy(bvec_virt(bv), addr, PAGE_SIZE);
 
-Fixes: bc70852fd104 ("bcache: convert to blk_alloc_disk/blk_cleanup_disk")
+This patch reverts the mentioned commit to avoid the memory corruption.
+
+Fixes: 2fd3e5efe791 ("bcache: use bvec_virt")
 Signed-off-by: Coly Li <colyli@suse.de>
 Cc: Christoph Hellwig <hch@lst.de>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: stable@vger.kernel.org # v5.14+
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20211103064917.67383-1-colyli@suse.de
+Cc: stable@vger.kernel.org # 5.15
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20211103151041.70516-1-colyli@suse.de
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/bcache/super.c |    2 +-
+ drivers/md/bcache/btree.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -885,9 +885,9 @@ static void bcache_device_free(struct bc
- 		bcache_device_detach(d);
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -378,7 +378,7 @@ static void do_btree_node_write(struct b
+ 		struct bvec_iter_all iter_all;
  
- 	if (disk) {
--		blk_cleanup_disk(disk);
- 		ida_simple_remove(&bcache_device_idx,
- 				  first_minor_to_idx(disk->first_minor));
-+		blk_cleanup_disk(disk);
- 	}
+ 		bio_for_each_segment_all(bv, b->bio, iter_all) {
+-			memcpy(bvec_virt(bv), addr, PAGE_SIZE);
++			memcpy(page_address(bv->bv_page), addr, PAGE_SIZE);
+ 			addr += PAGE_SIZE;
+ 		}
  
- 	bioset_exit(&d->bio_split);
 
 
