@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA83B451984
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01CE452023
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242609AbhKOXW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:22:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        id S1353842AbhKPAtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244823AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFAA8634D5;
-        Mon, 15 Nov 2021 18:24:35 +0000 (UTC)
+        id S1344651AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 791A6636AD;
+        Mon, 15 Nov 2021 19:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000676;
-        bh=37R7AQxwaHqBQnqHRMW6dJ+EsQblDFNxp4DVJlhU1As=;
+        s=korg; t=1637002899;
+        bh=9hKHflMQr9m/2690S4jwcKZdUKjuHvoNqW8AlOYk21Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lab6hLtPUki7GLpHXO2T+GzuAI4cNUuAQCR2qnmgriE1z6HhRtNOhor5wZ19JaQ7H
-         4voIkx2OJHtP8xU4nVi+gqamD8h65FynjNVm59+CU3BoeRLMm7bA2/T36IpbQwA4gT
-         dYi6FVJ9eCKWK6MJ5xRMNtYADwW3mBxyd+3P5Z18=
+        b=wnZpKSWnRY7Gnh2qp0UVbEYcPy7kfwtQ7//vTeOFAfsr3OAbWyGwcXemVupLYgUwy
+         4SQ1NLoYScpgkMbW6x0Cb3+cfSezFZkkLwOzRFe1fOWKYxpsKEwrAygq0BQVn/ubtv
+         zDELf5EqYaauqH8jzCxmeL5+80dgJiT+0KTQ+9JY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 716/849] xen-pciback: Fix return in pm_ctrl_init()
+Subject: [PATCH 5.15 704/917] Input: ariel-pwrbutton - add SPI device ID table
 Date:   Mon, 15 Nov 2021 18:03:19 +0100
-Message-Id: <20211115165444.475647163@linuxfoundation.org>
+Message-Id: <20211115165452.762148964@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
+[ Upstream commit 5c4c2c8e6fac26fa0b80c234d6e9f75d637193af ]
 
-Return NULL instead of passing to ERR_PTR while err is zero,
-this fix smatch warnings:
-drivers/xen/xen-pciback/conf_space_capability.c:163
- pm_ctrl_init() warn: passing zero to 'ERR_PTR'
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI device ID table.
 
-Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210927134104.38648-1-broonie@kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/misc/ariel-pwrbutton.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
-index 22f13abbe9130..5e53b4817f167 100644
---- a/drivers/xen/xen-pciback/conf_space_capability.c
-+++ b/drivers/xen/xen-pciback/conf_space_capability.c
-@@ -160,7 +160,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
- 	}
+diff --git a/drivers/input/misc/ariel-pwrbutton.c b/drivers/input/misc/ariel-pwrbutton.c
+index 17bbaac8b80c8..cdc80715b5fd6 100644
+--- a/drivers/input/misc/ariel-pwrbutton.c
++++ b/drivers/input/misc/ariel-pwrbutton.c
+@@ -149,12 +149,19 @@ static const struct of_device_id ariel_pwrbutton_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ariel_pwrbutton_of_match);
  
- out:
--	return ERR_PTR(err);
-+	return err ? ERR_PTR(err) : NULL;
- }
++static const struct spi_device_id ariel_pwrbutton_spi_ids[] = {
++	{ .name = "wyse-ariel-ec-input" },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, ariel_pwrbutton_spi_ids);
++
+ static struct spi_driver ariel_pwrbutton_driver = {
+ 	.driver = {
+ 		.name = "dell-wyse-ariel-ec-input",
+ 		.of_match_table = ariel_pwrbutton_of_match,
+ 	},
+ 	.probe = ariel_pwrbutton_probe,
++	.id_table = ariel_pwrbutton_spi_ids,
+ };
+ module_spi_driver(ariel_pwrbutton_driver);
  
- static const struct config_field caplist_pm[] = {
 -- 
 2.33.0
 
