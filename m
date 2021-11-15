@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58706451914
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEE4451B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350421AbhKOXOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:14:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41794 "EHLO mail.kernel.org"
+        id S1356169AbhKOXyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:54:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243731AbhKOTKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B660363231;
-        Mon, 15 Nov 2021 18:18:22 +0000 (UTC)
+        id S1344300AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C22633D2;
+        Mon, 15 Nov 2021 18:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000303;
-        bh=K9AunBxZ3A7se6BtYGm4uCfEiXETP6VKE9R+Zr4izz8=;
+        s=korg; t=1637002525;
+        bh=qNAaiD4oRJtdFgsCcRZsICSHAD4rUUz5qklq0epcFww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qH1yqkrxJ4KeHQrY0CUsS0YGgAfacUhy9I/QAy9K7E+yhcC0HoeS8xsLQFd7vIDgV
-         M6w0qL5TAIrw1VN6m94KBgXxhlzsKs3nsw71a4hvhAixtkTy5s0vgbjAUtfK/+sSc3
-         05CQEek8wi+fA+wmOeKgpe3OFcRtKT19opYnd6ZI=
+        b=kO+sS9MG1k/h8EMzHwMesXqHq0iUjvz4fIZ2mnn3FlC6nA0cmEBjDh/jHlAsox0J2
+         MMJmq0Hg4ErIjkgLUf8Oxnh4M1j2lv82gMmP6Z5oRbOmgy4EENLkM+MwqACwVx+RzF
+         c0dlZCHaWvBT/eKjxIDOVPIFcTBpbpUi1k4mcg1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, David Stevens <stevensd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>, Joerg Roedel <jroedel@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 612/849] ARM: dts: stm32: fix STUSB1600 Type-C irq level on stm32mp15xx-dkx
-Date:   Mon, 15 Nov 2021 18:01:35 +0100
-Message-Id: <20211115165440.949643111@linuxfoundation.org>
+Subject: [PATCH 5.15 601/917] iommu/dma: Fix sync_sg with swiotlb
+Date:   Mon, 15 Nov 2021 18:01:36 +0100
+Message-Id: <20211115165449.141740772@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+From: David Stevens <stevensd@chromium.org>
 
-[ Upstream commit 3d4fb3d4c431f45272bf8c308d3cbe030817f046 ]
+[ Upstream commit 08ae5d4a1ae96b72222e7b02d072bb997ff29dac ]
 
-STUSB1600 IRQ (Alert pin) is active low (open drain). Interrupts may get
-lost currently, so fix the IRQ type.
+The is_swiotlb_buffer function takes the physical address of the swiotlb
+buffer, not the physical address of the original buffer. The sglist
+contains the physical addresses of the original buffer, so for the
+sync_sg functions to work properly when a bounce buffer might have been
+used, we need to use iommu_iova_to_phys to look up the physical address.
+This is what sync_single does, so call that function on each sglist
+segment.
 
-Fixes: 83686162c0eb ("ARM: dts: stm32: add STUSB1600 Type-C using I2C4 on stm32mp15xx-dkx")
+The previous code mostly worked because swiotlb does the transfer on map
+and unmap. However, any callers which use DMA_ATTR_SKIP_CPU_SYNC with
+sglists or which call sync_sg would not have had anything copied to the
+bounce buffer.
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Fixes: 82612d66d51d ("iommu: Allow the iommu/dma api to use bounce buffers")
+Signed-off-by: David Stevens <stevensd@chromium.org>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210929023300.335969-2-stevensd@google.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 33 +++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-index 586aac8a998c0..a86f2dfa67acc 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-@@ -249,7 +249,7 @@
- 	stusb1600@28 {
- 		compatible = "st,stusb1600";
- 		reg = <0x28>;
--		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-parent = <&gpioi>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&stusb1600_pins_a>;
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 896bea04c347e..c4d205b63c582 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -828,17 +828,13 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+-		return;
+-
+-	for_each_sg(sgl, sg, nelems, i) {
+-		if (!dev_is_dma_coherent(dev))
++	if (dev_is_untrusted(dev))
++		for_each_sg(sgl, sg, nelems, i)
++			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
++						      sg->length, dir);
++	else if (!dev_is_dma_coherent(dev))
++		for_each_sg(sgl, sg, nelems, i)
+ 			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
+-
+-		if (is_swiotlb_buffer(dev, sg_phys(sg)))
+-			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
+-						    sg->length, dir);
+-	}
+ }
+ 
+ static void iommu_dma_sync_sg_for_device(struct device *dev,
+@@ -848,17 +844,14 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+-		return;
+-
+-	for_each_sg(sgl, sg, nelems, i) {
+-		if (is_swiotlb_buffer(dev, sg_phys(sg)))
+-			swiotlb_sync_single_for_device(dev, sg_phys(sg),
+-						       sg->length, dir);
+-
+-		if (!dev_is_dma_coherent(dev))
++	if (dev_is_untrusted(dev))
++		for_each_sg(sgl, sg, nelems, i)
++			iommu_dma_sync_single_for_device(dev,
++							 sg_dma_address(sg),
++							 sg->length, dir);
++	else if (!dev_is_dma_coherent(dev))
++		for_each_sg(sgl, sg, nelems, i)
+ 			arch_sync_dma_for_device(sg_phys(sg), sg->length, dir);
+-	}
+ }
+ 
+ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
 -- 
 2.33.0
 
