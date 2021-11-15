@@ -2,89 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF0A452649
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567F545275B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbhKPCEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239921AbhKOSFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:03 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB47DC110F0B;
-        Mon, 15 Nov 2021 09:32:36 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id b11so14995384pld.12;
-        Mon, 15 Nov 2021 09:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qbERs27MjXejNyi1gRtSSGpv4Ff7qN0thceJ4/krT68=;
-        b=HzjkGKqpWug7RhxGAjY65fYLKyGMH+SOCgW0SV4Slie0FzBmvGRKHlbHnsG/CSyRJy
-         6Ojk/Um61OhVxcsy0v3eSilWmkz8ynbArpaHS+bMqhrD7JwgKR7UmE9f98zYv2Fw4ame
-         HSKiyY3ZoSFZsL8eMfc0AeJkK8DM1I7DLNf57OhuE5GltAeEJQWsNe0AqslipfW4mzFC
-         RKYaIQ96OhuYdfV5ba+jdPIpBovFMQWN16uMyyvbjIH0OSdC/WTe8nUzg2UmDlUq8wt4
-         jza1UawelPwCXlHtE0bhMx706j2zRo8PoyKT16dyrPCJEd+WDZ7LCl+TNm3i31Oj//zH
-         fZuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qbERs27MjXejNyi1gRtSSGpv4Ff7qN0thceJ4/krT68=;
-        b=wf8stzISMqHCesaCLfEttZq9Z5ulI3WtnrFU2gE6HXmBzwL0aObDhxUK4KBQmjwmvA
-         ocGNPs9YF8ZcSUEO/YvA4TrY98/2WBeaVSYdWjoYzHCh9lI6cmFWhLYNyx254su6ERHH
-         n4M0TOfNOYSgaiGkO5uIUt0rHqWhddxLNmYFwOc8CTX3hWUPOMeUJPqrovdnhnEQgr7q
-         YvUIBnQIIekM8YfXh4AzPVrCR6Zaxp63cvp0qe0W5/HjJkYHQiLxrX75tVqVXXCDEnQw
-         ysCM+RQBBNCUyiqTbwbG8iupH9NXTuY+2hrr8KI4gaWIzGrJpDlZsz4wYPeEJOMHSY7x
-         hLDw==
-X-Gm-Message-State: AOAM533tWZiEh6FaK/cx9wWl6uxXZT/QwARxVQRC00tnVXShY+LNUjze
-        jPd8ILJhdidVkbbWLMpn8pzSRFGKZDU=
-X-Google-Smtp-Source: ABdhPJy7BQqw41VHuwGWDJOHuitIP4kayqgb/jRtEWU19j6LALQSNeJaDVavh22AT+JBZ+qEtNwNvw==
-X-Received: by 2002:a17:902:d2c1:b0:141:f710:922 with SMTP id n1-20020a170902d2c100b00141f7100922mr1080860plc.7.1636997556268;
-        Mon, 15 Nov 2021 09:32:36 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s2sm21064524pjs.56.2021.11.15.09.32.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 09:32:35 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: bcm2711: Fix PCIe interrupts
-Date:   Mon, 15 Nov 2021 09:32:34 -0800
-Message-Id: <20211115173234.489160-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211029210927.36800-1-f.fainelli@gmail.com>
-References: <20211029210927.36800-1-f.fainelli@gmail.com>
+        id S243815AbhKPCWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:22:15 -0500
+Received: from mga04.intel.com ([192.55.52.120]:21310 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238074AbhKORjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:39:17 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232211176"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="232211176"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 09:35:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="603916913"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 15 Nov 2021 09:35:44 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mmftP-000Moq-CO; Mon, 15 Nov 2021 17:35:43 +0000
+Date:   Tue, 16 Nov 2021 01:35:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:test-clang-ft] BUILD SUCCESS
+ 4ceb6d04c2cdcff2c6bd0cfcc1aad57915eaac2b
+Message-ID: <61929a55.wmXwgj2RvCaBdx+2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 14:09:26 -0700, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> The PCIe host bridge has two interrupt lines, one that goes towards it
-> PCIE_INTR2 second level interrupt controller and one for its MSI second
-> level interrupt controller. The first interrupt line is not currently
-> managed by the driver, which is why it was not a functional problem.
-> 
-> The interrupt-map property was also only listing the PCI_INTA interrupts
-> when there are also the INTB, C and D.
-> 
-> Reported-by: Jim Quinlan <jim2101024@gmail.com>
-> Fixes: d5c8dc0d4c88 ("ARM: dts: bcm2711: Enable PCIe controller")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git test-clang-ft
+branch HEAD: 4ceb6d04c2cdcff2c6bd0cfcc1aad57915eaac2b  kconfig: Fix -Wimplicit-fallthrough=5 error for GCC 5.x and 6.x
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/fixes, thanks!
---
-Florian
+elapsed time: 859m
+
+configs tested: 186
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211115
+arm                            zeus_defconfig
+nios2                         10m50_defconfig
+arm                          pcm027_defconfig
+arm                         assabet_defconfig
+arm                           tegra_defconfig
+h8300                            alldefconfig
+arc                                 defconfig
+sh                           se7751_defconfig
+arm                        mini2440_defconfig
+mips                        bcm63xx_defconfig
+sh                           se7721_defconfig
+powerpc                      pasemi_defconfig
+powerpc                      walnut_defconfig
+powerpc                     sequoia_defconfig
+arm                        mvebu_v7_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                  audio_kc705_defconfig
+arm                          ixp4xx_defconfig
+m68k                          multi_defconfig
+arm                      jornada720_defconfig
+powerpc                    sam440ep_defconfig
+nios2                               defconfig
+mips                         bigsur_defconfig
+sh                        edosk7760_defconfig
+um                                  defconfig
+riscv                               defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                           rs90_defconfig
+sh                      rts7751r2d1_defconfig
+nios2                            alldefconfig
+mips                         db1xxx_defconfig
+ia64                          tiger_defconfig
+mips                         cobalt_defconfig
+h8300                     edosk2674_defconfig
+m68k                          amiga_defconfig
+alpha                            allyesconfig
+openrisc                 simple_smp_defconfig
+sh                          r7780mp_defconfig
+ia64                                defconfig
+arm                            xcep_defconfig
+sh                        apsh4ad0a_defconfig
+arc                        nsim_700_defconfig
+mips                       capcella_defconfig
+arm                       netwinder_defconfig
+arm                        cerfcube_defconfig
+powerpc                      katmai_defconfig
+arm                         hackkit_defconfig
+arm                        clps711x_defconfig
+powerpc                     tqm5200_defconfig
+mips                        vocore2_defconfig
+powerpc                           allnoconfig
+arm                       aspeed_g4_defconfig
+powerpc                     tqm8541_defconfig
+m68k                            mac_defconfig
+arm                       omap2plus_defconfig
+powerpc                     ep8248e_defconfig
+arm                          pxa3xx_defconfig
+mips                             allyesconfig
+arm                           sama7_defconfig
+riscv                    nommu_virt_defconfig
+arm                          pxa168_defconfig
+xtensa                generic_kc705_defconfig
+arm                            qcom_defconfig
+m68k                        mvme16x_defconfig
+sh                        sh7757lcr_defconfig
+sh                          sdk7786_defconfig
+mips                       rbtx49xx_defconfig
+mips                            e55_defconfig
+arm                          pxa910_defconfig
+xtensa                  nommu_kc705_defconfig
+alpha                            alldefconfig
+arm                            dove_defconfig
+parisc                           alldefconfig
+sh                ecovec24-romimage_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                     loongson1c_defconfig
+arm                        trizeps4_defconfig
+sh                          urquell_defconfig
+mips                           ip28_defconfig
+arm                         socfpga_defconfig
+arm                        shmobile_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                         wii_defconfig
+mips                           ip32_defconfig
+mips                      malta_kvm_defconfig
+arm                      pxa255-idp_defconfig
+arm                        multi_v5_defconfig
+powerpc                  mpc866_ads_defconfig
+arc                      axs103_smp_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 mpc837x_mds_defconfig
+m68k                        m5272c3_defconfig
+arm                          lpd270_defconfig
+sh                           se7206_defconfig
+powerpc                      pcm030_defconfig
+sparc                            allyesconfig
+arm                        multi_v7_defconfig
+powerpc                   bluestone_defconfig
+sh                           se7343_defconfig
+sh                          r7785rp_defconfig
+m68k                        stmark2_defconfig
+arm                           sunxi_defconfig
+arm                  randconfig-c002-20211115
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+s390                                defconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                             allmodconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a005-20211115
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a006-20211115
+x86_64               randconfig-a004-20211115
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+riscv                            allmodconfig
+riscv                            allyesconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-c007-20211115
+i386                 randconfig-c001-20211115
+arm                  randconfig-c002-20211115
+riscv                randconfig-c006-20211115
+powerpc              randconfig-c003-20211115
+s390                 randconfig-c005-20211115
+mips                 randconfig-c004-20211115
+x86_64               randconfig-a015-20211115
+x86_64               randconfig-a013-20211115
+x86_64               randconfig-a011-20211115
+x86_64               randconfig-a012-20211115
+x86_64               randconfig-a016-20211115
+x86_64               randconfig-a014-20211115
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
