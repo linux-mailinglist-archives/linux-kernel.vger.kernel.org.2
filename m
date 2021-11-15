@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D126D4518A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63430451DE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351612AbhKOXEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:04:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57278 "EHLO mail.kernel.org"
+        id S1348170AbhKPAe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243100AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BBC63317;
-        Mon, 15 Nov 2021 18:11:01 +0000 (UTC)
+        id S1343895AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CF3A635FF;
+        Mon, 15 Nov 2021 18:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999862;
-        bh=qwivl6QBXeWUvuLBRy8LfcdNXw5gHAOodpc44a9sNMY=;
+        s=korg; t=1637002100;
+        bh=2PByhr3OandUGPXglW8FGAKcoxx/lv666qXfRFWEAOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lifVRRer4cJkqrEDdvzlVz4GeYOoD+8HBql9MeuvA60hUsbZ/xMlq36ZEzlM2XLfE
-         CU9lVSp5mMPaR/E8jojxd3yKADEVw5E7Zls6GvB7IghUOm1xw/E3GWCK7AoXJv31Y2
-         NjI8qQXhbY/+fe0sPfpYWrowZInUXi+aLX1TyYzY=
+        b=mCv4wS2J/tnFj1n5xmL9Z8BkQw88PrVKtMQ+Vxnu+fR/twTWCzws5wcvUUkYll8iS
+         CaG4kVQd9/X1WjPZYvLALi/k0ym2FwkffBF62FB4EEAT5DT3Lo2R/Cf7Fbv5db+ytA
+         m8Gjw+ZSop7Dgtib6g6DyIeGZemkf94xkic8oaX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 450/849] mt76: mt7915: fix endianness warning in mt7915_mac_add_txs_skb
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 438/917] drm/msm: potential error pointer dereference in init()
 Date:   Mon, 15 Nov 2021 17:58:53 +0100
-Message-Id: <20211115165435.509478716@linuxfoundation.org>
+Message-Id: <20211115165443.638722412@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 08b3c8da87aed4200dab00906f149d675ca90f23 ]
+[ Upstream commit b6816441a14bbe356ba8590de79cfea2de6a085c ]
 
-Fix the following sparse warning in mt7915_mac_add_txs_skb routine:
+The msm_iommu_new() returns error pointers on failure so check for that
+to avoid an Oops.
 
-drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:29:
-	warning: cast to restricted __le32
-drivers/net/wireless/mediatek/mt76/mt7915/mac.c:1235:23:
-	warning: restricted __le32 degrades to integer
-
-Fixes: 3de4cb1756565 ("mt76: mt7915: add support for tx status reporting")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fixes: ccac7ce373c1 ("drm/msm: Refactor address space initialization")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20211004103806.GD25015@kili
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-index 2462704094b0a..bbc996f86b5c3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-@@ -1232,7 +1232,7 @@ mt7915_mac_add_txs_skb(struct mt7915_dev *dev, struct mt76_wcid *wcid, int pid,
- 		goto out;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index ae48f41821cfe..ad247c06e198f 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -908,6 +908,10 @@ static int _dpu_kms_mmu_init(struct dpu_kms *dpu_kms)
+ 		return 0;
  
- 	info = IEEE80211_SKB_CB(skb);
--	if (!(txs_data[0] & le32_to_cpu(MT_TXS0_ACK_ERROR_MASK)))
-+	if (!(txs_data[0] & cpu_to_le32(MT_TXS0_ACK_ERROR_MASK)))
- 		info->flags |= IEEE80211_TX_STAT_ACK;
+ 	mmu = msm_iommu_new(dpu_kms->dev->dev, domain);
++	if (IS_ERR(mmu)) {
++		iommu_domain_free(domain);
++		return PTR_ERR(mmu);
++	}
+ 	aspace = msm_gem_address_space_create(mmu, "dpu1",
+ 		0x1000, 0x100000000 - 0x1000);
  
- 	info->status.ampdu_len = 1;
 -- 
 2.33.0
 
