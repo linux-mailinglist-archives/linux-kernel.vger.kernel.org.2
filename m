@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D4C450193
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45B1450198
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236505AbhKOJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:44:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhKOJop (ORCPT
+        id S236730AbhKOJpK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 04:45:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4094 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbhKOJpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:44:45 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562C7C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:41:49 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id w1so69193749edd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AYqbeZ2mpQmpuB6ksQc8ohOCYowaIxnorZPGKiryA0c=;
-        b=JdMnykfVIKiiMfL2VFgEJRbHZB7MfwD71DqvHpdzQbO4tmxNago+L3p/1h7ESjNjyu
-         oxO3rtK9kRAb2z/eOpuFUIiMi43U4dSeXoNKMy3cgMKNfn3ZVa86cGUixekGfuUCLsxm
-         /7nMCOBspoDbYJ3JgGZL15HZc7ypC4LNbKMnU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AYqbeZ2mpQmpuB6ksQc8ohOCYowaIxnorZPGKiryA0c=;
-        b=yGMT67KmWeqzVEAIQjIzoyHv4MT7BKds42kxrV4h6QHzlLPqS8L4/h2soxQt8f9NTJ
-         4ZHQOwcJVLcWrt4qU9CeYcF+qenniBi6JU3OJ+kqbUoY5x+bPDBH0I3XrcftHGRPJtsO
-         IJlyykAnAecKd981D91eqYdH50bDBKiSxvFvG6cpadbG/WEELmOX6QG6s1PFXmcx+yvM
-         /YqSmnsq3V+/n6MbcJwF8g7VOv3xFrwm9vdQx89btKeHDZ50vS0vGZlPKMXQ7Am5UDqr
-         zTnaaAZGDej2S5Pwr32B592yoQjGarJca5ii0zvxjOOmB6TuCrpUfdtvO+MK0xohSISq
-         UvaQ==
-X-Gm-Message-State: AOAM531tco/JnK5i9PxiZRO5x2RxsIZLY6r2gNXjVx+MBTdoDBKS8WaI
-        xcQdcYjRtpXJ7SQNlxY50GnpRuV3EA0kZ/qFS+mVmQ==
-X-Google-Smtp-Source: ABdhPJxLrlF28FgYkomzR4UH3SqUDvOokPN1DVYuV1rM6mujj1DJG9mFRIRGyNDhu/4m275cebUKYM4RiMCcXsJPkpM=
-X-Received: by 2002:aa7:c719:: with SMTP id i25mr16210158edq.157.1636969307866;
- Mon, 15 Nov 2021 01:41:47 -0800 (PST)
+        Mon, 15 Nov 2021 04:45:07 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ht43K5DVKz67lMW;
+        Mon, 15 Nov 2021 17:42:05 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 15 Nov 2021 10:42:09 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
+ Mon, 15 Nov 2021 10:42:09 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hughd@google.com" <hughd@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "deven.desai@linux.microsoft.com" <deven.desai@linux.microsoft.com>,
+        "wufan@linux.microsoft.com" <wufan@linux.microsoft.com>
+Subject: RE: [RFC][PATCH 2/5] fsverity: Revalidate built-in signatures at file
+ open
+Thread-Topic: [RFC][PATCH 2/5] fsverity: Revalidate built-in signatures at
+ file open
+Thread-Index: AQHX18MQyymJ+lWsYUGROsvm6WBSwawAMuSAgAQZWoA=
+Date:   Mon, 15 Nov 2021 09:42:09 +0000
+Message-ID: <ae418bcd4d074500b417b74af5db11b2@huawei.com>
+References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
+ <20211112124411.1948809-3-roberto.sassu@huawei.com>
+ <YY69NaucW+0t474Q@gmail.com>
+In-Reply-To: <YY69NaucW+0t474Q@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <47ed717c3070a1d0f53e7b4c768a4fd11caf365d.1636707421.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <47ed717c3070a1d0f53e7b4c768a4fd11caf365d.1636707421.git.christophe.jaillet@wanadoo.fr>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Mon, 15 Nov 2021 15:11:36 +0530
-Message-ID: <CA+sbYW3WNJNWSNL84XgZ+PPSbR+_S93HV1u0CGS+3uNTpDp-WQ@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/bnxt_re: Scan the whole bitmap when checking if
- "disabling RCFW with pending cmd-bit"
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 2:36 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> The 'cmdq->cmdq_bitmap' bitmap is 'rcfw->cmdq_depth' bits long.
-> The size stored in 'cmdq->bmap_size' is the size of the bitmap in bytes.
->
-> Remove this erroneous 'bmap_size' and use 'rcfw->cmdq_depth' directly in
-> 'bnxt_qplib_disable_rcfw_channel()'. Otherwise some error messages may
-> be missing.
->
-> Other uses of 'cmdq_bitmap' already take into account 'rcfw->cmdq_depth'
-> directly.
->
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> From: Eric Biggers [mailto:ebiggers@kernel.org]
+> Sent: Friday, November 12, 2021 8:15 PM
+> On Fri, Nov 12, 2021 at 01:44:08PM +0100, Roberto Sassu wrote:
+> > Fsverity signatures are validated only upon request by the user by setting
+> > the requirement through procfs or sysctl.
+> >
+> > However, signatures are validated only when the fsverity-related
+> > initialization is performed on the file. If the initialization happened
+> > while the signature requirement was disabled, the signature is not
+> > validated again.
+> 
+> I'm not sure this really matters.  If someone has started using a verity file
+> before the require_signatures sysctl was set, then there is already a race
+> condition; this patch doesn't fix that.  Don't you need to set the
+> require_signatures sysctl early enough anyway?
+
+Yes, access to already opened files is not revoked. It will work
+for a new open. Actually, the main reason for this patch was that
+one of the tests in xfstests-dev fails (generic/577).
+
+While persistent filesystems are unmounted and mounted before
+the test, which causes the fsverity_info structure to be removed
+from the inode, requiring a new verification, tmpfs is just remounted.
+During remount, the fsverity_info structure of already instantiated
+inodes is kept.
+
+Since fsverity_verify_signature() is called only when the
+fsverity_info structure is created, all files with that structure are
+considered valid, even if signature verification was temporarily
+disabled at the time the structure was created.
+
+Requiring signature verification early could be a solution, but
+it is still at discretion of root. Maybe it would be a good idea to
+disable the interface with a kernel option, so that signatures
+can be enforced in a mandatory way.
+
+This patch probably helps more LSMs, by exposing the information
+of whether the signature was validated, to make their decision
+depending on their policy.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
