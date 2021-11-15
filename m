@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED10451145
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6775845114F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243196AbhKOTDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:03:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57870 "EHLO mail.kernel.org"
+        id S243773AbhKOTD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:03:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237953AbhKORjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:39:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 575836324A;
-        Mon, 15 Nov 2021 17:26:38 +0000 (UTC)
+        id S238259AbhKORkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:40:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70A72632EA;
+        Mon, 15 Nov 2021 17:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997198;
-        bh=r8lz0dyZKz8fXwRGSzLHh99p+dcOFLime4hri3FIvFk=;
+        s=korg; t=1636997206;
+        bh=rMnptWs3hjqzTLkIUaAVovM2TQHRfBBANM53PvOlk/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E6y1n2AYr1b3oGT2JUNxudCvk86+OBI1OyBrc/QF+pKw7Ifc2nsOJi9Yf1gBVL4En
-         nyXOZuaEriB9HBu6HrljfLe0wd/JLM0JAii8zDs7Xv88fHK0Rh0k/rixwSBLFcD0tA
-         ddOME3GibRdfyPVpu6951dfug1JKT5LmqpiFivfY=
+        b=cJEG7w/czuzOZ+9W6rKjsrep7JwA8plE31/5akQ4Hcts1rU1McNpnd0SIjE95IvKR
+         2RYN0KGZqwmY6extC9611DkZ84fNouyEpGVkFmlQC48su61U5OPNHcBMXU7Jn5C4x8
+         JWc4vpLJyTm9Q6vPYcyp3Ic6iQRATLja3G+5s6Uo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bastien=20Roucari=C3=A8s?= <rouca@debian.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Pierre Ossman <pierre@ossman.eu>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/575] ARM: dts: sun7i: A20-olinuxino-lime2: Fix ethernet phy-mode
-Date:   Mon, 15 Nov 2021 17:56:25 +0100
-Message-Id: <20211115165345.719774124@linuxfoundation.org>
+Subject: [PATCH 5.10 063/575] mmc: winbond: dont build on M68K
+Date:   Mon, 15 Nov 2021 17:56:28 +0100
+Message-Id: <20211115165345.826443903@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,40 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bastien Roucariès <rouca@debian.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 55dd7e059098ce4bd0a55c251cb78e74604abb57 ]
+[ Upstream commit 162079f2dccd02cb4b6654defd32ca387dd6d4d4 ]
 
-Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-config") sets the RX/TX delay according to the phy-mode property in the
-device tree. For the A20-olinuxino-lime2 board this is "rgmii", which is the
-wrong setting.
+The Winbond MMC driver fails to build on ARCH=m68k so prevent
+that build config. Silences these build errors:
 
-Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
-Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
-the Ethernet working again on this board.
+../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
+../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
+  212 |                 dmaflags = claim_dma_lock();
+../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
+  215 |                 release_dma_lock(dmaflags);
 
-Signed-off-by: Bastien Roucariès <rouca@debian.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210916081721.237137-1-rouca@debian.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Pierre Ossman <pierre@ossman.eu>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211017175949.23838-1-rdunlap@infradead.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts | 2 +-
+ drivers/mmc/host/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts b/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
-index 9ba62774e89a1..488933b87ad5a 100644
---- a/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
-+++ b/arch/arm/boot/dts/sun7i-a20-olinuxino-lime2.dts
-@@ -112,7 +112,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 31481c9fcc2ec..30ff42fd173e2 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -503,7 +503,7 @@ config MMC_OMAP_HS
  
+ config MMC_WBSD
+ 	tristate "Winbond W83L51xD SD/MMC Card Interface support"
+-	depends on ISA_DMA_API
++	depends on ISA_DMA_API && !M68K
+ 	help
+ 	  This selects the Winbond(R) W83L51xD Secure digital and
+ 	  Multimedia card Interface.
 -- 
 2.33.0
 
