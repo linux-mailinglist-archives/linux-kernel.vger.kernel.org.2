@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00259451E3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2484518BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344768AbhKPAf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1351511AbhKOXG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:06:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344012AbhKOTXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DBA26329E;
-        Mon, 15 Nov 2021 18:50:25 +0000 (UTC)
+        id S243483AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:59:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D941460EB2;
+        Mon, 15 Nov 2021 18:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002225;
-        bh=hqwD/FUK63W4kpGNOCRZRdrKqVexnJ6ZTfS+yIQapcg=;
+        s=korg; t=1636999991;
+        bh=Qeyx0YVCwR6rX9/M5y0c+7zqXyGyt5uNMJFJMWFWJmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZNhsGNQk3rf7y00UAG8OI02xv4djA726rZwU4m5MGMoYyggqZkfrV5wirpD6mkT1
-         Dwyw4bY6a+YugxT/wB8uWziEdjnykwmqSDubb6+7MKkVoCWqwnt8sE9vZVWmpX25Ba
-         xy+0yXz8nST+Oj3QvHL86ILo2oQfcKlfYsOpKOtM=
+        b=HMZ1icBZj7fvisgmqM/mB0TRWq+j2+zkTR2BtU4bbDwBNHKl39SNLD7OpjHlY/E5/
+         KdIpIv8rqEmBk+Qe7rI0CNUoEZsLPuv7wjChDJb1ov1wLY/iq1Kh2LD3hzthUZUeQe
+         eGayep6Cg6vcLLTHqKSElcwcMt1FO8ukLwz2tJb4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fei Shao <fshao@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 452/917] mailbox: mtk-cmdq: Validate alias_id on probe
-Date:   Mon, 15 Nov 2021 17:59:07 +0100
-Message-Id: <20211115165444.109584912@linuxfoundation.org>
+        stable@vger.kernel.org, Joshua Emele <jemele@chromium.org>,
+        YN Chen <YN.Chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 465/849] mt76: mt7921: fix firmware usage of RA info using legacy rates
+Date:   Mon, 15 Nov 2021 17:59:08 +0100
+Message-Id: <20211115165436.013376567@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fei Shao <fshao@chromium.org>
+From: Sean Wang <sean.wang@mediatek.com>
 
-[ Upstream commit 5c154b6a51c2d2d7f266b3ef49b7dd1dc8cb5b65 ]
+[ Upstream commit 99b8e195994d9d77de3bfe0cb403c44a57c2cf79 ]
 
-of_alias_get_id() may return -ENODEV which leads to illegal access to
-the cmdq->clocks array.
-Adding a check over alias_id to prevent the unexpected behavior.
+According to the firmware usage, OFDM rates should fill out bit 6 - 13
+while CCK rates should fill out bit 0 - 3 in legacy field of RA info to
+make the rate adaption runs propertly. Otherwise, a unicast frame might be
+picking up the unsupported rate to send out.
 
-Fixes: 85dfdbfc13ea ("mailbox: cmdq: add multi-gce clocks support for mt8195")
-Signed-off-by: Fei Shao <fshao@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Fixes: 1c099ab44727 ("mt76: mt7921: add MCU support")
+Reported-by: Joshua Emele <jemele@chromium.org>
+Co-developed-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/mtk-cmdq-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 11 ++++++++++-
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h |  2 ++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index c591dab9d5a48..9b0cc3bb5b23a 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -572,7 +572,7 @@ static int cmdq_probe(struct platform_device *pdev)
- 			char clk_id[8];
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+index f57f047fce99c..98d233e24afcc 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+@@ -719,6 +719,7 @@ void mt76_connac_mcu_sta_tlv(struct mt76_phy *mphy, struct sk_buff *skb,
+ 	struct sta_rec_state *state;
+ 	struct sta_rec_phy *phy;
+ 	struct tlv *tlv;
++	u16 supp_rates;
  
- 			alias_id = of_alias_get_id(node, clk_name);
--			if (alias_id < cmdq->gce_num) {
-+			if (alias_id >= 0 && alias_id < cmdq->gce_num) {
- 				snprintf(clk_id, sizeof(clk_id), "%s%d", clk_name, alias_id);
- 				cmdq->clocks[alias_id].id = clk_id;
- 				cmdq->clocks[alias_id].clk = of_clk_get(node, 0);
+ 	/* starec ht */
+ 	if (sta->ht_cap.ht_supported) {
+@@ -767,7 +768,15 @@ void mt76_connac_mcu_sta_tlv(struct mt76_phy *mphy, struct sk_buff *skb,
+ 
+ 	tlv = mt76_connac_mcu_add_tlv(skb, STA_REC_RA, sizeof(*ra_info));
+ 	ra_info = (struct sta_rec_ra_info *)tlv;
+-	ra_info->legacy = cpu_to_le16((u16)sta->supp_rates[band]);
++
++	supp_rates = sta->supp_rates[band];
++	if (band == NL80211_BAND_2GHZ)
++		supp_rates = FIELD_PREP(RA_LEGACY_OFDM, supp_rates >> 4) |
++			     FIELD_PREP(RA_LEGACY_CCK, supp_rates & 0xf);
++	else
++		supp_rates = FIELD_PREP(RA_LEGACY_OFDM, supp_rates);
++
++	ra_info->legacy = cpu_to_le16(supp_rates);
+ 
+ 	if (sta->ht_cap.ht_supported)
+ 		memcpy(ra_info->rx_mcs_bitmask, sta->ht_cap.mcs.rx_mask,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
+index 4bcd728ff97c5..77d4435e4581e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
+@@ -124,6 +124,8 @@ struct sta_rec_state {
+ 	u8 rsv[1];
+ } __packed;
+ 
++#define RA_LEGACY_OFDM GENMASK(13, 6)
++#define RA_LEGACY_CCK  GENMASK(3, 0)
+ #define HT_MCS_MASK_NUM 10
+ struct sta_rec_ra_info {
+ 	__le16 tag;
 -- 
 2.33.0
 
