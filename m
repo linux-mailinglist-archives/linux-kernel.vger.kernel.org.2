@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ADF451DB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE38B451C4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236449AbhKPAc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238741AbhKPAa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 19:30:26 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F4FC06FD8F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:57:09 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u22so32004169lju.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RmphX0MvgxPcyZ1NxD5xM+drSKIWrzBdfK3vQGpFT0Y=;
-        b=PTAG7zydJ+Czx1L/qKKrEFKvHQHR2PHUkLnV7dbMJ0n9YPER5y8gWhw+0A4fU6ji6l
-         qe9M0vz8I2Nxj7j6lsb9kI9plzoSWN7+JLBMq4KpxUh8j0gnIaO11fHllhUFtKqmVOM3
-         jX5Gg5k0vSUQZJbx+Sgc6lISP4h2zVzGzcl7sZ5b+45aqLYzrwGX9DGu4/yrwOZDy/xI
-         I6PGAxCTOCUA3Iyf9CgUJoadM29jrjtnvrK5KCtQJA0wjA5lBqGHOx3ViTI6D5IIyZRy
-         FGUKigyHPNq2VwV2ZcoSimpbSN7GB0on28jjQ7ZYWSUev9o3eZOeQr5KPdN3/1Nk985Q
-         m2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RmphX0MvgxPcyZ1NxD5xM+drSKIWrzBdfK3vQGpFT0Y=;
-        b=Z2rorpeWS7271zGAlaLu0GBN0jeEppM3IFfeNWWfb74oCr05In9S6dRjkTl1MTnXwK
-         cjyHb/8YYHCAKCz1Xrb74DGQJJxr31vfw1wBCmZ3Dl8VtpQe8EnX6n5hS6n6Avi5zwKw
-         SwsuKh6NYsTmj/VwM2/GAs7knZnXvG+7hMHkXxO/3STaz6/1aSUHdqvYHOjpNviFu6bK
-         JEYOmYqsDy94KdEiiNA8ifZ8Hpsq0CluC6QepSTXT1PQNJlIHr00pzfpAG3W9C5vRyNG
-         xmnJF6noC/Y9yyC4d59GunOtfYt0haFSn+lZ9O3QWtmLgDAXp6u257y2IkvTKtI2S0wj
-         KdWg==
-X-Gm-Message-State: AOAM531tqpsRQdoepOe2cuSOL1uO/Jj7XhajPgW7Bj4kOMbun7BLzLy5
-        BtFE1Xvta0v9c5+8NxaQa8TDP2wPnIi4yaMjTSkW7w==
-X-Google-Smtp-Source: ABdhPJx7gdgAc+IXgszBD3wr3x5nZ4t8p3VJpeJTlxk1cFk85uFsL1LfgIM2zpoAdMMdZYsRUKVnSbLxhRvEXvqbe6U=
-X-Received: by 2002:a2e:8906:: with SMTP id d6mr1464579lji.454.1637017027772;
- Mon, 15 Nov 2021 14:57:07 -0800 (PST)
+        id S1351984AbhKPAPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:15:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350947AbhKOXDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 18:03:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7B8146124B;
+        Mon, 15 Nov 2021 23:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637017209;
+        bh=N8vy7Ciqk3MUgXenShMP/984Gc3+qw7T2saMQMt4meQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=o5ILMxlQKhBlia8NToVIE/JiaA+lzdTYNM02/IaXtZxIfeNBN3h3IHVRga4kOnFBN
+         8RLq351UP05ECIqSCKjSCZc9zborUmxl2c7B4pqZW/eKvE1ZuXLguXpKGkcVpRx3ZT
+         J8VfnxVseZPlEWSobch4MptDZHhtnMTyLZmoNJ4YuxApJNesZeLV1J7oIS9mBjCMms
+         sduBa4sxE+K5Au3G+tLOu/8a2o96MAOX6AJBtB+IMV4YHLTLRiyGwJBbKaZ0nFgJQs
+         k7XdKeiOHHuboHAnMkir+OCps24pz2R8A2h6Vw+ySDoSizWgd0dMWxeEEXTpYshjTK
+         41uLR/q9K+EkQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6AE5C6095A;
+        Mon, 15 Nov 2021 23:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211115153024.209083-1-mw@semihalf.com> <YZK2bPgHE0BFlDMd@lunn.ch>
-In-Reply-To: <YZK2bPgHE0BFlDMd@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Mon, 15 Nov 2021 23:56:54 +0100
-Message-ID: <CAPv3WKcUO7fnbOJH5tQ0hKATV2WpOBTog2WpzgEYjQk-JQa5_g@mail.gmail.com>
-Subject: Re: [net: PATCH] net: mvmdio: fix compilation warning
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, upstream@semihalf.com,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] samples: bpf: fix build error due to -isystem removal
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163701720943.28601.12990584204511867827.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Nov 2021 23:00:09 +0000
+References: <20211115130741.3584-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20211115130741.3584-1-alexandr.lobakin@intel.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, jesse.brandeburg@intel.com,
+        maciej.fijalkowski@intel.com, michal.swiatkowski@linux.intel.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, adobriyan@gmail.com, masahiroy@kernel.org,
+        ardb@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Mon, 15 Nov 2021 14:07:41 +0100 you wrote:
+> Since recent Kbuild updates we no longer include files from compiler
+> directories. However, samples/bpf/hbm_kern.h hasn't been tuned for
+> this (LLVM 13):
+> 
+>   CLANG-bpf  samples/bpf/hbm_out_kern.o
+> In file included from samples/bpf/hbm_out_kern.c:55:
+> samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
+>          ^~~~~~~~~~
+> 1 error generated.
+>   CLANG-bpf  samples/bpf/hbm_edt_kern.o
+> In file included from samples/bpf/hbm_edt_kern.c:53:
+> samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
+>          ^~~~~~~~~~
+> 1 error generated.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] samples: bpf: fix build error due to -isystem removal
+    https://git.kernel.org/bpf/bpf/c/6e528ca494d4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-pon., 15 lis 2021 o 20:35 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> On Mon, Nov 15, 2021 at 04:30:24PM +0100, Marcin Wojtas wrote:
-> > The kernel test robot reported a following issue:
-> >
-> > >> drivers/net/ethernet/marvell/mvmdio.c:426:36: warning:
-> > unused variable 'orion_mdio_acpi_match' [-Wunused-const-variable]
-> >    static const struct acpi_device_id orion_mdio_acpi_match[] =3D {
->
-> How come OF never gives these warning, just ACPI? If there something
-> missing in ACPI which OF has?
-
-It was enough to compile mvebu_v7_defconfig with W=3D1 to get it (so
-CONFIG_ACPI disabled). There may be a similar case for config _OF, but
-I couldn't deselect it easily and compile mvmdio at the same time.
-
->
-> > Fixes: c54da4c1acb1 ("net: mvmdio: add ACPI support")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
->
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->
-
-Thanks,
-Marcin
