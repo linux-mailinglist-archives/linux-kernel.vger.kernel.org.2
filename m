@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BBB45195A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8400451EA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353192AbhKOXSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42962 "EHLO mail.kernel.org"
+        id S1348055AbhKPAgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244621AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6595861B48;
-        Mon, 15 Nov 2021 18:22:26 +0000 (UTC)
+        id S1344532AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41E56368A;
+        Mon, 15 Nov 2021 18:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000547;
-        bh=3QZfEHTy8x3dW9yDMXvdUiQZmoEHmzkyzYm70Df/AJ0=;
+        s=korg; t=1637002764;
+        bh=bvl7/2cFgDMnUQLxmYAhY/q5K98jcp/7S1Giu9g6djs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+xSQF7g2BFdPpgNX8a/O6TSWM+FztuWwFZUPCAdPZ3GhnKm0aNCeDML3HenJJMol
-         6JlAWbrPH1ePTnJ5SSqY7wvbXt0bhYqTQzG1beAtXy8Br6gj+jIltXeTDIywc19283
-         ssn+jN1TXMcB4DXtJG2RQ5K/xcftR5vYXORDZo8w=
+        b=eehXv1Eg1USmpmlsVWg+Oiq+fmTEcwBi7GqPdzypEDYuJVofEik6ep4s0yXFIbPVz
+         W4bxlJz6Wg7XEwIEFh+8NZMHcQYKt5+XNtwF0lOeuG7sjlzsGo2r59CirELqTH1iVE
+         GRcHPTuWbZTAywg6kk31p4HLDIGbzVuQ0sT4V0xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 700/849] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+Subject: [PATCH 5.15 688/917] virtio_ring: check desc == NULL when using indirect with packed
 Date:   Mon, 15 Nov 2021 18:03:03 +0100
-Message-Id: <20211115165443.933180395@linuxfoundation.org>
+Message-Id: <20211115165452.224518951@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-[ Upstream commit afcb5a811ff3ab3969f09666535eb6018a160358 ]
+[ Upstream commit fc6d70f40b3d0b3219e2026d05be0409695f620d ]
 
-While writing an empty string to a device attribute is a no-op, and thus
-does not need explicit safeguards, the user can still write a single
-newline to an attribute file:
+When using indirect with packed, we don't check for allocation failures.
+This patch checks that and fall back on direct.
 
-    echo > .../message
-
-If that happens, img_ascii_lcd_display() trims the newline, yielding an
-empty string, and causing an infinite loop in img_ascii_lcd_scroll().
-
-Fix this by adding a check for empty strings.  Clear the display in case
-one is encountered.
-
-Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20211020112323.67466-3-xuanzhuo@linux.alibaba.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/virtio/virtio_ring.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 1cce409ce5cac..e33ce0151cdfd 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
- 	if (msg[count - 1] == '\n')
- 		count--;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 3035bb6f54585..d1f47327f6cfe 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1065,6 +1065,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
  
-+	if (!count) {
-+		/* clear the LCD */
-+		devm_kfree(&ctx->pdev->dev, ctx->message);
-+		ctx->message = NULL;
-+		ctx->message_len = 0;
-+		memset(ctx->curr, ' ', ctx->cfg->num_chars);
-+		ctx->cfg->update(ctx);
-+		return 0;
-+	}
+ 	head = vq->packed.next_avail_idx;
+ 	desc = alloc_indirect_packed(total_sg, gfp);
++	if (!desc)
++		return -ENOMEM;
+ 
+ 	if (unlikely(vq->vq.num_free < 1)) {
+ 		pr_debug("Can't add buf len 1 - avail = 0\n");
+@@ -1176,6 +1178,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+ 	unsigned int i, n, c, descs_used, err_idx;
+ 	__le16 head_flags, flags;
+ 	u16 head, id, prev, curr, avail_used_flags;
++	int err;
+ 
+ 	START_USE(vq);
+ 
+@@ -1191,9 +1194,14 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+ 
+ 	BUG_ON(total_sg == 0);
+ 
+-	if (virtqueue_use_indirect(_vq, total_sg))
+-		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
+-				out_sgs, in_sgs, data, gfp);
++	if (virtqueue_use_indirect(_vq, total_sg)) {
++		err = virtqueue_add_indirect_packed(vq, sgs, total_sg, out_sgs,
++						    in_sgs, data, gfp);
++		if (err != -ENOMEM)
++			return err;
 +
- 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
++		/* fall back on direct */
++	}
+ 
+ 	head = vq->packed.next_avail_idx;
+ 	avail_used_flags = vq->packed.avail_used_flags;
 -- 
 2.33.0
 
