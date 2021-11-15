@@ -2,253 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EE545094A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F605450980
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhKOQMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:12:23 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:50449 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236619AbhKOQMO (ORCPT
+        id S231991AbhKOQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:23:24 -0500
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:37822 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236711AbhKOQWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:12:14 -0500
-Received: (qmail 113032 invoked by uid 1000); 15 Nov 2021 11:09:18 -0500
-Date:   Mon, 15 Nov 2021 11:09:18 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     David Niklas <Hgntkwis@vfemail.net>
-Cc:     linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <20211115160918.GB109771@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
- <20211114144842.72463ccc@Zen-II-x12.niklas.com>
- <20211114211435.GA87082@rowland.harvard.edu>
- <20211114220222.31755871@Zen-II-x12.niklas.com>
+        Mon, 15 Nov 2021 11:22:43 -0500
+Received: by mail-ua1-f49.google.com with SMTP id o1so3163658uap.4;
+        Mon, 15 Nov 2021 08:19:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=efm7nTUMt8rzsLA3IdyOYKyQXeHPPTB88YQ7l3tEZPU=;
+        b=j1ePCDZz9pjRoBSjFPBK36Zkij+CB1qkYiXTY2Q3Wp4RBzYIuPpueipNAr4BDIT5Ge
+         3SycT+nqt7zu8Fk7R5Gsrzw3syS3NENcAds96Vs2uthWNWG1lUnYXFYPMLVOriSKm7ca
+         /m9xHDv/Y8S9zaBhSZIN9F7jjCjVmUd2HX20FhAeUcHNY6K4x23cQ0Fy2U+wZn7rlyrv
+         RGgEOs+EcSJ3vxim8f+x87mPJ6aOU1OpyknXNv4zcV+W618oqCRqL3Lj3sVGTbPLyZ0L
+         PIAxEBQTYGtMEFARIzBxLlYvhfg7JQBmYsnHjf7ZB2xN3/ljNIgblRXnJoM85m7VyW7V
+         e6/Q==
+X-Gm-Message-State: AOAM533Z+HIGAeIaX6iMf1CQvBtK2FuYsmKT2NsJnLTwyy62NRaCvM/D
+        9JZqAwRUF2yE+MgaldzM9xMECe64xCuRWQ==
+X-Google-Smtp-Source: ABdhPJylBZXFwAq5a1NpYaCzYAYvfTy5mBiEIMoNMxzm+3uw7hyEvmc0grXVvV36HYTiF4V1kFvcrw==
+X-Received: by 2002:ab0:3d13:: with SMTP id f19mr80563uax.30.1636993184203;
+        Mon, 15 Nov 2021 08:19:44 -0800 (PST)
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com. [209.85.221.182])
+        by smtp.gmail.com with ESMTPSA id s10sm8696109vkf.9.2021.11.15.08.19.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 08:19:44 -0800 (PST)
+Received: by mail-vk1-f182.google.com with SMTP id j1so2079248vkr.1;
+        Mon, 15 Nov 2021 08:19:44 -0800 (PST)
+X-Received: by 2002:a1f:f24f:: with SMTP id q76mr60850690vkh.11.1636992782095;
+ Mon, 15 Nov 2021 08:13:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114220222.31755871@Zen-II-x12.niklas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+In-Reply-To: <20211115155105.3797527-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Nov 2021 17:12:50 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+Message-ID: <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.16-rc1
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Nick Terrell <terrelln@fb.com>, Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 10:02:22PM -0500, David Niklas wrote:
-> On Sun, 14 Nov 2021 16:14:35 -0500
-> stern@rowland.harvard.edu wrote:
-> > On Sun, Nov 14, 2021 at 02:48:42PM -0500, David Niklas wrote:
-> > > Hello,
-> > > 
-> > > Almost 1 year ago to the date I posted a question regarding
-> > > connecting my UPS to my PC (look for the same subject -ping). The
-> > > input subsystem maintainers, Jiri Kosina or Ben Tissoires were asked
-> > > to get back to me. No one ever did though.
-> > > 
-> > > Now my UPS is *not* working correctly, and I'd really really like to
-> > > be able to speak to it with my PC so I can (hopefully) figure out
-> > > what's wrong with it.
-> > > 
-> > > I'm running Linux Kernel 5.15.X on a Devuan (Debian) system. I
-> > > connected my UPS (OPTI-UPS Thunder Shield TS2250B) via USB cable and
-> > > got (almost the same as last time...):
-> > > [ 4236.165138] usb 3-2: new low-speed USB device number 2 using
-> > > xhci_hcd [ 4236.325178] usb 3-2: New USB device found, idVendor=0d9f,
-> > > idProduct=0004, bcdDevice= 0.02 [ 4236.325183] usb 3-2: New USB
-> > > device strings: Mfr=3, Product=1, SerialNumber=2 [ 4236.325185] usb
-> > > 3-2: Product: HID UPS Battery [ 4236.325187] usb 3-2: Manufacturer:
-> > > POWERCOM Co.,LTD [ 4236.325188] usb 3-2: SerialNumber: 004-0D9F-000
-> > > [ 4236.423210] hid-generic 0003:0D9F:0004.000B: hiddev3,hidraw8: USB
-> > > HID v1.00 Device [POWERCOM Co.,LTD HID UPS Battery] on
-> > > usb-0000:11:00.3-2/input0 [ 4239.842223] usb 3-2: USB disconnect,
-> > > device number 2 [ 4242.485126] usb 3-2: new low-speed USB device
-> > > number 3 using xhci_hcd [ 4242.645075] usb 3-2: New USB device found,
-> > > idVendor=0d9f, idProduct=0004, bcdDevice= 0.02 [ 4242.645080] usb
-> > > 3-2: New USB device strings: Mfr=3, Product=1, SerialNumber=2
-> > > [ 4242.645082] usb 3-2: Product: HID UPS Battery [ 4242.645084] usb
-> > > 3-2: Manufacturer: POWERCOM Co.,LTD [ 4242.645085] usb 3-2:
-> > > SerialNumber: 004-0D9F-000 [ 4242.727148] hid-generic
-> > > 0003:0D9F:0004.000C: hiddev3,hidraw8: USB HID v1.00 Device [POWERCOM
-> > > Co.,LTD HID UPS Battery] on usb-0000:11:00.3-2/input0 [ 4246.135926]
-> > > usb 3-2: USB disconnect, device number 3 [ 4248.781839] usb 3-2: new
-> > > low-speed USB device number 4 using xhci_hcd [ 4248.942099] usb 3-2:
-> > > New USB device found, idVendor=0d9f, idProduct=0004, bcdDevice= 0.02
-> > > [ 4248.942104] usb 3-2: New USB device strings: Mfr=3, Product=1,
-> > > SerialNumber=2 [ 4248.942106] usb 3-2: Product: HID UPS Battery
-> > > [ 4248.942108] usb 3-2: Manufacturer: POWERCOM Co.,LTD [ 4248.942109]
-> > > usb 3-2: SerialNumber: 004-0D9F-000 [ 4249.031166] hid-generic
-> > > 0003:0D9F:0004.000D: hiddev3,hidraw8: USB HID v1.00 Device [POWERCOM
-> > > Co.,LTD HID UPS Battery] on usb-0000:11:00.3-2/input0 [ 4252.511996]
-> > > usb 3-2: USB disconnect, device number 4 ...
-> > > 
-> > > I'd appreciate any advice trying to get my UPS to stay connected and
-> > > not spam the kernel log. I'd like to have nut or apcupsd talk to it.
-> > 
-> > It would help to see the details of the communication between the 
-> > computer and the UPS.  You can collect a usbmon trace by running (as 
-> > superuser):
-> > 
-> > 	cat /sys/kernel/debug/usb/usbmon/3u >mon.txt
-> > 
-> > before plugging in the UPS cable.  (The 3 comes from the bus number of 
-> > the USB port in the log above.)  Kill the process after the cable has 
-> > been plugged in long enough for a couple of these disconnect messages
-> > to appear, and post the output file to the mailing list.
-> > 
-> > Alan Stern
-> > 
-> 
-> Attached is the info.
-> 
-> In case someone doesn't realize, I'm subscribed to the linux-kernel ML,
-> but not input or usb. Please CC me if you don't want to spam the LKML.
+On Mon, Nov 15, 2021 at 4:54 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v5.16-rc1[1] compared to v5.15[2].
+>
+> Summarized:
+>   - build errors: +20/-13
+>   - build warnings: +3/-28
+>
+> Happy fixing! ;-)
+>
+> Thanks to the linux-next team for providing the build service.
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf/ (all 90 configs)
+> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8bb7eca972ad531c9b149c0a51ab43a417385813/ (all 90 configs)
+>
+>
+> *** ERRORS ***
+>
+> 20 error regressions:
+>   + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: expected ':' before '__stringify':  => 33:4, 18:4
+>   + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: label 'l_yes' defined but not used [-Werror=unused-label]:  => 38:1, 23:1
 
-Has this device ever worked with any version of Linux?
+    due to static_branch_likely() in crypto/api.c
 
-The usbmon trace is not terribly revealing.  Here are the important 
-parts from one connect/disconnect cycle.  (FYI, the second column of 
-each line is a timestamp in microseconds.)
+parisc-allmodconfig
 
-ffff93eaa3edad80 2135760066 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
-ffff93eaa3edad80 2135760074 C Ci:3:001:0 0 4 = 01030000
+>   + /kisskb/src/drivers/gpu/drm/msm/msm_drv.h: error: "COND" redefined [-Werror]:  => 531
+>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3252 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 47:1
+>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3360 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 499:1
+>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5344 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 334:1
+>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5380 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 354:1
+>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 1824 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 372:1
+>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 2224 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 204:1
+>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 3800 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 476:1
 
-The kernel learns that there is a connection on port 3 of bus 3.
+parisc-allmodconfig
 
-ffff93eaa3edad80 2135760113 S Co:3:001:0 s 23 03 0004 0003 0000 0
-ffff93eaa3edad80 2135760117 C Co:3:001:0 0 0
+>   + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2240 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+>   + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2304 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+>   + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2320 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
 
-The kernel tells the USB host controller to reset the port.
+powerpc-allmodconfig
 
-ffff93eaa3edad80 2135826729 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
-ffff93eaa3edad80 2135826739 C Ci:3:001:0 0 4 = 03031000
+>   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_366' declared with attribute error: FIELD_PREP: value too large for the field:  => 335:38
 
-The kernel sees that the reset is complete and the port is enabled.
+    in drivers/pinctrl/pinctrl-apple-gpio.c
 
-ffff93eaa3edad80 2135826742 S Co:3:001:0 s 23 01 0014 0003 0000 0
-ffff93eaa3edad80 2135826744 C Co:3:001:0 0 0
+arm64-allmodconfig (gcc8)
 
-The kernel clears the "reset complete" status flag.
+>   + /kisskb/src/include/linux/fortify-string.h: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter):  => 263:25, 277:17
 
-ffff93eaa3edad80 2135883456 S Ci:3:000:0 s 80 06 0100 0000 0040 64 <
-ffff93eaa3edad80 2135885736 C Ci:3:000:0 0 18 = 12011001 00000008 9f0d0400 02000301 0201
+    in lib/test_kasan.c
 
-The computer reads the device descriptor for the first time.
+s390-all{mod,yes}config
+arm64-allmodconfig (gcc11)
 
-ffff93eaa3edad80 2135885741 S Co:3:001:0 s 23 03 0004 0003 0000 0
-ffff93eaa3edad80 2135885746 C Co:3:001:0 0 0
-ffff93eaa3edad80 2135950054 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
-ffff93eaa3edad80 2135950060 C Ci:3:001:0 0 4 = 03031000
-ffff93eaa3edad80 2135950063 S Co:3:001:0 s 23 01 0014 0003 0000 0
-ffff93eaa3edad80 2135950066 C Co:3:001:0 0 0
+>   + error: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+>   + error: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+>   + error: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+>   + error: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
+>   + error: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
 
-Another reset, reset complete, clear "reset complete" flag series.  
-This is the normal sequence used every time a device gets connected.
+mips-allmodconfig
 
-ffff93eaa3edad80 2136023391 S Ci:3:009:0 s 80 06 0100 0000 0012 18 <
-ffff93eaa3edad80 2136025736 C Ci:3:009:0 0 18 = 12011001 00000008 9f0d0400 02000301 0201
+> 3 warning regressions:
+>   + <stdin>: warning: #warning syscall futex_waitv not implemented [-Wcpp]:  => 1559:2
 
-The kernel reads the device descriptor a second time.
+powerpc, m68k, mips, s390, parisc (and probably more)
 
-ffff93eaa3edad80 2136025745 S Ci:3:009:0 s 80 06 0200 0000 0009 9 <
-ffff93eaa3edad80 2136028735 C Ci:3:009:0 0 9 = 09022200 010100a0 32
+>   + arch/m68k/configs/multi_defconfig: warning: symbol value 'm' invalid for MCTP:  => 322
+>   + arch/m68k/configs/sun3_defconfig: warning: symbol value 'm' invalid for MCTP:  => 295
 
-The kernel reads the device's configuration descriptor.
+Yeah, that happens when symbols are changed from tristate to bool...
+Will be fixed in 5.17-rc1, with the next defconfig refresh.
 
-ffff93eaa3edad80 2136028738 S Ci:3:009:0 s 80 06 0200 0000 0022 34 <
-ffff93eaa3edad80 2136031810 C Ci:3:009:0 0 34 = 09022200 010100a0 32090400 00010300 00000921 00010001 22e40307 05810308
+Gr{oetje,eeting}s,
 
-The kernel reads the device's configuration, interface, and endpoint 
-descriptors.
+                        Geert
 
-ffff93eaa3edad80 2136031818 S Ci:3:009:0 s 80 06 0300 0000 00ff 255 <
-ffff93eaa3edad80 2136034734 C Ci:3:009:0 0 6 = 06030904 0408
-ffff93eaa3edad80 2136034738 S Ci:3:009:0 s 80 06 0301 0409 00ff 255 <
-ffff93eaa3edad80 2136037799 C Ci:3:009:0 0 32 = 20034800 49004400 20005500 50005300 20004200 61007400 74006500 72007900
-ffff93eaa3edad80 2136037803 S Ci:3:009:0 s 80 06 0303 0409 00ff 255 <
-ffff93eaa3edad80 2136040810 C Ci:3:009:0 0 34 = 22035000 4f005700 45005200 43004f00 4d002000 43006f00 2e002c00 4c005400
-ffff93eaa3edad80 2136040816 S Ci:3:009:0 s 80 06 0302 0409 00ff 255 <
-ffff93eaa3edad80 2136043734 C Ci:3:009:0 0 26 = 1a033000 30003400 2d003000 44003900 46002d00 30003000 3000
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The kernel reads several string descriptors.  If you're good at 
-translating UTF-16LE codes from hex to normal characters, you can find 
-the truncated strings "HID UPS Battery", "POWERCOM Co.,LT", and 
-"004-0D9F-000" that make up the vendor, product (slightly truncated), 
-and serial number string descriptors.
-
-Reading these descriptors is part of the normal enumeration process 
-that happens whenever a USB device is plugged in.
-
-ffff93eaa3edad80 2136080671 S Co:3:009:0 s 00 09 0001 0000 0000 0
-ffff93eaa3edad80 2136081734 C Co:3:009:0 0 0
-
-The kernel tells the device to install its first (and in this case, 
-only) configuration.  Also very normal, and necessary for proper 
-operation.
-
-ffff93eaa3edad80 2136081778 S Ci:3:009:0 s 80 06 0302 0409 00ff 255 <
-ffff93eaa3edad80 2136084734 C Ci:3:009:0 0 26 = 1a033000 30003400 2d003000 44003900 46002d00 30003000 3000
-
-The kernel reads the serial number string descriptor descriptor again.
-
-ffff93eaa3edad80 2136084747 S Co:3:009:0 s 21 0a 0000 0000 0000 0
-ffff93eaa3edad80 2136086733 C Co:3:009:0 0 0
-
-The kernel sends a Set-Idle request to the device, telling it not to 
-send any data reports when nothing has changed.  This is done 
-automatically by the usbhid driver for every USB HID device, including 
-keyboards and mice as well as your UPS.
-
-ffff93eaa3edad80 2136086737 S Ci:3:009:0 s 81 06 2200 0000 03e4 996 <
-ffff93eaa3edad80 2136122734 C Ci:3:009:0 0 996 = 05840904 a1010924 a1028501 09fe7901 75089501 150026ff 00b12285 0209ff79
-
-The kernel reads the device's HID descriptor.  (The usbmon trace shows 
-only the first 32 bytes of the 996-byte descriptor.)  Again, this is 
-normal and necessary for using any HID device.
-
-ffff93e482efb440 2139520170 C Ii:3:001:1 0:2048 1 = 08
-ffff93e482efb440 2139520180 S Ii:3:001:1 -115:2048 4 <
-
-At this point the USB controller tells the kernel that there has been a 
-status change on port 3 of bus 3.
-
-ffff93eaa2ff8240 2139520188 S Ci:3:001:0 s a3 00 0000 0003 0004 4 <
-ffff93eaa2ff8240 2139520197 C Ci:3:001:0 0 4 = 00010100
-
-The kernel reads the port's status and sees that there is a "connection 
-status change" bit set and the port is no longer connected.  In other 
-words, the UPS device has disconnected itself electronically from the 
-USB bus.
-
-ffff93eaa2ff8240 2139520200 S Co:3:001:0 s 23 01 0010 0003 0000 0
-ffff93eaa2ff8240 2139520203 C Co:3:001:0 0 0
-
-The kernel clears the "connection status change" flag.  Following this 
-the cycle repeats.
-
-
-Out of all this information, the only conclusion I can draw is that the 
-UPS is not behaving like a normal device.  One possibility is that it 
-doesn't like the Set-Idle request (although if that is the case, why 
-did it remain connected long enough to send the HID descriptor?).
-
-You can test the theory by patching the kernel, if you want.  The code 
-to change is in the source file drivers/hid/usbhid/hid-core.c, and the 
-function in question is hid_set_idle() located around line 659 in the 
-file.  Just change the statement:
-
-	return usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
-		HID_REQ_SET_IDLE, USB_TYPE_CLASS | USB_RECIP_INTERFACE, (idle << 8) | report,
-		ifnum, NULL, 0, USB_CTRL_SET_TIMEOUT);
-
-to:
-
-	return 0;
-
-to prevent the Set-Idle request from being sent.  If the device still 
-insists on disconnecting then we'll know that this wasn't the reason.
-
-Also, if you have another system (say, one running Windows) which the 
-UPS does work properly with, you could try collecting the equivalent of 
-a usbmon trace from that system for purposes of comparison.  (On 
-Windows, I believe you can use Wireshark to trace USB communications.)
-
-Alan Stern
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
