@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D574945104B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB8C451053
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237867AbhKOSp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:45:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
+        id S242808AbhKOSqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:46:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236966AbhKORhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236978AbhKORhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:37:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11451632CA;
-        Mon, 15 Nov 2021 17:24:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8CA632CD;
+        Mon, 15 Nov 2021 17:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997075;
-        bh=9KTEY2DSYPcZCVckqyP5Q3mnxm2Fb1tQzwkEICwZsgg=;
+        s=korg; t=1636997078;
+        bh=5vsH4RS6TY8A0ZGqLQr2k9YzKabcWTkb7k4GTCnBff8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jFALWkOsYNAvznJ0wBk6jeVpQE0zZS40cpLKGTflWc4Y8elfZLxHOX+M7scRdVfVL
-         D1NOmzxgmRII8sVOTxCQPkxE+cKTBBqhCjWdo6Ojiuobeoa/ez/8IKnC0vj/LyES7n
-         CkCp0jM1344hZTdXWwOJAacs6YcsMk+DDY7X02Ok=
+        b=dofs/uiM+7Ir1C3xlQVP47OKgmxnfqWBGQc0RKyR6hhISagjqQZ7XXfKldpQANG+1
+         +cGyp4f+cLT0EbOLsn4CE3WfC9cEGNnTRf7GaSL1woZvWhuERomnJkSmCpAtaWNwYW
+         jCH3kqhl4ItzElH4sUECUBLSFvjKypMMXNFVIFFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.10 017/575] parisc: Fix set_fixmap() on PA1.x CPUs
-Date:   Mon, 15 Nov 2021 17:55:42 +0100
-Message-Id: <20211115165344.208970916@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Kyle McMartin <kyle@mcmartin.ca>
+Subject: [PATCH 5.10 018/575] parisc: Fix ptrace check on syscall return
+Date:   Mon, 15 Nov 2021 17:55:43 +0100
+Message-Id: <20211115165344.242464202@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,35 +41,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-commit 6e866a462867b60841202e900f10936a0478608c upstream.
+commit 8779e05ba8aaffec1829872ef9774a71f44f6580 upstream.
 
-Fix a kernel crash which happens on PA1.x CPUs while initializing the
-FTRACE/KPROBE breakpoints.  The PTE table entries for the fixmap area
-were not created correctly.
+The TIF_XXX flags are stored in the flags field in the thread_info
+struct (TI_FLAGS), not in the flags field of the task_struct structure
+(TASK_FLAGS).
+
+It seems this bug didn't generate any important side-effects, otherwise it
+wouldn't have went unnoticed for 12 years (since v2.6.32).
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: ccfbc68d41c2 ("parisc: add set_fixmap()/clear_fixmap()")
-Cc: stable@vger.kernel.org # v5.2+
+Fixes: ecd3d4bc06e48 ("parisc: stop using task->ptrace for {single,block}step flags")
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/parisc/mm/fixmap.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/parisc/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/parisc/mm/fixmap.c
-+++ b/arch/parisc/mm/fixmap.c
-@@ -20,12 +20,9 @@ void notrace set_fixmap(enum fixed_addre
- 	pte_t *pte;
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1848,7 +1848,7 @@ syscall_restore:
+ 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
  
- 	if (pmd_none(*pmd))
--		pmd = pmd_alloc(NULL, pud, vaddr);
--
--	pte = pte_offset_kernel(pmd, vaddr);
--	if (pte_none(*pte))
- 		pte = pte_alloc_kernel(pmd, vaddr);
- 
-+	pte = pte_offset_kernel(pmd, vaddr);
- 	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
- 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
- }
+ 	/* Are we being ptraced? */
+-	ldw	TASK_FLAGS(%r1),%r19
++	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+ 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+ 	and,COND(=)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
 
 
