@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9724519DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83505451F6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349974AbhKOX3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:29:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S243314AbhKPAj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:39:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233535AbhKOTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F25608FB;
-        Mon, 15 Nov 2021 18:28:46 +0000 (UTC)
+        id S1344875AbhKOTZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24205633EE;
+        Mon, 15 Nov 2021 19:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000927;
-        bh=tYRKOmY9Hl6jFOJh1r8I8A6x+142enJlUAvQxfqcGtQ=;
+        s=korg; t=1637003158;
+        bh=Anahu57UVRbHPfBatxwAVanp6zGzGg91igYa5IY1BA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=blP0jDJ69uLuEpZu3L0vv4cA10QJ0QWp2EJUu9axn2HO3u05+OQiGqxPNff0eNCi9
-         UtfTQkQot69shMITz5JWMpagRrl9FvER3/Fp5M5UReVTHN+uI7aEUf/9XX6faWY4R4
-         T40BRsE5UeM/X63o6L+e8dCjHW45yY+GDAe2GP7E=
+        b=soxLYGyTYcPfFubw5/FsXo7u66EXQPI0EmSwpriDxzhmw6bTUZtHSwCmSIqz2w7tK
+         JUl+6H4vJMY64kuGFTaG8ArNN2x3nBjzNGC59Soe6Ll870WjGjk8Y5CwXtYtSf0SaN
+         7AUm2DDu3TmscepLJezpmKqh3yS1e1v/9dMHH6OA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.14 844/849] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 832/917] net: dsa: mv88e6xxx: Dont support >1G speeds on 6191X on ports other than 10
 Date:   Mon, 15 Nov 2021 18:05:27 +0100
-Message-Id: <20211115165448.803499535@linuxfoundation.org>
+Message-Id: <20211115165457.257164507@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Marek Behún <kabel@kernel.org>
 
-commit 460275f124fb072dca218a6b43b6370eebbab20d upstream.
+[ Upstream commit dc2fc9f03c5c410d8f01c2206b3d529f80b13733 ]
 
-Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
-Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
+Model 88E6191X only supports >1G speeds on port 10. Port 0 and 9 are
+only 1G.
 
-Link: https://lore.kernel.org/r/20211005180952.6812-2-kabel@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: de776d0d316f ("net: dsa: mv88e6xxx: add support for mv88e6393x family")
 Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20211104171747.10509-1-kabel@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/pci_regs.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -504,6 +504,12 @@
- #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
- #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
- #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
- #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
- #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
- #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 8dadcae93c9b5..be8589fa86a15 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -640,7 +640,10 @@ static void mv88e6393x_phylink_validate(struct mv88e6xxx_chip *chip, int port,
+ 					unsigned long *mask,
+ 					struct phylink_link_state *state)
+ {
+-	if (port == 0 || port == 9 || port == 10) {
++	bool is_6191x =
++		chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6191X;
++
++	if (((port == 0 || port == 9) && !is_6191x) || port == 10) {
+ 		phylink_set(mask, 10000baseT_Full);
+ 		phylink_set(mask, 10000baseKR_Full);
+ 		phylink_set(mask, 10000baseCR_Full);
+-- 
+2.33.0
+
 
 
