@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59940452693
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5202452392
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240006AbhKPCHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46098 "EHLO mail.kernel.org"
+        id S238294AbhKPB1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:27:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239936AbhKOSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10670632EE;
-        Mon, 15 Nov 2021 17:40:10 +0000 (UTC)
+        id S244022AbhKOTIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:08:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B655633FC;
+        Mon, 15 Nov 2021 18:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998011;
-        bh=+2JM1QAu1Xx8tz7mPil1d/T/CVLsadDSqw1RKSTkYs0=;
+        s=korg; t=1637000267;
+        bh=MWEt8njDj2KMAbvYCho8AJeqLwWCgG28hhha+AQLu2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjJVDraHT2DeuozO/iOKsPUTC8dvneg7yn30jsgJKVRTen5BxLn3Tv8c8UxWhLVC/
-         QDAHBk3R6sLoJ9zg2nJKr0W/nTUGhXrgdGTdmEmIb9liHX7KnbEp3DgNjGrjTJ9BXu
-         e7a3jcTVJ5g2fEKBHKVoQwz/fStWzBZF93RhVsNM=
+        b=CMAMUGUeGNRE6x/QLzhh4TgkbTzav9v5LcMYWMIE1LR54A9OFmzF7GC7/9WI94LLN
+         vxlXSgZWBo3fOqHwSJ8UWI9tRF0qHlmZwmp+3o3FyneJfrK/lFZkpFHkIrMlawqE8b
+         I3lmCX4quyx1/zD828x64TcNCvwlZrFK7cIgpu24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 354/575] s390/gmap: dont unconditionally call pte_unmap_unlock() in __gmap_zap()
-Date:   Mon, 15 Nov 2021 18:01:19 +0100
-Message-Id: <20211115165356.048300092@linuxfoundation.org>
+Subject: [PATCH 5.14 597/849] powerpc: fix unbalanced node refcount in check_kvm_guest()
+Date:   Mon, 15 Nov 2021 18:01:20 +0100
+Message-Id: <20211115165440.443327274@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit b159f94c86b43cf7e73e654bc527255b1f4eafc4 ]
+[ Upstream commit 56537faf8821e361d739fc5ff58c9c40f54a1d4c ]
 
-... otherwise we will try unlocking a spinlock that was never locked via a
-garbage pointer.
+When check_kvm_guest() succeeds in looking up a /hypervisor OF node, it
+returns without performing a matching put for the lookup, leaving the
+node's reference count elevated.
 
-At the time we reach this code path, we usually successfully looked up
-a PGSTE already; however, evil user space could have manipulated the VMA
-layout in the meantime and triggered removal of the page table.
+Add the necessary call to of_node_put(), rearranging the code slightly to
+avoid repetition or goto.
 
-Fixes: 1e133ab296f3 ("s390/mm: split arch/s390/mm/pgtable.c")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210909162248.14969-3-david@redhat.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Fixes: 107c55005fbd ("powerpc/pseries: Add KVM guest doorbell restrictions")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210928124550.132020-1-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/mm/gmap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/firmware.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 64795d0349263..f2d19d40272cf 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -684,9 +684,10 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
- 		vmaddr |= gaddr & ~PMD_MASK;
- 		/* Get pointer to the page table entry */
- 		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
--		if (likely(ptep))
-+		if (likely(ptep)) {
- 			ptep_zap_unused(gmap->mm, vmaddr, ptep, 0);
--		pte_unmap_unlock(ptep, ptl);
-+			pte_unmap_unlock(ptep, ptl);
-+		}
- 	}
+diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
+index c7022c41cc314..20328f72f9f2b 100644
+--- a/arch/powerpc/kernel/firmware.c
++++ b/arch/powerpc/kernel/firmware.c
+@@ -31,11 +31,10 @@ int __init check_kvm_guest(void)
+ 	if (!hyper_node)
+ 		return 0;
+ 
+-	if (!of_device_is_compatible(hyper_node, "linux,kvm"))
+-		return 0;
+-
+-	static_branch_enable(&kvm_guest);
++	if (of_device_is_compatible(hyper_node, "linux,kvm"))
++		static_branch_enable(&kvm_guest);
+ 
++	of_node_put(hyper_node);
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(__gmap_zap);
+ core_initcall(check_kvm_guest); // before kvm_guest_init()
 -- 
 2.33.0
 
