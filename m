@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F57451B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2A2451935
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243238AbhKPAAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:00:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1348603AbhKOXQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:16:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344393AbhKOTYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E5AB63676;
-        Mon, 15 Nov 2021 18:56:55 +0000 (UTC)
+        id S243647AbhKOTMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:12:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A546128E;
+        Mon, 15 Nov 2021 18:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002615;
-        bh=p5LI70zC3eLsSDUT3/3qCC3J29Idy8LZRnUSlbVMpUs=;
+        s=korg; t=1637000357;
+        bh=cKn887L89COsZSUeVPkhEL3GS07Gyc5XgIuribQmppo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KCpvfixcH9AYEuAY4sQ7D6xXOT91qNWFsUHFiEePvDci11m99FwQ8K2Z0wFge67J1
-         OD42jEGpOBVgo2BMWtZckzdNl2myeny5BK0ejUrh/Svp4ybYTH/XwQ4Z8UttqCgx97
-         Z8fthzISeKdJSrggt2CFXa3t0wE+1/Wig6qRhSn4=
+        b=HC6QQ4jH/J4AdRFFxWDBNTkJqClnmqDQeUsFUEviEXK9mRzJFmW2+17l4YW0wAOki
+         sW5uJzbKBMVoW0XKY2Gf27RJ/fy2o97qK0lrD5gyHgo64VGt7Qgu7NdNAAL9W586pG
+         AcJD9w8CNMXEdKpEVzkuN//YMfldcZU6fDbS1Y9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 591/917] arm64: dts: qcom: sc7280: fix display port phy reg property
-Date:   Mon, 15 Nov 2021 18:01:26 +0100
-Message-Id: <20211115165448.802069365@linuxfoundation.org>
+Subject: [PATCH 5.14 604/849] RDMA/mlx4: Return missed an error if device doesnt support steering
+Date:   Mon, 15 Nov 2021 18:01:27 +0100
+Message-Id: <20211115165440.685174088@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuogee Hsieh <khsieh@codeaurora.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 425f30cc843c727bc7753a0d33710d1e4a999168 ]
+[ Upstream commit f4e56ec4452f48b8292dcf0e1c4bdac83506fb8b ]
 
-Existing display port phy reg property is derived from usb phy which
-map display port phy pcs to wrong address which cause aux init
-with wrong address and prevent both dpcd read and write from working.
-Fix this problem by assigning correct pcs address to display port
-phy reg property.
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
-Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/1631216998-10049-1-git-send-email-khsieh@codeaurora.org
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Link: https://lore.kernel.org/r/91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index fd78f16181ddd..f58336536a92a 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -1258,15 +1258,11 @@
- 			dp_phy: dp-phy@88ea200 {
- 				reg = <0 0x088ea200 0 0x200>,
- 				      <0 0x088ea400 0 0x200>,
--				      <0 0x088eac00 0 0x400>,
-+				      <0 0x088eaa00 0 0x200>,
- 				      <0 0x088ea600 0 0x200>,
--				      <0 0x088ea800 0 0x200>,
--				      <0 0x088eaa00 0 0x100>;
-+				      <0 0x088ea800 0 0x200>;
- 				#phy-cells = <0>;
- 				#clock-cells = <1>;
--				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
--				clock-names = "pipe0";
--				clock-output-names = "usb3_phy_pipe_clk_src";
- 			};
- 		};
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 4a2ef7daadeda..a8b22c08af5d3 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -1099,8 +1099,10 @@ static int create_qp_common(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
  
+ 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
 -- 
 2.33.0
 
