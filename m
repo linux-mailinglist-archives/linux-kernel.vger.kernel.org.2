@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EE54500C8
+	by mail.lfdr.de (Postfix) with ESMTP id 35F2C4500C7
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbhKOJDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:03:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236344AbhKOI6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:58:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D85961BF5;
-        Mon, 15 Nov 2021 08:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636966558;
-        bh=KymEuSb1ZBu9d4ip60ZapuAOc2fPUmm65BckI1F9t+0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LdZ6xF0xp+O72e2bWrz1JbVB8H175gzm3ebqcgB4b1TFRnEbOtg/Co/2UVmy2RSYO
-         K4PGopsAL2+EPUBQXn3pIZuRLnOiV7Z4ZHRzhRaGpOOilkyT8qB7djWEyRGQxY+o07
-         0pURtU5ha6Bqhqi3VRo20hpuTebBqhRUMgKKcND/ItqTEUbbBG6gtFAFRdgoUlbWQv
-         nllnKfHGybN+48IS6aBEK9XM+8ihm/vdNwSp8OLBPdHs4lV1MKpoIy38LN4jK4yIhT
-         e7DvDqpq2WV2gb8/H5hLIdnkM9Qc2HOyUeSrulI8xZE0lHPXJ5SUm3GD7JPkNCpR/k
-         kEJCWgx/yAgzA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
+        id S230268AbhKOJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237369AbhKOI77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:59:59 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4B9C061204
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:56:58 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so3290431wrb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:56:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KoIGQMcPDNQgf+l0n0SpbMR7KXGkG+Y/GyFEGlGCO3o=;
+        b=IBr/z4EKJFSM75I81wBnCyglSG/3Ya2Ix/jImMc1GYpTGxtZ0rn9JBx31N7o/0lQSI
+         kFlAL8fbu+k6VJ/m1aiOpkk37CTXZnwTGnqaJ7A235Bqr+pxGbvXybR4dsmn1fL0pOw5
+         6x0WNk+EJMlxLV7RDzhIlU8h1Zf9AbXFPZ4FiLgqDrbNvqplQtpV1qKlqjYodleg3TKX
+         47yBWEIzoWlXx1+6sueNmUjLlwF/IjQ7uvi0mHHiNi73SRjQVRm5iOz5To6QvQJLZrVK
+         TtwCuUE2yZd4U58ckl3Ted24bj509eBJMnXXiEaWdXW/6pLQnMhsnJLZm1hkIcWlj+kF
+         cH+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KoIGQMcPDNQgf+l0n0SpbMR7KXGkG+Y/GyFEGlGCO3o=;
+        b=KXmOoyZbmDAOHrmNsKmuDSq4cv7DoBr0hIsTfVW/9X2+moEHJomLgO2WtxUPHW8PlG
+         baWur/adWIrcASySilR0vh9lbfWQ5347LN2vMd0TPJuthdfrGSTJZhidxobn9dUTpy68
+         BdFpS3Lh0dPAx7Fc2/EWxSOHArJom1WFU4lda2t93v1zA804rcK49/PP0mJ03JxEYaVw
+         tOwk2qxDy4M2j8nFzs8gthSRhpoO5D+q1CC5mfDyExv8rZGCEcyii1Dgq4h3o+dNYOeZ
+         GsF6es2QQSRiZL1+FJ30SF1DCTkY8nCRtLeEET/2Y7GeYr/gO7pmAoVeMdbGU0rCI40D
+         GM1g==
+X-Gm-Message-State: AOAM530PQufC0T2BIcYTYxx4QNFqjrjSkqTLrLlht7sfIsB690Yq89w3
+        N1F1pUkCxY0MdTSRbY3ivIJlsEGyAQ==
+X-Google-Smtp-Source: ABdhPJzOmtxmSllVxqGTlBcsrK01DnQbMGKLOj3GNZgFR/5oZDiExWI3o46tr/f226rHkH0OfgWbR1kYdA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6385:6bd0:4ede:d8c6])
+ (user=elver job=sendgmr) by 2002:a05:600c:1d1b:: with SMTP id
+ l27mr470410wms.1.1636966616454; Mon, 15 Nov 2021 00:56:56 -0800 (PST)
+Date:   Mon, 15 Nov 2021 09:56:30 +0100
+Message-Id: <20211115085630.1756817-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH] panic: use error_report_end tracepoint on warnings
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        John Ogness <john.ogness@linutronix.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH 11/11] dmaengine: remove slave_id config field
-Date:   Mon, 15 Nov 2021 09:54:03 +0100
-Message-Id: <20211115085403.360194-12-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211115085403.360194-1-arnd@kernel.org>
-References: <20211115085403.360194-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        Alexander Popov <alex.popov@linux.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Introduce the error detector "warning" to the error_report event and use
+the error_report_end tracepoint at the end of a warning report.
 
-All references to the slave_id field have been removed, so
-remove the field as well to prevent new references from
-creeping in again.
+This allows in-kernel tests but also userspace to more easily determine
+if a warning occurred without polling kernel logs.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- include/linux/dmaengine.h | 4 ----
- 1 file changed, 4 deletions(-)
+ include/trace/events/error_report.h | 8 +++++---
+ kernel/panic.c                      | 2 ++
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 9000f3ffce8b..0349b35235e6 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -418,9 +418,6 @@ enum dma_slave_buswidth {
-  * @device_fc: Flow Controller Settings. Only valid for slave channels. Fill
-  * with 'true' if peripheral should be flow controller. Direction will be
-  * selected at Runtime.
-- * @slave_id: Slave requester id. Only valid for slave channels. The dma
-- * slave peripheral will have unique id as dma requester which need to be
-- * pass as slave config.
-  * @peripheral_config: peripheral configuration for programming peripheral
-  * for dmaengine transfer
-  * @peripheral_size: peripheral configuration buffer size
-@@ -448,7 +445,6 @@ struct dma_slave_config {
- 	u32 src_port_window_size;
- 	u32 dst_port_window_size;
- 	bool device_fc;
--	unsigned int slave_id;
- 	void *peripheral_config;
- 	size_t peripheral_size;
+diff --git a/include/trace/events/error_report.h b/include/trace/events/error_report.h
+index 96f64bf218b2..ed0164f8e79c 100644
+--- a/include/trace/events/error_report.h
++++ b/include/trace/events/error_report.h
+@@ -17,14 +17,16 @@
+ 
+ enum error_detector {
+ 	ERROR_DETECTOR_KFENCE,
+-	ERROR_DETECTOR_KASAN
++	ERROR_DETECTOR_KASAN,
++	ERROR_DETECTOR_WARN
  };
+ 
+ #endif /* __ERROR_REPORT_DECLARE_TRACE_ENUMS_ONCE_ONLY */
+ 
+-#define error_detector_list	\
++#define error_detector_list			\
+ 	EM(ERROR_DETECTOR_KFENCE, "kfence")	\
+-	EMe(ERROR_DETECTOR_KASAN, "kasan")
++	EM(ERROR_DETECTOR_KASAN, "kasan")	\
++	EMe(ERROR_DETECTOR_WARN, "warning")
+ /* Always end the list with an EMe. */
+ 
+ #undef EM
+diff --git a/kernel/panic.c b/kernel/panic.c
+index cefd7d82366f..8e299cae1615 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -32,6 +32,7 @@
+ #include <linux/bug.h>
+ #include <linux/ratelimit.h>
+ #include <linux/debugfs.h>
++#include <trace/events/error_report.h>
+ #include <asm/sections.h>
+ 
+ #define PANIC_TIMER_STEP 100
+@@ -609,6 +610,7 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+ 	print_irqtrace_events(current);
+ 
+ 	print_oops_end_marker();
++	trace_error_report_end(ERROR_DETECTOR_WARN, (unsigned long)caller);
+ 
+ 	/* Just a warning, don't kill lockdep. */
+ 	add_taint(taint, LOCKDEP_STILL_OK);
 -- 
-2.30.2
+2.34.0.rc1.387.gb447b232ab-goog
 
