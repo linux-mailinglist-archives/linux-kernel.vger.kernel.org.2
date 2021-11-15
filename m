@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C7445120C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5E945123E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344737AbhKOTZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:25:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
+        id S1346483AbhKOTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:33:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238924AbhKORul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:50:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 362CF632A9;
-        Mon, 15 Nov 2021 17:31:11 +0000 (UTC)
+        id S238925AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:50:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA96632A8;
+        Mon, 15 Nov 2021 17:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997471;
-        bh=7ugmn2ADZpOBVa6zP15MhcEQnsDM1KId1UGi3WSJUo8=;
+        s=korg; t=1636997474;
+        bh=zkva6D9XNbKclvxoEiGKlwUdHSvbFINQDj1W7so7dVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nULRe4lqu1Mogdg45oaXrWXcS3CUjqUy/sY2VJAy3ryFY6el1d4EcVY4YzlB1o/pb
-         cwUA0qjaKOz+GBmlO/OPypFRhUpxUHlXs0DGEkw263zQhckLFfe9AXnjWAKTy4pWVX
-         eBaK4mVc9P/zA1wl1BjBkmFpbNg4BbrGMOgjLTJw=
+        b=A8X8nAkYUf11M7khK54jFVwhtOIY0sqg0eiUsg87+VQ6xXGjZAm07xHg8TzXNFAvz
+         3AaR2xGgZRBWXosSfrsFHI6z93WtzqA2x9heGTmvvcECjRlZCNott2AlkFCICAEnsx
+         GpWqfCLHy82dBT0rPAxDixRyhXiOCeal/GOu83uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 161/575] USB: chipidea: fix interrupt deadlock
-Date:   Mon, 15 Nov 2021 17:58:06 +0100
-Message-Id: <20211115165349.273797845@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 5.10 162/575] power: supply: max17042_battery: Clear status bits in interrupt handler
+Date:   Mon, 15 Nov 2021 17:58:07 +0100
+Message-Id: <20211115165349.315595564@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,105 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 
-commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
+commit 0cf48167b87e388fa1268c9fe6d2443ae7f43d8a upstream.
 
-Chipidea core was calling the interrupt handler from non-IRQ context
-with interrupts enabled, something which can lead to a deadlock if
-there's an actual interrupt trying to take a lock that's already held
-(e.g. the controller lock in udc_irq()).
+The gauge requires us to clear the status bits manually for some alerts
+to be properly dismissed. Previously the IRQ was configured to react only
+on falling edge, which wasn't technically correct (the ALRT line is active
+low), but it had a happy side-effect of preventing interrupt storms
+on uncleared alerts from happening.
 
-Add a wrapper that can be used to fake interrupts instead of calling the
-handler directly.
-
-Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
-Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
-Cc: Peter Chen <peter.chen@kernel.org>
-Cc: stable@vger.kernel.org      # 4.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
+Fixes: 7fbf6b731bca ("power: supply: max17042: Do not enforce (incorrect) interrupt trigger type")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/chipidea/core.c |   23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ drivers/power/supply/max17042_battery.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -509,7 +509,7 @@ int hw_device_reset(struct ci_hdrc *ci)
- 	return 0;
- }
- 
--static irqreturn_t ci_irq(int irq, void *data)
-+static irqreturn_t ci_irq_handler(int irq, void *data)
- {
- 	struct ci_hdrc *ci = data;
- 	irqreturn_t ret = IRQ_NONE;
-@@ -562,6 +562,15 @@ static irqreturn_t ci_irq(int irq, void
- 	return ret;
- }
- 
-+static void ci_irq(struct ci_hdrc *ci)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	ci_irq_handler(ci->irq, ci);
-+	local_irq_restore(flags);
-+}
-+
- static int ci_cable_notifier(struct notifier_block *nb, unsigned long event,
- 			     void *ptr)
- {
-@@ -571,7 +580,7 @@ static int ci_cable_notifier(struct noti
- 	cbl->connected = event;
- 	cbl->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -612,7 +621,7 @@ static int ci_usb_role_switch_set(struct
- 	if (cable) {
- 		cable->changed = true;
- 		cable->connected = false;
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 		spin_unlock_irqrestore(&ci->lock, flags);
- 		if (ci->wq && role != USB_ROLE_NONE)
- 			flush_workqueue(ci->wq);
-@@ -630,7 +639,7 @@ static int ci_usb_role_switch_set(struct
- 	if (cable) {
- 		cable->changed = true;
- 		cable->connected = true;
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 	}
- 	spin_unlock_irqrestore(&ci->lock, flags);
- 	pm_runtime_put_sync(ci->dev);
-@@ -1166,7 +1175,7 @@ static int ci_hdrc_probe(struct platform
- 		}
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -875,6 +875,10 @@ static irqreturn_t max17042_thread_handl
+ 		max17042_set_soc_threshold(chip, 1);
  	}
  
--	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
-+	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
- 			ci->platdata->name, ci);
- 	if (ret)
- 		goto stop;
-@@ -1287,11 +1296,11 @@ static void ci_extcon_wakeup_int(struct
- 
- 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 
- 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
++	/* we implicitly handle all alerts via power_supply_changed */
++	regmap_clear_bits(chip->regmap, MAX17042_STATUS,
++			  0xFFFF & ~(STATUS_POR_BIT | STATUS_BST_BIT));
++
+ 	power_supply_changed(chip->battery);
+ 	return IRQ_HANDLED;
  }
- 
- static int ci_controller_resume(struct device *dev)
 
 
