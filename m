@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A36B44FDBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DDE44FDBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 04:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhKODyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 22:54:25 -0500
-Received: from mail-eopbgr1300107.outbound.protection.outlook.com ([40.107.130.107]:18027
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237143AbhKODsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 22:48:19 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XejEjo4G7taYJLpI7VmIl0L5yIZefLFD7yMP6k3O34FINIt6gZbmy6jBhsKqG4RoZXXaN0BIfBYqio2dnr+LysCeeFa7JJyAUe9nft8Pn3ukcfxLGtYMPV1cTGo/itcEUJ0SQydC9FXkV/FFWApTdyqSIjFmkGw4l7D2H70eJhSLqhGSoWxV1FlKV/2bFPGbX0gFui02jN7xcy/SvvI8KAKc4Hrgh5tQ1fs8GEe+O1n9+gC3C3fAeAXpFv1a+hmBnBmtIVQOck4mHxzmd3++boTie7FWsZFL00wkJ0Ud+vnCQ+04hbvxo/aStjkwZYnm9yiRNHf5wRJqgvNUv4TxTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H6tXfdxfySNkxFS2uSS5Bbm+E7RmyTX8PsfIxYZSWwk=;
- b=U4JHpSrajWxe0NXbKbcz2e0lIRF6VakWUc4GoudrLjePCC3f29CIXq9ZSLz+snssZp7gJyO+406blDOdNp+Wjbo7kdCsaGcXHHSd0WrcnbSNBs2wSW13jqPE8xzLsqdvTsbKBNC4iW8EPVZgUTdQZ+WBSt0v/xJAq4QtYU7J8aDo5OJmVo1HPIcxQLdThNIw+lXAexOwAS0gi3MTWcCImnd06ZHPezj33tIGLIyzmylYfg69xoHA1uM+tj8ta8tzXff5rY0/I38UCzGaasOWyV///rTWLC5uCRlwf13hff/qm7IJ4zVzWFqCCHc1wa1/36+8LQiUH2uMtk20qWSy4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H6tXfdxfySNkxFS2uSS5Bbm+E7RmyTX8PsfIxYZSWwk=;
- b=XvLr3dlsUAjU8Kx4vMSZHL7adO+Ce/k0h8HPU5g9T2FGs1x3Bxm/zFN+KjyNwZxahOyAh1N3k+xDfC/k8U4RYv6MZVtlC4Ugo8E8NbO5bVphD8Dm+PWD5CjkWRd1r7pC8s9ajqL4PYFTPInjNidFifNXbZJX/jvb940RbulmlQs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PSAPR06MB4021.apcprd06.prod.outlook.com (2603:1096:301:37::11)
- by PSAPR06MB4311.apcprd06.prod.outlook.com (2603:1096:301:81::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.22; Mon, 15 Nov
- 2021 03:45:22 +0000
-Received: from PSAPR06MB4021.apcprd06.prod.outlook.com
- ([fe80::395a:f2d7:d67f:b385]) by PSAPR06MB4021.apcprd06.prod.outlook.com
- ([fe80::395a:f2d7:d67f:b385%5]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 03:45:22 +0000
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] drm/xen: fix potential memleak in error branch
-Date:   Sun, 14 Nov 2021 19:45:03 -0800
-Message-Id: <20211115034504.4993-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.33.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR0302CA0001.apcprd03.prod.outlook.com
- (2603:1096:202::11) To PSAPR06MB4021.apcprd06.prod.outlook.com
- (2603:1096:301:37::11)
+        id S237305AbhKODxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 22:53:34 -0500
+Received: from asix.com.tw ([113.196.140.82]:60850 "EHLO asix.com.tw"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237326AbhKODxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 22:53:24 -0500
+Received: from localhost.localdomain (unknown [10.1.2.57])
+        by asix.com.tw (Postfix) with ESMTPA id 9F6AA1008C143;
+        Mon, 15 Nov 2021 11:50:09 +0800 (CST)
+From:   Jacky Chou <jackychou@asix.com.tw>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        louis@asix.com.tw, jackychou@asix.com.tw
+Subject: [PATCH] net: usb: ax88179_178a: add TSO feature
+Date:   Mon, 15 Nov 2021 11:49:41 +0800
+Message-Id: <20211115034941.793347-1-jackychou@asix.com.tw>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (203.90.234.87) by HK2PR0302CA0001.apcprd03.prod.outlook.com (2603:1096:202::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.16 via Frontend Transport; Mon, 15 Nov 2021 03:45:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 22c8cce4-7549-44ce-6396-08d9a7ea59d4
-X-MS-TrafficTypeDiagnostic: PSAPR06MB4311:
-X-Microsoft-Antispam-PRVS: <PSAPR06MB43115980B7005847F18B682CDF989@PSAPR06MB4311.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:525;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hf00m0xBSHTiEOwFwIhHEVeJZGrC54oXIB9H+HeyaiaIuIRuxYcDRWg11S6c3i+OtlPpfr3SVsoiVVpikdIGdmYpLT4IvdhEOP9arRAt2FFx1s0yJK/7J1Wr7qfk6VWTMhKBtulcUHM4p3jX8GeV9VagRQlptpLTvsnWsQvi15jSxX6l+vnQCYE1/yTGaqlnduhy0eOhKQ+qnLRArALAAH8Cr2fcxob1kQMyvdll80xqlSXcib4+2kxws3WJyXyRUrmHABhNSB6qa2QAO3kObpL29cYGki1d6NJNGBUSAtf8co0hHY3H1WYTUWGGHFOPciilBHDdGkAjQ7FYI/EGlOJsJ7P020KSFiedXfqYXU8aBz3NzSKxTBxUf03LYiaszXHILAfAoqEfFfH4cnc6DjTJrkCTnnLXKbYHSQBDAydLUQjQUAamNS+wcVArGGny/6/SrEpzhoiwMEdDJ4IGwely/C6lihNMvm7DG7Pl3m5PK0WhWhCUD45JZX3C634Kag0s3d4/eCGT/2+BQbsE7ovcw0x7mAbpp/Jy81vUfek+Q2J+gfRF88pyV7O26qBZXISQl/G1mpX3meAkbNtcQYy0HbXyJ6rPK2Z5XSeV4EIZ5nqYd9oieA1U/HfepkvArQhwqhMqtnubnTmkpGw9MApLYkvZg5nZDnjRebTh+eG/3tWPoT/srDGvny1rqGdBu1i0Df5tdRRnutZxwqlJ/g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB4021.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(38100700002)(110136005)(66946007)(6486002)(1076003)(38350700002)(66476007)(66556008)(4326008)(8676002)(107886003)(6506007)(5660300002)(6512007)(6666004)(83380400001)(316002)(2616005)(26005)(8936002)(52116002)(86362001)(956004)(2906002)(36756003)(508600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y+4XRGWKmtBYwDtpF/WrRip0oJbSVlKLtIFmpQoY8mXkAtq1DuheOo5ifgFg?=
- =?us-ascii?Q?60uO6fPDzyqXN3lsavI9hmgJPLBSzNzutRVsxzV1FqRrgoM764DLcYvEqF2Q?=
- =?us-ascii?Q?j41N63oUl69Ju1LIvMF8PUCDOThUCFvgl4rBpskVMjGwyJBneTnoKrrm1svT?=
- =?us-ascii?Q?09enKCp+JXN/A8ohiW3Vd4qaB4G6kEdvfhJXOcsP+U0qkhFtBfr4RyFn2Ixk?=
- =?us-ascii?Q?/xf0CSpUNPZeUizgPgs2qk9MskUtQwL+/khiuZqn55hH/w8nVfkOezPo7O8a?=
- =?us-ascii?Q?vHqBcibqfSfp28oPebVsPqHKLbJsAwTPiXHAap0vyrrOy4h5Z9EjSeOKjzgx?=
- =?us-ascii?Q?ddZFnX5wpKNf49cbdZ4kopjEivZUW3SNu2KIQXpFYuXZ81lBipmaAEdLrWdg?=
- =?us-ascii?Q?j3iBFOt743nMMxbKTme6XykIWC9UVEwykHKJX0/z6jNXSA1GIJF7H9/ild6s?=
- =?us-ascii?Q?uU8tE1dpkRcU+WU3ZNPyesT/mUMkR9/428L8r5XGu40g/juOxN9hLyydf9YO?=
- =?us-ascii?Q?4KbGXOFA6QlL2Y0+gB8VEUydxlcgISKsW6JzwbmW0kk0XNBH+ASElLtUcllP?=
- =?us-ascii?Q?yFKC30Y5dp9duWS6V209fjYhYKZ0VM/J/zcC03dpL2enj8HkkAwPzFDISlrp?=
- =?us-ascii?Q?9i7R3cfhBZpwxTUrbONFwhOjQ6VIGKhSvGATK6LhBaJ3OThvqKfq//5x3VRj?=
- =?us-ascii?Q?WimCbUyB+pi2oNvpssiKgYhEnucxPhSQGnnvatwY/NeBGTb/ingmKJcI2Hql?=
- =?us-ascii?Q?YZq6/bzTlYxLnnV3Caj4LCsxkhEgiHZppFXeOVq0DUSxSIk7GZ5zyF5g/Qlm?=
- =?us-ascii?Q?U5JMorPIMXqrllnLNNuFaixoXAl8HHVPRP6vvzJ7SZLsDKrcrfmM4JMws8gz?=
- =?us-ascii?Q?3f79Ssn/9AqjjIyCh7qTT5+o1YwcM4ldtS20z108ZJmgGhko3NXWa55DPhaz?=
- =?us-ascii?Q?G/vcYlpRgVNSWExZDXPwo9iJLGNPMTmomhx6v8bp02vM/7waQYQ9tBX5+gf6?=
- =?us-ascii?Q?tVDwbIoMWSKLZQB2O2BJFSKxW6lt035Em+pVYAyWHBgHl62Bpj9OzSLXSre+?=
- =?us-ascii?Q?FNPmVD9nj7XoIqTtWzj9A5ceDITGALZMh2IL11vVOYwU3VVDNc0sy6FR+HQe?=
- =?us-ascii?Q?mgyHJdoV+nW4PA5Xj9pFvu5oQJYHyjEZgKs2F7q7dmqGxYbti4ylej2TRNeJ?=
- =?us-ascii?Q?AVQ81NJJPxAHTTO5t8H197xFah1EZ+35pPPbJGw9byQHGcHZBfmpHj+wbKbs?=
- =?us-ascii?Q?Zz2p+zcxck+CR1iNAPZzUtSmgWLGe10m9F1CEG32jndNehm6SP68CyESzvxU?=
- =?us-ascii?Q?o430PC1wyNz7eJCEQSonbqZNPr6iNz4FDBF62tBASVeKEYyXWo5yXOQnBk0l?=
- =?us-ascii?Q?WlhXRTA8Wv228FfE1AExd2V+CjuBwl0jAXaEj/uSLJ4AXlOylDDpYsjE6c5I?=
- =?us-ascii?Q?xe1d6hn6ovyA/eMKgKmX/EPLa0YQ3+v2JGBeOA6o269BUXCx2Dbs3CDPm9RL?=
- =?us-ascii?Q?VjWQk7HpsqOiSIMTqs+ciu1DJNDlKG3sC1+v6szc8NsPZJbK5OAEl2+dP6Up?=
- =?us-ascii?Q?eCdCH0YWaDWriKgbJr4MTijibfOANgP39MecdOWLzLDAL2zcBdME8o5mcVUd?=
- =?us-ascii?Q?yQbbk6CKUf5xC6NaAdkD1is=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22c8cce4-7549-44ce-6396-08d9a7ea59d4
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4021.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 03:45:22.2575
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C2Z64cDvLYrQC05OYDq4Lxvf27U3rbLOC0x1EDJaFp6GTKAPV7VXyndtPlTbuDcGweskFoT0liqYjCAUEFRP+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4311
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function xen_drm_front_gem_import_sg_table, if in error branch,
-there maybe potential memleak if not call gem_free_pages_array.
+On low-effciency embedded platforms, transmission performance is poor
+due to on Bulk-out with single packet.
+Adding TSO feature improves the transmission performance and reduces
+the number of interrupt caused by Bulk-out complete.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
+Reference to module, net: usb: aqc111.
+
+Signed-off-by: Jacky Chou <jackychou@asix.com.tw>
 ---
- drivers/gpu/drm/xen/xen_drm_front_gem.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/usb/ax88179_178a.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-index b293c67230ef..732c3eec0666 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-@@ -222,15 +222,19 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index c13167183..f78f48d89 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1377,11 +1377,12 @@ static int ax88179_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	dev->mii.phy_id = 0x03;
+ 	dev->mii.supports_gmii = 1;
  
- 	ret = drm_prime_sg_to_page_array(sgt, xen_obj->pages,
- 					 xen_obj->num_pages);
--	if (ret < 0)
-+	if (ret < 0) {
-+		gem_free_pages_array(xen_obj);
- 		return ERR_PTR(ret);
-+	}
+-	dev->net->features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+-			      NETIF_F_RXCSUM;
++	dev->net->features |= NETIF_F_SG | NETIF_F_IP_CSUM |
++			      NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM | NETIF_F_TSO;
  
- 	ret = xen_drm_front_dbuf_create(drm_info->front_info,
- 					xen_drm_front_dbuf_to_cookie(&xen_obj->base),
- 					0, 0, 0, size, sgt->sgl->offset,
- 					xen_obj->pages);
--	if (ret < 0)
-+	if (ret < 0) {
-+		gem_free_pages_array(xen_obj);
- 		return ERR_PTR(ret);
-+	}
+-	dev->net->hw_features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+-				 NETIF_F_RXCSUM;
++	dev->net->hw_features |= dev->net->features;
++
++	netif_set_gso_max_size(dev->net, 16384);
  
- 	DRM_DEBUG("Imported buffer of size %zu with nents %u\n",
- 		  size, sgt->orig_nents);
+ 	/* Enable checksum offload */
+ 	*tmp = AX_RXCOE_IP | AX_RXCOE_TCP | AX_RXCOE_UDP |
+@@ -1526,17 +1527,19 @@ ax88179_tx_fixup(struct usbnet *dev, struct sk_buff *skb, gfp_t flags)
+ {
+ 	u32 tx_hdr1, tx_hdr2;
+ 	int frame_size = dev->maxpacket;
+-	int mss = skb_shinfo(skb)->gso_size;
+ 	int headroom;
+ 	void *ptr;
+ 
+ 	tx_hdr1 = skb->len;
+-	tx_hdr2 = mss;
++	tx_hdr2 = skb_shinfo(skb)->gso_size; /* Set TSO mss */
+ 	if (((skb->len + 8) % frame_size) == 0)
+ 		tx_hdr2 |= 0x80008000;	/* Enable padding */
+ 
+ 	headroom = skb_headroom(skb) - 8;
+ 
++	if ((dev->net->features & NETIF_F_SG) && skb_linearize(skb))
++		return NULL;
++
+ 	if ((skb_header_cloned(skb) || headroom < 0) &&
+ 	    pskb_expand_head(skb, headroom < 0 ? 8 : 0, 0, GFP_ATOMIC)) {
+ 		dev_kfree_skb_any(skb);
+@@ -1547,6 +1550,8 @@ ax88179_tx_fixup(struct usbnet *dev, struct sk_buff *skb, gfp_t flags)
+ 	put_unaligned_le32(tx_hdr1, ptr);
+ 	put_unaligned_le32(tx_hdr2, ptr + 4);
+ 
++	usbnet_set_skb_tx_stats(skb, (skb_shinfo(skb)->gso_segs ?: 1), 0);
++
+ 	return skb;
+ }
+ 
 -- 
-2.33.1
+2.25.1
 
