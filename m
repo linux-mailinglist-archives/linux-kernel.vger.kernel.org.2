@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAC1451982
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1567B452037
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241087AbhKOXWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:22:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S242745AbhKPAth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244828AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69EFE634CD;
-        Mon, 15 Nov 2021 18:24:25 +0000 (UTC)
+        id S1344568AbhKOTZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC1863269;
+        Mon, 15 Nov 2021 19:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000665;
-        bh=vgGxpAS2Xn37898TQ3WzWBkgtd5jFVcMbB1uoqT8Crs=;
+        s=korg; t=1637002816;
+        bh=A6OVzBYof/SjrMJz25bL99VDMk3icOgup9qlFoiyCRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mZpjBzCiTXYNWqb3FBTIi1wYk5u90Ne6M2fabIf1s180wug8eneKOzekAq68llY9E
-         hYfw9siOWU8eNw4Oyr4sMfON870YNCFxNjvlu045OAkicpJ7dAtegDuDIYVROxUZNi
-         KYxODANODP4lX3UdrxSJgXOM08T/aJoMi+KMSdnk=
+        b=aifJTqdLEps3AP+JA0c2JZAZVVqP/fl7D1LuPsCo9qW7G9tfIln1e4SWvhqAPuj95
+         J0Jx2bgBvWvj6yy/rxTE0+aBYIsnSFQoUF1Pi/rIAOs4F6MBpZetv/N8kBi4ocoyCi
+         ebDfs3ulIlmP6nC+Rl43imdJ1cVEcnSbeGhZ9Whk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 712/849] scsi: qla2xxx: Turn off target reset during issue_lip
+Subject: [PATCH 5.15 700/917] remoteproc: imx_rproc: Fix TCM io memory type
 Date:   Mon, 15 Nov 2021 18:03:15 +0100
-Message-Id: <20211115165444.333748407@linuxfoundation.org>
+Message-Id: <20211115165452.621083677@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +43,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Dong Aisheng <aisheng.dong@nxp.com>
 
-[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
+[ Upstream commit 91bb26637353f35241f5472eedf3202ebe13e2e5 ]
 
-When user uses issue_lip to do link bounce, driver sends additional target
-reset to remote device before resetting the link. The target reset would
-affect other paths with active I/Os. This patch will remove the unnecessary
-target reset.
+is_iomem was introduced in the commit 40df0a91b2a5 ("remoteproc: add
+is_iomem to da_to_va"), but the driver seemed missed to provide the io
+type correctly.
+This patch updates remoteproc driver to indicate the TCM on IMX are io
+memories. Without the change, remoteproc kick will fail.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
-Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Peng Fan <peng.fan@nxp.com>
+Reviewed-and-tested-by: Peng Fan <peng.fan@nxp.com>
+Fixes: 79806d32d5aa ("remoteproc: imx_rproc: support i.MX8MN/P")
+Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210910090621.3073540-4-peng.fan@oss.nxp.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_gbl.h |  2 --
- drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
- drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
- 3 files changed, 2 insertions(+), 50 deletions(-)
+ drivers/remoteproc/imx_rproc.c | 35 ++++++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 2f867da822aee..9d394dce5a5c4 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -158,7 +158,6 @@ extern int ql2xasynctmfenable;
- extern int ql2xgffidenable;
- extern int ql2xenabledif;
- extern int ql2xenablehba_err_chk;
--extern int ql2xtargetreset;
- extern int ql2xdontresethba;
- extern uint64_t ql2xmaxlun;
- extern int ql2xmdcapmask;
-@@ -792,7 +791,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
- extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
- extern void qlafx00_timer_routine(scsi_qla_host_t *);
- extern int qlafx00_rescan_isp(scsi_qla_host_t *);
--extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
+diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+index d88f76f5305eb..71dcc6dd32e40 100644
+--- a/drivers/remoteproc/imx_rproc.c
++++ b/drivers/remoteproc/imx_rproc.c
+@@ -71,6 +71,7 @@ struct imx_rproc_mem {
+ /* att flags */
+ /* M4 own area. Can be mapped at probe */
+ #define ATT_OWN		BIT(1)
++#define ATT_IOMEM	BIT(2)
  
- /* qla82xx related functions */
+ /* address translation table */
+ struct imx_rproc_att {
+@@ -117,7 +118,7 @@ struct imx_rproc {
+ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* ITCM   */
+-	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN },
++	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S */
+ 	{ 0x00180000, 0x00180000, 0x00009000, 0 },
+ 	/* OCRAM */
+@@ -131,7 +132,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ 	/* DDR (Code) - alias */
+ 	{ 0x10000000, 0x40000000, 0x0FFE0000, 0 },
+ 	/* DTCM */
+-	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S - alias */
+ 	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+ 	/* OCRAM */
+@@ -147,7 +148,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* TCML - alias */
+-	{ 0x00000000, 0x007e0000, 0x00020000, 0 },
++	{ 0x00000000, 0x007e0000, 0x00020000, ATT_IOMEM},
+ 	/* OCRAM_S */
+ 	{ 0x00180000, 0x00180000, 0x00008000, 0 },
+ 	/* OCRAM */
+@@ -159,9 +160,9 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+ 	/* DDR (Code) - alias */
+ 	{ 0x10000000, 0x80000000, 0x0FFE0000, 0 },
+ 	/* TCML */
+-	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN },
++	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+ 	/* TCMU */
+-	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+ 	/* OCRAM_S */
+ 	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+ 	/* OCRAM */
+@@ -199,12 +200,12 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+ 	/* OCRAM_PXP (Code) - alias */
+ 	{ 0x00940000, 0x00940000, 0x00008000, 0 },
+ 	/* TCML (Code) */
+-	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
++	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* DDR (Code) - alias, first part of DDR (Data) */
+ 	{ 0x10000000, 0x80000000, 0x0FFF0000, 0 },
  
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index 6e920da64863e..350b0c4346fb6 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -738,29 +738,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
- 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
+ 	/* TCMU (Data) */
+-	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM (Data) */
+ 	{ 0x20200000, 0x00900000, 0x00020000, 0 },
+ 	/* OCRAM_EPDC (Data) */
+@@ -218,18 +219,18 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+ static const struct imx_rproc_att imx_rproc_att_imx6sx[] = {
+ 	/* dev addr , sys addr  , size	    , flags */
+ 	/* TCML (M4 Boot Code) - alias */
+-	{ 0x00000000, 0x007F8000, 0x00008000, 0 },
++	{ 0x00000000, 0x007F8000, 0x00008000, ATT_IOMEM },
+ 	/* OCRAM_S (Code) */
+ 	{ 0x00180000, 0x008F8000, 0x00004000, 0 },
+ 	/* OCRAM_S (Code) - alias */
+ 	{ 0x00180000, 0x008FC000, 0x00004000, 0 },
+ 	/* TCML (Code) */
+-	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
++	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* DDR (Code) - alias, first part of DDR (Data) */
+ 	{ 0x10000000, 0x80000000, 0x0FFF8000, 0 },
+ 
+ 	/* TCMU (Data) */
+-	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
++	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+ 	/* OCRAM_S (Data) - alias? */
+ 	{ 0x208F8000, 0x008F8000, 0x00004000, 0 },
+ 	/* DDR (Data) */
+@@ -341,7 +342,7 @@ static int imx_rproc_stop(struct rproc *rproc)
  }
  
--int
--qlafx00_loop_reset(scsi_qla_host_t *vha)
--{
--	int ret;
--	struct fc_port *fcport;
--	struct qla_hw_data *ha = vha->hw;
--
--	if (ql2xtargetreset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x803d,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--	return QLA_SUCCESS;
--}
--
- int
- qlafx00_iospace_config(struct qla_hw_data *ha)
+ static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+-			       size_t len, u64 *sys)
++			       size_t len, u64 *sys, bool *is_iomem)
  {
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index b48d2344fd4ce..4f1647701175a 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -197,12 +197,6 @@ MODULE_PARM_DESC(ql2xdbwr,
- 		" 0 -- Regular doorbell.\n"
- 		" 1 -- CAMRAM doorbell (faster).\n");
+ 	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
+ 	int i;
+@@ -354,6 +355,8 @@ static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+ 			unsigned int offset = da - att->da;
  
--int ql2xtargetreset = 1;
--module_param(ql2xtargetreset, int, S_IRUGO);
--MODULE_PARM_DESC(ql2xtargetreset,
--		 "Enable target reset."
--		 "Default is 1 - use hw defaults.");
--
- int ql2xgffidenable;
- module_param(ql2xgffidenable, int, S_IRUGO);
- MODULE_PARM_DESC(ql2xgffidenable,
-@@ -1642,27 +1636,10 @@ int
- qla2x00_loop_reset(scsi_qla_host_t *vha)
- {
- 	int ret;
--	struct fc_port *fcport;
- 	struct qla_hw_data *ha = vha->hw;
+ 			*sys = att->sa + offset;
++			if (is_iomem)
++				*is_iomem = att->flags & ATT_IOMEM;
+ 			return 0;
+ 		}
+ 	}
+@@ -377,7 +380,7 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
+ 	 * On device side we have many aliases, so we need to convert device
+ 	 * address (M4) to system bus address first.
+ 	 */
+-	if (imx_rproc_da_to_sys(priv, da, len, &sys))
++	if (imx_rproc_da_to_sys(priv, da, len, &sys, is_iomem))
+ 		return NULL;
  
--	if (IS_QLAFX00(ha)) {
--		return qlafx00_loop_reset(vha);
--	}
--
--	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x802c,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--
-+	if (IS_QLAFX00(ha))
-+		return QLA_SUCCESS;
+ 	for (i = 0; i < IMX_RPROC_MEM_MAX; i++) {
+@@ -553,8 +556,12 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+ 		if (b >= IMX_RPROC_MEM_MAX)
+ 			break;
  
- 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
- 		atomic_set(&vha->loop_state, LOOP_DOWN);
+-		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
+-						     att->sa, att->size);
++		if (att->flags & ATT_IOMEM)
++			priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
++							     att->sa, att->size);
++		else
++			priv->mem[b].cpu_addr = devm_ioremap_wc(&pdev->dev,
++								att->sa, att->size);
+ 		if (!priv->mem[b].cpu_addr) {
+ 			dev_err(dev, "failed to remap %#x bytes from %#x\n", att->size, att->sa);
+ 			return -ENOMEM;
 -- 
 2.33.0
 
