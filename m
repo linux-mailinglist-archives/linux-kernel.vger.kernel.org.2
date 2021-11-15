@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CAD451B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47509451912
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351034AbhKOXxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:53:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S243922AbhKOXOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:14:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344298AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0899C633CC;
-        Mon, 15 Nov 2021 18:55:19 +0000 (UTC)
+        id S244025AbhKOTIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:08:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 363AA63402;
+        Mon, 15 Nov 2021 18:17:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002520;
-        bh=R6kfVtPZtZiUAOQg6evUy+5HJ6MonfkON/BkmlPZv34=;
+        s=korg; t=1637000278;
+        bh=968QfDD1pURssI5vp7c5C92KofDfJ4bAUDofdb6tsAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9ARA5WOhX9/1EfqYiaJo5M5f4aWC06g4j29p5UdJpuLHoTxPcjSoO1Nf1exXNOan
-         WGorLTH00sXxMBB6CJjK3GTiXD6A11vrbsN2ZT0QpdZbf25mCYBm0/M4t1S2vinEci
-         q8SvxEkVOCEfT4Y5cZZQzbSxrC5TlRVfKQY0/AfY=
+        b=ossZEH635yzLv4AfqME6mFfYB5I3fVOpiKjGBIl1bnOM7DsoOaY7L5NRCKa3VnO0R
+         mRQmCYdRlQM/yZTwcTdwknYcHnsVVJResD6d372xUc2qnuJxfFUAXIVszbx5y8/Y4N
+         rzNwlbpSBu0RbD8kLgvfO115SnVxIFDfwgghhg+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abdul Haleem <abdhalee@in.ibm.com>,
-        Vaishnavi Bhat <vaish123@in.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 556/917] ibmvnic: dont stop queue in xmit
-Date:   Mon, 15 Nov 2021 18:00:51 +0100
-Message-Id: <20211115165447.648930722@linuxfoundation.org>
+Subject: [PATCH 5.14 569/849] bus: ti-sysc: Fix timekeeping_suspended warning on resume
+Date:   Mon, 15 Nov 2021 18:00:52 +0100
+Message-Id: <20211115165439.495201728@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +39,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 8878e46fcfd46b19964bd90e13b25dd94cbfc9be ]
+[ Upstream commit b3e9431854e8f305385d5de225441c0477b936cb ]
 
-If adapter's resetting bit is on, discard the packet but don't stop the
-transmit queue - instead leave that to the reset code. With this change,
-it is possible that we may get several calls to ibmvnic_xmit() that simply
-discard packets and return.
+On resume we can get a warning at kernel/time/timekeeping.c:824 for
+timekeeping_suspended.
 
-But if we stop the queue here, we might end up doing so just after
-__ibmvnic_open() started the queues (during a hard/soft reset) and before
-the ->resetting bit was cleared. If that happens, there will be no one to
-restart queue and transmissions will be blocked indefinitely.
+Let's fix this by adding separate functions for sysc_poll_reset_sysstatus()
+and sysc_poll_reset_sysconfig() and have the new functions handle also
+timekeeping_suspended.
 
-This can cause a TIMEOUT reset and with auto priority failover enabled,
-an unnecessary FAILOVER reset to less favored backing device and then a
-FAILOVER back to the most favored backing device. If we hit the window
-repeatedly, we can get stuck in a loop of TIMEOUT, FAILOVER, FAILOVER
-resets leaving the adapter unusable for extended periods of time.
+If iopoll at some point supports timekeeping_suspended, we can just drop
+the custom handling from these functions.
 
-Fixes: 7f5b030830fe ("ibmvnic: Free skb's in cases of failure in transmit")
-Reported-by: Abdul Haleem <abdhalee@in.ibm.com>
-Reported-by: Vaishnavi Bhat <vaish123@in.ibm.com>
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Reviewed-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/bus/ti-sysc.c | 65 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 53 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 6aa6ff89a7651..7438138c3766a 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1724,8 +1724,6 @@ static netdev_tx_t ibmvnic_xmit(struct sk_buff *skb, struct net_device *netdev)
- 	ind_bufp = &tx_scrq->ind_buf;
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 418ada474a85d..dd149cffe5e5b 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -17,6 +17,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/slab.h>
+ #include <linux/sys_soc.h>
++#include <linux/timekeeping.h>
+ #include <linux/iopoll.h>
  
- 	if (test_bit(0, &adapter->resetting)) {
--		if (!netif_subqueue_stopped(netdev, skb))
--			netif_stop_subqueue(netdev, queue_num);
- 		dev_kfree_skb_any(skb);
+ #include <linux/platform_data/ti-sysc.h>
+@@ -223,37 +224,77 @@ static u32 sysc_read_sysstatus(struct sysc *ddata)
+ 	return sysc_read(ddata, offset);
+ }
  
- 		tx_send_failed++;
+-/* Poll on reset status */
+-static int sysc_wait_softreset(struct sysc *ddata)
++static int sysc_poll_reset_sysstatus(struct sysc *ddata)
+ {
+-	u32 sysc_mask, syss_done, rstval;
+-	int syss_offset, error = 0;
+-
+-	if (ddata->cap->regbits->srst_shift < 0)
+-		return 0;
+-
+-	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
+-	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
++	int error, retries;
++	u32 syss_done, rstval;
+ 
+ 	if (ddata->cfg.quirks & SYSS_QUIRK_RESETDONE_INVERTED)
+ 		syss_done = 0;
+ 	else
+ 		syss_done = ddata->cfg.syss_mask;
+ 
+-	if (syss_offset >= 0) {
++	if (likely(!timekeeping_suspended)) {
+ 		error = readx_poll_timeout_atomic(sysc_read_sysstatus, ddata,
+ 				rstval, (rstval & ddata->cfg.syss_mask) ==
+ 				syss_done, 100, MAX_MODULE_SOFTRESET_WAIT);
++	} else {
++		retries = MAX_MODULE_SOFTRESET_WAIT;
++		while (retries--) {
++			rstval = sysc_read_sysstatus(ddata);
++			if ((rstval & ddata->cfg.syss_mask) == syss_done)
++				return 0;
++			udelay(2); /* Account for udelay flakeyness */
++		}
++		error = -ETIMEDOUT;
++	}
+ 
+-	} else if (ddata->cfg.quirks & SYSC_QUIRK_RESET_STATUS) {
++	return error;
++}
++
++static int sysc_poll_reset_sysconfig(struct sysc *ddata)
++{
++	int error, retries;
++	u32 sysc_mask, rstval;
++
++	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
++
++	if (likely(!timekeeping_suspended)) {
+ 		error = readx_poll_timeout_atomic(sysc_read_sysconfig, ddata,
+ 				rstval, !(rstval & sysc_mask),
+ 				100, MAX_MODULE_SOFTRESET_WAIT);
++	} else {
++		retries = MAX_MODULE_SOFTRESET_WAIT;
++		while (retries--) {
++			rstval = sysc_read_sysconfig(ddata);
++			if (!(rstval & sysc_mask))
++				return 0;
++			udelay(2); /* Account for udelay flakeyness */
++		}
++		error = -ETIMEDOUT;
+ 	}
+ 
+ 	return error;
+ }
+ 
++/* Poll on reset status */
++static int sysc_wait_softreset(struct sysc *ddata)
++{
++	int syss_offset, error = 0;
++
++	if (ddata->cap->regbits->srst_shift < 0)
++		return 0;
++
++	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
++
++	if (syss_offset >= 0)
++		error = sysc_poll_reset_sysstatus(ddata);
++	else if (ddata->cfg.quirks & SYSC_QUIRK_RESET_STATUS)
++		error = sysc_poll_reset_sysconfig(ddata);
++
++	return error;
++}
++
+ static int sysc_add_named_clock_from_child(struct sysc *ddata,
+ 					   const char *name,
+ 					   const char *optfck_name)
 -- 
 2.33.0
 
