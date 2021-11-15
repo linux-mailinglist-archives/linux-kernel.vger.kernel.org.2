@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBFC4521E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1874524C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350920AbhKPBHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:07:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
+        id S1357469AbhKPBnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245594AbhKOTUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE14A63571;
-        Mon, 15 Nov 2021 18:37:47 +0000 (UTC)
+        id S242054AbhKOSdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:33:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DAA863340;
+        Mon, 15 Nov 2021 18:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001468;
-        bh=z9+zTo2KDsQT9EvYNzUHie5CjB31QngDZuv/O0seETA=;
+        s=korg; t=1636999205;
+        bh=W26zB9E6EDd7hH8yizdM0dWEaX7T3fJN9qCMPqJPU4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O48uAeUHUOEH8zHU2OfCoki5UZofEU42gUAOruPMezIRY//1xOoB8tcP5Am8OXCGS
-         +p4k7Kj0HHjAuLPORGaSPfIgSZk5czQczvzFE4HB538K8KB6ZPVFVq4WeD/q+iIqb8
-         UmxkbZNHoP7DqOrHrB541YazEu2ve8S1hmsMytL4=
+        b=rE9ErrusnAsMD1iNKhZ7s2azQbNf9MGfmovBeGnUCsfil4I0tYWClwXvVACca0YUo
+         C4UWccXJSBL5eV0lc2JoeM9CVWVW6OSq2h9dlGgQpG2vdTRnoz3anUubo5ShAx9JCh
+         2TKsGXMlJAeIepgPdoayW0NwNIh+W5/Zm86T2/qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mihail Chindris <mihail.chindris@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.15 170/917] Documentation:devicetree:bindings:iio:dac: Fix val
+        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
+        stable@kernel.org, Jan Kara <jack@suse.cz>
+Subject: [PATCH 5.14 182/849] quota: check block number when reading the block in quota file
 Date:   Mon, 15 Nov 2021 17:54:25 +0100
-Message-Id: <20211115165434.537257141@linuxfoundation.org>
+Message-Id: <20211115165426.335526329@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mihail Chindris <mihail.chindris@analog.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-commit 8fc4f038fa832ec3543907fdcbe1334e1b0a8950 upstream.
+commit 9bf3d20331295b1ecb81f4ed9ef358c51699a050 upstream.
 
-A correct value for output-range-microvolts is -5 to 5 Volts
-not -5 to 5 milivolts
+The block number in the quota tree on disk should be smaller than the
+v2_disk_dqinfo.dqi_blocks. If the quota file was corrupted, we may be
+allocating an 'allocated' block and that would lead to a loop in a tree,
+which will probably trigger oops later. This patch adds a check for the
+block number in the quota tree to prevent such potential issue.
 
-Fixes: e904cc899293f ("dt-bindings: iio: dac: AD5766 yaml documentation")
-Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Link: https://lore.kernel.org/r/20211007080035.2531-6-mihail.chindris@analog.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Link: https://lore.kernel.org/r/20211008093821.1001186-2-yi.zhang@huawei.com
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Cc: stable@kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/quota/quota_tree.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-@@ -54,7 +54,7 @@ examples:
- 
-           ad5766@0 {
-               compatible = "adi,ad5766";
--              output-range-microvolts = <(-5000) 5000>;
-+              output-range-microvolts = <(-5000000) 5000000>;
-               reg = <0>;
-               spi-cpol;
-               spi-max-frequency = <1000000>;
+--- a/fs/quota/quota_tree.c
++++ b/fs/quota/quota_tree.c
+@@ -479,6 +479,13 @@ static int remove_tree(struct qtree_mem_
+ 		goto out_buf;
+ 	}
+ 	newblk = le32_to_cpu(ref[get_index(info, dquot->dq_id, depth)]);
++	if (newblk < QT_TREEOFF || newblk >= info->dqi_blocks) {
++		quota_error(dquot->dq_sb, "Getting block too big (%u >= %u)",
++			    newblk, info->dqi_blocks);
++		ret = -EUCLEAN;
++		goto out_buf;
++	}
++
+ 	if (depth == info->dqi_qtree_depth - 1) {
+ 		ret = free_dqentry(info, dquot, newblk);
+ 		newblk = 0;
+@@ -578,6 +585,13 @@ static loff_t find_tree_dqentry(struct q
+ 	blk = le32_to_cpu(ref[get_index(info, dquot->dq_id, depth)]);
+ 	if (!blk)	/* No reference? */
+ 		goto out_buf;
++	if (blk < QT_TREEOFF || blk >= info->dqi_blocks) {
++		quota_error(dquot->dq_sb, "Getting block too big (%u >= %u)",
++			    blk, info->dqi_blocks);
++		ret = -EUCLEAN;
++		goto out_buf;
++	}
++
+ 	if (depth < info->dqi_qtree_depth - 1)
+ 		ret = find_tree_dqentry(info, dquot, blk, depth+1);
+ 	else
 
 
