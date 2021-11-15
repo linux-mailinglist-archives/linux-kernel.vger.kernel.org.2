@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB3E4512C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A026445129C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347315AbhKOTjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:39:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
+        id S1347042AbhKOTiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:38:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239289AbhKOR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:56:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C3A563212;
-        Mon, 15 Nov 2021 17:34:01 +0000 (UTC)
+        id S239274AbhKOR4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:56:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C52B76332A;
+        Mon, 15 Nov 2021 17:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997642;
-        bh=FBLJMvMK9sZBRnyOIEugINT7BTWVQ9fBWUo5UEldWnI=;
+        s=korg; t=1636997626;
+        bh=SqMwSJlsmhRnzp2vM6XUPwpHBdW+FdUM2Grw036Ydhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vxnPr71C53X9KUuk/JBHi0gt5ZatDsnOSa7xP/JlbL9BmCsHKRdEldrHddVuufULL
-         dK5F95rlx1hC2g/EIXRuspfNwdDluXyw+TZfyesnr06xxWvKfo+w45d6Z6id3GbkTN
-         iyOgfVHKea5dZZQeFxeonyqxrurM3QxrXrgKc6+U=
+        b=kqMdqKpmrk4YC3i9l7Dl/Ni5mVYSXKwmrHatfTWMS5U+k5jqHqc6Q6YW+rNFzBl7+
+         yLHX2EB+LFE2UyEhMIBybgxEPlyv8R5Y93FGvBLE8+sulSZKQ/s++8TdyZxi+iqdC1
+         fq1T1O72Q8aD2FhAlUg//H5XxwI2oVGrAghX0a18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        stable@vger.kernel.org, Sriram R <srirrama@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 180/575] mwifiex: Run SET_BSS_MODE when changing from P2P to STATION vif-type
-Date:   Mon, 15 Nov 2021 17:58:25 +0100
-Message-Id: <20211115165349.929454195@linuxfoundation.org>
+Subject: [PATCH 5.10 184/575] ath11k: Avoid reg rules update during firmware recovery
+Date:   Mon, 15 Nov 2021 17:58:29 +0100
+Message-Id: <20211115165350.063591490@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,72 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Sriram R <srirrama@codeaurora.org>
 
-[ Upstream commit c2e9666cdffd347460a2b17988db4cfaf2a68fb9 ]
+[ Upstream commit 69a0fcf8a9f2273040d03e5ee77c9689c09e9d3a ]
 
-We currently handle changing from the P2P to the STATION virtual
-interface type slightly different than changing from P2P to ADHOC: When
-changing to STATION, we don't send the SET_BSS_MODE command. We do send
-that command on all other type-changes though, and it probably makes
-sense to send the command since after all we just changed our BSS_MODE.
-Looking at prior changes to this part of the code, it seems that this is
-simply a leftover from old refactorings.
+During firmware recovery, the default reg rules which are
+received via WMI_REG_CHAN_LIST_CC_EVENT can overwrite
+the currently configured user regd.
 
-Since sending the SET_BSS_MODE command is the only difference between
-mwifiex_change_vif_to_sta_adhoc() and the current code, we can now use
-mwifiex_change_vif_to_sta_adhoc() for both switching to ADHOC and
-STATION interface type.
+See below snap for example,
 
-This does not fix any particular bug and just "looked right", so there's
-a small chance it might be a regression.
+root@OpenWrt:/# iw reg get | grep country
+country FR: DFS-ETSI
+country FR: DFS-ETSI
+country FR: DFS-ETSI
+country FR: DFS-ETSI
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+root@OpenWrt:/# echo assert > /sys/kernel/debug/ath11k/ipq8074\ hw2.0/simulate_f
+w_crash
+<snip>
+[ 5290.471696] ath11k c000000.wifi1: pdev 1 successfully recovered
+
+root@OpenWrt:/# iw reg get | grep country
+country FR: DFS-ETSI
+country US: DFS-FCC
+country US: DFS-FCC
+country US: DFS-FCC
+
+In the above, the user configured country 'FR' is overwritten
+when the rules of default country 'US' are received and updated during
+recovery. Hence avoid processing of these rules in general
+during firmware recovery as they have been already applied during
+driver registration or after last set user country is configured.
+
+This scenario applies for both AP and STA devices basically because
+cfg80211 is not aware of the recovery and only the driver recovers, but
+changing or resetting of the reg domain during recovery is not needed so
+as to continue with the configured regdomain currently in use.
+
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.4.0.1-01460-QCAHKSWPL_SILICONZ-1
+
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210914195909.36035-4-verdre@v0yd.nl
+Link: https://lore.kernel.org/r/20210721212029.142388-3-jouni@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/marvell/mwifiex/cfg80211.c   | 22 ++++---------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index a6b9dc6700b14..7a4e3c693d38b 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -1229,29 +1229,15 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
- 		break;
- 	case NL80211_IFTYPE_P2P_CLIENT:
- 	case NL80211_IFTYPE_P2P_GO:
-+		if (mwifiex_cfg80211_deinit_p2p(priv))
-+			return -EFAULT;
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index fca71e00123d9..2f777d61f9065 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -5362,6 +5362,17 @@ static int ath11k_reg_chan_list_event(struct ath11k_base *ab, struct sk_buff *sk
+ 
+ 	pdev_idx = reg_info->phy_id;
+ 
++	/* Avoid default reg rule updates sent during FW recovery if
++	 * it is already available
++	 */
++	spin_lock(&ab->base_lock);
++	if (test_bit(ATH11K_FLAG_RECOVERY, &ab->dev_flags) &&
++	    ab->default_regd[pdev_idx]) {
++		spin_unlock(&ab->base_lock);
++		goto mem_free;
++	}
++	spin_unlock(&ab->base_lock);
 +
- 		switch (type) {
--		case NL80211_IFTYPE_STATION:
--			if (mwifiex_cfg80211_deinit_p2p(priv))
--				return -EFAULT;
--			priv->adapter->curr_iface_comb.p2p_intf--;
--			priv->adapter->curr_iface_comb.sta_intf++;
--			dev->ieee80211_ptr->iftype = type;
--			if (mwifiex_deinit_priv_params(priv))
--				return -1;
--			if (mwifiex_init_new_priv_params(priv, dev, type))
--				return -1;
--			if (mwifiex_sta_init_cmd(priv, false, false))
--				return -1;
--			break;
- 		case NL80211_IFTYPE_ADHOC:
--			if (mwifiex_cfg80211_deinit_p2p(priv))
--				return -EFAULT;
-+		case NL80211_IFTYPE_STATION:
- 			return mwifiex_change_vif_to_sta_adhoc(dev, curr_iftype,
- 							       type, params);
--			break;
- 		case NL80211_IFTYPE_AP:
--			if (mwifiex_cfg80211_deinit_p2p(priv))
--				return -EFAULT;
- 			return mwifiex_change_vif_to_ap(dev, curr_iftype, type,
- 							params);
- 		case NL80211_IFTYPE_UNSPECIFIED:
+ 	if (pdev_idx >= ab->num_radios) {
+ 		/* Process the event for phy0 only if single_pdev_only
+ 		 * is true. If pdev_idx is valid but not 0, discard the
 -- 
 2.33.0
 
