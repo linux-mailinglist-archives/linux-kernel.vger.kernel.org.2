@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DD444FEB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDA344FEB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhKOGja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 01:39:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhKOGi6 (ORCPT
+        id S229922AbhKOGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 01:41:33 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:39526 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhKOGlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 01:38:58 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDBEC061746;
-        Sun, 14 Nov 2021 22:36:01 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id n23so13665837pgh.8;
-        Sun, 14 Nov 2021 22:36:01 -0800 (PST)
+        Mon, 15 Nov 2021 01:41:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LGML58GFy0MHgu4LbS5NH+OKV7G6tLA4Z3al0L54dBk=;
-        b=WPn7/dWIkdk+iDNmqtQ0YHx39pk3IqG0x8zI7f5jY0ZHeOUQR8l1tjgcC7DDCgEanS
-         aLLawTozgBMFSIgcDaROGoLxVEXvKIOoWpT/TJmEBaqL2nV6Rv+5Jg0sp07nPGo3KWGs
-         WU1xH0Te5nCh8zo6SBViSdn9njAP21xBjwWn5VyYDFqpL1EcxWmJgnzvEC82+FQAqcQT
-         7hPtIOGuqHCPVOA7ONeCx688fwPLEDHSLIRnIqMy2hFxw0BbZZhIAP5PYvg6IA1aB5+5
-         vFQzgz272ku/Dqq0M1Hs/Jfk0+6mvbP9NNyNTXPSZj9e8szZGc8tzirWVn7L6HfTdpxl
-         hJyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LGML58GFy0MHgu4LbS5NH+OKV7G6tLA4Z3al0L54dBk=;
-        b=3uQmYXuHTrJ352gHK52IMd5a+86wErAb9NOwOTymzSWKlWLMABJEcjN4kFv0KsdkyK
-         KZUpuCL44ugvZ29fCNzYbLXXiPco2V7cu3JYfFEPaF3tMVliP/gSvKijUtMR5FMGiWuC
-         Q9ILFFf3BaSG3kcSQ1Ej7qA/dwZIFiREfy/2OehV6Q6dinVm4CDVqiH3mlS52Fr+X+rN
-         NqeD/Qc2AVWhjiU/Wvj3DVTWhwgaTaWdaVBZmlggZ5RNe5YGT5W2AlJsXHNymmadckcb
-         x4/KMqfjy40PfaUJUJ0S2ryH7Id/8E9ZzFEekZVU23d7ofQtSgXSCx10jQ1y0eieXDaZ
-         sC9A==
-X-Gm-Message-State: AOAM531INzwT9YkNIjMVMaxg1XP9EkRrsyelxf7XUQHu2VAERjcXa3tt
-        ORJ2GeMZUc2w6bA30bXoJ1Y=
-X-Google-Smtp-Source: ABdhPJwHbZnnqt/GZY/Ni85pi7ENBo63KkYKsPk/891+SkoqzL6GNJYZO0+zoFT8or0g89GRpzk2jg==
-X-Received: by 2002:a63:91c8:: with SMTP id l191mr22784546pge.404.1636958161247;
-        Sun, 14 Nov 2021 22:36:01 -0800 (PST)
-Received: from localhost.localdomain ([103.99.179.247])
-        by smtp.gmail.com with ESMTPSA id f4sm13411720pfg.34.2021.11.14.22.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 22:36:01 -0800 (PST)
-From:   Calvin Zhang <calvinzhang.cool@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Calvin Zhang <calvinzhang.cool@gmail.com>
-Subject: [PATCH] of: make MAX_RESERVED_REGIONS configurable
-Date:   Mon, 15 Nov 2021 14:35:21 +0800
-Message-Id: <20211115063521.3457302-1-calvinzhang.cool@gmail.com>
-X-Mailer: git-send-email 2.30.2
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636958316; x=1668494316;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=ZCdyBfPAycYXHOAPOEAo6conMb52KuZIsOmNlhXRFuI=;
+  b=miRt6fTqv2Osk0dskAKsjeviUlkk1ikXfsBOCERP119AhuOzcwl/FSvG
+   R/73/i5hVbUFFxNzYAYmu7PoO5UHyxG9m2y2jelu/1Xp3V7KrYW+aifR2
+   Vyqo71vs3kbHbiqFKUA7LPhrZYTp2wZyAbvXAptozNICW7q7iRGCDaeZs
+   4=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 14 Nov 2021 22:38:36 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 22:38:35 -0800
+Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Sun, 14 Nov 2021 22:38:34 -0800
+Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Sun, 14 Nov
+ 2021 22:38:30 -0800
+Message-ID: <fcbeded0-8619-79dc-ec2e-42481acbc43c@quicinc.com>
+Date:   Mon, 15 Nov 2021 14:38:28 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [RESEND PATCH v2 11/11] dt-bindings: convert qcom,spmi-pmic-arb
+ binding to YAML format
+Content-Language: en-US
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>, <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, <maz@kernel.org>,
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <tglx@linutronix.de>, <collinsd@codeaurora.org>,
+        <subbaram@codeaurora.org>
+References: <1636691059-4305-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1636691059-4305-12-git-send-email-quic_fenglinw@quicinc.com>
+ <1636724917.088909.2463363.nullmailer@robh.at.kernel.org>
+ <b2c7bfcb-754b-8817-667e-b81a6ca5500f@quicinc.com>
+In-Reply-To: <b2c7bfcb-754b-8817-667e-b81a6ca5500f@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAX_RESERVED_REGIONS has changed several times. Max reserved regions
-count grow bigger as more SOC subsystems require reserved regions.
 
-Add a Kconfig for it so that when properly configured, the static
-reserved_mem array consumes less memory on systems with few reserved
-regions.
-
-Signed-off-by: Calvin Zhang <calvinzhang.cool@gmail.com>
----
- drivers/of/Kconfig           | 10 ++++++++++
- drivers/of/of_reserved_mem.c |  3 +--
- 2 files changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 80b5fd44ab1c..591b2c4d9dd0 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -73,6 +73,16 @@ config OF_IRQ
- config OF_RESERVED_MEM
- 	def_bool OF_EARLY_FLATTREE
- 
-+config OF_MAX_RESERVED_REGIONS
-+    int "Maximum count of reserved regions"
-+    depends on OF_RESERVED_MEM
-+    default 64
-+    help
-+        Reserved regions in /reserved-memory node includes static
-+        reservations with fixed location and dynamic ones for device
-+        cma regions. This parameter sets the maximum number of reserved
-+        regions in the system.
-+
- config OF_RESOLVE
- 	bool
- 
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 9c0fb962c22b..d90ae4c03011 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -25,8 +25,7 @@
- 
- #include "of_private.h"
- 
--#define MAX_RESERVED_REGIONS	64
--static struct reserved_mem reserved_mem[MAX_RESERVED_REGIONS];
-+static struct reserved_mem reserved_mem[CONFIG_OF_MAX_RESERVED_REGIONS];
- static int reserved_mem_count;
- 
- static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
--- 
-2.30.2
-
+On 2021/11/15 8:16, Fenglin Wu wrote:
+>
+> On 2021/11/12 21:48, Rob Herring wrote:
+>> On Fri, 12 Nov 2021 12:24:19 +0800, Fenglin Wu wrote:
+>>> Convert the SPMI PMIC arbiter documentation to JSON/yaml.
+>>>
+>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>>> ---
+>>>   .../bindings/spmi/qcom,spmi-pmic-arb.txt           |  67 -----------
+>>>   .../bindings/spmi/qcom,spmi-pmic-arb.yaml          | 122 
+>>> +++++++++++++++++++++
+>>>   2 files changed, 122 insertions(+), 67 deletions(-)
+>>>   delete mode 100644 
+>>> Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
+>>>
+>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>>
+>> yamllint warnings/errors:
+>>
+>> dtschema/dtc warnings/errors:
+>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: 
+>> properties:interrupt-names: 'const' should not be valid under 
+>> {'enum': ['const', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 
+>> 'minimum', 'maximum', 'multipleOf', 'pattern']}
+>>     hint: Scalar and array keywords cannot be mixed
+>>     from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: 
+>> properties:reg-names: {'minItems': 3, 'maxItems': 5, 'items': 
+>> [{'const': 'core'}, {'const': 'intr'}, {'const': 'cnfg'}, {'const': 
+>> 'chnls'}, {'const': 'obsrvr'}]} should not be valid under 
+>> {'required': ['maxItems']}
+>>     hint: "maxItems" is not needed with an "items" list
+>>     from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml: 
+>> ignoring, error in schema: properties: interrupt-names
+>> warning: no schema found in file: 
+>> ./Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
+>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.example.dt.yaml: 
+>> spmi@fc4cf000: reg: [[4232900608, 4096], [4232884224, 4096], 
+>> [4232880128, 4096]] is too long
+>>     From schema: 
+>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml
+>> Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.example.dt.yaml:0:0: 
+>> /example-0/spmi@fc4cf000: failed to match any schema with compatible: 
+>> ['qcom,spmi-pmic-arb']
+>>
+>> doc reference errors (make refcheckdocs):
+>> Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt: 
+>> Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
+>>
+>> See https://patchwork.ozlabs.org/patch/1554141
+>>
+>> This check can fail if there are any dependencies. The base for a patch
+>> series is generally the most recent rc1.
+>>
+>> If you already ran 'make dt_binding_check' and didn't see the above
+>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>> date:
+>>
+>> pip3 install dtschema --upgrade
+>>
+>> Please check and re-submit.
+> I actually ran "make dt-binding-check 
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/qcom,spmi-pmic-arb.txt"
+> and confirmed there was no error or warning before pushing the change. 
+> Anyway I will follow
+> your steps here andcheck it again, if any changes is required, I will 
+> have them updated it
+> in next patchset.
+> Thanks
+I could see the same warning message after installed 'yamllint'.
+I will fix this and re-submit.
+Thanks
