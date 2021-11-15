@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE55451F56
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F16E4519C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356028AbhKPAit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        id S1349696AbhKOX1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344784AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B380636C7;
-        Mon, 15 Nov 2021 19:04:24 +0000 (UTC)
+        id S245043AbhKOTS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18268634F6;
+        Mon, 15 Nov 2021 18:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003064;
-        bh=6uyj2ksn8jh958jNOjQMXDZ3WJRB1H63zstpoGPXMNw=;
+        s=korg; t=1637000838;
+        bh=L3uN9+P0S+XDR1GSymcw8svx8SwkYmssDHTWKkk9RI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CaDuGjHl3J1FmOV3kPlkJ0H0YDWiAM3Y6/upHRT5kiIhu0dz5cLHV01V8h1aW8xDZ
-         B5awAibZc363Ew8eGbEdjrE1Iw3iqzqEnCtTtOWthk1d3pXbvrQVvPQKhpegCrReJg
-         tDI49oH6PzxOzGOlVNvqChdT+cDtcGEiK9osaZv8=
+        b=cq1lYdWqjFEA5/TM4aWdDEU4ui+vcg1QCk2xXqBPzJMJeW/xpL4hlEfTdRQsGHC87
+         mZXbd9/9jMUZ7kt6tqjM5oLs6R+f9+bMZo9ZL1DBPFxLDk7oZIr0/i0NQhxAGqGsPL
+         JKMmkuOFMlXFUvtsLI2rgS5et1/f3wiSIHHPYOCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 797/917] ALSA: memalloc: Catch call with NULL snd_dma_buffer pointer
-Date:   Mon, 15 Nov 2021 18:04:52 +0100
-Message-Id: <20211115165455.998603907@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 810/849] io-wq: fix queue stalling race
+Date:   Mon, 15 Nov 2021 18:04:53 +0100
+Message-Id: <20211115165447.641713539@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +38,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit dce9446192439eaac81c21f517325fb473735e53 ]
+commit 0242f6426ea78fbe3933b44f8c55ae93ec37f6cc upstream.
 
-Although we've covered all calls with NULL dma buffer pointer, so far,
-there may be still some else in the wild.  For catching such a case
-more easily, add a WARN_ON_ONCE() in snd_dma_get_ops().
+We need to set the stalled bit early, before we drop the lock for adding
+us to the stall hash queue. If not, then we can race with new work being
+queued between adding us to the stall hash and io_worker_handle_work()
+marking us stalled.
 
-Fixes: 37af81c5998f ("ALSA: core: Abstract memory alloc helpers")
-Link: https://lore.kernel.org/r/20211105102103.28148-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/memalloc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/io-wq.c |   15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 0b8a1c3eae1b4..2d842982576bb 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -494,6 +494,8 @@ static const struct snd_malloc_ops *dma_ops[] = {
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -436,8 +436,7 @@ static bool io_worker_can_run_work(struc
+ }
  
- static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffer *dmab)
+ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe,
+-					   struct io_worker *worker,
+-					   bool *stalled)
++					   struct io_worker *worker)
+ 	__must_hold(wqe->lock)
  {
-+	if (WARN_ON_ONCE(!dmab))
-+		return NULL;
- 	if (WARN_ON_ONCE(dmab->dev.type <= SNDRV_DMA_TYPE_UNKNOWN ||
- 			 dmab->dev.type >= ARRAY_SIZE(dma_ops)))
- 		return NULL;
--- 
-2.33.0
-
+ 	struct io_wq_work_node *node, *prev;
+@@ -475,10 +474,14 @@ static struct io_wq_work *io_get_next_wo
+ 	}
+ 
+ 	if (stall_hash != -1U) {
++		/*
++		 * Set this before dropping the lock to avoid racing with new
++		 * work being added and clearing the stalled bit.
++		 */
++		wqe->flags |= IO_WQE_FLAG_STALLED;
+ 		raw_spin_unlock(&wqe->lock);
+ 		io_wait_on_hash(wqe, stall_hash);
+ 		raw_spin_lock(&wqe->lock);
+-		*stalled = true;
+ 	}
+ 
+ 	return NULL;
+@@ -518,7 +521,6 @@ static void io_worker_handle_work(struct
+ 
+ 	do {
+ 		struct io_wq_work *work;
+-		bool stalled;
+ get_next:
+ 		/*
+ 		 * If we got some work, mark us as busy. If we didn't, but
+@@ -527,12 +529,9 @@ get_next:
+ 		 * can't make progress, any work completion or insertion will
+ 		 * clear the stalled flag.
+ 		 */
+-		stalled = false;
+-		work = io_get_next_work(wqe, worker, &stalled);
++		work = io_get_next_work(wqe, worker);
+ 		if (work)
+ 			__io_worker_busy(wqe, worker, work);
+-		else if (stalled)
+-			wqe->flags |= IO_WQE_FLAG_STALLED;
+ 
+ 		raw_spin_unlock_irq(&wqe->lock);
+ 		if (!work)
 
 
