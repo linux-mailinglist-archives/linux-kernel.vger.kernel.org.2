@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E954511F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168084511F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245536AbhKOTUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:20:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57922 "EHLO mail.kernel.org"
+        id S245737AbhKOTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:21:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238609AbhKORrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238673AbhKORrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:47:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 532A663293;
-        Mon, 15 Nov 2021 17:29:38 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0199563297;
+        Mon, 15 Nov 2021 17:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997378;
-        bh=s0nka8RPxWxIT/15NkV+bc42rWpqAnOPs403Hcs+HF0=;
+        s=korg; t=1636997381;
+        bh=y+M0CDoxqRUTAzlF3RvjbE5fPWu7c1FTBhFIt1JLHbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nP8ZhiYON35UrhONojbdf5FDtj55jz9Cj0KvgWS3cCfevuDWQe0YqjnVTTU6yQoWj
-         uaitCPw7Yh+d5ET65hSwCCbO6r5XZfyfKKLSwN22HpnI2CbvJDsDdHWcm7fU1+0juk
-         g3aNT5XN27CCX+irXA4lfeH4Ysc1OdLFlMG5HzGs=
+        b=dteWIVYEyGUtkNyTVKH7ZWIMr+vmw6ymitR2FK5ISD9k/TEdicrwtzBCTEZcQzcrW
+         TpuHvKgymaqKYTTzkVDFUYv+4QLj7LmryMEp0b0kLhdXVb3Fcw87k5D+CFeF2dnvQ0
+         a9saOpOryKJM1gNS4Ux43dG+4UPJNLya+ghY27iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 127/575] KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in use
-Date:   Mon, 15 Nov 2021 17:57:32 +0100
-Message-Id: <20211115165348.102787078@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 128/575] can: j1939: j1939_tp_cmd_recv(): ignore abort message in the BAM transport
+Date:   Mon, 15 Nov 2021 17:57:33 +0100
+Message-Id: <20211115165348.142101929@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,66 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit 7dfbc624eb5726367900c8d86deff50836240361 upstream.
+commit c0f49d98006f2db3333b917caac65bce2af9865c upstream.
 
-Check the current VMCS controls to determine if an MSR write will be
-intercepted due to MSR bitmaps being disabled.  In the nested VMX case,
-KVM will disable MSR bitmaps in vmcs02 if they're disabled in vmcs12 or
-if KVM can't map L1's bitmaps for whatever reason.
+This patch prevents BAM transport from being closed by receiving abort
+message, as specified in SAE-J1939-82 2015 (A.3.3 Row 4).
 
-Note, the bad behavior is relatively benign in the current code base as
-KVM sets all bits in vmcs02's MSR bitmap by default, clears bits if and
-only if L0 KVM also disables interception of an MSR, and only uses the
-buggy helper for MSR_IA32_SPEC_CTRL.  Because KVM explicitly tests WRMSR
-before disabling interception of MSR_IA32_SPEC_CTRL, the flawed check
-will only result in KVM reading MSR_IA32_SPEC_CTRL from hardware when it
-isn't strictly necessary.
-
-Tag the fix for stable in case a future fix wants to use
-msr_write_intercepted(), in which case a buggy implementation in older
-kernels could prove subtly problematic.
-
-Fixes: d28b387fb74d ("KVM/VMX: Allow direct access to MSR_IA32_SPEC_CTRL")
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Link: https://lore.kernel.org/all/1635431907-15617-2-git-send-email-zhangchangzhong@huawei.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20211109013047.2041518-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/vmx/vmx.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/can/j1939/transport.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -859,15 +859,15 @@ void update_exception_bitmap(struct kvm_
- /*
-  * Check if MSR is intercepted for currently loaded MSR bitmap.
-  */
--static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
-+static bool msr_write_intercepted(struct vcpu_vmx *vmx, u32 msr)
- {
- 	unsigned long *msr_bitmap;
- 	int f = sizeof(unsigned long);
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -2065,6 +2065,12 @@ static void j1939_tp_cmd_recv(struct j19
+ 		break;
  
--	if (!cpu_has_vmx_msr_bitmap())
-+	if (!(exec_controls_get(vmx) & CPU_BASED_USE_MSR_BITMAPS))
- 		return true;
+ 	case J1939_ETP_CMD_ABORT: /* && J1939_TP_CMD_ABORT */
++		if (j1939_cb_is_broadcast(skcb)) {
++			netdev_err_once(priv->ndev, "%s: abort to broadcast (%02x), ignoring!\n",
++					__func__, skcb->addr.sa);
++			return;
++		}
++
+ 		if (j1939_tp_im_transmitter(skcb))
+ 			j1939_xtp_rx_abort(priv, skb, true);
  
--	msr_bitmap = to_vmx(vcpu)->loaded_vmcs->msr_bitmap;
-+	msr_bitmap = vmx->loaded_vmcs->msr_bitmap;
- 
- 	if (msr <= 0x1fff) {
- 		return !!test_bit(msr, msr_bitmap + 0x800 / f);
-@@ -6744,7 +6744,7 @@ reenter_guest:
- 	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
- 	 * save it.
- 	 */
--	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-+	if (unlikely(!msr_write_intercepted(vmx, MSR_IA32_SPEC_CTRL)))
- 		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
- 
- 	x86_spec_ctrl_restore_host(vmx->spec_ctrl, 0);
 
 
