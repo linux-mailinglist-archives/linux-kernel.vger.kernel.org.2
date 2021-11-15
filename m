@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CAD45204A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266C845194A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354354AbhKPAvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:51:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S1349688AbhKOXRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:17:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344447AbhKOTYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 149AC6349C;
-        Mon, 15 Nov 2021 18:57:52 +0000 (UTC)
+        id S244424AbhKOTOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:14:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E92634BF;
+        Mon, 15 Nov 2021 18:21:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002673;
-        bh=5gZoJW6fAe3iLPqtbq8ca458ZHCj5o0fRRvw4XD+L58=;
+        s=korg; t=1637000464;
+        bh=xIWacHPJYumNIerpRw8+Wy0rKa7p0QqJbQKbI/rlDNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yt1gDMH2OR8/644FVgJPo4q/Fsqz6VVTk/l7KZroFhqW1gTr9MohJmNk9XejbScyb
-         FWIyurhls2iNWqGFo65FOC92nhyJe1UorIAxpkAloqEOIw8NNnbQDil8rfHjo5Jc0C
-         TwjNx9uT6WGGmoiJUZ0Hz05FyYZczVSV+mMBVpvs=
+        b=Z7J+euyTYAmYnqXua+3eKVzue7GiMd0RrflqqsAsiNSrlsrPa6qzmjZjKY6iAD82y
+         rFNbPPVfp40RVZWmLvMAnNnmoMlckV6tkW/1mSBy9mEtEbS77xyTyf99Hx9FWz5p4O
+         hXJyt/4M/uIysoBvYAxPkuacjV30kx5KOtVbS2qI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 655/917] powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE
-Date:   Mon, 15 Nov 2021 18:02:30 +0100
-Message-Id: <20211115165451.081434779@linuxfoundation.org>
+Subject: [PATCH 5.14 668/849] rtc: ds1302: Add SPI ID table
+Date:   Mon, 15 Nov 2021 18:02:31 +0100
+Message-Id: <20211115165442.861214874@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 68b44f94d6370e2c6c790fedd28e637fa9964a93 ]
+[ Upstream commit 8719a17613e0233d707eb22e1645d217594631ef ]
 
-fsl_booke and 44x are not able to map kernel linear memory with
-pages, so they can't support DEBUG_PAGEALLOC and KFENCE, and
-STRICT_KERNEL_RWX is also a problem for now.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding an id_table listing the
+SPI IDs for everything.
 
-Enable those only on book3s (both 32 and 64 except KFENCE), 8xx and 40x.
-
-Fixes: 88df6e90fa97 ("[POWERPC] DEBUG_PAGEALLOC for 32-bit")
-Fixes: 95902e6c8864 ("powerpc/mm: Implement STRICT_KERNEL_RWX on PPC32")
-Fixes: 90cbac0e995d ("powerpc: Enable KFENCE for PPC32")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/d1ad9fdd9b27da3fdfa16510bb542ed51fa6e134.1634292136.git.christophe.leroy@csgroup.eu
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210923194922.53386-2-broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-ds1302.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index ba5b661893588..6b9f523882c58 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -138,7 +138,7 @@ config PPC
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
- 	select ARCH_HAS_SET_MEMORY
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
- 	select ARCH_HAS_STRICT_MODULE_RWX	if ARCH_HAS_STRICT_KERNEL_RWX && !PPC_BOOK3S_32
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
-@@ -150,7 +150,7 @@ config PPC
- 	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_STACKWALK
- 	select ARCH_SUPPORTS_ATOMIC_RMW
--	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
-+	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC_BOOK3S || PPC_8xx || 40x
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
- 	select ARCH_USE_MEMTEST
-@@ -190,7 +190,7 @@ config PPC
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
--	select HAVE_ARCH_KFENCE			if PPC32
-+	select HAVE_ARCH_KFENCE			if PPC_BOOK3S_32 || PPC_8xx || 40x
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+diff --git a/drivers/rtc/rtc-ds1302.c b/drivers/rtc/rtc-ds1302.c
+index b3de6d2e680a4..2f83adef966eb 100644
+--- a/drivers/rtc/rtc-ds1302.c
++++ b/drivers/rtc/rtc-ds1302.c
+@@ -199,11 +199,18 @@ static const struct of_device_id ds1302_dt_ids[] = {
+ MODULE_DEVICE_TABLE(of, ds1302_dt_ids);
+ #endif
+ 
++static const struct spi_device_id ds1302_spi_ids[] = {
++	{ .name = "ds1302", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(spi, ds1302_spi_ids);
++
+ static struct spi_driver ds1302_driver = {
+ 	.driver.name	= "rtc-ds1302",
+ 	.driver.of_match_table = of_match_ptr(ds1302_dt_ids),
+ 	.probe		= ds1302_probe,
+ 	.remove		= ds1302_remove,
++	.id_table	= ds1302_spi_ids,
+ };
+ 
+ module_spi_driver(ds1302_driver);
 -- 
 2.33.0
 
