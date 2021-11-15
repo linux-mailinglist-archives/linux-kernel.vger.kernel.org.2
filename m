@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6352C450F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756F8450F08
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241801AbhKOSZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:25:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45640 "EHLO mail.kernel.org"
+        id S241898AbhKOSZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:25:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238163AbhKORdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:33:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ED96327C;
-        Mon, 15 Nov 2021 17:21:29 +0000 (UTC)
+        id S238174AbhKORdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:33:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E147C63241;
+        Mon, 15 Nov 2021 17:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996889;
-        bh=Hhpt5/09ihCRRLXi62CCzQZ6wDu7vcGPY0lWg+4fKHk=;
+        s=korg; t=1636996897;
+        bh=iBn4D7zMtEq2IYTq2rxFZPleNsv6M8Ce5LQRTYgung4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5WqecgmTJXUPampVceQIaAgPLq2CO0Aa7v3b7RpRjbAUuBnCm6F+GlJLBnTwODR8
-         wetoOcL5dYgbQ8Hog08KWz/epGwBZDqZ4buwLn2fZgbRMvuy0PplO5AbMHd5EdNLiW
-         rFH7n9TjMZ/LiEqy3ws/QIismn3cA3o/TObhQaNA=
+        b=L9SycpENcODszqHdYXMwOflRlhDAlXRDYlcytGmPap2KXMie3vuzphE9diKFeXhPa
+         WFyJ7Ev4GBuBBdKfSV/UgNdhJ2oNkq9ifPpkXlmQg0G2bURohYjn70xFRR4HQ0tNiw
+         GUYNO4GJktap12jiiFfFe1flZ+T2H14kNfHfAmDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 304/355] soc: fsl: dpaa2-console: free buffer before returning from dpaa2_console_read
-Date:   Mon, 15 Nov 2021 18:03:48 +0100
-Message-Id: <20211115165323.558561135@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 306/355] dmaengine: dmaengine_desc_callback_valid(): Check for `callback_result`
+Date:   Mon, 15 Nov 2021 18:03:50 +0100
+Message-Id: <20211115165323.622129236@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,35 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit 8120bd469f5525da229953c1197f2b826c0109f4 ]
+[ Upstream commit e7e1e880b114ca640a2f280b0d5d38aed98f98c6 ]
 
-Free the kbuf buffer before returning from the dpaa2_console_read()
-function. The variable no longer goes out of scope, leaking the storage
-it points to.
+Before the `callback_result` callback was introduced drivers coded their
+invocation to the callback in a similar way to:
 
-Fixes: c93349d8c170 ("soc: fsl: add DPAA2 console support")
-Signed-off-by: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
+	if (cb->callback) {
+		spin_unlock(&dma->lock);
+		cb->callback(cb->callback_param);
+		spin_lock(&dma->lock);
+	}
+
+With the introduction of `callback_result` two helpers where introduced to
+transparently handle both types of callbacks. And drivers where updated to
+look like this:
+
+	if (dmaengine_desc_callback_valid(cb)) {
+		spin_unlock(&dma->lock);
+		dmaengine_desc_callback_invoke(cb, ...);
+		spin_lock(&dma->lock);
+	}
+
+dmaengine_desc_callback_invoke() correctly handles both `callback_result`
+and `callback`. But we forgot to update the dmaengine_desc_callback_valid()
+function to check for `callback_result`. As a result DMA descriptors that
+use the `callback_result` rather than `callback` don't have their callback
+invoked by drivers that follow the pattern above.
+
+Fix this by checking for both `callback` and `callback_result` in
+dmaengine_desc_callback_valid().
+
+Fixes: f067025bc676 ("dmaengine: add support to provide error result from a DMA transation")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+Link: https://lore.kernel.org/r/20211023134101.28042-1-lars@metafoo.de
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/fsl/dpaa2-console.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/dma/dmaengine.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/fsl/dpaa2-console.c b/drivers/soc/fsl/dpaa2-console.c
-index 27243f706f376..53917410f2bdb 100644
---- a/drivers/soc/fsl/dpaa2-console.c
-+++ b/drivers/soc/fsl/dpaa2-console.c
-@@ -231,6 +231,7 @@ static ssize_t dpaa2_console_read(struct file *fp, char __user *buf,
- 	cd->cur_ptr += bytes;
- 	written += bytes;
+diff --git a/drivers/dma/dmaengine.h b/drivers/dma/dmaengine.h
+index 501c0b063f852..302f13efd35d9 100644
+--- a/drivers/dma/dmaengine.h
++++ b/drivers/dma/dmaengine.h
+@@ -168,7 +168,7 @@ dmaengine_desc_get_callback_invoke(struct dma_async_tx_descriptor *tx,
+ static inline bool
+ dmaengine_desc_callback_valid(struct dmaengine_desc_callback *cb)
+ {
+-	return (cb->callback) ? true : false;
++	return cb->callback || cb->callback_result;
+ }
  
-+	kfree(kbuf);
- 	return written;
- 
- err_free_buf:
+ #endif
 -- 
 2.33.0
 
