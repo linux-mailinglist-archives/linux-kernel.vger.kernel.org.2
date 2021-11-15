@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EF5452006
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A264519DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351495AbhKPArX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:47:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S243419AbhKOX3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:29:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344823AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 636AD633E1;
-        Mon, 15 Nov 2021 19:04:48 +0000 (UTC)
+        id S245140AbhKOTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:19:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE7061549;
+        Mon, 15 Nov 2021 18:28:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003089;
-        bh=L0PMa3Q3yB6dKOng0a2/intWD71kVEdEsAS32z0lpLI=;
+        s=korg; t=1637000940;
+        bh=VOpEUYT7XfCuSTWtvSm253tVXWEbJz5MI/Bx2JMBAOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GHXSTR+qW4rB0e66KDsTqPEeiuL48mwX4VPhnLeTvyfKFYVv8aeptc2AsZOj5CTyy
-         bwria0aqSxXAAGgADsWn/QIrVVvMObVcu6AeYYin3Ym1E5Hp8FJUG2d15ffQpIrBB5
-         qvonNcBSlZA6hFP/nbd8XnHODLTAAHZZ91y6pL6w=
+        b=wkiVY9LBXK6YJH9MH3NcECQlWsYwgoO/WxGkvdZ2qisbhaXjYBcy2I5idonXfRpwC
+         YuCdBaihpTgei0cRriHNwf9tH+Bd7ZNMIfuRmRZzQ3vnucRrYJyqiZINRfrQcijJRO
+         ZsDuqDbpBvjUJIFa6RHkKgLq7Qf4jv02uolvSKsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 805/917] selftests/bpf/xdp_redirect_multi: Use arping to accurate the arp number
-Date:   Mon, 15 Nov 2021 18:05:00 +0100
-Message-Id: <20211115165456.283561667@linuxfoundation.org>
+        stable@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.14 818/849] s390/cio: check the subchannel validity for dev_busid
+Date:   Mon, 15 Nov 2021 18:05:01 +0100
+Message-Id: <20211115165447.906281371@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-[ Upstream commit f53ea9dbf78d42a10e2392b5c59362ccc224fd1d ]
+commit a4751f157c194431fae9e9c493f456df8272b871 upstream.
 
-The arp request number triggered by ping none exist address is not accurate,
-which may lead the test false negative/positive. Change to use arping to
-accurate the arp number. Also do not use grep pattern match for dot.
+Check the validity of subchanel before reading other fields in
+the schib.
 
-Fixes: d23292476297 ("selftests/bpf: Add xdp_redirect_multi test")
-Suggested-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20211027033553.962413-3-liuhangbin@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d3683c055212 ("s390/cio: add dev_busid sysfs entry for each subchannel")
+CC: <stable@vger.kernel.org>
+Reported-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Link: https://lore.kernel.org/r/20211105154451.847288-1-vneethv@linux.ibm.com
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_xdp_redirect_multi.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/s390/cio/css.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-index b20b96ba72ef0..c2a933caa32d4 100755
---- a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-@@ -127,7 +127,7 @@ do_ping_tests()
- 	ip netns exec ns3 tcpdump -i veth0 -nn -l -e &> ${LOG_DIR}/ns1-3_${mode}.log &
- 	sleep 0.5
- 	# ARP test
--	ip netns exec ns1 ping 192.0.2.254 -i 0.1 -c 4 &> /dev/null
-+	ip netns exec ns1 arping -q -c 2 -I veth0 192.0.2.254
- 	# IPv4 test
- 	ip netns exec ns1 ping 192.0.2.253 -i 0.1 -c 4 &> /dev/null
- 	# IPv6 test
-@@ -136,13 +136,13 @@ do_ping_tests()
- 	pkill -9 tcpdump
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -437,8 +437,8 @@ static ssize_t dev_busid_show(struct dev
+ 	struct subchannel *sch = to_subchannel(dev);
+ 	struct pmcw *pmcw = &sch->schib.pmcw;
  
- 	# All netns should receive the redirect arp requests
--	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-1_${mode}.log) -gt 4 ] && \
-+	[ $(grep -cF "who-has 192.0.2.254" ${LOG_DIR}/ns1-1_${mode}.log) -eq 4 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-1" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-1"
--	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-2_${mode}.log) -le 4 ] && \
-+	[ $(grep -cF "who-has 192.0.2.254" ${LOG_DIR}/ns1-2_${mode}.log) -eq 2 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-2" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-2"
--	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-3_${mode}.log) -le 4 ] && \
-+	[ $(grep -cF "who-has 192.0.2.254" ${LOG_DIR}/ns1-3_${mode}.log) -eq 2 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-3" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-3"
- 
--- 
-2.33.0
-
+-	if ((pmcw->st == SUBCHANNEL_TYPE_IO ||
+-	     pmcw->st == SUBCHANNEL_TYPE_MSG) && pmcw->dnv)
++	if ((pmcw->st == SUBCHANNEL_TYPE_IO && pmcw->dnv) ||
++	    (pmcw->st == SUBCHANNEL_TYPE_MSG && pmcw->w))
+ 		return sysfs_emit(buf, "0.%x.%04x\n", sch->schid.ssid,
+ 				  pmcw->dev);
+ 	else
 
 
