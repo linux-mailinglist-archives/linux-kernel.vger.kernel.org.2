@@ -2,136 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1981D4503A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6A84503A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhKOLlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:41:52 -0500
-Received: from mail-bn8nam11on2046.outbound.protection.outlook.com ([40.107.236.46]:5600
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231446AbhKOLlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:41:17 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HwjiCiWms6tjftV91voXEfQsfnQNGzRz55xImIV3vVmzd7TW8+8EZTgl+sbUIUAoMdA5F42keuzXo4PcQfu0HdYO5XY6jXhfENcd7B7pt6FDb/Cr+Y1++ouQQAj5Xf0LRxFbtyUlekYGF+H3lGcJeXbg+foIH3hvkYe4dG0/WezQvsS5hIXdqwziXeF8fEctgz00YuiULwfaPclpjidJlQwbxMl+nGE4+H3MU5lmfxVbN1cNfthxvtYborK0DK1TjTynMjMzG9uv3EemWeCuoNYHhAZ2iarNpuPGUrQ10uf/q0PyvIqzzaPcO2DdIwoiTpicoM+tdDdqVL8HhP7rLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iwrbW74UwKck9sI1uHrSSNjkbGXi7+pmPQga1NBI5Yw=;
- b=WE1S1vJR56RKsOi8f9FZq9pmtERibVvf9pR8E9sd1F0TDkLwH/La9x4qwPnIIgmLWIjLnCeBPRb1IZrQZHc8Lrq4Mg1JksfBaFT/kEELShMlLYmeUT/lsIRc2UPIxkg9AST7GSDhTBFEvr10X+n+pHUkr+rTRzztohxMRLkWCbn7viS7HacJgrsQcBzqJAlEUqlIBngcn7zM5GAf16oBR3UPVzrhuU8n2aK8RWLMPZomoIoRf7TKqSC6aR0cfCMfI7QsIlMnMk0xF8MoO6odv5GPD2vakWvKMuqMQv1/4tAghAuWinMDzNmEC3iyE2c8f50pDE2W7YhcrhVzwJCX2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iwrbW74UwKck9sI1uHrSSNjkbGXi7+pmPQga1NBI5Yw=;
- b=LFmsPbFHafFmAfgCl1+qbDz1KsBrwaPtTPXunCfL6Ihih7QgP7UZc+RwqIk1sofFRvNIOmLuF5nE49f4aVe0TxXMJGU87gj/N9zoU1d6hf+FTUDCfyRKJcJ+BvNigGvuAybY6L91mWWOe8WP1DhJ+kHnjSOFiH8Js5ElTlQl6IXPK6WkCqyY6H0CI7blazh/Rt20DAw/PWM2+2IPKjqA+cw12paATsA22T1yIpLmTETauA0oLaNQbKb2gYRRB3BU/9UOleSTwXU67MZzc/+ltDIhAlNfvv+xxAThbCR7OOJNShbbaQVA9UNaOuuBdHSs2P4jPwZNQ15c1lU+FVxHeg==
-Received: from DS7PR03CA0138.namprd03.prod.outlook.com (2603:10b6:5:3b4::23)
- by DM6PR12MB4090.namprd12.prod.outlook.com (2603:10b6:5:217::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25; Mon, 15 Nov
- 2021 11:38:18 +0000
-Received: from DM6NAM11FT064.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b4:cafe::24) by DS7PR03CA0138.outlook.office365.com
- (2603:10b6:5:3b4::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend
- Transport; Mon, 15 Nov 2021 11:38:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- DM6NAM11FT064.mail.protection.outlook.com (10.13.172.234) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 11:38:17 +0000
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 15 Nov
- 2021 03:38:17 -0800
-Received: from moonraker.home (172.20.187.5) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 15 Nov 2021 11:38:15 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] mmc: spi: Add device-tree SPI IDs
-Date:   Mon, 15 Nov 2021 11:38:13 +0000
-Message-ID: <20211115113813.238044-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S231394AbhKOLmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhKOLld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:41:33 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B659CC061746
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:38:36 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id s13so30099872wrb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:38:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wECB8Odve8M6ApPsX4FLwbNORmpbNOWeDrC7D87THPA=;
+        b=rOOD66sAr/gPFYySdX4jAJtAumwH55agqU6FjPjdq8n4+DSmmNDGMEmEWZN+hGOVSI
+         QOHilEQiPItA50fpVuibDmmTJGF7LWoNb2EbWMvmOmSd1fwq/JL1C0QWywTh+cl8QsTJ
+         xkxfdW5N7uImM2zDiI/6ceqCUpW6GQ27k9L07rcpPuLIi6UShpKMXc+X158QtepT9XGs
+         i221RT2e+gtwzrz9y+iAf7vDROEqLxb6DZv488TVtm+vn87lu9vIFFeagdhc13cYnGG6
+         qG4jhR3m4vMZm1ksTO2sHAB2gyHZG8aD6e85FZxzb3QM4R5iNL8skSEo960u4mfY2UAw
+         y+uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wECB8Odve8M6ApPsX4FLwbNORmpbNOWeDrC7D87THPA=;
+        b=UEgdY7FwW+oEfPPuMJZxRVTZmRYHqy/dMCL2HjciHyt0yT782Tbjumq8x/J7oeYiaI
+         plW7LPbOU34Nl0SmbPpaT0OPeOCxL4XpPPE0g9v7NAYQrIFVh5pzh9jtTviRIICPxt+B
+         PP8PevzPgtDd4+VYcNbwLsf7wMHOkXb3bgZZiiodB8h4UqF/FTETFTGamJ3B3hfrSIbC
+         PlZ+zxdcWyUbJTPiu/SHo64sepC/yTFbPqBxj56KVuk5a71dsgVUPPgZ0y9QcDMR8tnJ
+         xE+qWd7fCl8dRQ3TTIXDMc/nLwLRJ9AwqDgTeptkytsuCuyTHhqsY1Ld5iirbkWI+4vS
+         O2aA==
+X-Gm-Message-State: AOAM53097KLshPZceuSMnLu8iJi/p9Qad6MMrtE+DFIvJz+TdGBWnsqS
+        5JBnMlDoPs47FHQpU02mQxAnMw==
+X-Google-Smtp-Source: ABdhPJxblwpG4OXJ/jt54vhrD7w5/uHn5GsBdY4QtO/lT+xZrnupLotEmBZoHheg2Ad1pFFf1hX43g==
+X-Received: by 2002:adf:e9c5:: with SMTP id l5mr44846230wrn.218.1636976315312;
+        Mon, 15 Nov 2021 03:38:35 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f7sm16119643wri.74.2021.11.15.03.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 03:38:34 -0800 (PST)
+Date:   Mon, 15 Nov 2021 11:38:32 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        dri-devel@lists.freedesktop.org, Stefano Babic <sbabic@denx.de>,
+        Anatolij Gustschin <agust@denx.de>
+Subject: Re: [PATCH] backlight: ili922x: fix kernel-doc warnings & notation
+Message-ID: <20211115113832.rsdx3ziuujrobwxx@maple.lan>
+References: <20211115033925.22024-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 19e35c55-f950-48dd-c527-08d9a82c6b0e
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4090:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4090E82CF623D3E3891F17EAD9989@DM6PR12MB4090.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TYvTSU3C+03cxCFo5rDywW++aoNQcI+JzO9anP6uhYd+j8GAAV4047lPnnI7IhRdOT74qPg1gjfGc9ZeNC/AW4ksMexUwuPy56UYHqE/Lw1ryoDuHtSI9/TbUDRvVgWAqTW2AMIvUxi/sEw0q7NaqyD86eRw3rMOyyAgMjwWWJn4HRWPN5iXkWnhvg+60+6VwtHYdspSkDlzLPMCWolt9LFoRnVLmypyF6wkbxUjA8ssQMxnloZrRD5TbAEQ/oc715A+NmVdR7Af6n0K2Pwxhj7LZvEC92RX8vd+DVuH5wR3AEVbvSio8s4cxbK5DEfj5OoimlgxyTPGSBQFSNx3odC79oBSywEO2e9bny6hZe4dwQZW58TK0huaDBtqaDpbsv0cxG7rwm8ygr/98i3vrrlNvdXFRa7V3LrSKndbdanws9c3MCs2vAcFxiDdE7Uc1PW3szZIAp7TG+ysAe8dMlbxWFTrJ9gXGVqfJfwG3IhtAZqrYwNjOfsVslGUDVe2yzzfqax85brlpogmvXSXibvv0zfQBaLuPj0WOCPtWyNme86wCXIgl+UFyKf35h3/CBuuek5nUToh9L6Qx9AxfPlWQlJlNFdYQ8PHD2DSrrA+ezMr+4VAmtNz++XBKdZeOlIg3kihIlB84U/kx2500fqWKkSvWQMWktM6HkBpNPOY9gkUCWMtrircfuSQhHGNjAzDyE3SL8eNFFZTIJ1hXw==
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(83380400001)(82310400003)(316002)(186003)(508600001)(4326008)(54906003)(70586007)(8676002)(36756003)(6916009)(2906002)(26005)(426003)(70206006)(1076003)(47076005)(336012)(2616005)(356005)(107886003)(36860700001)(7636003)(8936002)(5660300002)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 11:38:17.5764
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19e35c55-f950-48dd-c527-08d9a82c6b0e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT064.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115033925.22024-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5fa6863ba692 ("spi: Check we have a spi_device_id for each DT
-compatible") added a test to check that every SPI driver has a
-spi_device_id for each DT compatiable string defined by the driver
-and warns if the spi_device_id is missing. The spi_device_id is
-missing for the MMC SPI driver and the following warning is now seen.
+On Sun, Nov 14, 2021 at 07:39:25PM -0800, Randy Dunlap wrote:
+> Convert function-like macro comments to kernel-doc notation and
+> fix other kernel-doc warnings:
+> 
+> drivers/video/backlight/ili922x.c:85: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>     * START_BYTE(id, rs, rw)
+> drivers/video/backlight/ili922x.c:118: warning: expecting prototype for CHECK_FREQ_REG(spi_device s, spi_transfer x)(). Prototype was for CHECK_FREQ_REG() instead
+> 
+> ili922x.c:92: warning: contents before sections
+> ili922x.c:150: warning: No description found for return value of 'ili922x_read_status'
+> ili922x.c:193: warning: No description found for return value of 'ili922x_read'
+> ili922x.c:247: warning: No description found for return value of 'ili922x_write'
+> ili922x.c:353: warning: No description found for return value of 'ili922x_poweron'
+> ili922x.c:382: warning: No description found for return value of 'ili922x_poweroff'
+> 
+> Fixes: 4cfbfa971478 ("video: backlight: add ili922x lcd driver")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Stefano Babic <sbabic@denx.de>
+> Cc: Anatolij Gustschin <agust@denx.de>
 
- WARNING KERN SPI driver mmc_spi has no spi_device_id for mmc-spi-slot
+Thanks for the fixes. Just a could of quibbles about full
+stops/periods.
 
-Fix this by adding the necessary spi_device_id.
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/mmc/host/mmc_spi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> ---
+>  drivers/video/backlight/ili922x.c |   29 ++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
+> --- linux-next-20211102.orig/drivers/video/backlight/ili922x.c
+> +++ linux-next-20211102/drivers/video/backlight/ili922x.c
+> @@ -82,13 +82,7 @@
+>  #define START_RW_READ		1
+>  
+>  /**
+> - * START_BYTE(id, rs, rw)
+> - *
+> - * Set the start byte according to the required operation.
+> - * The start byte is defined as:
+> - *   ----------------------------------
+> - *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
+> - *   ----------------------------------
+> + * START_BYTE() - Set the start byte according to the required operation
 
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index f4c8e1a61f53..b431cdd27353 100644
---- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -1514,6 +1514,12 @@ static int mmc_spi_remove(struct spi_device *spi)
- 	return 0;
- }
- 
-+static const struct spi_device_id mmc_spi_dev_ids[] = {
-+	{ "mmc-spi-slot"},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, mmc_spi_dev_ids);
-+
- static const struct of_device_id mmc_spi_of_match_table[] = {
- 	{ .compatible = "mmc-spi-slot", },
- 	{},
-@@ -1525,6 +1531,7 @@ static struct spi_driver mmc_spi_driver = {
- 		.name =		"mmc_spi",
- 		.of_match_table = mmc_spi_of_match_table,
- 	},
-+	.id_table =	mmc_spi_dev_ids,
- 	.probe =	mmc_spi_probe,
- 	.remove =	mmc_spi_remove,
- };
--- 
-2.25.1
+Missing full stop/period.
 
+
+>   * @id: display's id as set by the manufacturer
+>   * @rs: operation type bit, one of:
+>   *	  - START_RS_INDEX	set the index register
+> @@ -96,14 +90,19 @@
+>   * @rw: read/write operation
+>   *	 - START_RW_WRITE	write
+>   *	 - START_RW_READ	read
+> + *
+> + * The start byte is defined as:
+> + *   ----------------------------------
+> + *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
+> + *   ----------------------------------
+>   */
+>  #define START_BYTE(id, rs, rw)	\
+>  	(0x70 | (((id) & 0x01) << 2) | (((rs) & 0x01) << 1) | ((rw) & 0x01))
+>  
+>  /**
+> - * CHECK_FREQ_REG(spi_device s, spi_transfer x) - Check the frequency
+> - *	for the SPI transfer. According to the datasheet, the controller
+> - *	accept higher frequency for the GRAM transfer, but it requires
+> + * CHECK_FREQ_REG() - Check the frequency for the SPI transfer
+> + *	According to the datasheet, the controller
+> + *	accepts higher frequency for the GRAM transfer, but it requires
+
+Also missing the full stop/period in the first sentence of the summary.
+
+Note that here the missing full stop does not benefit from a new line to
+conceal it and we will generate bad text as a result.
+
+  Check the frequency for the SPI transfer According to the data
+  sheet, the controller accepts...
+
+
+Daniel.
