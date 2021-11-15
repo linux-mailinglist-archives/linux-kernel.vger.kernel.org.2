@@ -2,108 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D7F4504E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A294504DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhKONGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:06:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45809 "EHLO
+        id S231605AbhKONFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:05:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38068 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231587AbhKONF4 (ORCPT
+        by vger.kernel.org with ESMTP id S231288AbhKONEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:05:56 -0500
+        Mon, 15 Nov 2021 08:04:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636981380;
+        s=mimecast20190719; t=1636981279;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fNHR/4EKA1J8JSmTNFejCsQ+Ytekp9kmZceJTflwDKc=;
-        b=KtqHoZynzWSwaSje8rE8cOgJxTdVy24hHtcLSiocpFqyUp76lAcpwvRZCvetUqXo4HeN1j
-        70OrYp1dZAXU2OdoaQBCS2SMOrnev2R30flN57sV+1JCVgk/wnr4IfqMlzsE+ifdBDafKf
-        sewHp4P0WRG9GWu4TCwmDNQVNwzHS3I=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-Kx4Y2SjcMhm2rQ9clQsRvw-1; Mon, 15 Nov 2021 08:00:51 -0500
-X-MC-Unique: Kx4Y2SjcMhm2rQ9clQsRvw-1
-Received: by mail-wm1-f71.google.com with SMTP id k25-20020a05600c1c9900b00332f798ba1dso9619950wms.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:00:51 -0800 (PST)
+        bh=Nats6Tb5h/tFfC8AybE1A4hOx07KzU2pOLvXBwr1UEU=;
+        b=PSBWf7rujbsSt5DOLBlhz/xoelo5Z09znsy+IpxYLWY7nonij+n3coZiDR8b7J/UXbfwLy
+        wNS/DCocMOC9FcfZ5YMLyWSBzzhTypPt+dDghKbvRMnbFQba8Ch96sYyfw23ZhSeKOU4hN
+        E1+yWSKOAsjnXp5iqbXrN1H8Rb9iooA=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-JmANe10lPHe19oiHAwThlg-1; Mon, 15 Nov 2021 08:01:18 -0500
+X-MC-Unique: JmANe10lPHe19oiHAwThlg-1
+Received: by mail-qt1-f200.google.com with SMTP id 4-20020ac85744000000b002b2f329efc2so708732qtx.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:01:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=fNHR/4EKA1J8JSmTNFejCsQ+Ytekp9kmZceJTflwDKc=;
-        b=5DdlMvlfeRr0+Xx6bsD5/5oneyoAqpwucY9JR0c0LHCJzCvppT02J7ewUquHXOpNtF
-         7xvEWW4Y+84nPl1hzMLMCvVptiukplTn/xFncm/PR6JQlAAVc9G3hnqhuYpQR08uKGxc
-         bfk5oFjBIpa6pKp7sm8dfYM9U2oCFL8uOGxIXcNHBPCXlPNMJgRcVaz46LAtDs9G75tH
-         dr/f4jZoKOwJQDQ8hWTpdXKrazIC+q6g85iW1aebTYxnsIPoY0tNSUy/wngEui5/TavC
-         SYesGmC9RO0CHHz3+2Vc6hjr1I9m7B5bDFn+uswKGSOseuz/O11PM7FbnXW877aR8RFv
-         6/Pw==
-X-Gm-Message-State: AOAM533YaXWoG563vmsqhHfzXM20MlpV2bnMZKxTVsM+2IXC4wCw3XiH
-        uPcpX5nXMNFCR9A3F7VEp4/FSS9RsV00b99JKdpP5w2YU5WyremE+h25Z/S7fcRClc+UNl385Ck
-        yBRlFAYVy9GvzJmvCWQNWKAebTnBubOPfj4Rht+8lMNBUJlnLPkCtpibs7vyiIsohDfNI6ba0wU
-        Jj
-X-Received: by 2002:a5d:6902:: with SMTP id t2mr48286159wru.317.1636981250429;
-        Mon, 15 Nov 2021 05:00:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyksSkAyNqlPH0unAflPwLe/0xyM9aEOqPn8ztJiP3iIOBdvhurRV64rjvGcWEiuYSq5VU+dQ==
-X-Received: by 2002:a5d:6902:: with SMTP id t2mr48286129wru.317.1636981250253;
-        Mon, 15 Nov 2021 05:00:50 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o25sm15107809wms.17.2021.11.15.05.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 05:00:49 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     =?utf-8?B?6buE5LmQ?= <huangle1@jd.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH] KVM: x86: Fix uninitialized eoi_exit_bitmap usage
- in vcpu_load_eoi_exitmap()
-In-Reply-To: <567b276444f841519e42c91f43f5acd7@jd.com>
-References: <567b276444f841519e42c91f43f5acd7@jd.com>
-Date:   Mon, 15 Nov 2021 14:00:48 +0100
-Message-ID: <877dd9efpb.fsf@redhat.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Nats6Tb5h/tFfC8AybE1A4hOx07KzU2pOLvXBwr1UEU=;
+        b=G7psYkx+pMKiuW4417B/YpSWVInsC299jifZTM4bcOx0X5e3bfwcJOXRVDnOSSF9S5
+         zAL2v/NErIW91JQb1ZrBQMLigK9/aa+dI1tFiSFC2J8gQKAyrUny/Jkx8xod+oWEQPDX
+         0qJAAMdzFXVAJlUP1S+p7NcQwnG9rF+vL8dGLV7eIPxiNROH5JFbLfx4yMrSOJOHsiDA
+         0RdoxLCmIqkbQ3B6mJedUqBeGLCLXp26Zl8eZ/4faTUTdfUee2LV6eNOOfonC1VmWUOP
+         8zyP4E7o/DnNFfQ2crM8R96DRxpCFKvv0nvWIw7L737V7vEQicv+jPmxQxuuh30+OFXA
+         s/TQ==
+X-Gm-Message-State: AOAM531kBxprJX1KZ2VWVwGdJNwvPkPOo1L+aufBs+Uap+8RSRKb8Nwr
+        4j872MjKZyJy/UESxqEKBrfyZTdbEjAbVbQwvWI7khfVrriU6TOO1iuucR8E9fOabdXU85leSEi
+        Zjf0NIBX4vLN0STuY31rvz9Be
+X-Received: by 2002:ac8:7f4d:: with SMTP id g13mr29560469qtk.215.1636981277161;
+        Mon, 15 Nov 2021 05:01:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzxo1TcK9VaFtc0WGUCxGECNqw3DyHE06QastGf5ME9Y9wH8of7nS6CgIuc4ZtPxY+OPzSVtg==
+X-Received: by 2002:ac8:7f4d:: with SMTP id g13mr29560174qtk.215.1636981275470;
+        Mon, 15 Nov 2021 05:01:15 -0800 (PST)
+Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
+        by smtp.gmail.com with ESMTPSA id e13sm1816470qte.56.2021.11.15.05.01.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 05:01:15 -0800 (PST)
+To:     Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        live-patching@vger.kernel.org
+References: <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+ <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+ <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
+ <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+ <20211109210736.GV174703@worktop.programming.kicks-ass.net>
+ <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
+ <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
+ <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
+ <20211112015003.pefl656m3zmir6ov@treble>
+ <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net>
+ <20211113053500.jcnx5airbn7g763a@treble>
+ <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+Message-ID: <68b37450-d4bd-fa46-7bad-08d237e922b1@redhat.com>
+Date:   Mon, 15 Nov 2021 08:01:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E9=BB=84=E4=B9=90 <huangle1@jd.com> writes:
+On 11/15/21 7:36 AM, Miroslav Benes wrote:
+> On Fri, 12 Nov 2021, Josh Poimboeuf wrote:
+> 
+>> On Fri, Nov 12, 2021 at 10:33:36AM +0100, Peter Zijlstra wrote:
+>>> On Thu, Nov 11, 2021 at 05:50:03PM -0800, Josh Poimboeuf wrote:
+>>>
+>>>> Hm, I think there is actually a livepatch problem here.
+>>>
+>>> I suspected as much, because I couldn't find any code dealing with it
+>>> when I looked in a hurry.. :/
+>>>
+>>>> Some ideas to fix:
+>>>
+>>>> c) Update the reliable stacktrace code to mark the stack unreliable if
+>>>>    it has a function with ".cold" in the name?
+>>>
+>>> Why not simply match func.cold as func in the transition thing? Then
+>>> func won't get patched as long as it (or it's .cold part) is in use.
+>>> This seems like the natural thing to do.
+>>
+>> Well yes, you're basically hinting at my first two options a and b:
+>>
+>> a) Add a field to 'klp_func' which allows the patch module to specify a
+>>    function's .cold counterpart?
+>>
+>> b) Detect such cold counterparts in klp_enable_patch()?  Presumably it
+>>    would require searching kallsyms for "<func>.cold", which is somewhat
+>>    problematic as there might be duplicates.
+>>
+>> It's basically a two-step process:  1) match func to .cold if it exists;
+>> 2) check for both in klp_check_stack_func().  The above two options are
+>> proposals for the 1st step.  The 2nd step was implied.
+> 
+> This reminded me... one of the things I have on my todo list for a long 
+> time is to add an option for a live patch creator to specify functions 
+> which are not contained in the live patch but their presence on stacks 
+> should be checked for. It could save some space in the final live patch 
+> when one would add functions (callers) just because the consistency 
+> requires it.
+> 
 
->> =E9=BB=84=E4=B9=90 <huangle1@jd.com> writes:
->>=20
->> > In vcpu_load_eoi_exitmap(), currently the eoi_exit_bitmap[4] array is
->> > initialized only when Hyper-V context is available, in other path it is
->> > just passed to kvm_x86_ops.load_eoi_exitmap() directly from on the sta=
-ck,
->> > which would cause unexpected interrupt delivery/handling issues, e.g. =
-an
->> > *old* linux kernel that relies on PIT to do clock calibration on KVM m=
-ight
->> > randomly fail to boot.
->> >
->> > Fix it by passing ioapic_handled_vectors to load_eoi_exitmap() when Hy=
-per-V
->> > context is not available.
->> >
->> > Signed-off-by: Huang Le <huangle1@jd.com>
->>=20
->> Fixes: f2bc14b69c38 ("KVM: x86: hyper-v: Prepare to meet unallocated Hyp=
-er-V context")
->> Cc: stable@vger.kernel.org
->
-> Commit f2bc14b69c38 is not in stable tree I guess, it was merged in from =
-5.12,
-> do we still need Cc this patch to stable maintainers?
->
+Yea, I've used this technique once (adding a nop to a function so
+kpatch-build would detect and include in klp_funcs[]) to make a set of
+changes safer with respect to the consistency model.  Making it simpler
+to for the livepatch author to say, "I'm not changing foo(), but I don't
+want it doing anything while patching a task" sounds reasonable.
 
-There are multiple stable trees, one for each major release. Not all of
-them are still supported but you don't need to care about it, 'Cc:
-stable@vger.kernel.org' is just an indication for everyone who has
-f2bc14b69c38 in his tree (5.12+) that there's a fix available.
+> I took as a convenience feature with a low priority and forgot about it. 
+> The problem above changes it. So should we take the opportunity and 
+> implement both in one step? I wanted to include a list of functions in 
+> on a patch level (klp_patch structure) and klp_check_stack() would just 
+> have more to check.
+> 
 
---=20
-Vitaly
+As far as I read the original problem, I think it would solve for that,
+too, so I would say go for it.
+
+-- 
+Joe
 
