@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7F944FFDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E860A44FFE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhKOISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S229901AbhKOIS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhKOIR6 (ORCPT
+        with ESMTP id S229694AbhKOISI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:17:58 -0500
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C33C061746;
-        Mon, 15 Nov 2021 00:15:03 -0800 (PST)
-Received: by mail-vk1-xa31.google.com with SMTP id t127so8649699vke.13;
-        Mon, 15 Nov 2021 00:15:03 -0800 (PST)
+        Mon, 15 Nov 2021 03:18:08 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2B4C061746;
+        Mon, 15 Nov 2021 00:15:10 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id e7so19144045ljq.12;
+        Mon, 15 Nov 2021 00:15:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xW/67NTDls+AQBecTda6JoZytjWJ644lT/RbFu2z3fY=;
-        b=hTnkAyzdW22Hcal9RqXHw9g67fPiEEhJ7Jr2a4MPzrCaluIRScv3scJMJKVk+IsZSP
-         ABGP/bITlvsSOijmyfabGbUebX8C4PyfZMxV2LJQsh8DX5i3y68Q+uG8ajlDYHquNMT6
-         83wd1uGIiDbjcTWS9IfSLgoHAFuz17oN7Ewp0BuePodCo36IL+P3PytFv6KDUOs8KmOD
-         ehfuK7VgT9FFj5nQVmAF8X7hPFTml5x6Ba5vhDSf+/lNQQf4gb0VrH9sUllsQHMXBc8s
-         IBwbz/J94ws2T8IRPhXlYiwgzjk9YNiN4343CI8ks866BUO10kfZlboSXtWmDRaHSXbL
-         kKwg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=vjZtW2yOA4ipiduDRxx2P8rLLSDU/9rSfz8tUGlqKdo=;
+        b=ODeM+eDuFwz+njRiCpqbRTdsL13vUAE3/GTm3khgg6Y5cmejzpF68G2QLf6/Q6dQYQ
+         y2Gr7HuH3UjcrRy++bBkmjuAIidGVXCDw03NO9YIfMRHnhz6o8yNV79xFr1JZqOrCgmL
+         oGtK/rmwpU8FAxjhNrd0JT1Z8fM0S9yRsg7lVm2PhOaOHHD3jQ5tsGwtubH/W70INg+P
+         UVPGBpYxdaGEYN7XG1rBI+QmH6iYn+ZATQRfeHzC8v1tIrrUE54/1DyjH202IuFqPOJ5
+         b8Vd/GDHdd1q/OM0lV8ibkainzL2hstoX9J1CXlykJbGCVKzZ6LsSwYe2qH1z1FiDMA7
+         7lbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xW/67NTDls+AQBecTda6JoZytjWJ644lT/RbFu2z3fY=;
-        b=R4sKH0d1DdP0Z68j4sNuhfpzUEd+VXgjCJKYZCByNP/+F2cf489oUQJuiFS66gJPz8
-         n2F2rIfb7FyvPwC3NCCsbPVdHOGfUDo8FibYLZEPpM6kI7Y2zwucgq1ms7RLeFWludAA
-         /K5Sl1Jsn3kUeIU0laOj6+cwvQOgdQkjUawZ2cVZGX9BLHiOUgxs4Rob7qzYrfKsQ4U7
-         n/wqiBhxeAvngT+41WFxGSEoB5hL2mzbh4YConctPsHdALdL5cmUhaNZA65/tOuGi0y2
-         jdK4VUGFKctG3SY74AF+ErpropZgVK2rLof6sKvnu/Jz3Grf8NzbHTdfoH0H4VkdaL49
-         eocg==
-X-Gm-Message-State: AOAM532WP3xP0KA+TIIBOXsfbRsO+K5RIpP+MS8NN9WvwKme+PFZDzXj
-        9PqKl2385nleR1RX0cG6nMzcRCB0fH/Ua+GVAZAm93rD
-X-Google-Smtp-Source: ABdhPJyYG51GdeIH12hPpxNe7LoSy8M5VHKjtJOXH/PCAydAxorFEYz4RDwkS4aYCg7y9cygsxBHPKHnyvwSpKoxb8U=
-X-Received: by 2002:a05:6122:884:: with SMTP id 4mr55829588vkf.6.1636964101899;
- Mon, 15 Nov 2021 00:15:01 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vjZtW2yOA4ipiduDRxx2P8rLLSDU/9rSfz8tUGlqKdo=;
+        b=u1tVjHsC4HW1tDzWhqg9nJG6DroJ25bpa/OnyHaqEsLLurd0LPa3FU8oueQGXDQzLP
+         MBHRxSkflCx+7P8bWzfHz7itUgBU4cv7AZqq/dxhl+zDo9E+xHs/lo+hQo7wtH/eoF3h
+         O/syIv0v1Tav5MGpRAMLn0QQItxNImBBPZr1zjb9/prokV+Arm0GoHHtpS+xlnbLrGni
+         fSJ5e3/Vgi8l14C7e+0oxqr8h+fVkNylb6HCynH6kXrA9p82CDZvmd+5Lzp/NRqgTrc6
+         U2Dbt7JA2KkINoHG54Qf4on0qWy0nUozwOEUFLgBOvGg+roA/naPo2c4HgkRFQNXiydH
+         9G5w==
+X-Gm-Message-State: AOAM530rrT2KFV7xKnDDztl+dPSu8pNsdpdIGDHHChOZR8WFwWc0ou3H
+        R56Px6tbv7Wzfs/OnN1Vl6nypWsO/88=
+X-Google-Smtp-Source: ABdhPJzMME3J70IDo9VX+mChVcZPS1XKxbNyKJOdMlu12dcqBLC05aeTVi+arQIxcWROqbMP+pQGFQ==
+X-Received: by 2002:a05:651c:2102:: with SMTP id a2mr37611576ljq.112.1636964108672;
+        Mon, 15 Nov 2021 00:15:08 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id z41sm1496917lfu.100.2021.11.15.00.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 00:15:08 -0800 (PST)
+Message-ID: <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com>
+Date:   Mon, 15 Nov 2021 11:15:07 +0300
 MIME-Version: 1.0
-References: <YZABtvQab/M2CCQd@msi.localdomain> <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
-In-Reply-To: <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
-From:   "Nikolas L." <knv418@gmail.com>
-Date:   Mon, 15 Nov 2021 11:14:50 +0300
-Message-ID: <CAMJR_v6igrNZMzXpio27PpA6rQvo+efAVd2nM5GNg2+agQa9=A@mail.gmail.com>
-Subject: Re: PROBLEM: [drivers/ata] Read log page failed (boot error message)
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     mailhol.vincent@wanadoo.fr, wg@grandegger.com, mkl@pengutronix.de,
+        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
+ <20211115075124.17713-1-paskripkin@gmail.com>
+ <YZIWT9ATzN611n43@hovoldconsulting.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YZIWT9ATzN611n43@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This error is not fatal. It simply means that the drive does not support the
-> INDENTIFY DEVICE log page. Nothing to worry about.
-I suppose it's not the reason to log error, maybe warn or notice.
-> Attempting to read this log should be avoided in this case though. I will send a
-> patch to fix that.
-Thank you! Got it.
-> However, the files you attached show that you are using
-> kernel 5.12
-According to almost any file in attachment, I'm using 5.15.2.
-Error happens only since 5.15, tested on 5.14.16.
-> You can ignore the read log error, unless your drive is not functional ?
-Yes I can and I will. Entire problem is just about redundant noise
-with error level in kernel log.
+On 11/15/21 11:11, Johan Hovold wrote:
+> Just a drive-by comment:
+> 
+> Are you sure about this move of the netdev[channel_idx] initialisation?
+> What happens if the registered can device is opened before you
+> initialise the pointer? NULL-deref in es58x_send_msg()?
+> 
+> You generally want the driver data fully initialised before you register
+> the device so this looks broken.
+> 
+> And either way it is arguably an unrelated change that should go in a
+> separate patch explaining why it is needed and safe.
+> 
+
+
+It was suggested by Vincent who is the maintainer of this driver [1].
+
+
+
+[1] 
+https://lore.kernel.org/linux-can/CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com/
+
+
+
+With regards,
+Pavel Skripkin
