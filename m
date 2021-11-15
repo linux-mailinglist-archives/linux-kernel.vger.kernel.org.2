@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ECA452009
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D16A451B92
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348611AbhKPArh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:47:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S245556AbhKPAEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:04:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344797AbhKOTZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E97636CB;
-        Mon, 15 Nov 2021 19:04:34 +0000 (UTC)
+        id S1344818AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E00633E4;
+        Mon, 15 Nov 2021 19:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003075;
-        bh=+ifzoYYWvN0Eb12KuMcC/f+7bs6eJcLXBeSXdLyVcd8=;
+        s=korg; t=1637003091;
+        bh=+vwKklJRin16i6f7os8lABFaBvCuvnI2ZIJChWsbDq8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKUR0PEfYk0aYwSj5y9oO+TOr8D3q1CvyINJl0/krncRmYQE4/3PW7JDkFwABJpEQ
-         rzz1onelga2meDeGpsuX8OPeBf/Fv6zfIrU+vOrafICiS9h/kc7r1VZCZrZw+BtD7F
-         q+3LPbjr/8+iLQICLgfwHGXdQjIH7qqhoemBro/8=
+        b=qyJ/P1NHQsjBXsHLlSOO2aqAlwaKEZ5VC/X69fhCxJ6f0eCpA/HiSbtQb5eVaM1zy
+         LdLikIjAaYy5OGKFuScwUoyXu/fd5k6st85ygeZbHq2+XlebVK0/zA2un1QycoN65I
+         kjUiewcbC+D/t8bkGB6hpXWyJW8sag/6Ko/vl0Zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brett Creeley <brett.creeley@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 774/917] ice: Fix not stopping Tx queues for VFs
-Date:   Mon, 15 Nov 2021 18:04:29 +0100
-Message-Id: <20211115165455.187044410@linuxfoundation.org>
+Subject: [PATCH 5.15 775/917] kdb: Adopt schedulers task classification
+Date:   Mon, 15 Nov 2021 18:04:30 +0100
+Message-Id: <20211115165455.227713587@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,116 +40,402 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brett Creeley <brett.creeley@intel.com>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit b385cca47363316c6d9a74ae9db407bbc281f815 ]
+[ Upstream commit b77dbc86d60459b42ab375e4e23172e7245f2854 ]
 
-When a VF is removed and/or reset its Tx queues need to be
-stopped from the PF. This is done by calling the ice_dis_vf_qs()
-function, which calls ice_vsi_stop_lan_tx_rings(). Currently
-ice_dis_vf_qs() is protected by the VF state bit ICE_VF_STATE_QS_ENA.
-Unfortunately, this is causing the Tx queues to not be disabled in some
-cases and when the VF tries to re-enable/reconfigure its Tx queues over
-virtchnl the op is failing. This is because a VF can be reset and/or
-removed before the ICE_VF_STATE_QS_ENA bit is set, but the Tx queues
-were already configured via ice_vsi_cfg_single_txq() in the
-VIRTCHNL_OP_CONFIG_VSI_QUEUES op. However, the ICE_VF_STATE_QS_ENA bit
-is set on a successful VIRTCHNL_OP_ENABLE_QUEUES, which will always
-happen after the VIRTCHNL_OP_CONFIG_VSI_QUEUES op.
+Currently kdb contains some open-coded routines to generate a summary
+character for each task. This code currently issues warnings, is
+almost certainly broken and won't make sense to any kernel dev who
+has ever used /proc to examine task states.
 
-This was causing the following error message when loading the ice
-driver, creating VFs, and modifying VF trust in an endless loop:
+Fix both the warning and the potential for confusion by adopting the
+scheduler's task classification. Whilst doing this we also simplify the
+filtering by using mask strings directly (which means we don't have to
+guess all the characters the scheduler might give us).
 
-[35274.192484] ice 0000:88:00.0: Failed to set LAN Tx queue context, error: ICE_ERR_PARAM
-[35274.193074] ice 0000:88:00.0: VF 0 failed opcode 6, retval: -5
-[35274.193640] iavf 0000:88:01.0: PF returned error -5 (IAVF_ERR_PARAM) to our request 6
+Unfortunately we can't quite match the scheduler classification completely.
+We add four extra states: - for idle loops and i, m and s for sleeping
+system daemons (which means kthreads in one of the I, M and S states).
+These extra states are used to manage the filters for tools to make the
+output of ps and bta less noisy.
 
-Fix this by always calling ice_dis_vf_qs() and silencing the error
-message in ice_vsi_stop_tx_ring() since the calling code ignores the
-return anyway. Also, all other places that call ice_vsi_stop_tx_ring()
-catch the error, so this doesn't affect those flows since there was no
-change to the values the function returns.
+Note: The Fixes below is the last point the original dubious code was
+      moved; it was not introduced by that patch. However it gives us
+      the last point to which this patch can be easily backported.
+      Happily that should be enough to cover the introduction of
+      CONFIG_WERROR!
 
-Other solutions were considered (i.e. tracking which VF queues had been
-"started/configured" in VIRTCHNL_OP_CONFIG_VSI_QUEUES, but it seemed
-more complicated than it was worth. This solution also brings in the
-chance for other unexpected conditions due to invalid state bit checks.
-So, the proposed solution seemed like the best option since there is no
-harm in failing to stop Tx queues that were never started.
-
-This issue can be seen using the following commands:
-
-for i in {0..50}; do
-        rmmod ice
-        modprobe ice
-
-        sleep 1
-
-        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
-
-        ip link set ens785f1 vf 0 trust on
-        ip link set ens785f0 vf 0 trust on
-
-        sleep 2
-
-        echo 0 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 0 > /sys/class/net/ens785f1/device/sriov_numvfs
-        sleep 1
-        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
-        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
-
-        ip link set ens785f1 vf 0 trust on
-        ip link set ens785f0 vf 0 trust on
-done
-
-Fixes: 77ca27c41705 ("ice: add support for virtchnl_queue_select.[tx|rx]_queues bitmap")
-Signed-off-by: Brett Creeley <brett.creeley@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 2f064a59a11f ("sched: Change task_struct::state")
+Link: https://lore.kernel.org/r/20211102173158.3315227-1-daniel.thompson@linaro.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_base.c        | 2 +-
- drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c | 6 ++----
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ kernel/debug/kdb/kdb_bt.c      |  16 ++---
+ kernel/debug/kdb/kdb_main.c    |  37 ++++++-----
+ kernel/debug/kdb/kdb_private.h |   4 +-
+ kernel/debug/kdb/kdb_support.c | 118 +++++++--------------------------
+ 4 files changed, 53 insertions(+), 122 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
-index c36057efc7ae3..f74610442bda7 100644
---- a/drivers/net/ethernet/intel/ice/ice_base.c
-+++ b/drivers/net/ethernet/intel/ice/ice_base.c
-@@ -909,7 +909,7 @@ ice_vsi_stop_tx_ring(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
- 	} else if (status == ICE_ERR_DOES_NOT_EXIST) {
- 		dev_dbg(ice_pf_to_dev(vsi->back), "LAN Tx queues do not exist, nothing to disable\n");
- 	} else if (status) {
--		dev_err(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
-+		dev_dbg(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
- 			ice_stat_str(status));
- 		return -ENODEV;
+diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
+index 1f9f0e47aedaa..10b454554ab03 100644
+--- a/kernel/debug/kdb/kdb_bt.c
++++ b/kernel/debug/kdb/kdb_bt.c
+@@ -46,7 +46,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
+  *	btp <pid>			Kernel stack for <pid>
+  *	btt <address-expression>	Kernel stack for task structure at
+  *					<address-expression>
+- *	bta [DRSTCZEUIMA]		All useful processes, optionally
++ *	bta [state_chars>|A]		All useful processes, optionally
+  *					filtered by state
+  *	btc [<cpu>]			The current process on one cpu,
+  *					default is all cpus
+@@ -74,7 +74,7 @@ static void kdb_show_stack(struct task_struct *p, void *addr)
+  */
+ 
+ static int
+-kdb_bt1(struct task_struct *p, unsigned long mask, bool btaprompt)
++kdb_bt1(struct task_struct *p, const char *mask, bool btaprompt)
+ {
+ 	char ch;
+ 
+@@ -120,7 +120,7 @@ kdb_bt_cpu(unsigned long cpu)
+ 		return;
  	}
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-index 9f5da506d8f4b..7e3ae4cc17a39 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-@@ -634,8 +634,7 @@ void ice_free_vfs(struct ice_pf *pf)
  
- 	/* Avoid wait time by stopping all VFs at the same time */
- 	ice_for_each_vf(pf, i)
--		if (test_bit(ICE_VF_STATE_QS_ENA, pf->vf[i].vf_states))
--			ice_dis_vf_qs(&pf->vf[i]);
-+		ice_dis_vf_qs(&pf->vf[i]);
+-	kdb_bt1(kdb_tsk, ~0UL, false);
++	kdb_bt1(kdb_tsk, "A", false);
+ }
  
- 	tmp = pf->num_alloc_vfs;
- 	pf->num_qps_per_vf = 0;
-@@ -1645,8 +1644,7 @@ bool ice_reset_vf(struct ice_vf *vf, bool is_vflr)
+ int
+@@ -138,8 +138,8 @@ kdb_bt(int argc, const char **argv)
+ 	if (strcmp(argv[0], "bta") == 0) {
+ 		struct task_struct *g, *p;
+ 		unsigned long cpu;
+-		unsigned long mask = kdb_task_state_string(argc ? argv[1] :
+-							   NULL);
++		const char *mask = argc ? argv[1] : kdbgetenv("PS");
++
+ 		if (argc == 0)
+ 			kdb_ps_suppressed();
+ 		/* Run the active tasks first */
+@@ -167,7 +167,7 @@ kdb_bt(int argc, const char **argv)
+ 			return diag;
+ 		p = find_task_by_pid_ns(pid, &init_pid_ns);
+ 		if (p)
+-			return kdb_bt1(p, ~0UL, false);
++			return kdb_bt1(p, "A", false);
+ 		kdb_printf("No process with pid == %ld found\n", pid);
+ 		return 0;
+ 	} else if (strcmp(argv[0], "btt") == 0) {
+@@ -176,7 +176,7 @@ kdb_bt(int argc, const char **argv)
+ 		diag = kdbgetularg((char *)argv[1], &addr);
+ 		if (diag)
+ 			return diag;
+-		return kdb_bt1((struct task_struct *)addr, ~0UL, false);
++		return kdb_bt1((struct task_struct *)addr, "A", false);
+ 	} else if (strcmp(argv[0], "btc") == 0) {
+ 		unsigned long cpu = ~0;
+ 		if (argc > 1)
+@@ -212,7 +212,7 @@ kdb_bt(int argc, const char **argv)
+ 			kdb_show_stack(kdb_current_task, (void *)addr);
+ 			return 0;
+ 		} else {
+-			return kdb_bt1(kdb_current_task, ~0UL, false);
++			return kdb_bt1(kdb_current_task, "A", false);
+ 		}
+ 	}
  
- 	vsi = ice_get_vf_vsi(vf);
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index fa6deda894a17..0852a537dad4c 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -2203,8 +2203,8 @@ static void kdb_cpu_status(void)
+ 			state = 'D';	/* cpu is online but unresponsive */
+ 		} else {
+ 			state = ' ';	/* cpu is responding to kdb */
+-			if (kdb_task_state_char(KDB_TSK(i)) == 'I')
+-				state = 'I';	/* idle task */
++			if (kdb_task_state_char(KDB_TSK(i)) == '-')
++				state = '-';	/* idle task */
+ 		}
+ 		if (state != prev_state) {
+ 			if (prev_state != '?') {
+@@ -2271,37 +2271,30 @@ static int kdb_cpu(int argc, const char **argv)
+ void kdb_ps_suppressed(void)
+ {
+ 	int idle = 0, daemon = 0;
+-	unsigned long mask_I = kdb_task_state_string("I"),
+-		      mask_M = kdb_task_state_string("M");
+ 	unsigned long cpu;
+ 	const struct task_struct *p, *g;
+ 	for_each_online_cpu(cpu) {
+ 		p = kdb_curr_task(cpu);
+-		if (kdb_task_state(p, mask_I))
++		if (kdb_task_state(p, "-"))
+ 			++idle;
+ 	}
+ 	for_each_process_thread(g, p) {
+-		if (kdb_task_state(p, mask_M))
++		if (kdb_task_state(p, "ims"))
+ 			++daemon;
+ 	}
+ 	if (idle || daemon) {
+ 		if (idle)
+-			kdb_printf("%d idle process%s (state I)%s\n",
++			kdb_printf("%d idle process%s (state -)%s\n",
+ 				   idle, idle == 1 ? "" : "es",
+ 				   daemon ? " and " : "");
+ 		if (daemon)
+-			kdb_printf("%d sleeping system daemon (state M) "
++			kdb_printf("%d sleeping system daemon (state [ims]) "
+ 				   "process%s", daemon,
+ 				   daemon == 1 ? "" : "es");
+ 		kdb_printf(" suppressed,\nuse 'ps A' to see all.\n");
+ 	}
+ }
  
--	if (test_bit(ICE_VF_STATE_QS_ENA, vf->vf_states))
--		ice_dis_vf_qs(vf);
-+	ice_dis_vf_qs(vf);
+-/*
+- * kdb_ps - This function implements the 'ps' command which shows a
+- *	list of the active processes.
+- *		ps [DRSTCZEUIMA]   All processes, optionally filtered by state
+- */
+ void kdb_ps1(const struct task_struct *p)
+ {
+ 	int cpu;
+@@ -2330,17 +2323,25 @@ void kdb_ps1(const struct task_struct *p)
+ 	}
+ }
  
- 	/* Call Disable LAN Tx queue AQ whether or not queues are
- 	 * enabled. This is needed for successful completion of VFR.
++/*
++ * kdb_ps - This function implements the 'ps' command which shows a
++ *	    list of the active processes.
++ *
++ * ps [<state_chars>]   Show processes, optionally selecting only those whose
++ *                      state character is found in <state_chars>.
++ */
+ static int kdb_ps(int argc, const char **argv)
+ {
+ 	struct task_struct *g, *p;
+-	unsigned long mask, cpu;
++	const char *mask;
++	unsigned long cpu;
+ 
+ 	if (argc == 0)
+ 		kdb_ps_suppressed();
+ 	kdb_printf("%-*s      Pid   Parent [*] cpu State %-*s Command\n",
+ 		(int)(2*sizeof(void *))+2, "Task Addr",
+ 		(int)(2*sizeof(void *))+2, "Thread");
+-	mask = kdb_task_state_string(argc ? argv[1] : NULL);
++	mask = argc ? argv[1] : kdbgetenv("PS");
+ 	/* Run the active tasks first */
+ 	for_each_online_cpu(cpu) {
+ 		if (KDB_FLAG(CMD_INTERRUPT))
+@@ -2742,8 +2743,8 @@ static kdbtab_t maintab[] = {
+ 	},
+ 	{	.name = "bta",
+ 		.func = kdb_bt,
+-		.usage = "[D|R|S|T|C|Z|E|U|I|M|A]",
+-		.help = "Backtrace all processes matching state flag",
++		.usage = "[<state_chars>|A]",
++		.help = "Backtrace all processes whose state matches",
+ 		.flags = KDB_ENABLE_INSPECT,
+ 	},
+ 	{	.name = "btc",
+@@ -2797,7 +2798,7 @@ static kdbtab_t maintab[] = {
+ 	},
+ 	{	.name = "ps",
+ 		.func = kdb_ps,
+-		.usage = "[<flags>|A]",
++		.usage = "[<state_chars>|A]",
+ 		.help = "Display active task list",
+ 		.flags = KDB_ENABLE_INSPECT,
+ 	},
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index 629590084a0dc..0d2f9feea0a46 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -190,10 +190,8 @@ extern char kdb_grep_string[];
+ extern int kdb_grep_leading;
+ extern int kdb_grep_trailing;
+ extern char *kdb_cmds[];
+-extern unsigned long kdb_task_state_string(const char *);
+ extern char kdb_task_state_char (const struct task_struct *);
+-extern unsigned long kdb_task_state(const struct task_struct *p,
+-				    unsigned long mask);
++extern bool kdb_task_state(const struct task_struct *p, const char *mask);
+ extern void kdb_ps_suppressed(void);
+ extern void kdb_ps1(const struct task_struct *p);
+ extern void kdb_send_sig(struct task_struct *p, int sig);
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index 7507d9a8dc6ac..df2bface866ef 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -24,6 +24,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/kdb.h>
+ #include <linux/slab.h>
++#include <linux/ctype.h>
+ #include "kdb_private.h"
+ 
+ /*
+@@ -473,82 +474,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
+ 	return diag;
+ }
+ 
+-/*
+- * kdb_task_state_string - Convert a string containing any of the
+- *	letters DRSTCZEUIMA to a mask for the process state field and
+- *	return the value.  If no argument is supplied, return the mask
+- *	that corresponds to environment variable PS, DRSTCZEU by
+- *	default.
+- * Inputs:
+- *	s	String to convert
+- * Returns:
+- *	Mask for process state.
+- * Notes:
+- *	The mask folds data from several sources into a single long value, so
+- *	be careful not to overlap the bits.  TASK_* bits are in the LSB,
+- *	special cases like UNRUNNABLE are in the MSB.  As of 2.6.10-rc1 there
+- *	is no overlap between TASK_* and EXIT_* but that may not always be
+- *	true, so EXIT_* bits are shifted left 16 bits before being stored in
+- *	the mask.
+- */
+-
+-/* unrunnable is < 0 */
+-#define UNRUNNABLE	(1UL << (8*sizeof(unsigned long) - 1))
+-#define RUNNING		(1UL << (8*sizeof(unsigned long) - 2))
+-#define IDLE		(1UL << (8*sizeof(unsigned long) - 3))
+-#define DAEMON		(1UL << (8*sizeof(unsigned long) - 4))
+ 
+-unsigned long kdb_task_state_string(const char *s)
+-{
+-	long res = 0;
+-	if (!s) {
+-		s = kdbgetenv("PS");
+-		if (!s)
+-			s = "DRSTCZEU";	/* default value for ps */
+-	}
+-	while (*s) {
+-		switch (*s) {
+-		case 'D':
+-			res |= TASK_UNINTERRUPTIBLE;
+-			break;
+-		case 'R':
+-			res |= RUNNING;
+-			break;
+-		case 'S':
+-			res |= TASK_INTERRUPTIBLE;
+-			break;
+-		case 'T':
+-			res |= TASK_STOPPED;
+-			break;
+-		case 'C':
+-			res |= TASK_TRACED;
+-			break;
+-		case 'Z':
+-			res |= EXIT_ZOMBIE << 16;
+-			break;
+-		case 'E':
+-			res |= EXIT_DEAD << 16;
+-			break;
+-		case 'U':
+-			res |= UNRUNNABLE;
+-			break;
+-		case 'I':
+-			res |= IDLE;
+-			break;
+-		case 'M':
+-			res |= DAEMON;
+-			break;
+-		case 'A':
+-			res = ~0UL;
+-			break;
+-		default:
+-			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
+-			  break;
+-		}
+-		++s;
+-	}
+-	return res;
+-}
+ 
+ /*
+  * kdb_task_state_char - Return the character that represents the task state.
+@@ -559,7 +485,6 @@ unsigned long kdb_task_state_string(const char *s)
+  */
+ char kdb_task_state_char (const struct task_struct *p)
+ {
+-	unsigned int p_state;
+ 	unsigned long tmp;
+ 	char state;
+ 	int cpu;
+@@ -568,25 +493,18 @@ char kdb_task_state_char (const struct task_struct *p)
+ 	    copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
+ 		return 'E';
+ 
+-	cpu = kdb_process_cpu(p);
+-	p_state = READ_ONCE(p->__state);
+-	state = (p_state == 0) ? 'R' :
+-		(p_state < 0) ? 'U' :
+-		(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
+-		(p_state & TASK_STOPPED) ? 'T' :
+-		(p_state & TASK_TRACED) ? 'C' :
+-		(p->exit_state & EXIT_ZOMBIE) ? 'Z' :
+-		(p->exit_state & EXIT_DEAD) ? 'E' :
+-		(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';
++	state = task_state_to_char((struct task_struct *) p);
++
+ 	if (is_idle_task(p)) {
+ 		/* Idle task.  Is it really idle, apart from the kdb
+ 		 * interrupt? */
++		cpu = kdb_process_cpu(p);
+ 		if (!kdb_task_has_cpu(p) || kgdb_info[cpu].irq_depth == 1) {
+ 			if (cpu != kdb_initial_cpu)
+-				state = 'I';	/* idle task */
++				state = '-';	/* idle task */
+ 		}
+-	} else if (!p->mm && state == 'S') {
+-		state = 'M';	/* sleeping system daemon */
++	} else if (!p->mm && strchr("IMS", state)) {
++		state = tolower(state);		/* sleeping system daemon */
+ 	}
+ 	return state;
+ }
+@@ -596,14 +514,28 @@ char kdb_task_state_char (const struct task_struct *p)
+  *	given by the mask.
+  * Inputs:
+  *	p	struct task for the process
+- *	mask	mask from kdb_task_state_string to select processes
++ *	mask	set of characters used to select processes; both NULL
++ *	        and the empty string mean adopt a default filter, which
++ *	        is to suppress sleeping system daemons and the idle tasks
+  * Returns:
+  *	True if the process matches at least one criteria defined by the mask.
+  */
+-unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
++bool kdb_task_state(const struct task_struct *p, const char *mask)
+ {
+-	char state[] = { kdb_task_state_char(p), '\0' };
+-	return (mask & kdb_task_state_string(state)) != 0;
++	char state = kdb_task_state_char(p);
++
++	/* If there is no mask, then we will filter code that runs when the
++	 * scheduler is idling and any system daemons that are currently
++	 * sleeping.
++	 */
++	if (!mask || mask[0] == '\0')
++		return !strchr("-ims", state);
++
++	/* A is a special case that matches all states */
++	if (strchr(mask, 'A'))
++		return true;
++
++	return strchr(mask, state);
+ }
+ 
+ /* Maintain a small stack of kdb_flags to allow recursion without disturbing
 -- 
 2.33.0
 
