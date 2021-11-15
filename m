@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991764525E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0714525E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344954AbhKPB7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:59:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
+        id S1349934AbhKPCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:00:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240448AbhKOSJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240445AbhKOSJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:09:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 484E0633B7;
-        Mon, 15 Nov 2021 17:46:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA8EF633B8;
+        Mon, 15 Nov 2021 17:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998417;
-        bh=MmKejlUk1h1XpRkaHo0b7s+0uOcH78Ok4wRnpFwKOvs=;
+        s=korg; t=1636998420;
+        bh=/RpRwCksZUxbLjNIHbcpeijJBhoNGuPrTDZrhoNMOXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nIBs0qRCsebLjPpeSyjAGdIHns3isJ/7JUKXS+mxgfnnw2gEmMpxaMK0dlRjSsp//
-         o24tOOyJqh48jX29PrFISEQFXj/VJFcNlRsB6S790V3LMm5/rmf480oLSxbz7yvQXo
-         C9xK9WImmOeAVfYUBlt9hB09z+x/FH1/7Yh7bJTw=
+        b=oUOl81Gg62USLcoRlU6VUSfLvY8f6iX5tNGd/HimeZM2D+d6yVuyH7AqxqdnJHDYM
+         keuZpas98nZjzmbescPBBKlZcqK+gADdmkR4uFQP4CLHXxDcwN4X9xDJu7pMlA6ljZ
+         4gvkpxNdOaxPRgSR+mv2GuI0bP7J9LVISFHP0H2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 469/575] nfsd: dont alloc under spinlock in rpc_parse_scope_id
-Date:   Mon, 15 Nov 2021 18:03:14 +0100
-Message-Id: <20211115165359.943624527@linuxfoundation.org>
+        stable@vger.kernel.org, Kewei Xu <kewei.xu@mediatek.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 470/575] i2c: mediatek: fixing the incorrect register offset
+Date:   Mon, 15 Nov 2021 18:03:15 +0100
+Message-Id: <20211115165359.985188192@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,88 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Kewei Xu <kewei.xu@mediatek.com>
 
-[ Upstream commit 9b6e27d01adcec58e046c624874f8a124e8b07ec ]
+[ Upstream commit b8228aea5a19d5111a7bf44f7de6749d1f5d487a ]
 
-Dan Carpenter says:
+The reason for the modification here is that the previous
+offset information is incorrect, OFFSET_DEBUGSTAT = 0xE4 is
+the correct value.
 
-  The patch d20c11d86d8f: "nfsd: Protect session creation and client
-  confirm using client_lock" from Jul 30, 2014, leads to the following
-  Smatch static checker warning:
-
-        net/sunrpc/addr.c:178 rpc_parse_scope_id()
-        warn: sleeping in atomic context
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: d20c11d86d8f ("nfsd: Protect session creation and client...")
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: 25708278f810 ("i2c: mediatek: Add i2c support for MediaTek MT8183")
+Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/addr.c | 40 ++++++++++++++++++----------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
-index 6e4dbd577a39f..d435bffc61999 100644
---- a/net/sunrpc/addr.c
-+++ b/net/sunrpc/addr.c
-@@ -162,8 +162,10 @@ static int rpc_parse_scope_id(struct net *net, const char *buf,
- 			      const size_t buflen, const char *delim,
- 			      struct sockaddr_in6 *sin6)
- {
--	char *p;
-+	char p[IPV6_SCOPE_ID_LEN + 1];
- 	size_t len;
-+	u32 scope_id = 0;
-+	struct net_device *dev;
- 
- 	if ((buf + buflen) == delim)
- 		return 1;
-@@ -175,29 +177,23 @@ static int rpc_parse_scope_id(struct net *net, const char *buf,
- 		return 0;
- 
- 	len = (buf + buflen) - delim - 1;
--	p = kmemdup_nul(delim + 1, len, GFP_KERNEL);
--	if (p) {
--		u32 scope_id = 0;
--		struct net_device *dev;
--
--		dev = dev_get_by_name(net, p);
--		if (dev != NULL) {
--			scope_id = dev->ifindex;
--			dev_put(dev);
--		} else {
--			if (kstrtou32(p, 10, &scope_id) != 0) {
--				kfree(p);
--				return 0;
--			}
--		}
--
--		kfree(p);
--
--		sin6->sin6_scope_id = scope_id;
--		return 1;
-+	if (len > IPV6_SCOPE_ID_LEN)
-+		return 0;
-+
-+	memcpy(p, delim + 1, len);
-+	p[len] = 0;
-+
-+	dev = dev_get_by_name(net, p);
-+	if (dev != NULL) {
-+		scope_id = dev->ifindex;
-+		dev_put(dev);
-+	} else {
-+		if (kstrtou32(p, 10, &scope_id) != 0)
-+			return 0;
- 	}
- 
--	return 0;
-+	sin6->sin6_scope_id = scope_id;
-+	return 1;
- }
- 
- static size_t rpc_pton6(struct net *net, const char *buf, const size_t buflen,
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 0af2784cbd0d9..265635db29aa5 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -195,7 +195,7 @@ static const u16 mt_i2c_regs_v2[] = {
+ 	[OFFSET_CLOCK_DIV] = 0x48,
+ 	[OFFSET_SOFTRESET] = 0x50,
+ 	[OFFSET_SCL_MIS_COMP_POINT] = 0x90,
+-	[OFFSET_DEBUGSTAT] = 0xe0,
++	[OFFSET_DEBUGSTAT] = 0xe4,
+ 	[OFFSET_DEBUGCTRL] = 0xe8,
+ 	[OFFSET_FIFO_STAT] = 0xf4,
+ 	[OFFSET_FIFO_THRESH] = 0xf8,
 -- 
 2.33.0
 
