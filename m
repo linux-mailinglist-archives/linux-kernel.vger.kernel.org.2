@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266C845194A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8AA451E79
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349688AbhKOXRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:17:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
+        id S1347263AbhKPAgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:36:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244424AbhKOTOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E92634BF;
-        Mon, 15 Nov 2021 18:21:04 +0000 (UTC)
+        id S1344466AbhKOTYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D60006367C;
+        Mon, 15 Nov 2021 18:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000464;
-        bh=xIWacHPJYumNIerpRw8+Wy0rKa7p0QqJbQKbI/rlDNs=;
+        s=korg; t=1637002676;
+        bh=4vS9lJZo6T1JjKPgPYQwQ9UrRKHjDR7YGliKSPFknJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z7J+euyTYAmYnqXua+3eKVzue7GiMd0RrflqqsAsiNSrlsrPa6qzmjZjKY6iAD82y
-         rFNbPPVfp40RVZWmLvMAnNnmoMlckV6tkW/1mSBy9mEtEbS77xyTyf99Hx9FWz5p4O
-         hXJyt/4M/uIysoBvYAxPkuacjV30kx5KOtVbS2qI=
+        b=wJzBKRFWICXBhyJlcR32cOIDz/81BTJc8GNKjQAvDKDUzWbfK6O/YxEqSkhScKKLl
+         qIGggZ1NGvnO9WrlDfZijVhHTCL+fVP7gyXXuborcytStxRHKtsuZAS0NgXU4VDbua
+         W/mF0CzyfhofMJuj8VMqSJb7MOFRE3oQ2mouUM58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Jack Pham <jackp@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 668/849] rtc: ds1302: Add SPI ID table
+Subject: [PATCH 5.15 656/917] usb: dwc3: gadget: Skip resizing EPs TX FIFO if already resized
 Date:   Mon, 15 Nov 2021 18:02:31 +0100
-Message-Id: <20211115165442.861214874@linuxfoundation.org>
+Message-Id: <20211115165451.113067814@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +40,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 8719a17613e0233d707eb22e1645d217594631ef ]
+[ Upstream commit 876a75cb520f5869533a30a6ca01545ec817b7a0 ]
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding an id_table listing the
-SPI IDs for everything.
+Some functions may dynamically enable and disable their endpoints
+regularly throughout their operation, particularly when Set Interface
+is employed to switch between Alternate Settings.  For instance the
+UAC2 function has its respective endpoints for playback & capture
+associated with AltSetting 1, in which case those endpoints would not
+get enabled until the host activates the AltSetting.  And they
+conversely become disabled when the interfaces' AltSetting 0 is
+chosen.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210923194922.53386-2-broonie@kernel.org
+With the DWC3 FIFO resizing algorithm recently added, every
+usb_ep_enable() call results in a call to resize that EP's TXFIFO,
+but if the same endpoint is enabled again and again, this incorrectly
+leads to FIFO RAM allocation exhaustion as the mechanism did not
+account for the possibility that endpoints can be re-enabled many
+times.
+
+Example log splat:
+
+	dwc3 a600000.dwc3: Fifosize(3717) > RAM size(3462) ep3in depth:217973127
+	configfs-gadget gadget: u_audio_start_capture:521 Error!
+	dwc3 a600000.dwc3: request 000000000be13e18 was not queued to ep3in
+
+Add another bit DWC3_EP_TXFIFO_RESIZED to dep->flags to keep track of
+whether an EP had already been resized in the current configuration.
+If so, bail out of dwc3_gadget_resize_tx_fifos() to avoid the
+calculation error resulting from accumulating the EP's FIFO depth
+repeatedly.  This flag is retained across multiple ep_disable() and
+ep_enable() calls and is cleared when GTXFIFOSIZn is reset in
+dwc3_gadget_clear_tx_fifos() upon receiving the next Set Config.
+
+Fixes: 9f607a309fbe9 ("usb: dwc3: Resize TX FIFOs to meet EP bursting requirements")
+Reviewed-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20211021180129.27938-1-jackp@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-ds1302.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/dwc3/core.h   | 1 +
+ drivers/usb/dwc3/gadget.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-ds1302.c b/drivers/rtc/rtc-ds1302.c
-index b3de6d2e680a4..2f83adef966eb 100644
---- a/drivers/rtc/rtc-ds1302.c
-+++ b/drivers/rtc/rtc-ds1302.c
-@@ -199,11 +199,18 @@ static const struct of_device_id ds1302_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, ds1302_dt_ids);
- #endif
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 5612bfdf37da9..0c100901a7845 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -723,6 +723,7 @@ struct dwc3_ep {
+ #define DWC3_EP_FORCE_RESTART_STREAM	BIT(9)
+ #define DWC3_EP_FIRST_STREAM_PRIMED	BIT(10)
+ #define DWC3_EP_PENDING_CLEAR_STALL	BIT(11)
++#define DWC3_EP_TXFIFO_RESIZED		BIT(12)
  
-+static const struct spi_device_id ds1302_spi_ids[] = {
-+	{ .name = "ds1302", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(spi, ds1302_spi_ids);
+ 	/* This last one is specific to EP0 */
+ #define DWC3_EP0_DIR_IN		BIT(31)
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 4519d06c9ca2b..ed97e47d32613 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -702,6 +702,7 @@ void dwc3_gadget_clear_tx_fifos(struct dwc3 *dwc)
+ 				   DWC31_GTXFIFOSIZ_TXFRAMNUM;
+ 
+ 		dwc3_writel(dwc->regs, DWC3_GTXFIFOSIZ(num >> 1), size);
++		dep->flags &= ~DWC3_EP_TXFIFO_RESIZED;
+ 	}
+ 	dwc->num_ep_resized = 0;
+ }
+@@ -747,6 +748,10 @@ static int dwc3_gadget_resize_tx_fifos(struct dwc3_ep *dep)
+ 	if (!usb_endpoint_dir_in(dep->endpoint.desc) || dep->number <= 1)
+ 		return 0;
+ 
++	/* bail if already resized */
++	if (dep->flags & DWC3_EP_TXFIFO_RESIZED)
++		return 0;
 +
- static struct spi_driver ds1302_driver = {
- 	.driver.name	= "rtc-ds1302",
- 	.driver.of_match_table = of_match_ptr(ds1302_dt_ids),
- 	.probe		= ds1302_probe,
- 	.remove		= ds1302_remove,
-+	.id_table	= ds1302_spi_ids,
- };
+ 	ram1_depth = DWC3_RAM1_DEPTH(dwc->hwparams.hwparams7);
  
- module_spi_driver(ds1302_driver);
+ 	if ((dep->endpoint.maxburst > 1 &&
+@@ -807,6 +812,7 @@ static int dwc3_gadget_resize_tx_fifos(struct dwc3_ep *dep)
+ 	}
+ 
+ 	dwc3_writel(dwc->regs, DWC3_GTXFIFOSIZ(dep->number >> 1), fifo_size);
++	dep->flags |= DWC3_EP_TXFIFO_RESIZED;
+ 	dwc->num_ep_resized++;
+ 
+ 	return 0;
+@@ -995,7 +1001,7 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+ 
+ 	dep->stream_capable = false;
+ 	dep->type = 0;
+-	dep->flags = 0;
++	dep->flags &= DWC3_EP_TXFIFO_RESIZED;
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
