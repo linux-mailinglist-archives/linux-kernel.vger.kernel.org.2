@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6C2451374
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1FE4513EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348252AbhKOTvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:51:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45590 "EHLO mail.kernel.org"
+        id S1348748AbhKOT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:59:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239330AbhKOSAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:00:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F417C6333F;
-        Mon, 15 Nov 2021 17:36:19 +0000 (UTC)
+        id S239546AbhKOSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:01:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49C956333D;
+        Mon, 15 Nov 2021 17:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997780;
-        bh=jyxsIyDXJcaS5BY/M3JZIp8OXXPJChnPAENy4fLNxKU=;
+        s=korg; t=1636997790;
+        bh=7ci3+Ni8fTMn7vzkwmTfhfmHrY6o3gN6h1Yw6AHGwpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gAE7JXvRQwHI0nclLEiI9UOVIII64iK39w/tru2B8cZl3xRRXCg2lEhgcqVnQeJGD
-         /jwNUknwcD69Al8vsOu3TEVVSo6TiFbBVBMqaJp7Qq13fDAk6SNVygruCy4rX4rIG7
-         zaMwNvc7antdi0py9i4pLqjcS3+L9yytUE4jUAbE=
+        b=L3XNbC2NJXkuMn6B79KiRI3OVUP7MVTOVwya/n2FjoBBtcKe5g7QccJ4Zuwh9eowO
+         sO1hwm8jF0aK/e3oDFMUBioYb1gufBTOCUauE8MQeMYF5uSZt+aFNTsJEaLUpMOtmY
+         4mP1IW8cdboSnOWdokivf1bLRnJysKBt//pdL9F0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 272/575] cgroup: Make rebind_subsystems() disable v2 controllers all at once
-Date:   Mon, 15 Nov 2021 17:59:57 +0100
-Message-Id: <20211115165353.178746638@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 276/575] crypto: caam - disable pkc for non-E SoCs
+Date:   Mon, 15 Nov 2021 18:00:01 +0100
+Message-Id: <20211115165353.319474981@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,118 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 7ee285395b211cad474b2b989db52666e0430daf ]
+[ Upstream commit f20311cc9c58052e0b215013046cbf390937910c ]
 
-It was found that the following warning was displayed when remounting
-controllers from cgroup v2 to v1:
+On newer CAAM versions, not all accelerators are disabled if the SoC is
+a non-E variant. While the driver checks most of the modules for
+availability, there is one - PKHA - which sticks out. On non-E variants
+it is still reported as available, that is the number of instances is
+non-zero, but it has limited functionality. In particular it doesn't
+support encryption and decryption, but just signing and verifying. This
+is indicated by a bit in the PKHA_MISC field. Take this bit into account
+if we are checking for availability.
 
-[ 8042.997778] WARNING: CPU: 88 PID: 80682 at kernel/cgroup/cgroup.c:3130 cgroup_apply_control_disable+0x158/0x190
-   :
-[ 8043.091109] RIP: 0010:cgroup_apply_control_disable+0x158/0x190
-[ 8043.096946] Code: ff f6 45 54 01 74 39 48 8d 7d 10 48 c7 c6 e0 46 5a a4 e8 7b 67 33 00 e9 41 ff ff ff 49 8b 84 24 e8 01 00 00 0f b7 40 08 eb 95 <0f> 0b e9 5f ff ff ff 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f c3
-[ 8043.115692] RSP: 0018:ffffba8a47c23d28 EFLAGS: 00010202
-[ 8043.120916] RAX: 0000000000000036 RBX: ffffffffa624ce40 RCX: 000000000000181a
-[ 8043.128047] RDX: ffffffffa63c43e0 RSI: ffffffffa63c43e0 RDI: ffff9d7284ee1000
-[ 8043.135180] RBP: ffff9d72874c5800 R08: ffffffffa624b090 R09: 0000000000000004
-[ 8043.142314] R10: ffffffffa624b080 R11: 0000000000002000 R12: ffff9d7284ee1000
-[ 8043.149447] R13: ffff9d7284ee1000 R14: ffffffffa624ce70 R15: ffffffffa6269e20
-[ 8043.156576] FS:  00007f7747cff740(0000) GS:ffff9d7a5fc00000(0000) knlGS:0000000000000000
-[ 8043.164663] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 8043.170409] CR2: 00007f7747e96680 CR3: 0000000887d60001 CR4: 00000000007706e0
-[ 8043.177539] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 8043.184673] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 8043.191804] PKRU: 55555554
-[ 8043.194517] Call Trace:
-[ 8043.196970]  rebind_subsystems+0x18c/0x470
-[ 8043.201070]  cgroup_setup_root+0x16c/0x2f0
-[ 8043.205177]  cgroup1_root_to_use+0x204/0x2a0
-[ 8043.209456]  cgroup1_get_tree+0x3e/0x120
-[ 8043.213384]  vfs_get_tree+0x22/0xb0
-[ 8043.216883]  do_new_mount+0x176/0x2d0
-[ 8043.220550]  __x64_sys_mount+0x103/0x140
-[ 8043.224474]  do_syscall_64+0x38/0x90
-[ 8043.228063]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+This will the following error:
+[    8.167817] caam_jr 8020000.jr: 20000b0f: CCB: desc idx 11: : Invalid CHA selected.
 
-It was caused by the fact that rebind_subsystem() disables
-controllers to be rebound one by one. If more than one disabled
-controllers are originally from the default hierarchy, it means that
-cgroup_apply_control_disable() will be called multiple times for the
-same default hierarchy. A controller may be killed by css_kill() in
-the first round. In the second round, the killed controller may not be
-completely dead yet leading to the warning.
+Tested on an NXP LS1028A (non-E) SoC.
 
-To avoid this problem, we collect all the ssid's of controllers that
-needed to be disabled from the default hierarchy and then disable them
-in one go instead of one by one.
-
-Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: d239b10d4ceb ("crypto: caam - add register map changes cf. Era 10")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup/cgroup.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ drivers/crypto/caam/caampkc.c | 19 +++++++++++++++----
+ drivers/crypto/caam/regs.h    |  3 +++
+ 2 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 60d38e2f69dd8..a86857edaa571 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1711,6 +1711,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 	struct cgroup *dcgrp = &dst_root->cgrp;
- 	struct cgroup_subsys *ss;
- 	int ssid, i, ret;
-+	u16 dfl_disable_ss_mask = 0;
+diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
+index dd5f101e43f83..3acc825da4cca 100644
+--- a/drivers/crypto/caam/caampkc.c
++++ b/drivers/crypto/caam/caampkc.c
+@@ -1152,16 +1152,27 @@ static struct caam_akcipher_alg caam_rsa = {
+ int caam_pkc_init(struct device *ctrldev)
+ {
+ 	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
+-	u32 pk_inst;
++	u32 pk_inst, pkha;
+ 	int err;
+ 	init_done = false;
  
- 	lockdep_assert_held(&cgroup_mutex);
- 
-@@ -1727,8 +1728,28 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 		/* can't move between two non-dummy roots either */
- 		if (ss->root != &cgrp_dfl_root && dst_root != &cgrp_dfl_root)
- 			return -EBUSY;
+ 	/* Determine public key hardware accelerator presence. */
+-	if (priv->era < 10)
++	if (priv->era < 10) {
+ 		pk_inst = (rd_reg32(&priv->ctrl->perfmon.cha_num_ls) &
+ 			   CHA_ID_LS_PK_MASK) >> CHA_ID_LS_PK_SHIFT;
+-	else
+-		pk_inst = rd_reg32(&priv->ctrl->vreg.pkha) & CHA_VER_NUM_MASK;
++	} else {
++		pkha = rd_reg32(&priv->ctrl->vreg.pkha);
++		pk_inst = pkha & CHA_VER_NUM_MASK;
 +
 +		/*
-+		 * Collect ssid's that need to be disabled from default
-+		 * hierarchy.
++		 * Newer CAAMs support partially disabled functionality. If this is the
++		 * case, the number is non-zero, but this bit is set to indicate that
++		 * no encryption or decryption is supported. Only signing and verifying
++		 * is supported.
 +		 */
-+		if (ss->root == &cgrp_dfl_root)
-+			dfl_disable_ss_mask |= 1 << ssid;
-+
- 	} while_each_subsys_mask();
- 
-+	if (dfl_disable_ss_mask) {
-+		struct cgroup *scgrp = &cgrp_dfl_root.cgrp;
-+
-+		/*
-+		 * Controllers from default hierarchy that need to be rebound
-+		 * are all disabled together in one go.
-+		 */
-+		cgrp_dfl_root.subsys_mask &= ~dfl_disable_ss_mask;
-+		WARN_ON(cgroup_apply_control(scgrp));
-+		cgroup_finalize_control(scgrp, 0);
++		if (pkha & CHA_VER_MISC_PKHA_NO_CRYPT)
++			pk_inst = 0;
 +	}
+ 
+ 	/* Do not register algorithms if PKHA is not present. */
+ 	if (!pk_inst)
+diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+index af61f3a2c0d46..3738625c02509 100644
+--- a/drivers/crypto/caam/regs.h
++++ b/drivers/crypto/caam/regs.h
+@@ -322,6 +322,9 @@ struct version_regs {
+ /* CHA Miscellaneous Information - AESA_MISC specific */
+ #define CHA_VER_MISC_AES_GCM	BIT(1 + CHA_VER_MISC_SHIFT)
+ 
++/* CHA Miscellaneous Information - PKHA_MISC specific */
++#define CHA_VER_MISC_PKHA_NO_CRYPT	BIT(7 + CHA_VER_MISC_SHIFT)
 +
- 	do_each_subsys_mask(ss, ssid, ss_mask) {
- 		struct cgroup_root *src_root = ss->root;
- 		struct cgroup *scgrp = &src_root->cgrp;
-@@ -1737,10 +1758,12 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 
- 		WARN_ON(!css || cgroup_css(dcgrp, ss));
- 
--		/* disable from the source */
--		src_root->subsys_mask &= ~(1 << ssid);
--		WARN_ON(cgroup_apply_control(scgrp));
--		cgroup_finalize_control(scgrp, 0);
-+		if (src_root != &cgrp_dfl_root) {
-+			/* disable from the source */
-+			src_root->subsys_mask &= ~(1 << ssid);
-+			WARN_ON(cgroup_apply_control(scgrp));
-+			cgroup_finalize_control(scgrp, 0);
-+		}
- 
- 		/* rebind */
- 		RCU_INIT_POINTER(scgrp->subsys[ssid], NULL);
+ /*
+  * caam_perfmon - Performance Monitor/Secure Memory Status/
+  *                CAAM Global Status/Component Version IDs
 -- 
 2.33.0
 
