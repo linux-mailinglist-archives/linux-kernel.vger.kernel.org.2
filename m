@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1949845179A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9554517F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350832AbhKOWdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:33:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:59582 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242558AbhKOSin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:38:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62236D6E;
-        Mon, 15 Nov 2021 10:35:47 -0800 (PST)
-Received: from [10.57.82.45] (unknown [10.57.82.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4A423F70D;
-        Mon, 15 Nov 2021 10:35:44 -0800 (PST)
-Message-ID: <cc9878ae-df49-950c-f4f8-2e6ba545079b@arm.com>
-Date:   Mon, 15 Nov 2021 18:35:37 +0000
+        id S1351177AbhKOWwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:52:35 -0500
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:46658 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242615AbhKOSm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:42:58 -0500
+Received: by mail-pj1-f54.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so576632pjb.5;
+        Mon, 15 Nov 2021 10:40:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0Qq1oYPT2bATap84U8yzlebca1go/bddrPCpIhQ/oN8=;
+        b=vjfHZ/T0wkBqG3HXbTzEeKftmumMjh+etdKFZDZd7s3+gKIhiazxvhGyF/zJipJ19/
+         fiGN74/TgIxar4Sp6r7GCS8aXhVd9QkMWskSjM95dscOGY4YeQEno4qIz7HvzQIKA6Qv
+         6eWtHeDvipwFLnh9XYapZmDM+MI1Mq8IxZpAvTxpGhz2rpolv+hJzNGITnmGRut5xhjb
+         twPikGuPCERTCHxEFeNR0jLjSQeiqjCPQr80z6hmxbmsFaR2UOWRe137T5JrxOLh1+1m
+         9OKySh8HGUPKLT+4iOQmIjIpJcOzUku2/S1lN2PFuU9JjA9fEGY0uWHlNZC0+6zKan4v
+         qnJA==
+X-Gm-Message-State: AOAM5315APqSiAcgQBwsSggAw3QCf0aFHuy+oowfFt4t+uXECjvBa1aQ
+        zf/uoZdtHEYAuKR+AIAuTKZk2cj52SCtAw==
+X-Google-Smtp-Source: ABdhPJxqu5DEBxNKfYq6bVKKiDASVhYHF3GWI3OGaYQ2c+51xwf/qrlrl1nR26UTz0Z522sEk1hmYw==
+X-Received: by 2002:a17:90a:1a55:: with SMTP id 21mr836115pjl.240.1637001602352;
+        Mon, 15 Nov 2021 10:40:02 -0800 (PST)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:c779:caf7:7b7f:3ecd])
+        by smtp.gmail.com with ESMTPSA id d3sm5793910pfv.57.2021.11.15.10.40.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 10:40:01 -0800 (PST)
+Subject: Re: [PATCH v2] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+To:     Alistair Delva <adelva@google.com>, linux-kernel@vger.kernel.org
+Cc:     Khazhismel Kumykov <khazhy@google.com>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel-team@android.com,
+        stable@vger.kernel.org
+References: <20211115181655.3608659-1-adelva@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <da032e9f-0b95-f517-6e3c-647668fd823f@acm.org>
+Date:   Mon, 15 Nov 2021 10:40:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 02/11] driver core: Set DMA ownership during driver
- bind/unbind
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        iommu@lists.linux-foundation.org,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Will Deacon <will@kernel.org>,
-        Diana Craciun <diana.craciun@oss.nxp.com>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-3-baolu.lu@linux.intel.com>
- <YZJeRomcJjDqDv9q@infradead.org> <20211115132442.GA2379906@nvidia.com>
- <8499f0ab-9701-2ca2-ac7a-842c36c54f8a@arm.com>
- <20211115155613.GA2388278@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211115155613.GA2388278@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20211115181655.3608659-1-adelva@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-15 15:56, Jason Gunthorpe via iommu wrote:
-> On Mon, Nov 15, 2021 at 03:37:18PM +0000, Robin Murphy wrote:
+On 11/15/21 10:16 AM, Alistair Delva wrote:
+> Booting to Android userspace on 5.14 or newer triggers the following
+> SELinux denial:
 > 
->> IOMMUs, and possibly even fewer of them support VFIO, so I'm in full
->> agreement with Greg and Christoph that this absolutely warrants being scoped
->> per-bus. I mean, we literally already have infrastructure to prevent drivers
->> binding if the IOMMU/DMA configuration is broken or not ready yet; why would
->> we want a totally different mechanism to prevent driver binding when the
->> only difference is that that configuration *is* ready and working to the
->> point that someone's already claimed it for other purposes?
+> avc: denied { sys_nice } for comm="init" capability=23
+>       scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+>       permissive=0
 > 
-> I see, that does make sense
+> Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+> better compatibility with older SEPolicy, check ADMIN before NICE.
 > 
-> I see these implementations:
+> Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
+> Signed-off-by: Alistair Delva <adelva@google.com>
+> Cc: Khazhismel Kumykov <khazhy@google.com>
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: Serge Hallyn <serge@hallyn.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Paul Moore <paul@paul-moore.com>
+> Cc: selinux@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> Cc: kernel-team@android.com
+> Cc: stable@vger.kernel.org # v5.14+
+> ---
+> v2: added comment requested by Jens
+>   block/ioprio.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> drivers/amba/bus.c:     .dma_configure  = platform_dma_configure,
-> drivers/base/platform.c:        .dma_configure  = platform_dma_configure,
-> drivers/bus/fsl-mc/fsl-mc-bus.c:        .dma_configure  = fsl_mc_dma_configure,
-> drivers/pci/pci-driver.c:       .dma_configure  = pci_dma_configure,
-> drivers/gpu/host1x/bus.c:       .dma_configure = host1x_dma_configure,
+> diff --git a/block/ioprio.c b/block/ioprio.c
+> index 0e4ff245f2bf..313c14a70bbd 100644
+> --- a/block/ioprio.c
+> +++ b/block/ioprio.c
+> @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
+>   
+>   	switch (class) {
+>   		case IOPRIO_CLASS_RT:
+> -			if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> +			/*
+> +			 * Originally this only checked for CAP_SYS_ADMIN,
+> +			 * which was implicitly allowed for pid 0 by security
+> +			 * modules such as SELinux. Make sure we check
+> +			 * CAP_SYS_ADMIN first to avoid a denial/avc for
+> +			 * possibly missing CAP_SYS_NICE permission.
+> +			 */
+> +			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+>   				return -EPERM;
+>   			fallthrough;
+>   			/* rt has prio field too */
 > 
-> Other than host1x they all work with VFIO.
-> 
-> Also, there is no bus->dma_unconfigure() which would be needed to
-> restore the device as well.
 
-Not if we reduce the notion of "ownership" down to 
-"dev->iommu_group->domain != dev->iommu_group->default_domain", which 
-I'm becoming increasingly convinced is all we actually need here.
+Are there any other SELinux policies (Fedora?) that need to be verified?
 
-> So, would you rather see duplicated code into the 4 drivers, and a new
-> bus op to 'unconfigure dma'
+Anyway:
 
-The .dma_configure flow is unavoidably a bit boilerplatey already, so 
-personally I'd go for having the implementations call back into a common 
-check, similarly to their current flow. That also leaves room for the 
-bus code to further refine the outcome based on what it might know, 
-which I can particularly imagine for cleverer buses like fsl-mc and 
-host1x which can have lots of inside knowledge about how their devices 
-may interact.
-
-Robin.
-
-> Or, a 'dev_configure_dma()' function that is roughly:
-> 
->          if (dev->bus->dma_configure) {
->                  ret = dev->bus->dma_configure(dev);
->                  if (ret)
->                          return ret;
->                  if (!drv->suppress_auto_claim_dma_owner) {
->                         ret = iommu_device_set_dma_owner(dev, DMA_OWNER_KERNEL,
->                                                          NULL);
->                         if (ret)
->                                 ret;
->                  }
->           }
-> 
-> And a pair'd undo.
-> 
-> This is nice because we can enforce dev->bus->dma_configure when doing
-> a user bind so everything holds together safely without relying on
-> each bus_type to properly implement security.
-> 
-> Jason
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
