@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8174515BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EB84515B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239767AbhKOUuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:50:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        id S1347389AbhKOUtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:49:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240253AbhKOSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240254AbhKOSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1C1761AA2;
-        Mon, 15 Nov 2021 17:43:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B182E63260;
+        Mon, 15 Nov 2021 17:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998239;
-        bh=p7hYBl8uoaWoqAEBkT4Kalq/XBG9gtgi0SJeebrNEnY=;
+        s=korg; t=1636998242;
+        bh=RHZhCKqopg0/kn8Ha4aSCuMewYbiJVQjlJ6xHIGv4iA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EPsHES9VHDdLH+2TSiqH+RkKs9aNYEdR7n8cwX6D90P7aXPBnP44HsMPvBqh6gzkJ
-         1X6MFvDbLFtz6n3+XRTD21MLgVKg/Mfb4iRuFiOwl1wG1tHBBGNNJVWkBe+ceVHvLX
-         IHb/o8GLsEMHzC1h/iUWifd4PSq3PDPC8wRZJqyc=
+        b=KGC/8EV2//Z7eNJWJxfUD01LJ/dhasKzVy8al2ddwjzlZZjQC9XyYZf4XMO9mEowu
+         1vvnMkPW3/L2Kllm25pt25zfSMWhul3/1vvC/dcvDi/326KhXIpLUvgnGiJn+nlTTr
+         yCya7XaxCqqEEQoqyVzeRR+iv945gNYBgvspGwiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 439/575] ASoC: cs42l42: Defer probe if request_threaded_irq() returns EPROBE_DEFER
-Date:   Mon, 15 Nov 2021 18:02:44 +0100
-Message-Id: <20211115165358.947870164@linuxfoundation.org>
+Subject: [PATCH 5.10 440/575] soc: qcom: rpmhpd: Provide some missing struct member descriptions
+Date:   Mon, 15 Nov 2021 18:02:45 +0100
+Message-Id: <20211115165358.980948642@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,40 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Lee Jones <lee.jones@linaro.org>
 
-[ Upstream commit 0306988789d9d91a18ff70bd2bf165d3ae0ef1dd ]
+[ Upstream commit 5d16af6a921f5a4e7038671be5478cba4b7cfe81 ]
 
-The driver can run without an interrupt so if devm_request_threaded_irq()
-failed, the probe() just carried on. But if this was EPROBE_DEFER the
-driver would continue without an interrupt instead of deferring to wait
-for the interrupt to become available.
+Fixes the following W=1 kernel build warning(s):
 
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20211015133619.4698-6-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+ drivers/soc/qcom/rpmhpd.c:52: warning: Function parameter or member 'parent' not described in 'rpmhpd'
+ drivers/soc/qcom/rpmhpd.c:52: warning: Function parameter or member 'corner' not described in 'rpmhpd'
+ drivers/soc/qcom/rpmhpd.c:52: warning: Function parameter or member 'active_corner' not described in 'rpmhpd'
+
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20201103152838.1290217-22-lee.jones@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/soc/qcom/rpmhpd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 8e44d0f34194e..191431868c678 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1796,8 +1796,9 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 			NULL, cs42l42_irq_thread,
- 			IRQF_ONESHOT | IRQF_TRIGGER_LOW,
- 			"cs42l42", cs42l42);
--
--	if (ret != 0)
-+	if (ret == -EPROBE_DEFER)
-+		goto err_disable;
-+	else if (ret != 0)
- 		dev_err(&i2c_client->dev,
- 			"Failed to request IRQ: %d\n", ret);
- 
+diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+index c8b584d0c8fb4..e7cb40144f9b1 100644
+--- a/drivers/soc/qcom/rpmhpd.c
++++ b/drivers/soc/qcom/rpmhpd.c
+@@ -24,9 +24,12 @@
+  * struct rpmhpd - top level RPMh power domain resource data structure
+  * @dev:		rpmh power domain controller device
+  * @pd:			generic_pm_domain corrresponding to the power domain
++ * @parent:		generic_pm_domain corrresponding to the parent's power domain
+  * @peer:		A peer power domain in case Active only Voting is
+  *			supported
+  * @active_only:	True if it represents an Active only peer
++ * @corner:		current corner
++ * @active_corner:	current active corner
+  * @level:		An array of level (vlvl) to corner (hlvl) mappings
+  *			derived from cmd-db
+  * @level_count:	Number of levels supported by the power domain. max
 -- 
 2.33.0
 
