@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B479A451AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDBF451DDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349306AbhKOXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1344510AbhKPAeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343898AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343908AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA30B635FB;
-        Mon, 15 Nov 2021 18:48:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3DD635FC;
+        Mon, 15 Nov 2021 18:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002103;
-        bh=ZsKfohJl4e2rGbvDRMrzywK5flLwScxWwHbA89+MvZM=;
+        s=korg; t=1637002105;
+        bh=6d+HztCoVDCFI/Ahw2vaIpDRzGSSkNZqgNNfuZ7ezJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SDbkqOrTTDfce33IuR7a86+nBZq7Ttggy9dUxX4OrlO5DcpbUKLZZZS1DNe3E76Km
-         tZiBYFez3YirWYqiU6bm9KJM2/Fz39lBJ2W5CBt/OMUa0xb9GorjpGj0Wc8dOVyePt
-         d2NdIAkUuZ73JqFP3UWeWLixadOp0QXu4UfC1V+0=
+        b=HkR1GM7bnHxy3e/NlUD9L9zZW9WjSoi2NfRIQDa+iOkTDedml/hhIp45GXVLNYcwu
+         KNIgAT+u2Oa6Ye0ChOxXC6mvZvOobzfTC0cAcPa2SS8sOhrfKAwp1IfzAU2X+KeAE1
+         FrdAYlcL7Ezuvqs5y+NK9gBsIWnUvBdenoar6HCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 439/917] drm/msm: unlock on error in get_sched_entity()
-Date:   Mon, 15 Nov 2021 17:58:54 +0100
-Message-Id: <20211115165443.671361984@linuxfoundation.org>
+Subject: [PATCH 5.15 440/917] drm/msm: fix potential NULL dereference in cleanup
+Date:   Mon, 15 Nov 2021 17:58:55 +0100
+Message-Id: <20211115165443.703293448@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,31 +42,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7425e8167507fe512d8ac0825acda4aebf0a7ca0 ]
+[ Upstream commit 027d052a36e56789a2134772bacb4fd0860f03a3 ]
 
-Add a missing unlock on the error path if drm_sched_entity_init() fails.
+The "msm_obj->node" list needs to be initialized earlier so that the
+list_del() in msm_gem_free_object() doesn't experience a NULL pointer
+dereference.
 
-Fixes: 68002469e571 ("drm/msm: One sched entity per process per priority")
+Fixes: 6ed0897cd800 ("drm/msm: Fix debugfs deadlock")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20211011124005.GE15188@kili
+Link: https://lore.kernel.org/r/20211013081133.GF6010@kili
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_submitqueue.c | 1 +
+ drivers/gpu/drm/msm/msm_gem.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
-index b8621c6e05546..7cb158bcbcf67 100644
---- a/drivers/gpu/drm/msm/msm_submitqueue.c
-+++ b/drivers/gpu/drm/msm/msm_submitqueue.c
-@@ -101,6 +101,7 @@ get_sched_entity(struct msm_file_private *ctx, struct msm_ringbuffer *ring,
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 22308a1b66fc3..fd398a4eaf46e 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -1132,6 +1132,7 @@ static int msm_gem_new_impl(struct drm_device *dev,
+ 	msm_obj->flags = flags;
+ 	msm_obj->madv = MSM_MADV_WILLNEED;
  
- 		ret = drm_sched_entity_init(entity, sched_prio, &sched, 1, NULL);
- 		if (ret) {
-+			mutex_unlock(&entity_lock);
- 			kfree(entity);
- 			return ERR_PTR(ret);
- 		}
++	INIT_LIST_HEAD(&msm_obj->node);
+ 	INIT_LIST_HEAD(&msm_obj->vmas);
+ 
+ 	*obj = &msm_obj->base;
 -- 
 2.33.0
 
