@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B39745236A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E1A4527C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbhKPB0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:26:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34524 "EHLO mail.kernel.org"
+        id S243144AbhKPCbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:31:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243838AbhKOTEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:04:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C04EE63278;
-        Mon, 15 Nov 2021 18:15:35 +0000 (UTC)
+        id S237035AbhKORQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:16:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D1C63246;
+        Mon, 15 Nov 2021 17:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000136;
-        bh=XseYjj8GcNq3FnFCW9RZegwjKiWMEAE/U6zAPsKNHPs=;
+        s=korg; t=1636996355;
+        bh=iW7bRT3Q5oUIXLn4aRaqSRph6rITcwiUaTSvH7ilcwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ju7uo7dX2ynCSO/Fg+MX+IC6Tw6RqcsnqvoOdqFCfbuU7GpyCiNRMrR/o1/0GMvRT
-         VvUz8TSg1A+kkYkBWCV/mBXkfzFbd8Ej1SIWr6rSoJu0nhSEDUrHCn8bW+DilTrlC1
-         K2HXtVbyQmNgM+pb0XYYAklCB9HddWi4FaqrAq8k=
+        b=XlFM7GsJ3/1aaayemzBFMLBe9+/mJHsfe7nxRWWmwgb/t32WyXXh+HrLL+7rARNvq
+         HQquYzlYfmxfkTbNSFluniq4IBWS9jgQ4KSvDfOVK+xQQN56xKcCQ3D/IurPQNU+ky
+         Q80AAG2WtPRaBxzoAkzgYXlRUnGn66Xesq7VHPXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 550/849] arm64: dts: meson: sm1: add Ethernet PHY reset line for ODROID-C4/HC4
-Date:   Mon, 15 Nov 2021 18:00:33 +0100
-Message-Id: <20211115165438.866846025@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 110/355] USB: iowarrior: fix control-message timeouts
+Date:   Mon, 15 Nov 2021 18:00:34 +0100
+Message-Id: <20211115165317.364490410@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
+References: <20211115165313.549179499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongjin Kim <tobetter@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 9d02214f8332d5dbbcce3d6c5c915e54d43a0c46 ]
+commit 79a4479a17b83310deb0b1a2a274fe5be12d2318 upstream.
 
-This patch is to fix an issue that the ethernet link doesn't come up
-when using ip link set down/up:
-   [   11.428114] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
-   [   14.428595] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
-   [   14.428610] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
-   [   14.428974] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
-   [   14.711185] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-This fix refers to two commits applied for ODROID-N2 (G12B).
-    commit 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
-    commit 1c7412530d5d0 ("arm64: dts: meson: g12b: odroid-n2: fix PHY deassert timing requirements")
+Use the common control-message timeout define for the five-second
+timeout and drop the driver-specific one.
 
-Fixes: 88d537bc92ca ("arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi")
-Signed-off-by: Dongjin Kim <tobetter@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-[narmstrong: added fixes tag and typo in commit log]
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/YScKYFWlYymgGw3l@anyang-linuxfactory-or-kr
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 946b960d13c1 ("USB: add driver for iowarrior devices.")
+Cc: stable@vger.kernel.org      # 2.6.21
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025115159.4954-3-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/misc/iowarrior.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-index fd0ad85c165ba..45e7fcb062f96 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-@@ -263,6 +263,10 @@
- 		reg = <0>;
- 		max-speed = <1000>;
+--- a/drivers/usb/misc/iowarrior.c
++++ b/drivers/usb/misc/iowarrior.c
+@@ -99,10 +99,6 @@ struct iowarrior {
+ /*    globals   */
+ /*--------------*/
  
-+		reset-assert-us = <10000>;
-+		reset-deassert-us = <80000>;
-+		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
-+
- 		interrupt-parent = <&gpio_intc>;
- 		/* MAC_INTR on GPIOZ_14 */
- 		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
--- 
-2.33.0
-
+-/*
+- *  USB spec identifies 5 second timeouts.
+- */
+-#define GET_TIMEOUT 5
+ #define USB_REQ_GET_REPORT  0x01
+ //#if 0
+ static int usb_get_report(struct usb_device *dev,
+@@ -114,7 +110,7 @@ static int usb_get_report(struct usb_dev
+ 			       USB_DIR_IN | USB_TYPE_CLASS |
+ 			       USB_RECIP_INTERFACE, (type << 8) + id,
+ 			       inter->desc.bInterfaceNumber, buf, size,
+-			       GET_TIMEOUT*HZ);
++			       USB_CTRL_GET_TIMEOUT);
+ }
+ //#endif
+ 
+@@ -129,7 +125,7 @@ static int usb_set_report(struct usb_int
+ 			       USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+ 			       (type << 8) + id,
+ 			       intf->cur_altsetting->desc.bInterfaceNumber, buf,
+-			       size, HZ);
++			       size, 1000);
+ }
+ 
+ /*---------------------*/
 
 
