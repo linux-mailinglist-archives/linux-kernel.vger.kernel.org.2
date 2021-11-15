@@ -2,135 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD51645038A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5E0450394
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhKOLhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:37:05 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:56691 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231144AbhKOLgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:36:50 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 13A073200A1E;
-        Mon, 15 Nov 2021 06:33:51 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 15 Nov 2021 06:33:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=i6Cp4qqoOBe14ZgFWLAnguHBRY9
-        thtZqs5YYbssWhX0=; b=NRbP1yBJmz2P9nb7MivqC0/3CxdbP8+xYnAn2Skx0hR
-        /Z07i4CrjCGWQKonsv09s8rFUd7BtR0IG8hZoBpDu7YxsrgJuA0MWpwWPARvnccR
-        mUF4OxXSt1D4llDbBx8i8GyM5hoa2AHA0fZGm7dVV4yOOQX4skbdBjJ8wENsPODQ
-        n+17ypNL8T1CTFNESWtlX+vcE2zlcNblTPR0y7mK7jqDsVZQMEyZU5ZEkLGdBi4l
-        f+BHYErVFTWbK3cRdAX24NRL0zZ6gjyc9c+KWzklZHacs+CE/9dE6G2y78X/cQFm
-        xGyiu1NpuEy4EhsjvF/3ivu1O5knvlV/2L7UZqwVo0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=i6Cp4q
-        qoOBe14ZgFWLAnguHBRY9thtZqs5YYbssWhX0=; b=DRDkjLm0UenOCxmrHgaxQ1
-        fAHJLauMvW8AUo2mgrTLyIOXJjdyJIl/wNdn5rA/WpbzK0tx3QHRe4TE4Mkh47uo
-        CZvPHYTHc4Uzxp80VJEbnzMP3Ej32L41tpcJOsE536J294I2ysIj1TL13vZNSQ17
-        DYu+EkQ5ec6XJCHgQxI10hPfH8k4HZadHsUkXQglIqRMGB/I9FJPpeQgzZgnMY7u
-        Pt2IbRkKiTRXvDBVyuRptgj5cDtv/bwP0NHn2avSdSd9g823WNCZa5JC0HTyI7wH
-        Fd6jxU1KdE3Vf8syQOntggFxjDSkgb+aOlJsiHvgrV4Wauq0/wLeRRZG6+t4PtRA
-        ==
-X-ME-Sender: <xms:nkWSYW7_PnTi9oBt4u-7-eIqVtoDL-DqhweAm0Co47X-eeu1UFx-Rw>
-    <xme:nkWSYf6xrT0wg_6Ne8hXgzsGJMo8P8aEXWqmnUgiIBOFjIv9jtUOch3r2tYxFA5TS
-    c3rrXtFEgyjbMdRJG0>
-X-ME-Received: <xmr:nkWSYVdVZ6ImQq-qnVBaVRo9mrqNJH4b5Ojer4OuVlRzDSVlV66EHdBw9MpZOg4k_yKvAd6r0RyISRdkJhwB00pG_mduazpS03YhH4Ll>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedtgddtfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeeivdfhtdfggefgleffgfetieevvefhtddvhfehfefgfffhuefhtdeufeevhfel
-    vdenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvges
-    tggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:nkWSYTLswl-a2ySU3LpHw05-gpRVKl7nwU-kH8u8gcrpW9XLNN2Qbg>
-    <xmx:nkWSYaJBjzxcMJEuie9fkr2dzWNzVSlAP_H_PzlTla36wSHtuuZUpQ>
-    <xmx:nkWSYUwaNfyQvYfWIrPVdt57USbW6YntoxPgYsiOp8_DP_8hrn_NCQ>
-    <xmx:nkWSYRUhcJ8tNIpWPgGHGfseDXomfVp6CmegIYkiX-pHfGqMGOCkPg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Nov 2021 06:33:50 -0500 (EST)
-Date:   Mon, 15 Nov 2021 12:33:48 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jian-Hong Pan <jhp@endlessos.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org
-Subject: Re: [BUG] VC4 DRM waiting for flip down makes UI freeze a while with
- kernel 5.15
-Message-ID: <20211115113348.aylgkwrmaaomqrp4@gilmour>
-References: <CAPpJ_ecMSA8A=c=3KDOb59M=+go7DYH4dNNbE2cqYgDioO=MRQ@mail.gmail.com>
+        id S230145AbhKOLi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:38:56 -0500
+Received: from mga11.intel.com ([192.55.52.93]:30043 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231383AbhKOLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:38:11 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="230884121"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="230884121"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:34:18 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="671473514"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:34:16 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mmaFU-0072lE-Cb;
+        Mon, 15 Nov 2021 13:34:08 +0200
+Date:   Mon, 15 Nov 2021 13:34:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Cc:     Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH v1 1/1] kunit: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YZJFsFmvdyfblf/k@smile.fi.intel.com>
+References: <20211110103552.60181-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qpgvaecxcpaoyprl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPpJ_ecMSA8A=c=3KDOb59M=+go7DYH4dNNbE2cqYgDioO=MRQ@mail.gmail.com>
+In-Reply-To: <20211110103552.60181-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 10, 2021 at 12:35:52PM +0200, Andy Shevchenko wrote:
+> When kernel.h is used in the headers it adds a lot into dependency hell,
+> especially when there are circular dependencies are involved.
+> 
+> Replace kernel.h inclusion with the list of what is really being used.
 
---qpgvaecxcpaoyprl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can it be applied now?
 
-Hi,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-On Fri, Nov 12, 2021 at 11:22:49AM +0800, Jian-Hong Pan wrote:
-> Hi,
->=20
-> I tested Linux mainline kernel 5.15 (aarch64) with enabled VC4 on RPi 4B.=
- I
-> notice UI freezes a while (about 10 seconds) some times.
->=20
-> The kernel shows the error message during the time:
->=20
-> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:68:crtc-3]
-> flip_done timed out
-> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:68:crtc-3]
-> commit wait timed out
-> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> vc4-drm gpu: [drm] *ERROR* Timed out waiting for commit
->=20
-> Here is the full log:
-> https://github.com/lategoodbye/rpi-zero/files/7518076/dmesg-5.15.log
->=20
-> It is easy to reproduce this issue by invoking GL related things, for
-> example "es2gears".
->=20
-> After detail test, I found it is related to these commits:
-> * f3c420fe19f8 ("drm/vc4: kms: Convert to atomic helpers")
-> * 82faa3276012 ("drm/vc4: kms: Remove async modeset semaphore")
->=20
-> This issue cannot be reproduced after I revert the commits.
 
-I've been working on those regressions recently, and just sent all the
-fixes I have so far:
-https://lore.kernel.org/dri-devel/20211115113105.103275-1-maxime@cerno.tech/
-
-Based on the symptoms you provided, I think it should be fixed with
-those patches
-
-Let me know how it goes
-Maxime
-
---qpgvaecxcpaoyprl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYZJFnAAKCRDj7w1vZxhR
-xcKCAP4y9pmb6MnR5yzUyTIh8aA79lOK/NloUXd70TR0mU0WPwEA2w14ccqMXubE
-kMenwG5Vky1y6x12a9PCIwtTidqSjQk=
-=ufoo
------END PGP SIGNATURE-----
-
---qpgvaecxcpaoyprl--
