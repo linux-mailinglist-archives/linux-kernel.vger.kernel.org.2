@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC94451762
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D96451763
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353266AbhKOWYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:24:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
+        id S1353308AbhKOWYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:24:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242339AbhKOSfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:35:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C65F36346F;
-        Mon, 15 Nov 2021 18:01:27 +0000 (UTC)
+        id S242357AbhKOSfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6EDD61C15;
+        Mon, 15 Nov 2021 18:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999288;
-        bh=yqS5EcZ/hI7QK4grPthEC7x/xBPlFyeCWGV5YGToVBM=;
+        s=korg; t=1636999316;
+        bh=QJctPq2mvvXd9D5+REVvKRYsNwuWRooixOau3OZ0qMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ssxs0SvyXLP+Cz8H7SP7JL/lPxRLvDZ3mFgRytOJ42MTw+OAeXrYjcD4MMhT0XtZ
-         7prY+jNbbC9P5Vh2Hmj8s41kvNUS7D9Uiu/9WX9wHmKBj5YzhuLS2niAqvUrKBXeq1
-         m0y0v9V3YZIepZqYDb9zau5bHSSpG0f941DnydFc=
+        b=c/dwD4JyxdXQLvQ5ALFEEgZW9YdKCrGVKb1OcgwK//NNJb5oDitmXdUFrPvikf3Uf
+         YLkQSFFY0uKrs7T9jyRzJrrARAfYsCERr1KGjPPvB3SNINgdI9l05WP4Vp83AxwNCQ
+         NNZ/4i5EJKKnp/Q7jSCIN6NwT8PvRKg57hZwaoV4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 242/849] media: uvcvideo: Set capability in s_param
-Date:   Mon, 15 Nov 2021 17:55:25 +0100
-Message-Id: <20211115165428.400386622@linuxfoundation.org>
+Subject: [PATCH 5.14 246/849] media: s5p-mfc: fix possible null-pointer dereference in s5p_mfc_probe()
+Date:   Mon, 15 Nov 2021 17:55:29 +0100
+Message-Id: <20211115165428.541311431@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,45 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
+[ Upstream commit 8515965e5e33f4feb56134348c95953f3eadfb26 ]
 
-Fixes v4l2-compliance:
+The variable pdev is assigned to dev->plat_dev, and dev->plat_dev is
+checked in:
+  if (!dev->plat_dev)
 
-Format ioctls (Input 0):
-                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
-                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+This indicates both dev->plat_dev and pdev can be NULL. If so, the
+function dev_err() is called to print error information.
+  dev_err(&pdev->dev, "No platform data specified\n");
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+However, &pdev->dev is an illegal address, and it is dereferenced in
+dev_err().
+
+To fix this possible null-pointer dereference, replace dev_err() with
+mfc_err().
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 6acb8013de08b..c9d208677bcd8 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -472,10 +472,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
- 	uvc_simplify_fraction(&timeperframe.numerator,
- 		&timeperframe.denominator, 8, 333);
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index eba2b9f040df0..c763c0a03140c 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -1283,7 +1283,7 @@ static int s5p_mfc_probe(struct platform_device *pdev)
+ 	spin_lock_init(&dev->condlock);
+ 	dev->plat_dev = pdev;
+ 	if (!dev->plat_dev) {
+-		dev_err(&pdev->dev, "No platform data specified\n");
++		mfc_err("No platform data specified\n");
+ 		return -ENODEV;
+ 	}
  
--	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		parm->parm.capture.timeperframe = timeperframe;
--	else
-+		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
-+	} else {
- 		parm->parm.output.timeperframe = timeperframe;
-+		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
-+	}
- 
- 	return 0;
- }
 -- 
 2.33.0
 
