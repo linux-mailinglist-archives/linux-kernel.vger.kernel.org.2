@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB68A45229E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D483C452178
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241314AbhKPBPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
+        id S245638AbhKPBE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245138AbhKOTTc (ORCPT
+        with ESMTP id S245615AbhKOTUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:32 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF0BC0386CC
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:11:28 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so28842884otk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:11:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h7DOXi4ZM5FLAUD83SAzyJhtRItBmD8aCEord4L/i2U=;
-        b=Z9CpxgeIP4Aat3GlURGnb7kaa7nuTGd2PhkLliM9RxnEoB0L2ihKJkSIf2pQHOGbGr
-         FPdovtbvJbXfVAcwJjuLkmh5Ca0VKaoTMut/F8K+XHZ0mXq9gGP6l1UB/n08cYmabqzQ
-         GvkvjO93EabtKwNy3RvC/b4FC14pknK/WxzC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h7DOXi4ZM5FLAUD83SAzyJhtRItBmD8aCEord4L/i2U=;
-        b=KIOlchf6TzYdYn7BDE4njYb4AOlnGr6H/UoxiZEdmjDW3XwjayLru/3ePKP7hZb+pd
-         4r1EpAdHf1qBGPwRkZ4HaLkvWSbsk9UY/hfwWxA2kSFmSwSFItnTvZw0lioUfYy0Ecmg
-         466WRHekDZ1R4Mlwwv/NKKZFrZ7n7iYP4AkOO0tSDmaIv44Ow/SJ2CI4tQ8hpmTDibBQ
-         1MRqQ/I+tgLOLg5NLtDyQQ59pcthguGbbpzQ2Jkoo8vG047qqlk6P2/d8PqgBjzFXa6I
-         fehh2fcl4uHM5OOF9wplLDgdYFjP8s0TuG9C7bYziqNF3jNKBuN29XxP0lVRWJC/pnd3
-         HdcQ==
-X-Gm-Message-State: AOAM530/cuTCwDk4IEikQpEgEdVv5JhsLvZT4RALbVBGbHylu8BhhWLo
-        9SICwnG7vIB/k9J7Lwkz3z5PzL880K235/sI
-X-Google-Smtp-Source: ABdhPJxKDrfY5JVmLOCZZazpkB1bpMZW9x5cy0VWaib+djFzxSo4fBZXeC5y39bA7VxUS05DrxIxAw==
-X-Received: by 2002:a9d:4604:: with SMTP id y4mr770567ote.241.1636999887470;
-        Mon, 15 Nov 2021 10:11:27 -0800 (PST)
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com. [209.85.167.179])
-        by smtp.gmail.com with ESMTPSA id s17sm3104878otp.20.2021.11.15.10.11.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 10:11:26 -0800 (PST)
-Received: by mail-oi1-f179.google.com with SMTP id r26so36559381oiw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:11:26 -0800 (PST)
-X-Received: by 2002:aca:62c1:: with SMTP id w184mr541079oib.159.1636999886368;
- Mon, 15 Nov 2021 10:11:26 -0800 (PST)
+        Mon, 15 Nov 2021 14:20:51 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BECC077949;
+        Mon, 15 Nov 2021 10:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/j1kGg3Y3gXXMCKBT/FlrMPEzAkt4b0LfzEg1w0LaRY=; b=MiHTez0Qf+wX+jRQ5B/3EkMeSB
+        TvxNL1Ov34NgD3bwoIg17g3//hLJW1J9conA8mIU+92DauDmRpeOBfGqiA+NBBYGONoovgPDaaoeT
+        E9hbRqrey5lkoxXaOlQSqb3RveB7VNobb8j6oZMXpGtHVa1EjZvb84ijRMjafDoYjn/qi06lzFIA4
+        t08ygSB4+Hxt81yRGLr3p5uBd+TEtPKsvy2hqjw+oLQ+qHd5zgxTZAGfK6xvoDdQihW4H2ydtA27R
+        ylOo0xgaDgmTlW9rxr1QiFESRAn1mAZ7WrFwnQuCKV/52trgg6FZ6tiCPD0OlfG2au6V0ORG4Dkg6
+        C8px0TLw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmgVX-00Ge06-LZ; Mon, 15 Nov 2021 18:15:07 +0000
+Date:   Mon, 15 Nov 2021 10:15:07 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: Re: [PATCH 02/11] driver core: Set DMA ownership during driver
+ bind/unbind
+Message-ID: <YZKjq3sXb9+UTDSz@infradead.org>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-3-baolu.lu@linux.intel.com>
+ <YZJeRomcJjDqDv9q@infradead.org>
+ <20211115132442.GA2379906@nvidia.com>
+ <8499f0ab-9701-2ca2-ac7a-842c36c54f8a@arm.com>
+ <20211115155613.GA2388278@nvidia.com>
 MIME-Version: 1.0
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
- <20211115045616.GA1012538@roeck-us.net> <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
- <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
-In-Reply-To: <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Nov 2021 10:10:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wis4sMKEB1EWJW-+jgc4j31S297sx7nq4a_MS92r8-HgA@mail.gmail.com>
-Message-ID: <CAHk-=wis4sMKEB1EWJW-+jgc4j31S297sx7nq4a_MS92r8-HgA@mail.gmail.com>
-Subject: Re: Linux 5.16-rc1
-To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115155613.GA2388278@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 9:07 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> parisc:allmodconfig: Lots of build failures in arch/parisc/include/asm/jump_label.h.
-> Not fixed in -next. The problem seens to be related to the thread_info changes,
-> or at least bisect points to commit 01463374c50e ("Merge tag 'cpu-to-thread_info-v5.16-rc1'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux").
+On Mon, Nov 15, 2021 at 11:56:13AM -0400, Jason Gunthorpe wrote:
+> drivers/base/platform.c:        .dma_configure  = platform_dma_configure,
+> drivers/bus/fsl-mc/fsl-mc-bus.c:        .dma_configure  = fsl_mc_dma_configure,
+> drivers/pci/pci-driver.c:       .dma_configure  = pci_dma_configure,
+> drivers/gpu/host1x/bus.c:       .dma_configure = host1x_dma_configure,
+> 
+> Other than host1x they all work with VFIO.
+> 
+> Also, there is no bus->dma_unconfigure() which would be needed to
+> restore the device as well.
+> 
+> So, would you rather see duplicated code into the 4 drivers, and a new
+> bus op to 'unconfigure dma'
 
-I don't think they are related to the thread_info changes except very
-incidentally.
+The tend to mostly call into common helpers eventually.
 
-From the errors ("expected ':' before '__stringify'") it looks like
-__stringify() isn't defined there, and I do think that header file
-should include <linux/compiler.h> to get it.
+> 
+> Or, a 'dev_configure_dma()' function that is roughly:
+> 
+>         if (dev->bus->dma_configure) {
+>                 ret = dev->bus->dma_configure(dev);
+>                 if (ret)
+>                         return ret;
+>                 if (!drv->suppress_auto_claim_dma_owner) {
+>                        ret = iommu_device_set_dma_owner(dev, DMA_OWNER_KERNEL,
+>                                                         NULL);
+>                        if (ret)
+>                                ret;
+>                 }
+>          }
+> 
+> And a pair'd undo.
 
-I don't actually see how that merge commit you bisected to could
-possibly matter (the diff doesn't show any header file include
-changes, or any parisc ones), but I suspect you might have bisected to
-it because we did end up having actual thread_info errors on parsic
-that weren't fixed until commit 2a2e8202c7a1 ("parisc: move CPU field
-back into thread_info").
-
-So I suspect the parisc build problems started with thread_info issues
-at that merge commit you pinpoint, and then by commit 2a2e8202c7a1
-some other header file simplification had exposed that "no
-__stringify()" thing).
-
-Helge - apparently from allmodconfig and others, we have:
-
-   arch/parisc/include/asm/jump_label.h: In function 'arch_static_branch':
-   arch/parisc/include/asm/jump_label.h:18:18: error: expected ':'
-before '__stringify'
-
-and others, which does look like just a missing header file (that was
-presumably previously implicitly included earlier, and now the
-implicit include is gone).
-
-                    Linus
+But that seems like an even better idea to me.  Even better with an
+early return and avoiding the pointless indentation.
