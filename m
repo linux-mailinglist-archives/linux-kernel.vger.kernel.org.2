@@ -2,293 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09E6450158
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DD845010B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237763AbhKOJaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:30:16 -0500
-Received: from esa8.hc324-48.eu.iphmx.com ([207.54.65.242]:24153 "EHLO
-        esa8.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236489AbhKOJ0T (ORCPT
+        id S236478AbhKOJWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhKOJVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:26:19 -0500
-X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 04:26:19 EST
+        Mon, 15 Nov 2021 04:21:19 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D342C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:18:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w132-20020a25c78a000000b005c27f083240so25605485ybe.16
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:18:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
-  t=1636968204; x=1668504204;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=jtoQR8wy0LIbv3M96BIxO7zMobX3lohEgxe1SyDHY7o=;
-  b=GT4yGAeeOgkc8WbTgKffWiquGJIXdeFvl11qaHs+w90c3zmkTfyqshOA
-   FitGATqTZGhK9kUT9AAZDDr2DOnwUJ3NjkRoaglqRaREjxkPYegRvbBIc
-   cEgti3fFdxK4CT9/YqW5yUpsP9uEAVkN/xhZujgNddl090cejxlEvGMc2
-   A=;
-Received: from esagw1.bmwgroup.com (HELO esagw1.muc) ([160.46.252.34]) by
- esa8.hc324-48.eu.iphmx.com with ESMTP/TLS; 15 Nov 2021 10:15:50 +0100
-Received: from esabb6.muc ([160.50.100.50])  by esagw1.muc with ESMTP/TLS;
- 15 Nov 2021 10:15:50 +0100
-Received: from smucm08j.bmwgroup.net (HELO smucm08j.europe.bmw.corp) ([160.48.96.38])
- by esabb6.muc with ESMTP/TLS; 15 Nov 2021 10:15:48 +0100
-Received: from cmucw916504.de-cci.bmwgroup.net (192.168.221.38) by
- smucm08j.europe.bmw.corp (160.48.96.38) with Microsoft SMTP Server (TLS;
- Mon, 15 Nov 2021 10:15:46 +0100
-From:   Vladimir Divjak <vladimir.divjak@bmw.de>
-To:     <vladimir.divjak@bmw.de>, <viro@zeniv.linux.org.uk>,
-        <mcgrof@kernel.org>, <peterz@infradead.org>,
-        <akpm@linux-foundation.org>, <will@kernel.org>,
-        <yuzhao@google.com>, <hannes@cmpxchg.org>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, <jgg@ziepe.ca>, <hughd@google.com>,
-        <axboe@kernel.dk>, <ebiederm@xmission.com>, <pcc@google.com>,
-        <tglx@linutronix.de>, <elver@google.com>, <jannh@google.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] coredump-ptrace: Delayed delivery of SIGSTOP
-Date:   Mon, 15 Nov 2021 10:15:40 +0100
-Message-ID: <20211115091540.3806073-1-vladimir.divjak@bmw.de>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: smucm26l.europe.bmw.corp (160.46.167.28) To
- smucm08j.europe.bmw.corp (160.48.96.38)
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kCy6lJ3Y6mrf9EnZDJoiQgWHaGA5tu6NQzDrMR4H1Xs=;
+        b=kRLc8y+sIBebqXEZ+zGfkmLRlIQMXeAH0opUhShqdQZzVF224kGZzw83Q1bbxljK2R
+         rCtYkVSN1MwC5GMi0kMY5xXzonHErnKMWNNISXoRE6bh8HBs8jqYB+AZ4V8LZDRZUW26
+         BmW29/w2y+kQg0btU2npeU954OPokgNV0uuoDaxyjnbjHaay2TYpLlNwdN9zTAChyKBv
+         8yNgy8adqNqHau3hVEJniDJdu+EGJnEXJ/taH7uLw0QZMMvn+wd+TlPPvop3krbMpyOD
+         qCy6Azhlv5sYqBYAorHdfOJVKZ8htHGnEzSQWihXzeFVEqX4IiehyjNieDH5srTKkMkC
+         BZVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kCy6lJ3Y6mrf9EnZDJoiQgWHaGA5tu6NQzDrMR4H1Xs=;
+        b=589Xa8e3HMOaqzPcZKYFqRQf/p6FSPki/icfxc1+Pm7HuHEVrWKYECi3hCxnAdb6o5
+         9Wtd1DECfd30KXlX8134N/q9gSwji2MEdMRXocOMWQSKKTR4DQ4e6IHFDJd4/KPJPIcD
+         WxrofxO6VkyhFHfQdcL1xcpSJCaeJnmo52BD1WRKRVB5u5RVWsHZG5F3d3eShN6g0En8
+         GKnGNTAcpxdNHR3TD3+c8mESom5n/v8/92jAlqvhgTBcOt01VXQGhtYRoHH1hZ+TOJbj
+         hbW/96VE23MuFAIUzwRWeUM2oyb4qNuYKRP8YpMqJXRsYSqy9+Zl1Y4J2j4ha5qFg816
+         53uQ==
+X-Gm-Message-State: AOAM530FZlvYBzLftcs/Py5O02Gzjql1s4sTCqdqdsEbMHX61VjPrHBD
+        a1S8C/8FTCTWAxgjP3/TpqtfSQ32U220
+X-Google-Smtp-Source: ABdhPJz82POTNoWkDhIG9zoITHgI0U3gzcom5MUNCPWabksJwKXm4XOEHcXbQgMohmkj0AqtdSuPf/PBoyBP
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:5c8f:7191:e5ca:14fb])
+ (user=apusaka job=sendgmr) by 2002:a05:6902:1201:: with SMTP id
+ s1mr36546890ybu.248.1636967902948; Mon, 15 Nov 2021 01:18:22 -0800 (PST)
+Date:   Mon, 15 Nov 2021 17:17:49 +0800
+Message-Id: <20211115171726.v2.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH v2 1/2] Bluetooth: Send device found event on name resolve failure
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow SIGSTOP to be delivered to the dying process,
-if it is coming from coredump user mode helper (umh)
-process, but delay it until coredump is finished,
-at which point it will be re-triggered in coredump_finish().
+From: Archie Pusaka <apusaka@chromium.org>
 
-When processing this signal, set the tasks of the dying process
-directly to TASK_TRACED state during complete_signal(),
-instead of attempting signal_wake_up().
+Introducing CONFIRM_NAME_FAILED flag that will be sent together with
+device found event on name resolve failure. This will provide the
+userspace with an information so it can decide not to resolve the
+name for these devices in the future.
 
-Do so to allow the umh process to ptrace(PTRACE_ATTACH,...)
-to the dying process, whose coredump it's handling.
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
-* Problem description:
-In automotive and/or embedded environments,
-the storage capacity to store, and/or
-network capabilities to upload
-a complete core file can easily be a limiting factor,
-making offline crash analysis difficult.
-
-* Solution:
-Allow the user mode coredump helper process
-to perform ptrace on the dying process in order to obtain
-useful information such as user mode stacktrace,
-thereby improving the offline debugging possibilities
-for such environments.
-
-Signed-off-by: Vladimir Divjak <vladimir.divjak@bmw.de>
 ---
- fs/coredump.c            | 18 +++++++++--
- include/linux/mm_types.h |  2 ++
- include/linux/umh.h      |  1 +
- kernel/signal.c          | 64 +++++++++++++++++++++++++++++++++++++---
- kernel/umh.c             |  7 +++--
- 5 files changed, 84 insertions(+), 8 deletions(-)
+Hi maintainers,
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 2868e3e171ae..9a51a1a2168d 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -487,6 +487,20 @@ static void coredump_finish(struct mm_struct *mm, bool core_dumped)
+This is the patch series for remote name request as was discussed here.
+https://patchwork.kernel.org/project/bluetooth/patch/20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid/
+Please also review the corresponding userspace change.
+
+Thanks,
+Archie
+
+Changes in v2:
+* Remove the part which accepts DONT_CARE flag in MGMT_OP_CONFIRM_NAME
+* Rename MGMT constant to conform with the docs
+
+ include/net/bluetooth/mgmt.h |  1 +
+ net/bluetooth/hci_event.c    | 11 ++++-------
+ net/bluetooth/mgmt.c         | 11 ++++++++---
+ 3 files changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index 23a0524061b7..3cda081ed6d0 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -940,6 +940,7 @@ struct mgmt_ev_auth_failed {
+ #define MGMT_DEV_FOUND_LEGACY_PAIRING  0x02
+ #define MGMT_DEV_FOUND_NOT_CONNECTABLE 0x04
+ #define MGMT_DEV_FOUND_INITIATED_CONN  0x08
++#define MGMT_DEV_FOUND_NAME_REQUEST_FAILED 0x10
+ 
+ #define MGMT_EV_DEVICE_FOUND		0x0012
+ struct mgmt_ev_device_found {
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index d4b75a6cfeee..2de3080659f9 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2175,13 +2175,10 @@ static void hci_check_pending_name(struct hci_dev *hdev, struct hci_conn *conn,
+ 		return;
+ 
+ 	list_del(&e->list);
+-	if (name) {
+-		e->name_state = NAME_KNOWN;
+-		mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00,
+-				 e->data.rssi, name, name_len);
+-	} else {
+-		e->name_state = NAME_NOT_KNOWN;
+-	}
++
++	e->name_state = name ? NAME_KNOWN : NAME_NOT_KNOWN;
++	mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00, e->data.rssi,
++			 name, name_len);
+ 
+ 	if (hci_resolve_next_name(hdev))
+ 		return;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 06384d761928..0d77c010b391 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -9615,7 +9615,8 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
  {
- 	struct core_thread *curr, *next;
- 	struct task_struct *task;
-+	int signr;
-+	struct ksignal ksig;
-+
-+	current->mm->core_state->core_dumped = true;
-+
-+	/*
-+	 * Check if there is a SIGSTOP pending, and if so, re-trigger its delivery
-+	 * allowing the coredump umh process to do a ptrace on this one.
-+	 */
-+	spin_lock_irq(&current->sighand->siglock);
-+	signr = next_signal(&current->pending, &current->blocked);
-+	spin_unlock_irq(&current->sighand->siglock);
-+	if (signr == SIGSTOP)
-+		get_signal(&ksig);
+ 	struct mgmt_ev_device_found *ev;
+ 	char buf[sizeof(*ev) + HCI_MAX_NAME_LENGTH + 2];
+-	u16 eir_len;
++	u16 eir_len = 0;
++	u32 flags = 0;
  
- 	spin_lock_irq(&current->sighand->siglock);
- 	if (core_dumped && !__fatal_signal_pending(current))
-@@ -601,7 +615,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
- 		 */
- 		.mm_flags = mm->flags,
- 	};
--
-+	core_state.core_dumped = false;
- 	audit_core_dumps(siginfo->si_signo);
+ 	ev = (struct mgmt_ev_device_found *) buf;
  
- 	binfmt = mm->binfmt;
-@@ -695,7 +709,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
- 		if (sub_info)
- 			retval = call_usermodehelper_exec(sub_info,
- 							  UMH_WAIT_EXEC);
--
-+		core_state.umh_pid = sub_info->pid;
- 		kfree(helper_argv);
- 		if (retval) {
- 			printk(KERN_INFO "Core dump to |%s pipe failed\n",
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 6613b26a8894..475b3d8cd399 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -381,6 +381,8 @@ struct core_state {
- 	atomic_t nr_threads;
- 	struct core_thread dumper;
- 	struct completion startup;
-+	bool core_dumped;
-+	pid_t umh_pid;
- };
+@@ -9625,10 +9626,14 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
+ 	ev->addr.type = link_to_bdaddr(link_type, addr_type);
+ 	ev->rssi = rssi;
  
- struct kioctx_table;
-diff --git a/include/linux/umh.h b/include/linux/umh.h
-index 244aff638220..b2bbcafe7c98 100644
---- a/include/linux/umh.h
-+++ b/include/linux/umh.h
-@@ -24,6 +24,7 @@ struct subprocess_info {
- 	char **envp;
- 	int wait;
- 	int retval;
-+	pid_t pid;
- 	int (*init)(struct subprocess_info *info, struct cred *new);
- 	void (*cleanup)(struct subprocess_info *info);
- 	void *data;
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 66e88649cf74..5e7812644c8a 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -943,8 +943,22 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
- 	sigset_t flush;
+-	eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
+-				  name_len);
++	if (name)
++		eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
++					  name_len);
++	else
++		flags |= MGMT_DEV_FOUND_NAME_REQUEST_FAILED;
  
- 	if (signal->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP)) {
--		if (!(signal->flags & SIGNAL_GROUP_EXIT))
--			return sig == SIGKILL;
-+		if (!(signal->flags & SIGNAL_GROUP_EXIT)) {
-+			/*
-+			 * If the signal is for the process being core-dumped
-+			 * and the signal is SIGSTOP sent by the coredump umh process
-+			 * let it through (in addition to SIGKILL)
-+			 * allowing the coredump umh process to ptrace the dying process.
-+			 */
-+			bool sig_from_umh = false;
-+
-+			if (unlikely(p->mm && p->mm->core_state &&
-+				p->mm->core_state->umh_pid == current->tgid)) {
-+				sig_from_umh = true;
-+			}
-+			return sig == SIGKILL || (sig == SIGSTOP && sig_from_umh);
-+		}
-+
- 		/*
- 		 * The process is in the middle of dying, nothing to do.
- 		 */
-@@ -1014,8 +1028,18 @@ static inline bool wants_signal(int sig, struct task_struct *p)
- 	if (sigismember(&p->blocked, sig))
- 		return false;
+ 	ev->eir_len = cpu_to_le16(eir_len);
++	ev->flags = cpu_to_le32(flags);
  
--	if (p->flags & PF_EXITING)
-+	if (p->flags & PF_EXITING) {
-+		/*
-+		 * Ignore the fact the process is exiting,
-+		 * if it's being core-dumped, and the signal is SIGSTOP
-+		 * allowing the coredump umh process to ptrace the dying process.
-+		 * See prepare_signal().
-+		 */
-+		if (unlikely(p->mm && p->mm->core_state && sig == SIGSTOP))
-+			return true;
-+
- 		return false;
-+	}
- 
- 	if (sig == SIGKILL)
- 		return true;
-@@ -1094,6 +1118,22 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
- 		}
- 	}
- 
-+	/*
-+	 * If the signal is completed for a process being core-dumped,
-+	 * and the signal is SIGSTOP, there is no point in waking up its tasks,
-+	 * as they are either dumping the core, or in uninterruptible state,
-+	 * so skip the wake up if core-dump is not yet completed.
-+	 * Instead, if the core-dump has been completed, see coredump_finish()
-+	 * set the task state directly to TASK_TRACED,
-+	 * allowing the coredump umh process to ptrace the dying process.
-+	 */
-+	if (unlikely(t->mm && t->mm->core_state) && sig == SIGSTOP) {
-+		if (t->mm->core_state->core_dumped)
-+			t->state = TASK_TRACED;
-+
-+		return;
-+	}
-+
- 	/*
- 	 * The signal is already in the shared-pending queue.
- 	 * Tell the chosen thread to wake up and dequeue it.
-@@ -2586,6 +2626,7 @@ bool get_signal(struct ksignal *ksig)
- 	struct sighand_struct *sighand = current->sighand;
- 	struct signal_struct *signal = current->signal;
- 	int signr;
-+	bool sigstop_pending = false;
- 
- 	if (unlikely(current->task_works))
- 		task_work_run();
-@@ -2651,8 +2692,23 @@ bool get_signal(struct ksignal *ksig)
- 		goto relock;
- 	}
- 
-+
-+	/*
-+	 * If this task is being core-dumped,
-+	 * and the next signal is SIGSTOP, allow its delivery
-+	 * to enable the coredump umh process to ptrace the dying one.
-+	 */
-+	if (unlikely(current->mm && current->mm->core_state)) {
-+		int nextsig = 0;
-+
-+		nextsig = next_signal(&current->pending, &current->blocked);
-+		if (nextsig == SIGSTOP) {
-+			sigstop_pending = true;
-+		}
-+	}
-+
- 	/* Has this task already been marked for death? */
--	if (signal_group_exit(signal)) {
-+	if (signal_group_exit(signal) && !sigstop_pending) {
- 		ksig->info.si_signo = signr = SIGKILL;
- 		sigdelset(&current->pending.signal, SIGKILL);
- 		trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
-diff --git a/kernel/umh.c b/kernel/umh.c
-index 36c123360ab8..8ac027c75d70 100644
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -107,6 +107,7 @@ static int call_usermodehelper_exec_async(void *data)
- 	}
- 
- 	commit_creds(new);
-+	sub_info->pid = task_pid_nr(current);
- 
- 	wait_for_initramfs();
- 	retval = kernel_execve(sub_info->path,
-@@ -133,10 +134,12 @@ static void call_usermodehelper_exec_sync(struct subprocess_info *sub_info)
- 	/* If SIGCLD is ignored do_wait won't populate the status. */
- 	kernel_sigaction(SIGCHLD, SIG_DFL);
- 	pid = kernel_thread(call_usermodehelper_exec_async, sub_info, SIGCHLD);
--	if (pid < 0)
-+	if (pid < 0) {
- 		sub_info->retval = pid;
--	else
-+	} else {
-+		sub_info->pid = pid;
- 		kernel_wait(pid, &sub_info->retval);
-+	}
- 
- 	/* Restore default kernel sig handler */
- 	kernel_sigaction(SIGCHLD, SIG_IGN);
+ 	mgmt_event(MGMT_EV_DEVICE_FOUND, hdev, ev, sizeof(*ev) + eir_len, NULL);
+ }
 -- 
-2.25.1
+2.34.0.rc1.387.gb447b232ab-goog
 
