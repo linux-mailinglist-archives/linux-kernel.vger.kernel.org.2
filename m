@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FF2452265
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2F8452596
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377057AbhKPBLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:11:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S1382708AbhKPByH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:54:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245410AbhKOTUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6B6660041;
-        Mon, 15 Nov 2021 18:33:58 +0000 (UTC)
+        id S238067AbhKOSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:25:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A3F6342E;
+        Mon, 15 Nov 2021 17:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001239;
-        bh=qlmn6Bgw0UqFDSuKTeL9xceGwLBTOC+lDycFXeBxUDI=;
+        s=korg; t=1636998967;
+        bh=b6fcItTklQsN/ZPpPnRAkBWjlRbNKWlzd0HA6lNmv18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=agCz37AzzbuIX2sOi9d+AwDk8OOwyX3eLP4zGfIQYabPjVgSumme0sf/KFHEniSkZ
-         5Tuwfd1rh4a1uQOZKIrezLZqETBg+wjOKgOqSQwuoM/9nlfKfceHURqKsEbenfOqZa
-         MW4YBWI2x+s1ScqgxgUuhvVQaRtEvajXMNYSOGXk=
+        b=UnKL2xuWIYWfgfTt5WQDrDctJjiiVFWBeMRXeNdOEQtmyiGRI/ZfKnLJqtfAARPPj
+         Qy+uNoFRUZ1dOO8rRs7orfQNBLYC98G+LsaXVTg3Bn3oR8Jln8Qn7OHJS//fMGpM+d
+         GILUgGeFWtWH2hPJfg50OH4l5nYzXK9QnOUdd6rA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
-        Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH 5.15 114/917] soc: fsl: dpio: use the combined functions to protect critical zone
-Date:   Mon, 15 Nov 2021 17:53:29 +0100
-Message-Id: <20211115165432.608397356@linuxfoundation.org>
+        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.14 127/849] wcn36xx: Fix (QoS) null data frame bitrate/modulation
+Date:   Mon, 15 Nov 2021 17:53:30 +0100
+Message-Id: <20211115165424.393823315@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,87 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Meng Li <Meng.Li@windriver.com>
+From: Loic Poulain <loic.poulain@linaro.org>
 
-commit dc7e5940aad6641bd5ab33ea8b21c4b3904d989f upstream.
+commit d3fd2c95c1c13ec217d43ebef3c61cfa00a6cd37 upstream.
 
-In orininal code, use 2 function spin_lock() and local_irq_save() to
-protect the critical zone. But when enable the kernel debug config,
-there are below inconsistent lock state detected.
-================================
-WARNING: inconsistent lock state
-5.10.63-yocto-standard #1 Not tainted
---------------------------------
-inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-lock_torture_wr/226 [HC0[0]:SC1[5]:HE1:SE0] takes:
-ffff002005b2dd80 (&p->access_spinlock){+.?.}-{3:3}, at: qbman_swp_enqueue_multiple_mem_back+0x44/0x270
-{SOFTIRQ-ON-W} state was registered at:
-  lock_acquire.part.0+0xf8/0x250
-  lock_acquire+0x68/0x84
-  _raw_spin_lock+0x68/0x90
-  qbman_swp_enqueue_multiple_mem_back+0x44/0x270
-  ......
-  cryptomgr_test+0x38/0x60
-  kthread+0x158/0x164
-  ret_from_fork+0x10/0x38
-irq event stamp: 4498
-hardirqs last  enabled at (4498): [<ffff800010fcf980>] _raw_spin_unlock_irqrestore+0x90/0xb0
-hardirqs last disabled at (4497): [<ffff800010fcffc4>] _raw_spin_lock_irqsave+0xd4/0xe0
-softirqs last  enabled at (4458): [<ffff8000100108c4>] __do_softirq+0x674/0x724
-softirqs last disabled at (4465): [<ffff80001005b2a4>] __irq_exit_rcu+0x190/0x19c
+We observe unexpected connection drops with some APs due to
+non-acked mac80211 generated null data frames (keep-alive).
+After debugging and capture, we noticed that null frames are
+submitted at standard data bitrate and that the given APs are
+in trouble with that.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
-       CPU0
-       ----
-  lock(&p->access_spinlock);
-  <Interrupt>
-    lock(&p->access_spinlock);
- *** DEADLOCK ***
+After setting the null frame bitrate to control bitrate, all
+null frames are acked as expected and connection is maintained.
 
-So, in order to avoid deadlock, use the combined functions
-spin_lock_irqsave/spin_unlock_irqrestore() to protect critical zone.
+Not sure if it's a requirement of the specification, but it seems
+the right thing to do anyway, null frames are mostly used for control
+purpose (power-saving, keep-alive...), and submitting them with
+a slower/simpler bitrate/modulation is more robust.
 
-Fixes: 3b2abda7d28c ("soc: fsl: dpio: Replace QMAN array mode with ring mode enqueue")
 Cc: stable@vger.kernel.org
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
+Fixes: 512b191d9652 ("wcn36xx: Fix TX data path")
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1634560399-15290-1-git-send-email-loic.poulain@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/fsl/dpio/qbman-portal.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/wcn36xx/txrx.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/soc/fsl/dpio/qbman-portal.c
-+++ b/drivers/soc/fsl/dpio/qbman-portal.c
-@@ -732,8 +732,7 @@ int qbman_swp_enqueue_multiple_mem_back(
- 	int i, num_enqueued = 0;
- 	unsigned long irq_flags;
- 
--	spin_lock(&s->access_spinlock);
--	local_irq_save(irq_flags);
-+	spin_lock_irqsave(&s->access_spinlock, irq_flags);
- 
- 	half_mask = (s->eqcr.pi_ci_mask>>1);
- 	full_mask = s->eqcr.pi_ci_mask;
-@@ -744,8 +743,7 @@ int qbman_swp_enqueue_multiple_mem_back(
- 		s->eqcr.available = qm_cyc_diff(s->eqcr.pi_ring_size,
- 					eqcr_ci, s->eqcr.ci);
- 		if (!s->eqcr.available) {
--			local_irq_restore(irq_flags);
--			spin_unlock(&s->access_spinlock);
-+			spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
- 			return 0;
- 		}
+--- a/drivers/net/wireless/ath/wcn36xx/txrx.c
++++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
+@@ -429,6 +429,7 @@ static void wcn36xx_set_tx_data(struct w
+ 	if (ieee80211_is_any_nullfunc(hdr->frame_control)) {
+ 		/* Don't use a regular queue for null packet (no ampdu) */
+ 		bd->queue_id = WCN36XX_TX_U_WQ_ID;
++		bd->bd_rate = WCN36XX_BD_RATE_CTRL;
  	}
-@@ -784,8 +782,7 @@ int qbman_swp_enqueue_multiple_mem_back(
- 	dma_wmb();
- 	qbman_write_register(s, QBMAN_CINH_SWP_EQCR_PI,
- 				(QB_RT_BIT)|(s->eqcr.pi)|s->eqcr.pi_vb);
--	local_irq_restore(irq_flags);
--	spin_unlock(&s->access_spinlock);
-+	spin_unlock_irqrestore(&s->access_spinlock, irq_flags);
  
- 	return num_enqueued;
- }
+ 	if (bcast) {
 
 
