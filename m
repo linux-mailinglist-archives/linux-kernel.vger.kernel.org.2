@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6797451908
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E28A45205B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349755AbhKOXNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:13:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39116 "EHLO mail.kernel.org"
+        id S242508AbhKPAwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:52:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243918AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:06:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6081E633F0;
-        Mon, 15 Nov 2021 18:17:03 +0000 (UTC)
+        id S1344232AbhKOTYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F12163636;
+        Mon, 15 Nov 2021 18:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000223;
-        bh=y8+Me6CpmX5PqIny91teTC27N/PKc/yXKnrtroHGTc0=;
+        s=korg; t=1637002448;
+        bh=QPAv+pnlnR8/JQUrSyaxyj0CGOv8mdSEsO2XRhRn57E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ipYFDDNUTBuUoW+Nzx7BIz5u175ZwIDIL4bVNZg++TbuXMBKkcP4rppotP7OIMnHg
-         fWjoB5Ie6kWy1MMz/ZiSgUdci9D1DnsONsJrcEXLj0jKe7mxHQqPo1nI+nE19Gh9Or
-         WSqJDFhpPV9L+ICfbfy46YJMKxVxA4t/V3tfn8xY=
+        b=LECvO47sZJ7Y8jiP9FFBBUYdBUjL32CbV9dOkIgOq56Njfl7MU0sYMNAVGy3g3jQ5
+         tnQVKpLnkN3gtGUyDX1bn+D/Kdu5JG/x+c0nUxO2AWchjq2k2a4gwGuGGJ7N+J1eBB
+         T4IRRhB+71N2zwyDgkWuoXa730DZCtrbH9/dXCrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 583/849] ALSA: hda: Use position buffer for SKL+ again
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 571/917] arm64: dts: broadcom: bcm4908: Fix UART clock name
 Date:   Mon, 15 Nov 2021 18:01:06 +0100
-Message-Id: <20211115165439.978311913@linuxfoundation.org>
+Message-Id: <20211115165448.141476667@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit c4ca3871e21fa085096316f5f8d9975cf3dfde1d ]
+[ Upstream commit 6c38c39ab2141f53786d73e706675e8819a3f2cb ]
 
-The commit f87e7f25893d ("ALSA: hda - Improved position reporting on
-SKL+") changed the PCM position report for SKL+ chips to use DPIB, but
-according to Pierre, DPIB is no best choice for the accurate position
-reports and it often reports too early.  The recommended method is
-rather the classical position buffer.
+According to the binding the correct clock name is "refclk".
 
-This patch makes the PCM position reporting on SKL+ back to the
-position buffer again.
-
-Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210929072934.6809-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 2961f69f151c ("arm64: dts: broadcom: add BCM4908 and Asus GT-AC5300 early DTS files")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+ arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index e224feb792a08..ec17e40c710ea 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -881,27 +881,6 @@ static int azx_get_delay_from_fifo(struct azx *chip, struct azx_dev *azx_dev,
- 	return substream->runtime->delay;
- }
- 
--static unsigned int azx_skl_get_dpib_pos(struct azx *chip,
--					 struct azx_dev *azx_dev)
--{
--	return _snd_hdac_chip_readl(azx_bus(chip),
--				    AZX_REG_VS_SDXDPIB_XBASE +
--				    (AZX_REG_VS_SDXDPIB_XINTERVAL *
--				     azx_dev->core.index));
--}
--
--/* get the current DMA position with correction on SKL+ chips */
--static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
--{
--	/* DPIB register gives a more accurate position for playback */
--	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return azx_skl_get_dpib_pos(chip, azx_dev);
--
--	/* read of DPIB fetches the actual posbuf */
--	azx_skl_get_dpib_pos(chip, azx_dev);
--	return azx_get_pos_posbuf(chip, azx_dev);
--}
--
- static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
- {
- 	azx_stop_chip(chip);
-@@ -1598,7 +1577,7 @@ static void assign_position_fix(struct azx *chip, int fix)
- 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
- 		[POS_FIX_VIACOMBO] = azx_via_get_position,
- 		[POS_FIX_COMBO] = azx_get_pos_lpib,
--		[POS_FIX_SKL] = azx_get_pos_skl,
-+		[POS_FIX_SKL] = azx_get_pos_posbuf,
- 		[POS_FIX_FIFO] = azx_get_pos_fifo,
- 	};
+diff --git a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
+index a5a64d17d9ea6..f6b93bbb49228 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
++++ b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
+@@ -292,7 +292,7 @@
+ 			reg = <0x640 0x18>;
+ 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&periph_clk>;
+-			clock-names = "periph";
++			clock-names = "refclk";
+ 			status = "okay";
+ 		};
  
 -- 
 2.33.0
