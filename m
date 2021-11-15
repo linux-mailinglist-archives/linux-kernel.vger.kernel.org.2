@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FFB451B66
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C21451944
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346385AbhKPABY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:01:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        id S1347917AbhKOXRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:17:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344425AbhKOTYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 496626348D;
-        Mon, 15 Nov 2021 18:57:31 +0000 (UTC)
+        id S244391AbhKOTOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:14:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B8D6340D;
+        Mon, 15 Nov 2021 18:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002651;
-        bh=kdebkL3yJWAURCXWKPh9zP1gx264ri6FnPV749kAbf0=;
+        s=korg; t=1637000437;
+        bh=UIU8fn2r++JvQ/HB870lAGI4pAU7rADe1TVFedbvmdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2PUpJ7Za+HzrtKzlAuR0QNtzQzU1PA9XsAs1V0qmKhY1uNDrHwE/KzIm8hqT1lDzz
-         gafruFZoZozjUNXvk18sduHdIbXcVgVXtYudrEdNNXENtDXw3S4fVa19hl7W+r6mkP
-         ldksQvn9Yt9p4Mq+VXrAKrmMU3otOUZlxs2zH4h8=
+        b=X4eogyrclX+LG8ADhRdm0Zd5ooQ84WPrAdKvl4tIhuds57fHmEK5cZJeF01cq7psJ
+         QPEfLHHRE2QfHILO98NM7W4Ee8DvCoZYG1eH2N/FbvPSfeq4ZrGF7tdnRlNHPec5dp
+         UpBP/i322z7XXL8IxP8ItsWW0rxSnVnuNzkz/KdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 647/917] iio: adis: do not disabe IRQs in adis_init()
+Subject: [PATCH 5.14 659/849] serial: cpm_uart: Protect udbg definitions by CONFIG_SERIAL_CPM_CONSOLE
 Date:   Mon, 15 Nov 2021 18:02:22 +0100
-Message-Id: <20211115165450.797779699@linuxfoundation.org>
+Message-Id: <20211115165442.553570780@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sá <nuno.sa@analog.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit b600bd7eb333554518b4dd36b882b2ae58a5149e ]
+[ Upstream commit d142585bceb3218ad432ed0fcd5be9d6e3cd9052 ]
 
-With commit ecb010d441088 ("iio: imu: adis: Refactor adis_initial_startup")
-we are doing a HW or SW reset to the device which means that we'll get
-the default state of the data ready pin (which is enabled). Hence there's
-no point in disabling the IRQ in the init function. Moreover, this
-function is intended to initialize internal data structures and not
-really do anything on the device.
+If CONFIG_CONSOLE_POLL=y, and CONFIG_SERIAL_CPM=m (hence
+CONFIG_SERIAL_CPM_CONSOLE=n):
 
-As a result of this, some devices were left with the data ready pin enabled
-after probe which was not the desired behavior. Thus, we move the call to
-'adis_enable_irq()' to the initial startup function where it makes more
-sense for it to be.
+    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1109:12: warning: ‘udbg_cpm_getc’ defined but not used [-Wunused-function]
+     1109 | static int udbg_cpm_getc(void)
+	  |            ^~~~~~~~~~~~~
+    drivers/tty/serial/cpm_uart/cpm_uart_core.c:1095:13: warning: ‘udbg_cpm_putc’ defined but not used [-Wunused-function]
+     1095 | static void udbg_cpm_putc(char c)
+	  |             ^~~~~~~~~~~~~
 
-Note that for devices that cannot mask/unmask the pin, it makes no sense
-to call the function at this point since the IRQ should not have been
-yet requested. This will be improved in a follow up change.
+Fix this by making the udbg definitions depend on
+CONFIG_SERIAL_CPM_CONSOLE, in addition to CONFIG_CONSOLE_POLL.
 
-Fixes: ecb010d441088 ("iio: imu: adis: Refactor adis_initial_startup")
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210903141423.517028-2-nuno.sa@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: a60526097f42eb98 ("tty: serial: cpm_uart: Add udbg support for enabling xmon")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20211027075326.3270785-1-geert@linux-m68k.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/serial/cpm_uart/cpm_uart_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iio/imu/adis.c b/drivers/iio/imu/adis.c
-index b9a06ca29beec..d4e692b187cda 100644
---- a/drivers/iio/imu/adis.c
-+++ b/drivers/iio/imu/adis.c
-@@ -430,6 +430,8 @@ int __adis_initial_startup(struct adis *adis)
- 	if (ret)
- 		return ret;
- 
-+	adis_enable_irq(adis, false);
-+
- 	if (!adis->data->prod_id_reg)
- 		return 0;
- 
-@@ -526,7 +528,7 @@ int adis_init(struct adis *adis, struct iio_dev *indio_dev,
- 		adis->current_page = 0;
- 	}
- 
--	return adis_enable_irq(adis, false);
-+	return 0;
+diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+index c719aa2b18328..d6d3db9c3b1f8 100644
+--- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
++++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+@@ -1090,6 +1090,7 @@ static void cpm_put_poll_char(struct uart_port *port,
+ 	cpm_uart_early_write(pinfo, ch, 1, false);
  }
- EXPORT_SYMBOL_GPL(adis_init);
+ 
++#ifdef CONFIG_SERIAL_CPM_CONSOLE
+ static struct uart_port *udbg_port;
+ 
+ static void udbg_cpm_putc(char c)
+@@ -1114,6 +1115,7 @@ static int udbg_cpm_getc(void)
+ 		cpu_relax();
+ 	return c;
+ }
++#endif /* CONFIG_SERIAL_CPM_CONSOLE */
+ 
+ #endif /* CONFIG_CONSOLE_POLL */
  
 -- 
 2.33.0
