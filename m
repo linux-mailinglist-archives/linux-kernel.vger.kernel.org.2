@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2295F4518BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CE1451ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351477AbhKOXGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:06:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59660 "EHLO mail.kernel.org"
+        id S233949AbhKOXmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243484AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE2161027;
-        Mon, 15 Nov 2021 18:13:21 +0000 (UTC)
+        id S1343949AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F7B63363;
+        Mon, 15 Nov 2021 18:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000002;
-        bh=hn6X+C2qlh+J4yg96QjtdrInsnzs22vSWVQS4gkvOHw=;
+        s=korg; t=1637002146;
+        bh=DdA0QretWp4k5PwhTyCRv9R5py7QCQlDtuhwqxPqFFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iQBXZpyfCkCaVbpudKYkEhc6Jdf3gn2AdcYWBcW3Y0dzZKL01TwPZfIaWcl018x+W
-         bxOTfv24QsjUFUwKelChiHJ579MfQTNQ+P7GSjaMDT90b3SdHO/tCIlWUDVYKyMGch
-         B7e7EbYXBwhix9rdPuKs/bqJYK+sAJu0l6cNRF7E=
+        b=c8OlW/D6IL9iLtFIKLcVz14EzeaCejiCtOAskAV7Yaz/g+YbwfD2abJsSeMh4MfaT
+         3EriCMDHG2hUlX0nW9YwLny4ioT+o6KywT8yTmv/h4h8U+3lMaixbWo44VMmysDnG0
+         BDmB0yowAn4SPFUfA7Ayam5RzfOirmEZTX5LnGI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bo Jiao <bo.jiao@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 459/849] mt76: mt7915: fix potential overflow of eeprom page index
-Date:   Mon, 15 Nov 2021 17:59:02 +0100
-Message-Id: <20211115165435.814500967@linuxfoundation.org>
+        stable@vger.kernel.org, Bixuan Cui <cuibixuan@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        Hao Xu <haoxu@linux.alibaba.com>
+Subject: [PATCH 5.15 448/917] io-wq: Remove duplicate code in io_workqueue_create()
+Date:   Mon, 15 Nov 2021 17:59:03 +0100
+Message-Id: <20211115165443.969728103@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shayne Chen <shayne.chen@mediatek.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 82a980f82a511ce74ab57eb9f692d02225eb32f4 ]
+[ Upstream commit 71e1cef2d794338cc7b979d4c6144e1dc12718b5 ]
 
-If total eeprom size is divisible by per-page size, the i in for loop
-will exceed max page index, which happens in our newer chipset.
+While task_work_add() in io_workqueue_create() is true,
+then duplicate code is executed:
 
-Fixes: 26f18380e6ca ("mt76: mt7915: add support for flash mode")
-Signed-off-by: Bo Jiao <bo.jiao@mediatek.com>
-Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+  -> clear_bit_unlock(0, &worker->create_state);
+  -> io_worker_release(worker);
+  -> atomic_dec(&acct->nr_running);
+  -> io_worker_ref_put(wq);
+  -> return false;
+
+  -> clear_bit_unlock(0, &worker->create_state); // back to io_workqueue_create()
+  -> io_worker_release(worker);
+  -> kfree(worker);
+
+The io_worker_release() and clear_bit_unlock() are executed twice.
+
+Fixes: 3146cba99aa2 ("io-wq: make worker creation resilient against signals")
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Link: https://lore.kernel.org/r/20210911085847.34849-1-cuibixuan@huawei.com
+Reviwed-by: Hao Xu <haoxu@linux.alibaba.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/io-wq.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index c08c7398f9b85..e7e396f58c92c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -3391,20 +3391,20 @@ int mt7915_mcu_set_chan_info(struct mt7915_phy *phy, int cmd)
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 203c0e2a5dfae..5d189b24a8d4b 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -359,8 +359,10 @@ static bool io_queue_worker_create(struct io_worker *worker,
  
- static int mt7915_mcu_set_eeprom_flash(struct mt7915_dev *dev)
- {
--#define TOTAL_PAGE_MASK		GENMASK(7, 5)
-+#define MAX_PAGE_IDX_MASK	GENMASK(7, 5)
- #define PAGE_IDX_MASK		GENMASK(4, 2)
- #define PER_PAGE_SIZE		0x400
- 	struct mt7915_mcu_eeprom req = { .buffer_mode = EE_MODE_BUFFER };
--	u8 total = MT7915_EEPROM_SIZE / PER_PAGE_SIZE;
-+	u8 total = DIV_ROUND_UP(MT7915_EEPROM_SIZE, PER_PAGE_SIZE);
- 	u8 *eep = (u8 *)dev->mt76.eeprom.data;
- 	int eep_len;
- 	int i;
+ 	init_task_work(&worker->create_work, func);
+ 	worker->create_index = acct->index;
+-	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL)) {
++		clear_bit_unlock(0, &worker->create_state);
+ 		return true;
++	}
+ 	clear_bit_unlock(0, &worker->create_state);
+ fail_release:
+ 	io_worker_release(worker);
+@@ -765,11 +767,8 @@ static void io_workqueue_create(struct work_struct *work)
+ 	struct io_worker *worker = container_of(work, struct io_worker, work);
+ 	struct io_wqe_acct *acct = io_wqe_get_acct(worker);
  
--	for (i = 0; i <= total; i++, eep += eep_len) {
-+	for (i = 0; i < total; i++, eep += eep_len) {
- 		struct sk_buff *skb;
- 		int ret;
+-	if (!io_queue_worker_create(worker, acct, create_worker_cont)) {
+-		clear_bit_unlock(0, &worker->create_state);
+-		io_worker_release(worker);
++	if (!io_queue_worker_create(worker, acct, create_worker_cont))
+ 		kfree(worker);
+-	}
+ }
  
--		if (i == total)
-+		if (i == total - 1 && !!(MT7915_EEPROM_SIZE % PER_PAGE_SIZE))
- 			eep_len = MT7915_EEPROM_SIZE % PER_PAGE_SIZE;
- 		else
- 			eep_len = PER_PAGE_SIZE;
-@@ -3414,7 +3414,7 @@ static int mt7915_mcu_set_eeprom_flash(struct mt7915_dev *dev)
- 		if (!skb)
- 			return -ENOMEM;
- 
--		req.format = FIELD_PREP(TOTAL_PAGE_MASK, total) |
-+		req.format = FIELD_PREP(MAX_PAGE_IDX_MASK, total - 1) |
- 			     FIELD_PREP(PAGE_IDX_MASK, i) | EE_FORMAT_WHOLE;
- 		req.len = cpu_to_le16(eep_len);
- 
+ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
 -- 
 2.33.0
 
