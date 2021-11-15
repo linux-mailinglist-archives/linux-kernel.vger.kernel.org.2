@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F2F45211C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EC1451A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346804AbhKPA71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S244791AbhKOXiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:38:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343595AbhKOTVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AA6A635CD;
-        Mon, 15 Nov 2021 18:42:50 +0000 (UTC)
+        id S1343598AbhKOTVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28415635AC;
+        Mon, 15 Nov 2021 18:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001771;
-        bh=THe/nioCgVCQvo/WlreBJb3rdIBvO7XNaQf2Ui04Ou8=;
+        s=korg; t=1637001773;
+        bh=OiufC8pL7TWcuNUxGFH+t+ZqQE871C5D3yXEOIwBva0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D1b/Y/Y9Aq0Rw2Ix0W2SRtXZUqC1zs0jw1R8C6y4CH2voG6IxqORCi20/jOD5k5zy
-         wg2MWujgOlykLjNHzFro2pZ3s7Mv6dalroCzrz9DZXOxFpVbo8Lriu8RfkanU3dmHs
-         /sUR6zj14qV0mBsOVsgK4I1ZSA8DpQOfSVKVWuyE=
+        b=03CsttK/j1WGoZNJkYaAAV42OBIhpl+9s5+nkrWodTM3McsWvn9p8a+qheFGPXZGQ
+         Q9f0rIG1EYoIXv/0R3CskygYuLO5MUaYxcOfcO8cnnNygddM0LYvhClN8wrNXWBElu
+         PmA3N784H0Hjpn4JNdNJc/cUxnskZ7HM65BMAaA0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Chao Yu <chao@kernel.org>,
+        syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 315/917] task_stack: Fix end_of_stack() for architectures with upwards-growing stack
-Date:   Mon, 15 Nov 2021 17:56:50 +0100
-Message-Id: <20211115165439.427956615@linuxfoundation.org>
+Subject: [PATCH 5.15 316/917] erofs: dont trigger WARN() when decompression fails
+Date:   Mon, 15 Nov 2021 17:56:51 +0100
+Message-Id: <20211115165439.458113860@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,41 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 9cc2fa4f4a92ccc6760d764e7341be46ee8aaaa1 ]
+[ Upstream commit a0961f351d82d43ab0b845304caa235dfe249ae9 ]
 
-The function end_of_stack() returns a pointer to the last entry of a
-stack. For architectures like parisc where the stack grows upwards
-return the pointer to the highest address in the stack.
+syzbot reported a WARNING [1] due to corrupted compressed data.
 
-Without this change I faced a crash on parisc, because the stackleak
-functionality wrote STACKLEAK_POISON to the lowest address and thus
-overwrote the first 4 bytes of the task_struct which included the
-TIF_FLAGS.
+As Dmitry said, "If this is not a kernel bug, then the code should
+not use WARN. WARN if for kernel bugs and is recognized as such by
+all testing systems and humans."
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+[1] https://lore.kernel.org/r/000000000000b3586105cf0ff45e@google.com
+
+Link: https://lore.kernel.org/r/20211025074311.130395-1-hsiangkao@linux.alibaba.com
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Chao Yu <chao@kernel.org>
+Reported-by: syzbot+d8aaffc3719597e8cfb4@syzkaller.appspotmail.com
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sched/task_stack.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/erofs/decompressor.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/task_stack.h
-index 2413427e439c7..d10150587d819 100644
---- a/include/linux/sched/task_stack.h
-+++ b/include/linux/sched/task_stack.h
-@@ -25,7 +25,11 @@ static inline void *task_stack_page(const struct task_struct *task)
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index a5bc4b1b7813e..ad3f31380e6b2 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -233,7 +233,6 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
+ 		erofs_err(rq->sb, "failed to decompress %d in[%u, %u] out[%u]",
+ 			  ret, rq->inputsize, inputmargin, rq->outputsize);
  
- static inline unsigned long *end_of_stack(const struct task_struct *task)
- {
-+#ifdef CONFIG_STACK_GROWSUP
-+	return (unsigned long *)((unsigned long)task->stack + THREAD_SIZE) - 1;
-+#else
- 	return task->stack;
-+#endif
- }
- 
- #elif !defined(__HAVE_THREAD_FUNCTIONS)
+-		WARN_ON(1);
+ 		print_hex_dump(KERN_DEBUG, "[ in]: ", DUMP_PREFIX_OFFSET,
+ 			       16, 1, src + inputmargin, rq->inputsize, true);
+ 		print_hex_dump(KERN_DEBUG, "[out]: ", DUMP_PREFIX_OFFSET,
 -- 
 2.33.0
 
