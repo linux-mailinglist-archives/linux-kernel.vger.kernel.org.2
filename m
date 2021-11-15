@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A90E4515CD
+	by mail.lfdr.de (Postfix) with ESMTP id E0B3F4515CE
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353149AbhKOUzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:55:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
+        id S1353173AbhKOUzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:55:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239397AbhKOSIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:08:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE11F633AF;
-        Mon, 15 Nov 2021 17:46:13 +0000 (UTC)
+        id S240639AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:11:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA627633BE;
+        Mon, 15 Nov 2021 17:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998374;
-        bh=t3hcQGx1IuJ/hGgsUv2Dp3jFxWB8zNDGYv7ENhMxHNo=;
+        s=korg; t=1636998437;
+        bh=CO1s9a5JKXDfQAHjrPKjabOVn04M8aXeLNnH/E7NDok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQr4EnJJ7rGf9n4dOR5CCuH4zAbULe6UMRHk7+o2DPeiwFHU9zeNZ0dIzZAy+7vMW
-         S7pTzJ+u+hSKrgyssHE5R9qG5sQDncwmynYv/cAqEF5iNXKPUCXzA1ncYKUIT1Awbj
-         K2d9mdpQg6g6UPya0O2CNDzxQhNAUNyDz8UV3s5w=
+        b=ofM7qk95M0A5NIn0vFgvs3A82T/DJnbZ5ywbniXayV1PTO30Mc4uJTAsB0uPDqoqd
+         kX0+Ji3uOg/RZvtrYF25ju7qxrvOjXHR2dFoPirM0LNf8qqTxOK4IAOBh/canHoMWV
+         /iLTBuNGixDJiDBF4W1PG+nXtHji3zKCeBYNqroQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <aglo@umich.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Brett Creeley <brett.creeley@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 486/575] NFS: Fix an Oops in pnfs_mark_request_commit()
-Date:   Mon, 15 Nov 2021 18:03:31 +0100
-Message-Id: <20211115165400.513346889@linuxfoundation.org>
+Subject: [PATCH 5.10 510/575] ice: Fix not stopping Tx queues for VFs
+Date:   Mon, 15 Nov 2021 18:03:55 +0100
+Message-Id: <20211115165401.325254131@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,66 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Brett Creeley <brett.creeley@intel.com>
 
-[ Upstream commit f0caea8882a7412a2ad4d8274f0280cdf849c9e2 ]
+[ Upstream commit b385cca47363316c6d9a74ae9db407bbc281f815 ]
 
-Olga reports seeing the following Oops when doing O_DIRECT writes to a
-pNFS flexfiles server:
+When a VF is removed and/or reset its Tx queues need to be
+stopped from the PF. This is done by calling the ice_dis_vf_qs()
+function, which calls ice_vsi_stop_lan_tx_rings(). Currently
+ice_dis_vf_qs() is protected by the VF state bit ICE_VF_STATE_QS_ENA.
+Unfortunately, this is causing the Tx queues to not be disabled in some
+cases and when the VF tries to re-enable/reconfigure its Tx queues over
+virtchnl the op is failing. This is because a VF can be reset and/or
+removed before the ICE_VF_STATE_QS_ENA bit is set, but the Tx queues
+were already configured via ice_vsi_cfg_single_txq() in the
+VIRTCHNL_OP_CONFIG_VSI_QUEUES op. However, the ICE_VF_STATE_QS_ENA bit
+is set on a successful VIRTCHNL_OP_ENABLE_QUEUES, which will always
+happen after the VIRTCHNL_OP_CONFIG_VSI_QUEUES op.
 
-Oops: 0000 [#1] SMP PTI
-CPU: 1 PID: 234186 Comm: kworker/u8:1 Not tainted 5.15.0-rc4+ #4
-Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.13.0-2.module+el8.3.0+7353+9de0a3cc 04/01/2014
-Workqueue: nfsiod rpc_async_release [sunrpc]
-RIP: 0010:nfs_mark_request_commit+0x12/0x30 [nfs]
-Code: ff ff be 03 00 00 00 e8 ac 34 83 eb e9 29 ff ff
-ff e8 22 bc d7 eb 66 90 0f 1f 44 00 00 48 85 f6 74 16 48 8b 42 10 48
-8b 40 18 <48> 8b 40 18 48 85 c0 74 05 e9 70 fc 15 ec 48 89 d6 e9 68 ed
-ff ff
-RSP: 0018:ffffa82f0159fe00 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8f3393141880 RCX: 0000000000000000
-RDX: ffffa82f0159fe08 RSI: ffff8f3381252500 RDI: ffff8f3393141880
-RBP: ffff8f33ac317c00 R08: 0000000000000000 R09: ffff8f3487724cb0
-R10: 0000000000000008 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff8f3485bccee0 R14: ffff8f33ac317c10 R15: ffff8f33ac317cd8
-FS:  0000000000000000(0000) GS:ffff8f34fbc80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000018 CR3: 0000000122120006 CR4: 0000000000770ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- nfs_direct_write_completion+0x13b/0x250 [nfs]
- rpc_free_task+0x39/0x60 [sunrpc]
- rpc_async_release+0x29/0x40 [sunrpc]
- process_one_work+0x1ce/0x370
- worker_thread+0x30/0x380
- ? process_one_work+0x370/0x370
- kthread+0x11a/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
+This was causing the following error message when loading the ice
+driver, creating VFs, and modifying VF trust in an endless loop:
 
-Reported-by: Olga Kornievskaia <aglo@umich.edu>
-Fixes: 9c455a8c1e14 ("NFS/pNFS: Clean up pNFS commit operations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+[35274.192484] ice 0000:88:00.0: Failed to set LAN Tx queue context, error: ICE_ERR_PARAM
+[35274.193074] ice 0000:88:00.0: VF 0 failed opcode 6, retval: -5
+[35274.193640] iavf 0000:88:01.0: PF returned error -5 (IAVF_ERR_PARAM) to our request 6
+
+Fix this by always calling ice_dis_vf_qs() and silencing the error
+message in ice_vsi_stop_tx_ring() since the calling code ignores the
+return anyway. Also, all other places that call ice_vsi_stop_tx_ring()
+catch the error, so this doesn't affect those flows since there was no
+change to the values the function returns.
+
+Other solutions were considered (i.e. tracking which VF queues had been
+"started/configured" in VIRTCHNL_OP_CONFIG_VSI_QUEUES, but it seemed
+more complicated than it was worth. This solution also brings in the
+chance for other unexpected conditions due to invalid state bit checks.
+So, the proposed solution seemed like the best option since there is no
+harm in failing to stop Tx queues that were never started.
+
+This issue can be seen using the following commands:
+
+for i in {0..50}; do
+        rmmod ice
+        modprobe ice
+
+        sleep 1
+
+        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
+        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
+
+        ip link set ens785f1 vf 0 trust on
+        ip link set ens785f0 vf 0 trust on
+
+        sleep 2
+
+        echo 0 > /sys/class/net/ens785f0/device/sriov_numvfs
+        echo 0 > /sys/class/net/ens785f1/device/sriov_numvfs
+        sleep 1
+        echo 1 > /sys/class/net/ens785f0/device/sriov_numvfs
+        echo 1 > /sys/class/net/ens785f1/device/sriov_numvfs
+
+        ip link set ens785f1 vf 0 trust on
+        ip link set ens785f0 vf 0 trust on
+done
+
+Fixes: 77ca27c41705 ("ice: add support for virtchnl_queue_select.[tx|rx]_queues bitmap")
+Signed-off-by: Brett Creeley <brett.creeley@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_base.c        | 2 +-
+ drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c | 6 ++----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/nfs/pnfs.h b/fs/nfs/pnfs.h
-index 132a345e93731..0212fe32e63aa 100644
---- a/fs/nfs/pnfs.h
-+++ b/fs/nfs/pnfs.h
-@@ -515,7 +515,7 @@ pnfs_mark_request_commit(struct nfs_page *req, struct pnfs_layout_segment *lseg,
- {
- 	struct pnfs_ds_commit_info *fl_cinfo = cinfo->ds;
+diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+index fe4320e2d1f2f..1929847b8c404 100644
+--- a/drivers/net/ethernet/intel/ice/ice_base.c
++++ b/drivers/net/ethernet/intel/ice/ice_base.c
+@@ -839,7 +839,7 @@ ice_vsi_stop_tx_ring(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
+ 	} else if (status == ICE_ERR_DOES_NOT_EXIST) {
+ 		dev_dbg(ice_pf_to_dev(vsi->back), "LAN Tx queues do not exist, nothing to disable\n");
+ 	} else if (status) {
+-		dev_err(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
++		dev_dbg(ice_pf_to_dev(vsi->back), "Failed to disable LAN Tx queues, error: %s\n",
+ 			ice_stat_str(status));
+ 		return -ENODEV;
+ 	}
+diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+index 22e23199c92c1..69ce5d60a8570 100644
+--- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+@@ -362,8 +362,7 @@ void ice_free_vfs(struct ice_pf *pf)
  
--	if (!lseg || !fl_cinfo->ops->mark_request_commit)
-+	if (!lseg || !fl_cinfo->ops || !fl_cinfo->ops->mark_request_commit)
- 		return false;
- 	fl_cinfo->ops->mark_request_commit(req, lseg, cinfo, ds_commit_idx);
- 	return true;
+ 	/* Avoid wait time by stopping all VFs at the same time */
+ 	ice_for_each_vf(pf, i)
+-		if (test_bit(ICE_VF_STATE_QS_ENA, pf->vf[i].vf_states))
+-			ice_dis_vf_qs(&pf->vf[i]);
++		ice_dis_vf_qs(&pf->vf[i]);
+ 
+ 	tmp = pf->num_alloc_vfs;
+ 	pf->num_qps_per_vf = 0;
+@@ -1291,8 +1290,7 @@ bool ice_reset_vf(struct ice_vf *vf, bool is_vflr)
+ 
+ 	vsi = pf->vsi[vf->lan_vsi_idx];
+ 
+-	if (test_bit(ICE_VF_STATE_QS_ENA, vf->vf_states))
+-		ice_dis_vf_qs(vf);
++	ice_dis_vf_qs(vf);
+ 
+ 	/* Call Disable LAN Tx queue AQ whether or not queues are
+ 	 * enabled. This is needed for successful completion of VFR.
 -- 
 2.33.0
 
