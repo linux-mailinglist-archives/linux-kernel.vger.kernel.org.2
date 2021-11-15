@@ -2,142 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902BE450960
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E72A450967
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbhKOQUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:20:10 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37430 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhKOQTh (ORCPT
+        id S236609AbhKOQUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231463AbhKOQUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:19:37 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DFA26212BF;
-        Mon, 15 Nov 2021 16:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636992993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 15 Nov 2021 11:20:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A98C061746;
+        Mon, 15 Nov 2021 08:17:48 -0800 (PST)
+Date:   Mon, 15 Nov 2021 16:17:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636993066;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7b7eH+fwmM30RusUMjRrdf/DCj90saq7UtYZ8DAMnVE=;
-        b=PK/wWoUiH56BbJbfG6JFCeIiStKIJWdxb5ZDv/piXk065YE6yywS9Bfdk2pqZ5Euf6DbkX
-        iB1AudlevlB2SVlVd2wuW6+GgrPSLyXciMm7fJ8HZNPJz1A0KlynGFhnfHpkHg/lm/xk5P
-        eM2Mla4Kct4DF1At+fRfQSrNczrqeQg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636992993;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=CtLv2VkbS5okETso3jOAjr/QK0xuErBref7wU1o7lL8=;
+        b=suXGltxCc8nFG9DsKHRTvEGrw4OxVWN+R7GvnwN5f6mt9z0B52R0baX1i1DQyazDEpYWBD
+        SJLsEyhUVrM/+k6ctQuxd0tQ3eX1qwwhA3w0tgEY6XxoIJC79Xcg6udCyDSceNmlDtqG+c
+        a7ecWOVgKArllFNPWxzm+0AoK090L/IlWMMqwOzBbcrWiUu+g2+StDFnmKCQYHYoTCX+Qs
+        YpfpGGlzbdRzTzSlHLjYNsyPNmFCDoY1bC51RQo9FttrGywiSJn/DgUv8JXxs8UjFu2uje
+        j2669SyO1UbNwKXFSpRy9R8Rz8/Ct3Q1OZ87T60+1dGUHSzi0WfzSnvJz1LEkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636993066;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7b7eH+fwmM30RusUMjRrdf/DCj90saq7UtYZ8DAMnVE=;
-        b=EtSwPakln53v33h6PvPpBNHLN4ca1UjxiDmIwWirzpQeCkMCqu/6QcQ5xnLJChPfnaFUzl
-        nYjnxcD5gyDk3+DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B510A139EC;
-        Mon, 15 Nov 2021 16:16:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id VwdfKuCHkmH+eAAAMHmgww
-        (envelope-from <jroedel@suse.de>); Mon, 15 Nov 2021 16:16:32 +0000
-Date:   Mon, 15 Nov 2021 17:16:31 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZKH35J2GjIZ9JXS@suse.de>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
+        bh=CtLv2VkbS5okETso3jOAjr/QK0xuErBref7wU1o7lL8=;
+        b=Ux4WuhKLrFwLzkdHBwzJ38IzZ9s8SDmoye1D408DIKiKLKrPxQtHL9aAIpwrGdrT7KRoFS
+        xhw7Ufxb1wxdO9AA==
+From:   "tip-bot2 for Yazen Ghannam" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] EDAC/amd64: Allow for DF Indirect Broadcast reads
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211028175728.121452-4-yazen.ghannam@amd.com>
+References: <20211028175728.121452-4-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YY7FAW5ti7YMeejj@google.com>
+Message-ID: <163699306581.414.17847243127518017269.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 07:48:17PM +0000, Sean Christopherson wrote:
-> Yes, but IMO inducing a fault in the guest because of _host_ bug is wrong.
+The following commit has been merged into the ras/core branch of tip:
 
-And what is the plan with handling this host bug? Can it be handled in a
-way that keeps the guest running?
+Commit-ID:     448c3d6085b71aad58cd515469560ee76c982007
+Gitweb:        https://git.kernel.org/tip/448c3d6085b71aad58cd515469560ee76c982007
+Author:        Yazen Ghannam <yazen.ghannam@amd.com>
+AuthorDate:    Thu, 28 Oct 2021 17:56:58 
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 15 Nov 2021 12:48:55 +01:00
 
-IMO the best way to handle this is to do it the way Peter proposed:
+EDAC/amd64: Allow for DF Indirect Broadcast reads
 
-	* Convert the page from private to shared on host write access
-	  and log this event on the host side (e.g. via a trace event)
-	* The guest will notice what happened and can decide on its own
-	  what to do, either poison the page or panic with doing a
-	  kdump that can be used for bug analysis by guest and host
-	  owner
+The DF Indirect Access method allows for "Broadcast" accesses in which
+case no specific instance is targeted. Add support using a reserved
+instance ID of 0xFF to indicate a broadcast access. Set the FICAA
+register appropriately.
 
-At the time the fault happens we can not reliably find the reason. It
-can be a host bug, a guest bug (or attack), or whatnot. So the best that
-can be done is collecting debug data without impacting other guests.
+Define helpers functions for instance and broadcast reads and use them
+where appropriate.
 
-This also saves lots of code for avoiding these faults when the outcome
-would be the same: A dead VM.
+Drop the "amd_" prefix since these functions are all static.
 
-> I disagree, this would require "new" ABI in the sense that it commits KVM to
-> supporting SNP without requiring userspace to initiate any and all conversions
-> between shared and private.  Which in my mind is the big elephant in the room:
-> do we want to require new KVM (and kernel?) ABI to allow/force userspace to
-> explicitly declare guest private memory for TDX _and_ SNP, or just TDX?
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211028175728.121452-4-yazen.ghannam@amd.com
+---
+ drivers/edac/amd64_edac.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-No, not for SNP. User-space has no say in what guest memory is private
-and shared, that should fundamentally be the guests decision. The host
-has no idea about the guests workload and how much shared memory it
-needs. It might be that the guest temporarily needs to share more
-memory. I see no reason to cut this flexibility out for SNP guests.
-
-Regards,
-
--- 
-Jörg Rödel
-jroedel@suse.de
-
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index 034d986..d41b9a0 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -1000,8 +1000,11 @@ static DEFINE_MUTEX(df_indirect_mutex);
+  *
+  * Fabric Indirect Configuration Access Data (FICAD): There are FICAD LO
+  * and FICAD HI registers but so far we only need the LO register.
++ *
++ * Use Instance Id 0xFF to indicate a broadcast read.
+  */
+-static int amd_df_indirect_read(u16 node, u8 func, u16 reg, u8 instance_id, u32 *lo)
++#define DF_BROADCAST	0xFF
++static int __df_indirect_read(u16 node, u8 func, u16 reg, u8 instance_id, u32 *lo)
+ {
+ 	struct pci_dev *F4;
+ 	u32 ficaa;
+@@ -1014,7 +1017,7 @@ static int amd_df_indirect_read(u16 node, u8 func, u16 reg, u8 instance_id, u32 
+ 	if (!F4)
+ 		goto out;
  
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Ivo Totev
-
+-	ficaa  = 1;
++	ficaa  = (instance_id == DF_BROADCAST) ? 0 : 1;
+ 	ficaa |= reg & 0x3FC;
+ 	ficaa |= (func & 0x7) << 11;
+ 	ficaa |= instance_id << 16;
+@@ -1038,6 +1041,16 @@ out:
+ 	return err;
+ }
+ 
++static int df_indirect_read_instance(u16 node, u8 func, u16 reg, u8 instance_id, u32 *lo)
++{
++	return __df_indirect_read(node, func, reg, instance_id, lo);
++}
++
++static int df_indirect_read_broadcast(u16 node, u8 func, u16 reg, u32 *lo)
++{
++	return __df_indirect_read(node, func, reg, DF_BROADCAST, lo);
++}
++
+ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
+ {
+ 	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
+@@ -1055,7 +1068,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 	bool hash_enabled = false;
+ 
+ 	/* Read D18F0x1B4 (DramOffset), check if base 1 is used. */
+-	if (amd_df_indirect_read(nid, 0, 0x1B4, umc, &tmp))
++	if (df_indirect_read_instance(nid, 0, 0x1B4, umc, &tmp))
+ 		goto out_err;
+ 
+ 	/* Remove HiAddrOffset from normalized address, if enabled: */
+@@ -1069,7 +1082,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 	}
+ 
+ 	/* Read D18F0x110 (DramBaseAddress). */
+-	if (amd_df_indirect_read(nid, 0, 0x110 + (8 * base), umc, &tmp))
++	if (df_indirect_read_instance(nid, 0, 0x110 + (8 * base), umc, &tmp))
+ 		goto out_err;
+ 
+ 	/* Check if address range is valid. */
+@@ -1092,7 +1105,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 	}
+ 
+ 	/* Read D18F0x114 (DramLimitAddress). */
+-	if (amd_df_indirect_read(nid, 0, 0x114 + (8 * base), umc, &tmp))
++	if (df_indirect_read_instance(nid, 0, 0x114 + (8 * base), umc, &tmp))
+ 		goto out_err;
+ 
+ 	intlv_num_sockets = (tmp >> 8) & 0x1;
+@@ -1148,7 +1161,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 		 * umc/channel# as instance id of the coherent slave
+ 		 * for FICAA.
+ 		 */
+-		if (amd_df_indirect_read(nid, 0, 0x50, umc, &tmp))
++		if (df_indirect_read_instance(nid, 0, 0x50, umc, &tmp))
+ 			goto out_err;
+ 
+ 		cs_fabric_id = (tmp >> 8) & 0xFF;
+@@ -1165,7 +1178,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 
+ 		/* Read D18F1x208 (SystemFabricIdMask). */
+ 		if (intlv_num_dies || intlv_num_sockets)
+-			if (amd_df_indirect_read(nid, 1, 0x208, umc, &tmp))
++			if (df_indirect_read_broadcast(nid, 1, 0x208, &tmp))
+ 				goto out_err;
+ 
+ 		/* If interleaved over more than 1 die. */
+@@ -1204,7 +1217,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+ 
+ 	/* If legacy MMIO hole enabled */
+ 	if (lgcy_mmio_hole_en) {
+-		if (amd_df_indirect_read(nid, 0, 0x104, umc, &tmp))
++		if (df_indirect_read_broadcast(nid, 0, 0x104, &tmp))
+ 			goto out_err;
+ 
+ 		dram_hole_base = tmp & GENMASK(31, 24);
