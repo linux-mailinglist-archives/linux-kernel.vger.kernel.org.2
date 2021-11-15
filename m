@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295A2452073
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBDC45189F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344080AbhKPAzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:55:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S1351362AbhKOXEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343906AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D07D6339F;
-        Mon, 15 Nov 2021 18:48:09 +0000 (UTC)
+        id S243231AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4E28632A5;
+        Mon, 15 Nov 2021 18:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002089;
-        bh=8vWF8aQpljnn08VrZucwogFkbfZQolocwahYzzYTMEI=;
+        s=korg; t=1636999853;
+        bh=ZhVxJQaCIDAb/vIDczFoYwveB4qAWLQcwjfawo4QLec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jwv5WYe8UbHLRbQI8HUFD259gPcy0In3h/XZJG7gqhM45KU7+Pv7oHACYiAr7rYZW
-         lDnM4Rk5dS7n9uHDW17AMlhsa4s34RnVeSlRtv6FuHOxooN5In1GlFc5reAXs9tbRK
-         yU7Q9SR/ELKHaZQn6Vl3R1nYXYo1MuxouEgfPQqc=
+        b=WVgJszzzRCcAQxRq8gEnKJmXidJoLYVIIH65C5DaHg5VkawkHxmL8jWSGzvU07qoL
+         qRc79a8CLJxvk4msNd/CHWueOZprdjBzI2RdMZJzzKdU4HzZaBBC39Ymtb6alx8haU
+         bYL/0paw8DWpyUH3giJzCwJb+u2pfI2Y8SQSjCGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 434/917] crypto: octeontx2 - set assoclen in aead_do_fallback()
-Date:   Mon, 15 Nov 2021 17:58:49 +0100
-Message-Id: <20211115165443.508663606@linuxfoundation.org>
+Subject: [PATCH 5.14 447/849] ACPI: PM: Fix sharing of wakeup power resources
+Date:   Mon, 15 Nov 2021 17:58:50 +0100
+Message-Id: <20211115165435.410472676@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +40,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ovidiu Panait <ovidiu.panait@windriver.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 06f6e365e2ecf799c249bb464aa9d5f055e88b56 ]
+[ Upstream commit a2d7b2e004af6b09f21ac3d10f8f4456c16a8ddf ]
 
-Currently, in case of aead fallback, no associated data info is set in the
-fallback request. To fix this, call aead_request_set_ad() to pass the assoclen.
+If an ACPI wakeup power resource is shared between multiple devices,
+it may not be managed correctly.
 
-Fixes: 6f03f0e8b6c8 ("crypto: octeontx2 - register with linux crypto framework")
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Suppose, for example, that two devices, A and B, share a wakeup power
+resource P whose wakeup_enabled flag is 0 initially.  Next, suppose
+that wakeup power is enabled for A and B, in this order, and disabled
+for B.  When wakeup power is enabled for A, P will be turned on and
+its wakeup_enabled flag will be set.  Next, when wakeup power is
+enabled for B, P will not be touched, because its wakeup_enabled flag
+is set.  Now, when wakeup power is disabled for B, P will be turned
+off which is incorrect, because A will still need P in order to signal
+wakeup.
+
+Moreover, if wakeup power is enabled for A and then disabled for B,
+the latter will cause P to be turned off incorrectly (it will be still
+needed by A), because acpi_disable_wakeup_device_power() is allowed
+to manipulate power resources when the wakeup.prepare_count counter
+of the given device is 0.
+
+While the first issue could be addressed by changing the
+wakeup_enabled power resource flag into a counter, addressing the
+second one requires modifying acpi_disable_wakeup_device_power() to
+do nothing when the target device's wakeup.prepare_count reference
+counter is zero and that would cause the new counter to be redundant.
+Namely, if acpi_disable_wakeup_device_power() is modified as per the
+above, every change of the new counter following a wakeup.prepare_count
+change would be reflected by the analogous change of the main reference
+counter of the given power resource.
+
+Accordingly, modify acpi_disable_wakeup_device_power() to do nothing
+when the target device's wakeup.prepare_count reference counter is
+zero and drop the power resource wakeup_enabled flag altogether.
+
+While at it, ensure that all of the power resources that can be
+turned off will be turned off when disabling device wakeup due to
+a power resource manipulation error, to prevent energy from being
+wasted.
+
+Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/power.c | 69 +++++++++++++++-----------------------------
+ 1 file changed, 24 insertions(+), 45 deletions(-)
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-index a72723455df72..877a948469bd1 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_algs.c
-@@ -1274,6 +1274,7 @@ static int aead_do_fallback(struct aead_request *req, bool is_enc)
- 					  req->base.complete, req->base.data);
- 		aead_request_set_crypt(&rctx->fbk_req, req->src,
- 				       req->dst, req->cryptlen, req->iv);
-+		aead_request_set_ad(&rctx->fbk_req, req->assoclen);
- 		ret = is_enc ? crypto_aead_encrypt(&rctx->fbk_req) :
- 			       crypto_aead_decrypt(&rctx->fbk_req);
- 	} else {
+diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
+index dfe760bd7157f..e1f9a45587857 100644
+--- a/drivers/acpi/power.c
++++ b/drivers/acpi/power.c
+@@ -53,7 +53,6 @@ struct acpi_power_resource {
+ 	u32 order;
+ 	unsigned int ref_count;
+ 	u8 state;
+-	bool wakeup_enabled;
+ 	struct mutex resource_lock;
+ 	struct list_head dependents;
+ };
+@@ -701,7 +700,6 @@ int acpi_device_sleep_wake(struct acpi_device *dev,
+  */
+ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
+ {
+-	struct acpi_power_resource_entry *entry;
+ 	int err = 0;
+ 
+ 	if (!dev || !dev->wakeup.flags.valid)
+@@ -712,26 +710,13 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
+ 	if (dev->wakeup.prepare_count++)
+ 		goto out;
+ 
+-	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (!resource->wakeup_enabled) {
+-			err = acpi_power_on_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = true;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
+-
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources on\n");
+-			dev->wakeup.flags.valid = 0;
+-			goto out;
+-		}
++	err = acpi_power_on_list(&dev->wakeup.resources);
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn on wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
++		goto out;
+ 	}
++
+ 	/*
+ 	 * Passing 3 as the third argument below means the device may be
+ 	 * put into arbitrary power state afterward.
+@@ -761,39 +746,33 @@ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 
+-	if (--dev->wakeup.prepare_count > 0)
++	if (dev->wakeup.prepare_count > 1) {
++		dev->wakeup.prepare_count--;
+ 		goto out;
++	}
+ 
+-	/*
+-	 * Executing the code below even if prepare_count is already zero when
+-	 * the function is called may be useful, for example for initialisation.
+-	 */
+-	if (dev->wakeup.prepare_count < 0)
+-		dev->wakeup.prepare_count = 0;
++	/* Do nothing if wakeup power has not been enabled for this device. */
++	if (!dev->wakeup.prepare_count)
++		goto out;
+ 
+ 	err = acpi_device_sleep_wake(dev, 0, 0, 0);
+ 	if (err)
+ 		goto out;
+ 
++	/*
++	 * All of the power resources in the list need to be turned off even if
++	 * there are errors.
++	 */
+ 	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (resource->wakeup_enabled) {
+-			err = acpi_power_off_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = false;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
++		int ret;
+ 
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources off\n");
+-			dev->wakeup.flags.valid = 0;
+-			break;
+-		}
++		ret = acpi_power_off(entry->resource);
++		if (ret && !err)
++			err = ret;
++	}
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn off wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
+ 	}
+ 
+  out:
 -- 
 2.33.0
 
