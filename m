@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA94451544
+	by mail.lfdr.de (Postfix) with ESMTP id 96719451545
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351210AbhKOUcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
+        id S1351255AbhKOUcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:32:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240197AbhKOSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CB3663392;
-        Mon, 15 Nov 2021 17:43:23 +0000 (UTC)
+        id S240209AbhKOSHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD626338C;
+        Mon, 15 Nov 2021 17:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998203;
-        bh=MWEt8njDj2KMAbvYCho8AJeqLwWCgG28hhha+AQLu2M=;
+        s=korg; t=1636998206;
+        bh=808IRSV1ctutIU14jsPC+s3hg0ikRxgE78tFuB8fxVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lfBIk3usZRXAxAjBArH6vLCUQq9D7XqoqlytkWArfqrkAGP63OgydNDl5NAApPOzL
-         luJY6MWZUzc/c0Ct5/XPm2o2kEP0rZCAA7NjrorzF+fAMaW1PUTMDFQsnO+KdQ7C79
-         plfc08J/OnS+HAKW36cwGMScXGTh+25z9gAQtS4E=
+        b=d53R58An6zOdonrSY/5ja6Ue3WoATKrBfkzpQ7kmVUW2qhZ71H+sKWzI44gbmBfJG
+         jhFOAQHfv60Xq9JvuQzWKB5ItHZdf6b7fqslEgElSn7emsIxmzujzeHpudZHZrgmNw
+         2kwQaP6wx+5Hvv9BBcpYyju21x0Og1V3kpbzn7Yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 424/575] powerpc: fix unbalanced node refcount in check_kvm_guest()
-Date:   Mon, 15 Nov 2021 18:02:29 +0100
-Message-Id: <20211115165358.440843593@linuxfoundation.org>
+Subject: [PATCH 5.10 425/575] serial: 8250_dw: Drop wrong use of ACPI_PTR()
+Date:   Mon, 15 Nov 2021 18:02:30 +0100
+Message-Id: <20211115165358.480248488@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,47 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 56537faf8821e361d739fc5ff58c9c40f54a1d4c ]
+[ Upstream commit ebabb77a2a115b6c5e68f7364b598310b5f61fb2 ]
 
-When check_kvm_guest() succeeds in looking up a /hypervisor OF node, it
-returns without performing a matching put for the lookup, leaving the
-node's reference count elevated.
+ACPI_PTR() is more harmful than helpful. For example, in this case
+if CONFIG_ACPI=n, the ID table left unused which is not what we want.
 
-Add the necessary call to of_node_put(), rearranging the code slightly to
-avoid repetition or goto.
+Instead of adding ifdeffery here and there, drop ACPI_PTR().
 
-Fixes: 107c55005fbd ("powerpc/pseries: Add KVM guest doorbell restrictions")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210928124550.132020-1-nathanl@linux.ibm.com
+Fixes: 6a7320c4669f ("serial: 8250_dw: Add ACPI 5.0 support")
+Reported-by: Daniel Palmer <daniel@0x0f.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20211005134516.23218-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/firmware.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_dw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
-index c7022c41cc314..20328f72f9f2b 100644
---- a/arch/powerpc/kernel/firmware.c
-+++ b/arch/powerpc/kernel/firmware.c
-@@ -31,11 +31,10 @@ int __init check_kvm_guest(void)
- 	if (!hyper_node)
- 		return 0;
- 
--	if (!of_device_is_compatible(hyper_node, "linux,kvm"))
--		return 0;
--
--	static_branch_enable(&kvm_guest);
-+	if (of_device_is_compatible(hyper_node, "linux,kvm"))
-+		static_branch_enable(&kvm_guest);
- 
-+	of_node_put(hyper_node);
- 	return 0;
- }
- core_initcall(check_kvm_guest); // before kvm_guest_init()
+diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+index a3a0154da567d..49559731bbcf1 100644
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -726,7 +726,7 @@ static struct platform_driver dw8250_platform_driver = {
+ 		.name		= "dw-apb-uart",
+ 		.pm		= &dw8250_pm_ops,
+ 		.of_match_table	= dw8250_of_match,
+-		.acpi_match_table = ACPI_PTR(dw8250_acpi_match),
++		.acpi_match_table = dw8250_acpi_match,
+ 	},
+ 	.probe			= dw8250_probe,
+ 	.remove			= dw8250_remove,
 -- 
 2.33.0
 
