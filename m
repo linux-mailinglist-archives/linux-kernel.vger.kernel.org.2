@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50A745179F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5196B4517BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353462AbhKOWfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:35:55 -0500
+        id S1353239AbhKOWoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:44:55 -0500
 Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242632AbhKOSjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:39:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34772632ED;
-        Mon, 15 Nov 2021 18:04:06 +0000 (UTC)
+        id S242472AbhKOSlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:41:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAA92632F1;
+        Mon, 15 Nov 2021 18:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999446;
-        bh=YyT7r9fXaurAhv+M7sUwBSm6FhPaYMV2NyYut70xZaU=;
+        s=korg; t=1636999494;
+        bh=nisjMkk05ddDslovjW33PaKMkAa4TEgO4qZhmM7OoRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wus0mIl6HjmZ2vPqPNfganrX/r9tW5/ftUJTjRYhV9hkWw/jEf6Cti8ZdpEDBNRZY
-         HwByFpvgYWxYEnT+iWl5vI5tNxGD7UwOBRqd7MLm0VSfvxPpc9hw6hWkHRjF1FlYwK
-         88INyL7JN3WgK6Lz7WiINWzxQeEhC2+mvECxpK08=
+        b=X/0JfmwZMP6LZDknTxXpTWY76SwfPPxpWXSsPEZrWngBkARe24RLM0V/RWQLvgC3b
+         hzcXk8k3fn61PLsYoGp2+exqKSxWpSwm/hz9dtJ5trxc5eG6yI+sM6Z5s02p9ZKuOH
+         AHysp+316wPgS0EDbsYmyQlGcNXji3Oe3bfUk8kE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 282/849] block: bump max plugged deferred size from 16 to 32
-Date:   Mon, 15 Nov 2021 17:56:05 +0100
-Message-Id: <20211115165429.817023857@linuxfoundation.org>
+        stable@vger.kernel.org, Li Feng <fengli@smartx.com>,
+        Xiao Ni <xni@redhat.com>, Song Liu <songliubraving@fb.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 284/849] md: update superblock after changing rdev flags in state_store
+Date:   Mon, 15 Nov 2021 17:56:07 +0100
+Message-Id: <20211115165429.878948404@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -39,82 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Xiao Ni <xni@redhat.com>
 
-[ Upstream commit ba0ffdd8ce48ad7f7e85191cd29f9674caca3745 ]
+[ Upstream commit 8b9e2291e355a0eafdd5b1e21a94a6659f24b351 ]
 
-Particularly for NVMe with efficient deferred submission for many
-requests, there are nice benefits to be seen by bumping the default max
-plug count from 16 to 32. This is especially true for virtualized setups,
-where the submit part is more expensive. But can be noticed even on
-native hardware.
+When the in memory flag is changed, we need to persist the change in the
+rdev superblock flags. This is needed for "writemostly" and "failfast".
 
-Reduce the multiple queue factor from 4 to 2, since we're changing the
-default size.
-
-While changing it, move the defines into the block layer private header.
-These aren't values that anyone outside of the block layer uses, or
-should use.
-
+Reviewed-by: Li Feng <fengli@smartx.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c         | 4 ++--
- block/blk.h            | 6 ++++++
- include/linux/blkdev.h | 2 --
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/md/md.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index dc49483334c72..9c658883020fb 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2141,14 +2141,14 @@ static void blk_add_rq_to_plug(struct blk_plug *plug, struct request *rq)
- }
- 
- /*
-- * Allow 4x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
-+ * Allow 2x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
-  * queues. This is important for md arrays to benefit from merging
-  * requests.
-  */
- static inline unsigned short blk_plug_max_rq_count(struct blk_plug *plug)
- {
- 	if (plug->multiple_queues)
--		return BLK_MAX_REQUEST_COUNT * 4;
-+		return BLK_MAX_REQUEST_COUNT * 2;
- 	return BLK_MAX_REQUEST_COUNT;
- }
- 
-diff --git a/block/blk.h b/block/blk.h
-index f10cc9b2c27f7..1af7c13ccc708 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -181,6 +181,12 @@ bool blk_bio_list_merge(struct request_queue *q, struct list_head *list,
- void blk_account_io_start(struct request *req);
- void blk_account_io_done(struct request *req, u64 now);
- 
-+/*
-+ * Plug flush limits
-+ */
-+#define BLK_MAX_REQUEST_COUNT	32
-+#define BLK_PLUG_FLUSH_SIZE	(128 * 1024)
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 6c0c3d0d905aa..e89eb467f1429 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -2976,7 +2976,11 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 	 *  -write_error - clears WriteErrorSeen
+ 	 *  {,-}failfast - set/clear FailFast
+ 	 */
 +
- /*
-  * Internal elevator interface
-  */
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 4b0f8bb0671d1..e7979fe7e4fad 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1223,8 +1223,6 @@ struct blk_plug {
- 	bool multiple_queues;
- 	bool nowait;
- };
--#define BLK_MAX_REQUEST_COUNT 16
--#define BLK_PLUG_FLUSH_SIZE (128 * 1024)
- 
- struct blk_plug_cb;
- typedef void (*blk_plug_cb_fn)(struct blk_plug_cb *, bool);
++	struct mddev *mddev = rdev->mddev;
+ 	int err = -EINVAL;
++	bool need_update_sb = false;
++
+ 	if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
+ 		md_error(rdev->mddev, rdev);
+ 		if (test_bit(Faulty, &rdev->flags))
+@@ -2991,7 +2995,6 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 		if (rdev->raid_disk >= 0)
+ 			err = -EBUSY;
+ 		else {
+-			struct mddev *mddev = rdev->mddev;
+ 			err = 0;
+ 			if (mddev_is_clustered(mddev))
+ 				err = md_cluster_ops->remove_disk(mddev, rdev);
+@@ -3008,10 +3011,12 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 	} else if (cmd_match(buf, "writemostly")) {
+ 		set_bit(WriteMostly, &rdev->flags);
+ 		mddev_create_serial_pool(rdev->mddev, rdev, false);
++		need_update_sb = true;
+ 		err = 0;
+ 	} else if (cmd_match(buf, "-writemostly")) {
+ 		mddev_destroy_serial_pool(rdev->mddev, rdev, false);
+ 		clear_bit(WriteMostly, &rdev->flags);
++		need_update_sb = true;
+ 		err = 0;
+ 	} else if (cmd_match(buf, "blocked")) {
+ 		set_bit(Blocked, &rdev->flags);
+@@ -3037,9 +3042,11 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 		err = 0;
+ 	} else if (cmd_match(buf, "failfast")) {
+ 		set_bit(FailFast, &rdev->flags);
++		need_update_sb = true;
+ 		err = 0;
+ 	} else if (cmd_match(buf, "-failfast")) {
+ 		clear_bit(FailFast, &rdev->flags);
++		need_update_sb = true;
+ 		err = 0;
+ 	} else if (cmd_match(buf, "-insync") && rdev->raid_disk >= 0 &&
+ 		   !test_bit(Journal, &rdev->flags)) {
+@@ -3118,6 +3125,8 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
+ 		clear_bit(ExternalBbl, &rdev->flags);
+ 		err = 0;
+ 	}
++	if (need_update_sb)
++		md_update_sb(mddev, 1);
+ 	if (!err)
+ 		sysfs_notify_dirent_safe(rdev->sysfs_state);
+ 	return err ? err : len;
 -- 
 2.33.0
 
