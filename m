@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF13A45120A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A33245128A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhKOTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:24:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47584 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238942AbhKORuw (ORCPT
+        id S1346811AbhKOTg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:36:26 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4097 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239176AbhKORyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:50:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636998476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YGf+XUfSwydKiiv0hT0cmfPV/U4WfCIrm4XgycOeKw8=;
-        b=KS56kO6+jwT+7mO7bbWHIHUHgzgKeRR1h/v3D15zFfbuXVcqILEX9FMEfXX84DoJsYU85l
-        z0PsI3VCilBgWnu1Hf0VSC/3Xgg5rwiUTsaxklsfameAFF5DxI1NJmuCQZFy3N9oL9RyzI
-        T2nZ1a+6vca/9S5O5d9RDd1Euyz0uis=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-u1ML8PLjOnW51WcQd4gadw-1; Mon, 15 Nov 2021 12:47:54 -0500
-X-MC-Unique: u1ML8PLjOnW51WcQd4gadw-1
-Received: by mail-wr1-f71.google.com with SMTP id d3-20020adfa343000000b0018ed6dd4629so3810490wrb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:47:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YGf+XUfSwydKiiv0hT0cmfPV/U4WfCIrm4XgycOeKw8=;
-        b=RKO7muMCjOGW0K/QA6kxF6n/Q1mZGu53ILEGs3/Qd3wZse2FgPw7IOQ3ykMkPK26/1
-         0UT3p5oH/qrYk5Jgm0L4d8wyu0TlbnOJE/eXSvYcOe9qIfSaFyL4drdkMRYiwMtd/A5T
-         8WGFjrj+kP6vjJKBMzFVivAGVRNMfvzMfZLQcLJKTHcwIpFpPqz/7Nzhtrg2qQeKH+yc
-         HGvVf1gqeYoUO8dYbiknLvB7arkzvrC+McZpnaGu0EYt1FL2l9NQIt+4HdqON3X6h2I5
-         JQ/b9tqugoXgacIIgmJ4OdpTbB1QW9CY69qZk8osksKJq4CowEz4Q5nEwHWYHOy88M05
-         Boeg==
-X-Gm-Message-State: AOAM5316unh/bHp1TaOKO03zh6ArVU1XlrjcKfZ1B+eav50cvJrqX5hq
-        99QP+F04G+0Vl5UvIIjtn4IomY7oJNQbri389QL62nP12ucB0fBgk/RblcuYaUuC8LRWGJnaUO8
-        VS2+Swwl9xgkWlj/cyANU2QYNt7vSGwCq81XJH0ZB
-X-Received: by 2002:a05:600c:1ca0:: with SMTP id k32mr371687wms.74.1636998473248;
-        Mon, 15 Nov 2021 09:47:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzqKzOEnvwu+fh1qgttyP6hSbaWqXIBdsUkNrLY9BsgCe2smG8I38SVxWF2PmLje6pNL9tmSfjVvcdJ16iCWZI=
-X-Received: by 2002:a05:600c:1ca0:: with SMTP id k32mr371664wms.74.1636998473021;
- Mon, 15 Nov 2021 09:47:53 -0800 (PST)
+        Mon, 15 Nov 2021 12:54:53 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HtGrD5MLtz67VcZ;
+        Tue, 16 Nov 2021 01:48:12 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 15 Nov 2021 18:51:54 +0100
+Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 15 Nov
+ 2021 17:51:53 +0000
+Date:   Mon, 15 Nov 2021 17:51:52 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        <linux-mips@vger.kernel.org>, John Crispin <john@phrozen.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        <linux-iio@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] mips: lantiq: add support for clk_get_parent()
+Message-ID: <20211115175152.000030d6@Huawei.com>
+In-Reply-To: <20211115012051.16302-1-rdunlap@infradead.org>
+References: <20211115012051.16302-1-rdunlap@infradead.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20211115165313.549179499@linuxfoundation.org> <20211115165315.847107930@linuxfoundation.org>
-In-Reply-To: <20211115165315.847107930@linuxfoundation.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 15 Nov 2021 18:47:41 +0100
-Message-ID: <CAHc6FU7a+gTDCZMCE6gOH1EDUW5SghPbQbsbeVtdg4tV1VdGxg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 063/355] powerpc/kvm: Fix kvm_use_magic_page
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.41]
+X-ClientProxiedBy: lhreml733-chm.china.huawei.com (10.201.108.84) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg,
+On Sun, 14 Nov 2021 17:20:51 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-On Mon, Nov 15, 2021 at 6:10 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> From: Andreas Gruenbacher <agruenba@redhat.com>
->
-> commit 0c8eb2884a42d992c7726539328b7d3568f22143 upstream.
->
-> When switching from __get_user to fault_in_pages_readable, commit
-> 9f9eae5ce717 broke kvm_use_magic_page: like __get_user,
-> fault_in_pages_readable returns 0 on success.
+> Provide a simple implementation of clk_get_parent() in the
+> lantiq subarch so that callers of it will build without errors.
+> 
+> Fixes this build error:
+> ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+> 
+> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Cc: linux-mips@vger.kernel.org
+> Cc: John Crispin <john@phrozen.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-I've not heard back from the maintainers about this patch so far, so
-it would probably be safer to leave it out of stable for now.
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Thanks,
-Andreas
+Thanks for tidying this up.
 
-> Fixes: 9f9eae5ce717 ("powerpc/kvm: Prefer fault_in_pages_readable function")
-> Cc: stable@vger.kernel.org # v4.18+
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Jonathan
+
 > ---
->  arch/powerpc/kernel/kvm.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- a/arch/powerpc/kernel/kvm.c
-> +++ b/arch/powerpc/kernel/kvm.c
-> @@ -669,7 +669,7 @@ static void __init kvm_use_magic_page(vo
->         on_each_cpu(kvm_map_magic_page, &features, 1);
->
->         /* Quick self-test to see if the mapping works */
-> -       if (!fault_in_pages_readable((const char *)KVM_MAGIC_PAGE, sizeof(u32))) {
-> +       if (fault_in_pages_readable((const char *)KVM_MAGIC_PAGE, sizeof(u32))) {
->                 kvm_patching_worked = false;
->                 return;
->         }
->
->
+>  arch/mips/lantiq/clk.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> --- linux-next-20211112.orig/arch/mips/lantiq/clk.c
+> +++ linux-next-20211112/arch/mips/lantiq/clk.c
+> @@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
+>  }
+>  EXPORT_SYMBOL(clk_deactivate);
+>  
+> +struct clk *clk_get_parent(struct clk *clk)
+> +{
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL(clk_get_parent);
+> +
+>  static inline u32 get_counter_resolution(void)
+>  {
+>  	u32 res;
 
