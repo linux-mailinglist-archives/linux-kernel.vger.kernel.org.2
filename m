@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3688A450218
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BED45021E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237617AbhKOKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:14:37 -0500
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:38608 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237588AbhKOKNx (ORCPT
+        id S237635AbhKOKOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhKOKOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:13:53 -0500
-Received: by mail-ua1-f46.google.com with SMTP id w23so10708731uao.5;
-        Mon, 15 Nov 2021 02:10:55 -0800 (PST)
+        Mon, 15 Nov 2021 05:14:15 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B7CC061767;
+        Mon, 15 Nov 2021 02:11:18 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id b1so36244253lfs.13;
+        Mon, 15 Nov 2021 02:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uxwfsA+44ef1b7hlksCPyj8IFexX6NAJcsqLHIbZtDw=;
+        b=ED1+rjMpnaWFy7IyLpgI4t6+NWjYrk9yvRsbDXQNO4edejFPeS5Fluo5T9eRA4iZWY
+         qyAtRjrCuhzRvbF7arz5giRx/1OyeHYOPGZ8idBnsCSX89Lz1hbrQoL1Q4hSMMvQY/vY
+         sRTdgNumGFp9+brp6ZmdJVdNJA1Y1oYxwd5Rsl/tcpXCmRMO0cstWd6ECUQhnVeqMk66
+         GMbaWu75HDQfPUtV03ha+oCfVVDZbuvVHXdBj/09cnQ8kjv4gtZmPvt4twaMUl5rf6qm
+         V6HQpYyJTgipoGQBWZki3AkHxRPM7Nafs76W5lF1USMKUixqfNtzgAZBYmtw1Ok/Tfkq
+         SMzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uczNj+JRGNzcNZDnUARVSzMZZa6FtWsEl77y1g5axMY=;
-        b=RGYfHjYonx3hsjWTuJpM+6U7LQkv7t1vCfjrkTdm9rwyLiHAGkyV/4yZ+5Fp7kq8l5
-         hhh8/03c6/xFJBmEQUQEUqkvo+qSAqlGh1StYjixtkU1xTtjsgJEOWDt4a6cxFOYu+1N
-         XxYxdH/OhZGipjEK/rm553d8hoae3/ciZnR9BwhcGRlVpI7hibraMv0qBwSG5aFPBHj1
-         AnhT0tof2wIiw7x5733EOYgaG/X8QMKi7vsxZA2IaXFClycGlY2qKpx0zCAZgWIysknG
-         es7xtlQMDc3ccPxfnr28noYXl4nVFg2LDcE0nlpNeKE2Z9QiAOLs8nFJLnKKgK+3bTl+
-         vkDQ==
-X-Gm-Message-State: AOAM532uLGStkxj4ZN/1OwBsJ8EMMzYLzkPu4WY3eR/u6ErwjiKnuZha
-        PaaDICZiEiM+Hmr9HV3OVS/NonWMb2XXbw==
-X-Google-Smtp-Source: ABdhPJzIW2+6vIsDVErFpZ8bdIkWNqdcfWrUF7xVzZwZxss56IYTacdHJs+Riu+1iFSCDE2Dav8prA==
-X-Received: by 2002:a67:e050:: with SMTP id n16mr40869277vsl.44.1636971054324;
-        Mon, 15 Nov 2021 02:10:54 -0800 (PST)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id f188sm8623117vsc.16.2021.11.15.02.10.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 02:10:54 -0800 (PST)
-Received: by mail-vk1-f179.google.com with SMTP id k83so7952348vke.7;
-        Mon, 15 Nov 2021 02:10:53 -0800 (PST)
-X-Received: by 2002:a1f:f24f:: with SMTP id q76mr56909184vkh.11.1636971053697;
- Mon, 15 Nov 2021 02:10:53 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uxwfsA+44ef1b7hlksCPyj8IFexX6NAJcsqLHIbZtDw=;
+        b=yHDloWQsuFZ0WRGEVlzKfVhUrOFkWqSB1jeId550atKckqs5StOQKDkZx+YQsT5LAR
+         jnTDW12I9hSb6vaUsFwJIXzGEuXDSpxYKz/MwFYXHvUF0d6jA0ymje5W3mzhdgxFFxAk
+         HXnIj0jErpYzPktDUK52PFw6Ch2G+U7rcCMURsu2nwxPvgQjwlT5N9MOk/XRGzaWWvsw
+         f8NHhY315VT/xjjyzm7WFC+Z0JprD6X/JYLcztZFFljm+f5LihD4woqUwzdYaeVyM33B
+         QIK54OQX/P+CkPJhf+VJLYU1MxYLi7pYx6oDfGooDRwnZQWW2hLp9K3Ehq/FwIAJ+Gug
+         QNOw==
+X-Gm-Message-State: AOAM532nuAg4DbUHc5b0S+JUdX559GiByuNwTzUeruA4AUb+vzJ9LRZD
+        ZlNH1zf1gtcArplj4Xbngw8=
+X-Google-Smtp-Source: ABdhPJzzG0A94HwBEFevyB5R/o6ZsnhSI8DcBgN+Z4YhggnKS037qGfUrVTsqxrckLGnY2R6XXXm3w==
+X-Received: by 2002:a05:6512:2201:: with SMTP id h1mr33409940lfu.397.1636971076884;
+        Mon, 15 Nov 2021 02:11:16 -0800 (PST)
+Received: from localhost.localdomain ([178.127.153.223])
+        by smtp.gmail.com with ESMTPSA id f15sm1246622lfq.236.2021.11.15.02.11.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 02:11:16 -0800 (PST)
+Received: from jek by localhost.localdomain with local (Exim 4.95)
+        (envelope-from <jekhor@gmail.com>)
+        id 1mmYxH-001Bq1-5o;
+        Mon, 15 Nov 2021 13:11:15 +0300
+Date:   Mon, 15 Nov 2021 13:11:15 +0300
+From:   Yauhen Kharuzhy <jekhor@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: Re: [PATCH v2 10/20] power: supply: bq25890: Add
+ bq25890_set_otg_cfg() helper
+Message-ID: <YZIyQ1BdJ0v8QTtj@jeknote.loshitsa1.net>
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-11-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <20211115064128.9896-1-rdunlap@infradead.org>
-In-Reply-To: <20211115064128.9896-1-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Nov 2021 11:10:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
-Message-ID: <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sh: mcount.S: fix build error when PRINTK is not enabled
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Paul Mundt <lethal@linux-sh.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114170335.66994-11-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+On Sun, Nov 14, 2021 at 06:03:25PM +0100, Hans de Goede wrote:
+> Add a bq25890_set_otg_cfg() helper function, this is a preparation
+> patch for adding regulator support.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/power/supply/bq25890_charger.c | 28 ++++++++++++++------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+> index 2bdfb58cda75..3c41fe86b3d3 100644
+> --- a/drivers/power/supply/bq25890_charger.c
+> +++ b/drivers/power/supply/bq25890_charger.c
+> @@ -801,6 +801,17 @@ static int bq25890_power_supply_init(struct bq25890_device *bq)
+>  	return PTR_ERR_OR_ZERO(bq->charger);
+>  }
+>  
+> +static int bq25890_set_otg_cfg(struct bq25890_device *bq, u8 val)
+> +{
+> +	int ret;
+> +
+> +	ret = bq25890_field_write(bq, F_OTG_CFG, val);
+> +	if (ret < 0)
+> +		dev_err(bq->dev, "Error switching to boost/charger mode: %d\n", ret);
 
-On Mon, Nov 15, 2021 at 7:41 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Fix a build error in mcount.S when CONFIG_PRINTK is not enabled.
-> Fixes this build error:
->
-> sh2-linux-ld: arch/sh/lib/mcount.o: in function `stack_panic':
-> (.text+0xec): undefined reference to `dump_stack'
->
-> Fixes: e460ab27b6c3e ("sh: Fix up stack overflow check with ftrace disabled.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Just a note: if a connected USB device has relative big capacitor
+at power wires inside, then a starting current pulse may be enough to
+overload the boost reguator and VBUS will not be powered. I met this
+at Yoga Book: the firmware set boost current limit to 1.4 A (default
+value for bq25892) but when USB hub connected, the BOOST_FAULT event
+appeared.
 
-Thanks for your patch!
+To avoid this, Lenovo uses following trick in its kernel: set a boost
+current limit to big value (2.1 A), wait some time (500 ms) and set
+the current limit to right value (1.4A). This provides enough current to
+charge capacitors in the connected device but saves desired long-time limit
+to prevent overloading if the device consumes too much power itself.
 
-> Possibly even more of this function should conditionally not be built...
 
-What about making STACK_DEBUG depend on PRINTK instead?
-It doesn't make much sense to enable the former, if you won't print
-any output...
 
-> --- linux-next-20211112.orig/arch/sh/lib/mcount.S
-> +++ linux-next-20211112/arch/sh/lib/mcount.S
-> @@ -257,9 +257,11 @@ return_to_handler:
->  #ifdef CONFIG_STACK_DEBUG
->         .globl  stack_panic
->  stack_panic:
-> +#ifdef CONFIG_PRINTK
->         mov.l   .Ldump_stack, r0
->         jsr     @r0
->          nop
-> +#endif
->
->         mov.l   .Lpanic, r0
->         jsr     @r0
-> @@ -277,8 +279,10 @@ stack_panic:
->         .long   panic
->  .Lpanic_s:
->         .long   .Lpanic_str
-> +#ifdef CONFIG_PRINTK
->  .Ldump_stack:
->         .long   dump_stack
-> +#endif
->
->         .section        .rodata
->         .align 2
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Yauhen Kharuzhy
