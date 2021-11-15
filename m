@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA364515D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CD64515E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353289AbhKOUze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:55:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50070 "EHLO mail.kernel.org"
+        id S1348047AbhKOVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:00:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240641AbhKOSLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:11:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 192DE633C2;
-        Mon, 15 Nov 2021 17:47:33 +0000 (UTC)
+        id S240685AbhKOSLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:11:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9FE7633C3;
+        Mon, 15 Nov 2021 17:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998454;
-        bh=hRgGveg67O4YaQdaBJBoise6YYevgIu8X342+sr0c6I=;
+        s=korg; t=1636998457;
+        bh=ZBMenJ5V07daEHWSVGsBoKeOb+heEv2q1Hmd4hREvkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g5Ry6F4KxbcYMX6MsTqZ46d6plKaL2ts8TFJOHipfGCe5qoL1VXIWNN2OmCvU5niw
-         2Q+5sKQ4HPTFOdQhS3t1gOM7bifIKQ6N/Q1xifQNQ5F/bi9/HMV2YJZF2s4XAcrSO9
-         Df7ofwedP8xmIKxYLsRlWPPkQfgqIZgy4dCWavtE=
+        b=t5Hj2yjzb9LiX7Ap0NBQWX1g6dG19+IiAE5XJv3at6JZg8Rjnxg/nrfJ6Xmxjkmh+
+         VY5wNjCFZwD2+cTQI8bxUgtl7i/unnoSADK7o83Iw0zzqLxTrd5Ngr/wjkpmyssCok
+         Sewdu8O97Cq8919oDWE1spK5SgzDYWD3pY8U4hR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 516/575] ataflop: remove ataflop_probe_lock mutex
-Date:   Mon, 15 Nov 2021 18:04:01 +0100
-Message-Id: <20211115165401.523895690@linuxfoundation.org>
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 517/575] net: phy: fix duplex out of sync problem while changing settings
+Date:   Mon, 15 Nov 2021 18:04:02 +0100
+Message-Id: <20211115165401.563947987@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,142 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 4ddb85d36613c45bde00d368bf9f357bd0708a0c ]
+[ Upstream commit a4db9055fdb9cf607775c66d39796caf6439ec92 ]
 
-Commit bf9c0538e485b591 ("ataflop: use a separate gendisk for each media
-format") introduced ataflop_probe_lock mutex, but forgot to unlock the
-mutex when atari_floppy_init() (i.e. module loading) succeeded. This will
-result in double lock deadlock if ataflop_probe() is called. Also,
-unregister_blkdev() must not be called from atari_floppy_init() with
-ataflop_probe_lock held when atari_floppy_init() failed, for
-ataflop_probe() waits for ataflop_probe_lock with major_names_lock held
-(i.e. AB-BA deadlock).
+As reported by Zhang there's a small issue if in forced mode the duplex
+mode changes with the link staying up [0]. In this case the MAC isn't
+notified about the change.
 
-__register_blkdev() needs to be called last in order to avoid calling
-ataflop_probe() when atari_floppy_init() is about to fail, for memory for
-completing already-started ataflop_probe() safely will be released as soon
-as atari_floppy_init() released ataflop_probe_lock mutex.
+The proposed patch relies on the phylib state machine and ignores the
+fact that there are drivers that uses phylib but not the phylib state
+machine. So let's don't change the behavior for such drivers and fix
+it w/o re-adding state PHY_FORCING for the case that phylib state
+machine is used.
 
-As with commit 8b52d8be86d72308 ("loop: reorder loop_exit"),
-unregister_blkdev() needs to be called first in order to avoid calling
-ataflop_alloc_disk() from ataflop_probe() after del_gendisk() from
-atari_floppy_exit().
+[0] https://lore.kernel.org/netdev/a5c26ffd-4ee4-a5e6-4103-873208ce0dc5@huawei.com/T/
 
-By relocating __register_blkdev() / unregister_blkdev() as explained above,
-we can remove ataflop_probe_lock mutex, for probe function and __exit
-function are serialized by major_names_lock mutex.
-
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: bf9c0538e485b591 ("ataflop: use a separate gendisk for each media format")
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Link: https://lore.kernel.org/r/20211103230437.1639990-11-mcgrof@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 2bd229df5e2e ("net: phy: remove state PHY_FORCING")
+Reported-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Tested-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/7b8b9456-a93f-abbc-1dc5-a2c2542f932c@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 47 +++++++++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+ drivers/net/phy/phy.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 2d3a66362dcf9..3a29f1992d971 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2016,8 +2016,6 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index 5ee7cde0c2e97..db7866b6f7525 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -831,7 +831,12 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
+ 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+ 
+ 	/* Restart the PHY */
+-	_phy_start_aneg(phydev);
++	if (phy_is_started(phydev)) {
++		phydev->state = PHY_UP;
++		phy_trigger_machine(phydev);
++	} else {
++		_phy_start_aneg(phydev);
++	}
+ 
+ 	mutex_unlock(&phydev->lock);
  	return 0;
- }
- 
--static DEFINE_MUTEX(ataflop_probe_lock);
--
- static void ataflop_probe(dev_t dev)
- {
- 	int drive = MINOR(dev) & 3;
-@@ -2025,14 +2023,32 @@ static void ataflop_probe(dev_t dev)
- 
- 	if (drive >= FD_MAX_UNITS || type > NUM_DISK_MINORS)
- 		return;
--	mutex_lock(&ataflop_probe_lock);
- 	if (!unit[drive].disk[type]) {
- 		if (ataflop_alloc_disk(drive, type) == 0) {
- 			add_disk(unit[drive].disk[type]);
- 			unit[drive].registered[type] = true;
- 		}
- 	}
--	mutex_unlock(&ataflop_probe_lock);
-+}
-+
-+static void atari_floppy_cleanup(void)
-+{
-+	int i;
-+	int type;
-+
-+	for (i = 0; i < FD_MAX_UNITS; i++) {
-+		for (type = 0; type < NUM_DISK_MINORS; type++) {
-+			if (!unit[i].disk[type])
-+				continue;
-+			del_gendisk(unit[i].disk[type]);
-+			blk_cleanup_queue(unit[i].disk[type]->queue);
-+			put_disk(unit[i].disk[type]);
-+		}
-+		blk_mq_free_tag_set(&unit[i].tag_set);
-+	}
-+
-+	del_timer_sync(&fd_timer);
-+	atari_stram_free(DMABuffer);
- }
- 
- static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
-@@ -2058,11 +2074,6 @@ static int __init atari_floppy_init (void)
- 		/* Amiga, Mac, ... don't have Atari-compatible floppy :-) */
- 		return -ENODEV;
- 
--	mutex_lock(&ataflop_probe_lock);
--	ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
--	if (ret)
--		goto out_unlock;
--
- 	for (i = 0; i < FD_MAX_UNITS; i++) {
- 		memset(&unit[i].tag_set, 0, sizeof(unit[i].tag_set));
- 		unit[i].tag_set.ops = &ataflop_mq_ops;
-@@ -2116,15 +2127,17 @@ static int __init atari_floppy_init (void)
- 	       UseTrackbuffer ? "" : "no ");
- 	config_types();
- 
--	return 0;
-+	ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
-+	if (ret) {
-+		printk(KERN_ERR "atari_floppy_init: cannot register block device\n");
-+		atari_floppy_cleanup();
-+	}
-+	return ret;
- 
- err:
- 	while (--i >= 0)
- 		atari_cleanup_floppy_disk(&unit[i]);
- 
--	unregister_blkdev(FLOPPY_MAJOR, "fd");
--out_unlock:
--	mutex_unlock(&ataflop_probe_lock);
- 	return ret;
- }
- 
-@@ -2169,14 +2182,8 @@ __setup("floppy=", atari_floppy_setup);
- 
- static void __exit atari_floppy_exit(void)
- {
--	int i;
--
--	for (i = 0; i < FD_MAX_UNITS; i++)
--		atari_cleanup_floppy_disk(&unit[i]);
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
--
--	del_timer_sync(&fd_timer);
--	atari_stram_free( DMABuffer );
-+	atari_floppy_cleanup();
- }
- 
- module_init(atari_floppy_init)
 -- 
 2.33.0
 
