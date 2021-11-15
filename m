@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D69451840
+	by mail.lfdr.de (Postfix) with ESMTP id AAD3245183F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345152AbhKOW4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:56:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50354 "EHLO mail.kernel.org"
+        id S1346755AbhKOW4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:56:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242834AbhKOSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242835AbhKOSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:46:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 646B963296;
-        Mon, 15 Nov 2021 18:06:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26FD063293;
+        Mon, 15 Nov 2021 18:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999617;
-        bh=HH9kc9fwqHZsH064mu4Hat/FXGOl5tPVZ52znZXXso4=;
+        s=korg; t=1636999619;
+        bh=GEK4oGja1rp4ZwDbg53pN+o2JQmK+EZF+En5tw4nLIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s/spWJtiqnIoAl9Ih7rN7zmSMfdj7RVn/6tqMYuwOvYUbv34Tw3NUFawU/kccnaib
-         Ow9PjNG72b55HjiIKuISHKW1vw/LqRRsTEYdFdw7JrAyKkPwMec/4rvEYC9j/+qkyn
-         gz6/GHP0o60KPE0Yow0yZbri+cpMmNwqTZAAwIxw=
+        b=yF2ugqaoC3Xg6WwACCPcVwcI5YU7H4KVxROmOxSSpj+fKEPu+9JEbFXTMzwkDP3Tn
+         mDLgwhbCBMRluEUbpTcUq57U09FNnD2kHiaEZCTJQOcVU7QwMcpCwb7DePHZiiGW7U
+         rEX5Fn51maokETt6ti19AZzgDU0NeC54Txm7+pGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 363/849] fortify: Fix dropped strcpy() compile-time write overflow check
-Date:   Mon, 15 Nov 2021 17:57:26 +0100
-Message-Id: <20211115165432.513512798@linuxfoundation.org>
+Subject: [PATCH 5.14 364/849] cfg80211: always free wiphy specific regdomain
+Date:   Mon, 15 Nov 2021 17:57:27 +0100
+Message-Id: <20211115165432.546582455@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,40 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 072af0c638dc8a5c7db2edc4dddbd6d44bee3bdb ]
+[ Upstream commit e53e9828a8d2c6545e01ff9711f1221f2fd199ce ]
 
-The implementation for intra-object overflow in str*-family functions
-accidentally dropped compile-time write overflow checking in strcpy(),
-leaving it entirely to run-time. Add back the intended check.
+In the (somewhat unlikely) event that we allocate a wiphy, then
+add a regdomain to it, and then fail registration, we leak the
+regdomain. Fix this by just always freeing it at the end, in the
+normal cases we'll free (and NULL) it during wiphy_unregister().
+This happened when the wiphy settings were bad, and since they
+can be controlled by userspace with hwsim, syzbot was able to
+find this issue.
 
-Fixes: 6a39e62abbaf ("lib: string.h: detect intra-object overflow in fortified string functions")
-Cc: Daniel Axtens <dja@axtens.net>
-Cc: Francis Laniel <laniel_francis@privacyrequired.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
+Fixes: 3e0c3ff36c4c ("cfg80211: allow multiple driver regulatory_hints()")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20210927131105.68b70cef4674.I4b9f0aa08c2af28555963b9fe3d34395bb72e0cc@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/fortify-string.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/wireless/core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-index c1be37437e778..0c70febd03e95 100644
---- a/include/linux/fortify-string.h
-+++ b/include/linux/fortify-string.h
-@@ -280,7 +280,10 @@ __FORTIFY_INLINE char *strcpy(char *p, const char *q)
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
- 		return __underlying_strcpy(p, q);
- 	size = strlen(q) + 1;
--	/* test here to use the more stringent object size */
-+	/* Compile-time check for const size overflow. */
-+	if (__builtin_constant_p(size) && p_size < size)
-+		__write_overflow();
-+	/* Run-time check for dynamic size overflow. */
- 	if (p_size < size)
- 		fortify_panic(__func__);
- 	memcpy(p, q, size);
+diff --git a/net/wireless/core.c b/net/wireless/core.c
+index aaba847d79eb2..eb297e1015e05 100644
+--- a/net/wireless/core.c
++++ b/net/wireless/core.c
+@@ -1081,6 +1081,16 @@ void cfg80211_dev_free(struct cfg80211_registered_device *rdev)
+ 	list_for_each_entry_safe(scan, tmp, &rdev->bss_list, list)
+ 		cfg80211_put_bss(&rdev->wiphy, &scan->pub);
+ 	mutex_destroy(&rdev->wiphy.mtx);
++
++	/*
++	 * The 'regd' can only be non-NULL if we never finished
++	 * initializing the wiphy and thus never went through the
++	 * unregister path - e.g. in failure scenarios. Thus, it
++	 * cannot have been visible to anyone if non-NULL, so we
++	 * can just free it here.
++	 */
++	kfree(rcu_dereference_raw(rdev->wiphy.regd));
++
+ 	kfree(rdev);
+ }
+ 
 -- 
 2.33.0
 
