@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0382452117
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DBB451A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349153AbhKPA7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:59:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
+        id S1352151AbhKOXiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:38:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343590AbhKOTVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343587AbhKOTVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:21:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C7BA635B0;
-        Mon, 15 Nov 2021 18:42:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B60B263314;
+        Mon, 15 Nov 2021 18:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001752;
-        bh=SgH0ohachYu8MovWvIDDMqLM0SQwxF2HGZE/N5bMw2g=;
+        s=korg; t=1637001755;
+        bh=fbqIj3nq4MlUwzjp9L7I2DlzTFpL1U6pHnDjYnDG0BA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=piPvtL4cwkj5D+So8XRthWPqhQ3w5WvtKrYgDqDJ+mscAr8CKiaNZ2HJ1zP/bB72e
-         BopxKj7u8a+OYBoT3a6go2/Zqxf62rurU0g4KHai+Wi7/nT/mSqjCzoLteKbfPgrCK
-         hV1+Ufw94XCTJY/0mI1T0AHVSUVoGBquXes835JU=
+        b=y+rzXWrEWVAIxq1XKkumiXwoe9q1TCbt0ninyp7kFbG706cWHK1QryNG6gYzFNQlz
+         EFl5EHxQbOzBqRn6409by2A1tguG6v9i6YACeAqRQ5brdNIamvQJjK2Uk53JgakWLq
+         r1rDZjg/FHl0+YUpJuG1LOTF4q0+jS35pyUMV3iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yaara Baruch <yaara.baruch@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 274/917] iwlwifi: change all JnP to NO-160 configuration
-Date:   Mon, 15 Nov 2021 17:56:09 +0100
-Message-Id: <20211115165438.067249018@linuxfoundation.org>
+        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 275/917] block: remove inaccurate requeue check
+Date:   Mon, 15 Nov 2021 17:56:10 +0100
+Message-Id: <20211115165438.106169250@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,46 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yaara Baruch <yaara.baruch@intel.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 70382b0897eeecfcd35ba5f6161dbceeb556ea1e ]
+[ Upstream commit 037057a5a979c7eeb2ee5d12cf4c24b805192c75 ]
 
-JnP should not have the 160 MHz.
+This check is meant to catch cases where a requeue is attempted on a
+request that is still inserted. It's never really been useful to catch any
+misuse, and now it's actively wrong. Outside of that, this should not be a
+BUG_ON() to begin with.
 
-Signed-off-by: Yaara Baruch <yaara.baruch@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20211016114029.ee163f4a7513.I7f87bd969a0b038c7f3a1a962d9695ffd18c5da1@changeid
+Remove the check as it's now causing active harm, as requeue off the plug
+path will trigger it even though the request state is just fine.
+
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Link: https://lore.kernel.org/linux-block/CAHj4cs80zAUc2grnCZ015-2Rvd-=gXRfB_dFKy=RTm+wRo09HQ@mail.gmail.com/
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-mq.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-index e3996ff99bad5..3b974388d834d 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -931,9 +931,9 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
- 		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
- 		      iwl_qu_b0_hr1_b0, iwl_ax101_name),
- 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
--		      IWL_CFG_MAC_TYPE_QU, SILICON_C_STEP,
-+		      IWL_CFG_MAC_TYPE_QU, SILICON_B_STEP,
- 		      IWL_CFG_RF_TYPE_HR2, IWL_CFG_ANY,
--		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
-+		      IWL_CFG_NO_160, IWL_CFG_ANY, IWL_CFG_NO_CDB,
- 		      iwl_qu_b0_hr_b0, iwl_ax203_name),
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 49587c181e3fd..c8a9d10f7c18b 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -763,7 +763,6 @@ void blk_mq_requeue_request(struct request *rq, bool kick_requeue_list)
+ 	/* this request will be re-inserted to io scheduler queue */
+ 	blk_mq_sched_requeue_request(rq);
  
- 	/* Qu C step */
-@@ -945,7 +945,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
- 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
- 		      IWL_CFG_MAC_TYPE_QU, SILICON_C_STEP,
- 		      IWL_CFG_RF_TYPE_HR2, IWL_CFG_ANY,
--		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
-+		      IWL_CFG_NO_160, IWL_CFG_ANY, IWL_CFG_NO_CDB,
- 		      iwl_qu_c0_hr_b0, iwl_ax203_name),
- 
- 	/* QuZ */
+-	BUG_ON(!list_empty(&rq->queuelist));
+ 	blk_mq_add_to_requeue_list(rq, true, kick_requeue_list);
+ }
+ EXPORT_SYMBOL(blk_mq_requeue_request);
 -- 
 2.33.0
 
