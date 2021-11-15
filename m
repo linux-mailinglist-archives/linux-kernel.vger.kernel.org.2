@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5051545191C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F57451B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350484AbhKOXOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:14:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39100 "EHLO mail.kernel.org"
+        id S243238AbhKPAAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:00:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244123AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A911F60231;
-        Mon, 15 Nov 2021 18:18:47 +0000 (UTC)
+        id S1344393AbhKOTYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E5AB63676;
+        Mon, 15 Nov 2021 18:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000328;
-        bh=xdEyeh42BxXPB41NBdisx1lK3QAfQdkGC4Brr9+jr3M=;
+        s=korg; t=1637002615;
+        bh=p5LI70zC3eLsSDUT3/3qCC3J29Idy8LZRnUSlbVMpUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RsckS0IXUGtEI6xH1mBF9/QRB98pu5uayK6mJBlXkl8lJE/OrOF9hczz6TUccasRS
-         hhR2VStG2wZMnC+kN3dic26H/hbRt77Q81ght9VGU6/Q0yKIhFF902Cz3qPle/u7TG
-         UMaBZ2iJ6C14Fgjq2cz46EwKvZenolf9KsoZ7k3U=
+        b=KCpvfixcH9AYEuAY4sQ7D6xXOT91qNWFsUHFiEePvDci11m99FwQ8K2Z0wFge67J1
+         OD42jEGpOBVgo2BMWtZckzdNl2myeny5BK0ejUrh/Svp4ybYTH/XwQ4Z8UttqCgx97
+         Z8fthzISeKdJSrggt2CFXa3t0wE+1/Wig6qRhSn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 603/849] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
+Subject: [PATCH 5.15 591/917] arm64: dts: qcom: sc7280: fix display port phy reg property
 Date:   Mon, 15 Nov 2021 18:01:26 +0100
-Message-Id: <20211115165440.652014225@linuxfoundation.org>
+Message-Id: <20211115165448.802069365@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-[ Upstream commit f4875d509a0a78ad294a1a538d534b5ba94e685a ]
+[ Upstream commit 425f30cc843c727bc7753a0d33710d1e4a999168 ]
 
-This variable is just a temporary variable, used to do an endian
-conversion.  The problem is that the last byte is not initialized.  After
-the conversion is completely done, the last byte is discarded so it doesn't
-cause a problem.  But static checkers and the KMSan runtime checker can
-detect the uninitialized read and will complain about it.
+Existing display port phy reg property is derived from usb phy which
+map display port phy pcs to wrong address which cause aux init
+with wrong address and prevent both dpcd read and write from working.
+Fix this problem by assigning correct pcs address to display port
+phy reg property.
 
-Link: https://lore.kernel.org/r/20211006073242.GA8404@kili
-Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/1631216998-10049-1-git-send-email-khsieh@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_lnode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
-index dc98f51f466fb..d5ac938970232 100644
---- a/drivers/scsi/csiostor/csio_lnode.c
-+++ b/drivers/scsi/csiostor/csio_lnode.c
-@@ -619,7 +619,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
- 	struct fc_els_csp *csp;
- 	struct fc_els_cssp *clsp;
- 	enum fw_retval retval;
--	__be32 nport_id;
-+	__be32 nport_id = 0;
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index fd78f16181ddd..f58336536a92a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -1258,15 +1258,11 @@
+ 			dp_phy: dp-phy@88ea200 {
+ 				reg = <0 0x088ea200 0 0x200>,
+ 				      <0 0x088ea400 0 0x200>,
+-				      <0 0x088eac00 0 0x400>,
++				      <0 0x088eaa00 0 0x200>,
+ 				      <0 0x088ea600 0 0x200>,
+-				      <0 0x088ea800 0 0x200>,
+-				      <0 0x088eaa00 0 0x100>;
++				      <0 0x088ea800 0 0x200>;
+ 				#phy-cells = <0>;
+ 				#clock-cells = <1>;
+-				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+-				clock-names = "pipe0";
+-				clock-output-names = "usb3_phy_pipe_clk_src";
+ 			};
+ 		};
  
- 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
- 	if (retval != FW_SUCCESS) {
 -- 
 2.33.0
 
