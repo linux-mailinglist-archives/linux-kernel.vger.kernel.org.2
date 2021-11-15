@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48459451AA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D0C4520D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355375AbhKOXlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
+        id S1350466AbhKPA4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:56:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343757AbhKOTV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343758AbhKOTV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:21:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F5C6331C;
-        Mon, 15 Nov 2021 18:45:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F2B63386;
+        Mon, 15 Nov 2021 18:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001944;
-        bh=TuMDX0vo3Zm4oB6/mobRY5UZv9WRM6P+BymZF79XnPg=;
+        s=korg; t=1637001947;
+        bh=OJJ5GzrfKJmexoT8xEDq12/BHY7rNLMU/1N9X08Zcis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z2PW9DtMVEKVDiUn39/gFAJS2Q57jf0uFT7/NclFWZTcPBoJ5llnluwSDwrvg7DIP
-         KWZoWpTuP/TQ/1fwnB6od9Gye8vxeFavDdW89H8o1Zpm+hvexs73ltbdLqmTFGOYjB
-         LyM4Npar3t009enU97Uu3naQP1L4Y8pYlGxT7U/o=
+        b=cB46JzQIwy0Xa4RCZxl36c35un3MKfjeHNK5fqdMCTuFWYm6uFMBZwyIFTS7+5Owj
+         q91k9NYR7Ty9qiZdt+hLRg+305GJQecenyCZzkjGn2bks+J0XT0iKOZE/Dl8uW+Cx6
+         Uvnx8kdLytmCwxP8MvkwJ++stEQqBpLWgxhr4rOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 347/917] wilc1000: fix possible memory leak in cfg_scan_result()
-Date:   Mon, 15 Nov 2021 17:57:22 +0100
-Message-Id: <20211115165440.521109182@linuxfoundation.org>
+Subject: [PATCH 5.15 348/917] Bluetooth: btmtkuart: fix a memleak in mtk_hci_wmt_sync
+Date:   Mon, 15 Nov 2021 17:57:23 +0100
+Message-Id: <20211115165440.551180457@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,39 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Singh <ajay.kathat@microchip.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 3c719fed0f3a5e95b1d164609ecc81c4191ade70 ]
+[ Upstream commit 3e5f2d90c28f9454e421108554707620bc23269d ]
 
-When the BSS reference holds a valid reference, it is not freed. The 'if'
-condition is wrong. Instead of the 'if (bss)' check, the 'if (!bss)' check
-is used.
-The issue is solved by removing the unnecessary 'if' check because
-cfg80211_put_bss() already performs the NULL validation.
+bdev->evt_skb will get freed in the normal path and one error path
+of mtk_hci_wmt_sync, while the other error paths do not free it,
+which may cause a memleak. This bug is suggested by a static analysis
+tool, please advise.
 
-Fixes: 6cd4fa5ab691 ("staging: wilc1000: make use of cfg80211_inform_bss_frame()")
-Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210916164902.74629-3-ajay.kathat@microchip.com
+Fixes: e0b67035a90b ("Bluetooth: mediatek: update the common setup between MT7622 and other devices")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/microchip/wilc1000/cfg80211.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/bluetooth/btmtkuart.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-index 96973ec7bd9ac..87c14969c75fa 100644
---- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-+++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-@@ -129,8 +129,7 @@ static void cfg_scan_result(enum scan_event scan_event,
- 						info->frame_len,
- 						(s32)info->rssi * 100,
- 						GFP_KERNEL);
--		if (!bss)
--			cfg80211_put_bss(wiphy, bss);
-+		cfg80211_put_bss(wiphy, bss);
- 	} else if (scan_event == SCAN_EVENT_DONE) {
- 		mutex_lock(&priv->scan_req_lock);
+diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
+index e9d91d7c0db48..9ba22b13b4fa0 100644
+--- a/drivers/bluetooth/btmtkuart.c
++++ b/drivers/bluetooth/btmtkuart.c
+@@ -158,8 +158,10 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	int err;
  
+ 	hlen = sizeof(*hdr) + wmt_params->dlen;
+-	if (hlen > 255)
+-		return -EINVAL;
++	if (hlen > 255) {
++		err = -EINVAL;
++		goto err_free_skb;
++	}
+ 
+ 	hdr = (struct mtk_wmt_hdr *)&wc;
+ 	hdr->dir = 1;
+@@ -173,7 +175,7 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	err = __hci_cmd_send(hdev, 0xfc6f, hlen, &wc);
+ 	if (err < 0) {
+ 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
+-		return err;
++		goto err_free_skb;
+ 	}
+ 
+ 	/* The vendor specific WMT commands are all answered by a vendor
+@@ -190,13 +192,14 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	if (err == -EINTR) {
+ 		bt_dev_err(hdev, "Execution of wmt command interrupted");
+ 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
+-		return err;
++		goto err_free_skb;
+ 	}
+ 
+ 	if (err) {
+ 		bt_dev_err(hdev, "Execution of wmt command timed out");
+ 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
+-		return -ETIMEDOUT;
++		err = -ETIMEDOUT;
++		goto err_free_skb;
+ 	}
+ 
+ 	/* Parse and handle the return WMT event */
 -- 
 2.33.0
 
