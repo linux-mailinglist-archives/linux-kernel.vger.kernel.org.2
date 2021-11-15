@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EA344FCF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 03:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBBC44FD17
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 03:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhKOCNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 21:13:45 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:43854 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236240AbhKOCNb (ORCPT
+        id S236199AbhKOCVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 21:21:32 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:60123 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhKOCV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 21:13:31 -0500
-Received: by mail-ot1-f46.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so24768422otm.10;
-        Sun, 14 Nov 2021 18:10:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=z8ZfoyfHKKBFGiYdX8Dup3pn0hyus7Ct6ubn5t+9TRY=;
-        b=ff+KJsfkKkAxqJ+i2Ezg8QoQpK9VhYcfrnd7lknERHrCSepK9gdUcUNtrLiML7imRP
-         nP2TFrzwVHHrIrnocbE5lUMKbsEqG1Mb0Wrvb6iexat4LVjion8J1weuo7bdD0E9EKMm
-         rfr2jCD6MvvtGed0q+e/dyMBM0vWCwk7UCfDrnbtmuJpV8pSdnlvYCepK+hZlnK6mWjL
-         21/1tBHL5IQT2VKGe8amMPwTM7UiQ14PyV1XG6knbFgzUU1Yqv8cD/mjdhy3VPkZjZ+v
-         OdHR+h50eDrI2rtRIxIRGBMRVOSx+Ny+cOLNH7J2iuVpKo1TyrEBW1o0nmglA4sKcyQN
-         jR+Q==
-X-Gm-Message-State: AOAM530m1vFn9Pqyqa6Lg4eKP1eN1Zs2PdITYMnGTWNuSAnKHtSXDOP/
-        TVLrejV6zri+4a51J7K7/w==
-X-Google-Smtp-Source: ABdhPJyugnIoBugvV/ymi2bazYiqcEFTPF190Q/UlJQEmI8dYoZuC1NfsXInsFevOKZyBCZy8m8rNg==
-X-Received: by 2002:a05:6830:1688:: with SMTP id k8mr27762637otr.238.1636942236077;
-        Sun, 14 Nov 2021 18:10:36 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id u136sm2894379oie.13.2021.11.14.18.10.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 18:10:35 -0800 (PST)
-Received: (nullmailer pid 3712870 invoked by uid 1000);
-        Mon, 15 Nov 2021 02:10:32 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Gilles Talis <gilles.talis@gmail.com>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org, lars@metafoo.de,
-        jic23@kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, pmeerw@pmeerw.net
-In-Reply-To: <20211114132335.47651-3-gilles.talis@gmail.com>
-References: <20211114132335.47651-1-gilles.talis@gmail.com> <20211114132335.47651-3-gilles.talis@gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: trivial-devices: Add Sensirion SHTC3 humidity sensor
-Date:   Sun, 14 Nov 2021 20:10:32 -0600
-Message-Id: <1636942232.952764.3712869.nullmailer@robh.at.kernel.org>
+        Sun, 14 Nov 2021 21:21:29 -0500
+X-Greylist: delayed 5528 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Nov 2021 21:20:56 EST
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 1AF2HPNI005642;
+        Mon, 15 Nov 2021 11:17:26 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1AF2HPNI005642
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636942646;
+        bh=zc50JpZynEpA7OOKlhPwk+0GNvGQo8rHuZdBYL+q53Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=khxVupkACbDQr76B6w9wiQ1s+K0FCF4Lqnd2fP/hjHTWjVfU0tClKPa/WjrnTx7M8
+         nVewtUDY6fTLqtj3Oef5giEIlQICZaLAqN9iiBhTUUooDNjp3BIdjDNQp0oVZJDRFn
+         ktnJfJpHp4w4Q9cnGBkhOX/XMsB6T5BE2NBU8tGDABlP1yKcQUIQsIiE7wvEeM2TNj
+         v1caQp7Cl88Fb+1DkvzRLYV8aoShj6ZvOQNRekbUOGTCgUhgGz9lGw57ycGmL7rBLG
+         GpZvWJ9klcwAOMmgauw4kWv3KQLxffXj8Lb/DzHuUPO/4hvhyKylOAiBRBy2LzGlZQ
+         vBf+9+NC6A3qA==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id np3so11530095pjb.4;
+        Sun, 14 Nov 2021 18:17:25 -0800 (PST)
+X-Gm-Message-State: AOAM5312T/03I/5NGvPDJnEvq0Qyrj5vc1wBf4dPhFagRgnrpzFWhyto
+        vBWRnowW9vHw8OhPGHtyvARyEF9j73oNOry7Lj8=
+X-Google-Smtp-Source: ABdhPJyFikcVi3ql5mZhpThJGUWZwvtHlezWtB27iVfwekznHJ1Oq05ojyhxuOyrcGZmIXNqJDJhl7JPd/gM3LprToM=
+X-Received: by 2002:a17:902:c7d5:b0:143:72b7:2ca5 with SMTP id
+ r21-20020a170902c7d500b0014372b72ca5mr31119559pla.20.1636942645141; Sun, 14
+ Nov 2021 18:17:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20211114005725.GA27075@embeddedor> <YZF9MY6rRLQwdTgM@archlinux-ax161>
+ <YZGnL3nfA5876hX3@archlinux-ax161> <20211115003501.GA43686@embeddedor>
+ <CAK7LNAQY4Y-wnY8wQOuHh5eyVdUBGGP58Uu2aZSe+zdxt7km-A@mail.gmail.com> <20211115010001.GA44147@embeddedor>
+In-Reply-To: <20211115010001.GA44147@embeddedor>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 15 Nov 2021 11:16:48 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASOWJgoSqUgyrz3QLKjw9uj=PXcKEH7AOrwmNA9jNpVGw@mail.gmail.com>
+Message-ID: <CAK7LNASOWJgoSqUgyrz3QLKjw9uj=PXcKEH7AOrwmNA9jNpVGw@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Add support for -Wimplicit-fallthrough
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Nov 2021 14:23:35 +0100, Gilles Talis wrote:
-> Sensirion SHTC3 is a humidity and temperature sensor controlled
-> through I2C interface
-> 
-> Signed-off-by: Gilles Talis <gilles.talis@gmail.com>
-> ---
->  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Mon, Nov 15, 2021 at 9:54 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> On Mon, Nov 15, 2021 at 09:44:40AM +0900, Masahiro Yamada wrote:
+> > On Mon, Nov 15, 2021 at 9:30 AM Gustavo A. R. Silva
+> > <gustavoars@kernel.org> wrote:
+> > >
+> >
+> > Please use a subject prefix different than "kconfig:"
+> >
+> > I want to see "kconfig:' only for changes in scripts/kconfig/.
+>
+> How about kbuild for this case, instead?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Sounds good to me.
 
-yamllint warnings/errors:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: shtc3@70: 'sensirion,blocking-io' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/trivial-devices.yaml
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1554826
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Best Regards
+Masahiro Yamada
