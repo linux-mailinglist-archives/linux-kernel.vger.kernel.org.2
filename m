@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114E44519C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F92451F5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhKOX1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:27:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S1356159AbhKPAix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245044AbhKOTS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C3463436;
-        Mon, 15 Nov 2021 18:27:22 +0000 (UTC)
+        id S1344792AbhKOTZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFAEF63325;
+        Mon, 15 Nov 2021 19:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000843;
-        bh=lKuoYC8M2aumsmWpirMLSxztT3UFHkNs5zbLFzuKtYM=;
+        s=korg; t=1637003072;
+        bh=ZCEUYrVNKyHT5pvRUmeBf4GUnRYrr7GSX3UGCtd7HsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FDNyVUOPnomzwjv0q96xrtXrE1FWFyyD4SrDwsrvnHM+7wCtdHPSShqjOcJPKts1P
-         +AhqkCs+BAz7sbfdqpGY3pzZg0yFynl1z4756vZYAmG68ReZnLXQKzmseqKfRawEAR
-         SBMJc45DlFN/YUlZ/AEexuW8im0TBXUvV1XzBHa4=
+        b=1ZOg24qzBrDR1kW8QV0gP5WAkGl6A83umMiv1C6Jsh6iTQqxHJRijzyvDuSLd1wlQ
+         NsjSn4jtYhvlt+3J7Od/3CMX0gha/bI7F6d8OSldIbCUTcr9hDNQsn1xyPhRr4CW8R
+         x1OYH9tkf9LJnrUxQ2KtdmgpXlgeM56EejRo5c+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 812/849] mm, oom: pagefault_out_of_memory: dont force global OOM for dying tasks
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 800/917] mfd: sprd: Add SPI device ID table
 Date:   Mon, 15 Nov 2021 18:04:55 +0100
-Message-Id: <20211115165447.712181759@linuxfoundation.org>
+Message-Id: <20211115165456.098430005@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,74 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit 0b28179a6138a5edd9d82ad2687c05b3773c387b upstream.
+[ Upstream commit c5c7f0677107052060037583b9c8c15d818afb04 ]
 
-Patch series "memcg: prohibit unconditional exceeding the limit of dying tasks", v3.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI device ID table.
 
-Memory cgroup charging allows killed or exiting tasks to exceed the hard
-limit.  It can be misused and allowed to trigger global OOM from inside
-a memcg-limited container.  On the other hand if memcg fails allocation,
-called from inside #PF handler it triggers global OOM from inside
-pagefault_out_of_memory().
-
-To prevent these problems this patchset:
- (a) removes execution of out_of_memory() from
-     pagefault_out_of_memory(), becasue nobody can explain why it is
-     necessary.
- (b) allow memcg to fail allocation of dying/killed tasks.
-
-This patch (of 3):
-
-Any allocation failure during the #PF path will return with VM_FAULT_OOM
-which in turn results in pagefault_out_of_memory which in turn executes
-out_out_memory() and can kill a random task.
-
-An allocation might fail when the current task is the oom victim and
-there are no memory reserves left.  The OOM killer is already handled at
-the page allocator level for the global OOM and at the charging level
-for the memcg one.  Both have much more information about the scope of
-allocation/charge request.  This means that either the OOM killer has
-been invoked properly and didn't lead to the allocation success or it
-has been skipped because it couldn't have been invoked.  In both cases
-triggering it from here is pointless and even harmful.
-
-It makes much more sense to let the killed task die rather than to wake
-up an eternally hungry oom-killer and send him to choose a fatter victim
-for breakfast.
-
-Link: https://lkml.kernel.org/r/0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20210924143347.14721-4-broonie@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/oom_kill.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mfd/sprd-sc27xx-spi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -1136,6 +1136,9 @@ void pagefault_out_of_memory(void)
- 	if (mem_cgroup_oom_synchronize(true))
- 		return;
+diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+index 6b7956604a0f0..9890882db1ed3 100644
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -236,6 +236,12 @@ static const struct of_device_id sprd_pmic_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, sprd_pmic_match);
  
-+	if (fatal_signal_pending(current))
-+		return;
++static const struct spi_device_id sprd_pmic_spi_ids[] = {
++	{ .name = "sc2731", .driver_data = (unsigned long)&sc2731_data },
++	{},
++};
++MODULE_DEVICE_TABLE(spi, sprd_pmic_spi_ids);
 +
- 	if (!mutex_trylock(&oom_lock))
- 		return;
- 	out_of_memory(&oc);
+ static struct spi_driver sprd_pmic_driver = {
+ 	.driver = {
+ 		.name = "sc27xx-pmic",
+@@ -243,6 +249,7 @@ static struct spi_driver sprd_pmic_driver = {
+ 		.pm = &sprd_pmic_pm_ops,
+ 	},
+ 	.probe = sprd_pmic_probe,
++	.id_table = sprd_pmic_spi_ids,
+ };
+ 
+ static int __init sprd_pmic_init(void)
+-- 
+2.33.0
+
 
 
