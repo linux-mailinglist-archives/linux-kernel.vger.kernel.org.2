@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2E1450BCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44369450BE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhKOR3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:29:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46616 "EHLO mail.kernel.org"
+        id S237948AbhKORay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:30:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236852AbhKORO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:14:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6064363250;
-        Mon, 15 Nov 2021 17:11:32 +0000 (UTC)
+        id S236910AbhKORO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:14:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CA6D63252;
+        Mon, 15 Nov 2021 17:11:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996292;
-        bh=XunzDaa8N7lpnorS4BtkwbO051ejfol5eKt5qaAtSx0=;
+        s=korg; t=1636996295;
+        bh=FvTzF9DjUkBZjUTMZVXzAJbL0QtGY3f3UU4HluLDkV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3g/0buEEtnDaSCSbcC7c1s84kw+KdLBpFWaiLT1vCZKIbKDuUlYfTUXlj1vrDW8K
-         vctrGhR0j4qNCXSvkrNo8Rf+2hKL9Lfj80nlRLHuIk712ahqzUkG4hAV+78P7EI7oc
-         fpBCUXT/OiN69BSJ8/+Zcyr6j2ytStoxJTsGYu34=
+        b=IOb4FLgezELxHlViQDnO4uoN7DDXSbJCuCSLfIDOs1Q6SaqdJsxE3T4yZiVPhYRHV
+         7L2xpO5ODedf9C4FjT3TwoHSaKKj1FbmIc0ZH51d5kTwTayToR23vLaha065l48Bjl
+         tnaIlw7BJRz19OiVOI4XkiDifeNXGzGZHlCbhcTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
         "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.4 086/355] signal: Remove the bogus sigkill_pending in ptrace_stop
-Date:   Mon, 15 Nov 2021 18:00:10 +0100
-Message-Id: <20211115165316.585318865@linuxfoundation.org>
+Subject: [PATCH 5.4 087/355] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
+Date:   Mon, 15 Nov 2021 18:00:11 +0100
+Message-Id: <20211115165316.617906069@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,76 +43,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 7d613f9f72ec8f90ddefcae038fdae5adb8404b3 upstream.
+commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
 
-The existence of sigkill_pending is a little silly as it is
-functionally a duplicate of fatal_signal_pending that is used in
-exactly one place.
+When an instruction to save or restore a register from the stack fails
+in _save_fp_context or _restore_fp_context return with -EFAULT.  This
+change was made to r2300_fpu.S[1] but it looks like it got lost with
+the introduction of EX2[2].  This is also what the other implementation
+of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
+what is needed for the callers to be able to handle the error.
 
-Checking for pending fatal signals and returning early in ptrace_stop
-is actively harmful.  It casues the ptrace_stop called by
-ptrace_signal to return early before setting current->exit_code.
-Later when ptrace_signal reads the signal number from
-current->exit_code is undefined, making it unpredictable what will
-happen.
+Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
+it does not terminate the entire process it just terminates a single
+thread.
 
-Instead rely on the fact that schedule will not sleep if there is a
-pending signal that can awaken a task.
+As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
+remove the problematic and now unused helper function.
 
-Removing the explict sigkill_pending test fixes fixes ptrace_signal
-when ptrace_stop does not stop because current->exit_code is always
-set to to signr.
-
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Maciej Rozycki <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org
+[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
+[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
 Cc: stable@vger.kernel.org
-Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
-Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
-Link: https://lkml.kernel.org/r/87pmsyx29t.fsf@disp2133
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
+Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/signal.c |   18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ arch/mips/kernel/r2300_fpu.S |    4 ++--
+ arch/mips/kernel/syscall.c   |    9 ---------
+ 2 files changed, 2 insertions(+), 11 deletions(-)
 
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2101,15 +2101,6 @@ static inline bool may_ptrace_stop(void)
- 	return true;
+--- a/arch/mips/kernel/r2300_fpu.S
++++ b/arch/mips/kernel/r2300_fpu.S
+@@ -29,8 +29,8 @@
+ #define EX2(a,b)						\
+ 9:	a,##b;							\
+ 	.section __ex_table,"a";				\
+-	PTR	9b,bad_stack;					\
+-	PTR	9b+4,bad_stack;					\
++	PTR	9b,fault;					\
++	PTR	9b+4,fault;					\
+ 	.previous
+ 
+ 	.set	mips1
+--- a/arch/mips/kernel/syscall.c
++++ b/arch/mips/kernel/syscall.c
+@@ -239,12 +239,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
+ {
+ 	return -ENOSYS;
  }
- 
+-
 -/*
-- * Return non-zero if there is a SIGKILL that should be waking us up.
-- * Called with the siglock held.
+- * If we ever come here the user sp is bad.  Zap the process right away.
+- * Due to the bad stack signaling wouldn't work.
 - */
--static bool sigkill_pending(struct task_struct *tsk)
+-asmlinkage void bad_stack(void)
 -{
--	return sigismember(&tsk->pending.signal, SIGKILL) ||
--	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
+-	do_exit(SIGSEGV);
 -}
- 
- /*
-  * This must be called with current->sighand->siglock held.
-@@ -2136,17 +2127,16 @@ static void ptrace_stop(int exit_code, i
- 		 * calling arch_ptrace_stop, so we must release it now.
- 		 * To preserve proper semantics, we must do this before
- 		 * any signal bookkeeping like checking group_stop_count.
--		 * Meanwhile, a SIGKILL could come in before we retake the
--		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
--		 * So after regaining the lock, we must check for SIGKILL.
- 		 */
- 		spin_unlock_irq(&current->sighand->siglock);
- 		arch_ptrace_stop(exit_code, info);
- 		spin_lock_irq(&current->sighand->siglock);
--		if (sigkill_pending(current))
--			return;
- 	}
- 
-+	/*
-+	 * schedule() will not sleep if there is a pending signal that
-+	 * can awaken the task.
-+	 */
- 	set_special_state(TASK_TRACED);
- 
- 	/*
 
 
