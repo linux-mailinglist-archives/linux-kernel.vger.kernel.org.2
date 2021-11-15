@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63430451DE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B479A451AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348170AbhKPAe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:34:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
+        id S1349306AbhKOXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343895AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343898AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CF3A635FF;
-        Mon, 15 Nov 2021 18:48:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA30B635FB;
+        Mon, 15 Nov 2021 18:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002100;
-        bh=2PByhr3OandUGPXglW8FGAKcoxx/lv666qXfRFWEAOU=;
+        s=korg; t=1637002103;
+        bh=ZsKfohJl4e2rGbvDRMrzywK5flLwScxWwHbA89+MvZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCv4wS2J/tnFj1n5xmL9Z8BkQw88PrVKtMQ+Vxnu+fR/twTWCzws5wcvUUkYll8iS
-         CaG4kVQd9/X1WjPZYvLALi/k0ym2FwkffBF62FB4EEAT5DT3Lo2R/Cf7Fbv5db+ytA
-         m8Gjw+ZSop7Dgtib6g6DyIeGZemkf94xkic8oaX4=
+        b=SDbkqOrTTDfce33IuR7a86+nBZq7Ttggy9dUxX4OrlO5DcpbUKLZZZS1DNe3E76Km
+         tZiBYFez3YirWYqiU6bm9KJM2/Fz39lBJ2W5CBt/OMUa0xb9GorjpGj0Wc8dOVyePt
+         d2NdIAkUuZ73JqFP3UWeWLixadOp0QXu4UfC1V+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 438/917] drm/msm: potential error pointer dereference in init()
-Date:   Mon, 15 Nov 2021 17:58:53 +0100
-Message-Id: <20211115165443.638722412@linuxfoundation.org>
+Subject: [PATCH 5.15 439/917] drm/msm: unlock on error in get_sched_entity()
+Date:   Mon, 15 Nov 2021 17:58:54 +0100
+Message-Id: <20211115165443.671361984@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -44,38 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b6816441a14bbe356ba8590de79cfea2de6a085c ]
+[ Upstream commit 7425e8167507fe512d8ac0825acda4aebf0a7ca0 ]
 
-The msm_iommu_new() returns error pointers on failure so check for that
-to avoid an Oops.
+Add a missing unlock on the error path if drm_sched_entity_init() fails.
 
-Fixes: ccac7ce373c1 ("drm/msm: Refactor address space initialization")
+Fixes: 68002469e571 ("drm/msm: One sched entity per process per priority")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20211004103806.GD25015@kili
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20211011124005.GE15188@kili
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/msm/msm_submitqueue.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index ae48f41821cfe..ad247c06e198f 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -908,6 +908,10 @@ static int _dpu_kms_mmu_init(struct dpu_kms *dpu_kms)
- 		return 0;
+diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
+index b8621c6e05546..7cb158bcbcf67 100644
+--- a/drivers/gpu/drm/msm/msm_submitqueue.c
++++ b/drivers/gpu/drm/msm/msm_submitqueue.c
+@@ -101,6 +101,7 @@ get_sched_entity(struct msm_file_private *ctx, struct msm_ringbuffer *ring,
  
- 	mmu = msm_iommu_new(dpu_kms->dev->dev, domain);
-+	if (IS_ERR(mmu)) {
-+		iommu_domain_free(domain);
-+		return PTR_ERR(mmu);
-+	}
- 	aspace = msm_gem_address_space_create(mmu, "dpu1",
- 		0x1000, 0x100000000 - 0x1000);
- 
+ 		ret = drm_sched_entity_init(entity, sched_prio, &sched, 1, NULL);
+ 		if (ret) {
++			mutex_unlock(&entity_lock);
+ 			kfree(entity);
+ 			return ERR_PTR(ret);
+ 		}
 -- 
 2.33.0
 
