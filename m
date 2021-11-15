@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863A845200B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464E64519C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350624AbhKPAro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:47:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S234690AbhKOX1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344787AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B37B63327;
-        Mon, 15 Nov 2021 19:04:21 +0000 (UTC)
+        id S245042AbhKOTS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78BB4634F5;
+        Mon, 15 Nov 2021 18:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003061;
-        bh=DBBQlRGGKcNTH9lwqZ9/8RTUFWhe5wO9et+EjbBSE6k=;
+        s=korg; t=1637000836;
+        bh=J525mGhl1YD9mkcieMoRUPPCD1GjzimEAxPVQYBO2oo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m5iPmoe4TOq0QT0LRNx3Dmk3fjN3oVFIn9OonkUew7Zlu5cofQ+mfquIQ8GoI/lLg
-         YCWXnJbnTDvIqrBasq506zM4Ezc3SPTIdytvoKueqvc5ZrW+uW3KHx5PnXOaAzFPRG
-         TFFr4uAI2EdQkcBmE/c4hRJ7n7FNTurARWs/k+EU=
+        b=lRPtYnbYWCI8tvgF5XRAnvpTHGcyWPVNQMSs5f6saRWHfGwEZiWkzVtU4m4qXJI5K
+         cHZMu1NNo/QxolZXg9wiCNiY0O2cv7tPiSsNeoOnFpCq1+LDqflpBT9MKvIIOQ2hCD
+         9nvXbGWxBReqhv4hLYmYlYgrMvTX9oOmRCzJR65k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 796/917] octeontx2-pf: select CONFIG_NET_DEVLINK
-Date:   Mon, 15 Nov 2021 18:04:51 +0100
-Message-Id: <20211115165455.965363850@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 809/849] io-wq: ensure that hash wait lock is IRQ disabling
+Date:   Mon, 15 Nov 2021 18:04:52 +0100
+Message-Id: <20211115165447.611808255@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 9cbc3367968de69017a87a1118b62490ac1bdd0a ]
+commit 08bdbd39b58474d762242e1fadb7f2eb9ffcca71 upstream.
 
-The octeontx2 pf nic driver failsz to link when the devlink support
-is not reachable:
+A previous commit removed the IRQ safety of the worker and wqe locks,
+but that left one spot of the hash wait lock now being done without
+already having IRQs disabled.
 
-aarch64-linux-ld: drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.o: in function `otx2_dl_mcam_count_get':
-otx2_devlink.c:(.text+0x10): undefined reference to `devlink_priv'
-aarch64-linux-ld: drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.o: in function `otx2_dl_mcam_count_validate':
-otx2_devlink.c:(.text+0x50): undefined reference to `devlink_priv'
-aarch64-linux-ld: drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.o: in function `otx2_dl_mcam_count_set':
-otx2_devlink.c:(.text+0xd0): undefined reference to `devlink_priv'
-aarch64-linux-ld: drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.o: in function `otx2_devlink_info_get':
-otx2_devlink.c:(.text+0x150): undefined reference to `devlink_priv'
+Ensure that we use the right locking variant for the hashed waitqueue
+lock.
 
-This is already selected by the admin function driver, but not the
-actual nic, which might be built-in when the af driver is not.
-
-Fixes: 2da489432747 ("octeontx2-pf: devlink params support to set mcam entry count")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a9a4aa9fbfc5 ("io-wq: wqe and worker locks no longer need to be IRQ safe")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ fs/io-wq.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/Kconfig b/drivers/net/ethernet/marvell/octeontx2/Kconfig
-index 3f982ccf2c85f..639893d870550 100644
---- a/drivers/net/ethernet/marvell/octeontx2/Kconfig
-+++ b/drivers/net/ethernet/marvell/octeontx2/Kconfig
-@@ -31,6 +31,7 @@ config NDC_DIS_DYNAMIC_CACHING
- config OCTEONTX2_PF
- 	tristate "Marvell OcteonTX2 NIC Physical Function driver"
- 	select OCTEONTX2_MBOX
-+	select NET_DEVLINK
- 	depends on (64BIT && COMPILE_TEST) || ARM64
- 	depends on PCI
- 	depends on PTP_1588_CLOCK_OPTIONAL
--- 
-2.33.0
-
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -405,7 +405,7 @@ static void io_wait_on_hash(struct io_wq
+ {
+ 	struct io_wq *wq = wqe->wq;
+ 
+-	spin_lock(&wq->hash->wait.lock);
++	spin_lock_irq(&wq->hash->wait.lock);
+ 	if (list_empty(&wqe->wait.entry)) {
+ 		__add_wait_queue(&wq->hash->wait, &wqe->wait);
+ 		if (!test_bit(hash, &wq->hash->map)) {
+@@ -413,7 +413,7 @@ static void io_wait_on_hash(struct io_wq
+ 			list_del_init(&wqe->wait.entry);
+ 		}
+ 	}
+-	spin_unlock(&wq->hash->wait.lock);
++	spin_unlock_irq(&wq->hash->wait.lock);
+ }
+ 
+ /*
 
 
