@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C223451F2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A684519C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355689AbhKPAii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1350812AbhKOX1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:27:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344786AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B36632C0;
-        Mon, 15 Nov 2021 19:04:13 +0000 (UTC)
+        id S245013AbhKOTSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A496343C;
+        Mon, 15 Nov 2021 18:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003053;
-        bh=GfFbanzA7JbXfM5Y+eHyHkuxrROkpziyab8MHyjJNlA=;
+        s=korg; t=1637000825;
+        bh=GV+yLY1qMyJbDgABWqeKRNlVuWlo462KBrJpGEaa8Ic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=prtL7yt7PPmubfavcXHmBB/IS/31vMRb8oinyPp9LRGBf/Q+cM970yhBwzuqEc/G8
-         pKGqf3nfSPBHNVJO/b2ugiIPBb7r7BWXKm98o9xA1PbE2qtIqMn8eDfSrzgWI4OWnD
-         HOkoF4c3VxYs6bGtyCeT8/CJSRBd30K7e7tmSFiU=
+        b=fXvYjej7DcDT6Csvn94uYgyWUR3C2pM0QvP0hXfy0AIvIcuTfnyczm1nzoRw2+yuN
+         QfiNMlyI3eQ4OqUDCeCSF1chqm+KAxCQLMBqxozDRpGUB8q5VzR5wt+ioTir9ejLBu
+         mEHsxXqq/FfxNRMdHWq9zm9cZAu7Rnzic7ANI318=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 793/917] block: fix device_add_disk() kobject_create_and_add() error handling
-Date:   Mon, 15 Nov 2021 18:04:48 +0100
-Message-Id: <20211115165455.857556511@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+06472778c97ed94af66d@syzkaller.appspotmail.com,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.14 806/849] 9p/net: fix missing error check in p9_check_errors
+Date:   Mon, 15 Nov 2021 18:04:49 +0100
+Message-Id: <20211115165447.500722127@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +40,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Dominique Martinet <asmadeus@codewreck.org>
 
-[ Upstream commit fe7d064fa3faec5d8157029fb8720b4fddc9e1e8 ]
+commit 27eb4c3144f7a5ebef3c9a261d80cb3e1fa784dc upstream.
 
-Commit 83cbce957446 ("block: add error handling for device_add_disk /
-add_disk") added error handling to device_add_disk(), however the goto
-label for the kobject_create_and_add() failure did not set the return
-value correctly, and so we can end up in a situation where
-kobject_create_and_add() fails but we report success.
-
-Fixes: 83cbce957446 ("block: add error handling for device_add_disk / add_disk")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20211103164023.1384821-1-mcgrof@kernel.org
-[axboe: fold in followup fix from Wu Bo <wubo40@huawei.com>]
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/99338965-d36c-886e-cd0e-1d8fff2b4746@gmail.com
+Reported-by: syzbot+06472778c97ed94af66d@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/genhd.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/9p/client.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index ab12ae6e636e8..6accd0b185e9e 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -467,11 +467,15 @@ int device_add_disk(struct device *parent, struct gendisk *disk,
+--- a/net/9p/client.c
++++ b/net/9p/client.c
+@@ -539,6 +539,8 @@ static int p9_check_errors(struct p9_cli
+ 		kfree(ename);
+ 	} else {
+ 		err = p9pdu_readf(&req->rc, c->proto_version, "d", &ecode);
++		if (err)
++			goto out_err;
+ 		err = -ecode;
  
- 	disk->part0->bd_holder_dir =
- 		kobject_create_and_add("holders", &ddev->kobj);
--	if (!disk->part0->bd_holder_dir)
-+	if (!disk->part0->bd_holder_dir) {
-+		ret = -ENOMEM;
- 		goto out_del_integrity;
-+	}
- 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
--	if (!disk->slave_dir)
-+	if (!disk->slave_dir) {
-+		ret = -ENOMEM;
- 		goto out_put_holder_dir;
-+	}
- 
- 	ret = bd_register_pending_holders(disk);
- 	if (ret < 0)
--- 
-2.33.0
-
+ 		p9_debug(P9_DEBUG_9P, "<<< RLERROR (%d)\n", -ecode);
 
 
