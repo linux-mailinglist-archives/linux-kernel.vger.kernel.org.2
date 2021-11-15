@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD5D44FC81
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 00:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CBF44FC83
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhKOABz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhKOABy (ORCPT
+        id S234808AbhKOAGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:06:54 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:64264 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhKOAGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:01:54 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1112C061746;
-        Sun, 14 Nov 2021 15:58:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=pAbl5ztpAJhxtR97lMLramfM9UMlLdXOZaCX+q3eDfM=; b=HDPCp5s4vd5u/9JFLsaafoN53f
-        DB0UMuQQNIeRTmXC1vUUg5rlp6nEMUkeDC+YkzCtLCxjNmLCtCEP0wnoIHyq3rOU/VZ7KEM9Nk6cE
-        /DeD3zY6gJrXc0swsJ4tFoxH3eWxljbTgki4BZ44TwMM9rjzCqVQNgW1kVmxutkBXqdfkCPnREMXu
-        iNMOQTCPxKUN0CqVTLQsNQJ0lv1aY45AJ3C2gqea7IXxEsy6phnYqN+A6UVDpQMt6RakQYAY+nuat
-        J9YxgDBR8r81Vc7CJv62QOGFQBeqFP3tjBfBBh9X672di8Ya99dtxXXnZ0aBLcuHxUYOodVGj1hL6
-        nqA0ElCQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmPOe-00EBEE-3F; Sun, 14 Nov 2021 23:58:52 +0000
-Subject: Re: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>
-References: <20211114163444.21669-1-rdunlap@infradead.org>
- <20211114165913.55a90249@jic23-huawei>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <06ff9945-1c46-bc73-e7cf-6a9dfc926307@infradead.org>
-Date:   Sun, 14 Nov 2021 15:58:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 14 Nov 2021 19:06:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1636934632; x=1668470632;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gTlG4y8PIaaaGzRUmCMKdDVyddI7uk0biQazOncrHPQ=;
+  b=MDf8JCMGdD+ixw0AMctSeW9PJbpcs//o1DlqLjULgrGCc0PcAIHRVSPT
+   cDf/A3PGOL8I8byJTFh90UztnBVJOpAR4BHj4hQ9t8Ot72FFZmLwjQRQS
+   rpkiEbyE0Z1H+ywPyqdxjaBQDHheWHFUBl5nx+iB0/go26ZShuPhDuVv5
+   B5a+x54fJ7nuvKaivXNEEV4fY4fnWUcAj5NK7/sODIaaD7ox1o/GC2DEd
+   6O5ncWqbLy3IpoPZ/4EfEN9m34LK/AG73WhmeOeTT8HGD8+NT3PnEM0Gr
+   8j9a/guk6xk23qe9eWAw6Ucv82B8thenXhQi11qOBZPng2y+LGcrNcPn6
+   A==;
+X-IronPort-AV: E=Sophos;i="5.87,235,1631548800"; 
+   d="scan'208";a="184565627"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Nov 2021 08:03:52 +0800
+IronPort-SDR: RBkPBArHW5R7c5XiYZgftH6bJN0j895hr4Q2WLtY8lHLJcbvWtEK4cvHHHckeD3wmvnC5Dp/s4
+ RGpoASGrHWXC8/lpAfoT43unHByH/H2OLctiQ3I/7n2dAHjoxM9V6VY/CQukZTgLtmN6rcnjRq
+ DQaPpJmJxJn7Mm6ix2grse4oApRpxLpMJrhGTFYD2lfosUeI7QmYohNePMsDeVru4bL/5oG+Qi
+ elYQ3o6RtXWVpEfD4c2h9J4+XuUot/qoLg7HLwwR+s3DLUiqQOWLUGF4VJFKpwGM/qKqHJpFAc
+ WLctg9ynXO4H86fe1QYZNGdE
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 15:38:57 -0800
+IronPort-SDR: WTgxqIkt9Xn3HS3HyQYjlW32rMdpFifNSp9uHSxI/Ce3bfrw5BtiGt+iZD+ZQrUqElMRj4OrfO
+ 2h3eGqRVhRnbdn7JI9d0f+Rkk7fn8kqtodySEUsUrgEzQ1zC+xagrOVwDlK8wvGdmh6jFlFeJM
+ 65pLl/tVyF7xdVVwJNAE9v9PWd7nHJEa36XQBmDOskESfaT18359WHWct66+TEOsg2mJTRfxV/
+ LJGgM9OdGIhF2oVug80zuFebfA5di0afoivFPeRO8S3nYCchqX+rXHvRm2BXBrEuH7Y9S+vO9S
+ ubo=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 16:03:52 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HsqD74jWkz1RtVm
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 16:03:51 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1636934630; x=1639526631; bh=gTlG4y8PIaaaGzRUmCMKdDVyddI7uk0biQa
+        zOncrHPQ=; b=jK4uU3h9W3N7qNArvsA44JOylpqw11qjb7J0g1VcfJwE5xeBXMW
+        MavWpSgpcGl/j0a9ZBZtz1iaIKyRDY1Rdy3tNZ1XaeVHAyxvGOPBYbe2kJyItwFT
+        84aHvVWPs7Vi8ogf/XyYsphctY4u6NLB/4WkVGKL/wHQhVloPimNhtgGYzYFZufu
+        FO4rckTU6jAlwQD0N3kcBy1EDUAlRX7+3oO1s3tTo3YP32zekSQTJF2ztRYruQ67
+        2xvoBPqU68t3KdS246cdFwTFDXJe7rY9MYSpUrQXfvtLTYaiPeDl9nl7aKCjtD9z
+        ALz+bk9EZ0fX70AIDqhzTlzukxjqWCS1hiw==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id wgSwlJE8rqgC for <linux-kernel@vger.kernel.org>;
+        Sun, 14 Nov 2021 16:03:50 -0800 (PST)
+Received: from [10.89.84.145] (c02drav6md6t.dhcp.fujisawa.hgst.com [10.89.84.145])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HsqD55YMhz1RtVl;
+        Sun, 14 Nov 2021 16:03:49 -0800 (PST)
+Message-ID: <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
+Date:   Mon, 15 Nov 2021 09:03:47 +0900
 MIME-Version: 1.0
-In-Reply-To: <20211114165913.55a90249@jic23-huawei>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: PROBLEM: [drivers/ata] Read log page failed (boot error message)
 Content-Language: en-US
+To:     Nikolay <knv418@gmail.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <YZABtvQab/M2CCQd@msi.localdomain>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <YZABtvQab/M2CCQd@msi.localdomain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/21 8:59 AM, Jonathan Cameron wrote:
-> On Sun, 14 Nov 2021 08:34:44 -0800
-> Randy Dunlap <rdunlap@infradead.org> wrote:
+On 2021/11/14 3:19, Nikolay wrote:
+> 1. While booting system, the following message appears in dmesg twice:
+> ata6.00: Read log page 0x08 failed, Emask 0x1
+> 2. Error comes from libata-core.c:ata_read_log_page()
+> if called with page = ATA_LOG_SATA_SETTINGS (0x08), 
+> i.e. from functions ata_dev_config_ncq_prio() or ata_dev_config_devslp()
+
+This error is not fatal. It simply means that the drive does not support the
+INDENTIFY DEVICE log page. Nothing to worry about.
+
+Attempting to read this log should be avoided in this case though. I will send a
+patch to fix that. However, the files you attached show that you are using
+kernel 5.12. That is not an LTS kernel (it is EOL), so this kernel will not get
+the fix.
+
+> (latter is new since v5.14 tag).
+> 3. drivers/ata
+> 4. /proc/version, output of scripts/ver_linux and kernel config are
+> attached
+> 5. Not appeared in v5.14
+> 8. /proc/scsi/scsi is attached
+> Relevant fragment of dmesg output:
+> ata6: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+> ata1: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> ata2: SATA link down (SStatus 0 SControl 300)
+> ata6.00: ATA-9: WDC WD5000LPLX-75ZNTT0, 03.01A03, max UDMA/133
+> ata6.00: Read log page 0x08 failed, Emask 0x1
+> ata6.00: 976773168 sectors, multi 16: LBA48 NCQ (depth 32), AA
+
+Your drive is still detected as supporting NCQ, so I think this is all OK. You
+can ignore the read log error, unless your drive is not functional ?
+
+> ata6.00: Read log page 0x08 failed, Emask 0x1
+> ata6.00: configured for UDMA/133
+> ata1.00: ATAPI: TSSTcorp CDDVDW TS-L633F, TM02, max UDMA/100
+> ata1.00: configured for UDMA/100
 > 
->> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
->> clk_get_parent(), so add a simple implementation of that
->> function so that callers of it will build without errors.
->>
->> Fixes these build errors:
->>
->> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
->> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
->> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
->> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> I wonder a bit if it makes sense to fix only the ones we hit given there
-> look to be other missing definitions in this subarch.
-> clk_has_parent() for example appears to also be missing.
 
-I haven't seen any failures for clk_has_parent().
-
-I'm not actively looking for build errors; I'm just fixing
-reported problems (usually and in this case).
-There are plenty of them being reported without me having
-to go looking for more.
-
-> Do we have the same issue with mips/lantiq?
-
-Yes, now that you made me look. :)
-Now I'll have to send a patch for that subarch also.
 
 -- 
-~Randy
+Damien Le Moal
+Western Digital Research
