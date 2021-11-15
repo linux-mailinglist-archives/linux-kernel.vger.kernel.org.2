@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DA44512B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ED1451291
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346943AbhKOThz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:37:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
+        id S1346872AbhKOThO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:37:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239234AbhKOR4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239235AbhKOR4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:56:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB5C4632BF;
-        Mon, 15 Nov 2021 17:33:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BEF463329;
+        Mon, 15 Nov 2021 17:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997621;
-        bh=5D0OSs6CAyAiMAb6TI2VFOF170zKsZNjeWLJdRobvGg=;
+        s=korg; t=1636997623;
+        bh=r5aRhNSwkqy0DGgrFIo4D4wyRlFHC3vlayN/tYCI0S0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jW5xXB0qGeoD8xCaazdq6LtQclFlPM7VvB+hUvYYyiT/05aH56qULX7z/QV1sQiru
-         EkrOLKNFCwukFsR8a6p1sVS54JBu1aNlUB7sRcIxULVP/zCVS24AoO7wzJX+C/M/q8
-         0S+1VGPy+4cssFKj2OcOzbG12QXm/ymmsk/q4osg=
+        b=IKp5v78tq3GdMBLBFePdr199M1t3/fn1wr3lEzW0aqntu+vjasrCaV7lHIjp/NjKk
+         fNZizLkGwcg1AeDPC40hQRyFApj7QAbt1/tvPUfAWYyvlgwsuHxEawnso9YpkTk3+H
+         FZzKxVXjvv4xpWfRB3URRlVcUwvdlduyQrYSB02Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 213/575] iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
-Date:   Mon, 15 Nov 2021 17:58:58 +0100
-Message-Id: <20211115165351.088826075@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 214/575] ACPI: battery: Accept charges over the design capacity as full
+Date:   Mon, 15 Nov 2021 17:58:59 +0100
+Message-Id: <20211115165351.119170886@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,50 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: André Almeida <andrealmeid@collabora.com>
 
-[ Upstream commit 814a66741b9ffb5e1ba119e368b178edb0b7322d ]
+[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
 
-Both iov_iter_get_pages and iov_iter_get_pages_alloc return the number
-of bytes of the iovec they could get the pages for.  When they cannot
-get any pages, they're supposed to return 0, but when the start of the
-iovec isn't page aligned, the calculation goes wrong and they return a
-negative value.  Fix both functions.
+Some buggy firmware and/or brand new batteries can support a charge that's
+slightly over the reported design capacity. In such cases, the kernel will
+report to userspace that the charging state of the battery is "Unknown",
+when in reality the battery charge is "Full", at least from the design
+capacity point of view. Make the fallback condition accepts capacities
+over the designed capacity so userspace knows that is full.
 
-In addition, change iov_iter_get_pages_alloc to return NULL in that case
-to prevent resource leaks.
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: André Almeida <andrealmeid@collabora.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/iov_iter.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 537bfdc8cd095..b364231b5fc8c 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1343,7 +1343,7 @@ ssize_t iov_iter_get_pages(struct iov_iter *i,
- 		res = get_user_pages_fast(addr, n,
- 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0,
- 				pages);
--		if (unlikely(res < 0))
-+		if (unlikely(res <= 0))
- 			return res;
- 		return (res == n ? len : res * PAGE_SIZE) - *start;
- 	0;}),({
-@@ -1424,8 +1424,9 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
- 			return -ENOMEM;
- 		res = get_user_pages_fast(addr, n,
- 				iov_iter_rw(i) != WRITE ?  FOLL_WRITE : 0, p);
--		if (unlikely(res < 0)) {
-+		if (unlikely(res <= 0)) {
- 			kvfree(p);
-+			*pages = NULL;
- 			return res;
- 		}
- 		*pages = p;
+diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+index 08ee1c7b12e00..e04352c1dc2ce 100644
+--- a/drivers/acpi/battery.c
++++ b/drivers/acpi/battery.c
+@@ -174,7 +174,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
+ 		return 1;
+ 
+ 	/* fallback to using design values for broken batteries */
+-	if (battery->design_capacity == battery->capacity_now)
++	if (battery->design_capacity <= battery->capacity_now)
+ 		return 1;
+ 
+ 	/* we don't do any sort of metric based on percentages */
 -- 
 2.33.0
 
