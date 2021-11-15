@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30824510CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB9E4510D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243108AbhKOSzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:55:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
+        id S242552AbhKOSzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:55:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237946AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237962AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A214632E0;
-        Mon, 15 Nov 2021 17:25:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD43632DF;
+        Mon, 15 Nov 2021 17:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997125;
-        bh=Bo3GefjFkW/VJVX6lXs083hETx+NOQ85M4kRcMwA1uI=;
+        s=korg; t=1636997128;
+        bh=BbYYdb3dVcIH/aoZW75OBYR10LWsYZETPQAD+cSH3y8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CzpHgmy0eaZimHvmRk+3LDAJobAc+2UAttCmui1iEdnqBpBcmc4dlzeQ2Wp6e7+EE
-         f+if0HmnDN2WaMsaxebRJZHCy1oUTuE0AdOcH+cPZXAOGX0tqX+tL8RrtmhBT1EP2j
-         dhizh+I7+5aylhhPXpLIRFHNAp8dzG/fqhLNNfvI=
+        b=HvpKZavZf85S8WT/ykztnjCB62eX3YjpsM70DTT7cXgsKCRocF3fC9lpCgYVcH8BZ
+         sH8/6kzkTBMzBKSzfcrybNyqAPGMVZdvAr7mZiJKKh+uni8NS7KoOuGXAlfprnNCv/
+         95upksZW4MX7jT1R3FqQLakjwnkMQKLs1L8ZgD14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 033/575] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute LED
-Date:   Mon, 15 Nov 2021 17:55:58 +0100
-Message-Id: <20211115165344.770085371@linuxfoundation.org>
+Subject: [PATCH 5.10 034/575] ALSA: ua101: fix division by zero at probe
+Date:   Mon, 15 Nov 2021 17:55:59 +0100
+Message-Id: <20211115165344.816793153@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,31 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c058493df7edcef8f48c1494d9a84218519f966b upstream.
+commit 55f261b73a7e1cb254577c3536cef8f415de220a upstream.
 
-The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
-quirk for other HP laptops can let LEDs work, so apply it.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in alloc_stream_buffers() in case a malicious device
+has broken descriptors (or when doing descriptor fuzz testing).
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211110144033.118451-1-kai.heng.feng@canonical.com
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
+
+Fixes: 63978ab3e3e9 ("sound: add Edirol UA-101 support")
+Cc: stable@vger.kernel.org      # 2.6.34
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026095401.26522-1-johan@kernel.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/misc/ua101.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8532,6 +8532,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8720, "HP EliteBook x360 1040 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1001,7 +1001,7 @@ static int detect_usb_format(struct ua10
+ 		fmt_playback->bSubframeSize * ua->playback.channels;
+ 
+ 	epd = &ua->intf[INTF_CAPTURE]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_in(epd)) {
++	if (!usb_endpoint_is_isoc_in(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid capture endpoint\n");
+ 		return -ENXIO;
+ 	}
+@@ -1009,7 +1009,7 @@ static int detect_usb_format(struct ua10
+ 	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
+ 
+ 	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_out(epd)) {
++	if (!usb_endpoint_is_isoc_out(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid playback endpoint\n");
+ 		return -ENXIO;
+ 	}
 
 
