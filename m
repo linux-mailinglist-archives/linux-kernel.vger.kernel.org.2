@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743D0451EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65974451993
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346632AbhKPAiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:38:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1353747AbhKOXYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:24:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344639AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56BAA636A4;
-        Mon, 15 Nov 2021 19:01:28 +0000 (UTC)
+        id S244900AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8467360F6E;
+        Mon, 15 Nov 2021 18:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002888;
-        bh=9/vGCjDKh0FtxxuDvYqCS9oR8L1aHwnLR2f8pWJbRPQ=;
+        s=korg; t=1637000710;
+        bh=P2r1svbrR0FvdhPuUQFkCzHvBD8t19nlfyexA5OxDa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w4Uv47gQKBcXf8UD42r998EnINqTP53F6K8DDc8sujBqebnZLzobUzqZNqZvxYj4B
-         lW+0XgikKUZYq6XfmZGiwDW3QX2IsXeoXZhR5silQTY72amoIhPmPmVNDQz+Tc2DiC
-         jWSw5u5eQaN5+zcXV4qMYEzKJAEXF6+twWDcX0ww=
+        b=JOMzYdIJ3RuGYPKeiu1YJMrG/QlQUUEICyj7vAop9TXAvKj1aVMxW5qmhCL4Ai5Cr
+         NSBUI7jwBQXeTGA3eocG5ADbpki05aO5c9WmizxieuxDZQj4yHooZ1DTwubR8HXG1e
+         Cevmc6um6jFaOKWyn+e/r1qd1u0xWyOSDsSyGdWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Gladkov <legion@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Kai Song <songkai01@inspur.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 732/917] Fix user namespace leak
-Date:   Mon, 15 Nov 2021 18:03:47 +0100
-Message-Id: <20211115165453.739024391@linuxfoundation.org>
+Subject: [PATCH 5.14 745/849] mfd: altera-sysmgr: Fix a mistake caused by resource_size conversion
+Date:   Mon, 15 Nov 2021 18:03:48 +0100
+Message-Id: <20211115165445.451952878@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Gladkov <legion@kernel.org>
+From: Kai Song <songkai01@inspur.com>
 
-[ Upstream commit d5f458a979650e5ed37212f6134e4ee2b28cb6ed ]
+[ Upstream commit fae2570d629cdd72f0611d015fc4ba705ae5422b ]
 
-Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+The resource_size defines that:
+	res->end - res->start + 1;
+The origin original code is:
+	sysmgr_config.max_register = res->end - res->start - 3;
+
+So, the correct fix is that:
+	sysmgr_config.max_register = resource_size(res) - 4;
+
+Fixes: d12edf9661a4 ("mfd: altera-sysmgr: Use resource_size function on resource object")
+Signed-off-by: Kai Song <songkai01@inspur.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20211006141926.6120-1-songkai01@inspur.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4idmap.c | 2 +-
+ drivers/mfd/altera-sysmgr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
-index 8d8aba305ecca..f331866dd4182 100644
---- a/fs/nfs/nfs4idmap.c
-+++ b/fs/nfs/nfs4idmap.c
-@@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
- err_destroy_pipe:
- 	rpc_destroy_pipe_data(idmap->idmap_pipe);
- err:
--	get_user_ns(idmap->user_ns);
-+	put_user_ns(idmap->user_ns);
- 	kfree(idmap);
- 	return error;
- }
+diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
+index 20cb294c75122..5d3715a28b28e 100644
+--- a/drivers/mfd/altera-sysmgr.c
++++ b/drivers/mfd/altera-sysmgr.c
+@@ -153,7 +153,7 @@ static int sysmgr_probe(struct platform_device *pdev)
+ 		if (!base)
+ 			return -ENOMEM;
+ 
+-		sysmgr_config.max_register = resource_size(res) - 3;
++		sysmgr_config.max_register = resource_size(res) - 4;
+ 		regmap = devm_regmap_init_mmio(dev, base, &sysmgr_config);
+ 	}
+ 
 -- 
 2.33.0
 
