@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28C2450648
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB94B45064B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhKOOLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:11:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60558 "EHLO mail.kernel.org"
+        id S232004AbhKOOLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:11:44 -0500
+Received: from smtp4.jd.com ([59.151.64.76]:2048 "EHLO smtp4.jd.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231765AbhKOOK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:10:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EA4B61B3A;
-        Mon, 15 Nov 2021 14:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636985282;
-        bh=DXGnhAXzvOOvEwPqwyXzIxg7taPUAJGCb974M+y4pxo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rB5wMSEyUy15G5o4on0W1JekMZjfYViDT+z/Rr5Ai0pD44f3FAhU+c/fl+np2rcts
-         s3wVLuEjcsB/J4jAFgbbaReJWAbzWsOonLFLtIoywF42BbejYPTZ7RAQi1zgoZ2FmI
-         qBKaa29ydXf0mTj/diTLbOGs6bK8oNjJS9gEOHrKiHbP6YvdonDD2E8tCmxZHbbR2u
-         DqLpkY9l7RWighwFnonF40INjg5TlU78M3NjToAt9tMJwHxgKaA0QNLlwa2cvC63qt
-         7InEiFuMXncLH+pnvZzPoANn3qnZmY8rkEMo1xYyao1xAsE3Xi0Wqlwc9G2nLVChsE
-         M0M00Q1KI6uVw==
-Date:   Mon, 15 Nov 2021 06:08:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        id S231669AbhKOOLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:11:38 -0500
+Received: from JDCloudMail06.360buyAD.local (172.31.68.39) by
+ JDCloudMail03.360buyAD.local (172.31.68.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 15 Nov 2021 22:08:29 +0800
+Received: from JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913]) by
+ JDCloudMail06.360buyAD.local ([fe80::643e:3192:cad7:c913%5]) with mapi id
+ 15.01.2375.007; Mon, 15 Nov 2021 22:08:29 +0800
+From:   =?gb2312?B?u8bA1g==?= <huangle1@jd.com>
+To:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 3/6] net: ocelot: pre-compute injection frame header
- content
-Message-ID: <20211115060800.44493c2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211115111344.03376026@fixe.home>
-References: <20211103091943.3878621-1-clement.leger@bootlin.com>
-        <20211103091943.3878621-4-clement.leger@bootlin.com>
-        <20211103123811.im5ua7kirogoltm7@skbuf>
-        <20211103145351.793538c3@fixe.home>
-        <20211115111344.03376026@fixe.home>
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: [PATCH v2] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
+ vcpu_load_eoi_exitmap()
+Thread-Topic: [PATCH v2] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
+ vcpu_load_eoi_exitmap()
+Thread-Index: AQHX2ioPJQ7vMfDmj0ezvcoium2MGA==
+Date:   Mon, 15 Nov 2021 14:08:29 +0000
+Message-ID: <62115b277dab49ea97da5633f8522daf@jd.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.31.14.18]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 11:13:44 +0100 Cl=C3=A9ment L=C3=A9ger wrote:
-> Test on standard packets with UDP (iperf3 -t 100 -l 1460 -u -b 0 -c *)
-> - With pre-computed header: UDP TX: 	33Mbit/s
-> - Without UDP TX: 			31Mbit/s
-> -> 6.5% improvement =20
->=20
-> Test on small packets with UDP (iperf3 -t 100 -l 700 -u -b 0 -c *)
-> - With pre-computed header: UDP TX: 	15.8Mbit/s
-> - Without UDP TX: 			16.4Mbit/s
-> -> 4.3% improvement =20
-
-Something's wrong with these numbers or I'm missing context.
-You say improvement in both cases yet in the latter case the=20
-new number is lower?
+SW4gdmNwdV9sb2FkX2VvaV9leGl0bWFwKCksIGN1cnJlbnRseSB0aGUgZW9pX2V4aXRfYml0bWFw
+WzRdIGFycmF5IGlzDQppbml0aWFsaXplZCBvbmx5IHdoZW4gSHlwZXItViBjb250ZXh0IGlzIGF2
+YWlsYWJsZSwgaW4gb3RoZXIgcGF0aCBpdCBpcw0KanVzdCBwYXNzZWQgdG8ga3ZtX3g4Nl9vcHMu
+bG9hZF9lb2lfZXhpdG1hcCgpIGRpcmVjdGx5IGZyb20gb24gdGhlIHN0YWNrLA0Kd2hpY2ggd291
+bGQgY2F1c2UgdW5leHBlY3RlZCBpbnRlcnJ1cHQgZGVsaXZlcnkvaGFuZGxpbmcgaXNzdWVzLCBl
+LmcuIGFuDQoqb2xkKiBsaW51eCBrZXJuZWwgdGhhdCByZWxpZXMgb24gUElUIHRvIGRvIGNsb2Nr
+IGNhbGlicmF0aW9uIG9uIEtWTSBtaWdodA0KcmFuZG9tbHkgZmFpbCB0byBib290Lg0KDQpGaXgg
+aXQgYnkgcGFzc2luZyBpb2FwaWNfaGFuZGxlZF92ZWN0b3JzIHRvIGxvYWRfZW9pX2V4aXRtYXAo
+KSB3aGVuIEh5cGVyLVYNCmNvbnRleHQgaXMgbm90IGF2YWlsYWJsZS4NCg0KRml4ZXM6IGYyYmMx
+NGI2OWMzOCAoIktWTTogeDg2OiBoeXBlci12OiBQcmVwYXJlIHRvIG1lZXQgdW5hbGxvY2F0ZWQg
+SHlwZXItViBjb250ZXh0IikNCkNjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQpSZXZpZXdlZC1i
+eTogVml0YWx5IEt1em5ldHNvdiA8dmt1em5ldHNAcmVkaGF0LmNvbT4NClNpZ25lZC1vZmYtYnk6
+IEh1YW5nIExlIDxodWFuZ2xlMUBqZC5jb20+DQotLS0NCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9r
+dm0veDg2LmMgYi9hcmNoL3g4Ni9rdm0veDg2LmMNCmluZGV4IGRjN2ViNWZkZGZkMy4uMjY0NjZm
+OTRlMzFhIDEwMDY0NA0KLS0tIGEvYXJjaC94ODYva3ZtL3g4Ni5jDQorKysgYi9hcmNoL3g4Ni9r
+dm0veDg2LmMNCkBAIC05NTQ3LDEyICs5NTQ3LDE2IEBAIHN0YXRpYyB2b2lkIHZjcHVfbG9hZF9l
+b2lfZXhpdG1hcChzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUpDQogCWlmICgha3ZtX2FwaWNfaHdfZW5h
+YmxlZCh2Y3B1LT5hcmNoLmFwaWMpKQ0KIAkJcmV0dXJuOw0KIA0KLQlpZiAodG9faHZfdmNwdSh2
+Y3B1KSkNCisJaWYgKHRvX2h2X3ZjcHUodmNwdSkpIHsNCiAJCWJpdG1hcF9vcigodWxvbmcgKill
+b2lfZXhpdF9iaXRtYXAsDQogCQkJICB2Y3B1LT5hcmNoLmlvYXBpY19oYW5kbGVkX3ZlY3RvcnMs
+DQogCQkJICB0b19odl9zeW5pYyh2Y3B1KS0+dmVjX2JpdG1hcCwgMjU2KTsNCisJCXN0YXRpY19j
+YWxsKGt2bV94ODZfbG9hZF9lb2lfZXhpdG1hcCkodmNwdSwgZW9pX2V4aXRfYml0bWFwKTsNCisJ
+CXJldHVybjsNCisJfQ0KIA0KLQlzdGF0aWNfY2FsbChrdm1feDg2X2xvYWRfZW9pX2V4aXRtYXAp
+KHZjcHUsIGVvaV9leGl0X2JpdG1hcCk7DQorCXN0YXRpY19jYWxsKGt2bV94ODZfbG9hZF9lb2lf
+ZXhpdG1hcCkoDQorCQl2Y3B1LCAodTY0ICopdmNwdS0+YXJjaC5pb2FwaWNfaGFuZGxlZF92ZWN0
+b3JzKTsNCiB9DQogDQogdm9pZCBrdm1fYXJjaF9tbXVfbm90aWZpZXJfaW52YWxpZGF0ZV9yYW5n
+ZShzdHJ1Y3Qga3ZtICprdm0sDQo=
