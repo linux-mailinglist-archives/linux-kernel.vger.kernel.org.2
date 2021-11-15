@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26B9451BAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6E5451FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348379AbhKPAFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:05:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1357284AbhKPAqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:46:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233026AbhKOTZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344936AbhKOTZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D53636F2;
-        Mon, 15 Nov 2021 19:07:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99EF8636F9;
+        Mon, 15 Nov 2021 19:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003223;
-        bh=HcYYH8irgmea996FAzwQCUuREuFh69Rkamg2+JgvnSQ=;
+        s=korg; t=1637003226;
+        bh=DyiEg/cv15DnuYy2ZqnNimNbsbpFg6yfctqrHf6X79A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g2l7Mlr7eWlQAqzHafPJzA5UUX+h/0QwleO4/B7SPGvFMLpp1vmD28vPORfxpu0qK
-         Jj+tJWLdbSctJbUWT9K2xM5RUmx42HYCn9oe5ZI6crNkWH09BIgSScQGWWy/u4zCjy
-         09T+qJlXx5WnOoGpmZSHpnxbNcB0dzfigZNEAMeY=
+        b=SHH7MLNuSUZjlO/1HLyITr8twmM/DbR6uEuivrx4EM//dI2pa2b8SkYy8MXRFlNjw
+         CGoX5rXQ4O/JMeE6pEHYpkIKI3YWUbVWQKlImFoMSDYCfWq4p+1uBiuweTfzX+L1r6
+         VUceQAzino/WI/fxHf6iiLAmbyhgWz8HcPFDcBQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.15 857/917] KVM: x86: move guest_pv_has out of user_access section
-Date:   Mon, 15 Nov 2021 18:05:52 +0100
-Message-Id: <20211115165458.090152864@linuxfoundation.org>
+        stable@vger.kernel.org, Rhys Hiltner <rhys@justin.tv>,
+        Michael Pratt <mpratt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.15 858/917] posix-cpu-timers: Clear task::posix_cputimers_work in copy_process()
+Date:   Mon, 15 Nov 2021 18:05:53 +0100
+Message-Id: <20211115165458.129939374@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,55 +40,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Michael Pratt <mpratt@google.com>
 
-commit 3e067fd8503d6205aa0c1c8f48f6b209c592d19c upstream.
+commit ca7752caeaa70bd31d1714af566c9809688544af upstream.
 
-When UBSAN is enabled, the code emitted for the call to guest_pv_has
-includes a call to __ubsan_handle_load_invalid_value.  objtool
-complains that this call happens with UACCESS enabled; to avoid
-the warning, pull the calls to user_access_begin into both arms
-of the "if" statement, after the check for guest_pv_has.
+copy_process currently copies task_struct.posix_cputimers_work as-is. If a
+timer interrupt arrives while handling clone and before dup_task_struct
+completes then the child task will have:
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+1. posix_cputimers_work.scheduled = true
+2. posix_cputimers_work.work queued.
+
+copy_process clears task_struct.task_works, so (2) will have no effect and
+posix_cpu_timers_work will never run (not to mention it doesn't make sense
+for two tasks to share a common linked list).
+
+Since posix_cpu_timers_work never runs, posix_cputimers_work.scheduled is
+never cleared. Since scheduled is set, future timer interrupts will skip
+scheduling work, with the ultimate result that the task will never receive
+timer expirations.
+
+Together, the complete flow is:
+
+1. Task 1 calls clone(), enters kernel.
+2. Timer interrupt fires, schedules task work on Task 1.
+   2a. task_struct.posix_cputimers_work.scheduled = true
+   2b. task_struct.posix_cputimers_work.work added to
+       task_struct.task_works.
+3. dup_task_struct() copies Task 1 to Task 2.
+4. copy_process() clears task_struct.task_works for Task 2.
+5. Future timer interrupts on Task 2 see
+   task_struct.posix_cputimers_work.scheduled = true and skip scheduling
+   work.
+
+Fix this by explicitly clearing contents of task_struct.posix_cputimers_work
+in copy_process(). This was never meant to be shared or inherited across
+tasks in the first place.
+
+Fixes: 1fb497dd0030 ("posix-cpu-timers: Provide mechanisms to defer timer handling to task_work")
+Reported-by: Rhys Hiltner <rhys@justin.tv>
+Signed-off-by: Michael Pratt <mpratt@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211101210615.716522-1-mpratt@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ include/linux/posix-timers.h   |    2 ++
+ kernel/fork.c                  |    1 +
+ kernel/time/posix-cpu-timers.c |   19 +++++++++++++++++--
+ 3 files changed, 20 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3227,9 +3227,6 @@ static void record_steal_time(struct kvm
- 	}
+--- a/include/linux/posix-timers.h
++++ b/include/linux/posix-timers.h
+@@ -184,8 +184,10 @@ static inline void posix_cputimers_group
+ #endif
  
- 	st = (struct kvm_steal_time __user *)ghc->hva;
--	if (!user_access_begin(st, sizeof(*st)))
--		return;
--
- 	/*
- 	 * Doing a TLB flush here, on the guest's behalf, can avoid
- 	 * expensive IPIs.
-@@ -3238,6 +3235,9 @@ static void record_steal_time(struct kvm
- 		u8 st_preempted = 0;
- 		int err = -EFAULT;
+ #ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
++void clear_posix_cputimers_work(struct task_struct *p);
+ void posix_cputimers_init_work(void);
+ #else
++static inline void clear_posix_cputimers_work(struct task_struct *p) { }
+ static inline void posix_cputimers_init_work(void) { }
+ #endif
  
-+		if (!user_access_begin(st, sizeof(*st)))
-+			return;
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2280,6 +2280,7 @@ static __latent_entropy struct task_stru
+ 	p->pdeath_signal = 0;
+ 	INIT_LIST_HEAD(&p->thread_group);
+ 	p->task_works = NULL;
++	clear_posix_cputimers_work(p);
+ 
+ #ifdef CONFIG_KRETPROBES
+ 	p->kretprobe_instances.first = NULL;
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -1159,13 +1159,28 @@ static void posix_cpu_timers_work(struct
+ }
+ 
+ /*
++ * Clear existing posix CPU timers task work.
++ */
++void clear_posix_cputimers_work(struct task_struct *p)
++{
++	/*
++	 * A copied work entry from the old task is not meaningful, clear it.
++	 * N.B. init_task_work will not do this.
++	 */
++	memset(&p->posix_cputimers_work.work, 0,
++	       sizeof(p->posix_cputimers_work.work));
++	init_task_work(&p->posix_cputimers_work.work,
++		       posix_cpu_timers_work);
++	p->posix_cputimers_work.scheduled = false;
++}
 +
- 		asm volatile("1: xchgb %0, %2\n"
- 			     "xor %1, %1\n"
- 			     "2:\n"
-@@ -3260,6 +3260,9 @@ static void record_steal_time(struct kvm
- 		if (!user_access_begin(st, sizeof(*st)))
- 			goto dirty;
- 	} else {
-+		if (!user_access_begin(st, sizeof(*st)))
-+			return;
-+
- 		unsafe_put_user(0, &st->preempted, out);
- 		vcpu->arch.st.preempted = 0;
- 	}
++/*
+  * Initialize posix CPU timers task work in init task. Out of line to
+  * keep the callback static and to avoid header recursion hell.
+  */
+ void __init posix_cputimers_init_work(void)
+ {
+-	init_task_work(&current->posix_cputimers_work.work,
+-		       posix_cpu_timers_work);
++	clear_posix_cputimers_work(current);
+ }
+ 
+ /*
 
 
