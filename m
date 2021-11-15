@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0245205D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6797451908
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349381AbhKPAwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1349755AbhKOXNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:13:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344216AbhKOTYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C496363D;
-        Mon, 15 Nov 2021 18:54:04 +0000 (UTC)
+        id S243918AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:06:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6081E633F0;
+        Mon, 15 Nov 2021 18:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002445;
-        bh=jLx/TiqCWkq6M2IK5tjtNuEWhV933eY9CLLnZYAahz4=;
+        s=korg; t=1637000223;
+        bh=y8+Me6CpmX5PqIny91teTC27N/PKc/yXKnrtroHGTc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cuXKTPo6ZQiSzMxBA9whlwMtVTqhXzXEhVmbP/ezlxHapU1VEVQfRi9m+eElk+BRF
-         E3aeTVq0RjQGqrUHSVXwUDp6wNrIftRP3D0MsOCQD9h954mHVgxyGM3Bb2SRymq/2U
-         EP3kSIH3XExU8QUW1ozQVmegV/H9qGWykIVTTAFg=
+        b=ipYFDDNUTBuUoW+Nzx7BIz5u175ZwIDIL4bVNZg++TbuXMBKkcP4rppotP7OIMnHg
+         fWjoB5Ie6kWy1MMz/ZiSgUdci9D1DnsONsJrcEXLj0jKe7mxHQqPo1nI+nE19Gh9Or
+         WSqJDFhpPV9L+ICfbfy46YJMKxVxA4t/V3tfn8xY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 570/917] ARM: dts: BCM5301X: Fix memory nodes names
-Date:   Mon, 15 Nov 2021 18:01:05 +0100
-Message-Id: <20211115165448.110819296@linuxfoundation.org>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 583/849] ALSA: hda: Use position buffer for SKL+ again
+Date:   Mon, 15 Nov 2021 18:01:06 +0100
+Message-Id: <20211115165439.978311913@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,183 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit c5e1df3276d7a500678da9453be31a66ad115150 ]
+[ Upstream commit c4ca3871e21fa085096316f5f8d9975cf3dfde1d ]
 
-Thix fixes:
-arch/arm/boot/dts/bcm4708-netgear-r6250.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
-arch/arm/boot/dts/bcm4709-linksys-ea9200.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-netgear-r7000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-netgear-r8000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 134217728]]}
-arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
-arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728], [2281701376, 402653184]]}
-arch/arm/boot/dts/bcm53016-meraki-mr32.dt.yaml: /: memory: False schema does not allow {'reg': [[0, 134217728]], 'device_type': ['memory']}
-arch/arm/boot/dts/bcm94708.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
-arch/arm/boot/dts/bcm94709.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 134217728]]}
+The commit f87e7f25893d ("ALSA: hda - Improved position reporting on
+SKL+") changed the PCM position report for SKL+ chips to use DPIB, but
+according to Pierre, DPIB is no best choice for the accurate position
+reports and it often reports too early.  The recommended method is
+rather the classical position buffer.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+This patch makes the PCM position reporting on SKL+ back to the
+position buffer again.
+
+Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210929072934.6809-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm4708-netgear-r6250.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts | 2 +-
- arch/arm/boot/dts/bcm4709-linksys-ea9200.dts      | 2 +-
- arch/arm/boot/dts/bcm4709-netgear-r7000.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-netgear-r8000.dts       | 2 +-
- arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts | 2 +-
- arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts     | 2 +-
- arch/arm/boot/dts/bcm53016-meraki-mr32.dts        | 2 +-
- arch/arm/boot/dts/bcm94708.dts                    | 2 +-
- arch/arm/boot/dts/bcm94709.dts                    | 2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
+ sound/pci/hda/hda_intel.c | 23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-index 61c7b137607e5..7900aac4f35a9 100644
---- a/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-+++ b/arch/arm/boot/dts/bcm4708-netgear-r6250.dts
-@@ -20,7 +20,7 @@
- 		bootargs = "console=ttyS0,115200 earlycon";
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index e224feb792a08..ec17e40c710ea 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -881,27 +881,6 @@ static int azx_get_delay_from_fifo(struct azx *chip, struct azx_dev *azx_dev,
+ 	return substream->runtime->delay;
+ }
+ 
+-static unsigned int azx_skl_get_dpib_pos(struct azx *chip,
+-					 struct azx_dev *azx_dev)
+-{
+-	return _snd_hdac_chip_readl(azx_bus(chip),
+-				    AZX_REG_VS_SDXDPIB_XBASE +
+-				    (AZX_REG_VS_SDXDPIB_XINTERVAL *
+-				     azx_dev->core.index));
+-}
+-
+-/* get the current DMA position with correction on SKL+ chips */
+-static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+-{
+-	/* DPIB register gives a more accurate position for playback */
+-	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		return azx_skl_get_dpib_pos(chip, azx_dev);
+-
+-	/* read of DPIB fetches the actual posbuf */
+-	azx_skl_get_dpib_pos(chip, azx_dev);
+-	return azx_get_pos_posbuf(chip, azx_dev);
+-}
+-
+ static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
+ {
+ 	azx_stop_chip(chip);
+@@ -1598,7 +1577,7 @@ static void assign_position_fix(struct azx *chip, int fix)
+ 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
+ 		[POS_FIX_VIACOMBO] = azx_via_get_position,
+ 		[POS_FIX_COMBO] = azx_get_pos_lpib,
+-		[POS_FIX_SKL] = azx_get_pos_skl,
++		[POS_FIX_SKL] = azx_get_pos_posbuf,
+ 		[POS_FIX_FIFO] = azx_get_pos_fifo,
  	};
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-index 6c6bb7b17d27a..7546c8d07bcd7 100644
---- a/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-+++ b/arch/arm/boot/dts/bcm4709-asus-rt-ac87u.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-index d29e7f80ea6aa..beae9eab9cb8c 100644
---- a/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-+++ b/arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x18000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-index 9b6887d477d86..7879f7d7d9c33 100644
---- a/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-+++ b/arch/arm/boot/dts/bcm4709-linksys-ea9200.dts
-@@ -16,7 +16,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-index 7989a53597d4f..56d309dbc6b0d 100644
---- a/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-+++ b/arch/arm/boot/dts/bcm4709-netgear-r7000.dts
-@@ -19,7 +19,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-index 87b655be674c5..184e3039aa864 100644
---- a/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-+++ b/arch/arm/boot/dts/bcm4709-netgear-r8000.dts
-@@ -30,7 +30,7 @@
- 		bootargs = "console=ttyS0,115200";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x08000000>;
-diff --git a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-index f806be5da7237..c2a266a439d05 100644
---- a/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-+++ b/arch/arm/boot/dts/bcm4709-tplink-archer-c9-v1.dts
-@@ -15,7 +15,7 @@
- 		bootargs = "console=ttyS0,115200 earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
-diff --git a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-index 452b8d0ab180e..b0d8a688141d3 100644
---- a/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-+++ b/arch/arm/boot/dts/bcm47094-luxul-xwc-2000.dts
-@@ -16,7 +16,7 @@
- 		bootargs = "earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>,
- 		      <0x88000000 0x18000000>;
-diff --git a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-index 3b978dc8997a4..612d61852bfb9 100644
---- a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-+++ b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
-@@ -20,7 +20,7 @@
- 		bootargs = " console=ttyS0,115200n8 earlycon";
- 	};
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;
- 		device_type = "memory";
- 	};
-diff --git a/arch/arm/boot/dts/bcm94708.dts b/arch/arm/boot/dts/bcm94708.dts
-index 3d13e46c69494..d9eb2040b9631 100644
---- a/arch/arm/boot/dts/bcm94708.dts
-+++ b/arch/arm/boot/dts/bcm94708.dts
-@@ -38,7 +38,7 @@
- 	model = "NorthStar SVK (BCM94708)";
- 	compatible = "brcm,bcm94708", "brcm,bcm4708";
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
-diff --git a/arch/arm/boot/dts/bcm94709.dts b/arch/arm/boot/dts/bcm94709.dts
-index 5017b7b259cbe..618c812eef73e 100644
---- a/arch/arm/boot/dts/bcm94709.dts
-+++ b/arch/arm/boot/dts/bcm94709.dts
-@@ -38,7 +38,7 @@
- 	model = "NorthStar SVK (BCM94709)";
- 	compatible = "brcm,bcm94709", "brcm,bcm4709", "brcm,bcm4708";
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;
- 	};
 -- 
 2.33.0
 
