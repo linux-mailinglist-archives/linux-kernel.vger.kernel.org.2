@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B9445191B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23B7451B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240717AbhKOXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:14:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39110 "EHLO mail.kernel.org"
+        id S1354262AbhKOXxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:53:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244128AbhKOTKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F906633F5;
-        Mon, 15 Nov 2021 18:18:39 +0000 (UTC)
+        id S1344315AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EAAC6365D;
+        Mon, 15 Nov 2021 18:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000320;
-        bh=2tx8THRSRrbuqceFMjrGJWX0CpBqc6Ory7Tl0ZKBAyg=;
+        s=korg; t=1637002540;
+        bh=iC7IF6dVqGVqWQIH98l7aYnkMCcZP24pH6pirizffw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CX1y6OM2b0OOaXfzn3GJ34JdBP33XWKUK8tLxqwd7+SRpIgP1oe3U4Ld1QI9zSOsh
-         1JYwcRyXGLoxZKM4vq+QNfjnhLtBKRYvrtTETZwSnNMwOsRb9neACD7YRc1VdogGDY
-         DTw4qFMa+5MMnRuODiC0lL8vZub8uqzGMXHNGUA4=
+        b=zfrzwe5ZBBnqxKCwvzweTOBrP0eshpBSBo9fyr/Il+iPw4RIZluShLC0S9b6JRUpW
+         G65yU2uo7IdcisFfSkLzqlY03XFBMWPbZbfjhKTN6Ie8kgAkN5MB+v1+8kAkYj4+KZ
+         uYiP9iCeNaws18+7arK7zQd5cZyiZLSaMi0JsyvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 618/849] soc: qcom: rpmhpd: Make power_on actually enable the domain
-Date:   Mon, 15 Nov 2021 18:01:41 +0100
-Message-Id: <20211115165441.156035877@linuxfoundation.org>
+Subject: [PATCH 5.15 607/917] power: reset: at91-reset: check properly the return value of devm_of_iomap
+Date:   Mon, 15 Nov 2021 18:01:42 +0100
+Message-Id: <20211115165449.360012866@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,100 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit e3e56c050ab6e3f1bd811f0787f50709017543e4 ]
+[ Upstream commit f558c8072c3461b65c12c0068b108f78cebc8246 ]
 
-The general expectation is that powering on a power-domain should make
-the power domain deliver some power, and if a specific performance state
-is needed further requests has to be made.
+devm_of_iomap() returns error code or valid pointer. Check its return
+value with IS_ERR().
 
-But in contrast with other power-domain implementations (e.g. rpmpd) the
-RPMh does not have an interface to enable the power, so the driver has
-to vote for a particular corner (performance level) in rpmh_power_on().
-
-But the corner is never initialized, so a typical request to simply
-enable the power domain would not actually turn on the hardware. Further
-more, when no more clients vote for a performance state (i.e. the
-aggregated vote is 0) the power domain would be turned off.
-
-Fix both of these issues by always voting for a corner with non-zero
-value, when the power domain is enabled.
-
-The tracking of the lowest non-zero corner is performed to handle the
-corner case if there's ever a domain with a non-zero lowest corner, in
-which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-would be allowed to use this lowest corner.
-
-Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20211005033732.2284447-1-bjorn.andersson@linaro.org
+Fixes: bd3127733f2c ("power: reset: at91-reset: use devm_of_iomap")
+Reported-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/power/reset/at91-reset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index fa209b479ab35..a46735cec3f0f 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -30,6 +30,7 @@
-  * @active_only:	True if it represents an Active only peer
-  * @corner:		current corner
-  * @active_corner:	current active corner
-+ * @enable_corner:	lowest non-zero corner
-  * @level:		An array of level (vlvl) to corner (hlvl) mappings
-  *			derived from cmd-db
-  * @level_count:	Number of levels supported by the power domain. max
-@@ -47,6 +48,7 @@ struct rpmhpd {
- 	const bool	active_only;
- 	unsigned int	corner;
- 	unsigned int	active_corner;
-+	unsigned int	enable_corner;
- 	u32		level[RPMH_ARC_MAX_LEVELS];
- 	size_t		level_count;
- 	bool		enabled;
-@@ -385,13 +387,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- static int rpmhpd_power_on(struct generic_pm_domain *domain)
- {
- 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
--	int ret = 0;
-+	unsigned int corner;
-+	int ret;
+diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-reset.c
+index 026649409135c..64def79d557a8 100644
+--- a/drivers/power/reset/at91-reset.c
++++ b/drivers/power/reset/at91-reset.c
+@@ -193,7 +193,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- 	mutex_lock(&rpmhpd_lock);
- 
--	if (pd->corner)
--		ret = rpmhpd_aggregate_corner(pd, pd->corner);
--
-+	corner = max(pd->corner, pd->enable_corner);
-+	ret = rpmhpd_aggregate_corner(pd, corner);
- 	if (!ret)
- 		pd->enabled = true;
- 
-@@ -436,6 +438,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
- 		i--;
- 
- 	if (pd->enabled) {
-+		/* Ensure that the domain isn't turn off */
-+		if (i < pd->enable_corner)
-+			i = pd->enable_corner;
-+
- 		ret = rpmhpd_aggregate_corner(pd, i);
- 		if (ret)
- 			goto out;
-@@ -472,6 +478,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
- 	for (i = 0; i < rpmhpd->level_count; i++) {
- 		rpmhpd->level[i] = buf[i];
- 
-+		/* Remember the first corner with non-zero level */
-+		if (!rpmhpd->level[rpmhpd->enable_corner] && rpmhpd->level[i])
-+			rpmhpd->enable_corner = i;
-+
- 		/*
- 		 * The AUX data may be zero padded.  These 0 valued entries at
- 		 * the end of the map must be ignored.
+ 	reset->rstc_base = devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NULL);
+-	if (!reset->rstc_base) {
++	if (IS_ERR(reset->rstc_base)) {
+ 		dev_err(&pdev->dev, "Could not map reset controller address\n");
+ 		return -ENODEV;
+ 	}
+@@ -203,7 +203,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 		for_each_matching_node_and_match(np, at91_ramc_of_match, &match) {
+ 			reset->ramc_lpr = (u32)match->data;
+ 			reset->ramc_base[idx] = devm_of_iomap(&pdev->dev, np, 0, NULL);
+-			if (!reset->ramc_base[idx]) {
++			if (IS_ERR(reset->ramc_base[idx])) {
+ 				dev_err(&pdev->dev, "Could not map ram controller address\n");
+ 				of_node_put(np);
+ 				return -ENODEV;
 -- 
 2.33.0
 
