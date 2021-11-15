@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23AD451610
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A276C4515FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349490AbhKOVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:10:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
+        id S1352765AbhKOVFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:05:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240714AbhKOSNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:13:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3CD06331E;
-        Mon, 15 Nov 2021 17:48:06 +0000 (UTC)
+        id S240728AbhKOSNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:13:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 132AF63246;
+        Mon, 15 Nov 2021 17:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998487;
-        bh=7cIs7PBYuEUqLMjsqmboH6zqBo/el/bZN8FQeNHFyxQ=;
+        s=korg; t=1636998498;
+        bh=o9/hDdeDKSGy/oStf65eFuZRM87+az9Go/ldmwy3Bsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MpuNH4JNi0loT6VAJq3Lj5LrQEhKiQog4UoHbq41inOAjsP80t3fPqOgp6t6A6rCV
-         sZS8SQmJ1DGvLDtTrNyIAei3PsNNr88ysbmhpnjhSRseilUgaIfGGiMrr8cggnKW5Z
-         WFTtLXI4u5ZsmmXGOGbCAO1a0JxdF88eLhDth0iw=
+        b=jM7Ve6Ppa+gu5iOxc92sp757C5QdmYohdGyv8Wf6/fJcw0Wu1u6eTeqKTATBz2q2t
+         m2iMXWhI+8QWp0q5PAgdU3yx2m8fAITuIrRmV7d+gd+uTMZO0AtVATugm7HR8fo0rn
+         JXD2H9iPFRltz4urEnI1mRa9+71++EHv7QVRan+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jussi Maki <joamaki@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Florent Revest <revest@chromium.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 527/575] bpf, sockmap: Remove unhash handler for BPF sockmap usage
-Date:   Mon, 15 Nov 2021 18:04:12 +0100
-Message-Id: <20211115165401.896958945@linuxfoundation.org>
+Subject: [PATCH 5.10 530/575] seq_file: fix passing wrong private data
+Date:   Mon, 15 Nov 2021 18:04:15 +0100
+Message-Id: <20211115165402.004395391@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,46 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit b8b8315e39ffaca82e79d86dde26e9144addf66b ]
+[ Upstream commit 10a6de19cad6efb9b49883513afb810dc265fca2 ]
 
-We do not need to handle unhash from BPF side we can simply wait for the
-close to happen. The original concern was a socket could transition from
-ESTABLISHED state to a new state while the BPF hook was still attached.
-But, we convinced ourself this is no longer possible and we also improved
-BPF sockmap to handle listen sockets so this is no longer a problem.
+DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
+of functions and variables to register proc file easily. And the users
+can use proc_create_data() to pass their own private data and get it
+via seq->private in the callback. Unfortunately, the proc file system
+use PDE_DATA() to get private data instead of inode->i_private. So fix
+it. Fortunately, there only one user of it which does not pass any
+private data, so this bug does not break any in-tree codes.
 
-More importantly though there are cases where unhash is called when data is
-in the receive queue. The BPF unhash logic will flush this data which is
-wrong. To be correct it should keep the data in the receive queue and allow
-a receiving application to continue reading the data. This may happen when
-tcp_abort() is received for example. Instead of complicating the logic in
-unhash simply moving all this to tcp_close() hook solves this.
-
-Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20211103204736.248403-3-john.fastabend@gmail.com
+Link: https://lkml.kernel.org/r/20211029032638.84884-1-songmuchun@bytedance.com
+Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Florent Revest <revest@chromium.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/seq_file.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 9194070c67250..6b745ce4108c8 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -573,7 +573,6 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 				   struct proto *base)
- {
- 	prot[TCP_BPF_BASE]			= *base;
--	prot[TCP_BPF_BASE].unhash		= sock_map_unhash;
- 	prot[TCP_BPF_BASE].close		= sock_map_close;
- 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
- 	prot[TCP_BPF_BASE].stream_memory_read	= tcp_bpf_stream_read;
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index b83b3ae3c877f..662a8cfa1bcd3 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -182,7 +182,7 @@ static const struct file_operations __name ## _fops = {			\
+ #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)				\
+ static int __name ## _open(struct inode *inode, struct file *file)	\
+ {									\
+-	return single_open(file, __name ## _show, inode->i_private);	\
++	return single_open(file, __name ## _show, PDE_DATA(inode));	\
+ }									\
+ 									\
+ static const struct proc_ops __name ## _proc_ops = {			\
 -- 
 2.33.0
 
