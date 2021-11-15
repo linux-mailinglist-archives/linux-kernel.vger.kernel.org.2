@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3812C4524B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F2E45215E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351790AbhKPBm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:42:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46028 "EHLO mail.kernel.org"
+        id S1350621AbhKPBDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:03:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241781AbhKOSgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:36:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A6061A6C;
-        Mon, 15 Nov 2021 18:02:20 +0000 (UTC)
+        id S245718AbhKOTVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C0A61465;
+        Mon, 15 Nov 2021 18:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999340;
-        bh=rHUsHtngfJ01PWkzk+xW18SXgQk96K+dt0s8V893RUQ=;
+        s=korg; t=1637001600;
+        bh=8Ch3EU3UK83abFyDFxq8C9tda3V4GfTWuRtUmaB6dXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VL57jwGT2VJtMgonHem6H2uw9LTwcR42EwRg5fX7ldyKz+917y4aqJS9BVEIWOzi5
-         lbgSIQeAt/vlXSNvwmmZNLFJlm+OBB1zASRvfxnzuN0MVrWR2U9TfCM0/j/l95UWY6
-         gtT8u7J+D2T524E3+cv8BIJ95ytUiKQitHf+NWuo=
+        b=p1zC9sHu+Sp8R0gR7AaEzre3hhH7/faUtjI3mgQw6osrOhJtuwLMVqTLFgDR2BW8b
+         hKweLz3KOJxG4LhjS08zKaR/qRgRe0eElt4z2AhcBD/AHn6rQKxty5rHsbmj7vUwjb
+         R7ZU4WiPJnA/hKvD41pKj5kdYBrtR7UUxXTt5o8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 263/849] media: ipu3-imgu: imgu_fmt: Handle properly try
-Date:   Mon, 15 Nov 2021 17:55:46 +0100
-Message-Id: <20211115165429.141003104@linuxfoundation.org>
+Subject: [PATCH 5.15 252/917] mmc: moxart: Fix reference count leaks in moxart_probe
+Date:   Mon, 15 Nov 2021 17:55:47 +0100
+Message-Id: <20211115165437.334163001@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit 553481e38045f349bb9aa596d03bebd020020c9c ]
+[ Upstream commit 8105c2abbf36296bf38ca44f55ee45d160db476a ]
 
-For a try_fmt call, the node noes not need to be enabled.
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement one or both objects'
+reference count increased earlier by dma_request_chan(), causing
+reference count leaks.
 
-Fixes v4l2-compliance
+Fix it by balancing the refcounts of both objects in some error
+handling paths. In correspondence with the changes in moxart_probe(),
+IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
 
-fail: v4l2-test-formats.cpp(717): Video Output Multiplanar is valid, but
-				  no TRY_FMT was implemented
-test VIDIOC_TRY_FMT: FAIL
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/20211009041918.28419-1-xiongx18@fudan.edu.cn
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/ipu3/ipu3-v4l2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index 38a2407645096..ea746e8054eb7 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -696,7 +696,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
- 
- 		/* CSS expects some format on OUT queue */
- 		if (i != IPU3_CSS_QUEUE_OUT &&
--		    !imgu_pipe->nodes[inode].enabled) {
-+		    !imgu_pipe->nodes[inode].enabled && !try) {
- 			fmts[i] = NULL;
- 			continue;
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 6c9d38132f74c..7b9fcef490de7 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
+ 			ret = -EPROBE_DEFER;
+ 			goto out;
  		}
++		if (!IS_ERR(host->dma_chan_tx)) {
++			dma_release_channel(host->dma_chan_tx);
++			host->dma_chan_tx = NULL;
++		}
++		if (!IS_ERR(host->dma_chan_rx)) {
++			dma_release_channel(host->dma_chan_rx);
++			host->dma_chan_rx = NULL;
++		}
+ 		dev_dbg(dev, "PIO mode transfer enabled\n");
+ 		host->have_dma = false;
+ 	} else {
+@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out:
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
++		dma_release_channel(host->dma_chan_tx);
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
++		dma_release_channel(host->dma_chan_rx);
+ 	if (mmc)
+ 		mmc_free_host(mmc);
+ 	return ret;
+@@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, NULL);
+ 
+-	if (!IS_ERR(host->dma_chan_tx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+ 		dma_release_channel(host->dma_chan_tx);
+-	if (!IS_ERR(host->dma_chan_rx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+ 		dma_release_channel(host->dma_chan_rx);
+ 	mmc_remove_host(mmc);
+ 	mmc_free_host(mmc);
 -- 
 2.33.0
 
