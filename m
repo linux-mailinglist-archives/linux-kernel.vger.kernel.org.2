@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651F2450015
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1FF450016
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236931AbhKOIn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:43:59 -0500
-Received: from out0.migadu.com ([94.23.1.103]:20119 "EHLO out0.migadu.com"
+        id S231225AbhKOIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:44:19 -0500
+Received: from out0.migadu.com ([94.23.1.103]:20155 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236727AbhKOIn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:43:26 -0500
+        id S236791AbhKOIna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:43:30 -0500
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1636965625;
+        t=1636965630;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vPKc0J0OTU/aNWayUNR4Hp99A8Hk13iS7YS1//ccMM8=;
-        b=Z1IO+OoRYKg5uzm6nC1VIZpgmkEdg5mhq7yzc9kvbmwKD9UaRjTgzVxEQLZKmXWzt1opSl
-        hiQlJk6Ryocau7zezjWnzA0EWamL/Q+g7L1pZN7GmqxsLuxDydlj5yajmnnW14uJdfX8fz
-        8m29UubgbtdeGr/FW/b23EsOoCQXtPA=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TUIDw/Vuw7+v40VKkRfutNtDggbjfhBkv4VGOk3L19Q=;
+        b=Ci0ZJPGtq0HmK4mWWtSIDRe28Izku4VMV0ywmx5ejPQ0/+6J8WaPTvPV9Iq8Q6rRbIvkpS
+        CW5rh68CNDoxS+T6KRr9B5rSju4KxqS3JXXbHX8lWvjgYiLP1kBqRPYNJ8902q3slrRmpp
+        7bCABl4gfEqpOtuF9hzzKDc4GWl8gQk=
 From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -34,61 +35,203 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
         Naoya Horiguchi <naoya.horiguchi@nec.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/3] mm/hwpoison: fix unpoison_memory()
-Date:   Mon, 15 Nov 2021 17:40:03 +0900
-Message-Id: <20211115084006.3728254-1-naoya.horiguchi@linux.dev>
+Subject: [PATCH v4 1/3] mm/hwpoison: mf_mutex for soft offline and unpoison
+Date:   Mon, 15 Nov 2021 17:40:04 +0900
+Message-Id: <20211115084006.3728254-2-naoya.horiguchi@linux.dev>
+In-Reply-To: <20211115084006.3728254-1-naoya.horiguchi@linux.dev>
+References: <20211115084006.3728254-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-I updated the unpoison patchset based on feedbacks for v3.
+Originally mf_mutex is introduced to serialize multiple MCE events, but
+it is not that useful to allow unpoison to run in parallel with memory_failure()
+and soft offline.  So apply mf_mutex to soft offline and unpoison.
+The memory failure handler and soft offline handler get simpler with this.
 
-I fixed a typo in patch description and closed raced in
-unpoison_taken_off_page() reported by Yang Shi.  As for the build
-failure reported from build bot, I commented about disabling
-X86_SUPPORTS_MEMORY_FAILURE for i386 at first, but I'm not 100% sure
-that someone could use the subsystem for 32 bit system, so I shift to
-the easier way (setting MAGIC_HWPOISON to 32-bit integer value).
-
------ (cover letter copied from v2) -----
-Main purpose of this series is to sync unpoison code to recent changes
-around how hwpoison code takes page refcount.  Unpoison should work or
-simply fail (without crash) if impossible.
-
-The recent works of keeping hwpoison pages in shmem pagecache introduce
-a new state of hwpoisoned pages, but unpoison for such pages is not
-supported yet with this series.
-
-It seems that soft-offline and unpoison can be used as general purpose
-page offline/online mechanism (not in the context of memory error). I
-think that we need some additional works to realize it because currently
-soft-offline and unpoison are assumed not to happen so frequently
-(print out too many messages for aggressive usecases). But anyway this
-could be another interesting next topic.
-
-v1: https://lore.kernel.org/linux-mm/20210614021212.223326-1-nao.horiguchi@gmail.com/
-v2: https://lore.kernel.org/linux-mm/20211025230503.2650970-1-naoya.horiguchi@linux.dev/
-v3: https://lore.kernel.org/linux-mm/20211105055058.3152564-1-naoya.horiguchi@linux.dev/
-
-Thanks,
-Naoya Horiguchi
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 ---
-Summary:
+ChangeLog v4:
+- fix type in commit description.
 
-Naoya Horiguchi (3):
-      mm/hwpoison: mf_mutex for soft offline and unpoison
-      mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
-      mm/hwpoison: fix unpoison_memory()
+ChangeLog v3:
+- merge with "mm/hwpoison: remove race consideration"
+- update description
 
- include/linux/mm.h         |   3 +-
- include/linux/page-flags.h |   4 ++
- include/ras/ras_event.h    |   2 -
- mm/memory-failure.c        | 171 ++++++++++++++++++++++++++++-----------------
- mm/page_alloc.c            |  27 +++++++
- 5 files changed, 139 insertions(+), 68 deletions(-)
+ChangeLog v2:
+- add mutex_unlock() in "page already poisoned" path in soft_offline_page().
+  (Thanks to Ding Hui)
+---
+ mm/memory-failure.c | 62 +++++++++++++--------------------------------
+ 1 file changed, 18 insertions(+), 44 deletions(-)
+
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index e8c38e27b753..d29c79de6034 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1507,14 +1507,6 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
+ 	lock_page(head);
+ 	page_flags = head->flags;
+ 
+-	if (!PageHWPoison(head)) {
+-		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
+-		num_poisoned_pages_dec();
+-		unlock_page(head);
+-		put_page(head);
+-		return 0;
+-	}
+-
+ 	/*
+ 	 * TODO: hwpoison for pud-sized hugetlb doesn't work right now, so
+ 	 * simply disable it. In order to make it work properly, we need
+@@ -1628,6 +1620,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 	return rc;
+ }
+ 
++static DEFINE_MUTEX(mf_mutex);
++
+ /**
+  * memory_failure - Handle memory failure of a page.
+  * @pfn: Page Number of the corrupted page
+@@ -1654,7 +1648,6 @@ int memory_failure(unsigned long pfn, int flags)
+ 	int res = 0;
+ 	unsigned long page_flags;
+ 	bool retry = true;
+-	static DEFINE_MUTEX(mf_mutex);
+ 
+ 	if (!sysctl_memory_failure_recovery)
+ 		panic("Memory failure on page %lx", pfn);
+@@ -1788,16 +1781,6 @@ int memory_failure(unsigned long pfn, int flags)
+ 	 */
+ 	page_flags = p->flags;
+ 
+-	/*
+-	 * unpoison always clear PG_hwpoison inside page lock
+-	 */
+-	if (!PageHWPoison(p)) {
+-		pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
+-		num_poisoned_pages_dec();
+-		unlock_page(p);
+-		put_page(p);
+-		goto unlock_mutex;
+-	}
+ 	if (hwpoison_filter(p)) {
+ 		if (TestClearPageHWPoison(p))
+ 			num_poisoned_pages_dec();
+@@ -1978,6 +1961,7 @@ int unpoison_memory(unsigned long pfn)
+ 	struct page *page;
+ 	struct page *p;
+ 	int freeit = 0;
++	int ret = 0;
+ 	unsigned long flags = 0;
+ 	static DEFINE_RATELIMIT_STATE(unpoison_rs, DEFAULT_RATELIMIT_INTERVAL,
+ 					DEFAULT_RATELIMIT_BURST);
+@@ -1988,39 +1972,30 @@ int unpoison_memory(unsigned long pfn)
+ 	p = pfn_to_page(pfn);
+ 	page = compound_head(p);
+ 
++	mutex_lock(&mf_mutex);
++
+ 	if (!PageHWPoison(p)) {
+ 		unpoison_pr_info("Unpoison: Page was already unpoisoned %#lx\n",
+ 				 pfn, &unpoison_rs);
+-		return 0;
++		goto unlock_mutex;
+ 	}
+ 
+ 	if (page_count(page) > 1) {
+ 		unpoison_pr_info("Unpoison: Someone grabs the hwpoison page %#lx\n",
+ 				 pfn, &unpoison_rs);
+-		return 0;
++		goto unlock_mutex;
+ 	}
+ 
+ 	if (page_mapped(page)) {
+ 		unpoison_pr_info("Unpoison: Someone maps the hwpoison page %#lx\n",
+ 				 pfn, &unpoison_rs);
+-		return 0;
++		goto unlock_mutex;
+ 	}
+ 
+ 	if (page_mapping(page)) {
+ 		unpoison_pr_info("Unpoison: the hwpoison page has non-NULL mapping %#lx\n",
+ 				 pfn, &unpoison_rs);
+-		return 0;
+-	}
+-
+-	/*
+-	 * unpoison_memory() can encounter thp only when the thp is being
+-	 * worked by memory_failure() and the page lock is not held yet.
+-	 * In such case, we yield to memory_failure() and make unpoison fail.
+-	 */
+-	if (!PageHuge(page) && PageTransHuge(page)) {
+-		unpoison_pr_info("Unpoison: Memory failure is now running on %#lx\n",
+-				 pfn, &unpoison_rs);
+-		return 0;
++		goto unlock_mutex;
+ 	}
+ 
+ 	if (!get_hwpoison_page(p, flags)) {
+@@ -2028,29 +2003,23 @@ int unpoison_memory(unsigned long pfn)
+ 			num_poisoned_pages_dec();
+ 		unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
+ 				 pfn, &unpoison_rs);
+-		return 0;
++		goto unlock_mutex;
+ 	}
+ 
+-	lock_page(page);
+-	/*
+-	 * This test is racy because PG_hwpoison is set outside of page lock.
+-	 * That's acceptable because that won't trigger kernel panic. Instead,
+-	 * the PG_hwpoison page will be caught and isolated on the entrance to
+-	 * the free buddy page pool.
+-	 */
+ 	if (TestClearPageHWPoison(page)) {
+ 		unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
+ 				 pfn, &unpoison_rs);
+ 		num_poisoned_pages_dec();
+ 		freeit = 1;
+ 	}
+-	unlock_page(page);
+ 
+ 	put_page(page);
+ 	if (freeit && !(pfn == my_zero_pfn(0) && page_count(p) == 1))
+ 		put_page(page);
+ 
+-	return 0;
++unlock_mutex:
++	mutex_unlock(&mf_mutex);
++	return ret;
+ }
+ EXPORT_SYMBOL(unpoison_memory);
+ 
+@@ -2231,9 +2200,12 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 		return -EIO;
+ 	}
+ 
++	mutex_lock(&mf_mutex);
++
+ 	if (PageHWPoison(page)) {
+ 		pr_info("%s: %#lx page already poisoned\n", __func__, pfn);
+ 		put_ref_page(ref_page);
++		mutex_unlock(&mf_mutex);
+ 		return 0;
+ 	}
+ 
+@@ -2251,5 +2223,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 		}
+ 	}
+ 
++	mutex_unlock(&mf_mutex);
++
+ 	return ret;
+ }
+-- 
+2.25.1
+
