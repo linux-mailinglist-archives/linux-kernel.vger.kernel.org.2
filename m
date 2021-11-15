@@ -2,213 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0870451C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D62451C2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354136AbhKPAPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240256AbhKOXOd (ORCPT
+        id S1355823AbhKPANq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:13:46 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:34893 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350231AbhKOWUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:14:33 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F163AC04EFB9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 136so11140533pgc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
-        b=GfFI7XvVt8YFksskvqmrQ3qPuEuVeXEYjSmuZkGA5xMMXxFy564PrMeBNc7Y8WH5PL
-         yt5GdFT0FW445phxmH69+fTSi0opmzSp0MKM1Su7LpWaODpHqJOvO/AjHDC3wXOmrXDe
-         2wLMSbl2QDTBiMGmIPaGGEJJB0n0X5+1Qk2gI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
-        b=zFnjaAOL3j6b7BxAcnvpnfV54gQuzm4ON5Q72evY7qW4zlR81HwAqCta2+H6CJjA0M
-         RRqLF0u2NlPilZsK1yqN7+S1Y+m88AGrD2Vw7HHDgwvfG8S6Vbb6VLnl8swhKmjaZrV7
-         1PhAK/VJtvtSlAMlDUVTBMVkz41XNpPzy6WUXGUYKGTAjz5OSIwrnelEe9API/27TDlZ
-         CQdxVeOTsEM8Uxzq/T1QH/v1nj1/QxJRiEYxQf4f7bzmlWUOM8tq7rSpf7DDgPMiw7hV
-         M6ryAK7wlPG20da0pQnGcx3VQzeIxmAZLCs3MVEpW2ktoZreQCmuPx4vmjDBLRjdzLVk
-         yIJg==
-X-Gm-Message-State: AOAM5309W5OBARyn66ebk7NV/Dgp2iA2C9HyKhJpJlr2FMwQram9WwBX
-        2Ld9z9s1omMZrLiSgDixgM9ZQg==
-X-Google-Smtp-Source: ABdhPJz3d1Fm6DVmJXDnQcSZ6XVqy1YGkg+bK+EhRM29LMp3+iWkEpRfouWPgP5TqiLJ0sYBVy/rdA==
-X-Received: by 2002:a63:1d13:: with SMTP id d19mr1556417pgd.383.1637014576434;
-        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oc10sm293770pjb.26.2021.11.15.14.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Avoid field-overflowing memcpy()
-Date:   Mon, 15 Nov 2021 14:16:13 -0800
-Message-Id: <20211115221613.2791637-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 15 Nov 2021 17:20:25 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HtNpQ6gV0z4xcC;
+        Tue, 16 Nov 2021 09:17:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637014623;
+        bh=7cUctgxZBS6/N20u0anh9V5IsZ0iPrrFRpTs8tw8GJ4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lQNjYrO1cE2hBfL3itZQIwpriLdB+rpfaz+5EXAXeaoqEivXgsXImGHgyJjCNPzz1
+         IHH3C1fH34NRln8SfYADIwvwWGZRpzF4DJ15hRAaZApb3Vv660GuL8IAx5EIXHU7rE
+         PdwD2U2gUMQgZO0y2HtUbm6K3nEL8JwPid/R7AD3u6n4qZax8vExQjfN5xyfI12FWS
+         Kp2R13RkU3L1HgE+VNRI+w9k37DdSmJtZkG/TH//8j/ooKl/CXBOny5z4FEDl+xBro
+         SCgvtN78HmCdRzxQUyhTOp8FOpMXpvqb+i9opMWq1azJ2WeeDBmfcUmmJ1MfbS6zDr
+         BT6pFSd7jjEpw==
+Date:   Tue, 16 Nov 2021 09:17:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     chiminghao <chi.minghao@zte.com.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the cifs tree
+Message-ID: <20211116091702.3e2c4550@canb.auug.org.au>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5948; h=from:subject; bh=0WIZ0LaG1CrIgiauMUryZqkW+d9Y9QkDjTEtreWu41w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhktwsH+KBpNKg9y8K0YobbeqSLF6d2fuY7VTbl+5Z Uh4uM5yJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZLcLAAKCRCJcvTf3G3AJmobD/ 4yvXZ4YCp0KjHJMvrX51CQUEcJK+sRXEh/r1W+abkDL4ueQ+6QV3vWeVSrhqJESh+XpSxMLwszT+IF xrIH7gRb+kRPp3AXQaL8Eh4rC3NpFmtrhyo5tKR1FTkRViKY1ziXYvytN3tnVhL+btoLMt69UWKA4M rH0wA3BuMNWUIK1yxE7SHdVTs9H0FZ1M9qPaWt9a+uq6DLPTP3iJUKRM12850xYCvVzdFbbf7mIg+m pXUDLunfMEj2Vc3jg5LwpL/ow9rH2Q+9RU9Nx0hiUlNfQA+4m75yhlsDP81nmQv9aLkoHTuSvowmGT dGJOEUZep0TZp09tQJTgrb+6rJNPIQM5KD2uj/+6ks2FeGu1ADL6WQIlRJpKGRhZZFwJW9lDx4BuIk kK9RfAVMz9bw0QJSeX8iq7Wmx5cro599decAtm8SwF0Pku/UhCALalcV5AlXHgINCFYldUYDNTJ+KY RdLLm3HGfN22x6hoP7AqbCJvIYEsmf2qlBuzHH6vSD8PjHelqMKzw3F2d470UfxUDtlzI5lMNMsAj3 GYLomDbvaxl11/Z2MJeb0SnUHTnFzbHFeYkCZQylS9lAiycVZ9AkxDIch7PQTVW/TSO8uAtuTeXnDS 4oiEm5xtKVE2kUINM+5T3E6lXmFCmBmSV7z5qTKv6zt2wbuQPEOHPukS7IIQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/8OU1EBP8FYM4_smUQbePUaG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+--Sig_/8OU1EBP8FYM4_smUQbePUaG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Use flexible arrays instead of zero-element arrays (which look like they
-are always overflowing) and split the cross-field memcpy() into two halves
-that can be appropriately bounds-checked by the compiler.
+Hi all,
 
-We were doing:
+After merging the cifs tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-	#define ETH_HLEN  14
-	#define VLAN_HLEN  4
-	...
-	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
-	...
-        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
-	...
-        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
-        struct mlx5_wqe_data_seg *dseg = wqe->data;
-	...
-	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+In file included from fs/cifs/dns_resolve.c:18:
+fs/cifs/cifsglob.h: In function 'cifs_get_tlink':
+fs/cifs/cifsglob.h:1169:14: error: passing argument 1 of 'atomic_inc' from =
+incompatible pointer type [-Werror=3Dincompatible-pointer-types]
+ 1169 |   atomic_inc(&tlink->tl_count);
+      |              ^~~~~~~~~~~~~~~~
+      |              |
+      |              refcount_t * {aka struct refcount_struct *}
+In file included from include/linux/atomic.h:82,
+                 from include/linux/cpumask.h:13,
+                 from include/linux/smp.h:13,
+                 from include/linux/lockdep.h:14,
+                 from include/linux/spinlock.h:62,
+                 from include/linux/mmzone.h:8,
+                 from include/linux/gfp.h:6,
+                 from include/linux/slab.h:15,
+                 from fs/cifs/dns_resolve.c:15:
+include/linux/atomic/atomic-instrumented.h:179:22: note: expected 'atomic_t=
+ *' but argument is of type 'refcount_t *' {aka 'struct refcount_struct *'}
+  179 | atomic_inc(atomic_t *v)
+      |            ~~~~~~~~~~^
 
-target is wqe->eth.inline_hdr.start (which the compiler sees as being
-2 bytes in size), but copying 18, intending to write across start
-(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
-wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
-(8 bytes).
+and lots more similar ...
 
-struct mlx5e_tx_wqe {
-        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
-        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
-        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+Caused by commit
 
-        /* size: 32, cachelines: 1, members: 3 */
-        /* last cacheline: 32 bytes */
-};
+  ef242296e441 ("fs:cifs: convert from atomic_t to refcount_t on tlink->tl_=
+count")
 
-struct mlx5_wqe_eth_seg {
-        u8                         swp_outer_l4_offset;  /*     0     1 */
-        u8                         swp_outer_l3_offset;  /*     1     1 */
-        u8                         swp_inner_l4_offset;  /*     2     1 */
-        u8                         swp_inner_l3_offset;  /*     3     1 */
-        u8                         cs_flags;             /*     4     1 */
-        u8                         swp_flags;            /*     5     1 */
-        __be16                     mss;                  /*     6     2 */
-        __be32                     flow_table_metadata;  /*     8     4 */
-        union {
-                struct {
-                        __be16     sz;                   /*    12     2 */
-                        u8         start[2];             /*    14     2 */
-                } inline_hdr;                            /*    12     4 */
-                struct {
-                        __be16     type;                 /*    12     2 */
-                        __be16     vlan_tci;             /*    14     2 */
-                } insert;                                /*    12     4 */
-                __be32             trailer;              /*    12     4 */
-        };                                               /*    12     4 */
+Please write, review, test (repeat) and, only then, publish. :-(
 
-        /* size: 16, cachelines: 1, members: 9 */
-        /* last cacheline: 16 bytes */
-};
+I have used the cifs tree from next-20211115 for today.
 
-struct mlx5_wqe_data_seg {
-        __be32                     byte_count;           /*     0     4 */
-        __be32                     lkey;                 /*     4     4 */
-        __be64                     addr;                 /*     8     8 */
+--=20
+Cheers,
+Stephen Rothwell
 
-        /* size: 16, cachelines: 1, members: 3 */
-        /* last cacheline: 16 bytes */
-};
+--Sig_/8OU1EBP8FYM4_smUQbePUaG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-So, split the memcpy() so the compiler can reason about the buffer
-sizes.
+-----BEGIN PGP SIGNATURE-----
 
-"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
-nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
-code changes (i.e. only source line number induced differences and
-optimizations).
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGS3F4ACgkQAVBC80lX
+0Gwl7wf/fkkYyUfQl2BCCbBUhVHjlIigMz/u91Z+nugFkijukO6d00ef5TcemlM+
+HwTZWmsakV0AdtwBa3tIGY+4NFy1xpSMsGoBjhbcS9pQAXnkVzxa1OTtync2nGUZ
+8M5z4LrKd+FmVZYqA3w3ekvDCQBZkbchrwBVEU+hurl8XUVrOFrFo7eO7KfFR74s
+kGzIRVf/wrKD4RI0f0pDTyEjUKWyxX4O6YKDhPDHzPBQVs2VWaUSYuDOyAmlfmOZ
+pIA5EcPW1C56c7ntFPvw+U9tP6jsKpzP3ajVmal9UcVk0+LAezAK74llJlSDHd9F
+Wla1vfjpLmqsTnwqPHlsQw4IJsjp+g==
+=xtMQ
+-----END PGP SIGNATURE-----
 
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en.h     | 6 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index f0ac6b0d9653..0925092211ce 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -225,7 +225,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
- struct mlx5e_tx_wqe {
- 	struct mlx5_wqe_ctrl_seg ctrl;
- 	struct mlx5_wqe_eth_seg  eth;
--	struct mlx5_wqe_data_seg data[0];
-+	struct mlx5_wqe_data_seg data[];
- };
- 
- struct mlx5e_rx_wqe_ll {
-@@ -242,8 +242,8 @@ struct mlx5e_umr_wqe {
- 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
- 	struct mlx5_mkey_seg           mkc;
- 	union {
--		struct mlx5_mtt inline_mtts[0];
--		struct mlx5_klm inline_klms[0];
-+		DECLARE_FLEX_ARRAY(struct mlx5_mtt, inline_mtts);
-+		DECLARE_FLEX_ARRAY(struct mlx5_klm, inline_klms);
- 	};
- };
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 2f0df5cc1a2d..efae2444c26f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 
- 	/* copy the inline part if required */
- 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
--		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
-+		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
- 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
-+		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
-+		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
- 		dma_len  -= MLX5E_XDP_MIN_INLINE;
- 		dma_addr += MLX5E_XDP_MIN_INLINE;
- 		dseg++;
--- 
-2.30.2
-
+--Sig_/8OU1EBP8FYM4_smUQbePUaG--
