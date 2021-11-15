@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE0845176A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F434451766
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242361AbhKOW0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:26:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
+        id S1349759AbhKOWZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:25:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242363AbhKOSfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242361AbhKOSfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:35:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42E0E60041;
-        Mon, 15 Nov 2021 18:02:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B54E661266;
+        Mon, 15 Nov 2021 18:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999324;
-        bh=tL3cNx9DGLvWMHPkZ+/58zXhibgTw22YvZCOTbdVdyg=;
+        s=korg; t=1636999327;
+        bh=mr72sMAxi2ANO9JBKautuLfo8JjvZHFJp3uk+VR09f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0k1IA2FwV0oG6ApZQ6hf7QGOuQtFpofLTv7/db6c681mR6WjOWqTVgpCmeo7ULJA
-         YNuj1qF4iiIt53JmUlYPjPKFPhLjojI0xznzb4yv9QPSVN1+xLV2Do9sTXtTEG7pFk
-         PolfxGjVxnoVZhNLELLN8ZG6tLnTBR4E/qXrWSfc=
+        b=Ihh0Cl/FZbJcm2qDXV9VFxyt44z6Pimxv3nWgPlHbj3ftoEag9y0MIXsGCu5YeAGU
+         9tYQQqaS7oXnNvqUs0HQAbpAAdp/Mcpfx64X5gXF83u4B7eaS1PNQDgygIEkmsbQHT
+         Gx4CraZ2TL2XCIUa9+/QAAe2rRkIlwNLjMtjtKAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luigi Rizzo <lrizzo@google.com>,
-        Josh Don <joshdon@google.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 257/849] fs/proc/uptime.c: Fix idle time reporting in /proc/uptime
-Date:   Mon, 15 Nov 2021 17:55:40 +0100
-Message-Id: <20211115165428.933993748@linuxfoundation.org>
+Subject: [PATCH 5.14 258/849] kselftests/sched: cleanup the child processes
+Date:   Mon, 15 Nov 2021 17:55:41 +0100
+Message-Id: <20211115165428.973878868@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -42,102 +42,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Don <joshdon@google.com>
+From: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-[ Upstream commit a130e8fbc7de796eb6e680724d87f4737a26d0ac ]
+[ Upstream commit 1c36432b278cecf1499f21fae19836e614954309 ]
 
-/proc/uptime reports idle time by reading the CPUTIME_IDLE field from
-the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
-continually updated on idle cpus, leading this value to appear
-incorrectly small.
+Previously, 'make -C sched run_tests' will block forever when it occurs
+something wrong where the *selftests framework* is waiting for its child
+processes to exit.
 
-/proc/stat performs an accounting update when reading idle time; we
-can use the same approach for uptime.
+[root@iaas-rpma sched]# ./cs_prctl_test
 
-With this patch, /proc/stat and /proc/uptime now agree on idle time.
-Additionally, the following shows idle time tick up consistently on an
-idle machine:
+ ## Create a thread/process/process group hiearchy
+Not a core sched system
+tid=74985, / tgid=74985 / pgid=74985: ffffffffffffffff
+Not a core sched system
+    tid=74986, / tgid=74986 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74988, / tgid=74986 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74989, / tgid=74986 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74990, / tgid=74986 / pgid=74985: ffffffffffffffff
+Not a core sched system
+    tid=74987, / tgid=74987 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74991, / tgid=74987 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74992, / tgid=74987 / pgid=74985: ffffffffffffffff
+Not a core sched system
+        tid=74993, / tgid=74987 / pgid=74985: ffffffffffffffff
 
-  (while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
+Not a core sched system
+(268) FAILED: get_cs_cookie(0) == 0
 
-Reported-by: Luigi Rizzo <lrizzo@google.com>
-Signed-off-by: Josh Don <joshdon@google.com>
+ ## Set a cookie on entire process group
+-1 = prctl(62, 1, 0, 2, 0)
+core_sched create failed -- PGID: Invalid argument
+(cs_prctl_test.c:272) -
+[root@iaas-rpma sched]# ps
+    PID TTY          TIME CMD
+   4605 pts/2    00:00:00 bash
+  74986 pts/2    00:00:00 cs_prctl_test
+  74987 pts/2    00:00:00 cs_prctl_test
+  74999 pts/2    00:00:00 ps
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lkml.kernel.org/r/20210827165438.3280779-1-joshdon@google.com
+Reviewed-by: Chris Hyser <chris.hyser@oracle.com>
+Link: https://lore.kernel.org/r/20210902024333.75983-1-lizhijian@cn.fujitsu.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/stat.c              |  4 ++--
- fs/proc/uptime.c            | 14 +++++++++-----
- include/linux/kernel_stat.h |  1 +
- 3 files changed, 12 insertions(+), 7 deletions(-)
+ tools/testing/selftests/sched/cs_prctl_test.c | 28 ++++++++++++-------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/fs/proc/stat.c b/fs/proc/stat.c
-index 6561a06ef9059..4fb8729a68d4e 100644
---- a/fs/proc/stat.c
-+++ b/fs/proc/stat.c
-@@ -24,7 +24,7 @@
+diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
+index 63fe6521c56d9..1829383715c66 100644
+--- a/tools/testing/selftests/sched/cs_prctl_test.c
++++ b/tools/testing/selftests/sched/cs_prctl_test.c
+@@ -64,6 +64,17 @@ enum pid_type {PIDTYPE_PID = 0, PIDTYPE_TGID, PIDTYPE_PGID};
  
- #ifdef arch_idle_time
+ const int THREAD_CLONE_FLAGS = CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES;
  
--static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
-+u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
- {
- 	u64 idle;
- 
-@@ -46,7 +46,7 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
- 
- #else
- 
--static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
-+u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
- {
- 	u64 idle, idle_usecs = -1ULL;
- 
-diff --git a/fs/proc/uptime.c b/fs/proc/uptime.c
-index 5a1b228964fb7..deb99bc9b7e6b 100644
---- a/fs/proc/uptime.c
-+++ b/fs/proc/uptime.c
-@@ -12,18 +12,22 @@ static int uptime_proc_show(struct seq_file *m, void *v)
- {
- 	struct timespec64 uptime;
- 	struct timespec64 idle;
--	u64 nsec;
-+	u64 idle_nsec;
- 	u32 rem;
- 	int i;
- 
--	nsec = 0;
--	for_each_possible_cpu(i)
--		nsec += (__force u64) kcpustat_cpu(i).cpustat[CPUTIME_IDLE];
-+	idle_nsec = 0;
-+	for_each_possible_cpu(i) {
-+		struct kernel_cpustat kcs;
++struct child_args {
++	int num_threads;
++	int pfd[2];
++	int cpid;
++	int thr_tids[MAX_THREADS];
++};
 +
-+		kcpustat_cpu_fetch(&kcs, i);
-+		idle_nsec += get_idle_time(&kcs, i);
++static struct child_args procs[MAX_PROCESSES];
++static int num_processes = 2;
++static int need_cleanup = 0;
++
+ static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
+ 		  unsigned long arg5)
+ {
+@@ -80,8 +91,14 @@ static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned l
+ #define handle_error(msg) __handle_error(__FILE__, __LINE__, msg)
+ static void __handle_error(char *fn, int ln, char *msg)
+ {
++	int pidx;
+ 	printf("(%s:%d) - ", fn, ln);
+ 	perror(msg);
++	if (need_cleanup) {
++		for (pidx = 0; pidx < num_processes; ++pidx)
++			kill(procs[pidx].cpid, 15);
++		need_cleanup = 0;
 +	}
+ 	exit(EXIT_FAILURE);
+ }
  
- 	ktime_get_boottime_ts64(&uptime);
- 	timens_add_boottime(&uptime);
+@@ -108,13 +125,6 @@ static unsigned long get_cs_cookie(int pid)
+ 	return cookie;
+ }
  
--	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
-+	idle.tv_sec = div_u64_rem(idle_nsec, NSEC_PER_SEC, &rem);
- 	idle.tv_nsec = rem;
- 	seq_printf(m, "%lu.%02lu %lu.%02lu\n",
- 			(unsigned long) uptime.tv_sec,
-diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index 44ae1a7eb9e39..69ae6b2784645 100644
---- a/include/linux/kernel_stat.h
-+++ b/include/linux/kernel_stat.h
-@@ -102,6 +102,7 @@ extern void account_system_index_time(struct task_struct *, u64,
- 				      enum cpu_usage_stat);
- extern void account_steal_time(u64);
- extern void account_idle_time(u64);
-+extern u64 get_idle_time(struct kernel_cpustat *kcs, int cpu);
+-struct child_args {
+-	int num_threads;
+-	int pfd[2];
+-	int cpid;
+-	int thr_tids[MAX_THREADS];
+-};
+-
+ static int child_func_thread(void __attribute__((unused))*arg)
+ {
+ 	while (1)
+@@ -214,10 +224,7 @@ void _validate(int line, int val, char *msg)
  
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
- static inline void account_process_tick(struct task_struct *tsk, int user)
+ int main(int argc, char *argv[])
+ {
+-	struct child_args procs[MAX_PROCESSES];
+-
+ 	int keypress = 0;
+-	int num_processes = 2;
+ 	int num_threads = 3;
+ 	int delay = 0;
+ 	int res = 0;
+@@ -264,6 +271,7 @@ int main(int argc, char *argv[])
+ 
+ 	printf("\n## Create a thread/process/process group hiearchy\n");
+ 	create_processes(num_processes, num_threads, procs);
++	need_cleanup = 1;
+ 	disp_processes(num_processes, procs);
+ 	validate(get_cs_cookie(0) == 0);
+ 
 -- 
 2.33.0
 
