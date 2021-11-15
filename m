@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA18645214E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0C345240F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346342AbhKPBDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:03:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
+        id S243071AbhKPBfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:35:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245720AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0237163287;
-        Mon, 15 Nov 2021 18:40:07 +0000 (UTC)
+        id S242081AbhKOSgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:36:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D1C63268;
+        Mon, 15 Nov 2021 18:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001608;
-        bh=U6fQnsNKbPTE11NFNlm0+xZgCeG7JwAaZO672gNR+qs=;
+        s=korg; t=1636999355;
+        bh=PWRPyJ4SWoaDvKTSxU4rb+kcgPf1SgaM1x4oGlcrMLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEUiCdYzBz2Ivn9mldFtBKKss5UAwxHj8KIc6q2J5pa+gWEC2DcD+KHs4oaCSoosm
-         vln6Daf/9lYFE5CnfGP76HLCKduPeRXJAWs+uMkW++W0YuFI5n+i4PmGLbzL6KzeeB
-         rSlXEZmNQnaUGAk6aTgzIB01qNFY/ceO8i28/744=
+        b=cngtQhcgF2ZFoV7nkrDB8b9b3czSVCuuDhTtIb8pU8b9627z0qogiRAL13P+Pd9eF
+         uzfH4BYEJLE+lnqiFdQepbR4YIgharR3jwg81YFI//m6akF9o5aC6aW7yoN7J7x54h
+         DxDynech1o1a5pAVuAzxfh+Ah9hcaMvciDlmW0ik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Alex Sierra <alex.sierra@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Philip Yang <philip.yang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 254/917] ACPI: battery: Accept charges over the design capacity as full
-Date:   Mon, 15 Nov 2021 17:55:49 +0100
-Message-Id: <20211115165437.397894404@linuxfoundation.org>
+Subject: [PATCH 5.14 267/849] drm/amdkfd: rm BO resv on validation to avoid deadlock
+Date:   Mon, 15 Nov 2021 17:55:50 +0100
+Message-Id: <20211115165429.283674269@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: André Almeida <andrealmeid@collabora.com>
+From: Alex Sierra <alex.sierra@amd.com>
 
-[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
+[ Upstream commit ec6abe831a843208e99a59adf108adba22166b3f ]
 
-Some buggy firmware and/or brand new batteries can support a charge that's
-slightly over the reported design capacity. In such cases, the kernel will
-report to userspace that the charging state of the battery is "Unknown",
-when in reality the battery charge is "Full", at least from the design
-capacity point of view. Make the fallback condition accepts capacities
-over the designed capacity so userspace knows that is full.
+This fix the deadlock with the BO reservations during SVM_BO evictions
+while allocations in VRAM are concurrently performed. More specific,
+while the ttm waits for the fence to be signaled (ttm_bo_wait), it
+already has the BO reserved. In parallel, the restore worker might be
+running, prefetching memory to VRAM. This also requires to reserve the
+BO, but blocks the mmap semaphore first. The deadlock happens when the
+SVM_BO eviction worker kicks in and waits for the mmap semaphore held
+in restore worker. Preventing signal the fence back, causing the
+deadlock until the ttm times out.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+We don't need to hold the BO reservation anymore during validation
+and mapping. Now the physical addresses are taken from hmm_range_fault.
+We also take migrate_mutex to prevent range migration while
+validate_and_map update GPU page table.
+
+Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Philip Yang <philip.yang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-index dae91f906cea9..8afa85d6eb6a7 100644
---- a/drivers/acpi/battery.c
-+++ b/drivers/acpi/battery.c
-@@ -169,7 +169,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
- 		return 1;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+index e85035fd1ccb4..b6a19ac2bc607 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+@@ -1303,7 +1303,7 @@ struct svm_validate_context {
+ 	struct svm_range *prange;
+ 	bool intr;
+ 	unsigned long bitmap[MAX_GPU_INSTANCE];
+-	struct ttm_validate_buffer tv[MAX_GPU_INSTANCE+1];
++	struct ttm_validate_buffer tv[MAX_GPU_INSTANCE];
+ 	struct list_head validate_list;
+ 	struct ww_acquire_ctx ticket;
+ };
+@@ -1330,11 +1330,6 @@ static int svm_range_reserve_bos(struct svm_validate_context *ctx)
+ 		ctx->tv[gpuidx].num_shared = 4;
+ 		list_add(&ctx->tv[gpuidx].head, &ctx->validate_list);
+ 	}
+-	if (ctx->prange->svm_bo && ctx->prange->ttm_res) {
+-		ctx->tv[MAX_GPU_INSTANCE].bo = &ctx->prange->svm_bo->bo->tbo;
+-		ctx->tv[MAX_GPU_INSTANCE].num_shared = 1;
+-		list_add(&ctx->tv[MAX_GPU_INSTANCE].head, &ctx->validate_list);
+-	}
  
- 	/* fallback to using design values for broken batteries */
--	if (battery->design_capacity == battery->capacity_now)
-+	if (battery->design_capacity <= battery->capacity_now)
- 		return 1;
- 
- 	/* we don't do any sort of metric based on percentages */
+ 	r = ttm_eu_reserve_buffers(&ctx->ticket, &ctx->validate_list,
+ 				   ctx->intr, NULL);
 -- 
 2.33.0
 
