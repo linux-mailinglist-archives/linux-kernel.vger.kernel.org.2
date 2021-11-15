@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EA3451AC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFB04518A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353797AbhKOXm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1351811AbhKOXEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:04:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343948AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AB6A63362;
-        Mon, 15 Nov 2021 18:49:03 +0000 (UTC)
+        id S243092AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E17E63477;
+        Mon, 15 Nov 2021 18:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002143;
-        bh=Bl8FawvaqTAjEKVIHajhQr+tgS/icd3mXSYB1ktEy78=;
+        s=korg; t=1636999839;
+        bh=vPMz/5VMfVrv/JhrgRAhUPgIPq+gfRu4moruOfVYe3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TKVj2qxsFbW7qnwUu+rG3+YUUjsoSIswKVS9mVgtEHJtJ8bMnUbx/BaG9okFuoEBZ
-         DAIiRtjbC7cQ9T+yuxkj8xv9UZVslf3Q+qfO7RLWDqZ1nzZX958vksrWAmBC7M87nA
-         Tn+OQhkcIrm+AEbxJ1H8wDbQ4BXK8UWjIfaqZAzM=
+        b=BED6Aa/w250xyg1oKTjW/73ZzZK9sxxx5f5ZzyAEan15l79+lzy5gGx4BmpVLdPe/
+         hw8Xc2eSK8UiyplwVcpxLBZw+KHyXbsDVUJNoPQF7ekvOfAHATILnozg8T4OlTkUJy
+         Et4Yoc1DYdP1dbZBhGPr0tVKCzUQQuCNurelqhVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 412/917] crypto: qat - detect PFVF collision after ACK
-Date:   Mon, 15 Nov 2021 17:58:27 +0100
-Message-Id: <20211115165442.761374527@linuxfoundation.org>
+Subject: [PATCH 5.14 425/849] hwmon: Fix possible memleak in __hwmon_device_register()
+Date:   Mon, 15 Nov 2021 17:58:28 +0100
+Message-Id: <20211115165434.642075071@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 9b768e8a3909ac1ab39ed44a3933716da7761a6f ]
+[ Upstream commit ada61aa0b1184a8fda1a89a340c7d6cc4e59aee5 ]
 
-Detect a PFVF collision between the local and the remote function by
-checking if the message on the PFVF CSR has been overwritten.
-This is done after the remote function confirms that the message has
-been received, by clearing the interrupt bit, or the maximum number of
-attempts (ADF_IOV_MSG_ACK_MAX_RETRY) to check the CSR has been exceeded.
+I got memory leak as follows when doing fault injection test:
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Co-developed-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+unreferenced object 0xffff888102740438 (size 8):
+  comm "27", pid 859, jiffies 4295031351 (age 143.992s)
+  hex dump (first 8 bytes):
+    68 77 6d 6f 6e 30 00 00                          hwmon0..
+  backtrace:
+    [<00000000544b5996>] __kmalloc_track_caller+0x1a6/0x300
+    [<00000000df0d62b9>] kvasprintf+0xad/0x140
+    [<00000000d3d2a3da>] kvasprintf_const+0x62/0x190
+    [<000000005f8f0f29>] kobject_set_name_vargs+0x56/0x140
+    [<00000000b739e4b9>] dev_set_name+0xb0/0xe0
+    [<0000000095b69c25>] __hwmon_device_register+0xf19/0x1e50 [hwmon]
+    [<00000000a7e65b52>] hwmon_device_register_with_info+0xcb/0x110 [hwmon]
+    [<000000006f181e86>] devm_hwmon_device_register_with_info+0x85/0x100 [hwmon]
+    [<0000000081bdc567>] tmp421_probe+0x2d2/0x465 [tmp421]
+    [<00000000502cc3f8>] i2c_device_probe+0x4e1/0xbb0
+    [<00000000f90bda3b>] really_probe+0x285/0xc30
+    [<000000007eac7b77>] __driver_probe_device+0x35f/0x4f0
+    [<000000004953d43d>] driver_probe_device+0x4f/0x140
+    [<000000002ada2d41>] __device_attach_driver+0x24c/0x330
+    [<00000000b3977977>] bus_for_each_drv+0x15d/0x1e0
+    [<000000005bf2a8e3>] __device_attach+0x267/0x410
+
+When device_register() returns an error, the name allocated in
+dev_set_name() will be leaked, the put_device() should be used
+instead of calling hwmon_dev_release() to give up the device
+reference, then the name will be freed in kobject_cleanup().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: bab2243ce189 ("hwmon: Introduce hwmon_device_register_with_groups")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211012112758.2681084-1-yangyingliang@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/hwmon/hwmon.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-index 976b9ab7617cd..789a4135e28c0 100644
---- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-@@ -156,6 +156,13 @@ static int __adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
- 		val = ADF_CSR_RD(pmisc_bar_addr, pf2vf_offset);
- 	} while ((val & int_bit) && (count++ < ADF_IOV_MSG_ACK_MAX_RETRY));
- 
-+	if (val != msg) {
-+		dev_dbg(&GET_DEV(accel_dev),
-+			"Collision - PFVF CSR overwritten by remote function\n");
-+		ret = -EIO;
-+		goto out;
+diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
+index 8d3b1dae31df1..3501a3ead4ba6 100644
+--- a/drivers/hwmon/hwmon.c
++++ b/drivers/hwmon/hwmon.c
+@@ -796,8 +796,10 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
+ 	dev_set_drvdata(hdev, drvdata);
+ 	dev_set_name(hdev, HWMON_ID_FORMAT, id);
+ 	err = device_register(hdev);
+-	if (err)
+-		goto free_hwmon;
++	if (err) {
++		put_device(hdev);
++		goto ida_remove;
 +	}
-+
- 	if (val & int_bit) {
- 		dev_dbg(&GET_DEV(accel_dev), "ACK not received from remote\n");
- 		val &= ~int_bit;
+ 
+ 	INIT_LIST_HEAD(&hwdev->tzdata);
+ 
 -- 
 2.33.0
 
