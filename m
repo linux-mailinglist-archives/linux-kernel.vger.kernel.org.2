@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CA9451D2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB864451D1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349988AbhKPAZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        id S245287AbhKPAZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243708AbhKOUe7 (ORCPT
+        with ESMTP id S245128AbhKOUe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 15:34:59 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7F0C043194;
-        Mon, 15 Nov 2021 12:22:27 -0800 (PST)
-Date:   Mon, 15 Nov 2021 20:22:24 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756EAC061766;
+        Mon, 15 Nov 2021 12:22:33 -0800 (PST)
+Date:   Mon, 15 Nov 2021 20:22:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637007745;
+        s=2020; t=1637007746;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zDaJ1Y2ZSdlgYn2R6smYGH5xIp9gyusMVSiFKmIzVBg=;
-        b=Z8v8hmrfQkATcb9TJ93KZHqkaRSBfFMPX16Sg/JsNv0gKubC6h6WB7GuGdaNwlzXH8uIYo
-        iyvQRTKBRXeofTDpavftjN2AVoKX5dPbPVXDdmHgmvWpInktr1NmyxUxML2OGENjKB6SSP
-        K9P6gWoRQfthU/1XRCxJuMS139Ty7dX1pt4d7VLxUmm7eh2M03jVXCxI5dmZYKdbJwEmlc
-        BmPrz+44LaOble7fpqOG9PoDHC7Rryt1GLZHw16HKJmX1ojnVVH+PZQmo9XaUKp3gUzNlv
-        q4PH0iC4rVOnB6C2eLTulD+DYGZfhbaDHiBirJdX7atDUdAdYGu5ss9PiQvv1Q==
+        bh=mwXCNjX0lCCnb2Nu4EA1fKzucVOGmU2qNSATc6MmBOw=;
+        b=l975o9TLI6WlDfvHQXA1d7cDkjOIVRPigmG/eFb1yC7VptyJNdU8DCh9fTFwSR5noxJWUS
+        K4XulOvrmnigaHq8NkAAhl22UST32+4fWoAMIY8fySBahVFN0UXkIZKmun9yBz+tkV6TJ8
+        mhk7MKOtSiuSOAfTBaKTkL7DfQuluFDqLVDLl2zojRh5sHKr9ebRh1jVvcK+gs+bQRImAx
+        bj4T+/0ls9cAinSbR6imnna8Pvr9jIOyFU6bz6Rp9APa929+DMTo/wycE6wO9TYtaXZRvX
+        nHGfsEDPeJ8FPntIbWCCjPHI2x7QJjPqMVRwOTA+7T+ret/e1NBojWDNh4EvHQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637007745;
+        s=2020e; t=1637007746;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zDaJ1Y2ZSdlgYn2R6smYGH5xIp9gyusMVSiFKmIzVBg=;
-        b=BOXfaQj9T19anWaFrUgY8/m7NCstLaYucunbModSJnVKA5ioQ0lljS5rrD3JDp4tOBQ8q6
-        LEb0FcvjqPPfF9Bg==
+        bh=mwXCNjX0lCCnb2Nu4EA1fKzucVOGmU2qNSATc6MmBOw=;
+        b=AEIzEcupri581u8pUI1nuitr3p8+elOnK4nSwHtyXoKQ1KhvHoSBqtHSJS6jD+Gkf1tX1g
+        nRWRQbKMciKpw/Dg==
 From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] selftests/sgx: Move setup_test_encl() to each TEST_F()
+Subject: [tip: x86/sgx] selftests/sgx: Dump segments and /proc/self/maps only
+ on failure
 Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         Reinette Chatre <reinette.chatre@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C70ca264535d2ca0dc8dcaf2281e7d6965f8d4a24=2E16369?=
+In-Reply-To: =?utf-8?q?=3C23cef0ae1de3a8a74cbfbbe74eca48ca3f300fde=2E16369?=
  =?utf-8?q?97631=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
-References: =?utf-8?q?=3C70ca264535d2ca0dc8dcaf2281e7d6965f8d4a24=2E163699?=
+References: =?utf-8?q?=3C23cef0ae1de3a8a74cbfbbe74eca48ca3f300fde=2E163699?=
  =?utf-8?q?7631=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
 MIME-Version: 1.0
-Message-ID: <163700774413.414.9510744334425807258.tip-bot2@tip-bot2>
+Message-ID: <163700774556.414.17914976039276112604.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,75 +65,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     065825db1fd60aa7695565613a69ed086a831869
-Gitweb:        https://git.kernel.org/tip/065825db1fd60aa7695565613a69ed086a831869
+Commit-ID:     1471721489090515f9f0f059b25124898928e559
+Gitweb:        https://git.kernel.org/tip/1471721489090515f9f0f059b25124898928e559
 Author:        Jarkko Sakkinen <jarkko@kernel.org>
-AuthorDate:    Mon, 15 Nov 2021 10:35:20 -08:00
+AuthorDate:    Mon, 15 Nov 2021 10:35:18 -08:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 15 Nov 2021 11:34:07 -08:00
+CommitterDate: Mon, 15 Nov 2021 11:34:04 -08:00
 
-selftests/sgx: Move setup_test_encl() to each TEST_F()
+selftests/sgx: Dump segments and /proc/self/maps only on failure
 
-Create the test enclave inside each TEST_F(), instead of FIXTURE_SETUP(),
-so that the heap size can be defined per test.
+Logging is always a compromise between clarity and detail. The main use
+case for dumping VMA's is when FIXTURE_SETUP() fails, and is less important
+for enclaves that do initialize correctly. Therefore, print the segments
+and /proc/self/maps only in the error case.
+
+Finally, if a single test ever creates multiple enclaves, the amount of
+log lines would become enormous.
 
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lkml.kernel.org/r/70ca264535d2ca0dc8dcaf2281e7d6965f8d4a24.1636997631.git.reinette.chatre@intel.com
+Link: https://lkml.kernel.org/r/23cef0ae1de3a8a74cbfbbe74eca48ca3f300fde.1636997631.git.reinette.chatre@intel.com
 ---
- tools/testing/selftests/sgx/main.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ tools/testing/selftests/sgx/main.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index 5b3e49a..f41fba9 100644
+index 6858a35..deab02f 100644
 --- a/tools/testing/selftests/sgx/main.c
 +++ b/tools/testing/selftests/sgx/main.c
-@@ -191,10 +191,6 @@ err:
+@@ -127,12 +127,6 @@ FIXTURE_SETUP(enclave)
+ 		ksft_exit_skip("cannot load enclaves\n");
+ 	}
  
- FIXTURE_SETUP(enclave)
- {
--	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
+-	for (i = 0; i < self->encl.nr_segments; i++) {
+-		seg = &self->encl.segment_tbl[i];
 -
--	memset(&self->run, 0, sizeof(self->run));
--	self->run.tcs = self->encl.encl_base;
+-		TH_LOG("0x%016lx 0x%016lx 0x%02x", seg->offset, seg->size, seg->prot);
+-	}
+-
+ 	if (!encl_measure(&self->encl))
+ 		goto err;
+ 
+@@ -169,6 +163,17 @@ FIXTURE_SETUP(enclave)
+ 	memset(&self->run, 0, sizeof(self->run));
+ 	self->run.tcs = self->encl.encl_base;
+ 
++	return;
++
++err:
++	encl_delete(&self->encl);
++
++	for (i = 0; i < self->encl.nr_segments; i++) {
++		seg = &self->encl.segment_tbl[i];
++
++		TH_LOG("0x%016lx 0x%016lx 0x%02x", seg->offset, seg->size, seg->prot);
++	}
++
+ 	maps_file = fopen("/proc/self/maps", "r");
+ 	if (maps_file != NULL)  {
+ 		while (fgets(maps_line, sizeof(maps_line), maps_file) != NULL) {
+@@ -181,11 +186,7 @@ FIXTURE_SETUP(enclave)
+ 		fclose(maps_file);
+ 	}
+ 
+-err:
+-	if (!sgx_enter_enclave_sym)
+-		encl_delete(&self->encl);
+-
+-	ASSERT_NE(sgx_enter_enclave_sym, NULL);
++	ASSERT_TRUE(false);
  }
  
  FIXTURE_TEARDOWN(enclave)
-@@ -226,6 +222,11 @@ TEST_F(enclave, unclobbered_vdso)
- {
- 	struct encl_op op;
- 
-+	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
- 	op.type = ENCL_OP_PUT;
- 	op.buffer = MAGIC;
- 
-@@ -248,6 +249,11 @@ TEST_F(enclave, clobbered_vdso)
- {
- 	struct encl_op op;
- 
-+	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
- 	op.type = ENCL_OP_PUT;
- 	op.buffer = MAGIC;
- 
-@@ -278,6 +284,11 @@ TEST_F(enclave, clobbered_vdso_and_user_function)
- {
- 	struct encl_op op;
- 
-+	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
- 	self->run.user_handler = (__u64)test_handler;
- 	self->run.user_data = 0xdeadbeef;
- 
