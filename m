@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21ABC4518B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA3F451E63
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhKOXGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:06:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
+        id S1355046AbhKPAft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243485AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B484611F0;
-        Mon, 15 Nov 2021 18:13:24 +0000 (UTC)
+        id S1344119AbhKOTX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 196456362C;
+        Mon, 15 Nov 2021 18:52:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000005;
-        bh=g/bilKBDC6h29mvOMbtjEL+7rCtNxHcGMr1IWUxpL+Y=;
+        s=korg; t=1637002335;
+        bh=30zaXgkWn6LMf8F82UXUSME9HHe90ZQ+tE5KmINAcbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mSnEUWf5hbLtUCIWGQuhpMk0E1KQVFyC7X0uGIwMQLkA7X8pU/sMSPqrwld/S2JAO
-         vmd6PGftBEs75S26OPH3TtG4c+N1nA4r0CrPOIWKSSEP+RztB/CLQyUm7CkcXuAtfo
-         rf379E1eqHRD4yhnoJ4sWideUBiwNzwacOCieGjM=
+        b=q/Ke2rfTSw5atJBBouKFDfJ6E38xEDYC/jZYAs0RXapWqJ8d8ukdpayCPa8HwKfvS
+         7Je2cDlJmzMBO41bd/0BA4eXXN+31wbvQ2Zxkt5yVqx5Pa0FNWGIVarsDDlpdPISR5
+         nNOjNErueFrbHMxg+Put+EzN4cr9+BumYzNdxV60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Vereshchagin <evvers@ya.ru>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 495/849] libbpf: Fix BTF header parsing checks
+        stable@vger.kernel.org, Shayne Chen <shayne.chen@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 483/917] mt76: mt7915: fix muar_idx in mt7915_mcu_alloc_sta_req()
 Date:   Mon, 15 Nov 2021 17:59:38 +0100
-Message-Id: <20211115165437.032830792@linuxfoundation.org>
+Message-Id: <20211115165445.159192388@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Shayne Chen <shayne.chen@mediatek.com>
 
-[ Upstream commit c825f5fee19caf301d9821cd79abaa734322de26 ]
+[ Upstream commit 161cc13912d3c3e8857001988dfba39be842454a ]
 
-Original code assumed fixed and correct BTF header length. That's not
-always the case, though, so fix this bug with a proper additional check.
-And use actual header length instead of sizeof(struct btf_header) in
-sanity checks.
+For broadcast/multicast wcid, the muar_idx should be 0xe.
 
-Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
-Reported-by: Evgeny Vereshchagin <evvers@ya.ru>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211023003157.726961-2-andrii@kernel.org
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 3e3ecac43ea9b..7ab9f702e72ac 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -231,13 +231,19 @@ static int btf_parse_hdr(struct btf *btf)
- 		}
- 		btf_bswap_hdr(hdr);
- 	} else if (hdr->magic != BTF_MAGIC) {
--		pr_debug("Invalid BTF magic:%x\n", hdr->magic);
-+		pr_debug("Invalid BTF magic: %x\n", hdr->magic);
- 		return -EINVAL;
- 	}
- 
--	meta_left = btf->raw_size - sizeof(*hdr);
-+	if (btf->raw_size < hdr->hdr_len) {
-+		pr_debug("BTF header len %u larger than data size %u\n",
-+			 hdr->hdr_len, btf->raw_size);
-+		return -EINVAL;
-+	}
-+
-+	meta_left = btf->raw_size - hdr->hdr_len;
- 	if (meta_left < (long long)hdr->str_off + hdr->str_len) {
--		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
-+		pr_debug("Invalid BTF total size: %u\n", btf->raw_size);
- 		return -EINVAL;
- 	}
- 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index 6dfe3716a63a5..ba36d3caec8e1 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -721,7 +721,7 @@ mt7915_mcu_alloc_sta_req(struct mt7915_dev *dev, struct mt7915_vif *mvif,
+ 		.bss_idx = mvif->idx,
+ 		.wlan_idx_lo = msta ? to_wcid_lo(msta->wcid.idx) : 0,
+ 		.wlan_idx_hi = msta ? to_wcid_hi(msta->wcid.idx) : 0,
+-		.muar_idx = msta ? mvif->omac_idx : 0,
++		.muar_idx = msta && msta->wcid.sta ? mvif->omac_idx : 0xe,
+ 		.is_tlv_append = 1,
+ 	};
+ 	struct sk_buff *skb;
 -- 
 2.33.0
 
