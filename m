@@ -2,169 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE778451DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91872451DA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348732AbhKPAcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        id S1352540AbhKPAcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345568AbhKOT2m (ORCPT
+        with ESMTP id S1345571AbhKOT2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:28:42 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BD4C0AFD71
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:55:53 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id k1so17755593ilo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:55:53 -0800 (PST)
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C541C0AFD76
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:56:23 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id v3so36897211uam.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tSucHjGcT6rkKlRqoilO8gpQKCTFkj/1xgEEhZp5eAs=;
-        b=shPjg8V/5u2dqDLkaXzmMZAZMsCcQsR6PFojLDP+XysioiAsZ4MWDBMH6lj/nqs6gK
-         gng1bRyO6QvcnTO5lOmQ6W+fJmAbMq4U84LN21NdUpOJ2TZB5iUf/WOZOMIeN3CqxYkr
-         IHjlp6d6zLWOSnmsbK5LHmMacY5TAnn2yOu9iGU4BUJdGHzhHKyMsjsOc1lEugx33ZlJ
-         MMDWKgTqqpjDhcSTU/d5FYsk3P3mMUlTtDK0R2zHrkggCNZie+YAQPwf4MNanrevjkqc
-         uXoPpauDl8mPczO61WBkh+P/51kTrT4iziFFSqwAX75MuRSaSUNqvyAax4bMnnKdg4vZ
-         xekw==
+         :cc;
+        bh=wjFytYa62TwsRDtT9P+lI6l+ZPmY9Qu38r4fj9pXQeI=;
+        b=Et3mLJfVVa31pUjIiX3D9ldtHtwfS2Ty0ZDCKaDhjnrACzXviF+n5avqkd0wi52RbJ
+         x8B6+Y/Mrdqx7qBEUU7AMThPC/tfboVqIHcexrDStDQG4F6OuXJm7QybGYb4/PIefpiP
+         qdNa5kCUzqv+9tlXAWjZjq6k46+nKkyyj3ca3AJq+z73CvIReKUOSUP7yH7sAHD0khTj
+         ponfVix4Wzw1TnM2ady5uBFwE4d33Bo1+bZknSVPKjD4HedtWQClz32AwYdNZFtHh5Z7
+         BHVTOvFvAyl4pxfoavUjBnxwV1aP9Hb7IvY06fkY2g0G/yNZCGfX2Bpe1C2YWYlrYcEV
+         uNyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tSucHjGcT6rkKlRqoilO8gpQKCTFkj/1xgEEhZp5eAs=;
-        b=IN5PK6ZHDJozFAEeehmIVHrxbakG8kwBucMsatBy5Kob9gXNgOM7+luGHzJrmXK/D/
-         OMiH/vO7N1AMdOFDb5yKnrk633MgYE4EMpcCTE6vZhIoL6RuRDgW5XAC50Lp+QnGgofZ
-         TbyOZP3Y0NDkxmkNp5GZdr6zsHLqtAmxREsHvZdPsHfIx0HJQHLavE7lGd1BI3Oj5XcY
-         2xkDs+ASqdzN3Rj0h+Qf/yY3A2k/E2heMmqJFEM7ru1MPUV8QLjDkJJvCOh+tQ5knjsH
-         LxyspqmUI4gCrgsC8LGuAqBemSP5gm8E99QMSIY1yTE/URo96TTD/DrCra90uzkSEq9R
-         uVfQ==
-X-Gm-Message-State: AOAM530/dWrXw+UjpHFu0lin0GHyWpND/G+HLTLRlZKrwRueQA2JZkjs
-        VvsOxH39EuBhUbwlEqgrQNW9eSrRIYBrx7PhZnxPIQ==
-X-Google-Smtp-Source: ABdhPJzz/r513GfRNjO6TK5we9g+gjG84Zhlrk5AIOCmQVGEOVogXCQfWGjXf4QWkxK7t8FkTXXsFpZUnaWHoUz7zgY=
-X-Received: by 2002:a92:c569:: with SMTP id b9mr714347ilj.39.1637002552537;
- Mon, 15 Nov 2021 10:55:52 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=wjFytYa62TwsRDtT9P+lI6l+ZPmY9Qu38r4fj9pXQeI=;
+        b=GwSquyFDRhla10T9sHzs0Ldf78cfMVRxmtlUp2i7Gx53foMMx1WhvLrDLtYgYkro8W
+         4UzUAQ3hbvZu5/5+Vugg8kEhCe2+/QokwEgYYxGH+I05+X2Sjsr0VGfRRY14kS+ALx1D
+         26NgC2sRWUqAn+hgZpeIon+PqWZC329481TNYr2E4KE1TuxhaamNSq5TZyxLt6ChawdP
+         zgrl3khvQr82XHT4nEn4vN6UWH/zXxWch9kWAmQqeDGFGKXTxt1Dox8SKuaefFqOhGPb
+         1O4KTiRJvu13SOizeRC8AGGCUtIbn8hS/WK7Nvgm6WiE4fMkOsm3I589YI8nSTxQEk9N
+         mMow==
+X-Gm-Message-State: AOAM532ti3Aza7mmggOMWXoq+hHFAsjARm8IVf+mwjr8j6K/yx1syeQE
+        bTt6Kvx6zSGBayP7h2TdLeN01PR6Ay0LUvOHISY2dyXihOvHCg==
+X-Google-Smtp-Source: ABdhPJylv9Dsbu7ZOrf0qTkvNNEqYiy+MbBLGYCd80FkaWunLT9ncwO+I1KUfsKqM53IfBUg2/slkF2dFCSNflVEqho=
+X-Received: by 2002:a67:d893:: with SMTP id f19mr45783283vsj.39.1637002581757;
+ Mon, 15 Nov 2021 10:56:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20211111015037.4092956-1-almasrymina@google.com>
- <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
- <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com> <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
- <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com>
- <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
- <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com> <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com>
-In-Reply-To: <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 15 Nov 2021 10:55:41 -0800
-Message-ID: <CAHS8izP3aOZ6MOOH-eMQ2HzJy2Y8B6NYY-FfJiyoKLGu7_OoJA@mail.gmail.com>
-Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CGME20211112010603epcas2p26c076e65e0cb286cb53f06053165ef60@epcas2p2.samsung.com>
+ <20211112010137.149174-1-jaewon02.kim@samsung.com> <20211112010137.149174-2-jaewon02.kim@samsung.com>
+In-Reply-To: <20211112010137.149174-2-jaewon02.kim@samsung.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Mon, 15 Nov 2021 20:56:10 +0200
+Message-ID: <CAPLW+4=QoTLzZsHHxM_E+WhzhYKsfEisFe_berH=i9G=TSb0ng@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: exynos5: add exynosautov9-hsi2c compatible
+To:     Jaewon Kim <jaewon02.kim@samsung.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chanho61.park@samsung.com, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:22 AM Mike Kravetz <mike.kravetz@oracle.com> wro=
-te:
+On Fri, 12 Nov 2021 at 03:06, Jaewon Kim <jaewon02.kim@samsung.com> wrote:
 >
-> Subject:   Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
+> This patch adds new "samsung,exynosautov9-hsi2c" compatible.
+> It is for i2c compatible with HSI2C available on Exynos SoC with USI.
 >
-> To:        Muchun Song <songmuchun@bytedance.com>, Shakeel Butt <shakeelb=
-@google.com>, Mina Almasry <almasrymina@google.com>
->
-> Cc:        Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@k=
-ernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Oscar Salvador <osalvador@su=
-se.de>, Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com=
->, Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>, Joanna Li <joan=
-nali@google.com>, Cannon Matthews <cannonmatthews@google.com>, Linux Memory=
- Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
->
-> Bcc:
->
-> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D# Don't remove this line #=3D-=3D-=3D=
--=3D-=3D-=3D-=3D-=3D-=3D-
->
-> On 11/14/21 5:43 AM, Muchun Song wrote:
->
-> > On Sun, Nov 14, 2021 at 3:15 AM Shakeel Butt <shakeelb@google.com> wrot=
-e:
->
-> >> On Sat, Nov 13, 2021 at 6:48 AM Mina Almasry <almasrymina@google.com> =
-wrote:
->
-> >>> On Fri, Nov 12, 2021 at 6:45 PM Muchun Song <songmuchun@bytedance.com=
-> wrote:
->
-> >>>> On Sat, Nov 13, 2021 at 7:36 AM Mike Kravetz <mike.kravetz@oracle.co=
-m> wrote:
->
-> >> We have following options:
->
-> >>
->
-> >> 1) Use atomic type for usage.
->
-> >> 2) Use "unsigned long" for usage along with WRITE_ONCE/READ_ONCE.
->
-> >> 3) Use hugetlb_lock for hugetlb_cgroup_read_numa_stat as well.
->
-> >>
->
-> >> All options are valid but we would like to avoid (3).
->
-> >>
->
-> >> What if we use "unsigned long" type but without READ_ONCE/WRITE_ONCE.
->
-> >> The potential issues with that are KCSAN will report this as race and
->
-> >> possible garbage value on archs which do not support atomic writes to
->
-> >> unsigned long.
->
-> >
->
-> > At least I totally agree with you. Thanks for your detailed explanation=
-.
->
-> >
->
->
->
-> Thanks everyone.  This makes sense.
->
->
->
-> However, I should note that this same situation (updates to unsigned
->
-> long variables under lock and reads of the the same variable without
->
-> lock or READ/WRITE_ONCE) exists in hugetlb sysfs files today.  Not
->
-> suggesting that this makes it OK to ignore the potential issue.  Just
->
-> wanted to point this out.
->
+> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
 
-Sorry I'm still a bit confused. READ_ONCE/WRITE_ONCE isn't documented
-to provide atomicity to the write or read, just prevents the compiler
-from re-ordering them. Is there something I'm missing, or is the
-suggestion to add READ_ONCE/WRITE_ONCE simply to supress the KCSAN
-warnings?
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
+>  Documentation/devicetree/bindings/i2c/i2c-exynos5.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt b/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
+> index 2dbc0b62daa6..39f4067d9d1f 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-exynos5.txt
+> @@ -14,6 +14,8 @@ Required properties:
+>                                 on Exynos5260 SoCs.
+>         -> "samsung,exynos7-hsi2c", for i2c compatible with HSI2C available
+>                                 on Exynos7 SoCs.
+> +       -> "samsung,exynosautov9-hsi2c", for i2c compatible with HSI2C available
+> +                               on ExynosAutov9 SoCs.
+>
+>    - reg: physical base address of the controller and length of memory mapped
+>      region.
+> @@ -31,6 +33,11 @@ Optional properties:
+>         at 100khz.
+>      -> If specified, the bus operates in high-speed mode only if the
+>         clock-frequency is >= 1Mhz.
+> +  - samsung,sysreg : system registers controller phandle to control USI.
+> +    -> If I2C integrated to USI(Universal Serial Interface), this property
+> +       is required. When using Exynos USI block, it needs to select which type
+> +       of Serial IPs(UART, SPI, I2C) to use with system register. So, it
+> +       requires samsung,sysreg phandle and offset value of system register.
+>
+>  Example:
+>
 > --
->
-> Mike Kravetz
+> 2.33.1
 >
