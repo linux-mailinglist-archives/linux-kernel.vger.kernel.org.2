@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8673450340
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA56F45033E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhKOLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:16:53 -0500
-Received: from mga09.intel.com ([134.134.136.24]:10569 "EHLO mga09.intel.com"
+        id S231277AbhKOLPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:15:37 -0500
+Received: from mga02.intel.com ([134.134.136.20]:23733 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhKOLQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:16:05 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233259944"
+        id S230456AbhKOLPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:15:30 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220631468"
 X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="233259944"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:13:08 -0800
-X-ExtLoop1: 1
+   d="scan'208";a="220631468"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:12:35 -0800
 X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="734932781"
-Received: from pg-vnc03.altera.com ([10.142.129.92])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Nov 2021 03:13:06 -0800
-From:   sin.hui.kho@linux.intel.com
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sin Hui Kho <sin.hui.kho@intel.com>
-Subject: [PATCH] HSD #14014983934: arm64: dts: Update NAND MTD partition for Agilex and Stratix 10
-Date:   Mon, 15 Nov 2021 19:12:15 +0800
-Message-Id: <20211115111215.107992-1-sin.hui.kho@linux.intel.com>
-X-Mailer: git-send-email 2.13.0
+   d="scan'208";a="535475373"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:12:33 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mmZuS-0072To-Vi;
+        Mon, 15 Nov 2021 13:12:24 +0200
+Date:   Mon, 15 Nov 2021 13:12:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH v2 0/2] iio: buffer: allocation and freeing buffers fix
+ and optimization
+Message-ID: <YZJAmCsnD2QRNoCs@smile.fi.intel.com>
+References: <20211013094923.2473-1-andriy.shevchenko@linux.intel.com>
+ <20211017152611.13fb0357@jic23-huawei>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211017152611.13fb0357@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sin Hui Kho <sin.hui.kho@intel.com>
+On Sun, Oct 17, 2021 at 03:26:11PM +0100, Jonathan Cameron wrote:
+> On Wed, 13 Oct 2021 12:49:21 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > Yang submitted a fix, but I think the code can be refactored a bit to be more
+> > robust against similar mistakes in the future, if any.
+> > 
+> > In v2:
+> > - put SoB Yang's patch (it's good for backporting)
+> > - added refactoring patch on top of Yang's fix
+> > 
+> > Andy Shevchenko (1):
+> >   iio: buffer: Use dedicated variable in
+> >     iio_buffers_alloc_sysfs_and_mask()
+> > 
+> > Yang Yingliang (1):
+> >   iio: buffer: Fix double-free in iio_buffers_alloc_sysfs_and_mask()
+> > 
+> >  drivers/iio/industrialio-buffer.c | 18 +++++++-----------
+> >  1 file changed, 7 insertions(+), 11 deletions(-)
+> > 
+> 1st patch applied to the fixes-togreg branch of iio.git. I may well end up
+> sending these in the merge window anyway in which case I'll probably stick patch 2
+> on top of it before sending.  If not I'll pick that up next cycle now.
 
-Change NAND flash MTD partition in device tree after implementation of
-UBI and UBIFS. "u-boot" partition remain for raw u-boot image, but "root"
-partition is use for UBI image containing all other components.
+Is it a right time now?
 
-Signed-off-by: Sin Hui Kho <sin.hui.kho@intel.com>
----
- .../dts/altera/socfpga_stratix10_socdk_nand.dts    | 24 ++--------------------
- .../boot/dts/intel/socfpga_agilex_socdk_nand.dts   | 20 ++----------------
- 2 files changed, 4 insertions(+), 40 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
-index c07966740e14..9511f2bf2d25 100644
---- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
-+++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
-@@ -119,28 +119,8 @@
- 		};
- 
- 		partition@200000 {
--			label = "env";
--			reg = <0x200000 0x40000>;
--		};
--
--		partition@240000 {
--			label = "dtb";
--			reg = <0x240000 0x40000>;
--		};
--
--		partition@280000 {
--			label = "kernel";
--			reg = <0x280000 0x2000000>;
--		};
--
--		partition@2280000 {
--			label = "misc";
--			reg = <0x2280000 0x2000000>;
--		};
--
--		partition@4280000 {
--			label = "rootfs";
--			reg = <0x4280000 0x3bd80000>;
-+			label = "root";
-+			reg = <0x200000 0x3fe00000>;
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
-index 979aa59a6bd0..2327af820cb4 100644
---- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
-+++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
-@@ -99,24 +99,8 @@
- 			reg = <0 0x200000>;
- 		};
- 		partition@200000 {
--			label = "env";
--			reg = <0x200000 0x40000>;
--		};
--		partition@240000 {
--			label = "dtb";
--			reg = <0x240000 0x40000>;
--		};
--		partition@280000 {
--			label = "kernel";
--			reg = <0x280000 0x2000000>;
--		};
--		partition@2280000 {
--			label = "misc";
--			reg = <0x2280000 0x2000000>;
--		};
--		partition@4280000 {
--			label = "rootfs";
--			reg = <0x4280000 0x3bd80000>;
-+			label = "root";
-+			reg = <0x200000 0x3fe00000>;
- 		};
- 	};
- };
 -- 
-2.13.0
+With Best Regards,
+Andy Shevchenko
+
 
