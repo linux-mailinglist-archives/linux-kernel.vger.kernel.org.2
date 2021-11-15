@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39B7451953
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E9245203D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352734AbhKOXSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
+        id S1350584AbhKPAuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:50:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244619AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 166CB61B4B;
-        Mon, 15 Nov 2021 18:22:20 +0000 (UTC)
+        id S1344531AbhKOTY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 644F8633D4;
+        Mon, 15 Nov 2021 18:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000541;
-        bh=LkVksyCniB251JOTxu7OtmmbtFTlHTvDAgVDAq9HncA=;
+        s=korg; t=1637002758;
+        bh=+XnHw3g7g9D+RFsVTPRs+GWW8on9ZiD2JFN64wI7XZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KLvtMmzyRSB5dnrop5A7h9tuJCC8UlQasUK2sl43KoLoVb3R7EjwZJTqsp0nEcXBY
-         8Fz7/8gpZEufPv9GHyvxnCWhsSs/UJxzUNG/UD5Cqqa2RSDoVt+Ksc91fTUiuMMZs+
-         nfdkqk3bzOJc4Kv7LXlui4/x0qyrdrV9NTCVoi3o=
+        b=jB8qdlV5RuJU5fmhqi5sX8h9i822gUkSKzJj73WOHURMkC4dFmysBIVxRgkZP1q9T
+         jCZ6L9effyn6q5j4Ohri7c/TPl9prn21gYpuW5EQ9zLJCKPsM6z5CVg44hVtUbA36d
+         HZwjW8xPP7s1ElDIm+yXeJ2xgevnAqLcBd/Ao28k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <aglo@umich.edu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 698/849] NFS: Fix an Oops in pnfs_mark_request_commit()
+Subject: [PATCH 5.15 686/917] ASoC: rsnd: Fix an error handling path in rsnd_node_count()
 Date:   Mon, 15 Nov 2021 18:03:01 +0100
-Message-Id: <20211115165443.867144547@linuxfoundation.org>
+Message-Id: <20211115165452.159744655@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit f0caea8882a7412a2ad4d8274f0280cdf849c9e2 ]
+[ Upstream commit 173632358fde7a567f28e07c4549b959ee857986 ]
 
-Olga reports seeing the following Oops when doing O_DIRECT writes to a
-pNFS flexfiles server:
+If we return before the end of the 'for_each_child_of_node()' iterator, the
+reference taken on 'np' must be released.
 
-Oops: 0000 [#1] SMP PTI
-CPU: 1 PID: 234186 Comm: kworker/u8:1 Not tainted 5.15.0-rc4+ #4
-Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.13.0-2.module+el8.3.0+7353+9de0a3cc 04/01/2014
-Workqueue: nfsiod rpc_async_release [sunrpc]
-RIP: 0010:nfs_mark_request_commit+0x12/0x30 [nfs]
-Code: ff ff be 03 00 00 00 e8 ac 34 83 eb e9 29 ff ff
-ff e8 22 bc d7 eb 66 90 0f 1f 44 00 00 48 85 f6 74 16 48 8b 42 10 48
-8b 40 18 <48> 8b 40 18 48 85 c0 74 05 e9 70 fc 15 ec 48 89 d6 e9 68 ed
-ff ff
-RSP: 0018:ffffa82f0159fe00 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8f3393141880 RCX: 0000000000000000
-RDX: ffffa82f0159fe08 RSI: ffff8f3381252500 RDI: ffff8f3393141880
-RBP: ffff8f33ac317c00 R08: 0000000000000000 R09: ffff8f3487724cb0
-R10: 0000000000000008 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff8f3485bccee0 R14: ffff8f33ac317c10 R15: ffff8f33ac317cd8
-FS:  0000000000000000(0000) GS:ffff8f34fbc80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000018 CR3: 0000000122120006 CR4: 0000000000770ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- nfs_direct_write_completion+0x13b/0x250 [nfs]
- rpc_free_task+0x39/0x60 [sunrpc]
- rpc_async_release+0x29/0x40 [sunrpc]
- process_one_work+0x1ce/0x370
- worker_thread+0x30/0x380
- ? process_one_work+0x370/0x370
- kthread+0x11a/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
+Add the missing 'of_node_put()' call.
 
-Reported-by: Olga Kornievskaia <aglo@umich.edu>
-Fixes: 9c455a8c1e14 ("NFS/pNFS: Clean up pNFS commit operations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: c413983eb66a ("ASoC: rsnd: adjust disabled module")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/4c0e893cbfa21dc76c1ede0b6f4f8cff42209299.1634586167.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/pnfs.h b/fs/nfs/pnfs.h
-index d810ae674f4e8..a0f6ff094b3a4 100644
---- a/fs/nfs/pnfs.h
-+++ b/fs/nfs/pnfs.h
-@@ -517,7 +517,7 @@ pnfs_mark_request_commit(struct nfs_page *req, struct pnfs_layout_segment *lseg,
- {
- 	struct pnfs_ds_commit_info *fl_cinfo = cinfo->ds;
- 
--	if (!lseg || !fl_cinfo->ops->mark_request_commit)
-+	if (!lseg || !fl_cinfo->ops || !fl_cinfo->ops->mark_request_commit)
- 		return false;
- 	fl_cinfo->ops->mark_request_commit(req, lseg, cinfo, ds_commit_idx);
- 	return true;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 978bd0406729a..6a8fe0da7670b 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1225,6 +1225,7 @@ int rsnd_node_count(struct rsnd_priv *priv, struct device_node *node, char *name
+ 		if (i < 0) {
+ 			dev_err(dev, "strange node numbering (%s)",
+ 				of_node_full_name(node));
++			of_node_put(np);
+ 			return 0;
+ 		}
+ 		i++;
 -- 
 2.33.0
 
