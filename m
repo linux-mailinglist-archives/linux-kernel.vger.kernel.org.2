@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D324518DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF78451E04
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352239AbhKOXJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:09:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59662 "EHLO mail.kernel.org"
+        id S1347382AbhKPAet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243097AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2529B63484;
-        Mon, 15 Nov 2021 18:12:09 +0000 (UTC)
+        id S1343963AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CA560174;
+        Mon, 15 Nov 2021 18:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999929;
-        bh=JEwMn5gTkrBchXO4VU1g4R/loMNyVmPXU0YgI8/IL9s=;
+        s=korg; t=1637002167;
+        bh=X03UOnOAj5lzHAtG1htSWTtU5Fn1ySb8Y34IxPWlr4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q45NE5uoWyzR5MIToMhNDylaTJfOWNftl9/WMpd7yqBSrfuUKIOFDAJmzflD+emXF
-         A8F9YijNaqZJQi9a4lRFgLEv09rcPlsVvvIaOQoipVulc69XA9sOZZaHvqCYIMuXDr
-         6J9JhrXlzzwY+FAjmTJYeSoU3S9WVY4vF6R/xSpI=
+        b=th+KmaWQT781NSjqUr0w4LSwX1KZVS/+c1XwrzndZNSAQmqnootcimfD9of4GypDv
+         5abcZt1iYtpHrSwuslqDaOCC07bj+4OZQcJYRIaXnFEno73S68P9i4PAPR/e7MXIzO
+         GN9DATkLHdBkJSShJeB4bHdoystP94iLXLRuizIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 476/849] rsi: stop thread firstly in rsi_91x_init() error handling
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 464/917] mt76: mt7921: fix survey-dump reporting
 Date:   Mon, 15 Nov 2021 17:59:19 +0100
-Message-Id: <20211115165436.383686596@linuxfoundation.org>
+Message-Id: <20211115165444.510966229@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 515e7184bdf0a3ebf1757cc77fb046b4fe282189 ]
+[ Upstream commit 64ed76d118c656907ec1155f2cdd24de778470a2 ]
 
-When fail to init coex module, free 'common' and 'adapter' directly, but
-common->tx_thread which will access 'common' and 'adapter' is running at
-the same time. That will trigger the UAF bug.
+Fix MIB tx-rx MIB counters for survey-dump reporting.
 
-==================================================================
-BUG: KASAN: use-after-free in rsi_tx_scheduler_thread+0x50f/0x520 [rsi_91x]
-Read of size 8 at addr ffff8880076dc000 by task Tx-Thread/124777
-CPU: 0 PID: 124777 Comm: Tx-Thread Not tainted 5.15.0-rc5+ #19
-Call Trace:
- dump_stack_lvl+0xe2/0x152
- print_address_description.constprop.0+0x21/0x140
- ? rsi_tx_scheduler_thread+0x50f/0x520
- kasan_report.cold+0x7f/0x11b
- ? rsi_tx_scheduler_thread+0x50f/0x520
- rsi_tx_scheduler_thread+0x50f/0x520
-...
-
-Freed by task 111873:
- kasan_save_stack+0x1b/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x20/0x30
- __kasan_slab_free+0x109/0x140
- kfree+0x117/0x4c0
- rsi_91x_init+0x741/0x8a0 [rsi_91x]
- rsi_probe+0x9f/0x1750 [rsi_usb]
-
-Stop thread before free 'common' and 'adapter' to fix it.
-
-Fixes: 2108df3c4b18 ("rsi: add coex support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211015040335.1021546-1-william.xuanziyang@huawei.com
+Fixes: 163f4d22c118d ("mt76: mt7921: add MAC support")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/mediatek/mt76/mt7921/init.c | 4 ++++
+ drivers/net/wireless/mediatek/mt76/mt7921/regs.h | 8 ++++++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_main.c b/drivers/net/wireless/rsi/rsi_91x_main.c
-index 143224a3802ba..f1bf71e6c6081 100644
---- a/drivers/net/wireless/rsi/rsi_91x_main.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_main.c
-@@ -369,6 +369,7 @@ struct rsi_hw *rsi_91x_init(u16 oper_mode)
- 	if (common->coex_mode > 1) {
- 		if (rsi_coex_attach(common)) {
- 			rsi_dbg(ERR_ZONE, "Failed to init coex module\n");
-+			rsi_kill_thread(&common->tx_thread);
- 			goto err;
- 		}
- 	}
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+index a9ce10b988273..52d40385fab6c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+@@ -106,6 +106,10 @@ mt7921_mac_init_band(struct mt7921_dev *dev, u8 band)
+ 	mt76_set(dev, MT_WF_RMAC_MIB_TIME0(band), MT_WF_RMAC_MIB_RXTIME_EN);
+ 	mt76_set(dev, MT_WF_RMAC_MIB_AIRTIME0(band), MT_WF_RMAC_MIB_RXTIME_EN);
+ 
++	/* enable MIB tx-rx time reporting */
++	mt76_set(dev, MT_MIB_SCR1(band), MT_MIB_TXDUR_EN);
++	mt76_set(dev, MT_MIB_SCR1(band), MT_MIB_RXDUR_EN);
++
+ 	mt76_rmw_field(dev, MT_DMA_DCR0(band), MT_DMA_DCR0_MAX_RX_LEN, 1536);
+ 	/* disable rx rate report by default due to hw issues */
+ 	mt76_clear(dev, MT_DMA_DCR0(band), MT_DMA_DCR0_RXD_G5_EN);
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
+index b6944c867a573..26fb118237626 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
+@@ -96,6 +96,10 @@
+ #define MT_WF_MIB_BASE(_band)		((_band) ? 0xa4800 : 0x24800)
+ #define MT_WF_MIB(_band, ofs)		(MT_WF_MIB_BASE(_band) + (ofs))
+ 
++#define MT_MIB_SCR1(_band)		MT_WF_MIB(_band, 0x004)
++#define MT_MIB_TXDUR_EN			BIT(8)
++#define MT_MIB_RXDUR_EN			BIT(9)
++
+ #define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x698)
+ #define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(31, 16)
+ 
+@@ -108,9 +112,9 @@
+ #define MT_MIB_SDR34(_band)		MT_WF_MIB(_band, 0x090)
+ #define MT_MIB_MU_BF_TX_CNT		GENMASK(15, 0)
+ 
+-#define MT_MIB_SDR36(_band)		MT_WF_MIB(_band, 0x098)
++#define MT_MIB_SDR36(_band)		MT_WF_MIB(_band, 0x054)
+ #define MT_MIB_SDR36_TXTIME_MASK	GENMASK(23, 0)
+-#define MT_MIB_SDR37(_band)		MT_WF_MIB(_band, 0x09c)
++#define MT_MIB_SDR37(_band)		MT_WF_MIB(_band, 0x058)
+ #define MT_MIB_SDR37_RXTIME_MASK	GENMASK(23, 0)
+ 
+ #define MT_MIB_DR8(_band)		MT_WF_MIB(_band, 0x0c0)
 -- 
 2.33.0
 
