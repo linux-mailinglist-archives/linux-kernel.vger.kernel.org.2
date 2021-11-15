@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5E5451BAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21555451F6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350963AbhKPAF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:05:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1352028AbhKPAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:40:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344928AbhKOTZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344932AbhKOTZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C9B7636F4;
-        Mon, 15 Nov 2021 19:06:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A24A636F6;
+        Mon, 15 Nov 2021 19:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003215;
-        bh=Dhp3BJ2GwnWDqF5Y9kUk8zMGnF7gZgqJ0rp8i4g7Vo0=;
+        s=korg; t=1637003218;
+        bh=mdJrWoohCu+eHCYDtn0pr+fXSS1u75FEgDZMS5nA2Qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0M/wellzBubMxjUaU9KI0/Tug19Tw/ld21Ge2uUI0vtmnViPJ/YjpXzlpwow0NB8x
-         04JXprV0UzdY3/sDMNEhfmci93PucPd46KL0z8sh0a+iNx5K1Bi7ovH/KQZ/Posy7Y
-         eIUWr2a39Qwy8YyHsJJQ2wSDG+HZLSM7OfYbKMQs=
+        b=OG4ia+wp/5OHfFan+BmmwRNGp8jg0+TbtRM5BTEe78uePGLxXAlLi/JJWcHGiqYC3
+         ZT3FNqmjEwiVpFxNC9aw7//Pc2nPmExkUI4LGguTN4gkmFd+q+yU0zU9xRFZGJqr4h
+         p6EJIvSn9pZRNMXvIUeUmifF94+SbTWP7KViPROk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Jones <davej@codemonkey.org.uk>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.15 854/917] x86/mce: Add errata workaround for Skylake SKX37
-Date:   Mon, 15 Nov 2021 18:05:49 +0100
-Message-Id: <20211115165457.988036808@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Johansson <josef@oderland.se>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: [PATCH 5.15 855/917] PCI/MSI: Move non-mask check back into low level accessors
+Date:   Mon, 15 Nov 2021 18:05:50 +0100
+Message-Id: <20211115165458.019187971@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,43 +40,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jones <davej@codemonkey.org.uk>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit e629fc1407a63dbb748f828f9814463ffc2a0af0 upstream.
+commit 9c8e9c9681a0f3f1ae90a90230d059c7a1dece5a upstream.
 
-Errata SKX37 is word-for-word identical to the other errata listed in
-this workaround.   I happened to notice this after investigating a CMCI
-storm on a Skylake host.  While I can't confirm this was the root cause,
-spurious corrected errors does sound like a likely suspect.
+The recent rework of PCI/MSI[X] masking moved the non-mask checks from the
+low level accessors into the higher level mask/unmask functions.
 
-Fixes: 2976908e4198 ("x86/mce: Do not log spurious corrected mce errors")
-Signed-off-by: Dave Jones <davej@codemonkey.org.uk>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20211029205759.GA7385@codemonkey.org.uk
+This missed the fact that these accessors can be invoked from other places
+as well. The missing checks break XEN-PV which sets pci_msi_ignore_mask and
+also violates the virtual MSIX and the msi_attrib.maskbit protections.
+
+Instead of sprinkling checks all over the place, lift them back into the
+low level accessor functions. To avoid checking three different conditions
+combine them into one property of msi_desc::msi_attrib.
+
+[ josef: Fixed the missed conversion in the core code ]
+
+Fixes: fcacdfbef5a1 ("PCI/MSI: Provide a new set of mask and unmask functions")
+Reported-by: Josef Johansson <josef@oderland.se>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Josef Johansson <josef@oderland.se>
+Cc: Bjorn Helgaas <helgaas@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/cpu/mce/intel.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/pci/msi.c   |   26 ++++++++++++++------------
+ include/linux/msi.h |    2 +-
+ kernel/irq/msi.c    |    4 ++--
+ 3 files changed, 17 insertions(+), 15 deletions(-)
 
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -547,12 +547,13 @@ bool intel_filter_mce(struct mce *m)
- {
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -148,6 +148,9 @@ static noinline void pci_msi_update_mask
+ 	raw_spinlock_t *lock = &desc->dev->msi_lock;
+ 	unsigned long flags;
  
--	/* MCE errata HSD131, HSM142, HSW131, BDM48, and HSM142 */
-+	/* MCE errata HSD131, HSM142, HSW131, BDM48, HSM142 and SKX37 */
- 	if ((c->x86 == 6) &&
- 	    ((c->x86_model == INTEL_FAM6_HASWELL) ||
- 	     (c->x86_model == INTEL_FAM6_HASWELL_L) ||
- 	     (c->x86_model == INTEL_FAM6_BROADWELL) ||
--	     (c->x86_model == INTEL_FAM6_HASWELL_G)) &&
-+	     (c->x86_model == INTEL_FAM6_HASWELL_G) ||
-+	     (c->x86_model == INTEL_FAM6_SKYLAKE_X)) &&
- 	    (m->bank == 0) &&
- 	    ((m->status & 0xa0000000ffffffff) == 0x80000000000f0005))
- 		return true;
++	if (!desc->msi_attrib.can_mask)
++		return;
++
+ 	raw_spin_lock_irqsave(lock, flags);
+ 	desc->msi_mask &= ~clear;
+ 	desc->msi_mask |= set;
+@@ -181,7 +184,8 @@ static void pci_msix_write_vector_ctrl(s
+ {
+ 	void __iomem *desc_addr = pci_msix_desc_addr(desc);
+ 
+-	writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
++	if (desc->msi_attrib.can_mask)
++		writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
+ 
+ static inline void pci_msix_mask(struct msi_desc *desc)
+@@ -200,23 +204,17 @@ static inline void pci_msix_unmask(struc
+ 
+ static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
+ {
+-	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
+-		return;
+-
+ 	if (desc->msi_attrib.is_msix)
+ 		pci_msix_mask(desc);
+-	else if (desc->msi_attrib.maskbit)
++	else
+ 		pci_msi_mask(desc, mask);
+ }
+ 
+ static void __pci_msi_unmask_desc(struct msi_desc *desc, u32 mask)
+ {
+-	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
+-		return;
+-
+ 	if (desc->msi_attrib.is_msix)
+ 		pci_msix_unmask(desc);
+-	else if (desc->msi_attrib.maskbit)
++	else
+ 		pci_msi_unmask(desc, mask);
+ }
+ 
+@@ -484,7 +482,8 @@ msi_setup_entry(struct pci_dev *dev, int
+ 	entry->msi_attrib.is_64		= !!(control & PCI_MSI_FLAGS_64BIT);
+ 	entry->msi_attrib.is_virtual    = 0;
+ 	entry->msi_attrib.entry_nr	= 0;
+-	entry->msi_attrib.maskbit	= !!(control & PCI_MSI_FLAGS_MASKBIT);
++	entry->msi_attrib.can_mask	= !pci_msi_ignore_mask &&
++					  !!(control & PCI_MSI_FLAGS_MASKBIT);
+ 	entry->msi_attrib.default_irq	= dev->irq;	/* Save IOAPIC IRQ */
+ 	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
+ 	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
+@@ -495,7 +494,7 @@ msi_setup_entry(struct pci_dev *dev, int
+ 		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
+ 
+ 	/* Save the initial mask status */
+-	if (entry->msi_attrib.maskbit)
++	if (entry->msi_attrib.can_mask)
+ 		pci_read_config_dword(dev, entry->mask_pos, &entry->msi_mask);
+ 
+ out:
+@@ -638,10 +637,13 @@ static int msix_setup_entries(struct pci
+ 		entry->msi_attrib.is_virtual =
+ 			entry->msi_attrib.entry_nr >= vec_count;
+ 
++		entry->msi_attrib.can_mask	= !pci_msi_ignore_mask &&
++						  !entry->msi_attrib.is_virtual;
++
+ 		entry->msi_attrib.default_irq	= dev->irq;
+ 		entry->mask_base		= base;
+ 
+-		if (!entry->msi_attrib.is_virtual) {
++		if (entry->msi_attrib.can_mask) {
+ 			addr = pci_msix_desc_addr(entry);
+ 			entry->msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ 		}
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -148,7 +148,7 @@ struct msi_desc {
+ 				u8	is_msix		: 1;
+ 				u8	multiple	: 3;
+ 				u8	multi_cap	: 3;
+-				u8	maskbit		: 1;
++				u8	can_mask	: 1;
+ 				u8	is_64		: 1;
+ 				u8	is_virtual	: 1;
+ 				u16	entry_nr;
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -529,10 +529,10 @@ static bool msi_check_reservation_mode(s
+ 
+ 	/*
+ 	 * Checking the first MSI descriptor is sufficient. MSIX supports
+-	 * masking and MSI does so when the maskbit is set.
++	 * masking and MSI does so when the can_mask attribute is set.
+ 	 */
+ 	desc = first_msi_entry(dev);
+-	return desc->msi_attrib.is_msix || desc->msi_attrib.maskbit;
++	return desc->msi_attrib.is_msix || desc->msi_attrib.can_mask;
+ }
+ 
+ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
 
 
