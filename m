@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2830145083D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB45450849
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236370AbhKOP3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:29:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231819AbhKOP3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:29:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A31D61B04;
-        Mon, 15 Nov 2021 15:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636989975;
-        bh=eUM8nh5M+J+Xyi+ghRfR7pLG+uMUG9uqMGGQaGZ7d4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b3ALJC1+8a3W3KhaixGxLlLbW1hq7YTPfYnIwt9vAAc/DDJwwgKkxTy9mKKbHOdYc
-         bTVzSPSn++dIEOzTQxoSCiqr6njOi8AByZMpaaiErnxDe3U3V88S/nkMh6W6gs/xRX
-         2BVqD42QceFvynL+yCnJ1K8R8c0FriftY7Bxro9sJ/CHFghoM95Y8JFqbAMlARBZVn
-         S/TRnCTFPTUbuRRi3yagULXRL2d5BSQ85nFcYE3DVraYtTG8R/fuw7+bV7i1fHB/XF
-         6GC0ak9fE2MpQgeInTBdnJvIiZUNEoXw+c9mL1Ev1FY4X1ENP3gyyPQYZpTkd196RL
-         pDzpDY96MnE8g==
-Date:   Mon, 15 Nov 2021 16:26:12 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] i2c: designware: Fix the kernel doc description
- for struct dw_i2c_dev
-Message-ID: <YZJ8FPDDQ4PqDtTF@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <20211112123459.73538-1-andriy.shevchenko@linux.intel.com>
- <e62bf878-03df-1b93-2177-7b8a3be293c4@infradead.org>
- <CAHp75Vd71WPosA8Sy999Mb5ZiGEGg-y3vxYsYz3st5Ng2PJ98A@mail.gmail.com>
- <07932f56-ec2d-46a5-7c8e-3f4aab7afd35@infradead.org>
- <YZJsUHVhGFsImNvt@smile.fi.intel.com>
+        id S236517AbhKOPcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:32:12 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:43993 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232424AbhKOPbQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:31:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwkTWPf_1636990097;
+Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UwkTWPf_1636990097)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 15 Nov 2021 23:28:19 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+To:     sjpark@amazon.de
+Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 1/4] mm/damon: Unified access_check function naming rules
+Date:   Mon, 15 Nov 2021 23:26:12 +0800
+Message-Id: <529054aed932a42b9c09fc9977ad4574b9e7b0bd.1636989871.git.xhao@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <cover.1636989871.git.xhao@linux.alibaba.com>
+References: <cover.1636989871.git.xhao@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BvXqiEanE7JDdHew"
-Content-Disposition: inline
-In-Reply-To: <YZJsUHVhGFsImNvt@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In damon/paddr.c file, two functions names start with underscore,
+	static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
+			struct damon_region *r)
+	static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
+			struct damon_region *r)
+In damon/vaddr.c file, there are also two functions with the same function,
+	static void damon_va_prepare_access_check(struct damon_ctx *ctx,
+			struct mm_struct *mm, struct damon_region *r)
+	static void damon_va_check_access(struct damon_ctx *ctx,
+			struct mm_struct *mm, struct damon_region *r)
 
---BvXqiEanE7JDdHew
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It makes sense to keep consistent, and it is not easy to be confused with
+the function that call them.
 
+Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>
+---
+ mm/damon/vaddr.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> > Yes, I am aware of what is in the spec.
->=20
-> Wolfram, what do you prefer?
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index 35fe49080ee9..905e0fc8a8ec 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -409,7 +409,7 @@ static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
+  * Functions for the access checking of the regions
+  */
+ 
+-static void damon_va_prepare_access_check(struct damon_ctx *ctx,
++static void __damon_va_prepare_access_check(struct damon_ctx *ctx,
+ 			struct mm_struct *mm, struct damon_region *r)
+ {
+ 	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
+@@ -428,7 +428,7 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
+ 		if (!mm)
+ 			continue;
+ 		damon_for_each_region(r, t)
+-			damon_va_prepare_access_check(ctx, mm, r);
++			__damon_va_prepare_access_check(ctx, mm, r);
+ 		mmput(mm);
+ 	}
+ }
+@@ -514,7 +514,7 @@ static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+  * mm	'mm_struct' for the given virtual address space
+  * r	the region to be checked
+  */
+-static void damon_va_check_access(struct damon_ctx *ctx,
++static void __damon_va_check_access(struct damon_ctx *ctx,
+ 			       struct mm_struct *mm, struct damon_region *r)
+ {
+ 	static struct mm_struct *last_mm;
+@@ -550,7 +550,7 @@ unsigned int damon_va_check_accesses(struct damon_ctx *ctx)
+ 		if (!mm)
+ 			continue;
+ 		damon_for_each_region(r, t) {
+-			damon_va_check_access(ctx, mm, r);
++			__damon_va_check_access(ctx, mm, r);
+ 			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
+ 		}
+ 		mmput(mm);
+-- 
+2.31.0
 
-I prefer I2C. But it is more a reading habit. I would neither enforce
-I2C nor I=C2=B2C.
-
-
---BvXqiEanE7JDdHew
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGSfBQACgkQFA3kzBSg
-KbYKfhAAlId9kFNfFr8y53JyPOsTxdJ6h521xQpki3cD89L/+f57D/saomjQUjp5
-TauAzptzTJSIlDMzvdrayyEASdr5Ca8KWTeiHZ///GvMJlaPzFVWt7KNk01BCCZk
-odYj63G68vU5i5+CDPAabHDOuqTk4Nqbw2tbBjoeyRPOuPQCRfspQZ6BbYvbuxuB
-57wGURpyjV57zb68EDsJCUV5sEWwq8sxZvU34i8eANaLTdJaosKTkcQraqwIQ4Pw
-WwsVw3vsNwIaWAZ6cuxJz9PybX9N46U7+Hv0L6+eUtE4530cNSe95QnWTZG0fvs1
-6v/IAvaqo6Tk3lALjj6aUx+ab8fkgENH8NNyx8JHTo3XhzTD0bkNTHB462skgr8U
-vS0VLCw5AjMZZdr8Av8u9hf9Go/rmYhKPxyF1ImTM+jxeIa91NKgbsShxD4KA1VA
-K2X0i3buJRUEFfIGEWSdx2HYNt6fifWCNYheXDTvmOibQ9EUCEEQVNr7tWJkXK/W
-YT4FdjLJRzsVZWyM3i7b/zG75cL6FueQH3YhfeqtS0u8kmEa7+u1UsP71U02k2cM
-5ERgoO1Fs6EyqETNcMhGVl//fpuDmbQ0Jaewvrj9KIbqEozkupDVXSN57WVkTuZh
-4W9PbirslmNqpbHlANUFkFxtR8akm1aEGWJA6hFBLpeZ4YMLn90=
-=/G3W
------END PGP SIGNATURE-----
-
---BvXqiEanE7JDdHew--
