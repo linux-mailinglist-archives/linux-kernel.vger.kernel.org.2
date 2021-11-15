@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A892C451378
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9E445138B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348278AbhKOTvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:51:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
+        id S1348397AbhKOTwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:52:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239850AbhKOSEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239848AbhKOSEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:04:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED3763274;
-        Mon, 15 Nov 2021 17:39:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24602632E6;
+        Mon, 15 Nov 2021 17:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997978;
-        bh=QNkBOXerpcpHEfQOVpQVhKG2iNCf4nEvew5Iw5lWYuM=;
+        s=korg; t=1636997980;
+        bh=XzweCvmoHTy63gnpL5NBLwzrwLQJJgkukG8j1sy6zHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqW3SrvaObnHhKtBGMgod3klXj2joQhOA1V2AjJZZ2qur/Y37zBmD/s8WJG8W2YUm
-         5QSW3jjDAqEH/B8IGCwp+Qx0eWVQ3OV4KsDN75q9QORfxSx/QJ/Tq4MMkN4zAWUk1e
-         +ykxzbWf1L9t8bAgdikJeFcPcEVHkQS8Q4JUpoJU=
+        b=oXW/f7LkMrDBGCZe5w/CF5QctZll7e4MclJaQ1yjxN0VgW1OGsQhPDO9v/Lk8iduA
+         zSFFFEKZU4x2oGDl+vJL7j2qaK/Us2PmGGweGnNRQSXULtk6Zr33Hy7LU4E6lgBubQ
+         Pa6/bjwg5SNwV6P0/aHstBnyIHvpsSgd4xQgHbjI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 343/575] clocksource/drivers/timer-ti-dm: Select TIMER_OF
-Date:   Mon, 15 Nov 2021 18:01:08 +0100
-Message-Id: <20211115165355.663142735@linuxfoundation.org>
+Subject: [PATCH 5.10 344/575] x86/sev: Fix stack type check in vc_switch_off_ist()
+Date:   Mon, 15 Nov 2021 18:01:09 +0100
+Message-Id: <20211115165355.694642447@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -46,47 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit eda9a4f7af6ee47e9e131f20e4f8a41a97379293 ]
+[ Upstream commit 5681981fb788281b09a4ea14d310d30b2bd89132 ]
 
-When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
-due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
-CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
+The value of STACK_TYPE_EXCEPTION_LAST points to the last _valid_
+exception stack. Reflect that in the check done in the
+vc_switch_off_ist() function.
 
-arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: linux-omap@vger.kernel.org
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210828175747.3777891-1-keescook@chromium.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Fixes: a13644f3a53de ("x86/entry/64: Add entry code for #VC handler")
+Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211021080833.30875-2-joro@8bytes.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 39f4d88662002..a0c6e88bebe08 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -24,6 +24,7 @@ config I8253_LOCK
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 7692bf7908e6c..143fcb8af38f4 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -701,7 +701,7 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
+ 	stack = (unsigned long *)sp;
  
- config OMAP_DM_TIMER
- 	bool
-+	select TIMER_OF
+ 	if (!get_stack_info_noinstr(stack, current, &info) || info.type == STACK_TYPE_ENTRY ||
+-	    info.type >= STACK_TYPE_EXCEPTION_LAST)
++	    info.type > STACK_TYPE_EXCEPTION_LAST)
+ 		sp = __this_cpu_ist_top_va(VC2);
  
- config CLKBLD_I8253
- 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
+ sync:
 -- 
 2.33.0
 
