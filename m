@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F69F450AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84528450B05
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236916AbhKORQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:16:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45158 "EHLO mail.kernel.org"
+        id S232029AbhKORRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:17:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236536AbhKORM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:12:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55E0161452;
-        Mon, 15 Nov 2021 17:09:32 +0000 (UTC)
+        id S236565AbhKORMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:12:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D345A6322A;
+        Mon, 15 Nov 2021 17:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996172;
-        bh=fgW7IZ0V+TaDrxPJYsD4H4Awxt+nUIrh1fRJjTlfW18=;
+        s=korg; t=1636996175;
+        bh=RwPELUlSRrH8ihBiH8+BhS7PfY7lGPMdxADq8nR8pK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yFI+vsVJMGu4Dw6+JdhCzh/tIcbfuIIXd1NBSbaP7vbbdL8T5WDv0zc23pdxlhdM3
-         YdnNEkEvM/jDCKDBlN4XovKHYsLNWUJ91iH3MaMaT143mUzTSlPU7gaRDa2oq2QOEB
-         UMwv5ApZEYAVnHorIpIkh5HHDE90SLtuwN6b6yRE=
+        b=qtTxebzqiSVwEzELAHxFYT6DK3zPXxCwXSaoUAVY9odAE0kg6Sev7iJDfM56OtzDi
+         PF6X9tZUJRhfnLoJwYH8StHtcD85eL7YO2+rxjAXFKtqxPb6sWHRew3QEzVB+W4Wis
+         4IPvb6Op0ZKpqXJCWJVegBgiIvRAqET5O2pzfFMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 043/355] reset: tegra-bpmp: Handle errors in BPMP response
-Date:   Mon, 15 Nov 2021 17:59:27 +0100
-Message-Id: <20211115165314.943849440@linuxfoundation.org>
+Subject: [PATCH 5.4 044/355] reset: socfpga: add empty driver allowing consumers to probe
+Date:   Mon, 15 Nov 2021 17:59:28 +0100
+Message-Id: <20211115165314.975035619@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,50 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikko Perttunen <mperttunen@nvidia.com>
+From: Paweł Anikiel <pan@semihalf.com>
 
-[ Upstream commit c045ceb5a145d2a9a4bf33cbc55185ddf99f60ab ]
+[ Upstream commit 3ad60b4b3570937f3278509fe6797a5093ce53f8 ]
 
-The return value from tegra_bpmp_transfer indicates the success or
-failure of the IPC transaction with BPMP. If the transaction
-succeeded, we also need to check the actual command's result code.
-Add code to do this.
+The early reset driver doesn't ever probe, which causes consuming
+devices to be unable to probe. Add an empty driver to set this device
+as available, allowing consumers to probe.
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-Link: https://lore.kernel.org/r/20210915085517.1669675-2-mperttunen@nvidia.com
+Signed-off-by: Paweł Anikiel <pan@semihalf.com>
+Link: https://lore.kernel.org/r/20210920124141.1166544-4-pan@semihalf.com
 Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/tegra/reset-bpmp.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/reset/reset-socfpga.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/reset/tegra/reset-bpmp.c b/drivers/reset/tegra/reset-bpmp.c
-index 24d3395964cc4..4c5bba52b1059 100644
---- a/drivers/reset/tegra/reset-bpmp.c
-+++ b/drivers/reset/tegra/reset-bpmp.c
-@@ -20,6 +20,7 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
- 	struct tegra_bpmp *bpmp = to_tegra_bpmp(rstc);
- 	struct mrq_reset_request request;
- 	struct tegra_bpmp_message msg;
-+	int err;
- 
- 	memset(&request, 0, sizeof(request));
- 	request.cmd = command;
-@@ -30,7 +31,13 @@ static int tegra_bpmp_reset_common(struct reset_controller_dev *rstc,
- 	msg.tx.data = &request;
- 	msg.tx.size = sizeof(request);
- 
--	return tegra_bpmp_transfer(bpmp, &msg);
-+	err = tegra_bpmp_transfer(bpmp, &msg);
-+	if (err)
-+		return err;
-+	if (msg.rx.ret)
-+		return -EINVAL;
-+
-+	return 0;
+diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpga.c
+index 96953992c2bb5..1c5236a69dc49 100644
+--- a/drivers/reset/reset-socfpga.c
++++ b/drivers/reset/reset-socfpga.c
+@@ -86,3 +86,29 @@ void __init socfpga_reset_init(void)
+ 	for_each_matching_node(np, socfpga_early_reset_dt_ids)
+ 		a10_reset_init(np);
  }
- 
- static int tegra_bpmp_reset_module(struct reset_controller_dev *rstc,
++
++/*
++ * The early driver is problematic, because it doesn't register
++ * itself as a driver. This causes certain device links to prevent
++ * consumer devices from probing. The hacky solution is to register
++ * an empty driver, whose only job is to attach itself to the reset
++ * manager and call probe.
++ */
++static const struct of_device_id socfpga_reset_dt_ids[] = {
++	{ .compatible = "altr,rst-mgr", },
++	{ /* sentinel */ },
++};
++
++static int reset_simple_probe(struct platform_device *pdev)
++{
++	return 0;
++}
++
++static struct platform_driver reset_socfpga_driver = {
++	.probe	= reset_simple_probe,
++	.driver = {
++		.name		= "socfpga-reset",
++		.of_match_table	= socfpga_reset_dt_ids,
++	},
++};
++builtin_platform_driver(reset_socfpga_driver);
 -- 
 2.33.0
 
