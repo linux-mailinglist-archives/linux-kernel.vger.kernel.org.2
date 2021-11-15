@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8F7450DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BD4450DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhKOSJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:09:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
+        id S240276AbhKOSH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:07:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237828AbhKOR02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:26:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D136325D;
-        Mon, 15 Nov 2021 17:18:05 +0000 (UTC)
+        id S237850AbhKOR0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ADDD619EC;
+        Mon, 15 Nov 2021 17:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996686;
-        bh=KJ/VXmUshvt4YkoR1haYv/EuljwzbtgKLxKB04yihFc=;
+        s=korg; t=1636996688;
+        bh=uW1Z6WMCUWy/5QO2cc8QWmfz3awNB6pguTI/tNIMpQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ffQMjr0FwH3t3WqRkFZWm2d34RIDMVrlOnFi0IMZkDZHs+9lREkoIZzFryIsPUDkc
-         m8w7t+Xf1s6HODVzmYSyCDgDDPd+q/6x3xBSpzINUiGmZ50/91X04c3FUqJCPUTGHA
-         FcwEwQ3QJTbGWR8ioPRKTN6Bu0GrH91aV603pdPE=
+        b=lMp9fxfSqNJo6R33M2Q3Y9/AL/SaYSyqYcm6WOPNA3Hyc/L06WVclY2w4jOt+WQv1
+         /l3RF9cDd5z35Qrz/kJPY8l/55yv89PO2nqeHPZZyXU0hMBAay0KD61dmSQsey87h7
+         GC4hKxpkBTQY+S0yf2SkpYRrtMdj7ADnU9un16zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 230/355] mt76: mt76x02: fix endianness warnings in mt76x02_mac.c
-Date:   Mon, 15 Nov 2021 18:02:34 +0100
-Message-Id: <20211115165321.195094888@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 231/355] rsi: stop thread firstly in rsi_91x_init() error handling
+Date:   Mon, 15 Nov 2021 18:02:35 +0100
+Message-Id: <20211115165321.228111461@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -39,85 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-[ Upstream commit c33edef520213feccebc22c9474c685b9fb60611 ]
+[ Upstream commit 515e7184bdf0a3ebf1757cc77fb046b4fe282189 ]
 
-Fix the following sparse warning in mt76x02_mac_write_txwi and
-mt76x02_mac_tx_rate_val routines:
-drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:237:19:
-	warning: restricted __le16 degrades to intege
-	warning: cast from restricted __le16
-drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:383:28:
-	warning: incorrect type in assignment (different base types)
-	expected restricted __le16 [usertype] rate
-	got unsigned long
+When fail to init coex module, free 'common' and 'adapter' directly, but
+common->tx_thread which will access 'common' and 'adapter' is running at
+the same time. That will trigger the UAF bug.
 
-Fixes: db9f11d3433f7 ("mt76: store wcid tx rate info in one u32 reduce locking")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+==================================================================
+BUG: KASAN: use-after-free in rsi_tx_scheduler_thread+0x50f/0x520 [rsi_91x]
+Read of size 8 at addr ffff8880076dc000 by task Tx-Thread/124777
+CPU: 0 PID: 124777 Comm: Tx-Thread Not tainted 5.15.0-rc5+ #19
+Call Trace:
+ dump_stack_lvl+0xe2/0x152
+ print_address_description.constprop.0+0x21/0x140
+ ? rsi_tx_scheduler_thread+0x50f/0x520
+ kasan_report.cold+0x7f/0x11b
+ ? rsi_tx_scheduler_thread+0x50f/0x520
+ rsi_tx_scheduler_thread+0x50f/0x520
+...
+
+Freed by task 111873:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x30
+ __kasan_slab_free+0x109/0x140
+ kfree+0x117/0x4c0
+ rsi_91x_init+0x741/0x8a0 [rsi_91x]
+ rsi_probe+0x9f/0x1750 [rsi_usb]
+
+Stop thread before free 'common' and 'adapter' to fix it.
+
+Fixes: 2108df3c4b18 ("rsi: add coex support")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211015040335.1021546-1-william.xuanziyang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt76x02_mac.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
-index abacb4ea7179d..5c12cd7fce940 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
-@@ -154,7 +154,7 @@ void mt76x02_mac_wcid_set_drop(struct mt76x02_dev *dev, u8 idx, bool drop)
- 		mt76_wr(dev, MT_WCID_DROP(idx), (val & ~bit) | (bit * drop));
- }
- 
--static __le16
-+static u16
- mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
- 			const struct ieee80211_tx_rate *rate, u8 *nss_val)
- {
-@@ -200,14 +200,14 @@ mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
- 		rateval |= MT_RXWI_RATE_SGI;
- 
- 	*nss_val = nss;
--	return cpu_to_le16(rateval);
-+	return rateval;
- }
- 
- void mt76x02_mac_wcid_set_rate(struct mt76x02_dev *dev, struct mt76_wcid *wcid,
- 			       const struct ieee80211_tx_rate *rate)
- {
- 	s8 max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
--	__le16 rateval;
-+	u16 rateval;
- 	u32 tx_info;
- 	s8 nss;
- 
-@@ -320,7 +320,7 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
- 	struct ieee80211_key_conf *key = info->control.hw_key;
- 	u32 wcid_tx_info;
- 	u16 rate_ht_mask = FIELD_PREP(MT_RXWI_RATE_PHY, BIT(1) | BIT(2));
--	u16 txwi_flags = 0;
-+	u16 txwi_flags = 0, rateval;
- 	u8 nss;
- 	s8 txpwr_adj, max_txpwr_adj;
- 	u8 ccmp_pn[8], nstreams = dev->mt76.chainmask & 0xf;
-@@ -356,14 +356,15 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
- 
- 	if (wcid && (rate->idx < 0 || !rate->count)) {
- 		wcid_tx_info = wcid->tx_info;
--		txwi->rate = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
-+		rateval = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
- 		max_txpwr_adj = FIELD_GET(MT_WCID_TX_INFO_TXPWR_ADJ,
- 					  wcid_tx_info);
- 		nss = FIELD_GET(MT_WCID_TX_INFO_NSS, wcid_tx_info);
- 	} else {
--		txwi->rate = mt76x02_mac_tx_rate_val(dev, rate, &nss);
-+		rateval = mt76x02_mac_tx_rate_val(dev, rate, &nss);
- 		max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
+diff --git a/drivers/net/wireless/rsi/rsi_91x_main.c b/drivers/net/wireless/rsi/rsi_91x_main.c
+index aece1d3a6b055..441fda71f6289 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_main.c
++++ b/drivers/net/wireless/rsi/rsi_91x_main.c
+@@ -368,6 +368,7 @@ struct rsi_hw *rsi_91x_init(u16 oper_mode)
+ 	if (common->coex_mode > 1) {
+ 		if (rsi_coex_attach(common)) {
+ 			rsi_dbg(ERR_ZONE, "Failed to init coex module\n");
++			rsi_kill_thread(&common->tx_thread);
+ 			goto err;
+ 		}
  	}
-+	txwi->rate = cpu_to_le16(rateval);
- 
- 	txpwr_adj = mt76x02_tx_get_txpwr_adj(dev, dev->mt76.txpower_conf,
- 					     max_txpwr_adj);
 -- 
 2.33.0
 
