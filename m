@@ -2,66 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0904450557
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BA545055B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhKON13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhKON0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:26:00 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBECC061766;
-        Mon, 15 Nov 2021 05:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=X1ITeHe+ujLogHoHoBslh2b+KYlgavcC5p3THMJ3Fac=; b=J7e9HUHbL4CLr6zXYZB1KWdrgK
-        QJ6bhZlwWp7YziATK7pczR9iPQe0Ak47PaLoL7UnJ8J6H5127j8nPQnJza0LPfx2oxpyraSXAR3+W
-        sio+BzJ4VjWlOtOw8HrlPwTKQzIxnqwxtTLGMaQc6W5y9NY9TQtnIMXLoCxhvgRu3+O296eQUNkgY
-        kNh/waAURt3KN9jKL8RedrNPBJPg4mkdlZ8cwV5OP37nWnznpw/aQE0khEqlQW+SgHvkvYCa3L602
-        mu+yJotuIfojwsZFxdAXIe5imbLWJ9m2+2ksQD3+29iLNft2lK2SAJNfZNSGEEFiu1iBbrGOog/xr
-        UrEGg8Ug==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmbwo-00FeeB-6C; Mon, 15 Nov 2021 13:22:58 +0000
-Date:   Mon, 15 Nov 2021 05:22:58 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, linux-pci@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 05/11] iommu: Add security context management for
- assigned devices
-Message-ID: <YZJfMg8O/y4aLf8Q@infradead.org>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-6-baolu.lu@linux.intel.com>
+        id S231649AbhKON1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:27:41 -0500
+Received: from mga05.intel.com ([192.55.52.43]:46256 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhKON12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:27:28 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="319647404"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="319647404"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 05:23:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="734981986"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Nov 2021 05:23:08 -0800
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rafael@kernel.org, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] cpufreq: intel_pstate: Fix EPP restore after offline/online
+Date:   Mon, 15 Nov 2021 05:23:02 -0800
+Message-Id: <20211115132302.1257642-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115020552.2378167-6-baolu.lu@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:05:46AM +0800, Lu Baolu wrote:
-> +			/*
-> +			 * The UNMANAGED domain should be detached before all USER
-> +			 * owners have been released.
-> +			 */
+When using performance policy, EPP value is restored to non "performance"
+mode EPP after offline and online.
 
-Please avoid comments spilling over 80 characters.
+For example:
+cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+performance
+echo 0 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+balance_performance
+
+The commit 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
+optimized save restore path of the HWP request MSR, when there is no
+change in the policy. Also added special processing for performance mode
+EPP. If EPP has been set to "performance" by the active mode "performance"
+scaling algorithm, replace that value with the cached EPP. This ends up
+replacing with cached EPP during offline, which is restored during online
+again.
+
+So add a change which will set cpu_data->epp_policy to zero, when in
+performance policy and has non zero epp. In this way EPP is set to zero
+again.
+
+Fixes: 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: stable@vger.kernel.org # v5.9+
+---
+ drivers/cpufreq/intel_pstate.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 815df3daae9d..49ff24d2b0ea 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -930,17 +930,23 @@ static void intel_pstate_hwp_set(unsigned int cpu)
+ {
+ 	struct cpudata *cpu_data = all_cpu_data[cpu];
+ 	int max, min;
++	s16 epp = 0;
+ 	u64 value;
+-	s16 epp;
+ 
+ 	max = cpu_data->max_perf_ratio;
+ 	min = cpu_data->min_perf_ratio;
+ 
+-	if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE)
+-		min = max;
+-
+ 	rdmsrl_on_cpu(cpu, MSR_HWP_REQUEST, &value);
+ 
++	if (boot_cpu_has(X86_FEATURE_HWP_EPP))
++		epp = (value >> 24) & 0xff;
++
++	if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE) {
++		min = max;
++		if (epp)
++			cpu_data->epp_policy = 0;
++	}
++
+ 	value &= ~HWP_MIN_PERF(~0L);
+ 	value |= HWP_MIN_PERF(min);
+ 
+-- 
+2.17.1
+
