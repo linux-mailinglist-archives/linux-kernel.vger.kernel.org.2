@@ -2,32 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE8A452526
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74199452551
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343612AbhKPBrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:47:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
+        id S1351269AbhKPBsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:48:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241365AbhKOS1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:27:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFCB63333;
-        Mon, 15 Nov 2021 17:56:52 +0000 (UTC)
+        id S241916AbhKOSZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:25:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A5B963430;
+        Mon, 15 Nov 2021 17:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999013;
-        bh=TbQ/2XRT61/Y54P7sZuYOGP/oLn2Hkxo8uUqDFLHkwY=;
+        s=korg; t=1636998978;
+        bh=QthVg+cX5YqHqcKa/7OPfLYph4F0VvrfwyH18m05D7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iqGRefLD6u49YdsypH+irD1urP7HiyHBf6eI8ZqF6ynfCt8q0KKsyPeC+ZiCAPBhY
-         k3z7DjtxLuRIkdyp4Bpi/0dozWYW9ZLYtDweMQHhSo4c7uiG65l2++cecyl5R7RvNQ
-         157sjp+KfRAaPhBMJt7iY/UFE2KNycSQMR6aOgxI=
+        b=NsZTZOu3MAHj8VqbOcH53at6Kzi7DSfVZE5l99iSD7XEkpzZgMhjp6BHFF8o5lYqP
+         gp7JiyEyjVA29SNsiI7+ISzA5iav9kmJ1mBUT/EzfqgXJODgS81TRXjk416LWed/1U
+         d7Aeedab9p2W7NmVTSfVogqDs1rZHHlhrTFJo6OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 101/849] KVM: VMX: Unregister posted interrupt wakeup handler on hardware unsetup
-Date:   Mon, 15 Nov 2021 17:53:04 +0100
-Message-Id: <20211115165423.506317966@linuxfoundation.org>
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.14 104/849] ia64: kprobes: Fix to pass correct trampoline address to the handler
+Date:   Mon, 15 Nov 2021 17:53:07 +0100
+Message-Id: <20211115165423.600960114@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -39,53 +48,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit ec5a4919fa7b7d8c7a2af1c7e799b1fe4be84343 upstream.
+commit a7fe2378454cf46cd5e2776d05e72bbe8f0a468c upstream.
 
-Unregister KVM's posted interrupt wakeup handler during unsetup so that a
-spurious interrupt that arrives after kvm_intel.ko is unloaded doesn't
-call into freed memory.
+The following commit:
 
-Fixes: bf9f6ac8d749 ("KVM: Update Posted-Interrupts Descriptor when vCPU is blocked")
+   Commit e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+
+Passed the wrong trampoline address to __kretprobe_trampoline_handler(): it
+passes the descriptor address instead of function entry address.
+
+Pass the right parameter.
+
+Also use correct symbol dereference function to get the function address
+from 'kretprobe_trampoline' - an IA64 special.
+
+Link: https://lkml.kernel.org/r/163163042696.489837.12551102356265354730.stgit@devnote2
+
+Fixes: e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: X86 ML <x86@kernel.org>
+Cc: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Abhishek Sagar <sagar.abhishek@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Paul McKenney <paulmck@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20211009001107.3936588-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/vmx/vmx.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/ia64/kernel/kprobes.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7517,6 +7517,8 @@ static void vmx_migrate_timers(struct kv
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -398,7 +398,8 @@ static void kretprobe_trampoline(void)
  
- static void hardware_unsetup(void)
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
  {
-+	kvm_set_posted_intr_wakeup_handler(NULL);
-+
- 	if (nested)
- 		nested_vmx_hardware_unsetup();
+-	regs->cr_iip = __kretprobe_trampoline_handler(regs, kretprobe_trampoline, NULL);
++	regs->cr_iip = __kretprobe_trampoline_handler(regs,
++		dereference_function_descriptor(kretprobe_trampoline), NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+@@ -414,7 +415,7 @@ void __kprobes arch_prepare_kretprobe(st
+ 	ri->fp = NULL;
  
-@@ -7844,8 +7846,6 @@ static __init int hardware_setup(void)
- 		vmx_x86_ops.request_immediate_exit = __kvm_request_immediate_exit;
- 	}
- 
--	kvm_set_posted_intr_wakeup_handler(pi_wakeup_handler);
--
- 	kvm_mce_cap_supported |= MCG_LMCE_P;
- 
- 	if (pt_mode != PT_MODE_SYSTEM && pt_mode != PT_MODE_HOST_GUEST)
-@@ -7869,6 +7869,9 @@ static __init int hardware_setup(void)
- 	r = alloc_kvm_area();
- 	if (r)
- 		nested_vmx_hardware_unsetup();
-+
-+	kvm_set_posted_intr_wakeup_handler(pi_wakeup_handler);
-+
- 	return r;
+ 	/* Replace the return addr with trampoline addr */
+-	regs->b0 = ((struct fnptr *)kretprobe_trampoline)->ip;
++	regs->b0 = (unsigned long)dereference_function_descriptor(kretprobe_trampoline);
  }
  
+ /* Check the instruction in the slot is break */
+@@ -902,14 +903,14 @@ static struct kprobe trampoline_p = {
+ int __init arch_init_kprobes(void)
+ {
+ 	trampoline_p.addr =
+-		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip;
++		dereference_function_descriptor(kretprobe_trampoline);
+ 	return register_kprobe(&trampoline_p);
+ }
+ 
+ int __kprobes arch_trampoline_kprobe(struct kprobe *p)
+ {
+ 	if (p->addr ==
+-		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip)
++		dereference_function_descriptor(kretprobe_trampoline))
+ 		return 1;
+ 
+ 	return 0;
 
 
