@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C59451C33
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E07451C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349823AbhKPAOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:14:20 -0500
-Received: from mga04.intel.com ([192.55.52.120]:46514 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240317AbhKOWmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:42:22 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232269578"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="232269578"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 14:35:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="645046000"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2021 14:35:45 -0800
-Subject: Re: [5.12 - 5.15] xHCI controller dead - not renesas but intel
-To:     Norbert Preining <norbert@preining.info>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-References: <YY3RIdKBbIL3Dw/q@bulldog.preining.info>
-Cc:     Norbert Preining <norbert@preining.info>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Message-ID: <8f752efb-e38e-b012-de98-e4b938dde7b7@linux.intel.com>
-Date:   Tue, 16 Nov 2021 00:37:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        id S1349123AbhKPAOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:14:17 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:46666 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351060AbhKOWiy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 17:38:54 -0500
+Received: from [128.177.79.46] (helo=csail.mit.edu)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mmkZp-0005ex-25; Mon, 15 Nov 2021 17:35:49 -0500
+Date:   Mon, 15 Nov 2021 14:39:00 -0800
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
+        x86@kernel.org, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com, joe@perches.com,
+        kuba@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
+ and VMware hypervisor interface
+Message-ID: <20211115223900.GA22267@csail.mit.edu>
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+ <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
+ <YYy9P7Rjg9hntmm3@kroah.com>
+ <20211111153916.GA7966@csail.mit.edu>
+ <YY1krlfM5R7uEzJF@kroah.com>
+ <20211111194002.GA8739@csail.mit.edu>
+ <YY6hhWtvh+OvOqAl@sashalap>
 MIME-Version: 1.0
-In-Reply-To: <YY3RIdKBbIL3Dw/q@bulldog.preining.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YY6hhWtvh+OvOqAl@sashalap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.11.2021 4.27, Norbert Preining wrote:
-> Dear all,
+On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
+> On Thu, Nov 11, 2021 at 11:40:02AM -0800, Srivatsa S. Bhat wrote:
+> > On Thu, Nov 11, 2021 at 07:45:02PM +0100, Greg KH wrote:
+> > > On Thu, Nov 11, 2021 at 07:39:16AM -0800, Srivatsa S. Bhat wrote:
+> > > > On Thu, Nov 11, 2021 at 07:50:39AM +0100, Greg KH wrote:
+> > > > > On Wed, Nov 10, 2021 at 12:08:16PM -0800, Srivatsa S. Bhat wrote:
+> > > > > > From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > > >
+> > > > > > Deep has decided to transfer maintainership of the VMware hypervisor
+> > > > > > interface to Srivatsa, and the joint-maintainership of paravirt ops in
+> > > > > > the Linux kernel to Srivatsa and Alexey. Update the MAINTAINERS file
+> > > > > > to reflect this change.
+> > > > > >
+> > > > > > Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> > > > > > Acked-by: Alexey Makhalov <amakhalov@vmware.com>
+> > > > > > Acked-by: Deep Shah <sdeep@vmware.com>
+> > > > > > Acked-by: Juergen Gross <jgross@suse.com>
+> > > > > > Cc: stable@vger.kernel.org
+> > > > >
+> > > > > Why are MAINTAINERS updates needed for stable?  That's not normal :(
+> > > >
+> > > > So that people posting bug-fixes / backports to these subsystems for
+> > > > older kernels (stable and LTS releases) will CC the new subsystem
+> > > > maintainers.
+> > > 
+> > > That's not how stable releases work at all.
+> > > 
+> > > > That's why I added CC stable tag only to the first two
+> > > > patches which add/replace maintainers and not the third patch which is
+> > > > just a cleanup.
+> > > 
+> > > Patches for stable kernels need to go into Linus's tree first, and if
+> > > you have the MAINTAINERS file updated properly there, then you will be
+> > > properly cc:ed.  We do not look at the MAINTAINERS file for the older
+> > > kernel when sending patches out, it's totally ignored as that was the
+> > > snapshot at a point in time, which is usually no longer the true state.
+> > > 
+> > 
+> > Sure, but that's the case for patches that get mainlined (and
+> > subsequently backported to -stable) /after/ this update to the
+> > MAINTAINERS file gets merged into mainline.
+> > 
+> > When adding the CC stable tag, the case I was trying to address was
+> > for patches that are already in mainline but weren't CC'ed to stable,
+> > and at some later point, somebody decides to backport them to older
+> > stable kernels. In that case, there is a chance that the contributor
+> > might run ./get_maintainer.pl against the stable tree (as that's the
+> > tree they are backporting the upstream commit against) and end up not
+> > CC'ing the new maintainers. So, I thought it would be good to keep the
+> > maintainer info updated in the older stable kernels too.
 > 
-> (please Cc)
+> If you look at cases like these, I can see an argument around bringing
+> it back to -stable. However, changes in the upstream MAINTAINERS file
+> aren't limited to just change in maintainers.
 > 
-> I see quite some discussion here about hanging USB controls from
-> Renesas. Interestingly, I see the very same behaviour with my Intel USB
-> controller:
-> 00:14.0 USB controller: Intel Corporation 100 Series/C230 Series Chipset Family USB 3.0 xHCI Controller (rev 31)
+> How would we handle addition of maintainers of a new code upstream? Or
+> removal of maintainers due to code deletion? Or code movement upstream
+> that isn't reflected in the stable tree (think a driver graduating from
+> staging).
 > 
-> It happens again and again that:
-> Nov 12 10:57:58 bulldog kernel: xhci_hcd 0000:00:14.0: Abort failed to stop command ring: -110
-> Nov 12 10:57:58 bulldog kernel: xhci_hcd 0000:00:14.0: xHCI host controller not responding, assume dead
-> Nov 12 10:57:58 bulldog kernel: xhci_hcd 0000:00:14.0: HC died; cleaning up
-> Nov 12 10:57:58 bulldog kernel: xhci_hcd 0000:00:14.0: Timeout while waiting for setup device command
-> 
-> and I loose all mouse/kbd access.
-> 
-> I have the feeling that it happens more often/at all when I redirect my
-> USB webcam to a virtual machine using virt-manager.
-> Before the above happened, the log showed
-> Nov 12 10:57:06 bulldog kernel: usb 1-12: reset high-speed USB device number 47 using xhci_hcd
-> Nov 12 10:57:11 bulldog kernel: usb 1-12: device descriptor read/64, error -110
-> Nov 12 10:57:27 bulldog kernel: usb 1-12: device descriptor read/64, error -110
-> Nov 12 10:57:27 bulldog kernel: usb 1-12: reset high-speed USB device number 47 using xhci_hcd
-> Nov 12 10:57:32 bulldog kernel: usb 1-12: device descriptor read/64, error -110
-> Nov 12 10:57:48 bulldog kernel: usb 1-12: device descriptor read/64, error -110
-> Nov 12 10:57:48 bulldog kernel: usb 1-12: reset high-speed USB device number 47 using xhci_hcd
-> 
-> where 
-> HD Pro Webcam C920 as /devices/pci0000:00/0000:00:14.0/usb1/1-12/1-12:1.0/input/input40
-> 
-> I am currently running 5.15.1.
-> 
-> Is there anything (besides ssh-ing into the machine and unbind/bind the
-> pci device) I can provide or do?
 
-Patch in link below resolved another case with similar log. 
-Does it help in your case?
+Good point!
 
-https://lore.kernel.org/linux-usb/20211115221630.871204-1-mathias.nyman@linux.intel.com/T/#u
+> It becomes a mess quite quickly and the easiest solution here is to just
+> use upstream's MAINTAINERS file.
+> 
 
--Mathias
+Agreed.
+
+> Maybe we should just remove MAINTAINERS from stable trees to make it
+> obvious.
+> 
+
+I don't think we should go quite that far. Instead, perhaps we can
+modify get_maintainer.pl (if needed) such that it prints out a warning
+or reminder to consult the upstream MAINTAINERS file if the script is
+invoked on an older stable kernel.
+
+Regards,
+Srivatsa
