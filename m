@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E9E450A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A66450AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhKORLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:11:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
+        id S230361AbhKORM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:12:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232072AbhKORLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:11:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E56A61B73;
-        Mon, 15 Nov 2021 17:08:07 +0000 (UTC)
+        id S232211AbhKORLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41FE5610CA;
+        Mon, 15 Nov 2021 17:08:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996088;
-        bh=wRAGWBpahZ6uPSBO6z6KW73pVimdI4AjoIKTpFg9JM8=;
+        s=korg; t=1636996090;
+        bh=aX4ZbAM3G0ivCKNMQNygwjqk10bL6+YKJD5usWualHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jfNrTjX9ftalVjTY8lSqfXWI+SZa0HAP51coix5fyvrSVNxK8dEmbnypEri4TV2S5
-         t3wODdSCNmYK5dA6BgOrvN5857L2aOuhZ+e1SADkK98guPkV4dSShV2KPnIBuGr+tP
-         OMuwqJ2h0duZGALEB1yHWtIsluCcoDOQfO+zTuG0=
+        b=rhHZfVzJRFeVkfh4o+o1hvUN86vwS+CLo4LjOW7jHsq0AyLAQvun4wzBtHeNfsgEG
+         ioOxZQwj/EykxfNxbPR4IoLXSAu4TIbAH80j2AuoLFphHtRc9g45HctOY7/6t6Xy9T
+         fmaB35KsG1yw+yRnchAUYpF2KZeb8Qq0htZC3LOo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 012/355] scsi: qla2xxx: Fix use after free in eh_abort path
-Date:   Mon, 15 Nov 2021 17:58:56 +0100
-Message-Id: <20211115165313.951325014@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 013/355] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+Date:   Mon, 15 Nov 2021 17:58:57 +0100
+Message-Id: <20211115165313.983021370@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -44,82 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Christian Löhle <CLoehle@hyperstone.com>
 
-commit 3d33b303d4f3b74a71bede5639ebba3cfd2a2b4d upstream.
+commit 43592c8736e84025d7a45e61a46c3fa40536a364 upstream.
 
-In eh_abort path driver prematurely exits the call to upper layer. Check
-whether command is aborted / completed by firmware before exiting the call.
+Only wait for DRTO on reads, otherwise the driver hangs.
 
-9 [ffff8b1ebf803c00] page_fault at ffffffffb0389778
-  [exception RIP: qla2x00_status_entry+0x48d]
-  RIP: ffffffffc04fa62d  RSP: ffff8b1ebf803cb0  RFLAGS: 00010082
-  RAX: 00000000ffffffff  RBX: 00000000000e0000  RCX: 0000000000000000
-  RDX: 0000000000000000  RSI: 00000000000013d8  RDI: fffff3253db78440
-  RBP: ffff8b1ebf803dd0   R8: ffff8b1ebcd9b0c0   R9: 0000000000000000
-  R10: ffff8b1e38a30808  R11: 0000000000001000  R12: 00000000000003e9
-  R13: 0000000000000000  R14: ffff8b1ebcd9d740  R15: 0000000000000028
-  ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-10 [ffff8b1ebf803cb0] enqueue_entity at ffffffffafce708f
-11 [ffff8b1ebf803d00] enqueue_task_fair at ffffffffafce7b88
-12 [ffff8b1ebf803dd8] qla24xx_process_response_queue at ffffffffc04fc9a6
-[qla2xxx]
-13 [ffff8b1ebf803e78] qla24xx_msix_rsp_q at ffffffffc04ff01b [qla2xxx]
-14 [ffff8b1ebf803eb0] __handle_irq_event_percpu at ffffffffafd50714
+The driver prevents sending CMD12 on response errors like CRCs. According
+to the comment this is because some cards have problems with this during
+the UHS tuning sequence. Unfortunately this workaround currently also
+applies for any command with data. On reads this will set the drto timer,
+which then triggers after a while. On writes this will not set any timer
+and the tasklet will not be scheduled again.
 
-Link: https://lore.kernel.org/r/20210908164622.19240-10-njavali@marvell.com
-Fixes: f45bca8c5052 ("scsi: qla2xxx: Fix double scsi_done for abort path")
+I cannot test for the UHS workarounds need, but even if so, it should at
+most apply to reads. I have observed many hangs when CMD25 response
+contained a CRC error. This patch fixes this without touching the actual
+UHS tuning workaround.
+
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Co-developed-by: David Jeffery <djeffery@redhat.com>
-Signed-off-by: David Jeffery <djeffery@redhat.com>
-Co-developed-by: Laurence Oberman <loberman@redhat.com>
-Signed-off-by: Laurence Oberman <loberman@redhat.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_os.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/mmc/host/dw_mmc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -1229,6 +1229,7 @@ qla2xxx_eh_abort(struct scsi_cmnd *cmd)
- 	uint32_t ratov_j;
- 	struct qla_qpair *qpair;
- 	unsigned long flags;
-+	int fast_fail_status = SUCCESS;
- 
- 	if (qla2x00_isp_reg_stat(ha)) {
- 		ql_log(ql_log_info, vha, 0x8042,
-@@ -1236,15 +1237,16 @@ qla2xxx_eh_abort(struct scsi_cmnd *cmd)
- 		return FAILED;
- 	}
- 
-+	/* Save any FAST_IO_FAIL value to return later if abort succeeds */
- 	ret = fc_block_scsi_eh(cmd);
- 	if (ret != 0)
--		return ret;
-+		fast_fail_status = ret;
- 
- 	sp = scsi_cmd_priv(cmd);
- 	qpair = sp->qpair;
- 
- 	if ((sp->fcport && sp->fcport->deleted) || !qpair)
--		return SUCCESS;
-+		return fast_fail_status != SUCCESS ? fast_fail_status : FAILED;
- 
- 	spin_lock_irqsave(qpair->qp_lock_ptr, flags);
- 	if (sp->completed) {
-@@ -1290,7 +1292,7 @@ qla2xxx_eh_abort(struct scsi_cmnd *cmd)
- 			    __func__, ha->r_a_tov/10);
- 			ret = FAILED;
- 		} else {
--			ret = SUCCESS;
-+			ret = fast_fail_status;
- 		}
- 		break;
- 	default:
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -2013,7 +2013,8 @@ static void dw_mci_tasklet_func(unsigned
+ 				 * delayed. Allowing the transfer to take place
+ 				 * avoids races and keeps things simple.
+ 				 */
+-				if (err != -ETIMEDOUT) {
++				if (err != -ETIMEDOUT &&
++				    host->dir_status == DW_MCI_RECV_STATUS) {
+ 					state = STATE_SENDING_DATA;
+ 					continue;
+ 				}
 
 
