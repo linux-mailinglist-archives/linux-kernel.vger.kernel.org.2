@@ -2,185 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01244451C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D507A451C14
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348358AbhKPAMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:12:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348981AbhKOVNx (ORCPT
+        id S1352955AbhKPAMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:12:14 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:48357 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348988AbhKOVNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 16:13:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637010652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z3jupCc4IITmY9q0ereyU1/OdqsEHxFt+kRYI5gk66Y=;
-        b=S//l6sJp8KP/kNTtqyDBvLDek4VN6q2l+AYEM1EjeA6Vel2dD+B+P6SJc/IaFwLg15xLX3
-        LAxt16ImHXhGiVxIdU3eFaVrOrD4alCbRicBDhuB7/Z+h0yXc/NLGWLaKyeYyvEgTFg3aa
-        wdb3UxHQj3agieIQcflNwGmsnr14xhQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-31GQQv7YMYGrsWvy25HvvA-1; Mon, 15 Nov 2021 16:10:51 -0500
-X-MC-Unique: 31GQQv7YMYGrsWvy25HvvA-1
-Received: by mail-wr1-f71.google.com with SMTP id q5-20020a5d5745000000b00178abb72486so4012395wrw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:10:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z3jupCc4IITmY9q0ereyU1/OdqsEHxFt+kRYI5gk66Y=;
-        b=Rgo+M3Yr7ojfBbtXEGEOCX7/Kfghp4JwdhiBR4AFQh/DeqW7wUY6VfY5F6NGpXwrlN
-         vP+4UN2GN/np6In6YSxmYLxr2630nNgdtdFXHGJ8oHC82JzpgwqwuVjMb881gPvpAN+9
-         cn0VkKgcg/XZKmzbWxWKHOVEUgrNZQ+GuHpoB2msAkqNh0c/s3ACla5u7GSxIhDM8ZcW
-         eyunjqmjA6iFmOwsqbIB0xJiv/wBMjKptXK+55Vzh/V2l9Sh46/RD8WGMeJ5iKHeQWyX
-         8vK5H5zGVD0YUKx5205nBpfOXhy1d4OQYebNakKCS+MyOX0y3ZEtqwnDKkMEH6mFzhQf
-         kM4Q==
-X-Gm-Message-State: AOAM532hL9HpehuNXDOpZAFQnzOFs0piSbWtTPpfwRmJ9mtVcxcQzucj
-        wLoZH/sRaOmi8tG13UxEtlRkxhBS9Psvlwk74ZlQi/dCxr3lDLf5Gci5s/KSAU7YsD1L83gEcli
-        +2xEOeTdpouajwNyjWhn0Ds85
-X-Received: by 2002:adf:ce03:: with SMTP id p3mr2615232wrn.145.1637010650139;
-        Mon, 15 Nov 2021 13:10:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx/+t1dna98ZvBpdsgt6maHPw++KLX3my6Ka4lFa3gZ4EizHSuM3/6PybxsV1tC0sXHh+dyGA==
-X-Received: by 2002:adf:ce03:: with SMTP id p3mr2615210wrn.145.1637010649990;
-        Mon, 15 Nov 2021 13:10:49 -0800 (PST)
-Received: from krava ([83.240.60.218])
-        by smtp.gmail.com with ESMTPSA id m36sm503171wms.25.2021.11.15.13.10.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:10:49 -0800 (PST)
-Date:   Mon, 15 Nov 2021 22:10:48 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        masahiroy@kernel.org, Laura Abbott <labbott@kernel.org>,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com
-Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
-Message-ID: <YZLM2BmFo+cK4B4J@krava>
-References: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
- <YYbXMd3N4+aXYLTJ@kernel.org>
- <591edce2-5aaa-22bc-6fd3-5a247f623eb3@huawei.com>
- <239840A9-F713-4FED-B638-14D6B91FBBF2@gmail.com>
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HtML51WvXz4xbM;
+        Tue, 16 Nov 2021 08:10:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637010653;
+        bh=ouiiKAgaax/jlItXSm8ObRYTMiRsdExBEOmVlnBfIQM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HnD1g3K2B1MU5DiQBVhfliUnlQEYvOT5A7/8RSAwX0zaveoPqWRsSZT5lR/b/6aVS
+         oBG4KEBjOp+V76S2C5vGw+aCs4ikElZ30GZIVVP6LjFgTxx7JOw9YFgfmVnaSB36eb
+         B8I9F2X7sxTASncyOCRn/TU9QvRM27u8vC4jJcP5BYw3kvVsHcchi4RsSf9jK7bEZj
+         UXbaK21kTTxXvOrRi9lSP/FD/QgnzURwH9KJpaZuvY6XsZ8IeHtz/LroUuJmres9Nd
+         fwx5645A0NRQS44+Lo9DIo7/4H+vKq4FnCY7nLAuvbCcIf6PQtwcufZ78uzwtLS95J
+         Yt4F9RA0ET0Kg==
+Date:   Tue, 16 Nov 2021 08:10:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Dillon Min <dillon.minfei@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tags need some work in the v4l-dvb-next tree
+Message-ID: <20211116081051.2066724f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <239840A9-F713-4FED-B638-14D6B91FBBF2@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/9pFV1GLELZsjSIUBnHqras3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:44:59PM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> 
-> On November 15, 2021 12:53:33 PM GMT-03:00, John Garry <john.garry@huawei.com> wrote:
-> >On 06/11/2021 19:27, Arnaldo Carvalho de Melo wrote:
-> >> Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
-> >>> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purposes.
-> >>>
-> >>> However this is not set for anything under tools/
-> >>>
-> >>> As such, host tools apps built have no compiler warnings enabled.
-> >>>
-> >>> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
-> >>> declaration of host_c_flags. HOSTCFLAGS comes from EXTRA_WARNINGS, which
-> >>> is independent of target platform/arch warning flags.
-> >>>
-> >>> Suggested-by: Jiri Olsa <jolsa@redhat.com>
-> >>> Signed-off-by: John Garry <john.garry@huawei.com>
-> >>> --
-> >>> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
-> >>> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
-> >>> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
-> >>> Masahiro.
-> >> 
-> >> Laura's redhat e-mail bouncedm updated it to her kernel.org one, Laura,
-> >> Masahiro, would you please comment? Jiri?
-> >
-> >Any opinion on this one? Shall I just resend ... ? or just apply it if 
-> >no one cares too much :)
-> 
-> I'll apply it now that everybody got enough time to review it . :-)
+--Sig_/9pFV1GLELZsjSIUBnHqras3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-sorry, overlooked this one, looks good
+Hi all,
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+In commit
 
-thanks,
-jirka
+  d9fbdedc56ea ("media: stm32-dma2d: fix compile-testing failed")
 
-> 
-> - Arnaldo
-> >
-> >Thanks,
-> >John
-> >
-> >> 
-> >> - Arnaldo
-> >>   
-> >>> diff --git a/tools/build/Build.include b/tools/build/Build.include
-> >>> index 2cf3b1bde86e..c2a95ab47379 100644
-> >>> --- a/tools/build/Build.include
-> >>> +++ b/tools/build/Build.include
-> >>> @@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
-> >>>   ###
-> >>>   ## HOSTCC C flags
-> >>>   
-> >>> -host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
-> >>> +host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
-> >>>   
-> >>>   # output directory for tests below
-> >>>   TMPOUT = .tmp_$$$$
-> >>> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> >>> index 4a9baed28f2e..9b95ba09657f 100644
-> >>> --- a/tools/perf/Makefile.config
-> >>> +++ b/tools/perf/Makefile.config
-> >>> @@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
-> >>>   detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
-> >>>   
-> >>>   CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-> >>> +HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-> >>>   
-> >>>   include $(srctree)/tools/scripts/Makefile.arch
-> >>>   
-> >>> @@ -211,6 +212,7 @@ endif
-> >>>   ifneq ($(WERROR),0)
-> >>>     CORE_CFLAGS += -Werror
-> >>>     CXXFLAGS += -Werror
-> >>> +  HOSTCFLAGS += -Werror
-> >>>   endif
-> >>>   
-> >>>   ifndef DEBUG
-> >>> @@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
-> >>>   CXXFLAGS += -funwind-tables
-> >>>   CXXFLAGS += -Wno-strict-aliasing
-> >>>   
-> >>> +HOSTCFLAGS += -Wall
-> >>> +HOSTCFLAGS += -Wextra
-> >>> +
-> >>>   # Enforce a non-executable stack, as we may regress (again) in the future by
-> >>>   # adding assembler files missing the .GNU-stack linker note.
-> >>>   LDFLAGS += -Wl,-z,noexecstack
-> >>> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> >>> index a3966f290297..8ca656aa8b06 100644
-> >>> --- a/tools/perf/Makefile.perf
-> >>> +++ b/tools/perf/Makefile.perf
-> >>> @@ -226,7 +226,7 @@ else
-> >>>   endif
-> >>>   
-> >>>   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
-> >>> -export HOSTCC HOSTLD HOSTAR
-> >>> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
-> >>>   
-> >>>   include $(srctree)/tools/build/Makefile.include
-> >>>   
-> >>> -- 
-> >>> 2.17.1
-> >> 
-> >
-> 
+Fixes tag
 
+  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
+
+In commit
+
+  147907e93224 ("media: stm32-dma2d: fix compile errors when W=3D1")
+
+Fixes tag
+
+  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
+
+In commit
+
+  22f2cac62dea ("media: atomisp-ov2680: properly set the vts value")
+
+Fixes tag
+
+  Fixes: 62b984359b6f ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing=
+ up high exposure settings")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 29400b5063db ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing u=
+p high exposure settings")
+
+In commit
+
+  d9916e7c87c9 ("media: atomisp-ov2680: initialize return var")
+
+Fixes tag
+
+  Fixes: 6b5b60687ada ("media: atomisp-ov2680: Save/restore exposure and ga=
+in over sensor power-down")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 4ed2caf85337 ("media: atomisp-ov2680: Save/restore exposure and gain=
+ over sensor power-down")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9pFV1GLELZsjSIUBnHqras3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGSzNsACgkQAVBC80lX
+0GxDlAf+LujFZn1TAWIT0Zuck5bYoMjMOi2Lo1RZ7VBpl6WVi8W18pSWRiOp5ymq
+KN4aRwYXHUGBfv46FMPmeTCO5mgrKAbEigVoHcsAWtzoA9XSJTrP1z+maV1qFpHb
+uJiKZ7VyXBoUlRZUQyYQCcOB83FhivjjB0Z7UvM9VOBR2EnONqDKu6cO97zp9UEE
+2Ksr/Oc2J8aZ4K8Mnwpn0yTDboA7lFpIUCW8kW8gsTwsJQLIV+6RJu4Zz3zE1kC8
+sa+tOXQeBYSut0LkqaredFZxoZYzHOcVBg3mh05DD+RAtYEi6/gIDEgMJPwQUvnX
+2XPsqxdvsTPN0o/MGhLwglWR2ut0+w==
+=EJpY
+-----END PGP SIGNATURE-----
+
+--Sig_/9pFV1GLELZsjSIUBnHqras3--
