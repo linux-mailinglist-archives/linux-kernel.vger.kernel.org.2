@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C9E44FFE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7F944FFDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhKOIS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:18:57 -0500
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:37024 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhKOIS2 (ORCPT
+        id S230292AbhKOISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhKOIR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:18:28 -0500
-X-QQ-mid: bizesmtp41t1636964092tsmkw1nx
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 15 Nov 2021 16:14:51 +0800 (CST)
-X-QQ-SSF: 01400000002000B0B000B00B0000000
-X-QQ-FEAT: z8a0vINfhrtNSltTRFQVi7zD2KGLsink0a6FYFTjNKtJPhJu3ZofsDF7kCNpW
-        bsShleOKT486OHYy6j5gJrLiHYjxPGvqPqQkocHkAII3cQQX87df/+l8hQgeJiQCH0H8JH8
-        zGRUDW1WpFV1ePIK5Kqs/CYPfwxyI84fBflP38HyKmU56ityOw0aiE/Tem5JI+k+REpI7yU
-        OqrQMj+EICvGbB8qc+BEAz4EDS5nRhQsN/q0+0zj2+yI5rYrnNs/mOivX4EywtRi6X6tw/7
-        l314oCAz4LXYJwTFR18POYt76WaOAb6moz12CWsPAZnNiMGGMDKwoJw9xYSAjR6VszpvzMi
-        5mtmSo/2MItJDu1R0Q=
-X-QQ-GoodBg: 2
-From:   liuguoqiang <liuguoqiang@uniontech.com>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        liuguoqiang <liuguoqiang@uniontech.com>
-Subject: [PATCH] net: return correct error code
-Date:   Mon, 15 Nov 2021 16:14:48 +0800
-Message-Id: <20211115081448.18564-1-liuguoqiang@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 15 Nov 2021 03:17:58 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C33C061746;
+        Mon, 15 Nov 2021 00:15:03 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id t127so8649699vke.13;
+        Mon, 15 Nov 2021 00:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xW/67NTDls+AQBecTda6JoZytjWJ644lT/RbFu2z3fY=;
+        b=hTnkAyzdW22Hcal9RqXHw9g67fPiEEhJ7Jr2a4MPzrCaluIRScv3scJMJKVk+IsZSP
+         ABGP/bITlvsSOijmyfabGbUebX8C4PyfZMxV2LJQsh8DX5i3y68Q+uG8ajlDYHquNMT6
+         83wd1uGIiDbjcTWS9IfSLgoHAFuz17oN7Ewp0BuePodCo36IL+P3PytFv6KDUOs8KmOD
+         ehfuK7VgT9FFj5nQVmAF8X7hPFTml5x6Ba5vhDSf+/lNQQf4gb0VrH9sUllsQHMXBc8s
+         IBwbz/J94ws2T8IRPhXlYiwgzjk9YNiN4343CI8ks866BUO10kfZlboSXtWmDRaHSXbL
+         kKwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xW/67NTDls+AQBecTda6JoZytjWJ644lT/RbFu2z3fY=;
+        b=R4sKH0d1DdP0Z68j4sNuhfpzUEd+VXgjCJKYZCByNP/+F2cf489oUQJuiFS66gJPz8
+         n2F2rIfb7FyvPwC3NCCsbPVdHOGfUDo8FibYLZEPpM6kI7Y2zwucgq1ms7RLeFWludAA
+         /K5Sl1Jsn3kUeIU0laOj6+cwvQOgdQkjUawZ2cVZGX9BLHiOUgxs4Rob7qzYrfKsQ4U7
+         n/wqiBhxeAvngT+41WFxGSEoB5hL2mzbh4YConctPsHdALdL5cmUhaNZA65/tOuGi0y2
+         jdK4VUGFKctG3SY74AF+ErpropZgVK2rLof6sKvnu/Jz3Grf8NzbHTdfoH0H4VkdaL49
+         eocg==
+X-Gm-Message-State: AOAM532WP3xP0KA+TIIBOXsfbRsO+K5RIpP+MS8NN9WvwKme+PFZDzXj
+        9PqKl2385nleR1RX0cG6nMzcRCB0fH/Ua+GVAZAm93rD
+X-Google-Smtp-Source: ABdhPJyYG51GdeIH12hPpxNe7LoSy8M5VHKjtJOXH/PCAydAxorFEYz4RDwkS4aYCg7y9cygsxBHPKHnyvwSpKoxb8U=
+X-Received: by 2002:a05:6122:884:: with SMTP id 4mr55829588vkf.6.1636964101899;
+ Mon, 15 Nov 2021 00:15:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
+References: <YZABtvQab/M2CCQd@msi.localdomain> <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
+In-Reply-To: <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
+From:   "Nikolas L." <knv418@gmail.com>
+Date:   Mon, 15 Nov 2021 11:14:50 +0300
+Message-ID: <CAMJR_v6igrNZMzXpio27PpA6rQvo+efAVd2nM5GNg2+agQa9=A@mail.gmail.com>
+Subject: Re: PROBLEM: [drivers/ata] Read log page failed (boot error message)
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kmemdup called failed and register_net_sysctl return NULL, should
-return ENOMEM instead of ENOBUFS
-
-Signed-off-by: liuguoqiang <liuguoqiang@uniontech.com>
----
- net/ipv4/devinet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-index ec73a0d52d3e..323e622ff9b7 100644
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -2591,7 +2591,7 @@ static int __devinet_sysctl_register(struct net *net, char *dev_name,
- free:
- 	kfree(t);
- out:
--	return -ENOBUFS;
-+	return -ENOMEM;
- }
- 
- static void __devinet_sysctl_unregister(struct net *net,
--- 
-2.20.1
-
-
-
+> This error is not fatal. It simply means that the drive does not support the
+> INDENTIFY DEVICE log page. Nothing to worry about.
+I suppose it's not the reason to log error, maybe warn or notice.
+> Attempting to read this log should be avoided in this case though. I will send a
+> patch to fix that.
+Thank you! Got it.
+> However, the files you attached show that you are using
+> kernel 5.12
+According to almost any file in attachment, I'm using 5.15.2.
+Error happens only since 5.15, tested on 5.14.16.
+> You can ignore the read log error, unless your drive is not functional ?
+Yes I can and I will. Entire problem is just about redundant noise
+with error level in kernel log.
