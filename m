@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F1E452356
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFDD452697
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379718AbhKPBYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:24:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38344 "EHLO mail.kernel.org"
+        id S1350530AbhKPCI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:08:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243338AbhKOTJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:09:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A92FA632AB;
-        Mon, 15 Nov 2021 18:18:11 +0000 (UTC)
+        id S239789AbhKOSEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:04:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C1D61ACE;
+        Mon, 15 Nov 2021 17:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000292;
-        bh=PoJ8JNsPSczgCEHCehyfwRl71RKx2HzQNFNQSw2ZjiQ=;
+        s=korg; t=1636997946;
+        bh=g/kD0yaHE67se5xJVaKmCsSuiO3uaW1InzpfNVj8b0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q0PRCvRCT9XiQg2KGOPZcxt7ez7w0QNtewo0ni1rf+rt772KElaykagdtiGSTYcKm
-         q0CmXkUJFKiuo7k+dLujlaMslGaaAZoHLYUcB6lMtZRmxfhzOfLRbP/ebGYd3aTZ7h
-         nJuCkx21/gnh0xf9wyioa4wJ6pZ9rNNi7FEWeXPk=
+        b=bXfnEygFyJtAeivRJjYBVMF0Gt1V0bbG5lUMqRd8JoNt/jOQ+SjIw3FiN5SxbF7nF
+         hFELUa4OsTRusllCfSRFPL7Nkfy7r1ggHUa09xU0dUNEL2ZHtnNtBdX1yyYLXRCQYV
+         Jkm8EwoCFtAXWcd/J+2LDQcjIzOlSqcUEyiZhT84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        k2ci robot <kernel-bot@kylinos.cn>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 574/849] MIPS: loongson64: make CPU_LOONGSON64 depends on MIPS_FP_SUPPORT
-Date:   Mon, 15 Nov 2021 18:00:57 +0100
-Message-Id: <20211115165439.666898517@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 333/575] mt76: mt76x02: fix endianness warnings in mt76x02_mac.c
+Date:   Mon, 15 Nov 2021 18:00:58 +0100
+Message-Id: <20211115165355.311759678@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 7f3b3c2bfa9c93ab9b5595543496f570983dc330 ]
+[ Upstream commit c33edef520213feccebc22c9474c685b9fb60611 ]
 
-mach/loongson64 fails to build when the FPU support is disabled:
+Fix the following sparse warning in mt76x02_mac_write_txwi and
+mt76x02_mac_tx_rate_val routines:
+drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:237:19:
+	warning: restricted __le16 degrades to intege
+	warning: cast from restricted __le16
+drivers/net/wireless/mediatek/mt76/mt76x02_mac.c:383:28:
+	warning: incorrect type in assignment (different base types)
+	expected restricted __le16 [usertype] rate
+	got unsigned long
 
-arch/mips/loongson64/cop2-ex.c:45:15: error: implicit declaration of function ‘__is_fpu_owner’; did you mean ‘is_fpu_owner’? [-Werror=implicit-function-declaration]
-arch/mips/loongson64/cop2-ex.c:98:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:99:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:131:43: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:137:38: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:203:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:219:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:283:38: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:301:38: error: ‘struct thread_struct’ has no member named ‘fpu’
-
-Fixes: ef2f826c8f2f ("MIPS: Loongson-3: Enable the COP2 usage")
-Suggested-by: Huacai Chen <chenhuacai@kernel.org>
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
-Reported-by: k2ci robot <kernel-bot@kylinos.cn>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: db9f11d3433f7 ("mt76: store wcid tx rate info in one u32 reduce locking")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/mediatek/mt76/mt76x02_mac.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6dfb27d531dd7..d1fcb3e497a88 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1406,6 +1406,7 @@ config CPU_LOONGSON64
- 	select MIPS_ASID_BITS_VARIABLE
- 	select MIPS_PGD_C0_CONTEXT
- 	select MIPS_L1_CACHE_SHIFT_6
-+	select MIPS_FP_SUPPORT
- 	select GPIOLIB
- 	select SWIOTLB
- 	select HAVE_KVM
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
+index da6d3f51f6d47..677082d8659a6 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76x02_mac.c
+@@ -176,7 +176,7 @@ void mt76x02_mac_wcid_set_drop(struct mt76x02_dev *dev, u8 idx, bool drop)
+ 		mt76_wr(dev, MT_WCID_DROP(idx), (val & ~bit) | (bit * drop));
+ }
+ 
+-static __le16
++static u16
+ mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
+ 			const struct ieee80211_tx_rate *rate, u8 *nss_val)
+ {
+@@ -222,14 +222,14 @@ mt76x02_mac_tx_rate_val(struct mt76x02_dev *dev,
+ 		rateval |= MT_RXWI_RATE_SGI;
+ 
+ 	*nss_val = nss;
+-	return cpu_to_le16(rateval);
++	return rateval;
+ }
+ 
+ void mt76x02_mac_wcid_set_rate(struct mt76x02_dev *dev, struct mt76_wcid *wcid,
+ 			       const struct ieee80211_tx_rate *rate)
+ {
+ 	s8 max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
+-	__le16 rateval;
++	u16 rateval;
+ 	u32 tx_info;
+ 	s8 nss;
+ 
+@@ -342,7 +342,7 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	u32 wcid_tx_info;
+ 	u16 rate_ht_mask = FIELD_PREP(MT_RXWI_RATE_PHY, BIT(1) | BIT(2));
+-	u16 txwi_flags = 0;
++	u16 txwi_flags = 0, rateval;
+ 	u8 nss;
+ 	s8 txpwr_adj, max_txpwr_adj;
+ 	u8 ccmp_pn[8], nstreams = dev->chainmask & 0xf;
+@@ -380,14 +380,15 @@ void mt76x02_mac_write_txwi(struct mt76x02_dev *dev, struct mt76x02_txwi *txwi,
+ 
+ 	if (wcid && (rate->idx < 0 || !rate->count)) {
+ 		wcid_tx_info = wcid->tx_info;
+-		txwi->rate = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
++		rateval = FIELD_GET(MT_WCID_TX_INFO_RATE, wcid_tx_info);
+ 		max_txpwr_adj = FIELD_GET(MT_WCID_TX_INFO_TXPWR_ADJ,
+ 					  wcid_tx_info);
+ 		nss = FIELD_GET(MT_WCID_TX_INFO_NSS, wcid_tx_info);
+ 	} else {
+-		txwi->rate = mt76x02_mac_tx_rate_val(dev, rate, &nss);
++		rateval = mt76x02_mac_tx_rate_val(dev, rate, &nss);
+ 		max_txpwr_adj = mt76x02_tx_get_max_txpwr_adj(dev, rate);
+ 	}
++	txwi->rate = cpu_to_le16(rateval);
+ 
+ 	txpwr_adj = mt76x02_tx_get_txpwr_adj(dev, dev->txpower_conf,
+ 					     max_txpwr_adj);
 -- 
 2.33.0
 
