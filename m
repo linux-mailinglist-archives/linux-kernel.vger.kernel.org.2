@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A70451B42
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE747451929
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347789AbhKOX6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:58:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1350961AbhKOXPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344338AbhKOTYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7021A63661;
-        Mon, 15 Nov 2021 18:56:01 +0000 (UTC)
+        id S244153AbhKOTLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:11:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81071611C7;
+        Mon, 15 Nov 2021 18:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002561;
-        bh=Zw90p/ZsdLRxko2E62WUIDtJM/Fhg1ws1f5Ep9Yi2X4=;
+        s=korg; t=1637000347;
+        bh=l192d7uiPDmOygLE1ZTTALz/cbKkMFAV6jYQQ1aqX4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K16UGhuFci4/Y05qqTuLoWgRZKbPyFMp6+IVedGdy8hLMhxKaWoyR+7/LUkUaIvRI
-         izFXKdUbOpbzwSubDMOPa9eAZJngCkJ1uqZHM/6HynIieER50+VC90a1QOB8NnMHo4
-         433+s7ZYgI9YrQD+5aM/iGUjAV0T+3Des4fUsmZ4=
+        b=vPXPahm3yLSXhlIKk8prM6Ih3XLwbJ/qq9MJQrIsYtmhOIyCRSGzZO0DCR6P5xIkI
+         BK8+dhFsVn0cCmSNS0pa7JxYRVV5S0B4Y12YUkJ+KAu7xCDxuDZCSzjDSkxUvhDiQT
+         oJLsUNrO6CTdIwrZov5rW6ob8PhVe87Z5zeN/yBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 614/917] ASoC: SOF: topology: do not power down primary core during topology removal
-Date:   Mon, 15 Nov 2021 18:01:49 +0100
-Message-Id: <20211115165449.614889659@linuxfoundation.org>
+Subject: [PATCH 5.14 627/849] usb: dwc2: drd: fix dwc2_force_mode call in dwc2_ovr_init
+Date:   Mon, 15 Nov 2021 18:01:50 +0100
+Message-Id: <20211115165441.474556103@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-[ Upstream commit ec626334eaffe101df9ed79e161eba95124e64ad ]
+[ Upstream commit b2cab2a24fb5d13ce1d384ecfb6de827fa08a048 ]
 
-When removing the topology components, do not power down
-the primary core. Doing so will result in an IPC timeout
-when the SOF PCI device runtime suspends.
+Instead of forcing the role to Device, check the dr_mode configuration.
+If the core is Host only, force the mode to Host, this to avoid the
+dwc2_force_mode warning:
+WARNING: CPU: 1 PID: 21 at drivers/usb/dwc2/core.c:615 dwc2_drd_init+0x104/0x17c
 
-Fixes: 0dcdf84289fb ("ASoC: SOF: add a "core" parameter to widget loading functions")
+When forcing mode to Host, dwc2_force_mode may sleep the time the host
+role is applied. To avoid sleeping while atomic context, move the call
+to dwc2_force_mode after spin_unlock_irqrestore. It is safe, as
+interrupts are not yet unmasked here.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20211006104041.27183-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 17f934024e84 ("usb: dwc2: override PHY input signals with usb role switch support")
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20211005095305.66397-2-amelie.delaunay@foss.st.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/topology.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/usb/dwc2/drd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index cc9585bfa4e9f..1bb2dcf37ffe9 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2598,6 +2598,15 @@ static int sof_widget_unload(struct snd_soc_component *scomp,
+diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
+index 2d4176f5788eb..80eae88d76dda 100644
+--- a/drivers/usb/dwc2/drd.c
++++ b/drivers/usb/dwc2/drd.c
+@@ -25,9 +25,9 @@ static void dwc2_ovr_init(struct dwc2_hsotg *hsotg)
+ 	gotgctl &= ~(GOTGCTL_BVALOVAL | GOTGCTL_AVALOVAL | GOTGCTL_VBVALOVAL);
+ 	dwc2_writel(hsotg, gotgctl, GOTGCTL);
  
- 		/* power down the pipeline schedule core */
- 		pipeline = swidget->private;
+-	dwc2_force_mode(hsotg, false);
+-
+ 	spin_unlock_irqrestore(&hsotg->lock, flags);
 +
-+		/*
-+		 * Runtime PM should still function normally if topology loading fails and
-+		 * it's components are unloaded. Do not power down the primary core so that the
-+		 * CTX_SAVE IPC can succeed during runtime suspend.
-+		 */
-+		if (pipeline->core == SOF_DSP_PRIMARY_CORE)
-+			break;
-+
- 		ret = snd_sof_dsp_core_power_down(sdev, 1 << pipeline->core);
- 		if (ret < 0)
- 			dev_err(scomp->dev, "error: powering down pipeline schedule core %d\n",
++	dwc2_force_mode(hsotg, (hsotg->dr_mode == USB_DR_MODE_HOST));
+ }
+ 
+ static int dwc2_ovr_avalid(struct dwc2_hsotg *hsotg, bool valid)
 -- 
 2.33.0
 
