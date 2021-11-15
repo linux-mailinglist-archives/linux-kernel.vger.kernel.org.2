@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993C64518BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDEC452065
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhKOXGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:06:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
+        id S1344183AbhKPAxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:53:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243487AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC62661AF0;
-        Mon, 15 Nov 2021 18:13:37 +0000 (UTC)
+        id S1344058AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 341DF633B6;
+        Mon, 15 Nov 2021 18:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000018;
-        bh=FUUzhV0aQZHF45SsL1ZUN80Nlr/CDWDn2vwQsaJOprA=;
+        s=korg; t=1637002250;
+        bh=JkJmVm8ZoAWcAvwlNM2cb7p0UHZ0HUuqm7pbgcOVThA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txSQUiLHLMPauq79XP83qM40+deBMJKNZBbzNgC0Lo3Cx2koho3l2AlbKaZoVFyLd
-         ZdP2dkWfNKseSJkhHH/fDvn5ueIFSYuozsZdijrqZcz3TO6ry8KHWsJ9bQjsYFwLDG
-         p8VR/ZjsalLu0pqGYO451WL52EuYjqqdCi0uaMaI=
+        b=sD/qGFOYB5wZ6Yv3hVF+btjX/nHceSpBg1jYKLd+JVFVwcQuY0vaVqvX7MI7yMkrm
+         H3wGUETgOAEDl8BTCxmdXVymvb66doj+9n389C+N/HcdkqzDeepynnD5lyrg8FfTfE
+         X+BMsSjpFsWyTD01ICRACBoADGtNrzJ8wuURkcjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jessica Zhang <jesszhan@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 508/849] block: ataflop: more blk-mq refactoring fixes
+Subject: [PATCH 5.15 496/917] drm/msm: Fix potential NULL dereference in DPU SSPP
 Date:   Mon, 15 Nov 2021 17:59:51 +0100
-Message-Id: <20211115165437.471352298@linuxfoundation.org>
+Message-Id: <20211115165445.594663571@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,216 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Jessica Zhang <jesszhan@codeaurora.org>
 
-[ Upstream commit d28e4dff085c5a87025c9a0a85fb798bd8e9ca17 ]
+[ Upstream commit 8bf71a5719b6cc5b6ba358096081e5d50ea23ab6 ]
 
-As it turns out, my earlier patch in commit 86d46fdaa12a (block:
-ataflop: fix breakage introduced at blk-mq refactoring) was
-incomplete. This patch fixes any remaining issues found during
-more testing and code review.
+Move initialization of sblk in _sspp_subblk_offset() after NULL check to
+avoid potential NULL pointer dereference.
 
-Requests exceeding 4 k are handled in 4k segments but
-__blk_mq_end_request() is never called on these (still
-sectors outstanding on the request). With redo_fd_request()
-removed, there is no provision to kick off processing of the
-next segment, causing requests exceeding 4k to hang. (By
-setting /sys/block/fd0/queue/max_sectors_k <= 4 as workaround,
-this behaviour can be avoided).
-
-Instead of reintroducing redo_fd_request(), requeue the remainder
-of the request by calling blk_mq_requeue_request() on incomplete
-requests (i.e. when blk_update_request() still returns true), and
-rely on the block layer to queue the residual as new request.
-
-Both error handling and formatting needs to release the
-ST-DMA lock, so call finish_fdc() on these (this was previously
-handled by redo_fd_request()). finish_fdc() may be called
-legitimately without the ST-DMA lock held - make sure we only
-release the lock if we actually held it. In a similar way,
-early exit due to errors in ataflop_queue_rq() must release
-the lock.
-
-After minor errors, fd_error sets up to recalibrate the drive
-but never re-runs the current operation (another task handled by
-redo_fd_request() before). Call do_fd_action() to get the next
-steps (seek, retry read/write) underway.
-
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Fixes: 6ec3938cff95f (ataflop: convert to blk-mq)
-CC: linux-block@vger.kernel.org
-Link: https://lore.kernel.org/r/20211024002013.9332-1-schmitzmic@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jessica Zhang <jesszhan@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020175733.3379-1-jesszhan@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 45 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index bbb64331cf8f4..4947e41f89b7d 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -456,10 +456,20 @@ static DEFINE_TIMER(fd_timer, check_change);
- 	
- static void fd_end_request_cur(blk_status_t err)
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
+index 69eed79324865..f9460672176aa 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c
+@@ -138,11 +138,13 @@ static int _sspp_subblk_offset(struct dpu_hw_pipe *ctx,
+ 		u32 *idx)
  {
-+	DPRINT(("fd_end_request_cur(), bytes %d of %d\n",
-+		blk_rq_cur_bytes(fd_request),
-+		blk_rq_bytes(fd_request)));
+ 	int rc = 0;
+-	const struct dpu_sspp_sub_blks *sblk = ctx->cap->sblk;
++	const struct dpu_sspp_sub_blks *sblk;
+ 
+-	if (!ctx)
++	if (!ctx || !ctx->cap || !ctx->cap->sblk)
+ 		return -EINVAL;
+ 
++	sblk = ctx->cap->sblk;
 +
- 	if (!blk_update_request(fd_request, err,
- 				blk_rq_cur_bytes(fd_request))) {
-+		DPRINT(("calling __blk_mq_end_request()\n"));
- 		__blk_mq_end_request(fd_request, err);
- 		fd_request = NULL;
-+	} else {
-+		/* requeue rest of request */
-+		DPRINT(("calling blk_mq_requeue_request()\n"));
-+		blk_mq_requeue_request(fd_request, true);
-+		fd_request = NULL;
- 	}
- }
+ 	switch (s_id) {
+ 	case DPU_SSPP_SRC:
+ 		*idx = sblk->src_blk.base;
+@@ -419,7 +421,7 @@ static void _dpu_hw_sspp_setup_scaler3(struct dpu_hw_pipe *ctx,
  
-@@ -697,12 +707,21 @@ static void fd_error( void )
- 	if (fd_request->error_count >= MAX_ERRORS) {
- 		printk(KERN_ERR "fd%d: too many errors.\n", SelectedDrive );
- 		fd_end_request_cur(BLK_STS_IOERR);
-+		finish_fdc();
-+		return;
- 	}
- 	else if (fd_request->error_count == RECALIBRATE_ERRORS) {
- 		printk(KERN_WARNING "fd%d: recalibrating\n", SelectedDrive );
- 		if (SelectedDrive != -1)
- 			SUD.track = -1;
- 	}
-+	/* need to re-run request to recalibrate */
-+	atari_disable_irq( IRQ_MFP_FDC );
-+
-+	setup_req_params( SelectedDrive );
-+	do_fd_action( SelectedDrive );
-+
-+	atari_enable_irq( IRQ_MFP_FDC );
- }
+ 	(void)pe;
+ 	if (_sspp_subblk_offset(ctx, DPU_SSPP_SCALER_QSEED3, &idx) || !sspp
+-		|| !scaler3_cfg || !ctx || !ctx->cap || !ctx->cap->sblk)
++		|| !scaler3_cfg)
+ 		return;
  
- 
-@@ -729,8 +748,10 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	if (type) {
- 		type--;
- 		if (type >= NUM_DISK_MINORS ||
--		    minor2disktype[type].drive_types > DriveType)
-+		    minor2disktype[type].drive_types > DriveType) {
-+			finish_fdc();
- 			return -EINVAL;
-+		}
- 	}
- 
- 	q = unit[drive].disk[type]->queue;
-@@ -748,6 +769,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	}
- 
- 	if (!UDT || desc->track >= UDT->blocks/UDT->spt/2 || desc->head >= 2) {
-+		finish_fdc();
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -788,6 +810,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 
- 	wait_for_completion(&format_wait);
- 
-+	finish_fdc();
- 	ret = FormatError ? -EIO : 0;
- out:
- 	blk_mq_unquiesce_queue(q);
-@@ -822,6 +845,7 @@ static void do_fd_action( int drive )
- 		    else {
- 			/* all sectors finished */
- 			fd_end_request_cur(BLK_STS_OK);
-+			finish_fdc();
- 			return;
- 		    }
- 		}
-@@ -1225,8 +1249,8 @@ static void fd_rwsec_done1(int status)
- 	}
- 	else {
- 		/* all sectors finished */
--		finish_fdc();
- 		fd_end_request_cur(BLK_STS_OK);
-+		finish_fdc();
- 	}
- 	return;
-   
-@@ -1348,7 +1372,7 @@ static void fd_times_out(struct timer_list *unused)
- 
- static void finish_fdc( void )
- {
--	if (!NeedSeek) {
-+	if (!NeedSeek || !stdma_is_locked_by(floppy_irq)) {
- 		finish_fdc_done( 0 );
- 	}
- 	else {
-@@ -1383,7 +1407,8 @@ static void finish_fdc_done( int dummy )
- 	start_motor_off_timer();
- 
- 	local_irq_save(flags);
--	stdma_release();
-+	if (stdma_is_locked_by(floppy_irq))
-+		stdma_release();
- 	local_irq_restore(flags);
- 
- 	DPRINT(("finish_fdc() finished\n"));
-@@ -1480,7 +1505,9 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	int drive = floppy - unit;
- 	int type = floppy->type;
- 
--	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
-+	DPRINT(("Queue request: drive %d type %d sectors %d of %d last %d\n",
-+		drive, type, blk_rq_cur_sectors(bd->rq),
-+		blk_rq_sectors(bd->rq), bd->last));
- 
- 	spin_lock_irq(&ataflop_lock);
- 	if (fd_request) {
-@@ -1502,6 +1529,7 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		/* drive not connected */
- 		printk(KERN_ERR "Unknown Device: fd%d\n", drive );
- 		fd_end_request_cur(BLK_STS_IOERR);
-+		stdma_release();
- 		goto out;
- 	}
- 		
-@@ -1518,11 +1546,13 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		if (--type >= NUM_DISK_MINORS) {
- 			printk(KERN_WARNING "fd%d: invalid disk format", drive );
- 			fd_end_request_cur(BLK_STS_IOERR);
-+			stdma_release();
- 			goto out;
- 		}
- 		if (minor2disktype[type].drive_types > DriveType)  {
- 			printk(KERN_WARNING "fd%d: unsupported disk format", drive );
- 			fd_end_request_cur(BLK_STS_IOERR);
-+			stdma_release();
- 			goto out;
- 		}
- 		type = minor2disktype[type].index;
-@@ -1623,6 +1653,7 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
- 		/* what if type > 0 here? Overwrite specified entry ? */
- 		if (type) {
- 		        /* refuse to re-set a predefined type for now */
-+			finish_fdc();
- 			return -EINVAL;
- 		}
- 
-@@ -1690,8 +1721,10 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
- 
- 		/* sanity check */
- 		if (setprm.track != dtp->blocks/dtp->spt/2 ||
--		    setprm.head != 2)
-+		    setprm.head != 2) {
-+			finish_fdc();
- 			return -EINVAL;
-+		}
- 
- 		UDT = dtp;
- 		set_capacity(disk, UDT->blocks);
+ 	dpu_hw_setup_scaler3(&ctx->hw, scaler3_cfg, idx,
 -- 
 2.33.0
 
