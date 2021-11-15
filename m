@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A43B4514FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12450451501
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349919AbhKOUUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:20:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
+        id S1350326AbhKOUX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:23:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240082AbhKOSFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5482163265;
-        Mon, 15 Nov 2021 17:41:56 +0000 (UTC)
+        id S240086AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:05:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB6D63380;
+        Mon, 15 Nov 2021 17:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998116;
-        bh=SY9jJh5EYmDgioZGYbfS3mMq78+zmzdfOThuitvZJEs=;
+        s=korg; t=1636998119;
+        bh=sKNoGjeUePsM8XpOm5zrx1MVzYmAnEF97eBkNuuylNU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kp5WEZyDEVW8Ka4jxgZO24CjcPHgcP+8xyLnHGWUYVZvcxs+/0oQloSlrw5+zz0go
-         7y84Hqz+abhYqOrx+d3yVo1q+r2CfQR1PE2IwsIcEmHsxKIB0Sj2CAs9Me7FWNWf57
-         VP6voXka5OMG2VVLXzVc9PcpV47CKtYig8a5X6sQ=
+        b=aHSh6e6LaWEMGY9HvHQbf+gM8ThJuKiMX0REA3Zwk+2GngPBTyQ1yVjGVcer9q3HB
+         qDqUv04GmdlbTvWr5d3GvdieffTzJXVkPnyQDIS9piLheYdzks6CM2/DAQHyIf/P2b
+         KtjdyohDnOgJsplGg1GcL0svj7orOLGA/6KdUsQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Hao Wu <hao.wu@rubrik.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 360/575] block: ataflop: more blk-mq refactoring fixes
-Date:   Mon, 15 Nov 2021 18:01:25 +0100
-Message-Id: <20211115165356.257023547@linuxfoundation.org>
+Subject: [PATCH 5.10 361/575] tpm: fix Atmel TPM crash caused by too frequent queries
+Date:   Mon, 15 Nov 2021 18:01:26 +0100
+Message-Id: <20211115165356.290500898@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,216 +40,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Hao Wu <hao.wu@rubrik.com>
 
-[ Upstream commit d28e4dff085c5a87025c9a0a85fb798bd8e9ca17 ]
+[ Upstream commit 79ca6f74dae067681a779fd573c2eb59649989bc ]
 
-As it turns out, my earlier patch in commit 86d46fdaa12a (block:
-ataflop: fix breakage introduced at blk-mq refactoring) was
-incomplete. This patch fixes any remaining issues found during
-more testing and code review.
+The Atmel TPM 1.2 chips crash with error
+`tpm_try_transmit: send(): error -62` since kernel 4.14.
+It is observed from the kernel log after running `tpm_sealdata -z`.
+The error thrown from the command is as follows
+```
+$ tpm_sealdata -z
+Tspi_Key_LoadKey failed: 0x00001087 - layer=tddl,
+code=0087 (135), I/O error
+```
 
-Requests exceeding 4 k are handled in 4k segments but
-__blk_mq_end_request() is never called on these (still
-sectors outstanding on the request). With redo_fd_request()
-removed, there is no provision to kick off processing of the
-next segment, causing requests exceeding 4k to hang. (By
-setting /sys/block/fd0/queue/max_sectors_k <= 4 as workaround,
-this behaviour can be avoided).
+The issue was reproduced with the following Atmel TPM chip:
+```
+$ tpm_version
+T0  TPM 1.2 Version Info:
+  Chip Version:        1.2.66.1
+  Spec Level:          2
+  Errata Revision:     3
+  TPM Vendor ID:       ATML
+  TPM Version:         01010000
+  Manufacturer Info:   41544d4c
+```
 
-Instead of reintroducing redo_fd_request(), requeue the remainder
-of the request by calling blk_mq_requeue_request() on incomplete
-requests (i.e. when blk_update_request() still returns true), and
-rely on the block layer to queue the residual as new request.
+The root cause of the issue is due to the TPM calls to msleep()
+were replaced with usleep_range() [1], which reduces
+the actual timeout. Via experiments, it is observed that
+the original msleep(5) actually sleeps for 15ms.
+Because of a known timeout issue in Atmel TPM 1.2 chip,
+the shorter timeout than 15ms can cause the error described above.
 
-Both error handling and formatting needs to release the
-ST-DMA lock, so call finish_fdc() on these (this was previously
-handled by redo_fd_request()). finish_fdc() may be called
-legitimately without the ST-DMA lock held - make sure we only
-release the lock if we actually held it. In a similar way,
-early exit due to errors in ataflop_queue_rq() must release
-the lock.
+A few further changes in kernel 4.16 [2] and 4.18 [3, 4] further
+reduced the timeout to less than 1ms. With experiments,
+the problematic timeout in the latest kernel is the one
+for `wait_for_tpm_stat`.
 
-After minor errors, fd_error sets up to recalibrate the drive
-but never re-runs the current operation (another task handled by
-redo_fd_request() before). Call do_fd_action() to get the next
-steps (seek, retry read/write) underway.
+To fix it, the patch reverts the timeout of `wait_for_tpm_stat`
+to 15ms for all Atmel TPM 1.2 chips, but leave it untouched
+for Ateml TPM 2.0 chip, and chips from other vendors.
+As explained above, the chosen 15ms timeout is
+the actual timeout before this issue introduced,
+thus the old value is used here.
+Particularly, TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 14700us,
+TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 15000us according to
+the existing TPM_TIMEOUT_RANGE_US (300us).
+The fixed has been tested in the system with the affected Atmel chip
+with no issues observed after boot up.
 
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Fixes: 6ec3938cff95f (ataflop: convert to blk-mq)
-CC: linux-block@vger.kernel.org
-Link: https://lore.kernel.org/r/20211024002013.9332-1-schmitzmic@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+[1] 9f3fc7bcddcb tpm: replace msleep() with usleep_range() in TPM
+1.2/2.0 generic drivers
+[2] cf151a9a44d5 tpm: reduce tpm polling delay in tpm_tis_core
+[3] 59f5a6b07f64 tpm: reduce poll sleep time in tpm_transmit()
+[4] 424eaf910c32 tpm: reduce polling time to usecs for even finer
+granularity
+
+Fixes: 9f3fc7bcddcb ("tpm: replace msleep() with usleep_range() in TPM 1.2/2.0 generic drivers")
+Link: https://patchwork.kernel.org/project/linux-integrity/patch/20200926223150.109645-1-hao.wu@rubrik.com/
+Signed-off-by: Hao Wu <hao.wu@rubrik.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 45 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
+ drivers/char/tpm/tpm_tis_core.c | 26 ++++++++++++++++++--------
+ drivers/char/tpm/tpm_tis_core.h |  4 ++++
+ include/linux/tpm.h             |  1 +
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 0a86f9d3a3798..94b76c254db9b 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -456,10 +456,20 @@ static DEFINE_TIMER(fd_timer, check_change);
- 	
- static void fd_end_request_cur(blk_status_t err)
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 69579efb247b3..b2659a4c40168 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -48,6 +48,7 @@ static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
+ 		unsigned long timeout, wait_queue_head_t *queue,
+ 		bool check_cancel)
  {
-+	DPRINT(("fd_end_request_cur(), bytes %d of %d\n",
-+		blk_rq_cur_bytes(fd_request),
-+		blk_rq_bytes(fd_request)));
++	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+ 	unsigned long stop;
+ 	long rc;
+ 	u8 status;
+@@ -80,8 +81,8 @@ again:
+ 		}
+ 	} else {
+ 		do {
+-			usleep_range(TPM_TIMEOUT_USECS_MIN,
+-				     TPM_TIMEOUT_USECS_MAX);
++			usleep_range(priv->timeout_min,
++				     priv->timeout_max);
+ 			status = chip->ops->status(chip);
+ 			if ((status & mask) == mask)
+ 				return 0;
+@@ -945,7 +946,22 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	chip->timeout_b = msecs_to_jiffies(TIS_TIMEOUT_B_MAX);
+ 	chip->timeout_c = msecs_to_jiffies(TIS_TIMEOUT_C_MAX);
+ 	chip->timeout_d = msecs_to_jiffies(TIS_TIMEOUT_D_MAX);
++	priv->timeout_min = TPM_TIMEOUT_USECS_MIN;
++	priv->timeout_max = TPM_TIMEOUT_USECS_MAX;
+ 	priv->phy_ops = phy_ops;
 +
- 	if (!blk_update_request(fd_request, err,
- 				blk_rq_cur_bytes(fd_request))) {
-+		DPRINT(("calling __blk_mq_end_request()\n"));
- 		__blk_mq_end_request(fd_request, err);
- 		fd_request = NULL;
-+	} else {
-+		/* requeue rest of request */
-+		DPRINT(("calling blk_mq_requeue_request()\n"));
-+		blk_mq_requeue_request(fd_request, true);
-+		fd_request = NULL;
- 	}
- }
- 
-@@ -697,12 +707,21 @@ static void fd_error( void )
- 	if (fd_request->error_count >= MAX_ERRORS) {
- 		printk(KERN_ERR "fd%d: too many errors.\n", SelectedDrive );
- 		fd_end_request_cur(BLK_STS_IOERR);
-+		finish_fdc();
-+		return;
- 	}
- 	else if (fd_request->error_count == RECALIBRATE_ERRORS) {
- 		printk(KERN_WARNING "fd%d: recalibrating\n", SelectedDrive );
- 		if (SelectedDrive != -1)
- 			SUD.track = -1;
- 	}
-+	/* need to re-run request to recalibrate */
-+	atari_disable_irq( IRQ_MFP_FDC );
++	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
++	if (rc < 0)
++		goto out_err;
 +
-+	setup_req_params( SelectedDrive );
-+	do_fd_action( SelectedDrive );
++	priv->manufacturer_id = vendor;
 +
-+	atari_enable_irq( IRQ_MFP_FDC );
- }
++	if (priv->manufacturer_id == TPM_VID_ATML &&
++		!(chip->flags & TPM_CHIP_FLAG_TPM2)) {
++		priv->timeout_min = TIS_TIMEOUT_MIN_ATML;
++		priv->timeout_max = TIS_TIMEOUT_MAX_ATML;
++	}
++
+ 	dev_set_drvdata(&chip->dev, priv);
  
+ 	if (is_bsw()) {
+@@ -988,12 +1004,6 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	if (rc)
+ 		goto out_err;
  
-@@ -729,8 +748,10 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	if (type) {
- 		type--;
- 		if (type >= NUM_DISK_MINORS ||
--		    minor2disktype[type].drive_types > DriveType)
-+		    minor2disktype[type].drive_types > DriveType) {
-+			finish_fdc();
- 			return -EINVAL;
-+		}
- 	}
+-	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
+-	if (rc < 0)
+-		goto out_err;
+-
+-	priv->manufacturer_id = vendor;
+-
+ 	rc = tpm_tis_read8(priv, TPM_RID(0), &rid);
+ 	if (rc < 0)
+ 		goto out_err;
+diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+index b2a3c6c72882d..3be24f221e32a 100644
+--- a/drivers/char/tpm/tpm_tis_core.h
++++ b/drivers/char/tpm/tpm_tis_core.h
+@@ -54,6 +54,8 @@ enum tis_defaults {
+ 	TIS_MEM_LEN = 0x5000,
+ 	TIS_SHORT_TIMEOUT = 750,	/* ms */
+ 	TIS_LONG_TIMEOUT = 2000,	/* 2 sec */
++	TIS_TIMEOUT_MIN_ATML = 14700,	/* usecs */
++	TIS_TIMEOUT_MAX_ATML = 15000,	/* usecs */
+ };
  
- 	q = unit[drive].disk[type]->queue;
-@@ -748,6 +769,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	}
+ /* Some timeout values are needed before it is known whether the chip is
+@@ -98,6 +100,8 @@ struct tpm_tis_data {
+ 	wait_queue_head_t read_queue;
+ 	const struct tpm_tis_phy_ops *phy_ops;
+ 	unsigned short rng_quality;
++	unsigned int timeout_min; /* usecs */
++	unsigned int timeout_max; /* usecs */
+ };
  
- 	if (!UDT || desc->track >= UDT->blocks/UDT->spt/2 || desc->head >= 2) {
-+		finish_fdc();
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -788,6 +810,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ struct tpm_tis_phy_ops {
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index 804a3f69bbd93..95c3069823f9b 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -262,6 +262,7 @@ enum tpm2_cc_attrs {
+ #define TPM_VID_INTEL    0x8086
+ #define TPM_VID_WINBOND  0x1050
+ #define TPM_VID_STM      0x104A
++#define TPM_VID_ATML     0x1114
  
- 	wait_for_completion(&format_wait);
- 
-+	finish_fdc();
- 	ret = FormatError ? -EIO : 0;
- out:
- 	blk_mq_unquiesce_queue(q);
-@@ -822,6 +845,7 @@ static void do_fd_action( int drive )
- 		    else {
- 			/* all sectors finished */
- 			fd_end_request_cur(BLK_STS_OK);
-+			finish_fdc();
- 			return;
- 		    }
- 		}
-@@ -1225,8 +1249,8 @@ static void fd_rwsec_done1(int status)
- 	}
- 	else {
- 		/* all sectors finished */
--		finish_fdc();
- 		fd_end_request_cur(BLK_STS_OK);
-+		finish_fdc();
- 	}
- 	return;
-   
-@@ -1348,7 +1372,7 @@ static void fd_times_out(struct timer_list *unused)
- 
- static void finish_fdc( void )
- {
--	if (!NeedSeek) {
-+	if (!NeedSeek || !stdma_is_locked_by(floppy_irq)) {
- 		finish_fdc_done( 0 );
- 	}
- 	else {
-@@ -1383,7 +1407,8 @@ static void finish_fdc_done( int dummy )
- 	start_motor_off_timer();
- 
- 	local_irq_save(flags);
--	stdma_release();
-+	if (stdma_is_locked_by(floppy_irq))
-+		stdma_release();
- 	local_irq_restore(flags);
- 
- 	DPRINT(("finish_fdc() finished\n"));
-@@ -1480,7 +1505,9 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	int drive = floppy - unit;
- 	int type = floppy->type;
- 
--	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
-+	DPRINT(("Queue request: drive %d type %d sectors %d of %d last %d\n",
-+		drive, type, blk_rq_cur_sectors(bd->rq),
-+		blk_rq_sectors(bd->rq), bd->last));
- 
- 	spin_lock_irq(&ataflop_lock);
- 	if (fd_request) {
-@@ -1502,6 +1529,7 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		/* drive not connected */
- 		printk(KERN_ERR "Unknown Device: fd%d\n", drive );
- 		fd_end_request_cur(BLK_STS_IOERR);
-+		stdma_release();
- 		goto out;
- 	}
- 		
-@@ -1518,11 +1546,13 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		if (--type >= NUM_DISK_MINORS) {
- 			printk(KERN_WARNING "fd%d: invalid disk format", drive );
- 			fd_end_request_cur(BLK_STS_IOERR);
-+			stdma_release();
- 			goto out;
- 		}
- 		if (minor2disktype[type].drive_types > DriveType)  {
- 			printk(KERN_WARNING "fd%d: unsupported disk format", drive );
- 			fd_end_request_cur(BLK_STS_IOERR);
-+			stdma_release();
- 			goto out;
- 		}
- 		type = minor2disktype[type].index;
-@@ -1623,6 +1653,7 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
- 		/* what if type > 0 here? Overwrite specified entry ? */
- 		if (type) {
- 		        /* refuse to re-set a predefined type for now */
-+			finish_fdc();
- 			return -EINVAL;
- 		}
- 
-@@ -1690,8 +1721,10 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
- 
- 		/* sanity check */
- 		if (setprm.track != dtp->blocks/dtp->spt/2 ||
--		    setprm.head != 2)
-+		    setprm.head != 2) {
-+			finish_fdc();
- 			return -EINVAL;
-+		}
- 
- 		UDT = dtp;
- 		set_capacity(disk, UDT->blocks);
+ enum tpm_chip_flags {
+ 	TPM_CHIP_FLAG_TPM2		= BIT(1),
 -- 
 2.33.0
 
