@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD9F452330
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E059452774
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348562AbhKPBVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:21:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42220 "EHLO mail.kernel.org"
+        id S244511AbhKPCZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:25:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243009AbhKOTMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:12:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6D5563408;
-        Mon, 15 Nov 2021 18:19:59 +0000 (UTC)
+        id S237471AbhKORYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC8D63283;
+        Mon, 15 Nov 2021 17:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000400;
-        bh=HAE1uLHAMNhtS2u1iqMWBioxpDilE97TU/dWJWCFxF0=;
+        s=korg; t=1636996670;
+        bh=7IcZfBjUKltYjlbSxAUUm/t9fmDHrBNMuG8f4NLKptI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r7EQ0WsgsC2/6SoWgXfBT/mzpQbEXAhf1wfAvYttI6hBVFCNvie1CrknMyaVjNRcY
-         yMeIH7LtwnglXyshZL0RAOEnEjT1UzGGHN9Uz9DsO3U90iEj7L6aMJ486JaZs8cLJ6
-         uPkue/OUNAhlTOn3OhSYUPGzNo0dJ1WaWScQPqp0=
+        b=Q7IhQ4MwjxsibJAfyhLaS6tvVMsi14UoPYfkD17BU/KlIQo8RMVKzwuihAfg+URV7
+         153B6VhW8FwLwZyYPL4/mz+GUVq8V+luYjmqS+6K+fIRD0lQ/neF+n7P+6NYbxd4eU
+         9iekqDynMKSYe83KsDx/KfN9DeUXpnEv8DehYWt0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrej Shadura <andrew.shadura@collabora.co.uk>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 647/849] HID: u2fzero: clarify error check and length calculations
-Date:   Mon, 15 Nov 2021 18:02:10 +0100
-Message-Id: <20211115165442.157409714@linuxfoundation.org>
+        stable@vger.kernel.org, Anel Orazgaliyeva <anelkz@amazon.de>,
+        Aman Priyadarshi <apeureka@amazon.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 207/355] cpuidle: Fix kobject memory leaks in error paths
+Date:   Mon, 15 Nov 2021 18:02:11 +0100
+Message-Id: <20211115165320.466726675@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
+References: <20211115165313.549179499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrej Shadura <andrew.shadura@collabora.co.uk>
+From: Anel Orazgaliyeva <anelkz@amazon.de>
 
-[ Upstream commit b7abf78b7a6c4a29a6e0ba0bb883fe44a2f3d693 ]
+[ Upstream commit e5f5a66c9aa9c331da5527c2e3fd9394e7091e01 ]
 
-The previous commit fixed handling of incomplete packets but broke error
-handling: offsetof returns an unsigned value (size_t), but when compared
-against the signed return value, the return value is interpreted as if
-it were unsigned, so negative return values are never less than the
-offset.
+Commit c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
+fixes the cleanup of kobjects; however, it removes kfree() calls
+altogether, leading to memory leaks.
 
-To make the code easier to read, calculate the minimal packet length
-once and separately, and assign it to a signed int variable to eliminate
-unsigned math and the need for type casts. It then becomes immediately
-obvious how the actual data length is calculated and why the return
-value cannot be less than the minimal length.
+Fix those and also defer the initialization of dev->kobj_dev until
+after the error check, so that we do not end up with a dangling
+pointer.
 
-Fixes: 22d65765f211 ("HID: u2fzero: ignore incomplete packets without data")
-Fixes: 42337b9d4d95 ("HID: add driver for U2F Zero built-in LED and RNG")
-Signed-off-by: Andrej Shadura <andrew.shadura@collabora.co.uk>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
+Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
+Suggested-by: Aman Priyadarshi <apeureka@amazon.de>
+[ rjw: Subject edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-u2fzero.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/cpuidle/sysfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-u2fzero.c b/drivers/hid/hid-u2fzero.c
-index d70cd3d7f583b..94f78ffb76d04 100644
---- a/drivers/hid/hid-u2fzero.c
-+++ b/drivers/hid/hid-u2fzero.c
-@@ -191,6 +191,8 @@ static int u2fzero_rng_read(struct hwrng *rng, void *data,
- 	struct u2f_hid_msg resp;
- 	int ret;
- 	size_t actual_length;
-+	/* valid packets must have a correct header */
-+	int min_length = offsetof(struct u2f_hid_msg, init.data);
+diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
+index f8747322b3c70..e591f56f98c03 100644
+--- a/drivers/cpuidle/sysfs.c
++++ b/drivers/cpuidle/sysfs.c
+@@ -481,6 +481,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
+ 					   &kdev->kobj, "state%d", i);
+ 		if (ret) {
+ 			kobject_put(&kobj->kobj);
++			kfree(kobj);
+ 			goto error_state;
+ 		}
+ 		cpuidle_add_s2idle_attr_group(kobj);
+@@ -612,6 +613,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
+ 				   &kdev->kobj, "driver");
+ 	if (ret) {
+ 		kobject_put(&kdrv->kobj);
++		kfree(kdrv);
+ 		return ret;
+ 	}
  
- 	if (!dev->present) {
- 		hid_dbg(dev->hdev, "device not present");
-@@ -200,12 +202,12 @@ static int u2fzero_rng_read(struct hwrng *rng, void *data,
- 	ret = u2fzero_recv(dev, &req, &resp);
+@@ -698,7 +700,6 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+ 	if (!kdev)
+ 		return -ENOMEM;
+ 	kdev->dev = dev;
+-	dev->kobj_dev = kdev;
  
- 	/* ignore errors or packets without data */
--	if (ret < offsetof(struct u2f_hid_msg, init.data))
-+	if (ret < min_length)
- 		return 0;
+ 	init_completion(&kdev->kobj_unregister);
  
- 	/* only take the minimum amount of data it is safe to take */
--	actual_length = min3((size_t)ret - offsetof(struct u2f_hid_msg,
--		init.data), U2F_HID_MSG_LEN(resp), max);
-+	actual_length = min3((size_t)ret - min_length,
-+		U2F_HID_MSG_LEN(resp), max);
+@@ -706,9 +707,11 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+ 				   "cpuidle");
+ 	if (error) {
+ 		kobject_put(&kdev->kobj);
++		kfree(kdev);
+ 		return error;
+ 	}
  
- 	memcpy(data, resp.init.data, actual_length);
++	dev->kobj_dev = kdev;
+ 	kobject_uevent(&kdev->kobj, KOBJ_ADD);
  
+ 	return 0;
 -- 
 2.33.0
 
