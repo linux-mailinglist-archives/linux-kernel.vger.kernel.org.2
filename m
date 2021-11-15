@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AF7451F92
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8940451ACF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356546AbhKPAm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:42:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
+        id S1355571AbhKOXni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:43:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343899AbhKOTWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A65263608;
-        Mon, 15 Nov 2021 18:48:44 +0000 (UTC)
+        id S1344031AbhKOTXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C87106361B;
+        Mon, 15 Nov 2021 18:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002124;
-        bh=Y5dNhMld1C90DQZMQOpYZ9zXUZpC4o2B/ib4MnhGsbU=;
+        s=korg; t=1637002238;
+        bh=+NudP2+8FtaGBahBMCZBFRurVUM7Gw0nAJc6OLcToYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ykRkqfLKXSiEBQSkPbiM3l6a2WDMe22gbOB6ovpE0PJVTlsiPVm2vjyQjuhL0fsl
-         VnvMXQRvs47lQoVVFRbgdNT+JhKK2wrPj1MALJAVx0A2ml+/hB8x6qmaWfiJgqz/nu
-         muqUcwejctwH1AE16KzMYMMHimvN1Wbth4RSKom4=
+        b=rXN8IHfoF/oOtrvb3pAiUbW8SJRW3FFwyWzc6xEY10jhww6CWrql0jB9ZebL3qmEh
+         kBWoAir8e2VUPxvcB7hlFakpCBi7+d2LtaGyIgfVjKDUH4pe+0juvsQmk63YeOYPKC
+         vhtS9FAwc4AEZPf66fSfzpmecDpi5Z7fMMK3BHIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 446/917] media: ir_toy: assignment to be16 should be of correct type
-Date:   Mon, 15 Nov 2021 17:59:01 +0100
-Message-Id: <20211115165443.905358002@linuxfoundation.org>
+Subject: [PATCH 5.15 447/917] mmc: mxs-mmc: disable regulator on error and in the remove function
+Date:   Mon, 15 Nov 2021 17:59:02 +0100
+Message-Id: <20211115165443.938707664@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,35 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit febfe985fc2ea052a363f6525ff624b8efd5273c ]
+[ Upstream commit ce5f6c2c9b0fcb4094f8e162cfd37fb4294204f7 ]
 
-commit f0c15b360fb6 ("media: ir_toy: prevent device from hanging during
-transmit") removed a cpu_to_be16() cast, which causes a sparse warning.
+The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
+Neither in the error handling path of the probe nor in the remove
+function.
 
-Fixes: f0c15b360fb6 ("media: ir_toy: prevent device from hanging during transmit")
-Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Register a devm_action to disable it when needed.
+
+Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/ir_toy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/media/rc/ir_toy.c b/drivers/media/rc/ir_toy.c
-index 48d52baec1a1c..1aa7989e756cc 100644
---- a/drivers/media/rc/ir_toy.c
-+++ b/drivers/media/rc/ir_toy.c
-@@ -310,7 +310,7 @@ static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uint count)
- 		buf[i] = cpu_to_be16(v);
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index 947581de78601..8c3655d3be961 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -552,6 +552,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
+ 
++static void mxs_mmc_regulator_disable(void *regulator)
++{
++	regulator_disable(regulator);
++}
++
+ static int mxs_mmc_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -591,6 +596,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+ 				"Failed to enable vmmc regulator: %d\n", ret);
+ 			goto out_mmc_free;
+ 		}
++
++		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
++					       reg_vmmc);
++		if (ret)
++			goto out_mmc_free;
  	}
  
--	buf[count] = 0xffff;
-+	buf[count] = cpu_to_be16(0xffff);
- 
- 	irtoy->tx_buf = buf;
- 	irtoy->tx_len = size;
+ 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
 -- 
 2.33.0
 
