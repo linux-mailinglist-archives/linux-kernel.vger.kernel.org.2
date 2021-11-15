@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7A8450F9A
+	by mail.lfdr.de (Postfix) with ESMTP id 52C02450F9B
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242104AbhKOSeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:34:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
+        id S242177AbhKOSev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:34:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238291AbhKOReT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:34:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 536E6632BD;
-        Mon, 15 Nov 2021 17:22:57 +0000 (UTC)
+        id S236531AbhKOReX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:34:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03414632C1;
+        Mon, 15 Nov 2021 17:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996977;
-        bh=ybeQckmtYKRCYWE7YxNPaIItfdszF1FCLzYR/rY0o6g=;
+        s=korg; t=1636996980;
+        bh=3pV8mBb0vsq6nsesCXf5cm9uFXJKGrfcd3ic3In95jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2Xr4zVZGRHT662VLe23KqUm7ayfK+Mjv1BARiT121dNg3ylAb9hC1bIriV+uYyjW
-         QpS1gizIU9KWPVwXHZWOVE2hd+axUvG/ZAu8Mxq4LKzVWcBJ4mJc8Iq+7Oas6KNPv4
-         Ii/7jnmO2nck8CXNKDEm+gzGiZoozhVroNDZfZEg=
+        b=tIFTrRWWb0bGUWNNIweKP7AjlH6Q4Vd2eVDdu5diyUUneYnTPAskhUve+waa1vCZc
+         KsbyH7lUTSfYPP5gcEV08YqZiWBMd+KStfRaHruNvf/OqMDD1Ua9WN1orm5cl7yKT7
+         Ql7VJPckGycIu8mKL5hJXW7xCncq8JvQfFUmhObc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Pelletier <plr.vincent@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup@brainfault.org>, Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.4 337/355] irqchip/sifive-plic: Fixup EOI failed when masked
-Date:   Mon, 15 Nov 2021 18:04:21 +0100
-Message-Id: <20211115165324.642074552@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.4 338/355] f2fs: should use GFP_NOFS for directory inodes
+Date:   Mon, 15 Nov 2021 18:04:22 +0100
+Message-Id: <20211115165324.675915017@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -44,65 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-commit 69ea463021be0d159ab30f96195fb0dd18ee2272 upstream.
+commit 92d602bc7177325e7453189a22e0c8764ed3453e upstream.
 
-When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in a driver,
-only the first interrupt is handled, and following interrupts are never
-delivered (initially reported in [1]).
+We use inline_dentry which requires to allocate dentry page when adding a link.
+If we allow to reclaim memory from filesystem, we do down_read(&sbi->cp_rwsem)
+twice by f2fs_lock_op(). I think this should be okay, but how about stopping
+the lockdep complaint [1]?
 
-That's because the RISC-V PLIC cannot EOI masked interrupts, as explained
-in the description of Interrupt Completion in the PLIC spec [2]:
+f2fs_create()
+ - f2fs_lock_op()
+ - f2fs_do_add_link()
+  - __f2fs_find_entry
+   - f2fs_get_read_data_page()
+   -> kswapd
+    - shrink_node
+     - f2fs_evict_inode
+      - f2fs_lock_op()
 
-<quote>
-The PLIC signals it has completed executing an interrupt handler by
-writing the interrupt ID it received from the claim to the claim/complete
-register. The PLIC does not check whether the completion ID is the same
-as the last claim ID for that target. If the completion ID does not match
-an interrupt source that *is currently enabled* for the target, the
-completion is silently ignored.
-</quote>
+[1]
 
-Re-enable the interrupt before completion if it has been masked during
-the handling, and remask it afterwards.
+fs_reclaim
+){+.+.}-{0:0}
+:
+kswapd0:        lock_acquire+0x114/0x394
+kswapd0:        __fs_reclaim_acquire+0x40/0x50
+kswapd0:        prepare_alloc_pages+0x94/0x1ec
+kswapd0:        __alloc_pages_nodemask+0x78/0x1b0
+kswapd0:        pagecache_get_page+0x2e0/0x57c
+kswapd0:        f2fs_get_read_data_page+0xc0/0x394
+kswapd0:        f2fs_find_data_page+0xa4/0x23c
+kswapd0:        find_in_level+0x1a8/0x36c
+kswapd0:        __f2fs_find_entry+0x70/0x100
+kswapd0:        f2fs_do_add_link+0x84/0x1ec
+kswapd0:        f2fs_mkdir+0xe4/0x1e4
+kswapd0:        vfs_mkdir+0x110/0x1c0
+kswapd0:        do_mkdirat+0xa4/0x160
+kswapd0:        __arm64_sys_mkdirat+0x24/0x34
+kswapd0:        el0_svc_common.llvm.17258447499513131576+0xc4/0x1e8
+kswapd0:        do_el0_svc+0x28/0xa0
+kswapd0:        el0_svc+0x24/0x38
+kswapd0:        el0_sync_handler+0x88/0xec
+kswapd0:        el0_sync+0x1c0/0x200
+kswapd0:
+-> #1
+(
+&sbi->cp_rwsem
+){++++}-{3:3}
+:
+kswapd0:        lock_acquire+0x114/0x394
+kswapd0:        down_read+0x7c/0x98
+kswapd0:        f2fs_do_truncate_blocks+0x78/0x3dc
+kswapd0:        f2fs_truncate+0xc8/0x128
+kswapd0:        f2fs_evict_inode+0x2b8/0x8b8
+kswapd0:        evict+0xd4/0x2f8
+kswapd0:        iput+0x1c0/0x258
+kswapd0:        do_unlinkat+0x170/0x2a0
+kswapd0:        __arm64_sys_unlinkat+0x4c/0x68
+kswapd0:        el0_svc_common.llvm.17258447499513131576+0xc4/0x1e8
+kswapd0:        do_el0_svc+0x28/0xa0
+kswapd0:        el0_svc+0x24/0x38
+kswapd0:        el0_sync_handler+0x88/0xec
+kswapd0:        el0_sync+0x1c0/0x200
 
-[1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
-[2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
-
-Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
-Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
-Tested-by: Nikita Shubin <nikita.shubin@maquefel.me>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Cc: stable@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-[maz: amended commit message]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211105094748.3894453-1-guoren@kernel.org
+Fixes: bdbc90fa55af ("f2fs: don't put dentry page in pagecache into highmem")
+Reviewed-by: Chao Yu <chao@kernel.org>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Light Hsieh <light.hsieh@mediatek.com>
+Tested-by: Light Hsieh <light.hsieh@mediatek.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/irqchip/irq-sifive-plic.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/f2fs/inode.c |    2 +-
+ fs/f2fs/namei.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -138,7 +138,13 @@ static void plic_irq_eoi(struct irq_data
- {
- 	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -455,7 +455,7 @@ make_now:
+ 		inode->i_op = &f2fs_dir_inode_operations;
+ 		inode->i_fop = &f2fs_dir_operations;
+ 		inode->i_mapping->a_ops = &f2fs_dblock_aops;
+-		inode_nohighmem(inode);
++		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
+ 	} else if (S_ISLNK(inode->i_mode)) {
+ 		if (file_is_encrypt(inode))
+ 			inode->i_op = &f2fs_encrypted_symlink_inode_operations;
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -679,7 +679,7 @@ static int f2fs_mkdir(struct inode *dir,
+ 	inode->i_op = &f2fs_dir_inode_operations;
+ 	inode->i_fop = &f2fs_dir_operations;
+ 	inode->i_mapping->a_ops = &f2fs_dblock_aops;
+-	inode_nohighmem(inode);
++	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
  
--	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+	if (irqd_irq_masked(d)) {
-+		plic_irq_unmask(d);
-+		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+		plic_irq_mask(d);
-+	} else {
-+		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+	}
- }
- 
- static struct irq_chip plic_chip = {
+ 	set_inode_flag(inode, FI_INC_LINK);
+ 	f2fs_lock_op(sbi);
 
 
