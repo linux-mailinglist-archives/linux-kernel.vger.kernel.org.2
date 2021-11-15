@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1490450DBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314E2450D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239875AbhKOSE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:04:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S238634AbhKORvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:51:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231967AbhKOR03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:26:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09F9C63285;
-        Mon, 15 Nov 2021 17:17:57 +0000 (UTC)
+        id S237452AbhKORVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:21:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C35463284;
+        Mon, 15 Nov 2021 17:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996678;
-        bh=KcT8QgUujXaepIkJiH9gMiHTMqYyQ0UOrDKZ+a1H9jo=;
+        s=korg; t=1636996683;
+        bh=V3HLTbZhlkYB1ojZN8+Ka7ZA2sJ5Ixxfdbd59NmIU1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=COu7aMyNwKioNnBoTfOPoC6tykAqJeRpprL+vGSO052U0jC3zQ55bIwoRFUEeMIKP
-         RkbZpmJ0gqP89a8LNzu+gW7/t8zV9OhsHLLeOO89RI8pRRmKy6ktMETbQkdoLtepbU
-         N0ITYqgRmvLqJLat9fhP5ALKAC8+RKQVsSYp1plA=
+        b=J+JYdnCbx1Mzf8VU8g3E9lQ165Y5HBVCcSc60Oa0SJaQEyDqjX/3lu9I3FI7aII6t
+         9B0F4CfSlYQ/LiyAdpUTX04N9Nct9NaQbpmTfXRT0kSCKg/Kjgslbmmr5oYLXO5srR
+         aXHdh9BLsgOP+HVboT63qJVdHBHWQecpnBbNOQII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 227/355] mmc: mxs-mmc: disable regulator on error and in the remove function
-Date:   Mon, 15 Nov 2021 18:02:31 +0100
-Message-Id: <20211115165321.100655171@linuxfoundation.org>
+Subject: [PATCH 5.4 229/355] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+Date:   Mon, 15 Nov 2021 18:02:33 +0100
+Message-Id: <20211115165321.164599554@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,53 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit ce5f6c2c9b0fcb4094f8e162cfd37fb4294204f7 ]
+[ Upstream commit fd96e35ea7b95f1e216277805be89d66e4ae962d ]
 
-The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
-Neither in the error handling path of the probe nor in the remove
-function.
+A new warning in clang points out a use of bitwise OR with boolean
+expressions in this driver:
 
-Register a devm_action to disable it when needed.
+drivers/platform/x86/thinkpad_acpi.c:9061:11: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        else if ((strlencmp(cmd, "level disengaged") == 0) |
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                           ||
+drivers/platform/x86/thinkpad_acpi.c:9061:11: note: cast one or both operands to int to silence this warning
+1 error generated.
 
-Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+This should clearly be a logical OR so change it to fix the warning.
+
+Fixes: fe98a52ce754 ("ACPI: thinkpad-acpi: add sysfs support to fan subdriver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1476
+Reported-by: Tor Vic <torvic9@mailbox.org>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20211018182537.2316800-1-nathan@kernel.org
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/platform/x86/thinkpad_acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index 52054931c3507..3a90037254a4d 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -565,6 +565,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index f027609fdab6d..3028d9f1ac59c 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9086,7 +9086,7 @@ static int fan_write_cmd_level(const char *cmd, int *rc)
  
-+static void mxs_mmc_regulator_disable(void *regulator)
-+{
-+	regulator_disable(regulator);
-+}
-+
- static int mxs_mmc_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *of_id =
-@@ -606,6 +611,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
- 				"Failed to enable vmmc regulator: %d\n", ret);
- 			goto out_mmc_free;
- 		}
-+
-+		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
-+					       reg_vmmc);
-+		if (ret)
-+			goto out_mmc_free;
- 	}
- 
- 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (strlencmp(cmd, "level auto") == 0)
+ 		level = TP_EC_FAN_AUTO;
+-	else if ((strlencmp(cmd, "level disengaged") == 0) |
++	else if ((strlencmp(cmd, "level disengaged") == 0) ||
+ 			(strlencmp(cmd, "level full-speed") == 0))
+ 		level = TP_EC_FAN_FULLSPEED;
+ 	else if (sscanf(cmd, "level %d", &level) != 1)
 -- 
 2.33.0
 
