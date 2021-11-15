@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3660045199E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC0345201C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhKOXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
+        id S1357560AbhKPAsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:48:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244939AbhKOTSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC70634DE;
-        Mon, 15 Nov 2021 18:25:51 +0000 (UTC)
+        id S1344714AbhKOTZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D828636B7;
+        Mon, 15 Nov 2021 19:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000752;
-        bh=uko3wy88vVatPWmLmQkYOdSbG58/6mNzIlJKw6MY2eU=;
+        s=korg; t=1637002979;
+        bh=vpAKWvmBaxgt80dS47aqaD+iO9Qy+veH5ehNAmRzsAg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXeZxUQyKOziE5IODzzNRC31qWNSo2K85tkMiJAf4KVawkhrhg1qK55yKnCKHq2uo
-         FqDOvMwsYqgdyr3Rv+2reHtT5gaFQmNW47XLvCmsWQ0b1ZgrqzM6ZZNbjrDqMMPn8b
-         O56X4vPQ5ExicrAD4jT5MplQU5Dr3aE7eFGgf+bg=
+        b=zzUn+MK6aO22E+M1HdiaBFlv0MxE6a3AgTXA+PRV4T0CZ6Ct1b3ExZawYeawTVz4h
+         b3aUevVQvVMjKXQU5arpVZH1swhqh7i0/Seap0Blp5LJfl7iPfW7M9/K6UNBpMifC/
+         y9zqU/1Kl4A3h+ycDkUSmBM0vXEiyifPtIxA1Fag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 777/849] net: hns3: allow configure ETS bandwidth of all TCs
+Subject: [PATCH 5.15 765/917] kselftests/net: add missed setup_loopback.sh/setup_veth.sh to Makefile
 Date:   Mon, 15 Nov 2021 18:04:20 +0100
-Message-Id: <20211115165446.528863409@linuxfoundation.org>
+Message-Id: <20211115165454.871454976@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 688db0c7a4a69ddc8b8143a1cac01eb20082a3aa ]
+[ Upstream commit b99ac1841147eefd8d8b52fcf00d7d917949ae7f ]
 
-Currently, driver only allow configuring ETS bandwidth of TCs according
-to the max TC number queried from firmware. However, the hardware actually
-supports 8 TCs and users may need to configure ETS bandwidth of all TCs,
-so remove the restriction.
+When generating the selftests to another folder, the include file
+setup_loopback.sh/setup_veth.sh for gro.sh/gre_gro.sh are missing as
+they are not in Makefile, e.g.
 
-Fixes: 330baff5423b ("net: hns3: add ETS TC weight setting in SSU module")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+  make -C tools/testing/selftests/ install \
+      TARGETS="net" INSTALL_PATH=/tmp/kselftests
+
+Fixes: 7d1575014a63 ("selftests/net: GRO coalesce test")
+Fixes: 9af771d2ec04 ("selftests/net: allow GRO coalesce test on veth")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 2 +-
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  | 9 +--------
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ tools/testing/selftests/net/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index 64cc019cb67ca..f517cc334ebed 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -125,7 +125,7 @@ static int hclge_ets_validate(struct hclge_dev *hdev, struct ieee_ets *ets,
- 	if (ret)
- 		return ret;
- 
--	for (i = 0; i < hdev->tc_max; i++) {
-+	for (i = 0; i < HNAE3_MAX_TC; i++) {
- 		switch (ets->tc_tsa[i]) {
- 		case IEEE_8021QAZ_TSA_STRICT:
- 			if (hdev->tm_info.tc_info[i].tc_sch_mode !=
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-index 5ff2c98a55427..e948b6558de59 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-@@ -1123,7 +1123,6 @@ static int hclge_tm_pri_tc_base_dwrr_cfg(struct hclge_dev *hdev)
- 
- static int hclge_tm_ets_tc_dwrr_cfg(struct hclge_dev *hdev)
- {
--#define DEFAULT_TC_WEIGHT	1
- #define DEFAULT_TC_OFFSET	14
- 
- 	struct hclge_ets_tc_weight_cmd *ets_weight;
-@@ -1136,13 +1135,7 @@ static int hclge_tm_ets_tc_dwrr_cfg(struct hclge_dev *hdev)
- 	for (i = 0; i < HNAE3_MAX_TC; i++) {
- 		struct hclge_pg_info *pg_info;
- 
--		ets_weight->tc_weight[i] = DEFAULT_TC_WEIGHT;
--
--		if (!(hdev->hw_tc_map & BIT(i)))
--			continue;
--
--		pg_info =
--			&hdev->tm_info.pg_info[hdev->tm_info.tc_info[i].pgid];
-+		pg_info = &hdev->tm_info.pg_info[hdev->tm_info.tc_info[i].pgid];
- 		ets_weight->tc_weight[i] = pg_info->tc_dwrr[i];
- 	}
- 
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 9b1c2dfe12530..63ee01c1437b6 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -28,7 +28,7 @@ TEST_PROGS += veth.sh
+ TEST_PROGS += ioam6.sh
+ TEST_PROGS += gro.sh
+ TEST_PROGS += gre_gso.sh
+-TEST_PROGS_EXTENDED := in_netns.sh
++TEST_PROGS_EXTENDED := in_netns.sh setup_loopback.sh setup_veth.sh
+ TEST_GEN_FILES =  socket nettest
+ TEST_GEN_FILES += psock_fanout psock_tpacket msg_zerocopy reuseport_addr_any
+ TEST_GEN_FILES += tcp_mmap tcp_inq psock_snd txring_overwrite
 -- 
 2.33.0
 
