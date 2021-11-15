@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E235D452287
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA42452285
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377981AbhKPBNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:13:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S1377919AbhKPBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:13:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245338AbhKOTUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245340AbhKOTUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:20:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB4C63349;
-        Mon, 15 Nov 2021 18:32:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED9266333D;
+        Mon, 15 Nov 2021 18:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001171;
-        bh=c9e0JVzpYrCDaXhy2yfRx+e3NlUNzE9VIMxJ2XvqOZI=;
+        s=korg; t=1637001176;
+        bh=LPzTPIuI9zxJ6Z11Fof+pznqGVjbKGNie7uuwCUbjf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izcS+5y7VIHDb3EkuDWbwfT/G6o+Z7hstEVoBAlm0OOB1rLx1pcMIX74XO/ozD9a0
-         0ZyMZ07eQKnqZFUbPNLn/pjxm1wsDdz7JZgSHMFtU91+e2fHNE6/FiTiUnRaVmpzhu
-         OjtDWDLmkXsQgPJV8OmuSrgKRlMgJDZxGp+eebeY=
+        b=tRnapmv5dgX5L3d5lG6eMhip+gwri0k+KWAg76sTOP0VwYR+LRBE6HMeECBQ+tSR+
+         guljOv/PjnQHzouUUXUxsk07Pe/ZRIWsSn0iKtRqczf61dTFjeHgvDZRwwLqzaQFiV
+         LmS/GMQlQzGB7+2rqBHdhCBJGu5fEOicYH9u9lds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.15 087/917] HID: surface-hid: Use correct event registry for managing HID events
-Date:   Mon, 15 Nov 2021 17:53:02 +0100
-Message-Id: <20211115165431.705330265@linuxfoundation.org>
+        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.15 089/917] wcn36xx: Fix HT40 capability for 2Ghz band
+Date:   Mon, 15 Nov 2021 17:53:04 +0100
+Message-Id: <20211115165431.770200356@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,65 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maximilian Luz <luzmaximilian@gmail.com>
+From: Loic Poulain <loic.poulain@linaro.org>
 
-commit dc0fd0acb6e0e8025a0a43ada54513b216254fac upstream.
+commit 960ae77f25631bbe4e3aafefe209b52e044baf31 upstream.
 
-Until now, we have only ever seen the REG-category registry being used
-on devices addressed with target ID 2. In fact, we have only ever seen
-Surface Aggregator Module (SAM) HID devices with target ID 2. For those
-devices, the registry also has to be addressed with target ID 2.
+All wcn36xx controllers are supposed to support HT40 (and SGI40),
+This doubles the maximum bitrate/throughput with compatible APs.
 
-Some devices, like the new Surface Laptop Studio, however, address their
-HID devices on target ID 1. As a result of this, any target ID 2
-commands time out. This includes event management commands addressed to
-the target ID 2 REG-category registry. For these devices, the registry
-has to be addressed via target ID 1 instead.
+Tested with wcn3620 & wcn3680B.
 
-We therefore assume that the target ID of the registry to be used
-depends on the target ID of the respective device. Implement this
-accordingly.
-
-Note that we currently allow the surface HID driver to only load against
-devices with target ID 2, so these timeouts are not happening (yet).
-This is just a preparation step before we allow the driver to load
-against all target IDs.
-
-Cc: stable@vger.kernel.org # 5.14+
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Link: https://lore.kernel.org/r/20211021130904.862610-3-luzmaximilian@gmail.com
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1634737133-22336-1-git-send-email-loic.poulain@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/surface-hid/surface_hid.c         |    2 +-
- include/linux/surface_aggregator/controller.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/wcn36xx/main.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/hid/surface-hid/surface_hid.c
-+++ b/drivers/hid/surface-hid/surface_hid.c
-@@ -209,7 +209,7 @@ static int surface_hid_probe(struct ssam
- 
- 	shid->notif.base.priority = 1;
- 	shid->notif.base.fn = ssam_hid_event_fn;
--	shid->notif.event.reg = SSAM_EVENT_REGISTRY_REG;
-+	shid->notif.event.reg = SSAM_EVENT_REGISTRY_REG(sdev->uid.target);
- 	shid->notif.event.id.target_category = sdev->uid.category;
- 	shid->notif.event.id.instance = sdev->uid.instance;
- 	shid->notif.event.mask = SSAM_EVENT_MASK_STRICT;
---- a/include/linux/surface_aggregator/controller.h
-+++ b/include/linux/surface_aggregator/controller.h
-@@ -792,8 +792,8 @@ enum ssam_event_mask {
- #define SSAM_EVENT_REGISTRY_KIP	\
- 	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_KIP, 0x02, 0x27, 0x28)
- 
--#define SSAM_EVENT_REGISTRY_REG \
--	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_REG, 0x02, 0x01, 0x02)
-+#define SSAM_EVENT_REGISTRY_REG(tid)\
-+	SSAM_EVENT_REGISTRY(SSAM_SSH_TC_REG, tid, 0x01, 0x02)
- 
- /**
-  * enum ssam_event_notifier_flags - Flags for event notifiers.
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -135,7 +135,9 @@ static struct ieee80211_supported_band w
+ 		.cap =	IEEE80211_HT_CAP_GRN_FLD |
+ 			IEEE80211_HT_CAP_SGI_20 |
+ 			IEEE80211_HT_CAP_DSSSCCK40 |
+-			IEEE80211_HT_CAP_LSIG_TXOP_PROT,
++			IEEE80211_HT_CAP_LSIG_TXOP_PROT |
++			IEEE80211_HT_CAP_SGI_40 |
++			IEEE80211_HT_CAP_SUP_WIDTH_20_40,
+ 		.ht_supported = true,
+ 		.ampdu_factor = IEEE80211_HT_MAX_AMPDU_64K,
+ 		.ampdu_density = IEEE80211_HT_MPDU_DENSITY_16,
 
 
