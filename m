@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460C745034A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49045450355
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhKOLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbhKOLV1 (ORCPT
+        id S231205AbhKOLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:25:15 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39096 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231486AbhKOLXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:21:27 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2994C061766;
-        Mon, 15 Nov 2021 03:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WqvNHBRbDheHE4MKIPBKX6vd6Q0lp1R/ZtOL1Idkt8o=; b=GQtNTshZ22ezhOpxwuqnxUd6Rt
-        7mxCh6nhCO8VeHkOiQx5hP03zVww4tBiXEZA5EMuxLqJju8AXHej+RXZYWPVGm8HaZmdM20zDyXPk
-        QftbyZloAs8L8kHhUisAO1K+s7Wu5Cvj4pvau89laWA+2DwEbnostZfVPznzFjtaWjbhv+iaSf0ZM
-        DklcD8iVWfTmAUUVVUX5OXOaluExKVZKTtr4ZAWSqwUR9Hi5V/pAaFj0rB81Mt2YCfeWpCYKjz2U0
-        tAkvypzvPL8pIiDorz3lvnAjNXQJO+fDjEhD5R/5Iu95cOu5G0ME/PYFkXlxRzOBwfbUA0rQW6bk8
-        abPIVcHw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmZzq-00G8WZ-Jh; Mon, 15 Nov 2021 11:17:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 398CA30031C;
-        Mon, 15 Nov 2021 12:17:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB6CC200E390A; Mon, 15 Nov 2021 12:17:56 +0100 (CET)
-Date:   Mon, 15 Nov 2021 12:17:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     kim.phillips@amd.com, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, santosh.shukla@amd.com,
-        sandipan.das@amd.com
-Subject: Re: [RFC] perf/amd/ibs: Move ibs pmus under perf_sw_context
-Message-ID: <YZJB5FVHpzhwFMtZ@hirez.programming.kicks-ass.net>
-References: <20211115094838.3359-1-ravi.bangoria@amd.com>
+        Mon, 15 Nov 2021 06:23:10 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AFBAfp0019208;
+        Mon, 15 Nov 2021 11:19:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7A8WJnxEub7TjzKh/8V7/VNswiioRZU7+WSJNf5i2co=;
+ b=dPjYjYyVgqesStpkaQIOwX0749NZD6T2zUgGQ3i/3V7RQvBO1fiVxgQF4GadxSRes+ho
+ b26A4EIuDkm0dsLVqGDwBVBnvAZ88p37N4k2/iEt41TlAaxKsoTVERKPRoilgOrDSTAZ
+ /JOSqnf1CDUyZuXsfhTMhGB2d7BszeiaVPgt4ikRixg+/rUwWW7AYptEYEUrDIBYJoD8
+ BwCJPy6OWVdRwGBUTwtPSx5j9k9X/pgrHMV/NmG3vySTm1QfG8Ix8nGngOPn7TlDwyL2
+ 8Cbw2oz9sLEu6aiGW2IsXb2tF8djMo+KzFlzyiitxAP39U+miQEVcVXsDAc8JAQSP4dE SA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cbkwq3cm3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 11:19:55 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AFBDX9c026453;
+        Mon, 15 Nov 2021 11:19:53 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ca509mpmb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 11:19:53 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AFBCwYw64094594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Nov 2021 11:12:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1ECF64C05C;
+        Mon, 15 Nov 2021 11:19:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC25B4C044;
+        Mon, 15 Nov 2021 11:19:49 +0000 (GMT)
+Received: from [9.171.2.161] (unknown [9.171.2.161])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Nov 2021 11:19:49 +0000 (GMT)
+Message-ID: <a12f593a-a9e4-44bf-1740-92303ceb1dc3@linux.ibm.com>
+Date:   Mon, 15 Nov 2021 13:19:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115094838.3359-1-ravi.bangoria@amd.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/6] net: ocelot: add support to get port mac from
+ device-tree
+Content-Language: en-US
+To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+ <20211103091943.3878621-2-clement.leger@bootlin.com>
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+In-Reply-To: <20211103091943.3878621-2-clement.leger@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: H6wf7pqRbxGK-vgjJd6SfEEuOkcEhfVD
+X-Proofpoint-ORIG-GUID: H6wf7pqRbxGK-vgjJd6SfEEuOkcEhfVD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_10,2021-11-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 malwarescore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111150061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 03:18:38PM +0530, Ravi Bangoria wrote:
-> Ideally, a pmu which is present in each hw thread belongs to
-> perf_hw_context, but perf_hw_context has limitation of allowing only
-> one pmu (a core pmu) and thus other hw pmus need to use either sw or
-> invalid context which limits pmu functionalities.
+On 03.11.21 11:19, Clément Léger wrote:
+> Add support to get mac from device-tree using of_get_mac_address.
 > 
-> This is not a new problem. It has been raised in the past, for example,
-> Arm big.LITTLE (same for Intel ADL) and s390 had this issue:
+> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> ---
+>  drivers/net/ethernet/mscc/ocelot_net.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
->   Arm:  https://lore.kernel.org/lkml/20160425175837.GB3141@leverpostej
->   s390: https://lore.kernel.org/lkml/20160606082124.GA30154@twins.programming.kicks-ass.net
-> 
-> Arm big.LITTLE (followed by Intel ADL) solved this by allowing multiple
-> (heterogeneous) pmus inside perf_hw_context. It makes sense as they are
-> still registering single pmu for each hw thread.
-> 
-> s390 solved it by moving 2nd hw pmu to perf_sw_context, though that 2nd
-> hw pmu is count mode only, i.e. no sampling.
-> 
-> AMD IBS also has similar problem. IBS pmu is present in each hw thread.
-> But because of perf_hw_context restriction, currently it belongs to
-> perf_invalid_context and thus important functionalities like per-task
-> profiling is not possible with IBS pmu. Moving it to perf_sw_context
-> will:
->  - allow per-task monitoring
->  - allow cgroup wise profiling
->  - allow grouping of IBS with other pmu events
->  - disallow multiplexing
-> 
-> Please let me know if I missed any major benefit or drawback of
-> perf_sw_context. I'm also not sure how easy it would be to lift
-> perf_hw_context restriction and start allowing more pmus in it.
-> 
-> Suggestions?
+> diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+> index eaeba60b1bba..d76def435b23 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_net.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_net.c
+> @@ -1704,7 +1704,10 @@ int ocelot_probe_port(struct ocelot *ocelot, int port, struct regmap *target,
+>  		NETIF_F_HW_TC;
+>  	dev->features |= NETIF_F_HW_VLAN_CTAG_FILTER | NETIF_F_HW_TC;
+>  
+> -	eth_hw_addr_gen(dev, ocelot->base_mac, port);
+> +	err = of_get_mac_address(portnp, dev->dev_addr);
 
-Same as I do every time this comes up... this patch is still lingering
-and wanting TLC:
+of_get_ethdev_address() maybe, so that this gets routed through Jakub's fancy
+new eth_hw_addr_set() infrastructure?
 
-  https://lore.kernel.org/lkml/20181010104559.GO5728@hirez.programming.kicks-ass.net/
+> +	if (err)
+> +		eth_hw_addr_gen(dev, ocelot->base_mac, port);
+> +
+>  	ocelot_mact_learn(ocelot, PGID_CPU, dev->dev_addr,
+>  			  OCELOT_VLAN_UNAWARE_PVID, ENTRYTYPE_LOCKED);
+>  
+> 
+
