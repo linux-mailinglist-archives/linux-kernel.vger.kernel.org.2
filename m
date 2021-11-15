@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7494519E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC524451BA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350340AbhKOX3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:29:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S244189AbhKPAFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:05:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245144AbhKOTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC24619E1;
-        Mon, 15 Nov 2021 18:29:04 +0000 (UTC)
+        id S1344895AbhKOTZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C62D636E5;
+        Mon, 15 Nov 2021 19:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000945;
-        bh=LYTfZ56JvZA9gMNvBtrLF+11I2B17jQl9P9Siweu6Y0=;
+        s=korg; t=1637003170;
+        bh=cWvzVNsktRUox9YTiKYpl1Lsa4+dDdZmXjJJWHEKNME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aXZTB57BvO7+fAucHA+EilB87GHCGhNi4fvz6YgodEimO/cPJJH9JhgqxLkuy9w6V
-         yZSYGFxfgt3cbC7wn1C6o+zG/HgSK0cD8KttZsrQ7NYbuAB9maPJLPJokrZRFYR/jd
-         G11iLsJEMnQQvsyilK+x6WZa/Dgh1aGtGset82Sg=
+        b=N1m56xiWzNRvsBbZkMXw4xF8/prmZTQmL3c6qLphL6AL3G3LbebkZ9gHWEN4cxl71
+         135ulgcpcTqnWVrvOgOAdKJznatz4l5eG5QnY0kQFshJUpSSKtr9MKKslECbwXxx9R
+         Sgh+5FiRZXt0Yk+7Lb13vFFhpB279DQ3jWH/w8b4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.14 820/849] s390/ap: Fix hanging ioctl caused by orphaned replies
-Date:   Mon, 15 Nov 2021 18:05:03 +0100
-Message-Id: <20211115165447.969887692@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 809/917] Revert "drm/imx: Annotate dma-fence critical section in commit path"
+Date:   Mon, 15 Nov 2021 18:05:04 +0100
+Message-Id: <20211115165456.429996451@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-commit 3826350e6dd435e244eb6e47abad5a47c169ebc2 upstream.
+[ Upstream commit 14d9a37c952588930d7226953359fea3ab956d39 ]
 
-When a queue is switched to soft offline during heavy load and later
-switched to soft online again and now used, it may be that the caller
-is blocked forever in the ioctl call.
+This reverts commit f4b34faa08428d813fc3629f882c503487f94a12.
 
-The failure occurs because there is a pending reply after the queue(s)
-have been switched to offline. This orphaned reply is received when
-the queue is switched to online and is accidentally counted for the
-outstanding replies. So when there was a valid outstanding reply and
-this orphaned reply is received it counts as the outstanding one thus
-dropping the outstanding counter to 0. Voila, with this counter the
-receive function is not called any more and the real outstanding reply
-is never received (until another request comes in...) and the ioctl
-blocks.
+Since commit f4b34faa0842 ("drm/imx: Annotate dma-fence critical section in
+commit path") the following possible circular dependency is detected:
 
-The fix is simple. However, instead of readjusting the counter when an
-orphaned reply is detected, I check the queue status for not empty and
-compare this to the outstanding counter. So if the queue is not empty
-then the counter must not drop to 0 but at least have a value of 1.
+[    5.001811] ======================================================
+[    5.001817] WARNING: possible circular locking dependency detected
+[    5.001824] 5.14.9-01225-g45da36cc6fcc-dirty #1 Tainted: G        W
+[    5.001833] ------------------------------------------------------
+[    5.001838] kworker/u8:0/7 is trying to acquire lock:
+[    5.001848] c1752080 (regulator_list_mutex){+.+.}-{3:3}, at: regulator_lock_dependent+0x40/0x294
+[    5.001903]
+[    5.001903] but task is already holding lock:
+[    5.001909] c176df78 (dma_fence_map){++++}-{0:0}, at: imx_drm_atomic_commit_tail+0x10/0x160
+[    5.001957]
+[    5.001957] which lock already depends on the new lock.
+...
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Revert it for now.
+
+Tested on a imx6q-sabresd.
+
+Fixes: f4b34faa0842 ("drm/imx: Annotate dma-fence critical section in commit path")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211104001112.4035691-1-festevam@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/crypto/ap_queue.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/imx/imx-drm-core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/s390/crypto/ap_queue.c
-+++ b/drivers/s390/crypto/ap_queue.c
-@@ -157,6 +157,8 @@ static struct ap_queue_status ap_sm_recv
- 	switch (status.response_code) {
- 	case AP_RESPONSE_NORMAL:
- 		aq->queue_count = max_t(int, 0, aq->queue_count - 1);
-+		if (!status.queue_empty && !aq->queue_count)
-+			aq->queue_count++;
- 		if (aq->queue_count > 0)
- 			mod_timer(&aq->timeout,
- 				  jiffies + aq->request_timeout);
+diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
+index 9558e9e1b431b..cb685fe2039b4 100644
+--- a/drivers/gpu/drm/imx/imx-drm-core.c
++++ b/drivers/gpu/drm/imx/imx-drm-core.c
+@@ -81,7 +81,6 @@ static void imx_drm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	struct drm_plane_state *old_plane_state, *new_plane_state;
+ 	bool plane_disabling = false;
+ 	int i;
+-	bool fence_cookie = dma_fence_begin_signalling();
+ 
+ 	drm_atomic_helper_commit_modeset_disables(dev, state);
+ 
+@@ -112,7 +111,6 @@ static void imx_drm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	}
+ 
+ 	drm_atomic_helper_commit_hw_done(state);
+-	dma_fence_end_signalling(fence_cookie);
+ }
+ 
+ static const struct drm_mode_config_helper_funcs imx_drm_mode_config_helpers = {
+-- 
+2.33.0
+
 
 
