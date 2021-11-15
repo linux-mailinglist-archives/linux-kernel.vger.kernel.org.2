@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5196B4517BB
+	by mail.lfdr.de (Postfix) with ESMTP id BF1254517BC
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353239AbhKOWoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
+        id S1353644AbhKOWpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:45:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242472AbhKOSlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:41:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAA92632F1;
-        Mon, 15 Nov 2021 18:04:53 +0000 (UTC)
+        id S242543AbhKOSma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:42:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5190263292;
+        Mon, 15 Nov 2021 18:04:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999494;
-        bh=nisjMkk05ddDslovjW33PaKMkAa4TEgO4qZhmM7OoRc=;
+        s=korg; t=1636999496;
+        bh=ahQxha6ntwCF4KYuNlxlCj+wzXEmueobk5jXRawApFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X/0JfmwZMP6LZDknTxXpTWY76SwfPPxpWXSsPEZrWngBkARe24RLM0V/RWQLvgC3b
-         hzcXk8k3fn61PLsYoGp2+exqKSxWpSwm/hz9dtJ5trxc5eG6yI+sM6Z5s02p9ZKuOH
-         AHysp+316wPgS0EDbsYmyQlGcNXji3Oe3bfUk8kE=
+        b=K9c6Zu/R7vfJ84UTzEZO6aoJSNPrCODDBPxEllZNwB4SSS3TTHEFkckPvVNQrkDpJ
+         3bAdexGHLiZYhcda4lgMVWlubyGeZ0RzFCAjP+YC5SlaWuOv2Y64GCW6+4TJCgeSj6
+         JNIRoJqvsshM+ROHnnfoOOj6zH7rtpCO5ZPsHdes=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Feng <fengli@smartx.com>,
-        Xiao Ni <xni@redhat.com>, Song Liu <songliubraving@fb.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 284/849] md: update superblock after changing rdev flags in state_store
-Date:   Mon, 15 Nov 2021 17:56:07 +0100
-Message-Id: <20211115165429.878948404@linuxfoundation.org>
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 285/849] memstick: r592: Fix a UAF bug when removing the driver
+Date:   Mon, 15 Nov 2021 17:56:08 +0100
+Message-Id: <20211115165429.916383651@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,80 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Ni <xni@redhat.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 8b9e2291e355a0eafdd5b1e21a94a6659f24b351 ]
+[ Upstream commit 738216c1953e802aa9f930c5d15b8f9092c847ff ]
 
-When the in memory flag is changed, we need to persist the change in the
-rdev superblock flags. This is needed for "writemostly" and "failfast".
+In r592_remove(), the driver will free dma after freeing the host, which
+may cause a UAF bug.
 
-Reviewed-by: Li Feng <fengli@smartx.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The following log reveals it:
+
+[   45.361796 ] BUG: KASAN: use-after-free in r592_remove+0x269/0x350 [r592]
+[   45.364286 ] Call Trace:
+[   45.364472 ]  dump_stack_lvl+0xa8/0xd1
+[   45.364751 ]  print_address_description+0x87/0x3b0
+[   45.365137 ]  kasan_report+0x172/0x1c0
+[   45.365415 ]  ? r592_remove+0x269/0x350 [r592]
+[   45.365834 ]  ? r592_remove+0x269/0x350 [r592]
+[   45.366168 ]  __asan_report_load8_noabort+0x14/0x20
+[   45.366531 ]  r592_remove+0x269/0x350 [r592]
+[   45.378785 ]
+[   45.378903 ] Allocated by task 4674:
+[   45.379162 ]  ____kasan_kmalloc+0xb5/0xe0
+[   45.379455 ]  __kasan_kmalloc+0x9/0x10
+[   45.379730 ]  __kmalloc+0x150/0x280
+[   45.379984 ]  memstick_alloc_host+0x2a/0x190
+[   45.380664 ]
+[   45.380781 ] Freed by task 5509:
+[   45.381014 ]  kasan_set_track+0x3d/0x70
+[   45.381293 ]  kasan_set_free_info+0x23/0x40
+[   45.381635 ]  ____kasan_slab_free+0x10b/0x140
+[   45.381950 ]  __kasan_slab_free+0x11/0x20
+[   45.382241 ]  slab_free_freelist_hook+0x81/0x150
+[   45.382575 ]  kfree+0x13e/0x290
+[   45.382805 ]  memstick_free+0x1c/0x20
+[   45.383070 ]  device_release+0x9c/0x1d0
+[   45.383349 ]  kobject_put+0x2ef/0x4c0
+[   45.383616 ]  put_device+0x1f/0x30
+[   45.383865 ]  memstick_free_host+0x24/0x30
+[   45.384162 ]  r592_remove+0x242/0x350 [r592]
+[   45.384473 ]  pci_device_remove+0xa9/0x250
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Link: https://lore.kernel.org/r/1634383581-11055-1-git-send-email-zheyuma97@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/memstick/host/r592.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 6c0c3d0d905aa..e89eb467f1429 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -2976,7 +2976,11 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 	 *  -write_error - clears WriteErrorSeen
- 	 *  {,-}failfast - set/clear FailFast
- 	 */
-+
-+	struct mddev *mddev = rdev->mddev;
- 	int err = -EINVAL;
-+	bool need_update_sb = false;
-+
- 	if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
- 		md_error(rdev->mddev, rdev);
- 		if (test_bit(Faulty, &rdev->flags))
-@@ -2991,7 +2995,6 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		if (rdev->raid_disk >= 0)
- 			err = -EBUSY;
- 		else {
--			struct mddev *mddev = rdev->mddev;
- 			err = 0;
- 			if (mddev_is_clustered(mddev))
- 				err = md_cluster_ops->remove_disk(mddev, rdev);
-@@ -3008,10 +3011,12 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 	} else if (cmd_match(buf, "writemostly")) {
- 		set_bit(WriteMostly, &rdev->flags);
- 		mddev_create_serial_pool(rdev->mddev, rdev, false);
-+		need_update_sb = true;
- 		err = 0;
- 	} else if (cmd_match(buf, "-writemostly")) {
- 		mddev_destroy_serial_pool(rdev->mddev, rdev, false);
- 		clear_bit(WriteMostly, &rdev->flags);
-+		need_update_sb = true;
- 		err = 0;
- 	} else if (cmd_match(buf, "blocked")) {
- 		set_bit(Blocked, &rdev->flags);
-@@ -3037,9 +3042,11 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		err = 0;
- 	} else if (cmd_match(buf, "failfast")) {
- 		set_bit(FailFast, &rdev->flags);
-+		need_update_sb = true;
- 		err = 0;
- 	} else if (cmd_match(buf, "-failfast")) {
- 		clear_bit(FailFast, &rdev->flags);
-+		need_update_sb = true;
- 		err = 0;
- 	} else if (cmd_match(buf, "-insync") && rdev->raid_disk >= 0 &&
- 		   !test_bit(Journal, &rdev->flags)) {
-@@ -3118,6 +3125,8 @@ state_store(struct md_rdev *rdev, const char *buf, size_t len)
- 		clear_bit(ExternalBbl, &rdev->flags);
- 		err = 0;
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index 615a83782e55d..7aba0fdeba177 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -839,15 +839,15 @@ static void r592_remove(struct pci_dev *pdev)
  	}
-+	if (need_update_sb)
-+		md_update_sb(mddev, 1);
- 	if (!err)
- 		sysfs_notify_dirent_safe(rdev->sysfs_state);
- 	return err ? err : len;
+ 	memstick_remove_host(dev->host);
+ 
++	if (dev->dummy_dma_page)
++		dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
++			dev->dummy_dma_page_physical_address);
++
+ 	free_irq(dev->irq, dev);
+ 	iounmap(dev->mmio);
+ 	pci_release_regions(pdev);
+ 	pci_disable_device(pdev);
+ 	memstick_free_host(dev->host);
+-
+-	if (dev->dummy_dma_page)
+-		dma_free_coherent(&pdev->dev, PAGE_SIZE, dev->dummy_dma_page,
+-			dev->dummy_dma_page_physical_address);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
 -- 
 2.33.0
 
