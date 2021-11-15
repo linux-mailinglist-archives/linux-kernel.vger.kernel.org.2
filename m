@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687EE451C7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1DB451C81
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356753AbhKPASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:18:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352288AbhKOXnT (ORCPT
+        id S1356781AbhKPASl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:18:41 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:18814 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356171AbhKOXtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:43:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637019617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7HlFFpHLOnkuYOySwouZ7s09DUlv+hLAMcjMTeeobTQ=;
-        b=NSrNpLg4WS+UiU/aoJsu+KJVoi0XarfBCdMXx52+q7uT9tkQ4CjBK3KZUU3POrPjlIFzcC
-        s54yjB9qhBDUHhc8LBt6HffevW2CDBNJxKsA6Qr4QcVfCvH1Y7/jGqoG/qDlRCs492oDfs
-        0inNyB7OU2Qnqm6PxgyQf9Z5oOLXCFs=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-v4uwbXbBMxmARzyyxxDo_Q-1; Mon, 15 Nov 2021 18:40:15 -0500
-X-MC-Unique: v4uwbXbBMxmARzyyxxDo_Q-1
-Received: by mail-ot1-f71.google.com with SMTP id a9-20020a056830008900b0056561b8c755so11111715oto.22
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:40:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7HlFFpHLOnkuYOySwouZ7s09DUlv+hLAMcjMTeeobTQ=;
-        b=58yb4+otjxJOYBRiCpKsqM7r1uPu/6k0acWmbOyxonw6i5fyZwjEetUz340/sG8phR
-         xECnJvQn6D6RpFjx4k4bN2BkfI/QHNqV57AcyDpCcDGox4Rx3Vd0ya9KD2QTgZ/7/z1Z
-         Jfpn1F/idbZ7A8tybcLmUmXO+Kz7aZTHluMEPloyWudpyHhQEOaPklry4rS+h8zar5hI
-         k0CcVBk1p7CP3o/Opf9y/T3jxrP/M3viTMemie3Mxjil31Jx4EG6VoPYUKhsHeNVIqk3
-         7nUkjHegYI7HFuayyjkhyfxkhADKqqVLT4typA/1sXuuVPT2DCH7YpICkgMqwyPrFqjS
-         Qt5g==
-X-Gm-Message-State: AOAM5337qRHiLMC0OjpuQAgF3qMHokLpucVIrdaKIrThfHrP0VA8Tq5G
-        8K00MXCwD8wrRXBrxWklUu3KAdK/CgYT+LhX37KHFAIfQQnVINfwwa0b9S+sixEFje7e+d0I0Y2
-        7cHfAmxAPPKUVrKi91STj8hlZ
-X-Received: by 2002:a05:6808:1802:: with SMTP id bh2mr2439561oib.142.1637019615032;
-        Mon, 15 Nov 2021 15:40:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyAnEdzKPq9JP3nnZ3nNYQbcWfDg+gSGSyz459dA3eAqEL3e6U/qm4mcDqoW5PIR90cfpX6dA==
-X-Received: by 2002:a05:6808:1802:: with SMTP id bh2mr2439540oib.142.1637019614874;
-        Mon, 15 Nov 2021 15:40:14 -0800 (PST)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id j20sm2289939ota.76.2021.11.15.15.40.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 15:40:14 -0800 (PST)
-Date:   Mon, 15 Nov 2021 15:40:11 -0800
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211115230327.m3zswzgrshotocju@treble>
-References: <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <20211109210736.GV174703@worktop.programming.kicks-ass.net>
- <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
- <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
- <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
- <20211112015003.pefl656m3zmir6ov@treble>
- <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net>
- <20211113053500.jcnx5airbn7g763a@treble>
- <alpine.LSU.2.21.2111151325390.29981@pobox.suse.cz>
- <68b37450-d4bd-fa46-7bad-08d237e922b1@redhat.com>
+        Mon, 15 Nov 2021 18:49:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637019976; x=1668555976;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ksWPLnze/XmDxYhUzJh44fx8XX05D1wp1nWU6YtLIw8=;
+  b=U4bgvZuP02zaUDbfEx5XwEBtJShlgYnpL9982AdS0yZSrg+im+lU6x35
+   zVHKY4aolJCI6B2miTHNJ9uHmb/3OL/GI6q4rorFKyqB7Li+OQSQ2f6WE
+   C9TIOvrit+0OX2xjlFRB6Myw8mXwvAbVJUrIav0U96IWr/v5WjMGYjeHy
+   qDsMpNsxl+NUYsVqPXL2VzlD/ojk57HRmCu+x5OCiviUHFftGjxp8N8X6
+   +eqfUpuQOaUfzkAwcpc4zog7aYUl7vfUKJ/EzUojvn4w/0lXUWXo77tF5
+   VNsXQfBtXIbjWNrrALYMLvwFX6XtUefansw1fK703G+for+HOftqIaUnq
+   A==;
+X-IronPort-AV: E=Sophos;i="5.87,237,1631548800"; 
+   d="scan'208";a="190489630"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Nov 2021 07:44:09 +0800
+IronPort-SDR: 9z9M6Hh5Gpvj6oSMzzJY3UIdlFacK3rckb1qMZ77+lhN+1ouOHTfrUCKJVv615x18mk5DZCXTg
+ s0aVN9YBJYoA4R1B/DeQbH6qmk4sRwjHYn93ygMGT8VR1FLidpm2wscqfZAT4XyGA+eZ9Q8S0q
+ jinOZCZLgJWa1dssRCKhWej+ghoqe7QRGr4Z2lD3k8bVcZJh50q8CxXOlD0hAvPMI5xNa0N32h
+ 3abMiL1ZSqL3qy9ehPjpnT9p6uqjdGC/H1gw9QVDLjNb5UGhB+Th/Ga2y6fSK7BWwvItILbuEe
+ aaWWk/K1EDQ9tc0zxe3qEOFA
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 15:19:13 -0800
+IronPort-SDR: wOFRww4PQM1P4D1Y8+vAoxhF4Td0wSGkT+ZvmGet6pS0CZwWOO+QC9AxLOf9zHRqe+4Qha2eew
+ YulmreOqdrkHKKxvHE3Q2Ey6k6wqmJuYbd0oxAmwGe7Or/E6rZbI4mMUKnlENA9d6BTnDToHXU
+ 1HHR/oBUHsi30wok+Y7dnIvzueIdbvPGx9YxI48GLKUnWNTNlMHumlyBlYCNc0yKY7qIY4DN4a
+ iwnhINiSh36NbQeWL1OOXpovTESZn7FvBKRWahJIpTgB1/ZOHKBNFSCqT0abfBJz0ug/vD5bEp
+ WW0=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 15:44:09 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HtQkx2P09z1RtVp
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 15:44:09 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1637019848; x=1639611849; bh=ksWPLnze/XmDxYhUzJh44fx8XX05D1wp1nW
+        U6YtLIw8=; b=csF6dHOfeJDvu8GOMojn8iFckdVD6nvUOC4Vsqoa6NR6KXufn0S
+        1Kc1eKwrZCzmMXEAP0n73QmU1qQmzdAHBqhGcBk/+hiy0UvHrrK5UJKSRqUy46YT
+        GDjXZmb4xfLq3UhMbE0OD2MoVa/LQl/oVHHeRRkA7kycu7WHg9VU+As0gd5igUNA
+        9Gg0lJilXbXsglP5AebnnbqS8ZdWzm9mQHZ/1kbBZVIC9PkREvn8rKfa5OXEnWnL
+        1tyjvMSDivFjnz3arcwhhxDtIoOR3nzyob6T/yNf22ANbftGTHxnMODsR4XRlzgp
+        Nfu8Y3LAbdViAEGCh6BlR6KcwrRYwNXBs4w==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HG5sieU5VSB7 for <linux-kernel@vger.kernel.org>;
+        Mon, 15 Nov 2021 15:44:08 -0800 (PST)
+Received: from [10.225.54.48] (unknown [10.225.54.48])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HtQkw2YYpz1RtVl;
+        Mon, 15 Nov 2021 15:44:08 -0800 (PST)
+Message-ID: <8e55f354-0522-de56-2c1e-56557888602f@opensource.wdc.com>
+Date:   Tue, 16 Nov 2021 08:44:06 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <68b37450-d4bd-fa46-7bad-08d237e922b1@redhat.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: PROBLEM: [drivers/ata] Read log page failed (boot error message)
+Content-Language: en-US
+To:     "Nikolas L." <knv418@gmail.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <YZABtvQab/M2CCQd@msi.localdomain>
+ <14b22c98-dc4c-fe3b-fa20-b3dd78afd5cc@opensource.wdc.com>
+ <CAMJR_v6igrNZMzXpio27PpA6rQvo+efAVd2nM5GNg2+agQa9=A@mail.gmail.com>
+ <b386bdc4-db27-3160-80ac-ecd9d8d69c9f@opensource.wdc.com>
+ <CAMJR_v7Y+o7sFh+ViM-hmZ-AqfEujcTSOYNf8ospvPHuk++wcQ@mail.gmail.com>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <CAMJR_v7Y+o7sFh+ViM-hmZ-AqfEujcTSOYNf8ospvPHuk++wcQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:01:13AM -0500, Joe Lawrence wrote:
-> > This reminded me... one of the things I have on my todo list for a long 
-> > time is to add an option for a live patch creator to specify functions 
-> > which are not contained in the live patch but their presence on stacks 
-> > should be checked for. It could save some space in the final live patch 
-> > when one would add functions (callers) just because the consistency 
-> > requires it.
-> > 
-> 
-> Yea, I've used this technique once (adding a nop to a function so
-> kpatch-build would detect and include in klp_funcs[]) to make a set of
-> changes safer with respect to the consistency model.  Making it simpler
-> to for the livepatch author to say, "I'm not changing foo(), but I don't
-> want it doing anything while patching a task" sounds reasonable.
-> 
-> > I took as a convenience feature with a low priority and forgot about it. 
-> > The problem above changes it. So should we take the opportunity and 
-> > implement both in one step? I wanted to include a list of functions in 
-> > on a patch level (klp_patch structure) and klp_check_stack() would just 
-> > have more to check.
-> > 
-> 
-> As far as I read the original problem, I think it would solve for that,
-> too, so I would say go for it.
+On 2021/11/15 22:27, Nikolas L. wrote:
+> There is no error message with vanilla 5.15.2 + this patch.
+> Warning message about missing support for
+> ATA Identify Device Log instead. Seems well.
+> Relevant dmesg part:
+> ata1: SATA max UDMA/133 abar m2048@0xd8806000 port 0xd8806100 irq 19
+> ata2: SATA max UDMA/133 abar m2048@0xd8806000 port 0xd8806180 irq 19
+> ata3: DUMMY
+> ata4: DUMMY
+> ata5: DUMMY
+> ata6: SATA max UDMA/133 abar m2048@0xd8806000 port 0xd8806380 irq 19
+> ata1: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> ata6: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+> ata2: SATA link down (SStatus 0 SControl 300)
+> ata6.00: ATA-9: WDC WD5000LPLX-75ZNTT0, 03.01A03, max UDMA/133
+> ata6.00: ATA Identify Device Log not supported
 
-Sounds good to me.
+Latest kernel will not even print this warning since not having support for the
+IDENTIFY DEVICE log page with ATA-9 drives is expected. The patch fixing this
+will go to stable too.
 
-Miroslav, do I understand correctly that you're volunteering to make
-this change? ;-)
+> ata6.00: 976773168 sectors, multi 16: LBA48 NCQ (depth 32), AA
+> ata1.00: ATAPI: TSSTcorp CDDVDW TS-L633F, TM02, max UDMA/100
+> ata6.00: ATA Identify Device Log not supported
+> ata6.00: configured for UDMA/133
+> ata1.00: configured for UDMA/100
+> scsi 0:0:0:0: CD-ROM            TSSTcorp CDDVDW TS-L633F  TM02 PQ: 0 ANSI: 5
+> scsi 5:0:0:0: Direct-Access     ATA      WDC WD5000LPLX-7 1A03 PQ: 0 ANSI: 5
+> 
+
 
 -- 
-Josh
-
+Damien Le Moal
+Western Digital Research
