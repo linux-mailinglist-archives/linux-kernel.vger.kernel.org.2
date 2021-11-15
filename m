@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1B84525FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BFC4525EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhKPCBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50078 "EHLO mail.kernel.org"
+        id S1357602AbhKPCAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:00:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240183AbhKOSJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240241AbhKOSJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:09:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90451633B3;
-        Mon, 15 Nov 2021 17:46:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DCFC632A0;
+        Mon, 15 Nov 2021 17:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998396;
-        bh=Wv15d2xuFD70EIFcG4CXUFbdIJo4ytqHF/AfRsbW0R8=;
+        s=korg; t=1636998398;
+        bh=XmzqHL0Z0tJSw6FXl0JzN3xJCCpGMGmK9Cp/EP+0nkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=as0GqGP8IOIzHSRWxRhFzt2Y0BYboCNK65HkIBCEryD09yD55mWpS8O6QuenwIst/
-         xXrX7YvYNV9ykaf7g+6UC0jSR3vLIEJcyNbk/zTOfPkeYPpPR9jE/3iBg3hltwDYFq
-         dPH6QfxbpP2fCB+BRaAKIP6T4k+3cKRYPDdVa0aQ=
+        b=VqIatroVuls5Yi3kNYX/9INkLgwmX8trJ6phk0Zs1HcytdpOjJmanrD0Vd2KJdNBj
+         ASoFO1YhxUN480zvhzhvxawyE3YwiRIOmNq7IcCQMFM/Nryd1y4MJf6Qj/z+F+VsQ0
+         gHVoU/9BOmeoFwHl18vPlG9QbMhrLClsTNMX0VEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 493/575] dmaengine: dmaengine_desc_callback_valid(): Check for `callback_result`
-Date:   Mon, 15 Nov 2021 18:03:38 +0100
-Message-Id: <20211115165400.738460260@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 494/575] signal/sh: Use force_sig(SIGKILL) instead of do_group_exit(SIGKILL)
+Date:   Mon, 15 Nov 2021 18:03:39 +0100
+Message-Id: <20211115165400.773094958@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,61 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-[ Upstream commit e7e1e880b114ca640a2f280b0d5d38aed98f98c6 ]
+[ Upstream commit ce0ee4e6ac99606f3945f4d47775544edc3f7985 ]
 
-Before the `callback_result` callback was introduced drivers coded their
-invocation to the callback in a similar way to:
+Today the sh code allocates memory the first time a process uses
+the fpu.  If that memory allocation fails, kill the affected task
+with force_sig(SIGKILL) rather than do_group_exit(SIGKILL).
 
-	if (cb->callback) {
-		spin_unlock(&dma->lock);
-		cb->callback(cb->callback_param);
-		spin_lock(&dma->lock);
-	}
+Calling do_group_exit from an exception handler can potentially lead
+to dead locks as do_group_exit is not designed to be called from
+interrupt context.  Instead use force_sig(SIGKILL) to kill the
+userspace process.  Sending signals in general and force_sig in
+particular has been tested from interrupt context so there should be
+no problems.
 
-With the introduction of `callback_result` two helpers where introduced to
-transparently handle both types of callbacks. And drivers where updated to
-look like this:
-
-	if (dmaengine_desc_callback_valid(cb)) {
-		spin_unlock(&dma->lock);
-		dmaengine_desc_callback_invoke(cb, ...);
-		spin_lock(&dma->lock);
-	}
-
-dmaengine_desc_callback_invoke() correctly handles both `callback_result`
-and `callback`. But we forgot to update the dmaengine_desc_callback_valid()
-function to check for `callback_result`. As a result DMA descriptors that
-use the `callback_result` rather than `callback` don't have their callback
-invoked by drivers that follow the pattern above.
-
-Fix this by checking for both `callback` and `callback_result` in
-dmaengine_desc_callback_valid().
-
-Fixes: f067025bc676 ("dmaengine: add support to provide error result from a DMA transation")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20211023134101.28042-1-lars@metafoo.de
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Fixes: 0ea820cf9bf5 ("sh: Move over to dynamically allocated FPU context.")
+Link: https://lkml.kernel.org/r/20211020174406.17889-6-ebiederm@xmission.com
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/dmaengine.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sh/kernel/cpu/fpu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/dmaengine.h b/drivers/dma/dmaengine.h
-index 1bfbd64b13717..53f16d3f00294 100644
---- a/drivers/dma/dmaengine.h
-+++ b/drivers/dma/dmaengine.h
-@@ -176,7 +176,7 @@ dmaengine_desc_get_callback_invoke(struct dma_async_tx_descriptor *tx,
- static inline bool
- dmaengine_desc_callback_valid(struct dmaengine_desc_callback *cb)
- {
--	return (cb->callback) ? true : false;
-+	return cb->callback || cb->callback_result;
- }
+diff --git a/arch/sh/kernel/cpu/fpu.c b/arch/sh/kernel/cpu/fpu.c
+index ae354a2931e7e..fd6db0ab19288 100644
+--- a/arch/sh/kernel/cpu/fpu.c
++++ b/arch/sh/kernel/cpu/fpu.c
+@@ -62,18 +62,20 @@ void fpu_state_restore(struct pt_regs *regs)
+ 	}
  
- struct dma_chan *dma_get_slave_channel(struct dma_chan *chan);
+ 	if (!tsk_used_math(tsk)) {
+-		local_irq_enable();
++		int ret;
+ 		/*
+ 		 * does a slab alloc which can sleep
+ 		 */
+-		if (init_fpu(tsk)) {
++		local_irq_enable();
++		ret = init_fpu(tsk);
++		local_irq_disable();
++		if (ret) {
+ 			/*
+ 			 * ran out of memory!
+ 			 */
+-			do_group_exit(SIGKILL);
++			force_sig(SIGKILL);
+ 			return;
+ 		}
+-		local_irq_disable();
+ 	}
+ 
+ 	grab_fpu(regs);
 -- 
 2.33.0
 
