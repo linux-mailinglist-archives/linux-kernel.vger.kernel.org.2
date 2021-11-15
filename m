@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B08D451A51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED2A452141
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353503AbhKOXhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:37:06 -0500
+        id S1343932AbhKPBCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:02:25 -0500
 Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245699AbhKOTVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4653A63580;
-        Mon, 15 Nov 2021 18:39:31 +0000 (UTC)
+        id S245752AbhKOTVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AADAE632F1;
+        Mon, 15 Nov 2021 18:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001571;
-        bh=PtzGnVFi+P8cgAOzSLEudaOBZxkg2CXSyrbIpExCZgs=;
+        s=korg; t=1637001632;
+        bh=Obdhc/0pMyV0hrek8x+/GRvmUnhklhKVjt35VANmS00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ekalPPZY4ksH2hf1gNI3pjAhWuy7rkt8wih4P0Dfuis20ripg10/sTtGBwG/4U2T4
-         6j43MJ/vh7QnD4+37SwNwvuEwg+1A+Qu6bHxZzLTq0kBOpqDmQwZg6hH6/OfR/0/ea
-         shTHhMSLmy7QKwyrQXCgN+sZen+8mUJgk7Q6NhuY=
+        b=imo3dM6JcvUdl2ILfFcfvmNydPVkzHARIJ+xHuTNtgq2SI5XjmzcPJ+CdRQgLYyNq
+         kwMOQoQXOAgSfSQSFhH6GQg0AZAh9Fx0WFOkLkPcH2tCIxTZP9k0ADQ4Gant0dIYqn
+         d/7oEOi4IMO8TePw8LyX99yLfDqSQbgQvsYqjUvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 234/917] brcmfmac: Add DMI nvram filename quirk for Cyberbook T116 tablet
-Date:   Mon, 15 Nov 2021 17:55:29 +0100
-Message-Id: <20211115165436.713249961@linuxfoundation.org>
+Subject: [PATCH 5.15 236/917] ipmi: Disable some operations during a panic
+Date:   Mon, 15 Nov 2021 17:55:31 +0100
+Message-Id: <20211115165436.792737845@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,48 +39,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Corey Minyard <cminyard@mvista.com>
 
-[ Upstream commit 49c3eb3036e6359c5c20fe76c611a2c0e0d4710e ]
+[ Upstream commit b36eb5e7b75a756baa64909a176dd4269ee05a8b ]
 
-The Cyberbook T116 tablet contains quite generic names in the sys_vendor
-and product_name DMI strings, without this patch brcmfmac will try to load:
-"brcmfmac43455-sdio.Default string-Default string.txt" as nvram file which
-is way too generic.
+Don't do kfree or other risky things when oops_in_progress is set.
+It's easy enough to avoid doing them
 
-The nvram file shipped on the factory Android image contains the exact
-same settings as those used on the AcePC T8 mini PC, so point the new
-DMI nvram filename quirk to the acepc-t8 nvram file.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210928160633.96928-1-hdegoede@redhat.com
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/char/ipmi/ipmi_msghandler.c | 10 +++++++---
+ drivers/char/ipmi/ipmi_watchdog.c   | 17 ++++++++++++-----
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-index 6d5188b78f2de..0af452dca7664 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-@@ -75,6 +75,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&acepc_t8_data,
- 	},
-+	{
-+		/* Cyberbook T116 rugged tablet */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "20170531"),
-+		},
-+		/* The factory image nvram file is identical to the ACEPC T8 one */
-+		.driver_data = (void *)&acepc_t8_data,
-+	},
- 	{
- 		/* Match for the GPDwin which unfortunately uses somewhat
- 		 * generic dmi strings, which is why we test for 4 strings.
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index e96cb5c4f97a3..a08f53f208bfe 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -4789,7 +4789,9 @@ static atomic_t recv_msg_inuse_count = ATOMIC_INIT(0);
+ static void free_smi_msg(struct ipmi_smi_msg *msg)
+ {
+ 	atomic_dec(&smi_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
+ 
+ struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
+@@ -4808,7 +4810,9 @@ EXPORT_SYMBOL(ipmi_alloc_smi_msg);
+ static void free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+ 	atomic_dec(&recv_msg_inuse_count);
+-	kfree(msg);
++	/* Try to keep as much stuff out of the panic path as possible. */
++	if (!oops_in_progress)
++		kfree(msg);
+ }
+ 
+ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+@@ -4826,7 +4830,7 @@ static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void)
+ 
+ void ipmi_free_recv_msg(struct ipmi_recv_msg *msg)
+ {
+-	if (msg->user)
++	if (msg->user && !oops_in_progress)
+ 		kref_put(&msg->user->refcount, free_user);
+ 	msg->done(msg);
+ }
+diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+index f855a9665c284..883b4a3410122 100644
+--- a/drivers/char/ipmi/ipmi_watchdog.c
++++ b/drivers/char/ipmi/ipmi_watchdog.c
+@@ -342,13 +342,17 @@ static atomic_t msg_tofree = ATOMIC_INIT(0);
+ static DECLARE_COMPLETION(msg_wait);
+ static void msg_free_smi(struct ipmi_smi_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static void msg_free_recv(struct ipmi_recv_msg *msg)
+ {
+-	if (atomic_dec_and_test(&msg_tofree))
+-		complete(&msg_wait);
++	if (atomic_dec_and_test(&msg_tofree)) {
++		if (!oops_in_progress)
++			complete(&msg_wait);
++	}
+ }
+ static struct ipmi_smi_msg smi_msg = {
+ 	.done = msg_free_smi
+@@ -434,8 +438,10 @@ static int _ipmi_set_timeout(int do_heartbeat)
+ 	rv = __ipmi_set_timeout(&smi_msg,
+ 				&recv_msg,
+ 				&send_heartbeat_now);
+-	if (rv)
++	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		return rv;
++	}
+ 
+ 	wait_for_completion(&msg_wait);
+ 
+@@ -580,6 +586,7 @@ restart:
+ 				      &recv_msg,
+ 				      1);
+ 	if (rv) {
++		atomic_set(&msg_tofree, 0);
+ 		pr_warn("heartbeat send failure: %d\n", rv);
+ 		return rv;
+ 	}
 -- 
 2.33.0
 
