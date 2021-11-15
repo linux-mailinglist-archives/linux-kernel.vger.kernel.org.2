@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EB44510B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30824510CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhKOSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
+        id S243108AbhKOSzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:55:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237949AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237946AbhKORiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A6EF632DD;
-        Mon, 15 Nov 2021 17:25:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A214632E0;
+        Mon, 15 Nov 2021 17:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997122;
-        bh=9ZWWQHTFG+OWpAGgz/f0beBSU03SIU7mHCKNFUUOeQ0=;
+        s=korg; t=1636997125;
+        bh=Bo3GefjFkW/VJVX6lXs083hETx+NOQ85M4kRcMwA1uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PFK2kXK6w8eT2y6/OS38l6VMY832b9CwSFUu8/+YRPSq22/X4dFrzoui4Gk0712vO
-         K4sDo914TsnRyHsDsxxM+1OQKDsF3Fi7BDhgIbQ8N+SGY1a3JHCNLqUUSuijVyY3xV
-         RAwtWiVRGIaxm2psf7WdinQYn+2sfP76IO6gAKQ8=
+        b=CzpHgmy0eaZimHvmRk+3LDAJobAc+2UAttCmui1iEdnqBpBcmc4dlzeQ2Wp6e7+EE
+         f+if0HmnDN2WaMsaxebRJZHCy1oUTuE0AdOcH+cPZXAOGX0tqX+tL8RrtmhBT1EP2j
+         dhizh+I7+5aylhhPXpLIRFHNAp8dzG/fqhLNNfvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 032/575] ALSA: hda/realtek: Add quirk for ASUS UX550VE
-Date:   Mon, 15 Nov 2021 17:55:57 +0100
-Message-Id: <20211115165344.732018033@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 033/575] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute LED
+Date:   Mon, 15 Nov 2021 17:55:58 +0100
+Message-Id: <20211115165344.770085371@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -38,17 +40,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 4fad4fb9871b43389e4f4bead18ec693064697bb upstream.
+commit c058493df7edcef8f48c1494d9a84218519f966b upstream.
 
-ASUS UX550VE (SSID 1043:1970) requires a similar workaround for
-managing the routing of the 4 speakers like some other ASUS models.
-Add a corresponding quirk entry for fixing it.
+The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
+quirk for other HP laptops can let LEDs work, so apply it.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212641
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211107083339.18013-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20211110144033.118451-1-kai.heng.feng@canonical.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -57,13 +58,13 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8590,6 +8590,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x194e, "ASUS UX563FD", ALC294_FIXUP_ASUS_HPE),
-+	SND_PCI_QUIRK(0x1043, 0x1970, "ASUS UX550VE", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1982, "ASUS B1400CEPE", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
+@@ -8532,6 +8532,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8720, "HP EliteBook x360 1040 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
 
 
