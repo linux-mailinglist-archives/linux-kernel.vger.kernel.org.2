@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189E1451999
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39877452032
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353908AbhKOXYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:24:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        id S1357641AbhKPAs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:48:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244917AbhKOTSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 540496342F;
-        Mon, 15 Nov 2021 18:25:33 +0000 (UTC)
+        id S1344705AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C2A610A8;
+        Mon, 15 Nov 2021 19:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000733;
-        bh=muAIcByDL+6/H+q8zkMKg4uAmO9mDUkD0D2OKVw4uy0=;
+        s=korg; t=1637002960;
+        bh=37R7AQxwaHqBQnqHRMW6dJ+EsQblDFNxp4DVJlhU1As=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZbA4KHpbuxg2lNR/iHj602qbblo70AMGUTVhvVv3x364KFbEplaWVMRBxgTL1qC3
-         Per1oCsNZloU1gLhJ2T4aIo7GTnhTsedCeRF4/ljsl6O76Hh1wLwDeb6VL3nrvRfMf
-         D+xXDrryoE8d+CAGZqMG7Eb65QIJqxf5DK8LGVfU=
+        b=EAWaS1cJNQbDmn2peppb+4M55BtwIEqSjzlkZtGsOdn9yVPx62koQXGCX2FePEv3r
+         oUCTGqoo6gf8bLqoarGRfS9tvzcpCxtCoOmTRkYoDmWIbbqmMFUJkGPc55XuVgkF8P
+         CQ4tSoNo+CS7UxNctyRMGF+yd+DJvy2fpQ18pNXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Florent Revest <revest@chromium.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 771/849] seq_file: fix passing wrong private data
+Subject: [PATCH 5.15 759/917] xen-pciback: Fix return in pm_ctrl_init()
 Date:   Mon, 15 Nov 2021 18:04:14 +0100
-Message-Id: <20211115165446.339917849@linuxfoundation.org>
+Message-Id: <20211115165454.657009559@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,46 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 10a6de19cad6efb9b49883513afb810dc265fca2 ]
+[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
 
-DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
-of functions and variables to register proc file easily. And the users
-can use proc_create_data() to pass their own private data and get it
-via seq->private in the callback. Unfortunately, the proc file system
-use PDE_DATA() to get private data instead of inode->i_private. So fix
-it. Fortunately, there only one user of it which does not pass any
-private data, so this bug does not break any in-tree codes.
+Return NULL instead of passing to ERR_PTR while err is zero,
+this fix smatch warnings:
+drivers/xen/xen-pciback/conf_space_capability.c:163
+ pm_ctrl_init() warn: passing zero to 'ERR_PTR'
 
-Link: https://lkml.kernel.org/r/20211029032638.84884-1-songmuchun@bytedance.com
-Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Florent Revest <revest@chromium.org>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/seq_file.h | 2 +-
+ drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index dd99569595fd3..5733890df64f5 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -194,7 +194,7 @@ static const struct file_operations __name ## _fops = {			\
- #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)				\
- static int __name ## _open(struct inode *inode, struct file *file)	\
- {									\
--	return single_open(file, __name ## _show, inode->i_private);	\
-+	return single_open(file, __name ## _show, PDE_DATA(inode));	\
- }									\
- 									\
- static const struct proc_ops __name ## _proc_ops = {			\
+diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
+index 22f13abbe9130..5e53b4817f167 100644
+--- a/drivers/xen/xen-pciback/conf_space_capability.c
++++ b/drivers/xen/xen-pciback/conf_space_capability.c
+@@ -160,7 +160,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
+ 	}
+ 
+ out:
+-	return ERR_PTR(err);
++	return err ? ERR_PTR(err) : NULL;
+ }
+ 
+ static const struct config_field caplist_pm[] = {
 -- 
 2.33.0
 
