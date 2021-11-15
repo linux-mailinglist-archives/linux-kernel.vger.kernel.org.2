@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E64450DA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C09C450E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238695AbhKOSBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:01:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38100 "EHLO mail.kernel.org"
+        id S240196AbhKOSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:10:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237453AbhKORVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:21:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC6A63251;
-        Mon, 15 Nov 2021 17:16:34 +0000 (UTC)
+        id S237973AbhKOR23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:28:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B4406324B;
+        Mon, 15 Nov 2021 17:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996595;
-        bh=jtAamnbMM9GNMvJPKdYOaPVxKRoJcT1GqptnT9dB5pY=;
+        s=korg; t=1636996598;
+        bh=RmlPYkTiq76zSr07PLV9M45bdt/RJ1Lr0AE9kY3UICY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hgbtifS+rrgCW/WAB5xEyh2Ms5V+3vt6SaDrZD7RsYwHTXll3ObsYrQcel7qNKra1
-         H2qz4wEg5SnYBdjRT2HZvC+IORabAbukVyHnaY6ss9tWubwqXvP8/FxTpndJaIFRpT
-         qnnzmyWrwcCqn21oVvwDHD0EGTX1VWJiidxsbdhw=
+        b=iopCfldm7kdO2LZ62Zz6RRLCjVvXoBzQ8Df+3bcMh/8TPIp8O7eGiXMPY7N46yHkY
+         u57FLwUqbR4/lwkHEsRliuJRoepXpJWVe1+4itcYEiK/mlNd1QdTTKIAVi31kFMJXM
+         SYA1d39FztU9rhxEevRFxtKhsw1reoUYENNTZptE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 197/355] media: dvb-usb: fix ununit-value in az6027_rc_query
-Date:   Mon, 15 Nov 2021 18:02:01 +0100
-Message-Id: <20211115165320.137614674@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 198/355] media: TDA1997x: handle short reads of hdmi info frame.
+Date:   Mon, 15 Nov 2021 18:02:02 +0100
+Message-Id: <20211115165320.167133991@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,37 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
+[ Upstream commit 48d219f9cc667bc6fbc3e3af0b1bfd75db94fce4 ]
 
-Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
-in missing state pointer initialization. Since this function does nothing
-we can simply initialize state to REMOTE_NO_KEY_PRESSED.
+Static analysis reports this representative problem
 
-Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
+tda1997x.c:1939: warning: 7th function call argument is an uninitialized
+value
 
-Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
+The 7th argument is buffer[0], which is set in the earlier call to
+io_readn().  When io_readn() call to io_read() fails with the first
+read, buffer[0] is not set and 0 is returned and stored in len.
+
+The later call to hdmi_infoframe_unpack()'s size parameter is the
+static size of buffer, always 40, so a short read is not caught
+in hdmi_infoframe_unpacks()'s checking.  The variable len should be
+used instead.
+
+Zero initialize buffer to 0 so it is in a known start state.
+
+Fixes: 9ac0038db9a7 ("media: i2c: Add TDA1997x HDMI receiver driver")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/az6027.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/i2c/tda1997x.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
-index 8de18da0c4bd1..5aa9c501ed9c9 100644
---- a/drivers/media/usb/dvb-usb/az6027.c
-+++ b/drivers/media/usb/dvb-usb/az6027.c
-@@ -391,6 +391,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
- /* remote control stuff (does not work with my box) */
- static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index 18a2027ba1450..5faffedb0feba 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -1247,13 +1247,13 @@ tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
  {
-+	*state = REMOTE_NO_KEY_PRESSED;
- 	return 0;
- }
+ 	struct v4l2_subdev *sd = &state->sd;
+ 	union hdmi_infoframe frame;
+-	u8 buffer[40];
++	u8 buffer[40] = { 0 };
+ 	u8 reg;
+ 	int len, err;
  
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer, len);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+@@ -1927,13 +1927,13 @@ static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
+ {
+ 	struct tda1997x_state *state = to_state(sd);
+ 	union hdmi_infoframe frame;
+-	u8 buffer[40];
++	u8 buffer[40] = { 0 };
+ 	int len, err;
+ 
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+ 	v4l2_dbg(1, debug, sd, "infoframe: addr=%d len=%d\n", addr, len);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer, len);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
 -- 
 2.33.0
 
