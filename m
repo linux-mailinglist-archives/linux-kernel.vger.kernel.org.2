@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E994F451ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C9451973
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347805AbhKPAhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:37:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S1352207AbhKOXUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:20:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344593AbhKOTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89BF663350;
-        Mon, 15 Nov 2021 19:00:30 +0000 (UTC)
+        id S244756AbhKOTRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE7063326;
+        Mon, 15 Nov 2021 18:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002831;
-        bh=Ee4YgbIuZCtm9nm8/01hp3CDLQrvrgbP/9xi6c1CagU=;
+        s=korg; t=1637000612;
+        bh=pxom9vosKScpUwhdgZI+48w0Pp+NciKsrG3hUVGrJ4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RDIPKb949HLdz3VX9GCF3o6+bz7e6TCDPXEWfN4V/u+rg2ex4CIf1Cdo6Y/Y5Fq6Q
-         XfogSLoLOksrWVSFhHAu6U9gcKL8O5mg0vsAhytxfsf6wj7snBL86ozvPzdulUjAY1
-         xuyXkEO4dOsJZt6u9uR+YbEeHe3RCmpkOSu0W1Xc=
+        b=0BWXTtk+MjGaAd+dbBPKYmAzuC8pfkzs0az0T9ICG+DKbPTKCcdGbCQv3Ba+50vuD
+         +2HlZpZ67YESy2nFrxsMV/9YTc12M6hcKB+nDQdKVk4zlRia0uuxxCxL+kJVujR431
+         W2yQ4JFiRBHqosHm7sCshybmNsfqjgrCYqjdztA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 713/917] PCI: aardvark: Dont spam about PIO Response Status
-Date:   Mon, 15 Nov 2021 18:03:28 +0100
-Message-Id: <20211115165453.070394380@linuxfoundation.org>
+Subject: [PATCH 5.14 726/849] ice: Fix replacing VF hardware MAC to existing MAC filter
+Date:   Mon, 15 Nov 2021 18:03:29 +0100
+Message-Id: <20211115165444.818117350@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
 
-[ Upstream commit 464de7e7fff767e87429cd7be09c4f2cb50a6ccb ]
+[ Upstream commit ce572a5b88d5ca6737b5e23da9892792fd708ad3 ]
 
-Use dev_dbg() instead of dev_err() in advk_pcie_check_pio_status().
+VF was not able to change its hardware MAC address in case
+the new address was already present in the MAC filter list.
+Change the handling of VF add mac request to not return
+if requested MAC address is already present on the list
+and check if its hardware MAC needs to be updated in this case.
 
-For example CRS is not an error status, it just says that the request
-should be retried.
-
-Link: https://lore.kernel.org/r/20211005180952.6812-4-kabel@kernel.org
-Fixes: 8c39d710363c1 ("PCI: aardvark: Add Aardvark PCI host controller driver")
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Fixes: ed4c068d46f6 ("ice: Enable ip link show on the PF to display VF unicast MAC(s)")
+Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 0dd42435e7289..589ddb4c50100 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -778,7 +778,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
- 	else
- 		str_posted = "Posted";
+diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+index a827c6b653a38..9f5da506d8f4b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+@@ -3762,6 +3762,7 @@ ice_vc_add_mac_addr(struct ice_vf *vf, struct ice_vsi *vsi,
+ 	struct device *dev = ice_pf_to_dev(vf->pf);
+ 	u8 *mac_addr = vc_ether_addr->addr;
+ 	enum ice_status status;
++	int ret = 0;
  
--	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
-+	dev_dbg(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
- 		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
+ 	/* device MAC already added */
+ 	if (ether_addr_equal(mac_addr, vf->dev_lan_addr.addr))
+@@ -3774,20 +3775,23 @@ ice_vc_add_mac_addr(struct ice_vf *vf, struct ice_vsi *vsi,
  
- 	return -EFAULT;
+ 	status = ice_fltr_add_mac(vsi, mac_addr, ICE_FWD_TO_VSI);
+ 	if (status == ICE_ERR_ALREADY_EXISTS) {
+-		dev_err(dev, "MAC %pM already exists for VF %d\n", mac_addr,
++		dev_dbg(dev, "MAC %pM already exists for VF %d\n", mac_addr,
+ 			vf->vf_id);
+-		return -EEXIST;
++		/* don't return since we might need to update
++		 * the primary MAC in ice_vfhw_mac_add() below
++		 */
++		ret = -EEXIST;
+ 	} else if (status) {
+ 		dev_err(dev, "Failed to add MAC %pM for VF %d\n, error %s\n",
+ 			mac_addr, vf->vf_id, ice_stat_str(status));
+ 		return -EIO;
++	} else {
++		vf->num_mac++;
+ 	}
+ 
+ 	ice_vfhw_mac_add(vf, vc_ether_addr);
+ 
+-	vf->num_mac++;
+-
+-	return 0;
++	return ret;
+ }
+ 
+ /**
 -- 
 2.33.0
 
