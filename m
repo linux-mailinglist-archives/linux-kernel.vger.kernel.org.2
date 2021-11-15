@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA1C4508C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7AF4508CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhKOPo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:44:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37338 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236599AbhKOPnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:43:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636990855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jOlyV7EOyHv5WlsQP7dPeTU0BSFS3H/KIdZNLcVQqGM=;
-        b=NieGkXbqy5u4CXmaw4NE/4xFCg/8LckIvY9+ZmGa07I1eWQvFE9RgYu6tbce4UdaNlT+WS
-        +2BafqihTtIBFqeOzD2b4FWT3kYnx9dLctRPaKvyQgciEJvL/WWAmoVWmU6v4rWCmvwa1t
-        fD81ogl1D0pa3IzdPMlOXL4h2eL8rH8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-6DTy3xWINfS3wvFZm3LCMQ-1; Mon, 15 Nov 2021 10:40:54 -0500
-X-MC-Unique: 6DTy3xWINfS3wvFZm3LCMQ-1
-Received: by mail-ed1-f72.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso14406015edb.19
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:40:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jOlyV7EOyHv5WlsQP7dPeTU0BSFS3H/KIdZNLcVQqGM=;
-        b=GJd6NMMvshyWUiC8Xouuycx6l/IwCIoKBbLJADZYYqVfu+V6ayM93Y5GmP/rOvBUTS
-         KJORBuusogOwcjM7lSaw1gFEJP4pMWq2KQCkiE+O5TDgBbR/emo+9zzLy4Mhre+cbHRG
-         0T6oDtK/2S8C59Wm7hx2kYSJrm7zXHPfwgndzZbVh6EcOk8hctVYnhQu9Xd8k8rObfLH
-         BxjuPzwXFJiZq23KoH/rnXiS3b3hEP1ztA9sWZhUQ3xgCub53Vsp7Otlf6VefXoqJqIk
-         RRavf1rFzL+JXNAMTiLLIDRvs6lRyHBwj3OfrKndcF7+8gVQVCh24lYit/HbrCrZ+GIW
-         DwZg==
-X-Gm-Message-State: AOAM530PThYQje1Pq5jWEHthETduS47C4LIOCDSUmkT5DDq/h0HqGlry
-        rp8Q1Q93W+nbOsP/TnQJAnP1cC22fQV5U5DysbDw4uYPBUXzQIV8yyKo9TH8h6ijJUV7TQXZK0w
-        xN9uvIewJ6NbGeNzsrl4pUKtc
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr57416005edd.306.1636990853166;
-        Mon, 15 Nov 2021 07:40:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwDPKyyEb11g+BKxLwXQwZFfVyv+tGgMUtQwlKJf4Z9WueZJD2cZ4u8Pyzde3iKzatd6+lNig==
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr57415979edd.306.1636990852965;
-        Mon, 15 Nov 2021 07:40:52 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gt18sm6918918ejc.46.2021.11.15.07.40.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 07:40:52 -0800 (PST)
-Message-ID: <facf6787-9ad2-c75f-8a0e-786093125a10@redhat.com>
-Date:   Mon, 15 Nov 2021 16:40:51 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/4] bq25890_charger: Enable continuous conversion for ADC
- at charging
-Content-Language: en-US
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Yauhen Kharuzhy <jekhor@gmail.com>, linux-pm@vger.kernel.org,
+        id S236557AbhKOPp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:45:26 -0500
+Received: from mga07.intel.com ([134.134.136.100]:53935 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236674AbhKOPpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:45:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="296891655"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="296891655"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 07:42:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="454064088"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2021 07:42:07 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id C7D3B173; Mon, 15 Nov 2021 17:42:09 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211107202001.54579-1-jekhor@gmail.com>
- <20211107202001.54579-4-jekhor@gmail.com>
- <3414874a-3dd0-24b2-92be-f59392dba810@redhat.com>
- <20211115152313.5ls7asfwuj4eclzb@earth.universe>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211115152313.5ls7asfwuj4eclzb@earth.universe>
+Cc:     Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/3] =?UTF-8?q?i2c:=20mux:=20gpio:=C2=A0Replace=20custo?= =?UTF-8?q?m=20acpi=5Fget=5Flocal=5Faddress()?=
+Date:   Mon, 15 Nov 2021 17:41:59 +0200
+Message-Id: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Recently ACPI gained the acpi_get_local_address() API which may be used
+instead of home grown i2c_mux_gpio_get_acpi_adr().
 
-On 11/15/21 16:23, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Sun, Nov 07, 2021 at 09:48:38PM +0100, Hans de Goede wrote:
->> Hi,
->>
->> On 11/7/21 21:20, Yauhen Kharuzhy wrote:
->>> Instead of one shot run of ADC at beginning of charging, run continuous
->>> conversion to ensure that all charging-related values are monitored
->>> properly (input voltage, input current, themperature etc.).
->>>
->>> Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
->>
->> Thank you for finding this! This explains why all the ADC returned
->> values like current_now where 0 when charging, I thought this was
->> just something which was only supported while not charging, heh.
->>
->> As before, the patch subject prefix should be: "power: supply: bq25890: "
->>
->> Otherwise the patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>
->> Sebastian, this really is a pure bug-fix patch, any chance you
->> can pick this up for a future 5.16-rc# pull-req ? 
->>
->> Regards,
->>
->> Hans
-> 
-> Thanks, queued to power-supply's fixes branch.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/i2c/muxes/i2c-mux-gpio.c | 43 ++------------------------------
+ 1 file changed, 2 insertions(+), 41 deletions(-)
 
-Thank you.
-
-Note I also added this to my:
-
-[PATCH v2 00/20] power-suppy/i2c/extcon: Fix charger setup on Xiaomi Mi Pad 2 and Lenovo Yogabook
-
-Series, together with 2 of the 3 other patches from this series
-(with some minor fixes applied to one of them).
-
-So you can skip:
-
-[PATCH v2 02/20] power: supply: bq25890: Fix ADC continuous conversion setting when charging
-
-from that series (I reworded the commit msg subject a bit,
-but it is the exact same patch).
-
-If I end up doing a v3, I'll drop this patch.
-
-Regards,
-
-Hans
+diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
+index bac415a52b78..31e6eb1591bb 100644
+--- a/drivers/i2c/muxes/i2c-mux-gpio.c
++++ b/drivers/i2c/muxes/i2c-mux-gpio.c
+@@ -49,45 +49,6 @@ static int i2c_mux_gpio_deselect(struct i2c_mux_core *muxc, u32 chan)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_ACPI
+-
+-static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+-				     struct fwnode_handle *fwdev,
+-				     unsigned int *adr)
+-
+-{
+-	unsigned long long adr64;
+-	acpi_status status;
+-
+-	status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwdev),
+-				       METHOD_NAME__ADR,
+-				       NULL, &adr64);
+-
+-	if (!ACPI_SUCCESS(status)) {
+-		dev_err(dev, "Cannot get address\n");
+-		return -EINVAL;
+-	}
+-
+-	*adr = adr64;
+-	if (*adr != adr64) {
+-		dev_err(dev, "Address out of range\n");
+-		return -ERANGE;
+-	}
+-
+-	return 0;
+-}
+-
+-#else
+-
+-static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+-				     struct fwnode_handle *fwdev,
+-				     unsigned int *adr)
+-{
+-	return -EINVAL;
+-}
+-
+-#endif
+-
+ static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
+ 				 struct platform_device *pdev)
+ {
+@@ -141,9 +102,9 @@ static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
+ 			fwnode_property_read_u32(child, "reg", values + i);
+ 
+ 		} else if (is_acpi_node(child)) {
+-			rc = i2c_mux_gpio_get_acpi_adr(dev, child, values + i);
++			rc = acpi_get_local_address(ACPI_HANDLE_FWNODE(child), values + i);
+ 			if (rc)
+-				return rc;
++				return dev_err_probe(dev, rc, "Cannot get address\n");
+ 		}
+ 
+ 		i++;
+-- 
+2.33.0
 
