@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C94B450DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31774450D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239903AbhKOSFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:05:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50902 "EHLO mail.kernel.org"
+        id S238792AbhKORzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:55:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237446AbhKOR0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:26:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE0463281;
-        Mon, 15 Nov 2021 17:18:21 +0000 (UTC)
+        id S237777AbhKORYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F3963286;
+        Mon, 15 Nov 2021 17:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996702;
-        bh=/Zob+YkUS++K5hmaiQ+Y4ZkN0X+mD+OaiIMUhvMERKQ=;
+        s=korg; t=1636996705;
+        bh=DbtiOiCLEsnKuUdPZWFWTy0CB/G5GaTeDk2npq8/nNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fbKMPbICSD0A6mYgzzthzumAfs8OzPE56A1+bG91CbrtJ6T49xRUNlcW633dQXwxw
-         zAsvvyi2cX40dqMY3BTwnZr04FGqKp12mTTwCG+3CaFAL3plpzzg3RdZ4IaeI6aFNo
-         f2WKnoO8vq7TJWMFr4D+dEKZsfToDGZssRgILJNg=
+        b=hRpmUDQcXdUhjRC7TbJrCnhRpbEOw7TUc6H/bANKZNNs82ZxYmCMGVKwqcGjvacv8
+         nFyDdzmXqH+yV0Ow0UkrR8dje3J8EvDZtvYSyNJvyf0SaQ7uqW0ezuROhFcgd82A/S
+         omi9u1Z89C45ufY8DpwVdZagA4vu4bZXSJdDsoIg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
+        Ladislav Michl <ladis@linux-mips.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 235/355] PM: hibernate: fix sparse warnings
-Date:   Mon, 15 Nov 2021 18:02:39 +0100
-Message-Id: <20211115165321.354426917@linuxfoundation.org>
+Subject: [PATCH 5.4 236/355] clocksource/drivers/timer-ti-dm: Select TIMER_OF
+Date:   Mon, 15 Nov 2021 18:02:40 +0100
+Message-Id: <20211115165321.385021610@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,50 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anders Roxell <anders.roxell@linaro.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 01de5fcd8b1ac0ca28d2bb0921226a54fdd62684 ]
+[ Upstream commit eda9a4f7af6ee47e9e131f20e4f8a41a97379293 ]
 
-When building the kernel with sparse enabled 'C=1' the following
-warnings shows up:
+When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
+due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
+CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
 
-kernel/power/swap.c:390:29: warning: incorrect type in assignment (different base types)
-kernel/power/swap.c:390:29:    expected int ret
-kernel/power/swap.c:390:29:    got restricted blk_status_t
+arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
 
-This is due to function hib_wait_io() returns a 'blk_status_t' which is
-a bitwise u8. Commit 5416da01ff6e ("PM: hibernate: Remove
-blk_status_to_errno in hib_wait_io") seemed to have mixed up the return
-type. However, the 4e4cbee93d56 ("block: switch bios to blk_status_t")
-actually broke the behaviour by returning the wrong type.
-
-Rework so function hib_wait_io() returns a 'int' instead of
-'blk_status_t' and make sure to call function
-blk_status_to_errno(hb->error)' when returning from function
-hib_wait_io() a int gets returned.
-
-Fixes: 4e4cbee93d56 ("block: switch bios to blk_status_t")
-Fixes: 5416da01ff6e ("PM: hibernate: Remove blk_status_to_errno in hib_wait_io")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Ladislav Michl <ladis@linux-mips.org>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: linux-omap@vger.kernel.org
+Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210828175747.3777891-1-keescook@chromium.org
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/power/swap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clocksource/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index d32cd03d5ff8c..bcc9769e8a3b5 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -292,7 +292,7 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
- 	return error;
- }
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 3bb5625504e2f..9bfe4c5af87e3 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -24,6 +24,7 @@ config I8253_LOCK
  
--static blk_status_t hib_wait_io(struct hib_bio_batch *hb)
-+static int hib_wait_io(struct hib_bio_batch *hb)
- {
- 	wait_event(hb->wait, atomic_read(&hb->count) == 0);
- 	return blk_status_to_errno(hb->error);
+ config OMAP_DM_TIMER
+ 	bool
++	select TIMER_OF
+ 
+ config CLKBLD_I8253
+ 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
 -- 
 2.33.0
 
