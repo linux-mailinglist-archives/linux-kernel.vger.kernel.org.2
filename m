@@ -2,132 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A343450226
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D1645023A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237627AbhKOKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:16:00 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:58321 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237604AbhKOKPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:15:30 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Ht4kT1lyfz9sSP;
-        Mon, 15 Nov 2021 11:12:33 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id lzJCsmAC0euV; Mon, 15 Nov 2021 11:12:33 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Ht4kT0hqRz9sSM;
-        Mon, 15 Nov 2021 11:12:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 013478B770;
-        Mon, 15 Nov 2021 11:12:33 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id upcqBFDaFB3k; Mon, 15 Nov 2021 11:12:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CB1EB8B763;
-        Mon, 15 Nov 2021 11:12:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 1AFACN9b162159
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 11:12:23 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 1AFACMNr162158;
-        Mon, 15 Nov 2021 11:12:22 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Neuling <mikey@neuling.org>
-Subject: [PATCH v3] powerpc/code-patching: Improve verification of patchability
-Date:   Mon, 15 Nov 2021 11:12:22 +0100
-Message-Id: <bc683d499a411730504b132a924de0ccc2ef1f79.1636971137.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S237055AbhKOKUf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 05:20:35 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38329 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhKOKU3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:20:29 -0500
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 8942660010;
+        Mon, 15 Nov 2021 10:17:31 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 11:13:44 +0100
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 3/6] net: ocelot: pre-compute injection frame header
+ content
+Message-ID: <20211115111344.03376026@fixe.home>
+In-Reply-To: <20211103145351.793538c3@fixe.home>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+        <20211103091943.3878621-4-clement.leger@bootlin.com>
+        <20211103123811.im5ua7kirogoltm7@skbuf>
+        <20211103145351.793538c3@fixe.home>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1636971141; l=2546; s=20211009; h=from:subject:message-id; bh=fpvmT7W+ZgCmpsT/d2KZPUJcncqdxaGLBSYEXsLHWos=; b=sNSDgwOyja21A4BwS0DUNcWdb80oTdBoOhXojue++IRLMYJXgTKFzrXmAiYal96Gu5Y9dbWnfovk t7tVzxS6DeXHj5+xdiXyFqEUA/nLkd9iwnXB78qaQ8QYz8n8rn7x
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today, patch_instruction() assumes that it is called exclusively on
-valid addresses, and only checks that it is not called on an init
-address after init section has been freed.
+Le Wed, 3 Nov 2021 14:53:51 +0100,
+Clément Léger <clement.leger@bootlin.com> a écrit :
 
-Improve verification by calling kernel_text_address() instead.
+> Le Wed, 3 Nov 2021 12:38:12 +0000,
+> Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> 
+> > On Wed, Nov 03, 2021 at 10:19:40AM +0100, Clément Léger wrote:  
+> > > IFH preparation can take quite some time on slow processors (up to
+> > > 5% in a iperf3 test for instance). In order to reduce the cost of
+> > > this preparation, pre-compute IFH since most of the parameters are
+> > > fixed per port. Only rew_op and vlan tag will be set when sending
+> > > if different than 0. This allows to remove entirely the calls to
+> > > packing() with basic usage. In the same time, export this function
+> > > that will be used by FDMA.
+> > > 
+> > > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > > ---    
+> > 
+> > Honestly, this feels a bit cheap/gimmicky, and not really the
+> > fundamental thing to address. In my testing of a similar idea (see
+> > commits 67c2404922c2 ("net: dsa: felix: create a template for the DSA
+> > tags on xmit") and then 7c4bb540e917 ("net: dsa: tag_ocelot: create
+> > separate tagger for Seville"), the net difference is not that stark,
+> > considering that now you need to access one more memory region which
+> > you did not need before, do a memcpy, and then patch the IFH anyway
+> > for the non-constant stuff.  
+> 
+> The memcpy is neglectable and the patching happens only in a few
+> cases (at least vs the packing function call). The VSC7514 CPU is really
+> slow and lead to 2.5% up to 5% time spent in packing() when using iperf3
+> and depending on the use case (according to ftrace).
+> 
+> > 
+> > Certainly, for the calls to ocelot_port_inject_frame() from DSA, I
+> > would prefer not having this pre-computed IFH.
+> > 
+> > Could you provide some before/after performance numbers and perf
+> > counters?  
+> 
+> I will make another round of measure to confirm my previous number and
+> check the impact on the injection rate on ocelot.
 
-kernel_text_address() already includes a verification of
-initmem release.
+I checked again my bandwith numbers (obtained with iperf3) with and
+without the pre-computed header:
 
-Cc: Michael Neuling <mikey@neuling.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3:
-- At the same time also remove init_mem_is_free as it was the last user (Was done in patch 3 in v2)
-- Drop patch 2 (was merged via mm tree)
----
- arch/powerpc/include/asm/setup.h | 1 -
- arch/powerpc/lib/code-patching.c | 5 ++---
- arch/powerpc/mm/mem.c            | 2 --
- 3 files changed, 2 insertions(+), 6 deletions(-)
+Test on standard packets with UDP (iperf3 -t 100 -l 1460 -u -b 0 -c *)
+- With pre-computed header: UDP TX: 	33Mbit/s
+- Without UDP TX: 			31Mbit/s
+-> 6.5% improvement
 
-diff --git a/arch/powerpc/include/asm/setup.h b/arch/powerpc/include/asm/setup.h
-index 6c1a7d217d1a..426a2d8d028f 100644
---- a/arch/powerpc/include/asm/setup.h
-+++ b/arch/powerpc/include/asm/setup.h
-@@ -9,7 +9,6 @@ extern void ppc_printk_progress(char *s, unsigned short hex);
- 
- extern unsigned int rtas_data;
- extern unsigned long long memory_limit;
--extern bool init_mem_is_free;
- extern void *zalloc_maybe_bootmem(size_t size, gfp_t mask);
- 
- struct device_node;
-diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
-index c5ed98823835..5e2fe133639e 100644
---- a/arch/powerpc/lib/code-patching.c
-+++ b/arch/powerpc/lib/code-patching.c
-@@ -190,10 +190,9 @@ static int do_patch_instruction(u32 *addr, struct ppc_inst instr)
- int patch_instruction(u32 *addr, struct ppc_inst instr)
- {
- 	/* Make sure we aren't patching a freed init section */
--	if (init_mem_is_free && init_section_contains(addr, 4)) {
--		pr_debug("Skipping init section patching addr: 0x%px\n", addr);
-+	if (!kernel_text_address((unsigned long)addr))
- 		return 0;
--	}
-+
- 	return do_patch_instruction(addr, instr);
- }
- NOKPROBE_SYMBOL(patch_instruction);
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index bd5d91a31183..8e301cd8925b 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -26,7 +26,6 @@
- #include <mm/mmu_decl.h>
- 
- unsigned long long memory_limit;
--bool init_mem_is_free;
- 
- unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
- EXPORT_SYMBOL(empty_zero_page);
-@@ -312,7 +311,6 @@ void free_initmem(void)
- {
- 	ppc_md.progress = ppc_printk_progress;
- 	mark_initmem_nx();
--	init_mem_is_free = true;
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
- 
+Test on small packets with UDP (iperf3 -t 100 -l 700 -u -b 0 -c *)
+- With pre-computed header: UDP TX: 	15.8Mbit/s
+- Without UDP TX: 			16.4Mbit/s
+-> 4.3% improvement
+
+The improvement might not be huge but also not negligible at all.
+Please tell me if you want me to drop it or not based on those numbers.
+
+> 
+> >   
+> > >  drivers/net/ethernet/mscc/ocelot.c | 23 ++++++++++++++++++-----
+> > >  include/soc/mscc/ocelot.h          |  5 +++++
+> > >  2 files changed, 23 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mscc/ocelot.c
+> > > b/drivers/net/ethernet/mscc/ocelot.c index
+> > > e6c18b598d5c..97693772595b 100644 ---
+> > > a/drivers/net/ethernet/mscc/ocelot.c +++
+> > > b/drivers/net/ethernet/mscc/ocelot.c @@ -1076,20 +1076,29 @@ bool
+> > > ocelot_can_inject(struct ocelot *ocelot, int grp) }
+> > >  EXPORT_SYMBOL(ocelot_can_inject);
+> > >  
+> > > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
+> > > rew_op,
+> > > +			 u32 vlan_tag)
+> > > +{
+> > > +	memcpy(ifh, port->ifh, OCELOT_TAG_LEN);
+> > > +
+> > > +	if (vlan_tag)
+> > > +		ocelot_ifh_set_vlan_tci(ifh, vlan_tag);
+> > > +	if (rew_op)
+> > > +		ocelot_ifh_set_rew_op(ifh, rew_op);
+> > > +}
+> > > +EXPORT_SYMBOL(ocelot_ifh_port_set);
+> > > +
+> > >  void ocelot_port_inject_frame(struct ocelot *ocelot, int port, int
+> > > grp, u32 rew_op, struct sk_buff *skb)
+> > >  {
+> > > +	struct ocelot_port *port_s = ocelot->ports[port];
+> > >  	u32 ifh[OCELOT_TAG_LEN / 4] = {0};
+> > >  	unsigned int i, count, last;
+> > >  
+> > >  	ocelot_write_rix(ocelot, QS_INJ_CTRL_GAP_SIZE(1) |
+> > >  			 QS_INJ_CTRL_SOF, QS_INJ_CTRL, grp);
+> > >  
+> > > -	ocelot_ifh_set_bypass(ifh, 1);
+> > > -	ocelot_ifh_set_dest(ifh, BIT_ULL(port));
+> > > -	ocelot_ifh_set_tag_type(ifh, IFH_TAG_TYPE_C);
+> > > -	ocelot_ifh_set_vlan_tci(ifh, skb_vlan_tag_get(skb));
+> > > -	ocelot_ifh_set_rew_op(ifh, rew_op);
+> > > +	ocelot_ifh_port_set(ifh, port_s, rew_op,
+> > > skb_vlan_tag_get(skb)); 
+> > >  	for (i = 0; i < OCELOT_TAG_LEN / 4; i++)
+> > >  		ocelot_write_rix(ocelot, ifh[i], QS_INJ_WR, grp);
+> > > @@ -2128,6 +2137,10 @@ void ocelot_init_port(struct ocelot *ocelot,
+> > > int port) 
+> > >  	skb_queue_head_init(&ocelot_port->tx_skbs);
+> > >  
+> > > +	ocelot_ifh_set_bypass(ocelot_port->ifh, 1);
+> > > +	ocelot_ifh_set_dest(ocelot_port->ifh, BIT_ULL(port));
+> > > +	ocelot_ifh_set_tag_type(ocelot_port->ifh, IFH_TAG_TYPE_C);
+> > > +
+> > >  	/* Basic L2 initialization */
+> > >  
+> > >  	/* Set MAC IFG Gaps
+> > > diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+> > > index fef3a36b0210..b3381c90ff3e 100644
+> > > --- a/include/soc/mscc/ocelot.h
+> > > +++ b/include/soc/mscc/ocelot.h
+> > > @@ -6,6 +6,7 @@
+> > >  #define _SOC_MSCC_OCELOT_H
+> > >  
+> > >  #include <linux/ptp_clock_kernel.h>
+> > > +#include <linux/dsa/ocelot.h>
+> > >  #include <linux/net_tstamp.h>
+> > >  #include <linux/if_vlan.h>
+> > >  #include <linux/regmap.h>
+> > > @@ -623,6 +624,8 @@ struct ocelot_port {
+> > >  
+> > >  	struct net_device		*bridge;
+> > >  	u8				stp_state;
+> > > +
+> > > +	u8				ifh[OCELOT_TAG_LEN];
+> > >  };
+> > >  
+> > >  struct ocelot {
+> > > @@ -754,6 +757,8 @@ void __ocelot_target_write_ix(struct ocelot
+> > > *ocelot, enum ocelot_target target, bool ocelot_can_inject(struct
+> > > ocelot *ocelot, int grp); void ocelot_port_inject_frame(struct
+> > > ocelot *ocelot, int port, int grp, u32 rew_op, struct sk_buff *skb);
+> > > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
+> > > rew_op,
+> > > +			 u32 vlan_tag);
+> > >  int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct
+> > > sk_buff **skb); void ocelot_drain_cpu_queue(struct ocelot *ocelot,
+> > > int grp); 
+> > > -- 
+> > > 2.33.0  
+> >     
+> 
+> 
+> 
+
+
+
 -- 
-2.31.1
-
+Clément Léger,
+Embedded Linux and Kernel engineer at Bootlin
+https://bootlin.com
