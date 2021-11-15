@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95F74524BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8674524C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351565AbhKPBnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:43:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42400 "EHLO mail.kernel.org"
+        id S1344910AbhKPBnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:43:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242043AbhKOSdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242044AbhKOSdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:33:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91ACE6333A;
-        Mon, 15 Nov 2021 17:59:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 228206345A;
+        Mon, 15 Nov 2021 17:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999181;
-        bh=nh9Z0Ma/GeSOiyN4gCPuyXcL+6L+iRvKderhLl6dEaE=;
+        s=korg; t=1636999183;
+        bh=TOjlPrRJfj9axhzhp0RKU2dhlU5V9dASr+ThzNajcqA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0wf/CBVeOIX8C0VzbpuM+MLfY+jAPeKHPtBkwthBzVAVaT5rmPrMGGXe88Fqsb9T
-         papDFDyFgT7AGr3xkPI09gE9cyE7VxG7xyCMHzNsyP92HGNkEmWUspFPMBe3MUGdIN
-         IbIms5uOyrz8NNY1A8orCH9Hv+afX3uzFzyUNUoA=
+        b=Nq31D79trtpgOyqlYRChzW1nX3KEGZ66N5TiX2u2Q1mbL7er4xJ6QFgYUiW0czbUm
+         X8oPzpan+QMfFJ67MnI4KpQvLp+5KqI0VGUAEWaU7/w2J/beS+8OEb5SmWbL0VXMT4
+         sY5ToeVi/VMi+5k3Gq1Llo38SiY1f62oaO+Cengs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Imre Deak <imre.deak@intel.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [PATCH 5.14 204/849] component: do not leave master devres group open after bind
-Date:   Mon, 15 Nov 2021 17:54:47 +0100
-Message-Id: <20211115165427.104510220@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 205/849] dma-buf: WARN on dmabuf release with pending attachments
+Date:   Mon, 15 Nov 2021 17:54:48 +0100
+Message-Id: <20211115165427.135914290@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,95 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Charan Teja Reddy <charante@codeaurora.org>
 
-commit c87761db2100677a69be551365105125d872af5b upstream.
+[ Upstream commit f492283b157053e9555787262f058ae33096f568 ]
 
-In current code, the devres group for aggregate master is left open
-after call to component_master_add_*(). This leads to problems when the
-master does further managed allocations on its own. When any
-participating driver calls component_del(), this leads to immediate
-release of resources.
+It is expected from the clients to follow the below steps on an imported
+dmabuf fd:
+a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
+b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
+   o Here the kernel does some slab allocations, say for
+dma_buf_attachment and may be some other slab allocation in the
+dmabuf->ops->attach().
+c) Client may need to do dma_buf_map_attachment().
+d) Accordingly dma_buf_unmap_attachment() should be called.
+e) dma_buf_detach () // Clients detach to the dmabuf.
+   o Here the slab allocations made in b) are freed.
+f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
+reference.
 
-This came up when investigating a page fault occurring with i915 DRM
-driver unbind with 5.15-rc1 kernel. The following sequence occurs:
+Now say an erroneous client failed at step c) above thus it directly
+called dma_buf_put(), step f) above. Considering that it may be the last
+reference to the dmabuf, buffer will be freed with pending attachments
+left to the dmabuf which can show up as the 'memory leak'. This should
+at least be reported as the WARN().
 
- i915_pci_remove()
-   -> intel_display_driver_unregister()
-     -> i915_audio_component_cleanup()
-       -> component_del()
-         -> component.c:take_down_master()
-           -> hdac_component_master_unbind() [via master->ops->unbind()]
-           -> devres_release_group(master->parent, NULL)
-
-With older kernels this has not caused issues, but with audio driver
-moving to use managed interfaces for more of its allocations, this no
-longer works. Devres log shows following to occur:
-
-component_master_add_with_match()
-[  126.886032] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000323ccdc5 devm_component_match_release (24 bytes)
-[  126.886045] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000865cdb29 grp< (0 bytes)
-[  126.886049] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 grp< (0 bytes)
-
-audio driver completes its PCI probe()
-[  126.892238] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 pcim_iomap_release (48 bytes)
-
-component_del() called() at DRM/i915 unbind()
-[  137.579422] i915 0000:00:02.0: DEVRES REL 00000000ef44c293 grp< (0 bytes)
-[  137.579445] snd_hda_intel 0000:00:1f.3: DEVRES REL 00000000865cdb29 grp< (0 bytes)
-[  137.579458] snd_hda_intel 0000:00:1f.3: DEVRES REL 000000001b480725 pcim_iomap_release (48 bytes)
-
-So the "devres_release_group(master->parent, NULL)" ends up freeing the
-pcim_iomap allocation. Upon next runtime resume, the audio driver will
-cause a page fault as the iomap alloc was released without the driver
-knowing about it.
-
-Fix this issue by using the "struct master" pointer as identifier for
-the devres group, and by closing the devres group after
-the master->ops->bind() call is done. This allows devres allocations
-done by the driver acting as master to be isolated from the binding state
-of the aggregate driver. This modifies the logic originally introduced in
-commit 9e1ccb4a7700 ("drivers/base: fix devres handling for master device")
-
-Fixes: 9e1ccb4a7700 ("drivers/base: fix devres handling for master device")
-Cc: stable@vger.kernel.org
-Acked-by: Imre Deak <imre.deak@intel.com>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-BugLink: https://gitlab.freedesktop.org/drm/intel/-/issues/4136
-Link: https://lore.kernel.org/r/20211013161345.3755341-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627043468-16381-1-git-send-email-charante@codeaurora.org
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/component.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/dma-buf/dma-buf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -246,7 +246,7 @@ static int try_to_bring_up_master(struct
- 		return 0;
- 	}
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 511fe0d217a08..733c8b1c8467c 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -79,6 +79,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
  
--	if (!devres_open_group(master->parent, NULL, GFP_KERNEL))
-+	if (!devres_open_group(master->parent, master, GFP_KERNEL))
- 		return -ENOMEM;
- 
- 	/* Found all components */
-@@ -258,6 +258,7 @@ static int try_to_bring_up_master(struct
- 		return ret;
- 	}
- 
-+	devres_close_group(master->parent, NULL);
- 	master->bound = true;
- 	return 1;
- }
-@@ -282,7 +283,7 @@ static void take_down_master(struct mast
- {
- 	if (master->bound) {
- 		master->ops->unbind(master->parent);
--		devres_release_group(master->parent, NULL);
-+		devres_release_group(master->parent, master);
- 		master->bound = false;
- 	}
- }
++	WARN_ON(!list_empty(&dmabuf->attachments));
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+-- 
+2.33.0
+
 
 
