@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44038451BFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858B5451C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354073AbhKPAJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:09:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352644AbhKOUr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:47:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 675F763240;
-        Mon, 15 Nov 2021 20:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637009100;
-        bh=MQTFTpLy1DUXgbPj+fyTCEmPUUNZRsXNkWnZU16fcpY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rZx5UIHF5logW4gHVcEgXUyevjPivURMroo650Fdw/AUpY0n/l1Bb6ap+gevHX6+6
-         mIeO9tE3QD8U15KkS4T2WWO3OPw4gxlMXQVAYBmI8C/P1EbaIDCpB/lMoA4SjcJess
-         0lWBWcPb7L01ARzsX2ppPjRYDP56tva1CTFp22W/xurRlmmEhHGivUasoQL0R4Ga0Z
-         QiHfxHMf48coxqbWa1v41OMddgit7Bg/dqPToSW5VROvX8yPhuLLgcaPn9OeCjSWIm
-         vuFDCcdPPrdy4iofvybgGIDko9rhUscWHj7Ku3ondcbE2sixuL4oB1odVITHqnnGt9
-         uIfVjtbAjNbVQ==
-Date:   Mon, 15 Nov 2021 14:44:59 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
+        id S1344185AbhKPAKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353369AbhKOUzl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 15:55:41 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BAEC0432ED;
+        Mon, 15 Nov 2021 12:47:47 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so864251pjb.5;
+        Mon, 15 Nov 2021 12:47:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=37iPORGZWTcbPqrckEZeI9K5Eg70KvF8yptSAflO4Uw=;
+        b=RXgsN+aOmT0tvd3MDXT6gExcbkqyWM5NKd/5m3diH8mIMI9/WsCSqcb0y3AlsaU/fe
+         gJXFPIH8n0E3OZ0SrNXjjfVOu1D+z+VH7lIlKVYihp0qMAgCKB7iXol4vds9hWF2hv5P
+         E0+E1x37UO63H31p+Zhm6imdXbJQ0WN7qA0XfTcqHjAETNkXFTVv5mNZUgqWNwv8UAAe
+         fpvh45SscJE22UUN8Ao0deyYMpASeupP4MsdYDKzswUaVG0FpP5poMgvcmWYTpE7UVQt
+         XIBmXZpqYmlgcVYYLMpWCH1SZjyxteY3aPuEXMlBb8gebjC+CmST318B1cFcJhsONIN6
+         u1iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=37iPORGZWTcbPqrckEZeI9K5Eg70KvF8yptSAflO4Uw=;
+        b=RY84vFThyMs/brBbuhN5QzVC8BAjAXs+407ARSpqjHS0Bzlwy7QIxc7YyAH5sqabPt
+         6QHvllZnAHTNh4MLk2w58MuX5nthDUAcUYy+usnS2m+6T7sm1l5/T+cDFM+GCRArJHng
+         SI+Z33absaHXv3L8G+ACMzZqD/994DoBUHpDcVKal4nrmT5r59vaZpfS/bd9F+Q5C4Bg
+         MQjITz4FejfqH9dif4+Hs0Dmy2q8Z5/dD5QiXNPbsLMUz1N1NuUcs8BHCQT8PD5HnQNY
+         w6MsZAlK+znj+DZonDVmsZHU54/oexfbVi5orSzzCxXtwFGqcIyWEvfDkTygosgzG97m
+         q1KQ==
+X-Gm-Message-State: AOAM533TzfCAwoRbb37dH/WUYd8uPfz4f8qKPmzEBxfvjI7mpXVtGrZR
+        vdjbGILTeMGWvenfIwbhahLDOOKTASts6poWdwI=
+X-Google-Smtp-Source: ABdhPJya3JcZmZ+67ZgolK7IzkiairySucGFBYEMhzBIf74Vmy4XzQQ+HAMpmBUWkge4t5ohjhQ+cA==
+X-Received: by 2002:a17:902:e294:b0:143:86a8:c56d with SMTP id o20-20020a170902e29400b0014386a8c56dmr38666246plc.22.1637009266537;
+        Mon, 15 Nov 2021 12:47:46 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id m12sm12749224pfk.27.2021.11.15.12.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 12:47:45 -0800 (PST)
+Message-ID: <6192c771.1c69fb81.48c9.4359@mx.google.com>
+Date:   Mon, 15 Nov 2021 12:47:45 -0800 (PST)
+X-Google-Original-Date: Mon, 15 Nov 2021 20:47:44 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/575] 5.10.80-rc1 review
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
-        rafael@kernel.org, Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/11] PCI: portdrv: Suppress kernel DMA ownership
- auto-claiming
-Message-ID: <20211115204459.GA1585166@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115020552.2378167-5-baolu.lu@linux.intel.com>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:05:45AM +0800, Lu Baolu wrote:
-> IOMMU grouping on PCI necessitates that if we lack isolation on a bridge
-> then all of the downstream devices will be part of the same IOMMU group
-> as the bridge.
-
-I think this means something like: "If a PCIe Switch Downstream Port
-lacks <a specific set of ACS capabilities>, all downstream devices
-will be part of the same IOMMU group as the switch," right?
-
-If so, can you fill in the details to make it specific and concrete?
-
-> As long as the bridge kernel driver doesn't map and
-> access any PCI mmio bar, it's safe to bind it to the device in a USER-
-> owned group. Hence, safe to suppress the kernel DMA ownership auto-
-> claiming.
-
-s/mmio/MMIO/ (also below)
-s/bar/BAR/ (also below)
-
-I don't understand what "kernel DMA ownership auto-claiming" means.
-Presumably that's explained in previous patches and a code comment
-near "suppress_auto_claim_dma_owner".
-
-> The commit 5f096b14d421b ("vfio: Whitelist PCI bridges") permitted a
-> class of kernel drivers. 
-
-Permitted them to do what?
-
-> This is not always safe. For example, the SHPC
-> system design requires that it must be integrated into a PCI-to-PCI
-> bridge or a host bridge.
-
-If this SHPC example is important, it would be nice to have a citation
-to the spec section that requires this.
-
-> The shpchp_core driver relies on the PCI mmio
-> bar access for the controller functionality. Binding it to the device
-> belonging to a USER-owned group will allow the user to change the
-> controller via p2p transactions which is unknown to the hot-plug driver
-> and could lead to some unpredictable consequences.
+On Mon, 15 Nov 2021 17:55:25 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 575 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Now that we have driver self-declaration of safety we should rely on that.
-
-Can you spell out what drivers are self-declaring?  Are they declaring
-that they don't program their devices to do DMA?
-
-> This change may cause regression on some platforms, since all bridges were
-> exempted before, but now they have to be manually audited before doing so.
-> This is actually the desired outcome anyway.
-
-Please spell out what regression this may cause and how users would
-recognize it.  Also, please give a hint about why that is desirable.
-
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Suggested-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/pci/pcie/portdrv_pci.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-> index 35eca6277a96..1285862a9aa8 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -203,6 +203,8 @@ static struct pci_driver pcie_portdriver = {
->  	.err_handler	= &pcie_portdrv_err_handler,
->  
->  	.driver.pm	= PCIE_PORTDRV_PM_OPS,
-> +
-> +	.driver.suppress_auto_claim_dma_owner = true,
->  };
->  
->  static int __init dmi_pcie_pme_disable_msi(const struct dmi_system_id *d)
-> -- 
-> 2.25.1
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
+> 
+
+5.10.80-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
