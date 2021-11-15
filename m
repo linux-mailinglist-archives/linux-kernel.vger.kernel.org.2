@@ -2,141 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED16C44FF7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4760644FF57
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 08:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236863AbhKOHvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 02:51:31 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:36810 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhKOHsz (ORCPT
+        id S229780AbhKOHso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 02:48:44 -0500
+Received: from bmailout1.hostsharing.net ([83.223.95.100]:53963 "EHLO
+        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhKOHsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 02:48:55 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AF7KrAB080866;
-        Mon, 15 Nov 2021 15:20:54 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Nov
- 2021 15:44:28 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <hverkuil-cisco@xs4all.nl>,
-        <sakari.ailus@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <laurent.pinchart@ideasonboard.com>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 9/9] media: aspeed: Extend debug message
-Date:   Mon, 15 Nov 2021 15:44:37 +0800
-Message-ID: <20211115074437.28079-10-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211115074437.28079-1-jammy_huang@aspeedtech.com>
-References: <20211115074437.28079-1-jammy_huang@aspeedtech.com>
+        Mon, 15 Nov 2021 02:48:43 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id E79CC30000649;
+        Mon, 15 Nov 2021 08:45:42 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id DACF4FEC4B; Mon, 15 Nov 2021 08:45:42 +0100 (CET)
+Date:   Mon, 15 Nov 2021 08:45:42 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
+Message-ID: <20211115074542.GA24942@wunner.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AF7KrAB080866
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211114173550-mutt-send-email-mst@kernel.org>
+ <20211114122249-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-updated as below:
+On Sun, Nov 14, 2021 at 05:37:15PM -0500, Michael S. Tsirkin wrote:
+> On Sun, Nov 14, 2021 at 07:06:04PM +0100, Lukas Wunner wrote:
+> > Why don't you just trigger surprise-removal from outside the guest?
+> 
+> Because linux does not handle it well for all devices.  Fixing that
+> requires fixing all drivers.
 
-Capture:
-  Mode                : Direct fetch
-  VGA bpp mode        : 32
-  Signal              : lock
-  Width               : 1920
-  Height              : 1080
-  FRC                 : 0
+Please expose surprise removal in addition to the Attention Button
+to avoid perpetuating this situation.  Teach users to use that for
+devices whose drivers already support it well and fall back to the
+Attention Button only for those that don't.
 
-Compression:
-  Format              : JPEG
-  Subsampling         : 444
-  Quality             : 4
-  HQ Mode             : N/A
-  HQ Quality          : 0
-  Mode                : N/A
+macOS and Windows support surprise-removal of most hardware well.
+We've made a lot of progress in that area (AMD for one has been
+working on surprise removal of GPUs).  It's an embarrassment if
+contortions such as abusing the Attention Button are needed just
+because surprise removal doesn't work for everything.  I'd like
+to see engineering resources spent on fixing surprise removal for
+drivers that are relevant for you, rather than implementing
+workarounds such as this one.
 
-Performance:
-  Frame#              : 4
-  Frame Duration(ms)  :
-    Now               : 22
-    Min               : 21
-    Max               : 22
-  FPS                 : 45
+Thanks,
 
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
-v4:
-  - update debugfs log
-v3:
-  - no update
-v2:
-  - update commit message
----
- drivers/media/platform/aspeed-video.c | 33 +++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 00730bdda561..1b7ec8d1884b 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -1801,10 +1801,29 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
- static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
- {
- 	struct aspeed_video *v = s->private;
-+	u32 val08;
- 
- 	seq_puts(s, "\n");
- 
- 	seq_puts(s, "Capture:\n");
-+	val08 = aspeed_video_read(v, VE_CTRL);
-+	if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
-+		seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
-+		seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
-+			   FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
-+	} else {
-+		seq_printf(s, "  %-20s:\tSync\n", "Mode");
-+		seq_printf(s, "  %-20s:\t%s\n", "Video source",
-+			   FIELD_GET(VE_CTRL_SOURCE, val08) ?
-+			   "external" : "internal");
-+		seq_printf(s, "  %-20s:\t%s\n", "DE source",
-+			   FIELD_GET(VE_CTRL_INT_DE, val08) ?
-+			   "internal" : "external");
-+		seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
-+			   FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
-+			   "Without" : "With");
-+	}
-+
- 	seq_printf(s, "  %-20s:\t%s\n", "Signal",
- 		   v->v4l2_input_status ? "Unlock" : "Lock");
- 	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-@@ -1813,6 +1832,20 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
- 
- 	seq_puts(s, "\n");
- 
-+	seq_puts(s, "Compression:\n");
-+	seq_printf(s, "  %-20s:\t%s\n", "Format", format_str[v->format]);
-+	seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
-+		   v->yuv420 ? "420" : "444");
-+	seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
-+	seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
-+		   (v->format == VIDEO_FMT_ASPEED) ? (v->hq_mode ? "on" : "off") : "N/A");
-+	seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
-+	seq_printf(s, "  %-20s:\t%s\n", "Mode",
-+		   (v->format == VIDEO_FMT_ASPEED) ?
-+		   compress_mode_str[v->compression_mode] : "N/A");
-+
-+	seq_puts(s, "\n");
-+
- 	seq_puts(s, "Performance:\n");
- 	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
- 	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
--- 
-2.25.1
-
+Lukas
