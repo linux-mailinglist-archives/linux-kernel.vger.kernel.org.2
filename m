@@ -2,62 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A951A45033C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8673450340
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 12:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhKOLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 06:14:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbhKOLOm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 06:14:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E50C061746
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 03:11:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t7V8vkr29zZbMwpTi9zjV5Xk2KGVk9lglua9CYi555I=; b=osXk6uFjDeHhZH8nLNv49dvCac
-        GFJW4dD/BC1vAl8em2qEC8S7JEvQAjqVH0FKjyE55dNNuZcwuUJO4ueCmp0MP3YgPO5yrdwb6z2Y+
-        r4TivYqGQqfXPtBObnM9eiks3i7fWA2t7Ru7JBHDHkrHe4haUnvORyje3wBpHwq8klLjGa3cHLrDO
-        OohhfkwgFepAJlT6HsXXBZYP24TTKG+l/YMA/YLZDK9LkHS1RFVkYJ8O00U1iawANyjgwzxzCko4K
-        QuPEIArH9Kznw3D+J1N2jhGYUFtKwJIR6gV++dPndmM6+j+LDMFKG7Tfp9Vx1zT6Guuxy+5qzCK4v
-        ZPVFDP8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmZti-005din-Tc; Mon, 15 Nov 2021 11:11:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 182B230031C;
-        Mon, 15 Nov 2021 12:11:38 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EBE90203C0207; Mon, 15 Nov 2021 12:11:37 +0100 (CET)
-Date:   Mon, 15 Nov 2021 12:11:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Zhengkui <guozhengkui@vivo.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "open list:LOCKING PRIMITIVES" <linux-kernel@vger.kernel.org>,
-        kernel@vivo.com
-Subject: Re: [PATCH] rtmutex: fix boolreturn.cocci warning:
-Message-ID: <YZJAaUreHQQsilRL@hirez.programming.kicks-ass.net>
-References: <20211115070411.6842-1-guozhengkui@vivo.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115070411.6842-1-guozhengkui@vivo.com>
+        id S231343AbhKOLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 06:16:53 -0500
+Received: from mga09.intel.com ([134.134.136.24]:10569 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231252AbhKOLQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 06:16:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="233259944"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="233259944"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 03:13:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="734932781"
+Received: from pg-vnc03.altera.com ([10.142.129.92])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Nov 2021 03:13:06 -0800
+From:   sin.hui.kho@linux.intel.com
+To:     Dinh Nguyen <dinguyen@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sin Hui Kho <sin.hui.kho@intel.com>
+Subject: [PATCH] HSD #14014983934: arm64: dts: Update NAND MTD partition for Agilex and Stratix 10
+Date:   Mon, 15 Nov 2021 19:12:15 +0800
+Message-Id: <20211115111215.107992-1-sin.hui.kho@linux.intel.com>
+X-Mailer: git-send-email 2.13.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 03:04:10PM +0800, Guo Zhengkui wrote:
-> Fix following boolreturn.cocci warning:
-> ./kernel/locking/rtmutex.c:375:9-10: WARNING: return of 0/1 in function
->  '__waiter_less' with return type bool.
+From: Sin Hui Kho <sin.hui.kho@intel.com>
 
-The right patch it so delete that stupid script.
+Change NAND flash MTD partition in device tree after implementation of
+UBI and UBIFS. "u-boot" partition remain for raw u-boot image, but "root"
+partition is use for UBI image containing all other components.
+
+Signed-off-by: Sin Hui Kho <sin.hui.kho@intel.com>
+---
+ .../dts/altera/socfpga_stratix10_socdk_nand.dts    | 24 ++--------------------
+ .../boot/dts/intel/socfpga_agilex_socdk_nand.dts   | 20 ++----------------
+ 2 files changed, 4 insertions(+), 40 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
+index c07966740e14..9511f2bf2d25 100644
+--- a/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
++++ b/arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dts
+@@ -119,28 +119,8 @@
+ 		};
+ 
+ 		partition@200000 {
+-			label = "env";
+-			reg = <0x200000 0x40000>;
+-		};
+-
+-		partition@240000 {
+-			label = "dtb";
+-			reg = <0x240000 0x40000>;
+-		};
+-
+-		partition@280000 {
+-			label = "kernel";
+-			reg = <0x280000 0x2000000>;
+-		};
+-
+-		partition@2280000 {
+-			label = "misc";
+-			reg = <0x2280000 0x2000000>;
+-		};
+-
+-		partition@4280000 {
+-			label = "rootfs";
+-			reg = <0x4280000 0x3bd80000>;
++			label = "root";
++			reg = <0x200000 0x3fe00000>;
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
+index 979aa59a6bd0..2327af820cb4 100644
+--- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
++++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk_nand.dts
+@@ -99,24 +99,8 @@
+ 			reg = <0 0x200000>;
+ 		};
+ 		partition@200000 {
+-			label = "env";
+-			reg = <0x200000 0x40000>;
+-		};
+-		partition@240000 {
+-			label = "dtb";
+-			reg = <0x240000 0x40000>;
+-		};
+-		partition@280000 {
+-			label = "kernel";
+-			reg = <0x280000 0x2000000>;
+-		};
+-		partition@2280000 {
+-			label = "misc";
+-			reg = <0x2280000 0x2000000>;
+-		};
+-		partition@4280000 {
+-			label = "rootfs";
+-			reg = <0x4280000 0x3bd80000>;
++			label = "root";
++			reg = <0x200000 0x3fe00000>;
+ 		};
+ 	};
+ };
+-- 
+2.13.0
+
