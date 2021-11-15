@@ -2,119 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CECD451BCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DE0451A12
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244899AbhKPAHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346045AbhKOT3u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:29:50 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB9DC0431A8;
-        Mon, 15 Nov 2021 11:10:07 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id y8so9814755plg.1;
-        Mon, 15 Nov 2021 11:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wDPmToaijo7T8aT7P3r6ZMwp5FJI2KCyBAGlYq2w7rM=;
-        b=GIj9RXpkj2vA7zWzxBfBHgX2mUUcT2tHWP7cd9ldly7w/kWE3EVuQTmR4sPppk8hvr
-         ZA0yMGzW6BMQXiTqouLTjq3xDhBjBeUOeSh35Y9wWL3gNA762y6FFDg9u//0W0btd4oj
-         P9jk347dxLqAsPPpt1LAuBg7wevVo0BcGLDcoTU6ZNrwUphgopDtLcdusTp1j8wUB2z0
-         YYsbIinNv+fNrmtFfALxooXQTac7w+LFpzZs8j3wAq0jjODamZ6Qq/2G9aULQ6ol8NWY
-         CnmvF5GfqljRTjPOstArmUL22CEq4o5HS5RT4YSCDCzQlWx6PZRVKsr1BHMHUjIZYTbp
-         okyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wDPmToaijo7T8aT7P3r6ZMwp5FJI2KCyBAGlYq2w7rM=;
-        b=z5iD/GvMwAPBvlmhqrCtVRN42w4gVyyzVCpWPWiV8oIKURwS6yFvTSyUJdZgmSaGDb
-         cyQbk4uzSri2ykzYtnrYm9fp88HXR/bxKNlxPRH+SX3wV/9on6YvHXgerVkZjS5dGsF0
-         SW59XGKeYZ9rF5B0SuaN/A/tkXCDxmuIPuxKNL0UikeO87q1Q6VE+4GImmgKRzTH6vyS
-         Qg5fEUnCetpH2Zecsq1V59OE0x8wuJ8V4QPjpdDImhIt8P9lLKwfQ4/Njd5+rnlWG8Xj
-         k4sh1fqJPYKzv4H0fi24arjktTNoZxM4sGC0FUiKQxw2SgANTlBMZHBdWf9TEzJ7S2nK
-         fWcw==
-X-Gm-Message-State: AOAM532DuxaBoVzg400lViCdOFNgPOaylcR4AU83byBH6fE2wsmmJwkh
-        tOk104RrSgiOi11ATaqcOgo=
-X-Google-Smtp-Source: ABdhPJxkm0vEo2QPlPHnBhYa9RjtVtcJzMkuQtas1V0GtkWxUBLy59cyWKkt8W1adHeYtcjmRyK4ww==
-X-Received: by 2002:a17:90b:17cc:: with SMTP id me12mr52788431pjb.141.1637003407408;
-        Mon, 15 Nov 2021 11:10:07 -0800 (PST)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id i19sm15550492pfu.119.2021.11.15.11.10.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 11:10:06 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        id S1353083AbhKOXc6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 18:32:58 -0500
+Received: from aposti.net ([89.234.176.197]:56316 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245298AbhKOTUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:20:02 -0500
+Date:   Mon, 15 Nov 2021 19:16:51 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v6 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/adreno: Name the shadow buffer
-Date:   Mon, 15 Nov 2021 11:15:10 -0800
-Message-Id: <20211115191514.310472-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Message-Id: <38OM2R.QJECEBEZVSXU@crapouillou.net>
+In-Reply-To: <141a4ea23dc19629fea983093348d9dfaedb1cae.1636573413.git.hns@goldelico.com>
+References: <cover.1636573413.git.hns@goldelico.com>
+        <141a4ea23dc19629fea983093348d9dfaedb1cae.1636573413.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Hi Nikolaus, Thomas,
 
-This was the one GPU related kernel buffer which was not given a debug
-name.  Let's fix that.
+Le mer., nov. 10 2021 at 20:43:31 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> From: Paul Boddie <paul@boddie.org.uk>
+> 
+> We need to hook up
+> * HDMI connector
+> * HDMI power regulator
+> * JZ4780_CLK_HDMI @ 27 MHz
+> * DDC pinmux
+> * HDMI and LCDC endpoint connections
+> 
+> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  arch/mips/boot/dts/ingenic/ci20.dts | 73 
+> +++++++++++++++++++++++++++--
+>  1 file changed, 70 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> b/arch/mips/boot/dts/ingenic/ci20.dts
+> index a688809beebca..a62557bede565 100644
+> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> @@ -78,6 +78,18 @@ eth0_power: fixedregulator@0 {
+>  		enable-active-high;
+>  	};
+> 
+> +	hdmi_out: connector {
+> +		compatible = "hdmi-connector";
+> +		label = "HDMI OUT";
+> +		type = "a";
+> +
+> +		port {
+> +			hdmi_con: endpoint {
+> +				remote-endpoint = <&dw_hdmi_out>;
+> +			};
+> +		};
+> +	};
+> +
+>  	ir: ir {
+>  		compatible = "gpio-ir-receiver";
+>  		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
+> @@ -102,6 +114,17 @@ otg_power: fixedregulator@2 {
+>  		gpio = <&gpf 14 GPIO_ACTIVE_LOW>;
+>  		enable-active-high;
+>  	};
+> +
+> +	hdmi_power: fixedregulator@3 {
+> +		compatible = "regulator-fixed";
+> +
+> +		regulator-name = "hdmi_power";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +
+> +		gpio = <&gpa 25 GPIO_ACTIVE_LOW>;
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 ++
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 ++
- 2 files changed, 4 insertions(+)
+Just use 0 instead of GPIO_ACTIVE_LOW, since the flag is simply ignored 
+(I know the other regulators do use it, but I'll clean that up soon).
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index ec8e043c9d38..a95977e8ad98 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -925,6 +925,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 
- 			if (IS_ERR(a5xx_gpu->shadow))
- 				return PTR_ERR(a5xx_gpu->shadow);
-+
-+			msm_gem_object_set_name(a5xx_gpu->shadow_bo, "shadow");
- 		}
- 
- 		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index dcde5eff931d..c6e7e7ca0482 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1068,6 +1068,8 @@ static int hw_init(struct msm_gpu *gpu)
- 
- 			if (IS_ERR(a6xx_gpu->shadow))
- 				return PTR_ERR(a6xx_gpu->shadow);
-+
-+			msm_gem_object_set_name(a6xx_gpu->shadow_bo, "shadow");
- 		}
- 
- 		gpu_write64(gpu, REG_A6XX_CP_RB_RPTR_ADDR_LO,
--- 
-2.33.1
+> +		enable-active-high;
+> +	};
+>  };
+> 
+>  &ext {
+> @@ -113,9 +136,9 @@ &cgu {
+>  	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
+> higher
+>  	 * precision.
+>  	 */
+> -	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>;
+> -	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>;
+> -	assigned-clock-rates = <48000000>;
+> +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>, 
+> <&cgu JZ4780_CLK_HDMI>;
+> +	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>, <0>;
+> +	assigned-clock-rates = <48000000>, <0>, <27000000>;
+
+So drm-misc-next is based on a slightly older version (not v5.16-rc1 
+yet), and these lines changed in linux master.
+
+I think it would make sense to merge the DT changes (+ doc) into the 
+MIPS tree, and the driver changes into drm-misc-next.
+
+@Thomas: Is that OK for you?
+
+Cheers,
+-Paul
+
+>  };
+> 
+>  &tcu {
+> @@ -506,6 +529,12 @@ pins_i2c4: i2c4 {
+>  		bias-disable;
+>  	};
+> 
+> +	pins_hdmi_ddc: hdmi_ddc {
+> +		function = "hdmi-ddc";
+> +		groups = "hdmi-ddc";
+> +		bias-disable;
+> +	};
+> +
+>  	pins_nemc: nemc {
+>  		function = "nemc";
+>  		groups = "nemc-data", "nemc-cle-ale", "nemc-rd-we", "nemc-frd-fwe";
+> @@ -536,3 +565,41 @@ pins_mmc1: mmc1 {
+>  		bias-disable;
+>  	};
+>  };
+> +
+> +&hdmi {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pins_hdmi_ddc>;
+> +
+> +	hdmi-5v-supply = <&hdmi_power>;
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +			dw_hdmi_in: endpoint {
+> +				remote-endpoint = <&lcd_out>;
+> +			};
+> +		};
+> +
+> +		port@1 {
+> +			reg = <1>;
+> +			dw_hdmi_out: endpoint {
+> +				remote-endpoint = <&hdmi_con>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&lcdc0 {
+> +	status = "okay";
+> +
+> +	port {
+> +		lcd_out: endpoint {
+> +			remote-endpoint = <&dw_hdmi_in>;
+> +		};
+> +	};
+> +};
+> --
+> 2.33.0
+> 
+
 
