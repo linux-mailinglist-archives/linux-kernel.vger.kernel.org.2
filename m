@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40C845087E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60447450880
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhKOPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:34:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236539AbhKOPe0 (ORCPT
+        id S236641AbhKOPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:34:54 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:34354 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232424AbhKOPeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:34:26 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4C1C061200
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:31:29 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id v15so36537848ljc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 07:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=des7qVRMz1bc3eP/QEMS3RjICNd6OKBTMqZdowxjNLo=;
-        b=aN9ZxbNg4Hd4RpgMBeciRPwQqrpLQoCaMvHToNRBBQOn6HHLtZ4kemfKwWfCF+Oixf
-         tvSVl3OYK1o+W2NIn/YUrSzGb4Zw6aW5f6Im6HM74tK83D1cC+m3UdjE438vJKhDWssQ
-         MboomaGgc7YZh5XBXPieT8i+01bDB5OScoZxwUSTWXp9tsNukeeqqIvukiqQ6lnxZ2ZF
-         DBZEDaQ8nGPXT0Jt25W4JlO7JlB7kmBwX5afwPh6TiLDTggcQOKQl0muKOO9KpVguyjd
-         XnAjiua2+LCddM1AuI1EwOqT70U0KUtug1ljCNJOeAnU8HXcMZU3zQ4IMTqLKldIisC7
-         j1LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=des7qVRMz1bc3eP/QEMS3RjICNd6OKBTMqZdowxjNLo=;
-        b=b/WGC6uesU0RR1hNhCOEI2LptEfJeUPmGVIljhLiHNUOyGNAMekXLNPU+QmZ1xbIa9
-         qLLofMe0OzhKh7Wu4NN4tmXVn3g49+vGjCDsO1P4qga91n53tecqjrp1l6LydbeXSFu/
-         UOLh0rgdtZK9nTcdrYWrpWiZ0bsz6v9xB/lA1+orRfs1wZJvWmaFwnjKiLVneGQ887wz
-         RQygKMd6p2yB4esr2bpdlY+ugh7iJX5uT5PjMmImHwpoypKoHAEXgXgQizThKre8eNxm
-         D3fjASr/IZNBp/NCZsHveMHnjy1EfJYDYgTvQnbOXlBaK2ZNaOGvni1Glos8dsBuzzKG
-         z7Ug==
-X-Gm-Message-State: AOAM530AZSpQvIQDdxEJxISJFlO5cfvqecVPu9pR8aIkWhb75TSZvZgs
-        z8lyFiv/YjNC66HBvRtAQ2sPeWDrJKkEig==
-X-Google-Smtp-Source: ABdhPJxr7ZcVibLcJRIjlDO5EivoD0ORdJ0C9O1Dt3nqLf7sH9Sigc4AXlU+Y8akETeV+IHMRMEzrw==
-X-Received: by 2002:a2e:8554:: with SMTP id u20mr40248259ljj.70.1636990288296;
-        Mon, 15 Nov 2021 07:31:28 -0800 (PST)
-Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id s9sm1458031lfr.304.2021.11.15.07.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 07:31:27 -0800 (PST)
-From:   Marcin Wojtas <mw@semihalf.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, upstream@semihalf.com,
-        Marcin Wojtas <mw@semihalf.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [net: PATCH] net: mvmdio: fix compilation warning
-Date:   Mon, 15 Nov 2021 16:30:24 +0100
-Message-Id: <20211115153024.209083-1-mw@semihalf.com>
-X-Mailer: git-send-email 2.29.0
+        Mon, 15 Nov 2021 10:34:46 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6F646212C9;
+        Mon, 15 Nov 2021 15:31:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636990309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a7T9VKofSnMgX8iniVKYTzP8GhhYa4AfPu8Vtjh+O+M=;
+        b=CKRTcCXBQ7vOK5sAWYEkMSxkGRk2fxVkUthRFaBm6WtM6ZvgE/S9lvVfgORS39jb3WxUZQ
+        7SkDDaNmeYXDCNYLGKA/DEUqoZLeROoMxkbSsTXNSzgwCoFkAqwiDAqu1sacqTrS8yhtf6
+        5HFoqd5WA1Ta4qDbghzLaGaTOBKweIQ=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4C9E6A3B81;
+        Mon, 15 Nov 2021 15:31:49 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 16:31:48 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     akpm@linux-foundation.org, frederic@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: ignore nohz_full cores in new cpumask
+Message-ID: <YZJ9ZNusQR/3nh/9@alley>
+References: <20211112051434.23642-1-qiang.zhang1211@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112051434.23642-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot reported a following issue:
+On Fri 2021-11-12 13:14:34, Zqiang wrote:
+> If the nohz_full is enabled, when update watchdog_mask, the
+> nohz_full cores should be ignored.
+> 
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  kernel/watchdog.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index ad912511a0c0..3ef11a94783c 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -628,7 +628,9 @@ void lockup_detector_soft_poweroff(void)
+>  static void proc_watchdog_update(void)
+>  {
+>  	/* Remove impossible cpus to keep sysctl output clean. */
+> -	cpumask_and(&watchdog_cpumask, &watchdog_cpumask, cpu_possible_mask);
+> +	cpumask_and(&watchdog_cpumask, &watchdog_cpumask,
+> housekeeping_cpumask(HK_FLAG_TIMER));
 
->> drivers/net/ethernet/marvell/mvmdio.c:426:36: warning:
-unused variable 'orion_mdio_acpi_match' [-Wunused-const-variable]
-   static const struct acpi_device_id orion_mdio_acpi_match[] = {
-                                      ^
-   1 warning generated.
+I am not familiar with nozh_full code but this looks fine.
 
-Fix that by surrounding the variable by appropriate ifdef.
 
-Fixes: c54da4c1acb1 ("net: mvmdio: add ACPI support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- drivers/net/ethernet/marvell/mvmdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+> +	if (cpumask_empty(&watchdog_cpumask))
+> +		return;
 
-diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
-index 62a97c46fba0..ef878973b859 100644
---- a/drivers/net/ethernet/marvell/mvmdio.c
-+++ b/drivers/net/ethernet/marvell/mvmdio.c
-@@ -429,12 +429,14 @@ static const struct of_device_id orion_mdio_match[] = {
- };
- MODULE_DEVICE_TABLE(of, orion_mdio_match);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id orion_mdio_acpi_match[] = {
- 	{ "MRVL0100", BUS_TYPE_SMI },
- 	{ "MRVL0101", BUS_TYPE_XSMI },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, orion_mdio_acpi_match);
-+#endif
- 
- static struct platform_driver orion_mdio_driver = {
- 	.probe = orion_mdio_probe,
--- 
-2.29.0
+But this looks looks wrong. Is there any reason for this?
 
+We need to stop the watchdog when it was running before.
+
+I mean that lockup_detector_reconfigure() must be called anytime
+when the mask has changed even when it became empty.
+
+
+>  	lockup_detector_reconfigure();
+>  }
+
+Best Regards,
+Petr
