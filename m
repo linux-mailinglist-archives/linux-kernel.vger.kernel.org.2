@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73934519B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E30451F36
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241798AbhKOX0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:26:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
+        id S1355776AbhKPAik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:38:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245004AbhKOTSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1567E63439;
-        Mon, 15 Nov 2021 18:26:44 +0000 (UTC)
+        id S1344770AbhKOTZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7336861A53;
+        Mon, 15 Nov 2021 19:03:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000805;
-        bh=ZSb7yFP4AkMk9ONqo0xkm2qS0HJLqlAMxCfaa0V4PxA=;
+        s=korg; t=1637003032;
+        bh=a+2VaIAUuFNi6Rt63CHFe68YFV8drM28h/4vPQdTEKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4bzCY2vRBjgQEEzRVzvXrJpiXOq7ot7phcWrDOA94OQcSeaBthT/elVllTenoUFI
-         6+9rp4Pb3xUzLh7YZjlzjGG1yPrHJnL+arELsd1TMTqgittyDoM9PAiGQKVpUWb7UK
-         P6jjbranlRFDM+hR+I6V0UCqQjuXLqfCgXi29TFI=
+        b=2WrS81fSkGPYR/efWr0i239yiT5C9D1d/t4xc/bxOI4BT0H15u0DAW49iGIybgpME
+         SpSMyGJKnRUqa6N/dy5g8kRywlFYj33XWLXK1pYerDkP80f9oMqLZkFU8yBRZJMPze
+         T23rhq+iq3o8fDdI4ah6DanDjDVHXjxUOAj7Yk24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 5.14 798/849] f2fs: fix UAF in f2fs_available_free_memory
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 786/917] block/ataflop: use the blk_cleanup_disk() helper
 Date:   Mon, 15 Nov 2021 18:04:41 +0100
-Message-Id: <20211115165447.230649140@linuxfoundation.org>
+Message-Id: <20211115165455.608716618@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-commit 5429c9dbc9025f9a166f64e22e3a69c94fd5b29b upstream.
+[ Upstream commit 44a469b6acae6ad05c4acca8429467d1d50a8b8d ]
 
-if2fs_fill_super
--> f2fs_build_segment_manager
-   -> create_discard_cmd_control
-      -> f2fs_start_discard_thread
+Use the helper to replace two lines with one.
 
-It invokes kthread_run to create a thread and run issue_discard_thread.
-
-However, if f2fs_build_node_manager fails, the control flow goes to
-free_nm and calls f2fs_destroy_node_manager. This function will free
-sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
-after the deallocation, but before the f2fs_stop_discard_thread, it will
-cause UAF(Use-after-free).
-
--> f2fs_destroy_segment_manager
-   -> destroy_discard_cmd_control
-      -> f2fs_stop_discard_thread
-
-Fix this by stopping discard thread before f2fs_destroy_node_manager.
-
-Note that, the commit d6d2b491a82e1 introduces the call of
-f2fs_available_free_memory into issue_discard_thread.
-
-Cc: stable@vger.kernel.org
-Fixes: d6d2b491a82e ("f2fs: allow to change discard policy based on cached discard cmds")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20210927220302.1073499-12-mcgrof@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/super.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/block/ataflop.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4271,6 +4271,8 @@ free_node_inode:
- free_stats:
- 	f2fs_destroy_stats(sbi);
- free_nm:
-+	/* stop discard thread before destroying node manager */
-+	f2fs_stop_discard_thread(sbi);
- 	f2fs_destroy_node_manager(sbi);
- free_sm:
- 	f2fs_destroy_segment_manager(sbi);
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index 4947e41f89b7d..1a908455ff96f 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -2097,8 +2097,7 @@ static int __init atari_floppy_init (void)
+ 
+ err:
+ 	while (--i >= 0) {
+-		blk_cleanup_queue(unit[i].disk[0]->queue);
+-		put_disk(unit[i].disk[0]);
++		blk_cleanup_disk(unit[i].disk[0]);
+ 		blk_mq_free_tag_set(&unit[i].tag_set);
+ 	}
+ 
+@@ -2156,8 +2155,7 @@ static void __exit atari_floppy_exit(void)
+ 			if (!unit[i].disk[type])
+ 				continue;
+ 			del_gendisk(unit[i].disk[type]);
+-			blk_cleanup_queue(unit[i].disk[type]->queue);
+-			put_disk(unit[i].disk[type]);
++			blk_cleanup_disk(unit[i].disk[type]);
+ 		}
+ 		blk_mq_free_tag_set(&unit[i].tag_set);
+ 	}
+-- 
+2.33.0
+
 
 
