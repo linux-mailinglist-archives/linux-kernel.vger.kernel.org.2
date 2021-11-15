@@ -2,70 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3294504D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F224504E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhKONDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:03:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231508AbhKONDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:03:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8428661B97;
-        Mon, 15 Nov 2021 13:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636981208;
-        bh=BU9Hg+rVhcgBEZtCNFQRfrKQDndbf8SCThYxLL/P4Qs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Z6CpsbIXPRxAGAD/Eo7qR6NdxAT1HQo4zhyrzof3z+RRG9Uxxc3Psk/JbQBg4VIpI
-         2RNnqS6W1NLRoyCKFt/ovBomc2WAs+ArWiVH79tGLeDGerhqC86AnAxM1294wEts2b
-         9mQKOt1xOeQ+HG/PbU15xm7NnTHVaZFONgaAyTN7i7/JJ9KEamY/FnwTsD8JTcv99b
-         X3+rbaKgHZL1OQbQbOeQlcuZOPzznMF6rYwLwPUE0tFxGBMNxMFlnbhmiODR2aiISE
-         QuVxLv+/GGsXTOaYqGWO4M4VX0fzAc7HMj1MmZUpemr5TQ4gtDQnIyWvHJYZNZoWRw
-         8fIUnWQSOAthQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7238A60A4E;
-        Mon, 15 Nov 2021 13:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231518AbhKONFc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Nov 2021 08:05:32 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:52469 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230038AbhKONEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:04:50 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N17gw-1mfY7O1YxW-012WMZ; Mon, 15 Nov 2021 14:00:48 +0100
+Received: by mail-wr1-f49.google.com with SMTP id c4so30460954wrd.9;
+        Mon, 15 Nov 2021 05:00:48 -0800 (PST)
+X-Gm-Message-State: AOAM531/BSt51l9hGN8eH+Spe52UPKJTv73jGKTvOFQdzacdXtiV2PHD
+        aVx6l7glykzxzmxBLi4TCViQvc2rJU5PjneRXOY=
+X-Google-Smtp-Source: ABdhPJz2jZb0IioVANvEk5/XHzjDyF55+gflOqMSLZnvv9OhleGj61ucIoD3iLfrJotoW7ZKQO6a/T/z+ca0dplDdV0=
+X-Received: by 2002:adf:f7c2:: with SMTP id a2mr37014455wrq.71.1636981247997;
+ Mon, 15 Nov 2021 05:00:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tipc: use consistent GFP flags
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163698120846.10163.14371622974741533436.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Nov 2021 13:00:08 +0000
-References: <20211111205916.37899-2-tadeusz.struk@linaro.org>
-In-Reply-To: <20211111205916.37899-2-tadeusz.struk@linaro.org>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20211115070809.15529-1-sergio.paracuellos@gmail.com>
+ <20211115070809.15529-5-sergio.paracuellos@gmail.com> <YZJWM33dXqW1BsuV@rocinante>
+In-Reply-To: <YZJWM33dXqW1BsuV@rocinante>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 15 Nov 2021 14:00:32 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0A9xAcwDLFbUk--X2+7gFpOL7HJw-9Sk8KZxfoidcxuw@mail.gmail.com>
+Message-ID: <CAK8P3a0A9xAcwDLFbUk--X2+7gFpOL7HJw-9Sk8KZxfoidcxuw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] PCI: mt7621: Add missing 'MODULE_LICENSE()' definition
+To:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:8t33xIVSNRIFGAB8ZCf/cAdz/qXfSn1YVuxMaLplSrBq1RbiXYB
+ cvqz5aR0BZuhsWz2wR8RezGtT8MJ9qqujv8pdt2dCRIVma7mdUN5VUTWad2qemxM4q+0Zrd
+ L4npVriTndzVqO6Xcb9YC1dda7ooLr3qnDaVy3OEqjTQuh/z1m2akUiyVnAgBW9Qs2vUNhb
+ 1YAYr5rYHW3Wszjk4DdBg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ToxZdc1f3hM=:oY3xjNabfFK23siuEr4axT
+ Vk1XMlNFW849P7lwJC9SBNyXMWWtj3ZKXK8lupdBJOv+4VPkSb9dwsXNOsqRkXo1Oz0sXo5Ts
+ LGCwgNDoDfxCb/EoQ2abKhIrIjo/duJZ2Ejd4N8hbD0ts7HHAFezR7E8C82VQCR1xAEWM1oPy
+ qMr7GBv7AxbLU8miuvOgDF3qZS5QagVdhmdHEc4GWWW+ZmMblZ0Co6GKYolI3MuJOn6hs2NjU
+ Ba1Un8LLuItLHVa+kA9/altR0zZgOcAd0vCOLOILBSAAJvh+gmV//LFl84ikYSQRwHKjUDaKi
+ hxNWLZrF6eVXRE6EE0y/Czr9RfChYDOujItv5ee/3lf7eL5aNYRbI0HLiXUy8U5m7OyS02sa7
+ dCWmCPNkK+92ZynU3OA6ltA5SquqrySxxTjwA9TSLEfaFxhPKmAhvpzxrZBy6qDDrlaFPdQ4P
+ Qr+/7DOQt7hNPr2Wo1V+d2jAHkTLFN/Dt6VksTjtdUI5vVTFGAzLbuTj5xEieje9spsRK0PrT
+ OOP23T1iu13bQjJ/bCH6NcYXJNHhVSJl9lXHPz/U3hGzzcIA7RwTdukL0G/syjwclvtQNhT2M
+ teccDthhIk5KivhSy+zeeV43UNLX2NIO/5tVQ/Q2VAXG1zyWxPmaHljtrQ/eM+PCv4vyZvqfI
+ Cb11H3/c0vsKa7/7Fk+NrI8gtKZvAnYnBTmYWYne4rD85O4id1rh+ZvTHDQldYFydRaNU7jGs
+ CJftzJm8w+glc017bjcEv99v6dFoupUZe3tPFqyjoT+/GHxPZGBE4uT5gGDG11ikYMT1W3sfO
+ AZzFXcbFjFp/U/fN0MFCnBMJCDNLNcwh4tPyp7bng3cd01O0c0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Nov 15, 2021 at 1:44 PM Krzysztof Wilczyński <kw@linux.com> wrote:
+> > MT7620 PCIe host controller driver can be built as a module but there is no
+> > 'MODULE_LICENSE()' specified in code, causing a build error due to missing
+> > license information.
+> >
+> > ERROR: modpost: missing MODULE_LICENSE() in drivers/pci/controller/pcie-mt7621.o
+> >
+> > Fix this by adding 'MODULE_LICENSE()' to the driver.
+> >
+> > Fixes: 2bdd5238e756 ("PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver")
+> > Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  drivers/pci/controller/pcie-mt7621.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/pcie-mt7621.c b/drivers/pci/controller/pcie-mt7621.c
+> > index 9cf541f5de9c..a120a61ede07 100644
+> > --- a/drivers/pci/controller/pcie-mt7621.c
+> > +++ b/drivers/pci/controller/pcie-mt7621.c
+> > @@ -561,3 +561,5 @@ static struct platform_driver mt7621_pci_driver = {
+> >       },
+> >  };
+> >  builtin_platform_driver(mt7621_pci_driver);
+> > +
+> > +MODULE_LICENSE("GPL v2");
+>
+> A question here about the builtin_platform_driver() use in this driver,
+> especially since it's set as tristate in Kconfig, thus I am not sure if
+> using builtin_platform_driver() over module_platform_driver() is correct?
+>
+> Unless this is more because you need to reply on device_initcall() for the
+> driver to properly initialise?
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+builtin_platform_driver() does the right thing for loadable modules that
+have no module-unload and are not intended to be removable.
 
-On Thu, 11 Nov 2021 12:59:16 -0800 you wrote:
-> Some functions, like tipc_crypto_start use inconsisten GFP flags
-> when allocating memory. The mentioned function use GFP_ATOMIC to
-> to alloc a crypto instance, and then calls alloc_ordered_workqueue()
-> which allocates memory with GFP_KERNEL. tipc_aead_init() function
-> even uses GFP_KERNEL and GFP_ATOMIC interchangeably.
-> No doc comment specifies what context a function is designed to
-> work in, but the flags should at least be consistent within a function.
-> 
-> [...]
+This is often use for PCI drivers, but after Rob reworked this code a while
+back, it should actually be possible to reliably remove and reload PCI
+host bridge drivers, and it would be good to eventually lift the restriction
+here as well.
 
-Here is the summary with links:
-  - tipc: use consistent GFP flags
-    https://git.kernel.org/netdev/net/c/86c3a3e964d9
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+        Arnd
