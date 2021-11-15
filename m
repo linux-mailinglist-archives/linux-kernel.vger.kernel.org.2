@@ -2,117 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D4E45093C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB7E450942
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 17:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbhKOQKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 11:10:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236674AbhKOQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 11:09:56 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8202061B95;
-        Mon, 15 Nov 2021 16:06:51 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 11:06:49 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Alexander Popov <alex.popov@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        id S236566AbhKOQKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 11:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236749AbhKOQKf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:10:35 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7BC061207
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 08:07:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tRJIRldO8x/OJrUM+kyqbd8xhprA3vn8Q93WyN4i5SY=; b=Ln61dQV53OSRSsvTbsgX7lckHZ
+        CIZXi8xyY8JxoGVL6WS9VBmUDLgn37Hy0qtia29YDyF7EgL9WsKA00PyuPfjQzwIo5hdZ5NVV7/HP
+        Ae3Mp4W6oduQ+un82zgdP7PQ35+/fHg53zZ2ocYxQcTa3+rqp8PUCr035yUjYsqKEHV7Dr6QGizy1
+        scrW3lhNrntOGNTOVaF8p5bxgEhPjpLBzrAf2ARkavL9aeyCmiyqOHGkZz3mqkIfDU0kgZXcVXH6G
+        Ja/xWjIfjMhDm4Q6z5a2RwpqjzDL47hwnmebLQYLAK5mmmxbGuANHVpKMaFBJGf81LH2dVK9KoZWD
+        AgQo6fzA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmeVs-00GARK-Q4; Mon, 15 Nov 2021 16:07:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B04F300347;
+        Mon, 15 Nov 2021 17:07:20 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 526FE20BE2E8A; Mon, 15 Nov 2021 17:07:20 +0100 (CET)
+Date:   Mon, 15 Nov 2021 17:07:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Message-ID: <20211115110649.4f9cb390@gandalf.local.home>
-In-Reply-To: <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
-        <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
-        <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
-        <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
-        <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] timers/urgent for v5.16-rc1
+Message-ID: <YZKFuE0gpdlTiBOv@hirez.programming.kicks-ass.net>
+References: <163689642456.3249160.13397023971040961440.tglx@xen13>
+ <163689642744.3249160.6971106813056927807.tglx@xen13>
+ <CAHk-=wjQxHwdC61ore062Hc5PAF2o6CJnDG_NsQe+e599RovJw@mail.gmail.com>
+ <YZKCBqmb1gfKvFcR@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZKCBqmb1gfKvFcR@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:59:57 +0100
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+On Mon, Nov 15, 2021 at 04:51:34PM +0100, Peter Zijlstra wrote:
+> diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+> index 96b4e7810426..3352759e6916 100644
+> --- a/kernel/time/posix-cpu-timers.c
+> +++ b/kernel/time/posix-cpu-timers.c
+> @@ -1167,8 +1167,6 @@ void clear_posix_cputimers_work(struct task_struct *p)
+>  	 * A copied work entry from the old task is not meaningful, clear it.
+>  	 * N.B. init_task_work will not do this.
+>  	 */
+> -	memset(&p->posix_cputimers_work.work, 0,
+> -	       sizeof(p->posix_cputimers_work.work));
 
-> 1. Allow a reasonably configured kernel to boot and run with
-> panic_on_warn set. Warnings should only be raised when something is
-> not configured as the developers expect it or the kernel is put into a
-> state that generally is _unexpected_ and has been exposed little to
-> the critical thought of the developer, to testing efforts and use in
-> other systems in the wild. Warnings should not be used for something
-> informative, which still allows the kernel to continue running in a
-> proper way in a generally expected environment. Up to my knowledge,
-> there are some kernels in production that run with panic_on_warn; so,
-> IMHO, this requirement is generally accepted (we might of course
+Also, clearly that comments needs to go..
 
-To me, WARN*() is the same as BUG*(). If it gets hit, it's a bug in the
-kernel and needs to be fixed. I have several WARN*() calls in my code, and
-it's all because the algorithms used is expected to prevent the condition
-in the warning from happening. If the warning triggers, it means either that
-the algorithm is wrong or my assumption about the algorithm is wrong. In
-either case, the kernel needs to be updated. All my tests fail if a WARN*()
-gets hit (anywhere in the kernel, not just my own).
-
-After reading all the replies and thinking about this more, I find the
-pkill_on_warning actually worse than not doing anything. If you are
-concerned about exploits from warnings, the only real solution is a
-panic_on_warning. Yes, it brings down the system, but really, it has to be
-brought down anyway, because it is in need of a kernel update.
-
--- Steve
+>  	init_task_work(&p->posix_cputimers_work.work,
+>  		       posix_cpu_timers_work);
+>  	p->posix_cputimers_work.scheduled = false;
