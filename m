@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA67D451ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5926451AD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355810AbhKOXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:44:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1355789AbhKOXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:44:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344092AbhKOTXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344094AbhKOTXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:23:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0063363472;
-        Mon, 15 Nov 2021 18:51:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9155563620;
+        Mon, 15 Nov 2021 18:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002293;
-        bh=UxQqafP2iEoFfUVpJbLDbkyteGP6ArFOWDBsgr6dihY=;
+        s=korg; t=1637002296;
+        bh=zJy991Q6d5PUwah5OI4Kf82wnINpswc90gVR3xJV0Yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dRrmDcBeFFH1qriKMjSrHiwYHC6voX8bjthhAH51VX+hFz13OKCrUa6tQJxrwg0Ri
-         z4Km5VPnsHL4exqdNDESjeQXxJiNcnt0DiXI5KJbssnCPhHc93dAbTE+B7GujcY/6J
-         uLxZxt9FU66+eJYEegzPOg95vAAscx90Ppxr7HN4=
+        b=NpDGeutS2BkPn9ALGP8/ZRbjaUNyOOuMYzJlA00bGFV2hhryr4koEgsAeyUrQX+AQ
+         GgMAFs5DU/veDL3iwgi90LPKSp0BaSv6aj1/eYWkGTou1GTRKPY07391CJwmAhJ5Nc
+         YBYzrWv5Hn8Y0AYIcuUzSl3aFxizZioi9fQF+iLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 511/917] KVM: s390: pv: avoid double free of sida page
-Date:   Mon, 15 Nov 2021 18:00:06 +0100
-Message-Id: <20211115165446.091735172@linuxfoundation.org>
+Subject: [PATCH 5.15 512/917] KVM: s390: pv: avoid stalls for kvm_s390_pv_init_vm
+Date:   Mon, 15 Nov 2021 18:00:07 +0100
+Message-Id: <20211115165446.122722436@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,64 +43,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-[ Upstream commit d4074324b07a94a1fca476d452dfbb3a4e7bf656 ]
+[ Upstream commit 1e2aa46de526a5adafe580bca4c25856bb06f09e ]
 
-If kvm_s390_pv_destroy_cpu is called more than once, we risk calling
-free_page on a random page, since the sidad field is aliased with the
-gbea, which is not guaranteed to be zero.
+When the system is heavily overcommitted, kvm_s390_pv_init_vm might
+generate stall notifications.
 
-This can happen, for example, if userspace calls the KVM_PV_DISABLE
-IOCTL, and it fails, and then userspace calls the same IOCTL again.
-This scenario is only possible if KVM has some serious bug or if the
-hardware is broken.
-
-The solution is to simply return successfully immediately if the vCPU
-was already non secure.
+Fix this by using uv_call_sched instead of just uv_call. This is ok because
+we are not holding spinlocks.
 
 Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Fixes: 19e1227768863a1469797c13ef8fea1af7beac2c ("KVM: S390: protvirt: Introduce instruction data area bounce buffer")
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
 Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Message-Id: <20210920132502.36111-3-imbrenda@linux.ibm.com>
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Message-Id: <20210920132502.36111-4-imbrenda@linux.ibm.com>
 Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
 Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/pv.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ arch/s390/kvm/pv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index c8841f476e913..0a854115100b4 100644
+index 0a854115100b4..00d272d134c24 100644
 --- a/arch/s390/kvm/pv.c
 +++ b/arch/s390/kvm/pv.c
-@@ -16,18 +16,17 @@
+@@ -195,7 +195,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+ 	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
+ 	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
  
- int kvm_s390_pv_destroy_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc)
- {
--	int cc = 0;
-+	int cc;
- 
--	if (kvm_s390_pv_cpu_get_handle(vcpu)) {
--		cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu),
--				   UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
-+	if (!kvm_s390_pv_cpu_get_handle(vcpu))
-+		return 0;
-+
-+	cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu), UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
-+
-+	KVM_UV_EVENT(vcpu->kvm, 3, "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
-+		     vcpu->vcpu_id, *rc, *rrc);
-+	WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x", *rc, *rrc);
- 
--		KVM_UV_EVENT(vcpu->kvm, 3,
--			     "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
--			     vcpu->vcpu_id, *rc, *rrc);
--		WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x",
--			  *rc, *rrc);
--	}
- 	/* Intended memory leak for something that should never happen. */
- 	if (!cc)
- 		free_pages(vcpu->arch.pv.stor_base,
+-	cc = uv_call(0, (u64)&uvcb);
++	cc = uv_call_sched(0, (u64)&uvcb);
+ 	*rc = uvcb.header.rc;
+ 	*rrc = uvcb.header.rrc;
+ 	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
 -- 
 2.33.0
 
