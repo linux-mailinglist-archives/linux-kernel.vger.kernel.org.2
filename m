@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61A644FFEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F80244FFF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhKOIUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:20:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47726 "EHLO mail.kernel.org"
+        id S229948AbhKOIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:22:58 -0500
+Received: from mga18.intel.com ([134.134.136.126]:38080 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229654AbhKOIUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:20:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D8C61AA5;
-        Mon, 15 Nov 2021 08:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636964228;
-        bh=Am8In8ufP7uobTU+uylA0XmVZ21mL5UBy8K/DYCuZQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LprKn9O5eyaF6bDb0T7r+3utDcsVTtW8ziUNkj7st33JHhi4aUQYbdl2WAqLFNo3z
-         Gzor3+zRFawbLEd6YmUjXutJqb8YZKud/QKjQ49XkFdS90Cd0MFGq/W/uv0RdyhUeJ
-         a1EtVNJpKnVYDJhu0ad6hAd2d/lMbMvjW3cP/1TuVNtxBAikq1EOyKZ/IJ5j896guo
-         z0fnrC8iqmGBVqHFDrTsq44W1WPJizNjuO8YmKiOm0Zu0slJsooXMCtvpbTk6V7hUn
-         sng4RxcJJny49E7z6wEynvykuRK87VGfvQmfHhvgGrKk7BODO4rxve2clNYMCLktBP
-         KHEKUEnYKfj2w==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mmXAc-0004yF-FZ; Mon, 15 Nov 2021 09:16:54 +0100
-Date:   Mon, 15 Nov 2021 09:16:54 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mailhol.vincent@wanadoo.fr, wg@grandegger.com, mkl@pengutronix.de,
-        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
-Message-ID: <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
-References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
- <20211115075124.17713-1-paskripkin@gmail.com>
- <YZIWT9ATzN611n43@hovoldconsulting.com>
- <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com>
+        id S229654AbhKOIWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 03:22:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220288278"
+X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
+   d="scan'208";a="220288278"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 00:19:54 -0800
+X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
+   d="scan'208";a="603763025"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 00:19:49 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id F2AD020287;
+        Mon, 15 Nov 2021 10:19:46 +0200 (EET)
+Date:   Mon, 15 Nov 2021 10:19:46 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, hverkuil-cisco@xs4all.nl,
+        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
+        linux-media@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 7/9] media: aspeed: Support aspeed mode to reduce
+ compressed data
+Message-ID: <YZIYIsURV0Gv1bc6@paasikivi.fi.intel.com>
+References: <20211115074437.28079-1-jammy_huang@aspeedtech.com>
+ <20211115074437.28079-8-jammy_huang@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com>
+In-Reply-To: <20211115074437.28079-8-jammy_huang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:15:07AM +0300, Pavel Skripkin wrote:
-> On 11/15/21 11:11, Johan Hovold wrote:
-> > Just a drive-by comment:
-> > 
-> > Are you sure about this move of the netdev[channel_idx] initialisation?
-> > What happens if the registered can device is opened before you
-> > initialise the pointer? NULL-deref in es58x_send_msg()?
-> > 
-> > You generally want the driver data fully initialised before you register
-> > the device so this looks broken.
-> > 
-> > And either way it is arguably an unrelated change that should go in a
-> > separate patch explaining why it is needed and safe.
-> > 
-> 
-> 
-> It was suggested by Vincent who is the maintainer of this driver [1].
+Hi Jammy,
 
-Yeah, I saw that, but that doesn't necessarily mean it is correct.
+Thanks for the patch. A few comments below...
 
-You're still responsible for the changes you make and need to be able to
-argue why they are correct.
+On Mon, Nov 15, 2021 at 03:44:35PM +0800, Jammy Huang wrote:
+> @@ -969,35 +1045,70 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>  
+>  static void aspeed_video_update_regs(struct aspeed_video *video)
+>  {
+> -	u32 comp_ctrl = VE_COMP_CTRL_RSVD |
+> -		FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
+> -		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10);
+> +	u8 jpeg_hq_quality = clamp((int)video->jpeg_hq_quality - 1, 0,
+> +				   ASPEED_VIDEO_JPEG_NUM_QUALITIES - 1);
+> +	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
+> +		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
+> +		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
+> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_LUM, jpeg_hq_quality) |
+> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_CHR, jpeg_hq_quality |
+> +			   0x10);
+>  	u32 ctrl = 0;
+> -	u32 seq_ctrl = VE_SEQ_CTRL_JPEG_MODE;
+> +	u32 seq_ctrl = 0;
+>  
+> -	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n",
+> -		 video->frame_rate);
+> -	v4l2_dbg(1, debug, &video->v4l2_dev, "subsample(%s)\n",
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n", video->frame_rate);
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "jpeg format(%s) subsample(%s)\n",
+> +		 format_str[video->format],
+>  		 video->yuv420 ? "420" : "444");
+> -	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d)\n",
+> -		 video->jpeg_quality);
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d) hq(%s) hq_quality(%d)\n",
+> +		 video->jpeg_quality, video->hq_mode ? "on" : "off",
+> +		 video->jpeg_hq_quality);
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression mode(%s)\n",
+> +		 compress_mode_str[video->compression_mode]);
+> +
+> +	if (video->format == VIDEO_FMT_ASPEED)
+> +		aspeed_video_update(video, VE_BCD_CTRL, 0, VE_BCD_CTRL_EN_BCD);
+> +	else
+> +		aspeed_video_update(video, VE_BCD_CTRL, VE_BCD_CTRL_EN_BCD, 0);
+>  
+>  	if (video->frame_rate)
+>  		ctrl |= FIELD_PREP(VE_CTRL_FRC, video->frame_rate);
+>  
+> +	if (video->format == VIDEO_FMT_STANDARD) {
+> +		comp_ctrl &= ~FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode);
+> +		seq_ctrl |= VE_SEQ_CTRL_JPEG_MODE;
+> +	}
+> +
+>  	if (video->yuv420)
+>  		seq_ctrl |= VE_SEQ_CTRL_YUV420;
+>  
+>  	if (video->jpeg.virt)
+>  		aspeed_video_update_jpeg_table(video->jpeg.virt, video->yuv420);
+>  
+> +#ifdef CONFIG_MACH_ASPEED_G4
 
-Johan
+This would be better done based on the device recognised, not the selected
+compile target. The same goes for the rest of the conditional pre-processor
+bits.
+
+> +	switch (video->compression_mode) {
+> +	case 0:	//DCT only
+> +		comp_ctrl |= VE_COMP_CTRL_VQ_DCT_ONLY;
+> +		break;
+> +	case 1:	//DCT VQ mix 2-color
+> +		comp_ctrl &= ~(VE_COMP_CTRL_VQ_4COLOR | VE_COMP_CTRL_VQ_DCT_ONLY);
+> +		break;
+> +	case 2:	//DCT VQ mix 4-color
+> +		comp_ctrl |= VE_COMP_CTRL_VQ_4COLOR;
+> +		break;
+> +	}
+> +#endif
+> +
+
+-- 
+Kind regards,
+
+Sakari Ailus
