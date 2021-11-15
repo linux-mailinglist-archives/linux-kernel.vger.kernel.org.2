@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D074518A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1EF451AB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343581AbhKOXFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:05:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
+        id S1348927AbhKOXmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:42:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243052AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF22633BE;
-        Mon, 15 Nov 2021 18:10:24 +0000 (UTC)
+        id S1343869AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B71866329C;
+        Mon, 15 Nov 2021 18:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999825;
-        bh=iqKqQWEqOV02w7w19Komc4oSE8RCEfpJm9URWeylwTc=;
+        s=korg; t=1637002065;
+        bh=N2FZnSZFoO0MwQO7esxwLdsf5a+KCVLvrc7YZmABSbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F15FE4/ttuzmttG79jFj30E8qxbBMaHvmlOaF6iyZblvWF8bhOMpIO2RHUTzTVCmH
-         6Iwvet/o1J6w/jjqZEUCZ7Dy0lSBgUEpviEGQUfk7pVe5UcHIJ1I9F/ehjmAMfx1sy
-         tW1Mq/U7kP6q72pqDVolZag70kQxh0nLENYdQE9s=
+        b=Z44dzAGq27080XdXynZkzUwfI2GRVjk0DZMoxm8IEh/9owSQ/mJ0leQVl47+nakUP
+         1ZchZhIe+6xntCl+ysHEo+iJUCHrOO+pBv2chxWPmUdUlnv3pOz83Ow5A+PDyGyjFS
+         MiRk3oBXiDT5MzFAvKxsOLPu5exheOQiXhmSuqbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 438/849] drm/msm: uninitialized variable in msm_gem_import()
+Subject: [PATCH 5.15 426/917] hwmon: (pmbus/lm25066) Let compiler determine outer dimension of lm25066_coeff
 Date:   Mon, 15 Nov 2021 17:58:41 +0100
-Message-Id: <20211115165435.099652361@linuxfoundation.org>
+Message-Id: <20211115165443.240318526@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-[ Upstream commit 2203bd0e5c12ffc53ffdd4fbd7b12d6ba27e0424 ]
+[ Upstream commit b7931a7b0e0df4d2a25fedd895ad32c746b77bc1 ]
 
-The msm_gem_new_impl() function cleans up after itself so there is no
-need to call drm_gem_object_put().  Conceptually, it does not make sense
-to call a kref_put() function until after the reference counting has
-been initialized which happens immediately after this call in the
-drm_gem_(private_)object_init() functions.
+Maintaining this manually is error prone (there are currently only
+five chips supported, not six); gcc can do it for us automatically.
 
-In the msm_gem_import() function the "obj" pointer is uninitialized, so
-it will lead to a crash.
-
-Fixes: 05b849111c07 ("drm/msm: prime support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20211013081315.GG6010@kili
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Fixes: 666c14906b49 ("hwmon: (pmbus/lm25066) Drop support for LM25063")
+Link: https://lore.kernel.org/r/20210928092242.30036-5-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_gem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/pmbus/lm25066.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 1ba18f53dbda1..9533225b5c88c 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -1220,7 +1220,7 @@ static struct drm_gem_object *_msm_gem_new(struct drm_device *dev,
+diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
+index 1a660c4cd19f4..66d3e88b54172 100644
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -51,7 +51,7 @@ struct __coeff {
+ #define PSC_CURRENT_IN_L	(PSC_NUM_CLASSES)
+ #define PSC_POWER_L		(PSC_NUM_CLASSES + 1)
  
- 	ret = msm_gem_new_impl(dev, size, flags, &obj);
- 	if (ret)
--		goto fail;
-+		return ERR_PTR(ret);
- 
- 	msm_obj = to_msm_bo(obj);
- 
-@@ -1320,7 +1320,7 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
- 
- 	ret = msm_gem_new_impl(dev, size, MSM_BO_WC, &obj);
- 	if (ret)
--		goto fail;
-+		return ERR_PTR(ret);
- 
- 	drm_gem_private_object_init(dev, obj, size);
- 
+-static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
++static struct __coeff lm25066_coeff[][PSC_NUM_CLASSES + 2] = {
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
 -- 
 2.33.0
 
