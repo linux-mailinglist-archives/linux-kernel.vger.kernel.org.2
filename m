@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C1F45214A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278E3451A66
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237711AbhKPBC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:02:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S1354636AbhKOXi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:38:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343616AbhKOTV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3478B635BD;
-        Mon, 15 Nov 2021 18:43:11 +0000 (UTC)
+        id S1343630AbhKOTVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B90635BF;
+        Mon, 15 Nov 2021 18:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001791;
-        bh=DaCfvzE/PurnpKDm1f1w/40iGwtbVS7AV2SLlbTJBVA=;
+        s=korg; t=1637001796;
+        bh=EXzKFNV9CHR+H4ryuysgbWy1pm070uAsHFD+RQ/5uig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLAMOHxDsju5k0FAQk33LFIV6yJfXHQEME8JlGBTofCeoSn+NzjcpHmYEUXz7Apk9
-         k0KODV3AaMqO9r3h8swhz6GzN2ubzig0j3+ea0EYGm1nSGak5+qhvWklZQ0BUu4bUa
-         GuVJFoDZXBmEtAB1qU7VgP4XMhPMYI+2/7MYICQA=
+        b=bCkUhsrAzSIytS7VVPRiGYquk+L0UcPbxDNHQ4vTFe9flEypy3AFreGw/vuYWQ/yp
+         LWEAhJbgpLyjl33D0VVg6dc/Z/GF1yEGhF1tfwQbULkCOhEGt9Pf+WwqiLW0/IA9uP
+         MmsGX8c4Py1VG/xU5rWSrxfB0KhwGrVucA/GN4HA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 323/917] perf/x86/intel/uncore: Fix Intel SPR CHA event constraints
-Date:   Mon, 15 Nov 2021 17:56:58 +0100
-Message-Id: <20211115165439.690427774@linuxfoundation.org>
+Subject: [PATCH 5.15 324/917] perf/x86/intel/uncore: Fix Intel SPR IIO event constraints
+Date:   Mon, 15 Nov 2021 17:56:59 +0100
+Message-Id: <20211115165439.731469131@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,33 +42,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 9d756e408e080d40e7916484b00c802026e6d1ad ]
+[ Upstream commit 67c5d44384f8dc57e1c1b3040423cfce99b578cd ]
 
-SPR CHA events have the exact same event constraints as SKX, so add the
+SPR IIO events have the exact same event constraints as ICX, so add the
 constraints.
 
-Fixes: 949b11381f81 ("perf/x86/intel/uncore: Add Sapphire Rapids server CHA support")
-Reported-by: Stephane Eranian <eranian@google.com>
+Fixes: 3ba7095beaec ("perf/x86/intel/uncore: Add Sapphire Rapids server IIO support")
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1629991963-102621-5-git-send-email-kan.liang@linux.intel.com
+Link: https://lkml.kernel.org/r/1629991963-102621-6-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
  arch/x86/events/intel/uncore_snbep.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index d941854e4efaa..ce85ee5f60f97 100644
+index ce85ee5f60f97..2d75d212c8cc4 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5649,6 +5649,7 @@ static struct intel_uncore_type spr_uncore_chabox = {
- 	.event_mask		= SPR_CHA_PMON_EVENT_MASK,
- 	.event_mask_ext		= SPR_RAW_EVENT_MASK_EXT,
- 	.num_shared_regs	= 1,
-+	.constraints		= skx_uncore_chabox_constraints,
- 	.ops			= &spr_uncore_chabox_ops,
- 	.format_group		= &spr_uncore_chabox_format_group,
+@@ -5661,6 +5661,7 @@ static struct intel_uncore_type spr_uncore_iio = {
+ 	.event_mask_ext		= SNR_IIO_PMON_RAW_EVENT_MASK_EXT,
+ 	.format_group		= &snr_uncore_iio_format_group,
  	.attr_update		= uncore_alias_groups,
++	.constraints		= icx_uncore_iio_constraints,
+ };
+ 
+ static struct attribute *spr_uncore_raw_formats_attr[] = {
 -- 
 2.33.0
 
