@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8C1452298
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E01F3452599
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236253AbhKPBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:15:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
+        id S1382842AbhKPByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:54:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245216AbhKOTTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:19:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C687F61BE2;
-        Mon, 15 Nov 2021 18:30:34 +0000 (UTC)
+        id S241471AbhKOSUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:20:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA48A632AC;
+        Mon, 15 Nov 2021 17:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001035;
-        bh=ewYsxbhV+Zd5xnXSKihw3cRxLs+mJSgfoO0LpQcFN98=;
+        s=korg; t=1636998753;
+        bh=nR/rCC9IFhB7ler2lbumaNUikxb03l9QITfnzFPNusY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2m9PzXcgehPt4pQAsbtWQm4DNNlTT+A3tn6bed6S6UuLuilJqPOS8G3HNvh2wrcE
-         TXq4hlg6YuTafZq/Pj0U7bZ7OOhKDdxXxJmMzZ8U4gzvBKQjCPV97p1cOv0g3KdVWz
-         EuwGEDc4+2DRP/lZoDlV1f/WmPKIsUbOx4vt9gpc=
+        b=LmMYTNFxbn4/4EiM6sPVR2tdjJjByLI1EvZc9hcZYRtXYPJONZsSV5RaehJx7i07m
+         0zjvv383Q4O5ZIPNqxN66z5ggh4WDkdciy2PsYrq4JxF4bB5irc6Obs+aLonYpQMtK
+         5tudfcnyagMOFulb6U6uEq7TtR2/HR9BytlTgHbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.15 036/917] ALSA: hda/realtek: Add a quirk for Acer Spin SP513-54N
-Date:   Mon, 15 Nov 2021 17:52:11 +0100
-Message-Id: <20211115165429.981642518@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.14 049/849] ext4: ensure enough credits in ext4_ext_shift_path_extents
+Date:   Mon, 15 Nov 2021 17:52:12 +0100
+Message-Id: <20211115165421.666562372@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaroslav Kysela <perex@perex.cz>
+From: yangerkun <yangerkun@huawei.com>
 
-commit 2a5bb694488bb6593066d46881bfd9d07edd1628 upstream.
+commit 4268496e48dc681cfa53b92357314b5d7221e625 upstream.
 
-Another model requires ALC255_FIXUP_ACER_MIC_NO_PRESENCE fixup.
+Like ext4_ext_rm_leaf, we can ensure that there are enough credits
+before every call that will consume credits.  As part of this fix we
+fold the functionality of ext4_access_path() into
+ext4_ext_shift_path_extents().  This change is needed as a preparation
+for the next bugfix patch.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211853
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211104155726.2090997-1-perex@perex.cz
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20210903062748.4118886-3-yangerkun@huawei.com
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/extents.c |   49 +++++++++++++++----------------------------------
+ 1 file changed, 15 insertions(+), 34 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8496,6 +8496,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1025, 0x141f, "Acer Spin SP513-54N", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4972,36 +4972,6 @@ int ext4_get_es_cache(struct inode *inod
+ }
+ 
+ /*
+- * ext4_access_path:
+- * Function to access the path buffer for marking it dirty.
+- * It also checks if there are sufficient credits left in the journal handle
+- * to update path.
+- */
+-static int
+-ext4_access_path(handle_t *handle, struct inode *inode,
+-		struct ext4_ext_path *path)
+-{
+-	int credits, err;
+-
+-	if (!ext4_handle_valid(handle))
+-		return 0;
+-
+-	/*
+-	 * Check if need to extend journal credits
+-	 * 3 for leaf, sb, and inode plus 2 (bmap and group
+-	 * descriptor) for each block group; assume two block
+-	 * groups
+-	 */
+-	credits = ext4_writepage_trans_blocks(inode);
+-	err = ext4_datasem_ensure_credits(handle, inode, 7, credits, 0);
+-	if (err < 0)
+-		return err;
+-
+-	err = ext4_ext_get_access(handle, inode, path);
+-	return err;
+-}
+-
+-/*
+  * ext4_ext_shift_path_extents:
+  * Shift the extents of a path structure lying between path[depth].p_ext
+  * and EXT_LAST_EXTENT(path[depth].p_hdr), by @shift blocks. @SHIFT tells
+@@ -5015,6 +4985,7 @@ ext4_ext_shift_path_extents(struct ext4_
+ 	int depth, err = 0;
+ 	struct ext4_extent *ex_start, *ex_last;
+ 	bool update = false;
++	int credits, restart_credits;
+ 	depth = path->p_depth;
+ 
+ 	while (depth >= 0) {
+@@ -5024,13 +4995,23 @@ ext4_ext_shift_path_extents(struct ext4_
+ 				return -EFSCORRUPTED;
+ 
+ 			ex_last = EXT_LAST_EXTENT(path[depth].p_hdr);
++			/* leaf + sb + inode */
++			credits = 3;
++			if (ex_start == EXT_FIRST_EXTENT(path[depth].p_hdr)) {
++				update = true;
++				/* extent tree + sb + inode */
++				credits = depth + 2;
++			}
+ 
+-			err = ext4_access_path(handle, inode, path + depth);
++			restart_credits = ext4_writepage_trans_blocks(inode);
++			err = ext4_datasem_ensure_credits(handle, inode, credits,
++					restart_credits, 0);
+ 			if (err)
+ 				goto out;
+ 
+-			if (ex_start == EXT_FIRST_EXTENT(path[depth].p_hdr))
+-				update = true;
++			err = ext4_ext_get_access(handle, inode, path + depth);
++			if (err)
++				goto out;
+ 
+ 			while (ex_start <= ex_last) {
+ 				if (SHIFT == SHIFT_LEFT) {
+@@ -5061,7 +5042,7 @@ ext4_ext_shift_path_extents(struct ext4_
+ 		}
+ 
+ 		/* Update index too */
+-		err = ext4_access_path(handle, inode, path + depth);
++		err = ext4_ext_get_access(handle, inode, path + depth);
+ 		if (err)
+ 			goto out;
+ 
 
 
