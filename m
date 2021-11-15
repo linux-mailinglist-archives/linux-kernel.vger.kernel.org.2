@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6864518D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E0945207C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347813AbhKOXIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
+        id S1358830AbhKPAyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:54:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243368AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6960633C7;
-        Mon, 15 Nov 2021 18:12:14 +0000 (UTC)
+        id S1343958AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DC0613A7;
+        Mon, 15 Nov 2021 18:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999935;
-        bh=VJK1eqF61bLQOlNDzkfvJUfZcM6k8U2w5+ZaU0CfM14=;
+        s=korg; t=1637002173;
+        bh=U+Cz+1MOXx3jqtBh8kCLfofdzsmkjEKbIY+PGsRFGV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdJaDqBAu7YLWagqDA4xi2IiuMZ48zPBbO+Xe2T53pcKmK5fX0iLiqK0Ct3c1qjT/
-         7A8m/wQ9PUWiJtTbkkW9bHFreBffDeN2aMlAOM+s0sElS4omGJBIgtiJp6F7fcKUs1
-         AVo12KJsfEsNmkB5m3WtyKCKJTBGtTh8fzDw+ZOQ=
+        b=JGJAYQiTNok7Ge3XvvfDUH81sLo1bYllwH+ojc/tezF3xNaPZeU0rFgoGhnhgin62
+         8PMEx0yJuA4ulyIl/6olRW/3MDpGfz8PQ9kdkEDaxD+1maAwnYrymVUXzadbD2M4hi
+         vYXRNtNuQvTpQtKEn9IcjQSHZdfSI3HJ9BshsoIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Jimmy Hu <Jimmy.Hu@mediatek.com>,
+        Deren Wu <deren.wu@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 478/849] iwlwifi: mvm: reset PM state on unsuccessful resume
+Subject: [PATCH 5.15 466/917] mt76: mt7921: Fix out of order process by invalid event pkt
 Date:   Mon, 15 Nov 2021 17:59:21 +0100
-Message-Id: <20211115165436.452112893@linuxfoundation.org>
+Message-Id: <20211115165444.575954915@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Deren Wu <deren.wu@mediatek.com>
 
-[ Upstream commit 2f629a7772e2a7bdaff25178917a40073f79702c ]
+[ Upstream commit cd3f387371e941e6806b455b4ba5b9f4ca4b77c6 ]
 
-If resume fails for some reason, we need to set the PM state
-back to normal so we're able to send commands during firmware
-reset, rather than failing all of them because we're in D3.
+The acceptable event report should inlcude original CMD-ID. Otherwise,
+drop unexpected result from fw.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Fixes: 708a39aaca22 ("iwlwifi: mvm: don't send commands during suspend\resume transition")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20211016114029.7ceb9eaca9f6.If0cbef38c6d07ec1ddce125878a4bdadcb35d2c9@changeid
+Fixes: 1c099ab44727c ("mt76: mt7921: add MCU support")
+Signed-off-by: Jimmy Hu <Jimmy.Hu@mediatek.com>
+Signed-off-by: Deren Wu <deren.wu@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/d3.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-index 6a259d867d90e..9ed56c68a506a 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-@@ -2093,7 +2093,6 @@ static int __iwl_mvm_resume(struct iwl_mvm *mvm, bool test)
- 		iwl_fw_dbg_collect_desc(&mvm->fwrt, &iwl_dump_desc_assert,
- 					false, 0);
- 		ret = 1;
--		mvm->trans->system_pm_mode = IWL_PLAT_PM_MODE_DISABLED;
- 		goto err;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+index 8329b705c2ca2..8ced55501d373 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
+@@ -157,6 +157,7 @@ mt7921_mcu_parse_response(struct mt76_dev *mdev, int cmd,
+ 			  struct sk_buff *skb, int seq)
+ {
+ 	struct mt7921_mcu_rxd *rxd;
++	int mcu_cmd = cmd & MCU_CMD_MASK;
+ 	int ret = 0;
+ 
+ 	if (!skb) {
+@@ -194,6 +195,9 @@ mt7921_mcu_parse_response(struct mt76_dev *mdev, int cmd,
+ 		skb_pull(skb, sizeof(*rxd));
+ 		event = (struct mt7921_mcu_uni_event *)skb->data;
+ 		ret = le32_to_cpu(event->status);
++		/* skip invalid event */
++		if (mcu_cmd != event->cid)
++			ret = -EAGAIN;
+ 		break;
  	}
- 
-@@ -2142,6 +2141,7 @@ static int __iwl_mvm_resume(struct iwl_mvm *mvm, bool test)
- 		}
- 	}
- 
-+	/* after the successful handshake, we're out of D3 */
- 	mvm->trans->system_pm_mode = IWL_PLAT_PM_MODE_DISABLED;
- 
- 	/*
-@@ -2212,6 +2212,9 @@ out:
- 	 */
- 	set_bit(IWL_MVM_STATUS_HW_RESTART_REQUESTED, &mvm->status);
- 
-+	/* regardless of what happened, we're now out of D3 */
-+	mvm->trans->system_pm_mode = IWL_PLAT_PM_MODE_DISABLED;
-+
- 	return 1;
- }
- 
+ 	case MCU_CMD_REG_READ: {
 -- 
 2.33.0
 
