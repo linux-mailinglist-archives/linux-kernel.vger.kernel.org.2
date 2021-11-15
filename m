@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9BA451966
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCCA452028
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348130AbhKOXTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:19:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S1357904AbhKPAtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244789AbhKOTRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 594B26341F;
-        Mon, 15 Nov 2021 18:23:56 +0000 (UTC)
+        id S1344613AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 573AE6369E;
+        Mon, 15 Nov 2021 19:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000636;
-        bh=9ux/uLZEAuYk8MyRFnem9h7Mu+F1RnHP69iMpx9Z2lQ=;
+        s=korg; t=1637002858;
+        bh=/RWbr0uVzE/gGLArKdCbZsNNoobQUTceSt9Mu2lC6A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vZzhE/uIXIK0Q9vjLvnEozUoECAsHHM38Mp2SvjHZE5Jav7gRU1AMzwQYckR8Kgqm
-         7QCm3BZdYz53GCd0vPMX6GPJ5MNHcHwtihDHsY/csBcaumqDKA/m4lca41OGeWhUMR
-         WBkp1dyaErM/7SiQu0higbx7GJkZImIkk6L2gXpM=
+        b=rYQrOtfdZ8jby+RuPnhrWCoREeQLfY+FuhPO/u5CSa+SXSW/IgsEgrf19ZvG9snNy
+         oLLNVwUHugOn/bTNxApxWaTBmMp7xSFlnVwdqCXdNTI8T/BuwexHqBQRXRVtGNZ+pi
+         AV5sI9Jbxoqow0v+nD8IogOzJ2qsCa8ulke/RL+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 734/849] block/ataflop: provide a helper for cleanup up an atari disk
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 722/917] PCI: uniphier: Serialize INTx masking/unmasking and fix the bit operation
 Date:   Mon, 15 Nov 2021 18:03:37 +0100
-Message-Id: <20211115165445.074621110@linuxfoundation.org>
+Message-Id: <20211115165453.388332809@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,86 +42,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-[ Upstream commit deae1138d04758c7f8939fcb8aee330bc37e3015 ]
+[ Upstream commit 4caab28a6215da5f3c1b505ff08810bc6acfe365 ]
 
-Instead of using two separate code paths for cleaning up an atari disk,
-use one. We take the more careful approach to check for *all* disk
-types, as is done on exit. The init path didn't have that check as
-the alternative disk types are only probed for later, they are not
-initialized by default.
+The condition register PCI_RCV_INTX is used in irq_mask() and irq_unmask()
+callbacks. Accesses to register can occur at the same time without a lock.
+Add a lock into each callback to prevent the issue.
 
-Yes, there is a shared tag for all disks.
+And INTX mask and unmask fields in PCL_RCV_INTX register should only be
+set/reset for each bit. Clearing by PCL_RCV_INTX_ALL_MASK should be
+removed.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/20210927220302.1073499-14-mcgrof@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+INTX status fields in PCL_RCV_INTX register only indicates each INTX
+interrupt status, so the handler can't clear by writing 1 to the field.
+The status is expected to be cleared by the interrupt origin.
+The ack function has no meaning, so should remove it.
+
+Suggested-by: Pali Rohár <pali@kernel.org>
+Link: https://lore.kernel.org/r/1631924579-24567-1-git-send-email-hayashi.kunihiko@socionext.com
+Fixes: 7e6d5cd88a6f ("PCI: uniphier: Add UniPhier PCIe host controller support")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Pali Rohár <pali@kernel.org>
+Acked-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ drivers/pci/controller/dwc/pcie-uniphier.c | 26 +++++++++-------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 55f6d6f6dbd34..123ad58193098 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2030,6 +2030,20 @@ static void ataflop_probe(dev_t dev)
- 	mutex_unlock(&ataflop_probe_lock);
+diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+index d842fd0181299..d05be942956e2 100644
+--- a/drivers/pci/controller/dwc/pcie-uniphier.c
++++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+@@ -168,30 +168,21 @@ static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
+ 	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
  }
  
-+static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
-+{
-+	int type;
-+
-+	for (type = 0; type < NUM_DISK_MINORS; type++) {
-+		if (!fs->disk[type])
-+			continue;
-+		if (fs->registered[type])
-+			del_gendisk(fs->disk[type]);
-+		blk_cleanup_disk(fs->disk[type]);
-+	}
-+	blk_mq_free_tag_set(&fs->tag_set);
-+}
-+
- static int __init atari_floppy_init (void)
+-static void uniphier_pcie_irq_ack(struct irq_data *d)
+-{
+-	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+-	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+-	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+-	u32 val;
+-
+-	val = readl(priv->base + PCL_RCV_INTX);
+-	val &= ~PCL_RCV_INTX_ALL_STATUS;
+-	val |= BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_STATUS_SHIFT);
+-	writel(val, priv->base + PCL_RCV_INTX);
+-}
+-
+ static void uniphier_pcie_irq_mask(struct irq_data *d)
  {
- 	int i;
-@@ -2100,10 +2114,8 @@ static int __init atari_floppy_init (void)
- 	return 0;
+ 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+ 	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
++	unsigned long flags;
+ 	u32 val;
  
- err:
--	while (--i >= 0) {
--		blk_cleanup_disk(unit[i].disk[0]);
--		blk_mq_free_tag_set(&unit[i].tag_set);
--	}
-+	while (--i >= 0)
-+		atari_cleanup_floppy_disk(&unit[i]);
++	raw_spin_lock_irqsave(&pp->lock, flags);
++
+ 	val = readl(priv->base + PCL_RCV_INTX);
+-	val &= ~PCL_RCV_INTX_ALL_MASK;
+ 	val |= BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
+ 	writel(val, priv->base + PCL_RCV_INTX);
++
++	raw_spin_unlock_irqrestore(&pp->lock, flags);
+ }
  
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
- out_unlock:
-@@ -2152,18 +2164,10 @@ __setup("floppy=", atari_floppy_setup);
+ static void uniphier_pcie_irq_unmask(struct irq_data *d)
+@@ -199,17 +190,20 @@ static void uniphier_pcie_irq_unmask(struct irq_data *d)
+ 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+ 	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
++	unsigned long flags;
+ 	u32 val;
  
- static void __exit atari_floppy_exit(void)
- {
--	int i, type;
-+	int i;
++	raw_spin_lock_irqsave(&pp->lock, flags);
++
+ 	val = readl(priv->base + PCL_RCV_INTX);
+-	val &= ~PCL_RCV_INTX_ALL_MASK;
+ 	val &= ~BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
+ 	writel(val, priv->base + PCL_RCV_INTX);
++
++	raw_spin_unlock_irqrestore(&pp->lock, flags);
+ }
  
--	for (i = 0; i < FD_MAX_UNITS; i++) {
--		for (type = 0; type < NUM_DISK_MINORS; type++) {
--			if (!unit[i].disk[type])
--				continue;
--			if (unit[i].registered[type])
--				del_gendisk(unit[i].disk[type]);
--			blk_cleanup_disk(unit[i].disk[type]);
--		}
--		blk_mq_free_tag_set(&unit[i].tag_set);
--	}
-+	for (i = 0; i < FD_MAX_UNITS; i++)
-+		atari_cleanup_floppy_disk(&unit[i]);
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
- 
- 	del_timer_sync(&fd_timer);
+ static struct irq_chip uniphier_pcie_irq_chip = {
+ 	.name = "PCI",
+-	.irq_ack = uniphier_pcie_irq_ack,
+ 	.irq_mask = uniphier_pcie_irq_mask,
+ 	.irq_unmask = uniphier_pcie_irq_unmask,
+ };
 -- 
 2.33.0
 
