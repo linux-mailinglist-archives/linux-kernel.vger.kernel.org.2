@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA42452285
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE8A452526
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377919AbhKPBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:13:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
+        id S1343612AbhKPBrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:47:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245340AbhKOTUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED9266333D;
-        Mon, 15 Nov 2021 18:32:55 +0000 (UTC)
+        id S241365AbhKOS1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:27:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFCB63333;
+        Mon, 15 Nov 2021 17:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001176;
-        bh=LPzTPIuI9zxJ6Z11Fof+pznqGVjbKGNie7uuwCUbjf4=;
+        s=korg; t=1636999013;
+        bh=TbQ/2XRT61/Y54P7sZuYOGP/oLn2Hkxo8uUqDFLHkwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRnapmv5dgX5L3d5lG6eMhip+gwri0k+KWAg76sTOP0VwYR+LRBE6HMeECBQ+tSR+
-         guljOv/PjnQHzouUUXUxsk07Pe/ZRIWsSn0iKtRqczf61dTFjeHgvDZRwwLqzaQFiV
-         LmS/GMQlQzGB7+2rqBHdhCBJGu5fEOicYH9u9lds=
+        b=iqGRefLD6u49YdsypH+irD1urP7HiyHBf6eI8ZqF6ynfCt8q0KKsyPeC+ZiCAPBhY
+         k3z7DjtxLuRIkdyp4Bpi/0dozWYW9ZLYtDweMQHhSo4c7uiG65l2++cecyl5R7RvNQ
+         157sjp+KfRAaPhBMJt7iY/UFE2KNycSQMR6aOgxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.15 089/917] wcn36xx: Fix HT40 capability for 2Ghz band
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 101/849] KVM: VMX: Unregister posted interrupt wakeup handler on hardware unsetup
 Date:   Mon, 15 Nov 2021 17:53:04 +0100
-Message-Id: <20211115165431.770200356@linuxfoundation.org>
+Message-Id: <20211115165423.506317966@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 960ae77f25631bbe4e3aafefe209b52e044baf31 upstream.
+commit ec5a4919fa7b7d8c7a2af1c7e799b1fe4be84343 upstream.
 
-All wcn36xx controllers are supposed to support HT40 (and SGI40),
-This doubles the maximum bitrate/throughput with compatible APs.
+Unregister KVM's posted interrupt wakeup handler during unsetup so that a
+spurious interrupt that arrives after kvm_intel.ko is unloaded doesn't
+call into freed memory.
 
-Tested with wcn3620 & wcn3680B.
-
+Fixes: bf9f6ac8d749 ("KVM: Update Posted-Interrupts Descriptor when vCPU is blocked")
 Cc: stable@vger.kernel.org
-Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634737133-22336-1-git-send-email-loic.poulain@linaro.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20211009001107.3936588-3-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/kvm/vmx/vmx.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -135,7 +135,9 @@ static struct ieee80211_supported_band w
- 		.cap =	IEEE80211_HT_CAP_GRN_FLD |
- 			IEEE80211_HT_CAP_SGI_20 |
- 			IEEE80211_HT_CAP_DSSSCCK40 |
--			IEEE80211_HT_CAP_LSIG_TXOP_PROT,
-+			IEEE80211_HT_CAP_LSIG_TXOP_PROT |
-+			IEEE80211_HT_CAP_SGI_40 |
-+			IEEE80211_HT_CAP_SUP_WIDTH_20_40,
- 		.ht_supported = true,
- 		.ampdu_factor = IEEE80211_HT_MAX_AMPDU_64K,
- 		.ampdu_density = IEEE80211_HT_MPDU_DENSITY_16,
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7517,6 +7517,8 @@ static void vmx_migrate_timers(struct kv
+ 
+ static void hardware_unsetup(void)
+ {
++	kvm_set_posted_intr_wakeup_handler(NULL);
++
+ 	if (nested)
+ 		nested_vmx_hardware_unsetup();
+ 
+@@ -7844,8 +7846,6 @@ static __init int hardware_setup(void)
+ 		vmx_x86_ops.request_immediate_exit = __kvm_request_immediate_exit;
+ 	}
+ 
+-	kvm_set_posted_intr_wakeup_handler(pi_wakeup_handler);
+-
+ 	kvm_mce_cap_supported |= MCG_LMCE_P;
+ 
+ 	if (pt_mode != PT_MODE_SYSTEM && pt_mode != PT_MODE_HOST_GUEST)
+@@ -7869,6 +7869,9 @@ static __init int hardware_setup(void)
+ 	r = alloc_kvm_area();
+ 	if (r)
+ 		nested_vmx_hardware_unsetup();
++
++	kvm_set_posted_intr_wakeup_handler(pi_wakeup_handler);
++
+ 	return r;
+ }
+ 
 
 
