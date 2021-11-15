@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DCC4519A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD83D452021
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346916AbhKOXZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:25:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1357754AbhKPAtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244944AbhKOTSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:18:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E92C9634E0;
-        Mon, 15 Nov 2021 18:25:56 +0000 (UTC)
+        id S1344659AbhKOTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDBE63368;
+        Mon, 15 Nov 2021 19:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000757;
-        bh=4Zeh1rVycmPCKNTzIDyx3nPsvoujAcCJaricuIB1udE=;
+        s=korg; t=1637002915;
+        bh=Hhpt5/09ihCRRLXi62CCzQZ6wDu7vcGPY0lWg+4fKHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QznvXELtiOW+o3K5wmQvr9q7714WA3hB/s3XuG4CK78Bb4++935ATgHnqF+MjJUAz
-         sXxvUqhWAgGPPmuEE/zTe6O7o9YIfQHkvF8x2aQLdst/KmdLMxvlc+4AtAqmE23adg
-         Pwz8k8T5YNktJXe8DFQ2s/El1/9PRl3mkNaCLG70=
+        b=tWHhzxKGdwdJGlOZEYzSAfvI3xkh6kTRnGh9i0OSxP5imqijJ454BrGItm2OUWCe1
+         JTh8GXrE37lRj4pBcBbAyCL34K78Ozch68OlBaNOI09obHgCahqYJV/xqYDrqxCepl
+         Ky+svVHEPuZNurC+TmWg2YyAeRqgZEvrnTHSI2Pk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 748/849] selftests/bpf/xdp_redirect_multi: Put the logs to tmp folder
+        stable@vger.kernel.org,
+        Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 736/917] soc: fsl: dpaa2-console: free buffer before returning from dpaa2_console_read
 Date:   Mon, 15 Nov 2021 18:03:51 +0100
-Message-Id: <20211115165445.558559386@linuxfoundation.org>
+Message-Id: <20211115165453.870074619@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,135 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
 
-[ Upstream commit 8b4ac13abe7d82da0e0d22a9ba2e27301559a93e ]
+[ Upstream commit 8120bd469f5525da229953c1197f2b826c0109f4 ]
 
-The xdp_redirect_multi test logs are created in selftest folder and not cleaned
-after test. Let's creat a tmp dir and remove the logs after testing.
+Free the kbuf buffer before returning from the dpaa2_console_read()
+function. The variable no longer goes out of scope, leaking the storage
+it points to.
 
-Fixes: d23292476297 ("selftests/bpf: Add xdp_redirect_multi test")
-Suggested-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20211027033553.962413-2-liuhangbin@gmail.com
+Fixes: c93349d8c170 ("soc: fsl: add DPAA2 console support")
+Signed-off-by: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Signed-off-by: Li Yang <leoyang.li@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/test_xdp_redirect_multi.sh  | 35 ++++++++++---------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+ drivers/soc/fsl/dpaa2-console.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-index 1538373157e3c..b20b96ba72ef0 100755
---- a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-@@ -31,6 +31,7 @@ IFACES=""
- DRV_MODE="xdpgeneric xdpdrv xdpegress"
- PASS=0
- FAIL=0
-+LOG_DIR=$(mktemp -d)
+diff --git a/drivers/soc/fsl/dpaa2-console.c b/drivers/soc/fsl/dpaa2-console.c
+index 27243f706f376..53917410f2bdb 100644
+--- a/drivers/soc/fsl/dpaa2-console.c
++++ b/drivers/soc/fsl/dpaa2-console.c
+@@ -231,6 +231,7 @@ static ssize_t dpaa2_console_read(struct file *fp, char __user *buf,
+ 	cd->cur_ptr += bytes;
+ 	written += bytes;
  
- test_pass()
- {
-@@ -100,17 +101,17 @@ do_egress_tests()
- 	local mode=$1
++	kfree(kbuf);
+ 	return written;
  
- 	# mac test
--	ip netns exec ns2 tcpdump -e -i veth0 -nn -l -e &> mac_ns1-2_${mode}.log &
--	ip netns exec ns3 tcpdump -e -i veth0 -nn -l -e &> mac_ns1-3_${mode}.log &
-+	ip netns exec ns2 tcpdump -e -i veth0 -nn -l -e &> ${LOG_DIR}/mac_ns1-2_${mode}.log &
-+	ip netns exec ns3 tcpdump -e -i veth0 -nn -l -e &> ${LOG_DIR}/mac_ns1-3_${mode}.log &
- 	sleep 0.5
- 	ip netns exec ns1 ping 192.0.2.254 -i 0.1 -c 4 &> /dev/null
- 	sleep 0.5
- 	pkill -9 tcpdump
- 
- 	# mac check
--	grep -q "${veth_mac[2]} > ff:ff:ff:ff:ff:ff" mac_ns1-2_${mode}.log && \
-+	grep -q "${veth_mac[2]} > ff:ff:ff:ff:ff:ff" ${LOG_DIR}/mac_ns1-2_${mode}.log && \
- 	       test_pass "$mode mac ns1-2" || test_fail "$mode mac ns1-2"
--	grep -q "${veth_mac[3]} > ff:ff:ff:ff:ff:ff" mac_ns1-3_${mode}.log && \
-+	grep -q "${veth_mac[3]} > ff:ff:ff:ff:ff:ff" ${LOG_DIR}/mac_ns1-3_${mode}.log && \
- 		test_pass "$mode mac ns1-3" || test_fail "$mode mac ns1-3"
- }
- 
-@@ -121,9 +122,9 @@ do_ping_tests()
- 	# ping6 test: echo request should be redirect back to itself, not others
- 	ip netns exec ns1 ip neigh add 2001:db8::2 dev veth0 lladdr 00:00:00:00:00:02
- 
--	ip netns exec ns1 tcpdump -i veth0 -nn -l -e &> ns1-1_${mode}.log &
--	ip netns exec ns2 tcpdump -i veth0 -nn -l -e &> ns1-2_${mode}.log &
--	ip netns exec ns3 tcpdump -i veth0 -nn -l -e &> ns1-3_${mode}.log &
-+	ip netns exec ns1 tcpdump -i veth0 -nn -l -e &> ${LOG_DIR}/ns1-1_${mode}.log &
-+	ip netns exec ns2 tcpdump -i veth0 -nn -l -e &> ${LOG_DIR}/ns1-2_${mode}.log &
-+	ip netns exec ns3 tcpdump -i veth0 -nn -l -e &> ${LOG_DIR}/ns1-3_${mode}.log &
- 	sleep 0.5
- 	# ARP test
- 	ip netns exec ns1 ping 192.0.2.254 -i 0.1 -c 4 &> /dev/null
-@@ -135,32 +136,32 @@ do_ping_tests()
- 	pkill -9 tcpdump
- 
- 	# All netns should receive the redirect arp requests
--	[ $(grep -c "who-has 192.0.2.254" ns1-1_${mode}.log) -gt 4 ] && \
-+	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-1_${mode}.log) -gt 4 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-1" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-1"
--	[ $(grep -c "who-has 192.0.2.254" ns1-2_${mode}.log) -le 4 ] && \
-+	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-2_${mode}.log) -le 4 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-2" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-2"
--	[ $(grep -c "who-has 192.0.2.254" ns1-3_${mode}.log) -le 4 ] && \
-+	[ $(grep -c "who-has 192.0.2.254" ${LOG_DIR}/ns1-3_${mode}.log) -le 4 ] && \
- 		test_pass "$mode arp(F_BROADCAST) ns1-3" || \
- 		test_fail "$mode arp(F_BROADCAST) ns1-3"
- 
- 	# ns1 should not receive the redirect echo request, others should
--	[ $(grep -c "ICMP echo request" ns1-1_${mode}.log) -eq 4 ] && \
-+	[ $(grep -c "ICMP echo request" ${LOG_DIR}/ns1-1_${mode}.log) -eq 4 ] && \
- 		test_pass "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-1" || \
- 		test_fail "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-1"
--	[ $(grep -c "ICMP echo request" ns1-2_${mode}.log) -eq 4 ] && \
-+	[ $(grep -c "ICMP echo request" ${LOG_DIR}/ns1-2_${mode}.log) -eq 4 ] && \
- 		test_pass "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-2" || \
- 		test_fail "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-2"
--	[ $(grep -c "ICMP echo request" ns1-3_${mode}.log) -eq 4 ] && \
-+	[ $(grep -c "ICMP echo request" ${LOG_DIR}/ns1-3_${mode}.log) -eq 4 ] && \
- 		test_pass "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-3" || \
- 		test_fail "$mode IPv4 (F_BROADCAST|F_EXCLUDE_INGRESS) ns1-3"
- 
- 	# ns1 should receive the echo request, ns2 should not
--	[ $(grep -c "ICMP6, echo request" ns1-1_${mode}.log) -eq 4 ] && \
-+	[ $(grep -c "ICMP6, echo request" ${LOG_DIR}/ns1-1_${mode}.log) -eq 4 ] && \
- 		test_pass "$mode IPv6 (no flags) ns1-1" || \
- 		test_fail "$mode IPv6 (no flags) ns1-1"
--	[ $(grep -c "ICMP6, echo request" ns1-2_${mode}.log) -eq 0 ] && \
-+	[ $(grep -c "ICMP6, echo request" ${LOG_DIR}/ns1-2_${mode}.log) -eq 0 ] && \
- 		test_pass "$mode IPv6 (no flags) ns1-2" || \
- 		test_fail "$mode IPv6 (no flags) ns1-2"
- }
-@@ -176,7 +177,7 @@ do_tests()
- 		xdpgeneric) drv_p="-S";;
- 	esac
- 
--	./xdp_redirect_multi $drv_p $IFACES &> xdp_redirect_${mode}.log &
-+	./xdp_redirect_multi $drv_p $IFACES &> ${LOG_DIR}/xdp_redirect_${mode}.log &
- 	xdp_pid=$!
- 	sleep 1
- 
-@@ -192,13 +193,13 @@ do_tests()
- trap clean_up 0 2 3 6 9
- 
- check_env
--rm -f xdp_redirect_*.log ns*.log mac_ns*.log
- 
- for mode in ${DRV_MODE}; do
- 	setup_ns $mode
- 	do_tests $mode
- 	clean_up
- done
-+rm -rf ${LOG_DIR}
- 
- echo "Summary: PASS $PASS, FAIL $FAIL"
- [ $FAIL -eq 0 ] && exit 0 || exit 1
+ err_free_buf:
 -- 
 2.33.0
 
