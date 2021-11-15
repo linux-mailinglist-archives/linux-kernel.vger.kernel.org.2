@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CA9450CD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C673D450CE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238699AbhKORoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:44:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47402 "EHLO mail.kernel.org"
+        id S238644AbhKORqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:46:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237384AbhKORTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237385AbhKORTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:19:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D806325D;
-        Mon, 15 Nov 2021 17:14:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE2E6120F;
+        Mon, 15 Nov 2021 17:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996468;
-        bh=3e0y6Cpkz6e3Yji48722BrMi0E2xt8fhbTHhCg7QOtU=;
+        s=korg; t=1636996470;
+        bh=g9YqIBsJqPHUuvpLJDbPcXidbZmOm3hbsrEoiwDQWSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x0lwbH10tdxQVBkzXVk5XkMEg+VqWgxa3ZuX2n0DGDi5faIvXIxTnElSHAwX0AYXn
-         2+3BYyUZabH9vjfsBmQMnQhTr+IPtMGtJsJu1bcTq4BCBybpLMxSSQJ7RzPCggLAtv
-         o4yMmsqPDqAMqSmZtEzLVe9emyOTeg36khAcoVOY=
+        b=qXHt2q8RuH836l/Id/sX8E69vvBZ+cw39SditNiuvUfVn2tUmh3Z9u8PONJmuhz91
+         6KbuWdCBqivj1eMotYW0qJvCy4alePJFPdQfIhueaGTYX9RlNFWBexOtXYEmYKXt/g
+         sEvPryFRR1Bmxz+1PNTV+SXxUIA1n4bXpVHRr5XU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 151/355] ACPI: battery: Accept charges over the design capacity as full
-Date:   Mon, 15 Nov 2021 18:01:15 +0100
-Message-Id: <20211115165318.678373652@linuxfoundation.org>
+Subject: [PATCH 5.4 152/355] leaking_addresses: Always print a trailing newline
+Date:   Mon, 15 Nov 2021 18:01:16 +0100
+Message-Id: <20211115165318.709230583@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: André Almeida <andrealmeid@collabora.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
+[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
 
-Some buggy firmware and/or brand new batteries can support a charge that's
-slightly over the reported design capacity. In such cases, the kernel will
-report to userspace that the charging state of the battery is "Unknown",
-when in reality the battery charge is "Full", at least from the design
-capacity point of view. Make the fallback condition accepts capacities
-over the designed capacity so userspace knows that is full.
+For files that lack trailing newlines and match a leaking address (e.g.
+wchan[1]), the leaking_addresses.pl report would run together with the
+next line, making things look corrupted.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Unconditionally remove the newline on input, and write it back out on
+output.
+
+[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/leaking_addresses.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-index 254a7d98b9d4c..6e96ed68b3379 100644
---- a/drivers/acpi/battery.c
-+++ b/drivers/acpi/battery.c
-@@ -185,7 +185,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
- 		return 1;
+diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
+index b2d8b8aa2d99e..8f636a23bc3f2 100755
+--- a/scripts/leaking_addresses.pl
++++ b/scripts/leaking_addresses.pl
+@@ -455,8 +455,9 @@ sub parse_file
  
- 	/* fallback to using design values for broken batteries */
--	if (battery->design_capacity == battery->capacity_now)
-+	if (battery->design_capacity <= battery->capacity_now)
- 		return 1;
- 
- 	/* we don't do any sort of metric based on percentages */
+ 	open my $fh, "<", $file or return;
+ 	while ( <$fh> ) {
++		chomp;
+ 		if (may_leak_address($_)) {
+-			print $file . ': ' . $_;
++			printf("$file: $_\n");
+ 		}
+ 	}
+ 	close $fh;
 -- 
 2.33.0
 
