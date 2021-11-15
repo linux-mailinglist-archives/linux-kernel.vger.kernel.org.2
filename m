@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B634518C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA8A451AD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhKOXHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:07:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
+        id S1355630AbhKOXnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:43:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243479AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E533661AA8;
-        Mon, 15 Nov 2021 18:13:47 +0000 (UTC)
+        id S1344054AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0808633BC;
+        Mon, 15 Nov 2021 18:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000028;
-        bh=qQjTWBBKkkXc5wVQqANwUpgKMvtUSX+JFcNiZiipAMA=;
+        s=korg; t=1637002264;
+        bh=1srJoXs98ztI5OSn27Zssx/V/2oItZpf/I5+Vr7ygU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sLwggHG3sKvw1Tk81E8doaSJqEgF9PJ8y7F4wL2cDBKFBKdFZ3uRyewg3HiWJzxRH
-         G5K6M3QMdiUq1GXEqPW3Re321WY0EYLpuYYjLeqvGx+l9lJmJjxPLK5Rl0BRvQtyr+
-         hfL8oBagsGKoFUEMEa8snXxNifn2JAGbvScrgjMY=
+        b=k+wy6b/YzzysHEVVfwMMzXqA81Y5LY2ilnNsgsCRpdbzg6/LKayZ2BXbPJitrzN5A
+         7/pD801G3IrD4JjcrHFcHHvjD1AanxDLIottubpA6oTD8J8i2em5QFxMOrWKgv8ZyR
+         mje5t9M4i7oSgo85O4Uj3h5uGehY2wtYfk/Jh/jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>,
         Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 512/849] libbpf: Fix endianness detection in BPF_CORE_READ_BITFIELD_PROBED()
-Date:   Mon, 15 Nov 2021 17:59:55 +0100
-Message-Id: <20211115165437.606251411@linuxfoundation.org>
+Subject: [PATCH 5.15 501/917] libbpf: Fix memory leak in btf__dedup()
+Date:   Mon, 15 Nov 2021 17:59:56 +0100
+Message-Id: <20211115165445.759234614@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Mauricio Vásquez <mauricio@kinvolk.io>
 
-[ Upstream commit 45f2bebc8079788f62f22d9e8b2819afb1789d7b ]
+[ Upstream commit 1000298c76830bc291358e98e8fa5baa3baa9b3a ]
 
-__BYTE_ORDER is supposed to be defined by a libc, and __BYTE_ORDER__ -
-by a compiler. bpf_core_read.h checks __BYTE_ORDER == __LITTLE_ENDIAN,
-which is true if neither are defined, leading to incorrect behavior on
-big-endian hosts if libc headers are not included, which is often the
-case.
+Free btf_dedup if btf_ensure_modifiable() returns error.
 
-Fixes: ee26dade0e3b ("libbpf: Add support for relocatable bitfields")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Fixes: 919d2b1dbb07 ("libbpf: Allow modification of BTF and add btf__add_str API")
+Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20211026010831.748682-2-iii@linux.ibm.com
+Link: https://lore.kernel.org/bpf/20211022202035.48868-1-mauricio@kinvolk.io
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf_core_read.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/btf.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index 09ebe3db5f2f8..e4aa9996a5501 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -40,7 +40,7 @@ enum bpf_enum_value_kind {
- #define __CORE_RELO(src, field, info)					      \
- 	__builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 77dc24d58302d..bf8c8676d68e5 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -2914,8 +2914,10 @@ int btf__dedup(struct btf *btf, struct btf_ext *btf_ext,
+ 		return libbpf_err(-EINVAL);
+ 	}
  
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- #define __CORE_BITFIELD_PROBE_READ(dst, src, fld)			      \
- 	bpf_probe_read_kernel(						      \
- 			(void *)dst,				      \
+-	if (btf_ensure_modifiable(btf))
+-		return libbpf_err(-ENOMEM);
++	if (btf_ensure_modifiable(btf)) {
++		err = -ENOMEM;
++		goto done;
++	}
+ 
+ 	err = btf_dedup_prep(d);
+ 	if (err) {
 -- 
 2.33.0
 
