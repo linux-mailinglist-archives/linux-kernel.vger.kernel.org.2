@@ -2,185 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991C14524C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECB64525BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353483AbhKPBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242005AbhKOScU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:32:20 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670D2C04A186;
-        Mon, 15 Nov 2021 09:46:01 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id i6so36577591uae.6;
-        Mon, 15 Nov 2021 09:46:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=sZywcLSDmIQPbI6r1LbyMv5+Wpsnx09V/Ks0vRfdKnE=;
-        b=hktlfPgCOnIbxTUxtV8RbkbUZmrGA/0N2oRbhlVSVTyX/NWn3cAnLcwe1cP9PZ0EX2
-         e6jkbh757dnIOPhR0ZdS7e/dH0BigR3CSxeifpnTX8PIlXEva19RXx+DUbcAY/9DC562
-         vPIyIKXWvyzXx8WgZacpvwPVdf0tgqB1hvs9BMOJLO8nr7bu2ISl+H32Oc0tsHgHXzAB
-         X3lMkfTumdjKJ/jCbnLnC8sfMJpN6FB31OrYHS7BT5BEJ9qAoT4mZjcvUueLXT8AXZhd
-         lwoVOO7l+75XplYfrQay23xJgrEFQ0TQcoUrfh0xt7CXZ8yFSompmrIBTlRw3xdElYSU
-         S6fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=sZywcLSDmIQPbI6r1LbyMv5+Wpsnx09V/Ks0vRfdKnE=;
-        b=IHXX74LGzeM+/rxLbztU9mc0sYarQRWlk2bRp5XIDKhOPF5sjm95Lna/a+bP++PSQI
-         EkjmP/OjBMMmey9QipL0W0AsCXV4PchuMwWYZnHOa/ShfYFR2W+6XDoJnvzHq7TJ1hLK
-         D4mQAXrUIT0vVkqPArupfvV58ixpbrI3hDG06mjd+G/E+rASR/BTJJ++J0S3illAAInL
-         owczu8nBi+6Qcubj1UCnARwZcgk9lXvosNivEfpvMsqIkPODUcbuBI60NFMQ6I8ifEQs
-         tE3+24fiVGI5tHMJp8Mj+zue3HCew40pX3d9yYCTqOQZglZR8Q4c/hqZhPZC9VsAC716
-         U3Pg==
-X-Gm-Message-State: AOAM531fpywQtDvQ4fIvVFZtsbZN+EwdTFPFiCYACdMWsj5no6SS38Q4
-        /8xyDrjp/jFFSpIZf9MqKe4=
-X-Google-Smtp-Source: ABdhPJxzTxW2CXoaJP9CO+GNDzoKF40lGOZ7Tnkjg84p9LUajN28B9HytJ4mNxi22WWir7YP7ItbLw==
-X-Received: by 2002:a05:6102:e07:: with SMTP id o7mr45987356vst.27.1636998360126;
-        Mon, 15 Nov 2021 09:46:00 -0800 (PST)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id t5sm9649586vsk.24.2021.11.15.09.45.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 09:45:58 -0800 (PST)
-Date:   Mon, 15 Nov 2021 14:44:59 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        jolsa@redhat.com, masahiroy@kernel.org,
-        Laura Abbott <labbott@kernel.org>
-CC:     peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com
-Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
-User-Agent: K-9 Mail for Android
-In-Reply-To: <591edce2-5aaa-22bc-6fd3-5a247f623eb3@huawei.com>
-References: <1635525041-151876-1-git-send-email-john.garry@huawei.com> <YYbXMd3N4+aXYLTJ@kernel.org> <591edce2-5aaa-22bc-6fd3-5a247f623eb3@huawei.com>
-Message-ID: <239840A9-F713-4FED-B638-14D6B91FBBF2@gmail.com>
+        id S1353757AbhKPB5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:57:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239615AbhKOSOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:14:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0D9633E1;
+        Mon, 15 Nov 2021 17:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636998581;
+        bh=yNKnuk1bL39Dgrvp3NQ6HDKeuMRMz+3ejwv+V0Z7Zj8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ldF8JwkSvIdI/iq6+4z8n4Skh5t1jnSEsNvpyVRaZ5vozrFq+ITpN8g5wmrPMq+Vs
+         gCi9/xv1Q0DpNDyafOmJuBOolECFdY2UGLAqBxk+pm1FCPWP/tcvK6VwC0wj4h3P4y
+         fvjte1NobHBLlebQxnvjwRZ0mE+Zzf3mq0r0zMt1oGx0Ph1Ayhr1VRY9dioQ/5Icyi
+         +brunKE9f/OqNshhy/RuxsC4gCP6UV8bqJ2jy+M/rSAVR69xdNmaZ+1TEuJQgc/IIM
+         prqibyBX1rxo70WR2ro1rkzYiGVEIOBM+SaEmbzP+ns82YgVCUbrQ3COFZVDMwhiEF
+         iuEywHN4lJSzw==
+Date:   Mon, 15 Nov 2021 09:49:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Petr Machata <petrm@nvidia.com>
+Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>, <davem@davemloft.net>,
+        <jgg@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
+Message-ID: <20211115094940.138d86dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87k0h9bb9x.fsf@nvidia.com>
+References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
+        <87k0h9bb9x.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 15 Nov 2021 18:04:42 +0100 Petr Machata wrote:
+> Ziyang Xuan <william.xuanziyang@huawei.com> writes:
+> 
+> > diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> > index 55275ef9a31a..a3a0a5e994f5 100644
+> > --- a/net/8021q/vlan.c
+> > +++ b/net/8021q/vlan.c
+> > @@ -123,9 +123,6 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
+> >  	}
+> >  
+> >  	vlan_vid_del(real_dev, vlan->vlan_proto, vlan_id);
+> > -
+> > -	/* Get rid of the vlan's reference to real_dev */
+> > -	dev_put(real_dev);
+> >  }
+> >  
+> >  int vlan_check_real_dev(struct net_device *real_dev,
+> > diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
+> > index 0c21d1fec852..aeeb5f90417b 100644
+> > --- a/net/8021q/vlan_dev.c
+> > +++ b/net/8021q/vlan_dev.c
+> > @@ -843,6 +843,9 @@ static void vlan_dev_free(struct net_device *dev)
+> >  
+> >  	free_percpu(vlan->vlan_pcpu_stats);
+> >  	vlan->vlan_pcpu_stats = NULL;
+> > +
+> > +	/* Get rid of the vlan's reference to real_dev */
+> > +	dev_put(vlan->real_dev);
+> >  }
+> >  
+> >  void vlan_setup(struct net_device *dev)  
+> 
+> This is causing reference counting issues when vetoing is involved.
+> Consider the following snippet:
+> 
+>     ip link add name bond1 type bond mode 802.3ad
+>     ip link set dev swp1 master bond1
+>     ip link add name bond1.100 link bond1 type vlan protocol 802.1ad id 100
+>     # ^ vetoed, no netdevice created
+>     ip link del dev bond1
+> 
+> The setup process goes like this: vlan_newlink() calls
+> register_vlan_dev() calls netdev_upper_dev_link() calls
+> __netdev_upper_dev_link(), which issues a notifier
+> NETDEV_PRECHANGEUPPER, which yields a non-zero error,
+> because a listener vetoed it.
+> 
+> So it unwinds, skipping dev_hold(real_dev), but eventually the VLAN ends
+> up decreasing reference count of the real_dev. Then when when the bond
+> netdevice is removed, we get an endless loop of:
+> 
+>     kernel:unregister_netdevice: waiting for bond1 to become free. Usage count = 0 
+> 
+> Moving the dev_hold(real_dev) to always happen even if the
+> netdev_upper_dev_link() call makes the issue go away.
+> 
+> I'm not sure why this wasn't happening before. After the veto,
+> register_vlan_dev() follows with a goto out_unregister_netdev, which
+> calls unregister_netdevice() calls unregister_netdevice_queue(), which
+> issues a notifier NETDEV_UNREGISTER, which invokes vlan_device_event(),
+> which calls unregister_vlan_dev(), which used to dev_put(real_dev),
+> which seems like it should have caused the same issue. Dunno.
 
+Does the notifier trigger unregister_vlan_dev()? I thought the notifier
+triggers when lower dev is unregistered.
 
-On November 15, 2021 12:53:33 PM GMT-03:00, John Garry <john=2Egarry@huawe=
-i=2Ecom> wrote:
->On 06/11/2021 19:27, Arnaldo Carvalho de Melo wrote:
->> Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
->>> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purpo=
-ses=2E
->>>
->>> However this is not set for anything under tools/
->>>
->>> As such, host tools apps built have no compiler warnings enabled=2E
->>>
->>> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
->>> declaration of host_c_flags=2E HOSTCFLAGS comes from EXTRA_WARNINGS, w=
-hich
->>> is independent of target platform/arch warning flags=2E
->>>
->>> Suggested-by: Jiri Olsa <jolsa@redhat=2Ecom>
->>> Signed-off-by: John Garry <john=2Egarry@huawei=2Ecom>
->>> --
->>> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
->>> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
->>> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
->>> Masahiro=2E
->>=20
->> Laura's redhat e-mail bouncedm updated it to her kernel=2Eorg one, Laur=
-a,
->> Masahiro, would you please comment? Jiri?
->
->Any opinion on this one? Shall I just resend =2E=2E=2E ? or just apply it=
- if=20
->no one cares too much :)
-
-I'll apply it now that everybody got enough time to review it =2E :-)
-
-- Arnaldo
->
->Thanks,
->John
->
->>=20
->> - Arnaldo
->>  =20
->>> diff --git a/tools/build/Build=2Einclude b/tools/build/Build=2Einclude
->>> index 2cf3b1bde86e=2E=2Ec2a95ab47379 100644
->>> --- a/tools/build/Build=2Einclude
->>> +++ b/tools/build/Build=2Einclude
->>> @@ -99,7 +99,7 @@ cxx_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLA=
-GS) -D"BUILD_STR(s)=3D\#s" $(CXX
->>>   ###
->>>   ## HOSTCC C flags
->>>  =20
->>> -host_c_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -=
-D"BUILD_STR(s)=3D\#s" $(HOSTCFLAGS_$(basetarget)=2Eo) $(HOSTCFLAGS_$(obj))
->>> +host_c_flags =3D -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD=
-_STR(s)=3D\#s" $(HOSTCFLAGS_$(basetarget)=2Eo) $(HOSTCFLAGS_$(obj))
->>>  =20
->>>   # output directory for tests below
->>>   TMPOUT =3D =2Etmp_$$$$
->>> diff --git a/tools/perf/Makefile=2Econfig b/tools/perf/Makefile=2Econf=
-ig
->>> index 4a9baed28f2e=2E=2E9b95ba09657f 100644
->>> --- a/tools/perf/Makefile=2Econfig
->>> +++ b/tools/perf/Makefile=2Econfig
->>> @@ -17,6 +17,7 @@ detected     =3D $(shell echo "$(1)=3Dy"       >> $(=
-OUTPUT)=2Econfig-detected)
->>>   detected_var =3D $(shell echo "$(1)=3D$($(1))" >> $(OUTPUT)=2Econfig=
--detected)
->>>  =20
->>>   CFLAGS :=3D $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WA=
-RNINGS))
->>> +HOSTCFLAGS :=3D $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
->>>  =20
->>>   include $(srctree)/tools/scripts/Makefile=2Earch
->>>  =20
->>> @@ -211,6 +212,7 @@ endif
->>>   ifneq ($(WERROR),0)
->>>     CORE_CFLAGS +=3D -Werror
->>>     CXXFLAGS +=3D -Werror
->>> +  HOSTCFLAGS +=3D -Werror
->>>   endif
->>>  =20
->>>   ifndef DEBUG
->>> @@ -292,6 +294,9 @@ CXXFLAGS +=3D -ggdb3
->>>   CXXFLAGS +=3D -funwind-tables
->>>   CXXFLAGS +=3D -Wno-strict-aliasing
->>>  =20
->>> +HOSTCFLAGS +=3D -Wall
->>> +HOSTCFLAGS +=3D -Wextra
->>> +
->>>   # Enforce a non-executable stack, as we may regress (again) in the f=
-uture by
->>>   # adding assembler files missing the =2EGNU-stack linker note=2E
->>>   LDFLAGS +=3D -Wl,-z,noexecstack
->>> diff --git a/tools/perf/Makefile=2Eperf b/tools/perf/Makefile=2Eperf
->>> index a3966f290297=2E=2E8ca656aa8b06 100644
->>> --- a/tools/perf/Makefile=2Eperf
->>> +++ b/tools/perf/Makefile=2Eperf
->>> @@ -226,7 +226,7 @@ else
->>>   endif
->>>  =20
->>>   export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX A=
-WK
->>> -export HOSTCC HOSTLD HOSTAR
->>> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
->>>  =20
->>>   include $(srctree)/tools/build/Makefile=2Einclude
->>>  =20
->>> --=20
->>> 2=2E17=2E1
->>=20
->
+I think we should move the dev_hold() to ndo_init(), otherwise 
+it's hard to reason if destructor was invoked or not if
+register_netdevice() errors out.
