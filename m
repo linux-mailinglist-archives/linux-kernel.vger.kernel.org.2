@@ -2,70 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EEA450585
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D4445058E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhKONeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:34:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhKONdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:33:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 18CAE63218;
-        Mon, 15 Nov 2021 13:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636983009;
-        bh=yOxrQIR+impa5GKvJp2ihhDyv3hgoTZwiBqA+EEZrpU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iGr67JfJe4LwJ/u44UlRSh+l0XCf3h+40CT603Dn9/8MRcq/09Z5sjeQ8QqgvTJRj
-         D8jXoCVU/24ys8joHB+pvUgIYeq1Kx+No2U3ypKZrURue8w0gtDkik7RYrvYFrkE9P
-         VaFhte+vI3GrNijM2dZBGCEj/s4p6Gxl18CqCW3i9QGkP21ElA4CiSo9ae4Rp2jTVT
-         ae8dAPyhcu3ZLIj+oKPP5GErjomCOJZ6H9bgwq/2ByMlAGEMF0dyQEyRkSEzijhAxB
-         kx1VLZAmDAFPigpIeZLSLiEkuO5lkZTc+ANMUq8CGsyhmGm2MCeN1On3ohbshTPxKB
-         Q2JAEw92uzwKQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0E07D609E2;
-        Mon, 15 Nov 2021 13:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231661AbhKONgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:36:16 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:43078 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhKONe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:34:29 -0500
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 746D3D3E;
+        Mon, 15 Nov 2021 14:31:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1636983085;
+        bh=gblzYeLjUubmBQmVNLn+mtwg7EhlrprPn2k+YB53DbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zt+sCR1VWlyllFElfVywNQwDbhZaSo0q6BSulV8393U2I9PWCffE+eUAHZ3+GDK/L
+         oMQgq0HMLO//JpU/mwQmeVoyxaWbK7hjHlURvjWa/N5Q8Rr+VNXXpnpPq/FgEyib0r
+         ZcQ8QkwAERPru8h8MzOIz24jQCNTQthYj49KVMg4=
+Date:   Mon, 15 Nov 2021 15:31:03 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Subject: Re: [PATCH 1/1] media: uvcvideo: Increase UVC_CTRL_CONTROL_TIMEOUT
+ to 5 seconds.
+Message-ID: <YZJhF+Mv9uMhQHqp@pendragon.ideasonboard.com>
+References: <20211114085236.2345589-1-james.hilliard1@gmail.com>
+ <YZIorH8D7NPB3w5B@pendragon.ideasonboard.com>
+ <CADvTj4pY+2OXPLy1_pVuiA6=BR9u8634HhP5XBWnGUTVPk5wtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: bnx2x: fix variable dereferenced before check
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163698300905.26335.11739381869364470632.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Nov 2021 13:30:09 +0000
-References: <20211113223636.11446-1-paskripkin@gmail.com>
-In-Reply-To: <20211113223636.11446-1-paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     aelior@marvell.com, skalluru@marvell.com,
-        GR-everest-linux-l2@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CADvTj4pY+2OXPLy1_pVuiA6=BR9u8634HhP5XBWnGUTVPk5wtg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi James,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun, 14 Nov 2021 01:36:36 +0300 you wrote:
-> Smatch says:
-> 	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
-> 	warn: variable dereferenced before check 'ilt' (see line 638)
+On Mon, Nov 15, 2021 at 06:16:50AM -0700, James Hilliard wrote:
+> On Mon, Nov 15, 2021 at 2:30 AM Laurent Pinchart wrote:
+> > On Sun, Nov 14, 2021 at 01:52:36AM -0700, James Hilliard wrote:
+> > > Some uvc devices appear to require the maximum allowed USB timeout
+> > > for GET_CUR/SET_CUR requests.
+> >
+> > Could you list the devices that you know about which require this change
+> > ?
 > 
-> Move ilt_cli variable initialization _after_ ilt validation, because
-> it's unsafe to deref the pointer before validation check.
+> Seems random unbranded chinese made cameras is where I was hitting it,
+> but I was seeing a decent amount of others encountering similar timeout issues
+> when researching the issue.
+
+Can you share the USB descriptors (output of 'lsusb -v') for those
+devices ?
+
+> > > So lets just bump the UVC control timeout to 5 seconds which is the
+> > > same as the usb ctrl get/set defaults:
+> > > USB_CTRL_GET_TIMEOUT 5000
+> > > USB_CTRL_SET_TIMEOUT 5000
+> >
+> > The USB specification (section 9.2.6.4) requires the device to send the
+> > first data packet within 500ms of reception of the request. A 500ms
+> > timeout may thus be a bit too short for compliant devices, but 5000ms
+> > seems to be a very large margin. I'm wondering if it would make sense to
+> > go for a lower value.
 > 
-> [...]
+> The 500 ms timeout appears to be applicable:
+> "For standard device requests that require data stage transfer to the host"
+> 
+> While the 5s timeout appears to be applicable to:
+> "For standard device requests that require a data stage transfer to the device"
 
-Here is the summary with links:
-  - net: bnx2x: fix variable dereferenced before check
-    https://git.kernel.org/netdev/net/c/f8885ac89ce3
+Ah yes good point.
 
-You are awesome, thank you!
+> From what I could tell a lot of software just uses the 5s timeout everywhere for
+> these GET_CUR and SET_CUR requests, I think it's probably best to just use
+> the 5s timeout, that way it's much less likely that we'll see timeout bugs here as
+> it seems likely a lot of vendors are testing against software using
+> the 5s timeout.
+
+We could have a lower timeout for GET_CUR requests, but I agree it's
+likely not worth it.
+
+> I don't really see any harm in bumping it up to 5 seconds, maybe there is something
+> I'm missing there though?
+
+It would be nice to report failures faster to applications, but it's not
+mandatory, especially given that failures are not supposed to happen.
+
+> > > Fixes:
+> > > Failed to query (GET_CUR) UVC control 11 on unit 2: -110 (exp. 1).
+> > > Failed to query (SET_CUR) UVC control 3 on unit 2: -110 (exp. 2).
+> > >
+> > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> > > ---
+> > >  drivers/media/usb/uvc/uvcvideo.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > index fd4f5ef47dfb..583c51ac3eec 100644
+> > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > @@ -189,7 +189,7 @@
+> > >  /* Maximum status buffer size in bytes of interrupt URB. */
+> > >  #define UVC_MAX_STATUS_SIZE  16
+> > >
+> > > -#define UVC_CTRL_CONTROL_TIMEOUT     500
+> > > +#define UVC_CTRL_CONTROL_TIMEOUT     5000
+> > >  #define UVC_CTRL_STREAMING_TIMEOUT   5000
+> > >
+> > >  /* Maximum allowed number of control mappings per device */
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regards,
 
-
+Laurent Pinchart
