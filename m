@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ED8451BA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0CF451B8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354307AbhKPADm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:03:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        id S1353921AbhKPADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:03:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344708AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344709AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20955636B6;
-        Mon, 15 Nov 2021 19:02:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0B6B60296;
+        Mon, 15 Nov 2021 19:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002971;
-        bh=8uSBIqJXtnf0aUHMLoy2HKDxQ+mh9vlZVj0RpJo6CSI=;
+        s=korg; t=1637002974;
+        bh=oTkyhWfmYqDWnLLRDCHxv5pyj66b4y3nYOLkGXkxXoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qCKT3X6SWB75mM1XSaLq0iGQOyrDQZz2NegN9QIfl0DDTIS8cUvanwXjL0FQJMs8Y
-         aYASQZMDgJJGtrAqcGVS5Y1t7oXqY1i1AVK8YCOAeb9NDwnIhsATzZ/w508xflTiyF
-         zo2E/lEv96ujClbw+f2jqNU7nn/QhOcw5rbKf0VY=
+        b=yY83a8jWBqeALWbTGtwBNtlCB/1tDk+KbsUBKM1lhT1wlksQVeM4u4fLvIiPyVEDm
+         KteSsFHdm9N+9DLHme80BeYD4m4ulhU0AWcuXsLWAdSfwbhBPStmF6JfxVVLXU0iIq
+         Ekz9saxAuNFchtnc2lb4zVBGX7xw2k53VNfeGh/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 763/917] net: davinci_emac: Fix interrupt pacing disable
-Date:   Mon, 15 Nov 2021 18:04:18 +0100
-Message-Id: <20211115165454.798831409@linuxfoundation.org>
+Subject: [PATCH 5.15 764/917] kselftests/net: add missed icmp.sh test to Makefile
+Date:   Mon, 15 Nov 2021 18:04:19 +0100
+Message-Id: <20211115165454.831672223@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -41,57 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kiselev <bigunclemax@gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit d52bcb47bdf971a59a2467975d2405fcfcb2fa19 ]
+[ Upstream commit ca3676f94b8f40f52d285f9aef36dfd6725bfc14 ]
 
-This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
-disable rx irq coalescing.
+When generating the selftests to another folder, the icmp.sh test will
+miss as it is not in Makefile, e.g.
 
-Previously we could enable rx irq coalescing via ethtool
-(For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
-it because this part rejects 0 value:
+  make -C tools/testing/selftests/ install \
+      TARGETS="net" INSTALL_PATH=/tmp/kselftests
 
-       if (!coal->rx_coalesce_usecs)
-               return -EINVAL;
-
-Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing functionality.")
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Link: https://lore.kernel.org/r/20211101152343.4193233-1-bigunclemax@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 7e9838b7915e ("selftests/net: Add icmp.sh for testing ICMP dummy address responses")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/davinci_emac.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index e8291d8488391..d243ca5dfde00 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -420,8 +420,20 @@ static int emac_set_coalesce(struct net_device *ndev,
- 	u32 int_ctrl, num_interrupts = 0;
- 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
- 
--	if (!coal->rx_coalesce_usecs)
--		return -EINVAL;
-+	if (!coal->rx_coalesce_usecs) {
-+		priv->coal_intvl = 0;
-+
-+		switch (priv->version) {
-+		case EMAC_VERSION_2:
-+			emac_ctrl_write(EMAC_DM646X_CMINTCTRL, 0);
-+			break;
-+		default:
-+			emac_ctrl_write(EMAC_CTRL_EWINTTCNT, 0);
-+			break;
-+		}
-+
-+		return 0;
-+	}
- 
- 	coal_intvl = coal->rx_coalesce_usecs;
- 
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 492b273743b4e..9b1c2dfe12530 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -12,7 +12,7 @@ TEST_PROGS += udpgro_bench.sh udpgro.sh test_vxlan_under_vrf.sh reuseport_addr_a
+ TEST_PROGS += test_vxlan_fdb_changelink.sh so_txtime.sh ipv6_flowlabel.sh
+ TEST_PROGS += tcp_fastopen_backup_key.sh fcnal-test.sh l2tp.sh traceroute.sh
+ TEST_PROGS += fin_ack_lat.sh fib_nexthop_multiprefix.sh fib_nexthops.sh
+-TEST_PROGS += altnames.sh icmp_redirect.sh ip6_gre_headroom.sh
++TEST_PROGS += altnames.sh icmp.sh icmp_redirect.sh ip6_gre_headroom.sh
+ TEST_PROGS += route_localnet.sh
+ TEST_PROGS += reuseaddr_ports_exhausted.sh
+ TEST_PROGS += txtimestamp.sh
 -- 
 2.33.0
 
