@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DEB451910
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7448451E66
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352493AbhKOXNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:13:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S245723AbhKPAfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:35:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243400AbhKOTHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:07:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD80E633F4;
-        Mon, 15 Nov 2021 18:17:14 +0000 (UTC)
+        id S1344234AbhKOTYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED0E6347D;
+        Mon, 15 Nov 2021 18:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000235;
-        bh=CdI08ViV6BvG1YXh6LB3amNdngiUBTB8LPRQeIAyfvg=;
+        s=korg; t=1637002456;
+        bh=wWTWcgii0aHV3eSVRgcoS1F0PxZ4Awv/p5Mg9tj3z50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nxVBiAeiGzpE6m5U9loZEcZNYW9oW1D7RahxMl3tCqPoiynxivVQ++FQ9wh/Di5AO
-         sCVyBSaz5YLHrRlwul2BL5l9dLBj9LpF1yOkOGhBuQRCe1895mN0tDlOLJAj89Jbhl
-         uruppo2StClKMqWT6hcXhLj5ki6nB+1PBDF31O/E=
+        b=E9zgdBPOw1WflVHiFPdafLGR/xzAy1LumSr/KGC7InSe7rJFvvyuQECsRuTNu0ag2
+         oVgLii1oKN1aEId295aFzNmmCdJLcm/jZCHXuXSReO86Lh6siz27+CBYx8QUNEnvnC
+         LuSIeYosQPDpnZ62/rl9Gi6ixxIt/DEk8Vuz6HUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sumit Saxena <sumit.saxena@broadcom.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 586/849] scsi: megaraid_sas: Fix concurrent access to ISR between IRQ polling and real interrupt
+Subject: [PATCH 5.15 574/917] scsi: qla2xxx: edif: Use link event to wake up app
 Date:   Mon, 15 Nov 2021 18:01:09 +0100
-Message-Id: <20211115165440.075540650@linuxfoundation.org>
+Message-Id: <20211115165448.245930278@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Saxena <sumit.saxena@broadcom.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit e7dcc514a49e74051b869697d5ab0370f6301d57 ]
+[ Upstream commit 527d46e0b0147f2b32b78ba49c6a231835b24a41 ]
 
-IRQ polling thread calls ISR after enable_irq() to handle any missed I/O
-completion. The atomic flag "in_used" was added to have the synchronization
-between the IRQ polling thread and the interrupt context. There is a bug
-around it leading to a race condition.
+Authentication application may be running and in the past tried to probe
+driver (app_start) but was unsuccessful. This could be due to the bsg layer
+not being ready to service the request. On a successful link up, driver
+will use the netlink Link Up event to notify the app to retry the app_start
+call.
 
-Below is the sequence:
+In another case, app does not poll for new NPIV host. This link up event
+would notify app of the presence of a new SCSI host.
 
- - IRQ polling thread accesses ISR, fetches the reply descriptor.
-
- - Real interrupt arrives and pre-empts polling thread (enable_irq() is
-   already called).
-
- - Interrupt context picks the same reply descriptor as fetched by polling
-   thread, processes it, and exits.
-
- - Polling thread resumes and processes the descriptor which is already
-   processed by interrupt thread leads to kernel crash.
-
-Setting the "in_used" flag before fetching the reply descriptor ensures
-synchronized access to ISR.
-
-Link: https://www.spinics.net/lists/linux-scsi/msg159440.html
-Link: https://lore.kernel.org/r/20210929124022.24605-2-sumit.saxena@broadcom.com
-Fixes: 9bedd36e9146 ("scsi: megaraid_sas: Handle missing interrupts while re-enabling IRQs")
-Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Link: https://lore.kernel.org/r/20210908164622.19240-6-njavali@marvell.com
+Fixes: 4de067e5df12 ("scsi: qla2xxx: edif: Add N2N support for EDIF")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/scsi/qla2xxx/qla_init.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index 06399c026a8d5..1ff2198583a71 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -3530,6 +3530,9 @@ complete_cmd_fusion(struct megasas_instance *instance, u32 MSIxIndex,
- 	if (atomic_read(&instance->adprecovery) == MEGASAS_HW_CRITICAL_ERROR)
- 		return IRQ_HANDLED;
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 5fc7697f0af4c..7e64e4730b259 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -5335,15 +5335,14 @@ qla2x00_configure_loop(scsi_qla_host_t *vha)
+ 			    "LOOP READY.\n");
+ 			ha->flags.fw_init_done = 1;
  
-+	if (irq_context && !atomic_add_unless(&irq_context->in_used, 1, 1))
-+		return 0;
-+
- 	desc = fusion->reply_frames_desc[MSIxIndex] +
- 				fusion->last_reply_idx[MSIxIndex];
++			/*
++			 * use link up to wake up app to get ready for
++			 * authentication.
++			 */
+ 			if (ha->flags.edif_enabled &&
+-			    !(vha->e_dbell.db_flags & EDB_ACTIVE) &&
+-			    N2N_TOPO(vha->hw)) {
+-				/*
+-				 * use port online to wake up app to get ready
+-				 * for authentication
+-				 */
+-				qla2x00_post_aen_work(vha, FCH_EVT_PORT_ONLINE, 0);
+-			}
++			    !(vha->e_dbell.db_flags & EDB_ACTIVE))
++				qla2x00_post_aen_work(vha, FCH_EVT_LINKUP,
++						      ha->link_data_rate);
  
-@@ -3540,11 +3543,11 @@ complete_cmd_fusion(struct megasas_instance *instance, u32 MSIxIndex,
- 	reply_descript_type = reply_desc->ReplyFlags &
- 		MPI2_RPY_DESCRIPT_FLAGS_TYPE_MASK;
- 
--	if (reply_descript_type == MPI2_RPY_DESCRIPT_FLAGS_UNUSED)
-+	if (reply_descript_type == MPI2_RPY_DESCRIPT_FLAGS_UNUSED) {
-+		if (irq_context)
-+			atomic_dec(&irq_context->in_used);
- 		return IRQ_NONE;
--
--	if (irq_context && !atomic_add_unless(&irq_context->in_used, 1, 1))
--		return 0;
-+	}
- 
- 	num_completed = 0;
- 
+ 			/*
+ 			 * Process any ATIO queue entries that came in
 -- 
 2.33.0
 
