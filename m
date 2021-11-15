@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA83452020
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9180A451998
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357717AbhKPAtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:49:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
+        id S1353893AbhKOXYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:24:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344684AbhKOTZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B918636AC;
-        Mon, 15 Nov 2021 19:02:12 +0000 (UTC)
+        id S244902AbhKOTSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CD763280;
+        Mon, 15 Nov 2021 18:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002932;
-        bh=P4W9AgWWiVYk1csbTzAj0LQ2lQGFUlPtSi6yMupF2tw=;
+        s=korg; t=1637000712;
+        bh=CetfNMgAKZlEJwEoEBexEWFzrY/qhFBW5oH6L+yRd68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQbO8lYe0ppWLW+Tpdnpw3MDgkxtenM9S4B6Rb406spE9+7Mn83whaNWWDiLm/EJu
-         XpnDLQ1OO31NLFtqUTE0GkzhfHRB4mzjwfoGvhi0t9DQgXI7WxPEJKQLVK2jba2Ffl
-         BdeXdXy/BwqS7N2K6zPevul99oM9J4IqBkFrxlHo=
+        b=YJDcZ5xYheeFjO2s+YQd0LsSx4xZeakycL+BdRkUiGnCtvhZsxqjSx80XpmkXcPcY
+         gF1bzzmN3wPDl5jUuMHvB0mpublb5wKDRnnZFGUxkALukA9HJxl50mgCOPuEyFbFeV
+         NEO/MCBIy+gSNBp6dg/EVVG9GTdadBAE3fPyYAyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jussi Maki <joamaki@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 750/917] scsi: qla2xxx: edif: Fix app start fail
-Date:   Mon, 15 Nov 2021 18:04:05 +0100
-Message-Id: <20211115165454.346463663@linuxfoundation.org>
+Subject: [PATCH 5.14 763/849] bpf, sockmap: Remove unhash handler for BPF sockmap usage
+Date:   Mon, 15 Nov 2021 18:04:06 +0100
+Message-Id: <20211115165446.062554275@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,100 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit 8e6d5df3cb32dddf558a52414d29febecb660396 ]
+[ Upstream commit b8b8315e39ffaca82e79d86dde26e9144addf66b ]
 
-On app start, all sessions need to be reset to see if secure connection can
-be made. Fix the broken check which prevents that process.
+We do not need to handle unhash from BPF side we can simply wait for the
+close to happen. The original concern was a socket could transition from
+ESTABLISHED state to a new state while the BPF hook was still attached.
+But, we convinced ourself this is no longer possible and we also improved
+BPF sockmap to handle listen sockets so this is no longer a problem.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-5-njavali@marvell.com
-Fixes: 4de067e5df12 ("scsi: qla2xxx: edif: Add N2N support for EDIF")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+More importantly though there are cases where unhash is called when data is
+in the receive queue. The BPF unhash logic will flush this data which is
+wrong. To be correct it should keep the data in the receive queue and allow
+a receiving application to continue reading the data. This may happen when
+tcp_abort() is received for example. Instead of complicating the logic in
+unhash simply moving all this to tcp_close() hook solves this.
+
+Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Jussi Maki <joamaki@gmail.com>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20211103204736.248403-3-john.fastabend@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_edif.c | 52 ++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ net/ipv4/tcp_bpf.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
-index ad746c62f0d44..615596becb7a1 100644
---- a/drivers/scsi/qla2xxx/qla_edif.c
-+++ b/drivers/scsi/qla2xxx/qla_edif.c
-@@ -529,7 +529,8 @@ qla_edif_app_start(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
- 	struct app_start_reply	appreply;
- 	struct fc_port  *fcport, *tf;
- 
--	ql_dbg(ql_dbg_edif, vha, 0x911d, "%s app start\n", __func__);
-+	ql_log(ql_log_info, vha, 0x1313,
-+	       "EDIF application registration with driver, FC device connections will be re-established.\n");
- 
- 	sg_copy_to_buffer(bsg_job->request_payload.sg_list,
- 	    bsg_job->request_payload.sg_cnt, &appstart,
-@@ -554,37 +555,36 @@ qla_edif_app_start(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
- 		qla2xxx_wake_dpc(vha);
- 	} else {
- 		list_for_each_entry_safe(fcport, tf, &vha->vp_fcports, list) {
-+			ql_dbg(ql_dbg_edif, vha, 0x2058,
-+			       "FCSP - nn %8phN pn %8phN portid=%06x.\n",
-+			       fcport->node_name, fcport->port_name,
-+			       fcport->d_id.b24);
- 			ql_dbg(ql_dbg_edif, vha, 0xf084,
--			       "%s: sess %p %8phC lid %#04x s_id %06x logout %d\n",
--			       __func__, fcport, fcport->port_name,
--			       fcport->loop_id, fcport->d_id.b24,
--			       fcport->logout_on_delete);
--
--			ql_dbg(ql_dbg_edif, vha, 0xf084,
--			       "keep %d els_logo %d disc state %d auth state %d stop state %d\n",
--			       fcport->keep_nport_handle,
--			       fcport->send_els_logo, fcport->disc_state,
--			       fcport->edif.auth_state, fcport->edif.app_stop);
-+			       "%s: se_sess %p / sess %p from port %8phC "
-+			       "loop_id %#04x s_id %06x logout %d "
-+			       "keep %d els_logo %d disc state %d auth state %d"
-+			       "stop state %d\n",
-+			       __func__, fcport->se_sess, fcport,
-+			       fcport->port_name, fcport->loop_id,
-+			       fcport->d_id.b24, fcport->logout_on_delete,
-+			       fcport->keep_nport_handle, fcport->send_els_logo,
-+			       fcport->disc_state, fcport->edif.auth_state,
-+			       fcport->edif.app_stop);
- 
- 			if (atomic_read(&vha->loop_state) == LOOP_DOWN)
- 				break;
--			if (!(fcport->flags & FCF_FCSP_DEVICE))
--				continue;
- 
- 			fcport->edif.app_started = 1;
--			if (fcport->edif.app_stop ||
--			    (fcport->disc_state != DSC_LOGIN_COMPLETE &&
--			     fcport->disc_state != DSC_LOGIN_PEND &&
--			     fcport->disc_state != DSC_DELETED)) {
--				/* no activity */
--				fcport->edif.app_stop = 0;
--
--				ql_dbg(ql_dbg_edif, vha, 0x911e,
--				       "%s wwpn %8phC calling qla_edif_reset_auth_wait\n",
--				       __func__, fcport->port_name);
--				fcport->edif.app_sess_online = 1;
--				qla_edif_reset_auth_wait(fcport, DSC_LOGIN_PEND, 0);
--			}
-+			fcport->login_retry = vha->hw->login_retry_count;
-+
-+			/* no activity */
-+			fcport->edif.app_stop = 0;
-+
-+			ql_dbg(ql_dbg_edif, vha, 0x911e,
-+			       "%s wwpn %8phC calling qla_edif_reset_auth_wait\n",
-+			       __func__, fcport->port_name);
-+			fcport->edif.app_sess_online = 1;
-+			qla_edif_reset_auth_wait(fcport, DSC_LOGIN_PEND, 0);
- 			qla_edif_sa_ctl_init(vha, fcport);
- 		}
- 	}
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 9d068153c3168..cd6c2ebc1185c 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -488,7 +488,6 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
+ 				   struct proto *base)
+ {
+ 	prot[TCP_BPF_BASE]			= *base;
+-	prot[TCP_BPF_BASE].unhash		= sock_map_unhash;
+ 	prot[TCP_BPF_BASE].close		= sock_map_close;
+ 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
+ 	prot[TCP_BPF_BASE].stream_memory_read	= tcp_bpf_stream_read;
 -- 
 2.33.0
 
