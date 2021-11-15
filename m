@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB8A451980
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F068645202F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353562AbhKOXWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:22:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S1358070AbhKPAtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:49:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244714AbhKOTRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA6B61A7D;
-        Mon, 15 Nov 2021 18:22:58 +0000 (UTC)
+        id S1344572AbhKOTZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C97861A56;
+        Mon, 15 Nov 2021 18:59:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000579;
-        bh=dRgJMLgw4yxIYt+TNNTuOnUOyCrSll/E6JD65vMoENs=;
+        s=korg; t=1637002799;
+        bh=gqq9KKE0mgn3BJBjd3CNbKBSkZd21PDpbod6pCjr/CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I6IukBOieLoTSoD6+ttd0JIWk7fCGgKyAoI6NY7MKlE/CGXvHj0ljYlZ5Lrs5tXMc
-         eNljQpFbpBPbh1PxRpGaewx2gTVsDrr8E8A/y7VFsHrsNyc+Zh+x+mW6eO6bIhqq0U
-         cN2OHTpmyLxGjWApw41PJA1gwttPD/LwxScyDvxQ=
+        b=0TzGFYTFoFFY1JIX4r95dG4ObwLHteoWI6UxXEU/Y650GuHKHcyXso4YWn0tJvYJ3
+         /5sVG2wIHi525Y25KySYBZRTLcgXcOLM/2v2iFldViveCACJsJSyjdzkNySYYG1/PE
+         yISTRCV5Rw+UnksHV1zL4r+NHj3QoRyG9XAM2rsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 680/849] drm/bridge/lontium-lt9611uxc: fix provided connector suport
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 668/917] phy: qcom-snps: Correct the FSEL_MASK
 Date:   Mon, 15 Nov 2021 18:02:43 +0100
-Message-Id: <20211115165443.274740084@linuxfoundation.org>
+Message-Id: <20211115165451.542865023@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
 
-[ Upstream commit 15184965783aab3ca7ee4f939e2598943b3f40f9 ]
+[ Upstream commit b475bf0ec40a2b13fb32ef62f5706576d5858460 ]
 
-- set DRM_CONNECTOR_POLL_HPD as the connector will generate hotplug
-  events on its own
+The FSEL_MASK which selects the refclock is defined incorrectly.
+It should be [4:6] not [5:7]. Due to this incorrect definition, the BIT(7)
+in USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0 is reset which keeps PHY analog
+blocks ON during suspend.
+Fix this issue by correctly defining the FSEL_MASK.
 
-- do not call drm_kms_helper_hotplug_event() unless mode_config.funcs
-  pointer is not NULL to remove possible kernel oops.
-
-Fixes: bc6fa8676ebb ("drm/bridge/lontium-lt9611uxc: move HPD notification out of IRQ handler")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210708230329.395976-1-dmitry.baryshkov@linaro.org
+Fixes: 51e8114f80d0 ("phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs")
+Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Link: https://lore.kernel.org/r/1635135575-5668-1-git-send-email-quic_c_sanm@quicinc.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-index 3cac16db970f0..010657ea7af78 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-@@ -167,9 +167,10 @@ static void lt9611uxc_hpd_work(struct work_struct *work)
- 	struct lt9611uxc *lt9611uxc = container_of(work, struct lt9611uxc, work);
- 	bool connected;
+diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+index ae4bac024c7b1..7e61202aa234e 100644
+--- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
++++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+@@ -33,7 +33,7 @@
  
--	if (lt9611uxc->connector.dev)
--		drm_kms_helper_hotplug_event(lt9611uxc->connector.dev);
--	else {
-+	if (lt9611uxc->connector.dev) {
-+		if (lt9611uxc->connector.dev->mode_config.funcs)
-+			drm_kms_helper_hotplug_event(lt9611uxc->connector.dev);
-+	} else {
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
+ #define RETENABLEN				BIT(3)
+-#define FSEL_MASK				GENMASK(7, 5)
++#define FSEL_MASK				GENMASK(6, 4)
+ #define FSEL_DEFAULT				(0x3 << 4)
  
- 		mutex_lock(&lt9611uxc->ocm_lock);
- 		connected = lt9611uxc->hdmi_connected;
-@@ -339,6 +340,8 @@ static int lt9611uxc_connector_init(struct drm_bridge *bridge, struct lt9611uxc
- 		return -ENODEV;
- 	}
- 
-+	lt9611uxc->connector.polled = DRM_CONNECTOR_POLL_HPD;
-+
- 	drm_connector_helper_add(&lt9611uxc->connector,
- 				 &lt9611uxc_bridge_connector_helper_funcs);
- 	ret = drm_connector_init(bridge->dev, &lt9611uxc->connector,
+ #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON1	(0x58)
 -- 
 2.33.0
 
