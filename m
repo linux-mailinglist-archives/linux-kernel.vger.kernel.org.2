@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEB04520B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0B5451AAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358351AbhKPA4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:56:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
+        id S234119AbhKOXlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:41:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343791AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343789AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:22:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C77EF63391;
-        Mon, 15 Nov 2021 18:46:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A760563392;
+        Mon, 15 Nov 2021 18:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001980;
-        bh=rXrC95nwVbI6k6o1JvNF/OGvaEjc0s4y3JP4f6MEW7Q=;
+        s=korg; t=1637001983;
+        bh=cYrOYS1+KIfaOEpww6W/hCePkj8cZjnxveBQ64QIXSM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFuHrUjywgHibjOs0K2nlODtIRJc1ivMPSITnX3V4epFLH2ADxhNr7xHAOI5sij4j
-         ngv5tu9QdcFfx/XZpBKM2sQC/on92mDnrM1xjMVOOghBFS0/YnamvuCtDlsF9rjD9w
-         +325wlPovikcxZs0lI2iKUq7MoHWuFsNRDFWpBEk=
+        b=zpjfOXG64+tSO4gognOEeeujKACRU8Jk108ThXw4RT7FQWeULcpp144I9GzC2Lut/
+         ttHwaSRwhd6hoFRf7mJrWtymjxIHlwmjS66DaBBGDjgk1VhP4vbqdJznOgVNse3sz6
+         sa+tYX2PpT3lD25PidiNIH2erq5W5/Zt9DvRAMhU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 394/917] media: atmel: fix the ispck initialization
-Date:   Mon, 15 Nov 2021 17:58:09 +0100
-Message-Id: <20211115165442.133096424@linuxfoundation.org>
+        stable@vger.kernel.org, Kuan-Ying Lee <kuan-ying.lee@mediatek.com>,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Yee Lee <yee.lee@mediatek.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 395/917] scs: Release kasan vmalloc poison in scs_free process
+Date:   Mon, 15 Nov 2021 17:58:10 +0100
+Message-Id: <20211115165442.165250296@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,250 +41,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+From: Yee Lee <yee.lee@mediatek.com>
 
-[ Upstream commit d7f26849ed7cc875d0ff7480c2efebeeccea2bad ]
+[ Upstream commit 528a4ab45300fa6283556d9b48e26b45a8aa15c4 ]
 
-The runtime enabling of the ISPCK (internally clocks the pipeline inside
-the ISC) has to be done after the pm_runtime for the ISC dev has been
-started.
+Since scs allocation is moved to vmalloc region, the
+shadow stack is protected by kasan_posion_vmalloc.
+However, the vfree_atomic operation needs to access
+its context for scs_free process and causes kasan error
+as the dump info below.
 
-After the commit by Mauro:
-the ISC failed to probe with the error:
+This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
+which aligns to the prior flow as using kmem_cache.
+The vmalloc region will go back posioned in the following
+vumap() operations.
 
-atmel-sama5d2-isc f0008000.isc: failed to enable ispck: -13
-atmel-sama5d2-isc: probe of f0008000.isc failed with error -13
+ ==================================================================
+ BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
+ Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
 
-This is because the enabling of the ispck is done too early in the probe,
-and the PM runtime returns invalid request.
-Thus, moved this clock enabling after pm_runtime_idle is called.
+ CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-g92477dd1faa6-dirty #1
+ Hardware name: linux,dummy-virt (DT)
+ Call trace:
+  dump_backtrace+0x0/0x43c
+  show_stack+0x1c/0x2c
+  dump_stack_lvl+0x68/0x84
+  print_address_description+0x80/0x394
+  kasan_report+0x180/0x1dc
+  __asan_report_store8_noabort+0x48/0x58
+  llist_add_batch+0x60/0xd4
+  vfree_atomic+0x60/0xe0
+  scs_free+0x1dc/0x1fc
+  scs_release+0xa4/0xd4
+  free_task+0x30/0xe4
+  __put_task_struct+0x1ec/0x2e0
+  delayed_put_task_struct+0x5c/0xa0
+  rcu_do_batch+0x62c/0x8a0
+  rcu_core+0x60c/0xc14
+  rcu_core_si+0x14/0x24
+  __do_softirq+0x19c/0x68c
+  irq_exit+0x118/0x2dc
+  handle_domain_irq+0xcc/0x134
+  gic_handle_irq+0x7c/0x1bc
+  call_on_irq_stack+0x40/0x70
+  do_interrupt_handler+0x78/0x9c
+  el1_interrupt+0x34/0x60
+  el1h_64_irq_handler+0x1c/0x2c
+  el1h_64_irq+0x78/0x7c
+  _raw_spin_unlock_irqrestore+0x40/0xcc
+  sched_fork+0x4f0/0xb00
+  copy_process+0xacc/0x3648
+  kernel_clone+0x168/0x534
+  kernel_thread+0x13c/0x1b0
+  kthreadd+0x2bc/0x400
+  ret_from_fork+0x10/0x20
 
-The ISPCK is required only for sama5d2 type of ISC.
-Thus, add a bool inside the isc struct that is platform dependent.
-For the sama7g5-isc, the enabling of the ISPCK is wrong and does not make
-sense. Removed it from the sama7g5 probe. In sama7g5-isc, there is only
-one clock, the MCK, which also clocks the internal pipeline of the ISC.
+ Memory state around the buggy address:
+  ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+  ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                    ^
+  ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+  ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ==================================================================
 
-Adapted the clk_prepare and clk_unprepare to request the runtime PM
-for both clocks (MCK and ISPCK) in case of sama5d2-isc, and the single
-clock (MCK) in case of sama7g5-isc.
-
-Fixes: dd97908ee350 ("media: atmel: properly get pm_runtime")
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Suggested-by: Kuan-Ying Lee <kuan-ying.lee@mediatek.com>
+Acked-by: Will Deacon <will@kernel.org>
+Tested-by: Will Deacon <will@kernel.org>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+Fixes: a2abe7cbd8fe ("scs: switch to vmapped shadow stacks")
+Link: https://lore.kernel.org/r/20210930081619.30091-1-yee.lee@mediatek.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/atmel/atmel-isc-base.c | 25 ++++++------
- drivers/media/platform/atmel/atmel-isc.h      |  2 +
- .../media/platform/atmel/atmel-sama5d2-isc.c  | 39 ++++++++++---------
- .../media/platform/atmel/atmel-sama7g5-isc.c  | 22 ++---------
- 4 files changed, 38 insertions(+), 50 deletions(-)
+ kernel/scs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
-index 136ab7cf36edc..ebf264b980f91 100644
---- a/drivers/media/platform/atmel/atmel-isc-base.c
-+++ b/drivers/media/platform/atmel/atmel-isc-base.c
-@@ -123,11 +123,9 @@ static int isc_clk_prepare(struct clk_hw *hw)
- 	struct isc_clk *isc_clk = to_isc_clk(hw);
- 	int ret;
+diff --git a/kernel/scs.c b/kernel/scs.c
+index e2a71fc82fa06..579841be88646 100644
+--- a/kernel/scs.c
++++ b/kernel/scs.c
+@@ -78,6 +78,7 @@ void scs_free(void *s)
+ 		if (this_cpu_cmpxchg(scs_cache[i], 0, s) == NULL)
+ 			return;
  
--	if (isc_clk->id == ISC_ISPCK) {
--		ret = pm_runtime_resume_and_get(isc_clk->dev);
--		if (ret < 0)
--			return ret;
--	}
-+	ret = pm_runtime_resume_and_get(isc_clk->dev);
-+	if (ret < 0)
-+		return ret;
- 
- 	return isc_wait_clk_stable(hw);
++	kasan_unpoison_vmalloc(s, SCS_SIZE);
+ 	vfree_atomic(s);
  }
-@@ -138,8 +136,7 @@ static void isc_clk_unprepare(struct clk_hw *hw)
- 
- 	isc_wait_clk_stable(hw);
- 
--	if (isc_clk->id == ISC_ISPCK)
--		pm_runtime_put_sync(isc_clk->dev);
-+	pm_runtime_put_sync(isc_clk->dev);
- }
- 
- static int isc_clk_enable(struct clk_hw *hw)
-@@ -186,16 +183,13 @@ static int isc_clk_is_enabled(struct clk_hw *hw)
- 	u32 status;
- 	int ret;
- 
--	if (isc_clk->id == ISC_ISPCK) {
--		ret = pm_runtime_resume_and_get(isc_clk->dev);
--		if (ret < 0)
--			return 0;
--	}
-+	ret = pm_runtime_resume_and_get(isc_clk->dev);
-+	if (ret < 0)
-+		return 0;
- 
- 	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
- 
--	if (isc_clk->id == ISC_ISPCK)
--		pm_runtime_put_sync(isc_clk->dev);
-+	pm_runtime_put_sync(isc_clk->dev);
- 
- 	return status & ISC_CLK(isc_clk->id) ? 1 : 0;
- }
-@@ -325,6 +319,9 @@ static int isc_clk_register(struct isc_device *isc, unsigned int id)
- 	const char *parent_names[3];
- 	int num_parents;
- 
-+	if (id == ISC_ISPCK && !isc->ispck_required)
-+		return 0;
-+
- 	num_parents = of_clk_get_parent_count(np);
- 	if (num_parents < 1 || num_parents > 3)
- 		return -EINVAL;
-diff --git a/drivers/media/platform/atmel/atmel-isc.h b/drivers/media/platform/atmel/atmel-isc.h
-index 19cc60dfcbe0f..2bfcb135ef13b 100644
---- a/drivers/media/platform/atmel/atmel-isc.h
-+++ b/drivers/media/platform/atmel/atmel-isc.h
-@@ -178,6 +178,7 @@ struct isc_reg_offsets {
-  * @hclock:		Hclock clock input (refer datasheet)
-  * @ispck:		iscpck clock (refer datasheet)
-  * @isc_clks:		ISC clocks
-+ * @ispck_required:	ISC requires ISP Clock initialization
-  * @dcfg:		DMA master configuration, architecture dependent
-  *
-  * @dev:		Registered device driver
-@@ -252,6 +253,7 @@ struct isc_device {
- 	struct clk		*hclock;
- 	struct clk		*ispck;
- 	struct isc_clk		isc_clks[2];
-+	bool			ispck_required;
- 	u32			dcfg;
- 
- 	struct device		*dev;
-diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
-index b66f1d174e9d7..e29a9193bac81 100644
---- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
-+++ b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
-@@ -454,6 +454,9 @@ static int atmel_isc_probe(struct platform_device *pdev)
- 	/* sama5d2-isc - 8 bits per beat */
- 	isc->dcfg = ISC_DCFG_YMBSIZE_BEATS8 | ISC_DCFG_CMBSIZE_BEATS8;
- 
-+	/* sama5d2-isc : ISPCK is required and mandatory */
-+	isc->ispck_required = true;
-+
- 	ret = isc_pipeline_init(isc);
- 	if (ret)
- 		return ret;
-@@ -476,22 +479,6 @@ static int atmel_isc_probe(struct platform_device *pdev)
- 		dev_err(dev, "failed to init isc clock: %d\n", ret);
- 		goto unprepare_hclk;
- 	}
--
--	isc->ispck = isc->isc_clks[ISC_ISPCK].clk;
--
--	ret = clk_prepare_enable(isc->ispck);
--	if (ret) {
--		dev_err(dev, "failed to enable ispck: %d\n", ret);
--		goto unprepare_hclk;
--	}
--
--	/* ispck should be greater or equal to hclock */
--	ret = clk_set_rate(isc->ispck, clk_get_rate(isc->hclock));
--	if (ret) {
--		dev_err(dev, "failed to set ispck rate: %d\n", ret);
--		goto unprepare_clk;
--	}
--
- 	ret = v4l2_device_register(dev, &isc->v4l2_dev);
- 	if (ret) {
- 		dev_err(dev, "unable to register v4l2 device.\n");
-@@ -545,19 +532,35 @@ static int atmel_isc_probe(struct platform_device *pdev)
- 	pm_runtime_enable(dev);
- 	pm_request_idle(dev);
- 
-+	isc->ispck = isc->isc_clks[ISC_ISPCK].clk;
-+
-+	ret = clk_prepare_enable(isc->ispck);
-+	if (ret) {
-+		dev_err(dev, "failed to enable ispck: %d\n", ret);
-+		goto cleanup_subdev;
-+	}
-+
-+	/* ispck should be greater or equal to hclock */
-+	ret = clk_set_rate(isc->ispck, clk_get_rate(isc->hclock));
-+	if (ret) {
-+		dev_err(dev, "failed to set ispck rate: %d\n", ret);
-+		goto unprepare_clk;
-+	}
-+
- 	regmap_read(isc->regmap, ISC_VERSION + isc->offsets.version, &ver);
- 	dev_info(dev, "Microchip ISC version %x\n", ver);
- 
- 	return 0;
- 
-+unprepare_clk:
-+	clk_disable_unprepare(isc->ispck);
-+
- cleanup_subdev:
- 	isc_subdev_cleanup(isc);
- 
- unregister_v4l2_device:
- 	v4l2_device_unregister(&isc->v4l2_dev);
- 
--unprepare_clk:
--	clk_disable_unprepare(isc->ispck);
- unprepare_hclk:
- 	clk_disable_unprepare(isc->hclock);
- 
-diff --git a/drivers/media/platform/atmel/atmel-sama7g5-isc.c b/drivers/media/platform/atmel/atmel-sama7g5-isc.c
-index f2785131ff569..9c05acafd0724 100644
---- a/drivers/media/platform/atmel/atmel-sama7g5-isc.c
-+++ b/drivers/media/platform/atmel/atmel-sama7g5-isc.c
-@@ -447,6 +447,9 @@ static int microchip_xisc_probe(struct platform_device *pdev)
- 	/* sama7g5-isc RAM access port is full AXI4 - 32 bits per beat */
- 	isc->dcfg = ISC_DCFG_YMBSIZE_BEATS32 | ISC_DCFG_CMBSIZE_BEATS32;
- 
-+	/* sama7g5-isc : ISPCK does not exist, ISC is clocked by MCK */
-+	isc->ispck_required = false;
-+
- 	ret = isc_pipeline_init(isc);
- 	if (ret)
- 		return ret;
-@@ -470,25 +473,10 @@ static int microchip_xisc_probe(struct platform_device *pdev)
- 		goto unprepare_hclk;
- 	}
- 
--	isc->ispck = isc->isc_clks[ISC_ISPCK].clk;
--
--	ret = clk_prepare_enable(isc->ispck);
--	if (ret) {
--		dev_err(dev, "failed to enable ispck: %d\n", ret);
--		goto unprepare_hclk;
--	}
--
--	/* ispck should be greater or equal to hclock */
--	ret = clk_set_rate(isc->ispck, clk_get_rate(isc->hclock));
--	if (ret) {
--		dev_err(dev, "failed to set ispck rate: %d\n", ret);
--		goto unprepare_clk;
--	}
--
- 	ret = v4l2_device_register(dev, &isc->v4l2_dev);
- 	if (ret) {
- 		dev_err(dev, "unable to register v4l2 device.\n");
--		goto unprepare_clk;
-+		goto unprepare_hclk;
- 	}
- 
- 	ret = xisc_parse_dt(dev, isc);
-@@ -549,8 +537,6 @@ cleanup_subdev:
- unregister_v4l2_device:
- 	v4l2_device_unregister(&isc->v4l2_dev);
- 
--unprepare_clk:
--	clk_disable_unprepare(isc->ispck);
- unprepare_hclk:
- 	clk_disable_unprepare(isc->hclock);
  
 -- 
 2.33.0
