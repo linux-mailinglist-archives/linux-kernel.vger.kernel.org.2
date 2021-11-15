@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0DD45013B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1CB450150
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhKOJ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:27:41 -0500
-Received: from mga01.intel.com ([192.55.52.88]:64451 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237574AbhKOJ0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:26:24 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="257156736"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="257156736"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 01:21:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
-   d="scan'208";a="644783363"
-Received: from kuha.fi.intel.com ([10.237.72.166])
-  by fmsmga001.fm.intel.com with SMTP; 15 Nov 2021 01:21:32 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 15 Nov 2021 11:21:31 +0200
-Date:   Mon, 15 Nov 2021 11:21:31 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:USB TYPEC PORT CONTROLLER DRIVERS" 
-        <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: typec: fusb302: Fix masking of comparator and
- bc_lvl interrupts
-Message-ID: <YZImm0UIy3os5H6Q@kuha.fi.intel.com>
-References: <20211108102833.2793803-1-megous@megous.com>
- <YZIILh++KIEK/ZA5@kuha.fi.intel.com>
- <20211115085532.xoufihjxkxzhxehv@core>
+        id S237637AbhKOJ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:28:50 -0500
+Received: from smtpbg701.qq.com ([203.205.195.86]:58599 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237006AbhKOJ1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 04:27:36 -0500
+X-Greylist: delayed 4145 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Nov 2021 04:27:36 EST
+X-QQ-mid: bizesmtp54t1636968132tgkosmaa
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 15 Nov 2021 17:22:11 +0800 (CST)
+X-QQ-SSF: 01400000002000B0B000B00C0000000
+X-QQ-FEAT: bOEXdVvRX8Y572JsKxccmj89e1WDJA+VIFcPTVPcE5+QP2APXfGS2txs/OTS3
+        fmVzyUb9hg+EHZ4POH+fuvLED/JaUPK+ao9eIl1YSdAAMxy5+mHKz+XF/xsSHVIDrAnmd6N
+        GT8X1ksrxzTfUmj4vgu3HNScOQCgtLkVVbLBFy+hHddk5rEIZfywl0p0IfbpFOtkEMs2nZ7
+        g9XZ8252jg8T260MFnmerxeiT2PB3CBUltwaOjvkl3eTMpPSMyAA2vI/cOj48dKwALrtltk
+        a6LcXe+34WnfBM6Q7ylL2/aXkuj16nO1gL4si2oAxU2aJFZox83PrgBTGqa825JpgfMlNXa
+        rapg92CQauO5c2DNo08gW8CMqiJ3scFage9xINp
+X-QQ-GoodBg: 2
+From:   liuguoqiang <liuguoqiang@uniontech.com>
+To:     johannes@sipsolutions.net
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        liuguoqiang <liuguoqiang@uniontech.com>
+Subject: [PATCH] cfg80211: delete redundant free code
+Date:   Mon, 15 Nov 2021 17:21:39 +0800
+Message-Id: <20211115092139.24407-1-liuguoqiang@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211115085532.xoufihjxkxzhxehv@core>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 09:55:32AM +0100, Ondřej Jirman wrote:
-> On Mon, Nov 15, 2021 at 09:11:42AM +0200, Heikki Krogerus wrote:
-> > On Mon, Nov 08, 2021 at 11:28:32AM +0100, Ondrej Jirman wrote:
-> > > The code that enables either BC_LVL or COMP_CHNG interrupt in tcpm_set_cc
-> > > wrongly assumes that the interrupt is unmasked by writing 1 to the apropriate
-> > > bit in the mask register. In fact, interrupts are enabled when the mask
-> > > is 0, so the tcpm_set_cc enables interrupt for COMP_CHNG when it expects
-> > > BC_LVL interrupt to be enabled.
-> > > 
-> > > This causes inability of the driver to recognize cable unplug events
-> > > in host mode (unplug is recognized only via a COMP_CHNG interrupt).
-> > > 
-> > > In device mode this bug was masked by simultaneous triggering of the VBUS
-> > > change interrupt, because of loss of VBUS when the port peer is providing
-> > > power.
-> > > 
-> > > Fixes: 48242e30532b ("usb: typec: fusb302: Revert "Resolve fixed power role contract setup"")
-> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > > Cc: Hans de Goede <hdegoede@redhat.com>
-> > 
-> > Should this go to stable?
-> 
-> Without this patch, VBUS is not turned off when I disconnect a hub from the
-> Type-C port (because fusb302 will not notice the disconnect), and it stays on
-> until next plugin of some device, say a normal non PD charger.
-> 
-> So I guess for a brief period you can have both sides provide VBUS (until
-> fusb302/tcpm processes the next plugin). It may be a problem if VBUS was more
-> than 5V (not very likely for devices running this driver, I guess).
+When kzalloc failed and rdev->sacn_req or rdev->scan_msg is null, pass a
+null pointer to kfree is redundant, delete it and return directly.
 
-OK. So this should find it's way to the stable kernel releases as
-well, and it should have the appropriate "Cc: stable@vger.kernel.org"
-tag:
+Signed-off-by: liuguoqiang <liuguoqiang@uniontech.com>
+---
+ net/wireless/scan.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#select-the-recipients-for-your-patch
-
-thanks,
-
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index 22e92be61938..011fcfabc846 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -2702,10 +2702,8 @@ int cfg80211_wext_siwscan(struct net_device *dev,
+ 	if (IS_ERR(rdev))
+ 		return PTR_ERR(rdev);
+ 
+-	if (rdev->scan_req || rdev->scan_msg) {
+-		err = -EBUSY;
+-		goto out;
+-	}
++	if (rdev->scan_req || rdev->scan_msg)
++		return -EBUSY;
+ 
+ 	wiphy = &rdev->wiphy;
+ 
+@@ -2718,10 +2716,8 @@ int cfg80211_wext_siwscan(struct net_device *dev,
+ 	creq = kzalloc(sizeof(*creq) + sizeof(struct cfg80211_ssid) +
+ 		       n_channels * sizeof(void *),
+ 		       GFP_ATOMIC);
+-	if (!creq) {
+-		err = -ENOMEM;
+-		goto out;
+-	}
++	if (!creq)
++		return -ENOMEM;
+ 
+ 	creq->wiphy = wiphy;
+ 	creq->wdev = dev->ieee80211_ptr;
 -- 
-heikki
+2.20.1
+
+
+	
