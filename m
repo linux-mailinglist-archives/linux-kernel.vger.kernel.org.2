@@ -2,265 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387F444FE8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F78D44FE94
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 07:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhKOGIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 01:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S230315AbhKOGJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 01:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhKOGIC (ORCPT
+        with ESMTP id S229651AbhKOGJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 01:08:02 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ED5C061766
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 22:05:07 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id q39-20020a4a962a000000b002b8bb100791so5532138ooi.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Nov 2021 22:05:07 -0800 (PST)
+        Mon, 15 Nov 2021 01:09:26 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5872DC061746;
+        Sun, 14 Nov 2021 22:06:29 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id z5so6887678edd.3;
+        Sun, 14 Nov 2021 22:06:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YcL98dcYP0M2jStnva8J9nz+JoDlg+B8cM6xTQH4RCQ=;
-        b=dc0GvEaEwe22fG8jKGnx1MzaNk0hPiJuSY/aH0zd969M6SxekXRsIPnuhSJPGUj2tO
-         c80PUSwnfb9d3U7dsE82NNBtmlcWLF9iNrAYIRa60UcZ0xNS3MTDiekjEowFN1cOF/Ou
-         1H7cBeouxC6Zpgwg6LuUSc+pGUhYLFjf2B3H1ElO/CXxlv8GHCA4JTcEv5RDWgtzB/vO
-         RemWEg/fMEp+TpWtroIFDncRWDPSnL3U/5KQX3acU/g9j6jX539N3wicz9Qc3adK5qy0
-         c3iu7Ve2aJfQprUEfONHMko/o1FGO88rKMV9iunCCCxcoFUvfGTEiHbmkzqrvCbPuemV
-         FKZg==
+        bh=WJyGtaduRtIJa/ZtDrFpN3oGhSX1GbTvjUgEHPLUCMg=;
+        b=SWMkJ9v6DUYEK3HiLAjMV80gRSTeXHyZclo63eHyu0x98VtMwyz3kiFOu7yEXR3XO4
+         c1US89xzKDsZEz0LE73Kyh/FgOH0+Suu21hr84btmpjC3KaUlhnahiEjYtGlCLkTB1mz
+         Phc8WXeTNKW6jsEVUapPS406bYuyUqPbsppPbo3hdFd8Vtr2IJg1RryZg+Y/fArcLX5U
+         KyfjSYfCqJXm1Q71LxXIsNJR5zwEXxaGKWlRPA7gkVLq2Nj41ohHJfqqN5egLEU967A0
+         q+Mge6Wo0TSBhYYCIVCyxpMPTP+fxaldBLyM33VmbDv2bGrF8HqBQ3i1Om5S9IHZFFDP
+         hKaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YcL98dcYP0M2jStnva8J9nz+JoDlg+B8cM6xTQH4RCQ=;
-        b=yc17Jxw6/5ERqVhA/CNGucakS6ym/fYqrhztXy0JV0hSDWfRQCN67nHdZBSgFJ9pZf
-         7cTFAHeeS6SEcj55Eo7z9hLVXVBBy8XSExH7GeYQLDTItwB9RyZgtJ1RfxWwugUz1QH5
-         1iIsOeDUxoiP8Aw+OmJnMoxSyCy/e8BMZe4YGu4niNjTTqZO8wby4PbInrhUWqNjLqVN
-         3QWmIUrXiPlFW4s47O1z1bFeI9PKPg0/uAYJvmuA8vnibUzb14LsfovRJx1fotCgCrF1
-         JgkbIieN0g5bhtNnuecPflA5BpSun8fkNFDD7lt/nWqM5b6mvbQVvAqz1gdp5gmcYR6C
-         GdBQ==
-X-Gm-Message-State: AOAM531wgyIGzXTHkuO99fvy5rL3NQENwIFHDWKaEB61zP8zV+JHqXaN
-        4Pjcuo+fcqwKSNPQ6rRSFHHQFmjji3J4XHt43i2QGg==
-X-Google-Smtp-Source: ABdhPJy2e88x2dTWGeoIROKmY2ssRaLj47rFk3JxO0UxewJexSUFIh7d7O86pYVMHaBaVufQ9xcStyzMZjIc2Ltdprc=
-X-Received: by 2002:a4a:ea84:: with SMTP id r4mr18628390ooh.13.1636956306909;
- Sun, 14 Nov 2021 22:05:06 -0800 (PST)
+        bh=WJyGtaduRtIJa/ZtDrFpN3oGhSX1GbTvjUgEHPLUCMg=;
+        b=ZKKBhYPYEBUTTY48mldQV8VXWp7KnBivtp7EF1l8YvPdOBwMgLpKvIdejHxnpZaY9S
+         WQecUuSOSd6VgEhkaPqk1myTn87ojZmfGRAeCVFK1hrEi6T24jevsNj+4424XhyKQxXY
+         +oZ7T6SnsxP5WzoHHF64ADHPl7hiTqB5iLZeQIFeChzo8qCkNLmYw5JTcrzdZaibuyiK
+         HshcvJA6c111d3NCBCztUglKpaw6mgJrjhqcDBOOOXIIwSe0H80cM0Oz5vtLN68K7hOR
+         DT3mPBZf7Rpt8WcdxpZ+KNI15UOLp1fxn+nhliZg6yajmVTcm/8QutF8+oOHT8VBejbY
+         hDmg==
+X-Gm-Message-State: AOAM533XAZNZA7ILNG/kKl9BOvVn96ADtKTKpl6JDytn5KO0FcdWiWvn
+        GHxWfbx79deFBrVCj00OfY6Rotr+fkhqHbOpEwFUk9YN
+X-Google-Smtp-Source: ABdhPJz5iujEF0gRIOihMaP1aSj04ay9mLJHtbI3Soyz1R6lWjRspvRUCY8gecc7utX0rH6lPACQni3RuU+0WhQtFOU=
+X-Received: by 2002:aa7:cd8a:: with SMTP id x10mr51748057edv.3.1636956387892;
+ Sun, 14 Nov 2021 22:06:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-4-bhupesh.sharma@linaro.org> <1636573460.935618.1783742.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1636573460.935618.1783742.nullmailer@robh.at.kernel.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 15 Nov 2021 11:34:56 +0530
-Message-ID: <CAH=2NtycQ7B40Q4oLQDa-65r5riAiCdCGLx6fkLBQS5P-dQSsw@mail.gmail.com>
-Subject: Re: [PATCH v5 03/22] dt-bindings: qcom-bam: Convert binding to YAML
-To:     Rob Herring <robh@kernel.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        stephan@gerhold.net, bhupesh.linux@gmail.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org
+References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
+ <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
+ <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com>
+ <CAOuPNLg_YwyhK6iPZZbRWe57Kkr1d8LjJaDniCvvOqk4t2-Sog@mail.gmail.com>
+ <CAOuPNLgYhm=goOiABjUFsAvRW+s2NqHjHYdm5MA9PvoUAMxOpg@mail.gmail.com> <4b99139a-802a-8255-adf5-2d3f9d0ccf7c@squashfs.org.uk>
+In-Reply-To: <4b99139a-802a-8255-adf5-2d3f9d0ccf7c@squashfs.org.uk>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 15 Nov 2021 11:36:16 +0530
+Message-ID: <CAOuPNLg3Te_QwNaUq25TVQ5zav_ER78tM6gakdGLtEVqWL2+AA@mail.gmail.com>
+Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
+ gives SQUASHFS error: xz decompression failed, data probably corrupt
+To:     Phillip Lougher <phillip@squashfs.org.uk>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        dm-devel@redhat.com, Mikulas Patocka <mpatocka@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Daniel Rosenberg <drosen@google.com>, astrachan@google.com,
+        speed.eom@samsung.com, Sami Tolvanen <samitolvanen@google.com>,
+        snitzer@redhat.com, squashfs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Thu, 11 Nov 2021 at 01:14, Rob Herring <robh@kernel.org> wrote:
+On Mon, 15 Nov 2021 at 00:40, Phillip Lougher <phillip@squashfs.org.uk> wrote:
 >
-> On Wed, 10 Nov 2021 16:29:03 +0530, Bhupesh Sharma wrote:
-> > Convert Qualcomm BAM DMA devicetree binding to YAML.
+> On 14/11/2021 07:06, Pintu Agarwal wrote:
+> > + Adding squashfs-devel to get opinion from squashfs side.
 > >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 ----------
-> >  .../devicetree/bindings/dma/qcom_bam_dma.yaml | 91 +++++++++++++++++++
-> >  2 files changed, 91 insertions(+), 50 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> >  create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> > On Fri, 12 Nov 2021 at 12:48, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> On Tue, 9 Nov 2021 at 21:04, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> >>
+> >>>>> We only get these squashfs errors flooded in the boot logs:
+> >>>>> {{{
+> >>>>> ....
+> >>>>> [    5.153479] device-mapper: init: dm-0 is ready
+> >>>>> [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
+> >>>>> ....
+> >>>>> [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
+> >>>>> [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
+> >>>>> [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
+> >>>>> [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
+> >>>>> [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
+> >>>>> [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
+> >>>>> [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
+> >>>>> ....
+> >>>>> }}}
+> >>>>>
+> >>
+> >> One more observation:
+> >> When I disable FEC flag in bootloader, I see the below error:
+> >> [    8.360791] device-mapper: verity: 253:0: data block 2 is corrupted
+> >> [    8.361134] device-mapper: verity: 253:0: data block 3 is corrupted
+> >> [    8.366016] SQUASHFS error: squashfs_read_data failed to read block 0x1106
+> >> [    8.379652] SQUASHFS error: Unable to read data cache entry [1106]
+> >> [    8.379680] SQUASHFS error: Unable to read page, block 1106, size 7770
+> >>
+> >> Also, now I see that the decompress error is gone, but the read error
+> >> is still there.
+> >>
+> >> This seems to me that dm-verity detects some corrupted blocks but with
+> >> FEC it auto corrects itself, how when dm-verity auto corrects itself,
+> >> the squashfs decompression algorithm somehow could not understand it.
+> >>
+> >> So, it seems like there is some mis-match between the way FEC
+> >> correction and the squashfs decompression happens ?
+> >>
+> >> Is this issue seen by anybody else here ?
+> >>
+> >
+> > The squashfs version used by Kernel:
+> > [    0.355958] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+> >
+> > The squashfs version available on Ubuntu:
+> > mksquashfs version 4.3-git (2014/06/09)
+> >
+> > The squashfs version used by Yocto 2.6:
+> > squashfs-tools/0001-squashfs-tools-Allow-setting-selinux-xattrs-through-.patch:61:
+> >     printf("mksquashfs version 4.3-git (2014/09/12)\n");
+> >
+> > We create dm-verity squashfs image using version 4.3 whereas, the
+> > kernel uses 4.0 version to decompress it.
+> > Is there something missing here?
+> >
+> > When FEC (Forward Error Correction) comes into picture, then squashfs
+> > decompress fails.
+> > When we remove FEC flag from dm-verity then decompress works but read
+> > error still occurs.
+> > This seems as if something is missing either in FEC handling or either
+> > in squashfs decompress logic.
+> >
+> > Just wanted to know if there are any fixes already available in the
+> > mainline for this ?
+> >
 > >
 >
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
+> As Squashfs maintainer I want you to stop randomly blaming anything and
+> everything here.  You won't fix anything doing that.
 >
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
->
-> Full log is available here: https://patchwork.ozlabs.org/patch/1553369
+> In a previous email you stated
 >
 >
-> dma@12142000: $nodename:0: 'dma@12142000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
+> >
+> > One quick observation:
+> > This issue is seen only when we enable dm-verity in our bootloader and
+> > cross-building the bootloader/kernel (with Yocto 2.6 toolchain
+> > arm-oe-linux-gnueabi-) on Ubuntu 18.04.
+> > The issue is *NOT* seen (on the same device) when building the
+> > dm-verity enabled kernel on Ubuntu 16.04.
+> >
+> > Is it something to do with the cross-toolchain difference between
+> > Ubuntu 16 and 18 ?
+> >
 >
-> dma@12182000: $nodename:0: 'dma@12182000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
->         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
+> If that is the case, then it is not an issue with Squashfs or any
+> kernel code, it is a build time issue and *that* is where you should
+> be concentrating your efforts.  Find out what differences are there.
 >
-> dma@121c2000: $nodename:0: 'dma@121c2000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+> You don't seem to understand that a Squashfs filesystem generated
+> by any Mksquashfs 4.X is mountable *without* errors on any kernel
+> since 2.6.29 (January 2009).  Looking for mismatches between
+> Mksquashfs and/or kernel version and blaming that for the above
+> different behaviour is a complete waste of time.
 >
-> dma@12402000: $nodename:0: 'dma@12402000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
->
-> dma@1dc4000: $nodename:0: 'dma@1dc4000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
->
-> dma@1dc4000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
->
-> dma@1dc4000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
->
-> dma@704000: $nodename:0: 'dma@704000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
->
-> dma@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
->
-> dma@7544000: $nodename:0: 'dma@7544000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
->         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->
-> dma@7584000: $nodename:0: 'dma@7584000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
->         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->
-> dma@7884000: $nodename:0: 'dma@7884000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@7984000: $nodename:0: 'dma@7984000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@8e04000: $nodename:0: 'dma@8e04000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@c184000: $nodename:0: 'dma@c184000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
->
-> dma-controller@17184000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
->
-> dma-controller@704000: 'qcom,config-pipe-trust-reg' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clock-names:0: 'bam_clk' was expected
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clock-names: Additional items are not allowed ('bam_clk' was unexpected)
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clock-names: ['iface_clk', 'bam_clk'] is too long
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clocks: [[9, 138], [9, 137]] is too long
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
 
-As noted with v4 review as well, all the errors reported above are
-fixed via other patches in this patchset, for e.g.:
+I am sorry, but I am not blaming anybody here.
+I am just trying to put my observation here and trying to understand
+if someone else have seen a similar issue.
+Toolchain side also, it seems the same as it comes from Yocto itself.
 
-[PATCH v5 01/22] arm64: dts: qcom: msm8996: Fix
-qcom,controlled-remotely property
-[PATCH v5 02/22] arm64: dts: qcom: msm8996: Fix 'dma' nodes in dts
-[PATCH v5 04/22] dt-bindings: qcom-bam: Add 'interconnects' &
-'interconnect-names' to optional properties
-[PATCH v5 05/22] dt-bindings: qcom-bam: Add 'iommus' to optional properties
+It seems there is some relation between dm-verity FEC correction and
+squashfs decompression.
+So I was looking for some clues from both sides.
 
-Regards,
-Bhupesh
+Anyways, thank you so much for your suggestion.
+Yes, we are analysing the Yocto side build difference as well between
+Ubuntu 16 and 18.
+
+Thank you!
+Pintu
