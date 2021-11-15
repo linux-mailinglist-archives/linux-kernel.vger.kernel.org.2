@@ -2,181 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFCB4504BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4284504C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 13:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhKOM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 07:57:03 -0500
-Received: from mail-dm6nam12on2065.outbound.protection.outlook.com ([40.107.243.65]:33504
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229568AbhKOM46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 07:56:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KcFKaA1wOo0yop5pA/osJsn0RuLpUg2HZzdgdS+XkQFfZd9p/9dvU8xbT5b3EcQx2DZ7ubREjrfAOlPCGap5POJuDmXR6q/x0XWwapq5HPhUhRwMpX0GMtbl8rxDtBVO8ohX+jvZqY7qL1E4oue3MTzX3MvzknBnynMrm9hr6GG86ljU1MEgXbu6uo7ZGhPr3uOdqqSDYolbSPfEQbLLGo3H2PZ8/1hIhJc2aPXcXXenvJZs6GaxkpvQNLgaK9g2TbYYaBlFtKYE+SYDTvhe0/lmhXDOxne8Dga/coVpK0VrFQB3Kni95NpVHTc6Oo86vAkogaT6RLHMXFGbz6b6xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PH8LIgiAUOK2fhoJ+J8uWls25pIpPBQKqPTDQs2mHyg=;
- b=KBOW0o02RrXJ1KMusCERE36/V2DB23OKJtgNCyddTeHEJdfiS1E6xST/WJmKZ9vcAixzNLjxPN/7H85I2O/8OhalyU1AjV6hPdPrwhvP0v7kxXxlopn4MKK5H100NHxZyYkh9Xl5nIOLZYhHs9q28JUFiqzDdO8OGzh5moOIZKH83pMp+BdSwU9ZHpcwzp0ZkzOab3a5poBNAMQRbm6ocVXGelyUTvKBSaZu9pGf+KBWYY9qCj2RNBKUanjVulVny0hUKiLLf+dxEGMDl/wef0xmtvLlt+WS6+/jepfQ794emezCOZSPKx9BJaNYoLyqRN0NhXg6P9bYYbL3HF7bmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PH8LIgiAUOK2fhoJ+J8uWls25pIpPBQKqPTDQs2mHyg=;
- b=GDmbgdUIUaTCZP0P+/EqCferL2zeZmCnFOd9PZB3H9cEznv5ncgz5ZHwWYNgOUBUdgEltROaN7iK7nKPa3gm8DlYTuZZdzIB5kLH6xQ2nev7xQY03CAQKiOnCyXrN/jHQWEbtrwUehWBTA2ipuLTc5S+BGmearydYV0VsC5HIYw8e96JLcP8iLOndpY5TiD26jqYXrCJJx7vltDozvALr/7isQ8mwPP9m8SDUzh6GbpYs2WUf4zOWQdc/gEtWsUfrdL0B54XNzz8x1zVCuhh7rseiWub5DCCQmy+HmBiVK48BsVZveKgjxXkh0NSiRYh5QaLT+WnkQIK1LyAiidDXQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5286.namprd12.prod.outlook.com (2603:10b6:208:31d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Mon, 15 Nov
- 2021 12:54:01 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
- 12:54:01 +0000
-Date:   Mon, 15 Nov 2021 08:53:59 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <20211115125359.GM2105516@nvidia.com>
-References: <20211109144358.GA1824154@nvidia.com>
- <20211109070702.17364ec7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211109153335.GH1740502@nvidia.com>
- <20211109082042.31cf29c3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211109182427.GJ1740502@nvidia.com>
- <YY0G90fJpu/OtF8L@nanopsycho>
- <YY0J8IOLQBBhok2M@unreal>
- <YY4aEFkVuqR+vauw@nanopsycho>
- <YZCqVig9GQi/o1iz@unreal>
- <YZJCdSy+wzqlwrE2@nanopsycho>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZJCdSy+wzqlwrE2@nanopsycho>
-X-ClientProxiedBy: CH0PR04CA0028.namprd04.prod.outlook.com
- (2603:10b6:610:76::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S230011AbhKONAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhKONAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 08:00:03 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530ACC061570;
+        Mon, 15 Nov 2021 04:57:04 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 4DEC11F44A5C
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1636981022; bh=H4epKBtdV/VjtyEoDLxI2gaMBucBZjKSZjaVFzxKCSU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=BPlOMwk+2oHaQJ7cPZKJrhL8S/FBYKpfg5pcR5rl7Mhn0vYASkfp6lfE/JAum+qv2
+         GsH6HrLz70dwb2fMhcXwpkYrsJfBlhm3ZaJhts3imqxmnDEItdNsdoXD/9yARHvxLQ
+         EGC8kQguh8+vTzdzWgMnpIAflpI8QFPILM3UCXLkW7hSKU8qEBOAFU0qpzjDPlTfr5
+         DvIwM3MUy2SrjPkASb6GrCemapJiRRxlNvscjsSaYr4H1ugxWR5Q39N9+sx5WTWvWp
+         8dwPmLba0638I1PjrQxOmF6wr/C+d0CAiPKXrMN4SX56VhOx0+4GTQseqwnqJviQEV
+         MXxpnzyBBeB0A==
+Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <b86785db-4f93-5804-d848-125d9077a8c7@xs4all.nl>
+ <2e57a3ae9d76ae4484b84ba358cd3bae0931c875.camel@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <58cd7f30-6052-95fa-bc70-cbc45cacbb07@collabora.com>
+Date:   Mon, 15 Nov 2021 13:56:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR04CA0028.namprd04.prod.outlook.com (2603:10b6:610:76::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Mon, 15 Nov 2021 12:54:01 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mmbUl-009ykI-RP; Mon, 15 Nov 2021 08:53:59 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dddac47e-fd9b-43fc-bc1d-08d9a836ff31
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5286:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5286D835D5EF4B0FDE10AE95C2989@BL1PR12MB5286.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:331;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PA/Vg/nARhocKa26RvV4QSykfel9+6rZxMTOydfZ9MCmJgJ2N9dc0GPqjo+lVKIhYtnDFis4b2FJgPMBH9LGmMAJJuLvmueT/avvqgpzfIOhVFQeBZDJ5OUf4MKKygp7j/af9o5zqBv0dp/p/PI357DCYBs5EdIar2ebXmS7iabvCvOkqTaPMZ5eNUoTjKNdSegn82riRc1Sbbm0+UHTtjTY0t+2VnhjAnQrhW8damq5rfQdA+sPFBVe6gQY61bHSUzY5x8BA3Hucis6R6b4Pwt03GBUPpXyeLXeDZ7xOCRdg2thUl0S8iCn65DfUbgfqWvYaBGuVSH8nT23Z0EwG+7I/0MIBxZl3YOFeHEbSJhQFGXTZCZLOx5zFgCZQV3zZ34aCT/XIGO+xsk+mEyuS08eVqjcY1yo+jk8D9SQsTWakcAYcY2ekZxOp9LBM339YQxweQNAzWk2buxpsSZhrXDNqFNcdpTeKbVV4JvVoSReOtqzI/Z6JQLSrvhsAdrb6LTBakjVp8nAzkGraqcfP4g55hOOmgcuzCWuYO6oYmkCYyRvxiCwmFPkIoZpmBWUSqqx70brBV+ZXt4bsC6pTRrCFdHvPUAaaYxFDq3Wj0iaSHnSpMxNVjW03sNc40F9lDXzqd3z20Vts1awATC8EQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(83380400001)(36756003)(66556008)(66476007)(66946007)(4326008)(54906003)(86362001)(38100700002)(8936002)(316002)(26005)(1076003)(2906002)(2616005)(5660300002)(33656002)(9786002)(426003)(9746002)(6916009)(186003)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7NdKhx4DMvRSsN2O8bIxHeGZW3eKbeaF0Xv8dKIJ+9HW0YGZFfvJ8n6hEdjH?=
- =?us-ascii?Q?iW7si/meslFxjdzDDHYYdBn+UtpNZQDL1mLR264BkaH35T2Jd2YiY+TVDQ2l?=
- =?us-ascii?Q?rt7G6mIjTkn8D+UX2vRIB3/jUZ0+mfYfUjdkwd36XhZVRj5wDnxezweSvf4q?=
- =?us-ascii?Q?T04n4q5+9ESvtBvE6XzDuNISsS9HgaopkNqwTRS/ui0fEDnl7Gyo594oPDoO?=
- =?us-ascii?Q?MN+3ZzI7PPyZ9Y2q3gaTOHpuk6rjgZor2LdH/ybFEk7t9FSeIG7sPWgnEM1E?=
- =?us-ascii?Q?5OXb3YYrIVhVUrH4xxtJBFQH6CbXMkZLzcEtmXKyat9V3QegwpV0XCyQtcff?=
- =?us-ascii?Q?qtFUe8m2zTjKTxF6kQarotBu18GTU2dnXCRgJ7sC2F2V9efn3NYbhbryvC8N?=
- =?us-ascii?Q?EWjWhRF780+HtQM4Eoa9u1iW5oaKJxmvsZw9/8AyJYXt7Agfo1fu00BH34kt?=
- =?us-ascii?Q?EXKq601ov4C7JubwfJxoBv4roVrtCx1KOyuNL2kBAp45yIUrhnQNb79yRO8s?=
- =?us-ascii?Q?91ACc+q23TZECtk7TRzWI/41i98HBt3bEji1SIlOpQq4k3PxxqY7/Jpynay0?=
- =?us-ascii?Q?oYy0WWUJzWB1n5rqLl7XTFGdanQ41ZdBmWoqYmvvJw8rhp2iVZGZ2OhxKINg?=
- =?us-ascii?Q?9GumtnbO5sjRBaqNOjVVOOK+yc4J7oCI4vA4ipL4s5rcTWGiqhJmd5HAQW0H?=
- =?us-ascii?Q?+rmnfRrs/JTTsqsjyMoxc5bWardRyf+M4/WZCZjxbERvOjVhKfGCDbQ3ZE2M?=
- =?us-ascii?Q?XtPorakv8hkCmO4fxdzXCzaM0C5Y276HQjOACQsl0AjDh4bmzIxp1CQZEXhG?=
- =?us-ascii?Q?U4lWTdZ3Go7/wSx0k0jvcm4ECVgjjDxKo8FZHbguVBWmu5d51o2ALwIWYKIk?=
- =?us-ascii?Q?yp4anCgxHVKl0UVqGZYl1mUEnu15PfSwICwzp17YWKxDoyzWWrHfPBUBaqYI?=
- =?us-ascii?Q?B6z+x8FgixrhrEBpZPYl5N8ECLF05xSSggyzZtiXCOXTbK7TCXEwudNmdMEV?=
- =?us-ascii?Q?5Ld9uhBIBGyqndCZtnnxUxiViPF9HCzkbVpx0fUDjx98Fn4DKexin0a82pPX?=
- =?us-ascii?Q?Gdzjv8xUnfTaVA4pCX9U71Q5qRlphBiO8eKXnZbR6O9HTf8U4k3d92t7Dh4V?=
- =?us-ascii?Q?W4a7iliPn7yZ/P3dHceifmmLBk46xP5kWxIsLQt2V6+I09jG5ujLiDNImb7N?=
- =?us-ascii?Q?dKJyZHgE9kU/lJWVOFFi19UMmBHbK+/W1ZpvmDlwQlYOlCPT0y/XhJRxv/3q?=
- =?us-ascii?Q?omjV8ZVffzUDY050WEIdD8eCi/yHrTBXz83cZNmpzWNjDeTWnUIb+t+d0hNx?=
- =?us-ascii?Q?y/3JeMCrRbNQlnppSyj1A5xJxIFnMx6cTq4h30G8sG7w2hWfmDR2bSDlwnvn?=
- =?us-ascii?Q?YoaebbTV3NSrwN8UWo4IjjzwyKWC2b4SnMbjBvtxChFKN33oLJD4XwUGIuFs?=
- =?us-ascii?Q?XHf0nFPAu5QmV177/MkYmRKD4lFIfalMV/f03bNEob0WUOXjSrBwDGGF+N+j?=
- =?us-ascii?Q?CdCq/eqSzQr7hsiIMd97jvb6bRxadARrqJStn43IeugtGskxeGSvU4iRQk6d?=
- =?us-ascii?Q?OIM5GBmq01B7z+VU5H0=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dddac47e-fd9b-43fc-bc1d-08d9a836ff31
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 12:54:01.4986
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iPsZ708prHau76K42UyoyLPpuHfOFbv+72sHeqdXXdMMTchaxTpC0jDZAHTl7j2m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5286
+In-Reply-To: <2e57a3ae9d76ae4484b84ba358cd3bae0931c875.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 12:20:21PM +0100, Jiri Pirko wrote:
-> Sun, Nov 14, 2021 at 07:19:02AM CET, leon@kernel.org wrote:
-> >On Fri, Nov 12, 2021 at 08:38:56AM +0100, Jiri Pirko wrote:
-> >> Thu, Nov 11, 2021 at 01:17:52PM CET, leon@kernel.org wrote:
-> >> >On Thu, Nov 11, 2021 at 01:05:11PM +0100, Jiri Pirko wrote:
-> >> >> Tue, Nov 09, 2021 at 07:24:27PM CET, jgg@nvidia.com wrote:
-> >> >> >On Tue, Nov 09, 2021 at 08:20:42AM -0800, Jakub Kicinski wrote:
-> >> >> >> On Tue, 9 Nov 2021 11:33:35 -0400 Jason Gunthorpe wrote:
-> >> >> >> > > > I once sketched out fixing this by removing the need to hold the
-> >> >> >> > > > per_net_rwsem just for list iteration, which in turn avoids holding it
-> >> >> >> > > > over the devlink reload paths. It seemed like a reasonable step toward
-> >> >> >> > > > finer grained locking.  
-> >> >> >> > > 
-> >> >> >> > > Seems to me the locking is just a symptom.  
-> >> >> >> > 
-> >> >> >> > My fear is this reload during net ns destruction is devlink uAPI now
-> >> >> >> > and, yes it may be only a symptom, but the root cause may be unfixable
-> >> >> >> > uAPI constraints.
-> >> >> >> 
-> >> >> >> If I'm reading this right it locks up 100% of the time, what is a uAPI
-> >> >> >> for? DoS? ;)
-> >> >> >> 
-> >> >> >> Hence my questions about the actual use cases.
-> >> >> >
-> >> >> >Removing namespace support from devlink would solve the crasher. I
-> >> >> >certainly didn't feel bold enough to suggest such a thing :)
-> >> >> >
-> >> >> >If no other devlink driver cares about this it is probably the best
-> >> >> >idea.
-> >> >> 
-> >> >> Devlink namespace support is not generic, not related to any driver.
-> >> >
-> >> >What do you mean?
-> >> >
-> >> >devlink_pernet_pre_exit() calls to devlink reload, which means that only
-> >> >drivers that support reload care about it. The reload is driver thing.
-> >> 
-> >> However, Jason was talking about "namespace support removal from
-> >> devlink"..
-> >
-> >The code that sparkles deadlocks is in devlink_pernet_pre_exit() and
-> >this will be nice to remove. I just don't know if it is possible to do
-> >without ripping whole namespace support from devlink.
+Hi Hans,
+
+W dniu 12.11.2021 o 16:27, Nicolas Dufresne pisze:
+> Hi Hans,
 > 
-> As discussed offline, the non-standard mlx5/IB usage of network
-> namespaces requires non standard mlx5/IB workaround. Does not make any
-> sense to remove the devlink net namespace support removal.
+> Le jeudi 11 novembre 2021 à 15:44 +0100, Hans Verkuil a écrit :
+>> Hi all,
+>>
+>> Andrzej, Jernej, Nicolas, if none of you (or anyone else for that matter)
+>> objects, then I'll make a PR for this early next week.
+> 
+> I have no objection. I've myself delayed replying as we have been digging a lot
+> into our compliance failures, but I believe we have explained most of them by
+> now and nothing seems to be related to the API.
+> 
+> regards,
+> Nicolas
+I'm fine with making a PR, too.
 
-Sorry, I don't agree that registering a net notifier in an aux device
-probe function is non-standard or wrong.
+Andrzej
 
-This model must be supported sanely somehow in the netdev area and
-cannot be worked around in leaf drivers.
+> 
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>> On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
+>>> Dear all,
+>>>
+>>> This patch series adds VP9 codec V4L2 control interface and two drivers
+>>> using the new controls. It is a follow-up of previous v6 series [1].
+>>>
+>>> In this iteration, we've implemented VP9 hardware decoding on two devices:
+>>> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+>>> The i.MX8M driver needs proper power domains support, though, which is a
+>>> subject of a different effort, but in all 3 cases we were able to run the
+>>> drivers.
+>>>
+>>> GStreamer support is also available, the needed changes have been submitted
+>>> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+>>> VP9 V4L2 controls to be merged and released.
+>>>
+>>> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+>>> using Fluster[3]. There are still a few tests that are not passing, due to
+>>> dynamic frame resize (not yet supported by V4L2) and small size videos
+>>> (due to IP block limitations).
+>>>
+>>> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+>>> merged without passing through staging, as agreed[4]. The ABI has been checked
+>>> for padding and verified to contain no holes.
+>>>
+>>> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
+>>> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+>>> [3] https://github.com/fluendo/fluster
+>>> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+>>>
+>>> The series depends on the YUV tiled format support prepared by Ezequiel:
+>>> https://www.spinics.net/lists/linux-media/msg197047.html
+>>>
+>>> Rebased onto latest media_tree.
+>>>
+>>> Changes related to v6:
+>>> - moved setting tile filter and tile bsd auxiliary buffer addresses so
+>>> that they are always set, even if no tiles are used (thanks, Jernej)
+>>> - added a comment near the place where the 32-bit DMA mask is applied
+>>>    (thanks, Nicolas)
+>>> - improved consistency in register names (thanks, Nicolas)
+>>>
+>>> Changes related to v5:
+>>> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
+>>> - improved pdf output of documentation
+>>> - added Benjamin's Reviewed-by (thanks, Benjamin)
+>>>
+>>> Changes related to v4:
+>>> - removed unused enum v4l2_vp9_intra_prediction_mode
+>>> - converted remaining enums to defines to follow the convention
+>>> - improved the documentation, in particular better documented how to use segmentation
+>>> features
+>>>
+>>> Changes related to v3:
+>>>
+>>> Apply suggestions from Jernej's review (thanks, Jernej):
+>>> - renamed a control and two structs:
+>>> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
+>>> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
+>>> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
+>>> 		v4l2_ctrl_vp9_compressed_hdr
+>>> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
+>>> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
+>>> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
+>>> - explicitly assigned values to all other vp9 enums
+>>>
+>>> Apply suggestion from Nicolas's review (thanks, Nicolas):
+>>> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
+>>> and implemented only by drivers which need it
+>>>
+>>> Changes related to the RFC v2:
+>>>
+>>> - added another driver including a postprocessor to de-tile
+>>>          codec-specific tiling
+>>> - reworked uAPI structs layout to follow VP8 style
+>>> - changed validation of loop filter params
+>>> - changed validation of segmentation params
+>>> - changed validation of VP9 frame params
+>>> - removed level lookup array from loop filter struct
+>>>          (can be computed by drivers)
+>>> - renamed some enum values to match the spec more closely
+>>> - V4L2 VP9 library changed the 'eob' member of
+>>>          'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+>>>          of pointers instead of an array of pointers to arrays
+>>>          (IPs such as g2 creatively pass parts of the 'eob' counts in
+>>>          the 'coeff' counts)
+>>> - factored out several repeated portions of code
+>>> - minor nitpicks and cleanups
+>>>
+>>> Andrzej Pietrasiewicz (6):
+>>>    media: uapi: Add VP9 stateless decoder controls
+>>>    media: Add VP9 v4l2 library
+>>>    media: hantro: Rename registers
+>>>    media: hantro: Prepare for other G2 codecs
+>>>    media: hantro: Support VP9 on the G2 core
+>>>    media: hantro: Support NV12 on the G2 core
+>>>
+>>> Boris Brezillon (1):
+>>>    media: rkvdec: Add the VP9 backend
+>>>
+>>> Ezequiel Garcia (4):
+>>>    hantro: postproc: Fix motion vector space size
+>>>    hantro: postproc: Introduce struct hantro_postproc_ops
+>>>    hantro: Simplify postprocessor
+>>>    hantro: Add quirk for NV12/NV12_4L4 capture format
+>>>
+>>>   .../userspace-api/media/v4l/biblio.rst        |   10 +
+>>>   .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
+>>>   .../media/v4l/pixfmt-compressed.rst           |   15 +
+>>>   .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+>>>   .../media/v4l/vidioc-queryctrl.rst            |   12 +
+>>>   .../media/videodev2.h.rst.exceptions          |    2 +
+>>>   drivers/media/v4l2-core/Kconfig               |    4 +
+>>>   drivers/media/v4l2-core/Makefile              |    1 +
+>>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
+>>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+>>>   drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>>>   drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+>>>   drivers/staging/media/hantro/Kconfig          |    1 +
+>>>   drivers/staging/media/hantro/Makefile         |    7 +-
+>>>   drivers/staging/media/hantro/hantro.h         |   40 +-
+>>>   drivers/staging/media/hantro/hantro_drv.c     |   23 +-
+>>>   drivers/staging/media/hantro/hantro_g2.c      |   27 +
+>>>   .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
+>>>   drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
+>>>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
+>>>   drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+>>>   .../staging/media/hantro/hantro_postproc.c    |   79 +-
+>>>   drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+>>>   drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+>>>   drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+>>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+>>>   .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+>>>   .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+>>>   drivers/staging/media/rkvdec/Kconfig          |    1 +
+>>>   drivers/staging/media/rkvdec/Makefile         |    2 +-
+>>>   drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+>>>   drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+>>>   drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+>>>   include/media/v4l2-ctrls.h                    |    4 +
+>>>   include/media/v4l2-vp9.h                      |  182 ++
+>>>   include/uapi/linux/v4l2-controls.h            |  284 +++
+>>>   include/uapi/linux/videodev2.h                |    6 +
+>>>   37 files changed, 6033 insertions(+), 104 deletions(-)
+>>>   create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+>>>   create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+>>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+>>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+>>>   create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+>>>   create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+>>>   create mode 100644 include/media/v4l2-vp9.h
+>>>
+>>>
+>>> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+>>>
+>>
+> 
 
-Intel ice will have the same problem, as would broadcom if they ever
-get their driver modernized.
-
-Jason
