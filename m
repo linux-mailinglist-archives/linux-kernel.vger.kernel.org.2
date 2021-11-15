@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B49F451C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C38451C74
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354257AbhKPASC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:18:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47022 "EHLO mail.kernel.org"
+        id S1353028AbhKPASS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:18:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351740AbhKOXlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351474AbhKOXlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 18:41:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9E3F6325A;
-        Mon, 15 Nov 2021 23:35:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D71BB61B3D;
+        Mon, 15 Nov 2021 23:35:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637019307;
-        bh=phk22W087gGn63frwTpAzHA3cZd3qLIpMBGvdYs0Xec=;
+        s=k20201202; t=1637019309;
+        bh=2BLuML7QlU7NsI1hA9jTUfLKUXT81kLYlx9JSVSAxQM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=RhO4m2JEy6bXBHq5uUN+RwQr5vrJhwnjrRDXpp5yE2Q95vvP7n//PUXdiLZk/D8ho
-         z58WraBiVj55cuW9nYycADs6GRvtTGOxiGYzCL0DLYU5RqqVU+PlIGlostQ5h1uMD9
-         zAilJNmVzw/ZT8DIKE0CLQC1zflbB5dabJEM0RDbrRYbz6p4VFotOvNcggyYiLM+br
-         VIPrJ11Tizw+OkLsKmdDwmmv+LliwLWNF2aZZmSoTNtUZdScQQ8B82AxQmHhkobsKI
-         PgmtqvgLakhMWJyiywfnjJkkLJlO6115no0Y+4ZTzes4lnATDmlRIoW3AUDTegWpj3
-         /yfEu9C3u1dfA==
+        b=ECdCqy8bYsf1/UCfEWI36qc+40S1DXBLScAOAQeEkCr4OWKhjDIE4O1q1aHq9ZVDm
+         uAPrv65eA5Boy/Ehv/PHcxqWuYg/rD06quBG7Mx6SJhiblxBzxVNNiZL0z9srVfOgp
+         Ft8lvyUq3fPfEfg2eqAmY5PaTJbBZjfbjpNUvzBJr3IR4cxRZpzngqJghg+ZI0e6TS
+         t/UE/bPXIlD4WcSjQeRmuKJ9y+tBJwbxmV3cfyi4AVuNiDSLuyx4dzihtgtpJBmgbh
+         aQcaumIcBJf6B4TSE7s5gWvgmLz2twbgdD08sz/+gv5caB6Lak+67joNIXuuPefX77
+         OmtdLp3qAqV2w==
 From:   Mark Brown <broonie@kernel.org>
-To:     yang.lee@linux.alibaba.com, perex@perex.cz, lgirdwood@gmail.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tiwai@suse.com, srinivas.kandagatla@linaro.org
+To:     - <patches@opensource.cirrus.com>,
+        David Heidelberg <david@ixit.cz>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        kernel-janitors@vger.kernel.org
-In-Reply-To: <57a89cc31eb2312addd3c77896d7df8206aef138.1635967035.git.christophe.jaillet@wanadoo.fr>
-References: <57a89cc31eb2312addd3c77896d7df8206aef138.1635967035.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: codecs: Axe some dead code in 'wcd_mbhc_adc_hs_rem_irq()'
-Message-Id: <163701930557.675370.6905108518323377395.b4-ty@kernel.org>
-Date:   Mon, 15 Nov 2021 23:35:05 +0000
+        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org
+In-Reply-To: <20211028124639.38420-1-david@ixit.cz>
+References: <20211028124639.38420-1-david@ixit.cz>
+Subject: Re: [PATCH v2] dt-bindings: sound: wlf,wm8903: Convert txt bindings to yaml
+Message-Id: <163701930762.675370.11238236735151846802.b4-ty@kernel.org>
+Date:   Mon, 15 Nov 2021 23:35:07 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,9 +43,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 20:19:27 +0100, Christophe JAILLET wrote:
-> 'hphpa_on' is know to be false, so this is just dead code that should be
-> removed.
+On Thu, 28 Oct 2021 14:46:38 +0200, David Heidelberg wrote:
+> Convert the Wolfson WM8903 Ultra-Low Power Stereo CODEC Device Tree
+> binding documentation to json-schema.
 > 
 > 
 
@@ -53,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: Axe some dead code in 'wcd_mbhc_adc_hs_rem_irq()'
-      commit: 95cead06866a95baf0f8355bba81a8142d5908cf
+[1/1] dt-bindings: sound: wlf,wm8903: Convert txt bindings to yaml
+      commit: 5ecc573d0c542c0f95497ba4586a6226814e4e18
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
