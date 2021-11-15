@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583494507A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33A64507A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhKOO60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:58:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
+        id S234980AbhKOO6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbhKOO6J (ORCPT
+        with ESMTP id S232060AbhKOO6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:58:09 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A148C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:55:11 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id f18so44341602lfv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:55:11 -0800 (PST)
+        Mon, 15 Nov 2021 09:58:15 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DAEC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:55:19 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id k2so28607866lji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:55:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gHoS2QIQL9jiqdDjkTDeK4x6Tmu2ipOUCUNpKzNE59E=;
-        b=e9U5TdTPp4xKy1kJcXwDzSC8tbSpVywEYH9Z+sUjf4G9L8eFHtx5l3hWhed7rd1Ajz
-         ebxts1R/3Vp3BD3fmiIs8ijW3vwxCRNKKrpAMPOT4NK7HnryzYPTd9dWWqyCBM/3mHnA
-         vTVpkSClOFZnaQA1Ggw0m1qKX5z9BFeyCSc4VjSaCn4xvJCaKykOcCzMkrUu/7sEAMyj
-         DCGbe70UQxZRmBIWafqA3pLWLk2Lx7W2zU1CZkBTpErb5uREerVsGeElEyyT8+u6f//7
-         cKqncI+6LUB4ho/pCz33S0HvvdKcK7yNiEWVK9N5MT9zepjoT0gjtQYQ+6o7aVhzRCiv
-         8/zw==
+        bh=QDBjuHaI/M6XAQNvDVXSkstOeNPvwT6mcUxnKoTVfL4=;
+        b=AwzVbJFUDU3EZfTuWnksSgb+dXT8XY4jgxXBx35XeMkJERwsqCKC1pNuAxDC0AYmlg
+         TlXQCMck2GmkkffaXe+AD8Adf4hlaDIMmmSmoEpAm6gRDZTkKjvMAgosfUBjjJsmlXr1
+         sJ2krPt4VNHON36Ns3WIG3ewtwe4YH5zON+YrwBFNRwrn+caqZX3F57qAe9iK+yA+uHC
+         3GvSSNMU1rYdL4EQE/ZW4WgbCdpKer1XRiXvYFNh0i/cfrUgehclzeyuURCGzzIQm3W+
+         RnmpvL34j9z1ulOg/ZTtOUdICBJUxa4ZqKkm5odyQ/VX0PCocwAjEvQe2Vo1SaSMLOqS
+         Ukhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gHoS2QIQL9jiqdDjkTDeK4x6Tmu2ipOUCUNpKzNE59E=;
-        b=n+VMpFpUG3Ngs2ukAmBTWLbeNXYM/Mj5boz+5kIYmk3UzSUTeKfWYoxanwHI7r71rE
-         GAgJGo16roWVo/7+JPEqy2pinXYd7mgzjWO9uNlOH51NpCxbYouQfBFX1i/IPdYRyp0M
-         Cm1fMz70SrpZatiqk+jVF3B/oryr+oUvUBpomgS0XI2HptpyTB8/vRA96smK+RbWg/KT
-         KdalTYElegKEorJH282cewMqf3Jxfm3NmlttMMfsiuEu3kF8iuXrmQnerBh3KSw+xvKO
-         DZ8veBEQm4uVcYjoIC50SX8H4STptz8yHNhMPH2sAkRTGKJC8WP61ZOz03Le+JxpTAOX
-         b1qQ==
-X-Gm-Message-State: AOAM531YV/2KEdboWpzY+Z7Rk7m4LY/vbkognyA/Tzf3pOgrtnBhpjgi
-        SsM7sM5EowFm/OgU5NPJhWYElptznOIhyw+pYUxnCw==
-X-Google-Smtp-Source: ABdhPJyFimQg7KkOTLtcJuBiGvEEcKgbemK/wWoYIOj4AkODv0WaiGPYUVNn88xx+gbks93TFVmDWvukiTbSyXAzBIA=
-X-Received: by 2002:a19:8c4d:: with SMTP id i13mr37079711lfj.254.1636988109753;
- Mon, 15 Nov 2021 06:55:09 -0800 (PST)
+        bh=QDBjuHaI/M6XAQNvDVXSkstOeNPvwT6mcUxnKoTVfL4=;
+        b=E4UXTTITIhtdRL6WZlM48JxNudC/EtTUX2ie++2A8U+g1taqUsUGulXjgr/zBAfxa3
+         s0+1gbrfTUlV6sj179rtycgfWpHiKVSUTDJ2PMdWVyb+78Y6haE5jkqtoYAfrMUzRbXz
+         M8qRAtGO8IhBK3LPJhToNPQ+Xy3IT5l6f73atTvab9x3OrNBj2DVB7moiBLGh1WohXPS
+         fgzNaQTwlCtywp/niabr760b0e9jzHaT8340dn2m64Q/c0fM7Oh5Ch9qY823xImI4pk0
+         bmJycErhYrUtE+Gv+4ZRPnLvOCpjdNRCG03FgA4oOKhb8/6H8PUpEQop+hII5ue7PQyH
+         xGoA==
+X-Gm-Message-State: AOAM533Zn7u0eFuTcCBxXER+ubBSe/fp+0YTHBUGTJ4+jlTCa55P0jul
+        0rCNKD7Ot0yzI4wDqmAzYO+y/6ynNsVX5Mvi41dxU/ulbkc=
+X-Google-Smtp-Source: ABdhPJxKgxsttYhTHkC2LoDZBAYtxZkRitvIhOVrLSIs2jWkLu8dlqJhJnAZdSCa5RkrfEp1Y8gHX84Eua4HH8QjIWw=
+X-Received: by 2002:a05:651c:907:: with SMTP id e7mr41936174ljq.300.1636988117478;
+ Mon, 15 Nov 2021 06:55:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112082930.3809351-1-peng.fan@oss.nxp.com> <20211112082930.3809351-3-peng.fan@oss.nxp.com>
-In-Reply-To: <20211112082930.3809351-3-peng.fan@oss.nxp.com>
+References: <CGME20211104063243epcas1p4526b49feac019f3eadb33a23dc132976@epcas1p4.samsung.com>
+ <20211104063231.2115-1-huijin.park@samsung.com>
+In-Reply-To: <20211104063231.2115-1-huijin.park@samsung.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 15 Nov 2021 15:54:33 +0100
-Message-ID: <CAPDyKFq=7aiRhKw5f3EqoTq3Npyjs+L1xJBxjjqtTwh03GuXow@mail.gmail.com>
-Subject: Re: [PATCH V4 2/9] dt-bindings: mmc: imx-esdhc: Add imx8ulp
- compatible string
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     robh+dt@kernel.org, aisheng.dong@nxp.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, broonie@kernel.org, linux@roeck-us.net,
-        wim@linux-watchdog.org, linux@rempel-privat.de,
-        Kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Jacky Bai <ping.bai@nxp.com>,
-        Rob Herring <robh@kernel.org>, Peng Fan <peng.fan@nxp.com>
+Date:   Mon, 15 Nov 2021 15:54:41 +0100
+Message-ID: <CAPDyKFrxbMvLNxFrsgD9KoG0eo_OSL3F91AU+tVJcf=mAj2c8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mmc: core: adjust polling interval for CMD1
+To:     Huijin Park <huijin.park@samsung.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huijin Park <bbanghj.park@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 at 09:30, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+On Thu, 4 Nov 2021 at 07:32, Huijin Park <huijin.park@samsung.com> wrote:
 >
-> From: Jacky Bai <ping.bai@nxp.com>
+> This series is for adjusting polling interval for CMD1 using
+> __mmc_poll_for_busy() common function which provides a stricter
+> timeout checking and a throttling mechanism.
 >
-> The USDHC on i.MX8ULP is derived from i.MX8MM, it uses two
-> compatible strings, so update the compatible string for i.MX8ULP.
+> v1...v2:
+>  - Change __mmc_poll_for_busy() first parameter type to 'mmc_host*'.
+>  - Use __mmc_poll_for_busy() common function.
 >
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Jacky Bai <ping.bai@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Huijin Park (2):
+>   mmc: core: change __mmc_poll_for_busy() parameter type
+>   mmc: core: adjust polling interval for CMD1
+>
+>  drivers/mmc/core/block.c   |  4 +-
+>  drivers/mmc/core/mmc.c     |  2 +-
+>  drivers/mmc/core/mmc_ops.c | 89 ++++++++++++++++++++++++--------------
+>  drivers/mmc/core/mmc_ops.h |  2 +-
+>  drivers/mmc/core/sd.c      |  2 +-
+>  5 files changed, 62 insertions(+), 37 deletions(-)
+>
+> --
+> 2.17.1
+>
 
 Applied for next, thanks!
 
 Kind regards
 Uffe
-
-
-> ---
->  - v4 changes:
->    no
->
->  - v3 changes:
->    no
->
->  - v2 changes:
->    refine the commit message
->
->  Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> index 19621a2f8beb..d5be9863009c 100644
-> --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> @@ -44,6 +44,10 @@ properties:
->                - fsl,imx8qm-usdhc
->                - fsl,imx8qxp-usdhc
->            - const: fsl,imx7d-usdhc
-> +      - items:
-> +          - enum:
-> +              - fsl,imx8ulp-usdhc
-> +          - const: fsl,imx8mm-usdhc
->
->    reg:
->      maxItems: 1
-> --
-> 2.25.1
->
