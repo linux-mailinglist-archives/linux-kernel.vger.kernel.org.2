@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B15451BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4068B451FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347627AbhKPAFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:05:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1349768AbhKPAqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:46:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345018AbhKOT0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345019AbhKOT0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:26:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F11F63702;
-        Mon, 15 Nov 2021 19:08:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E13F1615E3;
+        Mon, 15 Nov 2021 19:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003325;
-        bh=zU4rPBiqFthSUjgIk5HQ8ztLDn7MoThQ1/ySetEX4hA=;
+        s=korg; t=1637003328;
+        bh=JhA5kIFdh1rFkY7tHxTWH7qcNVtn0gR0p3Xj6C8YNQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNDV+n41HExZPy5ht5CI7lcXMXC3IRdZwjbgIMvH6gds9W3o9QcBmw1mctbq3FYAO
-         D8un7jeDR2hVwpaIIas8+F70hr3COw2Ku9AoWNCMfwV32W+jWp1RnzJLxUSGmhpWYV
-         qrFN3lEzMB2SKIErBFXwJ1ssUQG9+ZcHGtrl8qk4=
+        b=yptig44rX2qQAH1L59Zyh46U2F/NI/fA+nvQit8O0EesgmaFcgVyXQBO/XwoZcbuL
+         uF0F2+w7yeION5CI09NupTMxadhkDGqoTPvM3x0Y634It425H99MlVy6NHLnQyUbQ1
+         0BsxvPfRiMrOCRy7maR3S/bXm3eOfQO7ETNWGsgg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.15 894/917] remoteproc: imx_rproc: Fix ignoring mapping vdev regions
-Date:   Mon, 15 Nov 2021 18:06:29 +0100
-Message-Id: <20211115165459.368387722@linuxfoundation.org>
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 5.15 895/917] remoteproc: imx_rproc: Fix rsc-table name
+Date:   Mon, 15 Nov 2021 18:06:30 +0100
+Message-Id: <20211115165459.400948046@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -43,36 +44,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dong Aisheng <aisheng.dong@nxp.com>
 
-commit afe670e23af91d8a74a8d7049f6e0984bbf6ea11 upstream.
+commit e90547d59d4e29e269e22aa6ce590ed0b41207d2 upstream.
 
-vdev regions are typically named vdev0buffer, vdev0ring0, vdev0ring1 and
-etc. Change to strncmp to cover them all.
+Usually the dash '-'  is preferred in node name.
+So far, not dts in upstream kernel, so we just update node name
+in driver.
 
-Fixes: 8f2d8961640f ("remoteproc: imx_rproc: ignore mapping vdev regions")
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Fixes: 5e4c1243071d ("remoteproc: imx_rproc: support remote cores booted before Linux Kernel")
 Reviewed-and-tested-by: Peng Fan <peng.fan@nxp.com>
 Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210910090621.3073540-5-peng.fan@oss.nxp.com
+Link: https://lore.kernel.org/r/20210910090621.3073540-6-peng.fan@oss.nxp.com
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/remoteproc/imx_rproc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/remoteproc/imx_rproc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/remoteproc/imx_rproc.c
 +++ b/drivers/remoteproc/imx_rproc.c
-@@ -582,8 +582,8 @@ static int imx_rproc_addr_init(struct im
- 		struct resource res;
- 
- 		node = of_parse_phandle(np, "memory-region", a);
--		/* Not map vdev region */
--		if (!strcmp(node->name, "vdev"))
-+		/* Not map vdevbuffer, vdevring region */
-+		if (!strncmp(node->name, "vdev", strlen("vdev")))
- 			continue;
- 		err = of_address_to_resource(node, 0, &res);
- 		if (err) {
+@@ -604,7 +604,7 @@ static int imx_rproc_addr_init(struct im
+ 		}
+ 		priv->mem[b].sys_addr = res.start;
+ 		priv->mem[b].size = resource_size(&res);
+-		if (!strcmp(node->name, "rsc_table"))
++		if (!strcmp(node->name, "rsc-table"))
+ 			priv->rsc_table = priv->mem[b].cpu_addr;
+ 		b++;
+ 	}
 
 
