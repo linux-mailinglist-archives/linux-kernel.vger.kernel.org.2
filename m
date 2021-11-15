@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF114502CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368624502CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhKOKx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhKOKxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231199AbhKOKxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Nov 2021 05:53:53 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B2BC061767
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:50:58 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id g14so69871671edz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:50:58 -0800 (PST)
+Received: from mail-dm6nam10on2060.outbound.protection.outlook.com ([40.107.93.60]:58144
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231135AbhKOKxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:53:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cp2Mv+3tcnVkc2Fhy+gR2RMh9HtXr760GI9kl5LUeULTZH6i52m6cTZIsd+iyq8UGiZHalwpLHgS5M/GPruEvOAd9TG7YRJ9v4xccjAbtGlnff6vb4PS4tuZs6Yu5jztWXuRMNOv0BpjhjImx+UBgWxMgzZoK2r4imVGoCkX7nrAK/caNviUOTrEFu39pwJf+Lnb6RKjqSx+W7XDNhg9PRMSPNBcXbjy/c7D5z+D0/IaVRMA6/3iYhmsv8QYF1xKgofCAnoirNaioYiCbufqIwCslriBRgA9C5aE5+DglG4Gd3h4YHwB4IXxaFKF4j8M3KtcoivVcmL+hLHcrD7dzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vX+dbfb8G5ZtBLs34POIZJYtQanfvsf7lbCikmQRvQ4=;
+ b=PKslndTLQ4NB896roPqdkI2xqbR1Ko6+9loHbiXWM/oJKhQKi9qCnWDcs7JajnP+TrJ0gDFlZV5QGK/63BJM7NoUmL360W+xvn1+OenpkT3aJVfCiSbPqa0O8AWVTrDz6DFefydf4BdbLZ/Je6scGEVTmRSBxzxfbeDKxM1rQ5Qak4Sq8WGfrVkZWfj8HbtOle1mwvR57M1GQrlvYzLrcsu3Ua6vOzZNfdf+1EKqDWemvJoT4gS66AXRFLhMttxJ/HiIvruJag2xMdEUyshaxJr5HeS0Xmwida3EhiXsccPNRqEWTQomaH4RG57gJQk5zZZBsTVTob3Cqcz+IJGkOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uby7LO9dL88mrbNcNOuehqU8c8tZrroU3ttW6LQ5FA4=;
-        b=pgWl6ipxSbsjyFtgANj5lwVnsFOLDk87zFIoP42y5MSD5OPRJqQ2MW6VSfYeWolGS7
-         +r9wvE/OowwWha9JQKUPRDWZ+ahv+V1F57CI9DVSKvwMPed2kx5sT8GoV2ST/VlcWQsm
-         bqDl+Erl+zKADgiDgnYIIFocudmTNfiCJ+ZMlAJhLZk7CCFiAnWFClvSiIGNo6Eya2hY
-         nRuRTMWIN0OgqeZDSOQFEIwn3k05+q8LAzoqz0ng+4PfqQ5SUXxj+x9VCMoesh3W1++1
-         zwXAeCgWj2pDAg/7Q9YbsWvObJPP9ntphK/+j/bdeknijuhDIQrRHWuijhSodG5tvGiw
-         dpsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uby7LO9dL88mrbNcNOuehqU8c8tZrroU3ttW6LQ5FA4=;
-        b=wq71iPpVDokQI3q700w6NmXwlihNTM7srj7kXQZBscF9xlEz+02MjmbYQCDSBEDvWb
-         lXUdplTwVUMwvmyYdQx03LJblwEzD0sX+/s+5ugciOJlDSssIRzggwMSry8zwdXTxNT7
-         WWNq3mAB46fyq6b3GrZzZjGeH3D6TvsRvF3q9vUas3xEMDsdDoVgW1hDd6goYzqx1t9q
-         X6tAQWo0sGBcf7BJbQS3KJkvWEEF9Sb+ltge82ih3SZMCmP+YpJlP6/6aa1Ogxi8TNJM
-         kM2KmsIBaleWk7k44KF3NZdRz+gQhOehtRqHI+ziIh9Be6PEHxXQjjILSq5xCksv0VTV
-         07wg==
-X-Gm-Message-State: AOAM531vM/s4ZIUlYTewvQT9MWB8JiPggRTKpxLDkOlKO0WcLVvwjHLt
-        0FFTtIvd7lKWeX/0xCNDG1B56hnL+UHsnCjgK+RjfQ==
-X-Google-Smtp-Source: ABdhPJyVHSR9lRk3LOcNxNeMeyuyUFb/qift9UIm/qJKFrFEmzZIOKhLRAIkkmIlJQmaX668BadzUikFj4Veoa4DoEE=
-X-Received: by 2002:a17:907:3e9a:: with SMTP id hs26mr49241448ejc.433.1636973456861;
- Mon, 15 Nov 2021 02:50:56 -0800 (PST)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vX+dbfb8G5ZtBLs34POIZJYtQanfvsf7lbCikmQRvQ4=;
+ b=SIc+hron2WejTePpY5TDUJ/m+cc7n8O4+JCHeXMz9eJ88X/FiVnjD8FOL8E90111reF50AS3IQWaveBpj+Aaq+wdLqaS0UYL0v8865OEbKALhPo7ANmcsaEP2J+9X7NIdin1WB0K4HMUI6milC50lr6lvu+xS5dpkvb3jmxjve4=
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com (2603:10b6:a03:234::18)
+ by SJ0PR02MB7247.namprd02.prod.outlook.com (2603:10b6:a03:29b::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Mon, 15 Nov
+ 2021 10:50:48 +0000
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::c8a:dfb7:e411:9ad]) by BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::c8a:dfb7:e411:9ad%9]) with mapi id 15.20.4690.027; Mon, 15 Nov 2021
+ 10:50:48 +0000
+From:   Anand Ashok Dumbre <ANANDASH@xilinx.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "lars@metafoo.de" <lars@metafoo.de>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "jic23@kernel.org" <jic23@kernel.org>, git <git@xilinx.com>
+Subject: RE: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
+ documentation
+Thread-Topic: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
+ documentation
+Thread-Index: AQHX1ORkbUMqDXG9/UWa7VvDN1Yog6wAB8iAgARrM5A=
+Date:   Mon, 15 Nov 2021 10:50:48 +0000
+Message-ID: <BY5PR02MB691622D0B2E43854875ED31DA9989@BY5PR02MB6916.namprd02.prod.outlook.com>
+References: <20211108210509.29870-1-anand.ashok.dumbre@xilinx.com>
+ <20211108210509.29870-4-anand.ashok.dumbre@xilinx.com>
+ <YY6GK3K5B/cgdczY@robh.at.kernel.org>
+In-Reply-To: <YY6GK3K5B/cgdczY@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=xilinx.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1d16deba-7b81-4edc-73c3-08d9a825c8be
+x-ms-traffictypediagnostic: SJ0PR02MB7247:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-microsoft-antispam-prvs: <SJ0PR02MB7247A0B3AF8888BDAADAD9C0A9989@SJ0PR02MB7247.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PCOnz0xmCGpnQ8/is7snv4/3Am1Jv5180Y2P9YhMXBLqHkrAfxkf121s3W4z7WxlBcUA4gu4LzE3qYiN4scBhqP1+jUfHbiNeHa/zi+c1TVj3d5i2Uj9qQPvJBSoVJJam4X8b30ptlRPySqI3lTKAERM3hNmsNvn8UeXi+b7whnsRIVwQAKw7tWQxWBwySmQ3RlAQvJQ6cKsbfkD7+T500VGg8PeXeZa8S1ODkGAwKanJiqCHEhsR6ySP7gS7Vvs27AHwnmxaX7Knv4OS/l6mUBhGYmU4oweYlbZc0wRxOK4xt5MXSWCndNOeLP4QoAG9/I6Sj0wUlYGQ3H3kLehpJfSAKcl4xN/9SvvWoI17zGqkU7cU2sFQpHrCQEf4ziAOZ4ZI3wziZCye6ypSSLtnU9uAaJrVUZF4brd/xiYvSXcLWG+zsltYkbZY/2qLMc38+qkPYWiwEunRcoSCGM4UItpcBNLkzBeijiNWhP+PRUfRdUHL7BWVddK19i2VKHHZIhpnJZqA/e92RKP+R+ZuMJ/wAEETE28GpuX2hOl4uMA5uFhEshBC+BLMKwYjs2OwmNgHqydwwdUyoS35DQrdLXnadfzuW5cpjh5WCRFFq6TgvTcTel9ctKhW2oTXu2vdnhTJyY84qimaaUXAK0a7AlwZQmmW8WJZADTHrdjG+DCo+58SlRCCF+Kazb8/qpIAluAsMFlYfsy5y6gqvuDKA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6916.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66446008)(4326008)(8676002)(52536014)(76116006)(8936002)(316002)(64756008)(6506007)(33656002)(26005)(2906002)(38070700005)(5660300002)(9686003)(66556008)(83380400001)(122000001)(71200400001)(66476007)(66946007)(6916009)(508600001)(54906003)(38100700002)(86362001)(7696005)(53546011)(55016002)(186003)(107886003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?hhZy5xhqOzrCT83l4HBoVzBffeQ42mrYUYahBzoDAP2OomuBCeMeacpNn6lv?=
+ =?us-ascii?Q?UUuycgmPv9939qp9H0FdZA4CS2APXhCWo7EX3gXU1t6hFR7k62f3qPeuuMMk?=
+ =?us-ascii?Q?KydsXdB1ujW87FEJ4ZWTO34q+yYdtjryfvDAWym84DQdNeQgZQsKIRhK9NBn?=
+ =?us-ascii?Q?OETSEs7MdUVwo7uUbdMD9bhDBnLO7ASWZ+r5R2gO2IcjSz1QNiVWiTPIIfo/?=
+ =?us-ascii?Q?tBber3O5xDlyU5N7a5wDK+4i5CgH3wc1+WEEcXynPF8Uu0JoJzV5Om8N9nYw?=
+ =?us-ascii?Q?xZOo/RN52wo/+rFxtnWhE/yLijxT6XZa8xhiPbS4XOikkK11p1+f9aozOgQC?=
+ =?us-ascii?Q?rrF/0XhjVYJpv0pHiq8GhkmSImobIjwnQHOkspDlYDnnBC0ArSmi8vWu7gAO?=
+ =?us-ascii?Q?6YdbUO0J/i1Ib1dl5Q5Ni10Ns1hmNPcY38NQVfH9V4O3jQkdA3j4kfsLI1Pk?=
+ =?us-ascii?Q?SsIBJsmoo8ZAyfzjOOVuWD5v0Ev1WLLI7csuxkRm/dNpar3nZBY/ecv6S0op?=
+ =?us-ascii?Q?Z6aMFwHcdzkAU/mDFA6h7cK6DHKKhQAB5uZGuhxV0un147O+z19P1PU8GA4X?=
+ =?us-ascii?Q?VWk34HOERJHcqn32OgbtdWw0YtdiEZj4k+NeI6XFBy4+srK5lbTsjl+tBLPj?=
+ =?us-ascii?Q?m/sDTC8S5DGfLkxX3tbC5EE3u2jcPG019I7RWfA4RCVuOEcyNw3EuAjBoDr3?=
+ =?us-ascii?Q?q198p1QjMPgODBXPvZkzJtDg0RBeSBruQiFwTj81dNO6Rh/3ecAlV0vACX1C?=
+ =?us-ascii?Q?gXHBvAtyxF+fTS/Tn5IG8VHoygnvNGhSSSXwrdm9zAHl4NsFcwp+7SaiG0gg?=
+ =?us-ascii?Q?Bql4Bb+F9rxNxKlVXRrbamMi3bH/quOS8adikVtaZqb1IdZNiGdvinASEm/X?=
+ =?us-ascii?Q?ouElYJEjaReqS9WATU/StKlGWatAWSo9d+sJbnKbSV/kR/PNgZP4XJHOt1+z?=
+ =?us-ascii?Q?9me3tAixaobXuDOmFAWlER9WCfT314NAYQCELTVv9Z7WSgmwSVGhxbI8JzJg?=
+ =?us-ascii?Q?lL0tJvH3tNj0sUajOOkS1zXD6F4pMsj071oXGMGOGxBD8Gnd+JQtqwFnPjCc?=
+ =?us-ascii?Q?wYS6Voz9r6Bm1Iz+2ATWCViTrlvIpOrwfjBz26iVvfpvdPwMRa1W+JROG7P5?=
+ =?us-ascii?Q?bV8PkhmGm30kVhaflWMGDp+RmAoME88TH+6+p5dljkoYpkEGAN7HqfVEJlHQ?=
+ =?us-ascii?Q?nzX5X3G5mQTu3xCBeEXYxQ8SBau2wAY7o6r4vv1apDlb5Ppjug0pvZnD8nXH?=
+ =?us-ascii?Q?qNyVfTcQRL7Mw67umEvpFpH034/+lq+V11FRvr2if5UvtAP+gl+h6erhsMv/?=
+ =?us-ascii?Q?QvEg2fhrK8AcgMTLKqahOeJGIRpXL31oR6jCn17a/38aHjezgYEWpTz0IuuU?=
+ =?us-ascii?Q?0nbjmjVAx0F7oukmsvA0mabcGLCHcJgHKY+ktohai5uVDPdrxHmG0KqVOFVP?=
+ =?us-ascii?Q?3OtjmHYJOlgxmnHJ2ydtBxnHVUuvge9nhOqJoXHQ0rMeDOS7VNHn+XArPAtE?=
+ =?us-ascii?Q?9DDuEv4JwlA7EOziU2w6/vg0T9KdPFNd0O5rIvQy7ysfRmMTrvEv3vs7BB86?=
+ =?us-ascii?Q?pojwQ2M6EvLuWD/cvu9oa/pJMb5uTbvjol4ZoaaAaYIrMlGqOuI7aS5Xy4t4?=
+ =?us-ascii?Q?BmpF0Kt4gkYzpcg6S5/Docg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20211112071858.3641788-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20211112071858.3641788-1-peng.fan@oss.nxp.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 15 Nov 2021 11:50:45 +0100
-Message-ID: <CAMRc=McEBD5K+btkNHLn1yA9XecTGk5_B1q=MhHVCXcqEX47pA@mail.gmail.com>
-Subject: Re: [PATCH V4] dt-bindings: gpio: gpio-vf610: Add imx8ulp compatible string
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, stefan@agner.ch,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Rob Herring <robh@kernel.org>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6916.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d16deba-7b81-4edc-73c3-08d9a825c8be
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2021 10:50:48.3193
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dfr55WZo2MVEcJc20ipm7P1ey0apkz/Vjtj2dw3WRA/zthN/BWUWMRCRiBMfwUVs0GBEXjfHklHdUrw12vRyhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7247
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 8:20 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> From: Jacky Bai <ping.bai@nxp.com>
->
-> Add the compatible string for i.MX8ULP.
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Jacky Bai <ping.bai@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->
->  - v4 changes:
->    no, just resend this patch as a single one
->
->  - v3 changes:
->    no
->
->  - v2 changes:
->    no
->
->  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> index 19738a457a58..e1359391d3a4 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-> @@ -24,6 +24,9 @@ properties:
->        - items:
->            - const: fsl,imx7ulp-gpio
->            - const: fsl,vf610-gpio
-> +      - items:
-> +          - const: fsl,imx8ulp-gpio
-> +          - const: fsl,imx7ulp-gpio
->
->    reg:
->      description: The first reg tuple represents the PORT module, the second tuple
-> --
-> 2.25.1
->
+Hi Rob,
 
-Applied, thanks!
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Friday 12 November 2021 3:20 PM
+> To: Anand Ashok Dumbre <ANANDASH@xilinx.com>
+> Cc: lars@metafoo.de; pmeerw@pmeerw.net; linux-kernel@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-iio@vger.kernel.org; Michal Simek
+> <michals@xilinx.com>; jic23@kernel.org; git <git@xilinx.com>
+> Subject: Re: [PATCH v8 3/4] dt-bindings: iio: adc: Add Xilinx AMS binding
+> documentation
+>=20
+> On Mon, 08 Nov 2021 21:05:08 +0000, Anand Ashok Dumbre wrote:
+> > Xilinx AMS have several ADC channels that can be used for measurement
+> > of different voltages and temperatures. Document the same in the
+> bindings.
+> >
+> > Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+> > ---
+> >  .../bindings/iio/adc/xlnx,zynqmp-ams.yaml     | 227 ++++++++++++++++++
+> >  1 file changed, 227 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
+> >
+>=20
+>=20
+> Please add Acked-by/Reviewed-by tags when posting new versions.
+> However, there's no need to repost patches *only* to add the tags. The
+> upstream maintainer will do that for acks received on the version they ap=
+ply.
+>=20
+> If a tag was not added on purpose, please state why and what changed.
 
-Bart
+Will keep that in mind.
+
+Thanks,
+Anand
+
