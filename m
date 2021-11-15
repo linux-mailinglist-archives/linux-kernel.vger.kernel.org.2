@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7511F451AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327364520B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346107AbhKOXmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:42:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
+        id S1343627AbhKPA4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:56:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343864AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00A9563395;
-        Mon, 15 Nov 2021 18:47:28 +0000 (UTC)
+        id S1343784AbhKOTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DD6635E1;
+        Mon, 15 Nov 2021 18:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002049;
-        bh=OdPxKY2c7kAht3iiLXBnSutzuDh+aocw/PFPwt6d29o=;
+        s=korg; t=1637001959;
+        bh=gk9i/QMV6qjMsowELFGQHJlWlPx2evps556UGxorL5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VUt7gOpgqy0g3R8stpB9sQYTKVZXFrBmqKDcV0HEGifIcJMrpA5opByaNdNK6PwCz
-         0EtiT1hx3H/xqZ/ry1i7iYbJhxZ+FLCgn0HOVCer7FyfCPuLaXVKh4tpbLYjrfSy+7
-         0GjI/lLsJhJTijK5WgztI9QQCK0mHmYFsyLgpGLw=
+        b=aMzqH3+dyAXoIluEDTahktC/9q+io9fNgpOps/YVKz3WqBiYgBfhr0/IL8Y9Y1/BS
+         1al08rZ5lWs7Xrtu9ZpWZQoDhmyZuuOSm2v4oPuI7nY/IM0mNePf7vzlmI4rgZfxft
+         HLl3WAfNWcN+Pef9u2HJ7g8u/1YxNqk+7g07T+EQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-Subject: [PATCH 5.15 377/917] media: em28xx: add missing em28xx_close_extension
-Date:   Mon, 15 Nov 2021 17:57:52 +0100
-Message-Id: <20211115165441.547470216@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 378/917] media: meson-ge2d: Fix rotation parameter changes detection in ge2d_s_ctrl()
+Date:   Mon, 15 Nov 2021 17:57:53 +0100
+Message-Id: <20211115165441.586122863@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -42,42 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 2c98b8a3458df03abdc6945bbef67ef91d181938 ]
+[ Upstream commit 4b9e3e8af4b336eefca1f1ee535bc4b6734ed6aa ]
 
-If em28xx dev has ->dev_next pointer, we need to delete ->dev_next list
-node from em28xx_extension_devlist on disconnect to avoid UAF bugs and
-corrupted list bugs, since driver frees this pointer on disconnect.
+There is likely a typo here. To be consistent, we should compare
+'fmt.height' with 'ctx->out.pix_fmt.height', not 'ctx->out.pix_fmt.width'.
 
-Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Instead of fixing the test, just remove it and copy 'fmt' unconditionally.
 
-Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 59a635327ca7 ("media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/em28xx/em28xx-cards.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/media/platform/meson/ge2d/ge2d.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index c1e0dccb74088..948e22e29b42a 100644
---- a/drivers/media/usb/em28xx/em28xx-cards.c
-+++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -4139,8 +4139,11 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
+diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
+index a1393fefa8aea..9b1e973e78da3 100644
+--- a/drivers/media/platform/meson/ge2d/ge2d.c
++++ b/drivers/media/platform/meson/ge2d/ge2d.c
+@@ -779,11 +779,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		 * If the rotation parameter changes the OUTPUT frames
+ 		 * parameters, take them in account
+ 		 */
+-		if (fmt.width != ctx->out.pix_fmt.width ||
+-		    fmt.height != ctx->out.pix_fmt.width ||
+-		    fmt.bytesperline > ctx->out.pix_fmt.bytesperline ||
+-		    fmt.sizeimage > ctx->out.pix_fmt.sizeimage)
+-			ctx->out.pix_fmt = fmt;
++		ctx->out.pix_fmt = fmt;
  
- 	em28xx_close_extension(dev);
- 
--	if (dev->dev_next)
-+	if (dev->dev_next) {
-+		em28xx_close_extension(dev->dev_next);
- 		em28xx_release_resources(dev->dev_next);
-+	}
-+
- 	em28xx_release_resources(dev);
- 
- 	if (dev->dev_next) {
+ 		break;
+ 	}
 -- 
 2.33.0
 
