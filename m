@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CC0450E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C05450E0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239918AbhKOSKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:10:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53146 "EHLO mail.kernel.org"
+        id S240545AbhKOSKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:10:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237997AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237996AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 122F66328C;
-        Mon, 15 Nov 2021 17:19:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F007E6328D;
+        Mon, 15 Nov 2021 17:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996750;
-        bh=MCK+helM+tXIFzv91X9QgVNeSScYxIean0TJr+jCQn4=;
+        s=korg; t=1636996753;
+        bh=NphQaSKv/m2goQz1nJyHp7HGSwKXPYvverc5xzA8VEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMhK0WGVrjE2RKgg15NvuDDhvlKW30oURBVT7A+k9UhKiMfyamJHUCBO3FmB+3MKS
-         5AY6XXhqWBITF0XP2fATkbU//C1AhCmhiYR7sW3q+bAQJ8kEce7RnwwmoNqSscjr0M
-         qc2+2kMf/J2hO38llYwCw0GDNeuE0l3G23VL/E6E=
+        b=FZuEqHWmiUsMcFOFAZktUwAMGJf3XVE96R+incvYZpRQ1sXnpIeH6hl8tYCk7CvDW
+         cHTGSki2nvv6K/Pp8g5+uG0EIz0ihU90MpiJaTEpRhPZu/7L9UCrlGWLBlEPoO+iL7
+         7Ety3XrLezz2bpglk6fvNryZcmK5zS0zk3JnWRzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vaishnavi Bhat <vaish123@in.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Junji Wei <weijunji@bytedance.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 255/355] ibmvnic: Process crqs after enabling interrupts
-Date:   Mon, 15 Nov 2021 18:02:59 +0100
-Message-Id: <20211115165321.992350844@linuxfoundation.org>
+Subject: [PATCH 5.4 256/355] RDMA/rxe: Fix wrong port_cap_flags
+Date:   Mon, 15 Nov 2021 18:03:00 +0100
+Message-Id: <20211115165322.023905262@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,42 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Junji Wei <weijunji@bytedance.com>
 
-[ Upstream commit 6e20d00158f31f7631d68b86996b7e951c4451c8 ]
+[ Upstream commit dcd3f985b20ffcc375f82ca0ca9f241c7025eb5e ]
 
-Soon after registering a CRQ it is possible that we get a fail over or
-maybe a CRQ_INIT from the VIOS while interrupts were disabled.
+The port->attr.port_cap_flags should be set to enum
+ib_port_capability_mask_bits in ib_mad.h, not
+RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
 
-Look for any such CRQs after enabling interrupts.
-
-Otherwise we can intermittently fail to bring up ibmvnic adapters during
-boot, specially in kexec/kdump kernels.
-
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Reported-by: Vaishnavi Bhat <vaish123@in.ibm.com>
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Reviewed-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20210831083223.65797-1-weijunji@bytedance.com
+Signed-off-by: Junji Wei <weijunji@bytedance.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 059eaa13e2c6d..9adfc0a7ab823 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -4934,6 +4934,9 @@ static int init_crq_queue(struct ibmvnic_adapter *adapter)
- 	crq->cur = 0;
- 	spin_lock_init(&crq->lock);
- 
-+	/* process any CRQs that were queued before we enabled interrupts */
-+	tasklet_schedule(&adapter->tasklet);
-+
- 	return retrc;
- 
- req_irq_failed:
+diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+index fe52073867006..8d3f6d93dfb8d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_param.h
++++ b/drivers/infiniband/sw/rxe/rxe_param.h
+@@ -140,7 +140,7 @@ enum rxe_device_param {
+ /* default/initial rxe port parameters */
+ enum rxe_port_param {
+ 	RXE_PORT_GID_TBL_LEN		= 1024,
+-	RXE_PORT_PORT_CAP_FLAGS		= RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
++	RXE_PORT_PORT_CAP_FLAGS		= IB_PORT_CM_SUP,
+ 	RXE_PORT_MAX_MSG_SZ		= 0x800000,
+ 	RXE_PORT_BAD_PKEY_CNTR		= 0,
+ 	RXE_PORT_QKEY_VIOL_CNTR		= 0,
 -- 
 2.33.0
 
