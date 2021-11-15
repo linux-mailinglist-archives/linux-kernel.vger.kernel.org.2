@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA2D450D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1490450DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237452AbhKORyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:54:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
+        id S239875AbhKOSE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237776AbhKORYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71B9A63282;
-        Mon, 15 Nov 2021 17:17:55 +0000 (UTC)
+        id S231967AbhKOR03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:26:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09F9C63285;
+        Mon, 15 Nov 2021 17:17:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996676;
-        bh=0dxWu/VuRqyfzH7wNde602N0vf7ElPbN+0WzjLy/mu0=;
+        s=korg; t=1636996678;
+        bh=KcT8QgUujXaepIkJiH9gMiHTMqYyQ0UOrDKZ+a1H9jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZskZTT2r8S6NdIuPTrJ+p+Viv2QqoR5wZYu8hz+VnW1+i5S72FgtNtEICVWY7KMtc
-         PtzN5nWxxmwlDIu0rGf2Xl1nCpqEwj6BYdDftzNS28ff3KMrdSr3PPxXeoSAJWng+Q
-         FMhgO6l5G54I4JAafZ8Z7qDE2J4sBq3pTXfwREo4=
+        b=COu7aMyNwKioNnBoTfOPoC6tykAqJeRpprL+vGSO052U0jC3zQ55bIwoRFUEeMIKP
+         RkbZpmJ0gqP89a8LNzu+gW7/t8zV9OhsHLLeOO89RI8pRRmKy6ktMETbQkdoLtepbU
+         N0ITYqgRmvLqJLat9fhP5ALKAC8+RKQVsSYp1plA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 226/355] net: stream: dont purge sk_error_queue in sk_stream_kill_queues()
-Date:   Mon, 15 Nov 2021 18:02:30 +0100
-Message-Id: <20211115165321.068760530@linuxfoundation.org>
+Subject: [PATCH 5.4 227/355] mmc: mxs-mmc: disable regulator on error and in the remove function
+Date:   Mon, 15 Nov 2021 18:02:31 +0100
+Message-Id: <20211115165321.100655171@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,66 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 24bcbe1cc69fa52dc4f7b5b2456678ed464724d8 ]
+[ Upstream commit ce5f6c2c9b0fcb4094f8e162cfd37fb4294204f7 ]
 
-sk_stream_kill_queues() can be called on close when there are
-still outstanding skbs to transmit. Those skbs may try to queue
-notifications to the error queue (e.g. timestamps).
-If sk_stream_kill_queues() purges the queue without taking
-its lock the queue may get corrupted, and skbs leaked.
+The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
+Neither in the error handling path of the probe nor in the remove
+function.
 
-This shows up as a warning about an rmem leak:
+Register a devm_action to disable it when needed.
 
-WARNING: CPU: 24 PID: 0 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x...
-
-The leak is always a multiple of 0x300 bytes (the value is in
-%rax on my builds, so RAX: 0000000000000300). 0x300 is truesize of
-an empty sk_buff. Indeed if we dump the socket state at the time
-of the warning the sk_error_queue is often (but not always)
-corrupted. The ->next pointer points back at the list head,
-but not the ->prev pointer. Indeed we can find the leaked skb
-by scanning the kernel memory for something that looks like
-an skb with ->sk = socket in question, and ->truesize = 0x300.
-The contents of ->cb[] of the skb confirms the suspicion that
-it is indeed a timestamp notification (as generated in
-__skb_complete_tx_timestamp()).
-
-Removing purging of sk_error_queue should be okay, since
-inet_sock_destruct() does it again once all socket refs
-are gone. Eric suggests this may cause sockets that go
-thru disconnect() to maintain notifications from the
-previous incarnations of the socket, but that should be
-okay since the race was there anyway, and disconnect()
-is not exactly dependable.
-
-Thanks to Jonathan Lemon and Omar Sandoval for help at various
-stages of tracing the issue.
-
-Fixes: cb9eff097831 ("net: new user space API for time stamping of incoming and outgoing packets")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/stream.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/net/core/stream.c b/net/core/stream.c
-index 4f1d4aa5fb38d..a166a32b411fa 100644
---- a/net/core/stream.c
-+++ b/net/core/stream.c
-@@ -195,9 +195,6 @@ void sk_stream_kill_queues(struct sock *sk)
- 	/* First the read buffer. */
- 	__skb_queue_purge(&sk->sk_receive_queue);
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index 52054931c3507..3a90037254a4d 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -565,6 +565,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
  
--	/* Next, the error queue. */
--	__skb_queue_purge(&sk->sk_error_queue);
--
- 	/* Next, the write queue. */
- 	WARN_ON(!skb_queue_empty(&sk->sk_write_queue));
++static void mxs_mmc_regulator_disable(void *regulator)
++{
++	regulator_disable(regulator);
++}
++
+ static int mxs_mmc_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *of_id =
+@@ -606,6 +611,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+ 				"Failed to enable vmmc regulator: %d\n", ret);
+ 			goto out_mmc_free;
+ 		}
++
++		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
++					       reg_vmmc);
++		if (ret)
++			goto out_mmc_free;
+ 	}
  
+ 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
 -- 
 2.33.0
 
