@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA8C450525
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FBE450530
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 14:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhKONRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 08:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S231604AbhKONSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 08:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKONRX (ORCPT
+        with ESMTP id S231660AbhKONSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 08:17:23 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C74FC061570;
-        Mon, 15 Nov 2021 05:14:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ijx7ygrsbGB8DaiDlZgsojxI26SKNZNZbgP3dg36cpY=; b=FAnpyplCWUHBo7vCQHkFDFzoub
-        WU+vsiZ5NN0CSB47F5895O6ji7tOk+uOsz23e4WjzUjiaJK/50tSPMC6Q72PjCDSA+sGJ8h4HXxZq
-        h/eL8/TPwp9a1MIV3OuFuWf5XN9CmcAVg9IlUloz4HYB39yBcZyZhLoDO4B2+upeIF222LRVAXznT
-        +rtbzf8Wbyor7puFccsX56b2JYRCR6LsRmIColzUmz7IUfZLtLh+ShIBpS/JsP7uPHBGWD5G/ua3I
-        K26+oZiG4YmoxJ9lb0zZt1NkvvqqD0Z+r7iKd3DAEE2zE1zwfcOZB90y9clEeWchSXLpivkQ9wsq4
-        IeJ4L3Eg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmboK-00FchT-TG; Mon, 15 Nov 2021 13:14:12 +0000
-Date:   Mon, 15 Nov 2021 05:14:12 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, linux-pci@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 01/11] iommu: Add device dma ownership set/release
- interfaces
-Message-ID: <YZJdJH4AS+vm0j06@infradead.org>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-2-baolu.lu@linux.intel.com>
+        Mon, 15 Nov 2021 08:18:03 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E33C061200
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:14:53 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id l19so16613941ilk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 05:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=//STD+Hi45tkJE/Eu99jFcYzb4/fqeBDW/5cmJOU9SE=;
+        b=jEGVNa/IIpye26C/dh4uWjP+xy4+atqNnOGZfF91/aqPJWPn4O/DvbudlzsCSpKQoD
+         /UIYi8pj08sqRQ1E2tfZMgbMqNC44EtLx3FMH8XNBpznZ6Q/Q4FMI6xPgp11Rys3z6e6
+         1KwgucYZe8qKx/AfT4EawOu3i0u2PBmrNetORzPoKApDOaSfET6QSQfw+awWKcW2kh1S
+         u2q1huwzIrU6MglJpiSQ0CUM1wOtwVgAOdBFWmag3MSTTEyJwEDKIb1DqcaI9V8zxLEh
+         QRR3clsQvwQz1y/rC9tMWhKHnySZJHxz6dz2bQY+DZ5DmkJGo+YDIOg5IiftvoFdcisH
+         pUAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=//STD+Hi45tkJE/Eu99jFcYzb4/fqeBDW/5cmJOU9SE=;
+        b=6tJn8CuGV2KgSpkbs32LhFpriY3IhABfZAWb3nr6/6asoxYNWs8hmtoTDg1MzwV8O9
+         1KbO80WKjj9FJX7WH+9ifEcIqYGsEetfFpChHcIU92PGtub91jFP2mvHJp+X0sCRT/Ul
+         OEyrla9nK+wGofbpkwkaP+YaWhknfBHO6HQqDAk1Ixx6bDzIQDl1fnc6Dqr1ijMRqZeu
+         Z0MKkzERX3LmliIWQKziAD7rjy7E5SiGOCsxrvSnQzlVMsXYm3kK39bhn1hLcoWrcaIf
+         XENSYx9CvsFEPkiK5R8Xej/p5X/LOWDUi29U4rakHTQGQEWzh3isVVIyfRx5rCLCUbzL
+         gnPg==
+X-Gm-Message-State: AOAM532oCBfXWpJovhfkRZ1/6BT1ippArsc1yqn1Z6VbJ+mrm1fdDEg7
+        zhynPjjRVH+XvPINbja3ZhF7o68M4O0ZCFwg
+X-Google-Smtp-Source: ABdhPJz+yzLzoWjlkv4bgfL18UMTUmIY5dAS+NPg7QzpDWEI8eGAXCxsbto0lNKnHYH4qbuSe6wOXQ==
+X-Received: by 2002:a92:7413:: with SMTP id p19mr21348666ilc.134.1636982092859;
+        Mon, 15 Nov 2021 05:14:52 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id c11sm8788401ilm.74.2021.11.15.05.14.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 05:14:52 -0800 (PST)
+Subject: Re: [syzbot] INFO: task can't die in __bio_queue_enter
+To:     syzbot <syzbot+7ab022485f6761927d68@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <00000000000007948005d0d1214b@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <10fc0905-b166-ac20-560c-68f32bcccdad@kernel.dk>
+Date:   Mon, 15 Nov 2021 06:14:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115020552.2378167-2-baolu.lu@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <00000000000007948005d0d1214b@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:05:42AM +0800, Lu Baolu wrote:
-> +enum iommu_dma_owner {
-> +	DMA_OWNER_NONE,
-> +	DMA_OWNER_KERNEL,
-> +	DMA_OWNER_USER,
-> +};
-> +
+On 11/15/21 3:18 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ad8be4fa6e81 Add linux-next specific files for 20211111
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17026efab00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ba9c83199208e103
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7ab022485f6761927d68
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> +	enum iommu_dma_owner dma_owner;
-> +	refcount_t owner_cnt;
-> +	struct file *owner_user_file;
+#syz fix blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
 
-I'd just overload the ownership into owner_user_file,
+-- 
+Jens Axboe
 
- NULL			-> no owner
- (struct file *)1UL)	-> kernel
- real pointer		-> user
-
-Which could simplify a lot of the code dealing with the owner.
