@@ -2,176 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DD4451C05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685E8451BFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355071AbhKPAKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353122AbhKOUzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:55:02 -0500
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC49C034039;
-        Mon, 15 Nov 2021 12:35:15 -0800 (PST)
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7E01D20181;
-        Mon, 15 Nov 2021 21:35:13 +0100 (CET)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH v3 9/9] backlight: qcom-wled: Respect enabled-strings in set_brightness
-Date:   Mon, 15 Nov 2021 21:34:59 +0100
-Message-Id: <20211115203459.1634079-10-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115203459.1634079-1-marijn.suijten@somainline.org>
-References: <20211115203459.1634079-1-marijn.suijten@somainline.org>
+        id S1353846AbhKPAJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:09:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243939AbhKOUmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 15:42:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56E5561181;
+        Mon, 15 Nov 2021 20:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637008730;
+        bh=+MdU1gdoi9Y0H+fD2fxvZbAYwxpeArFFiStYzxrBRt8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Gc+ZpZCFlW9HOVziyYRuqE4eJwj0OMkNSDUIqef+RVb1ECfkLtMSTcD2hNYCXuvnk
+         01nJBSp6ieXbE4H/KH74qenlOc4EUkKt7lCluxfg/NSMJelJF3kIPnvpQ+6l7wQgGd
+         wYrErNLWfhpJ9Yno3p6LFaiDJgY/JqWOCxPmpI933Zw2CoTyHwaV6eiszNKWe2JSIV
+         d0bp7kjEDweS1qBkCDYlW9crnG0uwVBa03wwswB5oVK90g+l90V0IVO5AqARkqRBBv
+         r8f/4Y16sbjO2c7BMB4zxxGU6/XAZnDKrD0YBa2XbyeoyRsecAczXwJOj/RL19I+KR
+         0Zk8I0UQ/lvBA==
+Date:   Mon, 15 Nov 2021 14:38:48 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
+        rafael@kernel.org, Diana Craciun <diana.craciun@oss.nxp.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/11] iommu: Add device dma ownership set/release
+ interfaces
+Message-ID: <20211115203848.GA1586192@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115020552.2378167-2-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware is capable of controlling any non-contiguous sequence of
-LEDs specified in the DT using qcom,enabled-strings as u32
-array, and this also follows from the DT-bindings documentation.  The
-numbers specified in this array represent indices of the LED strings
-that are to be enabled and disabled.
+On Mon, Nov 15, 2021 at 10:05:42AM +0800, Lu Baolu wrote:
+> From the perspective of who is initiating the device to do DMA, device
+> DMA could be divided into the following types:
+> 
+>         DMA_OWNER_KERNEL: kernel device driver intiates the DMA
+>         DMA_OWNER_USER: userspace device driver intiates the DMA
 
-Its value is appropriately used to setup and enable string modules, but
-completely disregarded in the set_brightness paths which only iterate
-over the number of strings linearly.
-Take an example where only string 2 is enabled with
-qcom,enabled_strings=<2>: this string is appropriately enabled but
-subsequent brightness changes would have only touched the zero'th
-brightness register because num_strings is 1 here.  This is simply
-addressed by looking up the string for this index in the enabled_strings
-array just like the other codepaths that iterate over num_strings.
+s/intiates/initiates/ (twice)
 
-Likewise enabled_strings is now also used in the autodetection path for
-consistent behaviour: when a list of strings is specified in DT only
-those strings will be probed for autodetection, analogous to how the
-number of strings that need to be probed is already bound by
-qcom,num-strings.  After all autodetection uses the set_brightness
-helpers to set an initial value, which could otherwise end up changing
-brightness on a different set of strings.
+As your first sentence suggests, the driver doesn't actually
+*initiate* the DMA in either case.  One of the drivers programs the
+device, and the *device* initiates the DMA.
 
-Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-Fixes: 03b2b5e86986 ("backlight: qcom-wled: Add support for WLED4 peripheral")
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
----
- drivers/video/backlight/qcom-wled.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+> DMA_OWNER_KERNEL and DMA_OWNER_USER are exclusive for all devices in
+> same iommu group as an iommu group is the smallest granularity of device
+> isolation and protection that the IOMMU subsystem can guarantee.
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index e2a78f4a9668..306bcc6ccb92 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -237,7 +237,7 @@ static int wled3_set_brightness(struct wled *wled, u16 brightness)
- 
- 	for (i = 0; i < wled->cfg.num_strings; ++i) {
- 		rc = regmap_bulk_write(wled->regmap, wled->ctrl_addr +
--				       WLED3_SINK_REG_BRIGHT(i),
-+				       WLED3_SINK_REG_BRIGHT(wled->cfg.enabled_strings[i]),
- 				       &v, sizeof(v));
- 		if (rc < 0)
- 			return rc;
-@@ -260,7 +260,7 @@ static int wled4_set_brightness(struct wled *wled, u16 brightness)
- 
- 	for (i = 0; i < wled->cfg.num_strings; ++i) {
- 		rc = regmap_bulk_write(wled->regmap, wled->sink_addr +
--				       WLED4_SINK_REG_BRIGHT(i),
-+				       WLED4_SINK_REG_BRIGHT(wled->cfg.enabled_strings[i]),
- 				       &v, sizeof(v));
- 		if (rc < 0)
- 			return rc;
-@@ -571,7 +571,7 @@ static irqreturn_t wled_short_irq_handler(int irq, void *_wled)
- 
- static void wled_auto_string_detection(struct wled *wled)
- {
--	int rc = 0, i, delay_time_us;
-+	int rc = 0, i, j, delay_time_us;
- 	u32 sink_config = 0;
- 	u8 sink_test = 0, sink_valid = 0, val;
- 	bool fault_set;
-@@ -618,14 +618,15 @@ static void wled_auto_string_detection(struct wled *wled)
- 
- 	/* Iterate through the strings one by one */
- 	for (i = 0; i < wled->cfg.num_strings; i++) {
--		sink_test = BIT((WLED4_SINK_REG_CURR_SINK_SHFT + i));
-+		j = wled->cfg.enabled_strings[i];
-+		sink_test = BIT((WLED4_SINK_REG_CURR_SINK_SHFT + j));
- 
- 		/* Enable feedback control */
- 		rc = regmap_write(wled->regmap, wled->ctrl_addr +
--				  WLED3_CTRL_REG_FEEDBACK_CONTROL, i + 1);
-+				  WLED3_CTRL_REG_FEEDBACK_CONTROL, j + 1);
- 		if (rc < 0) {
- 			dev_err(wled->dev, "Failed to enable feedback for SINK %d rc = %d\n",
--				i + 1, rc);
-+				j + 1, rc);
- 			goto failed_detect;
- 		}
- 
-@@ -634,7 +635,7 @@ static void wled_auto_string_detection(struct wled *wled)
- 				  WLED4_SINK_REG_CURR_SINK, sink_test);
- 		if (rc < 0) {
- 			dev_err(wled->dev, "Failed to configure SINK %d rc=%d\n",
--				i + 1, rc);
-+				j + 1, rc);
- 			goto failed_detect;
- 		}
- 
-@@ -661,7 +662,7 @@ static void wled_auto_string_detection(struct wled *wled)
- 
- 		if (fault_set)
- 			dev_dbg(wled->dev, "WLED OVP fault detected with SINK %d\n",
--				i + 1);
-+				j + 1);
- 		else
- 			sink_valid |= sink_test;
- 
-@@ -701,15 +702,16 @@ static void wled_auto_string_detection(struct wled *wled)
- 	/* Enable valid sinks */
- 	if (wled->version == 4) {
- 		for (i = 0; i < wled->cfg.num_strings; i++) {
-+			j = wled->cfg.enabled_strings[i];
- 			if (sink_config &
--			    BIT(WLED4_SINK_REG_CURR_SINK_SHFT + i))
-+			    BIT(WLED4_SINK_REG_CURR_SINK_SHFT + j))
- 				val = WLED4_SINK_REG_STR_MOD_MASK;
- 			else
- 				/* Disable modulator_en for unused sink */
- 				val = 0;
- 
- 			rc = regmap_write(wled->regmap, wled->sink_addr +
--					  WLED4_SINK_REG_STR_MOD_EN(i), val);
-+					  WLED4_SINK_REG_STR_MOD_EN(j), val);
- 			if (rc < 0) {
- 				dev_err(wled->dev, "Failed to configure MODULATOR_EN rc=%d\n",
- 					rc);
--- 
-2.33.1
+I think this basically says DMA_OWNER_KERNEL and DMA_OWNER_USER are
+attributes of the iommu_group (not an individual device), and it
+applies to all devices in the iommu_group.  Below, you allude to the
+fact that the interfaces are per-device.  It's not clear to me why you
+made a per-device interface instead of a per-group interface.
 
+> This
+> extends the iommu core to enforce this exclusion when devices are
+> assigned to userspace.
+> 
+> Basically two new interfaces are provided:
+> 
+>         int iommu_device_set_dma_owner(struct device *dev,
+>                 enum iommu_dma_owner mode, struct file *user_file);
+>         void iommu_device_release_dma_owner(struct device *dev,
+>                 enum iommu_dma_owner mode);
+> 
+> Although above interfaces are per-device, DMA owner is tracked per group
+> under the hood. An iommu group cannot have both DMA_OWNER_KERNEL
+> and DMA_OWNER_USER set at the same time. Violation of this assumption
+> fails iommu_device_set_dma_owner().
+> 
+> Kernel driver which does DMA have DMA_OWNER_KENREL automatically
+> set/released in the driver binding process (see next patch).
+
+s/DMA_OWNER_KENREL/DMA_OWNER_KERNEL/
+
+> Kernel driver which doesn't do DMA should not set the owner type (via a
+> new suppress flag in next patch). Device bound to such driver is considered
+> same as a driver-less device which is compatible to all owner types.
+> 
+> Userspace driver framework (e.g. vfio) should set DMA_OWNER_USER for
+> a device before the userspace is allowed to access it, plus a fd pointer to
+> mark the user identity so a single group cannot be operated by multiple
+> users simultaneously. Vice versa, the owner type should be released after
+> the user access permission is withdrawn.
