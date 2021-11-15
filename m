@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1F7451ECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2284545198E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346933AbhKPAhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:37:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1353321AbhKOXXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:23:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344618AbhKOTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD052636A3;
-        Mon, 15 Nov 2021 19:01:11 +0000 (UTC)
+        id S244826AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2710563425;
+        Mon, 15 Nov 2021 18:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002872;
-        bh=MYJgA8nOfU5wFciEO+VjQWZOimo1eIo9xgFRUgbRBFU=;
+        s=korg; t=1637000655;
+        bh=x8c3oIyx7mvFo0HRAFo9anyAyJ6HpuZ++qT4atRC9dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ASnQXR7kjEnTXvybLGPEE+FiDuLFK+5ndVgBxQE1jnN+sIvcpyYkA9ir+4ct/WxKI
-         o+m8+dWwLwpMUXtz7IsT3XOFLIOXHosBfP/gKTdceZ1/BKygSgANDiKYWT+1kxlKn/
-         CUxI47v/w7UMlUv7rP2WO8Uq7gdx8uwQ3+0qCPVw=
+        b=tHByau3FOEX4dibSH2+sAcoyrmFYfHt5Ugrv2MSade1chPUE+sDaJQQtGI3Sk2h/J
+         92go0xq6q59qBxnemR8mTFZFr0ZRb6zdOEWrMWBM+1Z9vgMa8hZoQ+orNyVoeurqHA
+         utEO/3FlEWi7cNBHPeFHhCE6r+zxU+zKx5PnL0GA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 727/917] dmaengine: at_xdmac: call at_xdmac_axi_config() on resume path
-Date:   Mon, 15 Nov 2021 18:03:42 +0100
-Message-Id: <20211115165453.565542433@linuxfoundation.org>
+        stable@vger.kernel.org, Huang Guobin <huangguobin4@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 740/849] bonding: Fix a use-after-free problem when bond_sysfs_slave_add() failed
+Date:   Mon, 15 Nov 2021 18:03:43 +0100
+Message-Id: <20211115165445.286012098@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +41,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Huang Guobin <huangguobin4@huawei.com>
 
-[ Upstream commit fa5270ec2f2688d98a82895be7039b81c87d856c ]
+[ Upstream commit b93c6a911a3fe926b00add28f3b932007827c4ca ]
 
-at_xdmac could be used on SoCs which supports backup mode (where most
-of the SoC power, including power to DMA controller, is closed at suspend
-time). Thus, on resume, the settings which were previously done need to be
-restored. Do the same for axi configuration.
+When I do fuzz test for bonding device interface, I got the following
+use-after-free Calltrace:
 
-Fixes: f40566f220a1 ("dmaengine: at_xdmac: add AXI priority support and recommended settings")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20211007111230.2331837-2-claudiu.beznea@microchip.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+==================================================================
+BUG: KASAN: use-after-free in bond_enslave+0x1521/0x24f0
+Read of size 8 at addr ffff88825bc11c00 by task ifenslave/7365
+
+CPU: 5 PID: 7365 Comm: ifenslave Tainted: G            E     5.15.0-rc1+ #13
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0x6c/0x8b
+ print_address_description.constprop.0+0x48/0x70
+ kasan_report.cold+0x82/0xdb
+ __asan_load8+0x69/0x90
+ bond_enslave+0x1521/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f19159cf577
+Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 78
+RSP: 002b:00007ffeb3083c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffeb3084bca RCX: 00007f19159cf577
+RDX: 00007ffeb3083ce0 RSI: 0000000000008990 RDI: 0000000000000003
+RBP: 00007ffeb3084bc4 R08: 0000000000000040 R09: 0000000000000000
+R10: 00007ffeb3084bc0 R11: 0000000000000246 R12: 00007ffeb3083ce0
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeb3083cb0
+
+Allocated by task 7365:
+ kasan_save_stack+0x23/0x50
+ __kasan_kmalloc+0x83/0xa0
+ kmem_cache_alloc_trace+0x22e/0x470
+ bond_enslave+0x2e1/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 7365:
+ kasan_save_stack+0x23/0x50
+ kasan_set_track+0x20/0x30
+ kasan_set_free_info+0x24/0x40
+ __kasan_slab_free+0xf2/0x130
+ kfree+0xd1/0x5c0
+ slave_kobj_release+0x61/0x90
+ kobject_put+0x102/0x180
+ bond_sysfs_slave_add+0x7a/0xa0
+ bond_enslave+0x11b6/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x23/0x50
+ kasan_record_aux_stack+0xb7/0xd0
+ insert_work+0x43/0x190
+ __queue_work+0x2e3/0x970
+ delayed_work_timer_fn+0x3e/0x50
+ call_timer_fn+0x148/0x470
+ run_timer_softirq+0x8a8/0xc50
+ __do_softirq+0x107/0x55f
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x23/0x50
+ kasan_record_aux_stack+0xb7/0xd0
+ insert_work+0x43/0x190
+ __queue_work+0x2e3/0x970
+ __queue_delayed_work+0x130/0x180
+ queue_delayed_work_on+0xa7/0xb0
+ bond_enslave+0xe25/0x24f0
+ bond_do_ioctl+0x3e0/0x450
+ dev_ifsioc+0x2ba/0x970
+ dev_ioctl+0x112/0x710
+ sock_do_ioctl+0x118/0x1b0
+ sock_ioctl+0x2e0/0x490
+ __x64_sys_ioctl+0x118/0x150
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88825bc11c00
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 0 bytes inside of
+ 1024-byte region [ffff88825bc11c00, ffff88825bc12000)
+The buggy address belongs to the page:
+page:ffffea00096f0400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25bc10
+head:ffffea00096f0400 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
+raw: 057ff00000010200 ffffea0009a71c08 ffff888240001968 ffff88810004dbc0
+raw: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88825bc11b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88825bc11b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88825bc11c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88825bc11c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88825bc11d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+Put new_slave in bond_sysfs_slave_add() will cause use-after-free problems
+when new_slave is accessed in the subsequent error handling process. Since
+new_slave will be put in the subsequent error handling process, remove the
+unnecessary put to fix it.
+In addition, when sysfs_create_file() fails, if some files have been crea-
+ted successfully, we need to call sysfs_remove_file() to remove them.
+Since there are sysfs_create_files() & sysfs_remove_files() can be used,
+use these two functions instead.
+
+Fixes: 7afcaec49696 (bonding: use kobject_put instead of _del after kobject_add)
+Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/at_xdmac.c | 51 ++++++++++++++++++++++--------------------
- 1 file changed, 27 insertions(+), 24 deletions(-)
+ drivers/net/bonding/bond_sysfs_slave.c | 36 ++++++++------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index ab78e0f6afd70..c66ad5706cb5a 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -1926,6 +1926,30 @@ static void at_xdmac_free_chan_resources(struct dma_chan *chan)
- 	return;
+diff --git a/drivers/net/bonding/bond_sysfs_slave.c b/drivers/net/bonding/bond_sysfs_slave.c
+index fd07561da0348..6a6cdd0bb2585 100644
+--- a/drivers/net/bonding/bond_sysfs_slave.c
++++ b/drivers/net/bonding/bond_sysfs_slave.c
+@@ -108,15 +108,15 @@ static ssize_t ad_partner_oper_port_state_show(struct slave *slave, char *buf)
  }
+ static SLAVE_ATTR_RO(ad_partner_oper_port_state);
  
-+static void at_xdmac_axi_config(struct platform_device *pdev)
-+{
-+	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
-+	bool dev_m2m = false;
-+	u32 dma_requests;
-+
-+	if (!atxdmac->layout->axi_config)
-+		return; /* Not supported */
-+
-+	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
-+				  &dma_requests)) {
-+		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
-+		dev_m2m = true;
-+	}
-+
-+	if (dev_m2m) {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
-+	} else {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
-+	}
-+}
-+
- #ifdef CONFIG_PM
- static int atmel_xdmac_prepare(struct device *dev)
+-static const struct slave_attribute *slave_attrs[] = {
+-	&slave_attr_state,
+-	&slave_attr_mii_status,
+-	&slave_attr_link_failure_count,
+-	&slave_attr_perm_hwaddr,
+-	&slave_attr_queue_id,
+-	&slave_attr_ad_aggregator_id,
+-	&slave_attr_ad_actor_oper_port_state,
+-	&slave_attr_ad_partner_oper_port_state,
++static const struct attribute *slave_attrs[] = {
++	&slave_attr_state.attr,
++	&slave_attr_mii_status.attr,
++	&slave_attr_link_failure_count.attr,
++	&slave_attr_perm_hwaddr.attr,
++	&slave_attr_queue_id.attr,
++	&slave_attr_ad_aggregator_id.attr,
++	&slave_attr_ad_actor_oper_port_state.attr,
++	&slave_attr_ad_partner_oper_port_state.attr,
+ 	NULL
+ };
+ 
+@@ -137,24 +137,10 @@ const struct sysfs_ops slave_sysfs_ops = {
+ 
+ int bond_sysfs_slave_add(struct slave *slave)
  {
-@@ -1975,6 +1999,7 @@ static int atmel_xdmac_resume(struct device *dev)
- 	struct at_xdmac		*atxdmac = dev_get_drvdata(dev);
- 	struct at_xdmac_chan	*atchan;
- 	struct dma_chan		*chan, *_chan;
-+	struct platform_device	*pdev = container_of(dev, struct platform_device, dev);
- 	int			i;
- 	int ret;
- 
-@@ -1982,6 +2007,8 @@ static int atmel_xdmac_resume(struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	at_xdmac_axi_config(pdev);
-+
- 	/* Clear pending interrupts. */
- 	for (i = 0; i < atxdmac->dma.chancnt; i++) {
- 		atchan = &atxdmac->chan[i];
-@@ -2007,30 +2034,6 @@ static int atmel_xdmac_resume(struct device *dev)
- }
- #endif /* CONFIG_PM_SLEEP */
- 
--static void at_xdmac_axi_config(struct platform_device *pdev)
--{
--	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
--	bool dev_m2m = false;
--	u32 dma_requests;
+-	const struct slave_attribute **a;
+-	int err;
 -
--	if (!atxdmac->layout->axi_config)
--		return; /* Not supported */
--
--	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
--				  &dma_requests)) {
--		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
--		dev_m2m = true;
+-	for (a = slave_attrs; *a; ++a) {
+-		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
+-		if (err) {
+-			kobject_put(&slave->kobj);
+-			return err;
+-		}
 -	}
 -
--	if (dev_m2m) {
--		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
--		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
--	} else {
--		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
--		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
--	}
--}
--
- static int at_xdmac_probe(struct platform_device *pdev)
+-	return 0;
++	return sysfs_create_files(&slave->kobj, slave_attrs);
+ }
+ 
+ void bond_sysfs_slave_del(struct slave *slave)
  {
- 	struct at_xdmac	*atxdmac;
+-	const struct slave_attribute **a;
+-
+-	for (a = slave_attrs; *a; ++a)
+-		sysfs_remove_file(&slave->kobj, &((*a)->attr));
++	sysfs_remove_files(&slave->kobj, slave_attrs);
+ }
 -- 
 2.33.0
 
