@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90CA45115F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC894515EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240703AbhKOTGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:06:38 -0500
-Received: from mail-dm6nam12on2055.outbound.protection.outlook.com ([40.107.243.55]:35361
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238543AbhKORl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:41:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WEveHnJ69uZpRVY0LBDLeIWU42nFUK2bTc54XuQpv7kXWh5KEzPbGsur7sn/vU/xcuLNvGVx2lAh2st9SA1gWb/R3TiifGsHJkw9LDUUhPlOGS6Z0G/bQ9edJlS6TbHbAe7rJiTSlcpcZl0H7Riox9mnje0Ebj9eAlGYr2G12sJqzUYBa0uX3/oN80vLrRhj36NiPoaFcq4IgeFGnvmFyZCUPaDhuqxaWbeao9ISsKSTzwJvpE+AxNE2IMuvQTg2TO1G+ZFtj62pXAdCkIeYKqkpsDZtyYqX+NZYHe8sEzcvh2uGNBs76ib8B8hTKUMzYoItkI+AGIpPhcpcBJGmBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sWbtneqZm7WH1cdoAmCqw2wnyVnRgLPln1Zjiw4MviM=;
- b=cCBL3/czfid15HbQUsRTo2d6EIRG/dDMr2NxypdBYT584AfuXtZKOonlU9PkdlH+nkvBBeC6/wR+af3HgFhxNpBeAu9Wc8gXrGt79/ZLecYhajf2gF4QvsEYl3wL17TzRoVIv5lC9DW0IWSXN6BmRL2t6DAbXJhAECenH2Iu7GnVI6I8E9iC53azO9VtCTA2cLt5hRB2vR+XSaVP6lmZcxUbbbwh0IjWPjjEOa2iIQPQDZPPf5bO37g5Hdm5tYaL12KrSlTC02p0pMKVyqKRQIDdkU2g06cdxnQinY278ad6NFB56tjI8HVLzV/eomSuTsfmT+Z44Oz4VY17kOs8/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.80.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S1348169AbhKOVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240122AbhKOSMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:12:16 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E43C0386D4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:38:52 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id i25-20020a631319000000b002cce0a43e94so9526513pgl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:38:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sWbtneqZm7WH1cdoAmCqw2wnyVnRgLPln1Zjiw4MviM=;
- b=MCb6it6v+aDmLoHaHaoCtmdCjVKFlxqvzZeC2/ise/APVANIwUmJvt1Mm7CKW/BgWuOe60Ojo/eHWUtFEx0vrzNlR+W/I2+p88fmCrnM5DGJkPQzHxtbBPivFjwzkTq1hPgXGYkePEUHBTo7zJ/GkHME9b/SiiiZmePl9ZK2qyE=
-Received: from SA9PR13CA0078.namprd13.prod.outlook.com (2603:10b6:806:23::23)
- by SN6PR02MB5166.namprd02.prod.outlook.com (2603:10b6:805:67::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.20; Mon, 15 Nov
- 2021 17:38:30 +0000
-Received: from SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:23:cafe::cb) by SA9PR13CA0078.outlook.office365.com
- (2603:10b6:806:23::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.17 via Frontend
- Transport; Mon, 15 Nov 2021 17:38:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.80.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.80.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.80.198; helo=xir-pvapexch01.xlnx.xilinx.com;
-Received: from xir-pvapexch01.xlnx.xilinx.com (149.199.80.198) by
- SN1NAM02FT0005.mail.protection.outlook.com (10.97.4.182) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4690.19 via Frontend Transport; Mon, 15 Nov 2021 17:38:30 +0000
-Received: from xir-pvapexch02.xlnx.xilinx.com (172.21.17.17) by
- xir-pvapexch01.xlnx.xilinx.com (172.21.17.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 15 Nov 2021 17:38:27 +0000
-Received: from smtp.xilinx.com (172.21.105.198) by
- xir-pvapexch02.xlnx.xilinx.com (172.21.17.17) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 15 Nov 2021 17:38:27 +0000
-Envelope-to: anand.ashok.dumbre@xilinx.com,
- git@xilinx.com,
- michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org,
- jic23@kernel.org,
- lars@metafoo.de,
- linux-iio@vger.kernel.org,
- gregkh@linuxfoundation.org,
- rafael@kernel.org,
- linux-acpi@vger.kernel.org,
- andriy.shevchenko@linux.intel.com,
- heikki.krogerus@linux.intel.com
-Received: from [10.71.188.1] (port=56032 helo=xiranandash40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <anand.ashok.dumbre@xilinx.com>)
-        id 1mmfvw-0006sD-7j; Mon, 15 Nov 2021 17:38:20 +0000
-From:   Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-To:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <linux-iio@vger.kernel.org>, <git@xilinx.com>,
-        <michal.simek@xilinx.com>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <linux-acpi@vger.kernel.org>,
-        <andriy.shevchenko@linux.intel.com>,
-        <heikki.krogerus@linux.intel.com>
-CC:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Subject: [PATCH] device property: Add fwnode_iomap()
-Date:   Mon, 15 Nov 2021 17:38:19 +0000
-Message-ID: <20211115173819.22778-1-anand.ashok.dumbre@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a2f6bac-e00f-495d-df5b-08d9a85ebd4c
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5166:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB51664D444757A6A0F3D9BA60A9989@SN6PR02MB5166.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:561;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ak5Ekc84PkvSqqeOSL+IXViKm1r9x4rjMpHbBpJhtVOvRddPH/BnAVWG1ahKulTMiB6PFM+fVbqc2p2ra7r5VkM2Y2Ml4KoRuXr21DVf8q+T5yZ4c+C+8H4a3Is/brkgnSEumWwaK1jiPfY7fDFn9gsb+m3/EerxPK9YgxPoLpSnbcin4B67hgC/D1UBqfpC2Y/XY0ZxLm3PnxXv3LXw4TA09KhRl15URl5emcrX1moJ1N425KAg3LSkp6ZJH6JiCiqiwbWATQAqcIrm7TXT/dKU9w/KUyW/mOlRxDmfk4MP37744KUiGjr40milneotIZoqVqd/mBBmWfmN6HmfO6uuFVo8LP1e31WC5tSXxHUq1o+loyXt92Qozp+4CuqnM4l+I1qE5kxuIWSAXlnN4/d/11Y+b1v0to9QFyULeFx402FA+w0Qx2q9fyYdnEWfBSG7CVk08eRNf8GzhhEeUMd6GIXF7jJUErlHQ82XBilJTzE2TH5vn6CcXl7PlcN+mkZdGKEF08C36vT3CNYMA1pr/VTjhtMyHylG9LPXktjo6ZaacNFrswdOWJ6gvAYkM3OMaI4phUINOmp6FcSN0+Ph0Bw8VgyeFpRcsxwPH+TcVK4akLho+UTpWeObMnKjb58RAIkaX18//NEfyphfNcFPCwfzIbaz8PdULkK5IDigmJUK2P/VvIV2feV61SPn/xiHWPFH8VURKuNy+2lRoynogfHGuoqW68PsB+USoKhV007DzDDVtEZs01JcTY65y0+W/xxmEVpnPIT1K8PgfrqFvumLozo+WviBi9UHBBU=
-X-Forefront-Antispam-Report: CIP:149.199.80.198;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:xir-pvapexch01.xlnx.xilinx.com;PTR:unknown-80-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(107886003)(5660300002)(1076003)(356005)(2906002)(8676002)(336012)(921005)(8936002)(508600001)(7696005)(4326008)(2616005)(82310400003)(7636003)(9786002)(36756003)(110136005)(426003)(70206006)(70586007)(316002)(47076005)(36860700001)(36906005)(103116003)(186003)(26005)(102446001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 17:38:30.3270
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a2f6bac-e00f-495d-df5b-08d9a85ebd4c
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.80.198];Helo=[xir-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5166
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gFHzpDmZVv3KTzaa99s4GcDQLq8lkQoNbMRzfWvXXRU=;
+        b=E0lMrhcUzQ+Xxg7MzzracGH2o8ZPywwPNThCN8B2PV1+YsxQ7pcG6fw/LsdoL5DhpJ
+         Po3s0ulyU4vPeedC/oWHYgY2QT/E5n8f1j7yGJCR4TH0EDLR7pHs43w4Fn0CYmqbDa0b
+         C0axRULUIX1exCYTmfoFg2/WV3luxC+wnavfxXcrma1naBKaP+Qwb/UAzxoe3aOMfF+9
+         /LhYB/QdqhlAwXaExqi0xERMWK/ww3Q0LLDDgsSqjoH2cQ6ymB4g9FuH95+4++E+m+gv
+         gJIlxXphc6ecxg7H1I/CcfAWBgO6rECPBHy08g79iQ2oAy5ZYNMdQUXVfhQ7q0IgGMdk
+         CAhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gFHzpDmZVv3KTzaa99s4GcDQLq8lkQoNbMRzfWvXXRU=;
+        b=MAJse7q0oqO615Bv22F9CUCtpffnB+gYW4gJeHIvpnvpXkjZFg22HKcdHCxsStmdJo
+         HhP6HuUvLO+TZQ9zf3tB+foy+K/Q6Hfh8LTUDjtiRD69a/s/jKY9qMtu1z+S6FQjBZ56
+         yNwJLmoZq2taWthPVWqKH4EfxDPon0YWi/gl3piWB3ZwZ1FR2BpWvJvm8nINMBePz6eu
+         tBCG52uUOPypDKNT7ES2HVuYw6PepfLVGgCuGBwyUt1++z+hDkpG3Tk1p6OizISdaUxN
+         eIOmDEyW5MiHXgRll651ZZ7HIz/KnEnlJj+HdwuZbJcl6YB5yE+awOCjqgzesK0FHrfd
+         uYOg==
+X-Gm-Message-State: AOAM533IaiawE0pCU2XA5QJS+4XzsrTdNvJe5X1ar3Yplx1OXlTT5oBY
+        niJbIUi1VLd0dYyLpEr8hfQZBg3KxDd34VyYWQo8f2J+6Hx1h3tK+mLOyKHzRw6kz++QF2Z03GH
+        WP99pCZxcb4efFBg9lwPRHMmzCMe8UzrK5ckVptSVqAXlA38qFLLjNoHbQk7RmylKhDSFqA==
+X-Google-Smtp-Source: ABdhPJwTAV+ZG+2XqLkeiSQpjZ7KK5I0FTpAB9sdXiyOS+6eC4Xc72hJckhedQD25PX8UC+kT43g6OJrmDU=
+X-Received: from adelva.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:b2b])
+ (user=adelva job=sendgmr) by 2002:a17:90a:c287:: with SMTP id
+ f7mr60754043pjt.114.1636997931798; Mon, 15 Nov 2021 09:38:51 -0800 (PST)
+Date:   Mon, 15 Nov 2021 17:38:50 +0000
+Message-Id: <20211115173850.3598768-1-adelva@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+From:   Alistair Delva <adelva@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel-team@android.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new helper routine - fwnode_iomap(),
-which allows to map the memory mapped IO for a given device node.
+Booting to Android userspace on 5.14 or newer triggers the following
+SELinux denial:
 
-Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+avc: denied { sys_nice } for comm="init" capability=23
+     scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+     permissive=0
+
+Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+better compatibility with older SEPolicy, check ADMIN before NICE.
+
+Fixes: 9d3a39a5f1e4 ("block: grant IOPRIO_CLASS_RT to CAP_SYS_NICE")
+Signed-off-by: Alistair Delva <adelva@google.com>
+Cc: Khazhismel Kumykov <khazhy@google.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Serge Hallyn <serge@hallyn.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: selinux@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: kernel-team@android.com
+Cc: stable@vger.kernel.org # v5.14+
 ---
- drivers/base/property.c  | 15 +++++++++++++++
- include/linux/property.h |  2 ++
- 2 files changed, 17 insertions(+)
+ block/ioprio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 453918eb7390..9323e9b5de02 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1021,6 +1021,21 @@ int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
- }
- EXPORT_SYMBOL(fwnode_irq_get);
+diff --git a/block/ioprio.c b/block/ioprio.c
+index 0e4ff245f2bf..4d59c559e057 100644
+--- a/block/ioprio.c
++++ b/block/ioprio.c
+@@ -69,7 +69,7 @@ int ioprio_check_cap(int ioprio)
  
-+/**
-+ * fwnode_iomap - Maps the memory mapped IO for a given fwnode
-+ * @fwnode:	Pointer to the firmware node
-+ * @index:	Index of the IO range
-+ *
-+ * Returns a pointer to the mapped memory.
-+ */
-+void __iomem *fwnode_iomap(struct fwnode_handle *fwnode, int index) {
-+	if (is_of_node(fwnode))
-+		return of_iomap(to_of_node(fwnode), index);
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL(fwnode_iomap);
-+
- /**
-  * fwnode_graph_get_next_endpoint - Get next endpoint firmware node
-  * @fwnode: Pointer to the parent firmware node
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 357513a977e5..9bb0b0155402 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -121,6 +121,8 @@ void fwnode_handle_put(struct fwnode_handle *fwnode);
- 
- int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index);
- 
-+void __iomem *fwnode_iomap(struct fwnode_handle *fwnode, int index);
-+
- unsigned int device_get_child_node_count(struct device *dev);
- 
- static inline bool device_property_read_bool(struct device *dev,
+ 	switch (class) {
+ 		case IOPRIO_CLASS_RT:
+-			if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
++			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+ 				return -EPERM;
+ 			fallthrough;
+ 			/* rt has prio field too */
 -- 
-2.17.1
+2.34.0.rc1.387.gb447b232ab-goog
 
