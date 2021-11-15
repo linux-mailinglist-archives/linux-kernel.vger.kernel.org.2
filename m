@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CF5452016
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDDB451F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357364AbhKPAsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:48:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S243498AbhKPAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344735AbhKOTZS (ORCPT
+        with ESMTP id S1344942AbhKOTZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:18 -0500
+        Mon, 15 Nov 2021 14:25:46 -0500
 Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D72C04F54C
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:38:17 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id o4so36682727oia.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:38:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F17FC096768
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:41:27 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id m6so36751337oim.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:41:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CZSxWmZRav92+eQHeF0kSH/09V+GvkXV5M71MLsSM+0=;
-        b=R8FPcq2/Tr1Gia2TGiXrM0QYPhADBRI82AVFgYHBScfBoBYrXblU29jCixj9Rou4tE
-         1mdPoyckbTXo/G/fYiQVkjVQe9D0TlJWE6ghs0sF4wtBsf8T5G4km/09PV8ih7qnxCJ6
-         CqW2DuJCwnuiY/xMdKY++2V52kFYQOWVjKQilaOYxF8Gph5KNjmSpBKcS9uBWr1EPRPd
-         ApdJTCdW6ofINeC3Jb0BxSrbj6wlRNMa13XlfFh/a+qJ1dHzmqcH46PsU87tPxcNqLEm
-         gNvWureqsP1hXAytrX1B9dW8qJ9SF5/53t/6mdiOYm2L9kWXt5z/VPydC/Df5qOtM5oj
-         4d+A==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DvmCs80nJQRJulfMPNgITfN/kpc9dv/WOKQeVjWwio4=;
+        b=D2Mt+z865FvjQUumFXEdNURlsU2N9UC/MMmG8rlUqPypkNsBqmKRw0im+95vMwMZt+
+         lOyHOqJBT2Wf61emETZgh/H8MwFKn+7mxNspVDUE3ab/thq8z8MqaNv5E3cFC88Dhb1D
+         kozJOtu5iF3U6ReVV+IClUxB/KJuaaQOSaFzBpZV/RSinsd98IOm4cNGt+PpulbFPi4G
+         fh0anmlEfno22cJKa2/xdP2buGHXZVvlyBs3T5g9PgR1ul84hlgBs7kIQv+hZicSWIx/
+         DFY+BXoYlqwxk1FLb90BO7ox0VLE0OsYnIeGGKqSrw6S20pm4gRfEwAzqEUKSDwO5qAw
+         9xyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CZSxWmZRav92+eQHeF0kSH/09V+GvkXV5M71MLsSM+0=;
-        b=2d1IaTGtK4jSj6iTAjGSTSiHsKG7urD9wIOfgnULTcNA1SmQU04CbzxUpQ1SYDave5
-         FPuhYwQvhdfe2sNHTS1WEx8/0VA8q3CIJRQ9fexXo5ocmKFoOaSdZHGC8xE4o0AqWLFk
-         R1uwD1fzgDYGBqm3IbvDyD3cAVIScV99NoWz77ENxZ+CRDWsKKXNwnDppfj1+PvKXBv/
-         iyHg7rJcOKIthCpSj5D2jbJmj0wyxZ6d5tOKaiQcW9cgWw3KgVF0d3tV1Axkcpu0kKNB
-         S6KcqCCWlVOD795IST9NjGOp9QKuk0JqMeowAPu7Dj0SNfSd6znYkM093kwryotk8JWg
-         Vzdg==
-X-Gm-Message-State: AOAM530JKBk5PsToCReprIhdPYGBMuI0fneWeZ5b/L06UQuwmThfgxtY
-        uKWjduuNXkdJtYsZhc9XdpWrVUmwIFU=
-X-Google-Smtp-Source: ABdhPJyl1/OYFy81S/WRR2iB6CAZ7cVNKpIPGifvcwUl3RbTUBwn5YNNRCymr1+GXd65Gehpeld/kA==
-X-Received: by 2002:a05:6808:221c:: with SMTP id bd28mr825493oib.56.1637001496365;
-        Mon, 15 Nov 2021 10:38:16 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bk41sm2082190oib.31.2021.11.15.10.38.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 10:38:15 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
- <20211115045616.GA1012538@roeck-us.net>
- <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
- <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
- <CAHk-=wis4sMKEB1EWJW-+jgc4j31S297sx7nq4a_MS92r8-HgA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: Linux 5.16-rc1
-Message-ID: <2e041a4c-b74b-001f-eaca-3f186958e486@roeck-us.net>
-Date:   Mon, 15 Nov 2021 10:38:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DvmCs80nJQRJulfMPNgITfN/kpc9dv/WOKQeVjWwio4=;
+        b=zz+L7xAExRq96qN6N709/k/2AtKz5hxtrBYBWKgRcckK3rEZ22zViuLC0jhFc9S5mu
+         g727pEZrqWJLoEydEnk//U2ZG3TKfIQuXBzTO9sBYsmMHmWe0saTPnPu7SNibyQGvdKf
+         JvcYdfkrysUjkvNhJbloPkKOpP4pye9WpisKgX7e/h3rJyZIo6HDR9UbeXnqHCObmmHv
+         QbFTd2Lu1BZoMpKolOGIqPn+cVyjWYrIlOFGFWuDP4kaZIN0tpAsNmBKN2j7SaWG7MBT
+         BiNzCkOZXbIPNp4NuwzKKyQKeDro1b7vzhig/cdWWSQCAOuq/eSAuYKrSq8uQu+ODsiM
+         ya2g==
+X-Gm-Message-State: AOAM533XD2lfJQapO0/TWjPpluyA2FLs1hmEsTIWCKZ9pUfdaVaepaI7
+        fTOUdTj177yykn2i4kl8dK75nFtHPOUh0dDHeGQpAU2elpsmV8Oh
+X-Google-Smtp-Source: ABdhPJw+kw8Q07aUefBFMr3P/o64UhYLq5zXtIiaN0731ps80GxSYVXnY4M15E2ojpsZr+HhuXIh46aqRnH7y2V4Jys=
+X-Received: by 2002:a54:4515:: with SMTP id l21mr746806oil.15.1637001686230;
+ Mon, 15 Nov 2021 10:41:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wis4sMKEB1EWJW-+jgc4j31S297sx7nq4a_MS92r8-HgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210820155918.7518-1-brijesh.singh@amd.com> <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com> <YZJTA1NyLCmVtGtY@work-vm> <YZKmSDQJgCcR06nE@google.com>
+In-Reply-To: <YZKmSDQJgCcR06nE@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Mon, 15 Nov 2021 10:41:15 -0800
+Message-ID: <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 10:10 AM, Linus Torvalds wrote:
-> On Mon, Nov 15, 2021 at 9:07 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> parisc:allmodconfig: Lots of build failures in arch/parisc/include/asm/jump_label.h.
->> Not fixed in -next. The problem seens to be related to the thread_info changes,
->> or at least bisect points to commit 01463374c50e ("Merge tag 'cpu-to-thread_info-v5.16-rc1'
->> of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux").
-> 
-> I don't think they are related to the thread_info changes except very
-> incidentally.
-> 
->>From the errors ("expected ':' before '__stringify'") it looks like
-> __stringify() isn't defined there, and I do think that header file
-> should include <linux/compiler.h> to get it.
-> 
-> I don't actually see how that merge commit you bisected to could
-> possibly matter (the diff doesn't show any header file include
-> changes, or any parisc ones), but I suspect you might have bisected to
-> it because we did end up having actual thread_info errors on parsic
-> that weren't fixed until commit 2a2e8202c7a1 ("parisc: move CPU field
-> back into thread_info").
-> 
-> So I suspect the parisc build problems started with thread_info issues
-> at that merge commit you pinpoint, and then by commit 2a2e8202c7a1
-> some other header file simplification had exposed that "no
-> __stringify()" thing).
-> 
-> Helge - apparently from allmodconfig and others, we have:
-> 
->     arch/parisc/include/asm/jump_label.h: In function 'arch_static_branch':
->     arch/parisc/include/asm/jump_label.h:18:18: error: expected ':'
-> before '__stringify'
-> 
-> and others, which does look like just a missing header file (that was
-> presumably previously implicitly included earlier, and now the
-> implicit include is gone).
-> 
+On Mon, Nov 15, 2021 at 10:26 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Nov 15, 2021, Dr. David Alan Gilbert wrote:
+> > * Sean Christopherson (seanjc@google.com) wrote:
+> > > On Fri, Nov 12, 2021, Borislav Petkov wrote:
+> > > > On Fri, Nov 12, 2021 at 09:59:46AM -0800, Dave Hansen wrote:
+> > > > > Or, is there some mechanism that prevent guest-private memory from being
+> > > > > accessed in random host kernel code?
+> > >
+> > > Or random host userspace code...
+> > >
+> > > > So I'm currently under the impression that random host->guest accesses
+> > > > should not happen if not previously agreed upon by both.
+> > >
+> > > Key word "should".
+> > >
+> > > > Because, as explained on IRC, if host touches a private guest page,
+> > > > whatever the host does to that page, the next time the guest runs, it'll
+> > > > get a #VC where it will see that that page doesn't belong to it anymore
+> > > > and then, out of paranoia, it will simply terminate to protect itself.
+> > > >
+> > > > So cloud providers should have an interest to prevent such random stray
+> > > > accesses if they wanna have guests. :)
+> > >
+> > > Yes, but IMO inducing a fault in the guest because of _host_ bug is wrong.
+> >
+> > Would it necessarily have been a host bug?  A guest telling the host a
+> > bad GPA to DMA into would trigger this wouldn't it?
+>
+> No, because as Andy pointed out, host userspace must already guard against a bad
+> GPA, i.e. this is just a variant of the guest telling the host to DMA to a GPA
+> that is completely bogus.  The shared vs. private behavior just means that when
+> host userspace is doing a GPA=>HVA lookup, it needs to incorporate the "shared"
+> state of the GPA.  If the host goes and DMAs into the completely wrong HVA=>PFN,
+> then that is a host bug; that the bug happened to be exploited by a buggy/malicious
+> guest doesn't change the fact that the host messed up.
 
-Geert pinpointed this problem to
+"If the host goes and DMAs into the completely wrong HVA=>PFN, then
+that is a host bug; that the bug happened to be exploited by a
+buggy/malicious guest doesn't change the fact that the host messed
+up."
+^^^
+Again, I'm flabbergasted that you are arguing that it's OK for a guest
+to exploit a host bug to take down host-side processes or the host
+itself, either of which could bring down all other VMs on the machine.
 
-     due to static_branch_likely() in crypto/api.c
+I'm going to repeat -- this is not OK! Period.
 
-Commit adad556efcdd4 ("crypto: api - Fix built-in testing dependency failures")
-added "#include <linux/jump_label.h>". That extra include isn't needed because
-crypto/internal.h already includes it. Removing it from crypto/api.c
-fixes the problem for parisc, but I don't know if that is the correct fix.
-Alternatively, linux/completion.h would have to be included from crypto/api.c
-before including linux/jump_label.h.
+Again, if the community wants to layer some orchestration scheme
+between host userspace, host kernel, and guest, on top of the code to
+inject the #VC into the guest, that's fine. This proposal is not
+stopping that. In fact, the two approaches are completely orthogonal
+and compatible.
 
-Guenter
+But so far I have heard zero reasons why injecting a #VC into the
+guest is wrong. Other than just stating that it's wrong.
+
+Again, the guest must be able to detect buggy and malicious host-side
+writes to private memory. Or else "confidential computing" doesn't
+work. Assuming that's not true is not a valid argument to dismiss
+injecting a #VC exception into the guest.
