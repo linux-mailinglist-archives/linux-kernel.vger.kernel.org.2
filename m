@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0130451915
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52095451928
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350761AbhKOXOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:14:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
+        id S1349862AbhKOXPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:15:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244111AbhKOTKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:10:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A70AC63241;
-        Mon, 15 Nov 2021 18:18:25 +0000 (UTC)
+        id S244114AbhKOTKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:10:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6236327C;
+        Mon, 15 Nov 2021 18:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000306;
-        bh=yt5cx2WCFWtQQ6xKesorN/IvaQQz/K4+WBUdIcZo4DM=;
+        s=korg; t=1637000309;
+        bh=WD3ugRfNYke0/s4xKMlBr/2is5fw7IUeXxKMc000pKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AjHbKcX7o+xwotdfyqgZ1QakgN7U9lVmrE1FnPJIvUphToqBpOq8Gr6t7OnPQIWWJ
-         EVtdZMvcZK6D2jtgJ4UiN8Q/2QMKVtV9ZB1IdaCkVvTQuaoP7LWe3swZ8lHqo9wYKg
-         HxSjCWXc8kxjJNHjV0ZoAvVcV7WDSE2+RVqIVTTg=
+        b=X62XK1+54Ac4Ep0GtQvWUiIWj24Ob0FE4rnomtC1XepUHsB2oTdLjJ/IGOAz13iCo
+         OxElNuGL/xyy117DolyWMvXJwIyQ8V0bzyVdLtzrbApcuYsUzqTJxed7pzGGp8mkch
+         0oFxJA0jw4pyoDnVk0rrOlAKdxLb/PvD4jOswYrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Olivier Moysan <olivier.moysan@foss.st.com>,
+        Marek Vasut <marex@denx.de>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 613/849] ARM: dts: stm32: fix SAI sub nodes register range
-Date:   Mon, 15 Nov 2021 18:01:36 +0100
-Message-Id: <20211115165440.978746968@linuxfoundation.org>
+Subject: [PATCH 5.14 614/849] ARM: dts: stm32: fix AV96 board SAI2 pin muxing on stm32mp15
+Date:   Mon, 15 Nov 2021 18:01:37 +0100
+Message-Id: <20211115165441.014282038@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -43,98 +44,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Olivier Moysan <olivier.moysan@foss.st.com>
 
-[ Upstream commit 6f87a74d31277f0896dcf8c0850ec14bde03c423 ]
+[ Upstream commit 1a9a9d226f0f0ef5d9bf588ab432e0d679bb1954 ]
 
-The STM32 SAI subblocks registers offsets are in the range
-0x0004 (SAIx_CR1) to 0x0020 (SAIx_DR).
-The corresponding range length is 0x20 instead of 0x1c.
-Change reg property accordingly.
+Fix SAI2A and SAI2B pin muxings for AV96 board on STM32MP15.
+Change sai2a-4 & sai2a-5 to sai2a-2 & sai2a-2.
+Change sai2a-4 & sai2a-sleep-5 to sai2b-2 & sai2b-sleep-2
 
-Fixes: 5afd65c3a060 ("ARM: dts: stm32: add sai support on stm32mp157c")
+Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
 
 Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-by: Marek Vasut <marex@denx.de>
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp151.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bd289bf5d2690..6992a4b0ba79b 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -824,7 +824,7 @@
- 				#sound-dai-cells = <0>;
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+index 5b60ecbd718f0..2ebafe27a865b 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -1179,7 +1179,7 @@
+ 		};
+ 	};
  
- 				compatible = "st,stm32-sai-sub-a";
--				reg = <0x4 0x1c>;
-+				reg = <0x4 0x20>;
- 				clocks = <&rcc SAI1_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 87 0x400 0x01>;
-@@ -834,7 +834,7 @@
- 			sai1b: audio-controller@4400a024 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-b";
--				reg = <0x24 0x1c>;
-+				reg = <0x24 0x20>;
- 				clocks = <&rcc SAI1_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 88 0x400 0x01>;
-@@ -855,7 +855,7 @@
- 			sai2a: audio-controller@4400b004 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-a";
--				reg = <0x4 0x1c>;
-+				reg = <0x4 0x20>;
- 				clocks = <&rcc SAI2_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 89 0x400 0x01>;
-@@ -865,7 +865,7 @@
- 			sai2b: audio-controller@4400b024 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-b";
--				reg = <0x24 0x1c>;
-+				reg = <0x24 0x20>;
- 				clocks = <&rcc SAI2_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 90 0x400 0x01>;
-@@ -886,7 +886,7 @@
- 			sai3a: audio-controller@4400c004 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-a";
--				reg = <0x04 0x1c>;
-+				reg = <0x04 0x20>;
- 				clocks = <&rcc SAI3_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 113 0x400 0x01>;
-@@ -896,7 +896,7 @@
- 			sai3b: audio-controller@4400c024 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-b";
--				reg = <0x24 0x1c>;
-+				reg = <0x24 0x20>;
- 				clocks = <&rcc SAI3_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 114 0x400 0x01>;
-@@ -1271,7 +1271,7 @@
- 			sai4a: audio-controller@50027004 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-a";
--				reg = <0x04 0x1c>;
-+				reg = <0x04 0x20>;
- 				clocks = <&rcc SAI4_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 99 0x400 0x01>;
-@@ -1281,7 +1281,7 @@
- 			sai4b: audio-controller@50027024 {
- 				#sound-dai-cells = <0>;
- 				compatible = "st,stm32-sai-sub-b";
--				reg = <0x24 0x1c>;
-+				reg = <0x24 0x20>;
- 				clocks = <&rcc SAI4_K>;
- 				clock-names = "sai_ck";
- 				dmas = <&dmamux1 100 0x400 0x01>;
+-	sai2a_pins_c: sai2a-4 {
++	sai2a_pins_c: sai2a-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
+ 				 <STM32_PINMUX('D', 11, AF10)>, /* SAI2_SD_A */
+@@ -1190,7 +1190,7 @@
+ 		};
+ 	};
+ 
+-	sai2a_sleep_pins_c: sai2a-5 {
++	sai2a_sleep_pins_c: sai2a-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
+ 				 <STM32_PINMUX('D', 11, ANALOG)>, /* SAI2_SD_A */
+@@ -1235,14 +1235,14 @@
+ 		};
+ 	};
+ 
+-	sai2b_pins_c: sai2a-4 {
++	sai2b_pins_c: sai2b-2 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+ 			bias-disable;
+ 		};
+ 	};
+ 
+-	sai2b_sleep_pins_c: sai2a-sleep-5 {
++	sai2b_sleep_pins_c: sai2b-sleep-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
+ 		};
 -- 
 2.33.0
 
