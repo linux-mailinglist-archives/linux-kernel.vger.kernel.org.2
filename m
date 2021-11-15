@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F8F45195B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB596451EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbhKOXS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:18:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1355274AbhKPAhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:37:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244660AbhKOTRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97BA961B60;
-        Mon, 15 Nov 2021 18:22:39 +0000 (UTC)
+        id S1344550AbhKOTY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE0763690;
+        Mon, 15 Nov 2021 18:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000560;
-        bh=PzPN2FZB3Fty/LXR98O+STeNEYLT4bJWkWHFBR5k/J0=;
+        s=korg; t=1637002780;
+        bh=9/rOJiPt913Sfsy/2VjTdxUpKjbjIM51cH7wDXIpAHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmCXx0ZHTsOysEW/O+ppJ0b34bVN/853CbRiwDw1ohynGtrTVgzye/G4sKZf9CU//
-         2uhenNlkIeGlVUxj0VoVgJrgri/LQMEORr4ErkVxoX7/MVJSmkX3MIHc0/s/ijFipL
-         hVR3GSZLt8qjnisFNRSweFHtePfUtQ4wPkDE5OBo=
+        b=z7xEH0KcTN5zQ+FC7dLBeREhxYVd2VScnei683uQNj9C7iZ8fOLgZd8PrIhFis6YN
+         ebeJRyrR8dh1hPhM5/yvwVEplbjvoFMFc70aZJEg65E63WiTOXFeAhx84dXBR/FxJh
+         LzCmlsTkZrQKZprdVx43w0hsLK1j2B+cF+m3Q5ao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Johansen <john.johansen@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 704/849] netfilter: nfnetlink_queue: fix OOB when mac header was cleared
-Date:   Mon, 15 Nov 2021 18:03:07 +0100
-Message-Id: <20211115165444.074872609@linuxfoundation.org>
+Subject: [PATCH 5.15 693/917] apparmor: fix error check
+Date:   Mon, 15 Nov 2021 18:03:08 +0100
+Message-Id: <20211115165452.391395948@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 5648b5e1169ff1d6d6a46c35c0b5fbebd2a5cbb2 ]
+[ Upstream commit d108370c644b153382632b3e5511ade575c91c86 ]
 
-On 64bit platforms the MAC header is set to 0xffff on allocation and
-also when a helper like skb_unset_mac_header() is called.
+clang static analysis reports this representative problem:
 
-dev_parse_header may call skb_mac_header() which assumes valid mac offset:
+label.c:1463:16: warning: Assigned value is garbage or undefined
+        label->hname = name;
+                     ^ ~~~~
 
- BUG: KASAN: use-after-free in eth_header_parse+0x75/0x90
- Read of size 6 at addr ffff8881075a5c05 by task nf-queue/1364
- Call Trace:
-  memcpy+0x20/0x60
-  eth_header_parse+0x75/0x90
-  __nfqnl_enqueue_packet+0x1a61/0x3380
-  __nf_queue+0x597/0x1300
-  nf_queue+0xf/0x40
-  nf_hook_slow+0xed/0x190
-  nf_hook+0x184/0x440
-  ip_output+0x1c0/0x2a0
-  nf_reinject+0x26f/0x700
-  nfqnl_recv_verdict+0xa16/0x18b0
-  nfnetlink_rcv_msg+0x506/0xe70
+In aa_update_label_name(), this the problem block of code
 
-The existing code only works if the skb has a mac header.
+	if (aa_label_acntsxprint(&name, ...) == -1)
+		return res;
 
-Fixes: 2c38de4c1f8da7 ("netfilter: fix looped (broad|multi)cast's MAC handling")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+On failure, aa_label_acntsxprint() has a more complicated return
+that just -1.  So check for a negative return.
+
+It was also noted that the aa_label_acntsxprint() main comment refers
+to a nonexistent parameter, so clean up the comment.
+
+Fixes: f1bd904175e8 ("apparmor: add the base fns() for domain labels")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nfnetlink_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/apparmor/label.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index f774de0fc24f8..cd8da91fa3fe4 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -560,7 +560,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 		goto nla_put_failure;
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index e68bcedca976b..6222fdfebe4e5 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -1454,7 +1454,7 @@ bool aa_update_label_name(struct aa_ns *ns, struct aa_label *label, gfp_t gfp)
+ 	if (label->hname || labels_ns(label) != ns)
+ 		return res;
  
- 	if (indev && entskb->dev &&
--	    entskb->mac_header != entskb->network_header) {
-+	    skb_mac_header_was_set(entskb)) {
- 		struct nfqnl_msg_packet_hw phw;
- 		int len;
+-	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) == -1)
++	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) < 0)
+ 		return res;
  
+ 	ls = labels_set(label);
+@@ -1704,7 +1704,7 @@ int aa_label_asxprint(char **strp, struct aa_ns *ns, struct aa_label *label,
+ 
+ /**
+  * aa_label_acntsxprint - allocate a __counted string buffer and print label
+- * @strp: buffer to write to. (MAY BE NULL if @size == 0)
++ * @strp: buffer to write to.
+  * @ns: namespace profile is being viewed from
+  * @label: label to view (NOT NULL)
+  * @flags: flags controlling what label info is printed
 -- 
 2.33.0
 
