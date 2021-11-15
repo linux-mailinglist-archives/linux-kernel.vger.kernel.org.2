@@ -2,285 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F39451C73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB2B451C80
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352390AbhKPASQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:18:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355340AbhKOXlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:41:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E86CC63272;
-        Mon, 15 Nov 2021 23:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637019406;
-        bh=cctpZu5Y6zldBTQH9BYecYmoFJAIKu/tEYPP+N2ifkg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BUm+Or9GZUEVDVDQzn5Avd+95mdVhm4Ue+D7E4a+p7ajRCd5/l6Ays9aEhEEd8+Gg
-         thA2uLAZJD9ZVWzlqZvL/WFoGabVcwiynnUswgq40HjdebxPBO+XwPoQhDa6wey8rJ
-         zrrr/oLf7UjiMhWh7+3f0uSpgbnTofAjQLfpck/naZHMhtCvwsfMmhDMEB+e7srKqO
-         k0Rdc5GNWGFGIQPC4ZJ9oh++gp9Rq/XyTpzNfVynSZBEU/5rJxDQLuBGyx2yr/8Utv
-         fnG6HhVuGI2AMXi7ZdPmPLwMlw8uv5D+NBZxqc7AeXUMy9EO1MVcPDJV7fnDwCnHbD
-         UtbAx+QWfJyWQ==
-Received: by mail-ed1-f51.google.com with SMTP id r11so15347163edd.9;
-        Mon, 15 Nov 2021 15:36:46 -0800 (PST)
-X-Gm-Message-State: AOAM533ACluWjIP1qxJ5gVu6haaYv7qjxWD3EVM67thrBUfWW1y6GUL5
-        y66TfeztcOWGsj56L7liNEVqWcvehjApJGabQw==
-X-Google-Smtp-Source: ABdhPJxBF8uXp/soiWJMvx1BBMQh38TTql9xsdOjCMlzFG/WKZ34mL89epAie4tWiEUIrY4Yg2UkZ8zuSWFa0MXJF2Y=
-X-Received: by 2002:aa7:c415:: with SMTP id j21mr3624586edq.357.1637019405373;
- Mon, 15 Nov 2021 15:36:45 -0800 (PST)
+        id S1356727AbhKPASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:18:37 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:35903 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349289AbhKOXmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 18:42:24 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HtQdT4BVvz4xft;
+        Tue, 16 Nov 2021 10:39:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637019565;
+        bh=ucoeyBX960HR7Tugy9/YQEyFDb9mM0IWRwUD2FjJRWs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Om+yy47uiJwtLcSBaK1zNrsy1vSyRifS6tIayDlUwp1vnhd8hn+d9PJSTUtcXZU+2
+         c3oIOLrjYumRwxahXT7vg5PvobuvChAW02COT5kJP7LmzpqOXsFvkKgc3d+0FAZfkZ
+         qEvxk84oeLA8JVYz4yHrc4MpoipVeI9vnMaMXnvQaUzwMdnQ2/fYdWadDnzdRNDf49
+         pHrhv8FRPyLbHxkNf/pkgifMhQ7Zm8B+i8NHtY8skAA8K27dTX+zmuBHJNSyd6GBqh
+         VZaqMz/TB72kbuR6nOQiCKYoNEMfOuKdnnK8UV3fAffJFAX5Ilz7s+MJYzpbVH3+en
+         ZZ6odggE9qS/Q==
+Date:   Tue, 16 Nov 2021 10:39:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the gpio-sim tree with the
+ gpio-brgl-fixes tree
+Message-ID: <20211116103924.3a26ba23@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210930155222.5861-1-yongqiang.niu@mediatek.com> <20210930155222.5861-3-yongqiang.niu@mediatek.com>
-In-Reply-To: <20210930155222.5861-3-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 16 Nov 2021 07:36:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9R+=VPXMLEo0QTuzJSePyVNi6hmHUoCe8ctbKYKLDU1g@mail.gmail.com>
-Message-ID: <CAAOTY_9R+=VPXMLEo0QTuzJSePyVNi6hmHUoCe8ctbKYKLDU1g@mail.gmail.com>
-Subject: Re: [PATCH v10, 2/5] drm/mediatek: add component POSTMASK
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/XR0f4sYqyUQ5TPungndR/bD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+--Sig_/XR0f4sYqyUQ5TPungndR/bD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
-=8830=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:52=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> This patch add component POSTMASK.
+Hi all,
 
-Applied to mediatek-drm-next [1], thanks.
+Today's linux-next merge of the gpio-sim tree got a conflict in:
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+  tools/testing/selftests/gpio/Makefile
 
-Regards,
-Chun-Kuang.
+between commits:
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 102 ++++++++++++++------
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   1 +
->  2 files changed, 73 insertions(+), 30 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index 4a2abcf3e5f9..89170ad825fd 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -62,6 +62,12 @@
->  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
->  #define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
->
-> +#define DISP_POSTMASK_EN                       0x0000
-> +#define POSTMASK_EN                                    BIT(0)
-> +#define DISP_POSTMASK_CFG                      0x0020
-> +#define POSTMASK_RELAY_MODE                            BIT(0)
-> +#define DISP_POSTMASK_SIZE                     0x0030
-> +
->  struct mtk_ddp_comp_dev {
->         struct clk *clk;
->         void __iomem *regs;
-> @@ -214,6 +220,32 @@ static void mtk_dither_stop(struct device *dev)
->         writel_relaxed(0x0, priv->regs + DISP_DITHER_EN);
->  }
->
-> +static void mtk_postmask_config(struct device *dev, unsigned int w,
-> +                               unsigned int h, unsigned int vrefresh,
-> +                               unsigned int bpc, struct cmdq_pkt *cmdq_p=
-kt)
-> +{
-> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
-> +
-> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs,
-> +                     DISP_POSTMASK_SIZE);
-> +       mtk_ddp_write(cmdq_pkt, POSTMASK_RELAY_MODE, &priv->cmdq_reg,
-> +                     priv->regs, DISP_POSTMASK_CFG);
-> +}
-> +
-> +static void mtk_postmask_start(struct device *dev)
-> +{
-> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
-> +
-> +       writel(POSTMASK_EN, priv->regs + DISP_POSTMASK_EN);
-> +}
-> +
-> +static void mtk_postmask_stop(struct device *dev)
-> +{
-> +       struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
-> +
-> +       writel_relaxed(0x0, priv->regs + DISP_POSTMASK_EN);
-> +}
-> +
->  static const struct mtk_ddp_comp_funcs ddp_aal =3D {
->         .clk_enable =3D mtk_aal_clk_enable,
->         .clk_disable =3D mtk_aal_clk_disable,
-> @@ -289,6 +321,14 @@ static const struct mtk_ddp_comp_funcs ddp_ovl =3D {
->         .bgclr_in_off =3D mtk_ovl_bgclr_in_off,
->  };
->
-> +static const struct mtk_ddp_comp_funcs ddp_postmask =3D {
-> +       .clk_enable =3D mtk_ddp_clk_enable,
-> +       .clk_disable =3D mtk_ddp_clk_disable,
-> +       .config =3D mtk_postmask_config,
-> +       .start =3D mtk_postmask_start,
-> +       .stop =3D mtk_postmask_stop,
-> +};
-> +
->  static const struct mtk_ddp_comp_funcs ddp_rdma =3D {
->         .clk_enable =3D mtk_rdma_clk_enable,
->         .clk_disable =3D mtk_rdma_clk_disable,
-> @@ -324,6 +364,7 @@ static const char * const mtk_ddp_comp_stem[MTK_DDP_C=
-OMP_TYPE_MAX] =3D {
->         [MTK_DISP_MUTEX] =3D "mutex",
->         [MTK_DISP_OD] =3D "od",
->         [MTK_DISP_BLS] =3D "bls",
-> +       [MTK_DISP_POSTMASK] =3D "postmask",
->  };
->
->  struct mtk_ddp_comp_match {
-> @@ -333,36 +374,37 @@ struct mtk_ddp_comp_match {
->  };
->
->  static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_ID_=
-MAX] =3D {
-> -       [DDP_COMPONENT_AAL0]    =3D { MTK_DISP_AAL,       0, &ddp_aal },
-> -       [DDP_COMPONENT_AAL1]    =3D { MTK_DISP_AAL,       1, &ddp_aal },
-> -       [DDP_COMPONENT_BLS]     =3D { MTK_DISP_BLS,       0, NULL },
-> -       [DDP_COMPONENT_CCORR]   =3D { MTK_DISP_CCORR,     0, &ddp_ccorr }=
-,
-> -       [DDP_COMPONENT_COLOR0]  =3D { MTK_DISP_COLOR,     0, &ddp_color }=
-,
-> -       [DDP_COMPONENT_COLOR1]  =3D { MTK_DISP_COLOR,     1, &ddp_color }=
-,
-> -       [DDP_COMPONENT_DITHER]  =3D { MTK_DISP_DITHER,    0, &ddp_dither =
-},
-> -       [DDP_COMPONENT_DPI0]    =3D { MTK_DPI,            0, &ddp_dpi },
-> -       [DDP_COMPONENT_DPI1]    =3D { MTK_DPI,            1, &ddp_dpi },
-> -       [DDP_COMPONENT_DSI0]    =3D { MTK_DSI,            0, &ddp_dsi },
-> -       [DDP_COMPONENT_DSI1]    =3D { MTK_DSI,            1, &ddp_dsi },
-> -       [DDP_COMPONENT_DSI2]    =3D { MTK_DSI,            2, &ddp_dsi },
-> -       [DDP_COMPONENT_DSI3]    =3D { MTK_DSI,            3, &ddp_dsi },
-> -       [DDP_COMPONENT_GAMMA]   =3D { MTK_DISP_GAMMA,     0, &ddp_gamma }=
-,
-> -       [DDP_COMPONENT_OD0]     =3D { MTK_DISP_OD,        0, &ddp_od },
-> -       [DDP_COMPONENT_OD1]     =3D { MTK_DISP_OD,        1, &ddp_od },
-> -       [DDP_COMPONENT_OVL0]    =3D { MTK_DISP_OVL,       0, &ddp_ovl },
-> -       [DDP_COMPONENT_OVL1]    =3D { MTK_DISP_OVL,       1, &ddp_ovl },
-> -       [DDP_COMPONENT_OVL_2L0] =3D { MTK_DISP_OVL_2L,    0, &ddp_ovl },
-> -       [DDP_COMPONENT_OVL_2L1] =3D { MTK_DISP_OVL_2L,    1, &ddp_ovl },
-> -       [DDP_COMPONENT_OVL_2L2] =3D { MTK_DISP_OVL_2L,    2, &ddp_ovl },
-> -       [DDP_COMPONENT_PWM0]    =3D { MTK_DISP_PWM,       0, NULL },
-> -       [DDP_COMPONENT_PWM1]    =3D { MTK_DISP_PWM,       1, NULL },
-> -       [DDP_COMPONENT_PWM2]    =3D { MTK_DISP_PWM,       2, NULL },
-> -       [DDP_COMPONENT_RDMA0]   =3D { MTK_DISP_RDMA,      0, &ddp_rdma },
-> -       [DDP_COMPONENT_RDMA1]   =3D { MTK_DISP_RDMA,      1, &ddp_rdma },
-> -       [DDP_COMPONENT_RDMA2]   =3D { MTK_DISP_RDMA,      2, &ddp_rdma },
-> -       [DDP_COMPONENT_UFOE]    =3D { MTK_DISP_UFOE,      0, &ddp_ufoe },
-> -       [DDP_COMPONENT_WDMA0]   =3D { MTK_DISP_WDMA,      0, NULL },
-> -       [DDP_COMPONENT_WDMA1]   =3D { MTK_DISP_WDMA,      1, NULL },
-> +       [DDP_COMPONENT_AAL0]            =3D { MTK_DISP_AAL,       0, &ddp=
-_aal },
-> +       [DDP_COMPONENT_AAL1]            =3D { MTK_DISP_AAL,       1, &ddp=
-_aal },
-> +       [DDP_COMPONENT_BLS]             =3D { MTK_DISP_BLS,       0, NULL=
- },
-> +       [DDP_COMPONENT_CCORR]           =3D { MTK_DISP_CCORR,     0, &ddp=
-_ccorr },
-> +       [DDP_COMPONENT_COLOR0]          =3D { MTK_DISP_COLOR,     0, &ddp=
-_color },
-> +       [DDP_COMPONENT_COLOR1]          =3D { MTK_DISP_COLOR,     1, &ddp=
-_color },
-> +       [DDP_COMPONENT_DITHER]          =3D { MTK_DISP_DITHER,    0, &ddp=
-_dither },
-> +       [DDP_COMPONENT_DPI0]            =3D { MTK_DPI,            0, &ddp=
-_dpi },
-> +       [DDP_COMPONENT_DPI1]            =3D { MTK_DPI,            1, &ddp=
-_dpi },
-> +       [DDP_COMPONENT_DSI0]            =3D { MTK_DSI,            0, &ddp=
-_dsi },
-> +       [DDP_COMPONENT_DSI1]            =3D { MTK_DSI,            1, &ddp=
-_dsi },
-> +       [DDP_COMPONENT_DSI2]            =3D { MTK_DSI,            2, &ddp=
-_dsi },
-> +       [DDP_COMPONENT_DSI3]            =3D { MTK_DSI,            3, &ddp=
-_dsi },
-> +       [DDP_COMPONENT_GAMMA]           =3D { MTK_DISP_GAMMA,     0, &ddp=
-_gamma },
-> +       [DDP_COMPONENT_OD0]             =3D { MTK_DISP_OD,        0, &ddp=
-_od },
-> +       [DDP_COMPONENT_OD1]             =3D { MTK_DISP_OD,        1, &ddp=
-_od },
-> +       [DDP_COMPONENT_OVL0]            =3D { MTK_DISP_OVL,       0, &ddp=
-_ovl },
-> +       [DDP_COMPONENT_OVL1]            =3D { MTK_DISP_OVL,       1, &ddp=
-_ovl },
-> +       [DDP_COMPONENT_OVL_2L0]         =3D { MTK_DISP_OVL_2L,    0, &ddp=
-_ovl },
-> +       [DDP_COMPONENT_OVL_2L1]         =3D { MTK_DISP_OVL_2L,    1, &ddp=
-_ovl },
-> +       [DDP_COMPONENT_OVL_2L2]         =3D { MTK_DISP_OVL_2L,    2, &ddp=
-_ovl },
-> +       [DDP_COMPONENT_POSTMASK0]       =3D { MTK_DISP_POSTMASK,  0, &ddp=
-_postmask },
-> +       [DDP_COMPONENT_PWM0]            =3D { MTK_DISP_PWM,       0, NULL=
- },
-> +       [DDP_COMPONENT_PWM1]            =3D { MTK_DISP_PWM,       1, NULL=
- },
-> +       [DDP_COMPONENT_PWM2]            =3D { MTK_DISP_PWM,       2, NULL=
- },
-> +       [DDP_COMPONENT_RDMA0]           =3D { MTK_DISP_RDMA,      0, &ddp=
-_rdma },
-> +       [DDP_COMPONENT_RDMA1]           =3D { MTK_DISP_RDMA,      1, &ddp=
-_rdma },
-> +       [DDP_COMPONENT_RDMA2]           =3D { MTK_DISP_RDMA,      2, &ddp=
-_rdma },
-> +       [DDP_COMPONENT_UFOE]            =3D { MTK_DISP_UFOE,      0, &ddp=
-_ufoe },
-> +       [DDP_COMPONENT_WDMA0]           =3D { MTK_DISP_WDMA,      0, NULL=
- },
-> +       [DDP_COMPONENT_WDMA1]           =3D { MTK_DISP_WDMA,      1, NULL=
- },
->  };
->
->  static bool mtk_drm_find_comp_in_ddp(struct device *dev,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.h
-> index bb914d976cf5..cd1dec6b4cdf 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -30,6 +30,7 @@ enum mtk_ddp_comp_type {
->         MTK_DISP_UFOE,
->         MTK_DSI,
->         MTK_DPI,
-> +       MTK_DISP_POSTMASK,
->         MTK_DISP_PWM,
->         MTK_DISP_MUTEX,
->         MTK_DISP_OD,
-> --
-> 2.25.1
->
+  92a59d7f381d ("selftests: gpio: fix gpio compiling error")
+  4f4d0af7b2d9 ("selftests: gpio: restore CFLAGS options")
+
+from the gpio-brgl-fixes tree and commits:
+
+  79d93060a28e ("selftests: gpio: provide a helper for reading chip info")
+  60283bc9fceb ("selftests: gpio: add a helper for reading GPIO line names")
+
+from the gpio-sim tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/XR0f4sYqyUQ5TPungndR/bD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGS76wACgkQAVBC80lX
+0GxnkggAjc5rkjoyw4RLbXJBfNU1zPAcFM9qwq/St7w1I25bqYepLCsvh2hkIY2g
+WmX2RxKB9V9gyzwff95UJ4nlo5c5ue8LLVjX60ejELV0so2HYYQxyxjFJqkz84A2
+zDc4z2dSUe7pgMbGxfuffwuKdggQGrbiXZV+MlUAjCmCw1vwC10TnJ72/qywLnMH
+jPxK3kTIY9f7oaMXaWd/yfLjLVLMtca919W3bYWeuxjX5hbWhNZbol7VrZqc1Kyq
+RADaiMw1Wu7U+SQhig+xhNrfe68hnHj9bPzSdRkZhF/TxqkimcIhr093a86NuxdC
+MFBidE+cG8szcEoxneS5fcr6L/Jydg==
+=UXXZ
+-----END PGP SIGNATURE-----
+
+--Sig_/XR0f4sYqyUQ5TPungndR/bD--
