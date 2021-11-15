@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88EA4510BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2C24510AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239171AbhKOSym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:54:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        id S242117AbhKOSwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:52:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238183AbhKORfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238195AbhKORfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:35:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 812A7632C5;
-        Mon, 15 Nov 2021 17:23:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF3CE632C8;
+        Mon, 15 Nov 2021 17:23:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997005;
-        bh=mawGj9bAkOCUY1SQvO7k329OHtMuiLJXsMOHqPd/XFo=;
+        s=korg; t=1636997007;
+        bh=ybJrmMqE2rmiw6GzmYCKDv3daL/qTWofgCrNu0vNe0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ydlm3hBVeAKrT5fGUfkPsX+nga0kwA+ld2PH75wPoIx0TyxlAN9l3nWWoIzJbWGB/
-         z8PnE5zZ28rGhKI6CWcNtULTZZC4JABR1d5DaC2E2bWODHarhM7tSr0XSqHOpBhRZm
-         NsYf/RLP0b5RReu5h1fq6kX2Ri+3HkTgT8tb4plQ=
+        b=2MG8uU9NK8b5GAOyZYPVDa0HdK4CfVc+lgEhyysWpNAVnn06vl1DhUUbAOSFZFAIG
+         GHi7MDQO4VKDszkp+OgLjq+vKgHlwt00eXMl3s24Ui4GdiOusT6J2Yn5uiSOXUA6qP
+         q7+cZ6c/QHeMP34Ojocop2wRgrIg6wEIy2IpfGV4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 315/355] xen-pciback: Fix return in pm_ctrl_init()
-Date:   Mon, 15 Nov 2021 18:03:59 +0100
-Message-Id: <20211115165323.907176424@linuxfoundation.org>
+Subject: [PATCH 5.4 316/355] net: davinci_emac: Fix interrupt pacing disable
+Date:   Mon, 15 Nov 2021 18:04:00 +0100
+Message-Id: <20211115165323.940023122@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,38 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Maxim Kiselev <bigunclemax@gmail.com>
 
-[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
+[ Upstream commit d52bcb47bdf971a59a2467975d2405fcfcb2fa19 ]
 
-Return NULL instead of passing to ERR_PTR while err is zero,
-this fix smatch warnings:
-drivers/xen/xen-pciback/conf_space_capability.c:163
- pm_ctrl_init() warn: passing zero to 'ERR_PTR'
+This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
+disable rx irq coalescing.
 
-Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Previously we could enable rx irq coalescing via ethtool
+(For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
+it because this part rejects 0 value:
+
+       if (!coal->rx_coalesce_usecs)
+               return -EINVAL;
+
+Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing functionality.")
+Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Link: https://lore.kernel.org/r/20211101152343.4193233-1-bigunclemax@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/ti/davinci_emac.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
-index e5694133ebe57..42f0f64fcba47 100644
---- a/drivers/xen/xen-pciback/conf_space_capability.c
-+++ b/drivers/xen/xen-pciback/conf_space_capability.c
-@@ -160,7 +160,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
- 	}
+diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
+index 6869c5c74b9f7..fac59032bf83a 100644
+--- a/drivers/net/ethernet/ti/davinci_emac.c
++++ b/drivers/net/ethernet/ti/davinci_emac.c
+@@ -412,8 +412,20 @@ static int emac_set_coalesce(struct net_device *ndev,
+ 	u32 int_ctrl, num_interrupts = 0;
+ 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
  
- out:
--	return ERR_PTR(err);
-+	return err ? ERR_PTR(err) : NULL;
- }
+-	if (!coal->rx_coalesce_usecs)
+-		return -EINVAL;
++	if (!coal->rx_coalesce_usecs) {
++		priv->coal_intvl = 0;
++
++		switch (priv->version) {
++		case EMAC_VERSION_2:
++			emac_ctrl_write(EMAC_DM646X_CMINTCTRL, 0);
++			break;
++		default:
++			emac_ctrl_write(EMAC_CTRL_EWINTTCNT, 0);
++			break;
++		}
++
++		return 0;
++	}
  
- static const struct config_field caplist_pm[] = {
+ 	coal_intvl = coal->rx_coalesce_usecs;
+ 
 -- 
 2.33.0
 
