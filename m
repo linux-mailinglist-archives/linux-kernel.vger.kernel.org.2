@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6E0451894
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EFE45189B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350411AbhKOXCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:02:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54984 "EHLO mail.kernel.org"
+        id S1351118AbhKOXDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:03:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243200AbhKOSxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:53:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCEEE632A7;
-        Mon, 15 Nov 2021 18:10:21 +0000 (UTC)
+        id S243237AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FDC6347C;
+        Mon, 15 Nov 2021 18:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999822;
-        bh=uw+xNSlOKHQ7WjXoIaAkfruCcTcF5AlDPV/ZZq3PUAs=;
+        s=korg; t=1636999850;
+        bh=/Ahj1tKPRMFXqLpcC/UoHU3H1Nf7bUb9cHxIfLYN9aA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y5Lmvyko8DKn0ax1JJDjMSPE27PFCt6cY6axHU1xPb1JhWsYXq9djGblD1uyrwvKA
-         0yDPC8LPeQdJWvq06+nM3lmVEgVl/HcstozibWRw7+ql7z08iG6Oo+315VUmmBrj9W
-         1tdyFRpU2iIhN/hnguM3kXAGwqDD/L0qri1A+kLk=
+        b=HGt2rRwOA9vJ6rYHE4cmgIBqojvuMVsPW1nWpaslSTos1/GPtIsrEf5ABMWky3MH/
+         agBUSoW1597m/dXtEtam2IHvzcUle5Tm31nqjc0uhgN63Cw4V6HQH+uZdMmlZ1BA05
+         fXgJI3UWqmWfZB5wVERnuaSIbJjyFmSNecXUeo2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 437/849] drm/msm: fix potential NULL dereference in cleanup
-Date:   Mon, 15 Nov 2021 17:58:40 +0100
-Message-Id: <20211115165435.067246096@linuxfoundation.org>
+Subject: [PATCH 5.14 446/849] ACPI: PM: Turn off unused wakeup power resources
+Date:   Mon, 15 Nov 2021 17:58:49 +0100
+Message-Id: <20211115165435.370379193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,35 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 027d052a36e56789a2134772bacb4fd0860f03a3 ]
+[ Upstream commit 7a63296d6f579a02b2675b4b0fe5b1cd3235e8d3 ]
 
-The "msm_obj->node" list needs to be initialized earlier so that the
-list_del() in msm_gem_free_object() doesn't experience a NULL pointer
-dereference.
+If an ACPI power resource is found to be "on" during the
+initialization of the list of wakeup power resources of a device,
+it is reference counted and its wakeup_enabled flag is set, which is
+problematic if the deivce in question is the only user of the given
+power resource, it is never runtime-suspended and it is not allowed
+to wake up the system from sleep, because in that case the given
+power resource will stay "on" until the system reboots and energy
+will be wasted.
 
-Fixes: 6ed0897cd800 ("drm/msm: Fix debugfs deadlock")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20211013081133.GF6010@kili
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+It is better to simply turn off wakeup power resources that are "on"
+during the initialization unless their reference counters are not
+zero, because that may be the only opportunity to prevent them from
+staying in the "on" state all the time.
+
+Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_gem.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/power.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 1e8a971a86f29..1ba18f53dbda1 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -1184,6 +1184,7 @@ static int msm_gem_new_impl(struct drm_device *dev,
- 	msm_obj->madv = MSM_MADV_WILLNEED;
+diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
+index eba7785047cad..dfe760bd7157f 100644
+--- a/drivers/acpi/power.c
++++ b/drivers/acpi/power.c
+@@ -606,20 +606,19 @@ int acpi_power_wakeup_list_init(struct list_head *list, int *system_level_p)
  
- 	INIT_LIST_HEAD(&msm_obj->submit_entry);
-+	INIT_LIST_HEAD(&msm_obj->node);
- 	INIT_LIST_HEAD(&msm_obj->vmas);
+ 	list_for_each_entry(entry, list, node) {
+ 		struct acpi_power_resource *resource = entry->resource;
+-		int result;
+ 		u8 state;
  
- 	*obj = &msm_obj->base;
+ 		mutex_lock(&resource->resource_lock);
+ 
+-		result = acpi_power_get_state(resource, &state);
+-		if (result) {
+-			mutex_unlock(&resource->resource_lock);
+-			return result;
+-		}
+-		if (state == ACPI_POWER_RESOURCE_STATE_ON) {
+-			resource->ref_count++;
+-			resource->wakeup_enabled = true;
+-		}
++		/*
++		 * Make sure that the power resource state and its reference
++		 * counter value are consistent with each other.
++		 */
++		if (!resource->ref_count &&
++		    !acpi_power_get_state(resource, &state) &&
++		    state == ACPI_POWER_RESOURCE_STATE_ON)
++			__acpi_power_off(resource);
++
+ 		if (system_level > resource->system_level)
+ 			system_level = resource->system_level;
+ 
 -- 
 2.33.0
 
