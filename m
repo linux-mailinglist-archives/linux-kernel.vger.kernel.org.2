@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA4A4523BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FD94523A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243463AbhKPB3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S1351820AbhKPB16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239981AbhKOTAH (ORCPT
+        with ESMTP id S243864AbhKOTIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:00:07 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A060C04646F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:56:04 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id r11so11815997edd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t0OUGI1k+NoCaWNd0ewGVN0FMA6CALGUV3el2LJ06us=;
-        b=LFum/qab30nWQarJgC8HTDKj/7PEoEdFPtyHcTHO5FUUKxSwXiuMzn3XqIYYClt4w8
-         cVqVXobCm61Rlt+J2C325PDyHUFf7erycpTR4GqvoEyM9+ADtno58vqfNJ5ymqoeze4e
-         zTr0fFvpuavN1xBgh3dHvmKNQWN8jOZ/VJ0cI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t0OUGI1k+NoCaWNd0ewGVN0FMA6CALGUV3el2LJ06us=;
-        b=sbnWsikoEmvVkDYkj6yI9JpHy2vBxAhcng6JacFPhE7VEidGLvf7TPzEXT6vbyDNA0
-         f3pUeuaNdsQDyPt5vrRvAdCZv0kdH+AFFNTBAB89n8zhlxMk4qswLKplXtL0hpxR0PWj
-         AZkclxG6aC+zv8RZxrW0dRG9QG0VUBGBEU8gdn2bY+3W8M+rWWdrG3ilT03nX0l0rL5C
-         Nrtv1dBRERqAH5mkgLBBujCzGxzENO/OHbubMk17eg+TpMNTot+a+mJFYmxH1gj2waB9
-         zNdPeSZoqt/gsdjmZM6kznPo/WcGgybJRjttXoV9s+ldkTzPq422wCnYQ58t1eCsF0bZ
-         /AfQ==
-X-Gm-Message-State: AOAM5322BYJrar19AKXmvCeUUhoUG5n6Ho9FwNpAe2fT9+Hi46dQBokc
-        CByqDQzxVVPCS5qNTlMxgKIRViaWZYRK8N9G
-X-Google-Smtp-Source: ABdhPJxeIcgnlG97lLIbbr7Tx3Y6spVoqXWPrHQZtpx1aCz33VJZByy7ospwBNT/7r4Oy7b0rwtQxg==
-X-Received: by 2002:a05:6402:4401:: with SMTP id y1mr723679eda.225.1636998962481;
-        Mon, 15 Nov 2021 09:56:02 -0800 (PST)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id ne33sm7026280ejc.6.2021.11.15.09.56.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 09:56:02 -0800 (PST)
-Received: by mail-wr1-f42.google.com with SMTP id d27so32386189wrb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 09:56:01 -0800 (PST)
-X-Received: by 2002:a5d:50c6:: with SMTP id f6mr1063026wrt.131.1636998961630;
- Mon, 15 Nov 2021 09:56:01 -0800 (PST)
+        Mon, 15 Nov 2021 14:08:10 -0500
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD438C06EDE1;
+        Mon, 15 Nov 2021 09:58:21 -0800 (PST)
+Received: from [2a04:4540:1401:b700:606b:3eee:8c1b:a587]
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <john@phrozen.org>)
+        id 1mmgF6-0005a6-Ay; Mon, 15 Nov 2021 18:58:08 +0100
+Message-ID: <4342c4de-b516-8992-a3f3-4eea7ff4de40@phrozen.org>
+Date:   Mon, 15 Nov 2021 18:58:07 +0100
 MIME-Version: 1.0
-References: <163689642456.3249160.13397023971040961440.tglx@xen13>
- <163689642744.3249160.6971106813056927807.tglx@xen13> <CAHk-=wjQxHwdC61ore062Hc5PAF2o6CJnDG_NsQe+e599RovJw@mail.gmail.com>
- <YZKCBqmb1gfKvFcR@hirez.programming.kicks-ass.net> <YZKFuE0gpdlTiBOv@hirez.programming.kicks-ass.net>
-In-Reply-To: <YZKFuE0gpdlTiBOv@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Nov 2021 09:55:45 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whmGsVzPkHSErAGxRCrxwTFXoxjULrdbYeYKEq-sc7MJg@mail.gmail.com>
-Message-ID: <CAHk-=whmGsVzPkHSErAGxRCrxwTFXoxjULrdbYeYKEq-sc7MJg@mail.gmail.com>
-Subject: Re: [GIT pull] timers/urgent for v5.16-rc1
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] mips: lantiq: add support for clk_get_parent()
+Content-Language: en-GB
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20211115012051.16302-1-rdunlap@infradead.org>
+From:   John Crispin <john@phrozen.org>
+In-Reply-To: <20211115012051.16302-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 8:07 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Also, clearly that comments needs to go..
 
-Yeah, with that your patch looks good to me.
 
-Thanks,
-          Linus
+On 15.11.21 02:20, Randy Dunlap wrote:
+> Provide a simple implementation of clk_get_parent() in the
+> lantiq subarch so that callers of it will build without errors.
+> 
+> Fixes this build error:
+> ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+> 
+> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Cc: linux-mips@vger.kernel.org
+> Cc: John Crispin <john@phrozen.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Acked-by: John Crispin <john@phrozen.org>
+
+// we added the same fix for mips/ralink a while back
+
+> ---
+>   arch/mips/lantiq/clk.c |    6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> --- linux-next-20211112.orig/arch/mips/lantiq/clk.c
+> +++ linux-next-20211112/arch/mips/lantiq/clk.c
+> @@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
+>   }
+>   EXPORT_SYMBOL(clk_deactivate);
+>   
+> +struct clk *clk_get_parent(struct clk *clk)
+> +{
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL(clk_get_parent);
+> +
+>   static inline u32 get_counter_resolution(void)
+>   {
+>   	u32 res;
+> 
