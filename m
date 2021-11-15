@@ -2,119 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78E2451BD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED296451BCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352441AbhKPAIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S1347989AbhKPAHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347651AbhKOTlC (ORCPT
+        with ESMTP id S1346292AbhKOTeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:41:02 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF16C061746
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:23:31 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so111281pja.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 11:23:31 -0800 (PST)
+        Mon, 15 Nov 2021 14:34:01 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C7BC061766;
+        Mon, 15 Nov 2021 11:23:35 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id r132so13281383pgr.9;
+        Mon, 15 Nov 2021 11:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nPVEo+hKHgyq8lsQKVBoK2yvYubgVGaMGZmVFG+CK/w=;
-        b=WM7edfzFScZ2aXRNtXCZJKRhJYyurxkKdDUbO6Z7/ADhGlQC/mUbv1njQHVyOMQWcy
-         +e2d/WqmjKTNBgIfoYxULbutarIDJQ2smdwwQjYZ5iRBt70Ci6G1ffvkClhFEt2xQNri
-         ZaQClW8iWH+HCe+8jGN6b1Xo+ZhgMBarSGAvMZ8/J7o1zbK6mR7tNOxItbPI64xMi4Qk
-         O3KG9jTIM9LbrYdrTYPcCd6yX1TPiww0seJOVcpR7bhGfsu7RFyX2UhH3tVQc5olrOol
-         R3p2Szf+oFpU0qO/Ev5l15H01xWW95nDLAYGedtbIz3m2PCwCXYImYpwxbWp1ZAE7vSL
-         CeEw==
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=qOdfviDawrnQEmhpbh1EywiWPqwK+XMcwjxkSzr6gBk=;
+        b=HEkPVJxufusC0xGDUimU2ECSru8wAVsuOgcAa8mlub4XtZUF5G3IcbwWQX055kI0vN
+         fBqpLpMOyLtDlrWfXIabCgTjMqIQ1Kwr1qOlgn/DD0v/67O2U/NhM2gNFom2rhtrqQmG
+         guHygzAopddmSAnLOH/zFdVNaCIbJYhs7lO1D8epA2ZJxfx1aSplQWN9olV5TsZcn8jX
+         rpUJJI8oSA+cE1QK6veuJ1Waakhw9taGs43e5/VLg88jPSq1RClcTnSmXB/GTqUj/A9R
+         D4YOtQHsi0l8U3Ty9uMJRcbhsmXS15HC+pl780dd1n8ucfwz2YUyEmQ0cRRuP5llYNYr
+         d2oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nPVEo+hKHgyq8lsQKVBoK2yvYubgVGaMGZmVFG+CK/w=;
-        b=kCjC/abUArz1fcWCHcBzLVvADNFsvBJBwRgQEx8BtLCSUxOtadaipiyO09s2eGfBPn
-         XNIVFT8rKBSTM1WLVtWkWtGNlluDWDAFj7TxoZuxOm4q8RZdVmLA5HqvrViO1w6jq4Bs
-         pTdVB+csxz8Uz/QFXfjmMNVkjd2M6D8kZte7rZsza8HNmgyPbuAbWUZyz4pC2sJNsIyU
-         KNphjq7SnR/DMYyacqN+ATTwyAyuOes3gA2fkAHHOOXk5sUwgQ52OIcWNsdq0jcGWcGs
-         sWR1do0pPhJaCNz6SwzufQuSl+K7T186soyNC5FlhtVbXzsvU+knjX5BS8HuG+jzB1ll
-         49kw==
-X-Gm-Message-State: AOAM532vGfpLSgqT6abSqbvCxGBdHmCK5MeRFaQ0ZkvrTE167SlKv1rU
-        v9QEX7IFnKNXqad2GZrF+4mlSQ==
-X-Google-Smtp-Source: ABdhPJyNw1GrRvLTMWZ6Xnn4PkIKCBsuERQ7wlYQcz2IeqXCD/FNpYcGvDcf5rJiPR75oAR/sMno2w==
-X-Received: by 2002:a17:90a:df8d:: with SMTP id p13mr67019704pjv.197.1637004211130;
-        Mon, 15 Nov 2021 11:23:31 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u38sm17006008pfg.0.2021.11.15.11.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 11:23:30 -0800 (PST)
-Date:   Mon, 15 Nov 2021 19:23:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Update number of zapped pages even if page
- list is stable
-Message-ID: <YZKzr4mn1jJ3vdqK@google.com>
-References: <20211111221448.2683827-1-seanjc@google.com>
- <CALzav=dpzzKgaNRLrSBy71WBvybWmRJ39eDv4hPXsbU_DSS-fA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=qOdfviDawrnQEmhpbh1EywiWPqwK+XMcwjxkSzr6gBk=;
+        b=s9Gn6kSEqsUrCwI75mnQTBEC7W552PIQ9a1pIT1l2KVYZEimNyNiUHXD09/GsHnl56
+         kPPW2Lhanszmc97N70eCRFMDFU/5PkGeu2/MsxfpDOzNM6TDouJyfRAwN+AeDatgfs5r
+         JXbcrOtmwOWFVthCSqn2DRt0hwm3yv0bdMs1AaMftr2KGMyhlGED6J1xbxzvdwwWXhkc
+         5mn6nW5MFbCn3V16oIfrEu4rrJ+XPoUYQv8otxPc3zQMQliF6tvAiXl6WZ/U3OAxy3f1
+         JziSVIkdaSYdQofm+r1gd9gd4SlHdDnv3WltWm+aOLMNn4c4zf47OQ8DJVGcYPwmzmQj
+         1PRg==
+X-Gm-Message-State: AOAM531KxCh5TLEo30mwIvBv2UPR1j06R/EG0tXvy7Br7DrAA1/W2PLp
+        6AmTpaqBt4rG30x7PHUkLF/ccPQAbbw=
+X-Google-Smtp-Source: ABdhPJwjTnI3d8c95mBsQVyrQZ2iPHzV2zKNNllAo0wR0AEqNf1JWUnfLlHrZ4LFO1foDav+Q+JZxA==
+X-Received: by 2002:aa7:9004:0:b0:4a2:e58e:9442 with SMTP id m4-20020aa79004000000b004a2e58e9442mr952983pfo.24.1637004215201;
+        Mon, 15 Nov 2021 11:23:35 -0800 (PST)
+Received: from [10.1.1.26] (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
+        by smtp.gmail.com with ESMTPSA id a23sm4871537pgl.37.2021.11.15.11.23.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Nov 2021 11:23:34 -0800 (PST)
+Subject: Re: [PATCH 4/5] block: move queue enter logic into
+ blk_mq_submit_bio()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ming Lei <ming.lei@redhat.com>
+References: <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk>
+ <YYQr3jl3avsuOUAJ@infradead.org>
+ <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk>
+ <YYQuyt2/y1MgzRi0@infradead.org>
+ <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
+ <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
+ <YY0eVnbjmHmPZ3M4@T590>
+ <CAMuHMdWTiF3MpcwHc=jCGLoBtTngzXTLHsYSYKPyfLBFBn8B2g@mail.gmail.com>
+ <YY01hzAuvmeMxO+0@T590> <17ce59ff-bc8c-e8c8-22e1-96605440629a@kernel.dk>
+ <YY246bCP+wKw0Z2c@T590>
+ <CAMuHMdV30yvjam8i0Z4Nsu=e1YhPaRb4E1bAtw7=268v6TnrJg@mail.gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-block@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <ee78b20c-36f0-408d-87d0-b8b75a66110d@gmail.com>
+Date:   Tue, 16 Nov 2021 08:23:27 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALzav=dpzzKgaNRLrSBy71WBvybWmRJ39eDv4hPXsbU_DSS-fA@mail.gmail.com>
+In-Reply-To: <CAMuHMdV30yvjam8i0Z4Nsu=e1YhPaRb4E1bAtw7=268v6TnrJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021, David Matlack wrote:
-> On Thu, Nov 11, 2021 at 2:14 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > When zapping obsolete pages, update the running count of zapped pages
-> > regardless of whether or not the list has become unstable due to zapping
-> > a shadow page with its own child shadow pages.  If the VM is backed by
-> > mostly 4kb pages, KVM can zap an absurd number of SPTEs without bumping
-> > the batch count and thus without yielding.  In the worst case scenario,
-> > this can cause an RCU stall.
-> >
-> >   rcu: INFO: rcu_sched self-detected stall on CPU
-> >   rcu:     52-....: (20999 ticks this GP) idle=7be/1/0x4000000000000000
-> >                                           softirq=15759/15759 fqs=5058
-> >    (t=21016 jiffies g=66453 q=238577)
-> >   NMI backtrace for cpu 52
-> >   Call Trace:
-> >    ...
-> >    mark_page_accessed+0x266/0x2f0
-> >    kvm_set_pfn_accessed+0x31/0x40
-> >    handle_removed_tdp_mmu_page+0x259/0x2e0
-> >    __handle_changed_spte+0x223/0x2c0
-> >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> >    __handle_changed_spte+0x223/0x2c0
-> >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> >    __handle_changed_spte+0x223/0x2c0
-> >    zap_gfn_range+0x141/0x3b0
-> >    kvm_tdp_mmu_zap_invalidated_roots+0xc8/0x130
-> 
-> This is a useful patch but I don't see the connection with this stall.
-> The stall is detected in kvm_tdp_mmu_zap_invalidated_roots, which runs
-> after kvm_zap_obsolete_pages. How would rescheduling during
-> kvm_zap_obsolete_pages help?
+On 12/11/21 20:51, Geert Uytterhoeven wrote:
+[...]
+>>>>>> BTW, today I just found that hang in blk_mq_freeze_queue_wait() is
+>>>>>> caused by commit 900e080752025f00, and the following patch can fix it:
+>>>>>>
+>>>>>> - blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
+>>>>>>
+>>>>>> https://lore.kernel.org/linux-block/20211111085650.GA476@lst.de/T/#m759b88fda094a65ebf29bc81b780967cdaf9cf28
+>>>>>>
+>>>>>> Maybe you can try the above patch.
+>>>>>
+>>>>> Thanks! I have applied both patches, but it doesn't make a difference.
+>>>>
+>>>> Thanks for your test!
+>>>>
+>>>> Can you try the following patch?
+>
+> [...]
+>
+>>> That's definitely a real fix, akin to the other pre-enter variants, this
+>>> one just post checks. Geert, can you give this a whirl?
+>
+> With both of
+>
+>     blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
+>     blk-mq: rename blk_attempt_bio_merge
+>
+> applied, and the version above, I no longer saw the error, but the
+> boot sometimes hangs after:
+>
+>     ext3 filesystem being remounted at / supports timestamps until
+> 2038 (0x7fffffff)
+>
+> I don't know how easy that is to trigger: it hung on my first try, but
+> the second and third tries it booted fully into old Debian userspace.
+>
+>>> Ming, would you mind sending this as a real patch?
+>>
+>> The above patch may not be enough, since submit_bio_checks() is done in
+>> case of using cached request, so how about the following patch(un-tested)?
+>
+> Worked fine in five subsequent boots. Thanks!
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Ah shoot, I copy+pasted the wrong splat.  The correct, revelant backtrace is:
+For good measure: block-5.16-2021-11-13 tested fine running IO stress 
+tests on a mix of IDE and SCSI disks, only one of those supporting DPO/FUA.
 
-   mark_page_accessed+0x266/0x2e0
-   kvm_set_pfn_accessed+0x31/0x40
-   mmu_spte_clear_track_bits+0x136/0x1c0
-   drop_spte+0x1a/0xc0
-   mmu_page_zap_pte+0xef/0x120
-   __kvm_mmu_prepare_zap_page+0x205/0x5e0
-   kvm_mmu_zap_all_fast+0xd7/0x190
-   kvm_mmu_invalidate_zap_pages_in_memslot+0xe/0x10
-   kvm_page_track_flush_slot+0x5c/0x80
-   kvm_arch_flush_shadow_memslot+0xe/0x10
-   kvm_set_memslot+0x1a8/0x5d0
-   __kvm_set_memory_region+0x337/0x590
-   kvm_vm_ioctl+0xb08/0x1040
+Using
+
+WARN_ON(rq->cmd_flags & REQ_FUA && !sdkp->DPOFUA);
+
+in sd.c:sd_setup_read_write_cmnd(), nothing seen in the logs.
+
+Cheers,
+
+	Michael
+
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
