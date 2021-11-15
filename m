@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01BC4515A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445434515A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352527AbhKOUqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:46:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
+        id S1352569AbhKOUrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:47:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237872AbhKOSHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237873AbhKOSHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:07:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFF27633A4;
-        Mon, 15 Nov 2021 17:45:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94ADD633A0;
+        Mon, 15 Nov 2021 17:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998317;
-        bh=hez5oQVPSFGPapGDxet0O58mPzjLjxoOuyDKA05VivY=;
+        s=korg; t=1636998320;
+        bh=Ox9GGarjKrJ43zzWDMJIOhOgpbbTPKCURK2YLUmFtjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tu6OxPrg05+QqVGb9iNK0dHH2zL53V5L73sHLQ7yRFV9gHACOHQVKwnqOtW0rSLVt
-         mBG3JGHx+XT0Im7qmpSX/YR1Mm3N5klOZjnm0W9WTBHnc1+utunJKyz/EdRrSzGmIw
-         PM6a0IjEpHuAxRXYXw9Lq8bIiN2na1KQGqzomTSE=
+        b=EVrfF2Yq05zbQuNYlSQwNghrSOiP63eNw9Q7YnjmUXNH+Eq0I7w4fOgyrOT3YacVW
+         /HQV6NZ9HK7WuIuS5F76a2f91GG0yU+fgAL+Z998ImztEC/mk5rZcSULIAks5Fg+LH
+         xn93gMjiYZaPI4VHuTG0S9NuC4wBw73PwSz7hGao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 433/575] staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
-Date:   Mon, 15 Nov 2021 18:02:38 +0100
-Message-Id: <20211115165358.753813293@linuxfoundation.org>
+Subject: [PATCH 5.10 434/575] pinctrl: renesas: checker: Fix off-by-one bug in drive register check
+Date:   Mon, 15 Nov 2021 18:02:39 +0100
+Message-Id: <20211115165358.784783019@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,45 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 9ca0e55e52c7b2a99f3c2051fc4bd1c63a061519 ]
+[ Upstream commit 28e7f8ff90583791a034d43b5d2e3fe394142e13 ]
 
-Fix the following build/link errors:
+The GENMASK(h, l) macro creates a contiguous bitmask starting at bit
+position @l and ending at position @h, inclusive.
 
-  ld: drivers/staging/ks7010/ks_hostif.o: in function `michael_mic.constprop.0':
-  ks_hostif.c:(.text+0x95b): undefined reference to `crypto_alloc_shash'
-  ld: ks_hostif.c:(.text+0x97a): undefined reference to `crypto_shash_setkey'
-  ld: ks_hostif.c:(.text+0xa13): undefined reference to `crypto_shash_update'
-  ld: ks_hostif.c:(.text+0xa28): undefined reference to `crypto_shash_update'
-  ld: ks_hostif.c:(.text+0xa48): undefined reference to `crypto_shash_finup'
-  ld: ks_hostif.c:(.text+0xa6d): undefined reference to `crypto_destroy_tfm'
+This did not trigger any error checks, as the individual register fields
+cover at most 3 of the 4 available bits.
 
-Fixes: 8b523f20417d ("staging: ks7010: removed custom Michael MIC implementation.")
-Fixes: 3e5bc68fa5968 ("staging: ks7010: Fix build error")
-Fixes: a4961427e7494 ("Revert "staging: ks7010: Fix build error"")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Link: https://lore.kernel.org/r/20211011152941.12847-1-vegard.nossum@oracle.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 08df16e07ad0a1ec ("pinctrl: sh-pfc: checker: Add drive strength register checks")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/8f82d6147fbe3367d4c83962480e97f58d9c96a2.1633615652.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pinctrl/renesas/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ks7010/Kconfig b/drivers/staging/ks7010/Kconfig
-index 0987fdc2f70db..8ea6c09286798 100644
---- a/drivers/staging/ks7010/Kconfig
-+++ b/drivers/staging/ks7010/Kconfig
-@@ -5,6 +5,9 @@ config KS7010
- 	select WIRELESS_EXT
- 	select WEXT_PRIV
- 	select FW_LOADER
-+	select CRYPTO
-+	select CRYPTO_HASH
-+	select CRYPTO_MICHAEL_MIC
- 	help
- 	  This is a driver for KeyStream KS7010 based SDIO WIFI cards. It is
- 	  found on at least later Spectec SDW-821 (FCC-ID "S2Y-WLAN-11G-K" only,
+diff --git a/drivers/pinctrl/renesas/core.c b/drivers/pinctrl/renesas/core.c
+index c528c124fb0e9..9d168b90cd281 100644
+--- a/drivers/pinctrl/renesas/core.c
++++ b/drivers/pinctrl/renesas/core.c
+@@ -890,7 +890,7 @@ static void __init sh_pfc_check_drive_reg(const struct sh_pfc_soc_info *info,
+ 		if (!field->pin && !field->offset && !field->size)
+ 			continue;
+ 
+-		mask = GENMASK(field->offset + field->size, field->offset);
++		mask = GENMASK(field->offset + field->size - 1, field->offset);
+ 		if (mask & seen)
+ 			sh_pfc_err("drive_reg 0x%x: field %u overlap\n",
+ 				   drive->reg, i);
 -- 
 2.33.0
 
