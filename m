@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7086F450E6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683B0450D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239745AbhKOSPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:15:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50902 "EHLO mail.kernel.org"
+        id S238573AbhKOR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:56:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237976AbhKOR2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:28:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4488F6326D;
-        Mon, 15 Nov 2021 17:18:51 +0000 (UTC)
+        id S237782AbhKORYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22899610A8;
+        Mon, 15 Nov 2021 17:17:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996731;
-        bh=EhuQGIfKx2K89QJ7yeJ7Nto+4H77n+aK0HPCrsRD5rE=;
+        s=korg; t=1636996640;
+        bh=BaBvVlEJqBCWeDW+SvUIzbgUqT2Ju/AH9sf3JZD4pVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rkxgvJmw1eW/xDzmqUb564XYjiypcfPB6ot5WvEb60TVGp3VsympkyLCZRglYtos2
-         9g945VkYq3IfjDjqMI+VnB+wAotr6oRxoNui5hOY8mFsLgqA++JHS7JDycTSSgujr5
-         OhPyslm9si/9HS5HPFVHHVElEttsXxJTLoZJjISA=
+        b=XrHlY1egtdj4uIo0CW6tASxv4194k5x/wvTafPXAQVQrQjtjVuG7LMVz3LFkMoit2
+         7l6DIllrvZlxy+tccgscbyR1jyUFdNI7MB5RKaKWoOgaE2TaJPNL+bauMRmWWPO3wf
+         B8aMF2KhtfY/NdJ2TmVsh3o/JVYx2plGok1IiJIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Punit Agrawal <punitagrawal@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 205/355] kprobes: Do not use local variable when creating debugfs file
-Date:   Mon, 15 Nov 2021 18:02:09 +0100
-Message-Id: <20211115165320.394574008@linuxfoundation.org>
+Subject: [PATCH 5.4 206/355] crypto: ecc - fix CRYPTO_DEFAULT_RNG dependency
+Date:   Mon, 15 Nov 2021 18:02:10 +0100
+Message-Id: <20211115165320.435059819@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,59 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Punit Agrawal <punitagrawal@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 8f7262cd66699a4b02eb7549b35c81b2116aad95 ]
+[ Upstream commit 38aa192a05f22f9778f9420e630f0322525ef12e ]
 
-debugfs_create_file() takes a pointer argument that can be used during
-file operation callbacks (accessible via i_private in the inode
-structure). An obvious requirement is for the pointer to refer to
-valid memory when used.
+The ecc.c file started out as part of the ECDH algorithm but got
+moved out into a standalone module later. It does not build without
+CRYPTO_DEFAULT_RNG, so now that other modules are using it as well we
+can run into this link error:
 
-When creating the debugfs file to dynamically enable / disable
-kprobes, a pointer to local variable is passed to
-debugfs_create_file(); which will go out of scope when the init
-function returns. The reason this hasn't triggered random memory
-corruption is because the pointer is not accessed during the debugfs
-file callbacks.
+aarch64-linux-ld: ecc.c:(.text+0xfc8): undefined reference to `crypto_default_rng'
+aarch64-linux-ld: ecc.c:(.text+0xff4): undefined reference to `crypto_put_default_rng'
 
-Since the enabled state is managed by the kprobes_all_disabled global
-variable, the local variable is not needed. Fix the incorrect (and
-unnecessary) usage of local variable during debugfs_file_create() by
-passing NULL instead.
+Move the 'select CRYPTO_DEFAULT_RNG' statement into the correct symbol.
 
-Link: https://lkml.kernel.org/r/163163031686.489837.4476867635937014973.stgit@devnote2
-
-Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
-Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 0d7a78643f69 ("crypto: ecrdsa - add EC-RDSA (GOST 34.10) algorithm")
+Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kprobes.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ crypto/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index a7812c115e487..1668439b269d3 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2712,14 +2712,13 @@ static const struct file_operations fops_kp = {
- static int __init debugfs_kprobe_init(void)
- {
- 	struct dentry *dir;
--	unsigned int value = 1;
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index b2cc0ad3792ad..ce60ec30e78df 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -242,12 +242,12 @@ config CRYPTO_DH
  
- 	dir = debugfs_create_dir("kprobes", NULL);
+ config CRYPTO_ECC
+ 	tristate
++	select CRYPTO_RNG_DEFAULT
  
- 	debugfs_create_file("list", 0400, dir, NULL,
- 			    &debugfs_kprobes_operations);
+ config CRYPTO_ECDH
+ 	tristate "ECDH algorithm"
+ 	select CRYPTO_ECC
+ 	select CRYPTO_KPP
+-	select CRYPTO_RNG_DEFAULT
+ 	help
+ 	  Generic implementation of the ECDH algorithm
  
--	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
-+	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
- 
- 	debugfs_create_file("blacklist", 0400, dir, NULL,
- 			    &debugfs_kprobe_blacklist_ops);
 -- 
 2.33.0
 
