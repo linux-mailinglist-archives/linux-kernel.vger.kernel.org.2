@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687D2451E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D802F4518C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354791AbhKPAfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1348668AbhKOXHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:07:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343981AbhKOTWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E1B8615E1;
-        Mon, 15 Nov 2021 18:49:45 +0000 (UTC)
+        id S243131AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A445B6348E;
+        Mon, 15 Nov 2021 18:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002186;
-        bh=bUJhkn8O66m8xRPJtc8JMligjM41Q4ed+tc24hFcbz8=;
+        s=korg; t=1636999952;
+        bh=SIcsGbCXFI9C5pfWF98kf3KsDj8Gge2BjHzu+lHXedI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFXHMBow6m2P5uqwW6EteCrdtysSce6CuV42c0cwhOcqjBcM0CM5aRQU5pZSBAgnn
-         wbRdom0V6F7M/KsBPPyZ4q8vjzDibn1FCg/pNOkUD+XRxMJJW/baiU6MoMHLJJ8jKz
-         hJbuKDz432r0cuqBpw9DwUj35ThOQkcBFjOBVLI8=
+        b=kAEz8wffnRVw1lvAPBZrcjGIS3SyTqOmGKylAa/9xc2XgZtR3YLI6DQz6VhtgokGq
+         eKpKiGFyLUQWwCqCF0Is1fsx+SYcvgKg8P/eMD4RHvAsE/pXkp8Rg0RHiSAyuN4Dsp
+         YLtKxR4PWUydUKZjruvznIBAeAMX/gfTkM4Es/Ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Leon Yen <Leon.Yen@mediatek.com>, Felix Fietkau <nbd@nbd.name>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 470/917] mt76: connac: fix GTK rekey offload failure on WPA mixed mode
-Date:   Mon, 15 Nov 2021 17:59:25 +0100
-Message-Id: <20211115165444.713839461@linuxfoundation.org>
+        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 483/849] nbd: Fix use-after-free in pid_show
+Date:   Mon, 15 Nov 2021 17:59:26 +0100
+Message-Id: <20211115165436.618715905@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Yen <Leon.Yen@mediatek.com>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 781f62960c635cfed55a8f8c0f909bdaf8268257 ]
+[ Upstream commit 0c98057be9efa32de78dbc4685fc73da9d71faa1 ]
 
-Update the proper firmware programming sequence to fix GTK rekey
-offload failure on WPA mixed mode.
+I got issue as follows:
+[  263.886511] BUG: KASAN: use-after-free in pid_show+0x11f/0x13f
+[  263.888359] Read of size 4 at addr ffff8880bf0648c0 by task cat/746
+[  263.890479] CPU: 0 PID: 746 Comm: cat Not tainted 4.19.90-dirty #140
+[  263.893162] Call Trace:
+[  263.893509]  dump_stack+0x108/0x15f
+[  263.893999]  print_address_description+0xa5/0x372
+[  263.894641]  kasan_report.cold+0x236/0x2a8
+[  263.895696]  __asan_report_load4_noabort+0x25/0x30
+[  263.896365]  pid_show+0x11f/0x13f
+[  263.897422]  dev_attr_show+0x48/0x90
+[  263.898361]  sysfs_kf_seq_show+0x24d/0x4b0
+[  263.899479]  kernfs_seq_show+0x14e/0x1b0
+[  263.900029]  seq_read+0x43f/0x1150
+[  263.900499]  kernfs_fop_read+0xc7/0x5a0
+[  263.903764]  vfs_read+0x113/0x350
+[  263.904231]  ksys_read+0x103/0x270
+[  263.905230]  __x64_sys_read+0x77/0xc0
+[  263.906284]  do_syscall_64+0x106/0x360
+[  263.906797]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-In the mt76_connac_mcu_key_iter,
-gtk_tlv->proto should be only set up on pairwise key
-and gtk_tlk->group_cipher should be only set up on the group key.
+Reproduce this issue as follows:
+1. nbd-server 8000 /tmp/disk
+2. nbd-client localhost 8000 /dev/nbd1
+3. cat /sys/block/nbd1/pid
+Then trigger use-after-free in pid_show.
 
-Otherwise, those parameters required by firmware would be set
-incorrectly to cause GTK rekey offload failure on WPA mixed mode
-and then disconnection follows.
+Reason is after do step '2', nbd-client progress is already exit. So
+it's task_struct already freed.
+To solve this issue, revert part of 6521d39a64b3's modify and remove
+useless 'recv_task' member of nbd_device.
 
-Fixes: b47e21e75c80 ("mt76: mt7615: add gtk rekey offload support")
-Co-developed-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Leon Yen <Leon.Yen@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fixes: 6521d39a64b3 ("nbd: Remove variable 'pid'")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Link: https://lore.kernel.org/r/20211020073959.2679255-1-yebin10@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt76_connac_mcu.c  | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/block/nbd.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-index 5c3a81e5f559d..f57f047fce99c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-@@ -1929,19 +1929,22 @@ mt76_connac_mcu_key_iter(struct ieee80211_hw *hw,
- 	    key->cipher != WLAN_CIPHER_SUITE_TKIP)
- 		return;
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 99ab58b877f8c..6d7e181d3ed1f 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -122,11 +122,11 @@ struct nbd_device {
+ 	struct work_struct remove_work;
  
--	if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
--		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
-+	if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
- 		cipher = BIT(3);
--	} else {
--		gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
-+	else
- 		cipher = BIT(4);
--	}
+ 	struct list_head list;
+-	struct task_struct *task_recv;
+ 	struct task_struct *task_setup;
  
- 	/* we are assuming here to have a single pairwise key */
- 	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
-+		if (key->cipher == WLAN_CIPHER_SUITE_TKIP)
-+			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_1);
-+		else
-+			gtk_tlv->proto = cpu_to_le32(NL80211_WPA_VERSION_2);
-+
- 		gtk_tlv->pairwise_cipher = cpu_to_le32(cipher);
--		gtk_tlv->group_cipher = cpu_to_le32(cipher);
- 		gtk_tlv->keyid = key->keyidx;
-+	} else {
-+		gtk_tlv->group_cipher = cpu_to_le32(cipher);
- 	}
+ 	struct completion *destroy_complete;
+ 	unsigned long flags;
++	pid_t pid; /* pid of nbd-client, if attached */
+ 
+ 	char *backend;
+ };
+@@ -218,7 +218,7 @@ static ssize_t pid_show(struct device *dev,
+ 	struct gendisk *disk = dev_to_disk(dev);
+ 	struct nbd_device *nbd = (struct nbd_device *)disk->private_data;
+ 
+-	return sprintf(buf, "%d\n", task_pid_nr(nbd->task_recv));
++	return sprintf(buf, "%d\n", nbd->pid);
  }
  
+ static const struct device_attribute pid_attr = {
+@@ -362,7 +362,7 @@ static int nbd_set_size(struct nbd_device *nbd, loff_t bytesize,
+ 	nbd->config->bytesize = bytesize;
+ 	nbd->config->blksize_bits = __ffs(blksize);
+ 
+-	if (!nbd->task_recv)
++	if (!nbd->pid)
+ 		return 0;
+ 
+ 	if (nbd->config->flags & NBD_FLAG_SEND_TRIM) {
+@@ -1274,7 +1274,7 @@ static void nbd_config_put(struct nbd_device *nbd)
+ 		if (test_and_clear_bit(NBD_RT_HAS_PID_FILE,
+ 				       &config->runtime_flags))
+ 			device_remove_file(disk_to_dev(nbd->disk), &pid_attr);
+-		nbd->task_recv = NULL;
++		nbd->pid = 0;
+ 		if (test_and_clear_bit(NBD_RT_HAS_BACKEND_FILE,
+ 				       &config->runtime_flags)) {
+ 			device_remove_file(disk_to_dev(nbd->disk), &backend_attr);
+@@ -1315,7 +1315,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	int num_connections = config->num_connections;
+ 	int error = 0, i;
+ 
+-	if (nbd->task_recv)
++	if (nbd->pid)
+ 		return -EBUSY;
+ 	if (!config->socks)
+ 		return -EINVAL;
+@@ -1334,7 +1334,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 	}
+ 
+ 	blk_mq_update_nr_hw_queues(&nbd->tag_set, config->num_connections);
+-	nbd->task_recv = current;
++	nbd->pid = task_pid_nr(current);
+ 
+ 	nbd_parse_flags(nbd);
+ 
+@@ -1590,8 +1590,8 @@ static int nbd_dbg_tasks_show(struct seq_file *s, void *unused)
+ {
+ 	struct nbd_device *nbd = s->private;
+ 
+-	if (nbd->task_recv)
+-		seq_printf(s, "recv: %d\n", task_pid_nr(nbd->task_recv));
++	if (nbd->pid)
++		seq_printf(s, "recv: %d\n", nbd->pid);
+ 
+ 	return 0;
+ }
+@@ -2177,7 +2177,7 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+ 	mutex_lock(&nbd->config_lock);
+ 	config = nbd->config;
+ 	if (!test_bit(NBD_RT_BOUND, &config->runtime_flags) ||
+-	    !nbd->task_recv) {
++	    !nbd->pid) {
+ 		dev_err(nbd_to_dev(nbd),
+ 			"not configured, cannot reconfigure\n");
+ 		ret = -EINVAL;
 -- 
 2.33.0
 
