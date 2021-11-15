@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16EE4518B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A939451DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344263AbhKOXFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:05:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
+        id S1350099AbhKPAej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:34:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243217AbhKOSzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:55:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA3C6331A;
-        Mon, 15 Nov 2021 18:11:39 +0000 (UTC)
+        id S1343952AbhKOTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E846335F;
+        Mon, 15 Nov 2021 18:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999900;
-        bh=tTmXqmdG6aVwUcyq2RC2+4ytls6JqpiwL+hCByUlcWs=;
+        s=korg; t=1637002135;
+        bh=u9gt9CJnEm43gyR55ojdDtosvvJeIsIgo7Ra38xxJoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0TfuMelGMj1raRkDwdz4zoLTvfnMZp+EOsegWZMYwOBA3e7+mh+TdIQLvsLZsGsY
-         xGwvk5T4uPZUrTrkOfY8AAsSyE4nXGm0KrIaYlr9f6h+HiwvSMFQ6O+7HkLJilZHZw
-         v/OQdaUcI0qpRf188KzjbVknWmw0nwKTMcu7SH0o=
+        b=E7II81YPz8y1PJtrNk7BzU6hxGHPZwdW2vYTLokwcpvA6qlTfwueO+D1e+jo4MvLA
+         QbcEdh0weDaRPmE8Eco9YELEegA2V+SeGZmZDDmoAtMAeX/lpYmWc5/COYkwEa9xy+
+         sKwT6WdCK9dQFEg5vgr7x5LchTvVAVOZg+ZIwSP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Catherine Sullivan <csully@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 431/849] x86: Fix get_wchan() to support the ORC unwinder
+Subject: [PATCH 5.15 419/917] gve: Track RX buffer allocation failures
 Date:   Mon, 15 Nov 2021 17:58:34 +0100
-Message-Id: <20211115165434.858419932@linuxfoundation.org>
+Message-Id: <20211115165443.005961803@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,94 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+From: Catherine Sullivan <csully@google.com>
 
-[ Upstream commit bc9bbb81730ea667c31c5b284f95ee312bab466f ]
+[ Upstream commit 1b4d1c9bab091ac6e20a3ff80c30c5cefe192bf4 ]
 
-Currently, the kernel CONFIG_UNWINDER_ORC option is enabled by default
-on x86, but the implementation of get_wchan() is still based on the frame
-pointer unwinder, so the /proc/<pid>/wchan usually returned 0 regardless
-of whether the task <pid> is running.
+The rx_buf_alloc_fail counter wasn't getting updated.
 
-Reimplement get_wchan() by calling stack_trace_save_tsk(), which is
-adapted to the ORC and frame pointer unwinders.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008111626.271115116@infradead.org
+Fixes: 433e274b8f7b0 ("gve: Add stats for gve.")
+Signed-off-by: Catherine Sullivan <csully@google.com>
+Signed-off-by: Jeroen de Borst <jeroendb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/process.c | 51 +++------------------------------------
- 1 file changed, 3 insertions(+), 48 deletions(-)
+ drivers/net/ethernet/google/gve/gve_rx.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index f2f733bcb2b95..cd426c3283ee1 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -945,58 +945,13 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
-  */
- unsigned long get_wchan(struct task_struct *p)
- {
--	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
--	int count = 0;
-+	unsigned long entry = 0;
+diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/ethernet/google/gve/gve_rx.c
+index 94941d4e47449..16169f291ad9f 100644
+--- a/drivers/net/ethernet/google/gve/gve_rx.c
++++ b/drivers/net/ethernet/google/gve/gve_rx.c
+@@ -514,8 +514,13 @@ static bool gve_rx_refill_buffers(struct gve_priv *priv, struct gve_rx_ring *rx)
  
- 	if (p == current || task_is_running(p))
- 		return 0;
- 
--	if (!try_get_task_stack(p))
--		return 0;
--
--	start = (unsigned long)task_stack_page(p);
--	if (!start)
--		goto out;
--
--	/*
--	 * Layout of the stack page:
--	 *
--	 * ----------- topmax = start + THREAD_SIZE - sizeof(unsigned long)
--	 * PADDING
--	 * ----------- top = topmax - TOP_OF_KERNEL_STACK_PADDING
--	 * stack
--	 * ----------- bottom = start
--	 *
--	 * The tasks stack pointer points at the location where the
--	 * framepointer is stored. The data on the stack is:
--	 * ... IP FP ... IP FP
--	 *
--	 * We need to read FP and IP, so we need to adjust the upper
--	 * bound by another unsigned long.
--	 */
--	top = start + THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING;
--	top -= 2 * sizeof(unsigned long);
--	bottom = start;
--
--	sp = READ_ONCE(p->thread.sp);
--	if (sp < bottom || sp > top)
--		goto out;
--
--	fp = READ_ONCE_NOCHECK(((struct inactive_task_frame *)sp)->bp);
--	do {
--		if (fp < bottom || fp > top)
--			goto out;
--		ip = READ_ONCE_NOCHECK(*(unsigned long *)(fp + sizeof(unsigned long)));
--		if (!in_sched_functions(ip)) {
--			ret = ip;
--			goto out;
--		}
--		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
--	} while (count++ < 16 && !task_is_running(p));
--
--out:
--	put_task_stack(p);
--	return ret;
-+	stack_trace_save_tsk(p, &entry, 1, 0);
-+	return entry;
- }
- 
- long do_arch_prctl_common(struct task_struct *task, int option,
+ 				gve_rx_free_buffer(dev, page_info, data_slot);
+ 				page_info->page = NULL;
+-				if (gve_rx_alloc_buffer(priv, dev, page_info, data_slot))
++				if (gve_rx_alloc_buffer(priv, dev, page_info,
++							data_slot)) {
++					u64_stats_update_begin(&rx->statss);
++					rx->rx_buf_alloc_fail++;
++					u64_stats_update_end(&rx->statss);
+ 					break;
++				}
+ 			}
+ 		}
+ 		fill_cnt++;
 -- 
 2.33.0
 
