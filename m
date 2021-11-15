@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E83450244
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB80450245
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbhKOKXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:23:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51700 "EHLO mail.kernel.org"
+        id S230519AbhKOKX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:23:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237556AbhKOKW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:22:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 046F461B4D;
-        Mon, 15 Nov 2021 10:20:01 +0000 (UTC)
+        id S230507AbhKOKXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:23:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1542630EF;
+        Mon, 15 Nov 2021 10:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636971603;
-        bh=3TBXQjRrkyPfVWIL3nG9LISDqGO8K9tJRnSraEB9QIA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=har91j3g+0DNjOg5LcjvOge1FU6JNgE5NaUXPnzzcC8C0fz7ZKEvlO3hC6CUjDKTg
-         tJcMxc2PJWINq2hberwKwzssihcYrke2/cF/o2kj71kvmucDJlfiTgreFG9aBxVWfw
-         v7bXwZLjFvWVM7N/eAZK5l870bEpH0pLrgzry/PybsB1rtKUr+rpiN8OUeb5balu1L
-         P4c8tq0nsvibH66mtDnXn5pW09lPDkhvX1OMjDa808NhmNUzxVgLsC0XrPhiZPYYFT
-         XTGgHGksx9Y0hAUiruEYsP0OY+rYAd9wa+JSJblCKMUfwo8eKPTj/KcSpqLsPXvPDF
-         I61ygPCKus6Lw==
+        s=k20201202; t=1636971613;
+        bh=7KXkYf0+0y7eSSmppft+qFV9PD8R0wnIGcgxsfY97Wk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ceERKvGlcjOWiC1iiHsf6oeH0TSKQhcthtFGo+2Me+VZkOtSfjsmYw23bfBc216HS
+         PxhJFwHufmeTRqkK7pgIbOMMIPxqWH3vXaUdzGg/AJRd+aItIpC4TPiprkyy3ahpQ4
+         Fh37oca5fdiFAgEIBHNkTDdeflkDFd7xzI2VaZoF7RVEIeYJ9c8NrcJcatnnfNE+nm
+         njJp1fYGZCXAY+uuEQNidzuXQBxMkPMgh4Z6hJYXpAgcHgmSO96FQqn3mKT3ynVist
+         yjebCajhhwYCXiyOcaMebTwk+kp0G5lGoxOceubZ18x8KKfECqHfm21IpQAVVlZ7d1
+         lsbnre7ZmCmHQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Beau Belgrave <beaub@linux.microsoft.com>
@@ -30,10 +30,12 @@ Cc:     linux-kernel@vger.kernel.org,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH 0/5] tracing: Add __rel_loc support
-Date:   Mon, 15 Nov 2021 19:19:59 +0900
-Message-Id: <163697159970.131454.2661507704362599471.stgit@devnote2>
+Subject: [PATCH 1/5] tracing: Support __rel_loc relative dynamic data location attribute
+Date:   Mon, 15 Nov 2021 19:20:09 +0900
+Message-Id: <163697160895.131454.546431831389983209.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <163697159970.131454.2661507704362599471.stgit@devnote2>
+References: <163697159970.131454.2661507704362599471.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,34 +44,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Beau,
-
-(Sorry, if you get the same copy. I resend this because I made a typo
- on the mail address.)
-
-Here is a series of patches to add support of '__rel_loc' relative
-dynamic array attribute support. Note that this is only for the
-kernel side code, user space tools might need to be updated for
-decoding '__rel_loc' too.
-There are 2 patches for libtraceevent and perftools, but not those
-are not tested yet. I added it for review.
-
-Here are 3 patches, [1/5] is the main and required patch, which
-updates the event filter, histogram, and inject for __rel_loc.
-
-[2/5] and [3/5] are for testing. I think those are no needed to
-be merged. I just made it for the testing. [4/5] is updating
-libtraceevent, which allows libtraceevent user to decode the
-__rel_loc via libtraceevent API. Since perf-tools decodes the
-event by itself, it needs [5/5]. (Note that I haven't tested
-fully yet)
-
-Steve, please tell me if I missed some parts or features which
-need to decode the dynamic string or data.
-
-
-The __rel_loc
------
+Add '__rel_loc' new dynamic data location attribute which encodes
+the data location from the next to the field itself.
 
 The '__data_loc' is used for encoding the dynamic data location on
 the trace event record. But '__data_loc' is not useful if the writer
@@ -101,102 +77,188 @@ This is relatively easy (and no need to consider the kernel header
 change) when the event data fields are composed by user who doesn't
 know header and common fields.
 
-
-Test Event Injection
-----
-/ # modprobe trace-events-sample.ko
-/ # cd /sys/kernel/tracing/
-/sys/kernel/tracing # echo 'foo="test" bar=0' >> events/sample-trace/foo_rel_loc
-/inject 
-/sys/kernel/tracing # cat trace 
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 1/1   #P:8
-#
-#                                _-----=> irqs-off
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-           <...>-135     [002] .....   153.998779: foo_rel_loc: foo_rel_loc test, 0
-
-
-Test Event Histogram
-----
-
-/sys/kernel/tracing # echo 'hist:key=foo' >> events/sample-trace/foo_rel_loc/trigger 
-/sys/kernel/tracing # cat events/sample-trace/foo_rel_loc/hist 
-# event histogram
-#
-# trigger info: hist:keys=foo:vals=hitcount:sort=hitcount:size=2048 [active]
-#
-
-{ foo: Hello __rel_loc                                    } hitcount:         11
-
-Totals:
-    Hits: 11
-    Entries: 1
-    Dropped: 0
-
-
-Test Event Filter
-----
-/sys/kernel/tracing # echo 'foo == "Hello __rel_loc"' >> events/sample-trace/foo_rel_loc/filter
-/sys/kernel/tracing # echo > trace
-/sys/kernel/tracing # echo 1 >  events/sample-trace/foo_rel_loc/enable 
-/sys/kernel/tracing # cat trace 
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 2/2   #P:8
-#
-#                                _-----=> irqs-off
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-    event-sample-142     [005] .....   665.801471: foo_rel_loc: foo_rel_loc Hello __rel_loc, 631
-    event-sample-142     [005] .....   666.825611: foo_rel_loc: foo_rel_loc Hello __rel_loc, 632
-
-
-Thank you,
-
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ include/linux/trace_events.h       |    1 +
+ kernel/trace/trace.h               |    1 +
+ kernel/trace/trace_events_filter.c |   32 ++++++++++++++++++++++++++++++--
+ kernel/trace/trace_events_hist.c   |   21 +++++++++++++++++++--
+ kernel/trace/trace_events_inject.c |   11 +++++++++--
+ 5 files changed, 60 insertions(+), 6 deletions(-)
 
-Masami Hiramatsu (5):
-      tracing: Support __rel_loc relative dynamic data location attribute
-      tracing: Add '__rel_loc' using trace event macros
-      samples/trace_event: Add '__rel_loc' using sample event
-      libtraceevent: Add __rel_loc relative location attribute support
-      tools/perf: Add __rel_loc support
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 50453b287615..d5b20540ff98 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -782,6 +782,7 @@ enum {
+ 	FILTER_OTHER = 0,
+ 	FILTER_STATIC_STRING,
+ 	FILTER_DYN_STRING,
++	FILTER_RDYN_STRING,
+ 	FILTER_PTR_STRING,
+ 	FILTER_TRACE_FN,
+ 	FILTER_COMM,
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 6b60ab9475ed..4fd292c3a062 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1453,6 +1453,7 @@ struct filter_pred {
+ static inline bool is_string_field(struct ftrace_event_field *field)
+ {
+ 	return field->filter_type == FILTER_DYN_STRING ||
++	       field->filter_type == FILTER_RDYN_STRING ||
+ 	       field->filter_type == FILTER_STATIC_STRING ||
+ 	       field->filter_type == FILTER_PTR_STRING ||
+ 	       field->filter_type == FILTER_COMM;
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index c9124038b140..996920ed1812 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -706,6 +706,29 @@ static int filter_pred_strloc(struct filter_pred *pred, void *event)
+ 	return match;
+ }
+ 
++/*
++ * Filter predicate for relative dynamic sized arrays of characters.
++ * These are implemented through a list of strings at the end
++ * of the entry as same as dynamic string.
++ * The difference is that the relative one records the location offset
++ * from the field itself, not the event entry.
++ */
++static int filter_pred_strrelloc(struct filter_pred *pred, void *event)
++{
++	u32 *item = (u32 *)(event + pred->offset);
++	u32 str_item = *item;
++	int str_loc = str_item & 0xffff;
++	int str_len = str_item >> 16;
++	char *addr = (char *)(&item[1]) + str_loc;
++	int cmp, match;
++
++	cmp = pred->regex.match(addr, &pred->regex, str_len);
++
++	match = cmp ^ pred->not;
++
++	return match;
++}
++
+ /* Filter predicate for CPUs. */
+ static int filter_pred_cpu(struct filter_pred *pred, void *event)
+ {
+@@ -756,7 +779,7 @@ static int filter_pred_none(struct filter_pred *pred, void *event)
+  *
+  * Note:
+  * - @str might not be NULL-terminated if it's of type DYN_STRING
+- *   or STATIC_STRING, unless @len is zero.
++ *   RDYN_STRING, or STATIC_STRING, unless @len is zero.
+  */
+ 
+ static int regex_match_full(char *str, struct regex *r, int len)
+@@ -1083,6 +1106,9 @@ int filter_assign_type(const char *type)
+ 	if (strstr(type, "__data_loc") && strstr(type, "char"))
+ 		return FILTER_DYN_STRING;
+ 
++	if (strstr(type, "__rel_loc") && strstr(type, "char"))
++		return FILTER_RDYN_STRING;
++
+ 	if (strchr(type, '[') && strstr(type, "char"))
+ 		return FILTER_STATIC_STRING;
+ 
+@@ -1318,8 +1344,10 @@ static int parse_pred(const char *str, void *data,
+ 			pred->fn = filter_pred_string;
+ 			pred->regex.field_len = field->size;
+ 
+-		} else if (field->filter_type == FILTER_DYN_STRING)
++		} else if (field->filter_type == FILTER_DYN_STRING) {
+ 			pred->fn = filter_pred_strloc;
++		} else if (field->filter_type == FILTER_RDYN_STRING)
++			pred->fn = filter_pred_strrelloc;
+ 		else
+ 			pred->fn = filter_pred_pchar;
+ 		/* go past the last quote */
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 6a9fa34e2785..2c225f13f820 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -217,6 +217,20 @@ static u64 hist_field_dynstring(struct hist_field *hist_field,
+ 	return (u64)(unsigned long)addr;
+ }
+ 
++static u64 hist_field_reldynstring(struct hist_field *hist_field,
++				   struct tracing_map_elt *elt,
++				   struct trace_buffer *buffer,
++				   struct ring_buffer_event *rbe,
++				   void *event)
++{
++	u32 *item = event + hist_field->field->offset;
++	u32 str_item = *item;
++	int str_loc = str_item & 0xffff;
++	char *addr = (char *)&item[1] + str_loc;
++
++	return (u64)(unsigned long)addr;
++}
++
+ static u64 hist_field_pstring(struct hist_field *hist_field,
+ 			      struct tracing_map_elt *elt,
+ 			      struct trace_buffer *buffer,
+@@ -1956,8 +1970,10 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 		if (field->filter_type == FILTER_STATIC_STRING) {
+ 			hist_field->fn = hist_field_string;
+ 			hist_field->size = field->size;
+-		} else if (field->filter_type == FILTER_DYN_STRING)
++		} else if (field->filter_type == FILTER_DYN_STRING) {
+ 			hist_field->fn = hist_field_dynstring;
++		} else if (field->filter_type == FILTER_RDYN_STRING)
++			hist_field->fn = hist_field_reldynstring;
+ 		else
+ 			hist_field->fn = hist_field_pstring;
+ 	} else {
+@@ -4952,7 +4968,8 @@ static inline void add_to_key(char *compound_key, void *key,
+ 		struct ftrace_event_field *field;
+ 
+ 		field = key_field->field;
+-		if (field->filter_type == FILTER_DYN_STRING)
++		if (field->filter_type == FILTER_DYN_STRING ||
++		    field->filter_type == FILTER_RDYN_STRING)
+ 			size = *(u32 *)(rec + field->offset) >> 16;
+ 		else if (field->filter_type == FILTER_STATIC_STRING)
+ 			size = field->size;
+diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
+index c188045c5f97..d6b4935a78c0 100644
+--- a/kernel/trace/trace_events_inject.c
++++ b/kernel/trace/trace_events_inject.c
+@@ -168,10 +168,14 @@ static void *trace_alloc_entry(struct trace_event_call *call, int *size)
+ 			continue;
+ 		if (field->filter_type == FILTER_STATIC_STRING)
+ 			continue;
+-		if (field->filter_type == FILTER_DYN_STRING) {
++		if (field->filter_type == FILTER_DYN_STRING ||
++		    field->filter_type == FILTER_RDYN_STRING) {
+ 			u32 *str_item;
+ 			int str_loc = entry_size & 0xffff;
+ 
++			if (field->filter_type == FILTER_RDYN_STRING)
++				str_loc -= field->offset + field->size;
++
+ 			str_item = (u32 *)(entry + field->offset);
+ 			*str_item = str_loc; /* string length is 0. */
+ 		} else {
+@@ -214,7 +218,8 @@ static int parse_entry(char *str, struct trace_event_call *call, void **pentry)
+ 
+ 			if (field->filter_type == FILTER_STATIC_STRING) {
+ 				strlcpy(entry + field->offset, addr, field->size);
+-			} else if (field->filter_type == FILTER_DYN_STRING) {
++			} else if (field->filter_type == FILTER_DYN_STRING ||
++				   field->filter_type == FILTER_RDYN_STRING) {
+ 				int str_len = strlen(addr) + 1;
+ 				int str_loc = entry_size & 0xffff;
+ 				u32 *str_item;
+@@ -229,6 +234,8 @@ static int parse_entry(char *str, struct trace_event_call *call, void **pentry)
+ 
+ 				strlcpy(entry + (entry_size - str_len), addr, str_len);
+ 				str_item = (u32 *)(entry + field->offset);
++				if (field->filter_type == FILTER_RDYN_STRING)
++					str_loc -= field->offset + field->size;
+ 				*str_item = (str_len << 16) | str_loc;
+ 			} else {
+ 				char **paddr;
 
-
- include/linux/trace_events.h                       |    1 
- include/trace/bpf_probe.h                          |   13 +++
- include/trace/perf.h                               |   13 +++
- include/trace/trace_events.h                       |   83 ++++++++++++++++++++
- kernel/trace/trace.h                               |    4 +
- kernel/trace/trace_events_filter.c                 |   32 +++++++-
- kernel/trace/trace_events_hist.c                   |   21 +++++
- kernel/trace/trace_events_inject.c                 |   11 ++-
- samples/trace_events/trace-events-sample.c         |    2 
- samples/trace_events/trace-events-sample.h         |   28 +++++++
- tools/lib/traceevent/event-parse.c                 |   14 +++
- tools/lib/traceevent/event-parse.h                 |    1 
- tools/lib/traceevent/parse-filter.c                |    5 +
- tools/perf/builtin-trace.c                         |    2 
- tools/perf/util/data-convert-bt.c                  |    2 
- tools/perf/util/evsel.c                            |    2 
- tools/perf/util/python.c                           |    2 
- .../perf/util/scripting-engines/trace-event-perl.c |    2 
- .../util/scripting-engines/trace-event-python.c    |    2 
- tools/perf/util/sort.c                             |    2 
- 20 files changed, 235 insertions(+), 7 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
