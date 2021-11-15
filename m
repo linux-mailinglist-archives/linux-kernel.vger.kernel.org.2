@@ -2,55 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1EC451844
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4467B4517D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347380AbhKOW5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:57:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52898 "EHLO mail.kernel.org"
+        id S1351200AbhKOWpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242817AbhKOSq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:46:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FB476339D;
-        Mon, 15 Nov 2021 18:06:45 +0000 (UTC)
+        id S242272AbhKOSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6826A63300;
+        Mon, 15 Nov 2021 18:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999605;
-        bh=vqyGbOdGO/ysyLk+d9EPBo84834nVWtweDJPqQX0Qf0=;
+        s=korg; t=1636999514;
+        bh=/Lm5MC5ObMzOznXPIr0XniCeHYmSyUkwvGj0O9nmKwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GYK9hJNjO2PS/AMfmzz3OrClEvKOi8HdLcXcYPEZBXdwyOH3XezUOiwvA4rZz9MbS
-         LLdpadookJlrp/wHOJLeICBeW/V0EN6Wm5GwA4xbvL7Sj9aWLRY9vDWir6QEQcU1FE
-         s39lwDBXtD9JgaumLQ40MudshHbrQ2Y2TqFh4VDc=
+        b=FHNHquebIDYjuUUgMCHFMdCtZGBlUsCLAMtuDFbst4lUKNowR9ocqSNAgwS3A1GL8
+         IL6J/s7ZCxMCB31tPtzZI469x2aPi0kjHkfbeXDwRLeIrVxTVp/0d3/6TRf5pLuNGC
+         MeMNThwv2V+Ck1XwhMrYwQvfxMamAe/2D351007U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Abaci <abaci@linux.alibaba.com>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 325/849] ftrace: do CPU checking after preemption disabled
-Date:   Mon, 15 Nov 2021 17:56:48 +0100
-Message-Id: <20211115165431.231469268@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 326/849] x86/hyperv: Protect set_hv_tscchange_cb() against getting preempted
+Date:   Mon, 15 Nov 2021 17:56:49 +0100
+Message-Id: <20211115165431.271584276@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -62,87 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 王贇 <yun.wang@linux.alibaba.com>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-[ Upstream commit d33cc657372366a8959f099c619a208b4c5dc664 ]
+[ Upstream commit 285f68afa8b20f752b0b7194d54980b5e0e27b75 ]
 
-With CONFIG_DEBUG_PREEMPT we observed reports like:
+The following issue is observed with CONFIG_DEBUG_PREEMPT when KVM loads:
 
-  BUG: using smp_processor_id() in preemptible
-  caller is perf_ftrace_function_call+0x6f/0x2e0
-  CPU: 1 PID: 680 Comm: a.out Not tainted
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x8d/0xcf
-   check_preemption_disabled+0x104/0x110
-   ? optimize_nops.isra.7+0x230/0x230
-   ? text_poke_bp_batch+0x9f/0x310
-   perf_ftrace_function_call+0x6f/0x2e0
-   ...
-   __text_poke+0x5/0x620
-   text_poke_bp_batch+0x9f/0x310
+ KVM: vmx: using Hyper-V Enlightened VMCS
+ BUG: using smp_processor_id() in preemptible [00000000] code: systemd-udevd/488
+ caller is set_hv_tscchange_cb+0x16/0x80
+ CPU: 1 PID: 488 Comm: systemd-udevd Not tainted 5.15.0-rc5+ #396
+ Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
+ Call Trace:
+  dump_stack_lvl+0x6a/0x9a
+  check_preemption_disabled+0xde/0xe0
+  ? kvm_gen_update_masterclock+0xd0/0xd0 [kvm]
+  set_hv_tscchange_cb+0x16/0x80
+  kvm_arch_init+0x23f/0x290 [kvm]
+  kvm_init+0x30/0x310 [kvm]
+  vmx_init+0xaf/0x134 [kvm_intel]
+  ...
 
-This telling us the CPU could be changed after task is preempted, and
-the checking on CPU before preemption will be invalid.
+set_hv_tscchange_cb() can get preempted in between acquiring
+smp_processor_id() and writing to HV_X64_MSR_REENLIGHTENMENT_CONTROL. This
+is not an issue by itself: HV_X64_MSR_REENLIGHTENMENT_CONTROL is a
+partition-wide MSR and it doesn't matter which particular CPU will be
+used to receive reenlightenment notifications. The only real problem can
+(in theory) be observed if the CPU whose id was acquired with
+smp_processor_id() goes offline before we manage to write to the MSR,
+the logic in hv_cpu_die() won't be able to reassign it correctly.
 
-Since now ftrace_test_recursion_trylock() will help to disable the
-preemption, this patch just do the checking after trylock() to address
-the issue.
-
-Link: https://lkml.kernel.org/r/54880691-5fe2-33e7-d12f-1fa6136f5183@linux.alibaba.com
-
-CC: Steven Rostedt <rostedt@goodmis.org>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Miroslav Benes <mbenes@suse.cz>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Jisheng Zhang <jszhang@kernel.org>
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reported-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Link: https://lore.kernel.org/r/20211012155005.1613352-1-vkuznets@redhat.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_event_perf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/hyperv/hv_init.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 03be4435d103f..50cd5a1a7ab4a 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -441,13 +441,13 @@ perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip,
- 	if (!rcu_is_watching())
- 		return;
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 6952e219cba36..d7e1eac3802f4 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -160,7 +160,6 @@ void set_hv_tscchange_cb(void (*cb)(void))
+ 	struct hv_reenlightenment_control re_ctrl = {
+ 		.vector = HYPERV_REENLIGHTENMENT_VECTOR,
+ 		.enabled = 1,
+-		.target_vp = hv_vp_index[smp_processor_id()]
+ 	};
+ 	struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
  
--	if ((unsigned long)ops->private != smp_processor_id())
--		return;
--
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
+@@ -174,8 +173,12 @@ void set_hv_tscchange_cb(void (*cb)(void))
+ 	/* Make sure callback is registered before we write to MSRs */
+ 	wmb();
  
-+	if ((unsigned long)ops->private != smp_processor_id())
-+		goto out;
++	re_ctrl.target_vp = hv_vp_index[get_cpu()];
 +
- 	event = container_of(ops, struct perf_event, ftrace_ops);
+ 	wrmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
+ 	wrmsrl(HV_X64_MSR_TSC_EMULATION_CONTROL, *((u64 *)&emu_ctrl));
++
++	put_cpu();
+ }
+ EXPORT_SYMBOL_GPL(set_hv_tscchange_cb);
  
- 	/*
 -- 
 2.33.0
 
