@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E414451C49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1D7451C25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349897AbhKPAPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350880AbhKOWdv (ORCPT
+        id S1355570AbhKPAN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:13:29 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:50873 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352023AbhKOVxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 17:33:51 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FD4C06120E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:46:17 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso988426pjo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 13:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e9SsJHXkREEXgOvz8+1WYncw9ZbiSu97hwoPleOY3LI=;
-        b=q2Wf+AjvT/KSaRA+UU6FG8okOT5ec7/SfBZH7apyXaG9tStScRgGqPJvgoTKymD22r
-         lNEVy+x7YVbskeQiMXR3iWJApCV67N9E9fVQs5HMG6gnop6IuOX3Lnw6563AjoWb8VBC
-         m8ec41OXCC3BPN99aYKLyxM/coup9SVu+de+bdpUTFnaW201cAdu/n3muPtyGF6XObUb
-         bDQOFSkcAW6curnjSTVtvnFXpFcItxXd/2HJMWRoR76adZl3m4nIkcy30fbIg+mOryvG
-         eG6+GB5c51zuia2z1MYBsYfyloBoarHHe3OWYe2DU+wQQ5CmKsTqx2i5iWcDnoaq1Uzd
-         X23Q==
+        Mon, 15 Nov 2021 16:53:47 -0500
+Received: by mail-wm1-f46.google.com with SMTP id 133so15233208wme.0;
+        Mon, 15 Nov 2021 13:50:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=e9SsJHXkREEXgOvz8+1WYncw9ZbiSu97hwoPleOY3LI=;
-        b=Xk/iRQlf+P3Laj8yAiAKB5YbJnrT1SbokXi6pOA9NXCbSk0NG8N4Sk84rEu6+/FMLf
-         gAD0MH79uY0TkuDslA4Cj/gah3i6SJGSG6VU/ssqwielkKUFFxsqAi1VKpH1jXm2XERF
-         f9C1Tq0nAQ+l+Ca9P5JHyrRaOMfqhI22eedCJG/+kTLD7hkQSNyVOdmTSxLM15RQnI8w
-         19FTtXEwVjnd4dgiPX8LmKXzYDc54IIViKfXoysEvluGuzFykKm7dlgAVEAa56gYwBeo
-         anEIoTYmy16a7umrYRm9audBBR2t9Xvhl4/cuw13Fg8HIynqrmzNX9yRtnBBXCx7Rv6Q
-         fHLw==
-X-Gm-Message-State: AOAM530CjYvQ8k5dHpc1cRSoziYOSJAAxQF3MgMdhgRyJLV4JSbHeWQ3
-        f9qIwMh/4tfxpGDP4Qiy3L1ZOg==
-X-Google-Smtp-Source: ABdhPJylWOwwcpIIvbGQpSaxkQQ9vmcbK3N5vu+frs7m91JCCuk6OpVHXSl/+5abhc6avfDGWqj50w==
-X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr67827969pjb.157.1637012776970;
-        Mon, 15 Nov 2021 13:46:16 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t13sm15713136pfl.214.2021.11.15.13.46.16
+        bh=Zpo2FcY0JFle+1sWMVU6xVo7WBKafm0rx46PVS7H5Og=;
+        b=p1H5TsPszo6J0RWUpcwlqL2joGIRol38ZJPQ/mGnJLTHAqYX7XWW8+DLff+CAaK8he
+         ap5bQTYPdw5i8DzsY92gMEoPmu0K4sdQOy7zvmiX8lkI97QrKgwb77XtKT0AsVQF+c+c
+         rGgvTU/f5UkPCq4l1ljjJ+jo5WrgRadfytV7iPuKCAUcWXz2GcCwCGDgqGgOMzzQy/D/
+         I22rszVBHDJS7XrzbaXhtF5xTvrFTT05KvVHA5QHeSO7MktXxGEqw/3QMAUA3zSC9ETV
+         qeT8nkYDKnh5r6Y+KpFBBZtg9YuN0CSNIcJLmgDUz1TFyVnet1Ilwbj5EPgTIFq86kIU
+         IwNA==
+X-Gm-Message-State: AOAM5300WNFfUZvKA1Ro4q6Hxtgg43KbYVGEV1Djb5B1EvCToKNm8OZg
+        1yS5oScHw5OPMNhwTVLVHAE=
+X-Google-Smtp-Source: ABdhPJww7K1XBBi0PWxrQOFVuk8+zAGeety4qxeCcVFbci3CpQiU5u5cW5CXl2Fvmnjj75pJDUzBmA==
+X-Received: by 2002:a05:600c:299:: with SMTP id 25mr15075288wmk.77.1637013050094;
+        Mon, 15 Nov 2021 13:50:50 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id q84sm887283wme.3.2021.11.15.13.50.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:46:16 -0800 (PST)
-Date:   Mon, 15 Nov 2021 21:46:13 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Update number of zapped pages even if page
- list is stable
-Message-ID: <YZLVJX1XLF6Rx/2K@google.com>
-References: <20211111221448.2683827-1-seanjc@google.com>
- <CALzav=dpzzKgaNRLrSBy71WBvybWmRJ39eDv4hPXsbU_DSS-fA@mail.gmail.com>
- <YZKzr4mn1jJ3vdqK@google.com>
- <CALzav=fKycSowAyaymt9a9hpffbWnFeXvACC5pE5-rMpx+4H4g@mail.gmail.com>
+        Mon, 15 Nov 2021 13:50:49 -0800 (PST)
+Date:   Mon, 15 Nov 2021 22:50:48 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>
+Subject: Re: [PATCH 4/5] PCI: mt7621: Add missing 'MODULE_LICENSE()'
+ definition
+Message-ID: <YZLWOFGFs4g6gh5l@rocinante>
+References: <20211115070809.15529-1-sergio.paracuellos@gmail.com>
+ <20211115070809.15529-5-sergio.paracuellos@gmail.com>
+ <YZJWM33dXqW1BsuV@rocinante>
+ <CAK8P3a0A9xAcwDLFbUk--X2+7gFpOL7HJw-9Sk8KZxfoidcxuw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALzav=fKycSowAyaymt9a9hpffbWnFeXvACC5pE5-rMpx+4H4g@mail.gmail.com>
+In-Reply-To: <CAK8P3a0A9xAcwDLFbUk--X2+7gFpOL7HJw-9Sk8KZxfoidcxuw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021, David Matlack wrote:
-> On Mon, Nov 15, 2021 at 11:23 AM Sean Christopherson <seanjc@google.com> wrote:
+Hi Arnd,
+
+[...]
+> > >  builtin_platform_driver(mt7621_pci_driver);
+> > > +
+> > > +MODULE_LICENSE("GPL v2");
 > >
-> > On Mon, Nov 15, 2021, David Matlack wrote:
-> > > On Thu, Nov 11, 2021 at 2:14 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > >
-> > > > When zapping obsolete pages, update the running count of zapped pages
-> > > > regardless of whether or not the list has become unstable due to zapping
-> > > > a shadow page with its own child shadow pages.  If the VM is backed by
-> > > > mostly 4kb pages, KVM can zap an absurd number of SPTEs without bumping
-> > > > the batch count and thus without yielding.  In the worst case scenario,
-> > > > this can cause an RCU stall.
-> > > >
-> > > >   rcu: INFO: rcu_sched self-detected stall on CPU
-> > > >   rcu:     52-....: (20999 ticks this GP) idle=7be/1/0x4000000000000000
-> > > >                                           softirq=15759/15759 fqs=5058
-> > > >    (t=21016 jiffies g=66453 q=238577)
-> > > >   NMI backtrace for cpu 52
-> > > >   Call Trace:
-> > > >    ...
-> > > >    mark_page_accessed+0x266/0x2f0
-> > > >    kvm_set_pfn_accessed+0x31/0x40
-> > > >    handle_removed_tdp_mmu_page+0x259/0x2e0
-> > > >    __handle_changed_spte+0x223/0x2c0
-> > > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> > > >    __handle_changed_spte+0x223/0x2c0
-> > > >    handle_removed_tdp_mmu_page+0x1c1/0x2e0
-> > > >    __handle_changed_spte+0x223/0x2c0
-> > > >    zap_gfn_range+0x141/0x3b0
-> > > >    kvm_tdp_mmu_zap_invalidated_roots+0xc8/0x130
-> > >
-> > > This is a useful patch but I don't see the connection with this stall.
-> > > The stall is detected in kvm_tdp_mmu_zap_invalidated_roots, which runs
-> > > after kvm_zap_obsolete_pages. How would rescheduling during
-> > > kvm_zap_obsolete_pages help?
+> > A question here about the builtin_platform_driver() use in this driver,
+> > especially since it's set as tristate in Kconfig, thus I am not sure if
+> > using builtin_platform_driver() over module_platform_driver() is correct?
 > >
-> > Ah shoot, I copy+pasted the wrong splat.  The correct, revelant backtrace is:
+> > Unless this is more because you need to reply on device_initcall() for the
+> > driver to properly initialise?
 > 
-> Ok that makes more sense :). Also that was a soft lockup rather than
-> an RCU stall.
+> builtin_platform_driver() does the right thing for loadable modules that
+> have no module-unload and are not intended to be removable.
+> 
+> This is often use for PCI drivers, but after Rob reworked this code a while
+> back, it should actually be possible to reliably remove and reload PCI
+> host bridge drivers, and it would be good to eventually lift the restriction
+> here as well.
 
-*sigh*  I'm not sure which blatant "this is the wrong splat" goof is worse, the
-explicit tdp_mmu in the backtrace, or the fact that the legacy MMU doesn't rely
-on RCU...
+Thank you for letting me know.  Much appreciated.  I assumed in the past
+that with tristate in Kconfig the module_platform_driver() would be the
+preferred route.
 
-I'll get v2 posted.
+	Krzysztof
