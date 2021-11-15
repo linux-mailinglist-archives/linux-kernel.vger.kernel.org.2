@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C224B451539
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0016B45153D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhKOU3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:29:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48896 "EHLO mail.kernel.org"
+        id S1351044AbhKOUaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240133AbhKOSFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CB28632FD;
-        Mon, 15 Nov 2021 17:42:50 +0000 (UTC)
+        id S240187AbhKOSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5D063387;
+        Mon, 15 Nov 2021 17:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998170;
-        bh=YsfQXydnnYVDsA8EUuw0r2UCfDO195lGpkkRTB6wsyk=;
+        s=korg; t=1636998193;
+        bh=dFxQ0ogb3P0ZYRHEjk1S85kd5p5sZall410qwzf/OBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWRsPO2GAHU27QhIWR0/blTCf+JsSj5Ztq6SdT4ui5qYB8bhQGQ++8h20t3B1s7yY
-         4x7Ts/Kh22TaN78WIShdcgqOk6CMgL7yTIneoFqCrg4u5nlwuNRR2DbDNfeSNf2AyH
-         yrSDv9TdJREr18yXHvSNmhGDM+Wbc9dwvXTc/yqw=
+        b=mbciulmfCXdtJQYHSMtCj+i4ExXJIhI38diSmkjq2i+bz59wcfMR5zCcD3gBQwq98
+         zcGFcmwKKDy2q1MaxtDRtcF5zTIWwOe8ZuFdMEAS3T/tuktANwTzWOSoLDl0W3fKGv
+         fsEXxryZwg4RIWGktiANtt65/wQEc0plAgCm65XA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 413/575] driver core: Fix possible memory leak in device_link_add()
-Date:   Mon, 15 Nov 2021 18:02:18 +0100
-Message-Id: <20211115165358.043134263@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Waiman Long <longman@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 5.10 421/575] powerpc: Rename is_kvm_guest() to check_kvm_guest()
+Date:   Mon, 15 Nov 2021 18:02:26 +0100
+Message-Id: <20211115165358.329048810@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,67 +43,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit df0a18149474c7e6b21f6367fbc6bc8d0f192444 ]
+[ Upstream commit 16520a858a995742c2d2248e86a6026bd0316562 ]
 
-I got memory leak as follows:
+We want to reuse the is_kvm_guest() name in a subsequent patch but
+with a new body. Hence rename is_kvm_guest() to check_kvm_guest(). No
+additional changes.
 
-unreferenced object 0xffff88801f0b2200 (size 64):
-  comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
-  hex dump (first 32 bytes):
-    72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
-    74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
-  backtrace:
-    [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
-    [<0000000050da42d9>] kvasprintf+0xb5/0x150
-    [<000000004bbbed13>] kvasprintf_const+0x60/0x190
-    [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
-    [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
-    [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
-    [<000000009db9faed>] _regulator_get+0x297/0x680
-    [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
-    [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
-    [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
-    [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
-    [<0000000070fb977b>] really_probe+0x299/0xc30
-    [<0000000088e226ce>] __driver_probe_device+0x357/0x500
-    [<00000000c21dda32>] driver_probe_device+0x4e/0x140
-    [<000000004e650441>] __device_attach_driver+0x257/0x340
-    [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
-
-When device_register() returns an error, the name allocated in dev_set_name()
-will be leaked, the put_device() should be used instead of kfree() to give up
-the device reference, then the name will be freed in kobject_cleanup() and the
-references of consumer and supplier will be decreased in device_link_release_fn().
-
-Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210930085714.2057460-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Acked-by: Waiman Long <longman@redhat.com>
+Signed-off-by: kernel test robot <lkp@intel.com> # int -> bool fix
+[mpe: Fold in fix from lkp to use true/false not 0/1]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201202050456.164005-3-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/powerpc/include/asm/kvm_guest.h | 4 ++--
+ arch/powerpc/include/asm/kvm_para.h  | 2 +-
+ arch/powerpc/kernel/firmware.c       | 8 ++++----
+ arch/powerpc/platforms/pseries/smp.c | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 2bc4db5ffe445..389d13616d1df 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -668,9 +668,7 @@ struct device_link *device_link_add(struct device *consumer,
- 		     dev_bus_name(supplier), dev_name(supplier),
- 		     dev_bus_name(consumer), dev_name(consumer));
- 	if (device_register(&link->link_dev)) {
--		put_device(consumer);
--		put_device(supplier);
--		kfree(link);
-+		put_device(&link->link_dev);
- 		link = NULL;
- 		goto out;
- 	}
+diff --git a/arch/powerpc/include/asm/kvm_guest.h b/arch/powerpc/include/asm/kvm_guest.h
+index d2c946dbbd2c0..d7749ecb30d49 100644
+--- a/arch/powerpc/include/asm/kvm_guest.h
++++ b/arch/powerpc/include/asm/kvm_guest.h
+@@ -7,9 +7,9 @@
+ #define _ASM_POWERPC_KVM_GUEST_H_
+ 
+ #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
+-bool is_kvm_guest(void);
++bool check_kvm_guest(void);
+ #else
+-static inline bool is_kvm_guest(void) { return false; }
++static inline bool check_kvm_guest(void) { return false; }
+ #endif
+ 
+ #endif /* _ASM_POWERPC_KVM_GUEST_H_ */
+diff --git a/arch/powerpc/include/asm/kvm_para.h b/arch/powerpc/include/asm/kvm_para.h
+index abe1b5e82547b..6fba06b6cfdbc 100644
+--- a/arch/powerpc/include/asm/kvm_para.h
++++ b/arch/powerpc/include/asm/kvm_para.h
+@@ -14,7 +14,7 @@
+ 
+ static inline int kvm_para_available(void)
+ {
+-	return IS_ENABLED(CONFIG_KVM_GUEST) && is_kvm_guest();
++	return IS_ENABLED(CONFIG_KVM_GUEST) && check_kvm_guest();
+ }
+ 
+ static inline unsigned int kvm_arch_para_features(void)
+diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
+index 5f48e5ad24cdd..c3140c6084c93 100644
+--- a/arch/powerpc/kernel/firmware.c
++++ b/arch/powerpc/kernel/firmware.c
+@@ -22,17 +22,17 @@ EXPORT_SYMBOL_GPL(powerpc_firmware_features);
+ #endif
+ 
+ #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
+-bool is_kvm_guest(void)
++bool check_kvm_guest(void)
+ {
+ 	struct device_node *hyper_node;
+ 
+ 	hyper_node = of_find_node_by_path("/hypervisor");
+ 	if (!hyper_node)
+-		return 0;
++		return false;
+ 
+ 	if (!of_device_is_compatible(hyper_node, "linux,kvm"))
+-		return 0;
++		return false;
+ 
+-	return 1;
++	return true;
+ }
+ #endif
+diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
+index 7be7094075ab5..9d596b41ec675 100644
+--- a/arch/powerpc/platforms/pseries/smp.c
++++ b/arch/powerpc/platforms/pseries/smp.c
+@@ -208,7 +208,7 @@ static __init void pSeries_smp_probe(void)
+ 	if (!cpu_has_feature(CPU_FTR_SMT))
+ 		return;
+ 
+-	if (is_kvm_guest()) {
++	if (check_kvm_guest()) {
+ 		/*
+ 		 * KVM emulates doorbells by disabling FSCR[MSGP] so msgsndp
+ 		 * faults to the hypervisor which then reads the instruction
 -- 
 2.33.0
 
