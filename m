@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F195452318
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E23145230F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbhKPBT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:19:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S1379318AbhKPBSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:18:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244821AbhKOTRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:17:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71B3863428;
-        Mon, 15 Nov 2021 18:24:20 +0000 (UTC)
+        id S244951AbhKOTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1540163338;
+        Mon, 15 Nov 2021 18:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000661;
-        bh=reufAu6yogWRdslKweeyV7v5Tl/MKvbnnDnoqxorVr4=;
+        s=korg; t=1637000771;
+        bh=AIf3OGbDG7GkOz/5CLdnUl7dUuLx/f0kCjh6DXlo7e4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZsq6d0LdmpQyNWpWV5VCZdaPkqcEulWvJFy0Juo5QCmIp8mJOQuqW4Fj1ppEMqaq
-         mMXgriyIUSy4KWHRoOMoB74Q6g0cUoJWX6JCUvo6Ei2b0UoQpSB+GYAiXfRR4ajtmg
-         Fk41cXBDZgHaJMX8geSrVtMrqWuv2/NQvKX6ELYQ=
+        b=g/EPfUnd2opsIhy5TXimaZNZHKwjO/nuVmEFKqtH9TyeIee6W7VBiz9iCHpphzGH/
+         o3PEw1rYGQXYZ/YSNjIT2cV+wzWRVK3Fmwxs6cEL+5HZYffEEvZz/JzpYLthuOLZv3
+         tBQrhwcAX6iiwZi7YiSKWQh7PJysNj2758LwRjS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
         Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 742/849] mfd: core: Add missing of_node_put for loop iteration
-Date:   Mon, 15 Nov 2021 18:03:45 +0100
-Message-Id: <20211115165445.352458768@linuxfoundation.org>
+Subject: [PATCH 5.14 743/849] mfd: cpcap: Add SPI device ID table
+Date:   Mon, 15 Nov 2021 18:03:46 +0100
+Message-Id: <20211115165445.383548482@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,44 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 002be81140075e17a1ebd5c3c55e356fbab0ddad ]
+[ Upstream commit d5fa8592b773f4da2b04e7333cd37efec5e4ca43 ]
 
-Early exits from for_each_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI device ID table.
 
-  drivers/mfd/mfd-core.c:197:2-24: WARNING:
-    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
-
-Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20210528115126.18370-1-krzysztof.kozlowski@canonical.com
+Link: https://lore.kernel.org/r/20210924143347.14721-3-broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/mfd-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mfd/motorola-cpcap.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index 79f5c6a18815a..684a011a63968 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
- 			if (of_device_is_compatible(np, cell->of_compatible)) {
- 				/* Ignore 'disabled' devices error free */
- 				if (!of_device_is_available(np)) {
-+					of_node_put(np);
- 					ret = 0;
- 					goto fail_alias;
- 				}
-@@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
- 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
- 				if (ret == -EAGAIN)
- 					continue;
-+				of_node_put(np);
- 				if (ret)
- 					goto fail_alias;
+diff --git a/drivers/mfd/motorola-cpcap.c b/drivers/mfd/motorola-cpcap.c
+index 6fb206da27298..265464b5d7cc5 100644
+--- a/drivers/mfd/motorola-cpcap.c
++++ b/drivers/mfd/motorola-cpcap.c
+@@ -202,6 +202,13 @@ static const struct of_device_id cpcap_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, cpcap_of_match);
+ 
++static const struct spi_device_id cpcap_spi_ids[] = {
++	{ .name = "cpcap", },
++	{ .name = "6556002", },
++	{},
++};
++MODULE_DEVICE_TABLE(spi, cpcap_spi_ids);
++
+ static const struct regmap_config cpcap_regmap_config = {
+ 	.reg_bits = 16,
+ 	.reg_stride = 4,
+@@ -342,6 +349,7 @@ static struct spi_driver cpcap_driver = {
+ 		.pm = &cpcap_pm,
+ 	},
+ 	.probe = cpcap_probe,
++	.id_table = cpcap_spi_ids,
+ };
+ module_spi_driver(cpcap_driver);
  
 -- 
 2.33.0
