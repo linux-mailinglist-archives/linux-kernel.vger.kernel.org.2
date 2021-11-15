@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BB2450E44
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30F1450E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240859AbhKOSN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:13:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
+        id S240755AbhKOSNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:13:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238000AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238001AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E85966328E;
-        Mon, 15 Nov 2021 17:19:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE4763290;
+        Mon, 15 Nov 2021 17:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996756;
-        bh=K1VRQ02lCB5uLlXx7OOXa22QVW/Jkc27lzPNK0oRU/k=;
+        s=korg; t=1636996759;
+        bh=Xc+C6RMrFdCkw73NMWJZhOfv2KdCdFr4HRvhdW/MJHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d660cMVd9v6kdg2HitExCoSYPETmxPRYFoSfq7/gMM5hu9RQYiP0UjxuHUlHHmIg9
-         fSAe/4Fobqy201hFEmNdOSsbpIuS1sna2pg7Wh+FQVZv33G6fpw0ByEsD0xRlekiYZ
-         J93kv7z4aUiQeo9o94NdxsddSnwwDv5Y+1gKWuJQ=
+        b=B/BhnOq7w7V0aKVCRPWjhYDGQVs7GuGqFgErI52gJEVsGaXroqO+5EJGP+x8LMIoS
+         T02pLPKn1okybHZ4WJrF6muIQjfNsUEecJmpOM7NCrQy+JP/PRtzDKcPKe8E5cI64t
+         cwb53wf2uUrdtrcYvH3M6Z92cB2/CD9uZT1b7zds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 257/355] clk: mvebu: ap-cpu-clk: Fix a memory leak in error handling paths
-Date:   Mon, 15 Nov 2021 18:03:01 +0100
-Message-Id: <20211115165322.055141552@linuxfoundation.org>
+Subject: [PATCH 5.4 258/355] ARM: s3c: irq-s3c24xx: Fix return value check for s3c24xx_init_intc()
+Date:   Mon, 15 Nov 2021 18:03:02 +0100
+Message-Id: <20211115165322.085948637@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,75 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-[ Upstream commit af9617b419f77cf0b99702a7b2b0519da0d27715 ]
+[ Upstream commit 2aa717473ce96c93ae43a5dc8c23cedc8ce7dd9f ]
 
-If we exit the for_each_of_cpu_node loop early, the reference on the
-current node must be decremented, otherwise there is a leak.
+The s3c24xx_init_intc() returns an error pointer upon failure, not NULL.
+let's add an error pointer check in s3c24xx_handle_irq.
 
-Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+s3c_intc[0] is not NULL or ERR, we can simplify the code.
+
+Fixes: 1f629b7a3ced ("ARM: S3C24XX: transform irq handling into a declarative form")
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+Link: https://lore.kernel.org/r/20210901123557.1043953-1-liu.yun@linux.dev
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mvebu/ap-cpu-clk.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-s3c24xx.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/mvebu/ap-cpu-clk.c b/drivers/clk/mvebu/ap-cpu-clk.c
-index af5e5acad3706..bde4a7d6a1d33 100644
---- a/drivers/clk/mvebu/ap-cpu-clk.c
-+++ b/drivers/clk/mvebu/ap-cpu-clk.c
-@@ -256,12 +256,15 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		int cpu, err;
+diff --git a/drivers/irqchip/irq-s3c24xx.c b/drivers/irqchip/irq-s3c24xx.c
+index d2031fecc3861..5e97ae54782d6 100644
+--- a/drivers/irqchip/irq-s3c24xx.c
++++ b/drivers/irqchip/irq-s3c24xx.c
+@@ -359,11 +359,25 @@ static inline int s3c24xx_handle_intc(struct s3c_irq_intc *intc,
+ asmlinkage void __exception_irq_entry s3c24xx_handle_irq(struct pt_regs *regs)
+ {
+ 	do {
+-		if (likely(s3c_intc[0]))
+-			if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
+-				continue;
++		/*
++		 * For platform based machines, neither ERR nor NULL can happen here.
++		 * The s3c24xx_handle_irq() will be set as IRQ handler iff this succeeds:
++		 *
++		 *    s3c_intc[0] = s3c24xx_init_intc()
++		 *
++		 * If this fails, the next calls to s3c24xx_init_intc() won't be executed.
++		 *
++		 * For DT machine, s3c_init_intc_of() could set the IRQ handler without
++		 * setting s3c_intc[0] only if it was called with num_ctrl=0. There is no
++		 * such code path, so again the s3c_intc[0] will have a valid pointer if
++		 * set_handle_irq() is called.
++		 *
++		 * Therefore in s3c24xx_handle_irq(), the s3c_intc[0] is always something.
++		 */
++		if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
++			continue;
  
- 		err = of_property_read_u32(dn, "reg", &cpu);
--		if (WARN_ON(err))
-+		if (WARN_ON(err)) {
-+			of_node_put(dn);
- 			return err;
-+		}
- 
- 		/* If cpu2 or cpu3 is enabled */
- 		if (cpu & APN806_CLUSTER_NUM_MASK) {
- 			nclusters = 2;
-+			of_node_put(dn);
- 			break;
- 		}
- 	}
-@@ -288,8 +291,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		int cpu, err;
- 
- 		err = of_property_read_u32(dn, "reg", &cpu);
--		if (WARN_ON(err))
-+		if (WARN_ON(err)) {
-+			of_node_put(dn);
- 			return err;
-+		}
- 
- 		cluster_index = cpu & APN806_CLUSTER_NUM_MASK;
- 		cluster_index >>= APN806_CLUSTER_NUM_OFFSET;
-@@ -301,6 +306,7 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		parent = of_clk_get(np, cluster_index);
- 		if (IS_ERR(parent)) {
- 			dev_err(dev, "Could not get the clock parent\n");
-+			of_node_put(dn);
- 			return -EINVAL;
- 		}
- 		parent_name =  __clk_get_name(parent);
-@@ -319,8 +325,10 @@ static int ap_cpu_clock_probe(struct platform_device *pdev)
- 		init.parent_names = &parent_name;
- 
- 		ret = devm_clk_hw_register(dev, &ap_cpu_clk[cluster_index].hw);
--		if (ret)
-+		if (ret) {
-+			of_node_put(dn);
- 			return ret;
-+		}
- 		ap_cpu_data->hws[cluster_index] = &ap_cpu_clk[cluster_index].hw;
- 	}
+-		if (s3c_intc[2])
++		if (!IS_ERR_OR_NULL(s3c_intc[2]))
+ 			if (s3c24xx_handle_intc(s3c_intc[2], regs, 64))
+ 				continue;
  
 -- 
 2.33.0
