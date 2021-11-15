@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FFD450E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5BE450E27
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240125AbhKOSNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:13:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53172 "EHLO mail.kernel.org"
+        id S240704AbhKOSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:12:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238021AbhKOR2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238022AbhKOR2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:28:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3144863291;
-        Mon, 15 Nov 2021 17:19:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0E2763289;
+        Mon, 15 Nov 2021 17:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996770;
-        bh=aE8Pd57+8MuAlGVQwn7vGZ+gI8Naqr5js5Cv9WRYKsU=;
+        s=korg; t=1636996773;
+        bh=vNLmXhyTLNNbi5Y3dYGCJIfKqv7SnNYDg9AALaHo9SY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=leVWVrxfdyv22HW/XOeSgotiJt7y2/lXde60wdK03vX3dbbbTqLZ6BHPpjCis5gwB
-         AHL1s55sbD+RHf5lj7WI7CBod5iGzuoLUBKoM/uZ9W2R0R7owwwpWVhn+Tb49TNv5T
-         PwNkBKH1XjTAJxA7Rc/fRkDSADxBNv9VFSliaWiI=
+        b=EMN+Y9YBg+lpQmF0lRMw6GTtEG1FZJeah9V+qC0nuLg9ba1vryswG4LXrh9tG/4tc
+         9Z3Jynj49NsAUWmMV0kQYKo5hMvsSTUhdsjL1ZqEnmeJJkHwjzWx+oiqkZpVjye9ed
+         Aftn05n1586tOYK/gs283kN4hGRqLCcDXPKACSKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 261/355] RDMA/bnxt_re: Fix query SRQ failure
-Date:   Mon, 15 Nov 2021 18:03:05 +0100
-Message-Id: <20211115165322.180084793@linuxfoundation.org>
+Subject: [PATCH 5.4 262/355] arm64: dts: meson-g12a: Fix the pwm regulator supply properties
+Date:   Mon, 15 Nov 2021 18:03:06 +0100
+Message-Id: <20211115165322.211537512@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,41 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvin Xavier <selvin.xavier@broadcom.com>
+From: Anand Moon <linux.amoon@gmail.com>
 
-[ Upstream commit 598d16fa1bf93431ad35bbab3ed1affe4fb7b562 ]
+[ Upstream commit 085675117ecf5e02c4220698fd549024ec64ad2c ]
 
-Fill the missing parameters for the FW command while querying SRQ.
+After enabling CONFIG_REGULATOR_DEBUG=y we observe below debug logs.
+Changes help link VDDCPU pwm regulator to 12V regulator supply
+instead of dummy regulator.
 
-Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-Link: https://lore.kernel.org/r/1631709163-2287-8-git-send-email-selvin.xavier@broadcom.com
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+[   11.602281] pwm-regulator regulator-vddcpu: Looking up pwm-supply property
+               in node /regulator-vddcpu failed
+[   11.602344] VDDCPU: supplied by regulator-dummy
+[   11.602365] regulator-dummy: could not add device link regulator.11: -ENOENT
+[   11.602548] VDDCPU: 721 <--> 1022 mV at 1022 mV, enabled
+
+Fixes: e9bc0765cc12 ("arm64: dts: meson-g12a: enable DVFS on G12A boards")
+
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/20210919202918.3556-2-linux.amoon@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts    | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 4d07d22bfa7b1..5fc5ab7813c0f 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -642,12 +642,13 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 	int rc = 0;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
+index c9fa23a565624..b8d9e92197ac8 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts
+@@ -139,7 +139,7 @@
+ 		regulator-min-microvolt = <721000>;
+ 		regulator-max-microvolt = <1022000>;
  
- 	RCFW_CMD_PREP(req, QUERY_SRQ, cmd_flags);
--	req.srq_cid = cpu_to_le32(srq->id);
+-		vin-supply = <&dc_in>;
++		pwm-supply = <&dc_in>;
  
- 	/* Configure the request */
- 	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
- 	if (!sbuf)
- 		return -ENOMEM;
-+	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
-+	req.srq_cid = cpu_to_le32(srq->id);
- 	sb = sbuf->sb;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
- 					  (void *)sbuf, 0);
+ 		pwms = <&pwm_AO_cd 1 1250 0>;
+ 		pwm-dutycycle-range = <100 0>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+index 2a324f0136e3f..02ec6eda03b1c 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+@@ -139,7 +139,7 @@
+ 		regulator-min-microvolt = <721000>;
+ 		regulator-max-microvolt = <1022000>;
+ 
+-		vin-supply = <&main_12v>;
++		pwm-supply = <&main_12v>;
+ 
+ 		pwms = <&pwm_AO_cd 1 1250 0>;
+ 		pwm-dutycycle-range = <100 0>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
+index c48125bf9d1e3..5209c44fda01a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
+@@ -139,7 +139,7 @@
+ 		regulator-min-microvolt = <721000>;
+ 		regulator-max-microvolt = <1022000>;
+ 
+-		vin-supply = <&dc_in>;
++		pwm-supply = <&dc_in>;
+ 
+ 		pwms = <&pwm_AO_cd 1 1250 0>;
+ 		pwm-dutycycle-range = <100 0>;
 -- 
 2.33.0
 
