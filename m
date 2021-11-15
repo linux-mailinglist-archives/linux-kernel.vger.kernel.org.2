@@ -2,98 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2249F452060
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317DF451AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353652AbhKPAw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
+        id S1353590AbhKOXr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:47:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344070AbhKOTXN (ORCPT
+        with ESMTP id S1344167AbhKOTX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:13 -0500
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C12C04993F;
-        Mon, 15 Nov 2021 10:28:24 -0800 (PST)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4HtHkY4tv8zQkj1;
-        Mon, 15 Nov 2021 19:28:21 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1637000897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ix3GSMuJf8J7gxzZMVaehnNDtxrrvGJtZiRi1rggu8=;
-        b=LanLbt3rNZwXOA9eFpYW7VJc9FSBYn0BKEXwhWIXkGUeIkBASb5BjkEPDTMrKr8OrP8Ff7
-        RFGILYbIZBTZ9pavHkWF5IK012oNFbm6wJhOmnbTndZq01fZ8lVlYcPv6ov/vXEGooXqy5
-        m8imowG0mvY3SnlXH+7TYmsz4mU0ojNDmwWZMs/zzpVA/Xwjc7VnmC6TPY3UKNhn4K7oyo
-        XWaz7OM3oEChylIPe0wcKBLKM9lsu8UMolOJ74LCb0y9P0he7K0fEmrxbPmIYWFh72SwHl
-        F6kqqqeiGtpV1I5LHM0YsImLeSM6Oyw00laxevx6u7uaTuSMMe0Gbvu/t0R4vw==
-Subject: Re: [PATCH 5.14 309/849] net: dsa: lantiq_gswip: serialize access to
- the PCE table
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-References: <20211115165419.961798833@linuxfoundation.org>
- <20211115165430.700038680@linuxfoundation.org>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <511fefcb-9cad-bba2-e267-710994874097@hauke-m.de>
-Date:   Mon, 15 Nov 2021 19:28:14 +0100
+        Mon, 15 Nov 2021 14:23:58 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5B4C088894
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:29:16 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso28973139ots.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:29:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S9JEaZ5BtOcabxLBRmUDBJQLkGUlrZ/MG6Txwkmqf+A=;
+        b=OH/FizDobI3SZFXSTIcVA9637tP/HH/F9batz8Ro1DAOOjpp2sFrJuifRI/VVQxTXb
+         acxkVRT6OBIam++W6Sgbi2uJhd+G+3f02qS40zWaDEFdnlONAGDyfaldyJ058Ln5GW45
+         owLkEyombYcqMXBaX5OvYVwfSIKxcEZDsOUwZKH6UCodpnHraNXAgP2iEXUt2kZzJCY8
+         KNXoWyEk4NLsoqwvuVQBLneAwdv8UdN/5y3qe+K72MXkIHY2BCAQadzLdLnW/GAbLoSC
+         zoJwnhsS/MH7SsiS62bNPCrYTWSgoLKNiRzcnss2rwcTqDlYO6yZnT03S16dS9+0GgE5
+         iahA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S9JEaZ5BtOcabxLBRmUDBJQLkGUlrZ/MG6Txwkmqf+A=;
+        b=e/c3RQ+5ovaBGks+k331YpwXlwZMHTnDHK0zyqhxi4w0KRpjUY53hhBJE5Cii5Zx+1
+         qhc+KPMIjQ8VygoOmvZUxkeZv1PIhRkdVKNWSjED9SzXZ2veVl80L9iMKbpDGkQsmAfd
+         s3NFYmHNmBH08F7Mvsitg7umApQloo78vJ8/JGfexZ522zSrUVctOgrRj2iMVJtk3bqQ
+         b/3/TDH7WNvXQ3FBRI6nQ+XzxWCs5in3MajlLzXG3MOVt59JCVfauQao3J2w3CrrbdJN
+         SEGnSnCcYN6b0QFT5jTmnYEfDHnOMtqIXjf7xMOTjTAJL422KJUDNBJFrdnBvXKpYFIn
+         cYSQ==
+X-Gm-Message-State: AOAM530OfFqNeFheEQoI06LvU2qD1Wf4/42fUQkwSFaGx9ygPtXpO3vF
+        6Vh5HukrCnViAlD9lDR5/fh0oA==
+X-Google-Smtp-Source: ABdhPJzXeGCcvSUHpRXfTznQBZg4X5ODF42zxT6tS11Jpzc1IWXFQKeX1uGVjWLEvA/NZCY9kYYmUg==
+X-Received: by 2002:a9d:6394:: with SMTP id w20mr907316otk.248.1637000955996;
+        Mon, 15 Nov 2021 10:29:15 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u13sm2713672oop.28.2021.11.15.10.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 10:29:15 -0800 (PST)
+Date:   Mon, 15 Nov 2021 12:29:10 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>
+Subject: Re: [PATCH v5 18/22] crypto: qce: Defer probing if BAM dma channel
+ is not yet initialized
+Message-ID: <YZKm9gU4fPMbc291@builder.lan>
+References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
+ <20211110105922.217895-19-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20211115165430.700038680@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110105922.217895-19-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 5:56 PM, Greg Kroah-Hartman wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Wed 10 Nov 04:59 CST 2021, Bhupesh Sharma wrote:
+
+> Since the Qualcomm qce crypto driver needs the BAM dma driver to be
+> setup first (to allow crypto operations), it makes sense to defer
+> the qce crypto driver probing in case the BAM dma driver is not yet
+> probed.
 > 
-> [ Upstream commit 49753a75b9a32de4c0393bb8d1e51ea223fda8e4 ]
+
+To me this sentence implies that qce_crypto_probe() doesn't return
+-EPROBE_DEFER from qce_dma_request(), but looking at the code I don't
+see why this would be...
+
+> Move the code leg requesting dma channels earlier in the
+> probe() flow. This fixes the qce probe failure issues when both qce
+> and BMA dma are compiled as static part of the kernel.
 > 
-> Looking at the code, the GSWIP switch appears to hold bridging service
-> structures (VLANs, FDBs, forwarding rules) in PCE table entries.
-> Hardware access to the PCE table is non-atomic, and is comprised of
-> several register reads and writes.
-> 
-> These accesses are currently serialized by the rtnl_lock, but DSA is
-> changing its driver API and that lock will no longer be held when
-> calling ->port_fdb_add() and ->port_fdb_del().
-> 
-> So this driver needs to serialize the access to the PCE table using its
-> own locking scheme. This patch adds that.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+As far as I can tell the only actual difference is that you're moving
+the qce_dma_request() above the icc_set_bw() call and the three
+clk_prepare_enable() calls.
+
+This is a very valid optimization, but where does qce_crypto_probe()
+fail and why does it need the BAM driver to have probed before we try to
+turn on the clocks and (our) interconnect vote?
+
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 > ---
->   drivers/net/dsa/lantiq_gswip.c | 28 +++++++++++++++++++++++-----
->   1 file changed, 23 insertions(+), 5 deletions(-)
+>  drivers/crypto/qce/core.c | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index 7c90401a2ef1..84ed9e253d5d 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -209,9 +209,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	/* qce driver requires BAM dma driver to be setup first.
+> +	 * In case the dma channel are not set yet, this check
+> +	 * helps use to return -EPROBE_DEFER earlier.
+> +	 */
 
-Hi Greg and Vladimir,
+This comment warrants the change, but I don't see that it will add value
+in the code once the patch is merged. Please drop it.
 
-I understood this is only needed when we apply the complete patch series 
-from Vladimir. This would only be needed when we also apply this patch:
- > commit 5cdfde49a07f38663c277ddf2e56345ea1706fc2
- > Author: Vladimir Oltean <vladimir.oltean@nxp.com>
- > Date:   Fri Oct 22 21:43:10 2021 +0300
- >
- >     net: dsa: drop rtnl_lock from dsa_slave_switchdev_event_work
-This was added in v5.16-rc1.
+> +	ret = qce_dma_request(qce->dev, &qce->dma);
+> +	if (ret)
 
-Without this patch the sections are protected by rtnl_lock().
+I presume this is where your added dev_err() in err: comes in handy. I
+definitely think this warrants an error print; so return dev_err_probe()
+here would be the right thing to do (in the previous patch).
 
+> +		return ret;
+> +
+>  	qce->mem_path = devm_of_icc_get(qce->dev, "memory");
+> -	if (IS_ERR(qce->mem_path))
+> -		return PTR_ERR(qce->mem_path);
 
-Hauke
+But I see no reason for moving it above devm_of_icc_get() and the
+devm_clk_get*() calls - as they don't actually do anything, but moving
+qce_dma_request() above them forces the introduction of goto here.
+
+Regards,
+Bjorn
+
+> +	if (IS_ERR(qce->mem_path)) {
+> +		ret = PTR_ERR(qce->mem_path);
+> +		goto err;
+> +	}
+>  
+>  	qce->core = devm_clk_get_optional(qce->dev, "core");
+>  	if (IS_ERR(qce->core)) {
+> @@ -247,10 +257,6 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_clks_iface;
+>  
+> -	ret = qce_dma_request(qce->dev, &qce->dma);
+> -	if (ret)
+> -		goto err_clks;
+> -
+>  	ret = qce_check_version(qce);
+>  	if (ret)
+>  		goto err_clks;
+> @@ -265,12 +271,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  
+>  	ret = qce_register_algs(qce);
+>  	if (ret)
+> -		goto err_dma;
+> +		goto err_clks;
+>  
+>  	return 0;
+>  
+> -err_dma:
+> -	qce_dma_release(&qce->dma);
+>  err_clks:
+>  	clk_disable_unprepare(qce->bus);
+>  err_clks_iface:
+> @@ -280,6 +284,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>  err_mem_path_disable:
+>  	icc_set_bw(qce->mem_path, 0, 0);
+>  err:
+> +	qce_dma_release(&qce->dma);
+>  	dev_err(dev, "%s failed : %d\n", __func__, ret);
+>  	return ret;
+>  }
+> -- 
+> 2.31.1
+> 
