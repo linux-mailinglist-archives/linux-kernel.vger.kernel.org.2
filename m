@@ -2,116 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AAF4500E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30344500E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhKOJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S230274AbhKOJQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhKOJNS (ORCPT
+        with ESMTP id S230126AbhKOJPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:13:18 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631CBC061746;
-        Mon, 15 Nov 2021 01:10:21 -0800 (PST)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2837F9CA;
-        Mon, 15 Nov 2021 10:10:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636967417;
-        bh=bs5FwrGJKmZiUyJUhZtsFFkCbThCR2+MNX7sYGLdInI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dnjNnE+BxQubVBzyvt35tp9eSPunAc+NOuowzVjMVfnO6jqLw3nMEngEl53CjbMh0
-         UYxBQSy9hDC4AXM+j7bivGr1bDYL75caLR3Kpvgip4jQNeMxX1tvkF1//Xh3honHLn
-         XZyCAuT51XsudJZ+zXrp60OeLJ0gprUub8NgbGw0=
-Date:   Mon, 15 Nov 2021 11:09:54 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 04/11] dmaengine: shdma: remove legacy slave_id parsing
-Message-ID: <YZIj4iKUsj/QQ+BH@pendragon.ideasonboard.com>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-5-arnd@kernel.org>
+        Mon, 15 Nov 2021 04:15:33 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B768CC061746
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:12:33 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id 8so2543829pfo.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 01:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Z/AonHYgIyTnhUgXhUYt7rvkbbUxEPLmY9JAL7YXwgw=;
+        b=KPLq/yv8RYE5sedzS3AhtzNCgsstVaQ6O/lA0kPc8x7YVaf7i4I43muazQfyptthy1
+         AGqlAVdgyNrbkA/YcgHcsUIC/u8XcFGHA3ZGDiUYyZCSjdL61VcFxaP+s5FhmxLVhy+I
+         mE8VOlQoOSCWLIeilSbWacO2O8XX1yVarR2E1hdjyCZUiwwCNSU8Pse/AmdxpGjBuZNo
+         u/zQaMYBVQFSBrb+o3l+lvomQXQ6TLw0r/YfcLmpL1gWKuwv5EAfHBlj/+DdvdKa0Sud
+         xfL1gcWINxQiVZLomMU/RqxfYo7uLe44qqlLT7Amrn85YH0rY9t6w8ddCO712EigHcx/
+         WfrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Z/AonHYgIyTnhUgXhUYt7rvkbbUxEPLmY9JAL7YXwgw=;
+        b=cL20ReSlOMqm8wM7wB0WUEE1dX2B+aFou36t1rB4DJGii5dbI8ABIfh+TemztYxfpL
+         h6VdmiWZnjuBdccftH5s893vCLGdwTnWiakM4yV0hkxPgRnLKHPjAYpUQ65G4m+3ezq9
+         OSWwqnsHzwZl9zPqxN/HynYzUnQMTz/xUtZiCHmy7p1/Paqxl9N+4CnJ57CrDWzy5eql
+         AF91mDyWwFth8hiX+YufjV9ezRsWyQE7iaWpaRb2q/WNXj0zmNUyi9hpp5iunlWcCFXn
+         pkmsH+njS+TuepEGUVw6s3xC7dlgRLW6C6fWyrVNVmRcNIzAzI1w36o671i71Br8mMs1
+         EP0g==
+X-Gm-Message-State: AOAM533YAYOcSPb6tauln3HZr3MDxCCXjLL7x1HvNE+tjCBLWV40z15r
+        Vt85CxwaJYjNaaPEESfVCkwin0SPnljNZrnDJdU=
+X-Google-Smtp-Source: ABdhPJwuPMGOqgLSCSF/riWT9n8cf+bi2q3RckE9JZ3rHLfhoqnCpRfa0eHFCGkoNDAChSLfMyk4SS86YTFxmSDZFDE=
+X-Received: by 2002:a65:670d:: with SMTP id u13mr23881974pgf.455.1636967553083;
+ Mon, 15 Nov 2021 01:12:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211115085403.360194-5-arnd@kernel.org>
+Reply-To: lw46655@yahoo.com
+Sender: arunadogbee@gmail.com
+Received: by 2002:a05:6a20:8f1f:b0:5d:6cd9:dc13 with HTTP; Mon, 15 Nov 2021
+ 01:12:32 -0800 (PST)
+From:   Lisa <ml771500@gmail.com>
+Date:   Mon, 15 Nov 2021 01:12:32 -0800
+X-Google-Sender-Auth: BOaUk08FbY4AHug4zXbFTAiKTJU
+Message-ID: <CAGScg4pmSKmFG=1gRizeP7V+LHHHrH8s1wkf+cRbS086E1+72Q@mail.gmail.com>
+Subject: Hi Dear!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hi Dear,
 
-Thank you for the patch.
+My name is Lisa  Williams, I am from the United States of America, Its
+my pleasure to contact you for new and special friendship  I will be
+glad to see your reply for us to know each other better and exchange
+pictures.
 
-On Mon, Nov 15, 2021 at 09:53:56AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The slave device is picked through either devicetree or a filter
-> function, and any remaining out-of-tree drivers would have warned
-> about this usage since 2015.
-> 
-> Stop interpreting the field finally so it can be removed from
-> the interface.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/dma/sh/shdma-base.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/dma/sh/shdma-base.c b/drivers/dma/sh/shdma-base.c
-> index 7f72b3f4cd1a..41c6bc650fa3 100644
-> --- a/drivers/dma/sh/shdma-base.c
-> +++ b/drivers/dma/sh/shdma-base.c
-> @@ -786,14 +786,6 @@ static int shdma_config(struct dma_chan *chan,
->  	if (!config)
->  		return -EINVAL;
->  
-> -	/*
-> -	 * overriding the slave_id through dma_slave_config is deprecated,
-> -	 * but possibly some out-of-tree drivers still do it.
-> -	 */
-> -	if (WARN_ON_ONCE(config->slave_id &&
-> -			 config->slave_id != schan->real_slave_id))
-> -		schan->real_slave_id = config->slave_id;
-> -
->  	/*
->  	 * We could lock this, but you shouldn't be configuring the
->  	 * channel, while using it...
-
--- 
-Regards,
-
-Laurent Pinchart
+Yours
+Lisa
