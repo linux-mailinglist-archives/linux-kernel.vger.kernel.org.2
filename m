@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F43C451B87
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5358A451B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353219AbhKPAD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:03:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S1354387AbhKPADq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344694AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344703AbhKOTZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 418F9636B4;
-        Mon, 15 Nov 2021 19:02:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FEE56336D;
+        Mon, 15 Nov 2021 19:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002954;
-        bh=YtaMPtqdXB9HnZuqhvw6aEJQon/86GJold/KYhtH5Kw=;
+        s=korg; t=1637002957;
+        bh=Z2Bkfk7ldib36KvCzZmd63iuvwRrE+by1EVfv5cMvNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qg4xn4Ob1W78nzuJVL8qk3BYhJItha0t3L2mXRw3JGFgkDb3AunAOCkBC7eUVGZGl
-         3ibpO8fi+2QHXH8jzBLgRteXFuM0ilEmyvxXMZtI9N8a2Es7vtwR8NbdZSuTIgPtcD
-         MqY6Mo3zo4tp5KtlX0QvL/L1xXUido9GAFgACqzk=
+        b=pv3VST6wxH13Wp8mFqMD0J2q9iBJp9wCu+16yn1k4icASLZJiaorlmbntPq08PC4N
+         faJ/kQL3vyJ9gPpXYhKqMltuV0d41k1IrwQ+34qf5wFbX73ji/KtDHTSem7Tf53rW6
+         PY6R64GILn6+UOB/y34wsQAKUUyYpsja1beLXHM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 757/917] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
-Date:   Mon, 15 Nov 2021 18:04:12 +0100
-Message-Id: <20211115165454.576550024@linuxfoundation.org>
+        stable@vger.kernel.org, Sander Vanheule <sander@svanheule.net>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 758/917] gpio: realtek-otto: fix GPIO line IRQ offset
+Date:   Mon, 15 Nov 2021 18:04:13 +0100
+Message-Id: <20211115165454.616882314@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,48 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sander Vanheule <sander@svanheule.net>
 
-[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
+[ Upstream commit 585a07079909ba9061ddd88214c36653e1aef71a ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+The irqchip uses one domain for all GPIO lines, so the line offset
+should be determined w.r.t. the first line of the first port, not the
+first line of the triggered port.
 
-More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
-also already called. So just the unprepare step has still to be done.
-
-Update the error handling path accordingly.
-
-Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 0d82fb1127fb ("gpio: Add Realtek Otto GPIO support")
+Signed-off-by: Sander Vanheule <sander@svanheule.net>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-xlr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpio/gpio-realtek-otto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
-index 126d1393e548b..9ce20652d4942 100644
---- a/drivers/i2c/busses/i2c-xlr.c
-+++ b/drivers/i2c/busses/i2c-xlr.c
-@@ -431,11 +431,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
- 	i2c_set_adapdata(&priv->adap, priv);
- 	ret = i2c_add_numbered_adapter(&priv->adap);
- 	if (ret < 0)
--		return ret;
-+		goto err_unprepare_clk;
+diff --git a/drivers/gpio/gpio-realtek-otto.c b/drivers/gpio/gpio-realtek-otto.c
+index eeeb39bc171dc..bd75401b549d1 100644
+--- a/drivers/gpio/gpio-realtek-otto.c
++++ b/drivers/gpio/gpio-realtek-otto.c
+@@ -205,7 +205,7 @@ static void realtek_gpio_irq_handler(struct irq_desc *desc)
+ 		status = realtek_gpio_read_isr(ctrl, lines_done / 8);
+ 		port_pin_count = min(gc->ngpio - lines_done, 8U);
+ 		for_each_set_bit(offset, &status, port_pin_count)
+-			generic_handle_domain_irq(gc->irq.domain, offset);
++			generic_handle_domain_irq(gc->irq.domain, offset + lines_done);
+ 	}
  
- 	platform_set_drvdata(pdev, priv);
- 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
- 	return 0;
-+
-+err_unprepare_clk:
-+	clk_unprepare(clk);
-+	return ret;
- }
- 
- static int xlr_i2c_remove(struct platform_device *pdev)
+ 	chained_irq_exit(irq_chip, desc);
 -- 
 2.33.0
 
