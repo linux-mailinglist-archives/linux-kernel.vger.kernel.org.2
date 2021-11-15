@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EEA45274D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5A9452743
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245342AbhKPCUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:20:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
+        id S1344662AbhKPCUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:20:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238041AbhKORjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:39:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B4F163238;
-        Mon, 15 Nov 2021 17:26:04 +0000 (UTC)
+        id S237961AbhKORjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:39:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FB89632E3;
+        Mon, 15 Nov 2021 17:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997165;
-        bh=sCGRoqgIuTqVQaUHV3hSxzqpHqtGIbeipKYmDeqB+bY=;
+        s=korg; t=1636997196;
+        bh=TjenZcRn8UZcpPnaYPODH0Mc6K8LNJeiIvDmNPqaf+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lt3O5VMTWhZ8i7H1kBlziuUn5sjrr5a9T6MwkWfEpxTh2k/RKh9nN6whhSe9xcDym
-         ucQRbgO0CZ00xFe7sNOD9vfYlaCM9cKDxx/u2jwZh/nG1N+zbvgV74Abl3gzQO6PAo
-         d9NyZr49anW7LXPdPDcWrDMR7BsravBQoNB3QhnU=
+        b=1PxuMnOWH7lQfuuX1lR0QJRjnPxw2YBhW/zv0/e8GfJAp9EdUs59fTqRr24BpjBQu
+         Z+yhUJBWx3FKpWs7G6G5+A2baxRCH3XThr33kxv2bPf/NFh2hoSxrIzbVNEVewE8HA
+         V2kLsfvc+YavCd/d+Sl4PSHJ0LN2XA/l8KYrz5ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 049/575] x86/irq: Ensure PI wakeup handler is unregistered before module unload
-Date:   Mon, 15 Nov 2021 17:56:14 +0100
-Message-Id: <20211115165345.330094384@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 059/575] hyperv/vmbus: include linux/bitops.h
+Date:   Mon, 15 Nov 2021 17:56:24 +0100
+Message-Id: <20211115165345.686892873@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,43 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 6ff53f6a438f72998f56e82e76694a1df9d1ea2c upstream.
+[ Upstream commit 8017c99680fa65e1e8d999df1583de476a187830 ]
 
-Add a synchronize_rcu() after clearing the posted interrupt wakeup handler
-to ensure all readers, i.e. in-flight IRQ handlers, see the new handler
-before returning to the caller.  If the caller is an exiting module and
-is unregistering its handler, failure to wait could result in the IRQ
-handler jumping into an unloaded module.
+On arm64 randconfig builds, hyperv sometimes fails with this
+error:
 
-The registration path doesn't require synchronization, as it's the
-caller's responsibility to not generate interrupts it cares about until
-after its handler is registered.
+In file included from drivers/hv/hv_trace.c:3:
+In file included from drivers/hv/hyperv_vmbus.h:16:
+In file included from arch/arm64/include/asm/sync_bitops.h:5:
+arch/arm64/include/asm/bitops.h:11:2: error: only <linux/bitops.h> can be included directly
+In file included from include/asm-generic/bitops/hweight.h:5:
+include/asm-generic/bitops/arch_hweight.h:9:9: error: implicit declaration of function '__sw_hweight32' [-Werror,-Wimplicit-function-declaration]
+include/asm-generic/bitops/atomic.h:17:7: error: implicit declaration of function 'BIT_WORD' [-Werror,-Wimplicit-function-declaration]
 
-Fixes: f6b3c72c2366 ("x86/irq: Define a global vector for VT-d Posted-Interrupts")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20211009001107.3936588-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Include the correct header first.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211018131929.2260087-1-arnd@kernel.org
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/irq.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hv/hyperv_vmbus.h | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -290,8 +290,10 @@ void kvm_set_posted_intr_wakeup_handler(
- {
- 	if (handler)
- 		kvm_posted_intr_wakeup_handler = handler;
--	else
-+	else {
- 		kvm_posted_intr_wakeup_handler = dummy_handler;
-+		synchronize_rcu();
-+	}
- }
- EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
+diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+index 40e2b9f91163c..7845fa5de79e9 100644
+--- a/drivers/hv/hyperv_vmbus.h
++++ b/drivers/hv/hyperv_vmbus.h
+@@ -13,6 +13,7 @@
+ #define _HYPERV_VMBUS_H
  
+ #include <linux/list.h>
++#include <linux/bitops.h>
+ #include <asm/sync_bitops.h>
+ #include <asm/hyperv-tlfs.h>
+ #include <linux/atomic.h>
+-- 
+2.33.0
+
 
 
