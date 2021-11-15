@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB02451B0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93084518FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356232AbhKOXtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:49:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1348548AbhKOXMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:12:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344185AbhKOTYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CA4E63478;
-        Mon, 15 Nov 2021 18:53:20 +0000 (UTC)
+        id S240739AbhKOTFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:05:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54FAB633DF;
+        Mon, 15 Nov 2021 18:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002400;
-        bh=k1kcdyPnokAmjTWnwFNtH05VwvYs8bm4sjIfymJgdnM=;
+        s=korg; t=1637000177;
+        bh=DQ0i8PqimY1w6+qIllmuwTvk9wuit1mUHuouyYfBbyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sFFZAvyTLFMilY1GGrZ5q4HqDugMnuUCPc3zOIdNWpvaSpi8tnJ6yyuRcrav5fswE
-         GvTPkCbv1YFHxFzUq0CmZd2BoR2FC6NVIh1YEi+8QDE1DdwXzII5OfREMLDjA0nhW+
-         ul5SDiq3my5AJVpQdLoz85QwLT98NkEv4o4h2pH8=
+        b=RoGh+BJFSSkGO7B9r0L1eNTuxA8BxSIFEyfmaq7eadrnShfVJYjRl8AsG9eBZor+P
+         pwuWVm1nf8MNCwl+hdA6GzbN6jIEpQxDgqrwjyNnqeBA6y3Fw8wZTQhod42fnimC4u
+         E2Hg5mYAWiHbNqUVlfXky3k//6GrJKLaNEQBSq+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 551/917] net: bridge: fix uninitialized variables when BRIDGE_CFM is disabled
-Date:   Mon, 15 Nov 2021 18:00:46 +0100
-Message-Id: <20211115165447.466323240@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 564/849] arm64: dts: ti: j7200-main: Fix "vendor-id"/"device-id" properties of pcie node
+Date:   Mon, 15 Nov 2021 18:00:47 +0100
+Message-Id: <20211115165439.328909180@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Vecera <ivecera@redhat.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 829e050eea69c7442441b714b6f5b339b5b8c367 ]
+[ Upstream commit 0d553792726a61ced760422e74ea67552ac69cdb ]
 
-Function br_get_link_af_size_filtered() calls br_cfm_{,peer}_mep_count()
-that return a count. When BRIDGE_CFM is not enabled these functions
-simply return -EOPNOTSUPP but do not modify count parameter and
-calling function then works with uninitialized variables.
-Modify these inline functions to return zero in count parameter.
+commit 3276d9f53cf6 ("arm64: dts: ti: k3-j7200-main: Add PCIe device
+tree node") incorrectly added "vendor-id" and "device-id" as 16-bit
+properties though both of them are 32-bit properties. Fix it here.
 
-Fixes: b6d0425b816e ("bridge: cfm: Netlink Notifications.")
-Cc: Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 3276d9f53cf6 ("arm64: dts: ti: k3-j7200-main: Add PCIe device tree node")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210915055358.19997-4-kishon@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_private.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 37ca76406f1e8..fd5e7e74573ce 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -1911,11 +1911,13 @@ static inline int br_cfm_status_fill_info(struct sk_buff *skb,
- 
- static inline int br_cfm_mep_count(struct net_bridge *br, u32 *count)
- {
-+	*count = 0;
- 	return -EOPNOTSUPP;
- }
- 
- static inline int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count)
- {
-+	*count = 0;
- 	return -EOPNOTSUPP;
- }
- #endif
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index e8a41d09b45f2..521a56316fa5c 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -608,8 +608,8 @@
+ 		#size-cells = <2>;
+ 		bus-range = <0x0 0xf>;
+ 		cdns,no-bar-match-nbits = <64>;
+-		vendor-id = /bits/ 16 <0x104c>;
+-		device-id = /bits/ 16 <0xb00f>;
++		vendor-id = <0x104c>;
++		device-id = <0xb00f>;
+ 		msi-map = <0x0 &gic_its 0x0 0x10000>;
+ 		dma-coherent;
+ 		ranges = <0x01000000 0x0 0x18001000  0x00 0x18001000  0x0 0x0010000>,
 -- 
 2.33.0
 
