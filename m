@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F2C4500C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6664500CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhKOJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:03:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        id S237114AbhKOJEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237369AbhKOI77 (ORCPT
+        with ESMTP id S237055AbhKOJBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:59:59 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4B9C061204
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:56:58 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so3290431wrb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:56:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=KoIGQMcPDNQgf+l0n0SpbMR7KXGkG+Y/GyFEGlGCO3o=;
-        b=IBr/z4EKJFSM75I81wBnCyglSG/3Ya2Ix/jImMc1GYpTGxtZ0rn9JBx31N7o/0lQSI
-         kFlAL8fbu+k6VJ/m1aiOpkk37CTXZnwTGnqaJ7A235Bqr+pxGbvXybR4dsmn1fL0pOw5
-         6x0WNk+EJMlxLV7RDzhIlU8h1Zf9AbXFPZ4FiLgqDrbNvqplQtpV1qKlqjYodleg3TKX
-         47yBWEIzoWlXx1+6sueNmUjLlwF/IjQ7uvi0mHHiNi73SRjQVRm5iOz5To6QvQJLZrVK
-         TtwCuUE2yZd4U58ckl3Ted24bj509eBJMnXXiEaWdXW/6pLQnMhsnJLZm1hkIcWlj+kF
-         cH+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=KoIGQMcPDNQgf+l0n0SpbMR7KXGkG+Y/GyFEGlGCO3o=;
-        b=KXmOoyZbmDAOHrmNsKmuDSq4cv7DoBr0hIsTfVW/9X2+moEHJomLgO2WtxUPHW8PlG
-         baWur/adWIrcASySilR0vh9lbfWQ5347LN2vMd0TPJuthdfrGSTJZhidxobn9dUTpy68
-         BdFpS3Lh0dPAx7Fc2/EWxSOHArJom1WFU4lda2t93v1zA804rcK49/PP0mJ03JxEYaVw
-         tOwk2qxDy4M2j8nFzs8gthSRhpoO5D+q1CC5mfDyExv8rZGCEcyii1Dgq4h3o+dNYOeZ
-         GsF6es2QQSRiZL1+FJ30SF1DCTkY8nCRtLeEET/2Y7GeYr/gO7pmAoVeMdbGU0rCI40D
-         GM1g==
-X-Gm-Message-State: AOAM530PQufC0T2BIcYTYxx4QNFqjrjSkqTLrLlht7sfIsB690Yq89w3
-        N1F1pUkCxY0MdTSRbY3ivIJlsEGyAQ==
-X-Google-Smtp-Source: ABdhPJzOmtxmSllVxqGTlBcsrK01DnQbMGKLOj3GNZgFR/5oZDiExWI3o46tr/f226rHkH0OfgWbR1kYdA==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6385:6bd0:4ede:d8c6])
- (user=elver job=sendgmr) by 2002:a05:600c:1d1b:: with SMTP id
- l27mr470410wms.1.1636966616454; Mon, 15 Nov 2021 00:56:56 -0800 (PST)
-Date:   Mon, 15 Nov 2021 09:56:30 +0100
-Message-Id: <20211115085630.1756817-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] panic: use error_report_end tracepoint on warnings
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Alexander Popov <alex.popov@linux.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 15 Nov 2021 04:01:13 -0500
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EF5C06120A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 00:57:42 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636966661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RxPeFCT20glhLqQ5eY/Vl8C9iprAbdhuCAS4bnE3hdk=;
+        b=cuorowxW6xc6iHoVQfS9e1jHkqtwUX4xURi/nX6M63g13f6/SOaeOSYOsg8dWw8wnLm27B
+        MgEKZmwk5u/MLvWdX4lovVIvPBF/eEnuroj4BafGalRg3UOEAzFHZQG7Pv2xA3n2Bnh9h4
+        wFIIFXNBkAR6cubvaxj5xkS4jjgCGRI=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] skbuff: Add helper function for head_frag and pfmemalloc
+Date:   Mon, 15 Nov 2021 16:57:08 +0800
+Message-Id: <20211115085708.13901-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the error detector "warning" to the error_report event and use
-the error_report_end tracepoint at the end of a warning report.
+This series of build_skb() has the same code, add skb_set_head_frag_pfmemalloc()
+for it, at the same time, in-line skb_propagate_pfmemalloc().
 
-This allows in-kernel tests but also userspace to more easily determine
-if a warning occurred without polling kernel logs.
-
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- include/trace/events/error_report.h | 8 +++++---
- kernel/panic.c                      | 2 ++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ include/linux/skbuff.h | 19 ++++++++++++-------
+ net/core/skbuff.c      | 19 +++++--------------
+ 2 files changed, 17 insertions(+), 21 deletions(-)
 
-diff --git a/include/trace/events/error_report.h b/include/trace/events/error_report.h
-index 96f64bf218b2..ed0164f8e79c 100644
---- a/include/trace/events/error_report.h
-+++ b/include/trace/events/error_report.h
-@@ -17,14 +17,16 @@
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 0bd6520329f6..3e26b80bde29 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3007,15 +3007,20 @@ static inline bool dev_page_is_reusable(const struct page *page)
+ }
  
- enum error_detector {
- 	ERROR_DETECTOR_KFENCE,
--	ERROR_DETECTOR_KASAN
-+	ERROR_DETECTOR_KASAN,
-+	ERROR_DETECTOR_WARN
- };
+ /**
+- *	skb_propagate_pfmemalloc - Propagate pfmemalloc if skb is allocated after RX page
+- *	@page: The page that was allocated from skb_alloc_page
+- *	@skb: The skb that may need pfmemalloc set
++ *	skb_set_head_frag_pfmemalloc - Set head_frag and pfmemalloc
++ *	@skb: The skb that may need head_frag and pfmemalloc set
++ *      @data: data buffer provided by caller
++ *      @frag_size: size of data, or 0 if head was kmalloced
+  */
+-static inline void skb_propagate_pfmemalloc(const struct page *page,
+-					    struct sk_buff *skb)
++static inline void skb_set_head_frag_pfmemalloc(struct sk_buff *skb, void *data,
++						unsigned int frag_size)
+ {
+-	if (page_is_pfmemalloc(page))
+-		skb->pfmemalloc = true;
++
++	if (likely(skb) && frag_size) {
++		skb->head_frag = 1;
++		if (page_is_pfmemalloc(virt_to_head_page(data)))
++			skb->pfmemalloc = 1;
++	}
+ }
  
- #endif /* __ERROR_REPORT_DECLARE_TRACE_ENUMS_ONCE_ONLY */
+ /**
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 67a9188d8a49..7b3d2bf746ae 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -255,11 +255,8 @@ struct sk_buff *build_skb(void *data, unsigned int frag_size)
+ {
+ 	struct sk_buff *skb = __build_skb(data, frag_size);
  
--#define error_detector_list	\
-+#define error_detector_list			\
- 	EM(ERROR_DETECTOR_KFENCE, "kfence")	\
--	EMe(ERROR_DETECTOR_KASAN, "kasan")
-+	EM(ERROR_DETECTOR_KASAN, "kasan")	\
-+	EMe(ERROR_DETECTOR_WARN, "warning")
- /* Always end the list with an EMe. */
+-	if (skb && frag_size) {
+-		skb->head_frag = 1;
+-		if (page_is_pfmemalloc(virt_to_head_page(data)))
+-			skb->pfmemalloc = 1;
+-	}
++	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
++
+ 	return skb;
+ }
+ EXPORT_SYMBOL(build_skb);
+@@ -278,11 +275,8 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
  
- #undef EM
-diff --git a/kernel/panic.c b/kernel/panic.c
-index cefd7d82366f..8e299cae1615 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -32,6 +32,7 @@
- #include <linux/bug.h>
- #include <linux/ratelimit.h>
- #include <linux/debugfs.h>
-+#include <trace/events/error_report.h>
- #include <asm/sections.h>
+ 	__build_skb_around(skb, data, frag_size);
  
- #define PANIC_TIMER_STEP 100
-@@ -609,6 +610,7 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- 	print_irqtrace_events(current);
+-	if (frag_size) {
+-		skb->head_frag = 1;
+-		if (page_is_pfmemalloc(virt_to_head_page(data)))
+-			skb->pfmemalloc = 1;
+-	}
++	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
++
+ 	return skb;
+ }
+ EXPORT_SYMBOL(build_skb_around);
+@@ -325,10 +319,7 @@ struct sk_buff *napi_build_skb(void *data, unsigned int frag_size)
+ {
+ 	struct sk_buff *skb = __napi_build_skb(data, frag_size);
  
- 	print_oops_end_marker();
-+	trace_error_report_end(ERROR_DETECTOR_WARN, (unsigned long)caller);
+-	if (likely(skb) && frag_size) {
+-		skb->head_frag = 1;
+-		skb_propagate_pfmemalloc(virt_to_head_page(data), skb);
+-	}
++	skb_set_head_frag_pfmemalloc(skb, data, frag_size);
  
- 	/* Just a warning, don't kill lockdep. */
- 	add_taint(taint, LOCKDEP_STILL_OK);
+ 	return skb;
+ }
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
+2.32.0
 
