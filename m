@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644CC4517F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064BB451803
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348527AbhKOWvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:51:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50610 "EHLO mail.kernel.org"
+        id S1350215AbhKOWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:53:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239230AbhKOSnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:43:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 056D563358;
-        Mon, 15 Nov 2021 18:05:46 +0000 (UTC)
+        id S242747AbhKOSo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:44:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CB9463361;
+        Mon, 15 Nov 2021 18:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999547;
-        bh=RiV6o3xlqct9o0S+qUsjUOp1C4FLjZPFFtwZBcvw6mw=;
+        s=korg; t=1636999550;
+        bh=aGY6niSSEdrXyluydsOi1K+XDPSsHcsyuIhPv3fm/tE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KyS2Fw6FSSqGYbsaFQuxTwBSOfWnJC15W4iZK76T+JjAkDDGiHq0FgwRBIs9ISaRA
-         f3pJqC0c3oVw2RIoq2MZuzR0NsPOr5ksG8/g9ePF7zyzHYIC5HDt0Vut4ZNrkfCMf4
-         N6j12rAOaAXFkswnjtlK8ruEtjl5Lp6I3/Lu7djU=
+        b=LrSRw8hgWcgj4+OAsr/cok49xPQepcLtCdTMP7Mntyg5pno4UoP+qhVh1BKSC07Xk
+         0+NbmRhUpvmqAkwDnN9yn5shpeqfpTtjN281ozG2LERCeocDH1btDXStopjFbDzNtu
+         WGr7zIl3oI3qEzcyUJHBS5Rp32CkKpKhfeR3anwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Imre Deak <imre.deak@intel.com>,
+        stable@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        kernel test robot <lkp@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 337/849] fbdev/efifb: Release PCI devices runtime PM ref during FB destroy
-Date:   Mon, 15 Nov 2021 17:57:00 +0100
-Message-Id: <20211115165431.634942587@linuxfoundation.org>
+Subject: [PATCH 5.14 338/849] drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()
+Date:   Mon, 15 Nov 2021 17:57:01 +0100
+Message-Id: <20211115165431.667318228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -43,111 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Imre Deak <imre.deak@intel.com>
+From: Robert Foss <robert.foss@linaro.org>
 
-[ Upstream commit 55285e21f04517939480966164a33898c34b2af2 ]
+[ Upstream commit 7f16d0f3b8e2d13f940e944cd17044ca8eeb8b32 ]
 
-Atm the EFI FB platform driver gets a runtime PM reference for the
-associated GFX PCI device during probing the EFI FB platform device and
-releases it only when the platform device gets unbound.
+The return value of sp_tx_rst_aux() is not propagated, which means
+both compiler warnings and potential errors not being handled.
 
-When fbcon switches to the FB provided by the PCI device's driver (for
-instance i915/drmfb), the EFI FB will get only unregistered without the
-EFI FB platform device getting unbound, keeping the runtime PM reference
-acquired during the platform device probing. This reference will prevent
-the PCI driver from runtime suspending the device.
+Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
 
-Fix this by releasing the RPM reference from the EFI FB's destroy hook,
-called when the FB gets unregistered.
-
-While at it assert that pm_runtime_get_sync() didn't fail.
-
-v2:
-- Move pm_runtime_get_sync() before register_framebuffer() to avoid its
-  race wrt. efifb_destroy()->pm_runtime_put(). (Daniel)
-- Assert that pm_runtime_get_sync() didn't fail.
-- Clarify commit message wrt. platform/PCI device/driver and driver
-  removal vs. device unbinding.
-
-Fixes: a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch> (v1)
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Acked-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Imre Deak <imre.deak@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210809133146.2478382-1-imre.deak@intel.com
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210818171318.1848272-1-robert.foss@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/efifb.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
-index 8ea8f079cde26..edca3703b9640 100644
---- a/drivers/video/fbdev/efifb.c
-+++ b/drivers/video/fbdev/efifb.c
-@@ -47,6 +47,8 @@ static bool use_bgrt = true;
- static bool request_mem_succeeded = false;
- static u64 mem_flags = EFI_MEMORY_WC | EFI_MEMORY_UC;
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 7519b7a0f29dd..439c7bed33ff2 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -702,7 +702,7 @@ static int edid_read(struct anx7625_data *ctx,
+ 		ret = sp_tx_aux_rd(ctx, 0xf1);
  
-+static struct pci_dev *efifb_pci_dev;	/* dev with BAR covering the efifb */
-+
- static struct fb_var_screeninfo efifb_defined = {
- 	.activate		= FB_ACTIVATE_NOW,
- 	.height			= -1,
-@@ -243,6 +245,9 @@ static inline void efifb_show_boot_graphics(struct fb_info *info) {}
+ 		if (ret) {
+-			sp_tx_rst_aux(ctx);
++			ret = sp_tx_rst_aux(ctx);
+ 			DRM_DEV_DEBUG_DRIVER(dev, "edid read fail, reset!\n");
+ 		} else {
+ 			ret = anx7625_reg_block_read(ctx, ctx->i2c.rx_p0_client,
+@@ -717,7 +717,7 @@ static int edid_read(struct anx7625_data *ctx,
+ 	if (cnt > EDID_TRY_CNT)
+ 		return -EIO;
  
- static void efifb_destroy(struct fb_info *info)
- {
-+	if (efifb_pci_dev)
-+		pm_runtime_put(&efifb_pci_dev->dev);
-+
- 	if (info->screen_base) {
- 		if (mem_flags & (EFI_MEMORY_UC | EFI_MEMORY_WC))
- 			iounmap(info->screen_base);
-@@ -333,7 +338,6 @@ ATTRIBUTE_GROUPS(efifb);
+-	return 0;
++	return ret;
+ }
  
- static bool pci_dev_disabled;	/* FB base matches BAR of a disabled device */
+ static int segments_edid_read(struct anx7625_data *ctx,
+@@ -767,7 +767,7 @@ static int segments_edid_read(struct anx7625_data *ctx,
+ 	if (cnt > EDID_TRY_CNT)
+ 		return -EIO;
  
--static struct pci_dev *efifb_pci_dev;	/* dev with BAR covering the efifb */
- static struct resource *bar_resource;
- static u64 bar_offset;
+-	return 0;
++	return ret;
+ }
  
-@@ -569,17 +573,22 @@ static int efifb_probe(struct platform_device *dev)
- 		pr_err("efifb: cannot allocate colormap\n");
- 		goto err_groups;
+ static int sp_tx_edid_read(struct anx7625_data *ctx,
+@@ -869,7 +869,11 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
  	}
-+
-+	if (efifb_pci_dev)
-+		WARN_ON(pm_runtime_get_sync(&efifb_pci_dev->dev) < 0);
-+
- 	err = register_framebuffer(info);
- 	if (err < 0) {
- 		pr_err("efifb: cannot register framebuffer\n");
--		goto err_fb_dealoc;
-+		goto err_put_rpm_ref;
- 	}
- 	fb_info(info, "%s frame buffer device\n", info->fix.id);
--	if (efifb_pci_dev)
--		pm_runtime_get_sync(&efifb_pci_dev->dev);
- 	return 0;
  
--err_fb_dealoc:
-+err_put_rpm_ref:
-+	if (efifb_pci_dev)
-+		pm_runtime_put(&efifb_pci_dev->dev);
-+
- 	fb_dealloc_cmap(&info->cmap);
- err_groups:
- 	sysfs_remove_groups(&dev->dev.kobj, efifb_groups);
-@@ -603,8 +612,6 @@ static int efifb_remove(struct platform_device *pdev)
- 	unregister_framebuffer(info);
- 	sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
- 	framebuffer_release(info);
--	if (efifb_pci_dev)
--		pm_runtime_put(&efifb_pci_dev->dev);
+ 	/* Reset aux channel */
+-	sp_tx_rst_aux(ctx);
++	ret = sp_tx_rst_aux(ctx);
++	if (ret < 0) {
++		DRM_DEV_ERROR(dev, "Failed to reset aux channel!\n");
++		return ret;
++	}
  
- 	return 0;
+ 	return (blocks_num + 1);
  }
 -- 
 2.33.0
