@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB056451F7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B436451BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352176AbhKPAlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:41:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1353735AbhKPAFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:05:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344975AbhKOTZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344976AbhKOTZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:25:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10F9E63404;
-        Mon, 15 Nov 2021 19:07:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2BE263402;
+        Mon, 15 Nov 2021 19:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003270;
-        bh=yhwfpwdu/KnbovWSFDg1gKZqmTndNAL9H7hSu/+Bnf8=;
+        s=korg; t=1637003273;
+        bh=f5sBHD256VAoyIEQDueybkX0f1CgCHoWj5BiHd5mBBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfVlYUP1y7LV3OXgM6Yll65Fs+eoFr8363lzEuLgksxbuKSXgJY42MnsybihI3VTG
-         EsLD3r6G6GHMFRev5j5q3h3D1BAgJXS3Ook10hhC7Q81Mgq+NYJwFtrEdoy/3mKHaR
-         vsnNQbpvjUWJ4xlxKHraRXigqVtnOMxmvXTsusn0=
+        b=t1LVxWcnv2VNxaUyYdqGmOecYZ6rAakKNzkhR70rl6ZgajiUSXlc6DFFEdPT1oPY3
+         9rHBz0eULQ6EV6pROVhcNAgfgfQmkUFTBnx7MVFQlhoALNOegIVrJcGk4+o5ubfUm4
+         FCf9vwaIufLp0i1qBViKgIRMmjnkzstTWGMJZ1tQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
+        stable@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
         Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.15 872/917] dmaengine: ti: k3-udma: Set r/tchan or rflow to NULL if request fail
-Date:   Mon, 15 Nov 2021 18:06:07 +0100
-Message-Id: <20211115165458.622488630@linuxfoundation.org>
+Subject: [PATCH 5.15 873/917] dmaengine: bestcomm: fix system boot lockups
+Date:   Mon, 15 Nov 2021 18:06:08 +0100
+Message-Id: <20211115165458.652341934@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,97 +39,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Anatolij Gustschin <agust@denx.de>
 
-commit eb91224e47ec33a0a32c9be0ec0fcb3433e555fd upstream.
+commit adec566b05288f2787a1f88dbaf77ed8b0c644fa upstream.
 
-udma_get_*() checks if rchan/tchan/rflow is already allocated by checking
-if it has a NON NULL value. For the error cases, rchan/tchan/rflow will
-have error value and udma_get_*() considers this as already allocated
-(PASS) since the error values are NON NULL. This results in NULL pointer
-dereference error while de-referencing rchan/tchan/rflow.
+memset() and memcpy() on an MMIO region like here results in a
+lockup at startup on mpc5200 platform (since this first happens
+during probing of the ATA and Ethernet drivers). Use memset_io()
+and memcpy_toio() instead.
 
-Reset the value of rchan/tchan/rflow to NULL if a channel request fails.
-
-CC: stable@vger.kernel.org
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Link: https://lore.kernel.org/r/20211031032411.27235-3-kishon@ti.com
+Fixes: 2f9ea1bde0d1 ("bestcomm: core bestcomm support for Freescale MPC5200")
+Cc: stable@vger.kernel.org # v5.14+
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+Link: https://lore.kernel.org/r/20211014094012.21286-1-agust@denx.de
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/ti/k3-udma.c |   24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ drivers/dma/bestcomm/ata.c      |    2 +-
+ drivers/dma/bestcomm/bestcomm.c |   22 +++++++++++-----------
+ drivers/dma/bestcomm/fec.c      |    4 ++--
+ drivers/dma/bestcomm/gen_bd.c   |    4 ++--
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -1380,6 +1380,7 @@ static int bcdma_get_bchan(struct udma_c
- static int udma_get_tchan(struct udma_chan *uc)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
+--- a/drivers/dma/bestcomm/ata.c
++++ b/drivers/dma/bestcomm/ata.c
+@@ -133,7 +133,7 @@ void bcom_ata_reset_bd(struct bcom_task
+ 	struct bcom_ata_var *var;
  
- 	if (uc->tchan) {
- 		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
-@@ -1394,8 +1395,11 @@ static int udma_get_tchan(struct udma_ch
- 	 */
- 	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
- 					 uc->config.mapped_channel_id);
--	if (IS_ERR(uc->tchan))
--		return PTR_ERR(uc->tchan);
-+	if (IS_ERR(uc->tchan)) {
-+		ret = PTR_ERR(uc->tchan);
-+		uc->tchan = NULL;
-+		return ret;
-+	}
+ 	/* Reset all BD */
+-	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
  
- 	if (ud->tflow_cnt) {
- 		int tflow_id;
-@@ -1425,6 +1429,7 @@ static int udma_get_tchan(struct udma_ch
- static int udma_get_rchan(struct udma_chan *uc)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
+ 	tsk->index = 0;
+ 	tsk->outdex = 0;
+--- a/drivers/dma/bestcomm/bestcomm.c
++++ b/drivers/dma/bestcomm/bestcomm.c
+@@ -95,7 +95,7 @@ bcom_task_alloc(int bd_count, int bd_siz
+ 		tsk->bd = bcom_sram_alloc(bd_count * bd_size, 4, &tsk->bd_pa);
+ 		if (!tsk->bd)
+ 			goto error;
+-		memset(tsk->bd, 0x00, bd_count * bd_size);
++		memset_io(tsk->bd, 0x00, bd_count * bd_size);
  
- 	if (uc->rchan) {
- 		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
-@@ -1439,8 +1444,13 @@ static int udma_get_rchan(struct udma_ch
- 	 */
- 	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
- 					 uc->config.mapped_channel_id);
-+	if (IS_ERR(uc->rchan)) {
-+		ret = PTR_ERR(uc->rchan);
-+		uc->rchan = NULL;
-+		return ret;
-+	}
+ 		tsk->num_bd = bd_count;
+ 		tsk->bd_size = bd_size;
+@@ -186,16 +186,16 @@ bcom_load_image(int task, u32 *task_imag
+ 	inc = bcom_task_inc(task);
  
--	return PTR_ERR_OR_ZERO(uc->rchan);
-+	return 0;
+ 	/* Clear & copy */
+-	memset(var, 0x00, BCOM_VAR_SIZE);
+-	memset(inc, 0x00, BCOM_INC_SIZE);
++	memset_io(var, 0x00, BCOM_VAR_SIZE);
++	memset_io(inc, 0x00, BCOM_INC_SIZE);
+ 
+ 	desc_src = (u32 *)(hdr + 1);
+ 	var_src = desc_src + hdr->desc_size;
+ 	inc_src = var_src + hdr->var_size;
+ 
+-	memcpy(desc, desc_src, hdr->desc_size * sizeof(u32));
+-	memcpy(var + hdr->first_var, var_src, hdr->var_size * sizeof(u32));
+-	memcpy(inc, inc_src, hdr->inc_size * sizeof(u32));
++	memcpy_toio(desc, desc_src, hdr->desc_size * sizeof(u32));
++	memcpy_toio(var + hdr->first_var, var_src, hdr->var_size * sizeof(u32));
++	memcpy_toio(inc, inc_src, hdr->inc_size * sizeof(u32));
+ 
+ 	return 0;
  }
- 
- static int udma_get_chan_pair(struct udma_chan *uc)
-@@ -1494,6 +1504,7 @@ static int udma_get_chan_pair(struct udm
- static int udma_get_rflow(struct udma_chan *uc, int flow_id)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
- 
- 	if (!uc->rchan) {
- 		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
-@@ -1507,8 +1518,13 @@ static int udma_get_rflow(struct udma_ch
+@@ -302,13 +302,13 @@ static int bcom_engine_init(void)
+ 		return -ENOMEM;
  	}
  
- 	uc->rflow = __udma_get_rflow(ud, flow_id);
-+	if (IS_ERR(uc->rflow)) {
-+		ret = PTR_ERR(uc->rflow);
-+		uc->rflow = NULL;
-+		return ret;
-+	}
+-	memset(bcom_eng->tdt, 0x00, tdt_size);
+-	memset(bcom_eng->ctx, 0x00, ctx_size);
+-	memset(bcom_eng->var, 0x00, var_size);
+-	memset(bcom_eng->fdt, 0x00, fdt_size);
++	memset_io(bcom_eng->tdt, 0x00, tdt_size);
++	memset_io(bcom_eng->ctx, 0x00, ctx_size);
++	memset_io(bcom_eng->var, 0x00, var_size);
++	memset_io(bcom_eng->fdt, 0x00, fdt_size);
  
--	return PTR_ERR_OR_ZERO(uc->rflow);
-+	return 0;
- }
+ 	/* Copy the FDT for the EU#3 */
+-	memcpy(&bcom_eng->fdt[48], fdt_ops, sizeof(fdt_ops));
++	memcpy_toio(&bcom_eng->fdt[48], fdt_ops, sizeof(fdt_ops));
  
- static void bcdma_put_bchan(struct udma_chan *uc)
+ 	/* Initialize Task base structure */
+ 	for (task=0; task<BCOM_MAX_TASKS; task++)
+--- a/drivers/dma/bestcomm/fec.c
++++ b/drivers/dma/bestcomm/fec.c
+@@ -140,7 +140,7 @@ bcom_fec_rx_reset(struct bcom_task *tsk)
+ 	tsk->index = 0;
+ 	tsk->outdex = 0;
+ 
+-	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
+ 
+ 	/* Configure some stuff */
+ 	bcom_set_task_pragma(tsk->tasknum, BCOM_FEC_RX_BD_PRAGMA);
+@@ -241,7 +241,7 @@ bcom_fec_tx_reset(struct bcom_task *tsk)
+ 	tsk->index = 0;
+ 	tsk->outdex = 0;
+ 
+-	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
+ 
+ 	/* Configure some stuff */
+ 	bcom_set_task_pragma(tsk->tasknum, BCOM_FEC_TX_BD_PRAGMA);
+--- a/drivers/dma/bestcomm/gen_bd.c
++++ b/drivers/dma/bestcomm/gen_bd.c
+@@ -142,7 +142,7 @@ bcom_gen_bd_rx_reset(struct bcom_task *t
+ 	tsk->index = 0;
+ 	tsk->outdex = 0;
+ 
+-	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
+ 
+ 	/* Configure some stuff */
+ 	bcom_set_task_pragma(tsk->tasknum, BCOM_GEN_RX_BD_PRAGMA);
+@@ -226,7 +226,7 @@ bcom_gen_bd_tx_reset(struct bcom_task *t
+ 	tsk->index = 0;
+ 	tsk->outdex = 0;
+ 
+-	memset(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
++	memset_io(tsk->bd, 0x00, tsk->num_bd * tsk->bd_size);
+ 
+ 	/* Configure some stuff */
+ 	bcom_set_task_pragma(tsk->tasknum, BCOM_GEN_TX_BD_PRAGMA);
 
 
