@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB45450849
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3FA45085B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbhKOPcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:32:12 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:43993 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232424AbhKOPbQ (ORCPT
+        id S236499AbhKOPdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:33:46 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:37018 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236533AbhKOPb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:31:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwkTWPf_1636990097;
+        Mon, 15 Nov 2021 10:31:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwkTWPf_1636990097;
 Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UwkTWPf_1636990097)
           by smtp.aliyun-inc.com(127.0.0.1);
           Mon, 15 Nov 2021 23:28:19 +0800
@@ -20,78 +20,63 @@ From:   Xin Hao <xhao@linux.alibaba.com>
 To:     sjpark@amazon.de
 Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 1/4] mm/damon: Unified access_check function naming rules
-Date:   Mon, 15 Nov 2021 23:26:12 +0800
-Message-Id: <529054aed932a42b9c09fc9977ad4574b9e7b0bd.1636989871.git.xhao@linux.alibaba.com>
+Subject: [PATCH V4 2/4] mm/damon: Add 'age' of region tracepoint support
+Date:   Mon, 15 Nov 2021 23:26:13 +0800
+Message-Id: <b9def1262af95e0dc1d0caea447886434db01161.1636989871.git.xhao@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <cover.1636989871.git.xhao@linux.alibaba.com>
 References: <cover.1636989871.git.xhao@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In damon/paddr.c file, two functions names start with underscore,
-	static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
-			struct damon_region *r)
-	static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
-			struct damon_region *r)
-In damon/vaddr.c file, there are also two functions with the same function,
-	static void damon_va_prepare_access_check(struct damon_ctx *ctx,
-			struct mm_struct *mm, struct damon_region *r)
-	static void damon_va_check_access(struct damon_ctx *ctx,
-			struct mm_struct *mm, struct damon_region *r)
+In Damon, we can get age information by analyzing the nr_access change,
+But short time sampling is not effective, we have to obtain enough data
+for analysis through long time trace, this also means that we need to
+consume more cpu resources and storage space.
 
-It makes sense to keep consistent, and it is not easy to be confused with
-the function that call them.
+Now the region add a new 'age' variable, we only need to get the change
+of age value through a little time trace, for example, age has been
+increasing to 141, but nr_access shows a value of 0 at the same time,
+Through this，we can conclude that the region has a very low nr_access
+value for a long time.
 
+Fixes: 2fcb93629ad8 ("mm/damon: add a tracepoint")
 Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
-Reviewed-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/vaddr.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/trace/events/damon.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index 35fe49080ee9..905e0fc8a8ec 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -409,7 +409,7 @@ static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
-  * Functions for the access checking of the regions
-  */
- 
--static void damon_va_prepare_access_check(struct damon_ctx *ctx,
-+static void __damon_va_prepare_access_check(struct damon_ctx *ctx,
- 			struct mm_struct *mm, struct damon_region *r)
- {
- 	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
-@@ -428,7 +428,7 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
- 		if (!mm)
- 			continue;
- 		damon_for_each_region(r, t)
--			damon_va_prepare_access_check(ctx, mm, r);
-+			__damon_va_prepare_access_check(ctx, mm, r);
- 		mmput(mm);
- 	}
- }
-@@ -514,7 +514,7 @@ static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
-  * mm	'mm_struct' for the given virtual address space
-  * r	the region to be checked
-  */
--static void damon_va_check_access(struct damon_ctx *ctx,
-+static void __damon_va_check_access(struct damon_ctx *ctx,
- 			       struct mm_struct *mm, struct damon_region *r)
- {
- 	static struct mm_struct *last_mm;
-@@ -550,7 +550,7 @@ unsigned int damon_va_check_accesses(struct damon_ctx *ctx)
- 		if (!mm)
- 			continue;
- 		damon_for_each_region(r, t) {
--			damon_va_check_access(ctx, mm, r);
-+			__damon_va_check_access(ctx, mm, r);
- 			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
- 		}
- 		mmput(mm);
--- 
+diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
+index 2f422f4f1fb9..99ffa601e351 100644
+--- a/include/trace/events/damon.h
++++ b/include/trace/events/damon.h
+@@ -22,6 +22,7 @@ TRACE_EVENT(damon_aggregated,
+ 		__field(unsigned long, start)
+ 		__field(unsigned long, end)
+ 		__field(unsigned int, nr_accesses)
++		__field(unsigned int, age)
+ 	),
+
+ 	TP_fast_assign(
+@@ -30,11 +31,13 @@ TRACE_EVENT(damon_aggregated,
+ 		__entry->start = r->ar.start;
+ 		__entry->end = r->ar.end;
+ 		__entry->nr_accesses = r->nr_accesses;
++		__entry->age = r->age;
+ 	),
+
+-	TP_printk("target_id=%lu nr_regions=%u %lu-%lu: %u",
++	TP_printk("target_id=%lu nr_regions=%u %lu-%lu: %u %u",
+ 			__entry->target_id, __entry->nr_regions,
+-			__entry->start, __entry->end, __entry->nr_accesses)
++			__entry->start, __entry->end,
++			__entry->nr_accesses, __entry->age)
+ );
+
+ #endif /* _TRACE_DAMON_H */
+--
 2.31.0
-
