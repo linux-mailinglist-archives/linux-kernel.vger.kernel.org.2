@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84861451905
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B0E451B31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347096AbhKOXMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:12:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39108 "EHLO mail.kernel.org"
+        id S237334AbhKOXyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:54:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243920AbhKOTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:06:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC344633E3;
-        Mon, 15 Nov 2021 18:16:41 +0000 (UTC)
+        id S1344297AbhKOTYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D8C633CD;
+        Mon, 15 Nov 2021 18:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000202;
-        bh=B4mUOJkyn+FT1GJIRP6ekd7FphQyGfxTCK0xolSxVIA=;
+        s=korg; t=1637002515;
+        bh=bL40txRPWAQ8T5BX2hfXWdpM44zEHremJ3JJO/2Fllc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wFed2ba7G8/AL3LxXoAVnK3nMqpLjeDaQGHc0nQiHBpu8b+BH5dVNSMKbrQnydLPY
-         v0hggO+4aRKtc66yqCjAb4QyXUN4VeS5OEi0QESHMyswLfI3S0NOBOQQJ4c81m7P75
-         7QDTw3R5lgP4Ad4Fpnu9kGSnAgY8lHXH2eLKvvqk=
+        b=BweNxQkTF47W0uQSGX7bgOZ1BBxM7BI0EYCrGpYVbr0qnUQ4XPg7hbPloTbNVVa5u
+         NUGYFaa9S/xWoImtHt312FCZCAyWpHj5NqIHgjyulLri6q4GxGZkSNTlj30IRMHFZP
+         Jk89+jSDbk8NVaXJfOrBYzwao8vg0XYpFZk1RZXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 575/849] JFS: fix memleak in jfs_mount
-Date:   Mon, 15 Nov 2021 18:00:58 +0100
-Message-Id: <20211115165439.696746632@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 564/917] of: unittest: fix EXPECT text for gpio hog errors
+Date:   Mon, 15 Nov 2021 18:00:59 +0100
+Message-Id: <20211115165447.916759761@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,156 +39,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Frank Rowand <frank.rowand@sony.com>
 
-[ Upstream commit c48a14dca2cb57527dde6b960adbe69953935f10 ]
+[ Upstream commit e85860e5bc077865a04f0a88d0b0335d3200484a ]
 
-In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
-the following code does not free ipaimap2 allocated by diReadSpecial.
+The console message text for gpio hog errors does not match
+what unittest expects.
 
-Fix this by refactoring the error handling code of jfs_mount. To be
-specific, modify the lable name and free ipaimap2 when the above error
-ocurrs.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Fixes: f4056e705b2ef ("of: unittest: add overlay gpio test to catch gpio hog problem")
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Link: https://lore.kernel.org/r/20211029013225.2048695-1-frowand.list@gmail.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
- 1 file changed, 22 insertions(+), 29 deletions(-)
+ drivers/of/unittest.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-index 5d7d7170c03c0..aa4ff7bcaff23 100644
---- a/fs/jfs/jfs_mount.c
-+++ b/fs/jfs/jfs_mount.c
-@@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
- 	 * (initialize mount inode from the superblock)
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index 8c056972a6ddc..5b85a2a3792ae 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -1688,19 +1688,19 @@ static void __init of_unittest_overlay_gpio(void)
  	 */
- 	if ((rc = chkSuper(sb))) {
--		goto errout20;
-+		goto out;
- 	}
  
- 	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
- 	if (ipaimap == NULL) {
- 		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
- 		rc = -EIO;
--		goto errout20;
-+		goto out;
- 	}
- 	sbi->ipaimap = ipaimap;
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-B-input) hogged as input\n");
++		     "gpio-<<int>> (line-B-input): hogged as input\n");
  
-@@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-A-input) hogged as input\n");
++		     "gpio-<<int>> (line-A-input): hogged as input\n");
+ 
+ 	ret = platform_driver_register(&unittest_gpio_driver);
+ 	if (unittest(ret == 0, "could not register unittest gpio driver\n"))
+ 		return;
+ 
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-A-input) hogged as input\n");
++		   "gpio-<<int>> (line-A-input): hogged as input\n");
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-B-input) hogged as input\n");
++		   "gpio-<<int>> (line-B-input): hogged as input\n");
+ 
+ 	unittest(probe_pass_count + 2 == unittest_gpio_probe_pass_count,
+ 		 "unittest_gpio_probe() failed or not called\n");
+@@ -1727,7 +1727,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 	chip_request_count = unittest_gpio_chip_request_count;
+ 
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-D-input) hogged as input\n");
++		     "gpio-<<int>> (line-D-input): hogged as input\n");
+ 
+ 	/* overlay_gpio_03 contains gpio node and child gpio hog node */
+ 
+@@ -1735,7 +1735,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 		 "Adding overlay 'overlay_gpio_03' failed\n");
+ 
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-D-input) hogged as input\n");
++		   "gpio-<<int>> (line-D-input): hogged as input\n");
+ 
+ 	unittest(probe_pass_count + 1 == unittest_gpio_probe_pass_count,
+ 		 "unittest_gpio_probe() failed or not called\n");
+@@ -1774,7 +1774,7 @@ static void __init of_unittest_overlay_gpio(void)
  	 */
- 	if ((rc = diMount(ipaimap))) {
- 		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
--		goto errout21;
-+		goto err_ipaimap;
- 	}
  
- 	/*
-@@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
- 	ipbmap = diReadSpecial(sb, BMAP_I, 0);
- 	if (ipbmap == NULL) {
- 		rc = -EIO;
--		goto errout22;
-+		goto err_umount_ipaimap;
- 	}
+ 	EXPECT_BEGIN(KERN_INFO,
+-		     "GPIO line <<int>> (line-C-input) hogged as input\n");
++		     "gpio-<<int>> (line-C-input): hogged as input\n");
  
- 	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
-@@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
- 	 */
- 	if ((rc = dbMount(ipbmap))) {
- 		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
--		goto errout22;
-+		goto err_ipbmap;
- 	}
+ 	/* overlay_gpio_04b contains child gpio hog node */
  
- 	/*
-@@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
- 		if (!ipaimap2) {
- 			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
- 			rc = -EIO;
--			goto errout35;
-+			goto err_umount_ipbmap;
- 		}
- 		sbi->ipaimap2 = ipaimap2;
+@@ -1782,7 +1782,7 @@ static void __init of_unittest_overlay_gpio(void)
+ 		 "Adding overlay 'overlay_gpio_04b' failed\n");
  
-@@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
- 		if ((rc = diMount(ipaimap2))) {
- 			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
- 				rc);
--			goto errout35;
-+			goto err_ipaimap2;
- 		}
- 	} else
- 		/* Secondary aggregate inode table is not valid */
-@@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
- 		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
- 		/* open fileset secondary inode allocation map */
- 		rc = -EIO;
--		goto errout40;
-+		goto err_umount_ipaimap2;
- 	}
- 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
+ 	EXPECT_END(KERN_INFO,
+-		   "GPIO line <<int>> (line-C-input) hogged as input\n");
++		   "gpio-<<int>> (line-C-input): hogged as input\n");
  
-@@ -178,41 +178,34 @@ int jfs_mount(struct super_block *sb)
- 	/* initialize fileset inode allocation map */
- 	if ((rc = diMount(ipimap))) {
- 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
--		goto errout41;
-+		goto err_ipimap;
- 	}
- 
--	goto out;
-+	return rc;
- 
- 	/*
- 	 *	unwind on error
- 	 */
--      errout41:		/* close fileset inode allocation map inode */
-+err_ipimap:
-+	/* close fileset inode allocation map inode */
- 	diFreeSpecial(ipimap);
--
--      errout40:		/* fileset closed */
--
-+err_umount_ipaimap2:
- 	/* close secondary aggregate inode allocation map */
--	if (ipaimap2) {
-+	if (ipaimap2)
- 		diUnmount(ipaimap2, 1);
-+err_ipaimap2:
-+	/* close aggregate inodes */
-+	if (ipaimap2)
- 		diFreeSpecial(ipaimap2);
--	}
--
--      errout35:
--
--	/* close aggregate block allocation map */
-+err_umount_ipbmap:	/* close aggregate block allocation map */
- 	dbUnmount(ipbmap, 1);
-+err_ipbmap:		/* close aggregate inodes */
- 	diFreeSpecial(ipbmap);
--
--      errout22:		/* close aggregate inode allocation map */
--
-+err_umount_ipaimap:	/* close aggregate inode allocation map */
- 	diUnmount(ipaimap, 1);
--
--      errout21:		/* close aggregate inodes */
-+err_ipaimap:		/* close aggregate inodes */
- 	diFreeSpecial(ipaimap);
--      errout20:		/* aggregate closed */
--
--      out:
--
-+out:
- 	if (rc)
- 		jfs_err("Mount JFS Failure: %d", rc);
- 
+ 	unittest(chip_request_count + 1 == unittest_gpio_chip_request_count,
+ 		 "unittest_gpio_chip_request() called %d times (expected 1 time)\n",
 -- 
 2.33.0
 
