@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE3A4512F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C264512F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347583AbhKOTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:40:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
+        id S1347605AbhKOTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:40:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239292AbhKOR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239302AbhKOR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:56:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 381EC60234;
-        Mon, 15 Nov 2021 17:34:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FBE60C4A;
+        Mon, 15 Nov 2021 17:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997650;
-        bh=1wbu2UDNVvG4pGmKsS4xC+JaJVLy+awbAXuvYuBPrwQ=;
+        s=korg; t=1636997653;
+        bh=8fbU9IgSUk7FDv7cJhvRcEkhtk7NLg7NNOb7zjGpNeQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgW5pwLPj7gF5nKquhcEkEpDtp/dCzstq/UjpHZRjZS6IdxopF2rdzkP1zVRAzOr2
-         ycMad5ZfRhnTP7nLWOcubIBrXPnWHAiTN5cOch0qrMP4c7tsPQGPsNWR0YciPh3xJ0
-         D1uJo2NanHo+F6EriWXQnP9Y/qHBtUgrNRALG2AM=
+        b=MeKAfepH8TBObJqhUeSkiSzG/idyt2GrGdbTbTOizmaXNWpznqhh/nQ3F+dIQqoHK
+         kr+V+LW4+aRKBE9oMztyyeqYxMAHlsuzQppO8y4JDHwdhWypI/UY7gwKqGHgCxZtST
+         hDEpkd9J5yB6Hw0RfxLoDwPd303RmdTELWOIrdng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 226/575] mt76: mt7915: fix an off-by-one bound check
-Date:   Mon, 15 Nov 2021 17:59:11 +0100
-Message-Id: <20211115165351.534442531@linuxfoundation.org>
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 227/575] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
+Date:   Mon, 15 Nov 2021 17:59:12 +0100
+Message-Id: <20211115165351.566347154@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,32 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryder Lee <ryder.lee@mediatek.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit d45dac0732a287fc371a23f257cce04e65627947 ]
+[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
 
-The bounds check on datalen is off-by-one, so fix it.
+When the driver fails to request the firmware, it calls its error
+handler. In the error handler, the driver detaches device from driver
+first before releasing the firmware, which can cause a use-after-free bug.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fix this by releasing firmware first.
+
+The following log reveals it:
+
+[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
+[    9.010143 ] Workqueue: events request_firmware_work_func
+[    9.010830 ] Call Trace:
+[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
+[    9.010830 ]  print_address_description+0x87/0x3b0
+[    9.010830 ]  kasan_report+0x172/0x1c0
+[    9.010830 ]  ? mutex_unlock+0xd/0x10
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
+[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
+[    9.010830 ]  request_firmware_work_func+0x172/0x250
+[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
+[    9.010830 ]  ? process_one_work+0x7a1/0x1100
+[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
+[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
+[    9.010830 ]  process_one_work+0x9bb/0x1100
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
+ drivers/net/wireless/marvell/mwl8k.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index ea71409751519..7c2d09a64882e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -830,7 +830,7 @@ static void mt7915_check_he_obss_narrow_bw_ru_iter(struct wiphy *wiphy,
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index 27b7d4b779e0b..dc91ac8cbd48b 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -5796,8 +5796,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
+ fail:
+ 	priv->fw_state = FW_STATE_ERROR;
+ 	complete(&priv->firmware_loading_complete);
+-	device_release_driver(&priv->pdev->dev);
+ 	mwl8k_release_firmware(priv);
++	device_release_driver(&priv->pdev->dev);
+ }
  
- 	elem = ieee80211_bss_get_elem(bss, WLAN_EID_EXT_CAPABILITY);
- 
--	if (!elem || elem->datalen < 10 ||
-+	if (!elem || elem->datalen <= 10 ||
- 	    !(elem->data[10] &
- 	      WLAN_EXT_CAPA10_OBSS_NARROW_BW_RU_TOLERANCE_SUPPORT))
- 		data->tolerated = false;
+ #define MAX_RESTART_ATTEMPTS 1
 -- 
 2.33.0
 
