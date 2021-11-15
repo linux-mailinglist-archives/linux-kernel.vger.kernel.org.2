@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E636451F88
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A51451BBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbhKPAmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:42:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45390 "EHLO mail.kernel.org"
+        id S1348315AbhKPAG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:06:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345067AbhKOT0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:26:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7916633F5;
-        Mon, 15 Nov 2021 19:09:42 +0000 (UTC)
+        id S1345071AbhKOT0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:26:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0DE632D7;
+        Mon, 15 Nov 2021 19:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003383;
-        bh=fZyoex3Xh9SqjGK4bzXXvL+Yb+kn2e8dDp1t2zGQWag=;
+        s=korg; t=1637003386;
+        bh=EWZZMqDChEVRE6v3Fj1Wm/O2D7CsSJLOusrws6Z3K/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DiRRflwGAyHUp3Y0ndrE8HtFTSeQxe8itkXh/sJiKNf7kwF6iwLu0jeeBJI4FWcze
-         SKocx0HCQSpAjwrbIMt+xsnx8nHG5LjZoV1uDHSbMLKN357tQjd3VUaXuD+BZxoXUN
-         ihZA8fwG5ec0oXQthwBja1e0YdmMpvQ3Ua3jV/5E=
+        b=jXSaCckxpiIQyTG7NcSUZGJQWrsN4i2/2dmqrtYPHG8tgRiOUW0YotXs0hPjy0pMg
+         3gW2AcLkgj1LDTrC8evWGRgEiVOH5nH9NWFhHSg2vqYKpT5I4is6g4ZqObjBvdsLfJ
+         i5+VsQPX+N5X0M9BvUQnitmgA9ICtK1sDdRht3jM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Andersen <jackoalan@gmail.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
         =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.15 882/917] mfd: dln2: Add cell for initializing DLN2 ADC
-Date:   Mon, 15 Nov 2021 18:06:17 +0100
-Message-Id: <20211115165458.962850593@linuxfoundation.org>
+Subject: [PATCH 5.15 883/917] video: backlight: Drop maximum brightness override for brightness zero
+Date:   Mon, 15 Nov 2021 18:06:18 +0100
+Message-Id: <20211115165458.996766742@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,76 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Andersen <jackoalan@gmail.com>
+From: Marek Vasut <marex@denx.de>
 
-commit 313c84b5ae4104e48c661d5d706f9f4c425fd50f upstream.
+commit 33a5471f8da976bf271a1ebbd6b9d163cb0cb6aa upstream.
 
-This patch extends the DLN2 driver; adding cell for adc_dln2 module.
+The note in c2adda27d202f ("video: backlight: Add of_find_backlight helper
+in backlight.c") says that gpio-backlight uses brightness as power state.
+This has been fixed since in ec665b756e6f7 ("backlight: gpio-backlight:
+Correct initial power state handling") and other backlight drivers do not
+require this workaround. Drop the workaround.
 
-The original patch[1] fell through the cracks when the driver was added
-so ADC has never actually been usable. That patch did not have ACPI
-support which was added in v5.9, so the oldest supported version this
-current patch can be backported to is 5.10.
+This fixes the case where e.g. pwm-backlight can perfectly well be set to
+brightness 0 on boot in DT, which without this patch leads to the display
+brightness to be max instead of off.
 
-[1] https://www.spinics.net/lists/linux-iio/msg33975.html
-
-Cc: <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Jack Andersen <jackoalan@gmail.com>
-Signed-off-by: Noralf Trønnes <noralf@tronnes.org>
+Fixes: c2adda27d202f ("video: backlight: Add of_find_backlight helper in backlight.c")
+Cc: <stable@vger.kernel.org> # 5.4+
+Cc: <stable@vger.kernel.org> # 4.19.x: ec665b756e6f7: backlight: gpio-backlight: Correct initial power state handling
+Signed-off-by: Marek Vasut <marex@denx.de>
+Acked-by: Noralf Trønnes <noralf@tronnes.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20211018112541.25466-1-noralf@tronnes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/dln2.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/video/backlight/backlight.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
---- a/drivers/mfd/dln2.c
-+++ b/drivers/mfd/dln2.c
-@@ -50,6 +50,7 @@ enum dln2_handle {
- 	DLN2_HANDLE_GPIO,
- 	DLN2_HANDLE_I2C,
- 	DLN2_HANDLE_SPI,
-+	DLN2_HANDLE_ADC,
- 	DLN2_HANDLES
- };
+--- a/drivers/video/backlight/backlight.c
++++ b/drivers/video/backlight/backlight.c
+@@ -688,12 +688,6 @@ static struct backlight_device *of_find_
+ 			of_node_put(np);
+ 			if (!bd)
+ 				return ERR_PTR(-EPROBE_DEFER);
+-			/*
+-			 * Note: gpio_backlight uses brightness as
+-			 * power state during probe
+-			 */
+-			if (!bd->props.brightness)
+-				bd->props.brightness = bd->props.max_brightness;
+ 		}
+ 	}
  
-@@ -653,6 +654,7 @@ enum {
- 	DLN2_ACPI_MATCH_GPIO	= 0,
- 	DLN2_ACPI_MATCH_I2C	= 1,
- 	DLN2_ACPI_MATCH_SPI	= 2,
-+	DLN2_ACPI_MATCH_ADC	= 3,
- };
- 
- static struct dln2_platform_data dln2_pdata_gpio = {
-@@ -683,6 +685,16 @@ static struct mfd_cell_acpi_match dln2_a
- 	.adr = DLN2_ACPI_MATCH_SPI,
- };
- 
-+/* Only one ADC port supported */
-+static struct dln2_platform_data dln2_pdata_adc = {
-+	.handle = DLN2_HANDLE_ADC,
-+	.port = 0,
-+};
-+
-+static struct mfd_cell_acpi_match dln2_acpi_match_adc = {
-+	.adr = DLN2_ACPI_MATCH_ADC,
-+};
-+
- static const struct mfd_cell dln2_devs[] = {
- 	{
- 		.name = "dln2-gpio",
-@@ -702,6 +714,12 @@ static const struct mfd_cell dln2_devs[]
- 		.platform_data = &dln2_pdata_spi,
- 		.pdata_size = sizeof(struct dln2_platform_data),
- 	},
-+	{
-+		.name = "dln2-adc",
-+		.acpi_match = &dln2_acpi_match_adc,
-+		.platform_data = &dln2_pdata_adc,
-+		.pdata_size = sizeof(struct dln2_platform_data),
-+	},
- };
- 
- static void dln2_stop(struct dln2_dev *dln2)
 
 
