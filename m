@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B1B451934
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB70452057
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351392AbhKOXQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:16:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
+        id S1357937AbhKPAwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:52:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243671AbhKOTLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:11:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AFEE6124B;
-        Mon, 15 Nov 2021 18:19:14 +0000 (UTC)
+        id S1344344AbhKOTYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:24:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 952DD63666;
+        Mon, 15 Nov 2021 18:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000355;
-        bh=NPjVtk2A5GC7J3ix5FErXWBcijlXCXs0M3kZHT/2Gsc=;
+        s=korg; t=1637002572;
+        bh=susqupJ+Dygupq88Lp3tGxosSgZU+Qn+gXubyF3rN+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tvI8c5Ukcvp4RM95k969F0DXUyssrhK3lbryZ6Cfz2Ncndb1MRdqlWVeMqTt3fimY
-         WS4aFY8t8X2CpUYPSYVmtsoSaXGv+yE0Z4rrd4X18Qs5MhRVqUebTNuhV84Dbv6CPA
-         Gpmhm6uwdi48i+75ef38WtUoWCiJLztXa2Us1BWA=
+        b=Dn02xIngGeNtY15GMHVUTAoTMld+rNWR0zcn6M8f0yIRISjjRhHdl/SvVu+oHepYk
+         hVwlrpxYsBI9+JH0oD4hfWP/iJ3qtXvUCbxa/Ybf+XkoNqt5gf7eWHNYo731DLGy9U
+         QZq0IvtXFqEWp9KLxDF/Gm/yVErETeAuVEUHKkSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 630/849] powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE
+Subject: [PATCH 5.15 618/917] clk: at91: check pmc node status before registering syscore ops
 Date:   Mon, 15 Nov 2021 18:01:53 +0100
-Message-Id: <20211115165441.585983313@linuxfoundation.org>
+Message-Id: <20211115165449.754210486@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Clément Léger <clement.leger@bootlin.com>
 
-[ Upstream commit 68b44f94d6370e2c6c790fedd28e637fa9964a93 ]
+[ Upstream commit c405f5c15e9f6094f2fa1658e73e56f3058e2122 ]
 
-fsl_booke and 44x are not able to map kernel linear memory with
-pages, so they can't support DEBUG_PAGEALLOC and KFENCE, and
-STRICT_KERNEL_RWX is also a problem for now.
+Currently, at91 pmc driver always register the syscore_ops whatever
+the status of the pmc node that has been found. When set as secure
+and disabled, the pmc should not be accessed or this will generate
+abort exceptions.
+To avoid this, add a check on node availability before registering
+the syscore operations.
 
-Enable those only on book3s (both 32 and 64 except KFENCE), 8xx and 40x.
-
-Fixes: 88df6e90fa97 ("[POWERPC] DEBUG_PAGEALLOC for 32-bit")
-Fixes: 95902e6c8864 ("powerpc/mm: Implement STRICT_KERNEL_RWX on PPC32")
-Fixes: 90cbac0e995d ("powerpc: Enable KFENCE for PPC32")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/d1ad9fdd9b27da3fdfa16510bb542ed51fa6e134.1634292136.git.christophe.leroy@csgroup.eu
+Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+Link: https://lore.kernel.org/r/20210913082633.110168-1-clement.leger@bootlin.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Fixes: b3b02eac33ed ("clk: at91: Add sama5d2 suspend/resume")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/clk/at91/pmc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 663766fbf5055..d4d274bb07ffa 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -141,7 +141,7 @@ config PPC
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
- 	select ARCH_HAS_SET_MEMORY
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
- 	select ARCH_HAS_STRICT_MODULE_RWX	if ARCH_HAS_STRICT_KERNEL_RWX && !PPC_BOOK3S_32
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
-@@ -153,7 +153,7 @@ config PPC
- 	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_STACKWALK
- 	select ARCH_SUPPORTS_ATOMIC_RMW
--	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
-+	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC_BOOK3S || PPC_8xx || 40x
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
- 	select ARCH_USE_MEMTEST
-@@ -194,7 +194,7 @@ config PPC
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
--	select HAVE_ARCH_KFENCE			if PPC32
-+	select HAVE_ARCH_KFENCE			if PPC_BOOK3S_32 || PPC_8xx || 40x
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 20ee9dccee787..b40035b011d0a 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -267,6 +267,11 @@ static int __init pmc_register_ops(void)
+ 	if (!np)
+ 		return -ENODEV;
+ 
++	if (!of_device_is_available(np)) {
++		of_node_put(np);
++		return -ENODEV;
++	}
++
+ 	pmcreg = device_node_to_regmap(np);
+ 	of_node_put(np);
+ 	if (IS_ERR(pmcreg))
 -- 
 2.33.0
 
