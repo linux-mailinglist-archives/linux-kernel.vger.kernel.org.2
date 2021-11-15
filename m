@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9303452442
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7161345215B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241219AbhKPBgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:36:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        id S1349090AbhKPBDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:03:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242417AbhKOSgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:36:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE8E6326C;
-        Mon, 15 Nov 2021 18:02:46 +0000 (UTC)
+        id S245736AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0466328C;
+        Mon, 15 Nov 2021 18:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999367;
-        bh=8Ch3EU3UK83abFyDFxq8C9tda3V4GfTWuRtUmaB6dXM=;
+        s=korg; t=1637001624;
+        bh=qoemVxa7ZJJA84I2qEwqFTIIScJkbLpfTVZa4Wcglc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o16OJqN2pU2bH6RgVp0F+0L9iuuZj42/+FzJDewueC4gcU4XumqUeGqIUzLvzipSv
-         iBL94DAVUOBkuwTmqHlyQrgAGlwDdOlhHklirA5ZD11YOY4Eql3dUz26uTJhn4sK8G
-         qfrmkDl/8wk7oEHGeAVVrubPwVBzp3vBCVy7plvQ=
+        b=cqlkUIfYwsK6DEgTOjlpAuIRybVNBeJY+vfDSQW/r7lGPLQM7NAL1SbB25Lf5haEV
+         2DJQjmnwZFNr24/9Uswb1h+skpyo6MpwU/S+44yZliIy18kwhKEFfMzwmn8i8ily6q
+         BHNUnTduYidtQryidkbTTRpnJcXRUHevzv6eCMKk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Yuanzheng Song <songyuanzheng@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 271/849] mmc: moxart: Fix reference count leaks in moxart_probe
-Date:   Mon, 15 Nov 2021 17:55:54 +0100
-Message-Id: <20211115165429.412105624@linuxfoundation.org>
+Subject: [PATCH 5.15 260/917] thermal/core: Fix null pointer dereference in thermal_release()
+Date:   Mon, 15 Nov 2021 17:55:55 +0100
+Message-Id: <20211115165437.605126352@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Yuanzheng Song <songyuanzheng@huawei.com>
 
-[ Upstream commit 8105c2abbf36296bf38ca44f55ee45d160db476a ]
+[ Upstream commit 1dd7128b839f631b31a9e9dce3aaf639bef74e9d ]
 
-The issue happens in several error handling paths on two refcounted
-object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-these paths, the function forgets to decrement one or both objects'
-reference count increased earlier by dma_request_chan(), causing
-reference count leaks.
+If both dev_set_name() and device_register() failed, then null pointer
+dereference occurs in thermal_release() which will use strncmp() to
+compare the name.
 
-Fix it by balancing the refcounts of both objects in some error
-handling paths. In correspondence with the changes in moxart_probe(),
-IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
+So fix it by adding dev_set_name() return value check.
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/20211009041918.28419-1-xiongx18@fudan.edu.cn
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Yuanzheng Song <songyuanzheng@huawei.com>
+Link: https://lore.kernel.org/r/20211015083230.67658-1-songyuanzheng@huawei.com
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/thermal/thermal_core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 6c9d38132f74c..7b9fcef490de7 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
- 			ret = -EPROBE_DEFER;
- 			goto out;
- 		}
-+		if (!IS_ERR(host->dma_chan_tx)) {
-+			dma_release_channel(host->dma_chan_tx);
-+			host->dma_chan_tx = NULL;
-+		}
-+		if (!IS_ERR(host->dma_chan_rx)) {
-+			dma_release_channel(host->dma_chan_rx);
-+			host->dma_chan_rx = NULL;
-+		}
- 		dev_dbg(dev, "PIO mode transfer enabled\n");
- 		host->have_dma = false;
- 	} else {
-@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 51374f4e1ccaf..d094ebbde0ed7 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -902,6 +902,10 @@ __thermal_cooling_device_register(struct device_node *np,
+ 		goto out_kfree_cdev;
+ 	cdev->id = ret;
  
- out:
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
-+		dma_release_channel(host->dma_chan_tx);
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
-+		dma_release_channel(host->dma_chan_rx);
- 	if (mmc)
- 		mmc_free_host(mmc);
- 	return ret;
-@@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
++	ret = dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
++	if (ret)
++		goto out_ida_remove;
++
+ 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+ 	if (!cdev->type) {
+ 		ret = -ENOMEM;
+@@ -916,7 +920,6 @@ __thermal_cooling_device_register(struct device_node *np,
+ 	cdev->device.class = &thermal_class;
+ 	cdev->devdata = devdata;
+ 	thermal_cooling_device_setup_sysfs(cdev);
+-	dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
+ 	ret = device_register(&cdev->device);
+ 	if (ret)
+ 		goto out_kfree_type;
+@@ -1227,6 +1230,10 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	tz->id = id;
+ 	strlcpy(tz->type, type, sizeof(tz->type));
  
- 	dev_set_drvdata(&pdev->dev, NULL);
++	result = dev_set_name(&tz->device, "thermal_zone%d", tz->id);
++	if (result)
++		goto remove_id;
++
+ 	if (!ops->critical)
+ 		ops->critical = thermal_zone_device_critical;
  
--	if (!IS_ERR(host->dma_chan_tx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
- 		dma_release_channel(host->dma_chan_tx);
--	if (!IS_ERR(host->dma_chan_rx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
- 		dma_release_channel(host->dma_chan_rx);
- 	mmc_remove_host(mmc);
- 	mmc_free_host(mmc);
+@@ -1248,7 +1255,6 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	/* A new thermal zone needs to be updated anyway. */
+ 	atomic_set(&tz->need_update, 1);
+ 
+-	dev_set_name(&tz->device, "thermal_zone%d", tz->id);
+ 	result = device_register(&tz->device);
+ 	if (result)
+ 		goto release_device;
 -- 
 2.33.0
 
