@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541FB4515EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF554515EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhKOVBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:01:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        id S1348359AbhKOVCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:02:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240715AbhKOSNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:13:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EF6463320;
-        Mon, 15 Nov 2021 17:48:09 +0000 (UTC)
+        id S240733AbhKOSNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:13:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C7F6633C7;
+        Mon, 15 Nov 2021 17:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998490;
-        bh=TJ7mWoHFJkTL/qs9QSCVJTdC6xcRMVOrHXHwCWwr3Ms=;
+        s=korg; t=1636998495;
+        bh=F/MQ9D9uhSUZ5zk9Jd9AOnxbfTcNP8ZSpt7zQa+CjTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SuzS9qhGjBKM3XURYC7uYt7wcZXaepIcWvPeibEYKZD6eE1cEyuJ3yu/oRNbjl+Yy
-         lt+H7h9MIC/FkBpjtaZ7inTaNXB0fAyTcs6femqNzMvQd99yi8RHFJIzZb+V6mXJEm
-         2nBhL3LJf5RK3mIDnqR8Z8ewmIWh6fPIfFbwB29c=
+        b=XgYC8+hR9IgY8RUvN9RCvC07ynIHjbAtYvL3eeF/dgOhzVe4ybsnRWflgpZVdMxhV
+         sNozEwp4y8YIuWXvTluT3w+UOpr5kfR2AXQjuNztaAk8CONFZkGeEQt12W969L9/R+
+         epl3VNQ4EwbEmEggKGOKL29AVCbMMZI5CevIr6CU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jussi Maki <joamaki@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 528/575] bpf: sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
-Date:   Mon, 15 Nov 2021 18:04:13 +0100
-Message-Id: <20211115165401.934840585@linuxfoundation.org>
+Subject: [PATCH 5.10 529/575] gve: Fix off by one in gve_tx_timeout()
+Date:   Mon, 15 Nov 2021 18:04:14 +0100
+Message-Id: <20211115165401.966803513@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,141 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit e0dc3b93bd7bcff8c3813d1df43e0908499c7cf0 ]
+[ Upstream commit 1c360cc1cc883fbdf0a258b4df376571fbeac5ee ]
 
-Strparser is reusing the qdisc_skb_cb struct to stash the skb message handling
-progress, e.g. offset and length of the skb. First this is poorly named and
-inherits a struct from qdisc that doesn't reflect the actual usage of cb[] at
-this layer.
+The priv->ntfy_blocks[] has "priv->num_ntfy_blks" elements so this >
+needs to be >= to prevent an off by one bug.  The priv->ntfy_blocks[]
+array is allocated in gve_alloc_notify_blocks().
 
-But, more importantly strparser is using the following to access its metadata.
-
-  (struct _strp_msg *)((void *)skb->cb + offsetof(struct qdisc_skb_cb, data))
-
-Where _strp_msg is defined as:
-
-  struct _strp_msg {
-        struct strp_msg            strp;                 /*     0     8 */
-        int                        accum_len;            /*     8     4 */
-
-        /* size: 12, cachelines: 1, members: 2 */
-        /* last cacheline: 12 bytes */
-  };
-
-So we use 12 bytes of ->data[] in struct. However in BPF code running parser
-and verdict the user has read capabilities into the data[] array as well. Its
-not too problematic, but we should not be exposing internal state to BPF
-program. If its really needed then we can use the probe_read() APIs which allow
-reading kernel memory. And I don't believe cb[] layer poses any API breakage by
-moving this around because programs can't depend on cb[] across layers.
-
-In order to fix another issue with a ctx rewrite we need to stash a temp
-variable somewhere. To make this work cleanly this patch builds a cb struct
-for sk_skb types called sk_skb_cb struct. Then we can use this consistently
-in the strparser, sockmap space. Additionally we can start allowing ->cb[]
-write access after this.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20211103204736.248403-5-john.fastabend@gmail.com
+Fixes: 87a7f321bb6a ("gve: Recover from queue stall due to missed IRQ")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/strparser.h   | 16 +++++++++++++++-
- net/core/filter.c         | 21 +++++++++++++++++++++
- net/strparser/strparser.c | 10 +---------
- 3 files changed, 37 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/strparser.h b/include/net/strparser.h
-index 1d20b98493a10..bec1439bd3be6 100644
---- a/include/net/strparser.h
-+++ b/include/net/strparser.h
-@@ -54,10 +54,24 @@ struct strp_msg {
- 	int offset;
- };
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 3e96b2a11c5bf..6cb75bb1ed052 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -959,7 +959,7 @@ static void gve_tx_timeout(struct net_device *dev, unsigned int txqueue)
+ 		goto reset;
  
-+struct _strp_msg {
-+	/* Internal cb structure. struct strp_msg must be first for passing
-+	 * to upper layer.
-+	 */
-+	struct strp_msg strp;
-+	int accum_len;
-+};
-+
-+struct sk_skb_cb {
-+#define SK_SKB_CB_PRIV_LEN 20
-+	unsigned char data[SK_SKB_CB_PRIV_LEN];
-+	struct _strp_msg strp;
-+};
-+
- static inline struct strp_msg *strp_msg(struct sk_buff *skb)
- {
- 	return (struct strp_msg *)((void *)skb->cb +
--		offsetof(struct qdisc_skb_cb, data));
-+		offsetof(struct sk_skb_cb, strp));
- }
+ 	ntfy_idx = gve_tx_idx_to_ntfy(priv, txqueue);
+-	if (ntfy_idx > priv->num_ntfy_blks)
++	if (ntfy_idx >= priv->num_ntfy_blks)
+ 		goto reset;
  
- /* Structure for an attached lower socket */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7ea752af7894d..abd58dce49bbc 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -9493,6 +9493,27 @@ static u32 sk_skb_convert_ctx_access(enum bpf_access_type type,
- 		*insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg,
- 				      si->src_reg, off);
- 		break;
-+	case offsetof(struct __sk_buff, cb[0]) ...
-+	     offsetofend(struct __sk_buff, cb[4]) - 1:
-+		BUILD_BUG_ON(sizeof_field(struct sk_skb_cb, data) < 20);
-+		BUILD_BUG_ON((offsetof(struct sk_buff, cb) +
-+			      offsetof(struct sk_skb_cb, data)) %
-+			     sizeof(__u64));
-+
-+		prog->cb_access = 1;
-+		off  = si->off;
-+		off -= offsetof(struct __sk_buff, cb[0]);
-+		off += offsetof(struct sk_buff, cb);
-+		off += offsetof(struct sk_skb_cb, data);
-+		if (type == BPF_WRITE)
-+			*insn++ = BPF_STX_MEM(BPF_SIZE(si->code), si->dst_reg,
-+					      si->src_reg, off);
-+		else
-+			*insn++ = BPF_LDX_MEM(BPF_SIZE(si->code), si->dst_reg,
-+					      si->src_reg, off);
-+		break;
-+
-+
- 	default:
- 		return bpf_convert_ctx_access(type, si, insn_buf, prog,
- 					      target_size);
-diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-index b3815c1e8f2ea..cd9954c4ad808 100644
---- a/net/strparser/strparser.c
-+++ b/net/strparser/strparser.c
-@@ -27,18 +27,10 @@
- 
- static struct workqueue_struct *strp_wq;
- 
--struct _strp_msg {
--	/* Internal cb structure. struct strp_msg must be first for passing
--	 * to upper layer.
--	 */
--	struct strp_msg strp;
--	int accum_len;
--};
--
- static inline struct _strp_msg *_strp_msg(struct sk_buff *skb)
- {
- 	return (struct _strp_msg *)((void *)skb->cb +
--		offsetof(struct qdisc_skb_cb, data));
-+		offsetof(struct sk_skb_cb, strp));
- }
- 
- /* Lower lock held */
+ 	block = &priv->ntfy_blocks[ntfy_idx];
 -- 
 2.33.0
 
