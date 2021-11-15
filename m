@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E691451B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D13451960
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347114AbhKPACe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:02:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S1352762AbhKOXSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:18:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344514AbhKOTYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3BB63277;
-        Mon, 15 Nov 2021 18:58:59 +0000 (UTC)
+        id S244618AbhKOTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CF4F61872;
+        Mon, 15 Nov 2021 18:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002739;
-        bh=M2YtDN5c5DMIpf+rhEpGDTps8TZEA1RWaTDBl5L9Ey8=;
+        s=korg; t=1637000525;
+        bh=sIHIbKWXWQKAMWd6v6wxFncRTQ2BVNWst8wwIJ1FvIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxo3yBfld2S2bzRhgBEwjap5koQJxj3MhAq1/5W9vM3s9dHLFwYjMz/hbh7c5hcqU
-         ELdN2qkxzdnoAQA3xYYRvknMCektGyVxhx9hPbEjDGvfvcZzMZwxoemPBPSe0xCkwj
-         CHbUpqgIiknGi0/Y+s7QreDAtvY57aY5DPxBxWrI=
+        b=dLFgvS2tlHaSTEyKkNUR4QZymLN6MHuL+EYAWZIcVPb1h+1JbNdwCgPN17d6n1YkF
+         B0cZHR26UHXYnav3pmEP8JHySSxRHg0XZK28hk0chTa4aqJ6hw6xjdsASbAQqMynGf
+         cOBmcazNXuyZXe3O2OYRZ0mOocShNZbh+lxuQjF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 680/917] ALSA: oxfw: fix functional regression for Mackie Onyx 1640i in v5.14 or later
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 692/849] remoteproc: Fix a memory leak in an error handling path in rproc_handle_vdev()
 Date:   Mon, 15 Nov 2021 18:02:55 +0100
-Message-Id: <20211115165451.955543607@linuxfoundation.org>
+Message-Id: <20211115165443.665232094@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,103 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit cddcd5472abb7b8a9c37ccbcf0908b79740a01b5 ]
+[ Upstream commit 0374a4ea7269645c46c3eb288526ea072fa19e79 ]
 
-A user reports functional regression for Mackie Onyx 1640i that the device
-generates slow sound with ALSA oxfw driver which supports media clock
-recovery. Although the device is based on OXFW971 ASIC, it does not
-transfer isochronous packet with own event frequency as expected. The
-device seems to adjust event frequency according to events in received
-isochronous packets in the beginning of packet streaming. This is
-unknown quirk.
+If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
+Move the 'copy_dma_range_map()' call after the device registration so
+that 'rproc_rvdev_release()' can be called to free some resources.
 
-This commit fixes the regression to turn the recovery off in driver
-side. As a result, nominal frequency is used in duplex packet streaming
-between device and driver. For stability of sampling rate in events of
-transferred isochronous packet, 4,000 isochronous packets are skipped
-in the beginning of packet streaming.
+Also, branch to the error handling path if 'copy_dma_range_map()' instead
+of a direct return to avoid some other leaks.
 
-Reference: https://github.com/takaswie/snd-firewire-improve/issues/38
-Fixes: 029ffc429440 ("ALSA: oxfw: perform sequence replay for media clock recovery")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20211028130325.45772-1-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Jim Quinlan <james.quinlan@broadcom.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/oxfw/oxfw-stream.c | 7 ++++++-
- sound/firewire/oxfw/oxfw.c        | 8 ++++++++
- sound/firewire/oxfw/oxfw.h        | 5 +++++
- 3 files changed, 19 insertions(+), 1 deletion(-)
+ drivers/remoteproc/remoteproc_core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index fff18b5d4e052..f4a702def3979 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -9,7 +9,7 @@
- #include <linux/delay.h>
- 
- #define AVC_GENERIC_FRAME_MAXIMUM_BYTES	512
--#define READY_TIMEOUT_MS	200
-+#define READY_TIMEOUT_MS	600
- 
- /*
-  * According to datasheet of Oxford Semiconductor:
-@@ -367,6 +367,11 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
- 				// Just after changing sampling transfer frequency, many cycles are
- 				// skipped for packet transmission.
- 				tx_init_skip_cycles = 400;
-+			} else if (oxfw->quirks & SND_OXFW_QUIRK_VOLUNTARY_RECOVERY) {
-+				// It takes a bit time for target device to adjust event frequency
-+				// according to nominal event frequency in isochronous packets from
-+				// ALSA oxfw driver.
-+				tx_init_skip_cycles = 4000;
- 			} else {
- 				replay_seq = true;
- 			}
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index daf731364695b..b496f87841aec 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,6 +25,7 @@
- #define MODEL_SATELLITE		0x00200f
- #define MODEL_SCS1M		0x001000
- #define MODEL_DUET_FW		0x01dddd
-+#define MODEL_ONYX_1640I	0x001640
- 
- #define SPECIFIER_1394TA	0x00a02d
- #define VERSION_AVC		0x010001
-@@ -192,6 +193,13 @@ static int detect_quirks(struct snd_oxfw *oxfw, const struct ieee1394_device_id
- 		// OXFW971-based models may transfer events by blocking method.
- 		if (!(oxfw->quirks & SND_OXFW_QUIRK_JUMBO_PAYLOAD))
- 			oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION;
-+
-+		if (model == MODEL_ONYX_1640I) {
-+			//Unless receiving packets without NOINFO packet, the device transfers
-+			//mostly half of events in packets than expected.
-+			oxfw->quirks |= SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET |
-+					SND_OXFW_QUIRK_VOLUNTARY_RECOVERY;
-+		}
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 7de5905d276ac..f77b0ff55385e 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -556,9 +556,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 	/* Initialise vdev subdevice */
+ 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+ 	rvdev->dev.parent = &rproc->dev;
+-	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+-	if (ret)
+-		return ret;
+ 	rvdev->dev.release = rproc_rvdev_release;
+ 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+ 	dev_set_drvdata(&rvdev->dev, rvdev);
+@@ -568,6 +565,11 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 		put_device(&rvdev->dev);
+ 		return ret;
  	}
++
++	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
++	if (ret)
++		goto free_rvdev;
++
+ 	/* Make device dma capable by inheriting from parent's capabilities */
+ 	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
  
- 	return 0;
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index c13034f6c2ca5..d728e451a25c6 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -47,6 +47,11 @@ enum snd_oxfw_quirk {
- 	// the device to process audio data even if the value is invalid in a point of
- 	// IEC 61883-1/6.
- 	SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET = 0x10,
-+	// Loud Technologies Mackie Onyx 1640i seems to configure OXFW971 ASIC so that it decides
-+	// event frequency according to events in received isochronous packets. The device looks to
-+	// performs media clock recovery voluntarily. In the recovery, the packets with NO_INFO
-+	// are ignored, thus driver should transfer packets with timestamp.
-+	SND_OXFW_QUIRK_VOLUNTARY_RECOVERY = 0x20,
- };
- 
- /* This is an arbitrary number for convinience. */
 -- 
 2.33.0
 
