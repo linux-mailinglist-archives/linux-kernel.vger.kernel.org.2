@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A47E4511FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1765045121A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343756AbhKOTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:21:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
+        id S1346085AbhKOT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:29:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238085AbhKORsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:48:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8032E63309;
-        Mon, 15 Nov 2021 17:30:08 +0000 (UTC)
+        id S237416AbhKORsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:48:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 976486331E;
+        Mon, 15 Nov 2021 17:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997409;
-        bh=OrRmFCszA6mAXdgGst8rddDKVWyhmmFy0oiAvl9IAgQ=;
+        s=korg; t=1636997431;
+        bh=0/SBdM2qCJZe6euQDkiZXHBY6DU+eEdbdKtGv0otZr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ph9F69/EKfkokMWc6zogrwZIGtq0lFMPXhxWxg+QP5JHPDKhHYJ5BTaHh4m1spnBH
-         g9SvZXywwca31t6bqncQTV9BWRzJBnu+9gLC5WjwMW74OWGaqFT15PQjPn+72yyCfv
-         zGqLefi1q5QDbQqWzgtliqY/QDst1RiqMCvGFiFE=
+        b=IFA7/uzTxVYUNGqkFV0ETYZ5OMmyKfCIqCyC+VKTPWtpWgpaByLWxIUsREv+RSiby
+         H3YUdNVIqQcWUz7V2Z+r0oGG4AYGkGrgWX7uDcWz/2PjQDf++lu8U/zwC/iAZQNe5a
+         UEZw/qswIKzflsi76nFf+FudcS+0MHu05z6jwWIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.10 137/575] ovl: fix use after free in struct ovl_aio_req
-Date:   Mon, 15 Nov 2021 17:57:42 +0100
-Message-Id: <20211115165348.436431223@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.10 144/575] PCI: aardvark: Fix configuring Reference clock
+Date:   Mon, 15 Nov 2021 17:57:49 +0100
+Message-Id: <20211115165348.673582811@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -39,92 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 9a254403760041528bc8f69fe2f5e1ef86950991 upstream.
+commit 46ef6090dbf590711cb12680b6eafde5fa21fe87 upstream.
 
-Example for triggering use after free in a overlay on ext4 setup:
+Commit 366697018c9a ("PCI: aardvark: Add PHY support") introduced
+configuration of PCIe Reference clock via PCIE_CORE_REF_CLK_REG register,
+but did it incorrectly.
 
-aio_read
-  ovl_read_iter
-    vfs_iter_read
-      ext4_file_read_iter
-        ext4_dio_read_iter
-          iomap_dio_rw -> -EIOCBQUEUED
-          /*
-	   * Here IO is completed in a separate thread,
-	   * ovl_aio_cleanup_handler() frees aio_req which has iocb embedded
-	   */
-          file_accessed(iocb->ki_filp); /**BOOM**/
+PCIe Reference clock differential pair is routed from system board to
+endpoint card, so on CPU side it has output direction. Therefore it is
+required to enable transmitting and disable receiving.
 
-Fix by introducing a refcount in ovl_aio_req similarly to aio_kiocb.  This
-guarantees that iocb is only freed after vfs_read/write_iter() returns on
-underlying fs.
+Default configuration according to Armada 3700 Functional Specifications is
+enabled receiver part and disabled transmitter.
 
-Fixes: 2406a307ac7d ("ovl: implement async IO routines")
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Link: https://lore.kernel.org/r/20210930032228.3199690-3-yangerkun@huawei.com/
-Cc: <stable@vger.kernel.org> # v5.6
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+We need this change because otherwise PCIe Reference clock is configured to
+some undefined state when differential pair is used for both transmitting
+and receiving.
+
+Fix this by disabling receiver part.
+
+Link: https://lore.kernel.org/r/20211005180952.6812-6-kabel@kernel.org
+Fixes: 366697018c9a ("PCI: aardvark: Add PHY support")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/overlayfs/file.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-aardvark.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -17,6 +17,7 @@
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -98,6 +98,7 @@
+ #define     PCIE_CORE_CTRL2_MSI_ENABLE		BIT(10)
+ #define PCIE_CORE_REF_CLK_REG			(CONTROL_BASE_ADDR + 0x14)
+ #define     PCIE_CORE_REF_CLK_TX_ENABLE		BIT(1)
++#define     PCIE_CORE_REF_CLK_RX_ENABLE		BIT(2)
+ #define PCIE_MSG_LOG_REG			(CONTROL_BASE_ADDR + 0x30)
+ #define PCIE_ISR0_REG				(CONTROL_BASE_ADDR + 0x40)
+ #define PCIE_MSG_PM_PME_MASK			BIT(7)
+@@ -529,9 +530,15 @@ static void advk_pcie_setup_hw(struct ad
+ 	u32 reg;
+ 	int i;
  
- struct ovl_aio_req {
- 	struct kiocb iocb;
-+	refcount_t ref;
- 	struct kiocb *orig_iocb;
- 	struct fd fd;
- };
-@@ -257,6 +258,14 @@ static rwf_t ovl_iocb_to_rwf(int ifl)
- 	return flags;
- }
+-	/* Enable TX */
++	/*
++	 * Configure PCIe Reference clock. Direction is from the PCIe
++	 * controller to the endpoint card, so enable transmitting of
++	 * Reference clock differential signal off-chip and disable
++	 * receiving off-chip differential signal.
++	 */
+ 	reg = advk_readl(pcie, PCIE_CORE_REF_CLK_REG);
+ 	reg |= PCIE_CORE_REF_CLK_TX_ENABLE;
++	reg &= ~PCIE_CORE_REF_CLK_RX_ENABLE;
+ 	advk_writel(pcie, reg, PCIE_CORE_REF_CLK_REG);
  
-+static inline void ovl_aio_put(struct ovl_aio_req *aio_req)
-+{
-+	if (refcount_dec_and_test(&aio_req->ref)) {
-+		fdput(aio_req->fd);
-+		kmem_cache_free(ovl_aio_request_cachep, aio_req);
-+	}
-+}
-+
- static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
- {
- 	struct kiocb *iocb = &aio_req->iocb;
-@@ -273,8 +282,7 @@ static void ovl_aio_cleanup_handler(stru
- 	}
- 
- 	orig_iocb->ki_pos = iocb->ki_pos;
--	fdput(aio_req->fd);
--	kmem_cache_free(ovl_aio_request_cachep, aio_req);
-+	ovl_aio_put(aio_req);
- }
- 
- static void ovl_aio_rw_complete(struct kiocb *iocb, long res, long res2)
-@@ -324,7 +332,9 @@ static ssize_t ovl_read_iter(struct kioc
- 		aio_req->orig_iocb = iocb;
- 		kiocb_clone(&aio_req->iocb, iocb, real.file);
- 		aio_req->iocb.ki_complete = ovl_aio_rw_complete;
-+		refcount_set(&aio_req->ref, 2);
- 		ret = vfs_iocb_iter_read(real.file, &aio_req->iocb, iter);
-+		ovl_aio_put(aio_req);
- 		if (ret != -EIOCBQUEUED)
- 			ovl_aio_cleanup_handler(aio_req);
- 	}
-@@ -395,7 +405,9 @@ static ssize_t ovl_write_iter(struct kio
- 		kiocb_clone(&aio_req->iocb, iocb, real.file);
- 		aio_req->iocb.ki_flags = ifl;
- 		aio_req->iocb.ki_complete = ovl_aio_rw_complete;
-+		refcount_set(&aio_req->ref, 2);
- 		ret = vfs_iocb_iter_write(real.file, &aio_req->iocb, iter);
-+		ovl_aio_put(aio_req);
- 		if (ret != -EIOCBQUEUED)
- 			ovl_aio_cleanup_handler(aio_req);
- 	}
+ 	/* Set to Direct mode */
 
 
