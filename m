@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB0F450007
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0402545000A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 09:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhKOIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 03:38:32 -0500
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:41537 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhKOIiR (ORCPT
+        id S230113AbhKOIkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 03:40:53 -0500
+Received: from hosting.gsystem.sk ([212.5.213.30]:41350 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhKOIke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 03:38:17 -0500
-Received: by mail-ua1-f54.google.com with SMTP id p37so31535743uae.8;
-        Mon, 15 Nov 2021 00:35:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PmBiLQLwGk4BtQ4xIuEDuY7kvhhjd5riXXU4uoLcz30=;
-        b=x5aZuBvbKqgxMPwAaLHVwbTi77f3Aih+N5tMsJQhx2kyBR6CPBq3OPJHmb/EW+VmGO
-         Fd308p3wF3Kgd6AajIIvy0uf5yldrZ7xpdsP9FVRwlRd1UK8xo7oYjKmXGWBZKFmv2Nk
-         1REBBl5cjDwKNX+rBOE8gUVQ0Q9JPzSMyXPPG7yxkUcZusphhCAWLBDju8vRZSCncFIF
-         Xu2YPvipIHR54keJux/OknS3ixgeVDh9AOQ/iCJ8yiRByMh3iR1VVO6/GtPw/Xb2f2uz
-         18yxMPPKnoy01QGOj4WEkWwb7baumU5HAuMQxuv5zsG4u8qi38eir1DKj6cSgtbpDq7r
-         SR2w==
-X-Gm-Message-State: AOAM532ZPnjA6jV0FT7DtPLYrhBEEme5b+f9QGz2tA0GvxzMTqvT302x
-        1xjjT811kRCpzkCTZtj+OZ3yTz4L7Kujng==
-X-Google-Smtp-Source: ABdhPJwFf0yvJR5yS8aPuDBVD1M1j470FPAX9fQVLpTAoC+n4wAXgRvVycsRvye+1FTgk7+5tW8P2g==
-X-Received: by 2002:a05:6102:3232:: with SMTP id x18mr34870771vsf.38.1636965321726;
-        Mon, 15 Nov 2021 00:35:21 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id f11sm8316621vkk.50.2021.11.15.00.35.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 00:35:21 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id w23so10259066uao.5;
-        Mon, 15 Nov 2021 00:35:21 -0800 (PST)
-X-Received: by 2002:a9f:248b:: with SMTP id 11mr52047394uar.14.1636965320871;
- Mon, 15 Nov 2021 00:35:20 -0800 (PST)
+        Mon, 15 Nov 2021 03:40:34 -0500
+Received: from [192.168.1.3] (ns.gsystem.sk [62.176.172.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 2877C7A0226;
+        Mon, 15 Nov 2021 09:37:34 +0100 (CET)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH] hid-multitouch: Fix Iiyama ProLite T1931SAW (0eef:0001 again!)
+Date:   Mon, 15 Nov 2021 09:37:31 +0100
+User-Agent: KMail/1.9.10
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20211112135511.29573-1-linux@zary.sk> <CAO-hwJLZ8roXUxnB5Umyjd_22KFGbFMouxdVM0GLSSLrktteAg@mail.gmail.com>
+In-Reply-To: <CAO-hwJLZ8roXUxnB5Umyjd_22KFGbFMouxdVM0GLSSLrktteAg@mail.gmail.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <20211115063257.14369-1-rdunlap@infradead.org>
-In-Reply-To: <20211115063257.14369-1-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Nov 2021 09:35:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWerZGYz_i8oBK4-ZC+AHZm8c0VW7CXDRX=2PxboWFZ-w@mail.gmail.com>
-Message-ID: <CAMuHMdWerZGYz_i8oBK4-ZC+AHZm8c0VW7CXDRX=2PxboWFZ-w@mail.gmail.com>
-Subject: Re: [PATCH] fbdev: sh7760fb: document fallthrough cases
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>,
-        Manuel Lauss <mano@roarinelk.homelinux.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202111150937.31306.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 7:33 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Fix fallthrough warnings in sh776fb.c:
->
-> ../drivers/video/fbdev/sh7760fb.c: In function 'sh7760fb_get_color_info':
-> ../drivers/video/fbdev/sh7760fb.c:138:23: warning: this statement may fall through [-Wimplicit-fallthrough=]
->   138 |                 lgray = 1;
-> ../drivers/video/fbdev/sh7760fb.c:143:23: warning: this statement may fall through [-Wimplicit-fallthrough=]
->   143 |                 lgray = 1;
->
-> Just document the current state of code execution/flow.
->
-> Fixes: 4a25e41831ee ("video: sh7760fb: SH7760/SH7763 LCDC framebuffer driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+On Friday 12 November 2021, Benjamin Tissoires wrote:
+> Hi Ondrej,
+> 
+> On Fri, Nov 12, 2021 at 3:00 PM Ondrej Zary <linux@zary.sk> wrote:
+> >
+> > Iiyama ProLite T1931SAW does not work with Linux - input devices are
+> > created but cursor does not move.
+> >
+> > It has the infamous 0eef:0001 ID which has been reused for various
+> > devices before.
+> >
+> > It seems to require export_all_inputs = true.
+> > Add it to mt_devices[] as MT_CLS_WIN_8 to fix the problem.
+> > Hopefully there are no HID devices using this ID that will break.
+> > It should not break non-HID devices (handled by usbtouchscreen).
+> 
+> Hmm, this is worrisome. I am pretty sure there were some eGalax 0001
+> devices that were Win 7 compatible and I am not sure if they are
+> compatible with Win8...
+> 
+> I guess that if you have to set MT_CLS_WIN_8, the device is not
+> detected as such. so how about you use:
+> MT_CLS_EXPORT_ALL_INPUTS instead, (to keep MT_CLS_DEFAULT for those
+> devices), and restrict the VID/PID matching to the non Win8 devices:
 
-Section 30.4.4 ("Data Format") of the SH7760 Group Hardware
-Manual confirms fall-through is appropriate here (especially for
-the odd 6 bpp mode).
+It works with MT_CLS_EXPORT_ALL_INPUTS.
+ 
+> HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, USB_VENDOR_ID_DWAV,
+> USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER)
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+But does not match HID_GROUP_GENERIC.
 
-Gr{oetje,eeting}s,
+> 
+> ?
+> 
+> Cheers,
+> Benjamin
+> 
+> >
+> > Signed-off-by: Ondrej Zary <linux@zary.sk>
+> > ---
+> >  drivers/hid/hid-multitouch.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+> > index e1afddb7b33d..099daf590392 100644
+> > --- a/drivers/hid/hid-multitouch.c
+> > +++ b/drivers/hid/hid-multitouch.c
+> > @@ -1888,6 +1888,11 @@ static const struct hid_device_id mt_devices[] = {
+> >                 MT_USB_DEVICE(USB_VENDOR_ID_CVTOUCH,
+> >                         USB_DEVICE_ID_CVTOUCH_SCREEN) },
+> >
+> > +       /* eGalax devices (SAW) */
+> > +       { .driver_data = MT_CLS_WIN_8,
+> > +               MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+> > +                       USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER) },
+> > +
+> >         /* eGalax devices (resistive) */
+> >         { .driver_data = MT_CLS_EGALAX,
+> >                 MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+> > --
+> > Ondrej Zary
+> >
+> 
+> 
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Ondrej Zary
