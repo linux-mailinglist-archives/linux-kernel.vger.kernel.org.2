@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD49451024
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 699BD451023
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242022AbhKOSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:42:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57868 "EHLO mail.kernel.org"
+        id S241960AbhKOSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:42:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237643AbhKORhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237300AbhKORhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:37:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D104632CF;
-        Mon, 15 Nov 2021 17:24:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DF5A632D0;
+        Mon, 15 Nov 2021 17:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997083;
-        bh=WB6MbKLKedrVfpPzHLDPxMlz+56MEw5M6n7E8d+mgfg=;
+        s=korg; t=1636997086;
+        bh=IUiUIC6gonEFnZgEjjwg8ixcJYWc/smZKbYgfz2qgy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fqJqOTBE80GYedMGTCgQ0Dbyjcmm7KS+28SQiFrIB6a/ycS/vwIwIRlSE+jSMijjz
-         bb99IhYBHCrx4H2UcBqFT2DiyG+nacXrPX+Vi+vFOjwFkgu8ltstjSNRjZPpce71MC
-         Jiu81iOqUtzQ9xyuOiY6vghJnldqHtN+ccJh6nTM=
+        b=zmJJgNuAoka+caJEbaX0qGyT1Ktc6xxXoS35GdoPGPGHg6Tl3ei2vKbtVrIo7yw06
+         gBs+WdhN5tdXwrYuUTTZANveFBGkn8vWufKJbGtJEcpXKxhnfYFoEca3+SQGP9v9vS
+         Og+uTTBkbvyP0y426xBevGMhS2pTa3I2xWpOfRK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        jing yangyang <jing.yangyang@zte.com.cn>
-Subject: [PATCH 5.10 020/575] firmware/psci: fix application of sizeof to pointer
-Date:   Mon, 15 Nov 2021 17:55:45 +0100
-Message-Id: <20211115165344.310014958@linuxfoundation.org>
+        stable@vger.kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.10 021/575] crypto: s5p-sss - Add error handling in s5p_aes_probe()
+Date:   Mon, 15 Nov 2021 17:55:46 +0100
+Message-Id: <20211115165344.349022750@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,39 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <cgel.zte@gmail.com>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
 
-commit 2ac5fb35cd520ab1851c9a4816c523b65276052f upstream.
+commit a472cc0dde3eb057db71c80f102556eeced03805 upstream.
 
-sizeof when applied to a pointer typed expression gives the size of
-the pointer.
+The function s5p_aes_probe() does not perform sufficient error
+checking after executing platform_get_resource(), thus fix it.
 
-./drivers/firmware/psci/psci_checker.c:158:41-47: ERROR application of sizeof to pointer
-
-This issue was detected with the help of Coccinelle.
-
-Fixes: 7401056de5f8 ("drivers/firmware: psci_checker: stash and use topology_core_cpumask for hotplug tests")
-Cc: stable@vger.kernel.org
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: c2afad6c6105 ("crypto: s5p-sss - Add HASH support for Exynos")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/psci/psci_checker.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/s5p-sss.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/firmware/psci/psci_checker.c
-+++ b/drivers/firmware/psci/psci_checker.c
-@@ -155,7 +155,7 @@ static int alloc_init_cpu_groups(cpumask
- 	if (!alloc_cpumask_var(&tmp, GFP_KERNEL))
- 		return -ENOMEM;
+--- a/drivers/crypto/s5p-sss.c
++++ b/drivers/crypto/s5p-sss.c
+@@ -2173,6 +2173,8 @@ static int s5p_aes_probe(struct platform
  
--	cpu_groups = kcalloc(nb_available_cpus, sizeof(cpu_groups),
-+	cpu_groups = kcalloc(nb_available_cpus, sizeof(*cpu_groups),
- 			     GFP_KERNEL);
- 	if (!cpu_groups) {
- 		free_cpumask_var(tmp);
+ 	variant = find_s5p_sss_version(pdev);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
+ 
+ 	/*
+ 	 * Note: HASH and PRNG uses the same registers in secss, avoid
 
 
