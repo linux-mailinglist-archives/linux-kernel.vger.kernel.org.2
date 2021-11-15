@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAAB4514EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCE1451500
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346241AbhKOURM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:17:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        id S1350262AbhKOUW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:22:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239910AbhKOSFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:05:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C670563361;
-        Mon, 15 Nov 2021 17:39:59 +0000 (UTC)
+        id S240093AbhKOSFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:05:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34CC76326D;
+        Mon, 15 Nov 2021 17:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998000;
-        bh=iUdkhfdd1xc6U1Hu5gPcAe89mY+o3j29EB/wCq5QYsE=;
+        s=korg; t=1636998132;
+        bh=d1W/Mm5qqz722Rug1BmUtJM4GClARRRIRgfA+Tjtgoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Os5l3lxKZsRKnRRy/4kVHxi+VqzWP3HRnuKeNzKV3+InMTI1iLUKD8xpFUHQBokJO
-         Wl05CIH+ujqzasUUlRA+Hp2Pz6WziZ6P39vaxDNz1KH3ZvJxyBw7OqwEFyHSKJSw53
-         9sTQ6Jt8Iap490oagE1Lmgg2z727knp4/W9zUGrE=
+        b=OSEhmog2l2s3MiUwewegUN00xk5u6LTDcDvPFzSfOqXM6CRp05z0Ls1/OmUk9jLWs
+         WKJ5Oh8j4pVSr/NxTMPuyqj32qyGBauZAGcmYRpSnx1j40yAFY0tX7CukmRdAur1tl
+         MuCSmGawUFtzFT/o92oyWeHS2VKDJ7YLzAVWH9CM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 350/575] libbpf: Fix BTF data layout checks and allow empty BTF
-Date:   Mon, 15 Nov 2021 18:01:15 +0100
-Message-Id: <20211115165355.896772695@linuxfoundation.org>
+Subject: [PATCH 5.10 356/575] KVM: s390: pv: avoid stalls for kvm_s390_pv_init_vm
+Date:   Mon, 15 Nov 2021 18:01:21 +0100
+Message-Id: <20211115165356.117773956@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,62 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-[ Upstream commit d8123624506cd62730c9cd9c7672c698e462703d ]
+[ Upstream commit 1e2aa46de526a5adafe580bca4c25856bb06f09e ]
 
-Make data section layout checks stricter, disallowing overlap of types and
-strings data.
+When the system is heavily overcommitted, kvm_s390_pv_init_vm might
+generate stall notifications.
 
-Additionally, allow BTFs with no type data. There is nothing inherently wrong
-with having BTF with no types (put potentially with some strings). This could
-be a situation with kernel module BTFs, if module doesn't introduce any new
-type information.
+Fix this by using uv_call_sched instead of just uv_call. This is ok because
+we are not holding spinlocks.
 
-Also fix invalid offset alignment check for btf->hdr->type_off.
-
-Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20201105043402.2530976-8-andrii@kernel.org
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Message-Id: <20210920132502.36111-4-imbrenda@linux.ibm.com>
+Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ arch/s390/kvm/pv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 231b07203e3d2..987c1515b828b 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -215,22 +215,18 @@ static int btf_parse_hdr(struct btf *btf)
- 		return -EINVAL;
- 	}
+diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+index 74265304dd9cd..8228878872228 100644
+--- a/arch/s390/kvm/pv.c
++++ b/arch/s390/kvm/pv.c
+@@ -190,7 +190,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+ 	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
+ 	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
  
--	if (meta_left < hdr->type_off) {
--		pr_debug("Invalid BTF type section offset:%u\n", hdr->type_off);
-+	if (meta_left < hdr->str_off + hdr->str_len) {
-+		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
- 		return -EINVAL;
- 	}
- 
--	if (meta_left < hdr->str_off) {
--		pr_debug("Invalid BTF string section offset:%u\n", hdr->str_off);
-+	if (hdr->type_off + hdr->type_len > hdr->str_off) {
-+		pr_debug("Invalid BTF data sections layout: type data at %u + %u, strings data at %u + %u\n",
-+			 hdr->type_off, hdr->type_len, hdr->str_off, hdr->str_len);
- 		return -EINVAL;
- 	}
- 
--	if (hdr->type_off >= hdr->str_off) {
--		pr_debug("BTF type section offset >= string section offset. No type?\n");
--		return -EINVAL;
--	}
--
--	if (hdr->type_off & 0x02) {
-+	if (hdr->type_off % 4) {
- 		pr_debug("BTF type section is not aligned to 4 bytes\n");
- 		return -EINVAL;
- 	}
+-	cc = uv_call(0, (u64)&uvcb);
++	cc = uv_call_sched(0, (u64)&uvcb);
+ 	*rc = uvcb.header.rc;
+ 	*rrc = uvcb.header.rrc;
+ 	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
 -- 
 2.33.0
 
