@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B74450AB3
+	by mail.lfdr.de (Postfix) with ESMTP id 7802B450AB2
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhKOROE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:14:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S236847AbhKORNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:13:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232164AbhKORL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:11:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24AC961B5E;
-        Mon, 15 Nov 2021 17:08:32 +0000 (UTC)
+        id S232388AbhKORLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:11:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF1D61452;
+        Mon, 15 Nov 2021 17:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996112;
-        bh=ee+O9daHO4tmPbizNCcekqBAf8Yt8mL61b8y00A3h7w=;
+        s=korg; t=1636996115;
+        bh=3QXAGlUF16oJFwHivLne9jOvQorUO1pYB5gbr543SFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkxnRdtiugAtKX+GnxuO3uUZ93RHZQ8CVXRjyFdOuuVorv3jZw02O/9n6CtVXZaqo
-         11GO0mGjRcuAmqP+nN1wU3jcgjcfd57K1pW5tTCCp1RtlOq5n5k0vHZkegp/2fk8m3
-         9klRCcHs6L8RvqqRDdMYgPsjKaK3wQ/5MpOUxEp4=
+        b=Py4MWFP9nijgh7XjnHefMFj9ggt4W6QC+pw46lsMUnISmSmlUAkwmLUBX1eNLzYcK
+         fESB/XFQo9StbmC+roLuKOUi1fOGZvABiTaq7X38jXf5xpQvbCd30d8QXpw+p6Dg08
+         dMxMXZ0rrSaivv5kWO1bEwfZu/P/DkAMu1OOktCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 020/355] media: v4l2-ioctl: Fix check_ext_ctrls
-Date:   Mon, 15 Nov 2021 17:59:04 +0100
-Message-Id: <20211115165314.202385635@linuxfoundation.org>
+        stable@vger.kernel.org, Tim Crawford <tcrawford@system76.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 021/355] ALSA: hda/realtek: Add quirk for Clevo PC70HS
+Date:   Mon, 15 Nov 2021 17:59:05 +0100
+Message-Id: <20211115165314.236400642@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,162 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Tim Crawford <tcrawford@system76.com>
 
-commit 861f92cb9160b14beef0ada047384c2340701ee2 upstream.
+commit dbfe83507cf4ea66ce4efee2ac14c5ad420e31d3 upstream.
 
-Drivers that do not use the ctrl-framework use this function instead.
+Apply the PB51ED PCI quirk to the Clevo PC70HS. Fixes audio output from
+the internal speakers.
 
-Fix the following issues:
-
-- Do not check for multiple classes when getting the DEF_VAL.
-- Return -EINVAL for request_api calls
-- Default value cannot be changed, return EINVAL as soon as possible.
-- Return the right error_idx
-[If an error is found when validating the list of controls passed with
-VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to
-indicate to userspace that no actual hardware was touched.
-It would have been much nicer of course if error_idx could point to the
-control index that failed the validation, but sadly that's not how the
-API was designed.]
-
-Fixes v4l2-compliance:
-Control ioctls (Input 0):
-        warn: v4l2-test-controls.cpp(834): error_idx should be equal to count
-        warn: v4l2-test-controls.cpp(855): error_idx should be equal to count
-		fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-	test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-Buffer ioctls (Input 0):
-		fail: v4l2-test-buffers.cpp(1994): ret != EINVAL && ret != EBADR && ret != ENOTTY
-	test Requests: FAIL
-
-Cc: stable@vger.kernel.org
-Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Tim Crawford <tcrawford@system76.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211101162134.5336-1-tcrawford@system76.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c |   60 ++++++++++++++++++++++-------------
- 1 file changed, 39 insertions(+), 21 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -902,7 +902,7 @@ static void v4l_print_default(const void
- 	pr_cont("driver-specific ioctl\n");
- }
- 
--static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
-+static bool check_ext_ctrls(struct v4l2_ext_controls *c, unsigned long ioctl)
- {
- 	__u32 i;
- 
-@@ -911,23 +911,41 @@ static int check_ext_ctrls(struct v4l2_e
- 	for (i = 0; i < c->count; i++)
- 		c->controls[i].reserved2[0] = 0;
- 
--	/* V4L2_CID_PRIVATE_BASE cannot be used as control class
--	   when using extended controls.
--	   Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
--	   is it allowed for backwards compatibility.
--	 */
--	if (!allow_priv && c->which == V4L2_CID_PRIVATE_BASE)
--		return 0;
--	if (!c->which)
--		return 1;
-+	switch (c->which) {
-+	case V4L2_CID_PRIVATE_BASE:
-+		/*
-+		 * V4L2_CID_PRIVATE_BASE cannot be used as control class
-+		 * when using extended controls.
-+		 * Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-+		 * is it allowed for backwards compatibility.
-+		 */
-+		if (ioctl == VIDIOC_G_CTRL || ioctl == VIDIOC_S_CTRL)
-+			return false;
-+		break;
-+	case V4L2_CTRL_WHICH_DEF_VAL:
-+		/* Default value cannot be changed */
-+		if (ioctl == VIDIOC_S_EXT_CTRLS ||
-+		    ioctl == VIDIOC_TRY_EXT_CTRLS) {
-+			c->error_idx = c->count;
-+			return false;
-+		}
-+		return true;
-+	case V4L2_CTRL_WHICH_CUR_VAL:
-+		return true;
-+	case V4L2_CTRL_WHICH_REQUEST_VAL:
-+		c->error_idx = c->count;
-+		return false;
-+	}
-+
- 	/* Check that all controls are from the same control class. */
- 	for (i = 0; i < c->count; i++) {
- 		if (V4L2_CTRL_ID2WHICH(c->controls[i].id) != c->which) {
--			c->error_idx = i;
--			return 0;
-+			c->error_idx = ioctl == VIDIOC_TRY_EXT_CTRLS ? i :
-+								      c->count;
-+			return false;
- 		}
- 	}
--	return 1;
-+	return true;
- }
- 
- static int check_fmt(struct file *file, enum v4l2_buf_type type)
-@@ -2145,7 +2163,7 @@ static int v4l_g_ctrl(const struct v4l2_
- 	ctrls.controls = &ctrl;
- 	ctrl.id = p->id;
- 	ctrl.value = p->value;
--	if (check_ext_ctrls(&ctrls, 1)) {
-+	if (check_ext_ctrls(&ctrls, VIDIOC_G_CTRL)) {
- 		int ret = ops->vidioc_g_ext_ctrls(file, fh, &ctrls);
- 
- 		if (ret == 0)
-@@ -2179,7 +2197,7 @@ static int v4l_s_ctrl(const struct v4l2_
- 	ctrls.controls = &ctrl;
- 	ctrl.id = p->id;
- 	ctrl.value = p->value;
--	if (check_ext_ctrls(&ctrls, 1))
-+	if (check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
- 		return ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
- 	return -EINVAL;
- }
-@@ -2201,8 +2219,8 @@ static int v4l_g_ext_ctrls(const struct
- 					vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_g_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_g_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_G_EXT_CTRLS) ?
-+				ops->vidioc_g_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- static int v4l_s_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-@@ -2222,8 +2240,8 @@ static int v4l_s_ext_ctrls(const struct
- 					vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_s_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_s_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_S_EXT_CTRLS) ?
-+				ops->vidioc_s_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- static int v4l_try_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-@@ -2243,8 +2261,8 @@ static int v4l_try_ext_ctrls(const struc
- 					  vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_try_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_try_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_TRY_EXT_CTRLS) ?
-+			ops->vidioc_try_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- /*
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2541,6 +2541,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x67f1, "Clevo PC70H[PRS]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x7715, "Clevo X170KM-G", ALC1220_FIXUP_CLEVO_PB51ED),
 
 
