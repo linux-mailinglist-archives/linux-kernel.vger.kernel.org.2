@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E17450E4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115BB450E68
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240980AbhKOSO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:14:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
+        id S240882AbhKOSOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:14:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237987AbhKOR2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:28:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DDE16326E;
-        Mon, 15 Nov 2021 17:18:54 +0000 (UTC)
+        id S238003AbhKOR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:28:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 558CB63265;
+        Mon, 15 Nov 2021 17:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996734;
-        bh=WUOszUa6abMStEzb5VLy1TxoqPiX+++P2jKUYPXEycQ=;
+        s=korg; t=1636996764;
+        bh=w4I72NaVzier+G1qKqZur8sRbYK3qmU1z98ZL0ueKjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lpcmalveO3EfouaSSFurHk4DeErKssiTQJQklkd+hYK69lkLaBUo1wmXdNoBrga2X
-         aTzpnV2oDwVaOR5befZKMpnjrCSY7nsNncdJjLVO8dXPnPvrt4fSUnFaoGnWIAKhPn
-         vYsr1cFi5N/j23bNZyCqsQYsQ02bjOCPe95Y5Hck=
+        b=DfDN+6oum6ZJEu/IWdETINCjKQ3pGZjzaz5h3gWLK/kNuMUDywIMJm7OefsZ37sDR
+         /e89NCwOsZD7iIDPYiBoHmVjeNagT5QzOeNqv5UO374R5zu1OHbcBYAog+bxfo6FVu
+         QRsiT9Y/MYhFFZqwdXI1OuDTlTNeBiO8Z2SHOJJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org, Jon Maxwell <jmaxwell37@gmail.com>,
+        Monir Zouaoui <Monir.Zouaoui@mail.schwarz>,
+        Simon Stier <simon.stier@mail.schwarz>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 241/355] irq: mips: avoid nested irq_enter()
-Date:   Mon, 15 Nov 2021 18:02:45 +0100
-Message-Id: <20211115165321.541216738@linuxfoundation.org>
+Subject: [PATCH 5.4 242/355] tcp: dont free a FIN sk_buff in tcp_remove_empty_skb()
+Date:   Mon, 15 Nov 2021 18:02:46 +0100
+Message-Id: <20211115165321.574323349@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,50 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Jon Maxwell <jmaxwell37@gmail.com>
 
-[ Upstream commit c65b52d02f6c1a06ddb20cba175ad49eccd6410d ]
+[ Upstream commit cf12e6f9124629b18a6182deefc0315f0a73a199 ]
 
-As bcm6345_l1_irq_handle() is a chained irqchip handler, it will be
-invoked within the context of the root irqchip handler, which must have
-entered IRQ context already.
+v1: Implement a more general statement as recommended by Eric Dumazet. The
+sequence number will be advanced, so this check will fix the FIN case and
+other cases.
 
-When bcm6345_l1_irq_handle() calls arch/mips's do_IRQ() , this will nest
-another call to irq_enter(), and the resulting nested increment to
-`rcu_data.dynticks_nmi_nesting` will cause rcu_is_cpu_rrupt_from_idle()
-to fail to identify wakeups from idle, resulting in failure to preempt,
-and RCU stalls.
+A customer reported sockets stuck in the CLOSING state. A Vmcore revealed that
+the write_queue was not empty as determined by tcp_write_queue_empty() but the
+sk_buff containing the FIN flag had been freed and the socket was zombied in
+that state. Corresponding pcaps show no FIN from the Linux kernel on the wire.
 
-Chained irqchip handlers must invoke IRQ handlers by way of thee core
-irqchip code, i.e. generic_handle_irq() or generic_handle_domain_irq()
-and should not call do_IRQ(), which is intended only for root irqchip
-handlers.
+Some instrumentation was added to the kernel and it was found that there is a
+timing window where tcp_sendmsg() can run after tcp_send_fin().
 
-Fix bcm6345_l1_irq_handle() by calling generic_handle_irq() directly.
+tcp_sendmsg() will hit an error, for example:
 
-Fixes: c7c42ec2baa1de7a ("irqchips/bmips: Add bcm6345-l1 interrupt controller")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+1269 ▹       if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))↩
+1270 ▹       ▹       goto do_error;↩
+
+tcp_remove_empty_skb() will then free the FIN sk_buff as "skb->len == 0". The
+TCP socket is now wedged in the FIN-WAIT-1 state because the FIN is never sent.
+
+If the other side sends a FIN packet the socket will transition to CLOSING and
+remain that way until the system is rebooted.
+
+Fix this by checking for the FIN flag in the sk_buff and don't free it if that
+is the case. Testing confirmed that fixed the issue.
+
+Fixes: fdfc5c8594c2 ("tcp: remove empty skb from write queue in error cases")
+Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+Reported-by: Monir Zouaoui <Monir.Zouaoui@mail.schwarz>
+Reported-by: Simon Stier <simon.stier@mail.schwarz>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-bcm6345-l1.c | 2 +-
+ net/ipv4/tcp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-index e3483789f4df3..1bd0621c4ce2a 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -140,7 +140,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
- 		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
- 			irq = irq_linear_revmap(intc->domain, base + hwirq);
- 			if (irq)
--				do_IRQ(irq);
-+				generic_handle_irq(irq);
- 			else
- 				spurious_interrupt();
- 		}
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 5c8d0fb498256..9f53d25e047e3 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -955,7 +955,7 @@ static int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
+  */
+ static void tcp_remove_empty_skb(struct sock *sk, struct sk_buff *skb)
+ {
+-	if (skb && !skb->len) {
++	if (skb && TCP_SKB_CB(skb)->seq == TCP_SKB_CB(skb)->end_seq) {
+ 		tcp_unlink_write_queue(skb, sk);
+ 		if (tcp_write_queue_empty(sk))
+ 			tcp_chrono_stop(sk, TCP_CHRONO_BUSY);
 -- 
 2.33.0
 
