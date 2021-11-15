@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD3245183F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE41451847
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346755AbhKOW4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:56:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
+        id S244526AbhKOW5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242835AbhKOSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242836AbhKOSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:46:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26FD063293;
-        Mon, 15 Nov 2021 18:06:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D786330A;
+        Mon, 15 Nov 2021 18:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999619;
-        bh=GEK4oGja1rp4ZwDbg53pN+o2JQmK+EZF+En5tw4nLIk=;
+        s=korg; t=1636999622;
+        bh=QcCQOdEmr1MxmvKPwwmL5ZK+PW/WtjlkHCh+NjxZx08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yF2ugqaoC3Xg6WwACCPcVwcI5YU7H4KVxROmOxSSpj+fKEPu+9JEbFXTMzwkDP3Tn
-         mDLgwhbCBMRluEUbpTcUq57U09FNnD2kHiaEZCTJQOcVU7QwMcpCwb7DePHZiiGW7U
-         rEX5Fn51maokETt6ti19AZzgDU0NeC54Txm7+pGE=
+        b=at2wqYc5znTMpSHOMZkHlZCbk5V8Nbg/R/k++cpa3pGQNRkj4ucnX+8um3uSrdbJY
+         2Px44n8HNyUcata6rhjxmK1hP6y6oLIxHFzAt9/jAZXFFFYBPRHhL99GJ6n+zl2SBh
+         tQ+wwhtujFExndFxiu0e3fCwr73EQQnoA5/Gacwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Mauri Sandberg <sandberg@mailfence.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 364/849] cfg80211: always free wiphy specific regdomain
-Date:   Mon, 15 Nov 2021 17:57:27 +0100
-Message-Id: <20211115165432.546582455@linuxfoundation.org>
+Subject: [PATCH 5.14 365/849] net: dsa: rtl8366rb: Fix off-by-one bug
+Date:   Mon, 15 Nov 2021 17:57:28 +0100
+Message-Id: <20211115165432.587817968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -41,49 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit e53e9828a8d2c6545e01ff9711f1221f2fd199ce ]
+[ Upstream commit 5f5f12f5d4b108399130bb5c11f07765851d9cdb ]
 
-In the (somewhat unlikely) event that we allocate a wiphy, then
-add a regdomain to it, and then fail registration, we leak the
-regdomain. Fix this by just always freeing it at the end, in the
-normal cases we'll free (and NULL) it during wiphy_unregister().
-This happened when the wiphy settings were bad, and since they
-can be controlled by userspace with hwsim, syzbot was able to
-find this issue.
+The max VLAN number with non-4K VLAN activated is 15, and the
+range is 0..15. Not 16.
 
-Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
-Fixes: 3e0c3ff36c4c ("cfg80211: allow multiple driver regulatory_hints()")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Link: https://lore.kernel.org/r/20210927131105.68b70cef4674.I4b9f0aa08c2af28555963b9fe3d34395bb72e0cc@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+The impact should be low since we by default have 4K VLAN and
+thus have 4095 VLANs to play with in this switch. There will
+not be a problem unless the code is rewritten to only use
+16 VLANs.
+
+Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
+Cc: Mauri Sandberg <sandberg@mailfence.com>
+Cc: DENG Qingfang <dqfext@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/dsa/rtl8366rb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/wireless/core.c b/net/wireless/core.c
-index aaba847d79eb2..eb297e1015e05 100644
---- a/net/wireless/core.c
-+++ b/net/wireless/core.c
-@@ -1081,6 +1081,16 @@ void cfg80211_dev_free(struct cfg80211_registered_device *rdev)
- 	list_for_each_entry_safe(scan, tmp, &rdev->bss_list, list)
- 		cfg80211_put_bss(&rdev->wiphy, &scan->pub);
- 	mutex_destroy(&rdev->wiphy.mtx);
-+
-+	/*
-+	 * The 'regd' can only be non-NULL if we never finished
-+	 * initializing the wiphy and thus never went through the
-+	 * unregister path - e.g. in failure scenarios. Thus, it
-+	 * cannot have been visible to anyone if non-NULL, so we
-+	 * can just free it here.
-+	 */
-+	kfree(rcu_dereference_raw(rdev->wiphy.regd));
-+
- 	kfree(rdev);
- }
+diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
+index a89093bc6c6ad..9e3b572ed999e 100644
+--- a/drivers/net/dsa/rtl8366rb.c
++++ b/drivers/net/dsa/rtl8366rb.c
+@@ -1350,7 +1350,7 @@ static int rtl8366rb_set_mc_index(struct realtek_smi *smi, int port, int index)
  
+ static bool rtl8366rb_is_vlan_valid(struct realtek_smi *smi, unsigned int vlan)
+ {
+-	unsigned int max = RTL8366RB_NUM_VLANS;
++	unsigned int max = RTL8366RB_NUM_VLANS - 1;
+ 
+ 	if (smi->vlan4k_enabled)
+ 		max = RTL8366RB_NUM_VIDS - 1;
 -- 
 2.33.0
 
