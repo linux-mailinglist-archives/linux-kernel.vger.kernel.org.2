@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1765045121A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA8C451202
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346085AbhKOT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
+        id S1344205AbhKOTYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:24:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237416AbhKORsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:48:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 976486331E;
-        Mon, 15 Nov 2021 17:30:30 +0000 (UTC)
+        id S238701AbhKORtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:49:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C0D261BF5;
+        Mon, 15 Nov 2021 17:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997431;
-        bh=0/SBdM2qCJZe6euQDkiZXHBY6DU+eEdbdKtGv0otZr0=;
+        s=korg; t=1636997452;
+        bh=ewUiy7jStTrlMQZnL3VxG6jasC3VHP14AGcCgEFF5yo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IFA7/uzTxVYUNGqkFV0ETYZ5OMmyKfCIqCyC+VKTPWtpWgpaByLWxIUsREv+RSiby
-         H3YUdNVIqQcWUz7V2Z+r0oGG4AYGkGrgWX7uDcWz/2PjQDf++lu8U/zwC/iAZQNe5a
-         UEZw/qswIKzflsi76nFf+FudcS+0MHu05z6jwWIQ=
+        b=JiFrmg4mOCnPRWjlyP/o0mvclN/2ZVYv1vQh0j0E6YD0ndsPe2NQdHXL9A8AJz3LD
+         CELAOzZfxeiJGNvacZY5cfjlvO1RgkUa8DyeYC0Hqjos6H2hJ3YEwHInfoXJ38RsrC
+         VR+x3vo4kVzhgdB7GykLTplfgsf0UEJJs5QofG3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.10 144/575] PCI: aardvark: Fix configuring Reference clock
-Date:   Mon, 15 Nov 2021 17:57:49 +0100
-Message-Id: <20211115165348.673582811@linuxfoundation.org>
+Subject: [PATCH 5.10 146/575] PCI: aardvark: Read all 16-bits from PCIE_MSI_PAYLOAD_REG
+Date:   Mon, 15 Nov 2021 17:57:51 +0100
+Message-Id: <20211115165348.754843650@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,65 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Marek Behún <kabel@kernel.org>
 
-commit 46ef6090dbf590711cb12680b6eafde5fa21fe87 upstream.
+commit 95997723b6402cd6c53e0f9e7ac640ec64eaaff8 upstream.
 
-Commit 366697018c9a ("PCI: aardvark: Add PHY support") introduced
-configuration of PCIe Reference clock via PCIE_CORE_REF_CLK_REG register,
-but did it incorrectly.
+The PCIE_MSI_PAYLOAD_REG contains 16-bit MSI number, not only lower
+8 bits. Fix reading content of this register and add a comment
+describing the access to this register.
 
-PCIe Reference clock differential pair is routed from system board to
-endpoint card, so on CPU side it has output direction. Therefore it is
-required to enable transmitting and disable receiving.
-
-Default configuration according to Armada 3700 Functional Specifications is
-enabled receiver part and disabled transmitter.
-
-We need this change because otherwise PCIe Reference clock is configured to
-some undefined state when differential pair is used for both transmitting
-and receiving.
-
-Fix this by disabling receiver part.
-
-Link: https://lore.kernel.org/r/20211005180952.6812-6-kabel@kernel.org
-Fixes: 366697018c9a ("PCI: aardvark: Add PHY support")
+Link: https://lore.kernel.org/r/20211028185659.20329-4-kabel@kernel.org
+Fixes: 8c39d710363c ("PCI: aardvark: Add Aardvark PCI host controller driver")
 Signed-off-by: Pali Rohár <pali@kernel.org>
 Signed-off-by: Marek Behún <kabel@kernel.org>
 Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 --- a/drivers/pci/controller/pci-aardvark.c
 +++ b/drivers/pci/controller/pci-aardvark.c
-@@ -98,6 +98,7 @@
- #define     PCIE_CORE_CTRL2_MSI_ENABLE		BIT(10)
- #define PCIE_CORE_REF_CLK_REG			(CONTROL_BASE_ADDR + 0x14)
- #define     PCIE_CORE_REF_CLK_TX_ENABLE		BIT(1)
-+#define     PCIE_CORE_REF_CLK_RX_ENABLE		BIT(2)
- #define PCIE_MSG_LOG_REG			(CONTROL_BASE_ADDR + 0x30)
- #define PCIE_ISR0_REG				(CONTROL_BASE_ADDR + 0x40)
- #define PCIE_MSG_PM_PME_MASK			BIT(7)
-@@ -529,9 +530,15 @@ static void advk_pcie_setup_hw(struct ad
- 	u32 reg;
- 	int i;
+@@ -118,6 +118,7 @@
+ #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
+ #define PCIE_MSI_MASK_REG			(CONTROL_BASE_ADDR + 0x5C)
+ #define PCIE_MSI_PAYLOAD_REG			(CONTROL_BASE_ADDR + 0x9C)
++#define     PCIE_MSI_DATA_MASK			GENMASK(15, 0)
  
--	/* Enable TX */
-+	/*
-+	 * Configure PCIe Reference clock. Direction is from the PCIe
-+	 * controller to the endpoint card, so enable transmitting of
-+	 * Reference clock differential signal off-chip and disable
-+	 * receiving off-chip differential signal.
-+	 */
- 	reg = advk_readl(pcie, PCIE_CORE_REF_CLK_REG);
- 	reg |= PCIE_CORE_REF_CLK_TX_ENABLE;
-+	reg &= ~PCIE_CORE_REF_CLK_RX_ENABLE;
- 	advk_writel(pcie, reg, PCIE_CORE_REF_CLK_REG);
+ /* PCIe window configuration */
+ #define OB_WIN_BASE_ADDR			0x4c00
+@@ -1361,8 +1362,12 @@ static void advk_pcie_handle_msi(struct
+ 		if (!(BIT(msi_idx) & msi_status))
+ 			continue;
  
- 	/* Set to Direct mode */
++		/*
++		 * msi_idx contains bits [4:0] of the msi_data and msi_data
++		 * contains 16bit MSI interrupt number
++		 */
+ 		advk_writel(pcie, BIT(msi_idx), PCIE_MSI_STATUS_REG);
+-		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & 0xFF;
++		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & PCIE_MSI_DATA_MASK;
+ 		generic_handle_irq(msi_data);
+ 	}
+ 
 
 
