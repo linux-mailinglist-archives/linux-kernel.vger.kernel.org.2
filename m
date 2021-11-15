@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72EB45183E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949845179A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 23:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345022AbhKOW4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 17:56:03 -0500
-Received: from mga14.intel.com ([192.55.52.115]:8147 "EHLO mga14.intel.com"
+        id S1350832AbhKOWdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 17:33:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:59582 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242682AbhKOSp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:45:27 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233746839"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="233746839"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 10:35:38 -0800
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="454130664"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 10:35:37 -0800
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     jarkko@kernel.org, linux-sgx@vger.kernel.org, shuah@kernel.org,
-        dave.hansen@linux.intel.com
-Cc:     seanjc@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 13/13] selftests/sgx: Add test for multiple TCS entry
-Date:   Mon, 15 Nov 2021 10:35:26 -0800
-Message-Id: <7be151a57b4c7959a2364753b995e0006efa3da1.1636997631.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1636997631.git.reinette.chatre@intel.com>
-References: <cover.1636997631.git.reinette.chatre@intel.com>
+        id S242558AbhKOSin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:38:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62236D6E;
+        Mon, 15 Nov 2021 10:35:47 -0800 (PST)
+Received: from [10.57.82.45] (unknown [10.57.82.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4A423F70D;
+        Mon, 15 Nov 2021 10:35:44 -0800 (PST)
+Message-ID: <cc9878ae-df49-950c-f4f8-2e6ba545079b@arm.com>
+Date:   Mon, 15 Nov 2021 18:35:37 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 02/11] driver core: Set DMA ownership during driver
+ bind/unbind
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        iommu@lists.linux-foundation.org,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Will Deacon <will@kernel.org>,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-3-baolu.lu@linux.intel.com>
+ <YZJeRomcJjDqDv9q@infradead.org> <20211115132442.GA2379906@nvidia.com>
+ <8499f0ab-9701-2ca2-ac7a-842c36c54f8a@arm.com>
+ <20211115155613.GA2388278@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20211115155613.GA2388278@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each thread executing in an enclave is associated with a Thread Control
-Structure (TCS). The SGX test enclave contains two hardcoded TCS, thus
-supporting two threads in the enclave.
+On 2021-11-15 15:56, Jason Gunthorpe via iommu wrote:
+> On Mon, Nov 15, 2021 at 03:37:18PM +0000, Robin Murphy wrote:
+> 
+>> IOMMUs, and possibly even fewer of them support VFIO, so I'm in full
+>> agreement with Greg and Christoph that this absolutely warrants being scoped
+>> per-bus. I mean, we literally already have infrastructure to prevent drivers
+>> binding if the IOMMU/DMA configuration is broken or not ready yet; why would
+>> we want a totally different mechanism to prevent driver binding when the
+>> only difference is that that configuration *is* ready and working to the
+>> point that someone's already claimed it for other purposes?
+> 
+> I see, that does make sense
+> 
+> I see these implementations:
+> 
+> drivers/amba/bus.c:     .dma_configure  = platform_dma_configure,
+> drivers/base/platform.c:        .dma_configure  = platform_dma_configure,
+> drivers/bus/fsl-mc/fsl-mc-bus.c:        .dma_configure  = fsl_mc_dma_configure,
+> drivers/pci/pci-driver.c:       .dma_configure  = pci_dma_configure,
+> drivers/gpu/host1x/bus.c:       .dma_configure = host1x_dma_configure,
+> 
+> Other than host1x they all work with VFIO.
+> 
+> Also, there is no bus->dma_unconfigure() which would be needed to
+> restore the device as well.
 
-Add a test to ensure it is possible to enter enclave at both entrypoints.
+Not if we reduce the notion of "ownership" down to 
+"dev->iommu_group->domain != dev->iommu_group->default_domain", which 
+I'm becoming increasingly convinced is all we actually need here.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
-Changes since V1:
-- Add Jarkko and Dave's signatures.
+> So, would you rather see duplicated code into the 4 drivers, and a new
+> bus op to 'unconfigure dma'
 
- tools/testing/selftests/sgx/defines.h   |  1 +
- tools/testing/selftests/sgx/main.c      | 32 +++++++++++++++++++++++++
- tools/testing/selftests/sgx/test_encl.c |  6 +++++
- 3 files changed, 39 insertions(+)
+The .dma_configure flow is unavoidably a bit boilerplatey already, so 
+personally I'd go for having the implementations call back into a common 
+check, similarly to their current flow. That also leaves room for the 
+bus code to further refine the outcome based on what it might know, 
+which I can particularly imagine for cleverer buses like fsl-mc and 
+host1x which can have lots of inside knowledge about how their devices 
+may interact.
 
-diff --git a/tools/testing/selftests/sgx/defines.h b/tools/testing/selftests/sgx/defines.h
-index 0bbda6f0c7d3..02d775789ea7 100644
---- a/tools/testing/selftests/sgx/defines.h
-+++ b/tools/testing/selftests/sgx/defines.h
-@@ -23,6 +23,7 @@ enum encl_op_type {
- 	ENCL_OP_GET_FROM_BUFFER,
- 	ENCL_OP_PUT_TO_ADDRESS,
- 	ENCL_OP_GET_FROM_ADDRESS,
-+	ENCL_OP_NOP,
- 	ENCL_OP_MAX,
- };
- 
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index 1b4858f8ca4e..7e912db4c6c5 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -409,6 +409,38 @@ TEST_F(enclave, clobbered_vdso_and_user_function)
- 	EXPECT_EQ(self->run.user_data, 0);
- }
- 
-+/*
-+ * Sanity check that it is possible to enter either of the two hardcoded TCS
-+ */
-+TEST_F(enclave, tcs_entry)
-+{
-+	struct encl_op_header op;
-+
-+	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
-+	op.type = ENCL_OP_NOP;
-+
-+	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
-+
-+	EXPECT_EEXIT(&self->run);
-+	EXPECT_EQ(self->run.exception_vector, 0);
-+	EXPECT_EQ(self->run.exception_error_code, 0);
-+	EXPECT_EQ(self->run.exception_addr, 0);
-+
-+	/* Move to the next TCS. */
-+	self->run.tcs = self->encl.encl_base + PAGE_SIZE;
-+
-+	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
-+
-+	EXPECT_EEXIT(&self->run);
-+	EXPECT_EQ(self->run.exception_vector, 0);
-+	EXPECT_EQ(self->run.exception_error_code, 0);
-+	EXPECT_EQ(self->run.exception_addr, 0);
-+}
-+
- /*
-  * Second page of .data segment is used to test changing PTE permissions.
-  * This spans the local encl_buffer within the test enclave.
-diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
-index 5d86e3e6456a..4fca01cfd898 100644
---- a/tools/testing/selftests/sgx/test_encl.c
-+++ b/tools/testing/selftests/sgx/test_encl.c
-@@ -49,6 +49,11 @@ static void do_encl_op_get_from_addr(void *_op)
- 	memcpy(&op->value, (void *)op->addr, 8);
- }
- 
-+static void do_encl_op_nop(void *_op)
-+{
-+
-+}
-+
- void encl_body(void *rdi,  void *rsi)
- {
- 	const void (*encl_op_array[ENCL_OP_MAX])(void *) = {
-@@ -56,6 +61,7 @@ void encl_body(void *rdi,  void *rsi)
- 		do_encl_op_get_from_buf,
- 		do_encl_op_put_to_addr,
- 		do_encl_op_get_from_addr,
-+		do_encl_op_nop,
- 	};
- 
- 	struct encl_op_header *op = (struct encl_op_header *)rdi;
--- 
-2.25.1
+Robin.
 
+> Or, a 'dev_configure_dma()' function that is roughly:
+> 
+>          if (dev->bus->dma_configure) {
+>                  ret = dev->bus->dma_configure(dev);
+>                  if (ret)
+>                          return ret;
+>                  if (!drv->suppress_auto_claim_dma_owner) {
+>                         ret = iommu_device_set_dma_owner(dev, DMA_OWNER_KERNEL,
+>                                                          NULL);
+>                         if (ret)
+>                                 ret;
+>                  }
+>           }
+> 
+> And a pair'd undo.
+> 
+> This is nice because we can enforce dev->bus->dma_configure when doing
+> a user bind so everything holds together safely without relying on
+> each bus_type to properly implement security.
+> 
+> Jason
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
