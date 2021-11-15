@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A965450212
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22D2450217
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237599AbhKOKN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:13:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237566AbhKOKM4 (ORCPT
+        id S236413AbhKOKOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237607AbhKOKNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:12:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636971000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=spkFhHBfLWoUmEEFu9X0mCN465cERkwIsbNUF4+/SDk=;
-        b=LWPrEfDFIf4R/CW7f23//a9eIPjpx9AVLWquDgMM6gwOrTlvJXpdGG8Olf87CQ05iJbwTp
-        phPul1X+E3t/QxDNkpSLcDWrtZV+C/QXM7YYBGsS489+Big+Hu3L0ekEK0HrpD9GtoImiX
-        yWnz1L4bW7TM7L98DudrJlcYTm+1E6U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-4P8OZEEMO_C9S0E69bbHIQ-1; Mon, 15 Nov 2021 05:09:57 -0500
-X-MC-Unique: 4P8OZEEMO_C9S0E69bbHIQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59E1B87D545;
-        Mon, 15 Nov 2021 10:09:56 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1653517C58;
-        Mon, 15 Nov 2021 10:09:45 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 5BF2918000A9; Mon, 15 Nov 2021 11:09:43 +0100 (CET)
-Date:   Mon, 15 Nov 2021 11:09:43 +0100
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     linux-pci@vger.kernel.org, mst@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pciehp: fast unplug for virtual machines
-Message-ID: <20211115100943.ezvirlrxc2qzms3i@sirius.home.kraxel.org>
-References: <20211111090225.946381-1-kraxel@redhat.com>
- <20211114163958.GA7211@wunner.de>
+        Mon, 15 Nov 2021 05:13:31 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087DAC061208
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:10:16 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id x7so12341537pjn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 02:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rQs9pm/aXxVAPgcSDwX1+7NsGMS9etDYwTyptaFJJ6E=;
+        b=O4NkbgKXCLTnfYZHPFcJAgYBLLK4Q2LOBpTGeGeg1DLhw4ivG2tI18VG1acBSp0rA3
+         onJeWPTT6hFkYJysxXl9rev18DPwL7Oz5XcKns0HsungOR0B7yKDmhHWfxlBfPN5AXL0
+         xMnq8qDL5X826Inydmnjua08Z6tD6dX3bWD6ZrPhr5bTIAYNPQA6jFUTBSjAa74FAtVV
+         dfvrRWZM7gABNryOWbOozgDHNfDbv/zrgR6OjbR+/9l7QnRpqWnBWGoi8UhlqwrbwmRM
+         y9JN9svpLQV0G1wZWr5Y1VCx7aeKFGdGEEK++rLaI/mA9nFrB+pG6nY20OEMbex/QIvl
+         1M8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rQs9pm/aXxVAPgcSDwX1+7NsGMS9etDYwTyptaFJJ6E=;
+        b=j7/YMkQXBeMUtxxyKdLRA/HG0oOYTfbkUFAg+Ke0Qb3HjI4ha3cacOp7QSxmHyjYJG
+         Zkoulp6pdczqXQezgHhx5vH9n24GN3NbjO5zUhFuosl02+FV2lr5ooH/JrXdkf42pqSE
+         i7h558Mu10N35MgnmDyXvOhvtc2mEwuD2xodiOMm7DoRbhodzqklwGz16JavmkF+ZR8u
+         N2i8N1k20V7FLre+6Dq0raKQSFQ49SxTlBkzqizk8SOeyokWs1QbAz7TwKgdWpxcY97Z
+         CgQDOY11PvMsSj6OXm+Si91OxW7xg1ZbDCpVT7h0g//iV0rep1BYUlNuN5rtL1p/B99j
+         /urg==
+X-Gm-Message-State: AOAM531tzZPAscoQeT/Q1v83AgkppbHYYNlqwvFsFmg2Bg9vo5Xzs6K1
+        yzHr/Nrss9w22Nh835CY5TRm/g==
+X-Google-Smtp-Source: ABdhPJyaOvsJXCzyyniGRYQvmEq/qTr7NO/85BC0DU2HDujN3HoSHIhwrKp03ppni0xqVuvHOjqj4Q==
+X-Received: by 2002:a17:90b:4d0c:: with SMTP id mw12mr45026625pjb.209.1636971015560;
+        Mon, 15 Nov 2021 02:10:15 -0800 (PST)
+Received: from yinxin.bytedance.net ([139.177.225.235])
+        by smtp.gmail.com with ESMTPSA id mi18sm13131500pjb.13.2021.11.15.02.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 02:10:15 -0800 (PST)
+From:   Xin Yin <yinxin.x@bytedance.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        harshadshirwadkar@gmail.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xin Yin <yinxin.x@bytedance.com>
+Subject: [PATCH] ext4:fix different behavior of fsync when use fast commit
+Date:   Mon, 15 Nov 2021 18:09:50 +0800
+Message-Id: <20211115100951.1972-1-yinxin.x@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114163958.GA7211@wunner.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi,
+For the follow test example:
+-mkdir test/
+-create&write test/a.txt
+-fsync test/a.txt
+-crash (before a full commit)
 
-> Same for the 1 second delay in remove_board().  That's mandated by
-> PCIe r5.0, sec. 6.7.1.8, but it's only observed if a Power Controller
-> is present.  So just clear the Power Controller Present bit in the
-> Slot Capabilities register and the delay is gone.
+If fast commit is used then "a.txt" will lost, while the normal
+journaling can recover it.
 
-Well, the power control bit is a useful data channel.  qemu can use that
-to figure whenever the guest uses the device (power is on) or not (power
-is off).  And in case power is off anyway we can simply remove the
-device without the attention button dance.
+We should keep behavior of fsync unchanged when use fast commit.
 
-take care,
-  Gerd
+other report: https://www.spinics.net/lists/linux-ext4/msg80514.html
+
+Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
+---
+ fs/ext4/fast_commit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 8ea5a81e6554..2fc573575ebc 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -523,7 +523,7 @@ void __ext4_fc_track_create(handle_t *handle, struct inode *inode,
+ 	args.op = EXT4_FC_TAG_CREAT;
+ 
+ 	ret = ext4_fc_track_template(handle, inode, __track_dentry_update,
+-					(void *)&args, 0);
++					(void *)&args, 1);
+ 	trace_ext4_fc_track_create(inode, dentry, ret);
+ }
+ 
+-- 
+2.20.1
 
