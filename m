@@ -2,34 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683B0450D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54381450DD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238573AbhKOR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:56:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
+        id S238913AbhKOSIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:08:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237782AbhKORYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:24:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22899610A8;
-        Mon, 15 Nov 2021 17:17:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996640;
-        bh=BaBvVlEJqBCWeDW+SvUIzbgUqT2Ju/AH9sf3JZD4pVc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XrHlY1egtdj4uIo0CW6tASxv4194k5x/wvTafPXAQVQrQjtjVuG7LMVz3LFkMoit2
-         7l6DIllrvZlxy+tccgscbyR1jyUFdNI7MB5RKaKWoOgaE2TaJPNL+bauMRmWWPO3wf
-         B8aMF2KhtfY/NdJ2TmVsh3o/JVYx2plGok1IiJIM=
+        id S237858AbhKOR0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6354263268;
+        Mon, 15 Nov 2021 17:18:35 +0000 (UTC)
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 206/355] crypto: ecc - fix CRYPTO_DEFAULT_RNG dependency
-Date:   Mon, 15 Nov 2021 18:02:10 +0100
-Message-Id: <20211115165320.435059819@linuxfoundation.org>
+Subject: [PATCH 5.4 209/355] ath9k: Fix potential interrupt storm on queue reset
+Date:   Mon, 15 Nov 2021 18:02:13 +0100
+Message-Id: <20211115165320.527879188@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -41,48 +36,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Linus Lüssing <ll@simonwunderlich.de>
 
-[ Upstream commit 38aa192a05f22f9778f9420e630f0322525ef12e ]
+[ Upstream commit 4925642d541278575ad1948c5924d71ffd57ef14 ]
 
-The ecc.c file started out as part of the ECDH algorithm but got
-moved out into a standalone module later. It does not build without
-CRYPTO_DEFAULT_RNG, so now that other modules are using it as well we
-can run into this link error:
+In tests with two Lima boards from 8devices (QCA4531 based) on OpenWrt
+19.07 we could force a silent restart of a device with no serial
+output when we were sending a high amount of UDP traffic (iperf3 at 80
+MBit/s in both directions from external hosts, saturating the wifi and
+causing a load of about 4.5 to 6) and were then triggering an
+ath9k_queue_reset().
 
-aarch64-linux-ld: ecc.c:(.text+0xfc8): undefined reference to `crypto_default_rng'
-aarch64-linux-ld: ecc.c:(.text+0xff4): undefined reference to `crypto_put_default_rng'
+Further debugging showed that the restart was caused by the ath79
+watchdog. With disabled watchdog we could observe that the device was
+constantly going into ath_isr() interrupt handler and was returning
+early after the ATH_OP_HW_RESET flag test, without clearing any
+interrupts. Even though ath9k_queue_reset() calls
+ath9k_hw_kill_interrupts().
 
-Move the 'select CRYPTO_DEFAULT_RNG' statement into the correct symbol.
+With JTAG we could observe the following race condition:
 
-Fixes: 0d7a78643f69 ("crypto: ecrdsa - add EC-RDSA (GOST 34.10) algorithm")
-Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+1) ath9k_queue_reset()
+   ...
+   -> ath9k_hw_kill_interrupts()
+   -> set_bit(ATH_OP_HW_RESET, &common->op_flags);
+   ...
+   <- returns
+
+      2) ath9k_tasklet()
+         ...
+         -> ath9k_hw_resume_interrupts()
+         ...
+         <- returns
+
+                 3) loops around:
+                    ...
+                    handle_int()
+                    -> ath_isr()
+                       ...
+                       -> if (test_bit(ATH_OP_HW_RESET,
+                                       &common->op_flags))
+                            return IRQ_HANDLED;
+
+                    x) ath_reset_internal():
+                       => never reached <=
+
+And in ath_isr() we would typically see the following interrupts /
+interrupt causes:
+
+* status: 0x00111030 or 0x00110030
+* async_cause: 2 (AR_INTR_MAC_IPQ)
+* sync_cause: 0
+
+So the ath9k_tasklet() reenables the ath9k interrupts
+through ath9k_hw_resume_interrupts() which ath9k_queue_reset() had just
+disabled. And ath_isr() then keeps firing because it returns IRQ_HANDLED
+without actually clearing the interrupt.
+
+To fix this IRQ storm also clear/disable the interrupts again when we
+are in reset state.
+
+Cc: Sven Eckelmann <sven@narfation.org>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Linus Lüssing <linus.luessing@c0d3.blue>
+Fixes: 872b5d814f99 ("ath9k: do not access hardware on IRQs during reset")
+Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210914192515.9273-3-linus.luessing@c0d3.blue
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index b2cc0ad3792ad..ce60ec30e78df 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -242,12 +242,12 @@ config CRYPTO_DH
+diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
+index 28ccdcb197de2..ec13bd8d5487d 100644
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -530,8 +530,10 @@ irqreturn_t ath_isr(int irq, void *dev)
+ 	ath9k_debug_sync_cause(sc, sync_cause);
+ 	status &= ah->imask;	/* discard unasked-for bits */
  
- config CRYPTO_ECC
- 	tristate
-+	select CRYPTO_RNG_DEFAULT
+-	if (test_bit(ATH_OP_HW_RESET, &common->op_flags))
++	if (test_bit(ATH_OP_HW_RESET, &common->op_flags)) {
++		ath9k_hw_kill_interrupts(sc->sc_ah);
+ 		return IRQ_HANDLED;
++	}
  
- config CRYPTO_ECDH
- 	tristate "ECDH algorithm"
- 	select CRYPTO_ECC
- 	select CRYPTO_KPP
--	select CRYPTO_RNG_DEFAULT
- 	help
- 	  Generic implementation of the ECDH algorithm
- 
+ 	/*
+ 	 * If there are no status bits set, then this interrupt was not
 -- 
 2.33.0
 
