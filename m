@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D94451463
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BA1451469
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349177AbhKOUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:04:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        id S1349223AbhKOUFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:05:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239584AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239581AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:03:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C3863343;
-        Mon, 15 Nov 2021 17:37:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5575963350;
+        Mon, 15 Nov 2021 17:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997862;
-        bh=QlijqyVVf6FmSs0yHkBqzhlErox9J7KEtVaiX0lyjSw=;
+        s=korg; t=1636997876;
+        bh=Pn5CN1leSWAeKcMEAOS0osKrNufGb3AMkAW1MPGCqsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmJ9RKqrDVVYxd+AcD6d/nQSjPz0niJfj3t0NjStgteRyFQHIpD3gciBw+/M4qn54
-         IASR/Lyu1L7/qKUYJ9xrZs17AD+vioFla+CXC2nYNgTRFk8Va3P89RPIBwfQEg/NxL
-         ak2R0MvOYPe2C1LSvAuai1jqowv+eQO+kiYNf+cU=
+        b=QrNnSzTEODlnEXKXgLi4Wei0xvkv0MdIxt1uJFZINgj8MLstQICYmeqv987W8d8aO
+         WmryK5LVPng1PMjsaEGBLhGPFUeyn111bpCRmW7ES8ELl2aNheRpFbFOnvqb2eahY1
+         sUiV7/nCfk09VupzPO35aMQogt9EiVBJerVKvODc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 303/575] ath9k: Fix potential interrupt storm on queue reset
-Date:   Mon, 15 Nov 2021 18:00:28 +0100
-Message-Id: <20211115165354.263113245@linuxfoundation.org>
+Subject: [PATCH 5.10 307/575] netfilter: nft_dynset: relax superfluous check on set updates
+Date:   Mon, 15 Nov 2021 18:00:32 +0100
+Message-Id: <20211115165354.404614027@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -43,94 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 4925642d541278575ad1948c5924d71ffd57ef14 ]
+[ Upstream commit 7b1394892de8d95748d05e3ee41e85edb4abbfa1 ]
 
-In tests with two Lima boards from 8devices (QCA4531 based) on OpenWrt
-19.07 we could force a silent restart of a device with no serial
-output when we were sending a high amount of UDP traffic (iperf3 at 80
-MBit/s in both directions from external hosts, saturating the wifi and
-causing a load of about 4.5 to 6) and were then triggering an
-ath9k_queue_reset().
+Relax this condition to make add and update commands idempotent for sets
+with no timeout. The eval function already checks if the set element
+timeout is available and updates it if the update command is used.
 
-Further debugging showed that the restart was caused by the ath79
-watchdog. With disabled watchdog we could observe that the device was
-constantly going into ath_isr() interrupt handler and was returning
-early after the ATH_OP_HW_RESET flag test, without clearing any
-interrupts. Even though ath9k_queue_reset() calls
-ath9k_hw_kill_interrupts().
-
-With JTAG we could observe the following race condition:
-
-1) ath9k_queue_reset()
-   ...
-   -> ath9k_hw_kill_interrupts()
-   -> set_bit(ATH_OP_HW_RESET, &common->op_flags);
-   ...
-   <- returns
-
-      2) ath9k_tasklet()
-         ...
-         -> ath9k_hw_resume_interrupts()
-         ...
-         <- returns
-
-                 3) loops around:
-                    ...
-                    handle_int()
-                    -> ath_isr()
-                       ...
-                       -> if (test_bit(ATH_OP_HW_RESET,
-                                       &common->op_flags))
-                            return IRQ_HANDLED;
-
-                    x) ath_reset_internal():
-                       => never reached <=
-
-And in ath_isr() we would typically see the following interrupts /
-interrupt causes:
-
-* status: 0x00111030 or 0x00110030
-* async_cause: 2 (AR_INTR_MAC_IPQ)
-* sync_cause: 0
-
-So the ath9k_tasklet() reenables the ath9k interrupts
-through ath9k_hw_resume_interrupts() which ath9k_queue_reset() had just
-disabled. And ath_isr() then keeps firing because it returns IRQ_HANDLED
-without actually clearing the interrupt.
-
-To fix this IRQ storm also clear/disable the interrupts again when we
-are in reset state.
-
-Cc: Sven Eckelmann <sven@narfation.org>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Linus Lüssing <linus.luessing@c0d3.blue>
-Fixes: 872b5d814f99 ("ath9k: do not access hardware on IRQs during reset")
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210914192515.9273-3-linus.luessing@c0d3.blue
+Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/netfilter/nft_dynset.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
-index 5739c1dbf1661..af367696fd92f 100644
---- a/drivers/net/wireless/ath/ath9k/main.c
-+++ b/drivers/net/wireless/ath/ath9k/main.c
-@@ -533,8 +533,10 @@ irqreturn_t ath_isr(int irq, void *dev)
- 	ath9k_debug_sync_cause(sc, sync_cause);
- 	status &= ah->imask;	/* discard unasked-for bits */
+diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
+index 5c84a968dae29..58904bee1a0df 100644
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -141,17 +141,8 @@ static int nft_dynset_init(const struct nft_ctx *ctx,
+ 		return -EBUSY;
  
--	if (test_bit(ATH_OP_HW_RESET, &common->op_flags))
-+	if (test_bit(ATH_OP_HW_RESET, &common->op_flags)) {
-+		ath9k_hw_kill_interrupts(sc->sc_ah);
- 		return IRQ_HANDLED;
-+	}
+ 	priv->op = ntohl(nla_get_be32(tb[NFTA_DYNSET_OP]));
+-	switch (priv->op) {
+-	case NFT_DYNSET_OP_ADD:
+-	case NFT_DYNSET_OP_DELETE:
+-		break;
+-	case NFT_DYNSET_OP_UPDATE:
+-		if (!(set->flags & NFT_SET_TIMEOUT))
+-			return -EOPNOTSUPP;
+-		break;
+-	default:
++	if (priv->op > NFT_DYNSET_OP_DELETE)
+ 		return -EOPNOTSUPP;
+-	}
  
- 	/*
- 	 * If there are no status bits set, then this interrupt was not
+ 	timeout = 0;
+ 	if (tb[NFTA_DYNSET_TIMEOUT] != NULL) {
 -- 
 2.33.0
 
