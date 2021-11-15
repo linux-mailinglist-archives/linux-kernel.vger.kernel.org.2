@@ -2,141 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C6E4518C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0BC4518EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348304AbhKOXHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:07:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
+        id S1350994AbhKOXKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:10:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243378AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:57:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 602C263490;
-        Mon, 15 Nov 2021 18:12:51 +0000 (UTC)
+        id S243401AbhKOTB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:01:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C16E963351;
+        Mon, 15 Nov 2021 18:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636999972;
-        bh=F2zxYeotaXaYYRbtc8RJuA8MUR9XNAAv9/FV2gkGsE0=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=NT7VE7GS7I2V3wz2Pf+ZkbdwQCQChbnaDADjmk3lo2tzFAMxZcY/uq9Sz/2V3KcvY
-         c+dNppx/5tuL4cPZI0Dsm7v61Pftpl1ke6QUzeT6L6fvFapphwYtHXUlxzV3CqzUxK
-         TwlDfH7AvTdoIdNeDSkPgYQGqXa1HK3RSLaihWz+yNScp/VdqRhwJQ7kUATSlw+40c
-         udbmC5hw7v3qpC4Ql+ww8FtitzUfQ3qJjSIC6gEKgP8kyQMxKUt6YzrGU3DcowrqmM
-         f0Ga4l62o/7rC9+/e01aDnWk1NpBtLPJ6FR6WyEBdpgtnf/mip9txus1JKq1/+oAwz
-         BVhmNCJizXZNA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 74D7427C005A;
-        Mon, 15 Nov 2021 13:12:50 -0500 (EST)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Mon, 15 Nov 2021 13:12:50 -0500
-X-ME-Sender: <xms:IaOSYdqKA8M3JPabD-e9BvuQvBSMIh3HuxzzT5lzVPC0rpqmr107Qg>
-    <xme:IaOSYfoWMIxW2ePIZULEfCMqU0lfsaz6sccxS_3E2bTXF7B3vbKBi1VqvkWPAx4S5
-    1Dk5fxh-yDGM2n4IIw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedtgdekfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
-    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:IaOSYaO89tYJPvGPuUBU3NqHL7AO8t2GfPADk8AOcctuzQtTer5aAA>
-    <xmx:IaOSYY4vsLlKD1QuryEfCYhJeB1zb0H3Sj5e-Wm4XJ9VU4XeXbBP5g>
-    <xmx:IaOSYc6X6ZGC9mL1wLp8Qm0a62U-U49-ndwNMeXxizNhGtDliXinVg>
-    <xmx:IqOSYWTrAyK6GaN--s3z2QmqkbJPa3nylwOJ0syFlTHLuqMi_k5vJw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E937521E006E; Mon, 15 Nov 2021 13:12:49 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <712750e7-a00a-4573-8864-0c07286289e3@www.fastmail.com>
-In-Reply-To: <CAMzpN2jWs8heND7PydKw9CCZ0cjvJgxLMwXXQj45rwR6twpJLw@mail.gmail.com>
-References: <20211113124035.9180-1-brgerst@gmail.com>
- <20211113124035.9180-4-brgerst@gmail.com>
- <719e0170-7645-4787-8c3a-676f34068c27@www.fastmail.com>
- <CAMzpN2gbOzsmnAh330+zk+ZZQmk-xNdUdCar6WaPrvHtgzknTA@mail.gmail.com>
- <20211114110305.GN174703@worktop.programming.kicks-ass.net>
- <CAMzpN2jWs8heND7PydKw9CCZ0cjvJgxLMwXXQj45rwR6twpJLw@mail.gmail.com>
-Date:   Mon, 15 Nov 2021 10:12:28 -0800
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Brian Gerst" <brgerst@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Ingo Molnar" <mingo@kernel.org>
-Subject: Re: [PATCH 3/3] x86_64: Use relative per-cpu offsets
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        s=k20201202; t=1637000079;
+        bh=1jdsajeUX88NVAQocP9iDcgTXEzKovNOFexILtdxPxM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pKKgWeM6XQqj7skT8X/vS0XZMvZndQIDJ3HBoelJssrLAok/ETmJUoFJIp7Nmp8U/
+         bHd/V2wbBTRigCWsTkBtKFI3vxfCEhTnY1cWmPrNun0Lf0q/Pb5ofkGB27SRO+PGbi
+         k0tPgbf4Vf0ntgBFLmikNhk2KezFLVp36Yg37o+MwoQBFhkN5UVXTHof3prq3bkIvE
+         SCvU9rQA2tO7bnrZjYumGYGCcL5QRj/gwyRaJ5bsuuBrViVpqCHtaiVYIr/T3oSmi0
+         7/l3/7pPNIHb9Yop0ZSETYUWuwBEhwUgcU+xvAjJZOTjg3/PweAcOiE8S9gMoU9I6r
+         T7X7PNEAZ0Ciw==
+Date:   Mon, 15 Nov 2021 10:14:37 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Amit Cohen <amcohen@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net] devlink: Remove extra assertion from flash
+ notification logic
+Message-ID: <20211115101437.33bd531f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1d750b6f4991c16995c4d0927b709eb23647ff85.1636999616.git.leonro@nvidia.com>
+References: <1d750b6f4991c16995c4d0927b709eb23647ff85.1636999616.git.leonro@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 15 Nov 2021 20:07:47 +0200 Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The mlxsw driver calls to various devlink flash routines even before
+> users can get any access to the devlink instance itself. For example,
+> mlxsw_core_fw_rev_validate() one of such functions.
+> 
+> It causes to the WARN_ON to trigger warning about devlink not
+> registered, while the flow is valid.
 
+So the fix is to remove the warning and keep generating notifications
+about objects which to the best understanding of the user space do not
+exist?
 
-On Sun, Nov 14, 2021, at 10:29 AM, Brian Gerst wrote:
-> On Sun, Nov 14, 2021 at 6:03 AM Peter Zijlstra <peterz@infradead.org> =
-wrote:
->>
->> On Sat, Nov 13, 2021 at 11:54:19PM -0500, Brian Gerst wrote:
->> > On Sat, Nov 13, 2021 at 8:18 PM Andy Lutomirski <luto@kernel.org> w=
-rote:
->> > >
->> > >
->> > >
->> > > On Sat, Nov 13, 2021, at 4:40 AM, Brian Gerst wrote:
->> > > > The per-cpu section is currently linked at virtual address 0, b=
-ecause
->> > > > older compilers hardcoded the stack protector canary value at a=
- fixed
->> > > > offset from the start of the GS segment.  Use a standard relati=
-ve offset
->> > > > as the GS base when the stack protector is disabled, or a newer=
- compiler
->> > > > is used that supports a configurable location for the stack can=
-ary.
->> > >
->> > > Can you explain the benefit?  Also, I think we should consider dr=
-opping support for the fixed model like we did on x86_32.
->> >
->> > This patch probably makes more sense if we drop the fixed model, as
->> > that gets rid of alot of code that works around having to link the
->> > percpu section differently.
->>
->> Can someone spell out these benefits please? To me having per-cpu sta=
-rt
->> at 0 makes perfect sense, how does not having that make things better?
->
-> The best reason is that the percpu section is currently not subject to
-> KASLR.  It actually needs extra support to counter the effects of
-> relocation.  There have also been a number of linker bugs over the
-> years that have had to be worked around.
->
-> If we were to decide to drop the fixed stack protector the diffstat
-> would look something like:
->
->  arch/x86/Makefile                         |  19 ++--
->  arch/x86/boot/compressed/misc.c           |  12 ---
->  arch/x86/entry/entry_64.S                 |   2 +-
->  arch/x86/include/asm/percpu.h             |  22 -----
->  arch/x86/include/asm/processor.h          |  24 ++---
->  arch/x86/include/asm/stackprotector.h     |  13 +--
->  arch/x86/kernel/asm-offsets_64.c          |   6 --
->  arch/x86/kernel/cpu/common.c              |   8 +-
->  arch/x86/kernel/head_64.S                 |  11 ++-
->  arch/x86/kernel/irq_64.c                  |   1 -
->  arch/x86/kernel/vmlinux.lds.S             |  33 -------
->  arch/x86/tools/relocs.c                   | 143 +--------------------=
----------
->  arch/x86/xen/xen-head.S                   |  10 +--
->  scripts/gcc-x86_64-has-stack-protector.sh |   2 +-
->  14 files changed, 35 insertions(+), 271 deletions(-)
->
+> diff --git a/net/core/devlink.c b/net/core/devlink.c
+> index 5ba4f9434acd..6face738b16a 100644
+> --- a/net/core/devlink.c
+> +++ b/net/core/devlink.c
+> @@ -4229,7 +4229,6 @@ static void __devlink_flash_update_notify(struct devlink *devlink,
+>  	WARN_ON(cmd != DEVLINK_CMD_FLASH_UPDATE &&
+>  		cmd != DEVLINK_CMD_FLASH_UPDATE_END &&
+>  		cmd != DEVLINK_CMD_FLASH_UPDATE_STATUS);
+> -	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
 
-Ack.  We did this for 32-bit and got few complaints. Let=E2=80=99s finis=
-h the job.
-
-> --
-> Brian Gerst
