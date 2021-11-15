@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F36452022
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4E745197F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357772AbhKPAtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:49:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1353366AbhKOXVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:21:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344653AbhKOTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80DE663355;
-        Mon, 15 Nov 2021 19:01:41 +0000 (UTC)
+        id S244725AbhKOTRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:17:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6891632B7;
+        Mon, 15 Nov 2021 18:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002902;
-        bh=/q7KUzS8hthsAiub6qyUJTKBTxR/B0zL+JHTcbM3P3A=;
+        s=korg; t=1637000592;
+        bh=rgwp2BFzJTPRqdHIEZYeVg7FlO5/9pI3JSUNdIPx1nQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3TC3Bx6E/jDfWqFdgZe7TRmKxQQU5iXEeyCDrGfFpMQf5dOHmYl/ieWT9dURSogf
-         NPqmuRnNRAD3Z1/SYU/8Q6IaB/+Nfkuannod0WrYybIR854r+l+bl/o7hPn1DRK2i8
-         PzsM90ZiKh4IJ91ruumHL65NejB01rxTlek9tOPQ=
+        b=teuz/slF1PUyeP0dy9Nh4uarZ6mtVtTydblBcWvhWmqfWouCV8Fn4orZC/Ca+ORK8
+         hfw1++5zfm606+qiPqhfKWKU0uqZBk8zfCMJQC6cOdTIzqEMaMUaO4eGZZU2AwvDb5
+         INtsLmuEfSzvlgyZA8IIULn82hedwXSN7vMJv9JQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kewei Xu <kewei.xu@mediatek.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 705/917] i2c: mediatek: fixing the incorrect register offset
-Date:   Mon, 15 Nov 2021 18:03:20 +0100
-Message-Id: <20211115165452.802012723@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 718/849] nbd: fix possible overflow for first_minor in nbd_dev_add()
+Date:   Mon, 15 Nov 2021 18:03:21 +0100
+Message-Id: <20211115165444.539348679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kewei Xu <kewei.xu@mediatek.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit b8228aea5a19d5111a7bf44f7de6749d1f5d487a ]
+[ Upstream commit 940c264984fd1457918393c49674f6b39ee16506 ]
 
-The reason for the modification here is that the previous
-offset information is incorrect, OFFSET_DEBUGSTAT = 0xE4 is
-the correct value.
+If 'part_shift' is not zero, then 'index << part_shift' might
+overflow to a value that is not greater than '0xfffff', then sysfs
+might complains about duplicate creation.
 
-Fixes: 25708278f810 ("i2c: mediatek: Add i2c support for MediaTek MT8183")
-Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-Reviewed-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: b0d9111a2d53 ("nbd: use an idr to keep track of nbd devices")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Link: https://lore.kernel.org/r/20211102015237.2309763-3-yebin10@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/nbd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 7d4b3eb7077ad..72acda59eb399 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -195,7 +195,7 @@ static const u16 mt_i2c_regs_v2[] = {
- 	[OFFSET_CLOCK_DIV] = 0x48,
- 	[OFFSET_SOFTRESET] = 0x50,
- 	[OFFSET_SCL_MIS_COMP_POINT] = 0x90,
--	[OFFSET_DEBUGSTAT] = 0xe0,
-+	[OFFSET_DEBUGSTAT] = 0xe4,
- 	[OFFSET_DEBUGCTRL] = 0xe8,
- 	[OFFSET_FIFO_STAT] = 0xf4,
- 	[OFFSET_FIFO_THRESH] = 0xf8,
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index bdc6d656e785c..f72ff515ee51b 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1777,11 +1777,11 @@ static int nbd_dev_add(int index)
+ 	disk->major = NBD_MAJOR;
+ 
+ 	/* Too big first_minor can cause duplicate creation of
+-	 * sysfs files/links, since MKDEV() expect that the max bits of
+-	 * first_minor is 20.
++	 * sysfs files/links, since index << part_shift might overflow, or
++	 * MKDEV() expect that the max bits of first_minor is 20.
+ 	 */
+ 	disk->first_minor = index << part_shift;
+-	if (disk->first_minor > MINORMASK) {
++	if (disk->first_minor < index || disk->first_minor > MINORMASK) {
+ 		err = -EINVAL;
+ 		goto out_free_idr;
+ 	}
 -- 
 2.33.0
 
