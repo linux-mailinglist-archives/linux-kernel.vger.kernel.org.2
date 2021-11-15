@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76F745158A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39914515CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352050AbhKOUkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:40:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        id S1353096AbhKOUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:54:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236937AbhKOSHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B656339A;
-        Mon, 15 Nov 2021 17:45:08 +0000 (UTC)
+        id S239406AbhKOSHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04E1C633A9;
+        Mon, 15 Nov 2021 17:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998309;
-        bh=ODDxvufmhbDWUDwtkTzd/xVggoqwjNP9nMsCS/tUN/4=;
+        s=korg; t=1636998332;
+        bh=0zQX922MRo9mZHGDc+lpSJAjgNSvX6Fct3dI6G8PcMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J4yHJBQjaJflJ2rl+gJQ9JT7ZB5VxyoTQJBrmC9ezQlp9TylrrSABNEC9zYpK7Cs3
-         FuqKubwA5mO3zOgLFsGGzBLwzOj0uSPAi7MQC2vn/ILVCSmq06/AMES3z2mxYLZEbZ
-         wemiAr3yd0kUE8RDGpUOnvNwlypg2k71+gTwvyAQ=
+        b=zwRe8Gd2LRLklOqDoSSwOOZz0DS4bet5tc80iEr6MgaISx4l5o1ni9N1+ch6gEAL8
+         WSFTiLQ3iXm+oSaAHZdxL9gDL55k2KOK7r7QxosZDT55S9QY+9vViTnxP7T+LkJFY6
+         3lc3Z7M1DTpDJ4ec+ygTXC1lahJ5z9I5Z4wnLM84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 462/575] ASoC: cs42l42: Use device_property API instead of of_property
-Date:   Mon, 15 Nov 2021 18:03:07 +0100
-Message-Id: <20211115165359.715274090@linuxfoundation.org>
+Subject: [PATCH 5.10 464/575] virtio_ring: check desc == NULL when using indirect with packed
+Date:   Mon, 15 Nov 2021 18:03:09 +0100
+Message-Id: <20211115165359.778776223@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,199 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-[ Upstream commit ab78322a0dc8e5e472ff66ac7e18c94acc17587f ]
+[ Upstream commit fc6d70f40b3d0b3219e2026d05be0409695f620d ]
 
-Use the device_property APIs so that the code will work on devicetree
-and ACPI systems.
+When using indirect with packed, we don't check for allocation failures.
+This patch checks that and fall back on direct.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210426155303.853236-2-tanureal@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20211020112323.67466-3-xuanzhuo@linux.alibaba.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 60 +++++++++++++++-----------------------
- 1 file changed, 24 insertions(+), 36 deletions(-)
+ drivers/virtio/virtio_ring.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index eb1fcc5be0573..e56d3c9c39756 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -20,10 +20,9 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regulator/consumer.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/of_device.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -1554,17 +1553,15 @@ static const unsigned int threshold_defaults[] = {
- 	CS42L42_HS_DET_LEVEL_1
- };
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 6c730d6d50f71..e9432dbbec0a7 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -992,6 +992,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
  
--static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
-+static int cs42l42_handle_device_data(struct device *dev,
- 					struct cs42l42_private *cs42l42)
- {
--	struct device_node *np = i2c_client->dev.of_node;
- 	unsigned int val;
--	unsigned int thresholds[CS42L42_NUM_BIASES];
-+	u32 thresholds[CS42L42_NUM_BIASES];
- 	int ret;
- 	int i;
+ 	head = vq->packed.next_avail_idx;
+ 	desc = alloc_indirect_packed(total_sg, gfp);
++	if (!desc)
++		return -ENOMEM;
  
--	ret = of_property_read_u32(np, "cirrus,ts-inv", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,ts-inv", &val);
- 	if (!ret) {
- 		switch (val) {
- 		case CS42L42_TS_INV_EN:
-@@ -1572,7 +1569,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			cs42l42->ts_inv = val;
- 			break;
- 		default:
--			dev_err(&i2c_client->dev,
-+			dev_err(dev,
- 				"Wrong cirrus,ts-inv DT value %d\n",
- 				val);
- 			cs42l42->ts_inv = CS42L42_TS_INV_DIS;
-@@ -1585,8 +1582,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			CS42L42_TS_INV_MASK,
- 			(cs42l42->ts_inv << CS42L42_TS_INV_SHIFT));
+ 	if (unlikely(vq->vq.num_free < 1)) {
+ 		pr_debug("Can't add buf len 1 - avail = 0\n");
+@@ -1103,6 +1105,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+ 	unsigned int i, n, c, descs_used, err_idx;
+ 	__le16 head_flags, flags;
+ 	u16 head, id, prev, curr, avail_used_flags;
++	int err;
  
--	ret = of_property_read_u32(np, "cirrus,ts-dbnc-rise", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,ts-dbnc-rise", &val);
- 	if (!ret) {
- 		switch (val) {
- 		case CS42L42_TS_DBNCE_0:
-@@ -1600,7 +1596,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			cs42l42->ts_dbnc_rise = val;
- 			break;
- 		default:
--			dev_err(&i2c_client->dev,
-+			dev_err(dev,
- 				"Wrong cirrus,ts-dbnc-rise DT value %d\n",
- 				val);
- 			cs42l42->ts_dbnc_rise = CS42L42_TS_DBNCE_1000;
-@@ -1614,8 +1610,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			(cs42l42->ts_dbnc_rise <<
- 			CS42L42_TS_RISE_DBNCE_TIME_SHIFT));
+ 	START_USE(vq);
  
--	ret = of_property_read_u32(np, "cirrus,ts-dbnc-fall", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,ts-dbnc-fall", &val);
- 	if (!ret) {
- 		switch (val) {
- 		case CS42L42_TS_DBNCE_0:
-@@ -1629,7 +1624,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			cs42l42->ts_dbnc_fall = val;
- 			break;
- 		default:
--			dev_err(&i2c_client->dev,
-+			dev_err(dev,
- 				"Wrong cirrus,ts-dbnc-fall DT value %d\n",
- 				val);
- 			cs42l42->ts_dbnc_fall = CS42L42_TS_DBNCE_0;
-@@ -1643,13 +1638,12 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			(cs42l42->ts_dbnc_fall <<
- 			CS42L42_TS_FALL_DBNCE_TIME_SHIFT));
+@@ -1118,9 +1121,14 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
  
--	ret = of_property_read_u32(np, "cirrus,btn-det-init-dbnce", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,btn-det-init-dbnce", &val);
- 	if (!ret) {
- 		if (val <= CS42L42_BTN_DET_INIT_DBNCE_MAX)
- 			cs42l42->btn_det_init_dbnce = val;
- 		else {
--			dev_err(&i2c_client->dev,
-+			dev_err(dev,
- 				"Wrong cirrus,btn-det-init-dbnce DT value %d\n",
- 				val);
- 			cs42l42->btn_det_init_dbnce =
-@@ -1660,14 +1654,13 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			CS42L42_BTN_DET_INIT_DBNCE_DEFAULT;
- 	}
+ 	BUG_ON(total_sg == 0);
  
--	ret = of_property_read_u32(np, "cirrus,btn-det-event-dbnce", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,btn-det-event-dbnce", &val);
- 	if (!ret) {
- 		if (val <= CS42L42_BTN_DET_EVENT_DBNCE_MAX)
- 			cs42l42->btn_det_event_dbnce = val;
- 		else {
--			dev_err(&i2c_client->dev,
--			"Wrong cirrus,btn-det-event-dbnce DT value %d\n", val);
-+			dev_err(dev,
-+				"Wrong cirrus,btn-det-event-dbnce DT value %d\n", val);
- 			cs42l42->btn_det_event_dbnce =
- 				CS42L42_BTN_DET_EVENT_DBNCE_DEFAULT;
- 		}
-@@ -1676,19 +1669,17 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			CS42L42_BTN_DET_EVENT_DBNCE_DEFAULT;
- 	}
+-	if (virtqueue_use_indirect(_vq, total_sg))
+-		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
+-				out_sgs, in_sgs, data, gfp);
++	if (virtqueue_use_indirect(_vq, total_sg)) {
++		err = virtqueue_add_indirect_packed(vq, sgs, total_sg, out_sgs,
++						    in_sgs, data, gfp);
++		if (err != -ENOMEM)
++			return err;
++
++		/* fall back on direct */
++	}
  
--	ret = of_property_read_u32_array(np, "cirrus,bias-lvls",
--				   (u32 *)thresholds, CS42L42_NUM_BIASES);
--
-+	ret = device_property_read_u32_array(dev, "cirrus,bias-lvls",
-+					     thresholds, ARRAY_SIZE(thresholds));
- 	if (!ret) {
- 		for (i = 0; i < CS42L42_NUM_BIASES; i++) {
- 			if (thresholds[i] <= CS42L42_HS_DET_LEVEL_MAX)
- 				cs42l42->bias_thresholds[i] = thresholds[i];
- 			else {
--				dev_err(&i2c_client->dev,
--				"Wrong cirrus,bias-lvls[%d] DT value %d\n", i,
-+				dev_err(dev,
-+					"Wrong cirrus,bias-lvls[%d] DT value %d\n", i,
- 					thresholds[i]);
--				cs42l42->bias_thresholds[i] =
--					threshold_defaults[i];
-+				cs42l42->bias_thresholds[i] = threshold_defaults[i];
- 			}
- 		}
- 	} else {
-@@ -1696,8 +1687,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			cs42l42->bias_thresholds[i] = threshold_defaults[i];
- 	}
- 
--	ret = of_property_read_u32(np, "cirrus,hs-bias-ramp-rate", &val);
--
-+	ret = device_property_read_u32(dev, "cirrus,hs-bias-ramp-rate", &val);
- 	if (!ret) {
- 		switch (val) {
- 		case CS42L42_HSBIAS_RAMP_FAST_RISE_SLOW_FALL:
-@@ -1717,7 +1707,7 @@ static int cs42l42_handle_device_data(struct i2c_client *i2c_client,
- 			cs42l42->hs_bias_ramp_time = CS42L42_HSBIAS_RAMP_TIME3;
- 			break;
- 		default:
--			dev_err(&i2c_client->dev,
-+			dev_err(dev,
- 				"Wrong cirrus,hs-bias-ramp-rate DT value %d\n",
- 				val);
- 			cs42l42->hs_bias_ramp_rate = CS42L42_HSBIAS_RAMP_SLOW;
-@@ -1848,11 +1838,9 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 			(1 << CS42L42_ADC_PDN_SHIFT) |
- 			(0 << CS42L42_PDN_ALL_SHIFT));
- 
--	if (i2c_client->dev.of_node) {
--		ret = cs42l42_handle_device_data(i2c_client, cs42l42);
--		if (ret != 0)
--			goto err_disable;
--	}
-+	ret = cs42l42_handle_device_data(&i2c_client->dev, cs42l42);
-+	if (ret != 0)
-+		goto err_disable;
- 
- 	/* Setup headset detection */
- 	cs42l42_setup_hs_type_detect(cs42l42);
+ 	head = vq->packed.next_avail_idx;
+ 	avail_used_flags = vq->packed.avail_used_flags;
 -- 
 2.33.0
 
