@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0BC4518EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A04518F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350994AbhKOXKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:10:32 -0500
+        id S1351017AbhKOXLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:11:11 -0500
 Received: from mail.kernel.org ([198.145.29.99]:34350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243401AbhKOTB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:01:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C16E963351;
-        Mon, 15 Nov 2021 18:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637000079;
-        bh=1jdsajeUX88NVAQocP9iDcgTXEzKovNOFexILtdxPxM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pKKgWeM6XQqj7skT8X/vS0XZMvZndQIDJ3HBoelJssrLAok/ETmJUoFJIp7Nmp8U/
-         bHd/V2wbBTRigCWsTkBtKFI3vxfCEhTnY1cWmPrNun0Lf0q/Pb5ofkGB27SRO+PGbi
-         k0tPgbf4Vf0ntgBFLmikNhk2KezFLVp36Yg37o+MwoQBFhkN5UVXTHof3prq3bkIvE
-         SCvU9rQA2tO7bnrZjYumGYGCcL5QRj/gwyRaJ5bsuuBrViVpqCHtaiVYIr/T3oSmi0
-         7/l3/7pPNIHb9Yop0ZSETYUWuwBEhwUgcU+xvAjJZOTjg3/PweAcOiE8S9gMoU9I6r
-         T7X7PNEAZ0Ciw==
-Date:   Mon, 15 Nov 2021 10:14:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Amit Cohen <amcohen@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net] devlink: Remove extra assertion from flash
- notification logic
-Message-ID: <20211115101437.33bd531f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1d750b6f4991c16995c4d0927b709eb23647ff85.1636999616.git.leonro@nvidia.com>
-References: <1d750b6f4991c16995c4d0927b709eb23647ff85.1636999616.git.leonro@nvidia.com>
+        id S243746AbhKOTDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:03:48 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E421461265;
+        Mon, 15 Nov 2021 18:15:31 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 13:15:30 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: [ANNOUNCE] 5.10.78-rt55
+Message-ID: <20211115131530.15df8784@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -42,30 +37,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 20:07:47 +0200 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> The mlxsw driver calls to various devlink flash routines even before
-> users can get any access to the devlink instance itself. For example,
-> mlxsw_core_fw_rev_validate() one of such functions.
-> 
-> It causes to the WARN_ON to trigger warning about devlink not
-> registered, while the flow is valid.
 
-So the fix is to remove the warning and keep generating notifications
-about objects which to the best understanding of the user space do not
-exist?
+Dear RT Folks,
 
-> diff --git a/net/core/devlink.c b/net/core/devlink.c
-> index 5ba4f9434acd..6face738b16a 100644
-> --- a/net/core/devlink.c
-> +++ b/net/core/devlink.c
-> @@ -4229,7 +4229,6 @@ static void __devlink_flash_update_notify(struct devlink *devlink,
->  	WARN_ON(cmd != DEVLINK_CMD_FLASH_UPDATE &&
->  		cmd != DEVLINK_CMD_FLASH_UPDATE_END &&
->  		cmd != DEVLINK_CMD_FLASH_UPDATE_STATUS);
-> -	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
->  
->  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
->  	if (!msg)
+I'm pleased to announce the 5.10.78-rt55 stable release.
+
+
+This release is just an update to the new stable 5.10.78 version
+and no RT specific changes have been made.
+
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.10-rt
+  Head SHA1: 8790fdcff68cc0e69d19c352d0fd0fba471b7635
+
+
+Or to build 5.10.78-rt55 directly, the following patches should be applied:
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.78.xz
+
+  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.78-rt55.patch.xz
+
+
+
+
+Enjoy,
+
+-- Steve
 
