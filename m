@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A276C4515FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBFC451605
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 22:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352765AbhKOVFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 16:05:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
+        id S1348057AbhKOVGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 16:06:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240728AbhKOSNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240727AbhKOSNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:13:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 132AF63246;
-        Mon, 15 Nov 2021 17:48:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFDCA61131;
+        Mon, 15 Nov 2021 17:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998498;
-        bh=o9/hDdeDKSGy/oStf65eFuZRM87+az9Go/ldmwy3Bsg=;
+        s=korg; t=1636998501;
+        bh=RAuZV3sopUGxxk60phl/14JfHRP0/wljiFOeOIZEcgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jM7Ve6Ppa+gu5iOxc92sp757C5QdmYohdGyv8Wf6/fJcw0Wu1u6eTeqKTATBz2q2t
-         m2iMXWhI+8QWp0q5PAgdU3yx2m8fAITuIrRmV7d+gd+uTMZO0AtVATugm7HR8fo0rn
-         JXD2H9iPFRltz4urEnI1mRa9+71++EHv7QVRan+E=
+        b=UuhxzLX0625CSh7tKkz8bYOf8MuJysf4597UrGZBYr0a8Wy+FivwA9v43xO9E6r8Q
+         BRw0qIVVEYVGjc/aG21/m5PDuIHvGEz8mPuu75KssuyVFvo1+c1/3hYak14jsC7TpR
+         d3j9mXKqxuNhxxojbZI+MJ0tTvy7SBXNJddIw5+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Florent Revest <revest@chromium.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 530/575] seq_file: fix passing wrong private data
-Date:   Mon, 15 Nov 2021 18:04:15 +0100
-Message-Id: <20211115165402.004395391@linuxfoundation.org>
+Subject: [PATCH 5.10 531/575] net/sched: sch_taprio: fix undefined behavior in ktime_mono_to_any
+Date:   Mon, 15 Nov 2021 18:04:16 +0100
+Message-Id: <20211115165402.035493378@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -46,46 +43,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 10a6de19cad6efb9b49883513afb810dc265fca2 ]
+[ Upstream commit 6dc25401cba4d428328eade8ceae717633fdd702 ]
 
-DEFINE_PROC_SHOW_ATTRIBUTE() is supposed to be used to define a series
-of functions and variables to register proc file easily. And the users
-can use proc_create_data() to pass their own private data and get it
-via seq->private in the callback. Unfortunately, the proc file system
-use PDE_DATA() to get private data instead of inode->i_private. So fix
-it. Fortunately, there only one user of it which does not pass any
-private data, so this bug does not break any in-tree codes.
+1) if q->tk_offset == TK_OFFS_MAX, then get_tcp_tstamp() calls
+   ktime_mono_to_any() with out-of-bound value.
 
-Link: https://lkml.kernel.org/r/20211029032638.84884-1-songmuchun@bytedance.com
-Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Florent Revest <revest@chromium.org>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+2) if q->tk_offset is changed in taprio_parse_clockid(),
+   taprio_get_time() might also call ktime_mono_to_any()
+   with out-of-bound value as sysbot found:
+
+UBSAN: array-index-out-of-bounds in kernel/time/timekeeping.c:908:27
+index 3 is out of range for type 'ktime_t *[3]'
+CPU: 1 PID: 25668 Comm: kworker/u4:0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
+ ktime_mono_to_any+0x1d4/0x1e0 kernel/time/timekeeping.c:908
+ get_tcp_tstamp net/sched/sch_taprio.c:322 [inline]
+ get_packet_txtime net/sched/sch_taprio.c:353 [inline]
+ taprio_enqueue_one+0x5b0/0x1460 net/sched/sch_taprio.c:420
+ taprio_enqueue+0x3b1/0x730 net/sched/sch_taprio.c:485
+ dev_qdisc_enqueue+0x40/0x300 net/core/dev.c:3785
+ __dev_xmit_skb net/core/dev.c:3869 [inline]
+ __dev_queue_xmit+0x1f6e/0x3630 net/core/dev.c:4194
+ batadv_send_skb_packet+0x4a9/0x5f0 net/batman-adv/send.c:108
+ batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
+ batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:421 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x6d7/0x8e0 net/batman-adv/bat_iv_ogm.c:1701
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Fixes: 7ede7b03484b ("taprio: make clock reference conversions easier")
+Fixes: 54002066100b ("taprio: Adjust timestamps for TCP packets")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Vedang Patel <vedang.patel@intel.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reviewed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Link: https://lore.kernel.org/r/20211108180815.1822479-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/seq_file.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sched/sch_taprio.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index b83b3ae3c877f..662a8cfa1bcd3 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -182,7 +182,7 @@ static const struct file_operations __name ## _fops = {			\
- #define DEFINE_PROC_SHOW_ATTRIBUTE(__name)				\
- static int __name ## _open(struct inode *inode, struct file *file)	\
- {									\
--	return single_open(file, __name ## _show, inode->i_private);	\
-+	return single_open(file, __name ## _show, PDE_DATA(inode));	\
- }									\
- 									\
- static const struct proc_ops __name ## _proc_ops = {			\
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index 93899559ba6d2..806babdd838d2 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -94,18 +94,22 @@ static ktime_t sched_base_time(const struct sched_gate_list *sched)
+ 	return ns_to_ktime(sched->base_time);
+ }
+ 
+-static ktime_t taprio_get_time(struct taprio_sched *q)
++static ktime_t taprio_mono_to_any(const struct taprio_sched *q, ktime_t mono)
+ {
+-	ktime_t mono = ktime_get();
++	/* This pairs with WRITE_ONCE() in taprio_parse_clockid() */
++	enum tk_offsets tk_offset = READ_ONCE(q->tk_offset);
+ 
+-	switch (q->tk_offset) {
++	switch (tk_offset) {
+ 	case TK_OFFS_MAX:
+ 		return mono;
+ 	default:
+-		return ktime_mono_to_any(mono, q->tk_offset);
++		return ktime_mono_to_any(mono, tk_offset);
+ 	}
++}
+ 
+-	return KTIME_MAX;
++static ktime_t taprio_get_time(const struct taprio_sched *q)
++{
++	return taprio_mono_to_any(q, ktime_get());
+ }
+ 
+ static void taprio_free_sched_cb(struct rcu_head *head)
+@@ -321,7 +325,7 @@ static ktime_t get_tcp_tstamp(struct taprio_sched *q, struct sk_buff *skb)
+ 		return 0;
+ 	}
+ 
+-	return ktime_mono_to_any(skb->skb_mstamp_ns, q->tk_offset);
++	return taprio_mono_to_any(q, skb->skb_mstamp_ns);
+ }
+ 
+ /* There are a few scenarios where we will have to modify the txtime from
+@@ -1341,6 +1345,7 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
+ 		}
+ 	} else if (tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]) {
+ 		int clockid = nla_get_s32(tb[TCA_TAPRIO_ATTR_SCHED_CLOCKID]);
++		enum tk_offsets tk_offset;
+ 
+ 		/* We only support static clockids and we don't allow
+ 		 * for it to be modified after the first init.
+@@ -1355,22 +1360,24 @@ static int taprio_parse_clockid(struct Qdisc *sch, struct nlattr **tb,
+ 
+ 		switch (clockid) {
+ 		case CLOCK_REALTIME:
+-			q->tk_offset = TK_OFFS_REAL;
++			tk_offset = TK_OFFS_REAL;
+ 			break;
+ 		case CLOCK_MONOTONIC:
+-			q->tk_offset = TK_OFFS_MAX;
++			tk_offset = TK_OFFS_MAX;
+ 			break;
+ 		case CLOCK_BOOTTIME:
+-			q->tk_offset = TK_OFFS_BOOT;
++			tk_offset = TK_OFFS_BOOT;
+ 			break;
+ 		case CLOCK_TAI:
+-			q->tk_offset = TK_OFFS_TAI;
++			tk_offset = TK_OFFS_TAI;
+ 			break;
+ 		default:
+ 			NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
+ 			err = -EINVAL;
+ 			goto out;
+ 		}
++		/* This pairs with READ_ONCE() in taprio_mono_to_any */
++		WRITE_ONCE(q->tk_offset, tk_offset);
+ 
+ 		q->clockid = clockid;
+ 	} else {
 -- 
 2.33.0
 
