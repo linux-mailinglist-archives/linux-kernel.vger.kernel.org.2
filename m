@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDD444FCB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 02:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F9A44FCBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 02:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbhKOBX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 20:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbhKOBXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 20:23:52 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96917C061746;
-        Sun, 14 Nov 2021 17:20:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=xm2WaH1Ez4XZ9JuC8AhOwXIWdLRqdsdWoim4LFk92IY=; b=CBzkm4D3LOv1D4Xa4/t05C3Epc
-        WB+wiGwxycYMzEJnNjlMOC15q0pfbZOLvPl06KOF2W9uQn8eI93FRTxERu0rHWllidrdQmaNc4KUV
-        VTyJS8UJJ4WpDMShxvu2pNn4Y3ET7A1pAYvBUR7QDQ/8n6iVTFMxzHQzrGkwNJDnVa2Xfh2p+XwAu
-        nsg+PHoIhbUUU9skqfoUxV1xyGjl/gnrsNFQNkwsLT/BKq7ie1JOFmpfMLKBFVN/5qNc53Mp8UTRm
-        k5B9tS8hx6U3UoKwQtxHaikZcGjuv6WEJReehWSXEqN8WkPl4aLkuAQmuQtTHFKWIlgL5GH+acC37
-        WZB8Bzpw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmQg0-00ECsh-Ks; Mon, 15 Nov 2021 01:20:52 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH] mips: lantiq: add support for clk_get_parent()
-Date:   Sun, 14 Nov 2021 17:20:51 -0800
-Message-Id: <20211115012051.16302-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S233236AbhKOBfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 20:35:14 -0500
+Received: from mga18.intel.com ([134.134.136.126]:52707 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhKOBfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Nov 2021 20:35:10 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220249682"
+X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
+   d="scan'208";a="220249682"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2021 17:32:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,235,1631602800"; 
+   d="scan'208";a="453838742"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.68])
+  by orsmga006.jf.intel.com with ESMTP; 14 Nov 2021 17:32:14 -0800
+Date:   Mon, 15 Nov 2021 09:25:16 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     trix@redhat.com
+Cc:     hao.wu@intel.com, mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: pci: generalize find_dfls_by_vsec()
+Message-ID: <20211115012516.GA288162@yilunxu-OptiPlex-7050>
+References: <20211113221252.4062704-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211113221252.4062704-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a simple implementation of clk_get_parent() in the
-lantiq subarch so that callers of it will build without errors.
+On Sat, Nov 13, 2021 at 02:12:52PM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> find_dfls_by_vsec() is a general dfl function.
+> Although dfl has multiple vendors, only Intel is supported.
+> Move vsec and vendor id to an array variable.
+> Other vendors can append the array to enable their support.
 
-Fixes this build error:
-ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+As Hao mentioned, DVSEC could be a better solution if DFL should be
+present in components by a variety of vendors. This is not finally
+determined, but I think we should not add new features for VSEC now.
 
-Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: John Crispin <john@phrozen.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio@vger.kernel.org
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- arch/mips/lantiq/clk.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks,
+Yilun
 
---- linux-next-20211112.orig/arch/mips/lantiq/clk.c
-+++ linux-next-20211112/arch/mips/lantiq/clk.c
-@@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
- }
- EXPORT_SYMBOL(clk_deactivate);
- 
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- static inline u32 get_counter_resolution(void)
- {
- 	u32 res;
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/fpga/dfl-pci.c | 31 ++++++++++++++++++++++++-------
+>  1 file changed, 24 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> index 4d68719e608f..9dc0815c8274 100644
+> --- a/drivers/fpga/dfl-pci.c
+> +++ b/drivers/fpga/dfl-pci.c
+> @@ -136,19 +136,36 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
+>  	return table;
+>  }
+>  
+> -static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
+> +struct dfl_vsec {
+> +	u16 vendor;
+> +	u16 id;
+> +};
+> +
+> +static struct dfl_vsec vsecs[] = {
+> +	{ PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS },
+> +};
+> +
+> +static int find_dfls_by_vsec(struct pci_dev *pcidev,
+> +			     struct dfl_fpga_enum_info *info)
+>  {
+>  	u32 bir, offset, vndr_hdr, dfl_cnt, dfl_res;
+>  	int dfl_res_off, i, bars, voff = 0;
+>  	resource_size_t start, len;
+>  
+> -	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
+> -		vndr_hdr = 0;
+> -		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
+> +	for (i = 0; i < ARRAY_SIZE(vsecs); i++) {
+> +		if (pcidev->vendor != vsecs[i].vendor)
+> +			continue;
+> +
+> +		while ((voff =
+> +			pci_find_next_ext_capability(pcidev, voff,
+> +						     PCI_EXT_CAP_ID_VNDR))) {
+> +			vndr_hdr = 0;
+> +			pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER,
+> +					      &vndr_hdr);
+>  
+> -		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS &&
+> -		    pcidev->vendor == PCI_VENDOR_ID_INTEL)
+> -			break;
+> +			if (PCI_VNDR_HEADER_ID(vndr_hdr) == vsecs[i].id)
+> +				break;
+> +		}
+>  	}
+>  
+>  	if (!voff) {
+> -- 
+> 2.26.3
