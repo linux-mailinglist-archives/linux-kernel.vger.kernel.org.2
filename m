@@ -2,76 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86316450862
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39848450896
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236652AbhKOPdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:33:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:56642 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236522AbhKOPc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:32:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EF1C6D;
-        Mon, 15 Nov 2021 07:30:02 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 557F03F766;
-        Mon, 15 Nov 2021 07:30:00 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Galbraith <efault@gmx.de>, Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2 3/5] powerpc: Use preemption model accessors
-In-Reply-To: <87o86rmgu8.fsf@mpe.ellerman.id.au>
-References: <20211110202448.4054153-1-valentin.schneider@arm.com> <20211110202448.4054153-4-valentin.schneider@arm.com> <87o86rmgu8.fsf@mpe.ellerman.id.au>
-Date:   Mon, 15 Nov 2021 15:29:53 +0000
-Message-ID: <87lf1pqvwu.mognet@arm.com>
+        id S232310AbhKOPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236495AbhKOPfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:35:06 -0500
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07228C0613B9;
+        Mon, 15 Nov 2021 07:32:06 -0800 (PST)
+Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id E37B42E0D2E;
+        Mon, 15 Nov 2021 18:30:09 +0300 (MSK)
+Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
+        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 1azPPW854o-U9s8PH06;
+        Mon, 15 Nov 2021 18:30:09 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1636990209; bh=J+h9MxEvCgi9lU9qUsoWtrGY5JYnznqxdEvYLGooECM=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=eYLIjVv35LU1cKVxw+wRpipiW6+rgtAxwKx6CyvYZVw69FKpHjhfdtLrJ5F3Hsbok
+         hTeKtaeyXZG4WLzHL9CoMS5ItNHFT32+udslHAZJDJEjvyYK/VJFrhZ2IjjsNgEMlw
+         rjHHEdzAxp3o6Pn9FdJ/k2TNeeqbn5Pp3grSQmZM=
+Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dellarbn.yandex.net (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
+        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id wuqDqjnGag-U8xaesO8;
+        Mon, 15 Nov 2021 18:30:09 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andrey Ryabinin <arbn@yandex-team.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/6] vhost: get rid of vhost_poll_flush() wrapper
+Date:   Mon, 15 Nov 2021 18:29:58 +0300
+Message-Id: <20211115153003.9140-1-arbn@yandex-team.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+vhost_poll_flush() is a simple wrapper around vhost_work_dev_flush().
+It gives wrong impression that we are doing some work over vhost_poll,
+while in fact it flushes vhost_poll->dev.
+It only complicate understanding of the code and leads to mistakes
+like flushing the same vhost_dev several times in a row.
 
-Doh, thought I had sent this one out already...
+Just remove vhost_poll_flush() and call vhost_work_dev_flush() directly.
 
-On 11/11/21 15:55, Michael Ellerman wrote:
-> Valentin Schneider <valentin.schneider@arm.com> writes:
->> Per PREEMPT_DYNAMIC, checking CONFIG_PREEMPT doesn't tell you the actual
->> preemption model of the live kernel. Use the newly-introduced accessors
->> instead.
->>
->> sched_init() -> preempt_dynamic_init() happens way before IRQs are set up,
->> so this should be fine.
->
-> Despite the name interrupt_exit_kernel_prepare() is called before IRQs
-> are setup, traps and page faults are "interrupts" here.
->
-> So I'm not sure about adding that call there, because it will trigger a
-> WARN if called early in boot, which will trigger a trap and depending on
-> the context we may not survive.
->
-> I'd be happier if we can make it a build-time check.
->
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+---
+ drivers/vhost/net.c   |  4 ++--
+ drivers/vhost/test.c  |  2 +-
+ drivers/vhost/vhost.c | 12 ++----------
+ drivers/vhost/vsock.c |  2 +-
+ 4 files changed, 6 insertions(+), 14 deletions(-)
 
-This can't be done at build-time for PREEMPT_DYNAMIC, but that can be
-punted off to whoever will implement ppc support for that :-) AFAICT if
-this can't use preempt_dynamic_mode (due to how "late" it is setup), the
-preempt_schedule_irq() needs to go and ppc needs to use irqentry_exit() /
-irqentry_exit_cond_resched().
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index 28ef323882fb..11221f6d11b8 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -1375,8 +1375,8 @@ static void vhost_net_stop(struct vhost_net *n, struct socket **tx_sock,
+ 
+ static void vhost_net_flush_vq(struct vhost_net *n, int index)
+ {
+-	vhost_poll_flush(n->poll + index);
+-	vhost_poll_flush(&n->vqs[index].vq.poll);
++	vhost_work_dev_flush(n->poll[index].dev);
++	vhost_work_dev_flush(n->vqs[index].vq.poll.dev);
+ }
+ 
+ static void vhost_net_flush(struct vhost_net *n)
+diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
+index a09dedc79f68..1a8ab1d8cb1c 100644
+--- a/drivers/vhost/test.c
++++ b/drivers/vhost/test.c
+@@ -146,7 +146,7 @@ static void vhost_test_stop(struct vhost_test *n, void **privatep)
+ 
+ static void vhost_test_flush_vq(struct vhost_test *n, int index)
+ {
+-	vhost_poll_flush(&n->vqs[index].poll);
++	vhost_work_dev_flush(n->vqs[index].poll.dev);
+ }
+ 
+ static void vhost_test_flush(struct vhost_test *n)
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index 59edb5a1ffe2..ca088481da0e 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -245,14 +245,6 @@ void vhost_work_dev_flush(struct vhost_dev *dev)
+ }
+ EXPORT_SYMBOL_GPL(vhost_work_dev_flush);
+ 
+-/* Flush any work that has been scheduled. When calling this, don't hold any
+- * locks that are also used by the callback. */
+-void vhost_poll_flush(struct vhost_poll *poll)
+-{
+-	vhost_work_dev_flush(poll->dev);
+-}
+-EXPORT_SYMBOL_GPL(vhost_poll_flush);
+-
+ void vhost_work_queue(struct vhost_dev *dev, struct vhost_work *work)
+ {
+ 	if (!dev->worker)
+@@ -663,7 +655,7 @@ void vhost_dev_stop(struct vhost_dev *dev)
+ 	for (i = 0; i < dev->nvqs; ++i) {
+ 		if (dev->vqs[i]->kick && dev->vqs[i]->handle_kick) {
+ 			vhost_poll_stop(&dev->vqs[i]->poll);
+-			vhost_poll_flush(&dev->vqs[i]->poll);
++			vhost_work_dev_flush(dev->vqs[i]->poll.dev);
+ 		}
+ 	}
+ }
+@@ -1712,7 +1704,7 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+ 	mutex_unlock(&vq->mutex);
+ 
+ 	if (pollstop && vq->handle_kick)
+-		vhost_poll_flush(&vq->poll);
++		vhost_work_dev_flush(vq->poll.dev);
+ 	return r;
+ }
+ EXPORT_SYMBOL_GPL(vhost_vring_ioctl);
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index 938aefbc75ec..b0361ebbd695 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -711,7 +711,7 @@ static void vhost_vsock_flush(struct vhost_vsock *vsock)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++)
+ 		if (vsock->vqs[i].handle_kick)
+-			vhost_poll_flush(&vsock->vqs[i].poll);
++			vhost_work_dev_flush(vsock->vqs[i].poll.dev);
+ 	vhost_work_dev_flush(&vsock->dev);
+ }
+ 
+-- 
+2.32.0
 
-I dropped that for v2.
-
-> cheers
->
