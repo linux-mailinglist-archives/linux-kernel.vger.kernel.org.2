@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0983F452143
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91773451A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbhKPBCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:02:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        id S1352989AbhKOXhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:37:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245751AbhKOTVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C878632EF;
-        Mon, 15 Nov 2021 18:40:33 +0000 (UTC)
+        id S245753AbhKOTVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C74AD632F7;
+        Mon, 15 Nov 2021 18:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001634;
-        bh=GBNPxPVeLR32XxNszEFLDPWZp3XuXm0BjfRNbtSRdEg=;
+        s=korg; t=1637001637;
+        bh=BQRMNvmJRzCvnlsMGT/ELfWssZ1bdxZhEXVknYcY8RM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mAmnD2Tvy8YuoLYtOi2BOnoJoKmxTmu54jIHXQ1fpqEKQlOzPRzw3DnDPG21FxMUc
-         NOgfRC2bZRkcPEdwlTCV6rRUHsxq3lmeNCpE8j4ap2d9tkhPjDJ0ILdytG44pMcrHd
-         uzgWt6OrEXy7XOG6SNeEJE45oc6u+T5qmXK0grTM=
+        b=bBB8hqWDk4rxZD+GrB+1EZFEY3PBEZLXcmaBlUVzsK/iysHjdPkRy5BAcWZJEkyKL
+         +9SiuJsA50RlNttlVSNRCRT9qNI6oalYv7rBoxDv62Lbqr7rrlqesL0SS24ZRJkrXW
+         IMzolq6OEA5wrbCqR1gEmlT4qeGcCZEutRYbLU6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 263/917] block: bump max plugged deferred size from 16 to 32
-Date:   Mon, 15 Nov 2021 17:55:58 +0100
-Message-Id: <20211115165437.704594286@linuxfoundation.org>
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 264/917] floppy: fix calling platform_device_unregister() on invalid drives
+Date:   Mon, 15 Nov 2021 17:55:59 +0100
+Message-Id: <20211115165437.735263116@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -39,82 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-[ Upstream commit ba0ffdd8ce48ad7f7e85191cd29f9674caca3745 ]
+[ Upstream commit 662167e59d2f3c15a44a88088fc6c1a67c8a3650 ]
 
-Particularly for NVMe with efficient deferred submission for many
-requests, there are nice benefits to be seen by bumping the default max
-plug count from 16 to 32. This is especially true for virtualized setups,
-where the submit part is more expensive. But can be noticed even on
-native hardware.
+platform_device_unregister() should only be called when
+a respective platform_device_register() is called. However
+the floppy driver currently allows failures when registring
+a drive and a bail out could easily cause an invalid call
+to platform_device_unregister() where it was not intended.
 
-Reduce the multiple queue factor from 4 to 2, since we're changing the
-default size.
+Fix this by adding a bool to keep track of when the platform
+device was registered for a drive.
 
-While changing it, move the defines into the block layer private header.
-These aren't values that anyone outside of the block layer uses, or
-should use.
+This does not fix any known panic / bug. This issue was found
+through code inspection while preparing the driver to use the
+up and coming support for device_add_disk() error handling.
+>From what I can tell from code inspection, chances of this
+ever happening should be insanely small, perhaps OOM.
 
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20210927220302.1073499-5-mcgrof@kernel.org
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c         | 4 ++--
- block/blk.h            | 6 ++++++
- include/linux/blkdev.h | 2 --
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/block/floppy.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 652a31fc3bb38..49587c181e3fd 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2148,14 +2148,14 @@ static void blk_add_rq_to_plug(struct blk_plug *plug, struct request *rq)
- }
- 
- /*
-- * Allow 4x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
-+ * Allow 2x BLK_MAX_REQUEST_COUNT requests on plug queue for multiple
-  * queues. This is important for md arrays to benefit from merging
-  * requests.
-  */
- static inline unsigned short blk_plug_max_rq_count(struct blk_plug *plug)
- {
- 	if (plug->multiple_queues)
--		return BLK_MAX_REQUEST_COUNT * 4;
-+		return BLK_MAX_REQUEST_COUNT * 2;
- 	return BLK_MAX_REQUEST_COUNT;
- }
- 
-diff --git a/block/blk.h b/block/blk.h
-index 6c3c00a8fe19d..aab72194d2266 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -184,6 +184,12 @@ bool blk_bio_list_merge(struct request_queue *q, struct list_head *list,
- void blk_account_io_start(struct request *req);
- void blk_account_io_done(struct request *req, u64 now);
- 
-+/*
-+ * Plug flush limits
-+ */
-+#define BLK_MAX_REQUEST_COUNT	32
-+#define BLK_PLUG_FLUSH_SIZE	(128 * 1024)
-+
- /*
-  * Internal elevator interface
-  */
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 12b9dbcc980ee..683aee3654200 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1198,8 +1198,6 @@ struct blk_plug {
- 	bool multiple_queues;
- 	bool nowait;
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index 9538146e520e0..3592a6277d0bb 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -4478,6 +4478,7 @@ static const struct blk_mq_ops floppy_mq_ops = {
  };
--#define BLK_MAX_REQUEST_COUNT 16
--#define BLK_PLUG_FLUSH_SIZE (128 * 1024)
  
- struct blk_plug_cb;
- typedef void (*blk_plug_cb_fn)(struct blk_plug_cb *, bool);
+ static struct platform_device floppy_device[N_DRIVE];
++static bool registered[N_DRIVE];
+ 
+ static bool floppy_available(int drive)
+ {
+@@ -4693,6 +4694,8 @@ static int __init do_floppy_init(void)
+ 		if (err)
+ 			goto out_remove_drives;
+ 
++		registered[drive] = true;
++
+ 		device_add_disk(&floppy_device[drive].dev, disks[drive][0],
+ 				NULL);
+ 	}
+@@ -4703,7 +4706,8 @@ out_remove_drives:
+ 	while (drive--) {
+ 		if (floppy_available(drive)) {
+ 			del_gendisk(disks[drive][0]);
+-			platform_device_unregister(&floppy_device[drive]);
++			if (registered[drive])
++				platform_device_unregister(&floppy_device[drive]);
+ 		}
+ 	}
+ out_release_dma:
+@@ -4946,7 +4950,8 @@ static void __exit floppy_module_exit(void)
+ 				if (disks[drive][i])
+ 					del_gendisk(disks[drive][i]);
+ 			}
+-			platform_device_unregister(&floppy_device[drive]);
++			if (registered[drive])
++				platform_device_unregister(&floppy_device[drive]);
+ 		}
+ 		for (i = 0; i < ARRAY_SIZE(floppy_type); i++) {
+ 			if (disks[drive][i])
 -- 
 2.33.0
 
