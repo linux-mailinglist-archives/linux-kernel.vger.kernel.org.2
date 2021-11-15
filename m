@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB9451211
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BEE45120F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 20:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345167AbhKOT1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 14:27:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
+        id S1345017AbhKOT0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:26:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238929AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238930AbhKORuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:50:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F93D63277;
-        Mon, 15 Nov 2021 17:31:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56EA9632A4;
+        Mon, 15 Nov 2021 17:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997466;
-        bh=SEzyjq6agc0osw1GnbYwXxUbrYZZGzLnvMTNPjg3T8w=;
+        s=korg; t=1636997468;
+        bh=iW7bRT3Q5oUIXLn4aRaqSRph6rITcwiUaTSvH7ilcwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KxmQ5iZFEouW0JIa/dP7IPIFh9RzplsYDjiw+Y3r8MT+Bb6bXd9+cCT4YLIcsZgY+
-         oPoPa6x4Y2la6tksSSGVr04A/YTQI2TVbanmUHT8wCBqmAWjw0HuVma8VtKbbnTMMs
-         v/tkHiqpykRXUeh/dG1VNzpzhI1FFk7h7xkeq1gM=
+        b=fJv/tJFScukc2+hWKhtT7zJCHPI0jKJOlN6CNYsC7Fkn+jGbMN43h//ywxLwDFTba
+         pobm4I0FV1rWxD5wmB2lSND3z9sZhiwQGJ+rrg+mVTHWQvDH4iM5TYdHhji+xsHZSs
+         elZCV+p8Xw8gXKSu6/Gy4DQvJbybX9FntZqjPhDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 159/575] most: fix control-message timeouts
-Date:   Mon, 15 Nov 2021 17:58:04 +0100
-Message-Id: <20211115165349.198483555@linuxfoundation.org>
+Subject: [PATCH 5.10 160/575] USB: iowarrior: fix control-message timeouts
+Date:   Mon, 15 Nov 2021 17:58:05 +0100
+Message-Id: <20211115165349.240622741@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -40,43 +40,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit 63b3e810eff65fb8587fcb26fa0b56802be12dcf upstream.
+commit 79a4479a17b83310deb0b1a2a274fe5be12d2318 upstream.
 
 USB control-message timeouts are specified in milliseconds and should
 specifically not vary with CONFIG_HZ.
 
-Use the common control-message timeout defines for the five-second
-timeouts.
+Use the common control-message timeout define for the five-second
+timeout and drop the driver-specific one.
 
-Fixes: 97a6f772f36b ("drivers: most: add USB adapter driver")
-Cc: stable@vger.kernel.org      # 5.9
+Fixes: 946b960d13c1 ("USB: add driver for iowarrior devices.")
+Cc: stable@vger.kernel.org      # 2.6.21
 Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025115811.5410-1-johan@kernel.org
+Link: https://lore.kernel.org/r/20211025115159.4954-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/most/most_usb.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/usb/misc/iowarrior.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/most/most_usb.c
-+++ b/drivers/most/most_usb.c
-@@ -149,7 +149,8 @@ static inline int drci_rd_reg(struct usb
- 	retval = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
- 				 DRCI_READ_REQ, req_type,
- 				 0x0000,
--				 reg, dma_buf, sizeof(*dma_buf), 5 * HZ);
-+				 reg, dma_buf, sizeof(*dma_buf),
-+				 USB_CTRL_GET_TIMEOUT);
- 	*buf = le16_to_cpu(*dma_buf);
- 	kfree(dma_buf);
+--- a/drivers/usb/misc/iowarrior.c
++++ b/drivers/usb/misc/iowarrior.c
+@@ -99,10 +99,6 @@ struct iowarrior {
+ /*    globals   */
+ /*--------------*/
  
-@@ -176,7 +177,7 @@ static inline int drci_wr_reg(struct usb
- 			       reg,
- 			       NULL,
- 			       0,
--			       5 * HZ);
-+			       USB_CTRL_SET_TIMEOUT);
+-/*
+- *  USB spec identifies 5 second timeouts.
+- */
+-#define GET_TIMEOUT 5
+ #define USB_REQ_GET_REPORT  0x01
+ //#if 0
+ static int usb_get_report(struct usb_device *dev,
+@@ -114,7 +110,7 @@ static int usb_get_report(struct usb_dev
+ 			       USB_DIR_IN | USB_TYPE_CLASS |
+ 			       USB_RECIP_INTERFACE, (type << 8) + id,
+ 			       inter->desc.bInterfaceNumber, buf, size,
+-			       GET_TIMEOUT*HZ);
++			       USB_CTRL_GET_TIMEOUT);
+ }
+ //#endif
+ 
+@@ -129,7 +125,7 @@ static int usb_set_report(struct usb_int
+ 			       USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+ 			       (type << 8) + id,
+ 			       intf->cur_altsetting->desc.bInterfaceNumber, buf,
+-			       size, HZ);
++			       size, 1000);
  }
  
- static inline int start_sync_ep(struct usb_device *usb_dev, u16 ep)
+ /*---------------------*/
 
 
