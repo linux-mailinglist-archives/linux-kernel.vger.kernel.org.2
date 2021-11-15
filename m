@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A6D45144E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0F045142A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbhKOUCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:02:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
+        id S1349326AbhKOUGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:06:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239579AbhKOSDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:03:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A7563347;
-        Mon, 15 Nov 2021 17:37:47 +0000 (UTC)
+        id S239703AbhKOSEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:04:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC2B63357;
+        Mon, 15 Nov 2021 17:38:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997868;
-        bh=wzfks4W1c6gQCOK1Fdo5BssSFDsbB1hAIfcAgl/geGI=;
+        s=korg; t=1636997899;
+        bh=gD3+HAWWK3Exj2raDuQKo/ezmVkTpoloVcH1o6EKHJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aa1tMWIVcvDx39lbub7FcVGIqzX71mjYkP9lvYAjaEXdStm/GzpuRYSeTy8vhg4kB
-         RFxM/uEjQLSHAGGiKbAutfty0z+QYerhxzaJcZyAT2mb045YfGwSU8bzB2JhvKqA9h
-         xRKz36SmioYZBql4Esxw9jKE1LTFMqI+1nMI1f0g=
+        b=euH3z9rXCOyvHUTI1gdsXPcOHROumLClBV6cZoKMJ0QUafyfZxdAf+e0TYcfFMR0h
+         n/xzDmsDsYHfmIrVk34r6ySxjc7I2h2vQ1DoDsP4RwInU0qpdH2NyjgmwkX7uL8jnz
+         fHGKv9B1Wqso4nGG549zNXvyY83FigAsOnsTJj90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 287/575] drm/amdgpu: fix warning for overflow check
-Date:   Mon, 15 Nov 2021 18:00:12 +0100
-Message-Id: <20211115165353.707618871@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 288/575] media: em28xx: add missing em28xx_close_extension
+Date:   Mon, 15 Nov 2021 18:00:13 +0100
+Message-Id: <20211115165353.746352385@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -42,57 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 335aea75b0d95518951cad7c4c676e6f1c02c150 ]
+[ Upstream commit 2c98b8a3458df03abdc6945bbef67ef91d181938 ]
 
-The overflow check in amdgpu_bo_list_create() causes a warning with
-clang-14 on 64-bit architectures, since the limit can never be
-exceeded.
+If em28xx dev has ->dev_next pointer, we need to delete ->dev_next list
+node from em28xx_extension_devlist on disconnect to avoid UAF bugs and
+corrupted list bugs, since driver frees this pointer on disconnect.
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
-            ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
 
-The check remains useful for 32-bit architectures, so just avoid the
-warning by using size_t as the type for the count.
-
-Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/em28xx/em28xx-cards.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-index 15c45b2a39835..714178f1b6c6e 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-@@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 5144888ae36f7..cf45cc566cbe2 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -4089,8 +4089,11 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
  
- int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
- 			  struct drm_amdgpu_bo_list_entry *info,
--			  unsigned num_entries, struct amdgpu_bo_list **result)
-+			  size_t num_entries, struct amdgpu_bo_list **result)
- {
- 	unsigned last_entry = 0, first_userptr = num_entries;
- 	struct amdgpu_bo_list_entry *array;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-index a130e766cbdbe..529d52a204cf4 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-@@ -60,7 +60,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
- int amdgpu_bo_list_create(struct amdgpu_device *adev,
- 				 struct drm_file *filp,
- 				 struct drm_amdgpu_bo_list_entry *info,
--				 unsigned num_entries,
-+				 size_t num_entries,
- 				 struct amdgpu_bo_list **list);
+ 	em28xx_close_extension(dev);
  
- static inline struct amdgpu_bo_list_entry *
+-	if (dev->dev_next)
++	if (dev->dev_next) {
++		em28xx_close_extension(dev->dev_next);
+ 		em28xx_release_resources(dev->dev_next);
++	}
++
+ 	em28xx_release_resources(dev);
+ 
+ 	if (dev->dev_next) {
 -- 
 2.33.0
 
