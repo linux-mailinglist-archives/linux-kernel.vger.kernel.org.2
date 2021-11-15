@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62071451C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652D3451C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354664AbhKPAMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:12:39 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:18894 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348475AbhKOVTG (ORCPT
+        id S241225AbhKPAP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350184AbhKOVap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 16:19:06 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFJuA88014488;
-        Mon, 15 Nov 2021 13:15:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=0u9v8UoHudJT4C+u2s5L/90f8DkKf49tATsvUyIaKbY=;
- b=OwNWA8MTOI+ZHjvpdkSW8THWR6Ak/Rd8c4FsBA3R8te6S0OS7roDH/HqFVQg35FfKCvu
- 6eBJrx/Kipzft0D4LA8BA4qsQ8bT3AwKtFZ7QCxKW8BJ/zYh7EoCe5mvzbnNtzqscvCK
- kawkOuStjAd5D9es7tST4QCE38sWscfsDcbnh7R91RLQGImdqqyjF/wcPXGyl5zGcu3r
- 9DCbxa9MOvYczBj1paDR3L6liwLmNrYg28BjKjV5uJXtui0mxol+PLvn9zUnbn7muw/w
- kgPU8mbwLjweP6INvE0kiz79eT8JB/a+5G1KblIn77/rOE6OsqnP5kXiErkOpsokqiJH xw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3cbea8m6cj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 13:15:55 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 15 Nov
- 2021 13:15:53 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 15 Nov 2021 13:15:53 -0800
-Received: from localhost.localdomain (unknown [10.110.150.170])
-        by maili.marvell.com (Postfix) with ESMTP id 74A333F7066;
-        Mon, 15 Nov 2021 13:15:53 -0800 (PST)
-From:   Wojciech Bartczak <wbartczak@marvell.com>
-To:     <linux-mmc@vger.kernel.org>
-CC:     <rric@kernel.org>, <ulf.hansson@linaro.org>, <beanhuo@micron.com>,
-        <tanxiaofei@huawei.com>, <wbartczak@marvell.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: cavium: Improve request handling by proper use of API
-Date:   Mon, 15 Nov 2021 13:15:33 -0800
-Message-ID: <20211115211533.6971-1-wbartczak@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Nov 2021 16:30:45 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1DDC02982A;
+        Mon, 15 Nov 2021 13:15:57 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HtMRq5Vgwz4xbM;
+        Tue, 16 Nov 2021 08:15:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637010952;
+        bh=2PQkiML75nH5gTjFrmbLQEay2Mw4j+3cq9G3Vz10pxw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VBc38h/i+Jm+bhlGc95+AwVfhnsZQgPY96byZGfuKrOaXBDZ8g5SJAY+Kx9EGGW22
+         +7l1dJ3pTy5JNcmvcSKfRTfN2Tmw8Jx9nR1WtbCaOSEaXTuNHitHRS2BylHFEyDh/C
+         eWKYzVw1/3FR1ykc46WHM9mMhwsjGEFyj7iJOD4X/5cjuygUz/b8gX2pak/3iZWJRJ
+         2PrrTKtpd8wTHHZJhTVusprsErLDSgZ489KPQfG8En7FU/nJzjU1THDg775IuHpdwx
+         /HC7RAxPypJPytxArt4ZrBrdfF55CBqZj/CxVS2bPQrBsGFlszgM1J2rSxXo8QpPIj
+         JNCPuhqFO4Rgw==
+Date:   Tue, 16 Nov 2021 08:15:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the leds tree
+Message-ID: <20211116081550.7cb196bd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: -b3q8VeK3NLyoKBr-buD9F8UofQMalgO
-X-Proofpoint-ORIG-GUID: -b3q8VeK3NLyoKBr-buD9F8UofQMalgO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_15,2021-11-15_01,2020-04-07_01
+Content-Type: multipart/signed; boundary="Sig_/yalkpAx+/PzSTyn4mysE06u";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver for cavium/marvell platforms uses directly mrq->done() callback
-to signalize the request completion. This method to finalize request
-processing is not correct.
+--Sig_/yalkpAx+/PzSTyn4mysE06u
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Following fix introduces proper use of mmc_request_done() API for
-all paths involved into handling MMC core requests.
+Hi all,
 
-Signed-off-by: Wojciech Bartczak <wbartczak@marvell.com>
----
- drivers/mmc/host/cavium.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Commits
 
-diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-index 95a41983c6c0..7f82b5fde1f4 100644
---- a/drivers/mmc/host/cavium.c
-+++ b/drivers/mmc/host/cavium.c
-@@ -493,8 +493,8 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	    (rsp_sts & MIO_EMM_RSP_STS_DMA_PEND))
- 		cleanup_dma(host, rsp_sts);
- 
-+	mmc_request_done(slot->mmc, req);
- 	host->current_req = NULL;
--	req->done(req);
- 
- no_req_done:
- 	if (host->dmar_fixup_done)
-@@ -699,8 +699,7 @@ static void cvm_mmc_dma_request(struct mmc_host *mmc,
- 
- error:
- 	mrq->cmd->error = -EINVAL;
--	if (mrq->done)
--		mrq->done(mrq);
-+	mmc_request_done(mmc, mrq);
- 	host->release_bus(host);
- }
- 
--- 
-2.17.1
+  2f61f240215d ("leds: led-core: Update fwnode with device_set_node")
+  5b9fbb94ff5a ("leds: tca6507: use swap() to make code cleaner")
 
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/yalkpAx+/PzSTyn4mysE06u
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGSzgYACgkQAVBC80lX
+0Gw/6gf/fbGNVaKgSz7HPYXsJoBOl5YyUGA+KxZjbrQkxxWU5lpfyph9l21taopV
+INM80jYDSX8lXtJEEMalsynwo+RVPgUDM82COzLK9PEhT2Z8P4SIEVOKPw8FCpTe
+i5Ei3JiF6mntFQPJMA/ns9JzEeyCbFVEgb0Y8WVQR8/BJ/Nlt12TRP04uncilVkI
+947yoeh7IhCTK9t+q1O4ucBgFXbEycoM3crTQ+KkOjtm1AMvbYUQnW4nD3buRyPj
+m4pdzILifmq8U1R2OWKfoPO5NdjG3FiRLSQLPPYYH33jUNBAOmsZnXWgsK2tJY4d
+DhCIrI8vJFUl2/6sXzvqBhlf+gVaug==
+=nAmJ
+-----END PGP SIGNATURE-----
+
+--Sig_/yalkpAx+/PzSTyn4mysE06u--
