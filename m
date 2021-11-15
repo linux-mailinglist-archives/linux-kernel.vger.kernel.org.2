@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A50452187
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD6E4524B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349702AbhKPBDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:03:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
+        id S1352894AbhKPBmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:42:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245733AbhKOTVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8CC363288;
-        Mon, 15 Nov 2021 18:40:15 +0000 (UTC)
+        id S242082AbhKOSgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:36:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9DB563244;
+        Mon, 15 Nov 2021 18:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001616;
-        bh=nnoI8PKTNJPb58Rsneu+k3K8BYiYVFKucbDiQSgEg9c=;
+        s=korg; t=1636999364;
+        bh=orcB6o1+mGf6L6Mrclxl9zpxi2y0F8RvZN9Gg+OnbEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aieq6oJk3efVrELkxoJJBIjQcjU00eUZr30OT3MvAKm1ly4bSxu0ujQqwwI7IJpBq
-         hXU7G9M5bcAdtT+ut94GWpmaH6zWO7QKz//BCJo/Cif27NLj9U8OTgBpgnmbq8jWt/
-         5niGbw9fGKPSUK4pRPo92j0oCQAfxcamLh7cM6Jc=
+        b=2UTkChiXt328UjF9nXYXnpm56ef8SGqSPQr9AWE+DWf9Aro2rVDNjR/h+JKMc/9bq
+         KJ3IvjIxq6s60DTZldnHphkyv9itGankdyQ1RR4l0RobdBLyelf8TVIHwdVcGRyjz9
+         o2hI3KUR0+v1msCYtCXme0gBP/a/9zUm6wkOapbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, youling <youling257@gmail.com>,
-        Yifan Zhang <yifan1.zhang@amd.com>,
-        James Zhu <James.Zhu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 257/917] drm/amdkfd: fix resume error when iommu disabled in Picasso
-Date:   Mon, 15 Nov 2021 17:55:52 +0100
-Message-Id: <20211115165437.509025737@linuxfoundation.org>
+Subject: [PATCH 5.14 270/849] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
+Date:   Mon, 15 Nov 2021 17:55:53 +0100
+Message-Id: <20211115165429.379510677@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifan Zhang <yifan1.zhang@amd.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 6f4b590aae217da16cfa44039a2abcfb209137ab ]
+[ Upstream commit 4b6012a7830b813799a7faf40daa02a837e0fd5b ]
 
-When IOMMU disabled in sbios and kfd in iommuv2 path,
-IOMMU resume failure blocks system resume. Don't allow kfd to
-use iommu v2 when iommu is disabled.
+kzalloc() is used to allocate memory for cd->detectors, and if it fails,
+channel_detector_exit() behind the label fail will be called:
+  channel_detector_exit(dpd, cd);
 
-Reported-by: youling <youling257@gmail.com>
-Tested-by: youling <youling257@gmail.com>
-Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
-Reviewed-by: James Zhu <James.Zhu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+In channel_detector_exit(), cd->detectors is dereferenced through:
+  struct pri_detector *de = cd->detectors[i];
+
+To fix this possible null-pointer dereference, check cd->detectors before
+the for loop to dereference cd->detectors.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210805153854.154066-1-islituo@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index a6afacc3b10cd..88c483f699894 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -916,6 +916,7 @@ bool kgd2kfd_device_init(struct kfd_dev *kfd,
- 	kfd_double_confirm_iommu_support(kfd);
- 
- 	if (kfd_iommu_device_init(kfd)) {
-+		kfd->use_iommu_v2 = false;
- 		dev_err(kfd_device, "Error initializing iommuv2\n");
- 		goto device_iommu_error;
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index 80390495ea250..75cb53a3ec15e 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -183,10 +183,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
+ 	if (cd == NULL)
+ 		return;
+ 	list_del(&cd->head);
+-	for (i = 0; i < dpd->num_radar_types; i++) {
+-		struct pri_detector *de = cd->detectors[i];
+-		if (de != NULL)
+-			de->exit(de);
++	if (cd->detectors) {
++		for (i = 0; i < dpd->num_radar_types; i++) {
++			struct pri_detector *de = cd->detectors[i];
++			if (de != NULL)
++				de->exit(de);
++		}
  	}
+ 	kfree(cd->detectors);
+ 	kfree(cd);
 -- 
 2.33.0
 
