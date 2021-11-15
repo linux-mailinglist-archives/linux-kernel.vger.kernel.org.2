@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F84B452055
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21404451B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357527AbhKPAwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:52:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        id S1352615AbhKPAAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:00:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344357AbhKOTYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344363AbhKOTYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AAE6366A;
-        Mon, 15 Nov 2021 18:56:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6AB63671;
+        Mon, 15 Nov 2021 18:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002580;
-        bh=B4mUOJkyn+FT1GJIRP6ekd7FphQyGfxTCK0xolSxVIA=;
+        s=korg; t=1637002599;
+        bh=6pdPCUW72c+n3XcKU14saw6/ijKUA0nPsA4ADp5JEJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lHOsAZjRISE+LCNGo3qErMbIgyiB1SZdqK5zOA0/muBBgxUPBpuuIXhU/AfbxNlr5
-         +Wn40XiNcc1I8mfvuYRSv7qqftA4sDP2678CH3YYZ+YPNJmy8UkW4y8A/wOTpReI8j
-         neZ5KxzDGdvF3HCmsHXNRjy+O6ZVPT7iNGqsfADw=
+        b=WgmjNEhKQUbS8wT/uCZUEB67mlQQGNxrbRNyHzYLI7B6GmBLbiVWpdUp9dOOhTkxf
+         6DXL0HpLeoc8OYO6KHvzUmgBl+PjZmDxT6pbr8pzaW6rGEbrDXT1slCuEFprHwgQHK
+         mYYkXHNQgjQ90gXYeeKbJNitkrd3FcExvh+IrQAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 594/917] JFS: fix memleak in jfs_mount
-Date:   Mon, 15 Nov 2021 18:01:29 +0100
-Message-Id: <20211115165448.911890800@linuxfoundation.org>
+Subject: [PATCH 5.15 595/917] pinctrl: renesas: rzg2l: Fix missing port register 21h
+Date:   Mon, 15 Nov 2021 18:01:30 +0100
+Message-Id: <20211115165448.944550140@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,156 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-[ Upstream commit c48a14dca2cb57527dde6b960adbe69953935f10 ]
+[ Upstream commit fcfb63148c241adad54ed99fc318167176d7254b ]
 
-In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
-the following code does not free ipaimap2 allocated by diReadSpecial.
+Remove the duplicate port register 22h and replace it with missing port
+register 21h.
 
-Fix this by refactoring the error handling code of jfs_mount. To be
-specific, modify the lable name and free ipaimap2 when the above error
-ocurrs.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://lore.kernel.org/r/20210922074140.22178-1-biju.das.jz@bp.renesas.com
+Fixes: c4c4637eb57f2a25 ("pinctrl: renesas: Add RZ/G2L pin and gpio controller driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
- 1 file changed, 22 insertions(+), 29 deletions(-)
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-index 5d7d7170c03c0..aa4ff7bcaff23 100644
---- a/fs/jfs/jfs_mount.c
-+++ b/fs/jfs/jfs_mount.c
-@@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
- 	 * (initialize mount inode from the superblock)
- 	 */
- 	if ((rc = chkSuper(sb))) {
--		goto errout20;
-+		goto out;
- 	}
- 
- 	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
- 	if (ipaimap == NULL) {
- 		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
- 		rc = -EIO;
--		goto errout20;
-+		goto out;
- 	}
- 	sbi->ipaimap = ipaimap;
- 
-@@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
- 	 */
- 	if ((rc = diMount(ipaimap))) {
- 		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
--		goto errout21;
-+		goto err_ipaimap;
- 	}
- 
- 	/*
-@@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
- 	ipbmap = diReadSpecial(sb, BMAP_I, 0);
- 	if (ipbmap == NULL) {
- 		rc = -EIO;
--		goto errout22;
-+		goto err_umount_ipaimap;
- 	}
- 
- 	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
-@@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
- 	 */
- 	if ((rc = dbMount(ipbmap))) {
- 		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
--		goto errout22;
-+		goto err_ipbmap;
- 	}
- 
- 	/*
-@@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
- 		if (!ipaimap2) {
- 			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
- 			rc = -EIO;
--			goto errout35;
-+			goto err_umount_ipbmap;
- 		}
- 		sbi->ipaimap2 = ipaimap2;
- 
-@@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
- 		if ((rc = diMount(ipaimap2))) {
- 			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
- 				rc);
--			goto errout35;
-+			goto err_ipaimap2;
- 		}
- 	} else
- 		/* Secondary aggregate inode table is not valid */
-@@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
- 		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
- 		/* open fileset secondary inode allocation map */
- 		rc = -EIO;
--		goto errout40;
-+		goto err_umount_ipaimap2;
- 	}
- 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
- 
-@@ -178,41 +178,34 @@ int jfs_mount(struct super_block *sb)
- 	/* initialize fileset inode allocation map */
- 	if ((rc = diMount(ipimap))) {
- 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
--		goto errout41;
-+		goto err_ipimap;
- 	}
- 
--	goto out;
-+	return rc;
- 
- 	/*
- 	 *	unwind on error
- 	 */
--      errout41:		/* close fileset inode allocation map inode */
-+err_ipimap:
-+	/* close fileset inode allocation map inode */
- 	diFreeSpecial(ipimap);
--
--      errout40:		/* fileset closed */
--
-+err_umount_ipaimap2:
- 	/* close secondary aggregate inode allocation map */
--	if (ipaimap2) {
-+	if (ipaimap2)
- 		diUnmount(ipaimap2, 1);
-+err_ipaimap2:
-+	/* close aggregate inodes */
-+	if (ipaimap2)
- 		diFreeSpecial(ipaimap2);
--	}
--
--      errout35:
--
--	/* close aggregate block allocation map */
-+err_umount_ipbmap:	/* close aggregate block allocation map */
- 	dbUnmount(ipbmap, 1);
-+err_ipbmap:		/* close aggregate inodes */
- 	diFreeSpecial(ipbmap);
--
--      errout22:		/* close aggregate inode allocation map */
--
-+err_umount_ipaimap:	/* close aggregate inode allocation map */
- 	diUnmount(ipaimap, 1);
--
--      errout21:		/* close aggregate inodes */
-+err_ipaimap:		/* close aggregate inodes */
- 	diFreeSpecial(ipaimap);
--      errout20:		/* aggregate closed */
--
--      out:
--
-+out:
- 	if (rc)
- 		jfs_err("Mount JFS Failure: %d", rc);
- 
+diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+index dbf2f521bb272..20b2af889ca96 100644
+--- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+@@ -852,7 +852,7 @@ static const u32 rzg2l_gpio_configs[] = {
+ 	RZG2L_GPIO_PORT_PACK(2, 0x1e, RZG2L_MPXED_PIN_FUNCS),
+ 	RZG2L_GPIO_PORT_PACK(2, 0x1f, RZG2L_MPXED_PIN_FUNCS),
+ 	RZG2L_GPIO_PORT_PACK(2, 0x20, RZG2L_MPXED_PIN_FUNCS),
+-	RZG2L_GPIO_PORT_PACK(3, 0x22, RZG2L_MPXED_PIN_FUNCS),
++	RZG2L_GPIO_PORT_PACK(3, 0x21, RZG2L_MPXED_PIN_FUNCS),
+ 	RZG2L_GPIO_PORT_PACK(2, 0x22, RZG2L_MPXED_PIN_FUNCS),
+ 	RZG2L_GPIO_PORT_PACK(2, 0x23, RZG2L_MPXED_PIN_FUNCS),
+ 	RZG2L_GPIO_PORT_PACK(3, 0x24, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_ETH0)),
 -- 
 2.33.0
 
