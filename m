@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E1244FC92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F32544FC93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 01:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhKOAWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Nov 2021 19:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhKOAVe (ORCPT
+        id S230391AbhKOAak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Nov 2021 19:30:40 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37813 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhKOAaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Nov 2021 19:21:34 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1534EC061746;
-        Sun, 14 Nov 2021 16:18:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=n7f9L6nx97YdTMJtP7Ls20RES49EFohNDqW95oBsSWY=; b=Zxi1+EIOrcK/rOWj+FPvb2vDUw
-        CD/VANxP1wj4zu0JsIkcSS3zU9l3wHT7wPtYamN00RJiOtOKcBsPhsmImjKbWYlFizhj4E7t8XDeH
-        sVS3ihLgkt2rzRgX/CNcN5OE6huxfg5JJnm+QPl211tN72lnFbpOV3XP5k5aEIIm0RH2ZRKwjX7cq
-        gb53nGqNv8aQMco8wVnSwKA+WsaAeXIOYHFS0HNQI3Q708aZg2d1X9Y5sB+T92Zf/W8gnmNMfWvsD
-        1fmldmozejTswRVPzssydImLc3S4zUBGXz8hQKJwnYZj7OduV2hjGLy6fqKbvjcgftqd52A9OVsYF
-        tMt8UdTw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmPhl-00EBWr-60; Mon, 15 Nov 2021 00:18:37 +0000
-Subject: Re: [PATCH v3] mips: bcm63xx: add support for clk_get_parent()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>
-References: <20211114163444.21669-1-rdunlap@infradead.org>
- <CAHp75Veeppry=SHk0NUxpHVKbefCgRqDvi+PFJCiCABDSYg-HQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9429af8f-a301-9f51-68a0-2e42013e6e8f@infradead.org>
-Date:   Sun, 14 Nov 2021 16:18:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Veeppry=SHk0NUxpHVKbefCgRqDvi+PFJCiCABDSYg-HQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 14 Nov 2021 19:30:14 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 584C42B0124F;
+        Sun, 14 Nov 2021 19:27:19 -0500 (EST)
+Received: from imap43 ([10.202.2.93])
+  by compute4.internal (MEProxy); Sun, 14 Nov 2021 19:27:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=mkjJ4Y/pteRNeSPhoh6wdSUlB0Vt8cF
+        uTD9VcATUOEs=; b=naSStiP/3c2eGHVTWTXAvdPaFC55Ueu//Ntac+HOsU5xGn7
+        El9G3ESUPI777by+gnfb8fecgcmUTOOchltcJElbL1din5HFGDl+RVVMuBby13FJ
+        dtkx6ARt2bGaGNsIa/YQl+nxxiRTC9sA5QCdYOBjdb4xon8YektHed7ujFrEqk6B
+        kwlgSvAX5U6yvjVw+UYEI5ylsuKVKqSleWP1CyZFPVFBLKANGMvDm6UJzW9pEWYp
+        iGvv2iM8YlgUIoLu51kuYyiiLv3ZvakyrvOs/BxWctSHL+YxZsCU6zVuPctdDlmt
+        rNMRI7/khFwInWIL4JbCv/DTJvHJQ7jlveIGoFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=mkjJ4Y
+        /pteRNeSPhoh6wdSUlB0Vt8cFuTD9VcATUOEs=; b=EvxFmVa4SJYIdwcnZlg9dw
+        RP0/MfGG0yRCJvFZ0TKe8F+9oIwpnLyJBA0+ruSooXxCM9UY7KOaBR0SRF2A+gtX
+        aHuhcAvb5kCe5eSI5aoCHopOs5r3E5fSxnJD/P4qK09+d6en86fsir/yNWhoQ1mg
+        /f+AdBQlBmUb3L6vJtqVGSJubNwMUr3KBvHOEyZlcKiFN/cc0hd0einMaalxqDPO
+        Xnmswu06Wg1xjOOaQLnE0tzqNwy6VO7lA3REQXIB6heOrkzL2z4DQwnLLUjBwG9C
+        OP7SiUE3f2XUGfVLVQJevs1APm/Xe7tSPWGkRbDPeswiHBXLfEcgY+rTPRwo+tUA
+        ==
+X-ME-Sender: <xms:ZqmRYWDOSjvoQzZvep4vHsK9UG7Cqb52_ZTugtnlYmxA0mCdzsL3Kw>
+    <xme:ZqmRYQg7ujw72pPXe0-BYE_PFJiH4Uu1DcIzMA56a677xgYJag-S0tfmwojLk7NZf
+    L4t_YnLaPNS8jxjhw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdekgddvvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:ZqmRYZmqFH9wEhnHlYt34MAhNsKiB4MtOqnZa_LShsYg6tKcouOh_Q>
+    <xmx:ZqmRYUyFAeVrB2K48z1O19MVjnlrubpZ2mZFEqUo-IYAWgRd4YPkOw>
+    <xmx:ZqmRYbTNu-VSVVor1wfjPuSAtVqh6eWpjA7Bf1pUmq0K7VpYz-mEuQ>
+    <xmx:ZqmRYQI1QRL2kqX8CjJdDTJzAw5BLHiBzMrfAEN_Ryaeg5wJnjntSS-Ufng>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 00E63AC0DD1; Sun, 14 Nov 2021 19:27:17 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <65620ec1-94fb-48f7-a8f8-8e9f409b0fc8@www.fastmail.com>
+In-Reply-To: <20211113002948.GE14774@packtop>
+References: <20211112202931.2379145-1-anoo@linux.ibm.com>
+ <20211113002948.GE14774@packtop>
+Date:   Mon, 15 Nov 2021 10:56:33 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zweiss@equinix.com>,
+        "Adriana Kobylak" <anoo@linux.ibm.com>
+Cc:     "Russell King" <linux@armlinux.org.uk>,
+        "Joel Stanley" <joel@jms.id.au>, "Olof Johansson" <olof@lixom.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Bruce Mitchell" <bruce.mitchell@linux.vnet.ibm.com>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "Adriana Kobylak" <anoo@us.ibm.com>,
+        "Eddie James" <eajames@linux.ibm.com>,
+        "George Liu" <liuxiwei1013@gmail.com>
+Subject: Re: [PATCH] ARM: configs: aspeed: Add support for USB flash drives
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/21 8:40 AM, Andy Shevchenko wrote:
-> On Sun, Nov 14, 2021 at 6:34 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+
+
+On Sat, 13 Nov 2021, at 10:59, Zev Weiss wrote:
+> On Fri, Nov 12, 2021 at 12:29:31PM PST, Adriana Kobylak wrote:
+>>From: Adriana Kobylak <anoo@us.ibm.com>
 >>
->> BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
->> clk_get_parent(), so add a simple implementation of that
->> function so that callers of it will build without errors.
+>>Add support to detect USB flash drives and create the /dev/sd* devices.
+>>Also add support for vfat to support USB drives formatted as FAT32.
+>>This support will be used to enable firmware updates via USB flash
+>>drives where the firmware image is stored in the USB drive and it's
+>>plugged into the BMC USB port.
 >>
->> Fixes these build errors:
->>
->> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
->> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
->> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
->> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-> 
-> Some nit-picks below.
-> Otherwise looks good to me,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> Suggested-by?
+>
+> Hmm, how common is it for BMCs to have a USB port?  Perhaps it's more so
+> than I realize, but at least in my (admittedly somewhat limited)
+> experience I've yet to encounter one that does, so I'm wondering how
+> appropriate these options are for the aspeed-g5 defconfig if they might
+> just end up as a bunch of code that's never executed on most BMCs.
 
-Yes, I'll add Russell for that.
+The intent with the Aspeed defconfigs was to enable options that 
+provide a broad coverage of features used by e.g. upstream OpenBMC 
+systems. This aids kernel maintenance for OpenBMC. The platform 
+configuration in OpenBMC should provide a kernel config that only 
+enables options relevant to that specific platform. With this in mind I 
+think it's fine that USB support is enabled in the defconfigs.
 
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Artur Rojek <contact@artur-rojek.eu>
->> Cc: Paul Cercueil <paul@crapouillou.net>
->> Cc: linux-mips@vger.kernel.org
->> Cc: Jonathan Cameron <jic23@kernel.org>
->> Cc: Lars-Peter Clausen <lars@metafoo.de>
->> Cc: linux-iio@vger.kernel.org
->> Cc: Florian Fainelli <f.fainelli@gmail.com>
->> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Cc: bcm-kernel-feedback-list@broadcom.com
->> Cc: Jonas Gorski <jonas.gorski@gmail.com>
->> ---
->> v1 and v2 were:
->> [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-> 
->> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
-> 
-> Not sure why it's here. What does (the location of) this tag mean?
-
-Yesterday I didn't see what Fixes: tag I should use,
-but after looking again, it looks like I should use
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs."
-
-
-> 
->>   arch/mips/bcm63xx/clk.c |    7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> --- linux-next-20211112.orig/arch/mips/bcm63xx/clk.c
->> +++ linux-next-20211112/arch/mips/bcm63xx/clk.c
->> @@ -381,6 +381,13 @@ void clk_disable(struct clk *clk)
->>
->>   EXPORT_SYMBOL(clk_disable);
->>
->> +struct clk *clk_get_parent(struct clk *clk)
->> +{
->> +       return NULL;
->> +}
-> 
->> +
-> 
-> Perhaps it's not needed even if the rest have it (I mean blank line).
-
-Sure, I'll drop it. It was for file consistency,
-but it's not a big deal either way.
-
->> +EXPORT_SYMBOL(clk_get_parent);
->> +
->>   unsigned long clk_get_rate(struct clk *clk)
->>   {
->>          if (!clk)
-> 
-
-Thanks.
--- 
-~Randy
+Andrew
