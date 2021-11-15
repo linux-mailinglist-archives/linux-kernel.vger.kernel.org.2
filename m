@@ -2,120 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFFD4506D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBFB4506E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 15:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbhKOO34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 09:29:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40165 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236243AbhKOO2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:28:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636986339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0UHyekY33nyS4opU4pb9mDwiVLtFsBuv+1pBWFv92Xk=;
-        b=cIbjIFtn7+78NIesON5ODywM64GFaVXXiiF2IfdHzIFBYQZ1J4H2F4e1v1dVuIAMgpX4i+
-        YiALJks+2Xcl5NHCF9av/2mPrZFIhUuh0t8Sk8PumN0iv4jbG5l9i6JqiLVX3g01v0u+39
-        XbVJmAce1zFLFJLnhNCXJPqSD9ujmuQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-8T4JxKyVNCuCgW3B99pLZA-1; Mon, 15 Nov 2021 09:25:38 -0500
-X-MC-Unique: 8T4JxKyVNCuCgW3B99pLZA-1
-Received: by mail-qt1-f200.google.com with SMTP id u14-20020a05622a198e00b002b2f35a6dcfso857741qtc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 06:25:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0UHyekY33nyS4opU4pb9mDwiVLtFsBuv+1pBWFv92Xk=;
-        b=5rMnd6nZLKd8AtPTGO2T793rpkdgDS4TFYmVDxw/nO6QNzTpz32bYKWQ2bg0Z2c699
-         D5w0CDuZagsFhF6se4b99CRN8VJJ/qAofNXMV2syLFtJxQVfgtVhvudDLICSofUQZtBy
-         GRrqXP7C8FavVRuay5F66P8WFluu1FdjnumcpLEIlLSp40ARiPl9SDLyEXs7aiRaiRfm
-         RiSddtJ/V4Ich/9UUATw+LFNd0PyXEd5FhEE1tm23EbxKsbONQvuK/ZWkpe2s3c9JHWV
-         KhfQtVEdUTXszgfK2bLJVL19DXFRY/LsKy6+0sIzhYDywKw6cwBHmy+uDNDc0DNpl2Au
-         pzrw==
-X-Gm-Message-State: AOAM530kEEN4VM7l7RIKDpjcWVdLEkP03xLq3w9PjZ3kjVxpYzZT3jjC
-        zOaxtTBKroZmsRR+XeH0qn4rUOWn8ADQg877jyVZavJH49WXtlyiOhKA5PEVOcW0EfegIlDzWYU
-        9qPYT0cIZJWEzCvAjXb6pulNH
-X-Received: by 2002:a37:bf81:: with SMTP id p123mr30809504qkf.29.1636986337655;
-        Mon, 15 Nov 2021 06:25:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx8CaJlCANdNsGwCvw1fxN4Ckg4kZNtXgH3P07Ulq6mAG0oYsKHCU/nEmq3Er9fppz4nqjb1g==
-X-Received: by 2002:a37:bf81:: with SMTP id p123mr30809477qkf.29.1636986337425;
-        Mon, 15 Nov 2021 06:25:37 -0800 (PST)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id a15sm1069130qtb.5.2021.11.15.06.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 06:25:37 -0800 (PST)
-Date:   Mon, 15 Nov 2021 09:25:35 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Ian Kent <raven@themaw.net>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2 2/2] xfs: make sure link path does not go away at access
-Message-ID: <YZJt320bZuIct3g9@bfoster>
-References: <163694289979.229789.1176392639284347792.stgit@mickey.themaw.net>
- <163694306800.229789.11812765289669370510.stgit@mickey.themaw.net>
+        id S236426AbhKOOcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 09:32:06 -0500
+Received: from mga06.intel.com ([134.134.136.31]:11453 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236588AbhKOOaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 09:30:18 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="294268014"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="294268014"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:27:21 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="454039990"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 06:27:19 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mmcww-0077Hh-Cf;
+        Mon, 15 Nov 2021 16:27:10 +0200
+Date:   Mon, 15 Nov 2021 16:27:10 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] spi: dw: Add a symbols namespace for the core
+ module
+Message-ID: <YZJuPrnhupbnPxGt@smile.fi.intel.com>
+References: <20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru>
+ <20211114223026.13359-2-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163694306800.229789.11812765289669370510.stgit@mickey.themaw.net>
+In-Reply-To: <20211114223026.13359-2-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:24:28AM +0800, Ian Kent wrote:
-> When following an inline symlink in rcu-walk mode it's possible to
-> succeed in getting the ->get_link() method pointer but the link path
-> string be deallocated while it's being used.
+On Mon, Nov 15, 2021 at 01:30:21AM +0300, Serge Semin wrote:
+> The exported from the DW SPI driver core symbols are only used by the
+> spi-dw-{dma,mmio,pci,bt1}.o objects. Add these symbols to a separate
+> namespace then and make sure the depended modules have it imported.
 > 
-> This is becuase of the xfs inode reclaim mechanism. While rcu freeing
-> the link path can prevent it from being freed during use the inode
-> reclaim could assign a new value to the field at any time outside of
-> the path walk and result in an invalid link path pointer being
-> returned. Admittedly a very small race window but possible.
-> 
-> The best way to mitigate this risk is to return -ECHILD to the VFS
-> if the inline symlink method, ->get_link(), is called in rcu-walk mode
-> so the VFS can switch to ref-walk mode or redo the walk if the inode
-> has become invalid.
-> 
-> If it's discovered that staying in rcu-walk mode gives a worth while
-> performance improvement (unlikely) then the link path could be freed
-> under rcu once potential side effects of the xfs inode reclaim
-> sub-system have been analysed and dealt with if needed.
-> 
-> Signed-off-by: Ian Kent <raven@themaw.net>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Thanks!
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+See also below.
+
 > ---
-
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-
->  fs/xfs/xfs_iops.c |    3 +++
->  1 file changed, 3 insertions(+)
 > 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index a607d6aca5c4..0a96183c5381 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -520,6 +520,9 @@ xfs_vn_get_link_inline(
->  	struct xfs_inode	*ip = XFS_I(inode);
->  	char			*link;
+> Changelog v2:
+> - This is a new patch created as of Andy' suggestion.
+> ---
+>  drivers/spi/spi-dw-bt1.c  |  1 +
+>  drivers/spi/spi-dw-core.c | 14 +++++++-------
+>  drivers/spi/spi-dw-dma.c  |  7 +++++--
+>  drivers/spi/spi-dw-mmio.c |  1 +
+>  drivers/spi/spi-dw-pci.c  |  1 +
+>  5 files changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
+> index 5be6b7b80c21..ac7e4f30d1da 100644
+> --- a/drivers/spi/spi-dw-bt1.c
+> +++ b/drivers/spi/spi-dw-bt1.c
+> @@ -339,3 +339,4 @@ module_platform_driver(dw_spi_bt1_driver);
+>  MODULE_AUTHOR("Serge Semin <Sergey.Semin@baikalelectronics.ru>");
+>  MODULE_DESCRIPTION("Baikal-T1 System Boot SPI Controller driver");
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_IMPORT_NS(SPI_DW_CORE);
+> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> index a305074c482e..a14940403ab4 100644
+> --- a/drivers/spi/spi-dw-core.c
+> +++ b/drivers/spi/spi-dw-core.c
+> @@ -106,7 +106,7 @@ void dw_spi_set_cs(struct spi_device *spi, bool enable)
+>  	else
+>  		dw_writel(dws, DW_SPI_SER, 0);
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_set_cs);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_set_cs, SPI_DW_CORE);
 >  
-> +	if (!dentry)
-> +		return ERR_PTR(-ECHILD);
-> +
->  	ASSERT(ip->i_df.if_format == XFS_DINODE_FMT_LOCAL);
+>  /* Return the max entries we can fill into tx fifo */
+>  static inline u32 tx_max(struct dw_spi *dws)
+> @@ -210,7 +210,7 @@ int dw_spi_check_status(struct dw_spi *dws, bool raw)
 >  
->  	/*
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_check_status);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_check_status, SPI_DW_CORE);
+>  
+>  static irqreturn_t dw_spi_transfer_handler(struct dw_spi *dws)
+>  {
+> @@ -345,7 +345,7 @@ void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
+>  		dws->cur_rx_sample_dly = chip->rx_sample_dly;
+>  	}
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_update_config);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_update_config, SPI_DW_CORE);
+>  
+>  static void dw_spi_irq_setup(struct dw_spi *dws)
+>  {
+> @@ -945,7 +945,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+>  	spi_controller_put(master);
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_add_host);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_add_host, SPI_DW_CORE);
+>  
+>  void dw_spi_remove_host(struct dw_spi *dws)
+>  {
+> @@ -960,7 +960,7 @@ void dw_spi_remove_host(struct dw_spi *dws)
+>  
+>  	free_irq(dws->irq, dws->master);
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_remove_host);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_remove_host, SPI_DW_CORE);
+>  
+>  int dw_spi_suspend_host(struct dw_spi *dws)
+>  {
+> @@ -973,14 +973,14 @@ int dw_spi_suspend_host(struct dw_spi *dws)
+>  	spi_shutdown_chip(dws);
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_suspend_host);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_suspend_host, SPI_DW_CORE);
+>  
+>  int dw_spi_resume_host(struct dw_spi *dws)
+>  {
+>  	spi_hw_init(&dws->master->dev, dws);
+>  	return spi_controller_resume(dws->master);
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_resume_host);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_resume_host, SPI_DW_CORE);
+>  
+>  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
+>  MODULE_DESCRIPTION("Driver for DesignWare SPI controller core");
+> diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
+> index a09831c62192..5687ec05d627 100644
+> --- a/drivers/spi/spi-dw-dma.c
+> +++ b/drivers/spi/spi-dw-dma.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/dmaengine.h>
+>  #include <linux/irqreturn.h>
+>  #include <linux/jiffies.h>
+> +#include <linux/module.h>
+>  #include <linux/pci.h>
+>  #include <linux/platform_data/dma-dw.h>
+>  #include <linux/spi/spi.h>
+> @@ -17,6 +18,8 @@
+>  
+>  #include "spi-dw.h"
+
+> +MODULE_IMPORT_NS(SPI_DW_CORE);
+
+I would rather see this at the end of file, but it should work either way.
+
+>  #define RX_BUSY		0
+>  #define RX_BURST_LEVEL	16
+>  #define TX_BUSY		1
+> @@ -638,7 +641,7 @@ void dw_spi_dma_setup_mfld(struct dw_spi *dws)
+>  {
+>  	dws->dma_ops = &dw_spi_dma_mfld_ops;
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_mfld);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_mfld, SPI_DW_CORE);
+>  
+>  static const struct dw_spi_dma_ops dw_spi_dma_generic_ops = {
+>  	.dma_init	= dw_spi_dma_init_generic,
+> @@ -653,4 +656,4 @@ void dw_spi_dma_setup_generic(struct dw_spi *dws)
+>  {
+>  	dws->dma_ops = &dw_spi_dma_generic_ops;
+>  }
+> -EXPORT_SYMBOL_GPL(dw_spi_dma_setup_generic);
+> +EXPORT_SYMBOL_NS_GPL(dw_spi_dma_setup_generic, SPI_DW_CORE);
+> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> index 17c06039a74d..711f4d3404c5 100644
+> --- a/drivers/spi/spi-dw-mmio.c
+> +++ b/drivers/spi/spi-dw-mmio.c
+> @@ -377,3 +377,4 @@ module_platform_driver(dw_spi_mmio_driver);
+>  MODULE_AUTHOR("Jean-Hugues Deschenes <jean-hugues.deschenes@octasic.com>");
+>  MODULE_DESCRIPTION("Memory-mapped I/O interface driver for DW SPI Core");
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_IMPORT_NS(SPI_DW_CORE);
+> diff --git a/drivers/spi/spi-dw-pci.c b/drivers/spi/spi-dw-pci.c
+> index 8a91cd58102f..5552240fee55 100644
+> --- a/drivers/spi/spi-dw-pci.c
+> +++ b/drivers/spi/spi-dw-pci.c
+> @@ -213,3 +213,4 @@ module_pci_driver(dw_spi_driver);
+>  MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
+>  MODULE_DESCRIPTION("PCI interface driver for DW SPI Core");
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_IMPORT_NS(SPI_DW_CORE);
+> -- 
+> 2.33.0
 > 
-> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
