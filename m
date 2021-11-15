@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DC6450BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2709450BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhKORbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:31:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41950 "EHLO mail.kernel.org"
+        id S238016AbhKORbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:31:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236855AbhKORO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236819AbhKORO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:14:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 988FE63253;
-        Mon, 15 Nov 2021 17:11:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A52761BE5;
+        Mon, 15 Nov 2021 17:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996301;
-        bh=ae12yPE0FGuOl5/OdtdlkIjDReYRtkavE6qsNLUd/9I=;
+        s=korg; t=1636996303;
+        bh=lBs+HZbKEHzuBDHl54AKoseW1ciC+arOT7XrgYwq0PA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGMXei1DvpGgkF2/mBCR1wwNL0Qzy1JZOIbG+Cyk6+2Ikju50e+ha3AjVflI5mbdZ
-         GhdsvKgSwU/TTlY07lOcJsYXMGcrgcnH/wXKgtj05uXiPfFBmVhmaZbwetAoGel2AZ
-         ITScQmQQB+3VBDdM6DKxQB7JsoJh0Pj2od97lmJo=
+        b=lGBXzH+S18231P18CNDArTZJ3gckPBtPDkWCyA6ZJ2a/zDPjbirSD/KFabsMkVNY9
+         X69800nOHdDPittzgm+1/+Gj0eYq7b0+xbgg91Vq94sMxcH/Bsyp56noFafHQukRM7
+         GeD33GwSpqqxUa2B8N35q5tEqla0cJesRkkE8D8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>,
-        Henrik Grimler <henrik@grimler.se>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.4 089/355] power: supply: max17042_battery: use VFSOC for capacity when no rsns
-Date:   Mon, 15 Nov 2021 18:00:13 +0100
-Message-Id: <20211115165316.681773641@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 090/355] KVM: nVMX: Query current VMCS when determining if MSR bitmaps are in use
+Date:   Mon, 15 Nov 2021 18:00:14 +0100
+Message-Id: <20211115165316.714161050@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -43,45 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henrik Grimler <henrik@grimler.se>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 223a3b82834f036a62aa831f67cbf1f1d644c6e2 upstream.
+commit 7dfbc624eb5726367900c8d86deff50836240361 upstream.
 
-On Galaxy S3 (i9300/i9305), which has the max17047 fuel gauge and no
-current sense resistor (rsns), the RepSOC register does not provide an
-accurate state of charge value. The reported value is wrong, and does
-not change over time. VFSOC however, which uses the voltage fuel gauge
-to determine the state of charge, always shows an accurate value.
+Check the current VMCS controls to determine if an MSR write will be
+intercepted due to MSR bitmaps being disabled.  In the nested VMX case,
+KVM will disable MSR bitmaps in vmcs02 if they're disabled in vmcs12 or
+if KVM can't map L1's bitmaps for whatever reason.
 
-For devices without current sense, VFSOC is already used for the
-soc-alert (0x0003 is written to MiscCFG register), so with this change
-the source of the alert and the PROP_CAPACITY value match.
+Note, the bad behavior is relatively benign in the current code base as
+KVM sets all bits in vmcs02's MSR bitmap by default, clears bits if and
+only if L0 KVM also disables interception of an MSR, and only uses the
+buggy helper for MSR_IA32_SPEC_CTRL.  Because KVM explicitly tests WRMSR
+before disabling interception of MSR_IA32_SPEC_CTRL, the flawed check
+will only result in KVM reading MSR_IA32_SPEC_CTRL from hardware when it
+isn't strictly necessary.
 
-Fixes: 359ab9f5b154 ("power_supply: Add MAX17042 Fuel Gauge Driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Suggested-by: Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>
-Signed-off-by: Henrik Grimler <henrik@grimler.se>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Tag the fix for stable in case a future fix wants to use
+msr_write_intercepted(), in which case a buggy implementation in older
+kernels could prove subtly problematic.
+
+Fixes: d28b387fb74d ("KVM/VMX: Allow direct access to MSR_IA32_SPEC_CTRL")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20211109013047.2041518-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/max17042_battery.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/kvm/vmx/vmx.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -312,7 +312,10 @@ static int max17042_get_property(struct
- 		val->intval = data * 625 / 8;
- 		break;
- 	case POWER_SUPPLY_PROP_CAPACITY:
--		ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		if (chip->pdata->enable_current_sense)
-+			ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		else
-+			ret = regmap_read(map, MAX17042_VFSOC, &data);
- 		if (ret < 0)
- 			return ret;
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -785,15 +785,15 @@ void update_exception_bitmap(struct kvm_
+ /*
+  * Check if MSR is intercepted for currently loaded MSR bitmap.
+  */
+-static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
++static bool msr_write_intercepted(struct vcpu_vmx *vmx, u32 msr)
+ {
+ 	unsigned long *msr_bitmap;
+ 	int f = sizeof(unsigned long);
  
+-	if (!cpu_has_vmx_msr_bitmap())
++	if (!(exec_controls_get(vmx) & CPU_BASED_USE_MSR_BITMAPS))
+ 		return true;
+ 
+-	msr_bitmap = to_vmx(vcpu)->loaded_vmcs->msr_bitmap;
++	msr_bitmap = vmx->loaded_vmcs->msr_bitmap;
+ 
+ 	if (msr <= 0x1fff) {
+ 		return !!test_bit(msr, msr_bitmap + 0x800 / f);
+@@ -6579,7 +6579,7 @@ static void vmx_vcpu_run(struct kvm_vcpu
+ 	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+ 	 * save it.
+ 	 */
+-	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
++	if (unlikely(!msr_write_intercepted(vmx, MSR_IA32_SPEC_CTRL)))
+ 		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+ 
+ 	x86_spec_ctrl_restore_host(vmx->spec_ctrl, 0);
 
 
