@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7377451592
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6DE45158B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241847AbhKOUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:42:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
+        id S1347076AbhKOUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:42:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238451AbhKOSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:07:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D78A633A1;
-        Mon, 15 Nov 2021 17:44:51 +0000 (UTC)
+        id S237131AbhKOSHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:07:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65EAE633A2;
+        Mon, 15 Nov 2021 17:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998292;
-        bh=55lL8uulT8XdG1MaepOPi9KIpP4N9v2b8WKmFvB41KU=;
+        s=korg; t=1636998311;
+        bh=a2gwHSopEmrMWCKLi/RmnFjPijvwE1uhhxTBII19q5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsaZZc3kqmmieqHbqxSXwx46DDRKOkMqpCdQSQtZ9+3GdTTsbkjcxvze0hcVs68Fp
-         +24mjANWoQ0NvKR1ywicbclN18RuQzLonXYKtq53tYaBFm4SO4SSyzeSMPJwWmGY9B
-         6rCsnU00YJuG7TFJPb5nwf1fDRrBTgZY5vo3qG2M=
+        b=siG6reAUmQ6AJQlkXSndyVrje077lviNcg5fp1UA8JlLO23/E4jUbjAo4uejIBH/8
+         5XwplPj/dqO42OEz2Z0YaLO2L4FvAeXal6OwtSF3CSAq5dOxWOcTgg9i+0WmOjUcMI
+         fqKLRfFnK14eq8mEjMKhHc1qhvhz7fRYrlmR4WMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Bin Liu <b-liu@ti.com>,
+        Min Guo <min.guo@mediatek.com>,
+        Yonglong Wu <yonglong.wu@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 430/575] RDMA/mlx4: Return missed an error if device doesnt support steering
-Date:   Mon, 15 Nov 2021 18:02:35 +0100
-Message-Id: <20211115165358.652287621@linuxfoundation.org>
+Subject: [PATCH 5.10 431/575] usb: musb: select GENERIC_PHY instead of depending on it
+Date:   Mon, 15 Nov 2021 18:02:36 +0100
+Message-Id: <20211115165358.683757027@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -41,40 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit f4e56ec4452f48b8292dcf0e1c4bdac83506fb8b ]
+[ Upstream commit fde1fbedbaed4e76cef4600d775b185f59b9b568 ]
 
-The error flow fixed in this patch is not possible because all kernel
-users of create QP interface check that device supports steering before
-set IB_QP_CREATE_NETIF_QP flag.
+The kconfig symbol GENERIC_PHY says:
+  All the users of this framework should select this config.
+and around 136 out of 138 drivers do so, so change USB_MUSB_MEDIATEK
+to do so also.
 
-Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
-Link: https://lore.kernel.org/r/91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+This (also) fixes a long circular dependency problem for an upcoming
+patch.
+
+Fixes: 0990366bab3c ("usb: musb: Add support for MediaTek musb controller")
+Cc: Bin Liu <b-liu@ti.com>
+Cc: Min Guo <min.guo@mediatek.com>
+Cc: Yonglong Wu <yonglong.wu@mediatek.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-mediatek@lists.infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20211005235747.5588-1-rdunlap@infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/qp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/musb/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 6bc0818f4b2c6..c6a815a705fef 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -1099,8 +1099,10 @@ static int create_qp_common(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
- 			if (dev->steering_support ==
- 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
- 				qp->flags |= MLX4_IB_QP_NETIF;
--			else
-+			else {
-+				err = -EINVAL;
- 				goto err;
-+			}
- 		}
+diff --git a/drivers/usb/musb/Kconfig b/drivers/usb/musb/Kconfig
+index 8de143807c1ae..4d61df6a9b5c8 100644
+--- a/drivers/usb/musb/Kconfig
++++ b/drivers/usb/musb/Kconfig
+@@ -120,7 +120,7 @@ config USB_MUSB_MEDIATEK
+ 	tristate "MediaTek platforms"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	depends on NOP_USB_XCEIV
+-	depends on GENERIC_PHY
++	select GENERIC_PHY
+ 	select USB_ROLE_SWITCH
  
- 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
+ comment "MUSB DMA mode"
 -- 
 2.33.0
 
