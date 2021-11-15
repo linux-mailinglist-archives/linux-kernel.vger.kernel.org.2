@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94A04518F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6032452128
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351017AbhKOXLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:11:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243746AbhKOTDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:03:48 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E421461265;
-        Mon, 15 Nov 2021 18:15:31 +0000 (UTC)
-Date:   Mon, 15 Nov 2021 13:15:30 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [ANNOUNCE] 5.10.78-rt55
-Message-ID: <20211115131530.15df8784@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1352041AbhKPBAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:00:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343549AbhKOTVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:21:19 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC95C03D78C
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:17:43 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id i6so36778075uae.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 10:17:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+a8ZktNn6ZKD5SR+F36fH6n6kb1h7BS7jd1Wp45NaFM=;
+        b=gKjpO0lLV7NAzCVw+nwCxA8yC44R21WAWD2XjYYi0XvHIj7m390XTLd0lEN5Nn7rcB
+         BuK4C1Cfgw1j9IVR5y4ccOOC9HnZhA9Q9ERm3Q22nj0xyYhHPPZ+IYpHX27qbjUCyDa9
+         FjBo+0o5USkN9WjUnl/bLBY+ePanR03FsUeaamVOMTsyk1ZuvITwcd6QcOScign6Qmun
+         u7WUTMpODzERw1+OGJLsaUtAupMXVPh3UXvanz5tAdren74UjX5wDmMwtt0tuKXcncWg
+         TUyJQc40cjABQb16NUrbV/xR8FV0L6K9gaV5knCQzF0+juocFBSz2mXCLAEddrjvWuAo
+         708w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+a8ZktNn6ZKD5SR+F36fH6n6kb1h7BS7jd1Wp45NaFM=;
+        b=PaQTSi//Ad1nx1GpwAZ0Abc9wDpnbbkp/hkUnhl15w250ymAY9e7oeJi0/y9eCuRRT
+         kDJ09kJ8jtWlYaUTX8TNk0+d/bR7BvyJxKXaNopqHDQptzQgJ7TCXDmqKZ5aWGjj2JZk
+         Cy6xAkXXnuxPc+/vdRDc1b+DPYyYUfoe1Rb9q87yJPNf6Leg+LJ6zfCWilchJK/VVme7
+         T1uA3OWMjVGzBqvV3nRtzJh3bjPqAZHXoA086kYpjB0Kj4jlJDrGf8jk6jhwpckuYGmp
+         aK0s5W7hGklLkKQ5CKas8bfWaSpKiENChzn3XsESPaKUQZ5uT2W9WJi7oWpqftFikJnc
+         x5lQ==
+X-Gm-Message-State: AOAM530aAU3gKPAbS8+lZy8GSpATQ/vQkIr+LQbIz/W6Ckt0dKEqsa2y
+        SANYS3zuWZUf/+xwrj1cDC8nbhuAZs6rIapgaJAM/g==
+X-Google-Smtp-Source: ABdhPJya8J9a4P+RjZgEeXSNntVJy86MJNmzIPw9P4CUF+9L+z4wnWDoOasaaQi9RrdEFaJXT3F+c+2vxQUEakzHjTg=
+X-Received: by 2002:a67:df96:: with SMTP id x22mr46045260vsk.9.1637000262835;
+ Mon, 15 Nov 2021 10:17:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211115173850.3598768-1-adelva@google.com> <74179f08-3529-7502-db33-2ea18cab3f58@kernel.dk>
+In-Reply-To: <74179f08-3529-7502-db33-2ea18cab3f58@kernel.dk>
+From:   Alistair Delva <adelva@google.com>
+Date:   Mon, 15 Nov 2021 10:17:30 -0800
+Message-ID: <CANDihLE5oO2=MDiPtGmUzZgaPuzT2_X7da-vKe+ybBJkXgnsAQ@mail.gmail.com>
+Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel-team@android.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 15, 2021 at 10:04 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 11/15/21 10:38 AM, Alistair Delva wrote:
+> > Booting to Android userspace on 5.14 or newer triggers the following
+> > SELinux denial:
+> >
+> > avc: denied { sys_nice } for comm="init" capability=23
+> >      scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+> >      permissive=0
+> >
+> > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+> > better compatibility with older SEPolicy, check ADMIN before NICE.
+>
+> Seems a bit wonky to me, but the end result is the same.
 
-Dear RT Folks,
+No argument from me..
 
-I'm pleased to announce the 5.10.78-rt55 stable release.
+> In any case,
+> this warrants a comment above it detailing why the ordering is
+> seemingly important.
 
+Sent v2.
 
-This release is just an update to the new stable 5.10.78 version
-and no RT specific changes have been made.
-
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.10-rt
-  Head SHA1: 8790fdcff68cc0e69d19c352d0fd0fba471b7635
-
-
-Or to build 5.10.78-rt55 directly, the following patches should be applied:
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.78.xz
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.78-rt55.patch.xz
-
-
-
-
-Enjoy,
-
--- Steve
-
+> --
+> Jens Axboe
+>
